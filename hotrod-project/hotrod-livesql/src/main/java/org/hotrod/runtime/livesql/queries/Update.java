@@ -81,8 +81,14 @@ public class Update {
   private LiveSQLStructure prepareQuery() {
     QueryWriter w = new QueryWriter(this.sqlDialect);
     w.write("UPDATE ");
+
+    String renderedAlias = this.tableOrView.getAlias();
+    if (renderedAlias != null) {
+      renderedAlias = this.sqlDialect.getIdentifierRenderer().renderTypedSQLIdentifier(renderedAlias);
+    }
+
     w.write(this.sqlDialect.getIdentifierRenderer().renderSQLObjectName(this.tableOrView)
-        + (this.tableOrView.getAlias() != null ? (" " + this.tableOrView.getAlias()) : ""));
+        + (renderedAlias != null ? (" " + renderedAlias) : ""));
 
     w.write("\nSET\n");
     boolean first = true;

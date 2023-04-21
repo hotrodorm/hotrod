@@ -35,15 +35,15 @@ public class ByteArrayColumn extends ByteArrayExpression implements Column {
   @Override
   public void renderTo(final QueryWriter w) {
     if (this.objectInstance.getAlias() != null) {
-      w.write(this.objectInstance.getAlias());
+      w.write(w.getSqlDialect().getIdentifierRenderer().renderTypedSQLIdentifier(this.objectInstance.getAlias()));
       w.write(".");
     }
-    w.write(w.getSqlDialect().getIdentifierRenderer().renderSQLName(this.name));
+    w.write(w.getSqlDialect().getIdentifierRenderer().renderSQLIdentifier(this.name));
   }
 
   @Override
   public void renderSimpleNameTo(final QueryWriter w) {
-    w.write(w.getSqlDialect().getIdentifierRenderer().renderSQLName(this.name));
+    w.write(w.getSqlDialect().getIdentifierRenderer().renderSQLIdentifier(this.name));
   }
 
   // Getters

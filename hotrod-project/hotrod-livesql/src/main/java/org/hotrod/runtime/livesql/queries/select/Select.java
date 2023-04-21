@@ -55,7 +55,7 @@ class Select<R> extends AbstractSelect<R> {
           try {
             Column col = (Column) c;
             w.write(" as ");
-            w.write(w.getSqlDialect().getIdentifierRenderer().renderSQLName(col.getProperty()));
+            w.write(w.getSqlDialect().getIdentifierRenderer().renderSQLIdentifier(col.getProperty()));
           } catch (ClassCastException e) {
             // Not a property -- no need to alias it
           }

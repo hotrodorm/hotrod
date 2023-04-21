@@ -2,6 +2,7 @@ package org.hotrod.runtime.livesql.dialects;
 
 import java.util.List;
 
+import org.hotrod.runtime.livesql.dialects.IdentifierRenderer.TypedIdentifierCase;
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
@@ -36,8 +37,9 @@ public class SQLServerDialect extends LiveSQLDialect {
   @Override
   public IdentifierRenderer getIdentifierRenderer() {
     // Identifier names are case insensitive in SQL Server
-    return new IdentifierRenderer("[a-zA-Z][a-zA-Z0-9_]*", "\"", "\"", false);
-  }
+    Quoter q = new Quoter("[", "]", "^[ -Z\\\\-~]$", "^[ -Z\\\\-~]$", "\"", "");
+    return new IdentifierRenderer("[a-zA-Z][a-zA-Z0-9_]*", false, "[A-Za-z][A-Za-z0-9_]*", TypedIdentifierCase.LOWER, q);
+}
 
   // Join rendering
 

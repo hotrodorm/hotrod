@@ -9,8 +9,8 @@ import java.util.Set;
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.LiveSQLMapper;
-import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.dialects.SetOperationRenderer.SetOperation;
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
@@ -27,8 +27,6 @@ import org.hotrodorm.hotrod.utils.SUtil;
 import org.hotrodorm.hotrod.utils.Separator;
 
 public abstract class AbstractSelect<R> extends Query {
-
-//  private static final Logger log = LogManager.getLogger(AbstractSelect.class);
 
   private boolean distinct;
   private TableOrView baseTable = null;
@@ -160,16 +158,27 @@ public abstract class AbstractSelect<R> extends Query {
 
     if (this.baseTable != null) {
 
+      String renderedAlias = this.baseTable.getAlias();
+      if (renderedAlias != null) {
+        renderedAlias = this.sqlDialect.getIdentifierRenderer().renderTypedSQLIdentifier(renderedAlias);
+      }
+
       w.write("\nFROM " + this.sqlDialect.getIdentifierRenderer().renderSQLObjectName(this.baseTable)
-          + (this.baseTable.getAlias() == null ? "" : " " + this.baseTable.getAlias()));
+          + (renderedAlias != null ? (" " + renderedAlias) : ""));
 
       // joins
 
       for (Join j : this.joins) {
         String joinKeywords;
         joinKeywords = this.sqlDialect.getJoinRenderer().renderJoinKeywords(j);
+
+        renderedAlias = j.getTable().getAlias();
+        if (renderedAlias != null) {
+          renderedAlias = this.sqlDialect.getIdentifierRenderer().renderTypedSQLIdentifier(renderedAlias);
+        }
+
         w.write("\n" + joinKeywords + " " + this.sqlDialect.getIdentifierRenderer().renderSQLObjectName(j.getTable())
-            + (j.getTable().getAlias() == null ? "" : " " + j.getTable().getAlias()));
+            + (renderedAlias != null ? (" " + renderedAlias) : ""));
         try {
           PredicatedJoin pj = (PredicatedJoin) j;
           if (pj.getJoinPredicate() != null) { // on
@@ -377,21 +386,15 @@ public abstract class AbstractSelect<R> extends Query {
   }
 
   public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-//    log.info("### obj " + System.identityHashCode(this) + " -- tableReferences=" + tableReferences.size());
     if (this.baseTable != null) {
-//      log.info(">>> Tree baseTable: " + this.baseTable.renderTree());
       this.baseTable.validateTableReferences(tableReferences, ag);
     }
-//    log.info("### obj " + System.identityHashCode(this) + " -- tableReferences=" + tableReferences.size());
     if (this.joins != null) {
       for (Join j : this.joins) {
-//        log.info(">>> Tree join: " + j.renderTree());
         j.getTable().validateTableReferences(tableReferences, ag);
       }
     }
-//    log.info("### obj " + System.identityHashCode(this) + " -- tableReferences=" + tableReferences.size());
     if (this.wherePredicate != null) {
-//      log.info(">>> Tree WHERE: " + this.wherePredicate.renderTree());
       this.wherePredicate.validateTableReferences(tableReferences, ag);
     }
     if (this.groupBy != null) {
@@ -420,8 +423,6 @@ public abstract class AbstractSelect<R> extends Query {
     private Set<String> aliases = new HashSet<String>();
 
     public void register(final String alias, final DatabaseObject databaseObject) {
-//      log.debug("---> registering2: " + databaseObject.renderUnescapedName());
-//      displayTableReferences();
       if (this.tableReferences.contains(databaseObject)) {
         throw new InvalidLiveSQLStatementException(
             "An instance of the " + databaseObject.getType() + " " + databaseObject.renderUnescapedName()
@@ -441,14 +442,6 @@ public abstract class AbstractSelect<R> extends Query {
     public Set<String> getAliases() {
       return aliases;
     }
-
-//    public void displayTableReferences() {
-//      log.info("=== Existing " + this.tableReferences.size() + " refs ===");
-//      for (DatabaseObject o : this.tableReferences) {
-//        log.info("o=" + o.renderUnescapedName());
-//      }
-//      log.info("======");
-//    }
 
     public int size() {
       return this.tableReferences.size();
@@ -530,60 +523,3 @@ public abstract class AbstractSelect<R> extends Query {
   }
 
 }
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//

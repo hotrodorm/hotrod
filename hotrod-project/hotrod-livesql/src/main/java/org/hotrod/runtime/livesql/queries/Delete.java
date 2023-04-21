@@ -61,8 +61,14 @@ public class Delete {
   private LiveSQLStructure prepareQuery() {
     QueryWriter w = new QueryWriter(this.sqlDialect);
     w.write("DELETE FROM ");
+
+    String renderedAlias = this.from.getAlias();
+    if (renderedAlias != null) {
+      renderedAlias = this.sqlDialect.getIdentifierRenderer().renderTypedSQLIdentifier(renderedAlias);
+    }
+
     w.write(this.sqlDialect.getIdentifierRenderer().renderSQLObjectName(this.from)
-        + (this.from.getAlias() != null ? (" " + this.from.getAlias()) : ""));
+        + (renderedAlias != null ? (" " + renderedAlias) : ""));
     if (this.wherePredicate != null) {
       w.write("\nWHERE ");
       this.wherePredicate.renderTo(w);

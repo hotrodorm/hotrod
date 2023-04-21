@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.hotrod.runtime.cursors.Cursor;
 
-public class CriteriaOffsetPhase<T> {
+public class CriteriaOffsetPhase<T> implements ExecutableCriteriaSelect<T> {
 
   private AbstractSelect<T> select;
 
@@ -27,6 +27,18 @@ public class CriteriaOffsetPhase<T> {
 
   public Cursor<T> executeCursor() {
     return this.select.executeCursor();
+  }
+
+  // rendering
+
+  @Override
+  public void renderTo(QueryWriter w) {
+    this.select.renderTo(w);
+  }
+
+  @Override
+  public String getPreview() {
+    return this.select.getPreview();
   }
 
 }
