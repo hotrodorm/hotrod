@@ -21,6 +21,7 @@ import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.utils.ClassPackage;
 import org.hotrodorm.hotrod.utils.SUtil;
+import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 import org.nocrala.tools.database.tartarus.core.DatabaseObject;
 import org.nocrala.tools.database.tartarus.core.JdbcForeignKey;
 import org.nocrala.tools.database.tartarus.core.JdbcKey;
@@ -76,6 +77,10 @@ public class TableTag extends AbstractEntityDAOTag {
   public TableTag(final JdbcTable t, final DaosSpringMyBatisTag daosTag, final HotRodFragmentConfigTag fragmentConfig,
       final HotRodConfigTag config, final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
     super("table");
+
+    this.catalog = t.getCatalog();
+    this.schema = t.getSchema();
+    this.name = t.getName();
 
     this.daosTag = daosTag;
     this.fragmentConfig = fragmentConfig;
@@ -214,7 +219,7 @@ public class TableTag extends AbstractEntityDAOTag {
   // Behavior
 
   public void validate(final DaosSpringMyBatisTag daosTag, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
+      final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter, final CatalogSchema currentCS)
       throws InvalidConfigurationFileException {
 
     this.daosTag = daosTag;
@@ -228,6 +233,10 @@ public class TableTag extends AbstractEntityDAOTag {
     if (SUtil.isEmpty(this.name)) {
       throw new InvalidConfigurationFileException(this, "Attribute 'name' of tag <" + super.getTagName()
           + "> cannot be empty. " + "Must specify a database table name.");
+    }
+
+    if (this.catalog == null && this.schema == null) {
+      this.applyCurrentSchema(currentCS);
     }
 
     // catalog
@@ -396,6 +405,13 @@ public class TableTag extends AbstractEntityDAOTag {
 
     super.validate(daosTag, config, fragmentConfig, adapter);
 
+  }
+
+  public void applyCurrentSchema(CatalogSchema currentCS) {
+    if (this.catalog == null && this.schema == null) {
+      this.catalog = currentCS.getCatalog();
+      this.schema = currentCS.getSchema();
+    }
   }
 
   public void validateExtendsAgainstAllTables(final List<TableTag> allTables, final List<EnumTag> allEnums)
@@ -620,6 +636,10 @@ public class TableTag extends AbstractEntityDAOTag {
     return null;
   }
 
+  public String toString() {
+    return this.catalog + "/" + this.schema + "." + this.name;
+  }
+
   // Getters
 
   public String getColumnSeam() {
@@ -642,7 +662,7 @@ public class TableTag extends AbstractEntityDAOTag {
     return this.extendsJdbcTable;
   }
 
-  public DatabaseObject getDatabaseObjectId() {
+  public DatabaseObject getDatabaseObject() {
     String c = this.id.getCatalog() == null ? null : this.id.getCatalog().getCanonicalSQLName();
     String s = this.id.getSchema() == null ? null : this.id.getSchema().getCanonicalSQLName();
     String n = this.id.getObject().getCanonicalSQLName();

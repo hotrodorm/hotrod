@@ -177,8 +177,12 @@ public class Metadata {
 
       Set<String> tablesAndEnumsCanonicalNames = new HashSet<String>();
 
+      log.debug("player tables="
+          + config.getFacetTables().stream().filter(t -> t.getDatabaseObject().getName().equals("player")).count());
+
       for (TableTag tt : config.getFacetTables()) {
         String canonicalName = tt.getId().getCanonicalSQLName();
+        log.debug("t: " + tt.getId());
         if (tablesAndEnumsCanonicalNames.contains(canonicalName)) {
           throw new ControlledException(tt.getSourceLocation(), "Duplicate database <table> name '" + canonicalName
               + "'. This table is already defined in the configuration file(s).");

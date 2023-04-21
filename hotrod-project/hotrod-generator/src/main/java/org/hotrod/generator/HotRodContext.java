@@ -114,14 +114,14 @@ public class HotRodContext {
 
       // Current Catalog & Schema
 
-      feedback.info("");
+      feedback.info(" ");
       if (adapter.supportsCatalog()) {
         feedback.info("Current Catalog: " + (loc.getCurrentCatalog() == null ? "" : loc.getCurrentCatalog()));
       }
       if (adapter.supportsSchema()) {
         feedback.info("Current Schema: " + (loc.getCurrentSchema() == null ? "" : loc.getCurrentSchema()));
       }
-      feedback.info("");
+      feedback.info(" ");
 
       // Loading Configuration
 
@@ -144,6 +144,12 @@ public class HotRodContext {
       }
       log.debug("Main Configuration loaded.");
 
+      // Apply current schema to declared tables with no schema and no catalog
+
+      this.config.applyCurrentSchema(this.loc.getCatalogSchema());
+      
+      // Discover schemas
+
       MyBatisSpringTag mst = (MyBatisSpringTag) this.config.getGenerators().getSelectedGeneratorTag();
       boolean discover = mst.getDiscover() != null;
       feedback.info("Discover " + (discover ? "enabled." : "disabled."));
@@ -152,15 +158,15 @@ public class HotRodContext {
       // Database Object Scope
 
       Set<DatabaseObject> tables = new HashSet<DatabaseObject>();
-      for (TableTag t : config.getFacetTables()) {
-        tables.add(t.getDatabaseObjectId());
+      for (TableTag t : this.config.getFacetTables()) {
+        tables.add(t.getDatabaseObject());
       }
-      for (EnumTag e : config.getFacetEnums()) {
+      for (EnumTag e : this.config.getFacetEnums()) {
         tables.add(e.getDatabaseObjectId());
       }
 
       Set<DatabaseObject> views = new HashSet<DatabaseObject>();
-      for (ViewTag v : config.getFacetViews()) {
+      for (ViewTag v : this.config.getFacetViews()) {
         views.add(v.getDatabaseObjectId());
       }
 
@@ -176,7 +182,8 @@ public class HotRodContext {
             for (SchemaTag s : mst.getDiscover().getAllSchemaTags()) {
               discoverCSs.add(new CatalogSchema(s.getCanonicalCatalog(), s.getCanonicalSchema()));
               for (ExcludeTag ex : s.getExcludeList()) {
-                DatabaseObject id = new DatabaseObject(s.getCanonicalCatalog(), s.getCanonicalSchema(), ex.getCanonicalName());
+                DatabaseObject id = new DatabaseObject(s.getCanonicalCatalog(), s.getCanonicalSchema(),
+                    ex.getCanonicalName());
                 log.debug("-----> exclude: " + id);
                 excludeIds.add(id);
               }
@@ -185,19 +192,25 @@ public class HotRodContext {
             log.debug("gen 2");
             this.db = new JdbcDatabase(conn, loc.getCatalogSchema(), tables, views, discoverCSs, excludeIds);
             log.debug("gen 3");
+            this.config.getFacetTables();// FIXME
 
             DaosSpringMyBatisTag daosTag = mst.getDaos();
             try {
+              log.debug("gen 3.1");
               for (JdbcTable t : this.db.getTables()) {
                 config.includeInAllFacets(t, false, daosTag, config, adapter);
               }
+              log.debug("gen 3.2");
+              this.config.getFacetTables();// FIXME
               for (JdbcTable v : this.db.getViews()) {
                 config.includeInAllFacets(v, true, daosTag, config, adapter);
               }
+              this.config.getFacetTables();// FIXME
             } catch (InvalidConfigurationFileException e) {
               throw new ControlledException(
                   "Could not use a discovered table or view because of its peculiar name. " + e.getMessage());
             }
+            this.config.getFacetTables();// FIXME
 
           } else {
 
@@ -215,7 +228,8 @@ public class HotRodContext {
         }
 
         log.debug("gen 8");
-        adapter.setCurrentCatalogSchema(conn, loc.getCurrentCatalog(), loc.getCurrentSchema());
+        this.config.getFacetTables(); // FIXME
+       adapter.setCurrentCatalogSchema(conn, loc.getCurrentCatalog(), loc.getCurrentSchema());
         log.debug("gen 9");
 
       } catch (ReaderException e) {
@@ -274,6 +288,9 @@ public class HotRodContext {
 
       log.debug("gen 10");
       this.metadata = new Metadata(db, adapter, loc);
+     
+      log.debug("gen 10.5");
+      this.config.getFacetTables();// FIXME
       log.debug("gen 11");
       try {
         metadata.load(config, loc, conn);

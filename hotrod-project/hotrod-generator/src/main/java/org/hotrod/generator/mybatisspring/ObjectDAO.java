@@ -1368,7 +1368,7 @@ public class ObjectDAO extends GeneratableObject {
     String voClassName = this.avo.getFullClassName();
     String mapperName = this.mapper.getFullMapperIdUpdateByCriteria();
 
-    writeUpdateByCriteriaVariation(false, voClassName, mapperName);
+    // writeUpdateByCriteriaVariation(false, voClassName, mapperName);
     writeUpdateByCriteriaVariation(true, voClassName, mapperName);
 
     println();
@@ -1384,8 +1384,12 @@ public class ObjectDAO extends GeneratableObject {
 
     println("    Map<String, Object> values = new HashMap<>();");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
-      println("    if (updateValues." + cm.getId().getJavaGetter() + "() != null) values.put(\""
-          + cm.getId().getRenderedSQLName() + "\", updateValues." + cm.getId().getJavaGetter() + "());");
+      String colName = cm.getId().getRenderedSQLName();
+      if (colName.startsWith("\"") && colName.endsWith("\"")) {
+        colName = "\\\"" + colName.substring(1, colName.length() - 1) + "\\\"";
+      }
+      println("    if (updateValues." + cm.getId().getJavaGetter() + "() != null) values.put(\"" + colName
+          + "\", updateValues." + cm.getId().getJavaGetter() + "());");
     }
 
     print("    return new UpdateSetCompletePhase(");
@@ -1473,7 +1477,7 @@ public class ObjectDAO extends GeneratableObject {
     String daoClassName = this.getClassName();
     String mapperName = this.mapper.getFullMapperIdDeleteByCriteria();
 
-    writeDeleteByCriteriaVariation(false, daoClassName, mapperName);
+    // writeDeleteByCriteriaVariation(false, daoClassName, mapperName);
     writeDeleteByCriteriaVariation(true, daoClassName, mapperName);
   }
 
@@ -1639,7 +1643,8 @@ public class ObjectDAO extends GeneratableObject {
     println();
     println("  public static class " + typeHandlerClassName + " implements TypeHandler<" + type + "> {");
     println();
-    println("    private static final TypeConverter<" + interType + ", " + type + "> CONVERTER = new " + converter + "();");
+    println(
+        "    private static final TypeConverter<" + interType + ", " + type + "> CONVERTER = new " + converter + "();");
     println();
     println("    @Override");
     println("    public " + type + " getResult(final ResultSet rs, final String columnName) throws SQLException {");

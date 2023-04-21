@@ -117,7 +117,7 @@ public abstract class DataSetMetadataFactory {
         tableTag.setCatalog(t.getCatalog());
         tableTag.setSchema(t.getSchema());
         tableTag.setName(t.getName());
-        tableTag.validate(null, config, null, adapter);
+        tableTag.validate(null, config, null, adapter, null);
         return new TableDataSetMetadata(tableTag, t, tableTag.getExtendsTag(), tableTag.getExtendsJdbcTable(), adapter,
             config, layout, selectMetadataCache, isFromCurrentCatalog, isFromCurrentSchema);
       } else {
@@ -125,7 +125,7 @@ public abstract class DataSetMetadataFactory {
         viewTag.setCatalog(t.getCatalog());
         viewTag.setSchema(t.getSchema());
         viewTag.setName(t.getName());
-        viewTag.validate(null, config, null, adapter);
+        viewTag.validate(null, config, null, adapter, null);
         return new TableDataSetMetadata(viewTag, t, adapter, config, layout, selectMetadataCache, isFromCurrentCatalog,
             isFromCurrentSchema);
       }

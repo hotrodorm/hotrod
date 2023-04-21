@@ -131,32 +131,13 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
     }
   }
 
-  // // Entity Resolver
-  //
-  // public static class HotRodInternalEntityResolver implements EntityResolver
-  // {
-  //
-  // private static final Logger log =
-  // Logger.getLogger(HotRodInternalEntityResolver.class);
-  //
-  // private static final String DTD = "/hotrod.dtd";
-  //
-  // @Override
-  // public InputSource resolveEntity(final String publicId, final String
-  // systemId) throws SAXException, IOException {
-  // log.debug("*** public: " + publicId + " system: " + systemId);
-  // InputStream is = getClass().getResourceAsStream(DTD);
-  // log.debug("*** is=" + is);
-  // if (is == null) {
-  // throw new IOException("Could not find DTD definition file/resource: " +
-  // DTD);
-  // }
-  // return new InputSource(is);
-  // }
-  //
-  // }
+  // Apply current catalog/schema to declared tables
 
-  // Update generated cache
+  public void applyCurrentSchema(CatalogSchema currentCS) {
+    this.getAllTables().stream().forEach(t -> t.applyCurrentSchema(currentCS));
+    this.getAllViews().stream().forEach(t -> t.applyCurrentSchema(currentCS));
+    this.getAllEnums().stream().forEach(t -> t.applyCurrentSchema(currentCS));
+  }
 
   @Override
   public boolean concludeGeneration(final AbstractHotRodConfigTag unitCache, final DatabaseAdapter adapter) {

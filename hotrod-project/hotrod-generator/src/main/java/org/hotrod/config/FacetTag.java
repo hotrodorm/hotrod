@@ -1,7 +1,11 @@
 package org.hotrod.config;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -12,6 +16,8 @@ import org.apache.logging.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrodorm.hotrod.utils.SUtil;
+import org.nocrala.tools.database.tartarus.core.CatalogSchema;
+import org.nocrala.tools.database.tartarus.core.DatabaseObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
 @XmlRootElement(name = "facet")
@@ -31,6 +37,10 @@ public class FacetTag extends AbstractConfigurationTag {
   private List<EnumTag> enums = new ArrayList<EnumTag>();
   private List<ExecutorTag> daos = new ArrayList<ExecutorTag>();
 
+  private Set<DatabaseObjectId> tableIds = new HashSet<>();
+  private Set<DatabaseObjectId> viewIds = new HashSet<>();
+  private Set<DatabaseObjectId> enumIds = new HashSet<>();
+
   // Constructor
 
   public FacetTag() {
@@ -47,17 +57,17 @@ public class FacetTag extends AbstractConfigurationTag {
 
   @XmlElement
   public void setTable(final TableTag table) {
-    this.tables.add(table);
+    mergeTable(table);
   }
 
   @XmlElement
   public void setView(final ViewTag view) {
-    this.views.add(view);
+    mergeView(view);
   }
 
   @XmlElement
   public void setEnum(final EnumTag e) {
-    this.enums.add(e);
+    mergeEnum(e);
   }
 
   @XmlElement
@@ -98,33 +108,75 @@ public class FacetTag extends AbstractConfigurationTag {
 
   }
 
-  // Merge
+  // Merging
 
   public void mergeOther(final FacetTag other) {
-    this.tables.addAll(other.tables);
-    this.views.addAll(other.views);
-    this.enums.addAll(other.enums);
+    other.tables.stream().forEach(t -> mergeTable(t));
+    other.views.stream().forEach(t -> mergeView(t));
+    other.enums.stream().forEach(t -> mergeEnum(t));
     this.daos.addAll(other.daos);
   }
 
   public void mergeOther(final List<TableTag> tables, final List<ViewTag> views, final List<EnumTag> enums,
       final List<ExecutorTag> daos) {
-    this.tables.addAll(tables);
-    this.views.addAll(views);
-    this.enums.addAll(enums);
+    tables.stream().forEach(t -> mergeTable(t));
+    views.stream().forEach(t -> mergeView(t));
+    enums.stream().forEach(t -> mergeEnum(t));
     this.daos.addAll(daos);
   }
 
   public void includeTable(final JdbcTable t, final DaosSpringMyBatisTag daosTag, final HotRodConfigTag config,
       final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
     TableTag tt = new TableTag(t, daosTag, null, config, adapter);
-    this.tables.add(tt);
+    mergeTable(tt);
   }
 
   public void includeView(final JdbcTable t, final DaosSpringMyBatisTag daosTag, final HotRodConfigTag config,
       final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
     ViewTag vt = new ViewTag(t, daosTag, null, config, adapter);
-    this.views.add(vt);
+    mergeView(vt);
+  }
+
+  private void mergeTable(final TableTag table) {
+    log.debug("merge: " + table.toString() + " stack: " + Stream.of(Thread.currentThread().getStackTrace()).skip(1).limit(20)
+        .map(s -> s.getClassName() + "(" + s.getLineNumber() + ")").collect(Collectors.joining(", ")));
+    if (table.getDatabaseObject().getName().equals("player")) {
+      log.debug(">> Before: 'player' ids=" + this.tableIds.stream().filter(t -> t.getName().equals("player")).count() //
+          + " table: " + table.toString() //
+          + " found: "
+          + this.tableIds.stream().filter(t -> t.getName().equals("player")).map(t -> t.toString())
+              .collect(Collectors.joining(", ")) //
+          + " tables=" + this.tables.stream().filter(t -> t.getDatabaseObject().getName().equals("player")).count() //
+          + " contains=" + this.tableIds.contains(table.getDatabaseObject().getId()));
+    }
+    if (!this.tableIds.contains(table.getDatabaseObject().getId())) {
+      this.tableIds.add(table.getDatabaseObject().getId());
+      this.tables.add(table);
+    }
+    if (table.getDatabaseObject().getName().equals("player")) {
+      log.debug(">> After: 'player' ids=" + this.tableIds.stream().filter(t -> t.getName().equals("player")).count()
+          + " tables=" + this.tables.stream().filter(t -> t.getDatabaseObject().getName().equals("player")).count());
+    }
+  }
+
+  private void mergeView(final ViewTag view) {
+    if (!this.viewIds.contains(view.getDatabaseObjectId().getId())) {
+      this.viewIds.add(view.getDatabaseObjectId().getId());
+      this.views.add(view);
+    }
+  }
+
+  private void mergeEnum(final EnumTag e) {
+    if (!this.enumIds.contains(e.getDatabaseObjectId().getId())) {
+      this.enumIds.add(e.getDatabaseObjectId().getId());
+      this.enums.add(e);
+    }
+  }
+
+  // Apply current CS
+
+  public void applyCurrentCatalogSchema(final CatalogSchema cs) {
+
   }
 
   // Getters

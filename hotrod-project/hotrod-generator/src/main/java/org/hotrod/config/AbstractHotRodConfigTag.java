@@ -126,7 +126,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     // DAOs
 
     for (TableTag t : this.tables) {
-      t.validate(daosTag, config, fragmentConfig, adapter);
+      t.validate(daosTag, config, fragmentConfig, adapter, currentCS);
     }
     Collections.sort(this.tables, new Comparator<TableTag>() {
       @Override
@@ -137,7 +137,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     super.addChildren(this.tables);
 
     for (EnumTag e : this.enums) {
-      e.validate(daosTag, config, fragmentConfig, adapter);
+      e.validate(daosTag, config, fragmentConfig, adapter, currentCS);
     }
     Collections.sort(this.enums, new Comparator<EnumTag>() {
       @Override
@@ -148,7 +148,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     super.addChildren(this.enums);
 
     for (ViewTag v : this.views) {
-      v.validate(daosTag, config, fragmentConfig, adapter);
+      v.validate(daosTag, config, fragmentConfig, adapter, currentCS);
     }
     Collections.sort(this.views, new Comparator<ViewTag>() {
       @Override
@@ -329,17 +329,26 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     return facetNames;
   }
 
+  private FacetTag selected = null;
+
+  private void computeSelectedFacets() {
+    if (this.selected == null) {
+      FacetTag selected = new FacetTag();
+      for (FacetTag f : this.chosenFacets) {
+        selected.mergeOther(f);
+      }
+    }
+  }
+
   public List<TableTag> getFacetTables() {
     log.debug("this.chosenFacets=" + this.chosenFacets.stream().map(f -> f.getName()).collect(Collectors.joining(",")));
     if (this.chosenFacets.isEmpty()) {
-      log.debug("all facets -- total tables=" + this.allFacets.getTables().size());
+      log.debug("'player' tables="
+          + this.allFacets.getTables().stream().filter(t -> t.getDatabaseObject().getName().equals("player")).count());
       return this.allFacets.getTables();
     } else {
-      List<TableTag> subset = new ArrayList<TableTag>();
-      for (FacetTag f : this.chosenFacets) {
-        subset.addAll(f.getTables());
-      }
-      return subset;
+      computeSelectedFacets();
+      return selected.getTables();
     }
   }
 
@@ -360,11 +369,8 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     if (this.chosenFacets.isEmpty()) {
       return this.allFacets.getViews();
     } else {
-      List<ViewTag> subset = new ArrayList<ViewTag>();
-      for (FacetTag f : this.chosenFacets) {
-        subset.addAll(f.getViews());
-      }
-      return subset;
+      computeSelectedFacets();
+      return selected.getViews();
     }
   }
 
@@ -376,11 +382,8 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     if (this.chosenFacets.isEmpty()) {
       return this.allFacets.getEnums();
     } else {
-      List<EnumTag> subset = new ArrayList<EnumTag>();
-      for (FacetTag f : this.chosenFacets) {
-        subset.addAll(f.getEnums());
-      }
-      return subset;
+      computeSelectedFacets();
+      return selected.getEnums();
     }
   }
 
@@ -392,11 +395,8 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     if (this.chosenFacets.isEmpty()) {
       return this.allFacets.getExecutors();
     } else {
-      List<ExecutorTag> subset = new ArrayList<ExecutorTag>();
-      for (FacetTag f : this.chosenFacets) {
-        subset.addAll(f.getExecutors());
-      }
-      return subset;
+      computeSelectedFacets();
+      return selected.getExecutors();
     }
   }
 

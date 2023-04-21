@@ -21,6 +21,7 @@ import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.utils.ClassPackage;
 import org.hotrodorm.hotrod.utils.SUtil;
+import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 import org.nocrala.tools.database.tartarus.core.DatabaseObject;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
@@ -152,8 +153,9 @@ public class ViewTag extends AbstractEntityDAOTag {
   // Behavior
 
   public void validate(final DaosSpringMyBatisTag daosTag, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
+      final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter, final CatalogSchema currentCS)
       throws InvalidConfigurationFileException {
+    
     log.debug("validate");
 
     this.daosTag = daosTag;
@@ -167,6 +169,10 @@ public class ViewTag extends AbstractEntityDAOTag {
     if (SUtil.isEmpty(this.name)) {
       throw new InvalidConfigurationFileException(this, "Attribute 'name' of tag <" + super.getTagName()
           + "> cannot be empty. " + "Must specify a database view name.");
+    }
+
+    if (this.catalog == null && this.schema == null) {
+      this.applyCurrentSchema(currentCS);
     }
 
     // catalog
@@ -258,6 +264,13 @@ public class ViewTag extends AbstractEntityDAOTag {
 
     super.validate(daosTag, config, fragmentConfig, adapter);
 
+  }
+
+  public void applyCurrentSchema(CatalogSchema currentCS) {
+    if (this.catalog == null && this.schema == null) {
+      this.catalog = currentCS.getCatalog();
+      this.schema = currentCS.getSchema();
+    }
   }
 
   public void validateAgainstDatabase(final Metadata metadata) throws InvalidConfigurationFileException {

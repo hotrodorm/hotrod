@@ -32,6 +32,7 @@ import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ValueTypeFactory;
 import org.hotrod.utils.ValueTypeFactory.ValueTypeManager;
 import org.hotrodorm.hotrod.utils.SUtil;
+import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 import org.nocrala.tools.database.tartarus.core.DatabaseObject;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
@@ -146,7 +147,7 @@ public class EnumTag extends AbstractEntityDAOTag {
   // Behavior
 
   public void validate(final DaosSpringMyBatisTag daosTag, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
+      final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter, final CatalogSchema currentCS)
       throws InvalidConfigurationFileException {
 
     this.daosTag = daosTag;
@@ -161,6 +162,10 @@ public class EnumTag extends AbstractEntityDAOTag {
     if (SUtil.isEmpty(this.name)) {
       throw new InvalidConfigurationFileException(this, "Attribute 'name' of tag <" + super.getTagName()
           + "> cannot be empty. " + "Must specify the name of a database table.");
+    }
+
+    if (this.catalog == null && this.schema == null) {
+      this.applyCurrentSchema(currentCS);
     }
 
     // catalog
@@ -242,6 +247,13 @@ public class EnumTag extends AbstractEntityDAOTag {
       np.validate();
     }
 
+  }
+
+  public void applyCurrentSchema(CatalogSchema currentCS) {
+    if (this.catalog == null && this.schema == null) {
+      this.catalog = currentCS.getCatalog();
+      this.schema = currentCS.getSchema();
+    }
   }
 
   private static class EnumColumn implements Serializable {
