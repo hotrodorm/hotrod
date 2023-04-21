@@ -11,18 +11,18 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 - CRUD: Classic FK Navigation is now enabled by default. The `<classic-fk-navigation>` tag can be omitted now.
 - Config: Default values for the `<mappers>` tag. It can be now omitted in the configuration file.
 - Core: Reusing JDBC connection when using result-set processor.
-- Core: Schema auto-discovery implemented.
+- Core: Schema discovery implemented.
 - Core: Converters enhanced with Connection details.
 - Core: Converters fixed in `<dao>` tags.
 - Config: DTD declarations are now removed from config files.
 - LiveSQL: Oracle MOD() function fixed.
-- DynamicSQL: `<foreach>` fixed.
+- Nitro: `<foreach>` fixed.
 - LiveSQL: column wildcard `*` implemented including filtering and aliasing.
 - CRUD: Added "implements" for DAO classes.
 - CRUD: Methods renamed.
-- LiveSQL: Implemented basic versions of INSERT, UPDATE, and DELETE.
+- LiveSQL: Core versions of INSERT, UPDATE, and DELETE implemented.
 - LiveSQL: Added DUAL and SYSDUMMY1 for queries without tables.
-- LiveSQL: Adding row parser. 
+- LiveSQL: Row parser implemented. 
 
 ## 3.5.1-SNAPSHOT
 - LiveSQL: backport of filtering and aliasing for the star() method.
