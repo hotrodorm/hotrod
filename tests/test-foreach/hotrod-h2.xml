@@ -2,23 +2,40 @@
 
   <generators>
     <mybatis-spring>
-
       <daos package="app.daos" dao-suffix="DAO" vo-suffix="VO" abstract-vo-prefix="Abstract"
         abstract-vo-suffix="VO" />
       <mappers dir="mappers" />
     </mybatis-spring>
   </generators>
 
+  <table name="branch">
+    <select method="findTop3Branches">
+      select *
+      from branch
+      order by branch_name
+      limit 3
+    </select>
+  </table>
+
+  <dao name="QueriesB">
+    <select method="findLowBranches" vo="LowBranch">
+      select *
+      from branch
+      order by branch_name desc
+      limit 2
+    </select>
+  </dao>
+
+<!--
+  <table name="employee">
+    <column name="salary" converter="double_converter" />
+  </table>
+
   <converter name="double_converter"
     java-type="java.lang.Double"
     java-raw-type="java.lang.Integer"
     class="app.DoubleConverter"
   />
-  
-  <table name="branch" />
-  <table name="employee">
-    <column name="salary" converter="double_converter" />
-  </table>
 
   <dao name="Queries">
     <select method="findEmployees" vo="E">
@@ -38,5 +55,6 @@
       </complement>
     </select>
   </dao>
+-->
 
 </hotrod>
