@@ -3,27 +3,31 @@
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
 ## 4.0.0 (alpha, unreleased)
-- Core: Support for multiple datasources.
-- LiveSQL: LiveSQL now returns `List<Row>` and `Cursor<Row>` instead of `List<Map<String, Object>>` and `Cursor<Map<String, Object>>`.
-- CRUD: `propertiesChangeLog` is now removed from VOs to facilitate quick Spring prototyping.
-- Config: Configuration property `generator` removed.
-- Nitro: Nitro defaults to `result-set` generation now. The `<select-generation>` tag can be omitted by default.
-- CRUD: Classic FK Navigation is now enabled by default. The `<classic-fk-navigation>` tag can be omitted now.
-- Config: Default values for the `<mappers>` tag. It can be now omitted in the configuration file.
-- Core: Reusing JDBC connection when using result-set processor.
-- Core: Schema discovery implemented.
-- Core: Converters enhanced with Connection details.
-- Core: Converters fixed in `<dao>` tags.
-- Config: DTD declarations are now removed from config files.
-- LiveSQL: Oracle MOD() function fixed.
-- Nitro: `<foreach>` fixed.
-- LiveSQL: column wildcard `*` implemented including filtering and aliasing.
-- CRUD: Added "implements" for DAO classes.
-- CRUD: Methods renamed.
-- LiveSQL: Core versions of INSERT, UPDATE, and DELETE implemented.
-- LiveSQL: Added DUAL and SYSDUMMY1 for queries without tables.
-- LiveSQL: Row parser implemented.
-- Nitro: Select methods in entity tags return the entity VOs only. They don't accept the 'vo' attribute anymore.
+- Core:
+    - Support for multiple datasources.
+    - Configuration property `generator` removed.
+    - Default values for the `<mappers>` tag. It can be now omitted in the configuration file.
+    - Reusing JDBC connection when using result-set processor.
+    - Schema discovery implemented.
+    - Converters enhanced with Connection details.
+    - Converters fixed in `<dao>` tags.
+    - DTD declarations are now removed from config files.
+- LiveSQL: 
+    - LiveSQL now returns `List<Row>` and `Cursor<Row>` instead of `List<Map<String, Object>>` and `Cursor<Map<String, Object>>`.
+    - Oracle MOD() function fixed.
+    - column wildcard `*` implemented including filtering and aliasing.
+    - Core versions of INSERT, UPDATE, and DELETE implemented.
+    - Added DUAL and SYSDUMMY1 for queries without tables.
+    - Row parser implemented.
+- CRUD:
+    - `propertiesChangeLog` is now removed from VOs to facilitate quick Spring prototyping.
+    - Classic FK Navigation is now enabled by default. The `<classic-fk-navigation>` tag can be omitted now.
+    - Added "implements" for DAO classes.
+    - Methods renamed.
+- Nitro: 
+    - Select methods in entity tags (`<table>` and `<view>` tags) return the correspondig entity VOs only. They don't accept the 'vo' attribute anymore.
+    - Nitro defaults to `result-set` generation now. The `<select-generation>` tag can be omitted by default.
+    - `<foreach>` fixed.
 
 ## 3.5.1-SNAPSHOT
 - LiveSQL: backport of filtering and aliasing for the star() method.
