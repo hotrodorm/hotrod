@@ -25,7 +25,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
     - Added "implements" for DAO classes.
     - Methods renamed.
 - Nitro:
-    - Select methods in entity tags (`<table>` and `<view>` tags) are limited to the corresponding entity VOs only. They don't accept the 'vo' attribute anymore.
+    - Select methods in entity tags (`<table>` and `<view>` tags) are restricted to return the corresponding entity VOs only. They don't allow the 'vo' attribute anymore.
     - Nitro defaults to `result-set` generation now. The `<select-generation>` tag can be omitted by default.
     - `<foreach>` fixed.
 

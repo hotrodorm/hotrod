@@ -18,7 +18,7 @@ HotRod 4.0 includes several major features as well as a many of minor improvemen
 - `propertiesChangeLog` is now removed from VOs to facilitate quick Spring prototyping.
 - Nitro defaults to result-set generation now. The `<select-generation>` tag can be omitted by default.
 - Classic FK Navigation is now enabled by default. The `<classic-fk-navigation>` tag can be omitted now.
-- Nitro select methods in entity tags (<table> and <view> tags) are limited to return entity VOs only. They don't accept the 'vo' attribute anymore.
+- Nitro select methods in entity tags (`<table>` and `<view>` tags) are restricted to return the corresponding entity VOs only. They don't accept the 'vo' attribute anymore.
 
 ### LiveSQL
 
