@@ -22,7 +22,8 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 - CRUD: Methods renamed.
 - LiveSQL: Core versions of INSERT, UPDATE, and DELETE implemented.
 - LiveSQL: Added DUAL and SYSDUMMY1 for queries without tables.
-- LiveSQL: Row parser implemented. 
+- LiveSQL: Row parser implemented.
+- Nitro: Select methods in entity tags return the entity VOs only. They don't accept the 'vo' attribute anymore.
 
 ## 3.5.1-SNAPSHOT
 - LiveSQL: backport of filtering and aliasing for the star() method.
