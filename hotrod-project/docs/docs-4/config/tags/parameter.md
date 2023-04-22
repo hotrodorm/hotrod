@@ -4,7 +4,7 @@ This tags defines a parameter of a Nitro query and is used by the `<query>` and 
 
 Each query can include zero, one, or more `<parameter>` tags.
 
-For more details see [Nitro Queries](../../nitro/nitro.md).
+For more details see [Nitro Queries](../../nitro/README.md).
 
 
 ## Attributes

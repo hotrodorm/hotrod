@@ -10,7 +10,7 @@ a typical query that does not return a result set use the `<query>` tag instead.
 Nitro selects allow the developer to combine parameterized queries with native and dynamic SQL. These queries
 fall into two types: Flat Select and Graph Selects. Both of them can be used assemble complex queries with a 
 few tags. Used appropriately these queries can execute with high performance. For more details see
-[Nitro Queries](../../nitro/nitro.md).
+[Nitro Queries](../../nitro/README.md).
 
 
 ## Attributes
