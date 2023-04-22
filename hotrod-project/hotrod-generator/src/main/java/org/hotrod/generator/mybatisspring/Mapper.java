@@ -1120,52 +1120,67 @@ public class Mapper extends GeneratableObject {
     println("  <!-- select method: " + sm.getMethod() + " -->");
     println();
 
-    // result map
+    if (sm.getEntityMetadata() == null) {
 
-    String resultMapName = this.getResultMapName(sm);
+      // result map
 
-    SelectMethodReturnType rt = sm.getReturnType(this.layout.getDAOPackage(this.fragmentPackage));
+      String resultMapName = this.getResultMapName(sm);
 
-    println("  <resultMap id=\"" + resultMapName + "\" type=\"" + rt.getVOFullClassName() + "\">");
+      SelectMethodReturnType rt = sm.getReturnType(this.layout.getDAOPackage(this.fragmentPackage));
 
-    if (!sm.isStructured()) {
+      println("  <resultMap id=\"" + resultMapName + "\" type=\"" + rt.getVOFullClassName() + "\">");
 
-      for (ColumnMetadata cm : sm.getNonStructuredColumns()) {
-        renderResultMapColumn(sm, cm, "result");
+      if (!sm.isStructured()) {
+
+        for (ColumnMetadata cm : sm.getNonStructuredColumns()) {
+          renderResultMapColumn(sm, cm, "result");
+        }
+
+      } else {
+
+        StructuredColumnsMetadata scm = sm.getStructuredColumns();
+
+        boolean soloVO = scm.getExpressions().isEmpty() && scm.getVOs().size() == 1;
+        if (soloVO) {
+          VOMetadata vo = scm.getVOs().get(0);
+
+          String entityFullClassName = vo.getSuperClass() != null ? vo.getSuperClass().getFullClassName()
+              : vo.getFullClassName();
+
+          ObjectDAO dao = this.entityDAORegistry.findEntityDAO(entityFullClassName);
+          renderResultMapLevel(sm, vo.getInheritedColumns(), vo.getDeclaredColumns(), vo.getAssociations(),
+              vo.getCollections(), dao, 0);
+        } else {
+          renderResultMapLevel(sm, null, scm.getColumnsMetadata(), scm.getVOs(), null, null, 0);
+        }
+
       }
+
+      println("  </resultMap>");
+      println();
+
+      // statement
+
+      String statementId = this.getSelectMethodStatementId(sm);
+
+      println("  <select id=\"" + statementId + "\" resultMap=\"" + resultMapName + "\">");
+      log.debug("sm.getMethod()=" + sm.getMethod());
+      println(sm.renderXML(new MyBatisParameterRenderer()));
+      println("  </select>");
+      println();
 
     } else {
 
-      StructuredColumnsMetadata scm = sm.getStructuredColumns();
+      String statementId = this.getSelectMethodStatementId(sm);
 
-      boolean soloVO = scm.getExpressions().isEmpty() && scm.getVOs().size() == 1;
-      if (soloVO) {
-        VOMetadata vo = scm.getVOs().get(0);
-
-        String entityFullClassName = vo.getSuperClass() != null ? vo.getSuperClass().getFullClassName()
-            : vo.getFullClassName();
-
-        ObjectDAO dao = this.entityDAORegistry.findEntityDAO(entityFullClassName);
-        renderResultMapLevel(sm, vo.getInheritedColumns(), vo.getDeclaredColumns(), vo.getAssociations(),
-            vo.getCollections(), dao, 0);
-      } else {
-        renderResultMapLevel(sm, null, scm.getColumnsMetadata(), scm.getVOs(), null, null, 0);
-      }
+      println("  <select id=\"" + statementId + "\" resultMap=\"" + RESULT_MAP_NAME + "\">");
+      log.debug("sm.getMethod()=" + sm.getMethod());
+      println(sm.renderXML(new MyBatisParameterRenderer()));
+      println("  </select>");
+      println();
 
     }
 
-    println("  </resultMap>");
-    println();
-
-    // statement
-
-    String statementId = this.getSelectMethodStatementId(sm);
-
-    println("  <select id=\"" + statementId + "\" resultMap=\"" + resultMapName + "\">");
-    log.debug("sm.getMethod()=" + sm.getMethod());
-    println(sm.renderXML(new MyBatisParameterRenderer()));
-    println("  </select>");
-    println();
   }
 
   private void renderResultMapLevel(final SelectMethodMetadata sm,

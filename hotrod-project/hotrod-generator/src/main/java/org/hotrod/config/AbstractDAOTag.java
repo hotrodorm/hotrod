@@ -49,6 +49,8 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
 
   // Properties
 
+  protected boolean isEntity;
+
   private MethodTagContainer<SequenceMethodTag> sequences = new MethodTagContainer<SequenceMethodTag>();
   private MethodTagContainer<QueryMethodTag> queries = new MethodTagContainer<QueryMethodTag>();
   private MethodTagContainer<SelectMethodTag> selects = new MethodTagContainer<SelectMethodTag>();
@@ -59,8 +61,9 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
 
   // Constructor
 
-  protected AbstractDAOTag(final String tagName) {
+  protected AbstractDAOTag(final String tagName, final boolean isEntity) {
     super(tagName);
+    this.isEntity = isEntity;
   }
 
   // JAXB Setters
@@ -138,7 +141,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
     Set<String> methodNames = new HashSet<String>();
 
     for (SelectMethodTag s : this.selects) {
-      s.validate(daosTag, config, fragmentConfig, adapter);
+      s.validate(daosTag, config, fragmentConfig, adapter, isEntity);
       super.addChild(s);
 
       if (methodNames.contains(s.getMethod())) {
@@ -152,6 +155,10 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
   }
 
   // Getters
+
+  public boolean isEntity() {
+    return isEntity;
+  }
 
   public final List<AbstractMethodTag<?>> getMethods() {
     List<AbstractMethodTag<?>> methods = new ArrayList<AbstractMethodTag<?>>();

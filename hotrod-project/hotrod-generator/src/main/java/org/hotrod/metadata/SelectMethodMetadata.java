@@ -25,6 +25,7 @@ import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.mybatisspring.DataSetLayout;
+import org.hotrod.generator.mybatisspring.MyBatisSpringGenerator.EntityVOs;
 import org.hotrod.identifiers.Id;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.VOMetadata.DuplicatePropertyNameException;
@@ -55,6 +56,10 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
   private transient Metadata metadata;
   private ColumnsRetriever cr;
   private transient DataSetLayout layout;
+  private TableDataSetMetadata entityMetadata;
+
+  private EntityVOs entityVOs;
+
   @SuppressWarnings("unused")
   private transient JdbcDatabase db;
   private HotRodConfigTag config;
@@ -81,11 +86,13 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   public SelectMethodMetadata(final Metadata metadata, final ColumnsRetriever cr, final SelectMethodTag tag,
       final HotRodConfigTag config, final SelectGenerationTag selectGenerationTag,
-      final ColumnsPrefixGenerator columnsPrefixGenerator, final DataSetLayout layout)
-      throws InvalidIdentifierException, InvalidConfigurationFileException {
+      final ColumnsPrefixGenerator columnsPrefixGenerator, final DataSetLayout layout,
+      final TableDataSetMetadata entityMetadata) throws InvalidIdentifierException, InvalidConfigurationFileException {
     this.metadata = metadata;
     this.cr = cr;
     this.layout = layout;
+    this.entityMetadata = entityMetadata;
+    this.entityVOs = null;
     this.db = metadata.getJdbcDatabase();
     this.config = config;
     this.adapter = metadata.getAdapter();
@@ -107,6 +114,10 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
     this.selectMethodReturnType = null;
 
+  }
+
+  public void setEntityVOs(final EntityVOs entityVOs) {
+    this.entityVOs = entityVOs;
   }
 
   // TODO: Just a marker for phase 1
@@ -186,24 +197,28 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
       List<VOMember> associations = new ArrayList<VOMember>();
       List<VOMember> collections = new ArrayList<VOMember>();
 
-      SelectVOClass vo = null;
-      try {
-        vo = new SelectVOClass(this.classPackage, this.tag.getVOClassName(), null, null, properties, associations,
-            collections, this.tag);
-        log.debug("--> Adding VO: " + vo);
-        voRegistry.addVO(vo);
-      } catch (VOAlreadyExistsException e) {
-        throw new InvalidConfigurationFileException(this.tag,
-            "Duplicate VO name '" + vo.getName() + "' in package '" + vo.getClassPackage().getPackage()
-                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
-                + ".");
-      } catch (StructuredVOAlreadyExistsException e) {
-        throw new InvalidConfigurationFileException(this.tag,
-            "Duplicate VO name '" + vo.getName() + "' in package '" + vo.getClassPackage().getPackage()
-                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
-                + ".");
-      } catch (DuplicatePropertyNameException e) {
-        throw new InvalidConfigurationFileException(e.getInitial().getTag(), e.renderMessage());
+      if (this.entityMetadata == null) { // does not belong to an entity (table or view)
+
+        SelectVOClass vo = null;
+        try {
+          vo = new SelectVOClass(this.classPackage, this.tag.getVOClassName(), null, null, properties, associations,
+              collections, this.tag);
+          log.debug("--> Adding VO: " + vo);
+          voRegistry.addVO(vo);
+        } catch (VOAlreadyExistsException e) {
+          throw new InvalidConfigurationFileException(this.tag,
+              "Duplicate VO name '" + vo.getName() + "' in package '" + vo.getClassPackage().getPackage()
+                  + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
+                  + ".");
+        } catch (StructuredVOAlreadyExistsException e) {
+          throw new InvalidConfigurationFileException(this.tag,
+              "Duplicate VO name '" + vo.getName() + "' in package '" + vo.getClassPackage().getPackage()
+                  + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
+                  + ".");
+        } catch (DuplicatePropertyNameException e) {
+          throw new InvalidConfigurationFileException(e.getInitial().getTag(), e.renderMessage());
+        }
+
       }
 
     } else {
@@ -298,6 +313,10 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
   }
 
   // Other getters
+
+  public TableDataSetMetadata getEntityMetadata() {
+    return entityMetadata;
+  }
 
   public String getMethod() {
     return this.tag.getMethod();
@@ -428,6 +447,8 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private SelectMethodMetadata sm;
+
     private SelectVOClass soloVO;
     private SelectVOClass abstractSoloVO;
     private transient VOMetadata connectedVO;
@@ -436,6 +457,8 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
     public SelectMethodReturnType(final SelectMethodMetadata sm, final ClassPackage voClassPackage,
         final AbstractConfigurationTag tag, final DataSetLayout layout) throws InvalidConfigurationFileException {
+
+      this.sm = sm;
 
       if (sm.isStructured()) { // graph columns
 
@@ -474,24 +497,36 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
               sm.tag);
           properties.add(p);
         }
-        List<VOMember> associations = new ArrayList<VOMember>();
-        List<VOMember> collections = new ArrayList<VOMember>();
-        try {
-          this.soloVO = new SelectVOClass(voClassPackage, sm.getVOClassName(), null, sm.tag.getImplementsClasses(), properties, associations,
-              collections, tag);
-          this.abstractSoloVO = new SelectVOClass(voClassPackage, sm.getAbstractVOClassName(), null, null, properties,
-              associations, collections, tag);
-        } catch (DuplicatePropertyNameException e) {
-          // swallow this exception
+
+        this.mode = sm.getResultSetMode();
+
+        if (sm.tag.belongsToEntity()) {
+
+          this.soloVO = null;
+          this.abstractSoloVO = null;
+
+        } else {
+
+          List<VOMember> associations = new ArrayList<VOMember>();
+          List<VOMember> collections = new ArrayList<VOMember>();
+          try {
+            this.soloVO = new SelectVOClass(voClassPackage, sm.getVOClassName(), null, sm.tag.getImplementsClasses(),
+                properties, associations, collections, tag);
+            this.abstractSoloVO = new SelectVOClass(voClassPackage, sm.getAbstractVOClassName(), null, null, properties,
+                associations, collections, tag);
+          } catch (DuplicatePropertyNameException e) {
+            // swallow this exception
+          }
+          this.connectedVO = null;
+
+          log.trace(">>> sm.getVOClassName()=" + sm.getVOClassName() + " sm.getAbstractVOClassName()="
+              + sm.getAbstractVOClassName());
+          log.trace("this.soloVO.getName()=" + (this.soloVO == null ? "null" : this.soloVO.getName())
+              + " this.connectedVO.getName()=" + (this.connectedVO == null ? "null" : this.connectedVO.getName()));
+
         }
-        this.connectedVO = null;
 
       }
-      this.mode = sm.getResultSetMode();
-      log.trace(">>> sm.getVOClassName()=" + sm.getVOClassName() + " sm.getAbstractVOClassName()="
-          + sm.getAbstractVOClassName());
-      log.trace("this.soloVO.getName()=" + (this.soloVO == null ? "null" : this.soloVO.getName())
-          + " this.connectedVO.getName()=" + (this.connectedVO == null ? "null" : this.connectedVO.getName()));
 
     }
 
@@ -518,6 +553,9 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
     }
 
     public String getBaseReturnVOType() { // AccountPersonVO
+      if (this.sm.entityVOs != null) {
+        return this.sm.entityVOs.getVo().getClassName();
+      }
       return this.soloVO != null ? this.soloVO.getName() : this.connectedVO.getName();
     }
 
@@ -533,7 +571,11 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
     }
 
     public String getVOFullClassName() { // primitives.accounting.AccountPersonVO
-      return this.getReturnVOPackage().getFullClassName(getBaseReturnVOType());
+      if (this.sm.entityVOs != null) {
+        return this.sm.entityVOs.getVo().getFullClassName();
+      } else {
+        return this.getReturnVOPackage().getFullClassName(getBaseReturnVOType());
+      }
     }
 
   }

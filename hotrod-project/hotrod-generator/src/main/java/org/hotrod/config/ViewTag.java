@@ -53,14 +53,14 @@ public class ViewTag extends AbstractEntityDAOTag {
   // Constructor for XML config
 
   public ViewTag() {
-    super("view");
+    super("view", true);
   }
 
   // Constructor for Discover
 
   public ViewTag(final JdbcTable t, final DaosSpringMyBatisTag daosTag, final HotRodFragmentConfigTag fragmentConfig,
       final HotRodConfigTag config, final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
-    super("table");
+    super("view", true);
 
     this.daosTag = daosTag;
     this.fragmentConfig = fragmentConfig;
@@ -155,7 +155,7 @@ public class ViewTag extends AbstractEntityDAOTag {
   public void validate(final DaosSpringMyBatisTag daosTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter, final CatalogSchema currentCS)
       throws InvalidConfigurationFileException {
-    
+
     log.debug("validate");
 
     this.daosTag = daosTag;

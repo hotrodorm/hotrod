@@ -33,7 +33,7 @@ public class ExecutorTag extends AbstractDAOTag {
   // Constructor
 
   public ExecutorTag() {
-    super("dao");
+    super("dao", false);
   }
 
   // Duplicate

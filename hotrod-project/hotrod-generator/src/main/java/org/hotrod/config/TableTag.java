@@ -69,14 +69,14 @@ public class TableTag extends AbstractEntityDAOTag {
   // Constructor for XML config
 
   public TableTag() {
-    super("table");
+    super("table", true);
   }
 
   // Constructor for Discover
 
   public TableTag(final JdbcTable t, final DaosSpringMyBatisTag daosTag, final HotRodFragmentConfigTag fragmentConfig,
       final HotRodConfigTag config, final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
-    super("table");
+    super("table", true);
 
     this.catalog = t.getCatalog();
     this.schema = t.getSchema();

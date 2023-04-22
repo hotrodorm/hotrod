@@ -79,7 +79,7 @@ public class EnumTag extends AbstractEntityDAOTag {
   // Constructor
 
   public EnumTag() {
-    super("enum");
+    super("enum", false);
     log.debug("init");
   }
 

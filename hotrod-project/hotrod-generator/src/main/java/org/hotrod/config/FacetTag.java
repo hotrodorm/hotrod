@@ -138,8 +138,8 @@ public class FacetTag extends AbstractConfigurationTag {
   }
 
   private void mergeTable(final TableTag table) {
-    log.debug("merge: " + table.toString() + " stack: " + Stream.of(Thread.currentThread().getStackTrace()).skip(1).limit(20)
-        .map(s -> s.getClassName() + "(" + s.getLineNumber() + ")").collect(Collectors.joining(", ")));
+    log.debug("merge: " + table.toString() + " stack: " + Stream.of(Thread.currentThread().getStackTrace()).skip(1)
+        .limit(20).map(s -> s.getClassName() + "(" + s.getLineNumber() + ")").collect(Collectors.joining(", ")));
     if (table.getDatabaseObject().getName().equals("player")) {
       log.debug(">> Before: 'player' ids=" + this.tableIds.stream().filter(t -> t.getName().equals("player")).count() //
           + " table: " + table.toString() //

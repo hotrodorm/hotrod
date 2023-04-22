@@ -76,7 +76,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
   private List<QueryMethodTag> queries = new ArrayList<QueryMethodTag>();
   private List<SelectMethodTag> selects = new ArrayList<SelectMethodTag>();
 
-  private SelectMetadataCache selectMetadataCache;
+//  private SelectMetadataCache selectMetadataCache;
   private List<SelectMethodMetadata> selectsMetadata;
 
   private HotRodFragmentConfigTag fragmentConfig;
@@ -107,7 +107,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
     this.classicFKNavigation = tableTag.getClassicFKNavigation();
 
-    this.selectMetadataCache = selectMetadataCache;
+//    this.selectMetadataCache = selectMetadataCache;
 
     this.isFromCurrentCatalog = isFromCurrentCatalog;
     this.isFromCurrentSchema = isFromCurrentSchema;
@@ -225,7 +225,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
     this.classicFKNavigation = null;
 
-    this.selectMetadataCache = selectMetadataCache;
+//    this.selectMetadataCache = selectMetadataCache;
 
     this.isFromCurrentCatalog = isFromCurrentCatalog;
     this.isFromCurrentSchema = isFromCurrentSchema;
@@ -274,7 +274,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
     this.classicFKNavigation = null;
 
-    this.selectMetadataCache = selectMetadataCache;
+//    this.selectMetadataCache = selectMetadataCache;
 
     this.isFromCurrentCatalog = isFromCurrentCatalog;
     this.isFromCurrentSchema = isFromCurrentSchema;
@@ -420,9 +420,9 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
       // SelectMethodMetadata cachedSm =
       // this.selectMetadataCache.get(this.javaName, selectTag.getMethod());
       SelectMethodMetadata cachedSm = null; // Do not use cache, for now.
-      log.debug("[" + this.getId().getCanonicalSQLName() + "] " + selectTag.getMethod() + "() cache["
-          + this.id.getCanonicalSQLName() + "]=" + cachedSm + " cache[" + this.selectMetadataCache.size() + "]");
-      log.debug(" cache entries: " + this.selectMetadataCache.listNames());
+//      log.debug("[" + this.getId().getCanonicalSQLName() + "] " + selectTag.getMethod() + "() cache["
+//          + this.id.getCanonicalSQLName() + "]=" + cachedSm + " cache[" + this.selectMetadataCache.size() + "]");
+//      log.debug(" cache entries: " + this.selectMetadataCache.listNames());
 
       if (referencesAMarkedEntity(selectTag.getReferencedEntities())) {
         selectTag.markGenerate();
@@ -444,7 +444,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
         SelectMethodMetadata sm;
         try {
           sm = new SelectMethodMetadata(metadata, cr, selectTag, this.config, selectGenerationTag,
-              columnsPrefixGenerator, layout);
+              columnsPrefixGenerator, layout, this);
         } catch (InvalidIdentifierException e) {
           String msg = "Invalid method name '" + selectTag.getMethod() + "': " + e.getMessage();
           throw new InvalidConfigurationFileException(selectTag, msg);

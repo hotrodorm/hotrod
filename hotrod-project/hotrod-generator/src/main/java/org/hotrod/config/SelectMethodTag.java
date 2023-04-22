@@ -66,6 +66,7 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
   // Properties
 
+  private boolean belongsToEntity;
   private String vo = null;
   private String sMode = null;
 
@@ -159,9 +160,10 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
   // Behavior
 
   public void validate(final DaosSpringMyBatisTag daosTag, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
+      final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter, final boolean belongsToEntity)
       throws InvalidConfigurationFileException {
 
+    this.belongsToEntity = belongsToEntity;
     this.fragmentConfig = fragmentConfig;
 
     // Sort: content parts, columns, parameters, complements
@@ -229,29 +231,44 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
     // vo
 
-    if (this.vo == null) {
-      if (this.structuredColumns == null) {
-        throw new InvalidConfigurationFileException(this, "Missing 'vo' attribute in the <" + this.getTagName()
-            + "> tag. The 'vo' attribute must be specified when no inner <columns> tag is present.");
+    if (this.belongsToEntity) {
+
+      if (this.vo != null) {
+        throw new InvalidConfigurationFileException(this, "The 'vo' attribute cannot be specified in a <select> "
+            + "tag that belongs to a <table> or <view>, since these always must return rows from the table or view they belong to.");
       }
-    } else {
       if (this.structuredColumns != null) {
-        throw new InvalidConfigurationFileException(this, "Invalid 'vo' attribute. "
-            + "When the 'vo' attribute is specified no inner <columns> tag can be used. Use one or the other but not both.");
-      }
-      if (SUtil.isEmpty(this.vo)) {
-        throw new InvalidConfigurationFileException(this, "When specified, the 'vo' attribute cannot be empty.");
-      }
-      if (!this.vo.matches(Patterns.VALID_JAVA_CLASS)) {
         throw new InvalidConfigurationFileException(this,
-            "Invalid 'vo' attribute with value '" + this.vo + "' in the tag <" + super.getTagName()
-                + ">. A Java class name must start with an upper case letter, "
-                + "and continue with letters, digits, and/or underscores.");
+            "Graph selects (tag `<columns>`) are not allowed in <select> tags that belong to a <table> or <view>. "
+                + "Graph selects can be used in <select> tags included in <dao> tags only.");
       }
 
-      this.voClassName = daosTag.generateNitroVOName(this.vo);
-      this.abstractVoClassName = daosTag.generateNitroAbstractVOName(this.vo);
+    } else {
 
+      if (this.vo == null) {
+        if (this.structuredColumns == null) {
+          throw new InvalidConfigurationFileException(this, "Missing 'vo' attribute in the <" + this.getTagName()
+              + "> tag. The 'vo' attribute must be specified when no inner <columns> tag is present.");
+        }
+      } else {
+        if (this.structuredColumns != null) {
+          throw new InvalidConfigurationFileException(this, "Invalid 'vo' attribute. "
+              + "When the 'vo' attribute is specified no inner <columns> tag can be used. Use one or the other but not both.");
+        }
+        if (SUtil.isEmpty(this.vo)) {
+          throw new InvalidConfigurationFileException(this, "When specified, the 'vo' attribute cannot be empty.");
+        }
+        if (!this.vo.matches(Patterns.VALID_JAVA_CLASS)) {
+          throw new InvalidConfigurationFileException(this,
+              "Invalid 'vo' attribute with value '" + this.vo + "' in the tag <" + super.getTagName()
+                  + ">. A Java class name must start with an upper case letter, "
+                  + "and continue with letters, digits, and/or underscores.");
+        }
+
+        this.voClassName = daosTag.generateNitroVOName(this.vo);
+        this.abstractVoClassName = daosTag.generateNitroAbstractVOName(this.vo);
+
+      }
     }
 
     // mode
@@ -319,6 +336,10 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
   public String getMethod() {
     return method;
+  }
+
+  public boolean belongsToEntity() {
+    return belongsToEntity;
   }
 
   public String getVOClassName() {

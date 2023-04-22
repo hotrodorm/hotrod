@@ -36,6 +36,7 @@ public abstract class AbstractConfigurationTag implements Serializable {
   // Properties
 
   private String tagName;
+  
   private SourceLocation location = null;
 
   private TagStatus status;
