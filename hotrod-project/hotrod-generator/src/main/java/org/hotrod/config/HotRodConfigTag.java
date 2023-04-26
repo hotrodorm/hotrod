@@ -96,6 +96,10 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
     // Generators
 
+    if (this.generatorsTag == null) {
+      this.generatorsTag = new GeneratorsTag();
+      this.generatorsTag.enableDiscover();
+    }
     this.generatorsTag.validate(basedir, parentDir, adapter, currentCS);
     super.addChild(this.generatorsTag);
 

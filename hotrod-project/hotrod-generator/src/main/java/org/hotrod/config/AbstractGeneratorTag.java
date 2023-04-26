@@ -23,10 +23,12 @@ public abstract class AbstractGeneratorTag extends AbstractConfigurationTag {
 
   // Abstract Methods
 
+  public abstract void enableDiscover();
+
   public abstract String getName();
 
-  public abstract void validate(File basedir, File parentDir, final DatabaseAdapter adapter, final CatalogSchema currentCS)
-      throws InvalidConfigurationFileException;
+  public abstract void validate(File basedir, File parentDir, final DatabaseAdapter adapter,
+      final CatalogSchema currentCS) throws InvalidConfigurationFileException;
 
   public abstract DaosTag getDaos();
 

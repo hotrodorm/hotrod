@@ -36,6 +36,11 @@ public class GeneratorsTag extends AbstractConfigurationTag {
     log.debug("init");
   }
 
+  public void enableDiscover() {
+    secureGenerators();
+    this.selectedGeneratorTag.enableDiscover();
+  }
+
   // JAXB Setters
 
   @XmlElement(name = "mybatis-spring")
@@ -47,11 +52,15 @@ public class GeneratorsTag extends AbstractConfigurationTag {
 
   public void validate(final File basedir, final File parentDir, final DatabaseAdapter adapter,
       final CatalogSchema currentCS) throws InvalidConfigurationFileException, GeneratorNotFoundException {
+    secureGenerators();
+    this.selectedGeneratorTag.validate(basedir, parentDir, adapter, currentCS);
+  }
+
+  private void secureGenerators() {
     if (this.generators.isEmpty()) {
-      throw new GeneratorNotFoundException("No HotRod generator found.");
+      this.setMyBatisSpring(new MyBatisSpringTag());
     }
     this.selectedGeneratorTag = this.generators.get(0);
-    this.selectedGeneratorTag.validate(basedir, parentDir, adapter, currentCS);
   }
 
   // Getters

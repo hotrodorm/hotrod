@@ -53,6 +53,15 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
     log.debug("init");
   }
 
+  public void enableDiscover() {
+    if (this.discover == null) {
+      this.discover = new DiscoverTag();
+      SchemaTag currentSchema = new SchemaTag();
+      currentSchema.setCurrent();
+      this.discover.setCurrentSchema(currentSchema);
+    }
+  }
+
   // JAXB Setters
 
   @XmlElement(name = "discover")
@@ -121,6 +130,13 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
       this.discover.validate(adapter, currentCS);
     }
 
+    // daos
+
+    if (this.daos == null) {
+      this.daos = new DaosTag();
+    }
+    this.daos.validate(basedir);
+
     // mappers
 
     if (this.mappers == null) {
@@ -133,13 +149,7 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
       this.selectGeneration = new SelectGenerationTag();
       this.selectGeneration.setTempViewBaseName(SelectGenerationTag.DEFAULT_TEMP_VIEW_NAME);
     }
-
-    // daos
-
-    if (this.daos == null) {
-      this.daos = new DaosTag();
-    }
-    this.daos.validate(basedir);
+    this.selectGeneration.validate(basedir);
 
     // mappers
 
@@ -148,11 +158,7 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
     }
     this.mappers.validate(basedir);
 
-    // select-generation
-
-    this.selectGeneration.validate(basedir);
-
-    // Properties
+    // properties
 
     Set<String> names = new HashSet<String>();
     for (PropertyTag p : this.propertyTags) {
