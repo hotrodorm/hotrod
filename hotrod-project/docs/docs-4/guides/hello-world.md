@@ -111,7 +111,6 @@ The complete `pom.xml` file will look like:
         <artifactId>hotrod-maven-plugin</artifactId>
         <version>4.0.0</version>
         <configuration>
-          <configfile>./hotrod.xml</configfile>
           <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
           <jdbcurl>jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1</jdbcurl>
           <jdbcusername>sa</jdbcusername>
@@ -176,26 +175,6 @@ insert into employee (id, name) values (6097, 'Steve');
 ```
 
 
-### Create the HotRod Configuration File
-
-Tell HotRod how you want the generation to work. Create the file `hotrod.xml` and add:
-
-```xml
-<?xml version="1.0"?>
-<hotrod>
-
-  <generators>
-    <mybatis-spring>
-      <daos package="com.myapp.daos" dao-suffix="DAO" vo-suffix="Impl" 
-            abstract-vo-prefix="" abstract-vo-suffix="VO" />
-    </mybatis-spring>
-  </generators>
-  
-  <table name="employee" />
-
-</hotrod>
-```
-
 ### Generate the Persistence Code
 
 Now, let's use HotRod to generate the persistence code. Type:
@@ -216,7 +195,6 @@ We see the code generation details:
 [INFO] --- hotrod-maven-plugin:4.0.0 (default-cli) @ myapp ---
 [INFO] HotRod version 4.0.0 (build 20221102-152614) - Generate
 [INFO] 
-[INFO] Configuration File: ~/example/./hotrod.xml
 [INFO] Database URL: jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1
 [INFO] Database Name: H2 - version 2.1 (2.1.214 (2022-06-13))
 [INFO] JDBC Driver: H2 JDBC Driver - version 2.1 (2.1.214 (2022-06-13)) - implements JDBC Specification 4.2
