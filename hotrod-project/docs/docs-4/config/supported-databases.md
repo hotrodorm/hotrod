@@ -5,8 +5,8 @@ HotRod supports the following Databases:
 - Db2 LUW
 - PostgreSQL &amp; Aurora/PostgreSQL
 - SQL Server
-- MariaDB
-- MySQL
+- MariaDB (through the MySQL dialect)
+- MySQL &amp; Aurora/MySQL
 - SAP ASE
 - H2
 - HyperSQL
