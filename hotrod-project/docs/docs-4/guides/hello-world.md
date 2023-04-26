@@ -216,9 +216,9 @@ We see the code generation details:
 ```
 
 HotRod connected to the database schema, retrieved the table details, and produced the persistence code. It created the following files:
-* `src/main/java/com/myapp/daos/EmployeeImpl.java`
-* `src/main/java/com/myapp/daos/primitives/EmployeeDAO.java`
-* `src/main/java/com/myapp/daos/primitives/EmployeeVO.java`
+* `src/main/java/app/daos/EmployeeImpl.java`
+* `src/main/java/app/daos/primitives/EmployeeDAO.java`
+* `src/main/java/app/daos/primitives/EmployeeVO.java`
 * `src/main/resources/mappers/primitives-employee.xml`
 
 Note that since the `EmployeeImpl.java` is designed to include custom code, it's always created the first time, but it's never 
@@ -255,10 +255,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
-import com.myapp.daos.primitives.EmployeeDAO;
-import com.myapp.daos.primitives.EmployeeDAO.EmployeeTable;
-import com.myapp.daos.primitives.EmployeeVO;
-import com.myapp.daos.EmployeeImpl;
+import app.daos.primitives.EmployeeDAO;
+import app.daos.primitives.EmployeeDAO.EmployeeTable;
+import app.daos.primitives.EmployeeVO;
+import app.daos.EmployeeImpl;
 
 @Configuration
 @SpringBootApplication
