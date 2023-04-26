@@ -16,7 +16,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
     - `primitives` subfolder removed in the location of mappers.
     - Deprecated tag `<mybatis-configuration-template>` removed.
     - No-config implemented. For rapid prototyping the `hotrod.xml` file can be omitted.
-    - Aurora/PostgreSQL and Aurora/MySQL tested.
+    - Aurora/PostgreSQL and Aurora/MySQL supported.
 - LiveSQL: 
     - LiveSQL now returns `List<Row>` and `Cursor<Row>` instead of `List<Map<String, Object>>` and `Cursor<Map<String, Object>>`.
     - Oracle MOD() function fixed.
