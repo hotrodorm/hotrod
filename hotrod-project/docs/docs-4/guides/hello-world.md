@@ -233,10 +233,10 @@ In this part we write a simple app that uses the CRUD and LiveSQL functionalitie
 ### A Simple Spring Boot Application
 
 Let's write a simple application that performs two searches in the table. Create the application 
-class `src/main/java/com/myapp/App.java` as:
+class `src/main/java/app/App.java` as:
 
 ```java
-package com.myapp;
+package app;
 
 import java.sql.SQLException;
 import java.util.List;
