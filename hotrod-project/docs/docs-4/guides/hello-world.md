@@ -199,6 +199,8 @@ We see the code generation details:
 [INFO] Database Adapter: H2 Adapter
 [INFO] 
 [INFO] Current Schema: PUBLIC
+[INFO]  
+[INFO] Discover enabled.
 [INFO] 
 [INFO] Generating all facets.
 [INFO]  
