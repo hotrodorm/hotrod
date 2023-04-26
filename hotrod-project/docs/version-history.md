@@ -12,6 +12,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
     - Converters enhanced with Connection details.
     - Converters fixed in `<dao>` tags.
     - DTD declarations are now removed from config files.
+    - Converter `java-intermadiate-type` renamed as `java-raw-type`.
 - LiveSQL: 
     - LiveSQL now returns `List<Row>` and `Cursor<Row>` instead of `List<Map<String, Object>>` and `Cursor<Map<String, Object>>`.
     - Oracle MOD() function fixed.
