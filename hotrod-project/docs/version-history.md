@@ -15,6 +15,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
     - Converter's `java-intermediate-type` attribute renamed as `java-raw-type`.
     - `primitives` subfolder removed in the location of mappers.
     - Deprecated tag `<mybatis-configuration-template>` removed.
+    - No-config implemented. For rapid prototyping the hotrod.xml can be omitted.
 - LiveSQL: 
     - LiveSQL now returns `List<Row>` and `Cursor<Row>` instead of `List<Map<String, Object>>` and `Cursor<Map<String, Object>>`.
     - Oracle MOD() function fixed.
