@@ -111,12 +111,10 @@ The complete `pom.xml` file will look like:
         <artifactId>hotrod-maven-plugin</artifactId>
         <version>4.0.0</version>
         <configuration>
-          <configfile>./hotrod.xml</configfile>
           <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
           <jdbcurl>jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1</jdbcurl>
           <jdbcusername>sa</jdbcusername>
           <jdbcpassword>""</jdbcpassword>
-          <jdbccatalog>EXAMPLEDB</jdbccatalog>
           <jdbcschema>PUBLIC</jdbcschema>
         </configuration>
         <dependencies>
@@ -176,26 +174,6 @@ insert into employee (id, name) values (6097, 'Steve');
 ```
 
 
-### Create the HotRod Configuration File
-
-Tell HotRod how you want the generation to work. Create the file `hotrod.xml` and add:
-
-```xml
-<?xml version="1.0"?>
-<hotrod>
-
-  <generators>
-    <mybatis-spring>
-      <daos package="com.myapp.daos" dao-suffix="DAO" vo-suffix="Impl" 
-            abstract-vo-prefix="" abstract-vo-suffix="VO" />
-    </mybatis-spring>
-  </generators>
-  
-  <table name="employee" />
-
-</hotrod>
-```
-
 ### Generate the Persistence Code
 
 Now, let's use HotRod to generate the persistence code. Type:
@@ -215,15 +193,14 @@ We see the code generation details:
 [INFO] 
 [INFO] --- hotrod-maven-plugin:4.0.0 (default-cli) @ myapp ---
 [INFO] HotRod version 4.0.0 (build 20221102-152614) - Generate
-[INFO] 
-[INFO] Configuration File: ~/example/./hotrod.xml
 [INFO] Database URL: jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1
 [INFO] Database Name: H2 - version 2.1 (2.1.214 (2022-06-13))
 [INFO] JDBC Driver: H2 JDBC Driver - version 2.1 (2.1.214 (2022-06-13)) - implements JDBC Specification 4.2
 [INFO] Database Adapter: H2 Adapter
 [INFO] 
-[INFO] Current Catalog: EXAMPLEDB
 [INFO] Current Schema: PUBLIC
+[INFO]  
+[INFO] Discover enabled.
 [INFO] 
 [INFO] Generating all facets.
 [INFO]  
@@ -239,9 +216,9 @@ We see the code generation details:
 ```
 
 HotRod connected to the database schema, retrieved the table details, and produced the persistence code. It created the following files:
-* `src/main/java/com/myapp/daos/EmployeeImpl.java`
-* `src/main/java/com/myapp/daos/primitives/EmployeeDAO.java`
-* `src/main/java/com/myapp/daos/primitives/EmployeeVO.java`
+* `src/main/java/app/daos/EmployeeImpl.java`
+* `src/main/java/app/daos/primitives/EmployeeDAO.java`
+* `src/main/java/app/daos/primitives/EmployeeVO.java`
 * `src/main/resources/mappers/primitives-employee.xml`
 
 Note that since the `EmployeeImpl.java` is designed to include custom code, it's always created the first time, but it's never 
@@ -256,14 +233,12 @@ In this part we write a simple app that uses the CRUD and LiveSQL functionalitie
 ### A Simple Spring Boot Application
 
 Let's write a simple application that performs two searches in the table. Create the application 
-class `src/main/java/com/myapp/App.java` as:
+class `src/main/java/app/App.java` as:
 
 ```java
-package com.myapp;
+package app;
 
-import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
@@ -276,12 +251,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
-import com.myapp.daos.primitives.EmployeeDAO;
-import com.myapp.daos.primitives.EmployeeDAO.EmployeeTable;
-import com.myapp.daos.primitives.EmployeeVO;
-import com.myapp.daos.EmployeeImpl;
+import app.daos.EmployeeVO;
+import app.daos.primitives.EmployeeDAO;
+import app.daos.primitives.EmployeeDAO.EmployeeTable;
 
 @Configuration
 @SpringBootApplication
@@ -314,21 +287,17 @@ public class App {
     // Use CRUD to search for employee #123
 
     Integer id = 123;
-    EmployeeVO vo = this.employeeDAO.selectByPK(id);
+    EmployeeVO vo = this.employeeDAO.select(id);
     System.out.println("Employee #" + id + " Name: " + vo.getName());
 
     // Use LiveSQL to search for employees whose name starts with 'A'
 
     EmployeeTable e = EmployeeDAO.newTable();
 
-    List<Row> rows = this.sql
-      .select()
-      .from(e)
-      .where(e.name.like("A%"))
-      .execute();
+    List<Row> rows = this.sql.select().from(e).where(e.name.like("A%")).execute();
 
     System.out.println("Employees with names that start with 'A':");
-    for (Row r: rows) {
+    for (Row r : rows) {
       System.out.println(r);
     }
 
