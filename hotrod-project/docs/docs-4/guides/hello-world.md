@@ -193,13 +193,11 @@ We see the code generation details:
 [INFO] 
 [INFO] --- hotrod-maven-plugin:4.0.0 (default-cli) @ myapp ---
 [INFO] HotRod version 4.0.0 (build 20221102-152614) - Generate
-[INFO] 
 [INFO] Database URL: jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1
 [INFO] Database Name: H2 - version 2.1 (2.1.214 (2022-06-13))
 [INFO] JDBC Driver: H2 JDBC Driver - version 2.1 (2.1.214 (2022-06-13)) - implements JDBC Specification 4.2
 [INFO] Database Adapter: H2 Adapter
 [INFO] 
-[INFO] Current Catalog: EXAMPLEDB
 [INFO] Current Schema: PUBLIC
 [INFO] 
 [INFO] Generating all facets.
