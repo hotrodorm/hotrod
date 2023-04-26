@@ -14,6 +14,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
     - DTD declarations are now removed from config files.
     - Converter's `java-intermediate-type` attribute renamed as `java-raw-type`.
     - `primitives` subfolder removed in the location of mappers.
+    - Deprecated tag `<mybatis-configuration-template>` removed.
 - LiveSQL: 
     - LiveSQL now returns `List<Row>` and `Cursor<Row>` instead of `List<Map<String, Object>>` and `Cursor<Map<String, Object>>`.
     - Oracle MOD() function fixed.
