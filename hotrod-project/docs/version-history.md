@@ -12,7 +12,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
     - Converters enhanced with Connection details.
     - Converters fixed in `<dao>` tags.
     - DTD declarations are now removed from config files.
-    - Converter's `java-intermadiate-type` attribute renamed as `java-raw-type`.
+    - Converter's `java-intermediate-type` attribute renamed as `java-raw-type`.
     - `primitives` subfolder removed in the location of mappers.
 - LiveSQL: 
     - LiveSQL now returns `List<Row>` and `Cursor<Row>` instead of `List<Map<String, Object>>` and `Cursor<Map<String, Object>>`.
