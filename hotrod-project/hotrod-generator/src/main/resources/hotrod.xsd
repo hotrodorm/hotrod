@@ -58,7 +58,6 @@
       <xsd:choice minOccurs="0" maxOccurs="unbounded">
         <xsd:element name="daos" type="daos-mybatis-spring-type" />
         <xsd:element name="mappers" type="mappers-type" />
-        <xsd:element name="mybatis-configuration-template" type="mybatis-configuration-template-type" />
         <xsd:element name="select-generation" type="select-generation-type" />
         <xsd:element name="classic-fk-navigation" type="classic-fk-navigation-type" />
         <xsd:element name="property" type="property-type" />
@@ -115,10 +114,6 @@
     <xsd:attribute name="base-dir" type="xsd:string" />
     <xsd:attribute name="dir" type="xsd:string" use="required" />
     <xsd:attribute name="namespace" type="xsd:string" />
-  </xsd:complexType>
-
-  <xsd:complexType name="mybatis-configuration-template-type">
-    <xsd:attribute name="file" type="xsd:string" use="required" />
   </xsd:complexType>
 
   <xsd:complexType name="select-generation-type">

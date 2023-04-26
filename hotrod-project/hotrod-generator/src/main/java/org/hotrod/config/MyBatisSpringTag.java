@@ -40,7 +40,6 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
 
   private DaosTag daos = null;
   private MappersTag mappers = null;
-  private TemplateTag template = null;
   private SelectGenerationTag selectGeneration = null;
   private ClassicFKNavigationTag classicFKNavigation = new ClassicFKNavigationTag();
   private List<PropertyTag> propertyTags = new ArrayList<PropertyTag>();
@@ -77,15 +76,6 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
           "Duplicate <mappers> tag; the generator can only have a single <mappers> tag");
     }
     this.mappers = mappers;
-  }
-
-  @XmlElement(name = "mybatis-configuration-template")
-  public void setTemplate(final TemplateTag template) throws InvalidConfigurationFileException {
-    if (this.template != null) {
-      throw new InvalidConfigurationFileException(this,
-          "Duplicate <mybatis-configuration-template> tag; the generator can only have a single <mybatis-configuration-template> tag");
-    }
-    this.template = template;
   }
 
   @XmlElement(name = "select-generation")
@@ -131,13 +121,7 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
       this.discover.validate(adapter, currentCS);
     }
 
-    // mybatis-configuration-template
-
-    if (this.template != null && this.template.getTemplateFile() == null) {
-      this.template.setTemplateFile(TemplateTag.DEFAULT_TEMPLATE_FILE);
-    }
-
-    // Mappers
+    // mappers
 
     if (this.mappers == null) {
       this.mappers = MappersTag.DEFAULT_MAPPERS_TAG;
@@ -164,9 +148,8 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
     }
     this.mappers.validate(basedir);
 
-    if (this.template != null) {
-      this.template.validate(basedir, parentDir);
-    }
+    // select-generation
+
     this.selectGeneration.validate(basedir);
 
     // Properties
@@ -195,10 +178,6 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
 
   public MappersTag getMappers() {
     return mappers;
-  }
-
-  public TemplateTag getTemplate() {
-    return template;
   }
 
   @Override
