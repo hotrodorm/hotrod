@@ -13,7 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.config.ConfigurationLoader;
 import org.hotrod.config.Constants;
-import org.hotrod.config.DaosSpringMyBatisTag;
+import org.hotrod.config.DaosTag;
 import org.hotrod.config.EnumTag;
 import org.hotrod.config.ExcludeTag;
 import org.hotrod.config.HotRodConfigTag;
@@ -194,7 +194,7 @@ public class HotRodContext {
             log.debug("gen 3");
             this.config.getFacetTables();// FIXME
 
-            DaosSpringMyBatisTag daosTag = mst.getDaos();
+            DaosTag daosTag = mst.getDaos();
             try {
               log.debug("gen 3.1");
               for (JdbcTable t : this.db.getTables()) {

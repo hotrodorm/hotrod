@@ -77,7 +77,7 @@ public class FacetTag extends AbstractConfigurationTag {
 
   // Behavior
 
-  public void validate(final HotRodConfigTag config, final DaosSpringMyBatisTag daosTag,
+  public void validate(final HotRodConfigTag config, final DaosTag daosTag,
       final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 
@@ -125,13 +125,13 @@ public class FacetTag extends AbstractConfigurationTag {
     this.daos.addAll(daos);
   }
 
-  public void includeTable(final JdbcTable t, final DaosSpringMyBatisTag daosTag, final HotRodConfigTag config,
+  public void includeTable(final JdbcTable t, final DaosTag daosTag, final HotRodConfigTag config,
       final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
     TableTag tt = new TableTag(t, daosTag, null, config, adapter);
     mergeTable(tt);
   }
 
-  public void includeView(final JdbcTable t, final DaosSpringMyBatisTag daosTag, final HotRodConfigTag config,
+  public void includeView(final JdbcTable t, final DaosTag daosTag, final HotRodConfigTag config,
       final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
     ViewTag vt = new ViewTag(t, daosTag, null, config, adapter);
     mergeView(vt);

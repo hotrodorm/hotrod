@@ -115,7 +115,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
   // Behavior
 
   protected void validateCommon(final HotRodConfigTag config, final File file, final FileRegistry fileRegistry,
-      final File parentFile, final DaosSpringMyBatisTag daosTag, final HotRodFragmentConfigTag fragmentConfig,
+      final File parentFile, final DaosTag daosTag, final HotRodFragmentConfigTag fragmentConfig,
       final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
       throws InvalidConfigurationFileException, ControlledException, UncontrolledException, FacetNotFoundException {
 
@@ -352,7 +352,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     }
   }
 
-  public void includeInAllFacets(JdbcTable t, boolean isView, final DaosSpringMyBatisTag daosTag,
+  public void includeInAllFacets(JdbcTable t, boolean isView, final DaosTag daosTag,
       final HotRodConfigTag config, final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
     if (isView) {
       this.allFacets.includeView(t, daosTag, config, adapter);

@@ -80,7 +80,7 @@ public class Metadata {
       // Prepare tables meta data
 
       DataSetLayout layout = new DataSetLayout(config);
-      DaosTag daosTag = config.getGenerators().getSelectedGeneratorTag().getDaos();
+      DaosTag daosTag = (DaosTag) config.getGenerators().getSelectedGeneratorTag().getDaos();
 
       this.tables = new LinkedHashSet<TableDataSetMetadata>();
       for (JdbcTable t : this.db.getTables()) {

@@ -148,7 +148,7 @@ public class ConfigurationLoader {
 
       // Validation (common)
 
-      DaosSpringMyBatisTag daosTag = (DaosSpringMyBatisTag) config.getGenerators().getSelectedGeneratorTag().getDaos();
+      DaosTag daosTag = (DaosTag) config.getGenerators().getSelectedGeneratorTag().getDaos();
       FileRegistry fileRegistry = new FileRegistry(f);
 
       config.validateCommon(config, f, fileRegistry, f, daosTag, null, adapter, facetNames, currentCS);
@@ -200,7 +200,7 @@ public class ConfigurationLoader {
   }
 
   public static HotRodFragmentConfigTag loadFragment(final HotRodConfigTag primaryConfig, final File f,
-      final FileRegistry fileRegistry, final DaosSpringMyBatisTag daosTag, final FragmentTag fragmentTag,
+      final FileRegistry fileRegistry, final DaosTag daosTag, final FragmentTag fragmentTag,
       final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
       throws UncontrolledException, ControlledException, FacetNotFoundException {
 

@@ -159,7 +159,7 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
   // Behavior
 
-  public void validate(final DaosSpringMyBatisTag daosTag, final HotRodConfigTag config,
+  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter, final boolean belongsToEntity)
       throws InvalidConfigurationFileException {
 

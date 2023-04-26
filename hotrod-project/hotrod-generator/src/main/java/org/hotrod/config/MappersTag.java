@@ -23,9 +23,6 @@ public class MappersTag extends AbstractConfigurationTag {
   private static final String DEFAULT_BASE_DIR = "src/main/resources";
   private static final String DEFAULT_DIR = "mappers";
 
-  private static final String PRIMITIVES_MAPPERS_DIR = "primitives";
-  private static final String CUSTOM_MAPPERS_DIR = "custom";
-
   private static final String VALID_NAMESPACE_PATTERN = "[a-z0-9][a-z0-9_]*";
   private static final String DEFAULT_NAMESPACE = "mappers";
 
@@ -43,9 +40,6 @@ public class MappersTag extends AbstractConfigurationTag {
 
   private File baseDir;
   private File fullRelativeDir;
-
-  private File customDir;
-  private boolean customDirVerified = false;
 
   // Constructor
 
@@ -111,8 +105,6 @@ public class MappersTag extends AbstractConfigurationTag {
           + "> with value '" + this.sDir + "' points to an file system entry " + "that is not a directory. ");
     }
 
-    this.customDir = new File(this.fullRelativeDir, CUSTOM_MAPPERS_DIR);
-
     // namespace
 
     if (this.namespace == null) {
@@ -139,12 +131,11 @@ public class MappersTag extends AbstractConfigurationTag {
 
   public File getPrimitivesDir(final ClassPackage fragmentPackage) {
     if (fragmentPackage != null) {
-      File fragmentDir = fragmentPackage.getPackageDir(this.fullRelativeDir);
-      File dir = new File(fragmentDir, PRIMITIVES_MAPPERS_DIR);
+      File dir = fragmentPackage.getPackageDir(this.fullRelativeDir);
       dir.mkdirs();
       return dir;
     } else {
-      File dir = new File(this.fullRelativeDir, PRIMITIVES_MAPPERS_DIR);
+      File dir = this.fullRelativeDir;
       dir.mkdirs();
       return dir;
     }
@@ -153,32 +144,18 @@ public class MappersTag extends AbstractConfigurationTag {
   public File getRuntimeDir(final ClassPackage fragmentPackage) {
     File relDir = new File(this.sDir);
     if (fragmentPackage != null) {
-      File fragmentDir = fragmentPackage.getPackageDir(relDir);
-      File dir = new File(fragmentDir, PRIMITIVES_MAPPERS_DIR);
+      File dir = fragmentPackage.getPackageDir(relDir);
       return dir;
     } else {
-      File dir = new File(relDir, PRIMITIVES_MAPPERS_DIR);
+      File dir = relDir;
       return dir;
     }
   }
 
-  public File getCustomDir() {
-    if (!this.customDirVerified) {
-      if (!this.customDir.exists()) {
-        this.customDir.mkdirs();
-      }
-      this.customDirVerified = true;
-    }
-    return customDir;
-  }
 
-  public String getRelativeCustomDir() {
-    return sDir + "/" + CUSTOM_MAPPERS_DIR;
-  }
-
-  public String getRelativePrimitivesDir() {
-    return sDir + "/" + PRIMITIVES_MAPPERS_DIR;
-  }
+//  public String getRelativePrimitivesDir() {
+//    return sDir ;
+//  }
 
   // Simple Caption
 

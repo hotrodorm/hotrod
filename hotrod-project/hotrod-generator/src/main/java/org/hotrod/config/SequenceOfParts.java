@@ -79,7 +79,7 @@ public class SequenceOfParts extends EnhancedSQLPart {
   }
 
   @Override
-  public void validate(final DaosSpringMyBatisTag daosTag, final HotRodConfigTag config,
+  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, final ParameterDefinitions parameters,
       final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
     // Nothing to do

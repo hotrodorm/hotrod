@@ -49,7 +49,7 @@ public class FragmentTag extends AbstractConfigurationTag implements GenerationU
   // Behavior
 
   public void validate(final HotRodConfigTag primaryConfig, final File parentDir, final FileRegistry fileRegistry,
-      final File parentFile, final DaosSpringMyBatisTag daosTag, final DatabaseAdapter adapter,
+      final File parentFile, final DaosTag daosTag, final DatabaseAdapter adapter,
       final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
       throws InvalidConfigurationFileException, ControlledException, UncontrolledException, FacetNotFoundException {
 
@@ -80,7 +80,7 @@ public class FragmentTag extends AbstractConfigurationTag implements GenerationU
   }
 
   public void load(final HotRodConfigTag primaryConfig, final FileRegistry fileRegistry,
-      final DaosSpringMyBatisTag daosTag, final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames,
+      final DaosTag daosTag, final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames,
       final CatalogSchema currentCS) throws UncontrolledException, ControlledException, FacetNotFoundException {
     log.debug("@@@ Will load fragment '" + this.f.getName() + "' -- at " + this.getSourceLocation());
     super.clearChildren();

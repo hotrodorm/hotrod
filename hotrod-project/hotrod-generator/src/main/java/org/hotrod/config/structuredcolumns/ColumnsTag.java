@@ -11,7 +11,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hotrod.config.DaosSpringMyBatisTag;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.EnhancedSQLPart;
 import org.hotrod.config.HotRodConfigTag;
@@ -51,7 +50,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
   // Properties
 
-  private DaosSpringMyBatisTag daosTag;
+  private DaosTag daosTag;
   private DataSetLayout layout;
   private HotRodFragmentConfigTag fragmentConfig;
 
@@ -108,7 +107,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   // ========================
 
   @Override
-  public void validate(final DaosSpringMyBatisTag daosTag, final HotRodConfigTag config,
+  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, ParameterDefinitions parameters, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 

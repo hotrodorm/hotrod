@@ -17,7 +17,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractConfigurationTag;
-import org.hotrod.config.DaosSpringMyBatisTag;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
@@ -830,7 +829,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
   }
 
   public VOMetadata getMetadata(final DataSetLayout layout, final HotRodFragmentConfigTag fragmentConfig,
-      final DaosSpringMyBatisTag daosTag) throws InvalidConfigurationFileException {
+      final DaosTag daosTag) throws InvalidConfigurationFileException {
     return new VOMetadata(this, layout, fragmentConfig, daosTag);
   }
 

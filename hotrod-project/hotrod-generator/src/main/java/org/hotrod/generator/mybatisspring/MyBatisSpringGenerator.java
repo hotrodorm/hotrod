@@ -76,7 +76,6 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
   private LinkedHashMap<DataSetMetadata, Mapper> mappers = new LinkedHashMap<DataSetMetadata, Mapper>();
   private LinkedHashMap<EnumDataSetMetadata, EnumClass> enumClasses = new LinkedHashMap<EnumDataSetMetadata, EnumClass>();
   private List<ObjectAbstractVO> tableAbstractVOs = new ArrayList<ObjectAbstractVO>();
-  private MyBatisConfiguration myBatisConfig;
 
   private EntityDAORegistry entityDAORegistry = new EntityDAORegistry();
 
@@ -113,7 +112,6 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
 
     // Load and validate the configuration file
 
-    this.myBatisConfig = new MyBatisConfiguration(this.config);
     this.myBatisSpringTag = (MyBatisSpringTag) this.config.getGenerators().getSelectedGeneratorTag();
     this.layout = new DataSetLayout(this.config);
 
@@ -180,24 +178,6 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
         addSelectVOs(sm, entityVOs);
       }
     }
-
-    // Prepare MyBatis Configuration File list
-
-    if (this.myBatisSpringTag.getTemplate() != null) {
-      for (Mapper mapper : this.mappers.values()) {
-        String sourceFile = mapper.getRuntimeSourceFileName();
-        this.myBatisConfig.addFacetSourceFile(sourceFile);
-      }
-
-      for (String sourceFile : getAllMappersSourceFileNames()) {
-        this.myBatisConfig.addAnySourceFile(sourceFile);
-      }
-    }
-
-//    // AvailableFKs
-//
-//    this.availableFKs = new AvailableFKs(this.config,
-//        this.tables.stream().map(t -> t.getImportedFKs()).flatMap(l -> l.stream()).collect(Collectors.toList()));
 
   }
 
@@ -489,12 +469,6 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
 
     for (EnumClass ec : this.enumClasses.values()) {
       ec.generate(fileGenerator);
-    }
-
-    // MyBatis Main configuration file
-
-    if (this.myBatisSpringTag.getTemplate() != null) {
-      this.myBatisConfig.generate(fileGenerator);
     }
 
     // MyBatis cursor implementation

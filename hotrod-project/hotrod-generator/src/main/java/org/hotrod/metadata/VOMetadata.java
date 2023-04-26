@@ -7,7 +7,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractConfigurationTag;
-import org.hotrod.config.DaosSpringMyBatisTag;
+import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.structuredcolumns.AssociationTag;
 import org.hotrod.config.structuredcolumns.CollectionTag;
@@ -60,7 +60,7 @@ public class VOMetadata implements Serializable {
   // Constructors
 
   public VOMetadata(final VOTag tag, final DataSetLayout layout, final HotRodFragmentConfigTag fragmentConfig,
-      final DaosSpringMyBatisTag daosTag) throws InvalidConfigurationFileException {
+      final DaosTag daosTag) throws InvalidConfigurationFileException {
     log.debug("init");
 
     this.tag = tag;

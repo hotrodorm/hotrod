@@ -36,7 +36,7 @@ public abstract class EnhancedSQLPart extends AbstractConfigurationTag {
 
   // Validation
 
-  public abstract void validate(final DaosSpringMyBatisTag daosTag, final HotRodConfigTag config,
+  public abstract void validate(final DaosTag daosTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, final ParameterDefinitions parameters,
       final DatabaseAdapter adapter) throws InvalidConfigurationFileException;
 

@@ -74,7 +74,7 @@ public class TableTag extends AbstractEntityDAOTag {
 
   // Constructor for Discover
 
-  public TableTag(final JdbcTable t, final DaosSpringMyBatisTag daosTag, final HotRodFragmentConfigTag fragmentConfig,
+  public TableTag(final JdbcTable t, final DaosTag daosTag, final HotRodFragmentConfigTag fragmentConfig,
       final HotRodConfigTag config, final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
     super("table", true);
 
@@ -218,7 +218,7 @@ public class TableTag extends AbstractEntityDAOTag {
 
   // Behavior
 
-  public void validate(final DaosSpringMyBatisTag daosTag, final HotRodConfigTag config,
+  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter, final CatalogSchema currentCS)
       throws InvalidConfigurationFileException {
 

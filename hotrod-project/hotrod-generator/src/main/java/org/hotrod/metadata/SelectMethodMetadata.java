@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.AbstractDAOTag;
+import org.hotrod.config.DaosTag;
 import org.hotrod.config.EnhancedSQLPart.SQLFormatter;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
@@ -404,13 +405,15 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
   @Override
   @Deprecated
   public String generateDAOName(final ObjectId identifier) {
-    return this.config.getGenerators().getSelectedGeneratorTag().getDaos().generateDAOName(identifier);
+    DaosTag daos = (DaosTag) this.config.getGenerators().getSelectedGeneratorTag().getDaos();
+    return daos.generateDAOName(identifier);
   }
 
   @Override
   @Deprecated
   public String generatePrimitivesName(final ObjectId identifier) {
-    return this.config.getGenerators().getSelectedGeneratorTag().getDaos().generatePrimitivesName(identifier);
+    DaosTag daos = (DaosTag) this.config.getGenerators().getSelectedGeneratorTag().getDaos();
+    return daos.generatePrimitivesName(identifier);
   }
 
   @Override

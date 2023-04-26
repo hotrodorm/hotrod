@@ -38,7 +38,7 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
 
   private DiscoverTag discover = null;
 
-  private DaosSpringMyBatisTag daos = null;
+  private DaosTag daos = null;
   private MappersTag mappers = null;
   private TemplateTag template = null;
   private SelectGenerationTag selectGeneration = null;
@@ -62,7 +62,7 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
   }
 
   @XmlElement(name = "daos")
-  public void setDaos(final DaosSpringMyBatisTag daos) throws InvalidConfigurationFileException {
+  public void setDaos(final DaosTag daos) throws InvalidConfigurationFileException {
     if (this.daos != null) {
       throw new InvalidConfigurationFileException(this,
           "Duplicate <daos> tag; the generator can only have a single <dao> tag");
@@ -150,10 +150,20 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
       this.selectGeneration.setTempViewBaseName(SelectGenerationTag.DEFAULT_TEMP_VIEW_NAME);
     }
 
-    // Validate sub tags
+    // daos
 
+    if (this.daos == null) {
+      this.daos = new DaosTag();
+    }
     this.daos.validate(basedir);
+
+    // mappers
+
+    if (this.mappers == null) {
+      this.mappers = new MappersTag();
+    }
     this.mappers.validate(basedir);
+
     if (this.template != null) {
       this.template.validate(basedir, parentDir);
     }
@@ -179,7 +189,7 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
     return this.discover;
   }
 
-  public DaosSpringMyBatisTag getDaos() {
+  public DaosTag getDaos() {
     return daos;
   }
 

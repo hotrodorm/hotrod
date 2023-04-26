@@ -87,7 +87,7 @@
 
   <xsd:complexType name="daos-mybatis-spring-type">
     <xsd:attribute name="base-dir" type="xsd:string" />
-    <xsd:attribute name="package" type="xsd:string" use="required" />
+    <xsd:attribute name="package" type="xsd:string" />
     <xsd:attribute name="primitives-package" type="xsd:string" />
 
     <xsd:attribute name="dao-prefix" type="xsd:string" />
