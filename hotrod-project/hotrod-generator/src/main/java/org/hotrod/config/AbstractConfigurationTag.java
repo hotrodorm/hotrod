@@ -245,37 +245,6 @@ public abstract class AbstractConfigurationTag implements Serializable {
     return generatables;
   }
 
-  // Update generated cache
-
-  public void promoteTreeToGenerated() {
-    if (this.isToBeGenerated()) {
-      boolean allObjectsGenerated = true;
-      for (GeneratableObject g : this.generatables) {
-        if (!g.isGenerated()) {
-          allObjectsGenerated = false;
-        }
-      }
-      if (allObjectsGenerated) {
-        this.generate = GenerationStatus.GENERATION_COMPLETE;
-      }
-    }
-    for (AbstractConfigurationTag subTag : this.subTags) {
-      subTag.promoteTreeToGenerated();
-    }
-  }
-
-  public boolean concludeGenerationMarkTag() {
-    if (this.generate == GenerationStatus.NO_ACTION || this.generate == GenerationStatus.GENERATION_COMPLETE) {
-      this.status = TagStatus.UP_TO_DATE;
-      return true;
-    }
-    return false;
-  }
-
-  public void markConcluded() {
-    this.status = TagStatus.UP_TO_DATE;
-  }
-
   // XmlLocatable
 
   public void setSourceLocation(final SourceLocation location) {
@@ -284,63 +253,6 @@ public abstract class AbstractConfigurationTag implements Serializable {
 
   public SourceLocation getSourceLocation() {
     return this.location;
-  }
-
-  // Comparable
-
-//  @Override
-//  public int compareTo(final AbstractConfigurationTag o) {
-//    if (this.same(o)) {
-//      return 0;
-//    }
-//    int v = this.tagName.compareTo(o.tagName);
-//    return v == 0 ? -1 : v;
-//  }
-
-  // Abstract methods for computing item changes
-
-//  // Checks if it has the same KEY properties
-//  public abstract boolean sameKey(AbstractConfigurationTag fresh);
-//
-//  // Checks if it has the same properties. Computed properties are not compared.
-//  public abstract boolean same(AbstractConfigurationTag fresh);
-//
-//  // Copy non-KEY properties; informs if there were any changes.
-//  public abstract boolean copyNonKeyProperties(AbstractConfigurationTag fresh);
-
-  // Display
-
-  public void logGenerateMark(final String title, final char c) {
-    // log.info(SUtils.getFiller(c, 10) + " " + title + " " +
-    // SUtils.getFiller(c, 10));
-    // log.info(" - Caller: " + LogUtil.getCaller());
-    // displayGenerateMark(this, 0);
-    // log.info(SUtils.getFiller(c, 22 + title.length()));
-  }
-
-  @SuppressWarnings("unused")
-  private void displayGenerateMark(final AbstractConfigurationTag tag, final int level) {
-    log.debug(SUtil.getFiller(". ", level) + " " + (tag.isToBeGenerated() ? "G" : "_") + " " + tag.getStatus().getIcon()
-        + " " + tag.getInternalCaption() + " - " + System.identityHashCode(tag));
-    for (AbstractConfigurationTag subtag : tag.getSubTags()) {
-      displayGenerateMark(subtag, level + 1);
-    }
-  }
-
-  // Merging logic
-
-  protected boolean coreCopyNonKeyProperties(final AbstractConfigurationTag f) {
-    try {
-      boolean different = false;
-
-      this.tagName = f.tagName;
-      this.location = f.location;
-      this.subTags = f.subTags;
-
-      return different;
-    } catch (ClassCastException e) {
-      return false;
-    }
   }
 
   // Simple Caption

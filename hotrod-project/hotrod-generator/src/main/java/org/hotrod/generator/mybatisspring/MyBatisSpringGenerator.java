@@ -475,10 +475,6 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
 
     // this.mybatisCursor.generate();
 
-    // compute tree generation status
-
-    this.config.promoteTreeToGenerated();
-
   }
 
   // Getters

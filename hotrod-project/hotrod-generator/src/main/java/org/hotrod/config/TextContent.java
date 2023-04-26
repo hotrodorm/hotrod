@@ -15,7 +15,6 @@ import org.hotrod.metadata.Metadata;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.dynamicsql.expressions.LiteralExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
-import org.hotrodorm.hotrod.utils.SUtil;
 
 public class TextContent extends EnhancedSQLPart {
 
@@ -156,21 +155,6 @@ public class TextContent extends EnhancedSQLPart {
   @Override
   public String getInternalCaption() {
     return this.getTagName();
-  }
-
-  // Merging logic
-
-  public boolean same(final AbstractConfigurationTag fresh) {
-    try {
-      TextContent f = (TextContent) fresh;
-      boolean equals = SUtil.equals(this.txt, f.txt);
-      // log.info("[LITERAL] equals=" + equals);
-      // log.info("this.text=" + this.text);
-      // log.info("othe.text=" + f.text);
-      return equals;
-    } catch (ClassCastException e) {
-      return false;
-    }
   }
 
 }
