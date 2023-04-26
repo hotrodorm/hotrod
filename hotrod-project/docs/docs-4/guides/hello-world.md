@@ -115,7 +115,6 @@ The complete `pom.xml` file will look like:
           <jdbcurl>jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1</jdbcurl>
           <jdbcusername>sa</jdbcusername>
           <jdbcpassword>""</jdbcpassword>
-          <jdbccatalog>EXAMPLEDB</jdbccatalog>
           <jdbcschema>PUBLIC</jdbcschema>
         </configuration>
         <dependencies>
