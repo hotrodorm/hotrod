@@ -238,9 +238,7 @@ class `src/main/java/app/App.java` as:
 ```java
 package app;
 
-import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
@@ -253,12 +251,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
+import app.daos.EmployeeVO;
 import app.daos.primitives.EmployeeDAO;
 import app.daos.primitives.EmployeeDAO.EmployeeTable;
-import app.daos.primitives.EmployeeVO;
-import app.daos.EmployeeImpl;
 
 @Configuration
 @SpringBootApplication
@@ -291,21 +287,17 @@ public class App {
     // Use CRUD to search for employee #123
 
     Integer id = 123;
-    EmployeeVO vo = this.employeeDAO.selectByPK(id);
+    EmployeeVO vo = this.employeeDAO.select(id);
     System.out.println("Employee #" + id + " Name: " + vo.getName());
 
     // Use LiveSQL to search for employees whose name starts with 'A'
 
     EmployeeTable e = EmployeeDAO.newTable();
 
-    List<Row> rows = this.sql
-      .select()
-      .from(e)
-      .where(e.name.like("A%"))
-      .execute();
+    List<Row> rows = this.sql.select().from(e).where(e.name.like("A%")).execute();
 
     System.out.println("Employees with names that start with 'A':");
-    for (Row r: rows) {
+    for (Row r : rows) {
       System.out.println(r);
     }
 
