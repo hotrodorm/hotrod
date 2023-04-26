@@ -82,7 +82,9 @@
             <artifactId>hotrod-maven-plugin</artifactId>
             <version>${hotrod.version}</version>
             <configuration>
+            <!-- 
               <configfile>./hotrod-h2.xml</configfile>
+               -->
               <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
               <jdbcurl>jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema-h2.sql';DB_CLOSE_DELAY=-1</jdbcurl>
               <jdbcusername>sa</jdbcusername>

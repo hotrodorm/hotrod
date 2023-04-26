@@ -135,13 +135,4 @@
     ${sql}
   </select>
 
-  <!-- select method: findTop3Branches -->
-
-  <select id="select_findTop3Branches" resultMap="allColumns">
-      select *
-      from branch
-      order by branch_name
-      limit 3
-  </select>
-
 </mapper>

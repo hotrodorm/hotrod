@@ -13,9 +13,8 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
-import app.daos.primitives.AbstractBranchVO;
+import app.daos.primitives.Branch;
 import app.daos.BranchVO;
-
 
 import java.util.Map;
 import java.util.HashMap;
@@ -76,16 +75,16 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<app.daos.BranchVO> select(final app.daos.primitives.AbstractBranchVO example, final BranchOrderBy... orderBies)
+  public List<app.daos.BranchVO> select(final app.daos.primitives.Branch example, final BranchOrderBy... orderBies)
       {
-    DaoWithOrder<app.daos.primitives.AbstractBranchVO, BranchOrderBy> dwo = //
+    DaoWithOrder<app.daos.primitives.Branch, BranchOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("mappers.branch.selectByExample", dwo);
   }
 
-  public Cursor<app.daos.BranchVO> selectCursor(final app.daos.primitives.AbstractBranchVO example, final BranchOrderBy... orderBies)
+  public Cursor<app.daos.BranchVO> selectCursor(final app.daos.primitives.Branch example, final BranchOrderBy... orderBies)
       {
-    DaoWithOrder<app.daos.primitives.AbstractBranchVO, BranchOrderBy> dwo = //
+    DaoWithOrder<app.daos.primitives.Branch, BranchOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<app.daos.BranchVO>(this.sqlSession.selectCursor("mappers.branch.selectByExample", dwo));
   }
@@ -104,7 +103,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public app.daos.BranchVO insert(final app.daos.primitives.AbstractBranchVO vo) {
+  public app.daos.BranchVO insert(final app.daos.primitives.Branch vo) {
     String id = "mappers.branch.insert";
     int rows = this.sqlSession.insert(id, vo);
     app.daos.BranchVO mo = new app.daos.BranchVO();
@@ -132,15 +131,15 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int update(final app.daos.primitives.AbstractBranchVO example, final app.daos.primitives.AbstractBranchVO updateValues) {
-    UpdateByExampleDao<app.daos.primitives.AbstractBranchVO> fvd = //
-      new UpdateByExampleDao<app.daos.primitives.AbstractBranchVO>(example, updateValues);
+  public int update(final app.daos.primitives.Branch example, final app.daos.primitives.Branch updateValues) {
+    UpdateByExampleDao<app.daos.primitives.Branch> fvd = //
+      new UpdateByExampleDao<app.daos.primitives.Branch>(example, updateValues);
     return this.sqlSession.update("mappers.branch.updateByExample", fvd);
   }
 
   // update by criteria
 
-  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractBranchVO updateValues, final BranchDAO.BranchTable tableOrView, final Predicate predicate) {
+  public UpdateSetCompletePhase update(final app.daos.primitives.Branch updateValues, final BranchDAO.BranchTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
     if (updateValues.getBranchId() != null) values.put("branch_id", updateValues.getBranchId());
     if (updateValues.getBranchName() != null) values.put("branch_name", updateValues.getBranchName());
@@ -151,7 +150,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   // delete by example
 
-  public int delete(final app.daos.primitives.AbstractBranchVO example) {
+  public int delete(final app.daos.primitives.Branch example) {
     return this.sqlSession.delete("mappers.branch.deleteByExample", example);
   }
 
@@ -244,25 +243,6 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
       this.branchName = new StringColumn(this, "BRANCH_NAME", "branchName", "CHARACTER VARYING", 20, 0);
     }
 
-  }
-
-  // select method: findTop3Branches
-
-  /*
-  * The SQL statement for this method is:
-
-
-      select *
-      from branch
-      order by branch_name
-      limit 3
-    
-
-  */
-
-
-  public List<BranchVO> findTop3Branches() {
-    return this.sqlSession.selectList("mappers.branch.select_findTop3Branches");
   }
 
 }

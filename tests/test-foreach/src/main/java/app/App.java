@@ -15,9 +15,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import app.daos.BranchVO;
-import app.daos.LowBranchVO;
 import app.daos.primitives.BranchDAO;
-import app.daos.primitives.QueriesBDAO;
 
 @Configuration
 @SpringBootApplication
@@ -35,14 +33,14 @@ public class App {
 //  @Autowired
 //  private PlayerDAO playerDAO;
 //
-//  @Autowired
+//  @Autowired  
 //  private Car_part_priceDAO cppDAO;
 
   @Autowired
   private BranchDAO branchDAO;
 
-  @Autowired
-  private QueriesBDAO queriesBDAO;
+//  @Autowired
+//  private QueriesBDAO queriesBDAO;
 
   @Autowired
   private LiveSQL sql;
@@ -67,17 +65,20 @@ public class App {
 
   private void selectEntity() {
 
-    List<BranchVO> branches = this.branchDAO.findTop3Branches();
-    System.out.println("> Top 3 branches: ");
-    for (BranchVO b : branches) {
-      System.out.println("> b=" + b);
-    }
+    BranchVO b = this.branchDAO.select(102);
+    System.out.println("> b=" + b);
 
-    List<LowBranchVO> lowBranches = this.queriesBDAO.findLowBranches();
-    System.out.println("> Low branches: ");
-    for (LowBranchVO lb : lowBranches) {
-      System.out.println("> lb=" + lb);
-    }
+//    List<BranchVO> branches = this.branchDAO.findTop3Branches();
+//    System.out.println("> Top 3 branches: ");
+//    for (BranchVO b : branches) {
+//      System.out.println("> b=" + b);
+//    }
+//
+//    List<LowBranchVO> lowBranches = this.queriesBDAO.findLowBranches();
+//    System.out.println("> Low branches: ");
+//    for (LowBranchVO lb : lowBranches) {
+//      System.out.println("> lb=" + lb);
+//    }
 
   }
 
