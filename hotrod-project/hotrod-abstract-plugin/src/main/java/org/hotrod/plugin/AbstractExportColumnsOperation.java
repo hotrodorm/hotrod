@@ -180,14 +180,15 @@ public abstract class AbstractExportColumnsOperation {
     // configfile
 
     if (this.configfilename == null) {
-      throw new Exception(Constants.TOOL_NAME + " parameter: " + "configfile attribute must be specified.");
-    }
-    if (SUtil.isEmpty(this.configfilename)) {
-      throw new Exception(Constants.TOOL_NAME + " parameter: " + "configfile attribute cannot be empty.");
-    }
-    this.configFile = new File(this.baseDir, this.configfilename);
-    if (!this.configFile.exists()) {
-      throw new Exception(Constants.TOOL_NAME + " parameter: " + "configfile does not exist: " + this.configfilename);
+      this.configFile = null;
+    } else {
+      if (SUtil.isEmpty(this.configfilename)) {
+        throw new Exception(Constants.TOOL_NAME + " parameter: " + "configfile attribute cannot be empty.");
+      }
+      this.configFile = new File(this.baseDir, this.configfilename);
+      if (!this.configFile.exists()) {
+        throw new Exception(Constants.TOOL_NAME + " parameter: " + "configfile does not exist: " + this.configfilename);
+      }
     }
 
     // driverclass

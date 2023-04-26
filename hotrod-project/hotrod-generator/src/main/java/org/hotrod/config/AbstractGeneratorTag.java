@@ -27,7 +27,7 @@ public abstract class AbstractGeneratorTag extends AbstractConfigurationTag {
 
   public abstract String getName();
 
-  public abstract void validate(File basedir, File parentDir, final DatabaseAdapter adapter,
+  public abstract void validate(File basedir, final File parentDir, final DatabaseAdapter adapter,
       final CatalogSchema currentCS) throws InvalidConfigurationFileException;
 
   public abstract DaosTag getDaos();

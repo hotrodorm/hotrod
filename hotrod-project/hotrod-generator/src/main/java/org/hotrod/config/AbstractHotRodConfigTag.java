@@ -116,7 +116,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
 
     log.debug("validateCommon");
 
-    File parentDir = file.getParentFile();
+    File parentDir = file != null ? file.getParentFile() : null;
 
     // DAOs
 

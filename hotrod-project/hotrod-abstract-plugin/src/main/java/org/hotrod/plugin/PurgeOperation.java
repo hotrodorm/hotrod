@@ -221,16 +221,15 @@ public class PurgeOperation {
 
     // configfile
 
-    if (this.configfilename == null) {
-      throw new OperationException(Constants.TOOL_NAME + " parameter: " + "configfile attribute must be specified.");
-    }
-    if (SUtil.isEmpty(this.configfilename)) {
-      throw new OperationException(Constants.TOOL_NAME + " parameter: " + "configfile attribute cannot be empty.");
-    }
-    this.configFile = new File(this.baseDir, this.configfilename);
-    if (!this.configFile.exists()) {
-      throw new OperationException(
-          Constants.TOOL_NAME + " parameter: " + "configfile does not exist: " + this.configfilename);
+    if (this.configfilename != null) {
+      if (SUtil.isEmpty(this.configfilename)) {
+        throw new OperationException(Constants.TOOL_NAME + " parameter: " + "configfile attribute cannot be empty.");
+      }
+      this.configFile = new File(this.baseDir, this.configfilename);
+      if (!this.configFile.exists()) {
+        throw new OperationException(
+            Constants.TOOL_NAME + " parameter: " + "configfile does not exist: " + this.configfilename);
+      }
     }
 
     // driverclass

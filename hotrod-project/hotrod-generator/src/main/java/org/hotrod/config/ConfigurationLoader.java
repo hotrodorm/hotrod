@@ -199,6 +199,33 @@ public class ConfigurationLoader {
 
   }
 
+  // When no hotrod.xml is provided
+
+  public static HotRodConfigTag prepareNoConfig(final File projectBaseDir, final File f, final DatabaseAdapter adapter,
+      final LinkedHashSet<String> facetNames, final CatalogSchema currentCS) throws ControlledException {
+    HotRodConfigTag config = new HotRodConfigTag();
+    File parentDir = null;
+    try {
+      config.validate(projectBaseDir, parentDir, f, adapter, currentCS);
+    } catch (InvalidConfigurationFileException e) {
+      throw new ControlledException("No Config Error: " + e.getMessage());
+    } catch (GeneratorNotFoundException e) {
+      throw new ControlledException("No Config Error: " + e.getMessage());
+    }
+    DaosTag daosTag = (DaosTag) config.getGenerators().getSelectedGeneratorTag().getDaos();
+    FileRegistry fileRegistry = new FileRegistry(f);
+    try {
+      config.validateCommon(config, f, fileRegistry, f, daosTag, null, adapter, facetNames, currentCS);
+    } catch (InvalidConfigurationFileException e) {
+      throw new ControlledException("No Config Error: " + e.getMessage());
+    } catch (UncontrolledException e) {
+      throw new ControlledException("No Config Error: " + e.getMessage());
+    } catch (FacetNotFoundException e) {
+      throw new ControlledException("No Config Error: " + e.getMessage());
+    }
+    return config;
+  }
+
   public static HotRodFragmentConfigTag loadFragment(final HotRodConfigTag primaryConfig, final File f,
       final FileRegistry fileRegistry, final DaosTag daosTag, final FragmentTag fragmentTag,
       final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)

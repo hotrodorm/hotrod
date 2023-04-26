@@ -62,8 +62,10 @@ public class HotRodContext {
       final String currentJDBCSchema, final File baseDir, final LinkedHashSet<String> facetNames,
       final Feedback feedback) throws ControlledException {
 
-    feedback.info("");
-    feedback.info("Configuration File: " + configFile);
+    if (configFile != null) {
+      feedback.info("");
+      feedback.info("Configuration File: " + configFile);
+    }
 
     this.loc = new DatabaseLocation(jdbcdriverclass, jdbcurl, jdbcusername, jdbcpassword, currentJDBCCatalog,
         currentJDBCSchema, null);
@@ -125,29 +127,35 @@ public class HotRodContext {
 
       // Loading Configuration
 
-      try {
-        this.config = ConfigurationLoader.loadPrimary(baseDir, configFile, adapter, facetNames, loc.getCatalogSchema());
-      } catch (ControlledException e) {
-        if (e.getLocation() != null) {
-          throw new ControlledException("\n" + e.getMessage() + "\n  in " + e.getLocation().render());
-        } else {
-          throw new ControlledException("\n" + e.getMessage());
+      if (configFile != null) {
+        try {
+          this.config = ConfigurationLoader.loadPrimary(baseDir, configFile, adapter, facetNames,
+              loc.getCatalogSchema());
+        } catch (ControlledException e) {
+          if (e.getLocation() != null) {
+            throw new ControlledException("\n" + e.getMessage() + "\n  in " + e.getLocation().render());
+          } else {
+            throw new ControlledException("\n" + e.getMessage());
+          }
+        } catch (UncontrolledException e) {
+          throw new ControlledException("Could not load configuration file " + configFile + " - " + e.getMessage()
+              + ": " + XUtil.trim(e.getCause()));
+        } catch (FacetNotFoundException e) {
+          throw new ControlledException("facet '" + e.getMessage() + "' not found.");
+        } catch (RuntimeException e) {
+          throw new ControlledException("Could not load configuration file " + configFile + " - " + e.getMessage()
+              + ": " + XUtil.trim(e.getCause()));
         }
-      } catch (UncontrolledException e) {
-        throw new ControlledException("Could not load configuration file " + configFile + " - " + e.getMessage() + ": "
-            + XUtil.trim(e.getCause()));
-      } catch (FacetNotFoundException e) {
-        throw new ControlledException("facet '" + e.getMessage() + "' not found.");
-      } catch (RuntimeException e) {
-        throw new ControlledException("Could not load configuration file " + configFile + " - " + e.getMessage() + ": "
-            + XUtil.trim(e.getCause()));
+        log.debug("Main Configuration loaded.");
+      } else {
+        this.config = ConfigurationLoader.prepareNoConfig(baseDir, configFile, adapter, facetNames,
+            loc.getCatalogSchema());
       }
-      log.debug("Main Configuration loaded.");
 
       // Apply current schema to declared tables with no schema and no catalog
 
       this.config.applyCurrentSchema(this.loc.getCatalogSchema());
-      
+
       // Discover schemas
 
       MyBatisSpringTag mst = (MyBatisSpringTag) this.config.getGenerators().getSelectedGeneratorTag();
@@ -229,7 +237,7 @@ public class HotRodContext {
 
         log.debug("gen 8");
         this.config.getFacetTables(); // FIXME
-       adapter.setCurrentCatalogSchema(conn, loc.getCurrentCatalog(), loc.getCurrentSchema());
+        adapter.setCurrentCatalogSchema(conn, loc.getCurrentCatalog(), loc.getCurrentSchema());
         log.debug("gen 9");
 
       } catch (ReaderException e) {
@@ -288,7 +296,7 @@ public class HotRodContext {
 
       log.debug("gen 10");
       this.metadata = new Metadata(db, adapter, loc);
-     
+
       log.debug("gen 10.5");
       this.config.getFacetTables();// FIXME
       log.debug("gen 11");
