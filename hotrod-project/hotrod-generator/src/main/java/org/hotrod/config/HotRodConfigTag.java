@@ -2,7 +2,6 @@ package org.hotrod.config;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -17,8 +16,6 @@ import org.apache.logging.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.GeneratorNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.utils.Correlator;
-import org.hotrod.utils.Correlator.CorrelatedEntry;
 import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 
 @XmlRootElement(name = "hotrod")
@@ -137,76 +134,6 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
     this.getAllTables().stream().forEach(t -> t.applyCurrentSchema(currentCS));
     this.getAllViews().stream().forEach(t -> t.applyCurrentSchema(currentCS));
     this.getAllEnums().stream().forEach(t -> t.applyCurrentSchema(currentCS));
-  }
-
-  @Override
-  public boolean concludeGeneration(final AbstractHotRodConfigTag unitCache, final DatabaseAdapter adapter) {
-    log.debug("CONCLUDE 1");
-
-    HotRodConfigTag cache = (HotRodConfigTag) unitCache;
-
-    boolean successfulCommonGeneration = super.commonConcludeGeneration(cache, adapter);
-
-    log.debug("CONCLUDE: successfulCommonGeneration=" + successfulCommonGeneration);
-
-    boolean failedExtendedGeneration = false;
-
-    // Converters
-
-    log.debug("conclude 2 - converters");
-
-    for (ConverterTag c : this.getConverters()) {
-      if (!c.concludeGenerationMarkTag()) {
-        failedExtendedGeneration = true;
-      }
-    }
-
-    for (CorrelatedEntry<ConverterTag> cor : Correlator.correlate(this.getConverters(), cache.getConverters(),
-        new Comparator<ConverterTag>() {
-          @Override
-          public int compare(ConverterTag o1, ConverterTag o2) {
-            return adapter.canonizeName(o1.getName(), false).compareTo(adapter.canonizeName(o2.getName(), false));
-          }
-        })) {
-
-      ConverterTag t = cor.getLeft();
-      ConverterTag c = cor.getRight();
-
-      if (t != null && t.isToBeGenerated()) {
-        failedExtendedGeneration = true;
-      }
-      if (t != null && c == null) {
-        if (t.isGenerationComplete()) {
-          cache.add(t); // adds the generated element to the cache.
-        }
-      }
-      if (t == null && c != null) {
-        cache.remove(t, adapter); // removes the element from the cache.
-      }
-      if (t != null && c != null) {
-        if (t.isGenerationComplete()) {
-          cache.replace(t, adapter); // replaces the element on the cache.
-        }
-      }
-
-    }
-
-    // Generators (settings)
-
-    this.generatorsTag.concludeGenerationMarkTag();
-
-    // HotRodConfigTag
-
-    log.debug("conclude 3 - end");
-    log.debug("CONCLUDE: successfulCommonGeneration=" + successfulCommonGeneration + " failedExtendedGeneration="
-        + failedExtendedGeneration);
-
-    if (successfulCommonGeneration && !failedExtendedGeneration) {
-      log.debug("conclude 4 - conclude");
-      return this.concludeGenerationMarkTag();
-    }
-
-    return false;
   }
 
   // Setters

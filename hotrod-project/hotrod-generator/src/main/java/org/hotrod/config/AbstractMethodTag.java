@@ -1,12 +1,10 @@
 package org.hotrod.config;
 
-import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.identifiers.Id;
 
-public abstract class AbstractMethodTag<M extends AbstractMethodTag<M>> extends AbstractConfigurationTag
-    implements GenerationUnit<AbstractMethodTag<M>> {
+public abstract class AbstractMethodTag<M extends AbstractMethodTag<M>> extends AbstractConfigurationTag {
 
   private static final long serialVersionUID = 1L;
 
@@ -19,15 +17,6 @@ public abstract class AbstractMethodTag<M extends AbstractMethodTag<M>> extends 
 
   protected AbstractMethodTag(final String tagName) {
     super(tagName);
-  }
-
-  // Duplicate
-
-  public abstract M duplicate();
-
-  protected void copyCommon(final M source) {
-    super.copyCommon(source);
-    this.method = source.method;
   }
 
   protected void validate(final DaosTag daosTag, final HotRodConfigTag config,
@@ -47,13 +36,6 @@ public abstract class AbstractMethodTag<M extends AbstractMethodTag<M>> extends 
       throw new InvalidConfigurationFileException(this, msg);
     }
 
-  }
-
-  // Methods
-
-  @Override
-  public boolean concludeGeneration(final AbstractMethodTag<M> cache, final DatabaseAdapter adapter) {
-    return this.concludeGenerationMarkTag();
   }
 
   // Getters

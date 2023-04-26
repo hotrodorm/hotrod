@@ -36,7 +36,7 @@ public abstract class AbstractConfigurationTag implements Serializable {
   // Properties
 
   private String tagName;
-  
+
   private SourceLocation location = null;
 
   private TagStatus status;
@@ -93,20 +93,6 @@ public abstract class AbstractConfigurationTag implements Serializable {
 
   public AbstractConfigurationTag getParent() {
     return parent;
-  }
-
-  // Duplicate
-
-  protected void copyCommon(final AbstractConfigurationTag source) {
-    this.tagName = source.tagName;
-    this.location = source.location;
-
-    this.status = source.status;
-    this.subTags = source.subTags;
-
-    this.generate = source.generate;
-    this.generatables = source.generatables;
-
   }
 
   // Getters
@@ -334,8 +320,8 @@ public abstract class AbstractConfigurationTag implements Serializable {
 
   @SuppressWarnings("unused")
   private void displayGenerateMark(final AbstractConfigurationTag tag, final int level) {
-    log.debug(SUtil.getFiller(". ", level) + " " + (tag.isToBeGenerated() ? "G" : "_") + " "
-        + tag.getStatus().getIcon() + " " + tag.getInternalCaption() + " - " + System.identityHashCode(tag));
+    log.debug(SUtil.getFiller(". ", level) + " " + (tag.isToBeGenerated() ? "G" : "_") + " " + tag.getStatus().getIcon()
+        + " " + tag.getInternalCaption() + " - " + System.identityHashCode(tag));
     for (AbstractConfigurationTag subtag : tag.getSubTags()) {
       displayGenerateMark(subtag, level + 1);
     }

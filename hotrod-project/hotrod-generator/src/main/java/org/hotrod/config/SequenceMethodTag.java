@@ -38,19 +38,6 @@ public class SequenceMethodTag extends AbstractMethodTag<SequenceMethodTag> {
     log.debug("init");
   }
 
-  // Duplicate
-
-  @Override
-  public SequenceMethodTag duplicate() {
-    SequenceMethodTag d = new SequenceMethodTag();
-
-    d.copyCommon(this);
-
-    d.name = this.name;
-
-    return d;
-  }
-
   // JAXB Setters
 
   @XmlAttribute

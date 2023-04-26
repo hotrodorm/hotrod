@@ -198,7 +198,7 @@ public class DaosTag extends AbstractConfigurationTag {
 
     // dao-package
 
-    log.info("this.sPackage=" + this.sPackage);
+    log.debug("this.sPackage=" + this.sPackage);
     if (this.sPackage == null) {
       try {
         this.daoPackage = new ClassPackage(DEFAULT_DAO_PACKAGE);

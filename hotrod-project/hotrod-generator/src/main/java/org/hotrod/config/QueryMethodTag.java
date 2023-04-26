@@ -68,21 +68,6 @@ public class QueryMethodTag extends AbstractMethodTag<QueryMethodTag> {
     log.debug("init");
   }
 
-  // Duplicate
-
-  @Override
-  public QueryMethodTag duplicate() {
-    QueryMethodTag d = new QueryMethodTag();
-
-    d.copyCommon(this);
-
-    d.content = this.content;
-    d.parts = this.parts;
-    d.parameters = this.parameters;
-
-    return d;
-  }
-
   // JAXB Setters
 
   @XmlAttribute(name = "method")

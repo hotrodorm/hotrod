@@ -9,7 +9,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.AbstractDAOTag;
-import org.hotrod.config.DaosTag;
 import org.hotrod.config.EnhancedSQLPart.SQLFormatter;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
@@ -403,20 +402,6 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
   }
 
   @Override
-  @Deprecated
-  public String generateDAOName(final ObjectId identifier) {
-    DaosTag daos = (DaosTag) this.config.getGenerators().getSelectedGeneratorTag().getDaos();
-    return daos.generateDAOName(identifier);
-  }
-
-  @Override
-  @Deprecated
-  public String generatePrimitivesName(final ObjectId identifier) {
-    DaosTag daos = (DaosTag) this.config.getGenerators().getSelectedGeneratorTag().getDaos();
-    return daos.generatePrimitivesName(identifier);
-  }
-
-  @Override
   public HotRodFragmentConfigTag getFragmentConfig() {
     return this.fragmentConfig;
   }
@@ -428,13 +413,8 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
   @Override
   @Deprecated
   public List<SelectMethodMetadata> getSelectsMetadata() {
-    // Should not be used
-    throw new UnsupportedOperationException("This operation should not be used.");
+    throw new UnsupportedOperationException("A <select> tag should not implement this method.");
   }
-
-//  public Generator getGenerator() {
-//    return metadata;
-//  }
 
   public SelectMethodReturnType getReturnType(final ClassPackage voClassPackage) {
     return this.selectMethodReturnType;

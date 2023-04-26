@@ -108,33 +108,6 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
     super("select");
   }
 
-  // Duplicate
-
-  @Override
-  public SelectMethodTag duplicate() {
-    SelectMethodTag d = new SelectMethodTag();
-
-    d.copyCommon(this);
-
-    d.vo = this.vo;
-    d.sMode = this.sMode;
-    d.metadata = this.metadata;
-
-    d.content = this.content;
-
-    d.voClassName = this.voClassName;
-    d.mode = this.mode;
-    d.parameters = this.parameters;
-    d.columns = this.columns;
-    d.parts = this.parts;
-    d.aggregatedPart = this.aggregatedPart;
-    d.structuredColumns = this.structuredColumns;
-
-    d.fragmentConfig = this.fragmentConfig;
-
-    return d;
-  }
-
   // JAXB Setters
 
   @XmlAttribute
@@ -327,11 +300,6 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
     }
   }
 
-  @Deprecated
-  public void setDataSetMetadata(final SelectMethodMetadata dataSetMetadata) {
-    this.metadata = dataSetMetadata;
-  }
-
   // Getters
 
   public String getMethod() {
@@ -368,11 +336,6 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
   public ColumnsTag getStructuredColumns() {
     return structuredColumns;
-  }
-
-  @Deprecated
-  public SelectMethodMetadata getDataSetMetadata() {
-    return metadata;
   }
 
   public HotRodFragmentConfigTag getFragmentConfig() {

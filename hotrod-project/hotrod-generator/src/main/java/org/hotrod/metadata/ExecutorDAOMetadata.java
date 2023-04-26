@@ -184,16 +184,6 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
   }
 
   @Override
-  public String generateDAOName(ObjectId identifier) {
-    return null;
-  }
-
-  @Override
-  public String generatePrimitivesName(ObjectId identifier) {
-    return null;
-  }
-
-  @Override
   public List<ColumnMetadata> getColumns() {
     return new ArrayList<ColumnMetadata>();
   }

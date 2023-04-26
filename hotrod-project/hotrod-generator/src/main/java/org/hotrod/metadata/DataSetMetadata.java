@@ -11,10 +11,6 @@ import org.hotrod.identifiers.ObjectId;
 
 public interface DataSetMetadata extends Serializable {
 
-  String generateDAOName(ObjectId identifier);
-
-  String generatePrimitivesName(ObjectId identifier);
-
   AbstractDAOTag getDaoTag();
 
   List<ColumnMetadata> getColumns();

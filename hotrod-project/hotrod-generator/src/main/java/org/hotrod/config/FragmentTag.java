@@ -18,7 +18,7 @@ import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 
 @XmlRootElement(name = "fragment")
-public class FragmentTag extends AbstractConfigurationTag implements GenerationUnit<FragmentTag> {
+public class FragmentTag extends AbstractConfigurationTag {
 
   private static final long serialVersionUID = 1L;
 
@@ -79,9 +79,9 @@ public class FragmentTag extends AbstractConfigurationTag implements GenerationU
 
   }
 
-  public void load(final HotRodConfigTag primaryConfig, final FileRegistry fileRegistry,
-      final DaosTag daosTag, final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames,
-      final CatalogSchema currentCS) throws UncontrolledException, ControlledException, FacetNotFoundException {
+  public void load(final HotRodConfigTag primaryConfig, final FileRegistry fileRegistry, final DaosTag daosTag,
+      final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
+      throws UncontrolledException, ControlledException, FacetNotFoundException {
     log.debug("@@@ Will load fragment '" + this.f.getName() + "' -- at " + this.getSourceLocation());
     super.clearChildren();
     this.fragmentConfig = ConfigurationLoader.loadFragment(primaryConfig, this.f, fileRegistry, daosTag, this, adapter,
@@ -109,21 +109,6 @@ public class FragmentTag extends AbstractConfigurationTag implements GenerationU
   @Override
   public String getInternalCaption() {
     return this.getTagName() + ":" + this.filename;
-  }
-
-  // Conclude Generation
-
-  public boolean concludeFragmentGeneration() {
-    boolean concluded = this.fragmentConfig.concludeFragmentGeneration();
-    if (concluded) {
-      super.markConcluded();
-    }
-    return concluded;
-  }
-
-  @Override
-  public boolean concludeGeneration(FragmentTag cache, DatabaseAdapter adapter) {
-    return this.concludeFragmentGeneration();
   }
 
 }

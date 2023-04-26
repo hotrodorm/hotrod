@@ -730,21 +730,6 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
     return this.vcm;
   }
 
-  @Override
-  @Deprecated
-  public String generateDAOName(final ObjectId identifier) {
-    DaosTag daos = (DaosTag) this.config.getGenerators().getSelectedGeneratorTag().getDaos();
-    return daos.generateDAOName(identifier);
-  }
-
-  @Override
-  @Deprecated
-  public String generatePrimitivesName(final ObjectId identifier) {
-    log.debug("identifier.getJavaClassIdentifier()=" + identifier.getJavaClassName());
-    DaosTag daos = (DaosTag) this.config.getGenerators().getSelectedGeneratorTag().getDaos();
-    return daos.generatePrimitivesName(identifier);
-  }
-
   public List<SequenceMethodTag> getSequences() {
     return sequences;
   }

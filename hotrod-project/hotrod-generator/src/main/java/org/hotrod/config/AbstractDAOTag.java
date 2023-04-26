@@ -2,7 +2,6 @@ package org.hotrod.config;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -19,8 +18,6 @@ import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.utils.ClassPackage;
-import org.hotrod.utils.Correlator;
-import org.hotrod.utils.Correlator.CorrelatedEntry;
 
 /**
  * <pre>
@@ -39,7 +36,7 @@ import org.hotrod.utils.Correlator.CorrelatedEntry;
  * </pre>
  */
 
-public abstract class AbstractDAOTag extends AbstractConfigurationTag implements GenerationUnit<AbstractDAOTag> {
+public abstract class AbstractDAOTag extends AbstractConfigurationTag {
 
   private static final long serialVersionUID = 1L;
 
@@ -86,12 +83,6 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
   @XmlAttribute(name = "implements")
   public void setImplements(final String implementsClasses) {
     this.implementsClasses = implementsClasses;
-  }
-
-  // Duplication
-
-  protected void copyCommon(final AbstractDAOTag source) {
-    super.copyCommon(source);
   }
 
   // Behavior
@@ -189,73 +180,6 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
     return this.declaredMethodNames;
   }
 
-  // Update generated cache
-
-  @Override
-  public boolean concludeGeneration(final AbstractDAOTag cache, final DatabaseAdapter adapter) {
-    log.debug("----> DAO " + this.getJavaClassName() + " 1- generate=" + this.getGenerate());
-
-    boolean failedInnerGeneration = false;
-
-    failedInnerGeneration |= markMethodGenerated(this.sequences, cache.sequences, adapter);
-    failedInnerGeneration |= markMethodGenerated(this.queries, cache.queries, adapter);
-    failedInnerGeneration |= markMethodGenerated(this.selects, cache.selects, adapter);
-    log.debug("failedInnerGeneration=" + failedInnerGeneration);
-
-    if (!failedInnerGeneration) {
-      return this.concludeGenerationMarkTag();
-    }
-
-    return !failedInnerGeneration;
-  }
-
-  private <M extends AbstractMethodTag<M>> boolean markMethodGenerated(final MethodTagContainer<M> thisMethods,
-      final MethodTagContainer<M> cache, final DatabaseAdapter adapter) {
-    boolean failedInnerGeneration = false;
-    log.debug("====> DAO " + this.getJavaClassName() + " 2");
-    for (CorrelatedEntry<M> cor : Correlator.correlate(thisMethods.toList(), cache.toList(), new Comparator<M>() {
-      @Override
-      public int compare(M o1, M o2) {
-        return o1.getMethod().compareTo(o2.getMethod());
-      }
-    })) {
-
-      M t = cor.getLeft();
-      M c = cor.getRight();
-
-      log.debug(
-          "method '" + (t != null ? t.method + "()" : (c != null ? c.method + "()" : "?")) + "': t=" + t + " c=" + c);
-
-      if (t != null && c == null) {
-        if (t != null && t.isToBeGenerated()) {
-          failedInnerGeneration = true;
-        }
-        if (t.isGenerationComplete()) {
-          cache.add(t); // adds the generated element to the cache.
-          t.concludeGenerationMarkTag();
-        }
-      }
-      if (t == null && c != null) {
-        cache.remove(t); // removes the element from the cache.
-      }
-      if (t != null && c != null) {
-        boolean innerTreeConclude = t.concludeGeneration(c, adapter);
-        if (!innerTreeConclude) {
-          failedInnerGeneration = true;
-        }
-        if (t != null && t.isToBeGenerated()) {
-          failedInnerGeneration = true;
-        }
-        if (t.isGenerationComplete()) {
-          cache.replace(t); // replaces the element on the cache.
-          t.concludeGenerationMarkTag();
-        }
-      }
-
-    }
-    return failedInnerGeneration;
-  }
-
   // Abstract methods
 
   public abstract ClassPackage getPackage();
@@ -291,14 +215,6 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
           it.set(m);
           return;
         }
-      }
-    }
-
-    @SuppressWarnings("unused")
-    public void copyMethods(final MethodTagContainer<M> source) {
-      for (M m : source) {
-        M d = m.duplicate();
-        this.methods.add(d);
       }
     }
 

@@ -7,7 +7,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidPackageException;
 import org.hotrod.utils.ClassPackage;
@@ -70,22 +69,6 @@ public class HotRodFragmentConfigTag extends AbstractHotRodConfigTag {
       }
     }
 
-  }
-
-  // Update generated cache
-
-  @Override
-  public boolean concludeGeneration(final AbstractHotRodConfigTag cache, final DatabaseAdapter adapter) {
-    HotRodFragmentConfigTag uc = (HotRodFragmentConfigTag) cache;
-    boolean successfulCommonGeneration = super.commonConcludeGeneration(uc, adapter);
-
-    // HotRodFragmentConfigTag
-
-    if (successfulCommonGeneration) {
-      return this.concludeGenerationMarkTag();
-    }
-
-    return false;
   }
 
   // Simple Caption
