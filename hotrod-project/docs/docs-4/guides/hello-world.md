@@ -287,7 +287,7 @@ public class App {
     // 1. Use CRUD to search for employee #123
 
     Integer id = 123;
-    EmployeeVO vo = employeeDAO.select(id);
+    EmployeeVO vo = this.employeeDAO.select(id);
     System.out.println("Employee #" + id + " Name: " + vo.getName());
 
     // 2. Use LiveSQL to search for employees whose name starts with 'A'
@@ -295,7 +295,7 @@ public class App {
     System.out.println("Employees with names that start with 'A':");
     EmployeeTable e = EmployeeDAO.newTable("e");
 
-    List<Row> rows = sql
+    List<Row> rows = this.sql
         .select()
         .from(e)
         .where(e.name.like("A%"))
