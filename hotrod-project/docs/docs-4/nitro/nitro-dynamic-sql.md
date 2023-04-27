@@ -42,18 +42,19 @@ the parameters are not coming unfiltered from an external source such as a brows
 
 ## OGNL - The Ogonal Engine
 
-Dynamic SQL decides to include or exclude SQL fragments based on boolean logic evaluated at runtime according to the supplied parameters. This boolean logic is expressed in OGNL scripting from [the OGNL Engine](https://commons.apache.org/proper/commons-ognl/language-guide.html).
+Dynamic SQL decides to include or exclude SQL fragments based on boolean logic evaluated at runtime according to the supplied parameters. The 
+OGNL expression language is described at [the OGNL Engine](https://commons.apache.org/proper/commons-ognl/language-guide.html).
 
-For example, the following expressions are valid ones in OGNL:
+For example, the following expressions are written in OGNL:
 
 - `name != null`
 - `phase == 'C' or amount > minAmount`
 - `orderDate != null ? status in (1, 3, 4) : status in (null, 2)`
 
-Typically they will need to &ndash; either `true` or `false`&ndash; since they are commonlyused to decide if a query segment should be 
-included or not in the resulting SQL statement. However, they can evaluate to any Java type, as needed: for example, the `<bind>` tag can 
-use any resulting type. In the examples above, the variables such as `name`, `phase`, `amount`, etc. correspond to runtime parameters 
-of the query, specified using `<parameter>` tags.
+Typically they need to evaluate to a boolean value &ndash; either `true` or `false`&ndash; since they are commonly used to decide if a 
+query segment should be included or not in the resulting SQL statement. However, they can evaluate to any Java type, as needed: for 
+example, the `<bind>` tag can use any resulting type. In the examples above, the variables such as `name`, `phase`, `amount`, etc. 
+correspond to runtime parameters of the query, specified using `<parameter>` tags.
 
 
 ## The `<if>` Tag
