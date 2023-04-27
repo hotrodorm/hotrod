@@ -215,13 +215,14 @@ We see the code generation details:
 ```
 
 HotRod connected to the database schema, retrieved the table details, and produced the persistence code. It created the following files:
-* `src/main/java/app/daos/EmployeeImpl.java`
+
+* `src/main/java/app/daos/EmployeeVO.java`
 * `src/main/java/app/daos/primitives/EmployeeDAO.java`
-* `src/main/java/app/daos/primitives/EmployeeVO.java`
+* `src/main/java/app/daos/primitives/Employee.java`
 * `src/main/resources/mappers/primitives-employee.xml`
 
-Note that since the `EmployeeImpl.java` is designed to include custom code, it's always created the first time, but it's never 
-overwritten afterwards. The other files are always overwritten to keep them current with the latest database structure.
+Note that since the `EmployeeVO.java` is designed to include custom code, it's never 
+overwritten. The other files are always overwritten to keep them current with the latest database structure.
 
 
 ## Part 3 &mdash; The Application
