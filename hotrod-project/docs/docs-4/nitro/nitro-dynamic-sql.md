@@ -33,10 +33,11 @@ This is the recommended way of using parameters that is known as *prepared state
 
 Injecting parameters &ndash; essentially concatenating parameters to the query as strings values &ndash; is an alternative way of
 using parameters that may be susceptible to SQL Injection. It's implemented using the `${param}` sequence. Notice the small
-syntax difference. Depending on the specifics of a query, 
-sometimes it's not possible to apply parameters but only to inject them as strings. Parameter injection should be avoided if possible; 
-if unavoidable, it needs to be considered with extreme care to make sure the parameters are not coming unfiltered from an 
-external source such as a browser or an externally exposed API.
+syntax difference. 
+
+Depending on the specifics of a query, sometimes it's not possible to apply parameters but only to inject them as strings.
+Parameter injection should be avoided if possible; if unavoidable, it needs to be considered with extreme care to make sure
+the parameters are not coming unfiltered from an external source such as a browser or an externally exposed API.
 
 
 ## OGNL - The Ogonal Engine
