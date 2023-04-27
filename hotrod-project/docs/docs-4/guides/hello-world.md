@@ -302,7 +302,7 @@ public class App {
 
     rows.stream().forEach(r -> System.out.println(r));
 
-    // 3. Use the configuration file to define Nitro queries
+    // 3. Add a configuration file (not included in this example) to define Nitro queries
 
   }
 
