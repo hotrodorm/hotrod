@@ -29,7 +29,7 @@ so any generator or underlying JDBC technology can use it.
 ## Applying Parameters vs Injecting Parameters
 
 Applying parameters is the safe way of using a parameter in a SQL query and is implemented using the `#{param}` sequence. 
-This is the recommended way of using parameters that is known as "prepared statements" in many programming languages.
+This is the recommended way of using parameters that is known as *prepared statements* in many programming languages.
 
 Injecting parameters &ndash; essentially concatenating parameters as strings &ndash; is an alternative way that may be
 susceptible to SQL Injection and is implemented using `${param}` sequence. Depending on the specifics of a query, sometimes 
