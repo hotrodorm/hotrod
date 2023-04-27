@@ -29,12 +29,13 @@ so any generator or underlying JDBC technology can use it.
 ## Applying Parameters vs Injecting Parameters
 
 Applying parameters is the safe way of using a parameter in a SQL query and is implemented using the `#{param}` sequence. 
-This is the recommended way of using parameters that makes use of "prepared statements". 
+This is the recommended way of using parameters that is known as "prepared statements" in many programming languages.
 
-Injecting parameters may be susceptible to SQL Injection and is implemented using `${param}` sequence. Depending on the
-specifics of a query sometimes it's not possible to apply parameters, but only to inject them as strings: that is, by 
-**concatenating** strings. Parameter Injections needs to be considered with extreme care. to make sure they are not 
-coming unfiltered from an external source such as a browser or an external caller of an API.
+Injecting parameters &ndash; essentially concatenating parameters as strings &ndash; is an alternative way that may be
+susceptible to SQL Injection and is implemented using `${param}` sequence. Depending on the specifics of a query, sometimes 
+it's not possible to apply parameters but only to inject them as strings. Parameter injection should be avoided if possible; 
+if unavoidable, it needs to be considered with extreme care to make sure the parameters are not coming unfiltered from an 
+external source such as a browser or an externally exposed API.
 
 
 ## OGNL - The Ogonal Engine
