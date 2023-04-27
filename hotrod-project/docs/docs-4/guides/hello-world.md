@@ -15,7 +15,6 @@ After following all the steps of this guide our main project folder will include
 ```bash
 pom.xml                    # The Maven project file
 schema.sql                 # A SQL script that creates a table and data for this example
-hotrod.xml                 # Tells HotRod how you want the persistent code
 src/main/java              # Your Java app and the generated DAOs and VOs
 src/main/resources         # All resources, including the generated mappers
 application.properties     # The runtime properties
