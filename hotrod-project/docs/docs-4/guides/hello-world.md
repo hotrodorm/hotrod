@@ -277,29 +277,33 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       System.out.println("[ Starting example ]");
-      searching();
+      demo();
       System.out.println("[ Example complete ]");
     };
   }
 
-  private void searching() {
+  private void demo() {
 
-    // Use CRUD to search for employee #123
+    // 1. Use CRUD to search for employee #123
 
     Integer id = 123;
-    EmployeeVO vo = this.employeeDAO.select(id);
+    EmployeeVO vo = employeeDAO.select(id);
     System.out.println("Employee #" + id + " Name: " + vo.getName());
 
-    // Use LiveSQL to search for employees whose name starts with 'A'
-
-    EmployeeTable e = EmployeeDAO.newTable();
-
-    List<Row> rows = this.sql.select().from(e).where(e.name.like("A%")).execute();
+    // 2. Use LiveSQL to search for employees whose name starts with 'A'
 
     System.out.println("Employees with names that start with 'A':");
-    for (Row r : rows) {
-      System.out.println(r);
-    }
+    EmployeeTable e = EmployeeDAO.newTable("e");
+
+    List<Row> rows = sql
+        .select()
+        .from(e)
+        .where(e.name.like("A%"))
+        .execute();
+
+    rows.stream().forEach(r -> System.out.println(r));
+
+    // 3. Use the configuration file to define Nitro queries
 
   }
 
