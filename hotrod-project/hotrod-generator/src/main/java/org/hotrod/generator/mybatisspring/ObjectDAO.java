@@ -165,27 +165,14 @@ public class ObjectDAO extends GeneratableObject {
 
     this.w = null;
 
-//    MiObjetoModel select(Long pk); // selectByPK
-//    List<MiObjetoModel> select(MiObjetoVO pattern); // selectByExample
-//                        selectCursor()
-//    List<MiObjetoModel> select(TableOrView t, Predicate p); // selectByCriteria ... I guess 'MiObjetoTable' is already in DAO context
-//
-//        String paramsSignature = toParametersSignature(key, mg);
-//
-//    int delete(Long pk);
-//    int delete(MiObjetoVO pattern); // dangerous. check empty pattern
-//    int delete([TableOrView t,] Predicate p);  // dangerous too
-//
-//    int update(MiObjetoModel vo); //byPK
-//    int update(MiObjetoVO values, MiObjetoVO example); // dangerous. check empty pattern
-//    int update(MiObjetoVO values, [TableOrView t,] Predicate p);
-
     try {
       this.w = fileGenerator.createWriter(f);
 
       writeClassHeader();
 
       if (!this.isExecutor()) {
+
+        writeRowParser();
 
         if (this.isTable()) {
           writeSelectByPK(mg);
@@ -630,6 +617,34 @@ public class ObjectDAO extends GeneratableObject {
       }
       return true;
     }
+
+  }
+
+  private void writeRowParser() throws IOException {
+    String voClassName = this.vo.getFullClassName();
+    println("  // Row Parser");
+    println();
+    println("  public " + voClassName + " parseRow(Map<String, Object> m) {");
+    println("    " + voClassName + " mo = this.applicationContext.getBean(" + voClassName + ".class);");
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      String javaType = resolveType(cm);
+      String property = cm.getId().getJavaMemberName();
+      println("    mo." + cm.getId().getJavaSetter() + "((" + javaType + ") m.get(\""
+          + JUtils.escapeJavaString(property) + "\"));");
+    }
+
+//    public app.daos.BranchVO parseRow(Map<String, Object> m) {
+//      app.daos.BranchVO mo = this.applicationContext.getBean(app.daos.BranchVO.class);
+//      mo.setBranchId((java.lang.Integer) m.get("branchId"));
+//      mo.setBranchName((java.lang.String) m.get("branchName"));
+//      return mo;
+//    }
+
+    
+    
+    println("    return mo;");
+    println("  }");
+    println();
 
   }
 
