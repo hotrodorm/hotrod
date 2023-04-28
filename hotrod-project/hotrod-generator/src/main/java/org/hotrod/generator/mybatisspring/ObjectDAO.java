@@ -604,8 +604,8 @@ public class ObjectDAO extends GeneratableObject {
     String voClassName = this.vo.getFullClassName();
     println("  // Row Parser");
     println();
-    println("  public static " + voClassName + " parseRow(Map<String, Object> m) {");
-    println("    " + voClassName + " mo = new " + voClassName + "();");
+    println("  public " + voClassName + " parseRow(Map<String, Object> m) {");
+    println("    " + voClassName + " mo = this.applicationContext.getBean(" + voClassName + ".class);");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String javaType = resolveType(cm);
       String property = cm.getId().getJavaMemberName();
@@ -613,16 +613,15 @@ public class ObjectDAO extends GeneratableObject {
           + JUtils.escapeJavaString(property) + "\"));");
     }
 
-//    for (ColumnMetadata cm : this.metadata.getColumns()) {
-//      String javaType = resolveType(cm);
-//      String liveSQLColumnType = toLiveSQLType(javaType);
-//      String javaMembername = cm.getId().getJavaMemberName();
-//      String colName = cm.getId().getCanonicalSQLName();
-//      String property = cm.getId().getJavaMemberName();
-//      println("      this." + javaMembername + " = new " + liveSQLColumnType + "(this, \""
-//          + JUtils.escapeJavaString(colName) + "\", \"" + JUtils.escapeJavaString(property) + "\");");
+//    public app.daos.BranchVO parseRow(Map<String, Object> m) {
+//      app.daos.BranchVO mo = this.applicationContext.getBean(app.daos.BranchVO.class);
+//      mo.setBranchId((java.lang.Integer) m.get("branchId"));
+//      mo.setBranchName((java.lang.String) m.get("branchName"));
+//      return mo;
 //    }
 
+    
+    
     println("    return mo;");
     println("  }");
     println();
