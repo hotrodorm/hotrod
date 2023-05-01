@@ -13,7 +13,6 @@ import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;
 import org.hotrod.runtime.livesql.LiveSQL;
-import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.queries.select.SelectFromPhase;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,33 +61,34 @@ public class App {
 
     NumbersTable n = NumbersDAO.newTable("n");
 
-  SelectFromPhase<Row> q = this.sql.select().from(n);
-//    SelectFromPhase<Row> q = this.sql.select(n.star().filter(c -> c.getName().startsWith("int")), n.int1.minus(n.int2).as("diff")).from(n);
-//    SelectFromPhase<Row> q = this.sql.select(n.int1).from(n);
+    SelectFromPhase<Map<String, Object>> q = this.sql.select().from(n);
+//    SelectFromPhase<Map<String, Object>> q = this.sql.select(n.star().filter(c -> c.getName().startsWith("int")), n.int1.minus(n.int2).as("diff")).from(n);
+//    SelectFromPhase<Map<String, Object>> q = this.sql.select(n.int1).from(n);
 
     System.out.println("q:" + q.getPreview());
-    List<Row> rows = q.execute();
+    List<Map<String, Object>> rows = q.execute();
 
     for (Map<String, Object> r : rows) {
       System.out.println("r=" + r);
 
       NumbersVO nv = this.numbersDAO.parseRow(r);
+      System.out.println("nv=" + nv);
 
-      System.out.println(render(r, "int1")); // 5 SMALLINT
-      System.out.println(render(r, "int2")); // 4 INTEGER
-      System.out.println(render(r, "int3")); // -5 BIGINT
-      System.out.println(render(r, "int4")); // 5 SMALLINT
-      System.out.println(render(r, "int5")); // 4 INTEGER
-      System.out.println(render(r, "int6")); // -5 BIGINT
-      System.out.println(render(r, "dec1")); // 2 NUMERIC
-      System.out.println(render(r, "dec2")); // 2 NUMERIC
-      System.out.println(render(r, "dec3")); // 2 NUMERIC
-      System.out.println(render(r, "dec4")); // 2 NUMERIC
-      System.out.println(render(r, "dec5")); // 2 NUMERIC
-      System.out.println(render(r, "dec6")); // 2 NUMERIC
-      System.out.println(render(r, "dec7")); // 2 NUMERIC
-      System.out.println(render(r, "flo1")); // 7 REAL
-      System.out.println(render(r, "flo2")); // 8 DOUBLE
+//      System.out.println(render(r, "int1")); // 5 SMALLINT
+//      System.out.println(render(r, "int2")); // 4 INTEGER
+//      System.out.println(render(r, "int3")); // -5 BIGINT
+//      System.out.println(render(r, "int4")); // 5 SMALLINT
+//      System.out.println(render(r, "int5")); // 4 INTEGER
+//      System.out.println(render(r, "int6")); // -5 BIGINT
+//      System.out.println(render(r, "dec1")); // 2 NUMERIC
+//      System.out.println(render(r, "dec2")); // 2 NUMERIC
+//      System.out.println(render(r, "dec3")); // 2 NUMERIC
+//      System.out.println(render(r, "dec4")); // 2 NUMERIC
+//      System.out.println(render(r, "dec5")); // 2 NUMERIC
+//      System.out.println(render(r, "dec6")); // 2 NUMERIC
+//      System.out.println(render(r, "dec7")); // 2 NUMERIC
+//      System.out.println(render(r, "flo1")); // 7 REAL
+//      System.out.println(render(r, "flo2")); // 8 DOUBLE
     }
 
   }
@@ -104,14 +104,14 @@ public class App {
 
   private void crud() {
     reinsert();
-    for (NumbersVO r : this.numbersDAO.select(new NumbersVO())) {
+    for (NumbersVO r : this.numbersDAO.selectByExample(new NumbersVO())) {
       System.out.println("r=" + r);
     }
   }
 
   private void reinsert() {
 
-    this.numbersDAO.delete(new AbstractNumbersVO());
+    this.numbersDAO.deleteByExample(new AbstractNumbersVO());
 
     NumbersVO n = new NumbersVO();
 
@@ -121,7 +121,7 @@ public class App {
     n.setInt4(Integer.valueOf(12345));
     n.setInt5(-2345);
     n.setInt6(-45678L);
-    
+
     n.setColumns(123);
 
     n.setDec1(BigDecimal.valueOf(1234.56));
