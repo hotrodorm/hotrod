@@ -61,6 +61,15 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     this.applicationContext = applicationContext;
   }
 
+  // Row Parser
+
+  public app.daos.BranchVO parseRow(Map<String, Object> m) {
+    app.daos.BranchVO mo = this.applicationContext.getBean(app.daos.BranchVO.class);
+    mo.setBranchId((java.lang.Integer) m.get("branchId"));
+    mo.setBranchName((java.lang.String) m.get("branchName"));
+    return mo;
+  }
+
   // select by primary key
 
   public app.daos.BranchVO select(final java.lang.Integer branchId) {

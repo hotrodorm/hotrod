@@ -1,0 +1,15 @@
+<hotrod>
+
+  <generators>
+    <mybatis-spring>
+      <daos package="app.daos" dao-suffix="DAO" vo-suffix="VO" abstract-vo-prefix="Abstract" abstract-vo-suffix="VO" />
+    </mybatis-spring>
+  </generators>
+  
+  <table name="chars" />
+  <table name="numbers" />
+  <table name="dates" />
+  <table name="binaries" />
+  <table name="other" />
+
+</hotrod>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="app.daos.primitives.binaries">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    bin1,
+    bol1
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.bin1,
+    ${alias}.bol1
+  </sql>
+
+  <resultMap id="allColumns" type="app.daos.BinariesVO">
+    <result property="bin1" column="bin1" />
+    <result property="bol1" column="bol1" />
+  </resultMap>
+
+  <!-- select by PK: no mapping generated, since the table does not have a PK -->
+
+  <!-- select by unique indexes: no mappings generated, since the table does not have UIs -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from binaries
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="p.bin1 != null">
+        and bin1 = #{p.bin1,jdbcType=BINARY}
+      </if>
+      <if test="p.bol1 != null">
+        and bol1 = #{p.bol1,jdbcType=BIT}
+      </if>
+    </trim>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into binaries (
+      <trim prefixOverrides=", ">
+        <if test="true">, bin1</if>
+        <if test="true">, bol1</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{bin1,jdbcType=BINARY}</if>
+        <if test="true">, #{bol1,jdbcType=BIT}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK: no update mapping generated, since the table does not have a PK -->
+
+  <!-- delete by PK: no delete mapping generated, since the table does not have a PK -->
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update binaries
+    <set>
+      <if test="values.bin1 != null">bin1 = #{values.bin1,jdbcType=BINARY},</if>
+      <if test="values.bol1 != null">bol1 = #{values.bol1,jdbcType=BIT},</if>
+    </set>
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="filter.bin1 != null">
+        and bin1 = #{filter.bin1,jdbcType=BINARY}
+      </if>
+      <if test="filter.bol1 != null">
+        and bol1 = #{filter.bol1,jdbcType=BIT}
+      </if>
+    </trim>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from binaries
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="bin1 != null">
+        and bin1 = #{bin1,jdbcType=BINARY}
+      </if>
+      <if test="bol1 != null">
+        and bol1 = #{bol1,jdbcType=BIT}
+      </if>
+    </trim>
+  </delete>
+
+</mapper>

@@ -61,6 +61,17 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     this.applicationContext = applicationContext;
   }
 
+  // Row Parser
+
+  public app.daos.EmployeeVO parseRow(Map<String, Object> m) {
+    app.daos.EmployeeVO mo = this.applicationContext.getBean(app.daos.EmployeeVO.class);
+    mo.setId((java.lang.Integer) m.get("id"));
+    mo.setName((java.lang.String) m.get("name"));
+    mo.setBranchId((java.lang.Integer) m.get("branchId"));
+    mo.setSalary((java.lang.Integer) m.get("salary"));
+    return mo;
+  }
+
   // select by primary key
 
   public app.daos.EmployeeVO select(final java.lang.Integer id) {

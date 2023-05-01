@@ -62,6 +62,15 @@ public class V2DAO implements Serializable, ApplicationContextAware {
     this.applicationContext = applicationContext;
   }
 
+  // Row Parser
+
+  public app.daos.V2VO parseRow(Map<String, Object> m) {
+    app.daos.V2VO mo = this.applicationContext.getBean(app.daos.V2VO.class);
+    mo.setId((java.lang.Integer) m.get("id"));
+    mo.setName((java.lang.String) m.get("name"));
+    return mo;
+  }
+
   // select by example
 
   public List<app.daos.V2VO> select(final app.daos.primitives.V2 example, final V2OrderBy... orderBies)

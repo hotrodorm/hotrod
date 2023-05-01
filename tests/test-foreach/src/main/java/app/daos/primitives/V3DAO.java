@@ -62,6 +62,15 @@ public class V3DAO implements Serializable, ApplicationContextAware {
     this.applicationContext = applicationContext;
   }
 
+  // Row Parser
+
+  public app.daos.V3VO parseRow(Map<String, Object> m) {
+    app.daos.V3VO mo = this.applicationContext.getBean(app.daos.V3VO.class);
+    mo.setId((java.lang.Integer) m.get("id"));
+    mo.setName((java.lang.String) m.get("name"));
+    return mo;
+  }
+
   // select by example
 
   public List<app.daos.V3VO> select(final app.daos.primitives.V3 example, final V3OrderBy... orderBies)
