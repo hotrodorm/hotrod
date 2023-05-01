@@ -1,9 +1,12 @@
 package org.hotrod.runtime.livesql.queries.select;
 
+import java.util.List;
+
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.livesql.LiveSQLMapper;
 import org.hotrod.runtime.livesql.dialects.SQLDialect;
 import org.hotrod.runtime.livesql.dialects.SetOperationRenderer.SetOperation;
+import org.hotrod.runtime.livesql.metadata.TableOrView;
 
 public class EnclosedSelect<R> extends AbstractSelect<R> {
 
@@ -16,7 +19,7 @@ public class EnclosedSelect<R> extends AbstractSelect<R> {
   }
 
   @Override
-  protected void writeColumns(final QueryWriter w) {
+  protected void writeColumns(final QueryWriter w, final TableOrView baseTable, final List<Join> joins) {
     w.write("\n(\n");
     w.enterLevel();
     this.select.renderTo(w);

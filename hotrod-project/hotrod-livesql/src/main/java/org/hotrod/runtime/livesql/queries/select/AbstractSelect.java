@@ -1,9 +1,11 @@
 package org.hotrod.runtime.livesql.queries.select;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
 
 import org.apache.ibatis.session.SqlSession;
@@ -13,9 +15,12 @@ import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.dialects.SQLDialect;
 import org.hotrod.runtime.livesql.dialects.SetOperationRenderer.SetOperation;
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
+import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.metadata.AllColumns.ColumnSubset;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.DatabaseObject;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
@@ -25,10 +30,9 @@ import org.hotrodorm.hotrod.utils.CUtil;
 import org.hotrodorm.hotrod.utils.HexaUtils;
 import org.hotrodorm.hotrod.utils.SUtil;
 import org.hotrodorm.hotrod.utils.Separator;
+import org.springframework.util.ReflectionUtils;
 
 public abstract class AbstractSelect<R> extends Query {
-
-//  private static final Logger log = LogManager.getLogger(AbstractSelect.class);
 
   private boolean distinct;
   private TableOrView baseTable = null;
@@ -58,7 +62,79 @@ public abstract class AbstractSelect<R> extends Query {
     this.liveSQLMapper = liveSQLMapper;
   }
 
-  protected abstract void writeColumns(QueryWriter w);
+  protected abstract void writeColumns(final QueryWriter w, final TableOrView baseTable, final List<Join> joins);
+
+  protected void writeExpandedColumns(final QueryWriter w, final TableOrView baseTable, final List<Join> joins,
+      final List<ResultSetColumn> resultSetColumns) {
+
+    List<ResultSetColumn> expandedColumns = new ArrayList<>(resultSetColumns);
+
+    // 1. Expand unlisted columns
+
+    try {
+      if (expandedColumns == null || expandedColumns.isEmpty()) {
+        expandedColumns = new ArrayList<>();
+        List<Column> columns = getColumnsField(baseTable, TableOrView.class, "columns");
+        for (Column e : columns) {
+          expandedColumns.add(e);
+        }
+        for (Join j : joins) {
+          columns = getColumnsField(j.getTable(), TableOrView.class, "columns");
+          for (Column e : columns) {
+            expandedColumns.add(e);
+          }
+        }
+      }
+    } catch (IllegalAccessException e) {
+      throw new LiveSQLException("Could not expand LiveSQL columns (all)", e);
+    } catch (RuntimeException e) {
+      throw new LiveSQLException("Could not expand LiveSQL columns (all)", e);
+    }
+
+    // 2. Expand columns subsets (star(), filtered star(), etc.)
+
+    ListIterator<ResultSetColumn> it = expandedColumns.listIterator();
+    while (it.hasNext()) {
+      try {
+        ResultSetColumn rsc = it.next();
+        ColumnSubset cs = (ColumnSubset) rsc;
+        it.remove();
+        List<Column> columns = getColumnsField(cs, ColumnSubset.class, "columns");
+        for (Column fc : columns) {
+          it.add(fc);
+        }
+
+      } catch (SecurityException e) {
+        throw new LiveSQLException("Could not expand subset of LiveSQL columns", e);
+      } catch (IllegalArgumentException e) {
+        throw new LiveSQLException("Could not expand subset of LiveSQL columns", e);
+      } catch (IllegalAccessException e) {
+        throw new LiveSQLException("Could not expand subset of LiveSQL columns", e);
+      } catch (ClassCastException e) {
+        // Ignore. It's not a subset
+      }
+
+    }
+
+    // 3. Render columns
+
+    Separator sep = new Separator();
+    for (ResultSetColumn c : expandedColumns) {
+
+      w.write(sep.render());
+      w.write("\n  ");
+      c.renderTo(w);
+
+      try {
+        Column col = (Column) c;
+        w.write(" as " + w.getSqlDialect().getIdentifierRenderer().renderSQLName(col.getProperty()));
+      } catch (ClassCastException e) {
+        // Not a plain table/view column -- no need to alias it
+      }
+
+    }
+
+  }
 
   // Setters
 
@@ -154,22 +230,33 @@ public abstract class AbstractSelect<R> extends Query {
 
     // query columns
 
-    this.writeColumns(w);
+    this.writeColumns(w, this.baseTable, this.joins);
 
     // base table
 
     if (this.baseTable != null) {
 
+      String renderedAlias = this.baseTable.getAlias();
+      if (renderedAlias != null) {
+        renderedAlias = this.sqlDialect.getIdentifierRenderer().renderSQLName(renderedAlias);
+      }
+
       w.write("\nFROM " + this.sqlDialect.getIdentifierRenderer().renderSQLObjectName(this.baseTable)
-          + (this.baseTable.getAlias() == null ? "" : " " + this.baseTable.getAlias()));
+          + (renderedAlias != null ? (" " + renderedAlias) : ""));
 
       // joins
 
       for (Join j : this.joins) {
         String joinKeywords;
         joinKeywords = this.sqlDialect.getJoinRenderer().renderJoinKeywords(j);
+
+        renderedAlias = j.getTable().getAlias();
+        if (renderedAlias != null) {
+          renderedAlias = this.sqlDialect.getIdentifierRenderer().renderSQLName(renderedAlias);
+        }
+
         w.write("\n" + joinKeywords + " " + this.sqlDialect.getIdentifierRenderer().renderSQLObjectName(j.getTable())
-            + (j.getTable().getAlias() == null ? "" : " " + j.getTable().getAlias()));
+            + (renderedAlias != null ? (" " + renderedAlias) : ""));
         try {
           PredicatedJoin pj = (PredicatedJoin) j;
           if (pj.getJoinPredicate() != null) { // on
@@ -377,21 +464,15 @@ public abstract class AbstractSelect<R> extends Query {
   }
 
   public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-//    log.info("### obj " + System.identityHashCode(this) + " -- tableReferences=" + tableReferences.size());
     if (this.baseTable != null) {
-//      log.info(">>> Tree baseTable: " + this.baseTable.renderTree());
       this.baseTable.validateTableReferences(tableReferences, ag);
     }
-//    log.info("### obj " + System.identityHashCode(this) + " -- tableReferences=" + tableReferences.size());
     if (this.joins != null) {
       for (Join j : this.joins) {
-//        log.info(">>> Tree join: " + j.renderTree());
         j.getTable().validateTableReferences(tableReferences, ag);
       }
     }
-//    log.info("### obj " + System.identityHashCode(this) + " -- tableReferences=" + tableReferences.size());
     if (this.wherePredicate != null) {
-//      log.info(">>> Tree WHERE: " + this.wherePredicate.renderTree());
       this.wherePredicate.validateTableReferences(tableReferences, ag);
     }
     if (this.groupBy != null) {
@@ -420,8 +501,6 @@ public abstract class AbstractSelect<R> extends Query {
     private Set<String> aliases = new HashSet<String>();
 
     public void register(final String alias, final DatabaseObject databaseObject) {
-//      log.debug("---> registering2: " + databaseObject.renderUnescapedName());
-//      displayTableReferences();
       if (this.tableReferences.contains(databaseObject)) {
         throw new InvalidLiveSQLStatementException(
             "An instance of the " + databaseObject.getType() + " " + databaseObject.renderUnescapedName()
@@ -441,14 +520,6 @@ public abstract class AbstractSelect<R> extends Query {
     public Set<String> getAliases() {
       return aliases;
     }
-
-//    public void displayTableReferences() {
-//      log.info("=== Existing " + this.tableReferences.size() + " refs ===");
-//      for (DatabaseObject o : this.tableReferences) {
-//        log.info("o=" + o.renderUnescapedName());
-//      }
-//      log.info("======");
-//    }
 
     public int size() {
       return this.tableReferences.size();
@@ -529,61 +600,14 @@ public abstract class AbstractSelect<R> extends Query {
     }
   }
 
-}
+  protected List<Column> getColumnsField(final Object cs, final Class<?> clazz, final String colName)
+      throws IllegalArgumentException, IllegalAccessException {
+    Field cf = ReflectionUtils.findField(clazz, colName);
+    cf.setAccessible(true);
+    Object object = cf.get(cs);
+    @SuppressWarnings("unchecked")
+    List<Column> columns = (List<Column>) object;
+    return columns;
+  }
 
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+}

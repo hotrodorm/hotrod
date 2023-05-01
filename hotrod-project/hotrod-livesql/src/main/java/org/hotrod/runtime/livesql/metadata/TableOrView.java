@@ -1,5 +1,7 @@
 package org.hotrod.runtime.livesql.metadata;
 
+import java.util.List;
+
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 import org.hotrodorm.hotrod.utils.SUtil;
@@ -8,6 +10,8 @@ public abstract class TableOrView extends DatabaseObject {
 
   private String alias;
   private String designatedAlias;
+  protected List<Column> columns;
+
 
   TableOrView(final String catalog, final String schema, final String name, final String type, final String alias) {
     super(catalog, schema, name, type);

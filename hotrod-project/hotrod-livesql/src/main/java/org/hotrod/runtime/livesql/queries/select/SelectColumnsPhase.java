@@ -2,6 +2,7 @@ package org.hotrod.runtime.livesql.queries.select;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.cursors.Cursor;
@@ -23,7 +24,7 @@ public class SelectColumnsPhase<R> implements ExecutableSelect<R>, CombinableSel
   public SelectColumnsPhase(final SQLDialect sqlDialect, final SqlSession sqlSession, final LiveSQLMapper liveSQLMapper,
       final boolean distinct, final ResultSetColumn... resultSetColumns) {
     Select<R> s = new Select<R>(sqlDialect, distinct, sqlSession, liveSQLMapper);
-    s.setResultSetColumns(Arrays.asList(resultSetColumns));
+    s.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
     this.select = s;
   }
 
