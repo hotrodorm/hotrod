@@ -2,11 +2,12 @@ package org.hotrod.runtime.livesql.queries.select;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.livesql.LiveSQLMapper;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
-import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.livesql.metadata.TableOrView;
 
 public class Subquery extends AbstractSelect<Map<String, Object>> {
 
@@ -26,21 +27,8 @@ public class Subquery extends AbstractSelect<Map<String, Object>> {
   // Rendering
 
   @Override
-  protected void writeColumns(final QueryWriter w) {
-    if (this.resultSetColumns == null || this.resultSetColumns.isEmpty()) {
-      w.write("\n  *");
-    } else {
-      boolean first = true;
-      for (ResultSetColumn c : this.resultSetColumns) {
-        if (first) {
-          first = false;
-        } else {
-          w.write(",");
-        }
-        w.write("\n  ");
-        c.renderTo(w);
-      }
-    }
+  protected void writeColumns(final QueryWriter w, final TableOrView baseTable, final List<Join> joins) {
+    super.writeExpandedColumns(w, baseTable, joins, this.resultSetColumns.stream().collect(Collectors.toList()));
   }
 
 }

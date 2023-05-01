@@ -20,6 +20,7 @@ public class DualTable extends Table {
 
   private void initialize() {
     this.dummy = new StringColumn(this, "DUMMY", "dummy", "VARCHAR2", 1, 0);
+    super.columns.add(this.dummy);
   }
 
 }

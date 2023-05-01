@@ -54,7 +54,9 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.OrderBy;
 import org.hotrod.runtime.interfaces.Selectable;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
+import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.queries.select.MyBatisCursor;
+import org.hotrod.runtime.livesql.util.CastUtil;
 import org.hotrod.runtime.spring.LazyParentClassLoading;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.GenUtils;
@@ -381,13 +383,17 @@ public class ObjectDAO extends GeneratableObject {
       imports.newLine();
     }
 
+    imports.add(Override.class);
     imports.add(Map.class);
+    imports.add(ArrayList.class);
     imports.add(HashMap.class);
     imports.newLine();
 
     imports.add("org.hotrod.runtime.livesql.expressions.ResultSetColumn");
 
     imports.add("org.hotrod.runtime.livesql.dialects.LiveSQLDialect");
+    imports.add(CastUtil.class);
+    imports.add(Column.class);
     imports.add("org.hotrod.runtime.livesql.metadata.NumberColumn");
     imports.add("org.hotrod.runtime.livesql.metadata.StringColumn");
     imports.add("org.hotrod.runtime.livesql.metadata.DateTimeColumn");
@@ -629,19 +635,28 @@ public class ObjectDAO extends GeneratableObject {
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String javaType = resolveType(cm);
       String property = cm.getId().getJavaMemberName();
-      println("    mo." + cm.getId().getJavaSetter() + "((" + javaType + ") m.get(\""
-          + JUtils.escapeJavaString(property) + "\"));");
+
+      if ("java.lang.Byte".equals(javaType) || //
+          "java.lang.Short".equals(javaType) || //
+          "java.lang.Integer".equals(javaType) || //
+          "java.lang.Long".equals(javaType) || //
+          "java.lang.Float".equals(javaType) || //
+          "java.lang.Double".equals(javaType) || //
+          "java.math.BigInteger".equals(javaType) || //
+          "java.math.BigDecimal".equals(javaType)) {
+        int idx = javaType.lastIndexOf(".");
+        String st = idx == -1 ? javaType : javaType.substring(idx + 1);
+        println("    mo." + cm.getId().getJavaSetter() + "(CastUtil.to" + st + "((Number)  m.get(\""
+            + JUtils.escapeJavaString(property) + "\")));");
+      } else if ("java.lang.Object".equals(javaType)) {
+        println("    mo." + cm.getId().getJavaSetter() + "(m.get(\"" + JUtils.escapeJavaString(property) + "\"));");
+      } else {
+        println("    mo." + cm.getId().getJavaSetter() + "((" + javaType + ") m.get(\""
+            + JUtils.escapeJavaString(property) + "\"));");
+      }
+
     }
 
-//    public app.daos.BranchVO parseRow(Map<String, Object> m) {
-//      app.daos.BranchVO mo = this.applicationContext.getBean(app.daos.BranchVO.class);
-//      mo.setBranchId((java.lang.Integer) m.get("branchId"));
-//      mo.setBranchName((java.lang.String) m.get("branchName"));
-//      return mo;
-//    }
-
-    
-    
     println("    return mo;");
     println("  }");
     println();
@@ -1833,6 +1848,7 @@ public class ObjectDAO extends GeneratableObject {
     println("    // Initialization");
     println();
     println("    private void initialize() {");
+    println("      super.columns = new ArrayList<>();");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String javaType = resolveType(cm);
       String liveSQLColumnType = toLiveSQLType(javaType);
@@ -1846,10 +1862,18 @@ public class ObjectDAO extends GeneratableObject {
           + ", " + cm.getColumnSize() + "" //
           + ", " + cm.getDecimalDigits() + "" //
           + ");");
+      println("      super.columns.add(this." + javaMembername + ");");
     }
 
     println("    }");
     println();
+
+//    println("    @Override");
+//    println("    public List<Column> getAllColumns() {");
+//    println("      return this.ALL$COLUMNS;");
+//    println("    }");
+//    println();
+
     println("  }");
     println();
   }
