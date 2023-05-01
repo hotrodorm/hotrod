@@ -13,6 +13,7 @@ import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;
 import org.hotrod.runtime.livesql.LiveSQL;
+import org.hotrod.runtime.livesql.metadata.AllColumns.Alias;
 import org.hotrod.runtime.livesql.queries.select.SelectFromPhase;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
