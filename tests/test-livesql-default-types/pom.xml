@@ -1,0 +1,130 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>tests</groupId>
+  <artifactId>test-livesql-default-types</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>8</maven.compiler.source>
+    <maven.compiler.target>8</maven.compiler.target>
+
+    <debbie.version>1.3.3</debbie.version>
+    <hotrod.version>4.0.0-SNAPSHOT</hotrod.version>
+
+    <jdbcdrivergroupid>org.postgresql</jdbcdrivergroupid>
+    <jdbcdriverartifactid>postgresql</jdbcdriverartifactid>
+    <jdbcdriverversion>42.3.3</jdbcdriverversion>
+
+    <jdbcdriverclass>org.postgresql.Driver</jdbcdriverclass>
+    <jdbcurl>jdbc:postgresql://192.168.56.214:5432/hotrod</jdbcurl>
+    <jdbcusername>user1</jdbcusername>
+    <jdbcpassword>pass1</jdbcpassword>
+    <jdbcschema>public</jdbcschema>
+
+  </properties>
+
+  <dependencies>
+
+    <dependency> <!-- You can use Spring Boot, plain Spring, or other -->
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <version>2.3.4.RELEASE</version>
+    </dependency>
+
+    <dependency> <!-- Your app needs the JDBC driver to connect to the database. Can be provided at runtime -->
+      <groupId>${jdbcdrivergroupid}</groupId>
+      <artifactId>${jdbcdriverartifactid}</artifactId>
+      <version>${jdbcdriverversion}</version>
+    </dependency>
+
+    <dependency> <!-- Required. The main HotRod library -->
+      <groupId>org.hotrodorm.hotrod</groupId>
+      <artifactId>hotrod</artifactId>
+      <version>${hotrod.version}</version>
+    </dependency>
+
+    <dependency> <!-- Required. HotRod's LiveSQL library -->
+      <groupId>org.hotrodorm.hotrod</groupId>
+      <artifactId>hotrod-livesql</artifactId>
+      <version>${hotrod.version}</version>
+    </dependency>
+
+    <dependency> <!-- Required. The generator uses MyBatis for database connectivity -->
+      <groupId>org.mybatis.spring.boot</groupId>
+      <artifactId>mybatis-spring-boot-starter</artifactId>
+      <version>2.1.3</version>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+
+    <plugins>
+
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>2.3.4.RELEASE</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.nocrala.tools.database.debbie</groupId>
+        <artifactId>debbie-maven-plugin</artifactId>
+        <version>${debbie.version}</version>
+        <configuration>
+          <sourcedir>src/main/database</sourcedir>
+          <targetversion>1.0.0</targetversion>
+          <jdbcdriverclass>${jdbcdriverclass}</jdbcdriverclass>
+          <jdbcurl>${jdbcurl}</jdbcurl>
+          <jdbcusername>${jdbcusername}</jdbcusername>
+          <jdbcpassword>${jdbcpassword}</jdbcpassword>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>${jdbcdrivergroupid}</groupId>
+            <artifactId>${jdbcdriverartifactid}</artifactId>
+            <version>${jdbcdriverversion}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+      <plugin>
+        <groupId>org.hotrodorm.hotrod</groupId>
+        <artifactId>hotrod-maven-plugin</artifactId>
+        <version>${hotrod.version}</version>
+        <configuration>
+          <configfile>./hotrod.xml</configfile>
+          <generator>MyBatis-Spring</generator>
+          <jdbcdriverclass>${jdbcdriverclass}</jdbcdriverclass>
+          <jdbcurl>${jdbcurl}</jdbcurl>
+          <jdbcusername>${jdbcusername}</jdbcusername>
+          <jdbcpassword>${jdbcpassword}</jdbcpassword>
+          <jdbcschema>public</jdbcschema>
+          <facets></facets>
+          <display></display>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>${jdbcdrivergroupid}</groupId>
+            <artifactId>${jdbcdriverartifactid}</artifactId>
+            <version>${jdbcdriverversion}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+    </plugins>
+
+  </build>
+
+</project>
