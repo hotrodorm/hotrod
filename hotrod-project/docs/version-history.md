@@ -23,7 +23,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
     - Column wildcard `*` implemented including filtering and aliasing.
     - Core versions of INSERT, UPDATE, and DELETE implemented.
     - Added DUAL and SYSDUMMY1 for queries without tables.
-    - Row parser implemented with support for joined tables.
+    - Row parser implemented with support for joins.
 - CRUD:
     - `propertiesChangeLog` is now removed from VOs to facilitate quick Spring prototyping.
     - Classic FK Navigation is now enabled by default. The `<classic-fk-navigation>` tag can be omitted now.
