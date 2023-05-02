@@ -1,5 +1,6 @@
 package org.hotrod.runtime.livesql.metadata;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
@@ -12,11 +13,11 @@ public abstract class TableOrView extends DatabaseObject {
   private String designatedAlias;
   protected List<Column> columns;
 
-
   TableOrView(final String catalog, final String schema, final String name, final String type, final String alias) {
     super(catalog, schema, name, type);
     this.alias = alias;
     this.designatedAlias = null;
+    this.columns = new ArrayList<>();
   }
 
   public final String getAlias() {

@@ -26,7 +26,7 @@ public class AliasedExpression implements ReferenceableExpression {
     this.expression.renderTo(w);
     w.write(" as ");
     if (this.verbatim) {
-      w.write(w.getSqlDialect().getIdentifierRenderer().renderTypedSQLIdentifier(this.alias));
+      w.write(w.getSqlDialect().getIdentifierRenderer().renderSQLIdentifier(this.alias));
     } else {
       w.write(w.getSqlDialect().getIdentifierRenderer().renderSQLIdentifier(this.alias));
     }

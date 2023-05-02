@@ -36,7 +36,7 @@ public class PostgreSQLDialect extends LiveSQLDialect {
   public IdentifierRenderer getIdentifierRenderer() {
     // Identifier names are by default lower case in PostgreSQL
     Quoter q = new Quoter("\"", "\"", "^[ -!#-~]$", "^[ -~]$", "\"", "");
-    return new IdentifierRenderer("[A-Z][A-Z0-9_]*", false, "[A-Za-z][A-Za-z0-9_]*", TypedIdentifierCase.LOWER, q);
+    return new IdentifierRenderer("[a-z][a-z0-9_]*", false, "[A-Za-z][A-Za-z0-9_]*", TypedIdentifierCase.LOWER, q);
   }
 
   // Join rendering
