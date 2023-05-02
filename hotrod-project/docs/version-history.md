@@ -20,7 +20,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 - LiveSQL: 
     - LiveSQL now returns `List<Row>` and `Cursor<Row>` instead of `List<Map<String, Object>>` and `Cursor<Map<String, Object>>`.
     - Oracle MOD() function fixed.
-    - column wildcard `*` implemented including filtering and aliasing.
+    - Column wildcard `*` implemented including filtering and aliasing.
     - Core versions of INSERT, UPDATE, and DELETE implemented.
     - Added DUAL and SYSDUMMY1 for queries without tables.
     - Row parser implemented with support for joined tables.
