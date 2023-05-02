@@ -14,6 +14,7 @@ import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
+import org.hotrod.runtime.livesql.metadata.AllColumns.Alias;
 import org.hotrod.runtime.livesql.queries.select.SelectFromPhase;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import app.daos.BranchVO;
+import app.daos.InvoiceVO;
 import app.daos.NumbersVO;
 import app.daos.primitives.AbstractNumbersVO;
+import app.daos.primitives.BranchDAO;
+import app.daos.primitives.BranchDAO.BranchTable;
+import app.daos.primitives.InvoiceDAO;
+import app.daos.primitives.InvoiceDAO.InvoiceTable;
 import app.daos.primitives.NumbersDAO;
 import app.daos.primitives.NumbersDAO.NumbersTable;
 
@@ -41,6 +48,12 @@ public class App {
   private NumbersDAO numbersDAO;
 
   @Autowired
+  private InvoiceDAO invoiceDAO;
+
+  @Autowired
+  private BranchDAO branchDAO;
+
+  @Autowired
   private LiveSQL sql;
 
   public static void main(String[] args) {
@@ -52,7 +65,8 @@ public class App {
     return args -> {
       System.out.println("[ Starting example ]");
 //      crud();
-      livesql();
+      join();
+//      livesql();
       System.out.println("[ Example complete ]");
     };
   }
@@ -62,7 +76,7 @@ public class App {
 
     NumbersTable n = NumbersDAO.newTable("n");
 
-  SelectFromPhase<Row> q = this.sql.select().from(n);
+    SelectFromPhase<Row> q = this.sql.select().from(n);
 //    SelectFromPhase<Row> q = this.sql.select(n.star().filter(c -> c.getName().startsWith("int")), n.int1.minus(n.int2).as("diff")).from(n);
 //    SelectFromPhase<Row> q = this.sql.select(n.int1).from(n);
 
@@ -109,6 +123,32 @@ public class App {
     }
   }
 
+  private void join() {
+
+    InvoiceTable i = InvoiceDAO.newTable("i");
+    BranchTable b = BranchDAO.newTable("c");
+
+    SelectFromPhase<Row> q = this.sql.select( //
+        i.star().as(c -> {
+          Alias a = Alias.literal("inx_" + c.getProperty());
+          System.out.println("c.getProperty()=" + c.getProperty() + " a.getAlias()=" + a.getAlias());
+          return a;
+        }), b.star().as(c -> Alias.literal("brx_" + c.getProperty()))) //
+        .from(i).join(b, b.id.eq(i.branchId));
+    System.out.println("q:" + q.getPreview());
+    List<Row> rows = q.execute();
+
+    for (Row r : rows) {
+      InvoiceVO inx = this.invoiceDAO.parseRow(r, "inx_");
+      BranchVO brx = this.branchDAO.parseRow(r, "brx_");
+
+      System.out.println("r=" + r);
+      System.out.println("inx=" + inx);
+      System.out.println("brx=" + brx);
+    }
+
+  }
+
   private void reinsert() {
 
     this.numbersDAO.delete(new AbstractNumbersVO());
@@ -121,7 +161,7 @@ public class App {
     n.setInt4(Integer.valueOf(12345));
     n.setInt5(-2345);
     n.setInt6(-45678L);
-    
+
     n.setColumns(123);
 
     n.setDec1(BigDecimal.valueOf(1234.56));

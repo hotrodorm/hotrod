@@ -68,10 +68,20 @@ public class CharsDAO implements Serializable, ApplicationContextAware {
   // Row Parser
 
   public app.daos.CharsVO parseRow(Map<String, Object> m) {
+    return parseRow(m, null, null);
+  }
+
+  public app.daos.CharsVO parseRow(Map<String, Object> m, String prefix) {
+    return parseRow(m, prefix, null);
+  }
+
+  public app.daos.CharsVO parseRow(Map<String, Object> m, String prefix, String suffix) {
     app.daos.CharsVO mo = this.applicationContext.getBean(app.daos.CharsVO.class);
-    mo.setCha1((java.lang.String) m.get("cha1"));
-    mo.setCha2((java.lang.String) m.get("cha2"));
-    mo.setCha3((java.lang.String) m.get("cha3"));
+    String p = prefix == null ? "": prefix;
+    String s = suffix == null ? "": suffix;
+    mo.setCha1((java.lang.String) m.get(p + "cha1" + s));
+    mo.setCha2((java.lang.String) m.get(p + "cha2" + s));
+    mo.setCha3((java.lang.String) m.get(p + "cha3" + s));
     return mo;
   }
 

@@ -68,9 +68,19 @@ public class BinariesDAO implements Serializable, ApplicationContextAware {
   // Row Parser
 
   public app.daos.BinariesVO parseRow(Map<String, Object> m) {
+    return parseRow(m, null, null);
+  }
+
+  public app.daos.BinariesVO parseRow(Map<String, Object> m, String prefix) {
+    return parseRow(m, prefix, null);
+  }
+
+  public app.daos.BinariesVO parseRow(Map<String, Object> m, String prefix, String suffix) {
     app.daos.BinariesVO mo = this.applicationContext.getBean(app.daos.BinariesVO.class);
-    mo.setBin1((byte[]) m.get("bin1"));
-    mo.setBol1((java.lang.Boolean) m.get("bol1"));
+    String p = prefix == null ? "": prefix;
+    String s = suffix == null ? "": suffix;
+    mo.setBin1((byte[]) m.get(p + "bin1" + s));
+    mo.setBol1((java.lang.Boolean) m.get(p + "bol1" + s));
     return mo;
   }
 

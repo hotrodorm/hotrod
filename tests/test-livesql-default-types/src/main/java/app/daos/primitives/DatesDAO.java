@@ -68,36 +68,46 @@ public class DatesDAO implements Serializable, ApplicationContextAware {
   // Row Parser
 
   public app.daos.DatesVO parseRow(Map<String, Object> m) {
+    return parseRow(m, null, null);
+  }
+
+  public app.daos.DatesVO parseRow(Map<String, Object> m, String prefix) {
+    return parseRow(m, prefix, null);
+  }
+
+  public app.daos.DatesVO parseRow(Map<String, Object> m, String prefix, String suffix) {
     app.daos.DatesVO mo = this.applicationContext.getBean(app.daos.DatesVO.class);
-    mo.setId(CastUtil.toInteger((Number)  m.get("id")));
-    mo.setDat1((java.sql.Date) m.get("dat1"));
-    mo.setTs1((java.sql.Timestamp) m.get("ts1"));
-    mo.setTs2((java.sql.Timestamp) m.get("ts2"));
-    mo.setTs3((java.sql.Timestamp) m.get("ts3"));
-    mo.setTs4((java.sql.Timestamp) m.get("ts4"));
-    mo.setTs5((java.sql.Timestamp) m.get("ts5"));
-    mo.setTim1((java.sql.Timestamp) m.get("tim1"));
-    mo.setTim2((java.sql.Timestamp) m.get("tim2"));
-    mo.setTim3((java.sql.Timestamp) m.get("tim3"));
-    mo.setTim4((java.sql.Timestamp) m.get("tim4"));
-    mo.setTim5((java.sql.Timestamp) m.get("tim5"));
-    mo.setIvt1(m.get("ivt1"));
-    mo.setIvt2(m.get("ivt2"));
-    mo.setIvt3(m.get("ivt3"));
-    mo.setIvt4(m.get("ivt4"));
-    mo.setIvt5(m.get("ivt5"));
-    mo.setIvt6(m.get("ivt6"));
-    mo.setIvt7(m.get("ivt7"));
-    mo.setIvt8(m.get("ivt8"));
-    mo.setIvt9(m.get("ivt9"));
-    mo.setIvt10(m.get("ivt10"));
-    mo.setIvt11(m.get("ivt11"));
-    mo.setIvt12(m.get("ivt12"));
-    mo.setIvt13(m.get("ivt13"));
-    mo.setIvt14(m.get("ivt14"));
-    mo.setIvt15(m.get("ivt15"));
-    mo.setIvt16(m.get("ivt16"));
-    mo.setIvt17(m.get("ivt17"));
+    String p = prefix == null ? "": prefix;
+    String s = suffix == null ? "": suffix;
+    mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
+    mo.setDat1((java.sql.Date) m.get(p + "dat1" + s));
+    mo.setTs1((java.sql.Timestamp) m.get(p + "ts1" + s));
+    mo.setTs2((java.sql.Timestamp) m.get(p + "ts2" + s));
+    mo.setTs3((java.sql.Timestamp) m.get(p + "ts3" + s));
+    mo.setTs4((java.sql.Timestamp) m.get(p + "ts4" + s));
+    mo.setTs5((java.sql.Timestamp) m.get(p + "ts5" + s));
+    mo.setTim1((java.sql.Timestamp) m.get(p + "tim1" + s));
+    mo.setTim2((java.sql.Timestamp) m.get(p + "tim2" + s));
+    mo.setTim3((java.sql.Timestamp) m.get(p + "tim3" + s));
+    mo.setTim4((java.sql.Timestamp) m.get(p + "tim4" + s));
+    mo.setTim5((java.sql.Timestamp) m.get(p + "tim5" + s));
+    mo.setIvt1(m.get(p + "ivt1" + s));
+    mo.setIvt2(m.get(p + "ivt2" + s));
+    mo.setIvt3(m.get(p + "ivt3" + s));
+    mo.setIvt4(m.get(p + "ivt4" + s));
+    mo.setIvt5(m.get(p + "ivt5" + s));
+    mo.setIvt6(m.get(p + "ivt6" + s));
+    mo.setIvt7(m.get(p + "ivt7" + s));
+    mo.setIvt8(m.get(p + "ivt8" + s));
+    mo.setIvt9(m.get(p + "ivt9" + s));
+    mo.setIvt10(m.get(p + "ivt10" + s));
+    mo.setIvt11(m.get(p + "ivt11" + s));
+    mo.setIvt12(m.get(p + "ivt12" + s));
+    mo.setIvt13(m.get(p + "ivt13" + s));
+    mo.setIvt14(m.get(p + "ivt14" + s));
+    mo.setIvt15(m.get(p + "ivt15" + s));
+    mo.setIvt16(m.get(p + "ivt16" + s));
+    mo.setIvt17(m.get(p + "ivt17" + s));
     return mo;
   }
 
