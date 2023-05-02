@@ -129,11 +129,8 @@ public class App {
     BranchTable b = BranchDAO.newTable("c");
 
     SelectFromPhase<Row> q = this.sql.select( //
-        i.star().as(c -> {
-          Alias a = Alias.literal("inx_" + c.getProperty());
-          System.out.println("c.getProperty()=" + c.getProperty() + " a.getAlias()=" + a.getAlias());
-          return a;
-        }), b.star().as(c -> Alias.literal("brx_" + c.getProperty()))) //
+        i.star().as(c -> Alias.literal("inx_" + c.getProperty())),
+        b.star().as(c -> Alias.literal("brx_" + c.getProperty()))) //
         .from(i).join(b, b.id.eq(i.branchId));
     System.out.println("q:" + q.getPreview());
     List<Row> rows = q.execute();
