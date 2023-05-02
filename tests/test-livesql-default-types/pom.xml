@@ -20,8 +20,8 @@
     <jdbcdriverversion>42.3.3</jdbcdriverversion>
 
     <jdbcdriverclass>org.postgresql.Driver</jdbcdriverclass>
-    <jdbcurl>jdbc:postgresql://192.168.56.204:5432/postgres</jdbcurl>
-    <jdbcusername>postgres</jdbcusername>
+    <jdbcurl>jdbc:postgresql://192.168.56.214:5432/hotrod</jdbcurl>
+    <jdbcusername>user1</jdbcusername>
     <jdbcpassword>pass1</jdbcpassword>
     <jdbcschema>public</jdbcschema>
 
