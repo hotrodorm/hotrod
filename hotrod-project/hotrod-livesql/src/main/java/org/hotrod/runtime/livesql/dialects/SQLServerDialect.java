@@ -38,7 +38,7 @@ public class SQLServerDialect extends LiveSQLDialect {
   public IdentifierRenderer getIdentifierRenderer() {
     // Identifier names are case insensitive in SQL Server
     Quoter q = new Quoter("[", "]", "^[ -Z\\\\-~]$", "^[ -Z\\\\-~]$", "\"", "");
-    return new IdentifierRenderer("[a-zA-Z][a-zA-Z0-9_]*", false, "[A-Za-z][A-Za-z0-9_]*", NaturalIdentifierCase.LOWER, q);
+    return new IdentifierRenderer("[a-zA-Z][a-zA-Z0-9_]*", true, "[A-Za-z][A-Za-z0-9_]*", NaturalIdentifierCase.LOWER, q);
 }
 
   // Join rendering
