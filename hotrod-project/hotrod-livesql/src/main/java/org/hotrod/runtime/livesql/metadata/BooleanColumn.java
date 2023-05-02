@@ -35,7 +35,7 @@ public class BooleanColumn extends Predicate implements Column {
   @Override
   public void renderTo(final QueryWriter w) {
     if (this.objectInstance.getAlias() != null) {
-      w.write(w.getSqlDialect().getIdentifierRenderer().renderTypedSQLIdentifier(this.objectInstance.getAlias()));
+      w.write(w.getSqlDialect().getIdentifierRenderer().renderNaturalSQLIdentifier(this.objectInstance.getAlias()));
       w.write(".");
     }
     w.write(w.getSqlDialect().getIdentifierRenderer().renderSQLIdentifier(this.name));

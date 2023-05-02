@@ -238,7 +238,7 @@ public abstract class AbstractSelect<R> extends Query {
 
       String renderedAlias = this.baseTable.getAlias();
       if (renderedAlias != null) {
-        renderedAlias = this.sqlDialect.getIdentifierRenderer().renderTypedSQLIdentifier(renderedAlias);
+        renderedAlias = this.sqlDialect.getIdentifierRenderer().renderNaturalSQLIdentifier(renderedAlias);
       }
 
       w.write("\nFROM " + this.sqlDialect.getIdentifierRenderer().renderSQLObjectName(this.baseTable)
@@ -252,7 +252,7 @@ public abstract class AbstractSelect<R> extends Query {
 
         renderedAlias = j.getTable().getAlias();
         if (renderedAlias != null) {
-          renderedAlias = this.sqlDialect.getIdentifierRenderer().renderTypedSQLIdentifier(renderedAlias);
+          renderedAlias = this.sqlDialect.getIdentifierRenderer().renderNaturalSQLIdentifier(renderedAlias);
         }
 
         w.write("\n" + joinKeywords + " " + this.sqlDialect.getIdentifierRenderer().renderSQLObjectName(j.getTable())

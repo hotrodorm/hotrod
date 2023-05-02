@@ -2,7 +2,7 @@ package org.hotrod.runtime.livesql.dialects;
 
 import java.util.List;
 
-import org.hotrod.runtime.livesql.dialects.IdentifierRenderer.TypedIdentifierCase;
+import org.hotrod.runtime.livesql.dialects.IdentifierRenderer.NaturalIdentifierCase;
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
@@ -37,7 +37,7 @@ public class DerbyDialect extends LiveSQLDialect {
   public IdentifierRenderer getIdentifierRenderer() {
     // Identifier names are by default upper case in Apache Derby
     Quoter q = new Quoter("\"", "\"", "^[ -!#-~]$", "^[ -!#-~]$", "\"", "");
-    return new IdentifierRenderer("[A-Z][A-Z0-9_]*", false, "[A-Za-z][A-Za-z0-9_]*", TypedIdentifierCase.LOWER, q);
+    return new IdentifierRenderer("[A-Z][A-Z0-9_]*", false, "[A-Za-z][A-Za-z0-9_]*", NaturalIdentifierCase.LOWER, q);
 
   }
 

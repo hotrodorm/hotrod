@@ -7,9 +7,9 @@ public class IdentifierRenderer {
   private String unquotedCanonicalIdentifierPattern;
   private boolean caseSensitiveWhenUnquoted;
   private String unquotedParsingTypedPattern;
-  private TypedIdentifierCase typedCase;
+  private NaturalIdentifierCase naturalCase;
 
-  public static enum TypedIdentifierCase {
+  public static enum NaturalIdentifierCase {
     UPPER, LOWER, CASE_SENSITIVE;
 
     public String switchCase(final String s) {
@@ -24,11 +24,11 @@ public class IdentifierRenderer {
   private Quoter quoter;
 
   public IdentifierRenderer(final String unquotedCanonicalIdentifierPattern, final boolean caseSensitiveWhenUnquoted,
-      final String unquotedParsingTypedPattern, final TypedIdentifierCase typedCase, final Quoter quoter) {
+      final String unquotedParsingTypedPattern, final NaturalIdentifierCase naturalCase, final Quoter quoter) {
     this.unquotedCanonicalIdentifierPattern = unquotedCanonicalIdentifierPattern;
     this.caseSensitiveWhenUnquoted = caseSensitiveWhenUnquoted;
     this.unquotedParsingTypedPattern = unquotedParsingTypedPattern;
-    this.typedCase = typedCase;
+    this.naturalCase = naturalCase;
     this.quoter = quoter;
   }
 
@@ -43,14 +43,14 @@ public class IdentifierRenderer {
     }
   }
 
-  public final String renderTypedSQLIdentifier(final String typedSQLName) {
+  public final String renderNaturalSQLIdentifier(final String typedSQLName) {
 //    System.out.println("typedSQLName=" + typedSQLName);
     if (typedSQLName == null) {
 //      System.out.println("1) typedSQLName=" + typedSQLName + " out: null");
       return null;
     }
     if (typedSQLName.matches(this.unquotedParsingTypedPattern)) {
-      String r = this.typedCase.switchCase(typedSQLName);
+      String r = this.naturalCase.switchCase(typedSQLName);
 //      System.out.println("2) typedSQLName=" + typedSQLName + " out: " + r);
       return r;
     } else {

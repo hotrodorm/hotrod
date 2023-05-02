@@ -84,7 +84,7 @@ public class Update {
 
     String renderedAlias = this.tableOrView.getAlias();
     if (renderedAlias != null) {
-      renderedAlias = this.sqlDialect.getIdentifierRenderer().renderTypedSQLIdentifier(renderedAlias);
+      renderedAlias = this.sqlDialect.getIdentifierRenderer().renderNaturalSQLIdentifier(renderedAlias);
     }
 
     w.write(this.sqlDialect.getIdentifierRenderer().renderSQLObjectName(this.tableOrView)

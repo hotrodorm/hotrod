@@ -64,7 +64,7 @@ public class Delete {
 
     String renderedAlias = this.from.getAlias();
     if (renderedAlias != null) {
-      renderedAlias = this.sqlDialect.getIdentifierRenderer().renderTypedSQLIdentifier(renderedAlias);
+      renderedAlias = this.sqlDialect.getIdentifierRenderer().renderNaturalSQLIdentifier(renderedAlias);
     }
 
     w.write(this.sqlDialect.getIdentifierRenderer().renderSQLObjectName(this.from)
