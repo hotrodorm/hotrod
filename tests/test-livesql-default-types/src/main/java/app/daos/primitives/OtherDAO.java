@@ -64,30 +64,40 @@ public class OtherDAO implements Serializable, ApplicationContextAware {
   // Row Parser
 
   public app.daos.OtherVO parseRow(Map<String, Object> m) {
+    return parseRow(m, null, null);
+  }
+
+  public app.daos.OtherVO parseRow(Map<String, Object> m, String prefix) {
+    return parseRow(m, prefix, null);
+  }
+
+  public app.daos.OtherVO parseRow(Map<String, Object> m, String prefix, String suffix) {
     app.daos.OtherVO mo = this.applicationContext.getBean(app.daos.OtherVO.class);
-    mo.setGeo1(m.get("geo1"));
-    mo.setGeo2(m.get("geo2"));
-    mo.setGeo3(m.get("geo3"));
-    mo.setGeo4(m.get("geo4"));
-    mo.setGeo5(m.get("geo5"));
-    mo.setGeo6(m.get("geo6"));
-    mo.setGeo7(m.get("geo7"));
-    mo.setNet1(m.get("net1"));
-    mo.setNet2(m.get("net2"));
-    mo.setNet3(m.get("net3"));
-    mo.setUui1(m.get("uui1"));
-    mo.setJso1(m.get("jso1"));
-    mo.setJso2(m.get("jso2"));
-    mo.setArr1(m.get("arr1"));
-    mo.setArr2(m.get("arr2"));
-    mo.setArr3(m.get("arr3"));
-    mo.setCom1(m.get("com1"));
-    mo.setRan1(m.get("ran1"));
-    mo.setRan2(m.get("ran2"));
-    mo.setRan3(m.get("ran3"));
-    mo.setRan4(m.get("ran4"));
-    mo.setRan5(m.get("ran5"));
-    mo.setRan6(m.get("ran6"));
+    String p = prefix == null ? "": prefix;
+    String s = suffix == null ? "": suffix;
+    mo.setGeo1(m.get(p + "geo1" + s));
+    mo.setGeo2(m.get(p + "geo2" + s));
+    mo.setGeo3(m.get(p + "geo3" + s));
+    mo.setGeo4(m.get(p + "geo4" + s));
+    mo.setGeo5(m.get(p + "geo5" + s));
+    mo.setGeo6(m.get(p + "geo6" + s));
+    mo.setGeo7(m.get(p + "geo7" + s));
+    mo.setNet1(m.get(p + "net1" + s));
+    mo.setNet2(m.get(p + "net2" + s));
+    mo.setNet3(m.get(p + "net3" + s));
+    mo.setUui1(m.get(p + "uui1" + s));
+    mo.setJso1(m.get(p + "jso1" + s));
+    mo.setJso2(m.get(p + "jso2" + s));
+    mo.setArr1(m.get(p + "arr1" + s));
+    mo.setArr2(m.get(p + "arr2" + s));
+    mo.setArr3(m.get(p + "arr3" + s));
+    mo.setCom1(m.get(p + "com1" + s));
+    mo.setRan1(m.get(p + "ran1" + s));
+    mo.setRan2(m.get(p + "ran2" + s));
+    mo.setRan3(m.get(p + "ran3" + s));
+    mo.setRan4(m.get(p + "ran4" + s));
+    mo.setRan5(m.get(p + "ran5" + s));
+    mo.setRan6(m.get(p + "ran6" + s));
     return mo;
   }
 

@@ -16,4 +16,7 @@
   <table name="binaries" />
   <table name="other" />
 
+  <table name="branch" />
+  <table name="invoice" />
+
 </hotrod>

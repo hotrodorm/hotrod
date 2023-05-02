@@ -11,3 +11,6 @@ drop table other;
 drop type mood;
 
 drop type complex cascade;
+
+drop table invoice;
+drop table branch;

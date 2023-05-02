@@ -64,26 +64,36 @@ public class NumbersDAO implements Serializable, ApplicationContextAware {
   // Row Parser
 
   public app.daos.NumbersVO parseRow(Map<String, Object> m) {
+    return parseRow(m, null, null);
+  }
+
+  public app.daos.NumbersVO parseRow(Map<String, Object> m, String prefix) {
+    return parseRow(m, prefix, null);
+  }
+
+  public app.daos.NumbersVO parseRow(Map<String, Object> m, String prefix, String suffix) {
     app.daos.NumbersVO mo = this.applicationContext.getBean(app.daos.NumbersVO.class);
-    mo.setInt1(CastUtil.toShort((Number)  m.get("int1")));
-    mo.setInt2(CastUtil.toInteger((Number)  m.get("int2")));
-    mo.setInt3(CastUtil.toLong((Number)  m.get("int3")));
-    mo.setInt4(m.get("int4"));
-    mo.setInt5(CastUtil.toInteger((Number)  m.get("int5")));
-    mo.setInt6(CastUtil.toLong((Number)  m.get("int6")));
-    mo.setIntTotalAmount(CastUtil.toInteger((Number)  m.get("intTotalAmount")));
-    mo.setColumns(CastUtil.toInteger((Number)  m.get("columns")));
-    mo.setDec1(CastUtil.toBigDecimal((Number)  m.get("dec1")));
-    mo.setDec2(CastUtil.toBigDecimal((Number)  m.get("dec2")));
-    mo.setDec3(CastUtil.toByte((Number)  m.get("dec3")));
-    mo.setDec4(CastUtil.toShort((Number)  m.get("dec4")));
-    mo.setDec5(CastUtil.toInteger((Number)  m.get("dec5")));
-    mo.setDec6(CastUtil.toLong((Number)  m.get("dec6")));
-    mo.setDec7(CastUtil.toBigInteger((Number)  m.get("dec7")));
-    mo.setDecTotalAmount(CastUtil.toShort((Number)  m.get("decTotalAmount")));
-    mo.setFlo1(CastUtil.toFloat((Number)  m.get("flo1")));
-    mo.setFlo2(CastUtil.toDouble((Number)  m.get("flo2")));
-    mo.setFloTotalAmount(CastUtil.toFloat((Number)  m.get("floTotalAmount")));
+    String p = prefix == null ? "": prefix;
+    String s = suffix == null ? "": suffix;
+    mo.setInt1(CastUtil.toShort((Number)  m.get(p + "int1" + s)));
+    mo.setInt2(CastUtil.toInteger((Number)  m.get(p + "int2" + s)));
+    mo.setInt3(CastUtil.toLong((Number)  m.get(p + "int3" + s)));
+    mo.setInt4(m.get(p + "int4" + s));
+    mo.setInt5(CastUtil.toInteger((Number)  m.get(p + "int5" + s)));
+    mo.setInt6(CastUtil.toLong((Number)  m.get(p + "int6" + s)));
+    mo.setIntTotalAmount(CastUtil.toInteger((Number)  m.get(p + "intTotalAmount" + s)));
+    mo.setColumns(CastUtil.toInteger((Number)  m.get(p + "columns" + s)));
+    mo.setDec1(CastUtil.toBigDecimal((Number)  m.get(p + "dec1" + s)));
+    mo.setDec2(CastUtil.toBigDecimal((Number)  m.get(p + "dec2" + s)));
+    mo.setDec3(CastUtil.toByte((Number)  m.get(p + "dec3" + s)));
+    mo.setDec4(CastUtil.toShort((Number)  m.get(p + "dec4" + s)));
+    mo.setDec5(CastUtil.toInteger((Number)  m.get(p + "dec5" + s)));
+    mo.setDec6(CastUtil.toLong((Number)  m.get(p + "dec6" + s)));
+    mo.setDec7(CastUtil.toBigInteger((Number)  m.get(p + "dec7" + s)));
+    mo.setDecTotalAmount(CastUtil.toShort((Number)  m.get(p + "decTotalAmount" + s)));
+    mo.setFlo1(CastUtil.toFloat((Number)  m.get(p + "flo1" + s)));
+    mo.setFlo2(CastUtil.toDouble((Number)  m.get(p + "flo2" + s)));
+    mo.setFloTotalAmount(CastUtil.toFloat((Number)  m.get(p + "floTotalAmount" + s)));
     return mo;
   }
 

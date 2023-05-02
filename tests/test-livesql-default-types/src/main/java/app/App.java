@@ -25,8 +25,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import app.daos.BranchVO;
+import app.daos.InvoiceVO;
 import app.daos.NumbersVO;
 import app.daos.primitives.AbstractNumbersVO;
+import app.daos.primitives.BranchDAO;
+import app.daos.primitives.BranchDAO.BranchTable;
+import app.daos.primitives.InvoiceDAO;
+import app.daos.primitives.InvoiceDAO.InvoiceTable;
 import app.daos.primitives.NumbersDAO;
 import app.daos.primitives.NumbersDAO.NumbersTable;
 
@@ -41,6 +47,12 @@ public class App {
   private NumbersDAO numbersDAO;
 
   @Autowired
+  private BranchDAO branchDAO;
+
+  @Autowired
+  private InvoiceDAO invoiceDAO;
+
+  @Autowired
   private LiveSQL sql;
 
   public static void main(String[] args) {
@@ -52,7 +64,8 @@ public class App {
     return args -> {
       System.out.println("[ Starting example ]");
 //      crud();
-      livesql();
+//      livesql();
+      join();
       System.out.println("[ Example complete ]");
     };
   }
@@ -62,8 +75,12 @@ public class App {
 
     NumbersTable n = NumbersDAO.newTable("n");
 
-    SelectFromPhase<Map<String, Object>> q = this.sql.select().from(n);
-//    SelectFromPhase<Map<String, Object>> q = this.sql.select(n.star().filter(c -> c.getName().startsWith("int")), n.int1.minus(n.int2).as("diff")).from(n);
+//    SelectFromPhase<Map<String, Object>> q = this.sql.select().from(n);
+    SelectFromPhase<Map<String, Object>> q = this.sql.select( //
+        n.star() //
+            .filter(c -> c.getName().startsWith("int")) //
+            .as(c -> Alias.literal("zz" + c.getProperty())), //
+        n.int1.minus(n.int2).as("diff")).from(n);
 //    SelectFromPhase<Map<String, Object>> q = this.sql.select(n.int1).from(n);
 
     System.out.println("q:" + q.getPreview());
@@ -72,7 +89,7 @@ public class App {
     for (Map<String, Object> r : rows) {
       System.out.println("r=" + r);
 
-      NumbersVO nv = this.numbersDAO.parseRow(r);
+      NumbersVO nv = this.numbersDAO.parseRow(r, "zz");
       System.out.println("nv=" + nv);
 
 //      System.out.println(render(r, "int1")); // 5 SMALLINT
@@ -90,6 +107,28 @@ public class App {
 //      System.out.println(render(r, "dec7")); // 2 NUMERIC
 //      System.out.println(render(r, "flo1")); // 7 REAL
 //      System.out.println(render(r, "flo2")); // 8 DOUBLE
+    }
+
+  }
+
+  private void join() {
+
+    InvoiceTable i = InvoiceDAO.newTable("i");
+    BranchTable b = BranchDAO.newTable("c");
+
+    SelectFromPhase<Map<String, Object>> q = this.sql.select( //
+        i.star().as(c -> Alias.literal("inx_" + c.getProperty())),
+        b.star().as(c -> Alias.literal("brx_" + c.getProperty()))) //
+        .from(i).join(b, b.id.eq(i.branchId));
+    System.out.println("q:" + q.getPreview());
+    List<Map<String, Object>> rows = q.execute();
+
+    for (Map<String, Object> r : rows) {
+      System.out.println("r=" + r);
+      InvoiceVO inx = this.invoiceDAO.parseRow(r, "inx_");
+      System.out.println("inx=" + inx);
+      BranchVO brx = this.branchDAO.parseRow(r, "brx_");
+      System.out.println("brx=" + brx);
     }
 
   }
