@@ -612,7 +612,17 @@ public class ObjectDAO extends GeneratableObject {
     println("  // Row Parser");
     println();
     println("  public " + voClassName + " parseRow(Map<String, Object> m) {");
+    println("    return parseRow(m, null, null);");
+    println("  }");
+    println();
+    println("  public " + voClassName + " parseRow(Map<String, Object> m, String prefix) {");
+    println("    return parseRow(m, prefix, null);");
+    println("  }");
+    println();
+    println("  public " + voClassName + " parseRow(Map<String, Object> m, String prefix, String suffix) {");
     println("    " + voClassName + " mo = this.applicationContext.getBean(" + voClassName + ".class);");
+    println("    String p = prefix == null ? \"\": prefix;");
+    println("    String s = suffix == null ? \"\": suffix;");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String javaType = resolveType(cm);
       String property = cm.getId().getJavaMemberName();
@@ -627,13 +637,14 @@ public class ObjectDAO extends GeneratableObject {
           "java.math.BigDecimal".equals(javaType)) {
         int idx = javaType.lastIndexOf(".");
         String st = idx == -1 ? javaType : javaType.substring(idx + 1);
-        println("    mo." + cm.getId().getJavaSetter() + "(CastUtil.to" + st + "((Number)  m.get(\""
-            + JUtils.escapeJavaString(property) + "\")));");
+        println("    mo." + cm.getId().getJavaSetter() + "(CastUtil.to" + st + "((Number)  m.get(p + \""
+            + JUtils.escapeJavaString(property) + "\" + s)));");
       } else if ("java.lang.Object".equals(javaType)) {
-        println("    mo." + cm.getId().getJavaSetter() + "(m.get(\"" + JUtils.escapeJavaString(property) + "\"));");
+        println(
+            "    mo." + cm.getId().getJavaSetter() + "(m.get(p + \"" + JUtils.escapeJavaString(property) + "\" + s));");
       } else {
-        println("    mo." + cm.getId().getJavaSetter() + "((" + javaType + ") m.get(\""
-            + JUtils.escapeJavaString(property) + "\"));");
+        println("    mo." + cm.getId().getJavaSetter() + "((" + javaType + ") m.get(p + \""
+            + JUtils.escapeJavaString(property) + "\" + s));");
       }
 
     }
