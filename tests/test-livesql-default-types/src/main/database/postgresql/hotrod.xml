@@ -1,0 +1,21 @@
+<hotrod>
+
+  <generators>
+    <mybatis-spring>
+      <daos package="app.daos" dao-suffix="DAO" vo-suffix="VO" abstract-vo-prefix="Abstract" abstract-vo-suffix="VO" />
+      <mappers dir="mappers" namespace="bc" />
+      <classic-fk-navigation />
+      <select-generation strategy="result-set" />
+    </mybatis-spring>
+  </generators>
+  
+  <table name="chars" />
+  <table name="numbers" />
+  <table name="dates" />
+  <table name="binaries" />
+  <table name="other" />
+
+  <table name="invoice" />
+  <table name="branch" />
+
+</hotrod>
