@@ -14,17 +14,6 @@
 
     <debbie.version>1.3.3</debbie.version>
     <hotrod.version>3.5.1-SNAPSHOT</hotrod.version>
-
-    <jdbcdrivergroupid>org.postgresql</jdbcdrivergroupid>
-    <jdbcdriverartifactid>postgresql</jdbcdriverartifactid>
-    <jdbcdriverversion>42.3.3</jdbcdriverversion>
-
-    <jdbcdriverclass>org.postgresql.Driver</jdbcdriverclass>
-    <jdbcurl>jdbc:postgresql://192.168.56.214:5432/hotrod</jdbcurl>
-    <jdbcusername>user1</jdbcusername>
-    <jdbcpassword>pass1</jdbcpassword>
-    <jdbcschema>public</jdbcschema>
-
   </properties>
 
   <dependencies>
@@ -38,13 +27,13 @@
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod</artifactId>
-      <version>3.5.1-SNAPSHOT</version>
+      <version>${hotrod.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
-      <version>3.5.1-SNAPSHOT</version>
+      <version>${hotrod.version}</version>
     </dependency>
 
     <dependency>
@@ -66,13 +55,295 @@
   <profiles>
 
     <profile>
+      <id>oracle</id>
+
+      <properties>
+        <jdbcdrivergroupid>com.oracle.ojdbc</jdbcdrivergroupid>
+        <jdbcdriverartifactid>ojdbc8</jdbcdriverartifactid>
+        <jdbcdriverversion>19.3.0.0</jdbcdriverversion>
+
+        <jdbcdriverclass>oracle.jdbc.driver.OracleDriver</jdbcdriverclass>
+        <jdbcurl>jdbc:oracle:thin:@192.168.56.95:1521:orcl</jdbcurl>
+        <jdbcusername>user1</jdbcusername>
+        <jdbcpassword>pass1</jdbcpassword>
+        <jdbcschema>public</jdbcschema>
+      </properties>
+
+      <dependencies>
+        <dependency>
+          <groupId>${jdbcdrivergroupid}</groupId>
+          <artifactId>${jdbcdriverartifactid}</artifactId>
+          <version>${jdbcdriverversion}</version>
+        </dependency>
+      </dependencies>
+
+      <build>
+        <plugins>
+
+          <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <version>2.3.4.RELEASE</version>
+            <configuration>
+              <arguments>
+                <argument>--spring.config.location=src/main/database/oracle/</argument>
+              </arguments>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>repackage</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.nocrala.tools.database.debbie</groupId>
+            <artifactId>debbie-maven-plugin</artifactId>
+            <version>${debbie.version}</version>
+            <configuration>
+              <sourcedir>src/main/database/oracle</sourcedir>
+              <targetversion>1.0.0</targetversion>
+              <jdbcdriverclass>${jdbcdriverclass}</jdbcdriverclass>
+              <jdbcurl>${jdbcurl}</jdbcurl>
+              <jdbcusername>${jdbcusername}</jdbcusername>
+              <jdbcpassword>${jdbcpassword}</jdbcpassword>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>${jdbcdrivergroupid}</groupId>
+                <artifactId>${jdbcdriverartifactid}</artifactId>
+                <version>${jdbcdriverversion}</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+
+          <plugin>
+            <groupId>org.hotrodorm.hotrod</groupId>
+            <artifactId>hotrod-maven-plugin</artifactId>
+            <version>${hotrod.version}</version>
+            <configuration>
+              <configfile>src/main/database/oracle/hotrod.xml</configfile>
+              <generator>MyBatis-Spring</generator>
+              <jdbcdriverclass>${jdbcdriverclass}</jdbcdriverclass>
+              <jdbcurl>${jdbcurl}</jdbcurl>
+              <jdbcusername>${jdbcusername}</jdbcusername>
+              <jdbcpassword>${jdbcpassword}</jdbcpassword>
+              <jdbcschema>USER1</jdbcschema>
+              <facets></facets>
+              <display></display>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>${jdbcdrivergroupid}</groupId>
+                <artifactId>${jdbcdriverartifactid}</artifactId>
+                <version>${jdbcdriverversion}</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+
+        </plugins>
+      </build>
+
+    </profile>
+
+    <profile>
+      <id>postgresql</id>
+
+      <properties>
+        <jdbcdrivergroupid>org.postgresql</jdbcdrivergroupid>
+        <jdbcdriverartifactid>postgresql</jdbcdriverartifactid>
+        <jdbcdriverversion>42.3.3</jdbcdriverversion>
+
+        <jdbcdriverclass>org.postgresql.Driver</jdbcdriverclass>
+        <jdbcurl>jdbc:postgresql://192.168.56.214:5432/hotrod</jdbcurl>
+        <jdbcusername>user1</jdbcusername>
+        <jdbcpassword>pass1</jdbcpassword>
+        <jdbcschema>public</jdbcschema>
+      </properties>
+
+      <dependencies>
+        <dependency>
+          <groupId>${jdbcdrivergroupid}</groupId>
+          <artifactId>${jdbcdriverartifactid}</artifactId>
+          <version>${jdbcdriverversion}</version>
+        </dependency>
+      </dependencies>
+
+      <build>
+        <plugins>
+
+          <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <version>2.3.4.RELEASE</version>
+            <configuration>
+              <arguments>
+                <argument>--spring.config.location=src/main/database/postgresql/</argument>
+              </arguments>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>repackage</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.nocrala.tools.database.debbie</groupId>
+            <artifactId>debbie-maven-plugin</artifactId>
+            <version>${debbie.version}</version>
+            <configuration>
+              <sourcedir>src/main/database/postgresql</sourcedir>
+              <targetversion>1.0.0</targetversion>
+              <jdbcdriverclass>${jdbcdriverclass}</jdbcdriverclass>
+              <jdbcurl>${jdbcurl}</jdbcurl>
+              <jdbcusername>${jdbcusername}</jdbcusername>
+              <jdbcpassword>${jdbcpassword}</jdbcpassword>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>${jdbcdrivergroupid}</groupId>
+                <artifactId>${jdbcdriverartifactid}</artifactId>
+                <version>${jdbcdriverversion}</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+
+          <plugin>
+            <groupId>org.hotrodorm.hotrod</groupId>
+            <artifactId>hotrod-maven-plugin</artifactId>
+            <version>${hotrod.version}</version>
+            <configuration>
+              <configfile>src/main/database/postgresql/hotrod.xml</configfile>
+              <generator>MyBatis-Spring</generator>
+              <jdbcdriverclass>${jdbcdriverclass}</jdbcdriverclass>
+              <jdbcurl>${jdbcurl}</jdbcurl>
+              <jdbcusername>${jdbcusername}</jdbcusername>
+              <jdbcpassword>${jdbcpassword}</jdbcpassword>
+              <jdbcschema>public</jdbcschema>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>${jdbcdrivergroupid}</groupId>
+                <artifactId>${jdbcdriverartifactid}</artifactId>
+                <version>${jdbcdriverversion}</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+
+        </plugins>
+      </build>
+
+    </profile>
+
+    <profile>
+      <id>sqlserver</id>
+
+      <properties>
+        <configbasedir>src/main/database/sqlserver</configbasedir>
+        <jdbcdrivergroupid>com.microsoft.sqlserver</jdbcdrivergroupid>
+        <jdbcdriverartifactid>mssql-jdbc</jdbcdriverartifactid>
+        <jdbcdriverversion>10.2.0.jre8  </jdbcdriverversion>
+
+        <jdbcdriverclass>com.microsoft.sqlserver.jdbc.SQLServerDriver</jdbcdriverclass>
+        <jdbcurl>jdbc:sqlserver://192.168.56.51:1433;encrypt=true;trustServerCertificate=true</jdbcurl>
+        <jdbcusername>admin</jdbcusername>
+        <jdbcpassword>admin</jdbcpassword>
+        <jdbccatalog>master</jdbccatalog>
+        <jdbcschema>dbo</jdbcschema>
+      </properties>
+
+      <dependencies>
+        <dependency>
+          <groupId>${jdbcdrivergroupid}</groupId>
+          <artifactId>${jdbcdriverartifactid}</artifactId>
+          <version>${jdbcdriverversion}</version>
+        </dependency>
+      </dependencies>
+
+      <build>
+        <plugins>
+
+          <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <version>2.3.4.RELEASE</version>
+            <configuration>
+              <arguments>
+                <argument>--spring.config.location=${configbasedir}/</argument>
+              </arguments>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>repackage</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.nocrala.tools.database.debbie</groupId>
+            <artifactId>debbie-maven-plugin</artifactId>
+            <version>${debbie.version}</version>
+            <configuration>
+              <sourcedir>${configbasedir}</sourcedir>
+              <targetversion>1.0.0</targetversion>
+              <jdbcdriverclass>${jdbcdriverclass}</jdbcdriverclass>
+              <jdbcurl>${jdbcurl}</jdbcurl>
+              <jdbcusername>${jdbcusername}</jdbcusername>
+              <jdbcpassword>${jdbcpassword}</jdbcpassword>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>${jdbcdrivergroupid}</groupId>
+                <artifactId>${jdbcdriverartifactid}</artifactId>
+                <version>${jdbcdriverversion}</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+
+          <plugin>
+            <groupId>org.hotrodorm.hotrod</groupId>
+            <artifactId>hotrod-maven-plugin</artifactId>
+            <version>${hotrod.version}</version>
+            <configuration>
+              <configfile>${configbasedir}/hotrod.xml</configfile>
+              <generator>MyBatis-Spring</generator>
+              <jdbcdriverclass>${jdbcdriverclass}</jdbcdriverclass>
+              <jdbcurl>${jdbcurl}</jdbcurl>
+              <jdbcusername>${jdbcusername}</jdbcusername>
+              <jdbcpassword>${jdbcpassword}</jdbcpassword>
+              <jdbccatalog>${jdbccatalog}</jdbccatalog>
+              <jdbcschema>${jdbcschema}</jdbcschema>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>${jdbcdrivergroupid}</groupId>
+                <artifactId>${jdbcdriverartifactid}</artifactId>
+                <version>${jdbcdriverversion}</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+
+        </plugins>
+      </build>
+
+    </profile>
+
+
+    <profile>
       <id>h2</id>
 
       <properties>
         <configbasedir>src/main/database/h2</configbasedir>
         <jdbcdrivergroupid>com.h2database</jdbcdrivergroupid>
         <jdbcdriverartifactid>h2</jdbcdriverartifactid>
-        <jdbcdriverversion>2.1.214</jdbcdriverversion>
+        <jdbcdriverversion>2.1.210</jdbcdriverversion>
 
         <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
         <jdbcurl>jdbc:h2:mem:EXAMPLEDB;INIT=runscript from 'src/main/database/h2/1.0.0/build.sql';DB_CLOSE_DELAY=-1</jdbcurl>
@@ -110,7 +381,7 @@
               </execution>
             </executions>
           </plugin>
-<!-- 
+
           <plugin>
             <groupId>org.nocrala.tools.database.debbie</groupId>
             <artifactId>debbie-maven-plugin</artifactId>
@@ -131,12 +402,11 @@
               </dependency>
             </dependencies>
           </plugin>
- -->
- 
+
           <plugin>
             <groupId>org.hotrodorm.hotrod</groupId>
             <artifactId>hotrod-maven-plugin</artifactId>
-      <version>3.5.1-SNAPSHOT</version>
+            <version>${hotrod.version}</version>
             <configuration>
               <configfile>${configbasedir}/hotrod.xml</configfile>
               <generator>MyBatis-Spring</generator>
