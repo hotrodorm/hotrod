@@ -19,9 +19,9 @@
   </sql>
 
   <resultMap id="allColumns" type="app.daos.InvoiceVO">
-    <id property="id" column="id" />
-    <result property="amount" column="amount" />
-    <result property="branchId" column="branch_id" />
+    <id property="id" column="ID" />
+    <result property="amount" column="AMOUNT" />
+    <result property="branchId" column="BRANCH_ID" />
   </resultMap>
 
   <!-- select by PK -->

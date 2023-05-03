@@ -9,12 +9,6 @@
     </mybatis-spring>
   </generators>
   
-  <table name="chars" />
-  <table name="numbers" />
-  <table name="dates" />
-  <table name="binaries" />
-  <table name="other" />
-
   <table name="invoice" />
   <table name="branch" />
 

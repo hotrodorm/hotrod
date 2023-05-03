@@ -17,6 +17,12 @@ public class InvoiceVO extends AbstractInvoiceVO {
   @Autowired
   private InvoiceDAO invoiceDAO;
 
+
   // Add custom code below.
+  
+  public InvoiceDAO getInvoiceDAO() {
+    return invoiceDAO;
+  }
+  
 
 }

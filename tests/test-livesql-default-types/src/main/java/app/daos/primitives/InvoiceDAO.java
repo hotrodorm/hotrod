@@ -22,6 +22,7 @@ import app.daos.primitives.BranchDAO;
 import java.lang.Override;
 import java.util.ArrayList;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.hotrod.runtime.livesql.dialects.SQLDialect;
 import org.hotrod.runtime.livesql.util.CastUtil;
 import org.hotrod.runtime.livesql.metadata.Column;
@@ -60,11 +61,15 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   @Autowired
   private SQLDialect sqlDialect;
 
+  @Autowired
+  private SpringBeanObjectFactory springBeanObjectFactory;
+
   private ApplicationContext applicationContext;
 
   @Override
   public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
+    this.sqlSession.getConfiguration().setObjectFactory(this.springBeanObjectFactory);
   }
 
   // Row Parser
@@ -262,12 +267,12 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     InvoiceTable() {
-      super(null, null, "invoice", "Table", null);
+      super(null, null, "INVOICE", "Table", null);
       initialize();
     }
 
     InvoiceTable(final String alias) {
-      super(null, null, "invoice", "Table", alias);
+      super(null, null, "INVOICE", "Table", alias);
       initialize();
     }
 
@@ -275,11 +280,11 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.id = new NumberColumn(this, "id", "id", "int4", 10, 0);
+      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
       super.columns.add(this.id);
-      this.amount = new NumberColumn(this, "amount", "amount", "int4", 10, 0);
+      this.amount = new NumberColumn(this, "AMOUNT", "amount", "INTEGER", 32, 0);
       super.columns.add(this.amount);
-      this.branchId = new NumberColumn(this, "branch_id", "branchId", "int4", 10, 0);
+      this.branchId = new NumberColumn(this, "BRANCH_ID", "branchId", "INTEGER", 32, 0);
       super.columns.add(this.branchId);
     }
 
