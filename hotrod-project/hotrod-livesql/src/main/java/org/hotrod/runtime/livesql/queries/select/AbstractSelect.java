@@ -65,7 +65,7 @@ public abstract class AbstractSelect<R> extends Query {
   protected abstract void writeColumns(final QueryWriter w, final TableOrView baseTable, final List<Join> joins);
 
   protected void writeExpandedColumns(final QueryWriter w, final TableOrView baseTable, final List<Join> joins,
-      final List<ResultSetColumn> resultSetColumns) {
+      final List<ResultSetColumn> resultSetColumns, final boolean doNotAliasColumns) {
 
     List<ResultSetColumn> expandedColumns = new ArrayList<>(resultSetColumns);
 
@@ -125,11 +125,13 @@ public abstract class AbstractSelect<R> extends Query {
       w.write("\n  ");
       c.renderTo(w);
 
-      try {
-        Column col = (Column) c;
-        w.write(" as " + w.getSqlDialect().canonicalToNatural(col.getProperty()));
-      } catch (ClassCastException e) {
-        // Not a plain table/view column -- no need to alias it
+      if (!doNotAliasColumns) {
+        try {
+          Column col = (Column) c;
+          w.write(" as " + w.getSqlDialect().canonicalToNatural(col.getProperty()));
+        } catch (ClassCastException e) {
+          // Not a plain table/view column -- no need to alias it
+        }
       }
 
     }

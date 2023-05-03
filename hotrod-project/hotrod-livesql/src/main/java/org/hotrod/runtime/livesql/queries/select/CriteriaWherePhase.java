@@ -16,7 +16,7 @@ public class CriteriaWherePhase<T> {
 
   public CriteriaWherePhase(final TableOrView baseTable, final SQLDialect sqlDialect, final SqlSession sqlSession,
       final Predicate whereCondition, final String mapperStatement) {
-    this.select = new Select<T>(sqlDialect, false, sqlSession, mapperStatement);
+    this.select = new Select<T>(sqlDialect, false, sqlSession, mapperStatement, true);
     this.select.setBaseTable(baseTable);
     this.select.setWhereCondition(whereCondition);
   }
