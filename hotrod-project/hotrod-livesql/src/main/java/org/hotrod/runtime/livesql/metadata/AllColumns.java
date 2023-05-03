@@ -69,7 +69,7 @@ public class AllColumns implements ResultSetColumn {
     return new ColumnAliased(Arrays.stream(this.columns) //
         .map(c -> {
           Alias a = renamer.rename(c);
-          return new AliasedExpression((Expression) c, a.alias, true);
+          return new AliasedExpression((Expression) c, a.alias);
         }) //
         .collect(Collectors.toList()));
   }
@@ -103,7 +103,7 @@ public class AllColumns implements ResultSetColumn {
       return new ColumnAliased(this.columns.stream() //
           .map(c -> {
             Alias a = renamer.rename(c);
-            return new AliasedExpression((Expression) c, a.alias, true);
+            return new AliasedExpression((Expression) c, a.alias);
           }) //
           .collect(Collectors.toList()));
     }

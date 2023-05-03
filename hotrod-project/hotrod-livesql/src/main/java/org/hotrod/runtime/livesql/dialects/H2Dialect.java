@@ -24,29 +24,6 @@ public class H2Dialect extends SQLDialect {
     super(productName, productVersion, majorVersion, minorVersion);
   }
 
-  // Identifier parsing
-
-  private final String NATURAL_UNQUOTED_PATTERN = "[A-Za-z][A-Za-z0-9_]*";
-
-  @Override
-  public String naturalToCanonical(final String natural) {
-    if (natural == null) {
-      return null;
-    }
-    if (natural.matches(NATURAL_UNQUOTED_PATTERN)) {
-      return natural.toUpperCase();
-    }
-    return natural;
-  }
-
-  // Identifier rendering
-
-  @Override
-  public IdentifierRenderer getIdentifierRenderer() {
-    // Identifier names are by default upper case in H2
-    return new IdentifierRenderer("[A-Z][A-Z0-9_]*", "\"", "\"", false);
-  }
-
   // Join rendering
 
   @Override
@@ -219,6 +196,33 @@ public class H2Dialect extends SQLDialect {
       }
 
     };
+  }
+
+  // New SQL Identifier rendering
+
+  private final String UNQUOTED_NATURAL = "[A-Za-z][A-Za-z0-9_]*";
+  private final String UNQUOTED_CANONICAL = "[A-Z][A-Z0-9_]*";
+
+  @Override
+  public String naturalToCanonical(final String natural) {
+    if (natural == null) {
+      return null;
+    }
+    if (natural.matches(UNQUOTED_NATURAL)) {
+      return natural.toUpperCase();
+    }
+    return natural;
+  }
+
+  @Override
+  public String canonicalToNatural(final String canonical) {
+    if (canonical == null)
+      return null;
+    if (canonical.matches(UNQUOTED_CANONICAL)) {
+      return canonical.toLowerCase();
+    } else {
+      return "\"" + canonical.replace("\"", "\"\"") + "\"";
+    }
   }
 
 }

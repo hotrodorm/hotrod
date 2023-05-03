@@ -23,6 +23,6 @@ public interface Column extends ReferenceableExpression {
 
   String getProperty();
 
-  void renderSimpleNameTo(QueryWriter w);
+  void renderUnqualifiedNameTo(QueryWriter w);
 
 }

@@ -23,29 +23,6 @@ public class MariaDBDialect extends SQLDialect {
     super(productName, productVersion, majorVersion, minorVersion);
   }
 
-  // Identifier parsing
-
-  private final String NATURAL_UNQUOTED_PATTERN = "[A-Za-z][A-Za-z0-9_]*";
-
-  @Override
-  public String naturalToCanonical(final String natural) {
-    if (natural == null) {
-      return null;
-    }
-    if (natural.matches(NATURAL_UNQUOTED_PATTERN)) {
-      return natural;
-    }
-    return natural;
-  }
-
-  // Identifier rendering
-
-  @Override
-  public IdentifierRenderer getIdentifierRenderer() {
-    // Identifier names are case sensitive in MariaDB
-    return new IdentifierRenderer("[a-zA-Z][a-zA-Z0-9_]*", "`", "`", true);
-  }
-
   // Join rendering
 
   @Override
@@ -210,6 +187,23 @@ public class MariaDBDialect extends SQLDialect {
       }
 
     };
+  }
+
+  // New SQL Identifier rendering
+
+  // MariaDB may be case sensitive or not depending on the OS where it's running.
+  // Assume it's case sensitive and quote always.
+
+  @Override
+  public String naturalToCanonical(final String natural) {
+    return natural;
+  }
+
+  @Override
+  public String canonicalToNatural(final String canonical) {
+    if (canonical == null)
+      return null;
+    return "`" + canonical.replace("`", "``") + "`";
   }
 
 }

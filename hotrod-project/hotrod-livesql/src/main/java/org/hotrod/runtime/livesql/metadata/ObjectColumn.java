@@ -38,12 +38,12 @@ public class ObjectColumn extends ObjectExpression implements Column {
       w.write(this.objectInstance.getAlias());
       w.write(".");
     }
-    w.write(w.getSqlDialect().getIdentifierRenderer().renderSQLName(this.name));
+    renderUnqualifiedNameTo(w);
   }
 
   @Override
-  public void renderSimpleNameTo(final QueryWriter w) {
-    w.write(w.getSqlDialect().getIdentifierRenderer().renderSQLName(this.name));
+  public void renderUnqualifiedNameTo(final QueryWriter w) {
+    w.write(w.getSqlDialect().canonicalToNatural(this.name));
   }
 
   // Getters

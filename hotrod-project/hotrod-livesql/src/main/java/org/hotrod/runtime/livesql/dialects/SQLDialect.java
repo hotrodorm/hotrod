@@ -1,5 +1,7 @@
 package org.hotrod.runtime.livesql.dialects;
 
+import org.hotrod.runtime.livesql.metadata.DatabaseObject;
+
 public abstract class SQLDialect {
 
   private String databaseName;
@@ -55,10 +57,6 @@ public abstract class SQLDialect {
         + databaseMajorVersion + ", databaseMinorVersion=" + databaseMinorVersion + "]";
   }
 
-  public abstract String naturalToCanonical(final String natural);
-
-  public abstract IdentifierRenderer getIdentifierRenderer();
-
   public abstract JoinRenderer getJoinRenderer();
 
   public abstract PaginationRenderer getPaginationRenderer();
@@ -66,5 +64,30 @@ public abstract class SQLDialect {
   public abstract SetOperationRenderer getSetOperationRenderer();
 
   public abstract FunctionRenderer getFunctionRenderer();
+
+  // New SQL Identifier rendering
+
+  public abstract String naturalToCanonical(final String natural);
+
+  public abstract String canonicalToNatural(final String canonical);
+
+  public String canonicalToNatural(final DatabaseObject databaseObject) {
+    if (databaseObject == null) {
+      return null;
+    }
+    StringBuilder sb = new StringBuilder();
+    if (databaseObject.getCatalog() != null) {
+      sb.append(this.canonicalToNatural(databaseObject.getCatalog()));
+      sb.append(".");
+    }
+    if (databaseObject.getSchema() != null) {
+      sb.append(this.canonicalToNatural(databaseObject.getSchema()));
+      sb.append(".");
+    } else if (databaseObject.getCatalog() != null) {
+      sb.append(".");
+    }
+    sb.append(this.canonicalToNatural(databaseObject.getName()));
+    return sb.toString();
+  }
 
 }
