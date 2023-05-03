@@ -2,23 +2,26 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="bc.branch">
+<mapper namespace="bc.binaries">
 
   <!-- columns -->
 
   <sql id="columns">
     id,
-    "NaMe"
+    bin1,
+    bol1
   </sql>
 
   <sql id="columnsWithAlias">
     ${alias}.id,
-    ${alias}."NaMe"
+    ${alias}.bin1,
+    ${alias}.bol1
   </sql>
 
-  <resultMap id="allColumns" type="app.daos.BranchVO">
+  <resultMap id="allColumns" type="app.daos.BinariesVO">
     <id property="id" column="id" />
-    <result property="name" column="NaMe" />
+    <result property="bin1" column="bin1" />
+    <result property="bol1" column="bol1" />
   </resultMap>
 
   <!-- select by PK -->
@@ -26,7 +29,7 @@
   <select id="selectByPK" resultMap="allColumns">
     select
       <include refid="columns" />
-     from branch
+     from binaries
      where
       id = #{id,jdbcType=INTEGER}
   </select>
@@ -38,13 +41,16 @@
   <select id="selectByExample" resultMap="allColumns">
     select
       <include refid="columns" />
-     from branch
+     from binaries
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.id != null">
         and id = #{p.id,jdbcType=INTEGER}
       </if>
-      <if test="p.name != null">
-        and "NaMe" = #{p.name,jdbcType=VARCHAR}
+      <if test="p.bin1 != null">
+        and bin1 = #{p.bin1,jdbcType=BINARY}
+      </if>
+      <if test="p.bol1 != null">
+        and bol1 = #{p.bol1,jdbcType=BIT}
       </if>
     </trim>
     <if test="o != null">
@@ -61,15 +67,17 @@
   <!-- insert (no auto-generated columns) -->
 
   <insert id="insert">
-    insert into branch (
+    insert into binaries (
       <trim prefixOverrides=", ">
         <if test="true">, id</if>
-        <if test="true">, "NaMe"</if>
+        <if test="true">, bin1</if>
+        <if test="true">, bol1</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
         <if test="true">, #{id,jdbcType=INTEGER}</if>
-        <if test="true">, #{name,jdbcType=VARCHAR}</if>
+        <if test="true">, #{bin1,jdbcType=BINARY}</if>
+        <if test="true">, #{bol1,jdbcType=BIT}</if>
       </trim>
       )
   </insert>
@@ -77,8 +85,9 @@
   <!-- update by PK -->
 
   <update id="updateByPK">
-    update branch set
-      "NaMe" = #{name,jdbcType=VARCHAR}
+    update binaries set
+      bin1 = #{bin1,jdbcType=BINARY},
+      bol1 = #{bol1,jdbcType=BIT}
      where
       id = #{id,jdbcType=INTEGER}
   </update>
@@ -86,7 +95,7 @@
   <!-- delete by PK -->
 
   <delete id="deleteByPK">
-    delete from branch
+    delete from binaries
      where
       id = #{id,jdbcType=INTEGER}
   </delete>
@@ -94,17 +103,21 @@
   <!-- update by example -->
 
   <update id="updateByExample">
-    update branch
+    update binaries
     <set>
       <if test="values.id != null">id = #{values.id,jdbcType=INTEGER},</if>
-      <if test="values.name != null">"NaMe" = #{values.name,jdbcType=VARCHAR},</if>
+      <if test="values.bin1 != null">bin1 = #{values.bin1,jdbcType=BINARY},</if>
+      <if test="values.bol1 != null">bol1 = #{values.bol1,jdbcType=BIT},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.id != null">
         and id = #{filter.id,jdbcType=INTEGER}
       </if>
-      <if test="filter.name != null">
-        and "NaMe" = #{filter.name,jdbcType=VARCHAR}
+      <if test="filter.bin1 != null">
+        and bin1 = #{filter.bin1,jdbcType=BINARY}
+      </if>
+      <if test="filter.bol1 != null">
+        and bol1 = #{filter.bol1,jdbcType=BIT}
       </if>
     </trim>
   </update>
@@ -112,13 +125,16 @@
   <!-- delete by example -->
 
   <delete id="deleteByExample">
-    delete from branch
+    delete from binaries
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="id != null">
         and id = #{id,jdbcType=INTEGER}
       </if>
-      <if test="name != null">
-        and "NaMe" = #{name,jdbcType=VARCHAR}
+      <if test="bin1 != null">
+        and bin1 = #{bin1,jdbcType=BINARY}
+      </if>
+      <if test="bol1 != null">
+        and bol1 = #{bol1,jdbcType=BIT}
       </if>
     </trim>
   </delete>
