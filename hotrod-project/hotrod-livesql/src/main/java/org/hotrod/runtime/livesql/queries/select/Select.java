@@ -1,5 +1,6 @@
 package org.hotrod.runtime.livesql.queries.select;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
@@ -10,7 +11,7 @@ import org.hotrod.runtime.livesql.metadata.TableOrView;
 
 class Select<R> extends AbstractSelect<R> {
 
-  private List<ResultSetColumn> resultSetColumns = null;
+  private List<ResultSetColumn> resultSetColumns = new ArrayList<>();
 
   Select(final SQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession,
       final LiveSQLMapper liveSQLMapper) {

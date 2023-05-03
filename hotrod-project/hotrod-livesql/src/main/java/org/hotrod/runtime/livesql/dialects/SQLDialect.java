@@ -55,6 +55,8 @@ public abstract class SQLDialect {
         + databaseMajorVersion + ", databaseMinorVersion=" + databaseMinorVersion + "]";
   }
 
+  public abstract String naturalToCanonical(final String natural);
+
   public abstract IdentifierRenderer getIdentifierRenderer();
 
   public abstract JoinRenderer getJoinRenderer();

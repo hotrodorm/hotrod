@@ -24,6 +24,21 @@ public class H2Dialect extends SQLDialect {
     super(productName, productVersion, majorVersion, minorVersion);
   }
 
+  // Identifier parsing
+
+  private final String NATURAL_UNQUOTED_PATTERN = "[A-Za-z][A-Za-z0-9_]*";
+
+  @Override
+  public String naturalToCanonical(final String natural) {
+    if (natural == null) {
+      return null;
+    }
+    if (natural.matches(NATURAL_UNQUOTED_PATTERN)) {
+      return natural.toUpperCase();
+    }
+    return natural;
+  }
+
   // Identifier rendering
 
   @Override

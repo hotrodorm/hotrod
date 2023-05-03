@@ -1,19 +1,21 @@
 package org.hotrod.runtime.spring;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
 import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
-import org.apache.ibatis.reflection.factory.ObjectFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 
-public class SpringBeanObjectFactory implements ObjectFactory, ApplicationContextAware {
+@Component
+public class SpringBeanObjectFactory extends DefaultObjectFactory implements ApplicationContextAware {
 
-  private DefaultObjectFactory defaultObjectFactory = new DefaultObjectFactory();
-  private ApplicationContext applicationContext = null;
+  private static final long serialVersionUID = 1L;
+
+  private ApplicationContext applicationContext;
 
   @Override
   public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
@@ -21,32 +23,32 @@ public class SpringBeanObjectFactory implements ObjectFactory, ApplicationContex
   }
 
   @Override
-  public <T> T create(final Class<T> type) {
-    try {
-      return this.applicationContext.getBean(type);
-    } catch (NoSuchBeanDefinitionException e) {
-      return this.defaultObjectFactory.create(type);
+  public <T> T create(Class<T> type) {
+    if (this.isCollection(type)) {
+      return super.create(type);
+    } else {
+      T bean = this.applicationContext.getBean(type);
+      return bean;
     }
   }
 
   @Override
-  public <T> T create(final Class<T> type, final List<Class<?>> constructorArgTypes,
-      final List<Object> constructorArgs) {
-    try {
-      return this.applicationContext.getBean(type, constructorArgs.toArray());
-    } catch (NoSuchBeanDefinitionException e) {
-      return this.defaultObjectFactory.create(type, constructorArgTypes, constructorArgs);
+  public <T> T create(Class<T> type, List<Class<?>> constructorArgTypes, List<Object> constructorArgs) {
+    if (this.isCollection(type)) {
+      return super.create(type, constructorArgTypes, constructorArgs);
+    } else {
+      return this.applicationContext.getBean(type, constructorArgs);
     }
   }
 
   @Override
-  public <T> boolean isCollection(final Class<T> type) {
-    return this.defaultObjectFactory.isCollection(type);
+  public void setProperties(Properties properties) {
+    super.setProperties(properties);
   }
 
   @Override
-  public void setProperties(final Properties properties) {
-    // Nothing to do
+  public <T> boolean isCollection(Class<T> type) {
+    return Collection.class.isAssignableFrom(type);
   }
 
 }

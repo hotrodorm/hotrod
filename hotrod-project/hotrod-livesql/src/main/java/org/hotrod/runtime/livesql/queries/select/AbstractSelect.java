@@ -236,9 +236,11 @@ public abstract class AbstractSelect<R> extends Query {
 
     if (this.baseTable != null) {
 
-      String renderedAlias = this.baseTable.getAlias();
-      if (renderedAlias != null) {
-        renderedAlias = this.sqlDialect.getIdentifierRenderer().renderSQLName(renderedAlias);
+      String naturalAlias = this.baseTable.getAlias();
+      String renderedAlias = null;
+      if (naturalAlias != null) {
+        String canonicalAlias = this.sqlDialect.naturalToCanonical(naturalAlias);
+        renderedAlias = this.sqlDialect.getIdentifierRenderer().renderSQLName(canonicalAlias);
       }
 
       w.write("\nFROM " + this.sqlDialect.getIdentifierRenderer().renderSQLObjectName(this.baseTable)
@@ -250,9 +252,11 @@ public abstract class AbstractSelect<R> extends Query {
         String joinKeywords;
         joinKeywords = this.sqlDialect.getJoinRenderer().renderJoinKeywords(j);
 
-        renderedAlias = j.getTable().getAlias();
-        if (renderedAlias != null) {
-          renderedAlias = this.sqlDialect.getIdentifierRenderer().renderSQLName(renderedAlias);
+        naturalAlias = j.getTable().getAlias();
+        renderedAlias = null;
+        if (naturalAlias != null) {
+          String canonicalAlias = this.sqlDialect.naturalToCanonical(naturalAlias);
+          renderedAlias = this.sqlDialect.getIdentifierRenderer().renderSQLName(canonicalAlias);
         }
 
         w.write("\n" + joinKeywords + " " + this.sqlDialect.getIdentifierRenderer().renderSQLObjectName(j.getTable())
