@@ -5,7 +5,7 @@ A SELECT query starts with the SELECT List. This section specifies the columns t
 LiveSQL includes variations to specify all or a subset of the columns and also to qualify the query for DISTINCT rows only. See the variations below.
 
 - [Basic Usage](#basic-select-list)
-- [The Wildcard](#the-wildcard)
+- [The SQL Wildcard](#the-sql-wildcard)
 - [Using DISTINCT](#using-distinct)
 - [Selecting Without a Table](#selecting-without-a-table)
 
