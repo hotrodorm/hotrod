@@ -82,7 +82,7 @@ List<Row> rows = this.sql
 Produces a second column with a clear name:
 
 ```sql
-SELECT p.name, p.price + p.qty as total_price
+SELECT p.name, p.price + p.tax as total_price
 FROM product p
 ```
 
