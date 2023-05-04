@@ -197,8 +197,8 @@ System.out.println("q:" + q.getPreview()); // to see the actual query
 List<Row> rows = q.execute();
 
 for (Row r : rows) {
-  InvoiceVO inx = this.invoiceDAO.parseRow(r, "in#");
-  BranchVO brx = this.branchDAO.parseRow(r, "br#");
+  InvoiceVO ivo = this.invoiceDAO.parseRow(r, "in#");
+  BranchVO bvo = this.branchDAO.parseRow(r, "br#");
 }
 ```
 
