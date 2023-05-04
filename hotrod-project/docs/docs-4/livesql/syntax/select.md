@@ -184,7 +184,7 @@ the `.as()` method on them. For example:
 InvoiceTable i = InvoiceDAO.newTable("i");
 BranchTable b = BranchDAO.newTable("c");
 
-SelectFromPhase<Row> q = this.sql
+ExecutableSelect<Row> q = this.sql
     .select(
       i.star().as(c -> "in#" + c.getProperty()),
       b.star().as(c -> "br#" + c.getProperty())
