@@ -2,7 +2,6 @@ package org.hotrod.runtime.livesql.dialects;
 
 import java.util.List;
 
-import org.hotrod.runtime.livesql.dialects.IdentifierRenderer.NaturalIdentifierCase;
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
@@ -31,15 +30,6 @@ public class SQLServerDialect extends LiveSQLDialect {
       final int majorVersion, final int minorVersion) {
     super(discovered, productName, productVersion, majorVersion, minorVersion);
   }
-
-  // Identifier rendering
-
-  @Override
-  public IdentifierRenderer getIdentifierRenderer() {
-    // Identifier names are case insensitive in SQL Server
-    Quoter q = new Quoter("[", "]", "^[ -Z\\\\-~]$", "^[ -Z\\\\-~]$", "\"", "");
-    return new IdentifierRenderer("[a-zA-Z][a-zA-Z0-9_]*", true, "[A-Za-z][A-Za-z0-9_]*", NaturalIdentifierCase.LOWER, q);
-}
 
   // Join rendering
 
@@ -321,6 +311,33 @@ public class SQLServerDialect extends LiveSQLDialect {
       }
 
     };
+  }
+
+  // New SQL Identifier rendering
+
+  private final String UNQUOTED_NATURAL = "[A-Za-z][A-Za-z0-9_]*";
+  private final String UNQUOTED_CANONICAL = "[A-Za-z][A-Za-z0-9_]*";
+
+  @Override
+  public String naturalToCanonical(final String natural) {
+    if (natural == null) {
+      return null;
+    }
+    if (natural.matches(UNQUOTED_NATURAL)) {
+      return natural;
+    }
+    return natural;
+  }
+
+  @Override
+  public String canonicalToNatural(final String canonical) {
+    if (canonical == null)
+      return null;
+    if (canonical.matches(UNQUOTED_CANONICAL)) {
+      return canonical.toLowerCase();
+    } else {
+      return "\"" + canonical.replace("\"", "\"\"").replace("]", "]]") + "\"";
+    }
   }
 
 }

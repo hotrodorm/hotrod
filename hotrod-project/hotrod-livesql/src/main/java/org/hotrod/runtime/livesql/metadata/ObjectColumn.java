@@ -35,15 +35,16 @@ public class ObjectColumn extends ObjectExpression implements Column {
   @Override
   public void renderTo(final QueryWriter w) {
     if (this.objectInstance.getAlias() != null) {
-      w.write(w.getSqlDialect().getIdentifierRenderer().renderNaturalSQLIdentifier(this.objectInstance.getAlias()));
+      w.write(
+          w.getSqlDialect().canonicalToNatural(w.getSqlDialect().naturalToCanonical(this.objectInstance.getAlias())));
       w.write(".");
     }
-    w.write(w.getSqlDialect().getIdentifierRenderer().renderSQLIdentifier(this.name));
+    renderUnqualifiedNameTo(w);
   }
 
   @Override
-  public void renderSimpleNameTo(final QueryWriter w) {
-    w.write(w.getSqlDialect().getIdentifierRenderer().renderSQLIdentifier(this.name));
+  public void renderUnqualifiedNameTo(final QueryWriter w) {
+    w.write(w.getSqlDialect().canonicalToNatural(this.name));
   }
 
   // Getters

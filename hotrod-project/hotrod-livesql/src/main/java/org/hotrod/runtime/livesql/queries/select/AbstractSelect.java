@@ -65,7 +65,7 @@ public abstract class AbstractSelect<R> extends Query {
   protected abstract void writeColumns(final QueryWriter w, final TableOrView baseTable, final List<Join> joins);
 
   protected void writeExpandedColumns(final QueryWriter w, final TableOrView baseTable, final List<Join> joins,
-      final List<ResultSetColumn> resultSetColumns) {
+      final List<ResultSetColumn> resultSetColumns, final boolean doNotAliasColumns) {
 
     List<ResultSetColumn> expandedColumns = new ArrayList<>(resultSetColumns);
 
@@ -125,13 +125,14 @@ public abstract class AbstractSelect<R> extends Query {
       w.write("\n  ");
       c.renderTo(w);
 
-      try {
-        Column col = (Column) c;
-        w.write(" as " + w.getSqlDialect().getIdentifierRenderer().renderSQLIdentifier(col.getProperty()));
-      } catch (ClassCastException e) {
-        // Not a plain table/view column -- no need to alias it
+      if (!doNotAliasColumns) {
+        try {
+          Column col = (Column) c;
+          w.write(" as " + w.getSqlDialect().canonicalToNatural(col.getProperty()));
+        } catch (ClassCastException e) {
+          // Not a plain table/view column -- no need to alias it
+        }
       }
-
     }
 
   }
@@ -236,13 +237,10 @@ public abstract class AbstractSelect<R> extends Query {
 
     if (this.baseTable != null) {
 
-      String renderedAlias = this.baseTable.getAlias();
-      if (renderedAlias != null) {
-        renderedAlias = this.sqlDialect.getIdentifierRenderer().renderNaturalSQLIdentifier(renderedAlias);
-      }
+      String alias = this.baseTable.getAlias() == null ? null
+          : this.sqlDialect.canonicalToNatural(this.sqlDialect.naturalToCanonical(this.baseTable.getAlias()));
 
-      w.write("\nFROM " + this.sqlDialect.getIdentifierRenderer().renderSQLObjectName(this.baseTable)
-          + (renderedAlias != null ? (" " + renderedAlias) : ""));
+      w.write("\nFROM " + this.sqlDialect.canonicalToNatural(this.baseTable) + (alias != null ? (" " + alias) : ""));
 
       // joins
 
@@ -250,13 +248,11 @@ public abstract class AbstractSelect<R> extends Query {
         String joinKeywords;
         joinKeywords = this.sqlDialect.getJoinRenderer().renderJoinKeywords(j);
 
-        renderedAlias = j.getTable().getAlias();
-        if (renderedAlias != null) {
-          renderedAlias = this.sqlDialect.getIdentifierRenderer().renderNaturalSQLIdentifier(renderedAlias);
-        }
+        alias = j.getTable().getAlias() == null ? null
+            : this.sqlDialect.canonicalToNatural(this.sqlDialect.naturalToCanonical(j.getTable().getAlias()));
 
-        w.write("\n" + joinKeywords + " " + this.sqlDialect.getIdentifierRenderer().renderSQLObjectName(j.getTable())
-            + (renderedAlias != null ? (" " + renderedAlias) : ""));
+        w.write("\n" + joinKeywords + " " + this.sqlDialect.canonicalToNatural(j.getTable())
+            + (alias != null ? (" " + alias) : ""));
         try {
           PredicatedJoin pj = (PredicatedJoin) j;
           if (pj.getJoinPredicate() != null) { // on
@@ -267,7 +263,7 @@ public abstract class AbstractSelect<R> extends Query {
             Separator sep = new Separator();
             for (Column c : pj.getUsingColumns()) {
               w.write(sep.render());
-              c.renderSimpleNameTo(w);
+              c.renderUnqualifiedNameTo(w);
             }
             w.write(")");
           }

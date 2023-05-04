@@ -82,13 +82,11 @@ public class Update {
     QueryWriter w = new QueryWriter(this.sqlDialect);
     w.write("UPDATE ");
 
-    String renderedAlias = this.tableOrView.getAlias();
-    if (renderedAlias != null) {
-      renderedAlias = this.sqlDialect.getIdentifierRenderer().renderNaturalSQLIdentifier(renderedAlias);
-    }
+    String renderedAlias = this.tableOrView.getAlias() == null ? null
+        : this.sqlDialect.canonicalToNatural(this.sqlDialect.naturalToCanonical(this.tableOrView.getAlias()));
 
-    w.write(this.sqlDialect.getIdentifierRenderer().renderSQLObjectName(this.tableOrView)
-        + (renderedAlias != null ? (" " + renderedAlias) : ""));
+    w.write(
+        this.sqlDialect.canonicalToNatural(this.tableOrView) + (renderedAlias != null ? (" " + renderedAlias) : ""));
 
     w.write("\nSET\n");
     boolean first = true;

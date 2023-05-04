@@ -1,6 +1,5 @@
 package org.hotrod.runtime.livesql.dialects;
 
-import org.hotrod.runtime.livesql.dialects.IdentifierRenderer.NaturalIdentifierCase;
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
@@ -22,16 +21,6 @@ public class MySQLDialect extends LiveSQLDialect {
   public MySQLDialect(final boolean discovered, final String productName, final String productVersion,
       final int majorVersion, final int minorVersion) {
     super(discovered, productName, productVersion, majorVersion, minorVersion);
-  }
-
-  // Identifier rendering
-
-  @Override
-  public IdentifierRenderer getIdentifierRenderer() {
-    // Identifier names are case sensitive in MySQL
-    Quoter q = new Quoter("`", "`", "^[ -_a-~]$", "^[ -_a-~]$", "\"", "");
-    return new IdentifierRenderer("[a-zA-Z][a-zA-Z0-9_]*", true, "[A-Za-z][A-Za-z0-9_]*",
-        NaturalIdentifierCase.CASE_SENSITIVE, q);
   }
 
   // Join rendering
@@ -181,6 +170,23 @@ public class MySQLDialect extends LiveSQLDialect {
       }
 
     };
+  }
+
+  // New SQL Identifier rendering
+
+  // MySQL may be case sensitive or not depending on the OS where it's running.
+  // Assume it's case sensitive and quote always.
+
+  @Override
+  public String naturalToCanonical(final String natural) {
+    return natural;
+  }
+
+  @Override
+  public String canonicalToNatural(final String canonical) {
+    if (canonical == null)
+      return null;
+    return "`" + canonical.replace("`", "``") + "`";
   }
 
 }

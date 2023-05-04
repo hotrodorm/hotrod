@@ -9,6 +9,7 @@ import java.util.SortedSet;
 
 import org.apache.ibatis.reflection.ReflectionException;
 import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
+import org.hotrod.runtime.livesql.Row;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -31,7 +32,7 @@ public class SpringBeanObjectFactory extends DefaultObjectFactory implements App
     if (this.isCollection(type)) {
       return super.create(type);
     } else if (type == List.class || type == Collection.class || type == Iterable.class || type == Map.class
-        || type == SortedSet.class || type == Set.class) {
+        || type == SortedSet.class || type == Set.class || type == Row.class) {
       Class<?> clazz = super.resolveInterface(type);
       try {
         return (T) clazz.newInstance();

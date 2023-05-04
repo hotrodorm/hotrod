@@ -33,7 +33,7 @@ class CombinedSelect<T> extends AbstractSelect<T> {
 
   @Override
   protected void writeColumns(final QueryWriter w, final TableOrView baseTable, final List<Join> joins) {
-    super.writeExpandedColumns(w, baseTable, joins, this.resultSetColumns.stream().collect(Collectors.toList()));
+    super.writeExpandedColumns(w, baseTable, joins, this.resultSetColumns.stream().collect(Collectors.toList()), true);
   }
 
 }

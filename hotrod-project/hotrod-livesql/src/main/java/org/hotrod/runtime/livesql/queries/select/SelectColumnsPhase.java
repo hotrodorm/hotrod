@@ -23,7 +23,7 @@ public class SelectColumnsPhase<R> implements ExecutableSelect<R>, CombinableSel
 
   public SelectColumnsPhase(final LiveSQLDialect sqlDialect, final SqlSession sqlSession,
       final LiveSQLMapper liveSQLMapper, final boolean distinct, final ResultSetColumn... resultSetColumns) {
-    Select<R> s = new Select<R>(sqlDialect, distinct, sqlSession, liveSQLMapper);
+    Select<R> s = new Select<R>(sqlDialect, distinct, sqlSession, liveSQLMapper, false);
     s.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
     this.select = s;
   }

@@ -62,8 +62,8 @@ public class Insert {
   private LiveSQLStructure prepareQuery() {
     QueryWriter w = new QueryWriter(this.sqlDialect);
     w.write("INSERT INTO ");
-    w.write(this.sqlDialect.getIdentifierRenderer().renderSQLObjectName(this.into));
-    
+    w.write(this.sqlDialect.canonicalToNatural(this.into));
+
     if (this.columns != null) {
       w.write(" (");
       for (int i = 0; i < this.columns.size(); i++) {

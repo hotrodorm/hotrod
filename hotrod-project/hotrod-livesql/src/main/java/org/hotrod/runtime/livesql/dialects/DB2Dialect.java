@@ -2,7 +2,6 @@ package org.hotrod.runtime.livesql.dialects;
 
 import java.util.List;
 
-import org.hotrod.runtime.livesql.dialects.IdentifierRenderer.NaturalIdentifierCase;
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
@@ -27,15 +26,6 @@ public class DB2Dialect extends LiveSQLDialect {
   public DB2Dialect(final boolean discovered, final String productName, final String productVersion,
       final int majorVersion, final int minorVersion) {
     super(discovered, productName, productVersion, majorVersion, minorVersion);
-  }
-
-  // Identifier rendering
-
-  @Override
-  public IdentifierRenderer getIdentifierRenderer() {
-    // Identifier names are by default upper case in DB2
-    Quoter q = new Quoter("\"", "\"", "^[ -!#-~]$", "^[ -!#-~]$", "\"", "");
-    return new IdentifierRenderer("[A-Z][A-Z0-9_]*", false, "[A-Za-z][A-Za-z0-9_]*", NaturalIdentifierCase.LOWER, q);
   }
 
   // Join rendering
@@ -228,6 +218,33 @@ public class DB2Dialect extends LiveSQLDialect {
       }
 
     };
+  }
+
+  // New SQL Identifier rendering
+
+  private final String UNQUOTED_NATURAL = "[A-Za-z][A-Za-z0-9_]*";
+  private final String UNQUOTED_CANONICAL = "[A-Z][A-Z0-9_]*";
+
+  @Override
+  public String naturalToCanonical(final String natural) {
+    if (natural == null) {
+      return null;
+    }
+    if (natural.matches(UNQUOTED_NATURAL)) {
+      return natural.toUpperCase();
+    }
+    return natural;
+  }
+
+  @Override
+  public String canonicalToNatural(final String canonical) {
+    if (canonical == null)
+      return null;
+    if (canonical.matches(UNQUOTED_CANONICAL)) {
+      return canonical.toLowerCase();
+    } else {
+      return "\"" + canonical.replace("\"", "\"\"").replace("'", "''") + "\"";
+    }
   }
 
 }

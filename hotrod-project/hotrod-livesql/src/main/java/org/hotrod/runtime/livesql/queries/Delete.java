@@ -62,13 +62,9 @@ public class Delete {
     QueryWriter w = new QueryWriter(this.sqlDialect);
     w.write("DELETE FROM ");
 
-    String renderedAlias = this.from.getAlias();
-    if (renderedAlias != null) {
-      renderedAlias = this.sqlDialect.getIdentifierRenderer().renderNaturalSQLIdentifier(renderedAlias);
-    }
-
-    w.write(this.sqlDialect.getIdentifierRenderer().renderSQLObjectName(this.from)
-        + (renderedAlias != null ? (" " + renderedAlias) : ""));
+    String renderedAlias = this.from.getAlias() == null ? null
+        : this.sqlDialect.canonicalToNatural(this.sqlDialect.naturalToCanonical(this.from.getAlias()));
+    w.write(this.sqlDialect.canonicalToNatural(this.from) + (renderedAlias != null ? (" " + renderedAlias) : ""));
     if (this.wherePredicate != null) {
       w.write("\nWHERE ");
       this.wherePredicate.renderTo(w);
