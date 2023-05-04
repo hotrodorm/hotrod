@@ -40,7 +40,7 @@
     <dependency>
       <groupId>org.nocrala.tools.database</groupId>
       <artifactId>tartarus</artifactId>
-      <version>3.2.1-SNAPSHOT</version>
+      <version>3.2.1</version>
     </dependency>
 
     <!-- Log4j 2 -->
