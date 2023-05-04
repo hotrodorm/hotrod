@@ -158,46 +158,51 @@ create table client.checking_account (
 
 ## Aliasing * Wildcard Columns
 
-In some queries it can be useful to change the name of the column from one table to differentiate
+It can be useful to change the name of the columns from one table to differentiate
 from the columns of another one, specially when joined tables have columns with the same name.
 
 If we use the function `.star()` to select all the columns of one table we can alias them by using 
 the `.as()` method on them. For example:
 
 ```java
-BatchTable b = BatchDAO.newTable("b");
-EmployeeTable e = EmployeeDAO.newTable("e");
+InvoiceTable i = InvoiceDAO.newTable("i");
+BranchTable b = BranchDAO.newTable("c");
 
-List<Row> rows = this.sql
+SelectFromPhase<Row> q = this.sql
     .select(
-      e.star().as(c -> Alias.property("emp", c.getProperty())),
-      b.star().as(c -> Alias.literal(("bc_" + c.getName()).toLowerCase()))
+      i.star().as(c -> "in#" + c.getProperty()),
+      b.star().as(c -> "br#" + c.getProperty())
     )
-    .from(e) //
-    .join(b, b.itemName.eq(e.name)) //
-    .where(e.name.like("A%"));
+    .from(i)
+    .join(b, b.id.eq(i.branchId))
+    .where(i.type.like("CK%"));
+    ;
+System.out.println("q:" + q.getPreview());
+List<Row> rows = q.execute();
+
+for (Row r : rows) {
+  InvoiceVO inx = this.invoiceDAO.parseRow(r, "in#");
+  BranchVO brx = this.branchDAO.parseRow(r, "br#");
+}
 ```
 
-Produces the query:
+Produces a query with the form:
 
 ```sql
 SELECT
-  e.id as "empId", e.name as "empName", e.branch_id as "empBranchId", 
-  b.sku_code as "bc_sku_code", b.item_name as "bc_item_name"
-FROM public.employee e
-JOIN public.batch b ON b.item_name = e.name
-WHERE e.name like 'A%'
+  i.id as "in#id", i.amount as "in#amount", i.branch_id as "in#branchId", 
+  c.id as "br#id", c."NaMe" as "br#name"
+FROM public.invoice i
+JOIN public.branch c ON c.id = i.branch_id
+WHERE i.type like 'CK%'
 ```
 
-The LiveSQL query above renamed the columns from both tables. It did apply a different
-strategy to rename them, however:
+Renaming the columns with different prefixes for each table allows the `parseRow()` method to classify them back to 
+the corresponding VOs. In this case `getProperty()` produced the property name that `parseRow()` expects. You can use
+`getName()` to produce the raw column name instead.
 
-- In the first one, it used the method `Alias.property()` to generate a property-like column name. It prepended `emp` to the property names:
-`branchId` became `empBranchId`.
-- In the second case, it used the method `Alias.literal()` to generate a column name as a verbatim string. In this case it prepender `bc_`
-to the column name and converted it to lower case.
-
-Note that more complex logic can be used. All properties mentioned in the table above are available to write more complex functions.
+Note that more complex logic can be used. All properties mentioned in the table above are available
+to write more complex functions.
 
 
 ## Column Filtering and Aliasing
@@ -208,7 +213,7 @@ Finally, aliasing columns can be combined with filtering. For example, the selec
     .select(
       e.star()
        .filter(c -> !"BLOB".equals(c.getType()))
-       .as(c -> Alias.property("emp", c.getProperty())),
+       .as(c -> "emp_" + c.getName())
     )
 ```
 
