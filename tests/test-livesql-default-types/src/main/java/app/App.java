@@ -12,6 +12,7 @@ import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.metadata.AllColumns.Alias;
+import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.queries.select.SelectFromPhase;
 import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.mybatis.spring.annotation.MapperScan;
@@ -61,9 +62,10 @@ public class App {
     return args -> {
       System.out.println("[ Starting example ]");
 //      crud();
-      beans();
+//      beans();
 //      livesql();
 //      join();
+      selectByCriteria();
       System.out.println("[ Example complete ]");
     };
   }
@@ -108,6 +110,16 @@ public class App {
 //    }
 //
 //  }
+
+  private void selectByCriteria() {
+//    reinsert();
+
+    InvoiceTable i = InvoiceDAO.newTable("i");
+    CriteriaWherePhase<InvoiceVO> q = this.invoiceDAO.selectByCriteria(i, i.branchId.eq(10));
+    for (InvoiceVO r : q.execute()) {
+      System.out.println("r=" + r);
+    }
+  }
 
   private void join() {
 
