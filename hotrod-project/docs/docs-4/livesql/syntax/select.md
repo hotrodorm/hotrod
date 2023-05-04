@@ -1,4 +1,4 @@
-# The SELECT Clause 
+# The SELECT List 
 
 A SELECT query starts with the SELECT List. This section specifies the columns that are to be retrieved as well as the modifiers for them.
 
@@ -47,7 +47,7 @@ FROM product p
 ```
 
 The query can name the specific list of columns to produce. This list can also include expressions that the database can 
-compute using functions or operators. 
+compute using functions and operators. 
 
 
 ## Aliasing Columns
