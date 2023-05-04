@@ -36,12 +36,12 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
     - `<foreach>` fixed.
 
 ## 3.5.1-SNAPSHOT
-- LiveSQL: backport of filtering and aliasing for the star() method.
-- LiveSQL: backport Oracle MOD() function bugfix.
-- LiveSQL: backport of row parser with support for joins. Tuples can now be retrieved.
-- DynamicSQL: backport of `<foreach>` bugfix.
-- Core: backport of default values for the `<mappers>` tag. It can be now omitted in the configuration file.
-- Core: backport of VOs as Spring beans.
+- LiveSQL: Backport of filtering and aliasing for the star() method.
+- LiveSQL: Backport Oracle MOD() function bugfix.
+- LiveSQL: Backport of row parser with support for joins. Tuples can now be retrieved.
+- DynamicSQL: Backport of `<foreach>` bugfix.
+- Core: Backport of default values for the `<mappers>` tag. It can be now omitted in the configuration file.
+- Core: B of VOs as Spring beans.
 
 ## 3.5.0
 - CRUD: Backport of "implements" and DAO wiring for VOs.
