@@ -249,7 +249,7 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this, this.id, this.amount, this.branchId);
+      return new AllColumns(this.id, this.amount, this.branchId);
     }
 
     // Constructors

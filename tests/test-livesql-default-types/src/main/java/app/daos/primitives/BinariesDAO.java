@@ -297,7 +297,7 @@ public class BinariesDAO implements Serializable, ApplicationContextAware {
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this, this.id, this.bin1, this.bin2, this.bin3, this.bin4, this.bin5, this.blo1, this.blo2, this.blo3, this.blo4, this.blo5);
+      return new AllColumns(this.id, this.bin1, this.bin2, this.bin3, this.bin4, this.bin5, this.blo1, this.blo2, this.blo3, this.blo4, this.blo5);
     }
 
     // Constructors

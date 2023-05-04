@@ -363,7 +363,7 @@ public class NumbersDAO implements Serializable, ApplicationContextAware {
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this, this.id, this.int1, this.int2, this.int3, this.int4, this.int5, this.int10, this.int20, this.int21, this.int30, this.int31, this.dec1, this.dec2, this.dec3, this.dec4, this.dec5, this.dou1, this.dou2, this.dou3, this.dou4, this.rea1, this.rea2);
+      return new AllColumns(this.id, this.int1, this.int2, this.int3, this.int4, this.int5, this.int10, this.int20, this.int21, this.int30, this.int31, this.dec1, this.dec2, this.dec3, this.dec4, this.dec5, this.dou1, this.dou2, this.dou3, this.dou4, this.rea1, this.rea2);
     }
 
     // Constructors

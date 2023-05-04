@@ -273,7 +273,7 @@ public class OtherDAO implements Serializable, ApplicationContextAware {
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this, this.id, this.boo1, this.boo2, this.boo3, this.oth1, this.idn1, this.geo1);
+      return new AllColumns(this.id, this.boo1, this.boo2, this.boo3, this.oth1, this.idn1, this.geo1);
     }
 
     // Constructors

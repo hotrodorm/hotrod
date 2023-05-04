@@ -267,7 +267,7 @@ public class DatesDAO implements Serializable, ApplicationContextAware {
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this, this.id, this.tim1, this.dat1, this.ts1, this.ts2, this.ts3);
+      return new AllColumns(this.id, this.tim1, this.dat1, this.ts1, this.ts2, this.ts3);
     }
 
     // Constructors

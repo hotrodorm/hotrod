@@ -249,7 +249,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this, this.id, this.name);
+      return new AllColumns(this.id, this.name);
     }
 
     // Constructors

@@ -435,7 +435,7 @@ public class CharsDAO implements Serializable, ApplicationContextAware {
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this, this.id, this.vc1, this.vc2, this.vc3, this.vc4, this.vc5, this.vc6, this.vc7, this.cha1, this.cha2, this.cha3, this.clo1, this.clo2, this.clo3, this.clo4, this.clo5, this.clo6, this.clo7);
+      return new AllColumns(this.id, this.vc1, this.vc2, this.vc3, this.vc4, this.vc5, this.vc6, this.vc7, this.cha1, this.cha2, this.cha3, this.clo1, this.clo2, this.clo3, this.clo4, this.clo5, this.clo6, this.clo7);
     }
 
     // Constructors

@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
-import org.hotrod.runtime.livesql.metadata.AllColumns.Alias;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.queries.select.SelectFromPhase;
 import org.hotrod.runtime.spring.SpringBeanObjectFactory;
@@ -59,9 +58,9 @@ public class App {
     return args -> {
       System.out.println("[ Starting example ]");
 //      crud();
-//      join();
+      join();
 //      livesql();
-      selectByCriteria();
+//      selectByCriteria();
       System.out.println("[ Example complete ]");
     };
   }
@@ -122,7 +121,7 @@ public class App {
   private void selectByCriteria() {
     reinsert();
 
-    InvoiceTable i = InvoiceDAO.newTable("i");
+    InvoiceTable i = InvoiceDAO.newTable("i'a");
     CriteriaWherePhase<InvoiceVO> q = this.invoiceDAO.select(i, i.branchId.eq(10));
     System.out.println("q=" + q.getPreview());
     for (InvoiceVO r : q.execute()) {
@@ -136,15 +135,16 @@ public class App {
     BranchTable b = BranchDAO.newTable("c");
 
     SelectFromPhase<Row> q = this.sql.select( //
-        i.star().as(c -> Alias.literal("inx_" + c.getProperty())),
-        b.star().as(c -> Alias.literal("brx_" + c.getProperty()))) //
+        i.star().as(c -> "in#" + c.getProperty()), //
+        b.star().as(c -> "br#" + c.getProperty()) //
+    ) //
         .from(i).join(b, b.id.eq(i.branchId));
     System.out.println("q:" + q.getPreview());
     List<Row> rows = q.execute();
 
     for (Row r : rows) {
-      InvoiceVO inx = this.invoiceDAO.parseRow(r, "inx_");
-      BranchVO brx = this.branchDAO.parseRow(r, "brx_");
+      InvoiceVO inx = this.invoiceDAO.parseRow(r, "in#");
+      BranchVO brx = this.branchDAO.parseRow(r, "br#");
 
       System.out.println("r=" + r);
       System.out.println("inx=" + inx + " dao=" + inx.getInvoiceDAO());
