@@ -11,34 +11,16 @@ public class AbstractCharsVO implements Serializable {
 
   // VO Properties (table columns)
 
-  protected java.lang.String cha1 = null;
-  protected java.lang.String cha2 = null;
-  protected java.lang.String cha3 = null;
+  protected java.lang.Integer id = null;
 
   // getters & setters
 
-  public java.lang.String getCha1() {
-    return this.cha1;
+  public java.lang.Integer getId() {
+    return this.id;
   }
 
-  public void setCha1(final java.lang.String cha1) {
-    this.cha1 = cha1;
-  }
-
-  public java.lang.String getCha2() {
-    return this.cha2;
-  }
-
-  public void setCha2(final java.lang.String cha2) {
-    this.cha2 = cha2;
-  }
-
-  public java.lang.String getCha3() {
-    return this.cha3;
-  }
-
-  public void setCha3(final java.lang.String cha3) {
-    this.cha3 = cha3;
+  public void setId(final java.lang.Integer id) {
+    this.id = id;
   }
 
   // to string
@@ -46,9 +28,7 @@ public class AbstractCharsVO implements Serializable {
   public String toString() {
     java.lang.StringBuilder sb = new java.lang.StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
-    sb.append("- cha1=" + this.cha1 + "\n");
-    sb.append("- cha2=" + this.cha2 + "\n");
-    sb.append("- cha3=" + this.cha3);
+    sb.append("- id=" + this.id);
     return sb.toString();
   }
 
@@ -56,9 +36,7 @@ public class AbstractCharsVO implements Serializable {
 
   public String toJSON() {
     JSONObject obj = new JSONObject();
-    obj.addProperty("cha1", this.cha1);
-    obj.addProperty("cha2", this.cha2);
-    obj.addProperty("cha3", this.cha3);
+    obj.addProperty("id", this.id);
     return obj.render();
   }
 

@@ -11,25 +11,16 @@ public class AbstractBinariesVO implements Serializable {
 
   // VO Properties (table columns)
 
-  protected byte[] bin1 = null;
-  protected java.lang.Boolean bol1 = null;
+  protected java.lang.Integer id = null;
 
   // getters & setters
 
-  public byte[] getBin1() {
-    return this.bin1;
+  public java.lang.Integer getId() {
+    return this.id;
   }
 
-  public void setBin1(final byte[] bin1) {
-    this.bin1 = bin1;
-  }
-
-  public java.lang.Boolean getBol1() {
-    return this.bol1;
-  }
-
-  public void setBol1(final java.lang.Boolean bol1) {
-    this.bol1 = bol1;
+  public void setId(final java.lang.Integer id) {
+    this.id = id;
   }
 
   // to string
@@ -37,8 +28,7 @@ public class AbstractBinariesVO implements Serializable {
   public String toString() {
     java.lang.StringBuilder sb = new java.lang.StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
-    sb.append("- bin1=" + this.bin1 + "\n");
-    sb.append("- bol1=" + this.bol1);
+    sb.append("- id=" + this.id);
     return sb.toString();
   }
 
@@ -46,8 +36,7 @@ public class AbstractBinariesVO implements Serializable {
 
   public String toJSON() {
     JSONObject obj = new JSONObject();
-    obj.addProperty("bin1", this.bin1);
-    obj.addProperty("bol1", this.bol1);
+    obj.addProperty("id", this.id);
     return obj.render();
   }
 

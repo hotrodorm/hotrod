@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.util.CastUtil;
 import org.hotrod.runtime.livesql.metadata.Column;
@@ -58,11 +59,15 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
   @Autowired
   private LiveSQLDialect liveSQLDialect;
 
+  @Autowired
+  private SpringBeanObjectFactory springBeanObjectFactory;
+
   private ApplicationContext applicationContext;
 
   @Override
   public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
+    this.sqlSession.getConfiguration().setObjectFactory(this.springBeanObjectFactory);
   }
 
   // Row Parser
@@ -250,12 +255,12 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     BranchTable() {
-      super(null, "public", "branch", "Table", null);
+      super(null, "PUBLIC", "BRANCH", "Table", null);
       initialize();
     }
 
     BranchTable(final String alias) {
-      super(null, "public", "branch", "Table", alias);
+      super(null, "PUBLIC", "BRANCH", "Table", alias);
       initialize();
     }
 
@@ -263,9 +268,9 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.id = new NumberColumn(this, "id", "id", "int4", 10, 0);
+      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
       super.columns.add(this.id);
-      this.name = new StringColumn(this, "NaMe", "name", "varchar", 20, 0);
+      this.name = new StringColumn(this, "NaMe", "name", "CHARACTER VARYING", 20, 0);
       super.columns.add(this.name);
     }
 

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.util.CastUtil;
 import org.hotrod.runtime.livesql.metadata.Column;
@@ -58,11 +59,15 @@ public class CharsDAO implements Serializable, ApplicationContextAware {
   @Autowired
   private LiveSQLDialect liveSQLDialect;
 
+  @Autowired
+  private SpringBeanObjectFactory springBeanObjectFactory;
+
   private ApplicationContext applicationContext;
 
   @Override
   public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
+    this.sqlSession.getConfiguration().setObjectFactory(this.springBeanObjectFactory);
   }
 
   // Row Parser
@@ -79,15 +84,21 @@ public class CharsDAO implements Serializable, ApplicationContextAware {
     app.daos.CharsVO mo = this.applicationContext.getBean(app.daos.CharsVO.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
-    mo.setCha1((java.lang.String) m.get(p + "cha1" + s));
-    mo.setCha2((java.lang.String) m.get(p + "cha2" + s));
-    mo.setCha3((java.lang.String) m.get(p + "cha3" + s));
+    mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
     return mo;
   }
 
-  // no select by PK generated, since the table does not have a PK.
+  // select by primary key
 
-  // select by unique indexes: no unique indexes found -- skipped
+  public app.daos.CharsVO select(final java.lang.Integer id) {
+    if (id == null)
+      return null;
+    app.daos.CharsVO vo = new app.daos.CharsVO();
+    vo.setId(id);
+    return this.sqlSession.selectOne("mappers.chars.selectByPK", vo);
+  }
+
+  // select by unique indexes: no unique indexes found (besides the PK) -- skipped
 
   // select by example
 
@@ -123,15 +134,26 @@ public class CharsDAO implements Serializable, ApplicationContextAware {
     String id = "mappers.chars.insert";
     this.sqlSession.insert(id, vo);
     app.daos.CharsVO mo = new app.daos.CharsVO();
-    mo.setCha1(vo.getCha1());
-    mo.setCha2(vo.getCha2());
-    mo.setCha3(vo.getCha3());
+    mo.setId(vo.getId());
     return mo;
   }
 
-  // no update by PK generated, since the table does not have a PK.
+  // update by PK
 
-  // no delete by PK generated, since the table does not have a PK.
+  public int update(final app.daos.CharsVO vo) {
+    if (vo.id == null) return 0;
+    return this.sqlSession.update("mappers.chars.updateByPK", vo);
+  }
+
+  // delete by PK
+
+  public int delete(final java.lang.Integer id) {
+    if (id == null) return 0;
+    app.daos.CharsVO vo = new app.daos.CharsVO();
+    vo.setId(id);
+    if (vo.id == null) return 0;
+    return this.sqlSession.delete("mappers.chars.deleteByPK", vo);
+  }
 
   // update by example
 
@@ -145,9 +167,7 @@ public class CharsDAO implements Serializable, ApplicationContextAware {
 
   public UpdateSetCompletePhase update(final app.daos.primitives.AbstractCharsVO updateValues, final CharsDAO.CharsTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
-    if (updateValues.getCha1() != null) values.put("cha1", updateValues.getCha1());
-    if (updateValues.getCha2() != null) values.put("cha2", updateValues.getCha2());
-    if (updateValues.getCha3() != null) values.put("cha3", updateValues.getCha3());
+    if (updateValues.getId() != null) values.put("id", updateValues.getId());
     return new UpdateSetCompletePhase(tableOrView, this.liveSQLDialect, this.sqlSession,
       "mappers.chars.updateByCriteria", predicate, values);
   }
@@ -170,30 +190,8 @@ public class CharsDAO implements Serializable, ApplicationContextAware {
 
   public enum CharsOrderBy implements OrderBy {
 
-    CHA1("public.chars", "cha1", true), //
-    CHA1$DESC("public.chars", "cha1", false), //
-    CHA1$CASEINSENSITIVE("public.chars", "lower(cha1)", true), //
-    CHA1$CASEINSENSITIVE_STABLE_FORWARD("public.chars", "lower(cha1), cha1", true), //
-    CHA1$CASEINSENSITIVE_STABLE_REVERSE("public.chars", "lower(cha1), cha1", false), //
-    CHA1$DESC_CASEINSENSITIVE("public.chars", "lower(cha1)", false), //
-    CHA1$DESC_CASEINSENSITIVE_STABLE_FORWARD("public.chars", "lower(cha1), cha1", false), //
-    CHA1$DESC_CASEINSENSITIVE_STABLE_REVERSE("public.chars", "lower(cha1), cha1", true), //
-    CHA2("public.chars", "cha2", true), //
-    CHA2$DESC("public.chars", "cha2", false), //
-    CHA2$CASEINSENSITIVE("public.chars", "lower(cha2)", true), //
-    CHA2$CASEINSENSITIVE_STABLE_FORWARD("public.chars", "lower(cha2), cha2", true), //
-    CHA2$CASEINSENSITIVE_STABLE_REVERSE("public.chars", "lower(cha2), cha2", false), //
-    CHA2$DESC_CASEINSENSITIVE("public.chars", "lower(cha2)", false), //
-    CHA2$DESC_CASEINSENSITIVE_STABLE_FORWARD("public.chars", "lower(cha2), cha2", false), //
-    CHA2$DESC_CASEINSENSITIVE_STABLE_REVERSE("public.chars", "lower(cha2), cha2", true), //
-    CHA3("public.chars", "cha3", true), //
-    CHA3$DESC("public.chars", "cha3", false), //
-    CHA3$CASEINSENSITIVE("public.chars", "lower(cha3)", true), //
-    CHA3$CASEINSENSITIVE_STABLE_FORWARD("public.chars", "lower(cha3), cha3", true), //
-    CHA3$CASEINSENSITIVE_STABLE_REVERSE("public.chars", "lower(cha3), cha3", false), //
-    CHA3$DESC_CASEINSENSITIVE("public.chars", "lower(cha3)", false), //
-    CHA3$DESC_CASEINSENSITIVE_STABLE_FORWARD("public.chars", "lower(cha3), cha3", false), //
-    CHA3$DESC_CASEINSENSITIVE_STABLE_REVERSE("public.chars", "lower(cha3), cha3", true);
+    ID("public.chars", "id", true), //
+    ID$DESC("public.chars", "id", false);
 
     private CharsOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -234,25 +232,23 @@ public class CharsDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public StringColumn cha1;
-    public StringColumn cha2;
-    public StringColumn cha3;
+    public NumberColumn id;
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this, this.cha1, this.cha2, this.cha3);
+      return new AllColumns(this, this.id);
     }
 
     // Constructors
 
     CharsTable() {
-      super(null, "public", "chars", "Table", null);
+      super(null, "PUBLIC", "CHARS", "Table", null);
       initialize();
     }
 
     CharsTable(final String alias) {
-      super(null, "public", "chars", "Table", alias);
+      super(null, "PUBLIC", "CHARS", "Table", alias);
       initialize();
     }
 
@@ -260,12 +256,8 @@ public class CharsDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.cha1 = new StringColumn(this, "cha1", "cha1", "bpchar", 10, 0);
-      super.columns.add(this.cha1);
-      this.cha2 = new StringColumn(this, "cha2", "cha2", "varchar", 10, 0);
-      super.columns.add(this.cha2);
-      this.cha3 = new StringColumn(this, "cha3", "cha3", "text", 2147483647, 0);
-      super.columns.add(this.cha3);
+      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
+      super.columns.add(this.id);
     }
 
   }

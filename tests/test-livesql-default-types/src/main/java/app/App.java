@@ -1,21 +1,13 @@
 package app;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.sql.CallableStatement;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.ibatis.type.BaseTypeHandler;
-import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.MappedJdbcTypes;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.metadata.AllColumns.Alias;
 import org.hotrod.runtime.livesql.queries.select.SelectFromPhase;
+import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -40,6 +32,7 @@ import app.daos.primitives.NumbersDAO.NumbersTable;
 @Configuration
 @SpringBootApplication
 @ComponentScan
+@ComponentScan(basePackageClasses = SpringBeanObjectFactory.class)
 @ComponentScan(basePackageClasses = LiveSQL.class)
 @MapperScan(basePackageClasses = LiveSQL.class)
 public class App {
@@ -64,8 +57,8 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       System.out.println("[ Starting example ]");
-//      crud();
-      join();
+      crud();
+//      join();
 //      livesql();
       System.out.println("[ Example complete ]");
     };
@@ -119,7 +112,7 @@ public class App {
   private void crud() {
     reinsert();
     for (NumbersVO r : this.numbersDAO.select(new NumbersVO())) {
-      System.out.println("r=" + r);
+      System.out.println("r=" + r + " dao=" + r.getNumbersDAO());
     }
   }
 
@@ -152,56 +145,33 @@ public class App {
 
     NumbersVO n = new NumbersVO();
 
-    n.setInt1((short) 123);
-    n.setInt2(1234);
-    n.setInt3(123456L);
-    n.setInt4(Integer.valueOf(12345));
-    n.setInt5(-2345);
-    n.setInt6(-45678L);
-
-    n.setColumns(123);
-
-    n.setDec1(BigDecimal.valueOf(1234.56));
-    n.setDec2(BigDecimal.valueOf(7890.12));
-    n.setDec3((byte) 24);
-    n.setDec4((short) 125);
-    n.setDec5(12346);
-    n.setDec6(4455L);
-    n.setDec7(BigInteger.TEN);
-
-    n.setFlo1(123.456f);
-    n.setFlo2(789.012);
-
-    n.setIntTotalAmount(1);
-    n.setDecTotalAmount((short) 1);
-    n.setFloTotalAmount(1.2f);
+    n.setId(1);
+    n.setInt1(123);
+    
+//    n.setInt2(1234);
+//    n.setInt3(123456L);
+//    n.setInt4(Integer.valueOf(12345));
+//    n.setInt5(-2345);
+//    n.setInt6(-45678L);
+//
+//    n.setColumns(123);
+//
+//    n.setDec1(BigDecimal.valueOf(1234.56));
+//    n.setDec2(BigDecimal.valueOf(7890.12));
+//    n.setDec3((byte) 24);
+//    n.setDec4((short) 125);
+//    n.setDec5(12346);
+//    n.setDec6(4455L);
+//    n.setDec7(BigInteger.TEN);
+//
+//    n.setFlo1(123.456f);
+//    n.setFlo2(789.012);
+//
+//    n.setIntTotalAmount(1);
+//    n.setDecTotalAmount((short) 1);
+//    n.setFloTotalAmount(1.2f);
 
     this.numbersDAO.insert(n);
-  }
-
-  @MappedJdbcTypes(JdbcType.VARCHAR)
-  public class ExampleTypeHandler extends BaseTypeHandler<String> {
-
-    @Override
-    public void setNonNullParameter(PreparedStatement ps, int i, String parameter, JdbcType jdbcType)
-        throws SQLException {
-      ps.setString(i, parameter);
-    }
-
-    @Override
-    public String getNullableResult(ResultSet rs, String columnName) throws SQLException {
-      return rs.getString(columnName);
-    }
-
-    @Override
-    public String getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
-      return rs.getString(columnIndex);
-    }
-
-    @Override
-    public String getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
-      return cs.getString(columnIndex);
-    }
   }
 
 }

@@ -17,7 +17,7 @@
   </sql>
 
   <resultMap id="allColumns" type="app.daos.BranchVO">
-    <id property="id" column="id" />
+    <id property="id" column="ID" />
     <result property="name" column="NaMe" />
   </resultMap>
 

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.util.CastUtil;
 import org.hotrod.runtime.livesql.metadata.Column;
@@ -58,11 +59,15 @@ public class NumbersDAO implements Serializable, ApplicationContextAware {
   @Autowired
   private LiveSQLDialect liveSQLDialect;
 
+  @Autowired
+  private SpringBeanObjectFactory springBeanObjectFactory;
+
   private ApplicationContext applicationContext;
 
   @Override
   public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
+    this.sqlSession.getConfiguration().setObjectFactory(this.springBeanObjectFactory);
   }
 
   // Row Parser
@@ -79,31 +84,22 @@ public class NumbersDAO implements Serializable, ApplicationContextAware {
     app.daos.NumbersVO mo = this.applicationContext.getBean(app.daos.NumbersVO.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
-    mo.setInt1(CastUtil.toShort((Number) m.get(p + "int1" + s)));
-    mo.setInt2(CastUtil.toInteger((Number) m.get(p + "int2" + s)));
-    mo.setInt3(CastUtil.toLong((Number) m.get(p + "int3" + s)));
-    mo.setInt4(m.get(p + "int4" + s));
-    mo.setInt5(CastUtil.toInteger((Number) m.get(p + "int5" + s)));
-    mo.setInt6(CastUtil.toLong((Number) m.get(p + "int6" + s)));
-    mo.setIntTotalAmount(CastUtil.toInteger((Number) m.get(p + "intTotalAmount" + s)));
-    mo.setColumns(CastUtil.toInteger((Number) m.get(p + "columns" + s)));
-    mo.setDec1(CastUtil.toBigDecimal((Number) m.get(p + "dec1" + s)));
-    mo.setDec2(CastUtil.toBigDecimal((Number) m.get(p + "dec2" + s)));
-    mo.setDec3(CastUtil.toByte((Number) m.get(p + "dec3" + s)));
-    mo.setDec4(CastUtil.toShort((Number) m.get(p + "dec4" + s)));
-    mo.setDec5(CastUtil.toInteger((Number) m.get(p + "dec5" + s)));
-    mo.setDec6(CastUtil.toLong((Number) m.get(p + "dec6" + s)));
-    mo.setDec7(CastUtil.toBigInteger((Number) m.get(p + "dec7" + s)));
-    mo.setDecTotalAmount(CastUtil.toShort((Number) m.get(p + "decTotalAmount" + s)));
-    mo.setFlo1(CastUtil.toFloat((Number) m.get(p + "flo1" + s)));
-    mo.setFlo2(CastUtil.toDouble((Number) m.get(p + "flo2" + s)));
-    mo.setFloTotalAmount(CastUtil.toFloat((Number) m.get(p + "floTotalAmount" + s)));
+    mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
+    mo.setInt1(CastUtil.toInteger((Number) m.get(p + "int1" + s)));
     return mo;
   }
 
-  // no select by PK generated, since the table does not have a PK.
+  // select by primary key
 
-  // select by unique indexes: no unique indexes found -- skipped
+  public app.daos.NumbersVO select(final java.lang.Integer id) {
+    if (id == null)
+      return null;
+    app.daos.NumbersVO vo = new app.daos.NumbersVO();
+    vo.setId(id);
+    return this.sqlSession.selectOne("mappers.numbers.selectByPK", vo);
+  }
+
+  // select by unique indexes: no unique indexes found (besides the PK) -- skipped
 
   // select by example
 
@@ -136,38 +132,30 @@ public class NumbersDAO implements Serializable, ApplicationContextAware {
   // insert
 
   public app.daos.NumbersVO insert(final app.daos.primitives.AbstractNumbersVO vo) {
-    return insert(vo, false);
-  }
-
-  public app.daos.NumbersVO insert(final app.daos.primitives.AbstractNumbersVO vo, final boolean retrieveDefaults) {
-    String id = retrieveDefaults ? "mappers.numbers.insertRetrievingDefaults" : "mappers.numbers.insert";
-    int rows = this.sqlSession.insert(id, vo);
+    String id = "mappers.numbers.insert";
+    this.sqlSession.insert(id, vo);
     app.daos.NumbersVO mo = new app.daos.NumbersVO();
+    mo.setId(vo.getId());
     mo.setInt1(vo.getInt1());
-    mo.setInt2(vo.getInt2());
-    mo.setInt3(vo.getInt3());
-    mo.setInt4(vo.getInt4());
-    mo.setInt5(vo.getInt5());
-    mo.setInt6(vo.getInt6());
-    mo.setIntTotalAmount(vo.getIntTotalAmount());
-    mo.setColumns(vo.getColumns());
-    mo.setDec1(vo.getDec1());
-    mo.setDec2(vo.getDec2());
-    mo.setDec3(vo.getDec3());
-    mo.setDec4(vo.getDec4());
-    mo.setDec5(vo.getDec5());
-    mo.setDec6(vo.getDec6());
-    mo.setDec7(vo.getDec7());
-    mo.setDecTotalAmount(vo.getDecTotalAmount());
-    mo.setFlo1(vo.getFlo1());
-    mo.setFlo2(vo.getFlo2());
-    mo.setFloTotalAmount(vo.getFloTotalAmount());
     return mo;
   }
 
-  // no update by PK generated, since the table does not have a PK.
+  // update by PK
 
-  // no delete by PK generated, since the table does not have a PK.
+  public int update(final app.daos.NumbersVO vo) {
+    if (vo.id == null) return 0;
+    return this.sqlSession.update("mappers.numbers.updateByPK", vo);
+  }
+
+  // delete by PK
+
+  public int delete(final java.lang.Integer id) {
+    if (id == null) return 0;
+    app.daos.NumbersVO vo = new app.daos.NumbersVO();
+    vo.setId(id);
+    if (vo.id == null) return 0;
+    return this.sqlSession.delete("mappers.numbers.deleteByPK", vo);
+  }
 
   // update by example
 
@@ -181,25 +169,8 @@ public class NumbersDAO implements Serializable, ApplicationContextAware {
 
   public UpdateSetCompletePhase update(final app.daos.primitives.AbstractNumbersVO updateValues, final NumbersDAO.NumbersTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
+    if (updateValues.getId() != null) values.put("id", updateValues.getId());
     if (updateValues.getInt1() != null) values.put("int1", updateValues.getInt1());
-    if (updateValues.getInt2() != null) values.put("int2", updateValues.getInt2());
-    if (updateValues.getInt3() != null) values.put("int3", updateValues.getInt3());
-    if (updateValues.getInt4() != null) values.put("int4", updateValues.getInt4());
-    if (updateValues.getInt5() != null) values.put("int5", updateValues.getInt5());
-    if (updateValues.getInt6() != null) values.put("int6", updateValues.getInt6());
-    if (updateValues.getIntTotalAmount() != null) values.put("int_total_amount", updateValues.getIntTotalAmount());
-    if (updateValues.getColumns() != null) values.put("columns", updateValues.getColumns());
-    if (updateValues.getDec1() != null) values.put("dec1", updateValues.getDec1());
-    if (updateValues.getDec2() != null) values.put("dec2", updateValues.getDec2());
-    if (updateValues.getDec3() != null) values.put("dec3", updateValues.getDec3());
-    if (updateValues.getDec4() != null) values.put("dec4", updateValues.getDec4());
-    if (updateValues.getDec5() != null) values.put("dec5", updateValues.getDec5());
-    if (updateValues.getDec6() != null) values.put("dec6", updateValues.getDec6());
-    if (updateValues.getDec7() != null) values.put("dec7", updateValues.getDec7());
-    if (updateValues.getDecTotalAmount() != null) values.put("dec_total_amount", updateValues.getDecTotalAmount());
-    if (updateValues.getFlo1() != null) values.put("flo1", updateValues.getFlo1());
-    if (updateValues.getFlo2() != null) values.put("flo2", updateValues.getFlo2());
-    if (updateValues.getFloTotalAmount() != null) values.put("flo_total_amount", updateValues.getFloTotalAmount());
     return new UpdateSetCompletePhase(tableOrView, this.liveSQLDialect, this.sqlSession,
       "mappers.numbers.updateByCriteria", predicate, values);
   }
@@ -222,44 +193,10 @@ public class NumbersDAO implements Serializable, ApplicationContextAware {
 
   public enum NumbersOrderBy implements OrderBy {
 
+    ID("public.numbers", "id", true), //
+    ID$DESC("public.numbers", "id", false), //
     INT1("public.numbers", "int1", true), //
-    INT1$DESC("public.numbers", "int1", false), //
-    INT2("public.numbers", "int2", true), //
-    INT2$DESC("public.numbers", "int2", false), //
-    INT3("public.numbers", "int3", true), //
-    INT3$DESC("public.numbers", "int3", false), //
-    INT4("public.numbers", "int4", true), //
-    INT4$DESC("public.numbers", "int4", false), //
-    INT5("public.numbers", "int5", true), //
-    INT5$DESC("public.numbers", "int5", false), //
-    INT6("public.numbers", "int6", true), //
-    INT6$DESC("public.numbers", "int6", false), //
-    INT_TOTAL_AMOUNT("public.numbers", "int_total_amount", true), //
-    INT_TOTAL_AMOUNT$DESC("public.numbers", "int_total_amount", false), //
-    COLUMNS("public.numbers", "columns", true), //
-    COLUMNS$DESC("public.numbers", "columns", false), //
-    DEC1("public.numbers", "dec1", true), //
-    DEC1$DESC("public.numbers", "dec1", false), //
-    DEC2("public.numbers", "dec2", true), //
-    DEC2$DESC("public.numbers", "dec2", false), //
-    DEC3("public.numbers", "dec3", true), //
-    DEC3$DESC("public.numbers", "dec3", false), //
-    DEC4("public.numbers", "dec4", true), //
-    DEC4$DESC("public.numbers", "dec4", false), //
-    DEC5("public.numbers", "dec5", true), //
-    DEC5$DESC("public.numbers", "dec5", false), //
-    DEC6("public.numbers", "dec6", true), //
-    DEC6$DESC("public.numbers", "dec6", false), //
-    DEC7("public.numbers", "dec7", true), //
-    DEC7$DESC("public.numbers", "dec7", false), //
-    DEC_TOTAL_AMOUNT("public.numbers", "dec_total_amount", true), //
-    DEC_TOTAL_AMOUNT$DESC("public.numbers", "dec_total_amount", false), //
-    FLO1("public.numbers", "flo1", true), //
-    FLO1$DESC("public.numbers", "flo1", false), //
-    FLO2("public.numbers", "flo2", true), //
-    FLO2$DESC("public.numbers", "flo2", false), //
-    FLO_TOTAL_AMOUNT("public.numbers", "flo_total_amount", true), //
-    FLO_TOTAL_AMOUNT$DESC("public.numbers", "flo_total_amount", false);
+    INT1$DESC("public.numbers", "int1", false);
 
     private NumbersOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -300,41 +237,24 @@ public class NumbersDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
+    public NumberColumn id;
     public NumberColumn int1;
-    public NumberColumn int2;
-    public NumberColumn int3;
-    public ObjectColumn int4;
-    public NumberColumn int5;
-    public NumberColumn int6;
-    public NumberColumn intTotalAmount;
-    public NumberColumn columns;
-    public NumberColumn dec1;
-    public NumberColumn dec2;
-    public NumberColumn dec3;
-    public NumberColumn dec4;
-    public NumberColumn dec5;
-    public NumberColumn dec6;
-    public NumberColumn dec7;
-    public NumberColumn decTotalAmount;
-    public NumberColumn flo1;
-    public NumberColumn flo2;
-    public NumberColumn floTotalAmount;
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this, this.int1, this.int2, this.int3, this.int4, this.int5, this.int6, this.intTotalAmount, this.columns, this.dec1, this.dec2, this.dec3, this.dec4, this.dec5, this.dec6, this.dec7, this.decTotalAmount, this.flo1, this.flo2, this.floTotalAmount);
+      return new AllColumns(this, this.id, this.int1);
     }
 
     // Constructors
 
     NumbersTable() {
-      super(null, "public", "numbers", "Table", null);
+      super(null, "PUBLIC", "NUMBERS", "Table", null);
       initialize();
     }
 
     NumbersTable(final String alias) {
-      super(null, "public", "numbers", "Table", alias);
+      super(null, "PUBLIC", "NUMBERS", "Table", alias);
       initialize();
     }
 
@@ -342,44 +262,10 @@ public class NumbersDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.int1 = new NumberColumn(this, "int1", "int1", "int2", 5, 0);
+      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
+      super.columns.add(this.id);
+      this.int1 = new NumberColumn(this, "INT1", "int1", "INTEGER", 32, 0);
       super.columns.add(this.int1);
-      this.int2 = new NumberColumn(this, "int2", "int2", "int4", 10, 0);
-      super.columns.add(this.int2);
-      this.int3 = new NumberColumn(this, "int3", "int3", "int8", 19, 0);
-      super.columns.add(this.int3);
-      this.int4 = new ObjectColumn(this, "int4", "int4", "smallserial", 5, 0);
-      super.columns.add(this.int4);
-      this.int5 = new NumberColumn(this, "int5", "int5", "serial", 10, 0);
-      super.columns.add(this.int5);
-      this.int6 = new NumberColumn(this, "int6", "int6", "bigserial", 19, 0);
-      super.columns.add(this.int6);
-      this.intTotalAmount = new NumberColumn(this, "int_total_amount", "intTotalAmount", "int4", 10, 0);
-      super.columns.add(this.intTotalAmount);
-      this.columns = new NumberColumn(this, "columns", "columns", "int4", 10, 0);
-      super.columns.add(this.columns);
-      this.dec1 = new NumberColumn(this, "dec1", "dec1", "numeric", 12, 2);
-      super.columns.add(this.dec1);
-      this.dec2 = new NumberColumn(this, "dec2", "dec2", "numeric", 12, 2);
-      super.columns.add(this.dec2);
-      this.dec3 = new NumberColumn(this, "dec3", "dec3", "numeric", 2, 0);
-      super.columns.add(this.dec3);
-      this.dec4 = new NumberColumn(this, "dec4", "dec4", "numeric", 4, 0);
-      super.columns.add(this.dec4);
-      this.dec5 = new NumberColumn(this, "dec5", "dec5", "numeric", 8, 0);
-      super.columns.add(this.dec5);
-      this.dec6 = new NumberColumn(this, "dec6", "dec6", "numeric", 18, 0);
-      super.columns.add(this.dec6);
-      this.dec7 = new NumberColumn(this, "dec7", "dec7", "numeric", 100, 0);
-      super.columns.add(this.dec7);
-      this.decTotalAmount = new NumberColumn(this, "dec_total_amount", "decTotalAmount", "numeric", 4, 0);
-      super.columns.add(this.decTotalAmount);
-      this.flo1 = new NumberColumn(this, "flo1", "flo1", "float4", 8, 8);
-      super.columns.add(this.flo1);
-      this.flo2 = new NumberColumn(this, "flo2", "flo2", "float8", 17, 17);
-      super.columns.add(this.flo2);
-      this.floTotalAmount = new NumberColumn(this, "flo_total_amount", "floTotalAmount", "float4", 8, 8);
-      super.columns.add(this.floTotalAmount);
     }
 
   }

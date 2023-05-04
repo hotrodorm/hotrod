@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.util.CastUtil;
 import org.hotrod.runtime.livesql.metadata.Column;
@@ -58,11 +59,15 @@ public class BinariesDAO implements Serializable, ApplicationContextAware {
   @Autowired
   private LiveSQLDialect liveSQLDialect;
 
+  @Autowired
+  private SpringBeanObjectFactory springBeanObjectFactory;
+
   private ApplicationContext applicationContext;
 
   @Override
   public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
+    this.sqlSession.getConfiguration().setObjectFactory(this.springBeanObjectFactory);
   }
 
   // Row Parser
@@ -79,14 +84,21 @@ public class BinariesDAO implements Serializable, ApplicationContextAware {
     app.daos.BinariesVO mo = this.applicationContext.getBean(app.daos.BinariesVO.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
-    mo.setBin1((byte[]) m.get(p + "bin1" + s));
-    mo.setBol1((java.lang.Boolean) m.get(p + "bol1" + s));
+    mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
     return mo;
   }
 
-  // no select by PK generated, since the table does not have a PK.
+  // select by primary key
 
-  // select by unique indexes: no unique indexes found -- skipped
+  public app.daos.BinariesVO select(final java.lang.Integer id) {
+    if (id == null)
+      return null;
+    app.daos.BinariesVO vo = new app.daos.BinariesVO();
+    vo.setId(id);
+    return this.sqlSession.selectOne("mappers.binaries.selectByPK", vo);
+  }
+
+  // select by unique indexes: no unique indexes found (besides the PK) -- skipped
 
   // select by example
 
@@ -122,14 +134,26 @@ public class BinariesDAO implements Serializable, ApplicationContextAware {
     String id = "mappers.binaries.insert";
     this.sqlSession.insert(id, vo);
     app.daos.BinariesVO mo = new app.daos.BinariesVO();
-    mo.setBin1(vo.getBin1());
-    mo.setBol1(vo.getBol1());
+    mo.setId(vo.getId());
     return mo;
   }
 
-  // no update by PK generated, since the table does not have a PK.
+  // update by PK
 
-  // no delete by PK generated, since the table does not have a PK.
+  public int update(final app.daos.BinariesVO vo) {
+    if (vo.id == null) return 0;
+    return this.sqlSession.update("mappers.binaries.updateByPK", vo);
+  }
+
+  // delete by PK
+
+  public int delete(final java.lang.Integer id) {
+    if (id == null) return 0;
+    app.daos.BinariesVO vo = new app.daos.BinariesVO();
+    vo.setId(id);
+    if (vo.id == null) return 0;
+    return this.sqlSession.delete("mappers.binaries.deleteByPK", vo);
+  }
 
   // update by example
 
@@ -143,8 +167,7 @@ public class BinariesDAO implements Serializable, ApplicationContextAware {
 
   public UpdateSetCompletePhase update(final app.daos.primitives.AbstractBinariesVO updateValues, final BinariesDAO.BinariesTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
-    if (updateValues.getBin1() != null) values.put("bin1", updateValues.getBin1());
-    if (updateValues.getBol1() != null) values.put("bol1", updateValues.getBol1());
+    if (updateValues.getId() != null) values.put("id", updateValues.getId());
     return new UpdateSetCompletePhase(tableOrView, this.liveSQLDialect, this.sqlSession,
       "mappers.binaries.updateByCriteria", predicate, values);
   }
@@ -167,10 +190,8 @@ public class BinariesDAO implements Serializable, ApplicationContextAware {
 
   public enum BinariesOrderBy implements OrderBy {
 
-    BIN1("public.binaries", "bin1", true), //
-    BIN1$DESC("public.binaries", "bin1", false), //
-    BOL1("public.binaries", "bol1", true), //
-    BOL1$DESC("public.binaries", "bol1", false);
+    ID("public.binaries", "id", true), //
+    ID$DESC("public.binaries", "id", false);
 
     private BinariesOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -211,24 +232,23 @@ public class BinariesDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public ByteArrayColumn bin1;
-    public BooleanColumn bol1;
+    public NumberColumn id;
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this, this.bin1, this.bol1);
+      return new AllColumns(this, this.id);
     }
 
     // Constructors
 
     BinariesTable() {
-      super(null, "public", "binaries", "Table", null);
+      super(null, "PUBLIC", "BINARIES", "Table", null);
       initialize();
     }
 
     BinariesTable(final String alias) {
-      super(null, "public", "binaries", "Table", alias);
+      super(null, "PUBLIC", "BINARIES", "Table", alias);
       initialize();
     }
 
@@ -236,10 +256,8 @@ public class BinariesDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.bin1 = new ByteArrayColumn(this, "bin1", "bin1", "bytea", 2147483647, 0);
-      super.columns.add(this.bin1);
-      this.bol1 = new BooleanColumn(this, "bol1", "bol1", "bool", 1, 0);
-      super.columns.add(this.bol1);
+      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
+      super.columns.add(this.id);
     }
 
   }
