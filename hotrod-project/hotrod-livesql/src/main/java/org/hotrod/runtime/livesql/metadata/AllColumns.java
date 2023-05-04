@@ -9,16 +9,12 @@ import org.hotrod.runtime.livesql.expressions.AliasedExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
-import org.hotrodorm.hotrod.utils.SUtil;
 
 public class AllColumns implements ResultSetColumn {
 
-  private TableOrView tableOrView;
   private Column[] columns;
 
-  public AllColumns(final TableOrView tableOrView, final Column... columns) {
-    super();
-    this.tableOrView = tableOrView;
+  public AllColumns(final Column... columns) {
     this.columns = columns;
   }
 
@@ -26,61 +22,21 @@ public class AllColumns implements ResultSetColumn {
     return new ColumnSubset(Arrays.stream(this.columns).filter(predicate).collect(Collectors.toList()));
   }
 
-  public static class Alias {
-    private String alias;
-
-    protected Alias(final String alias) {
-      this.alias = alias;
-    }
-
-    protected Alias(final String... propertyParts) {
-      StringBuilder sb = new StringBuilder();
-      boolean first = true;
-      for (String p : propertyParts) {
-        if (first) {
-          first = false;
-          sb.append(p.toLowerCase());
-        } else {
-          sb.append(SUtil.upperFirst(p));
-        }
-      }
-      this.alias = sb.toString();
-    }
-
-    public static Alias literal(final String alias) {
-      return new Alias(alias);
-    }
-
-    public static Alias property(final String... alias) {
-      return new Alias(alias);
-    }
-
-    public String getAlias() {
-      return alias;
-    }
-
-  }
-
   public static interface ColumnRenamer {
-    Alias rename(Column c);
+    String newName(Column c);
   }
 
-  public ColumnAliased as(final ColumnRenamer renamer) {
+  public ColumnAliased as(final ColumnRenamer aliaser) {
     return new ColumnAliased(Arrays.stream(this.columns) //
         .map(c -> {
-          Alias a = renamer.rename(c);
-          return new AliasedExpression((Expression) c, a.alias);
+          return new AliasedExpression((Expression) c, aliaser.newName(c));
         }) //
         .collect(Collectors.toList()));
   }
 
   @Override
   public void renderTo(QueryWriter w) {
-    if (this.tableOrView.getAlias() != null) {
-      w.write(this.tableOrView.getAlias());
-      w.write(".");
-    }
-    w.write("*");
+    throw new UnsupportedOperationException();
   }
 
   public static interface ColumnList extends ResultSetColumn {
@@ -99,11 +55,10 @@ public class AllColumns implements ResultSetColumn {
       return this.columns.isEmpty();
     }
 
-    public ColumnAliased as(final ColumnRenamer renamer) {
+    public ColumnAliased as(final ColumnRenamer aliaser) {
       return new ColumnAliased(this.columns.stream() //
           .map(c -> {
-            Alias a = renamer.rename(c);
-            return new AliasedExpression((Expression) c, a.alias);
+            return new AliasedExpression((Expression) c, aliaser.newName(c));
           }) //
           .collect(Collectors.toList()));
     }
@@ -119,7 +74,6 @@ public class AllColumns implements ResultSetColumn {
         }
         this.columns.get(i).renderTo(w);
       }
-
     }
 
   }
