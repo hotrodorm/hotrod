@@ -85,6 +85,11 @@ public class DatesDAO implements Serializable, ApplicationContextAware {
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
     mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
+    mo.setTim1((java.sql.Time) m.get(p + "tim1" + s));
+    mo.setDat1((java.sql.Date) m.get(p + "dat1" + s));
+    mo.setTs1((java.sql.Timestamp) m.get(p + "ts1" + s));
+    mo.setTs2((java.sql.Timestamp) m.get(p + "ts2" + s));
+    mo.setTs3((java.sql.Timestamp) m.get(p + "ts3" + s));
     return mo;
   }
 
@@ -135,6 +140,11 @@ public class DatesDAO implements Serializable, ApplicationContextAware {
     this.sqlSession.insert(id, vo);
     app.daos.DatesVO mo = new app.daos.DatesVO();
     mo.setId(vo.getId());
+    mo.setTim1(vo.getTim1());
+    mo.setDat1(vo.getDat1());
+    mo.setTs1(vo.getTs1());
+    mo.setTs2(vo.getTs2());
+    mo.setTs3(vo.getTs3());
     return mo;
   }
 
@@ -168,6 +178,11 @@ public class DatesDAO implements Serializable, ApplicationContextAware {
   public UpdateSetCompletePhase update(final app.daos.primitives.AbstractDatesVO updateValues, final DatesDAO.DatesTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
     if (updateValues.getId() != null) values.put("id", updateValues.getId());
+    if (updateValues.getTim1() != null) values.put("tim1", updateValues.getTim1());
+    if (updateValues.getDat1() != null) values.put("dat1", updateValues.getDat1());
+    if (updateValues.getTs1() != null) values.put("ts1", updateValues.getTs1());
+    if (updateValues.getTs2() != null) values.put("ts2", updateValues.getTs2());
+    if (updateValues.getTs3() != null) values.put("ts3", updateValues.getTs3());
     return new UpdateSetCompletePhase(tableOrView, this.liveSQLDialect, this.sqlSession,
       "mappers.dates.updateByCriteria", predicate, values);
   }
@@ -191,7 +206,17 @@ public class DatesDAO implements Serializable, ApplicationContextAware {
   public enum DatesOrderBy implements OrderBy {
 
     ID("public.dates", "id", true), //
-    ID$DESC("public.dates", "id", false);
+    ID$DESC("public.dates", "id", false), //
+    TIM1("public.dates", "tim1", true), //
+    TIM1$DESC("public.dates", "tim1", false), //
+    DAT1("public.dates", "dat1", true), //
+    DAT1$DESC("public.dates", "dat1", false), //
+    TS1("public.dates", "ts1", true), //
+    TS1$DESC("public.dates", "ts1", false), //
+    TS2("public.dates", "ts2", true), //
+    TS2$DESC("public.dates", "ts2", false), //
+    TS3("public.dates", "ts3", true), //
+    TS3$DESC("public.dates", "ts3", false);
 
     private DatesOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -233,11 +258,16 @@ public class DatesDAO implements Serializable, ApplicationContextAware {
     // Properties
 
     public NumberColumn id;
+    public DateTimeColumn tim1;
+    public DateTimeColumn dat1;
+    public DateTimeColumn ts1;
+    public DateTimeColumn ts2;
+    public DateTimeColumn ts3;
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this, this.id);
+      return new AllColumns(this, this.id, this.tim1, this.dat1, this.ts1, this.ts2, this.ts3);
     }
 
     // Constructors
@@ -258,6 +288,16 @@ public class DatesDAO implements Serializable, ApplicationContextAware {
       super.columns = new ArrayList<>();
       this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
       super.columns.add(this.id);
+      this.tim1 = new DateTimeColumn(this, "TIM1", "tim1", "TIME", 8, 0);
+      super.columns.add(this.tim1);
+      this.dat1 = new DateTimeColumn(this, "DAT1", "dat1", "DATE", 10, 0);
+      super.columns.add(this.dat1);
+      this.ts1 = new DateTimeColumn(this, "TS1", "ts1", "TIMESTAMP", 26, 6);
+      super.columns.add(this.ts1);
+      this.ts2 = new DateTimeColumn(this, "TS2", "ts2", "TIMESTAMP", 26, 6);
+      super.columns.add(this.ts2);
+      this.ts3 = new DateTimeColumn(this, "TS3", "ts3", "TIMESTAMP", 19, 0);
+      super.columns.add(this.ts3);
     }
 
   }

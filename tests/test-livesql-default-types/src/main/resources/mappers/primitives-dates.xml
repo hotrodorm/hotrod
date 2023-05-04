@@ -7,15 +7,30 @@
   <!-- columns -->
 
   <sql id="columns">
-    id
+    id,
+    tim1,
+    dat1,
+    ts1,
+    ts2,
+    ts3
   </sql>
 
   <sql id="columnsWithAlias">
-    ${alias}.id
+    ${alias}.id,
+    ${alias}.tim1,
+    ${alias}.dat1,
+    ${alias}.ts1,
+    ${alias}.ts2,
+    ${alias}.ts3
   </sql>
 
   <resultMap id="allColumns" type="app.daos.DatesVO">
     <id property="id" column="ID" />
+    <result property="tim1" column="TIM1" />
+    <result property="dat1" column="DAT1" />
+    <result property="ts1" column="TS1" />
+    <result property="ts2" column="TS2" />
+    <result property="ts3" column="TS3" />
   </resultMap>
 
   <!-- select by PK -->
@@ -40,6 +55,21 @@
       <if test="p.id != null">
         and id = #{p.id,jdbcType=INTEGER}
       </if>
+      <if test="p.tim1 != null">
+        and tim1 = #{p.tim1,jdbcType=TIME}
+      </if>
+      <if test="p.dat1 != null">
+        and dat1 = #{p.dat1,jdbcType=DATE}
+      </if>
+      <if test="p.ts1 != null">
+        and ts1 = #{p.ts1,jdbcType=TIMESTAMP}
+      </if>
+      <if test="p.ts2 != null">
+        and ts2 = #{p.ts2,jdbcType=TIMESTAMP}
+      </if>
+      <if test="p.ts3 != null">
+        and ts3 = #{p.ts3,jdbcType=TIMESTAMP}
+      </if>
     </trim>
     <if test="o != null">
       order by ${o}
@@ -58,15 +88,36 @@
     insert into public.dates (
       <trim prefixOverrides=", ">
         <if test="true">, id</if>
+        <if test="true">, tim1</if>
+        <if test="true">, dat1</if>
+        <if test="true">, ts1</if>
+        <if test="true">, ts2</if>
+        <if test="true">, ts3</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
         <if test="true">, #{id,jdbcType=INTEGER}</if>
+        <if test="true">, #{tim1,jdbcType=TIME}</if>
+        <if test="true">, #{dat1,jdbcType=DATE}</if>
+        <if test="true">, #{ts1,jdbcType=TIMESTAMP}</if>
+        <if test="true">, #{ts2,jdbcType=TIMESTAMP}</if>
+        <if test="true">, #{ts3,jdbcType=TIMESTAMP}</if>
       </trim>
       )
   </insert>
 
-  <!-- update by PK: no update mapping generated, since there aren't any columns besides the PK -->
+  <!-- update by PK -->
+
+  <update id="updateByPK">
+    update public.dates set
+      tim1 = #{tim1,jdbcType=TIME},
+      dat1 = #{dat1,jdbcType=DATE},
+      ts1 = #{ts1,jdbcType=TIMESTAMP},
+      ts2 = #{ts2,jdbcType=TIMESTAMP},
+      ts3 = #{ts3,jdbcType=TIMESTAMP}
+     where
+      id = #{id,jdbcType=INTEGER}
+  </update>
 
   <!-- delete by PK -->
 
@@ -82,10 +133,30 @@
     update public.dates
     <set>
       <if test="values.id != null">id = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.tim1 != null">tim1 = #{values.tim1,jdbcType=TIME},</if>
+      <if test="values.dat1 != null">dat1 = #{values.dat1,jdbcType=DATE},</if>
+      <if test="values.ts1 != null">ts1 = #{values.ts1,jdbcType=TIMESTAMP},</if>
+      <if test="values.ts2 != null">ts2 = #{values.ts2,jdbcType=TIMESTAMP},</if>
+      <if test="values.ts3 != null">ts3 = #{values.ts3,jdbcType=TIMESTAMP},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.id != null">
         and id = #{filter.id,jdbcType=INTEGER}
+      </if>
+      <if test="filter.tim1 != null">
+        and tim1 = #{filter.tim1,jdbcType=TIME}
+      </if>
+      <if test="filter.dat1 != null">
+        and dat1 = #{filter.dat1,jdbcType=DATE}
+      </if>
+      <if test="filter.ts1 != null">
+        and ts1 = #{filter.ts1,jdbcType=TIMESTAMP}
+      </if>
+      <if test="filter.ts2 != null">
+        and ts2 = #{filter.ts2,jdbcType=TIMESTAMP}
+      </if>
+      <if test="filter.ts3 != null">
+        and ts3 = #{filter.ts3,jdbcType=TIMESTAMP}
       </if>
     </trim>
   </update>
@@ -103,6 +174,21 @@
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="id != null">
         and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="tim1 != null">
+        and tim1 = #{tim1,jdbcType=TIME}
+      </if>
+      <if test="dat1 != null">
+        and dat1 = #{dat1,jdbcType=DATE}
+      </if>
+      <if test="ts1 != null">
+        and ts1 = #{ts1,jdbcType=TIMESTAMP}
+      </if>
+      <if test="ts2 != null">
+        and ts2 = #{ts2,jdbcType=TIMESTAMP}
+      </if>
+      <if test="ts3 != null">
+        and ts3 = #{ts3,jdbcType=TIMESTAMP}
       </if>
     </trim>
   </delete>

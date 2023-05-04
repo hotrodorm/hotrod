@@ -85,6 +85,16 @@ public class BinariesDAO implements Serializable, ApplicationContextAware {
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
     mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
+    mo.setBin1((byte[]) m.get(p + "bin1" + s));
+    mo.setBin2((byte[]) m.get(p + "bin2" + s));
+    mo.setBin3((byte[]) m.get(p + "bin3" + s));
+    mo.setBin4((byte[]) m.get(p + "bin4" + s));
+    mo.setBin5((byte[]) m.get(p + "bin5" + s));
+    mo.setBlo1((byte[]) m.get(p + "blo1" + s));
+    mo.setBlo2((byte[]) m.get(p + "blo2" + s));
+    mo.setBlo3((byte[]) m.get(p + "blo3" + s));
+    mo.setBlo4((byte[]) m.get(p + "blo4" + s));
+    mo.setBlo5((byte[]) m.get(p + "blo5" + s));
     return mo;
   }
 
@@ -135,6 +145,16 @@ public class BinariesDAO implements Serializable, ApplicationContextAware {
     this.sqlSession.insert(id, vo);
     app.daos.BinariesVO mo = new app.daos.BinariesVO();
     mo.setId(vo.getId());
+    mo.setBin1(vo.getBin1());
+    mo.setBin2(vo.getBin2());
+    mo.setBin3(vo.getBin3());
+    mo.setBin4(vo.getBin4());
+    mo.setBin5(vo.getBin5());
+    mo.setBlo1(vo.getBlo1());
+    mo.setBlo2(vo.getBlo2());
+    mo.setBlo3(vo.getBlo3());
+    mo.setBlo4(vo.getBlo4());
+    mo.setBlo5(vo.getBlo5());
     return mo;
   }
 
@@ -168,6 +188,16 @@ public class BinariesDAO implements Serializable, ApplicationContextAware {
   public UpdateSetCompletePhase update(final app.daos.primitives.AbstractBinariesVO updateValues, final BinariesDAO.BinariesTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
     if (updateValues.getId() != null) values.put("id", updateValues.getId());
+    if (updateValues.getBin1() != null) values.put("bin1", updateValues.getBin1());
+    if (updateValues.getBin2() != null) values.put("bin2", updateValues.getBin2());
+    if (updateValues.getBin3() != null) values.put("bin3", updateValues.getBin3());
+    if (updateValues.getBin4() != null) values.put("bin4", updateValues.getBin4());
+    if (updateValues.getBin5() != null) values.put("bin5", updateValues.getBin5());
+    if (updateValues.getBlo1() != null) values.put("blo1", updateValues.getBlo1());
+    if (updateValues.getBlo2() != null) values.put("blo2", updateValues.getBlo2());
+    if (updateValues.getBlo3() != null) values.put("blo3", updateValues.getBlo3());
+    if (updateValues.getBlo4() != null) values.put("blo4", updateValues.getBlo4());
+    if (updateValues.getBlo5() != null) values.put("blo5", updateValues.getBlo5());
     return new UpdateSetCompletePhase(tableOrView, this.liveSQLDialect, this.sqlSession,
       "mappers.binaries.updateByCriteria", predicate, values);
   }
@@ -191,7 +221,27 @@ public class BinariesDAO implements Serializable, ApplicationContextAware {
   public enum BinariesOrderBy implements OrderBy {
 
     ID("public.binaries", "id", true), //
-    ID$DESC("public.binaries", "id", false);
+    ID$DESC("public.binaries", "id", false), //
+    BIN1("public.binaries", "bin1", true), //
+    BIN1$DESC("public.binaries", "bin1", false), //
+    BIN2("public.binaries", "bin2", true), //
+    BIN2$DESC("public.binaries", "bin2", false), //
+    BIN3("public.binaries", "bin3", true), //
+    BIN3$DESC("public.binaries", "bin3", false), //
+    BIN4("public.binaries", "bin4", true), //
+    BIN4$DESC("public.binaries", "bin4", false), //
+    BIN5("public.binaries", "bin5", true), //
+    BIN5$DESC("public.binaries", "bin5", false), //
+    BLO1("public.binaries", "blo1", true), //
+    BLO1$DESC("public.binaries", "blo1", false), //
+    BLO2("public.binaries", "blo2", true), //
+    BLO2$DESC("public.binaries", "blo2", false), //
+    BLO3("public.binaries", "blo3", true), //
+    BLO3$DESC("public.binaries", "blo3", false), //
+    BLO4("public.binaries", "blo4", true), //
+    BLO4$DESC("public.binaries", "blo4", false), //
+    BLO5("public.binaries", "blo5", true), //
+    BLO5$DESC("public.binaries", "blo5", false);
 
     private BinariesOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -233,11 +283,21 @@ public class BinariesDAO implements Serializable, ApplicationContextAware {
     // Properties
 
     public NumberColumn id;
+    public ByteArrayColumn bin1;
+    public ByteArrayColumn bin2;
+    public ByteArrayColumn bin3;
+    public ByteArrayColumn bin4;
+    public ByteArrayColumn bin5;
+    public ByteArrayColumn blo1;
+    public ByteArrayColumn blo2;
+    public ByteArrayColumn blo3;
+    public ByteArrayColumn blo4;
+    public ByteArrayColumn blo5;
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this, this.id);
+      return new AllColumns(this, this.id, this.bin1, this.bin2, this.bin3, this.bin4, this.bin5, this.blo1, this.blo2, this.blo3, this.blo4, this.blo5);
     }
 
     // Constructors
@@ -258,6 +318,26 @@ public class BinariesDAO implements Serializable, ApplicationContextAware {
       super.columns = new ArrayList<>();
       this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
       super.columns.add(this.id);
+      this.bin1 = new ByteArrayColumn(this, "BIN1", "bin1", "BINARY", 100, 0);
+      super.columns.add(this.bin1);
+      this.bin2 = new ByteArrayColumn(this, "BIN2", "bin2", "BINARY VARYING", 100, 0);
+      super.columns.add(this.bin2);
+      this.bin3 = new ByteArrayColumn(this, "BIN3", "bin3", "BINARY VARYING", 100, 0);
+      super.columns.add(this.bin3);
+      this.bin4 = new ByteArrayColumn(this, "BIN4", "bin4", "BINARY VARYING", 100, 0);
+      super.columns.add(this.bin4);
+      this.bin5 = new ByteArrayColumn(this, "BIN5", "bin5", "BINARY VARYING", 100, 0);
+      super.columns.add(this.bin5);
+      this.blo1 = new ByteArrayColumn(this, "BLO1", "blo1", "BINARY LARGE OBJECT", 1000000, 0);
+      super.columns.add(this.blo1);
+      this.blo2 = new ByteArrayColumn(this, "BLO2", "blo2", "BINARY LARGE OBJECT", 1000000, 0);
+      super.columns.add(this.blo2);
+      this.blo3 = new ByteArrayColumn(this, "BLO3", "blo3", "BINARY LARGE OBJECT", 1000000, 0);
+      super.columns.add(this.blo3);
+      this.blo4 = new ByteArrayColumn(this, "BLO4", "blo4", "BINARY LARGE OBJECT", 1000000, 0);
+      super.columns.add(this.blo4);
+      this.blo5 = new ByteArrayColumn(this, "BLO5", "blo5", "BINARY LARGE OBJECT", 1000000, 0);
+      super.columns.add(this.blo5);
     }
 
   }

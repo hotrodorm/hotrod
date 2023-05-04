@@ -6,6 +6,7 @@ import java.util.Map;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.metadata.AllColumns.Alias;
+import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.queries.select.SelectFromPhase;
 import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.mybatis.spring.annotation.MapperScan;
@@ -57,9 +58,10 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       System.out.println("[ Starting example ]");
-      crud();
+//      crud();
 //      join();
 //      livesql();
+      selectByCriteria();
       System.out.println("[ Example complete ]");
     };
   }
@@ -69,8 +71,9 @@ public class App {
 
     NumbersTable n = NumbersDAO.newTable("n");
 
-    SelectFromPhase<Row> q = this.sql.select().from(n);
-//    SelectFromPhase<Row> q = this.sql.select(n.star().filter(c -> c.getName().startsWith("int")), n.int1.minus(n.int2).as("diff")).from(n);
+//    SelectFromPhase<Row> q = this.sql.select().from(n);
+    SelectFromPhase<Row> q = this.sql
+        .select(n.star().filter(c -> c.getName().startsWith("INT")), n.int1.minus(n.int2).as("mainDiffLatest")).from(n);
 //    SelectFromPhase<Row> q = this.sql.select(n.int1).from(n);
 
     System.out.println("q:" + q.getPreview());
@@ -116,6 +119,17 @@ public class App {
     }
   }
 
+  private void selectByCriteria() {
+    reinsert();
+
+    InvoiceTable i = InvoiceDAO.newTable("i");
+    CriteriaWherePhase<InvoiceVO> q = this.invoiceDAO.select(i, i.branchId.eq(10));
+    System.out.println("q=" + q.getPreview());
+    for (InvoiceVO r : q.execute()) {
+      System.out.println("r=" + r);
+    }
+  }
+
   private void join() {
 
     InvoiceTable i = InvoiceDAO.newTable("i");
@@ -133,7 +147,7 @@ public class App {
       BranchVO brx = this.branchDAO.parseRow(r, "brx_");
 
       System.out.println("r=" + r);
-      System.out.println("inx=" + inx);
+      System.out.println("inx=" + inx + " dao=" + inx.getInvoiceDAO());
       System.out.println("brx=" + brx);
     }
 
@@ -147,7 +161,9 @@ public class App {
 
     n.setId(1);
     n.setInt1(123);
-    
+    n.setInt2(456);
+    n.setInt3(789);
+
 //    n.setInt2(1234);
 //    n.setInt3(123456L);
 //    n.setInt4(Integer.valueOf(12345));

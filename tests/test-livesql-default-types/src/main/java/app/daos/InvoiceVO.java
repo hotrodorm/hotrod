@@ -18,4 +18,8 @@ public class InvoiceVO extends AbstractInvoiceVO {
 
   // Add custom code below.
 
+  public InvoiceDAO getInvoiceDAO() {
+    return invoiceDAO;
+  }
+
 }

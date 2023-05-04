@@ -85,6 +85,12 @@ public class OtherDAO implements Serializable, ApplicationContextAware {
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
     mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
+    mo.setBoo1((java.lang.Boolean) m.get(p + "boo1" + s));
+    mo.setBoo2((java.lang.Boolean) m.get(p + "boo2" + s));
+    mo.setBoo3((java.lang.Boolean) m.get(p + "boo3" + s));
+    mo.setOth1(m.get(p + "oth1" + s));
+    mo.setIdn1((byte[]) m.get(p + "idn1" + s));
+    mo.setGeo1((byte[]) m.get(p + "geo1" + s));
     return mo;
   }
 
@@ -135,6 +141,12 @@ public class OtherDAO implements Serializable, ApplicationContextAware {
     this.sqlSession.insert(id, vo);
     app.daos.OtherVO mo = new app.daos.OtherVO();
     mo.setId(vo.getId());
+    mo.setBoo1(vo.getBoo1());
+    mo.setBoo2(vo.getBoo2());
+    mo.setBoo3(vo.getBoo3());
+    mo.setOth1(vo.getOth1());
+    mo.setIdn1(vo.getIdn1());
+    mo.setGeo1(vo.getGeo1());
     return mo;
   }
 
@@ -168,6 +180,12 @@ public class OtherDAO implements Serializable, ApplicationContextAware {
   public UpdateSetCompletePhase update(final app.daos.primitives.AbstractOtherVO updateValues, final OtherDAO.OtherTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
     if (updateValues.getId() != null) values.put("id", updateValues.getId());
+    if (updateValues.getBoo1() != null) values.put("boo1", updateValues.getBoo1());
+    if (updateValues.getBoo2() != null) values.put("boo2", updateValues.getBoo2());
+    if (updateValues.getBoo3() != null) values.put("boo3", updateValues.getBoo3());
+    if (updateValues.getOth1() != null) values.put("oth1", updateValues.getOth1());
+    if (updateValues.getIdn1() != null) values.put("idn1", updateValues.getIdn1());
+    if (updateValues.getGeo1() != null) values.put("geo1", updateValues.getGeo1());
     return new UpdateSetCompletePhase(tableOrView, this.liveSQLDialect, this.sqlSession,
       "mappers.other.updateByCriteria", predicate, values);
   }
@@ -191,7 +209,19 @@ public class OtherDAO implements Serializable, ApplicationContextAware {
   public enum OtherOrderBy implements OrderBy {
 
     ID("public.other", "id", true), //
-    ID$DESC("public.other", "id", false);
+    ID$DESC("public.other", "id", false), //
+    BOO1("public.other", "boo1", true), //
+    BOO1$DESC("public.other", "boo1", false), //
+    BOO2("public.other", "boo2", true), //
+    BOO2$DESC("public.other", "boo2", false), //
+    BOO3("public.other", "boo3", true), //
+    BOO3$DESC("public.other", "boo3", false), //
+    OTH1("public.other", "oth1", true), //
+    OTH1$DESC("public.other", "oth1", false), //
+    IDN1("public.other", "idn1", true), //
+    IDN1$DESC("public.other", "idn1", false), //
+    GEO1("public.other", "geo1", true), //
+    GEO1$DESC("public.other", "geo1", false);
 
     private OtherOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -233,11 +263,17 @@ public class OtherDAO implements Serializable, ApplicationContextAware {
     // Properties
 
     public NumberColumn id;
+    public BooleanColumn boo1;
+    public BooleanColumn boo2;
+    public BooleanColumn boo3;
+    public ObjectColumn oth1;
+    public ByteArrayColumn idn1;
+    public ByteArrayColumn geo1;
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this, this.id);
+      return new AllColumns(this, this.id, this.boo1, this.boo2, this.boo3, this.oth1, this.idn1, this.geo1);
     }
 
     // Constructors
@@ -258,6 +294,18 @@ public class OtherDAO implements Serializable, ApplicationContextAware {
       super.columns = new ArrayList<>();
       this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
       super.columns.add(this.id);
+      this.boo1 = new BooleanColumn(this, "BOO1", "boo1", "BOOLEAN", 1, 0);
+      super.columns.add(this.boo1);
+      this.boo2 = new BooleanColumn(this, "BOO2", "boo2", "BOOLEAN", 1, 0);
+      super.columns.add(this.boo2);
+      this.boo3 = new BooleanColumn(this, "BOO3", "boo3", "BOOLEAN", 1, 0);
+      super.columns.add(this.boo3);
+      this.oth1 = new ObjectColumn(this, "OTH1", "oth1", "JAVA_OBJECT", 1048576, 0);
+      super.columns.add(this.oth1);
+      this.idn1 = new ByteArrayColumn(this, "IDN1", "idn1", "UUID", 16, 0);
+      super.columns.add(this.idn1);
+      this.geo1 = new ByteArrayColumn(this, "GEO1", "geo1", "GEOMETRY", 1048576, 0);
+      super.columns.add(this.geo1);
     }
 
   }
