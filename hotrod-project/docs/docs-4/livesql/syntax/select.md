@@ -182,7 +182,7 @@ the `.as()` method on them. For example:
 
 ```java
 InvoiceTable i = InvoiceDAO.newTable("i");
-BranchTable b = BranchDAO.newTable("c");
+BranchTable b = BranchDAO.newTable("b");
 
 ExecutableSelect<Row> q = this.sql
     .select(
@@ -205,14 +205,16 @@ Produces a query with the form:
 
 ```sql
 SELECT
-  i.id as "in#id", i.amount as "in#amount", i.branch_id as "in#branchId", 
-  c.id as "br#id", c.name as "br#name"
+  i.id as "in#id", i.amount as "in#amount", i.branch_id as "in#branchId", i.created as "in#created"
+  b.id as "br#id", b.name as "br#name", c.created as "br#created"
 FROM public.invoice i
-JOIN public.branch c ON c.id = i.branch_id
+JOIN public.branch b ON b.id = i.branch_id
 WHERE i.type like 'CK%'
 ```
 
-Renaming the columns with different prefixes for each table allows the `parseRow()` method to classify them back to 
+While both tables have a column with the name `created`, they distinguished with different aliases: `in#created` and `br#created` respectively.
+
+Renaming the columns with different prefixes (and/or suffixes) for each table allows the `parseRow()` method to classify them back to 
 the corresponding VOs. In this case `getProperty()` produced the property name that `parseRow()` expects. You can use
 `getName()` to produce the raw column name instead.
 
