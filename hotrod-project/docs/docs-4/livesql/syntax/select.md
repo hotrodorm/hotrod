@@ -102,16 +102,18 @@ EmployeeTable e = EmployeeDAO.newTable("e");
 DepartmentTable d = DepartmentDAO.newTable("d");
 
 List<Row> rows = this.sql
-    .select(e.star(), d.name)
+    .select(e.star(), d.deptName)
     .from(e)
     .join(d, d.id.eq(e.departmentId)
     .execute();
 ```
 
-The resulting query is:
+LiveSQL expands the wildcards and replaces them with the corresponding columns to apply property aliases. The resulting query is:
 
 ```sql
-SELECT e.*, d.name
+SELECT
+  e.id as "id", e.first_name as "firstName", e.last_name as "lastName",
+  d.dept_name as "deptName"
 FROM employee e
 JOIN department d ON d.id = e.department_id
 ```
@@ -129,7 +131,7 @@ List<Row> rows = this.sql
     .select(
       e.star()
         .filter(c -> "INTEGER".equals(c.getType()) || "DECIMAL".equals(c.getType())),
-      d.name
+      d.deptName
     )
     .from(e)
     .join(d, d.id.eq(e.departmentId)
@@ -140,8 +142,8 @@ The resulting query is:
 
 ```sql
 SELECT
-  e.id, e.department_id, -- only 'id' and 'department_id' are of type INTEGER or DECIMAL in this table
-  d.name
+  e.id as "id", e.department_id as "departmentId", -- only 'id' and 'department_id' are of type INTEGER or DECIMAL in this table
+  d.dept_name as "deptName"
 FROM employee e
 JOIN department d ON d.id = e.department_id
 ```
@@ -191,7 +193,7 @@ SelectFromPhase<Row> q = this.sql
     .join(b, b.id.eq(i.branchId))
     .where(i.type.like("CK%"));
     ;
-System.out.println("q:" + q.getPreview());
+System.out.println("q:" + q.getPreview()); // to see the actual query
 List<Row> rows = q.execute();
 
 for (Row r : rows) {
