@@ -4,8 +4,16 @@ A SELECT query starts with the SELECT List. This section specifies the columns t
 
 LiveSQL includes variations to specify all or a subset of the columns and also to qualify the query for DISTINCT rows only. See the variations below.
 
+- [Basic Usage](#basic-select-list)
+- [The Wildcard](#the-wildcard)
+- [Using DISTINCT](#using-distinct)
+- [Selecting Without a Table](#selecting-without-a-table)
 
-## Selecting All Columns
+## Basic Select List
+
+A typical query can include all columns of a table by default or a subset of them. It can also alias them as needed, and include extra expressions computed on the fly.
+
+### Selecting All Columns
 
 To select all columns of the table(s) start the query with `select()`. For example:
 
@@ -26,7 +34,7 @@ FROM employee e
 ```
 
 
-## Selecting Specific Columns
+### Selecting Specific Columns
 
 To select a subset of the columns of the table(s) start the query with:
 
@@ -50,7 +58,7 @@ The query can name the specific list of columns to produce. This list can also i
 compute using functions and operators. 
 
 
-## Aliasing Columns
+### Aliasing Columns
 
 Most of the time SELECT queries preserve the names of the columns they are retrieving. However, naming or renaming columns
 can be useful to convey more clearly the meaning of a column value. This is specially useful when an expression is included in the 
@@ -78,8 +86,14 @@ SELECT p.name, p.price + p.qty as total_price
 FROM product p
 ```
 
+## The SQL Wildcard
 
-## Selecting All Columns From One Table &ndash; The * Wildcard
+The SQL wildcard (`*`) is used to include all columns of a table or view. LiveSQL enhances its
+functionality with filtering and aliasing. The latter can prove to be very useful when retrieving
+the result set as a tuple of VOs.
+
+
+### Selecting All Columns Of A Table
 
 To select all columns of a table or view use the method `.star()`. For example:
 
@@ -102,7 +116,7 @@ FROM employee e
 JOIN department d ON d.id = e.department_id
 ```
 
-## Filtering * Wildcard Columns
+### Filtering Columns
 
 If we only want a subset of the columns referenced by a `*` symbol we can use the `.filter(<predicate>)` method to exclude 
 some of them. For example, to include only columns of type `INTEGER` or `DECIMAL` of the table `EMPLOYEE` we can do:
@@ -156,7 +170,7 @@ create table client.checking_account (
 );
 ```
 
-## Aliasing * Wildcard Columns
+### Aliasing Columns
 
 It can be useful to change the name of the columns from one table to differentiate
 from the columns of another one, specially when joined tables have columns with the same name.
@@ -205,7 +219,7 @@ Note that more complex logic can be used. All properties mentioned in the table 
 to write more complex functions.
 
 
-## Column Filtering and Aliasing
+### Filtering and Aliasing Columns
 
 Finally, aliasing columns can be combined with filtering. For example, the select list can take the form:
 
@@ -220,7 +234,54 @@ Finally, aliasing columns can be combined with filtering. For example, the selec
 In this case, the filter removes the BLOB columns. The remaining columns are aliased.
 
 
-## Selecting without a FROM Clause
+## Using DISTINCT
+
+By default a SELECT query produce rows as found in the database and this could include duplicate rows: i.e. it returns a *multiset*.
+However, in some circumstances we may need the query to remove duplicate rows: i.e. to return a *set*. Removing duplicate
+rows is an extra effort the engine needs to do, and we indicate this by prepending the `DISTINCT` clause to the select list.
+
+
+### DISTINCT Over All Columns
+
+We can apply DISTINCT to all the columns of a table, as shown below:
+
+```java
+VehicleTable v = VehicleDAO.newTable("v");
+
+List<Row> rows = this.sql
+    .selectDistinct()
+    .from(v) 
+    .execute();
+```
+
+Produces:
+
+```sql
+SELECT DISTINCT *
+FROM vehicle v
+```
+
+### DISTINCT Over A Subset Of Columns
+
+The `DISTINCT` qualifier can also be combined with a specific list of columns:
+
+```java
+VehicleTable v = VehicleDAO.newTable("v");
+
+List<Row> rows = this.sql
+    .selectDistinct(v.brand, v.region)
+    .from(v) 
+    .execute();
+```
+
+Produces:
+
+```sql
+SELECT DISTINCT v.brand, v.region
+FROM vehicle v
+```
+
+## Selecting Without A Table
 
 Some database engines require a `FROM` clause in a `SELECT` statement. Other ones, such as
 PostgreSQL, MySQL, MariaDB, and SQL Server, can execute a `SELECT` without a `FROM` clause if using literals in the select list, or
@@ -245,48 +306,5 @@ SELECT 7, 15 * 3, getdate()
 **Note**: Oracle, DB2, and Apache Derby cannot select without a `FROM` clause. In these databases you can use
 [the `DUAL` and `SYSDUMMY1` tables](./systables.md).
 
-
-## Selecting Distinct Rows
-
-By default a SELECT query produce rows as found in the database and this could include duplicate rows: i.e. it returns a *multiset*.
-However, in some circumstances we may need the query to remove duplicate rows: i.e. to return a *set*. Removing duplicate
-rows is an extra effort the engine needs to do, and we indicate this by prepending the `DISTINCT` clause to the select list,
-as shown below:
-
-```java
-VehicleTable v = VehicleDAO.newTable("v");
-
-List<Row> rows = this.sql
-    .selectDistinct()
-    .from(v) 
-    .execute();
-```
-
-Produces:
-
-```sql
-SELECT DISTINCT *
-FROM vehicle v
-```
-
-## Selecting Distinct Rows with Specific Columns
-
-The `DISTINCT` qualifier can also be combined with a specific list of columns:
-
-```java
-VehicleTable v = VehicleDAO.newTable("v");
-
-List<Row> rows = this.sql
-    .selectDistinct(v.brand, v.region)
-    .from(v) 
-    .execute();
-```
-
-Produces:
-
-```sql
-SELECT DISTINCT v.brand, v.region
-FROM vehicle v
-```
 
 Next: [The FROM and JOIN Clauses](./from-and-joins.md)
