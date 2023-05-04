@@ -21,7 +21,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 - LiveSQL: 
     - Wildcard (`*`) implemented with the `star()` method, enhanced with filtering and aliasing.
     - Core versions of INSERT, UPDATE, and DELETE implemented.
-    - Row parser implemented with support for joins. Tuples can now be retrieved.
+    - Row parser implemented with support for joins. Rows can can now be retrieved as tuples of tables/views.
     - Added DUAL and SYSDUMMY1 for queries without tables.
     - LiveSQL now returns `List<Row>` and `Cursor<Row>` instead of `List<Map<String, Object>>` and `Cursor<Map<String, Object>>`.
     - Oracle MOD() function fixed.
