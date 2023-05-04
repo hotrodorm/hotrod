@@ -17,6 +17,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
     - Deprecated tag `<mybatis-configuration-template>` removed.
     - No-config implemented. For rapid prototyping the `hotrod.xml` file can be omitted.
     - Aurora/PostgreSQL and Aurora/MySQL supported.
+    - VOs are instantiated as Spring beans rather than as POJOs.
 - LiveSQL: 
     - LiveSQL now returns `List<Row>` and `Cursor<Row>` instead of `List<Map<String, Object>>` and `Cursor<Map<String, Object>>`.
     - Oracle MOD() function fixed.
@@ -38,7 +39,8 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 - LiveSQL: backport of filtering and aliasing for the star() method.
 - LiveSQL: backport Oracle MOD() function bugfix.
 - DynamicSQL: backport of `<foreach>` bugfix.
-- Config: backport of default values for the `<mappers>` tag. It can be now omitted in the configuration file.
+- Core: backport of default values for the `<mappers>` tag. It can be now omitted in the configuration file.
+- Core: backport of VOs as Spring beans.
 
 ## 3.5.0
 - CRUD: Backport of "implements" and DAO wiring for VOs.
