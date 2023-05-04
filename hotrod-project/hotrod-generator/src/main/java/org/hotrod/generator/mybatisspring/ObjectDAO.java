@@ -390,6 +390,7 @@ public class ObjectDAO extends GeneratableObject {
     imports.newLine();
 
     imports.add("org.hotrod.runtime.livesql.expressions.ResultSetColumn");
+    imports.add("org.hotrod.runtime.spring.SpringBeanObjectFactory");
 
     imports.add("org.hotrod.runtime.livesql.dialects.LiveSQLDialect");
     imports.add(CastUtil.class);
@@ -487,11 +488,15 @@ public class ObjectDAO extends GeneratableObject {
     }
     println("  private LiveSQLDialect liveSQLDialect;");
     println();
+    println("  @Autowired");
+    println("  private SpringBeanObjectFactory springBeanObjectFactory;");
+    println();
     println("  private ApplicationContext applicationContext;");
     println();
     println("  @Override");
     println("  public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {");
     println("    this.applicationContext = applicationContext;");
+    println("    this.sqlSession.getConfiguration().setObjectFactory(this.springBeanObjectFactory);");
     println("  }");
     println();
 
