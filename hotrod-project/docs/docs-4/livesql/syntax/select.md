@@ -4,12 +4,12 @@ A SELECT query starts with the SELECT List. This section specifies the columns t
 
 LiveSQL includes variations to specify all or a subset of the columns and also to qualify the query for DISTINCT rows only. See the variations below.
 
-- [Typical SELECT List](#typical-select-list)
+- [The typical SELECT List](#the-typical-select-list)
 - [The SQL Wildcard](#the-sql-wildcard)
 - [Using DISTINCT](#using-distinct)
 - [Selecting Without a Table](#selecting-without-a-table)
 
-## Typical SELECT List
+## The Typical SELECT List
 
 A typical query can include all the columns of a table or a subset of them. It can also alias them as needed, and include extra expressions computed on the fly. These variation are supported easily as shown below.
 
@@ -142,7 +142,7 @@ The resulting query is:
 
 ```sql
 SELECT
-  e.id as "id", e.department_id as "departmentId", -- only 'id' and 'department_id' are of type INTEGER or DECIMAL in this table
+  e.id as "id", e.department_id as "departmentId", -- only 'id' and 'department_id' are numeric
   d.dept_name as "deptName"
 FROM employee e
 JOIN department d ON d.id = e.department_id
