@@ -1,11 +1,19 @@
-# The SELECT Clause 
+# The SELECT List 
 
 A SELECT query starts with the SELECT List. This section specifies the columns that are to be retrieved as well as the modifiers for them.
 
 LiveSQL includes variations to specify all or a subset of the columns and also to qualify the query for DISTINCT rows only. See the variations below.
 
+- [The Typical SELECT List](#the-typical-select-list)
+- [The SQL Wildcard](#the-sql-wildcard)
+- [Using DISTINCT](#using-distinct)
+- [Selecting Without a Table](#selecting-without-a-table)
 
-## Selecting All Columns
+## The Typical SELECT List
+
+A typical query can include all the columns of a table or a subset of them. It can also alias them as needed, and include extra expressions computed on the fly. These variation are supported easily as shown below.
+
+### Selecting All Columns
 
 To select all columns of the table(s) start the query with `select()`. For example:
 
@@ -26,7 +34,7 @@ FROM employee e
 ```
 
 
-## Selecting Specific Columns
+### Selecting Specific Columns
 
 To select a subset of the columns of the table(s) start the query with:
 
@@ -47,10 +55,10 @@ FROM product p
 ```
 
 The query can name the specific list of columns to produce. This list can also include expressions that the database can 
-compute using functions or operators. 
+compute using functions and operators. 
 
 
-## Aliasing Columns
+### Aliasing Columns
 
 Most of the time SELECT queries preserve the names of the columns they are retrieving. However, naming or renaming columns
 can be useful to convey more clearly the meaning of a column value. This is specially useful when an expression is included in the 
@@ -78,8 +86,14 @@ SELECT p.name, p.price + p.qty as total_price
 FROM product p
 ```
 
+## The SQL Wildcard
 
-## Selecting All Columns From One Table &ndash; The * Wildcard
+The SQL wildcard (`*`) is used to include all columns of a table or view. LiveSQL enhances its
+functionality with filtering and aliasing. The latter can prove to be very useful when retrieving
+the result set as a tuple of VOs.
+
+
+### Selecting All Columns Of A Table
 
 To select all columns of a table or view use the method `.star()`. For example:
 
@@ -88,21 +102,23 @@ EmployeeTable e = EmployeeDAO.newTable("e");
 DepartmentTable d = DepartmentDAO.newTable("d");
 
 List<Row> rows = this.sql
-    .select(e.star(), d.name)
+    .select(e.star(), d.deptName)
     .from(e)
     .join(d, d.id.eq(e.departmentId)
     .execute();
 ```
 
-The resulting query is:
+LiveSQL expands the wildcards and replaces them with the corresponding columns to apply property aliases. The resulting query is:
 
 ```sql
-SELECT e.*, d.name
+SELECT
+  e.id as "id", e.first_name as "firstName", e.last_name as "lastName",
+  d.dept_name as "deptName"
 FROM employee e
 JOIN department d ON d.id = e.department_id
 ```
 
-## Filtering * Wildcard Columns
+### Filtering Columns
 
 If we only want a subset of the columns referenced by a `*` symbol we can use the `.filter(<predicate>)` method to exclude 
 some of them. For example, to include only columns of type `INTEGER` or `DECIMAL` of the table `EMPLOYEE` we can do:
@@ -115,7 +131,7 @@ List<Row> rows = this.sql
     .select(
       e.star()
         .filter(c -> "INTEGER".equals(c.getType()) || "DECIMAL".equals(c.getType())),
-      d.name
+      d.deptName
     )
     .from(e)
     .join(d, d.id.eq(e.departmentId)
@@ -126,8 +142,8 @@ The resulting query is:
 
 ```sql
 SELECT
-  e.id, e.department_id, -- only 'id' and 'department_id' are of type INTEGER or DECIMAL in this table
-  d.name
+  e.id as "id", e.department_id as "departmentId", -- only 'id' and 'department_id' are numeric
+  d.dept_name as "deptName"
 FROM employee e
 JOIN department d ON d.id = e.department_id
 ```
@@ -156,51 +172,56 @@ create table client.checking_account (
 );
 ```
 
-## Aliasing * Wildcard Columns
+### Aliasing Columns
 
-In some queries it can be useful to change the name of the column from one table to differentiate
+It can be useful to change the name of the columns from one table to differentiate
 from the columns of another one, specially when joined tables have columns with the same name.
 
 If we use the function `.star()` to select all the columns of one table we can alias them by using 
 the `.as()` method on them. For example:
 
 ```java
-BatchTable b = BatchDAO.newTable("b");
-EmployeeTable e = EmployeeDAO.newTable("e");
+InvoiceTable i = InvoiceDAO.newTable("i");
+BranchTable b = BranchDAO.newTable("c");
 
-List<Row> rows = this.sql
+ExecutableSelect<Row> q = this.sql
     .select(
-      e.star().as(c -> Alias.property("emp", c.getProperty())),
-      b.star().as(c -> Alias.literal(("bc_" + c.getName()).toLowerCase()))
+      i.star().as(c -> "in#" + c.getProperty()),
+      b.star().as(c -> "br#" + c.getProperty())
     )
-    .from(e) //
-    .join(b, b.itemName.eq(e.name)) //
-    .where(e.name.like("A%"));
+    .from(i)
+    .join(b, b.id.eq(i.branchId))
+    .where(i.type.like("CK%"));
+    ;
+System.out.println("q:" + q.getPreview()); // to see the actual query
+List<Row> rows = q.execute();
+
+for (Row r : rows) {
+  InvoiceVO ivo = this.invoiceDAO.parseRow(r, "in#");
+  BranchVO bvo = this.branchDAO.parseRow(r, "br#");
+}
 ```
 
-Produces the query:
+Produces a query with the form:
 
 ```sql
 SELECT
-  e.id as "empId", e.name as "empName", e.branch_id as "empBranchId", 
-  b.sku_code as "bc_sku_code", b.item_name as "bc_item_name"
-FROM public.employee e
-JOIN public.batch b ON b.item_name = e.name
-WHERE e.name like 'A%'
+  i.id as "in#id", i.amount as "in#amount", i.branch_id as "in#branchId", 
+  c.id as "br#id", c.name as "br#name"
+FROM public.invoice i
+JOIN public.branch c ON c.id = i.branch_id
+WHERE i.type like 'CK%'
 ```
 
-The LiveSQL query above renamed the columns from both tables. It did apply a different
-strategy to rename them, however:
+Renaming the columns with different prefixes for each table allows the `parseRow()` method to classify them back to 
+the corresponding VOs. In this case `getProperty()` produced the property name that `parseRow()` expects. You can use
+`getName()` to produce the raw column name instead.
 
-- In the first one, it used the method `Alias.property()` to generate a property-like column name. It prepended `emp` to the property names:
-`branchId` became `empBranchId`.
-- In the second case, it used the method `Alias.literal()` to generate a column name as a verbatim string. In this case it prepender `bc_`
-to the column name and converted it to lower case.
-
-Note that more complex logic can be used. All properties mentioned in the table above are available to write more complex functions.
+Note that more complex logic can be used. All properties mentioned in the table above are available
+to write more complex functions.
 
 
-## Column Filtering and Aliasing
+### Filtering and Aliasing Columns
 
 Finally, aliasing columns can be combined with filtering. For example, the select list can take the form:
 
@@ -208,14 +229,61 @@ Finally, aliasing columns can be combined with filtering. For example, the selec
     .select(
       e.star()
        .filter(c -> !"BLOB".equals(c.getType()))
-       .as(c -> Alias.property("emp", c.getProperty())),
+       .as(c -> "emp_" + c.getName())
     )
 ```
 
 In this case, the filter removes the BLOB columns. The remaining columns are aliased.
 
 
-## Selecting without a FROM Clause
+## Using DISTINCT
+
+By default a SELECT query produce rows as found in the database and this could include duplicate rows: i.e. it returns a *multiset*.
+However, in some circumstances we may need the query to remove duplicate rows: i.e. to return a *set*. Removing duplicate
+rows is an extra effort the engine needs to do, and we indicate this by prepending the `DISTINCT` clause to the select list.
+
+
+### DISTINCT Over All Columns
+
+We can apply DISTINCT to all the columns of a table, as shown below:
+
+```java
+VehicleTable v = VehicleDAO.newTable("v");
+
+List<Row> rows = this.sql
+    .selectDistinct()
+    .from(v) 
+    .execute();
+```
+
+Produces:
+
+```sql
+SELECT DISTINCT *
+FROM vehicle v
+```
+
+### DISTINCT Over A Subset Of Columns
+
+The `DISTINCT` qualifier can also be combined with a specific list of columns:
+
+```java
+VehicleTable v = VehicleDAO.newTable("v");
+
+List<Row> rows = this.sql
+    .selectDistinct(v.brand, v.region)
+    .from(v) 
+    .execute();
+```
+
+Produces:
+
+```sql
+SELECT DISTINCT v.brand, v.region
+FROM vehicle v
+```
+
+## Selecting Without A Table
 
 Some database engines require a `FROM` clause in a `SELECT` statement. Other ones, such as
 PostgreSQL, MySQL, MariaDB, and SQL Server, can execute a `SELECT` without a `FROM` clause if using literals in the select list, or
@@ -240,48 +308,5 @@ SELECT 7, 15 * 3, getdate()
 **Note**: Oracle, DB2, and Apache Derby cannot select without a `FROM` clause. In these databases you can use
 [the `DUAL` and `SYSDUMMY1` tables](./systables.md).
 
-
-## Selecting Distinct Rows
-
-By default a SELECT query produce rows as found in the database and this could include duplicate rows: i.e. it returns a *multiset*.
-However, in some circumstances we may need the query to remove duplicate rows: i.e. to return a *set*. Removing duplicate
-rows is an extra effort the engine needs to do, and we indicate this by prepending the `DISTINCT` clause to the select list,
-as shown below:
-
-```java
-VehicleTable v = VehicleDAO.newTable("v");
-
-List<Row> rows = this.sql
-    .selectDistinct()
-    .from(v) 
-    .execute();
-```
-
-Produces:
-
-```sql
-SELECT DISTINCT *
-FROM vehicle v
-```
-
-## Selecting Distinct Rows with Specific Columns
-
-The `DISTINCT` qualifier can also be combined with a specific list of columns:
-
-```java
-VehicleTable v = VehicleDAO.newTable("v");
-
-List<Row> rows = this.sql
-    .selectDistinct(v.brand, v.region)
-    .from(v) 
-    .execute();
-```
-
-Produces:
-
-```sql
-SELECT DISTINCT v.brand, v.region
-FROM vehicle v
-```
 
 Next: [The FROM and JOIN Clauses](./from-and-joins.md)

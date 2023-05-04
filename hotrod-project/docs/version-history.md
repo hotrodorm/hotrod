@@ -4,41 +4,44 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 
 ## 4.0.0 (alpha, unreleased)
 - Core:
-    - Support for multiple datasources.
-    - Configuration property `generator` removed.
-    - Default values for the `<mappers>` and `<daos>` tags. They can be now omitted in the configuration file.
-    - Reusing JDBC connection when using result-set processor.
     - Schema discovery implemented.
-    - Converters enhanced with Connection details.
+    - No-config implemented. The `hotrod.xml` file can now be omitted for rapid prototyping.
+    - Support for multiple datasources.
+    - Aurora/PostgreSQL and Aurora/MySQL supported.
+    - VOs are instantiated as Spring beans rather than as POJOs.
+    - Enhanced Converters.
+    - Default values for the `<mappers>` and `<daos>` tags. They can be now omitted in the configuration file.
+    - Configuration property `generator` removed.
+    - Reusing JDBC connection when using result-set processor.
     - Converters fixed in `<dao>` tags.
     - DTD declarations are now removed from config files.
     - Converter's `java-intermediate-type` attribute renamed as `java-raw-type`.
     - `primitives` subfolder removed in the location of mappers.
     - Deprecated tag `<mybatis-configuration-template>` removed.
-    - No-config implemented. For rapid prototyping the `hotrod.xml` file can be omitted.
-    - Aurora/PostgreSQL and Aurora/MySQL supported.
 - LiveSQL: 
+    - Wildcard (`*`) implemented with the `star()` method, enhanced with filtering and aliasing.
+    - Core versions of INSERT, UPDATE, and DELETE implemented.
+    - Row parser implemented with support for joins. Rows can can now be retrieved as tuples of tables/views.
+    - Added DUAL and SYSDUMMY1 for queries without tables.
     - LiveSQL now returns `List<Row>` and `Cursor<Row>` instead of `List<Map<String, Object>>` and `Cursor<Map<String, Object>>`.
     - Oracle MOD() function fixed.
-    - Column wildcard `*` implemented including filtering and aliasing.
-    - Core versions of INSERT, UPDATE, and DELETE implemented.
-    - Added DUAL and SYSDUMMY1 for queries without tables.
-    - Row parser implemented with support for joins.
 - CRUD:
-    - `propertiesChangeLog` is now removed from VOs to facilitate quick Spring prototyping.
+    - Main methods renamed.
     - Classic FK Navigation is now enabled by default. The `<classic-fk-navigation>` tag can be omitted now.
     - Added "implements" for DAO classes.
-    - Methods renamed.
+    - `propertiesChangeLog` is now removed from VOs to facilitate quick Spring prototyping.
 - Nitro:
     - Select methods in entity tags (`<table>` and `<view>` tags) are restricted to return the corresponding entity VOs only. They don't allow the 'vo' attribute anymore.
     - Nitro defaults to `result-set` generation now. The `<select-generation>` tag can be omitted by default.
     - `<foreach>` fixed.
 
 ## 3.5.1-SNAPSHOT
-- LiveSQL: backport of filtering and aliasing for the star() method.
-- LiveSQL: backport Oracle MOD() function bugfix.
-- DynamicSQL: backport of `<foreach>` bugfix.
-- Config: backport of default values for the `<mappers>` tag. It can be now omitted in the configuration file.
+- LiveSQL: Backport of filtering and aliasing for the star() method.
+- LiveSQL: Backport Oracle MOD() function bugfix.
+- LiveSQL: Backport of row parser with support for joins. Tuples can now be retrieved.
+- DynamicSQL: Backport of `<foreach>` bugfix.
+- Core: Backport of default values for the `<mappers>` tag. It can be now omitted in the configuration file.
+- Core: B of VOs as Spring beans.
 
 ## 3.5.0
 - CRUD: Backport of "implements" and DAO wiring for VOs.
