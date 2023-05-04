@@ -130,7 +130,7 @@ DepartmentTable d = DepartmentDAO.newTable("d");
 List<Row> rows = this.sql
     .select(
       e.star()
-        .filter(c -> "INTEGER".equals(c.getType()) || "DECIMAL".equals(c.getType())),
+       .filter(c -> "INTEGER".equals(c.getType()) || "DECIMAL".equals(c.getType())),
       d.deptName
     )
     .from(e)
@@ -192,7 +192,6 @@ ExecutableSelect<Row> q = this.sql
     .from(i)
     .join(b, b.id.eq(i.branchId))
     .where(i.type.like("CK%"));
-    ;
 System.out.println("q:" + q.getPreview()); // to see the actual query
 List<Row> rows = q.execute();
 
@@ -306,7 +305,7 @@ SELECT 7, 15 * 3, getdate()
 ```
 
 **Note**: Oracle, DB2, and Apache Derby cannot select without a `FROM` clause. In these databases you can use
-[the `DUAL` and `SYSDUMMY1` tables](./systables.md).
+[the DUAL and SYSDUMMY1 tables](./systables.md).
 
 
 Next: [The FROM and JOIN Clauses](./from-and-joins.md)
