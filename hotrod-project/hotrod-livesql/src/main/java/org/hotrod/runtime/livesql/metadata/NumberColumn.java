@@ -35,7 +35,8 @@ public class NumberColumn extends NumberExpression implements Column {
   @Override
   public void renderTo(final QueryWriter w) {
     if (this.objectInstance.getAlias() != null) {
-      w.write(this.objectInstance.getAlias());
+      w.write(
+          w.getSqlDialect().canonicalToNatural(w.getSqlDialect().naturalToCanonical(this.objectInstance.getAlias())));
       w.write(".");
     }
     renderUnqualifiedNameTo(w);
