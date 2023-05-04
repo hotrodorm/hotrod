@@ -1839,7 +1839,7 @@ public class ObjectDAO extends GeneratableObject {
     println();
 
     println("    public AllColumns star() {");
-    println("      return new AllColumns(this, " + this.metadata.getColumns().stream()
+    println("      return new AllColumns(" + this.metadata.getColumns().stream()
         .map(c -> "this." + c.getId().getJavaMemberName()).collect(Collectors.joining(", ")) + ");");
     println("    }");
     println();
