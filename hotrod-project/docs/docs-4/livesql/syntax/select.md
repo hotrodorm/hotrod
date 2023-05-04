@@ -227,11 +227,14 @@ to write more complex functions.
 Finally, aliasing columns can be combined with filtering. For example, the select list can take the form:
 
 ```sql
-    .select(
-      e.star()
-       .filter(c -> !"BLOB".equals(c.getType()))
-       .as(c -> "emp_" + c.getName())
-    )
+List<Row> rows = this.sql
+  .select(
+    e.star()
+     .filter(c -> !"BLOB".equals(c.getType()))
+     .as(c -> "emp_" + c.getName())
+  )
+  .from(e)
+  .execute();
 ```
 
 In this case, the filter removes the BLOB columns. The remaining columns are aliased.
