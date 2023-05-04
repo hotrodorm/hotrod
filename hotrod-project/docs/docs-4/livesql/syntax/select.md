@@ -207,7 +207,7 @@ Produces a query with the form:
 ```sql
 SELECT
   i.id as "in#id", i.amount as "in#amount", i.branch_id as "in#branchId", 
-  c.id as "br#id", c."NaMe" as "br#name"
+  c.id as "br#id", c.name as "br#name"
 FROM public.invoice i
 JOIN public.branch c ON c.id = i.branch_id
 WHERE i.type like 'CK%'
