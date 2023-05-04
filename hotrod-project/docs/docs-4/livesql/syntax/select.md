@@ -4,14 +4,14 @@ A SELECT query starts with the SELECT List. This section specifies the columns t
 
 LiveSQL includes variations to specify all or a subset of the columns and also to qualify the query for DISTINCT rows only. See the variations below.
 
-- [Basic Usage](#basic-select-list)
+- [Typical Select List](#typical-select-list)
 - [The SQL Wildcard](#the-sql-wildcard)
 - [Using DISTINCT](#using-distinct)
 - [Selecting Without a Table](#selecting-without-a-table)
 
-## Basic Select List
+## Typical Select List
 
-A typical query can include all columns of a table by default or a subset of them. It can also alias them as needed, and include extra expressions computed on the fly.
+A typical query can include all the columns of a table or a subset of them. It can also alias them as needed, and include extra expressions computed on the fly. These variation are supported easily as shown below.
 
 ### Selecting All Columns
 
