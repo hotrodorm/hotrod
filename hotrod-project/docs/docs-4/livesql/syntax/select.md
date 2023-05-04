@@ -212,7 +212,7 @@ JOIN public.branch b ON b.id = i.branch_id
 WHERE i.type like 'CK%'
 ```
 
-While both tables have a column with the name `created`, they distinguished with different aliases: `in#created` and `br#created` respectively.
+While both tables have a column with the name `created`, the query distinguishes them using different aliases: `in#created` and `br#created` respectively.
 
 Renaming the columns with different prefixes (and/or suffixes) for each table allows the `parseRow()` method to classify them back to 
 the corresponding VOs. In this case `getProperty()` produced the property name that `parseRow()` expects. You can use
