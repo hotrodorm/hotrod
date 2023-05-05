@@ -7,7 +7,7 @@ public class StringConstant extends StringExpression {
 
   private static final int MAX_LITERAL_STRING_LENGTH = 100;
 
-  private static final String PRINTABLE_ASCII_PATTERN = "[ -~]*";
+  private static final String PRINTABLE_ASCII_PATTERN = "^[ -!#-&\\(-~]*$";
 
   // Properties
 
