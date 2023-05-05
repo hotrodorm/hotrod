@@ -51,6 +51,23 @@ public class TorcsAspect {
     }
   }
 
+  @Around(value = "execution(* java.sql.Connection.prepareCall(..)) && args(sql)")
+  private Object measurePrepareCall(final ProceedingJoinPoint joinPoint, final String sql) throws Throwable {
+    try {
+      this.sql.set(sql);
+      Object cs = joinPoint.proceed();
+
+      AspectJProxyFactory proxyFactory = new AspectJProxyFactory(cs);
+      proxyFactory.addAspect(this);
+      PreparedStatement proxyPS = proxyFactory.getProxy();
+
+      return proxyPS;
+
+    } catch (Throwable e) {
+      throw e;
+    }
+  }
+
   // java.sql.PreparedStatement declared methods
 
   @Around(value = "execution(* java.sql.PreparedStatement.execute(..))")
