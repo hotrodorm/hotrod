@@ -326,11 +326,11 @@ public class SQLMetricsAspect {
         return "" + this.totalExecutions + " exe" + ", " + this.executionErrors + " errors" + ", avg "
             + (this.sum / this.totalExecutions) + " ms, \u03c3 " + Math.round(this.getTimeStandardDeviation()) + " ["
             + this.minTime + "-" + this.maxTime + " ms], last executed: " + le + ", last exception at "
-            + new Date(this.lastExceptionTimestamp) + ": " + XUtil.renderThrowable(this.lastException) + "\n"
+            + new Date(this.lastExceptionTimestamp) + ": " + XUtil.trim(this.lastException) + "\n"
             + this.compactedSQL;
       }
     }
-
+    
     // Getters
 
     public String getActualSQL() {

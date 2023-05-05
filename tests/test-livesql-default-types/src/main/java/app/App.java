@@ -8,6 +8,9 @@ import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.queries.select.SelectFromPhase;
 import org.hotrod.runtime.spring.SpringBeanObjectFactory;
+import org.hotrod.torcs.SQLMetrics;
+import org.hotrod.torcs.Statement;
+import org.hotrod.torcs.TorcsAspect;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -33,6 +36,7 @@ import app.daos.primitives.NumbersDAO.NumbersTable;
 @SpringBootApplication
 @ComponentScan
 @ComponentScan(basePackageClasses = SpringBeanObjectFactory.class)
+@ComponentScan(basePackageClasses = TorcsAspect.class)
 @ComponentScan(basePackageClasses = LiveSQL.class)
 @MapperScan(basePackageClasses = LiveSQL.class)
 public class App {
@@ -47,6 +51,9 @@ public class App {
   private BranchDAO branchDAO;
 
   @Autowired
+  private SQLMetrics sqlMetrics;
+
+  @Autowired
   private LiveSQL sql;
 
   public static void main(String[] args) {
@@ -59,8 +66,11 @@ public class App {
       System.out.println("[ Starting example ]");
 //      crud();
       join();
+//      this.sqlMetrics.deactivate();
+      join();
 //      livesql();
-//      selectByCriteria();
+      selectByCriteria();
+      torcs();
       System.out.println("[ Example complete ]");
     };
   }
@@ -151,6 +161,15 @@ public class App {
       System.out.println("brx=" + brx);
     }
 
+  }
+
+  private void torcs() {
+    System.out.println(">>> Torcs");
+    int pos = 1;
+    for (Statement m : this.sqlMetrics.getByHighestResponseTime()) {
+      System.out.println("#" + pos + ": " + m.toString());
+      pos++;
+    }
   }
 
   private void reinsert() {
