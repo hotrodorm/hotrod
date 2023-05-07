@@ -16,7 +16,7 @@ public class TorcsAspect {
   private ThreadLocal<String> sql = new ThreadLocal<String>();
 
   @Autowired
-  private SQLMetrics sqlMetrics;
+  private TorcsMetrics sqlMetrics;
 
   @Around(value = "execution(* javax.sql.DataSource.getConnection())")
   private Object measureGetConnection(final ProceedingJoinPoint joinPoint) throws Throwable {

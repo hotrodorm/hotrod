@@ -9,7 +9,7 @@ import org.nocrala.tools.lang.collector.listcollector.ListCollector;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SQLMetrics {
+public class TorcsMetrics {
 
   private boolean active = true;
   private Map<String, Statement> metrics = new HashMap<String, Statement>();
