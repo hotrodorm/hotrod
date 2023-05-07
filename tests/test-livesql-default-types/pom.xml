@@ -41,12 +41,24 @@
       <artifactId>hotrod-torcs</artifactId>
       <version>${hotrod.version}</version>
     </dependency>
-
+<!--
+    <dependency>
+      <groupId>org.hotrodorm.hotrod</groupId>
+      <artifactId>hotrod-torcs-ctp</artifactId>
+      <version>${hotrod.version}</version>
+    </dependency>
+-->
     <dependency>
       <groupId>org.mybatis.spring.boot</groupId>
       <artifactId>mybatis-spring-boot-starter</artifactId>
       <version>2.1.3</version>
     </dependency>
+
+        <dependency>
+          <groupId>org.postgresql</groupId>
+          <artifactId>postgresql</artifactId>
+          <version>42.3.3</version>
+        </dependency>
 
   </dependencies>
 
@@ -414,7 +426,6 @@
               <jdbcurl>${jdbcurl}</jdbcurl>
               <jdbcusername>${jdbcusername}</jdbcusername>
               <jdbcpassword>${jdbcpassword}</jdbcpassword>
-              <jdbccatalog>${jdbccatalog}</jdbccatalog>
               <jdbcschema>${jdbcschema}</jdbcschema>
             </configuration>
             <dependencies>

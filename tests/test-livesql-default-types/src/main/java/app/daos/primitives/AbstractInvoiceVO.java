@@ -3,7 +3,8 @@
 package app.daos.primitives;
 
 import java.io.Serializable;
-import org.hotrod.runtime.json.*;
+
+import org.hotrod.runtime.json.JSONObject;
 
 public class AbstractInvoiceVO implements Serializable {
 

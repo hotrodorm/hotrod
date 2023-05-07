@@ -6,11 +6,10 @@ import java.util.Map;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
+import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.SelectFromPhase;
-import org.hotrod.runtime.spring.SpringBeanObjectFactory;
-import org.hotrod.torcs.SQLMetrics;
 import org.hotrod.torcs.Statement;
-import org.hotrod.torcs.TorcsAspect;
+import org.hotrod.torcs.TorcsMetrics;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -35,8 +34,6 @@ import app.daos.primitives.NumbersDAO.NumbersTable;
 @Configuration
 @SpringBootApplication
 @ComponentScan
-@ComponentScan(basePackageClasses = SpringBeanObjectFactory.class)
-@ComponentScan(basePackageClasses = TorcsAspect.class)
 @ComponentScan(basePackageClasses = LiveSQL.class)
 @MapperScan(basePackageClasses = LiveSQL.class)
 public class App {
@@ -51,10 +48,13 @@ public class App {
   private BranchDAO branchDAO;
 
   @Autowired
-  private SQLMetrics sqlMetrics;
+  private TorcsMetrics metrics;
 
   @Autowired
   private LiveSQL sql;
+
+//  @Autowired
+//  private TorcsCTP torcsCTP;
 
   public static void main(String[] args) {
     SpringApplication.run(App.class, args);
@@ -66,8 +66,7 @@ public class App {
       System.out.println("[ Starting example ]");
 //      crud();
       join();
-//      this.sqlMetrics.deactivate();
-      join();
+//      join();
 //      livesql();
       selectByCriteria();
       torcs();
@@ -76,7 +75,7 @@ public class App {
   }
 
   private void livesql() {
-    reinsert();
+//    reinsert();
 
     NumbersTable n = NumbersDAO.newTable("n");
 
@@ -122,16 +121,16 @@ public class App {
   }
 
   private void crud() {
-    reinsert();
+//    reinsert();
     for (NumbersVO r : this.numbersDAO.select(new NumbersVO())) {
       System.out.println("r=" + r + " dao=" + r.getNumbersDAO());
     }
   }
 
   private void selectByCriteria() {
-    reinsert();
+//    reinsert();
 
-    InvoiceTable i = InvoiceDAO.newTable("i'a");
+    InvoiceTable i = InvoiceDAO.newTable("i");
     CriteriaWherePhase<InvoiceVO> q = this.invoiceDAO.select(i, i.branchId.eq(10));
     System.out.println("q=" + q.getPreview());
     for (InvoiceVO r : q.execute()) {
@@ -142,13 +141,15 @@ public class App {
   private void join() {
 
     InvoiceTable i = InvoiceDAO.newTable("i");
-    BranchTable b = BranchDAO.newTable("c");
+    BranchTable b = BranchDAO.newTable("b");
 
-    SelectFromPhase<Row> q = this.sql.select( //
+    ExecutableSelect<Row> q = this.sql.select( //
         i.star().as(c -> "in#" + c.getProperty()), //
         b.star().as(c -> "br#" + c.getProperty()) //
     ) //
-        .from(i).join(b, b.id.eq(i.branchId));
+        .from(i) //
+        .join(b, b.id.eq(i.branchId)) //
+        .where(b.name.like("%"));
     System.out.println("q:" + q.getPreview());
     List<Row> rows = q.execute();
 
@@ -164,12 +165,19 @@ public class App {
   }
 
   private void torcs() {
-    System.out.println(">>> Torcs");
+
+    System.out.println("--- Torcs --------------------------------------------------------");
     int pos = 1;
-    for (Statement m : this.sqlMetrics.getByHighestResponseTime()) {
+    for (Statement m : this.metrics.getByHighestResponseTime()) {
       System.out.println("#" + pos + ": " + m.toString());
       pos++;
     }
+
+//    System.out.println("--- Torcs PLAN ---------------------------------------------------");
+//    Statement h = this.sqlMetrics.getByHighestAvgResponseTime().get(0);
+//    String plan = this.torcsCTP.getEstimatedCTPExecutionPlan(h);
+//    System.out.println("Plan: " + plan);
+
   }
 
   private void reinsert() {
