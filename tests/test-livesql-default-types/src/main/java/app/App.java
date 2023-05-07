@@ -36,6 +36,8 @@ import app.daos.primitives.NumbersDAO.NumbersTable;
 @ComponentScan
 @ComponentScan(basePackageClasses = LiveSQL.class)
 @MapperScan(basePackageClasses = LiveSQL.class)
+@MapperScan("mappers")
+
 public class App {
 
   @Autowired
