@@ -242,7 +242,6 @@ import java.util.List;
 
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
-import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -260,7 +259,6 @@ import app.daos.primitives.EmployeeDAO.EmployeeTable;
 @Configuration
 @SpringBootApplication
 @ComponentScan
-@ComponentScan(basePackageClasses = SpringBeanObjectFactory.class)
 @ComponentScan(basePackageClasses = LiveSQL.class)
 @MapperScan(basePackageClasses = LiveSQL.class)
 public class App {
