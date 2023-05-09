@@ -5,7 +5,10 @@ following queries:
 
 ```sql
 select 3 * 7;
+```
+and:
 
+```sql
 select 
   concat('Hello', ' ', 'World'), 
   1 + 1, 
