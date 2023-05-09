@@ -31,6 +31,13 @@ public class SQLServerDialect extends LiveSQLDialect {
     super(discovered, productName, productVersion, majorVersion, minorVersion);
   }
 
+  // From rendering
+
+  @Override
+  public FromRenderer getFromRenderer() {
+    return () -> "";
+  }
+
   // Join rendering
 
   @Override

@@ -29,6 +29,13 @@ public class OracleDialect extends LiveSQLDialect {
     super(discovered, productName, productVersion, majorVersion, minorVersion);
   }
 
+  // From rendering
+
+  @Override
+  public FromRenderer getFromRenderer() {
+    return () -> "FROM dual";
+  }
+
   // Join rendering
 
   @Override

@@ -235,7 +235,11 @@ public abstract class AbstractSelect<R> extends Query {
 
     // base table
 
-    if (this.baseTable != null) {
+    if (this.baseTable == null) {
+
+      w.write("\n" + this.sqlDialect.getFromRenderer().renderFromWithoutATable());
+
+    } else {
 
       String alias = this.baseTable.getAlias() == null ? null
           : this.sqlDialect.canonicalToNatural(this.sqlDialect.naturalToCanonical(this.baseTable.getAlias()));

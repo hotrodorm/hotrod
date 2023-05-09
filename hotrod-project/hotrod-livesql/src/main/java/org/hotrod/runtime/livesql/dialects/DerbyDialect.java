@@ -30,6 +30,13 @@ public class DerbyDialect extends LiveSQLDialect {
     super(discovered, productName, productVersion, majorVersion, minorVersion);
   }
 
+  // From rendering
+
+  @Override
+  public FromRenderer getFromRenderer() {
+    return () -> "FROM sysibm.sysdummy1";
+  }
+
   // Join rendering
 
   @Override
