@@ -9,4 +9,6 @@
   <table name="invoice" />
   <table name="branch" />
 
+  <table name="numbers" />
+
 </hotrod>

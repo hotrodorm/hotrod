@@ -193,16 +193,16 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   public enum BranchOrderBy implements OrderBy {
 
-    ID("public.branch", "id", true), //
-    ID$DESC("public.branch", "id", false), //
-    NAME("public.branch", "\"NaMe\"", true), //
-    NAME$DESC("public.branch", "\"NaMe\"", false), //
-    NAME$CASEINSENSITIVE("public.branch", "lower(\"NaMe\")", true), //
-    NAME$CASEINSENSITIVE_STABLE_FORWARD("public.branch", "lower(\"NaMe\"), \"NaMe\"", true), //
-    NAME$CASEINSENSITIVE_STABLE_REVERSE("public.branch", "lower(\"NaMe\"), \"NaMe\"", false), //
-    NAME$DESC_CASEINSENSITIVE("public.branch", "lower(\"NaMe\")", false), //
-    NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("public.branch", "lower(\"NaMe\"), \"NaMe\"", false), //
-    NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("public.branch", "lower(\"NaMe\"), \"NaMe\"", true);
+    ID("user1.branch", "id", true), //
+    ID$DESC("user1.branch", "id", false), //
+    NAME("user1.branch", "\"NaMe\"", true), //
+    NAME$DESC("user1.branch", "\"NaMe\"", false), //
+    NAME$CASEINSENSITIVE("user1.branch", "lower(\"NaMe\")", true), //
+    NAME$CASEINSENSITIVE_STABLE_FORWARD("user1.branch", "lower(\"NaMe\"), \"NaMe\"", true), //
+    NAME$CASEINSENSITIVE_STABLE_REVERSE("user1.branch", "lower(\"NaMe\"), \"NaMe\"", false), //
+    NAME$DESC_CASEINSENSITIVE("user1.branch", "lower(\"NaMe\")", false), //
+    NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("user1.branch", "lower(\"NaMe\"), \"NaMe\"", false), //
+    NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("user1.branch", "lower(\"NaMe\"), \"NaMe\"", true);
 
     private BranchOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -255,12 +255,12 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     BranchTable() {
-      super(null, "PUBLIC", "BRANCH", "Table", null);
+      super(null, "USER1", "BRANCH", "Table", null);
       initialize();
     }
 
     BranchTable(final String alias) {
-      super(null, "PUBLIC", "BRANCH", "Table", alias);
+      super(null, "USER1", "BRANCH", "Table", alias);
       initialize();
     }
 
@@ -268,9 +268,9 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
+      this.id = new NumberColumn(this, "ID", "id", "NUMBER", 6, 0);
       super.columns.add(this.id);
-      this.name = new StringColumn(this, "NaMe", "name", "CHARACTER VARYING", 20, 0);
+      this.name = new StringColumn(this, "NaMe", "name", "VARCHAR2", 20, null);
       super.columns.add(this.name);
     }
 

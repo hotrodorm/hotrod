@@ -67,11 +67,12 @@ public class App {
     return args -> {
       System.out.println("[ Starting example ]");
 //      crud();
-      join();
+//      join();
 //      join();
 //      livesql();
-      selectByCriteria();
-      torcs();
+//      selectByCriteria();
+//      torcs();
+      noFrom();
       System.out.println("[ Example complete ]");
     };
   }
@@ -83,7 +84,7 @@ public class App {
 
 //    SelectFromPhase<Row> q = this.sql.select().from(n);
     SelectFromPhase<Row> q = this.sql
-        .select(n.star().filter(c -> c.getName().startsWith("INT")), n.int1.minus(n.int2).as("mainDiffLatest")).from(n);
+        .select(n.star().filter(c -> c.getName().startsWith("INT")), n.num1.minus(n.num2).as("mainDiffLatest")).from(n);
 //    SelectFromPhase<Row> q = this.sql.select(n.int1).from(n);
 
     System.out.println("q:" + q.getPreview());
@@ -125,7 +126,9 @@ public class App {
   private void crud() {
 //    reinsert();
     for (NumbersVO r : this.numbersDAO.select(new NumbersVO())) {
-      System.out.println("r=" + r + " dao=" + r.getNumbersDAO());
+      System.out.println("r=" + r
+//          + " dao=" + r.getNumbersDAO()
+      );
     }
   }
 
@@ -160,7 +163,9 @@ public class App {
       BranchVO brx = this.branchDAO.parseRow(r, "br#");
 
       System.out.println("r=" + r);
-      System.out.println("inx=" + inx + " dao=" + inx.getInvoiceDAO());
+      System.out.println("inx=" + inx
+//          + " dao=" + inx.getInvoiceDAO()
+      );
       System.out.println("brx=" + brx);
     }
 
@@ -182,6 +187,19 @@ public class App {
 
   }
 
+  private void noFrom() {
+    System.out.println("--- No FROM #1 ---------------------------------------------------");
+    for (Row r : this.sql.select(sql.val(3).mult(7).as("result"), sql.currentDateTime().as("now")).execute()) {
+      System.out.println("r=" + r);
+    }
+
+//    System.out.println("--- No FROM #2 ---------------------------------------------------");
+//    for (Row r : this.sql.select(sql.val(3).mult(7).as("result"), sql.currentDateTime().as("now")).from(sql.DUAL)
+//        .execute()) {
+//      System.out.println("r=" + r);
+//    }
+  }
+
   private void reinsert() {
 
     this.numbersDAO.delete(new AbstractNumbersVO());
@@ -189,9 +207,14 @@ public class App {
     NumbersVO n = new NumbersVO();
 
     n.setId(1);
-    n.setInt1(123);
-    n.setInt2(456);
-    n.setInt3(789);
+
+    n.setNum1((byte) 123);
+    n.setNum2((short) 456);
+    n.setNum3(789);
+
+//    n.setInt1(123);
+//    n.setInt2(456);
+//    n.setInt3(789);
 
 //    n.setInt2(1234);
 //    n.setInt3(123456L);
