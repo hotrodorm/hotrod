@@ -7,7 +7,6 @@ LiveSQL includes variations to specify all or a subset of the columns and also t
 - [Common Variations of the SELECT List](#common-variations-of-the-select-list)
 - [The SQL Wildcard](#the-sql-wildcard)
 - [Using DISTINCT](#using-distinct)
-- [Selecting Without a Table](#selecting-without-a-table)
 
 ## Common Variations of the SELECT List
 
@@ -285,24 +284,6 @@ Produces:
 SELECT DISTINCT v.brand, v.region
 FROM vehicle v
 ```
-
-## Selecting Without A FROM Clause
-
-Some database engines require a `FROM` clause in a `SELECT` statement. Other ones, such as
-PostgreSQL, MySQL, MariaDB, and SQL Server, can execute a `SELECT` without a `FROM` clause if using literals in the select list, or
-if the values can be computed directly without using any table. For example, the following query is valid in SQL Server:
-
-```java
-List<Row> rows = this.sql
-    .select(
-      sql.val(7),
-      sql.val(15).mult(sql.val(3)), 
-      sql.currentDate()
-    )
-    .execute();
-```
-
-See [Selecting Without A FROM Clause](selecting-without-a-from-clause.md) for more details.
 
 
 Next: [The FROM and JOIN Clauses](./from-and-joins.md)
