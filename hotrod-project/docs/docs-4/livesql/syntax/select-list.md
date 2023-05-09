@@ -302,14 +302,7 @@ List<Row> rows = this.sql
     .execute();
 ```
 
-The resulting query is:
-
-```sql
-SELECT 7, 15 * 3, getdate()
-```
-
-**Note**: Oracle, DB2, and Apache Derby cannot select without a `FROM` clause. In these databases you can use
-[the DUAL and SYSDUMMY1 tables](./systables.md).
+See [Selecting Without A Table](selecting-without-a-table.md) for more details.
 
 
 Next: [The FROM and JOIN Clauses](./from-and-joins.md)
