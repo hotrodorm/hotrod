@@ -184,16 +184,15 @@ the `.as()` method on them. For example:
 InvoiceTable i = InvoiceDAO.newTable("i");
 BranchTable b = BranchDAO.newTable("b");
 
-ExecutableSelect<Row> q = this.sql
+List<Row> rows = this.sql
     .select(
       i.star().as(c -> "in#" + c.getProperty()),
       b.star().as(c -> "br#" + c.getProperty())
     )
     .from(i)
     .join(b, b.id.eq(i.branchId))
-    .where(i.type.like("CK%"));
-System.out.println("q:" + q.getPreview()); // to see the actual query
-List<Row> rows = q.execute();
+    .where(i.type.like("CK%"))
+    .execute();
 
 for (Row r : rows) {
   InvoiceVO ivo = this.invoiceDAO.parseRow(r, "in#");
