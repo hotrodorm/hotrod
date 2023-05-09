@@ -98,7 +98,7 @@ expressions as join predicates: that's the general form of a join called *theta 
 
 LiveSQL implements the most common types of join:
 
-| Join Type | Variation | in LiveSQL | Resulting SQL Syntax |
+| Join Type | Variation | in LiveSQL | Typical SQL Syntax |
 | -- | -- | -- | -- |
 | INNER JOIN | *theta-join* | `join(t, predicate)` | `JOIN t ON predicate` |
 | INNER JOIN | USING | `join(t, column...)` | `JOIN t USING (column...)` |
