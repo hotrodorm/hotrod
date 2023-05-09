@@ -286,7 +286,7 @@ SELECT DISTINCT v.brand, v.region
 FROM vehicle v
 ```
 
-## Selecting Without A Table
+## Selecting Without A FROM Clause
 
 Some database engines require a `FROM` clause in a `SELECT` statement. Other ones, such as
 PostgreSQL, MySQL, MariaDB, and SQL Server, can execute a `SELECT` without a `FROM` clause if using literals in the select list, or
@@ -302,7 +302,7 @@ List<Row> rows = this.sql
     .execute();
 ```
 
-See [Selecting Without A Table](selecting-without-a-table.md) for more details.
+See [Selecting Without A FROM Clause](selecting-without-a-from-clause.md) for more details.
 
 
 Next: [The FROM and JOIN Clauses](./from-and-joins.md)
