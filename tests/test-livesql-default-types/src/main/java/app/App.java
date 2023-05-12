@@ -22,14 +22,11 @@ import org.springframework.context.annotation.Configuration;
 
 import app.daos.BranchVO;
 import app.daos.InvoiceVO;
-import app.daos.NumbersVO;
-import app.daos.primitives.AbstractNumbersVO;
 import app.daos.primitives.BranchDAO;
 import app.daos.primitives.BranchDAO.BranchTable;
 import app.daos.primitives.InvoiceDAO;
 import app.daos.primitives.InvoiceDAO.InvoiceTable;
 import app.daos.primitives.NumbersDAO;
-import app.daos.primitives.NumbersDAO.NumbersTable;
 
 @Configuration
 @SpringBootApplication
@@ -72,47 +69,48 @@ public class App {
 //      livesql();
 //      selectByCriteria();
 //      torcs();
-      noFrom();
+      star();
+//      noFrom();
       System.out.println("[ Example complete ]");
     };
   }
 
-  private void livesql() {
-//    reinsert();
-
-    NumbersTable n = NumbersDAO.newTable("n");
-
-//    SelectFromPhase<Row> q = this.sql.select().from(n);
-    SelectFromPhase<Row> q = this.sql
-        .select(n.star().filter(c -> c.getName().startsWith("INT")), n.num1.minus(n.num2).as("mainDiffLatest")).from(n);
-//    SelectFromPhase<Row> q = this.sql.select(n.int1).from(n);
-
-    System.out.println("q:" + q.getPreview());
-    List<Row> rows = q.execute();
-
-    for (Map<String, Object> r : rows) {
-      System.out.println("r=" + r);
-
-      NumbersVO nv = this.numbersDAO.parseRow(r);
-
-      System.out.println(render(r, "int1")); // 5 SMALLINT
-      System.out.println(render(r, "int2")); // 4 INTEGER
-      System.out.println(render(r, "int3")); // -5 BIGINT
-      System.out.println(render(r, "int4")); // 5 SMALLINT
-      System.out.println(render(r, "int5")); // 4 INTEGER
-      System.out.println(render(r, "int6")); // -5 BIGINT
-      System.out.println(render(r, "dec1")); // 2 NUMERIC
-      System.out.println(render(r, "dec2")); // 2 NUMERIC
-      System.out.println(render(r, "dec3")); // 2 NUMERIC
-      System.out.println(render(r, "dec4")); // 2 NUMERIC
-      System.out.println(render(r, "dec5")); // 2 NUMERIC
-      System.out.println(render(r, "dec6")); // 2 NUMERIC
-      System.out.println(render(r, "dec7")); // 2 NUMERIC
-      System.out.println(render(r, "flo1")); // 7 REAL
-      System.out.println(render(r, "flo2")); // 8 DOUBLE
-    }
-
-  }
+//  private void livesql() {
+////    reinsert();
+//
+//    NumbersTable n = NumbersDAO.newTable("n");
+//
+////    SelectFromPhase<Row> q = this.sql.select().from(n);
+//    SelectFromPhase<Row> q = this.sql
+//        .select(n.star().filter(c -> c.getName().startsWith("INT")), n.num1.minus(n.num2).as("mainDiffLatest")).from(n);
+////    SelectFromPhase<Row> q = this.sql.select(n.int1).from(n);
+//
+//    System.out.println("q:" + q.getPreview());
+//    List<Row> rows = q.execute();
+//
+//    for (Map<String, Object> r : rows) {
+//      System.out.println("r=" + r);
+//
+//      NumbersVO nv = this.numbersDAO.parseRow(r);
+//
+//      System.out.println(render(r, "int1")); // 5 SMALLINT
+//      System.out.println(render(r, "int2")); // 4 INTEGER
+//      System.out.println(render(r, "int3")); // -5 BIGINT
+//      System.out.println(render(r, "int4")); // 5 SMALLINT
+//      System.out.println(render(r, "int5")); // 4 INTEGER
+//      System.out.println(render(r, "int6")); // -5 BIGINT
+//      System.out.println(render(r, "dec1")); // 2 NUMERIC
+//      System.out.println(render(r, "dec2")); // 2 NUMERIC
+//      System.out.println(render(r, "dec3")); // 2 NUMERIC
+//      System.out.println(render(r, "dec4")); // 2 NUMERIC
+//      System.out.println(render(r, "dec5")); // 2 NUMERIC
+//      System.out.println(render(r, "dec6")); // 2 NUMERIC
+//      System.out.println(render(r, "dec7")); // 2 NUMERIC
+//      System.out.println(render(r, "flo1")); // 7 REAL
+//      System.out.println(render(r, "flo2")); // 8 DOUBLE
+//    }
+//
+//  }
 
   private String render(final Map<String, Object> r, final String name) {
     Object o = r.get(name);
@@ -123,13 +121,34 @@ public class App {
     }
   }
 
-  private void crud() {
-//    reinsert();
-    for (NumbersVO r : this.numbersDAO.select(new NumbersVO())) {
-      System.out.println("r=" + r
-//          + " dao=" + r.getNumbersDAO()
-      );
+//  private void crud() {
+////    reinsert();
+//    for (NumbersVO r : this.numbersDAO.select(new NumbersVO())) {
+//      System.out.println("r=" + r
+////          + " dao=" + r.getNumbersDAO()
+//      );
+//    }
+//  }
+
+  private void star() {
+
+    InvoiceTable i = InvoiceDAO.newTable("i");
+    BranchTable b = BranchDAO.newTable("c");
+
+    SelectFromPhase<Row> q = this.sql.select( //
+        i.id, i.amount.as("totalAmount"), // declared columns w/wo alias
+        i.star(), // simple *
+        b.star().filter(c -> true), // filtered *
+        b.star().as(c -> "b#" + c.getProperty()) // aliased *
+    ) //
+        .from(i) //
+        .join(b, b.id.eq(i.branchId));
+    System.out.println("q:" + q.getPreview());
+    List<Row> rows = q.execute();
+    for (Row r : rows) {
+      System.out.println("r=" + r);
     }
+
   }
 
   private void selectByCriteria() {
@@ -200,46 +219,46 @@ public class App {
 //    }
   }
 
-  private void reinsert() {
-
-    this.numbersDAO.delete(new AbstractNumbersVO());
-
-    NumbersVO n = new NumbersVO();
-
-    n.setId(1);
-
-    n.setNum1((byte) 123);
-    n.setNum2((short) 456);
-    n.setNum3(789);
-
-//    n.setInt1(123);
-//    n.setInt2(456);
-//    n.setInt3(789);
-
-//    n.setInt2(1234);
-//    n.setInt3(123456L);
-//    n.setInt4(Integer.valueOf(12345));
-//    n.setInt5(-2345);
-//    n.setInt6(-45678L);
+//  private void reinsert() {
 //
-//    n.setColumns(123);
+//    this.numbersDAO.delete(new AbstractNumbersVO());
 //
-//    n.setDec1(BigDecimal.valueOf(1234.56));
-//    n.setDec2(BigDecimal.valueOf(7890.12));
-//    n.setDec3((byte) 24);
-//    n.setDec4((short) 125);
-//    n.setDec5(12346);
-//    n.setDec6(4455L);
-//    n.setDec7(BigInteger.TEN);
+//    NumbersVO n = new NumbersVO();
 //
-//    n.setFlo1(123.456f);
-//    n.setFlo2(789.012);
+//    n.setId(1);
 //
-//    n.setIntTotalAmount(1);
-//    n.setDecTotalAmount((short) 1);
-//    n.setFloTotalAmount(1.2f);
-
-    this.numbersDAO.insert(n);
-  }
+//    n.setNum1((byte) 123);
+//    n.setNum2((short) 456);
+//    n.setNum3(789);
+//
+////    n.setInt1(123);
+////    n.setInt2(456);
+////    n.setInt3(789);
+//
+////    n.setInt2(1234);
+////    n.setInt3(123456L);
+////    n.setInt4(Integer.valueOf(12345));
+////    n.setInt5(-2345);
+////    n.setInt6(-45678L);
+////
+////    n.setColumns(123);
+////
+////    n.setDec1(BigDecimal.valueOf(1234.56));
+////    n.setDec2(BigDecimal.valueOf(7890.12));
+////    n.setDec3((byte) 24);
+////    n.setDec4((short) 125);
+////    n.setDec5(12346);
+////    n.setDec6(4455L);
+////    n.setDec7(BigInteger.TEN);
+////
+////    n.setFlo1(123.456f);
+////    n.setFlo2(789.012);
+////
+////    n.setIntTotalAmount(1);
+////    n.setDecTotalAmount((short) 1);
+////    n.setFloTotalAmount(1.2f);
+//
+//    this.numbersDAO.insert(n);
+//  }
 
 }

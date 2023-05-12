@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.other">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    id,
+    boo1,
+    boo2,
+    boo3,
+    oth1,
+    idn1,
+    geo1
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.id,
+    ${alias}.boo1,
+    ${alias}.boo2,
+    ${alias}.boo3,
+    ${alias}.oth1,
+    ${alias}.idn1,
+    ${alias}.geo1
+  </sql>
+
+  <resultMap id="allColumns" type="app.daos.OtherVO">
+    <id property="id" column="ID" />
+    <result property="boo1" column="BOO1" />
+    <result property="boo2" column="BOO2" />
+    <result property="boo3" column="BOO3" />
+    <result property="oth1" column="OTH1" />
+    <result property="idn1" column="IDN1" />
+    <result property="geo1" column="GEO1" />
+  </resultMap>
+
+  <!-- select by PK -->
+
+  <select id="selectByPK" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from public.other
+     where
+      id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!-- no select by unique indexes since there are no UI (besides the PK) -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from public.other
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="p.id != null">
+        and id = #{p.id,jdbcType=INTEGER}
+      </if>
+      <if test="p.boo1 != null">
+        and boo1 = #{p.boo1,jdbcType=BOOLEAN}
+      </if>
+      <if test="p.boo2 != null">
+        and boo2 = #{p.boo2,jdbcType=BOOLEAN}
+      </if>
+      <if test="p.boo3 != null">
+        and boo3 = #{p.boo3,jdbcType=BOOLEAN}
+      </if>
+      <if test="p.oth1 != null">
+        and oth1 = #{p.oth1,jdbcType=JAVA_OBJECT}
+      </if>
+      <if test="p.idn1 != null">
+        and idn1 = #{p.idn1,jdbcType=BINARY}
+      </if>
+      <if test="p.geo1 != null">
+        and geo1 = #{p.geo1,jdbcType=OTHER}
+      </if>
+    </trim>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into public.other (
+      <trim prefixOverrides=", ">
+        <if test="true">, id</if>
+        <if test="true">, boo1</if>
+        <if test="true">, boo2</if>
+        <if test="true">, boo3</if>
+        <if test="true">, oth1</if>
+        <if test="true">, idn1</if>
+        <if test="true">, geo1</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{id,jdbcType=INTEGER}</if>
+        <if test="true">, #{boo1,jdbcType=BOOLEAN}</if>
+        <if test="true">, #{boo2,jdbcType=BOOLEAN}</if>
+        <if test="true">, #{boo3,jdbcType=BOOLEAN}</if>
+        <if test="true">, #{oth1,jdbcType=JAVA_OBJECT}</if>
+        <if test="true">, #{idn1,jdbcType=BINARY}</if>
+        <if test="true">, #{geo1,jdbcType=OTHER}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK -->
+
+  <update id="updateByPK">
+    update public.other set
+      boo1 = #{boo1,jdbcType=BOOLEAN},
+      boo2 = #{boo2,jdbcType=BOOLEAN},
+      boo3 = #{boo3,jdbcType=BOOLEAN},
+      oth1 = #{oth1,jdbcType=JAVA_OBJECT},
+      idn1 = #{idn1,jdbcType=BINARY},
+      geo1 = #{geo1,jdbcType=OTHER}
+     where
+      id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- delete by PK -->
+
+  <delete id="deleteByPK">
+    delete from public.other
+     where
+      id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update public.other
+    <set>
+      <if test="values.id != null">id = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.boo1 != null">boo1 = #{values.boo1,jdbcType=BOOLEAN},</if>
+      <if test="values.boo2 != null">boo2 = #{values.boo2,jdbcType=BOOLEAN},</if>
+      <if test="values.boo3 != null">boo3 = #{values.boo3,jdbcType=BOOLEAN},</if>
+      <if test="values.oth1 != null">oth1 = #{values.oth1,jdbcType=JAVA_OBJECT},</if>
+      <if test="values.idn1 != null">idn1 = #{values.idn1,jdbcType=BINARY},</if>
+      <if test="values.geo1 != null">geo1 = #{values.geo1,jdbcType=OTHER},</if>
+    </set>
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="filter.id != null">
+        and id = #{filter.id,jdbcType=INTEGER}
+      </if>
+      <if test="filter.boo1 != null">
+        and boo1 = #{filter.boo1,jdbcType=BOOLEAN}
+      </if>
+      <if test="filter.boo2 != null">
+        and boo2 = #{filter.boo2,jdbcType=BOOLEAN}
+      </if>
+      <if test="filter.boo3 != null">
+        and boo3 = #{filter.boo3,jdbcType=BOOLEAN}
+      </if>
+      <if test="filter.oth1 != null">
+        and oth1 = #{filter.oth1,jdbcType=JAVA_OBJECT}
+      </if>
+      <if test="filter.idn1 != null">
+        and idn1 = #{filter.idn1,jdbcType=BINARY}
+      </if>
+      <if test="filter.geo1 != null">
+        and geo1 = #{filter.geo1,jdbcType=OTHER}
+      </if>
+    </trim>
+  </update>
+
+  <!-- update by criteria -->
+
+  <select id="updateByCriteria">
+    ${sql}
+  </select>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from public.other
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="id != null">
+        and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="boo1 != null">
+        and boo1 = #{boo1,jdbcType=BOOLEAN}
+      </if>
+      <if test="boo2 != null">
+        and boo2 = #{boo2,jdbcType=BOOLEAN}
+      </if>
+      <if test="boo3 != null">
+        and boo3 = #{boo3,jdbcType=BOOLEAN}
+      </if>
+      <if test="oth1 != null">
+        and oth1 = #{oth1,jdbcType=JAVA_OBJECT}
+      </if>
+      <if test="idn1 != null">
+        and idn1 = #{idn1,jdbcType=BINARY}
+      </if>
+      <if test="geo1 != null">
+        and geo1 = #{geo1,jdbcType=OTHER}
+      </if>
+    </trim>
+  </delete>
+
+  <!-- delete by criteria -->
+
+  <select id="deleteByCriteria">
+    ${sql}
+  </select>
+
+</mapper>
