@@ -41,7 +41,8 @@ This is the most advanced form and can use complex subqueries to retrieve the re
 Unlike the second form, this form requires the subquery to have a max cardinalty of 1 for each
 row of the table being updated (quite nice!). For example:
 
-```sqlupdate invoice i
+```sql
+update invoice i
 set (tax_rule_name, tax_law, tax_pct) = (
   select name, law, pct
   from tax_rule r
