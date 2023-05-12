@@ -37,7 +37,9 @@ Nevertheless, when using Oracle, DB2, or Derby, LiveSQL automatically adds a `FR
 For example the query:
 
 ```java
-List<Row> rows = sql.select(sql.val(3).mult(7)).execute();
+List<Row> rows = sql
+  .select(sql.val(3).mult(7))
+  .execute();
 ```
 
 Is perfectly valid in all supported databases, such as MySQL, PostgreSQL and also for Oracle, DB2, and Derby. For the last 
@@ -47,8 +49,19 @@ In any case, if you prefer to clearly include the `FROM dual` or `FROM sysibm.sy
 them. The query above can still be written as:
 
 ```java
-List<Row> rows = sql.select(sql.val(3).mult(7)).from(sql.DUAL).execute(); // Oracle
-List<Row> rows = sql.select(sql.val(3).mult(7)).from(sql.SYSDUMMY1).execute(); // DB2
-List<Row> rows = sql.select(sql.val(3).mult(7)).from(sql.SYSDUMMY1).execute(); // Apache Derby
+List<Row> rows = sql
+  .select(sql.val(3).mult(7))
+  .from(sql.DUAL) // Optional in Oracle
+  .execute();
+  
+List<Row> rows = sql
+  .select(sql.val(3).mult(7))
+  .from(sql.SYSDUMMY1) // Optional in DB2
+  .execute();
+  
+List<Row> rows = sql
+  .select(sql.val(3).mult(7))
+  .from(sql.SYSDUMMY1)  // Optional in Apache Derby
+  .execute();
 ```
 
