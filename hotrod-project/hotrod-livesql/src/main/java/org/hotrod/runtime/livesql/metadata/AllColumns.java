@@ -12,14 +12,14 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class AllColumns implements ResultSetColumn {
 
-  private Column[] columns;
+  private List<Column> columns;
 
   public AllColumns(final Column... columns) {
-    this.columns = columns;
+    this.columns = Arrays.asList(columns);
   }
 
   public ColumnSubset filter(final Predicate<Column> predicate) {
-    return new ColumnSubset(Arrays.stream(this.columns).filter(predicate).collect(Collectors.toList()));
+    return new ColumnSubset(this.columns.stream().filter(predicate).collect(Collectors.toList()));
   }
 
   public static interface ColumnRenamer {
@@ -27,7 +27,7 @@ public class AllColumns implements ResultSetColumn {
   }
 
   public ColumnAliased as(final ColumnRenamer aliaser) {
-    return new ColumnAliased(Arrays.stream(this.columns) //
+    return new ColumnAliased(this.columns.stream() //
         .map(c -> {
           return new AliasedExpression((Expression) c, aliaser.newName(c));
         }) //

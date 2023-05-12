@@ -20,6 +20,7 @@ import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.metadata.AllColumns.ColumnSubset;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.DatabaseObject;
@@ -69,10 +70,11 @@ public abstract class AbstractSelect<R> extends Query {
 
     List<ResultSetColumn> expandedColumns = new ArrayList<>(resultSetColumns);
 
-    // 1. Expand unlisted columns
+    if (expandedColumns == null || expandedColumns.isEmpty()) {
 
-    try {
-      if (expandedColumns == null || expandedColumns.isEmpty()) {
+      // 1. Expand unlisted columns
+
+      try {
         expandedColumns = new ArrayList<>();
         List<Column> columns = getColumnsField(baseTable, TableOrView.class, "columns");
         for (Column e : columns) {
@@ -84,34 +86,36 @@ public abstract class AbstractSelect<R> extends Query {
             expandedColumns.add(e);
           }
         }
-      }
-    } catch (IllegalAccessException e) {
-      throw new LiveSQLException("Could not expand LiveSQL columns (all)", e);
-    } catch (RuntimeException e) {
-      throw new LiveSQLException("Could not expand LiveSQL columns (all)", e);
-    }
-
-    // 2. Expand columns subsets (star(), filtered star(), etc.)
-
-    ListIterator<ResultSetColumn> it = expandedColumns.listIterator();
-    while (it.hasNext()) {
-      try {
-        ResultSetColumn rsc = it.next();
-        ColumnSubset cs = (ColumnSubset) rsc;
-        it.remove();
-        List<Column> columns = getColumnsField(cs, ColumnSubset.class, "columns");
-        for (Column fc : columns) {
-          it.add(fc);
-        }
-
-      } catch (SecurityException e) {
-        throw new LiveSQLException("Could not expand subset of LiveSQL columns", e);
-      } catch (IllegalArgumentException e) {
-        throw new LiveSQLException("Could not expand subset of LiveSQL columns", e);
       } catch (IllegalAccessException e) {
-        throw new LiveSQLException("Could not expand subset of LiveSQL columns", e);
-      } catch (ClassCastException e) {
-        // Ignore. It's not a subset
+        throw new LiveSQLException("Could not expand LiveSQL columns (all)", e);
+      } catch (RuntimeException e) {
+        throw new LiveSQLException("Could not expand LiveSQL columns (all)", e);
+      }
+
+    } else {
+
+      // 2. Expand columns subsets (star(), filtered star(), etc.)
+
+      ListIterator<ResultSetColumn> it = expandedColumns.listIterator();
+      while (it.hasNext()) {
+        try {
+          ResultSetColumn rsc = it.next();
+          List<Column> scols = getSubColumns(rsc);
+          if (scols != null) {
+            it.remove();
+            for (Column sc : scols) {
+              it.add(sc);
+            }
+          }
+        } catch (IllegalArgumentException e) {
+          throw new LiveSQLException("Could not expand subset of LiveSQL columns", e);
+        } catch (IllegalAccessException e) {
+          throw new LiveSQLException("Could not expand subset of LiveSQL columns", e);
+        } catch (ClassCastException e) {
+          throw new LiveSQLException("Could not expand subset of LiveSQL columns", e);
+        } catch (RuntimeException e) {
+          throw new LiveSQLException("Could not expand subset of LiveSQL columns", e);
+        }
       }
 
     }
@@ -136,6 +140,15 @@ public abstract class AbstractSelect<R> extends Query {
 
     }
 
+  }
+
+  private List<Column> getSubColumns(ResultSetColumn c) throws IllegalArgumentException, IllegalAccessException {
+    if (c instanceof AllColumns) {
+      return getColumnsField(c, AllColumns.class, "columns");
+    } else if (c instanceof ColumnSubset) {
+      return getColumnsField(c, ColumnSubset.class, "columns");
+    }
+    return null;
   }
 
   // Setters
@@ -599,12 +612,17 @@ public abstract class AbstractSelect<R> extends Query {
 
   protected List<Column> getColumnsField(final Object cs, final Class<?> clazz, final String colName)
       throws IllegalArgumentException, IllegalAccessException {
-    Field cf = ReflectionUtils.findField(clazz, colName);
-    cf.setAccessible(true);
-    Object object = cf.get(cs);
-    @SuppressWarnings("unchecked")
-    List<Column> columns = (List<Column>) object;
-    return columns;
+    try {
+      Field cf = ReflectionUtils.findField(clazz, colName);
+      cf.setAccessible(true);
+      Object object = cf.get(cs);
+      @SuppressWarnings("unchecked")
+      List<Column> columns = (List<Column>) object;
+      return columns;
+    } catch (ClassCastException e) {
+      e.printStackTrace();
+      throw e;
+    }
   }
 
 }
