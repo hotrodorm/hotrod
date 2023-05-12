@@ -51,17 +51,17 @@ them. The query above can still be written as:
 ```java
 List<Row> rows = sql
   .select(sql.val(3).mult(7))
-  .from(sql.DUAL) // Optional in Oracle
+  .from(sql.DUAL) // Optional from() in Oracle
   .execute();
   
 List<Row> rows = sql
   .select(sql.val(3).mult(7))
-  .from(sql.SYSDUMMY1) // Optional in DB2
+  .from(sql.SYSDUMMY1) // Optional from() in DB2
   .execute();
   
 List<Row> rows = sql
   .select(sql.val(3).mult(7))
-  .from(sql.SYSDUMMY1)  // Optional in Apache Derby
+  .from(sql.SYSDUMMY1)  // Optional from() in Apache Derby
   .execute();
 ```
 
