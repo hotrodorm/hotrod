@@ -2,7 +2,7 @@
 
 HotRod 4.0 includes several major features as well as a many of minor improvements.
 
-## 1. Core Module
+## 1. The Core Module
 
 ### 1.1 No Config Mode
 
@@ -66,7 +66,7 @@ Other minor changes were added. The following ones are worth mentioning:
 - Deprecated tag `<mybatis-configuration-template>` removed.
 
 
-## 2. LiveSQL Module
+## 2. The LiveSQL Module
 
 ### 2.1 The SQL Wildcard (`*`)
 
@@ -108,7 +108,7 @@ This change has minimal side effects since `Row` subclasses `Map<String, Object>
 The Oracle MOD() function was rendered incorrectly in LiveSQL 3 and this is now fixed in LiveSQL 4.
 
 
-## 3. CRUD
+## 3. The CRUD Module
 
 ### 3.1 DAO Methods Renamed
 
@@ -134,7 +134,7 @@ this extra property was useful in all `byExample()` functionality it was interfe
 renderer and parser. At the same the change log was largely rendered obsolete by the LiveSQL's
 predicates that cover all these searched and other much more complex ones.
 
-## 4. Nitro
+## 4. The Nitro Module
 
 ### 4.1 Entity `<select>`s Return Entity VOs
 
