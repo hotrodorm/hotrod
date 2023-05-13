@@ -150,8 +150,8 @@ implemented but this is not the case anymore in all supported databases.
 
 ### 4.3 Dynamic SQL For-Each Fully Implemented
 
-Dynamic SQL's `<foreach>` tag is now fully implemented to handle collection of parameters on the fly 
-while generating a dynamic query.
+Dynamic SQL's `<foreach>` tag is now fully implemented to handle collections of parameters on the fly 
+while assembing a dynamic query.
 
 
 
