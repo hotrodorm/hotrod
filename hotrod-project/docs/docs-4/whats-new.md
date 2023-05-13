@@ -74,7 +74,7 @@ The SQL wildcard (`*`) is now supported with the `star()` method. Apart from the
 functionality defined in the SQL Standard, this method is enhanced with filtering and aliasing.
 Filtering decides which columns to keep using a lambda function.
 Aliasing renames columns as needed also using another lambda function. See
-[The SQL Wildcard](livesql/syntax/select-list.md#the-sql-wildcard) and for aliasing in particular
+[The SQL Wildcard](livesql/syntax/select-list.md#the-sql-wildcard) and, for aliasing in particular,
 [Aliasing Wildcard Columns](livesql/syntax/select-list.md#aliasing-wildcard-columns).
 
 ### 2.2 INSERT, UPDATE, and DELETE Implemented
