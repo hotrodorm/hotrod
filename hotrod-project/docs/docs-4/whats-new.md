@@ -136,7 +136,7 @@ predicates that cover all these searched and other much more complex ones.
 
 ## 4. The Nitro Module
 
-### 4.1 Entity `<select>`s Return Entity VOs
+### 4.1 Entity SELECTs Return Entity VOs
 
 All `<select>` tags defined in entities (`<table>` and `<view>` tags) return VOs of the entity only.
 the `vo` attribute is not accepted anymore in entity selects. On the other hand, `<select>` tags
@@ -148,7 +148,7 @@ Long overdue, Nitro now defaults to `result-set` generation. The `<select-genera
 omitted by default. The `create-view` Nitro strategy was key at the time when JDBC drivers were poorly
 implemented but this is not the case anymore in all supported databases.
 
-### 4.3 `<foreach>` Fully Implemented
+### 4.3 Dynamic SQL For-Each Fully Implemented
 
 Dynamic SQL's `<foreach>` tag is now fully implemented to handle collection of parameters on the fly 
 while generating a dynamic query.
