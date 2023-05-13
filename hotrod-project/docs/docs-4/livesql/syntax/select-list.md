@@ -117,7 +117,7 @@ FROM employee e
 JOIN department d ON d.id = e.department_id
 ```
 
-### Filtering Columns
+### Filtering Wildcard Columns
 
 If we only want a subset of the columns referenced by a `*` symbol we can use the `.filter(<predicate>)` method to exclude 
 some of them. For example, to include only columns of type `INTEGER` or `DECIMAL` of the table `EMPLOYEE` we can do:
@@ -171,7 +171,7 @@ create table client.checking_account (
 );
 ```
 
-### Aliasing Columns
+### Aliasing Wildcard Columns
 
 It can be useful to change the name of the columns from one table to differentiate
 from the columns of another one, specially when joined tables have columns with the same name.
@@ -220,7 +220,7 @@ Note that more complex logic can be used. All properties mentioned in the table 
 to write more complex functions.
 
 
-### Filtering and Aliasing Columns
+### Filtering and Aliasing Wildcard Columns
 
 Finally, aliasing columns can be combined with filtering. For example, the select list can take the form:
 
