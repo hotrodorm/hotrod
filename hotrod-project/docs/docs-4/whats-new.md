@@ -75,7 +75,7 @@ functionality defined in the SQL Standard, this method is enhanced with filterin
 Filtering decides which columns to keep using a lambda function.
 Aliasing renames columns as needed also using another lambda function. See
 [The SQL Wildcard](livesql/syntax/select-list.md#the-sql-wildcard) and for aliasing in particular
-[Aliasing Columns](livesql/syntax/select-list.md#aliasing-wildcard-columns).
+[Aliasing Wildcard Columns](livesql/syntax/select-list.md#aliasing-wildcard-columns).
 
 ### 2.2 INSERT, UPDATE, and DELETE Implemented
 
@@ -88,7 +88,7 @@ expressions when updating data. Simple subqueries are allowed in these expressio
 The Row Parser funnctionality is available in the DAOs to reassemble one or more VOs from
 a SELECT data row. Support for prefixes and suffixes is designed to be used in conjunction
 with column aliasing to handle multiple VOs resulting from joined tables and views. See
-[Aliasing Columns](livesql/syntax/select-list.md#aliasing-wildcard-columns).
+[Aliasing Wildcard Columns](livesql/syntax/select-list.md#aliasing-wildcard-columns).
 
 ### 2.4 Support for Queries without a FROM Clause
 
