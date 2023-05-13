@@ -4,8 +4,8 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 
 ## 4.0.0 (alpha, unreleased)
 - Core:
-    - Schema discovery implemented.
     - No-config implemented. The `hotrod.xml` file can now be omitted for rapid prototyping.
+    - Schema discovery implemented.
     - Support for multiple datasources.
     - Aurora/PostgreSQL and Aurora/MySQL supported.
     - VOs are instantiated as Spring beans rather than as POJOs.

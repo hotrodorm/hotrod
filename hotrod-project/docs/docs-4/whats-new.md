@@ -2,30 +2,157 @@
 
 HotRod 4.0 includes several major features as well as a many of minor improvements.
 
+## 1. Core Module
 
-## New Features in 4.0
+### 1.1 No Config Mode
 
-### Main Functionality
+The main configuration file can be omitted for rapid prototyping. In this mode a minimal
+configuration can be defined in the Maven pom.xml plugin and the full persistence layer can
+be generated and used in no time. In this mode HotRod generates the persistence layer by 
+scanning the current database schema. Sensible defaults are defined for all configuration
+parameters for a standard persistence layer. See the [Hello World](guides/hello-world.md)
+example to see it in action.
 
-- Schema discovery.
-- Support for multiple datasources.
-- Configuration property generator removed.
-- Default values for the `<mappers>` tag. It can be now omitted in the configuration file.
+### 1.2 Schema Discovery
+
+Schema discovery can find tables and views in one or more schemas of the database
+and generate the persistence layer for them automatically. It's enabled in No Config
+mode and scans the current schema. Otherwise, the configuration tag `<discover>` 
+can specify the list of schemas to scan with exclusions. Rules can be defined with 
+a `<name-solver>` and/or `<type-solver>` to tweak the name generation of classes and
+the type and names of properties in the persistence layer. See 
+[Schema Discovery](guides/schema-discovery.md) for details.
+
+### 1.3 Support for Multiple Datasources
+
+Suppor for multiple datasources was added. These datasources can correspond to the same
+database engine or different ones. Each datasource generates a separated persistence
+layer that is used seamlessly by all the HotRod modules, including CRUD, LiveSQL, and Nitro,
+as well as Spring transactions. See [Using Multiple Datasources](guides/using-multiple-datasources.md) 
+for details.
+
+### 1.4 Aurora/PostgreSQL and Aurora/MySQL Databases Are Supported
+
+These two new databases are now supported with all PostgreSQL and MySQL features.
+HotRod recognizes them as such, and generates the persistence layer accordingly.
+
+### 1.5 VOs Are Now Spring Beans
+
+All VOs are retrieved as Spring Beans. This means they can use the Spring context
+to handle Spring calls, autowiring, initiate/manage transactions, AOP, etc.
+
+### 1.6 Enhanced Converters
+
+Converters were enhanced and to receive the database `Connection`. This allows them
+to manage special/exotic database types when sending them to and receiving them from
+the database.
+
+### 1.7 Configuration Default Settings
+
+Sensible values were defined for all settings of the HotRod configuration file.
+When a configuration setting is not specified a well-defined default behavior is included.
+This feature goes hand in hand with the No Config mode.
+
+### 1.8 Other Minor Changes
+
+Other minor changes were added. The following ones are worth mentioning:
+
+- Configuration property `generator` removed.
 - Reusing JDBC connection when using result-set processor.
+- Converters fixed in `<dao>` tags.
+- DTD declarations are now removed from config files.
+- Converter's `java-intermediate-type` attribute renamed as `java-raw-type`.
+- `primitives` subfolder removed in the location of mappers.
+- Deprecated tag `<mybatis-configuration-template>` removed.
 
-### CRUD
 
-- `propertiesChangeLog` is now removed from VOs to facilitate quick Spring prototyping.
-- Nitro defaults to result-set generation now. The `<select-generation>` tag can be omitted by default.
-- Classic FK Navigation is now enabled by default. The `<classic-fk-navigation>` tag can be omitted now.
-- Nitro select methods in entity tags (`<table>` and `<view>` tags) are restricted to return the corresponding entity VOs only. They don't accept the 'vo' attribute anymore.
+## 2. LiveSQL Module
 
-### LiveSQL
+### 2.1 The SQL Wildcard (`*`)
 
-- LiveSQL now implements INSERT, UPDATE, and DELETE statements in addition to SELECT.
-- LiveSQL supports the wildcard `*` symbol with filtering and aliasing.
-- LiveSQL can use the DUAL (Oracle) and SYSIBM.SYSDUMMY1 (DB2 and Derby) system tables.
-- LiveSQL now returns `List<Row>` and `Cursor<Row>`.
+The SQL wildcard (`*`) is now supported with the `star()` method. Apart from the traditional
+functionality defined in the SQL Standard, this method is enhanced with filtering and aliasing.
+Filtering decides which columns to keep using a lambda function.
+Aliasing renames columns as needed also using another lambda function. See
+[The SQL Wildcard](livesql/syntax/select-list.md#the-sql-wildcard) and for aliasing in particular
+[Aliasing Columns](livesql/syntax/select-list.md#aliasing-columns).
+
+### 2.2 INSERT, UPDATE, and DELETE Implemented
+
+Core versions of these SQL Statements are now implemented to handle typical cases, to make full 
+use the LiveSQL features such as usage of complex predicates when selecting data and complex
+expressions when updating data. Simple subqueries are allowed in these expressions as well.
+
+### 2.3 Row Parser Implemented
+
+The Row Parser funnctionality is available in the DAOs to reassemble one or more VOs from
+a SELECT data row. Support for prefixes and suffixes is designed to be used in conjunction
+with column aliasing to handle multiple VOs resulting from joined tables and views. See
+[Aliasing Columns](livesql/syntax/select-list.md#aliasing-columns).
+
+### 2.4 Support for Queries without a FROM Clause
+
+LiveSQL now automatically adds a FROM clause for databases that do not support queries without
+it. Depending on the database the `DUAL` or `SYSDUMMY1` tables are used for this purpose behind
+the scenes. These tables can also be used explicitly when desired. See
+[Selecting Without a FROM Clause](livesql/syntax/selecting-without-a-from-clause.md).
+
+### 2.5 LiveSQL Now Returns `List<Row>` and `Cursor<Row>`
+
+To improve readability, LiveSQL changed the return type of the SELECT clauses and now returns
+`List<Row>` and `Cursor<Row>` instead of `List<Map<String, Object>>` and `Cursor<Map<String, Object>>`.
+This change has minimal side effects since `Row` subclasses `Map<String, Object>`.
+
+### 2.6 Correct Oracle MOD() Function
+
+The Oracle MOD() function was rendered incorrectly in LiveSQL 3 and this is now fixed in LiveSQL 4.
+
+
+## 3. CRUD
+
+### 3.1 DAO Methods Renamed
+
+Most `select()` method variations are now named `select()`. This also applies to `update` and `delete`.
+The variations are differentiated by different kind of parameters such as scalar values (for keys),
+VOs (for `byExample`) and predicates for criteria searching.
+
+### 3.2 Classic FK Navigation Enable By Default
+
+Classic Foreign Key Navigation is now enabled by default and the `<classic-fk-navigation>` tag can 
+be omitted now. In practice, all DAO methods to select related VOs using foreign keys are now included
+by default in the DAOs and can be used out of the box.
+
+### 3.3 DAOs Implement Interfaces
+
+Java DAOs classes can be configured to implement predefined Java interfaces and take advantage
+of extra Java functionality with them.
+
+### 3.4 Plain VOs
+
+The `propertiesChangeLog` is now removed from VOs to facilitate quick Spring prototyping. Alhough
+this extra property was useful in all `byExample()` functionality it was interfering with the JSON
+renderer and parser. At the same the change log was largely rendered obsolete by the LiveSQL's
+predicates that cover all these searched and other much more complex ones.
+
+## 4. Nitro
+
+### 4.1 Entity `<select>` Return Entity VOs
+
+All `<select>` tags defined in entities (`<table>` and `<view>` tags) return VOs of the entity only.
+the `vo` attribute is not accepted anymore in entity selects. On the other hand, `<select>` tags
+outside entities (in `<dao>` tags) are fully free to return any type of VO.
+
+### 4.2 Result Set Generation
+
+Long overdue, Nitro now defaults to `result-set` generation. The `<select-generation>` tag can be 
+omitted by default. The `create-view` Nitro strategy was key at the time when JDBC drivers were poorly
+implemented but this is not the case anymore in all supported databases.
+
+### 4.3 `<foreach>` Fully Implemented
+
+Dynamic SQL's `<foreach>` tag is now fully implemented to handle collection of parameters on the fly 
+while generating a dynamic query.
+
 
 
 
