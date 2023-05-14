@@ -7,7 +7,9 @@ can quickly help to start prototyping an application.
 
 See [What's New In HotRod 4](./whats-new.md) and [Version History](../version-history.md).
 
-HotRod includes three modules:
+See HotRod in action with the [Hello World Example](./guides/hello-world.md).
+
+HotRod functionality is included in three modules:
 
 - [CRUD](crud/README.md) &mdash; Quick and simple persistence for rapid prototyping
 - [LiveSQL](livesql/README.md) &mdash; Flexible querying from Java
@@ -21,9 +23,8 @@ Reference:
 - [Maven Integration](maven/README.md)
 - [Supported Databases and Default Data Types](config/supported-databases.md)
 
-Quick Guides:
+Guides:
 
-- [Hello World!](./guides/hello-world.md)
 - [Schema Discovery](guides/schema-discovery.md)
 - [Starting a Spring Boot Project from Scratch using PostgreSQL](guides/starting-a-maven-project-from-scratch-with-postgresql.md)
 - [Automate Project Creation with One Command](maven/maven-arquetype.md)
