@@ -25,7 +25,7 @@ HotRod includes three modules:
 See HotRod in action with the [Hello World Example](hotrod-project/docs/docs-4/guides/hello-world.md).
 
 
-## Features
+## Features Overview
 
 HotRod follows the *Database First* approach. It assumes the database already exists with all 
 tables ready. HotRod inspects the database and produces a fully functional
