@@ -15,9 +15,9 @@ Documentation of the previous version can be found at [HotRod 3 Docs](hotrod-pro
 
 HotRod includes three modules:
 
-- CRUD &mdash; Quick and simple persistence for rapid prototyping.
-- LiveSQL &mdash; Flexible querying from Java.
-- Nitro &mdash; Combine Native SQL with Dynamic SQL and Graph Queries.
+- CRUD &mdash; Quick and simple persistence for rapid prototyping
+- LiveSQL &mdash; Flexible querying from Java
+- Nitro &mdash; Combine Native SQL with Dynamic SQL and Graph Queries
 
 
 ## Hello World Example
