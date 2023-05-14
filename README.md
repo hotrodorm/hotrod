@@ -8,10 +8,10 @@ can quickly help to start prototyping an application.
 
 ## Documentation
 
-Documentation of the latest version can be found at [HotRod 4 Docs](./hotrod-project/docs/docs-4/README.md)
-and [What's New in HotRod 4](hotrod-project/docs/docs-4/whats-new.md).
+Documentation of the latest version can be found at [HotRod 4 Documentation](./hotrod-project/docs/docs-4/README.md)
+and [What's New](hotrod-project/docs/docs-4/whats-new.md).
 
-Documentation of the previous version can be found at [HotRod 3 Docs](hotrod-project/docs/docs-3.4/README.md).
+Documentation of the previous version can be found at [HotRod 3 Documentation](hotrod-project/docs/docs-3.4/README.md).
 
 HotRod includes three modules:
 
