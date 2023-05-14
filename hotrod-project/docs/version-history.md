@@ -2,7 +2,8 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
-## 4.0.0 (alpha, unreleased)
+## 4.0.0
+
 - Core:
     - No-config implemented. The `hotrod.xml` file can now be omitted for rapid prototyping.
     - Schema discovery implemented.
@@ -36,6 +37,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
     - `<foreach>` fixed.
 
 ## 3.5.1-SNAPSHOT
+
 - LiveSQL: Backport of filtering and aliasing for the star() method.
 - LiveSQL: Backport Oracle MOD() function bugfix.
 - LiveSQL: Backport of row parser with support for joins. Tuples can now be retrieved.
@@ -44,52 +46,66 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 - Core: B of VOs as Spring beans.
 
 ## 3.5.0
+
 - CRUD: Backport of "implements" and DAO wiring for VOs.
 - LiveSQL: Backport of method wildcard `*`; method star().
 
 ## 3.4.14
+
 - Core: Adding support for tables with identical names in different schemas.
 
 ## 3.4.13
+
 - Core: Fixing treatment of identical Oracle metadata in multiple schemas. In this case the DBA copied a schema as a backup and 
 this created confusion in HotRod's metadata. 
 
 ## 3.4.12
+
 - CRUD: Removing `propertiesChangeLog` in VOs.
 - LiveSQL: Adding row parser.
 - CRUD: Fixing `updateByExample()`.
 
 ## 3.4.11
+
 - CRUD: Fixing CRUD insert.
 
 ## 3.4.10
+
 - CRUD: Removing `abstract` from model VOs.
 
 ## 3.4.9
+
 - Full documentation for version 3 and 4 in the GitHub repo/pages.
 
 ## 3.4.8
+
 - Adding support for H2 version 2.x.
 
 ## 3.4.7
+
 - DAO references to other DAO are now marked as `@Lazy` to deal with circular references (parent-children). Spring Boot prototypes don't like them when eager-loaded.
 
 ## 3.4.6
+
 - Migration to GitHub.
 - Improved Spring Boot Archetype.
 
 ## 3.4.5
+
 - New Spring Boot archetype! It generates a running full-blown project with a single command line: Includes
   Spring Boot, HotRod, REST Controllers, OpenAPI3, Debbie, and Sentinel.
 - Fixing `<enum>` tag error.
 
 ## 3.4.4
+
 - Log4j fully removed from runtimes (hotrod-jar and hotrod-livesql.jar). Now Log4j is only used in the generator.
 
 ## 3.4.3
+
 - Log4J upgraded to 2.17.1.
 
 ## 3.4.2
+
 - Fixing fragment processing.
 - Adding HotRod Services infrastructure to facilitate future plugins.
 - Removed deprecated first-level `<select>` tag.
@@ -98,11 +114,13 @@ this created confusion in HotRod's metadata.
 - Code clean up.
 
 ## 3.4.1
+
 - Improving select tag messaging for SQL errors.
 - Fixing default catalog/schema for nitro module.
 - Adding generation output and summary line.
 
 ## 3.4.0
+
 - Classic FK navigation can now be enabled on a per-table basis.
 - Cursors implemented for LiveSQL, Nitro Selects, selectByExample(), and selectByCriteria().
 - New `<select>` tag processor "result-set" offers many benefits compared to traditional "create view" processor.
@@ -117,39 +135,48 @@ this created confusion in HotRod's metadata.
 - Added extra prefixes and suffixes for Nitro DAOs and VOs.
 
 ## 3.3.3
+
 - Implemented classic FK navigation (globally enabled or disabled).
 
 ## 3.3.2
+
 - Maintenance release.
 
 ## 3.3.1
+
 - LiveSQL mapper is now implemented as a Java mapper; no XML file is generated anymore.
 - All HotRod Spring configuration can now be made using Java annotations.
 - Experimental FK navigation.
 
 ## 3.3.0
+
 - All functionality tested with SpringBoot release and web components.
 - Removed MyBatis Configuration file; replaced by mapper scanning annotations.
 - Experimental SQL metrics developed.
 
 ## 3.2.3
+
 - Log4J upgraded to 2.17.1 in the generator.
 - Log4j fully removed from runtimes (hotrod-jar and hotrod-livesql.jar). Now Log4j is only used in the generator.
 
 ## 3.2.2
+
 - Fixed connection exception reporting.
 - Cursors implemented for selectByExample().
 - AOP tested with experimental SQL metrics.
 
 ## 3.2.1
+
 - Removing "final" to VO getters and setters.
 - Experimental implementation of table inheritance.
 
 ## 3.2.0
+
 - Simplified hotrod.xml configuration file with many sensible default values.
 - Standard archetype implemented for a Spring, Maven, MyBatis, command-line app.
 
 ## 3.1.0
+
 - Maven Plugin released.
 - Full `<type-solver>` implemented with OGNL logic.
 - TXT column export implemented.
@@ -157,21 +184,27 @@ this created confusion in HotRod's metadata.
 - HotRod PURGE operation implemented to remove residual temporary views.
 
 ## 3.0.5
+
 - Fixing graph queries VOs prefixes and suffixes.
 
 ## 3.0.4
+
 - Fixing prefixes and suffixes for abstract VOs.
 - Removed default LiveSQL preview in logging. Can be enabled by DEBUG logging level.
 
 ## 3.0.3
+
 - Adding tar.gz packaging for Docker releases.
 - Fully dockerized example: web + hotrod + docker + java11 + maven + spring.
 
 ## 3.0.2
+
 - Added Spring, Maven, web POC.
 
 ## 3.0.1
+
 - Fixing Java 9 JAXB implementation.
 
 ## 3.0.0
+
 - HotRod released to Maven Central Repository.
