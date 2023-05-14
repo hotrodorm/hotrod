@@ -72,25 +72,25 @@ Core versions of these SQL Statements are now implemented to handle typical case
 use the LiveSQL features such as usage of complex predicates when selecting data and complex
 expressions when updating data. Simple subqueries are allowed in these expressions as well.
 
-### 2.3 Row Parser Implemented
-
-The Row Parser funnctionality is available in the DAOs to reassemble one or more VOs from
-a SELECT data row. Support for prefixes and suffixes is designed to be used in conjunction
-with column aliasing to handle multiple VOs resulting from joined tables and views. See
-[Aliasing Wildcard Columns](livesql/syntax/select-list.md#aliasing-wildcard-columns).
-
-### 2.4 Queries without a FROM Clause
+### 2.3 Queries without a FROM Clause
 
 LiveSQL now automatically adds a FROM clause for databases that do not support queries without
 it. Depending on the database the `DUAL` or `SYSDUMMY1` tables are used for this purpose behind
 the scenes. These tables can also be used explicitly when desired. See
 [Selecting Without a FROM Clause](livesql/syntax/selecting-without-a-from-clause.md).
 
-### 2.5 LiveSQL Now Returns List&lt;Row> and Cursor&lt;Row>
+### 2.4 LiveSQL Now Returns List&lt;Row> and Cursor&lt;Row>
 
 To improve readability, LiveSQL changed the return type of the SELECT clauses and now returns
 `List<Row>` and `Cursor<Row>` instead of `List<Map<String, Object>>` and `Cursor<Map<String, Object>>`.
 This change has minimal side effects since `Row` subclasses `Map<String, Object>`.
+
+### 2.5 Row Parser Implemented
+
+The Row Parser funnctionality is available in the DAOs to reassemble one or more VOs from
+a SELECT data row. Support for prefixes and suffixes is designed to be used in conjunction
+with column aliasing to handle multiple VOs resulting from joined tables and views. See
+[Aliasing Wildcard Columns](livesql/syntax/select-list.md#aliasing-wildcard-columns).
 
 
 ## 3. The CRUD Module
@@ -146,7 +146,7 @@ Version 4 includes many minor changes and bug fixes are included. The following 
 - Converter's `java-intermediate-type` attribute renamed as `java-raw-type`.
 - `primitives` subfolder removed in the location of mappers.
 - Deprecated tag `<mybatis-configuration-template>` removed.
-- LiveSQL's Oracle `.mod()` function was fixed.
+- LiveSQL's Oracle `.remainder()` function was fixed.
 - The `<foreach>` tag bug is fixed and supports standard parameters now.
 
 
