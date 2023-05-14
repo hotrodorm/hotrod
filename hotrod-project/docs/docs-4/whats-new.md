@@ -8,7 +8,7 @@ HotRod 4.0 includes several major features as well as a many of minor improvemen
 
 The main configuration file can be omitted for rapid prototyping. In this mode a minimal
 configuration can be defined in the Maven pom.xml plugin and the full persistence layer can
-be generated and used in no time. In this mode HotRod generates the persistence layer by 
+be generated and used in no time. In this mode HotRod generates the persistence layer by
 scanning the current database schema. Sensible defaults are defined for all configuration
 parameters for a standard persistence layer. See the [Hello World](guides/hello-world.md)
 example to see it in action.
@@ -17,10 +17,10 @@ example to see it in action.
 
 Schema discovery can find tables and views in one or more schemas of the database
 and generate the persistence layer for them automatically. It's enabled in No Config
-mode and scans the current schema. Otherwise, the configuration tag `<discover>` 
-can specify the list of schemas to scan with exclusions. Rules can be defined with 
+mode and scans the current schema. Otherwise, the configuration tag `<discover>`
+can specify the list of schemas to scan with exclusions. Rules can be defined with
 a `<name-solver>` and/or `<type-solver>` to tweak the name generation of classes and
-the type and names of properties in the persistence layer. See 
+the type and names of properties in the persistence layer. See
 [Schema Discovery](guides/schema-discovery.md) for details.
 
 ### 1.3 Support for Multiple Datasources
@@ -28,7 +28,7 @@ the type and names of properties in the persistence layer. See
 Suppor for multiple datasources was added. These datasources can correspond to the same
 database engine or different ones. Each datasource generates a separated persistence
 layer that is used seamlessly by all the HotRod modules, including CRUD, LiveSQL, and Nitro,
-as well as Spring transactions. See [Using Multiple Datasources](guides/using-multiple-datasources.md) 
+as well as Spring transactions. See [Using Multiple Datasources](guides/using-multiple-datasources.md)
 for details.
 
 ### 1.4 Aurora/PostgreSQL and Aurora/MySQL Databases Are Supported
@@ -52,18 +52,6 @@ the database.
 Sensible values were defined for all settings of the HotRod configuration file.
 When a configuration setting is not specified a well-defined default behavior is included.
 This feature goes hand in hand with the No Config mode.
-
-### 1.8 Other Minor Changes
-
-Other minor changes were added. The following ones are worth mentioning:
-
-- Configuration property `generator` removed.
-- Reusing JDBC connection when using result-set processor.
-- Converters fixed in `<dao>` tags.
-- DTD declarations are now removed from config files.
-- Converter's `java-intermediate-type` attribute renamed as `java-raw-type`.
-- `primitives` subfolder removed in the location of mappers.
-- Deprecated tag `<mybatis-configuration-template>` removed.
 
 
 ## 2. The LiveSQL Module
@@ -103,10 +91,6 @@ To improve readability, LiveSQL changed the return type of the SELECT clauses an
 `List<Row>` and `Cursor<Row>` instead of `List<Map<String, Object>>` and `Cursor<Map<String, Object>>`.
 This change has minimal side effects since `Row` subclasses `Map<String, Object>`.
 
-### 2.6 Correct Oracle MOD() Function
-
-The Oracle MOD() function was rendered incorrectly in LiveSQL 3 and this is now fixed in LiveSQL 4.
-
 
 ## 3. The CRUD Module
 
@@ -134,6 +118,7 @@ this extra property was useful in all `byExample()` functionality it was interfe
 renderer and parser. At the same the change log was largely rendered obsolete by the LiveSQL's
 predicates that cover all these searched and other much more complex ones.
 
+
 ## 4. The Nitro Module
 
 ### 4.1 Entity SELECTs Return Entity VOs
@@ -148,11 +133,20 @@ Long overdue, Nitro now defaults to `result-set` generation. The `<select-genera
 omitted by default. The `create-view` Nitro strategy was key at the time when JDBC drivers were poorly
 implemented but this is not the case anymore in all supported databases.
 
-### 4.3 Dynamic SQL For-Each Fully Implemented
 
-Dynamic SQL's `<foreach>` tag is now fully implemented to handle collections of parameters on the fly 
-while assembing a dynamic query.
+## 5. Minor Changes and Bug Fixes
 
+Version 4 includes many minor changes and bug fixes are included. The following ones are worth mentioning:
+
+- Configuration property `generator` removed.
+- Reusing JDBC connection when using result-set processor.
+- Converters fixed in `<dao>` tags.
+- DTD declarations are now removed from config files.
+- Converter's `java-intermediate-type` attribute renamed as `java-raw-type`.
+- `primitives` subfolder removed in the location of mappers.
+- Deprecated tag `<mybatis-configuration-template>` removed.
+- LiveSQL's Oracle `.mod()` function was fixed.
+- The `<foreach>` tag bug is fixed and supports standard parameters now.
 
 
 
