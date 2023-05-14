@@ -38,11 +38,11 @@ These guides focus on specific features and show examples that enable and use th
 These guides cover:
 
 - [Schema Discovery](guides/schema-discovery.md)
-- [Starting a Spring Boot Project from Scratch using PostgreSQL](guides/starting-a-maven-project-from-scratch-with-postgresql.md)
-- [Automate Project Creation with One Command](maven/maven-arquetype.md)
+- [Using Multiple DataSources](./guides/using-multiple-datasources.md)
 - [Custom Column Types](guides/mapping-column-types.md)
 - [Custom Table and Column Names](guides/mapping-table-and-column-names.md)
 - [Extending LiveSQL Functions](livesql/extending-livesql-functions.md)
 - [Previewing LiveSQL](./livesql/previewing-livesql.md)
+- [Starting a Spring Boot Project from Scratch using PostgreSQL](guides/starting-a-maven-project-from-scratch-with-postgresql.md)
+- [Automate Project Creation with One Command](maven/maven-arquetype.md)
 - [Enabling SQL Logging](./guides/enabling-sql-logging.md)
-- [Using Multiple DataSources](./guides/using-multiple-datasources.md)
