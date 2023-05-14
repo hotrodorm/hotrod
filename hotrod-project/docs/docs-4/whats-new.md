@@ -28,10 +28,11 @@ the type and names of properties in the persistence layer. See
 Suppor for multiple datasources was added. These datasources can correspond to the same
 database engine or different ones. Each datasource generates a separated persistence
 layer that is used seamlessly by all the HotRod modules, including CRUD, LiveSQL, and Nitro,
-as well as Spring transactions. See [Using Multiple Datasources](guides/using-multiple-datasources.md)
+as well as all Spring features such as transaction management, AOP, etc. 
+See [Using Multiple Datasources](guides/using-multiple-datasources.md)
 for details.
 
-### 1.4 Aurora/PostgreSQL and Aurora/MySQL Databases Are Supported
+### 1.4 Aurora/PostgreSQL and Aurora/MySQL Databases
 
 These two new databases are now supported with all PostgreSQL and MySQL features.
 HotRod recognizes them as such, and generates the persistence layer accordingly.
