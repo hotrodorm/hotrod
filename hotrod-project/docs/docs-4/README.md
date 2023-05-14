@@ -5,10 +5,7 @@ HotRod is an open source ORM for Spring and Spring Boot geared towards high perf
 A persistence layer is generated with a minimal configuration to no configuration and the CRUD and LiveSQL functionalities
 can quickly help to start prototyping an application.
 
-Overview:
-
-- [Features](./features.md) and [What's New](./whats-new.md)
-- [Version History](../version-history.md)
+See [What's New In HotRod 4](./whats-new.md) and [Version History](../version-history.md).
 
 HotRod includes three modules:
 
