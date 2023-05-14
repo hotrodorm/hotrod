@@ -33,24 +33,24 @@ Spring persistence layer.
 
 In a nutshell HotRod's features are:
 
-- Straightforward CRUD and LiveSQL persistence layer for quick prototyping.
-- Default, custom, and rule-based data types.
-- Default, custom, and rule-based object names.
-- Support for major relational databases.
-- Flexible querying from Java using LiveSQL.
-- Index-aware persistence layer. Indexes shape the persistence functionality.
-- Auto-discovery of tables and views that can be used by CRUD and LiveSQL off-the-shelf.
-- Domain objects can be extended with custom properties and custom methods.
-- Seamlessly applies database changes to the data model, without losing custom properties or methods.
-- Includes powerful Dynamic SQL for more demanding needs.
-- Implements Optimistic Locking for concurrency control on a per-table basis.
-- Full access to Native SQL when needed.
-- Graph queries load data in data structures trees rather than plain list of rows.
-- Implements cursors to process queries with minimal memory usage.
-- Implements enum dimension-like tables to reduce joins and database query cost.
-- Works seamlessly with database views.
-- Implements converters for a richer modeling of the data.
-- Fully integrated with Maven builds, Maven persistence layer generation, and Maven arquetype.
+- Straightforward CRUD and LiveSQL persistence layer for quick prototyping
+- Default, custom, and rule-based data types
+- Default, custom, and rule-based object names
+- Support for major relational databases
+- Flexible querying from Java using LiveSQL
+- Index-aware persistence layer. Indexes shape the persistence functionality
+- Auto-discovery of tables and views that can be used by CRUD and LiveSQL off-the-shelf
+- Domain objects can be extended with custom properties and custom methods
+- Seamlessly applies database changes to the data model, without losing custom properties or methods
+- Includes powerful Dynamic SQL for more demanding needs
+- Implements Optimistic Locking for concurrency control on a per-table basis
+- Full access to Native SQL when needed
+- Graph queries load data in data structures trees rather than plain list of rows
+- Implements cursors to process queries with minimal memory usage
+- Implements enum dimension-like tables to reduce joins and database query cost
+- Works seamlessly with database views
+- Implements converters for a richer modeling of the data
+- Fully integrated with Maven builds, Maven persistence layer generation, and Maven arquetype
 - Tailored for Spring and String Boot projects to gain access to all their 
-features such as transaction management and AOP.
+features such as transaction management and AOP
 
