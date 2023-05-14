@@ -85,7 +85,7 @@ it. Depending on the database the `DUAL` or `SYSDUMMY1` tables are used for this
 the scenes. These tables can also be used explicitly when desired. See
 [Selecting Without a FROM Clause](livesql/syntax/selecting-without-a-from-clause.md).
 
-### 2.5 LiveSQL Now Returns List<Row> and Cursor<Row>
+### 2.5 LiveSQL Now Returns List&lt;Row> and Cursor&lt;Row>
 
 To improve readability, LiveSQL changed the return type of the SELECT clauses and now returns
 `List<Row>` and `Cursor<Row>` instead of `List<Map<String, Object>>` and `Cursor<Map<String, Object>>`.
