@@ -78,7 +78,7 @@ a SELECT data row. Support for prefixes and suffixes is designed to be used in c
 with column aliasing to handle multiple VOs resulting from joined tables and views. See
 [Aliasing Wildcard Columns](livesql/syntax/select-list.md#aliasing-wildcard-columns).
 
-### 2.4 Support for Queries without a FROM Clause
+### 2.4 Queries without a FROM Clause
 
 LiveSQL now automatically adds a FROM clause for databases that do not support queries without
 it. Depending on the database the `DUAL` or `SYSDUMMY1` tables are used for this purpose behind
