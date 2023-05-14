@@ -8,13 +8,22 @@ can quickly help to start prototyping an application.
 See [What's New In HotRod 4](./whats-new.md) and [Version History](../version-history.md). See HotRod in action with the
 [Hello World Example](./guides/hello-world.md).
 
-HotRod functionality is included in three modules:
+## Modules
+
+HotRod functionality is divided in three modules that serve different purposes. From simple out-of-the-box functionality
+available for CRUD and LiveSQL to advanced querying capabilities provided by Nitro. 
+
+These modules are:
 
 - [CRUD](crud/README.md) &mdash; Quick and simple persistence for rapid prototyping
 - [LiveSQL](livesql/README.md) &mdash; Flexible querying from Java
 - [Nitro](nitro/README.md) &mdash; Combine Native SQL with [Dynamic SQL](nitro/nitro-dynamic-sql.md) and [Graph Queries](nitro/nitro-graph-selects.md)
 
-Reference:
+## Reference
+
+Even though prototyping with simple functionality can work out of the box, advanced features need to be enabled by configuration.
+
+The reference details how to activate all features, and how to use them.
 
 - [Configuration File Reference](config/README.md)
 - [Cheat Sheet](./cheat-sheet.md)
@@ -22,7 +31,11 @@ Reference:
 - [Maven Integration](maven/README.md)
 - [Supported Databases and Default Data Types](config/supported-databases.md)
 
-Guides:
+## Guides
+
+These guides focus on specific features and show examples that enable and use them. 
+
+These guides cover:
 
 - [Schema Discovery](guides/schema-discovery.md)
 - [Starting a Spring Boot Project from Scratch using PostgreSQL](guides/starting-a-maven-project-from-scratch-with-postgresql.md)
