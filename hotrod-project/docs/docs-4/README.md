@@ -2,8 +2,8 @@
 
 HotRod is an open source ORM for Spring and Spring Boot geared towards high performance persistence for relational databases.
 
-The persistence layer can be generated with a minimal configuration and the CRUD functionality can quickly help to start 
-prototyping an application.
+A persistence layer is generated with a minimal configuration to no configuration and the CRUD and LiveSQL functionalities
+can quickly help to start prototyping an application.
 
 Overview:
 
@@ -22,7 +22,6 @@ Reference:
 - [Cheat Sheet](./cheat-sheet.md)
 - [Libraries](config/libraries.md)
 - [Maven Integration](maven/README.md)
-- `Eclipse Integration`
 - [Supported Databases and Default Data Types](config/supported-databases.md)
 
 Quick Guides:
