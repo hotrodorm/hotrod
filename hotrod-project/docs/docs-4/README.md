@@ -21,7 +21,7 @@ These modules are:
 
 ## Reference
 
-Even though prototyping with simple functionality can work out of the box, advanced features need to be enabled by configuration.
+Even though prototyping with simple functionality works out of the box, more advanced features need to be enabled by configuration.
 
 The reference details how to activate all features, and how to use them.
 
