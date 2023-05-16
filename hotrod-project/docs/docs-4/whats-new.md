@@ -2,7 +2,9 @@
 
 HotRod 4.0 includes several major features as well as a many of minor improvements.
 
-## 1. The Core Module
+## 1. General Functionality
+
+This functionality affect all the modules.
 
 ### 1.1 No Config Mode
 
