@@ -8,16 +8,16 @@ can quickly help to start prototyping an application.
 
 ## Documentation
 
-Documentation of the latest version can be found at [HotRod 4 Docs](./hotrod-project/docs/docs-4/README.md)
-and [What's New in HotRod 4](hotrod-project/docs/docs-4/whats-new.md).
+Documentation of the latest version can be found at [HotRod 4 Documentation](./hotrod-project/docs/docs-4/README.md)
+and [What's New](hotrod-project/docs/docs-4/whats-new.md).
 
-Documentation of the previous version can be found at [HotRod 3 Docs](hotrod-project/docs/docs-3.4/README.md).
+Documentation of the previous version can be found at [HotRod 3 Documentation](hotrod-project/docs/docs-3.4/README.md).
 
 HotRod includes three modules:
 
 - CRUD &mdash; Quick and simple persistence for rapid prototyping
 - LiveSQL &mdash; Flexible querying from Java
-- Nitro &mdash; Native SQL combined with Dynamic SQL and Graph Queries
+- Nitro &mdash; All the power of Dynamic SQL combined with Graph Queries and native SQL
 
 
 ## Hello World Example
@@ -25,7 +25,7 @@ HotRod includes three modules:
 See HotRod in action with the [Hello World Example](hotrod-project/docs/docs-4/guides/hello-world.md).
 
 
-## Features
+## Features Overview
 
 HotRod follows the *Database First* approach. It assumes the database already exists with all 
 tables ready. HotRod inspects the database and produces a fully functional

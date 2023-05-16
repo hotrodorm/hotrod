@@ -205,7 +205,7 @@ We see the code generation details:
 [INFO]  
 [INFO] Table EMPLOYEE included.
 [INFO]  
-[INFO] Total of: 1 table, 0 views, 0 enums, 0 DAOs, and 0 sequences -- including 0 select methods, and 0 query methods.
+[INFO] Total of: 1 table, 0 views, 0 enums, 0 DAOs, and 0 sequences
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------

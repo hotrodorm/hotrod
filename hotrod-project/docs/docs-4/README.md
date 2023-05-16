@@ -5,8 +5,13 @@ HotRod is an open source ORM for Spring and Spring Boot geared towards high perf
 A persistence layer is generated with a minimal configuration to no configuration and the CRUD and LiveSQL functionalities
 can quickly help to start prototyping an application.
 
-See [What's New In HotRod 4](./whats-new.md) and [Version History](../version-history.md). See HotRod in action with the
-[Hello World Example](./guides/hello-world.md).
+See [What's New In HotRod 4](./whats-new.md) and [Version History](../version-history.md). 
+
+
+## Hello World
+
+See HotRod in action with the [Hello World Example](./guides/hello-world.md).
+
 
 ## Modules
 
@@ -17,11 +22,12 @@ These modules are:
 
 - [CRUD](crud/README.md) &mdash; Quick and simple persistence for rapid prototyping
 - [LiveSQL](livesql/README.md) &mdash; Flexible querying from Java
-- [Nitro](nitro/README.md) &mdash; Combine Native SQL with [Dynamic SQL](nitro/nitro-dynamic-sql.md) and [Graph Queries](nitro/nitro-graph-selects.md)
+- [Nitro](nitro/README.md) &mdash; All the power of [Dynamic SQL](nitro/nitro-dynamic-sql.md) combined with [Graph Queries](nitro/nitro-graph-selects.md) and native SQL
+
 
 ## Reference
 
-Even though prototyping with simple functionality can work out of the box, advanced features need to be enabled by configuration.
+Even though prototyping with simple functionality works out of the box, more advanced features need to be enabled by configuration.
 
 The reference details how to activate all features, and how to use them.
 
@@ -30,6 +36,7 @@ The reference details how to activate all features, and how to use them.
 - [Libraries](config/libraries.md)
 - [Maven Integration](maven/README.md)
 - [Supported Databases and Default Data Types](config/supported-databases.md)
+
 
 ## Guides
 

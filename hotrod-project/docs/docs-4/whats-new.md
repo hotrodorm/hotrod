@@ -9,8 +9,8 @@ This functionality affect all the modules.
 ### 1.1 No Config Mode
 
 The main configuration file can be omitted for rapid prototyping. In this mode a minimal
-configuration can be defined in the Maven pom.xml plugin and the full persistence layer can
-be generated and used in no time. In this mode HotRod generates the persistence layer by
+setup of the Maven plugin produces a full persistence layer in no time. In this mode HotRod 
+generates the persistence layer by
 scanning the current database schema. Sensible defaults are defined for all configuration
 parameters for a standard persistence layer. See the [Hello World](guides/hello-world.md)
 example to see it in action.
@@ -19,21 +19,22 @@ example to see it in action.
 
 Schema discovery can find tables and views in one or more schemas of the database
 and generate the persistence layer for them automatically. It's enabled in No Config
-mode and scans the current schema. Otherwise, the configuration tag `<discover>`
-can specify the list of schemas to scan with exclusions. Rules can be defined with
-a `<name-solver>` and/or `<type-solver>` to tweak the name generation of classes and
+mode and scans the current schema. Otherwise, it can be enabled in the configuration
+to specify a list of schemas to scan. Rules can be defined with
+a Name Solver and Type Solver to tailor the name generation of classes and
 the type and names of properties in the persistence layer. See
 [Schema Discovery](guides/schema-discovery.md) for details.
 
 ### 1.3 Support for Multiple Datasources
 
-Suppor for multiple datasources was added. These datasources can correspond to the same
+Support for multiple datasources was added. These datasources can correspond to the same
 database engine or different ones. Each datasource generates a separated persistence
 layer that is used seamlessly by all the HotRod modules, including CRUD, LiveSQL, and Nitro,
-as well as Spring transactions. See [Using Multiple Datasources](guides/using-multiple-datasources.md)
+as well as all Spring features such as transaction management, AOP, etc. 
+See [Using Multiple Datasources](guides/using-multiple-datasources.md)
 for details.
 
-### 1.4 Aurora/PostgreSQL and Aurora/MySQL Databases Are Supported
+### 1.4 Aurora/PostgreSQL and Aurora/MySQL Databases
 
 These two new databases are now supported with all PostgreSQL and MySQL features.
 HotRod recognizes them as such, and generates the persistence layer accordingly.
@@ -67,31 +68,31 @@ Aliasing renames columns as needed also using another lambda function. See
 [The SQL Wildcard](livesql/syntax/select-list.md#the-sql-wildcard) and, for aliasing in particular,
 [Aliasing Wildcard Columns](livesql/syntax/select-list.md#aliasing-wildcard-columns).
 
-### 2.2 INSERT, UPDATE, and DELETE Implemented
+### 2.2 INSERT, UPDATE, and DELETE
 
 Core versions of these SQL Statements are now implemented to handle typical cases, to make full 
 use the LiveSQL features such as usage of complex predicates when selecting data and complex
 expressions when updating data. Simple subqueries are allowed in these expressions as well.
 
-### 2.3 Row Parser Implemented
-
-The Row Parser funnctionality is available in the DAOs to reassemble one or more VOs from
-a SELECT data row. Support for prefixes and suffixes is designed to be used in conjunction
-with column aliasing to handle multiple VOs resulting from joined tables and views. See
-[Aliasing Wildcard Columns](livesql/syntax/select-list.md#aliasing-wildcard-columns).
-
-### 2.4 Queries without a FROM Clause
+### 2.3 Queries without a FROM Clause
 
 LiveSQL now automatically adds a FROM clause for databases that do not support queries without
 it. Depending on the database the `DUAL` or `SYSDUMMY1` tables are used for this purpose behind
 the scenes. These tables can also be used explicitly when desired. See
 [Selecting Without a FROM Clause](livesql/syntax/selecting-without-a-from-clause.md).
 
-### 2.5 LiveSQL Now Returns List&lt;Row> and Cursor&lt;Row>
+### 2.4 LiveSQL Returns List&lt;Row> and Cursor&lt;Row>
 
 To improve readability, LiveSQL changed the return type of the SELECT clauses and now returns
 `List<Row>` and `Cursor<Row>` instead of `List<Map<String, Object>>` and `Cursor<Map<String, Object>>`.
 This change has minimal side effects since `Row` subclasses `Map<String, Object>`.
+
+### 2.5 Row Parser Implemented
+
+The Row Parser funnctionality is available in the DAOs to reassemble one or more VOs from
+a SELECT data row. Support for prefixes and suffixes is designed to be used in conjunction
+with column aliasing to handle multiple VOs resulting from joined tables and views. See
+[Aliasing Wildcard Columns](livesql/syntax/select-list.md#aliasing-wildcard-columns).
 
 
 ## 3. The CRUD Module
@@ -113,7 +114,7 @@ by default in the DAOs and can be used out of the box.
 Java DAOs classes can be configured to implement predefined Java interfaces and take advantage
 of extra Java functionality with them.
 
-### 3.4 Plain VOs
+### 3.4 Simpler VOs
 
 The `propertiesChangeLog` is now removed from VOs to facilitate quick Spring prototyping. Alhough
 this extra property was useful in all `byExample()` functionality it was interfering with the JSON
@@ -147,7 +148,7 @@ Version 4 includes many minor changes and bug fixes are included. The following 
 - Converter's `java-intermediate-type` attribute renamed as `java-raw-type`.
 - `primitives` subfolder removed in the location of mappers.
 - Deprecated tag `<mybatis-configuration-template>` removed.
-- LiveSQL's Oracle `.mod()` function was fixed.
+- LiveSQL's Oracle `.remainder()` function was fixed.
 - The `<foreach>` tag bug is fixed and supports standard parameters now.
 
 
