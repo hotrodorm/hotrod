@@ -1256,7 +1256,11 @@ public class ObjectDAO extends GeneratableObject {
 
   private void writeVOToModel() throws IOException {
     String moClassName = this.vo.getFullClassName();
-    println("    " + moClassName + " mo = new " + moClassName + "();");
+
+    // TODO build Spring bean if 'SpringBeanFactory' set in context. Otherwise, return plain object.
+    // println("    " + moClassName + " mo = new " + moClassName + "();"); // plain-object
+    // 
+    println("    " + moClassName + " mo = springBeanObjectFactory.create(" + moClassName + ".class);"); // Spring bean
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       println("    mo." + cm.getId().getJavaSetter() + "(vo." + cm.getId().getJavaGetter() + "());");
     }
