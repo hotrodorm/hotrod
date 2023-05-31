@@ -3,6 +3,8 @@ package org.hotrod.runtime.livesql.queries.select;
 import java.util.List;
 
 import org.hotrod.runtime.cursors.Cursor;
+import org.hotrod.runtime.livesql.Available;
+import org.hotrod.runtime.livesql.dialects.Const;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.Column;
@@ -91,6 +93,7 @@ public class SelectFromPhase<R> implements ExecutableSelect<R>, CombinableSelect
     return this;
   }
 
+  @Available(engine = Const.HYPERSQL, since = Const.HS2)
   public SelectFromPhase<R> unionJoin(final TableOrView t) {
     this.select.addJoin(new UnionJoin(t));
     return this;

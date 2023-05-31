@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>hotrod-livesql</artifactId>
@@ -33,7 +34,7 @@
     </dependency>
   
     <!-- Spring -->
-    
+
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
@@ -65,5 +66,50 @@
     </dependency>
 
   </dependencies>
+
+  <build>
+
+    <plugins>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>splitter-exec</id>
+            <phase>package</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <includePluginDependencies>true</includePluginDependencies>
+          <mainClass>org.nocrala.tools.jarsplitter.Shell</mainClass>
+          <arguments>
+            <argument></argument> <!-- Empty: to scan and discover all versions -->
+            <argument>15</argument>
+            <argument>org.hotrod.runtime.livesql</argument>
+            <argument>${project.basedir}/target/rejar</argument>
+            <argument>${project.basedir}/target/${project.artifactId}-${project.version}.jar</argument>
+            <argument>${project.artifactId}</argument>
+            <argument>${project.version}</argument>
+            <argument>base-only</argument> <!-- base-only, all -->
+          </arguments>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.nocrala.tools</groupId>
+            <artifactId>jar-splitter</artifactId>
+            <version>1.0.3-SNAPSHOT</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+    </plugins>
+
+  </build>
+
 
 </project>
