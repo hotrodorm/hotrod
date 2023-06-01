@@ -93,6 +93,7 @@
             <argument>org.hotrod.runtime.livesql</argument>
             <argument>${project.basedir}/target/rejar</argument>
             <argument>${project.basedir}/target/${project.artifactId}-${project.version}.jar</argument>
+            <argument>${project.groupId}</argument>
             <argument>${project.artifactId}</argument>
             <argument>${project.version}</argument>
             <argument>base-only</argument> <!-- base-only, all -->
@@ -107,9 +108,37 @@
         </dependencies>
       </plugin>
 
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>3.3.0</version>
+        <executions>
+          <execution>
+            <id>attach-artifacts</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>${project.basedir}/target/hotrod-livesql-hypersql2-4.0.1-SNAPSHOT.jar</file>
+                  <type>jar</type>
+                  <classifier>hypersql-2</classifier>
+                </artifact>
+                <artifact>
+                  <file>${project.basedir}/target/hotrod-livesql-postgresql15-4.0.1-SNAPSHOT.jar</file>
+                  <type>jar</type>
+                  <classifier>postgresql-15</classifier>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
 
   </build>
-
 
 </project>

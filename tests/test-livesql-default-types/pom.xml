@@ -34,6 +34,10 @@
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
       <version>${hotrod.version}</version>
+      <classifier>hypersql-2</classifier>
+<!-- 
+      <classifier>postgresql-15</classifier>
+       -->
     </dependency>
 
     <dependency>

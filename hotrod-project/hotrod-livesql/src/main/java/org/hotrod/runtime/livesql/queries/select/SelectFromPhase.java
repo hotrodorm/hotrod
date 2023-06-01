@@ -93,8 +93,15 @@ public class SelectFromPhase<R> implements ExecutableSelect<R>, CombinableSelect
     return this;
   }
 
+  @Available(engine = Const.GENERIC, since = Const.ALL)
   @Available(engine = Const.HYPERSQL, since = Const.HS2)
   public SelectFromPhase<R> unionJoin(final TableOrView t) {
+    this.select.addJoin(new UnionJoin(t));
+    return this;
+  }
+
+  @Available(engine = Const.POSTGRESQL, since = Const.PG15)
+  public SelectFromPhase<R> unionPGJoin(final TableOrView t) {
     this.select.addJoin(new UnionJoin(t));
     return this;
   }
