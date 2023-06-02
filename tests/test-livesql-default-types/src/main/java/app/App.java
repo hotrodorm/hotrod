@@ -5,11 +5,7 @@ import java.util.Map;
 
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
-import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
-import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.SelectFromPhase;
-import org.hotrod.torcs.Statement;
-import org.hotrod.torcs.TorcsMetrics;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -20,13 +16,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import app.daos.BranchVO;
-import app.daos.InvoiceVO;
 import app.daos.primitives.BranchDAO;
 import app.daos.primitives.BranchDAO.BranchTable;
 import app.daos.primitives.InvoiceDAO;
 import app.daos.primitives.InvoiceDAO.InvoiceTable;
-import app.daos.primitives.NumbersDAO;
 
 @Configuration
 @SpringBootApplication
@@ -34,20 +27,19 @@ import app.daos.primitives.NumbersDAO;
 @ComponentScan(basePackageClasses = LiveSQL.class)
 @MapperScan(basePackageClasses = LiveSQL.class)
 @MapperScan("mappers")
-
 public class App {
+//
+//  @Autowired
+//  private NumbersDAO numbersDAO;
+//
+//  @Autowired
+//  private InvoiceDAO invoiceDAO;
+//
+//  @Autowired
+//  private BranchDAO branchDAO;
 
-  @Autowired
-  private NumbersDAO numbersDAO;
-
-  @Autowired
-  private InvoiceDAO invoiceDAO;
-
-  @Autowired
-  private BranchDAO branchDAO;
-
-  @Autowired
-  private TorcsMetrics metrics;
+//  @Autowired
+//  private TorcsMetrics metrics;
 
   @Autowired
   private LiveSQL sql;
@@ -66,13 +58,22 @@ public class App {
 //      crud();
 //      join();
 //      join();
-//      livesql();
+      livesql();
 //      selectByCriteria();
 //      torcs();
-      star();
+//      star();
 //      noFrom();
       System.out.println("[ Example complete ]");
     };
+  }
+
+  private void livesql() {
+    for (Row r : this.sql.select(sql.val("abc").ascii().as("code")).execute()) {
+      System.out.println("r=" + r);
+    }
+//    for (Row r : this.sql.select(sql.val("abc").ascii().as("code")).execute()) {
+//      System.out.println("r=" + r);
+//    }
   }
 
 //  private void livesql() {
@@ -151,60 +152,60 @@ public class App {
 
   }
 
-  private void selectByCriteria() {
-//    reinsert();
+//  private void selectByCriteria() {
+////    reinsert();
+//
+//    InvoiceTable i = InvoiceDAO.newTable("i");
+//    CriteriaWherePhase<InvoiceVO> q = this.invoiceDAO.select(i, i.branchId.eq(10));
+//    System.out.println("q=" + q.getPreview());
+//    for (InvoiceVO r : q.execute()) {
+//      System.out.println("r=" + r);
+//    }
+//  }
 
-    InvoiceTable i = InvoiceDAO.newTable("i");
-    CriteriaWherePhase<InvoiceVO> q = this.invoiceDAO.select(i, i.branchId.eq(10));
-    System.out.println("q=" + q.getPreview());
-    for (InvoiceVO r : q.execute()) {
-      System.out.println("r=" + r);
-    }
-  }
+//  private void join() {
+//
+//    InvoiceTable i = InvoiceDAO.newTable("i");
+//    BranchTable b = BranchDAO.newTable("b");
+//
+//    ExecutableSelect<Row> q = this.sql.select( //
+//        i.star().as(c -> "in#" + c.getProperty()), //
+//        b.star().as(c -> "br#" + c.getProperty()) //
+//    ) //
+//        .from(i) //
+//        .join(b, b.id.eq(i.branchId)) //
+//        .where(b.name.like("%"));
+//    System.out.println("q:" + q.getPreview());
+//    List<Row> rows = q.execute();
+//
+//    for (Row r : rows) {
+//      InvoiceVO inx = this.invoiceDAO.parseRow(r, "in#");
+//      BranchVO brx = this.branchDAO.parseRow(r, "br#");
+//
+//      System.out.println("r=" + r);
+//      System.out.println("inx=" + inx
+////          + " dao=" + inx.getInvoiceDAO()
+//      );
+//      System.out.println("brx=" + brx);
+//    }
+//
+//  }
 
-  private void join() {
-
-    InvoiceTable i = InvoiceDAO.newTable("i");
-    BranchTable b = BranchDAO.newTable("b");
-
-    ExecutableSelect<Row> q = this.sql.select( //
-        i.star().as(c -> "in#" + c.getProperty()), //
-        b.star().as(c -> "br#" + c.getProperty()) //
-    ) //
-        .from(i) //
-        .join(b, b.id.eq(i.branchId)) //
-        .where(b.name.like("%"));
-    System.out.println("q:" + q.getPreview());
-    List<Row> rows = q.execute();
-
-    for (Row r : rows) {
-      InvoiceVO inx = this.invoiceDAO.parseRow(r, "in#");
-      BranchVO brx = this.branchDAO.parseRow(r, "br#");
-
-      System.out.println("r=" + r);
-      System.out.println("inx=" + inx
-//          + " dao=" + inx.getInvoiceDAO()
-      );
-      System.out.println("brx=" + brx);
-    }
-
-  }
-
-  private void torcs() {
-
-    System.out.println("--- Torcs --------------------------------------------------------");
-    int pos = 1;
-    for (Statement m : this.metrics.getByHighestResponseTime()) {
-      System.out.println("#" + pos + ": " + m.toString());
-      pos++;
-    }
-
-//    System.out.println("--- Torcs PLAN ---------------------------------------------------");
-//    Statement h = this.sqlMetrics.getByHighestAvgResponseTime().get(0);
-//    String plan = this.torcsCTP.getEstimatedCTPExecutionPlan(h);
-//    System.out.println("Plan: " + plan);
-
-  }
+//  private void torcs() {
+//
+//    System.out.println("--- Torcs --------------------------------------------------------");
+//    int pos = 1;
+//    for (Statement m : this.metrics.getByHighestResponseTime()) {
+//      System.out.println("#" + pos + ": " + m.toString());
+//      pos++;
+//    }
+//
+////    System.out.println("--- Torcs PLAN ---------------------------------------------------");
+////    Statement h = this.sqlMetrics.getByHighestAvgResponseTime().get(0);
+////    String plan = this.torcsCTP.getEstimatedCTPExecutionPlan(h);
+////    System.out.println("Plan: " + plan);
+//
+//  }
 
   private void noFrom() {
     System.out.println("--- No FROM #1 ---------------------------------------------------");

@@ -131,6 +131,13 @@
                   <type>jar</type>
                   <classifier>postgresql-15</classifier>
                 </artifact>
+                <!-- 
+                <artifact>
+                  <file>${project.basedir}/target/hotrod-livesql-postgresql15-rp-4.0.1-SNAPSHOT.jar</file>
+                  <type>jar</type>
+                  <classifier>postgresql-15-rp</classifier>
+                </artifact>
+                 -->
               </artifacts>
             </configuration>
           </execution>
