@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.hotrod.runtime.livesql.Available;
+import org.hotrod.runtime.livesql.dialects.Const;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberConstant;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
@@ -20,6 +22,7 @@ import org.hotrod.runtime.livesql.expressions.predicates.NotEqual;
 import org.hotrod.runtime.livesql.expressions.predicates.NotInList;
 import org.hotrod.runtime.livesql.expressions.predicates.NotLike;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.expressions.strings.postgresql.Ascii;
 import org.hotrod.runtime.livesql.util.BoxUtil;
 
 public abstract class StringExpression extends Expression {
@@ -294,5 +297,12 @@ public abstract class StringExpression extends Expression {
   }
 
   // TODO: END -- implement in subclasses
+
+  // Specialized Functions
+
+  @Available(engine = Const.POSTGRESQL, since = Const.PG15)
+  public final NumberExpression ascii() {
+    return new Ascii(this);
+  }
 
 }
