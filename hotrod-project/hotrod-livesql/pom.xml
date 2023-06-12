@@ -103,7 +103,7 @@
           <dependency>
             <groupId>org.nocrala.tools</groupId>
             <artifactId>jar-splitter</artifactId>
-            <version>1.0.3-SNAPSHOT</version>
+            <version>1.0.3</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -124,12 +124,12 @@
                 <artifact>
                   <file>${project.basedir}/target/hotrod-livesql-hypersql2-4.0.1-SNAPSHOT.jar</file>
                   <type>jar</type>
-                  <classifier>hypersql-2</classifier>
+                  <classifier>hypersql-2+</classifier>
                 </artifact>
                 <artifact>
                   <file>${project.basedir}/target/hotrod-livesql-postgresql15-4.0.1-SNAPSHOT.jar</file>
                   <type>jar</type>
-                  <classifier>postgresql-15</classifier>
+                  <classifier>postgresql-15+</classifier>
                 </artifact>
                 <!-- 
                 <artifact>
