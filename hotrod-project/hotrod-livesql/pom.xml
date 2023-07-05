@@ -96,14 +96,14 @@
             <argument>${project.groupId}</argument>
             <argument>${project.artifactId}</argument>
             <argument>${project.version}</argument>
-            <argument>base-only</argument> <!-- base-only, all -->
+            <argument>all</argument> <!-- base-only, all -->
           </arguments>
         </configuration>
         <dependencies>
           <dependency>
             <groupId>org.nocrala.tools</groupId>
             <artifactId>jar-splitter</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4-SNAPSHOT</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -135,7 +135,7 @@
                 <artifact>
                   <file>${project.basedir}/target/hotrod-livesql-postgresql15-rp-4.0.1-SNAPSHOT.jar</file>
                   <type>jar</type>
-                  <classifier>postgresql-15-rp</classifier>
+                  <classifier>postgresql-15+-rp</classifier>
                 </artifact>
                  -->
               </artifacts>

@@ -77,6 +77,7 @@ import org.hotrod.runtime.livesql.queries.DeleteFromPhase;
 import org.hotrod.runtime.livesql.queries.InsertIntoPhase;
 import org.hotrod.runtime.livesql.queries.UpdateTablePhase;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
+import org.hotrod.runtime.livesql.queries.select.PGSelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.select.SelectColumnsPhase;
 import org.hotrod.runtime.livesql.sysobjects.DualTable;
 import org.hotrod.runtime.livesql.sysobjects.SysDummy1Table;
@@ -124,6 +125,12 @@ public class LiveSQL {
     return new SelectColumnsPhase<Row>(this.sqlDialect, this.sqlSession, this.liveSQLMapper, true, resultSetColumns);
   }
 
+  @Available(engine = Const.POSTGRESQL, since = Const.PG15)
+  public PGSelectColumnsPhase<Row> selectDistinctOn(final ResultSetColumn... resultSetColumns) {
+    return new PGSelectColumnsPhase<Row>(this.sqlDialect, this.sqlSession, this.liveSQLMapper, true, resultSetColumns);
+  }
+
+  
   // Delete
 
   public DeleteFromPhase delete(final TableOrView from) {
