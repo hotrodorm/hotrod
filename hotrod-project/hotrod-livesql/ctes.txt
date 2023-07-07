@@ -1,0 +1,144 @@
+
+CTE<N, S, DT> q1 = sql.with("q1").as(
+  sql.select(
+    sql.val(1), sql.val("a"), sql.val(now())
+  ).from(t)
+  .where(t.name.eq("Mike"))
+)
+
+CTE<N> q2 = sql.with("q2").as(
+  sql.select(sql.sum(q1.getA())).from(q1)
+);
+
+List<Rows> = sql.with(q1, q2)
+  .select()
+  .from(q1)
+  .join(q2, q1.getA().gt(q2.getA()))
+  .execute();
+
+// -------------------------------------------------
+
+CTE q1 = sql.newCTE("q1");
+CTE q2 = sql.newCTE("q2");
+
+sql
+  .with(q1).as(
+    sql.select(
+      sql.val(1), sql.val("a"), sql.val(now())
+    ).from(t)
+    .where(t.name.eq("Mike"))
+  )
+  .with(q2).as(
+    sql.select(sql.sum(q1.getA())).from(q1)
+  )
+  .select()
+  .from(q1)
+  .join(q2, q1.getA().gt(q2.getA()))
+  .execute();
+
+// -------------------------------------------------
+
+Numeric extends NumberExpression
+Varchar extends StringExpression
+DateTime extends DateTimeExpression
+Bool extends Predicate
+Binary extends BinaryExpression
+Obj extends ObjectExpression
+
+N extends NumberExpression
+S extends StringExpression
+DT extends DateTimeExpression
+B extends Predicate
+Bin extends BinaryExpression
+Obj extends ObjectExpression
+
+CTE q1 = sql.cte<N, S, DT>("q1");
+CTE q2 = sql.cte<N>("q2");
+
+sql
+  .with(q1).as(
+    sql.select(
+      sql.val(1), sql.val("a"), sql.val(now())
+    ).from(t)
+    .where(t.name.eq("Mike"))
+  )
+  .with(q2).as(
+    sql.select(sql.sum(q1.getCol1())).from(q1)
+  )
+  .select()
+  .from(q1)
+  .join(q2, q1.getCol1().gt(q2.getCol2()))
+  .execute();
+
+
+Subquery y = sql.subquery("y", select().from(t));
+Table z = ...
+
+Subquery q = sql.subquery("q", sql.select().from(y).join(z, z.id.eq(y.numCol("id")));
+
+
+Subquery Type           Correlated  Can Reference Itself
+----------------------  ----------  --------------------
+1. Scalar Subquery      Yes/No      No
+2. Subquery for IN      Yes/No      No
+3. Subquery for EXISTS  Yes/No      No
+4. Table Expression     No          No
+5. CTE                  No          No
+6. Recursive CTE        No          Yes
+7. Lateral Join         Yes/No      No
+
+1+2+3 Covered already.
+
+4. Table Expression (Inline View, Derived Table)
+
+  TE q = sql.te("q", sql.select()...);
+
+5. CTE
+
+  CTE q = sql.cte("q", sql.select()...);
+
+6. RecursiveCTE
+
+  CTE q = sql.cte("q");
+  q.as(sql.select().from(t).unionAll(sql.select().from(q).where(...)))
+
+7. Lateral Join
+
+  TE q = sql.te("q", sql.select()...);
+  joinLateral(q, <predicate>)
+
+Hierarchy:
+----------
+Select 
+  +- ReferenceableSelect
+       +- TableOrView
+       +- TE (TableExpression)
+       +- CTE (CommonTableExpression)
+  +- DrivingSelect   (first in UNION, INTERSECT, EXCEPT)
+  +- SecondarySelect (union-ed SELECTs)
+
+-------------------------------------------------------------------
+
+y.numCol("n");
+y.charCol("n");
+y.dtCol("n");
+y.boolCol("n");
+y.binaryCol("n");
+y.objectCol("n");
+
+y.n("n");
+y.c("n");
+y.dt("n");
+y.b("n");
+y.bin("n");
+y.o("n");
+
+y.num("n");  --> NumericExpression  
+y.char("n"); --> StringExpression   -> CharacterExpression
+y.dt("n");   --> DateTimeExpression 
+y.bool("n"); --> Predicate          -> BooleanExpression
+y.bin("n");  --> BinaryExpression   
+y.obj("n");  --> ObjectExpression   
+
+
+
