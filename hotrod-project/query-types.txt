@@ -1,0 +1,15 @@
+
+--- Performant Queries ---
+
+1. CRUD Query: accesses 0-1 row
+2. Transactional Query: accesses 0/10/100 rows
+3. Targeted Search Query: accesses 0-1000 rows
+
+--- Heavy Queries ---
+
+4. Broad Search Query: accesses 0-1M+ rows
+5. Partial Reporting Query: significant row access
+6. Full Reporting Query: extensive row access
+7. Text Search Query: multi-index access + low/significant row access
+8. OLAP Query
+

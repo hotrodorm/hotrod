@@ -114,8 +114,8 @@ Select
        +- TableOrView
        +- TE (TableExpression)
        +- CTE (CommonTableExpression)
-  +- DrivingSelect   (first in UNION, INTERSECT, EXCEPT)
-  +- SecondarySelect (union-ed SELECTs)
+  +- (no need) CombinableSelect   (first in UNION, INTERSECT, EXCEPT) -- before ORDER BY, LIMIT, OFFSET
+  +- SelectTerm         (union-ed SELECTs)
 
 -------------------------------------------------------------------
 
@@ -142,3 +142,30 @@ y.obj("n");  --> ObjectExpression
 
 
 
+
+
+
+                                             <query expression>
+                                                 /       \
+                                                /         \
+                         <non-join query expression>     <joined table>
+                                    /         \
+                                   /           \
+                    <non-join query term>    <query expression> UNION|EXCEPT <query term>
+                      /         \                                               /     \
+                     /           \                                             /       \
+<non-join query primary>    <qt> INTERSECT <query primary>    <non-join query term>     <joined table>     
+                                              /       \
+                                             /         \
+                        <non-join query primary>     <joined table>
+                              /           \
+                             /             \
+                   <simple table>     ( <non-join query expression> )
+             ______________/|\____________________________
+            /               |                             \
+<query specification>    <table value constructor>    <explicit table>                        
+         
+         
+         
+         
+         
