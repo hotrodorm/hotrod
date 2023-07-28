@@ -46,6 +46,7 @@ import org.hotrod.runtime.livesql.expressions.analytics.StringLag;
 import org.hotrod.runtime.livesql.expressions.analytics.StringLead;
 import org.hotrod.runtime.livesql.expressions.binary.ByteArrayConstant;
 import org.hotrod.runtime.livesql.expressions.binary.ByteArrayExpression;
+import org.hotrod.runtime.livesql.expressions.binary.EnclosedByteArrayExpression;
 import org.hotrod.runtime.livesql.expressions.caseclause.BooleanCaseWhenStage;
 import org.hotrod.runtime.livesql.expressions.caseclause.ByteArrayCaseWhenStage;
 import org.hotrod.runtime.livesql.expressions.caseclause.DateTimeCaseWhenStage;
@@ -58,16 +59,21 @@ import org.hotrod.runtime.livesql.expressions.datetime.CurrentTime;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTime;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeConstant;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
+import org.hotrod.runtime.livesql.expressions.datetime.EnclosedDateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.general.TupleExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.EnclosedNumberExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberConstant;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
+import org.hotrod.runtime.livesql.expressions.object.EnclosedObjectExpression;
 import org.hotrod.runtime.livesql.expressions.object.ObjectConstant;
 import org.hotrod.runtime.livesql.expressions.object.ObjectExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.BooleanConstant;
+import org.hotrod.runtime.livesql.expressions.predicates.EnclosedBooleanExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Exists;
 import org.hotrod.runtime.livesql.expressions.predicates.Not;
 import org.hotrod.runtime.livesql.expressions.predicates.NotExists;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.expressions.strings.EnclosedStringExpression;
 import org.hotrod.runtime.livesql.expressions.strings.StringConstant;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
 import org.hotrod.runtime.livesql.metadata.Table;
@@ -130,7 +136,6 @@ public class LiveSQL {
     return new PGSelectColumnsPhase<Row>(this.sqlDialect, this.sqlSession, this.liveSQLMapper, true, resultSetColumns);
   }
 
-  
   // Delete
 
   public DeleteFromPhase delete(final TableOrView from) {
@@ -777,6 +782,32 @@ public class LiveSQL {
 
   public ObjectConstant val(final Object value) {
     return new ObjectConstant(value);
+  }
+
+  // Parenthesis
+
+  public StringExpression enclose(final StringExpression value) {
+    return new EnclosedStringExpression(value);
+  }
+
+  public NumberExpression enclose(final NumberExpression value) {
+    return new EnclosedNumberExpression(value);
+  }
+
+  public DateTimeExpression enclose(final DateTimeExpression value) {
+    return new EnclosedDateTimeExpression(value);
+  }
+
+  public Predicate enclose(final Predicate value) {
+    return new EnclosedBooleanExpression(value);
+  }
+
+  public ByteArrayExpression enclose(final ByteArrayExpression value) {
+    return new EnclosedByteArrayExpression(value);
+  }
+
+  public ObjectExpression enclose(final ObjectExpression value) {
+    return new EnclosedObjectExpression(value);
   }
 
 }

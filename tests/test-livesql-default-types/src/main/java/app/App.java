@@ -20,6 +20,8 @@ import app.daos.primitives.BranchDAO;
 import app.daos.primitives.BranchDAO.BranchTable;
 import app.daos.primitives.InvoiceDAO;
 import app.daos.primitives.InvoiceDAO.InvoiceTable;
+import app.daos.primitives.NumbersDAO;
+import app.daos.primitives.NumbersDAO.NumbersTable;
 
 @Configuration
 @SpringBootApplication
@@ -28,9 +30,9 @@ import app.daos.primitives.InvoiceDAO.InvoiceTable;
 @MapperScan(basePackageClasses = LiveSQL.class)
 @MapperScan("mappers")
 public class App {
-//
-//  @Autowired
-//  private NumbersDAO numbersDAO;
+
+  @Autowired
+  private NumbersDAO numbersDAO;
 //
 //  @Autowired
 //  private InvoiceDAO invoiceDAO;
@@ -68,12 +70,22 @@ public class App {
   }
 
   private void livesql() {
-    for (Row r : this.sql.select(sql.val("abc").ascii().as("code")).execute()) {
-      System.out.println("r=" + r);
-    }
 //    for (Row r : this.sql.select(sql.val("abc").ascii().as("code")).execute()) {
 //      System.out.println("r=" + r);
 //    }
+//    for (Row r : this.sql.select(sql.val("abc").ascii().as("code")).execute()) {
+//      System.out.println("r=" + r);
+//    }
+
+    NumbersTable n = NumbersDAO.newTable("n");
+    List<Row> rows = this.sql.select(n.id) //
+        .from(n) //
+        .where(n.id.eq(1).and(sql.enclose(n.int1.lt(4).or(n.dec1.ne(2))).and(n.dec2.ge(3))))//
+        .execute();
+    for (Row r : rows) {
+      System.out.println("r=" + r);
+    }
+
   }
 
 //  private void livesql() {

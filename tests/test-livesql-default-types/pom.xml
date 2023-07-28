@@ -34,8 +34,8 @@
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
       <version>${hotrod.version}</version>
-      <classifier>postgresql-15+</classifier>
       <!-- 
+      <classifier>postgresql-15+</classifier>
       <classifier>postgresql-15+</classifier>
       <classifier>postgresql-15+-rp</classifier>
        -->

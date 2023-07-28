@@ -14,7 +14,8 @@ public class BooleanConstant extends Predicate {
 
   public BooleanConstant(final Boolean value) {
     super(Expression.PRECEDENCE_LITERAL);
-    this.parameterize = false;
+    this.parameterize = true;
+//    this.parameterize = false;
     this.value = value;
   }
 

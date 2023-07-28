@@ -14,7 +14,8 @@ public class NumberConstant extends NumberExpression {
 
   public NumberConstant(final Number value) {
     super(Expression.PRECEDENCE_LITERAL);
-    this.parameterize = value != null && (this.isFloat(value) || this.isDouble(value));
+    this.parameterize = true;
+//    this.parameterize = value != null && (this.isFloat(value) || this.isDouble(value));
     this.value = value;
   }
 

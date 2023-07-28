@@ -1,24 +1,16 @@
 
 
 
-For 3.x:
-- Rename Structured Queries to Graph Queries.
-- Clean annotations in the Hello World and the Projects from Scratch.
-
-Then:
-- Fork version 3.4.9-SNAPSHOT, so 4.0.0-alpha1-SNAPSHOT will become master.
-- Create two copies of the documentation: one for 3.4 and the other for 4.x (upcoming).
+For 3.4.x:
+- Change branch name to "3.x".
 
 For 4.0:
-- Disable or remove the "create-view" engine.
 - Simplify the configuration file, specially the <daos> tag.
-- Remove the "generator" property. It's not useful.
-- Document the dialects for single and multiple datasources.
-
-- Table/View auto-discovery
 - Default types to java.time
-- Zero Configuration.
-
-- Add methods with extra parameter "VO Class".
 
 - Combine docs/to-do.txt
+
+LiveSQL:
+- sql.enclose()
+- Parameterize integers.
+
