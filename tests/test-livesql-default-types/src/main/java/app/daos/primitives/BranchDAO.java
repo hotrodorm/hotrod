@@ -177,7 +177,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
   public app.daos.BranchVO insert(final app.daos.primitives.AbstractBranchVO vo) {
     String id = "bc.branch.insert";
     this.sqlSession.insert(id, vo);
-    app.daos.BranchVO mo = new app.daos.BranchVO();
+    app.daos.BranchVO mo = springBeanObjectFactory.create(app.daos.BranchVO.class);
     mo.setId(vo.getId());
     mo.setName(vo.getName());
     return mo;
@@ -186,14 +186,14 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
   // update by PK
 
   public int update(final app.daos.BranchVO vo) {
-    if (vo.id == null) return 0;
+    if (vo.getId() == null) return 0;
     return this.sqlSession.update("bc.branch.updateByPK", vo);
   }
 
   // delete by PK
 
   public int delete(final app.daos.BranchVO vo) {
-    if (vo.id == null) return 0;
+    if (vo.getId() == null) return 0;
     return this.sqlSession.delete("bc.branch.deleteByPK", vo);
   }
 
@@ -271,7 +271,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this, this.id, this.name);
+      return new AllColumns(this.id, this.name);
     }
 
     // Constructors

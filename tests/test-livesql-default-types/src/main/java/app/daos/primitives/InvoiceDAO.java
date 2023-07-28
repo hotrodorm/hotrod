@@ -169,7 +169,7 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   public app.daos.InvoiceVO insert(final app.daos.primitives.AbstractInvoiceVO vo) {
     String id = "bc.invoice.insert";
     this.sqlSession.insert(id, vo);
-    app.daos.InvoiceVO mo = new app.daos.InvoiceVO();
+    app.daos.InvoiceVO mo = springBeanObjectFactory.create(app.daos.InvoiceVO.class);
     mo.setId(vo.getId());
     mo.setAmount(vo.getAmount());
     mo.setBranchId(vo.getBranchId());
@@ -179,14 +179,14 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   // update by PK
 
   public int update(final app.daos.InvoiceVO vo) {
-    if (vo.id == null) return 0;
+    if (vo.getId() == null) return 0;
     return this.sqlSession.update("bc.invoice.updateByPK", vo);
   }
 
   // delete by PK
 
   public int delete(final app.daos.InvoiceVO vo) {
-    if (vo.id == null) return 0;
+    if (vo.getId() == null) return 0;
     return this.sqlSession.delete("bc.invoice.deleteByPK", vo);
   }
 
@@ -261,7 +261,7 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this, this.id, this.amount, this.branchId);
+      return new AllColumns(this.id, this.amount, this.branchId);
     }
 
     // Constructors

@@ -13,6 +13,7 @@ import org.apache.ibatis.type.MappedJdbcTypes;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.queries.select.SelectFromPhase;
+import org.hotrod.runtime.livesql.queries.select.SelectWherePhase;
 import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,11 +63,25 @@ public class App {
       System.out.println("[ Starting example ]");
 //      crud();
 //      beans();
-//      livesql();
+      livesql();
 //      join();
-      selectByCriteria();
+//      selectByCriteria();
       System.out.println("[ Example complete ]");
     };
+  }
+
+  private void livesql() {
+
+    InvoiceTable n = InvoiceDAO.newTable("n");
+
+    SelectWherePhase<Map<String, Object>> q = this.sql.select(n.id) //
+        .from(n) //
+        .where(n.id.eq(1).or(n.amount.lt(4)).and(
+            sql.enclose(n.branchId.ne(2).or(n.amount.ge(3) ) )
+            ));
+    System.out.println(q.getPreview());
+    List<Map<String, Object>> rows = q.execute();
+
   }
 
 //  private void livesql() {
@@ -128,7 +143,7 @@ public class App {
     SelectFromPhase<Map<String, Object>> q = this.sql.select( //
 //        i.star().as(c -> Alias.literal("inx_" + c.getProperty())),
 //        b.star().as(c -> Alias.literal("brx_" + c.getProperty()))) //
-)        .from(i).join(b, b.id.eq(i.branchId));
+    ).from(i).join(b, b.id.eq(i.branchId));
     System.out.println("q:" + q.getPreview());
     List<Map<String, Object>> rows = q.execute();
 
@@ -151,19 +166,19 @@ public class App {
     }
   }
 
-  private void beans() {
-    for (InvoiceVO i : this.invoiceDAO.selectByExample(new AbstractInvoiceVO())) {
-      System.out.println("i=" + i + " autowired=" + i.getInvoiceDAO());
-    }
-    InvoiceVO i10 = this.invoiceDAO.selectByPK(10);
-    System.out.println("i10=" + i10 + " autowired=" + i10.getInvoiceDAO());
-
-    InvoiceTable i = InvoiceDAO.newTable("i");
-    for (InvoiceVO iv : this.invoiceDAO.selectByCriteria(i, i.id.eq(11)).execute()) {
-      System.out.println("iv=" + iv + " autowired=" + iv.getInvoiceDAO());
-    }
-
-  }
+//  private void beans() {
+//    for (InvoiceVO i : this.invoiceDAO.selectByExample(new AbstractInvoiceVO())) {
+//      System.out.println("i=" + i + " autowired=" + i.getInvoiceDAO());
+//    }
+//    InvoiceVO i10 = this.invoiceDAO.selectByPK(10);
+//    System.out.println("i10=" + i10 + " autowired=" + i10.getInvoiceDAO());
+//
+//    InvoiceTable i = InvoiceDAO.newTable("i");
+//    for (InvoiceVO iv : this.invoiceDAO.selectByCriteria(i, i.id.eq(11)).execute()) {
+//      System.out.println("iv=" + iv + " autowired=" + iv.getInvoiceDAO());
+//    }
+//
+//  }
 
 //  private void crud() {
 //    reinsert();
