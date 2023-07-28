@@ -23,11 +23,7 @@ public class StringConstant extends StringExpression {
 
   public StringConstant(final String value) {
     super(Expression.PRECEDENCE_LITERAL);
-    if (value.length() > MAX_LITERAL_STRING_LENGTH) {
-      this.parameterize = true;
-    } else {
-      this.parameterize = value.matches(SQL_INJECTION_PATTERN);
-    }
+    this.parameterize = true;
     this.value = value;
   }
 

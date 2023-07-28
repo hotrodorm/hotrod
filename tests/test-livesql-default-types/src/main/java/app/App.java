@@ -11,7 +11,6 @@ import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;
 import org.hotrod.runtime.livesql.LiveSQL;
-import org.hotrod.runtime.livesql.metadata.AllColumns.Alias;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.queries.select.SelectFromPhase;
 import org.hotrod.runtime.spring.SpringBeanObjectFactory;
@@ -127,9 +126,9 @@ public class App {
     BranchTable b = BranchDAO.newTable("c");
 
     SelectFromPhase<Map<String, Object>> q = this.sql.select( //
-        i.star().as(c -> Alias.literal("inx_" + c.getProperty())),
-        b.star().as(c -> Alias.literal("brx_" + c.getProperty()))) //
-        .from(i).join(b, b.id.eq(i.branchId));
+//        i.star().as(c -> Alias.literal("inx_" + c.getProperty())),
+//        b.star().as(c -> Alias.literal("brx_" + c.getProperty()))) //
+)        .from(i).join(b, b.id.eq(i.branchId));
     System.out.println("q:" + q.getPreview());
     List<Map<String, Object>> rows = q.execute();
 
