@@ -6,6 +6,7 @@ import java.util.Map;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.queries.select.SelectFromPhase;
+import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -21,7 +22,6 @@ import app.daos.primitives.BranchDAO.BranchTable;
 import app.daos.primitives.InvoiceDAO;
 import app.daos.primitives.InvoiceDAO.InvoiceTable;
 import app.daos.primitives.NumbersDAO;
-import app.daos.primitives.NumbersDAO.NumbersTable;
 
 @Configuration
 @SpringBootApplication
@@ -33,12 +33,12 @@ public class App {
 
   @Autowired
   private NumbersDAO numbersDAO;
-//
-//  @Autowired
-//  private InvoiceDAO invoiceDAO;
-//
-//  @Autowired
-//  private BranchDAO branchDAO;
+
+  @Autowired
+  private InvoiceDAO invoiceDAO;
+
+  @Autowired
+  private BranchDAO branchDAO;
 
 //  @Autowired
 //  private TorcsMetrics metrics;
@@ -77,10 +77,26 @@ public class App {
 //      System.out.println("r=" + r);
 //    }
 
-    NumbersTable n = NumbersDAO.newTable("n");
-    List<Row> rows = this.sql.select(n.id) //
-        .from(n) //
-        .where(n.id.eq(1).and(sql.enclose(n.int1.lt(4).or(n.dec1.ne(2))).and(n.dec2.ge(3))))//
+//    NumbersTable n = NumbersDAO.newTable("n");
+//    List<Row> rows = sql.select(n.id) //
+//        .from(n) //
+//        .where(n.id.eq(1).and(sql.enclose(n.int1.lt(4).or(n.dec1.ne(2))).and(n.dec2.ge(3))))//
+//        .execute();
+//    for (Row r : rows) {
+//      System.out.println("r=" + r);
+//    }
+
+    InvoiceTable i = InvoiceDAO.newTable("i");
+    BranchTable b = BranchDAO.newTable("b");
+
+    Subquery<Row> x = sql.subquery("x", sql.select(i.star(), i.id.plus(1).as("subtotal")).from(i));
+    Subquery<Row> y = sql.subquery("y", sql.select(b.star(), b.name.concat("//").as("title")).from(b));
+
+    SelectFromPhase<Row> q = sql.select(x.num("id"), x.num("subtotal").mult(2).as("total"), y.chr("title")).from(x)
+        .leftJoin(y, y.num("id").eq(x.num("branchId")));
+    System.out.println("Query: " + q.getPreview());
+
+    List<Row> rows = q //
         .execute();
     for (Row r : rows) {
       System.out.println("r=" + r);
