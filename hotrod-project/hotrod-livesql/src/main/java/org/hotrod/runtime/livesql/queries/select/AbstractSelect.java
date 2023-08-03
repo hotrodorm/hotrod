@@ -36,7 +36,7 @@ import org.springframework.util.ReflectionUtils;
 public abstract class AbstractSelect<R> extends Query {
 
   private boolean distinct;
-  private TableOrView baseTable = null;
+  private TableExpression baseTableExpression = null;
   private List<Join> joins = null;
   private Predicate wherePredicate = null;
   private List<Expression> groupBy = null;
@@ -63,10 +63,11 @@ public abstract class AbstractSelect<R> extends Query {
     this.liveSQLMapper = liveSQLMapper;
   }
 
-  protected abstract void writeColumns(final QueryWriter w, final TableOrView baseTable, final List<Join> joins);
+  protected abstract void writeColumns(final QueryWriter w, final TableExpression baseTableExpression,
+      final List<Join> joins);
 
-  protected void writeExpandedColumns(final QueryWriter w, final TableOrView baseTable, final List<Join> joins,
-      final List<ResultSetColumn> resultSetColumns, final boolean doNotAliasColumns) {
+  protected void writeExpandedColumns(final QueryWriter w, final TableExpression baseTableExpression,
+      final List<Join> joins, final List<ResultSetColumn> resultSetColumns, final boolean doNotAliasColumns) {
 
     List<ResultSetColumn> expandedColumns = new ArrayList<>(resultSetColumns);
 
@@ -76,12 +77,12 @@ public abstract class AbstractSelect<R> extends Query {
 
       try {
         expandedColumns = new ArrayList<>();
-        List<Column> columns = getColumnsField(baseTable, TableOrView.class, "columns");
+        List<Column> columns = getColumnsField(baseTableExpression, TableOrView.class, "columns");
         for (Column e : columns) {
           expandedColumns.add(e);
         }
         for (Join j : joins) {
-          columns = getColumnsField(j.getTable(), TableOrView.class, "columns");
+          columns = getColumnsField(j.getTableExpression(), TableOrView.class, "columns");
           for (Column e : columns) {
             expandedColumns.add(e);
           }
@@ -153,8 +154,8 @@ public abstract class AbstractSelect<R> extends Query {
 
   // Setters
 
-  void setBaseTable(final TableOrView baseTable) {
-    this.baseTable = baseTable;
+  void setBaseTableExpression(final TableExpression baseTableExpression) {
+    this.baseTableExpression = baseTableExpression;
     this.joins = new ArrayList<Join>();
   }
 
@@ -245,32 +246,26 @@ public abstract class AbstractSelect<R> extends Query {
 
     // query columns
 
-    this.writeColumns(w, this.baseTable, this.joins);
+    this.writeColumns(w, this.baseTableExpression, this.joins);
 
     // base table
 
-    if (this.baseTable == null) {
+    if (this.baseTableExpression == null) {
 
       w.write("\n" + this.sqlDialect.getFromRenderer().renderFromWithoutATable());
 
     } else {
 
-      String alias = this.baseTable.getAlias() == null ? null
-          : this.sqlDialect.canonicalToNatural(this.sqlDialect.naturalToCanonical(this.baseTable.getAlias()));
-
-      w.write("\nFROM " + this.sqlDialect.canonicalToNatural(this.baseTable) + (alias != null ? (" " + alias) : ""));
+      w.write("\nFROM ");
+      this.baseTableExpression.renderTo(w, this.sqlDialect);
 
       // joins
 
       for (Join j : this.joins) {
-        String joinKeywords;
-        joinKeywords = this.sqlDialect.getJoinRenderer().renderJoinKeywords(j);
 
-        alias = j.getTable().getAlias() == null ? null
-            : this.sqlDialect.canonicalToNatural(this.sqlDialect.naturalToCanonical(j.getTable().getAlias()));
+        w.write("\n" + this.sqlDialect.getJoinRenderer().renderJoinKeywords(j) + " ");
+        j.getTableExpression().renderTo(w, this.sqlDialect);
 
-        w.write("\n" + joinKeywords + " " + this.sqlDialect.canonicalToNatural(j.getTable())
-            + (alias != null ? (" " + alias) : ""));
         try {
           PredicatedJoin pj = (PredicatedJoin) j;
           if (pj.getJoinPredicate() != null) { // on
@@ -478,12 +473,12 @@ public abstract class AbstractSelect<R> extends Query {
   }
 
   public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-    if (this.baseTable != null) {
-      this.baseTable.validateTableReferences(tableReferences, ag);
+    if (this.baseTableExpression != null) {
+      this.baseTableExpression.validateTableReferences(tableReferences, ag);
     }
     if (this.joins != null) {
       for (Join j : this.joins) {
-        j.getTable().validateTableReferences(tableReferences, ag);
+        j.getTableExpression().validateTableReferences(tableReferences, ag);
       }
     }
     if (this.wherePredicate != null) {
@@ -587,12 +582,12 @@ public abstract class AbstractSelect<R> extends Query {
   }
 
   public void assignNonDeclaredAliases(final AliasGenerator ag) {
-    if (this.baseTable != null) {
-      this.baseTable.designateAliases(ag);
+    if (this.baseTableExpression != null) {
+      this.baseTableExpression.designateAliases(ag);
     }
     if (this.joins != null) {
       for (Join j : this.joins) {
-        j.getTable().designateAliases(ag);
+        j.getTableExpression().designateAliases(ag);
       }
     }
     if (this.wherePredicate != null) {

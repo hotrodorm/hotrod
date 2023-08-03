@@ -67,70 +67,75 @@
 
   </dependencies>
 
-  <build>
+  <profiles>
 
-    <plugins>
+    <profile>
+      <id>release</id>
 
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>3.1.0</version>
-        <executions>
-          <execution>
-            <id>splitter-exec</id>
-            <phase>package</phase>
-            <goals>
-              <goal>java</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <includePluginDependencies>true</includePluginDependencies>
-          <mainClass>org.nocrala.tools.jarsplitter.Shell</mainClass>
-          <arguments>
-            <argument></argument> <!-- Empty: to scan and discover all versions -->
-            <argument>15</argument>
-            <argument>org.hotrod.runtime.livesql</argument>
-            <argument>${project.basedir}/target/rejar</argument>
-            <argument>${project.basedir}/target/${project.artifactId}-${project.version}.jar</argument>
-            <argument>${project.groupId}</argument>
-            <argument>${project.artifactId}</argument>
-            <argument>${project.version}</argument>
-            <argument>all</argument> <!-- base-only, all -->
-          </arguments>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.nocrala.tools</groupId>
-            <artifactId>jar-splitter</artifactId>
-            <version>1.0.4-SNAPSHOT</version>
-          </dependency>
-        </dependencies>
-      </plugin>
+      <build>
 
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>3.3.0</version>
-        <executions>
-          <execution>
-            <id>attach-artifacts</id>
-            <phase>package</phase>
-            <goals>
-              <goal>attach-artifact</goal>
-            </goals>
+        <plugins>
+
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.1.0</version>
+            <executions>
+              <execution>
+                <id>splitter-exec</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+              </execution>
+            </executions>
             <configuration>
-              <artifacts>
-                <artifact>
-                  <file>${project.basedir}/target/hotrod-livesql-hypersql2-4.0.1-SNAPSHOT.jar</file>
-                  <type>jar</type>
-                  <classifier>hypersql-2+</classifier>
-                </artifact>
-                <artifact>
-                  <file>${project.basedir}/target/hotrod-livesql-postgresql15-4.0.1-SNAPSHOT.jar</file>
-                  <type>jar</type>
-                  <classifier>postgresql-15+</classifier>
-                </artifact>
+              <includePluginDependencies>true</includePluginDependencies>
+              <mainClass>org.nocrala.tools.jarsplitter.Shell</mainClass>
+              <arguments>
+                <argument></argument> <!-- Empty: to scan and discover all versions -->
+                <argument>15</argument>
+                <argument>org.hotrod.runtime.livesql</argument>
+                <argument>${project.basedir}/target/rejar</argument>
+                <argument>${project.basedir}/target/${project.artifactId}-${project.version}.jar</argument>
+                <argument>${project.groupId}</argument>
+                <argument>${project.artifactId}</argument>
+                <argument>${project.version}</argument>
+                <argument>all</argument> <!-- base-only, all -->
+              </arguments>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>org.nocrala.tools</groupId>
+                <artifactId>jar-splitter</artifactId>
+                <version>1.0.4-SNAPSHOT</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <version>3.3.0</version>
+            <executions>
+              <execution>
+                <id>attach-artifacts</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>attach-artifact</goal>
+                </goals>
+                <configuration>
+                  <artifacts>
+                    <artifact>
+                      <file>${project.basedir}/target/hotrod-livesql-hypersql2-4.0.1-SNAPSHOT.jar</file>
+                      <type>jar</type>
+                      <classifier>hypersql-2+</classifier>
+                    </artifact>
+                    <artifact>
+                      <file>${project.basedir}/target/hotrod-livesql-postgresql15-4.0.1-SNAPSHOT.jar</file>
+                      <type>jar</type>
+                      <classifier>postgresql-15+</classifier>
+                    </artifact>
                 <!-- 
                 <artifact>
                   <file>${project.basedir}/target/hotrod-livesql-postgresql15-rp-4.0.1-SNAPSHOT.jar</file>
@@ -138,14 +143,19 @@
                   <classifier>postgresql-15+-rp</classifier>
                 </artifact>
                  -->
-              </artifacts>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
+                  </artifacts>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
 
-    </plugins>
+        </plugins>
 
-  </build>
+      </build>
+
+
+    </profile>
+
+  </profiles>
 
 </project>

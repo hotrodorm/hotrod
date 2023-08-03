@@ -85,6 +85,7 @@ import org.hotrod.runtime.livesql.queries.UpdateTablePhase;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.PGSelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.select.SelectColumnsPhase;
+import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 import org.hotrod.runtime.livesql.sysobjects.DualTable;
 import org.hotrod.runtime.livesql.sysobjects.SysDummy1Table;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -152,6 +153,12 @@ public class LiveSQL {
 
   public InsertIntoPhase insert(final TableOrView into) {
     return new InsertIntoPhase(this.sqlDialect, this.sqlSession, this.liveSQLMapper, into);
+  }
+
+  // Subqueries
+
+  public <T> Subquery<T> subquery(final String alias, final ExecutableSelect<T> select) {
+    return new Subquery<T>(alias, select);
   }
 
   // Tuples

@@ -17,7 +17,7 @@ public class CriteriaWherePhase<T> implements ExecutableCriteriaSelect<T> {
   public CriteriaWherePhase(final TableOrView baseTable, final LiveSQLDialect sqlDialect, final SqlSession sqlSession,
       final Predicate whereCondition, final String mapperStatement) {
     this.select = new Select<T>(sqlDialect, false, sqlSession, mapperStatement, true);
-    this.select.setBaseTable(baseTable);
+    this.select.setBaseTableExpression(baseTable);
     this.select.setWhereCondition(whereCondition);
   }
 
@@ -49,7 +49,7 @@ public class CriteriaWherePhase<T> implements ExecutableCriteriaSelect<T> {
   public Cursor<T> executeCursor() {
     return this.select.executeCursor();
   }
-  
+
   // rendering
 
   @Override

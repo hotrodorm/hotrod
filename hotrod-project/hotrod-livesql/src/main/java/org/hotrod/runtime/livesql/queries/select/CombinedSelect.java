@@ -7,7 +7,6 @@ import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.livesql.LiveSQLMapper;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.livesql.metadata.TableOrView;
 
 class CombinedSelect<T> extends AbstractSelect<T> {
 
@@ -32,8 +31,9 @@ class CombinedSelect<T> extends AbstractSelect<T> {
   // Rendering
 
   @Override
-  protected void writeColumns(final QueryWriter w, final TableOrView baseTable, final List<Join> joins) {
-    super.writeExpandedColumns(w, baseTable, joins, this.resultSetColumns.stream().collect(Collectors.toList()), true);
+  protected void writeColumns(final QueryWriter w, final TableExpression baseTableExpression, final List<Join> joins) {
+    super.writeExpandedColumns(w, baseTableExpression, joins,
+        this.resultSetColumns.stream().collect(Collectors.toList()), true);
   }
 
 }

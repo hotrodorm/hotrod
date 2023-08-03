@@ -9,7 +9,6 @@ import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.LiveSQLMapper;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 
@@ -30,8 +29,8 @@ public class SelectColumnsPhase<R> implements ExecutableSelect<R>, CombinableSel
 
   // Next stages
 
-  public SelectFromPhase<R> from(final TableOrView t) {
-    return new SelectFromPhase<R>(this.select, t);
+  public SelectFromPhase<R> from(final TableExpression tableViewOrSubquery) {
+    return new SelectFromPhase<R>(this.select, tableViewOrSubquery);
   }
 
   // Set operations

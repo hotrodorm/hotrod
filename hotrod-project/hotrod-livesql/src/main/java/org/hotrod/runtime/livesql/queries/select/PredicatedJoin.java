@@ -6,15 +6,14 @@ import java.util.List;
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLClauseException;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.Column;
-import org.hotrod.runtime.livesql.metadata.TableOrView;
 
 abstract class PredicatedJoin extends Join {
 
   private Predicate predicate;
   private List<Column> using;
 
-  PredicatedJoin(final TableOrView table, final Predicate predicate) {
-    super(table);
+  PredicatedJoin(final TableExpression tableExpression, final Predicate predicate) {
+    super(tableExpression);
     if (predicate == null) {
       throw new InvalidLiveSQLClauseException("The join predicate cannot be null");
     }
@@ -22,8 +21,8 @@ abstract class PredicatedJoin extends Join {
     this.using = null;
   }
 
-  PredicatedJoin(final TableOrView table, final Column... using) {
-    super(table);
+  PredicatedJoin(final TableExpression tableExpression, final Column... using) {
+    super(tableExpression);
     if (using.length == 0) {
       throw new InvalidLiveSQLClauseException(
           "The USING columns for the join equality must include at least one column.");
