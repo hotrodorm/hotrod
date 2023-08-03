@@ -39,7 +39,7 @@ public class Subquery<T> implements TableExpression {
     return new SubqueryNumberColumn(this, name);
   }
 
-  public StringExpression chr(final String name) {
+  public StringExpression str(final String name) {
     return new SubqueryStringColumn(this, name);
   }
 
