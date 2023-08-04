@@ -79,13 +79,15 @@ public abstract class AbstractSelect<R> extends Query {
 
       try {
         expandedColumns = new ArrayList<>();
-        List<Column> columns = getColumnsField(baseTableExpression, "columns");
-        for (Column e : columns) {
+        List<ResultSetColumn> columns = baseTableExpression.getColumns();
+//            getColumnsField(baseTableExpression, "columns");
+        for (ResultSetColumn e : columns) {
           expandedColumns.add(e);
         }
         for (Join j : joins) {
-          columns = getColumnsField(j.getTableExpression(), "columns");
-          for (Column e : columns) {
+          columns = j.getTableExpression().getColumns();
+//              getColumnsField(j.getTableExpression(), "columns");
+          for (ResultSetColumn e : columns) {
             expandedColumns.add(e);
           }
         }
@@ -638,6 +640,7 @@ public abstract class AbstractSelect<R> extends Query {
       throws IllegalArgumentException, IllegalAccessException {
     try {
       Field cf = ReflectionUtils.findField(cs.getClass(), colName);
+      System.out.println("cs (" + (cs == null ? "null" : cs.getClass().getName()) + ")");
       if (cf != null) {
         cf.setAccessible(true);
         Object object = cf.get(cs);
@@ -652,5 +655,7 @@ public abstract class AbstractSelect<R> extends Query {
       throw e;
     }
   }
+
+  abstract List<ResultSetColumn> listColumns();
 
 }

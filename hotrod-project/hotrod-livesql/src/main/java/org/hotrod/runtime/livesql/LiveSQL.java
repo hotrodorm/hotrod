@@ -83,6 +83,7 @@ import org.hotrod.runtime.livesql.queries.DeleteFromPhase;
 import org.hotrod.runtime.livesql.queries.InsertIntoPhase;
 import org.hotrod.runtime.livesql.queries.UpdateTablePhase;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
+import org.hotrod.runtime.livesql.queries.ctes.CTENamePhase;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.PGSelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.select.SelectCTEPhase;
@@ -141,6 +142,10 @@ public class LiveSQL {
 
   public CTE cte(final String alias, final ExecutableSelect<Row> select) {
     return new CTE(alias, select);
+  }
+
+  public CTENamePhase cte(final String cteName) {
+    return new CTENamePhase(cteName);
   }
 
   public SelectCTEPhase<Row> with(final CTE... ctes) {

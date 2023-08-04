@@ -3,6 +3,7 @@ package org.hotrod.runtime.livesql.queries.select;
 import java.util.List;
 
 import org.hotrod.runtime.cursors.Cursor;
+import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 
@@ -52,6 +53,11 @@ public class SelectLimitPhase<R> implements ExecutableSelect<R> {
   @Override
   public String getPreview() {
     return this.select.getPreview();
+  }
+
+  @Override
+  public List<ResultSetColumn> listColumns() throws IllegalAccessException {
+    return this.select.listColumns();
   }
 
 }

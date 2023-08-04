@@ -6,6 +6,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.livesql.LiveSQLMapper;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.dialects.SetOperationRenderer.SetOperation;
+import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 
 public class EnclosedSelect<R> extends AbstractSelect<R> {
 
@@ -56,6 +57,11 @@ public class EnclosedSelect<R> extends AbstractSelect<R> {
   public SelectHavingPhase<R> exceptAll(final CombinableSelect<R> select) {
     this.select.setCombinedSelect(SetOperation.EXCEPT_ALL, select);
     return new SelectHavingPhase<R>(this.select, null);
+  }
+
+  @Override
+  public List<ResultSetColumn> listColumns() {
+    return this.select.listColumns();
   }
 
 }

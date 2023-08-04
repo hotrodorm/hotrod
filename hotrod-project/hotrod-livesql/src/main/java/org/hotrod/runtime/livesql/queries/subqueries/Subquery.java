@@ -1,6 +1,9 @@
 package org.hotrod.runtime.livesql.queries.subqueries;
 
+import java.util.List;
+
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.binary.ByteArrayExpression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
@@ -82,6 +85,11 @@ public class Subquery<T> implements TableExpression {
     w.write("\n");
     w.write(") ");
     w.write(w.getSqlDialect().canonicalToNatural(w.getSqlDialect().naturalToCanonical(this.alias)));
+  }
+
+  @Override
+  public List<ResultSetColumn> getColumns() throws IllegalAccessException {
+    return this.select.listColumns();
   }
 
 }

@@ -7,6 +7,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.livesql.LiveSQLMapper;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.livesql.metadata.Column;
 
 class Select<R> extends AbstractSelect<R> {
 
@@ -36,6 +37,11 @@ class Select<R> extends AbstractSelect<R> {
   @Override
   protected void writeColumns(final QueryWriter w, final TableExpression baseTableExpression, final List<Join> joins) {
     super.writeExpandedColumns(w, baseTableExpression, joins, this.resultSetColumns, this.doNotAliasColumns);
+  }
+
+  @Override
+  List<ResultSetColumn> listColumns() {
+    return this.resultSetColumns;
   }
 
 }

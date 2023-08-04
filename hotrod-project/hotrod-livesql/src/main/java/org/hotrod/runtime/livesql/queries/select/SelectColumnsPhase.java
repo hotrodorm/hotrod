@@ -113,4 +113,9 @@ public class SelectColumnsPhase<R> implements ExecutableSelect<R>, CombinableSel
     return this.select.getPreview();
   }
 
+  @Override
+  public List<ResultSetColumn> listColumns() throws IllegalAccessException {
+    return this.select.listColumns();
+  }
+
 }

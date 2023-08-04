@@ -36,4 +36,9 @@ class CombinedSelect<T> extends AbstractSelect<T> {
         this.resultSetColumns.stream().collect(Collectors.toList()), true);
   }
 
+  @Override
+  public List<ResultSetColumn> listColumns() {
+    return this.resultSetColumns;
+  }
+
 }

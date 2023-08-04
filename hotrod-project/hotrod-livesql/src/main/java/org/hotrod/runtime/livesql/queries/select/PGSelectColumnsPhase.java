@@ -115,4 +115,9 @@ public class PGSelectColumnsPhase<R> implements ExecutableSelect<R>, CombinableS
     return this.select.getPreview();
   }
 
+  @Override
+  public List<ResultSetColumn> listColumns() throws IllegalAccessException {
+    return this.select.listColumns();
+  }
+
 }

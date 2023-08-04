@@ -38,4 +38,9 @@ class PGSelect<R> extends AbstractSelect<R> {
     super.writeExpandedColumns(w, baseTableExpression, joins, this.resultSetColumns, this.doNotAliasColumns);
   }
 
+  @Override
+  public List<ResultSetColumn> listColumns() {
+    return this.resultSetColumns;
+  }
+
 }

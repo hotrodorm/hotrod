@@ -6,6 +6,7 @@ import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.Available;
 import org.hotrod.runtime.livesql.dialects.Const;
 import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
@@ -200,6 +201,11 @@ public class SelectFromPhase<R> implements ExecutableSelect<R>, CombinableSelect
   @Override
   public String getPreview() {
     return this.select.getPreview();
+  }
+
+  @Override
+  public List<ResultSetColumn> listColumns() throws IllegalAccessException {
+    return this.select.listColumns();
   }
 
 }

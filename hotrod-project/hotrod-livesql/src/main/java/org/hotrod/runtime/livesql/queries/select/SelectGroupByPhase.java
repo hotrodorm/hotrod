@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
@@ -114,6 +115,11 @@ public class SelectGroupByPhase<R> implements ExecutableSelect<R>, CombinableSel
   @Override
   public String getPreview() {
     return this.select.getPreview();
+  }
+
+  @Override
+  public List<ResultSetColumn> listColumns() throws IllegalAccessException {
+    return this.select.listColumns();
   }
 
 }
