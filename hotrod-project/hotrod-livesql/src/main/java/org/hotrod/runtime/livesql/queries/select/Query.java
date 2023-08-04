@@ -5,13 +5,13 @@ import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 
 public abstract class Query {
 
-  protected LiveSQLDialect sqlDialect;
+  protected LiveSQLDialect liveSQLDialect;
 
   public Query(final LiveSQLDialect sqlDialect) {
     if (sqlDialect == null) {
       throw new UnsupportedLiveSQLFeatureException("Undefined SQL dialect. Please specify the SQL dialect");
     }
-    this.sqlDialect = sqlDialect;
+    this.liveSQLDialect = sqlDialect;
   }
 
 }

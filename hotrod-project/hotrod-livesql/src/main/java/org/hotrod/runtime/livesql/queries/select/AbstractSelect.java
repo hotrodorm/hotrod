@@ -3,6 +3,7 @@ package org.hotrod.runtime.livesql.queries.select;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -24,8 +25,8 @@ import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.metadata.AllColumns.ColumnSubset;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.DatabaseObject;
-import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
+import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLStructure;
 import org.hotrodorm.hotrod.utils.CUtil;
 import org.hotrodorm.hotrod.utils.HexaUtils;
@@ -35,6 +36,7 @@ import org.springframework.util.ReflectionUtils;
 
 public abstract class AbstractSelect<R> extends Query {
 
+  private List<CTE> ctes = new ArrayList<>();
   private boolean distinct;
   private TableExpression baseTableExpression = null;
   private List<Join> joins = null;
@@ -77,12 +79,12 @@ public abstract class AbstractSelect<R> extends Query {
 
       try {
         expandedColumns = new ArrayList<>();
-        List<Column> columns = getColumnsField(baseTableExpression, TableOrView.class, "columns");
+        List<Column> columns = getColumnsField(baseTableExpression, "columns");
         for (Column e : columns) {
           expandedColumns.add(e);
         }
         for (Join j : joins) {
-          columns = getColumnsField(j.getTableExpression(), TableOrView.class, "columns");
+          columns = getColumnsField(j.getTableExpression(), "columns");
           for (Column e : columns) {
             expandedColumns.add(e);
           }
@@ -145,14 +147,22 @@ public abstract class AbstractSelect<R> extends Query {
 
   private List<Column> getSubColumns(ResultSetColumn c) throws IllegalArgumentException, IllegalAccessException {
     if (c instanceof AllColumns) {
-      return getColumnsField(c, AllColumns.class, "columns");
+      return getColumnsField(c, "columns");
     } else if (c instanceof ColumnSubset) {
-      return getColumnsField(c, ColumnSubset.class, "columns");
+      return getColumnsField(c, "columns");
     }
     return null;
   }
 
   // Setters
+
+  void setCTEs(final List<CTE> ctes) {
+    if (ctes != null) {
+      for (CTE c : ctes) {
+        this.ctes.add(c);
+      }
+    }
+  }
 
   void setBaseTableExpression(final TableExpression baseTableExpression) {
     this.baseTableExpression = baseTableExpression;
@@ -210,21 +220,36 @@ public abstract class AbstractSelect<R> extends Query {
 
   private LiveSQLStructure prepareQuery() {
     validateQuery();
-    QueryWriter w = new QueryWriter(this.sqlDialect);
+    QueryWriter w = new QueryWriter(this.liveSQLDialect);
     renderTo(w);
     return w.getPreparedQuery();
   }
 
   public void renderTo(final QueryWriter w) {
 
+    // CTEs
+
+    if (!this.ctes.isEmpty()) {
+      w.write("WITH\n");
+      for (Iterator<CTE> it = this.ctes.iterator(); it.hasNext();) {
+        CTE cte = it.next();
+        cte.renderDefinitionTo(w, this.liveSQLDialect);
+        if (it.hasNext()) {
+          w.write(",");
+        }
+        w.write("\n");
+      }
+    }
+
     // retrieve pagination type
 
-    PaginationType paginationType = this.sqlDialect.getPaginationRenderer().getPaginationType(this.offset, this.limit);
+    PaginationType paginationType = this.liveSQLDialect.getPaginationRenderer().getPaginationType(this.offset,
+        this.limit);
 
     // enclosing pagination - begin
 
     if ((this.offset != null || this.limit != null) && paginationType == PaginationType.ENCLOSE) {
-      this.sqlDialect.getPaginationRenderer().renderBeginEnclosingPagination(this.offset, this.limit, w);
+      this.liveSQLDialect.getPaginationRenderer().renderBeginEnclosingPagination(this.offset, this.limit, w);
     }
 
     // select
@@ -241,7 +266,7 @@ public abstract class AbstractSelect<R> extends Query {
 
     if ((this.offset != null || this.limit != null) && paginationType == PaginationType.TOP) {
       w.write("\n  ");
-      this.sqlDialect.getPaginationRenderer().renderTopPagination(this.offset, this.limit, w);
+      this.liveSQLDialect.getPaginationRenderer().renderTopPagination(this.offset, this.limit, w);
     }
 
     // query columns
@@ -252,19 +277,19 @@ public abstract class AbstractSelect<R> extends Query {
 
     if (this.baseTableExpression == null) {
 
-      w.write("\n" + this.sqlDialect.getFromRenderer().renderFromWithoutATable());
+      w.write("\n" + this.liveSQLDialect.getFromRenderer().renderFromWithoutATable());
 
     } else {
 
       w.write("\nFROM ");
-      this.baseTableExpression.renderTo(w, this.sqlDialect);
+      this.baseTableExpression.renderTo(w, this.liveSQLDialect);
 
       // joins
 
       for (Join j : this.joins) {
 
-        w.write("\n" + this.sqlDialect.getJoinRenderer().renderJoinKeywords(j) + " ");
-        j.getTableExpression().renderTo(w, this.sqlDialect);
+        w.write("\n" + this.liveSQLDialect.getJoinRenderer().renderJoinKeywords(j) + " ");
+        j.getTableExpression().renderTo(w, this.liveSQLDialect);
 
         try {
           PredicatedJoin pj = (PredicatedJoin) j;
@@ -318,7 +343,7 @@ public abstract class AbstractSelect<R> extends Query {
 
       if (this.combinedSelect != null) {
         w.write("\n");
-        this.sqlDialect.getSetOperationRenderer().render(this.setOperation, w);
+        this.liveSQLDialect.getSetOperationRenderer().render(this.setOperation, w);
         w.write("\n");
         this.combinedSelect.renderTo(w);
       }
@@ -365,13 +390,13 @@ public abstract class AbstractSelect<R> extends Query {
     // bottom offset & limit
 
     if ((this.offset != null || this.limit != null) && paginationType == PaginationType.BOTTOM) {
-      this.sqlDialect.getPaginationRenderer().renderBottomPagination(this.offset, this.limit, w);
+      this.liveSQLDialect.getPaginationRenderer().renderBottomPagination(this.offset, this.limit, w);
     }
 
     // enclosing pagination - end
 
     if ((this.offset != null || this.limit != null) && paginationType == PaginationType.ENCLOSE) {
-      this.sqlDialect.getPaginationRenderer().renderEndEnclosingPagination(this.offset, this.limit, w);
+      this.liveSQLDialect.getPaginationRenderer().renderEndEnclosingPagination(this.offset, this.limit, w);
     }
 
   }
@@ -609,15 +634,19 @@ public abstract class AbstractSelect<R> extends Query {
     }
   }
 
-  protected List<Column> getColumnsField(final Object cs, final Class<?> clazz, final String colName)
+  protected List<Column> getColumnsField(final Object cs, final String colName)
       throws IllegalArgumentException, IllegalAccessException {
     try {
-      Field cf = ReflectionUtils.findField(clazz, colName);
-      cf.setAccessible(true);
-      Object object = cf.get(cs);
-      @SuppressWarnings("unchecked")
-      List<Column> columns = (List<Column>) object;
-      return columns;
+      Field cf = ReflectionUtils.findField(cs.getClass(), colName);
+      if (cf != null) {
+        cf.setAccessible(true);
+        Object object = cf.get(cs);
+        @SuppressWarnings("unchecked")
+        List<Column> columns = (List<Column>) object;
+        return columns;
+      } else {
+        return new ArrayList<>();
+      }
     } catch (ClassCastException e) {
       e.printStackTrace();
       throw e;

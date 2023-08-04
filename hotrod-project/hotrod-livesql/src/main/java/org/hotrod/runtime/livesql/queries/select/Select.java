@@ -27,7 +27,7 @@ class Select<R> extends AbstractSelect<R> {
 
   // Setters
 
-  void setResultSetColumns(final List<ResultSetColumn> resultSetColumns) {
+  public void setResultSetColumns(final List<ResultSetColumn> resultSetColumns) {
     this.resultSetColumns = resultSetColumns;
   }
 

@@ -82,8 +82,10 @@ import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.DeleteFromPhase;
 import org.hotrod.runtime.livesql.queries.InsertIntoPhase;
 import org.hotrod.runtime.livesql.queries.UpdateTablePhase;
+import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.PGSelectColumnsPhase;
+import org.hotrod.runtime.livesql.queries.select.SelectCTEPhase;
 import org.hotrod.runtime.livesql.queries.select.SelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 import org.hotrod.runtime.livesql.sysobjects.DualTable;
@@ -100,9 +102,7 @@ public class LiveSQL {
   // Properties
 
   private SqlSession sqlSession;
-
   private LiveSQLDialect sqlDialect;
-
   private LiveSQLMapper liveSQLMapper;
 
   // Setters
@@ -135,6 +135,16 @@ public class LiveSQL {
   @Available(engine = Const.POSTGRESQL, since = Const.PG15)
   public PGSelectColumnsPhase<Row> selectDistinctOn(final ResultSetColumn... resultSetColumns) {
     return new PGSelectColumnsPhase<Row>(this.sqlDialect, this.sqlSession, this.liveSQLMapper, true, resultSetColumns);
+  }
+
+  // CTEs
+
+  public CTE cte(final String alias, final ExecutableSelect<Row> select) {
+    return new CTE(alias, select);
+  }
+
+  public SelectCTEPhase<Row> with(final CTE... ctes) {
+    return new SelectCTEPhase<Row>(this.sqlDialect, this.sqlSession, this.liveSQLMapper, ctes);
   }
 
   // Delete

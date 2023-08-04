@@ -28,6 +28,12 @@ public class PGSelectColumnsPhase<R> implements ExecutableSelect<R>, CombinableS
     this.select = s;
   }
 
+  public PGSelectColumnsPhase(final Select<R> select, final boolean distinct,
+      final ResultSetColumn... resultSetColumns) {
+    select.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
+    this.select = select;
+  }
+
   // Next stages
 
   public SelectFromPhase<R> from(final TableOrView t) {

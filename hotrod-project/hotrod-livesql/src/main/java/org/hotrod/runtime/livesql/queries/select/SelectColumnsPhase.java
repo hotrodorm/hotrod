@@ -27,6 +27,11 @@ public class SelectColumnsPhase<R> implements ExecutableSelect<R>, CombinableSel
     this.select = s;
   }
 
+  public SelectColumnsPhase(final Select<R> select, final boolean distinct, final ResultSetColumn... resultSetColumns) {
+    select.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
+    this.select = select;
+  }
+
   // Next stages
 
   public SelectFromPhase<R> from(final TableExpression tableViewOrSubquery) {
