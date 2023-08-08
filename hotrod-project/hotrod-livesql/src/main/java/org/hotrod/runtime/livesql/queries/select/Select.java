@@ -14,7 +14,9 @@ import org.hotrod.runtime.livesql.metadata.AllColumns.ColumnAliased;
 import org.hotrod.runtime.livesql.metadata.AllColumns.ColumnList;
 import org.hotrod.runtime.livesql.metadata.AllColumns.ColumnSubset;
 import org.hotrod.runtime.livesql.metadata.Column;
+import org.hotrod.runtime.livesql.queries.subqueries.AllSubqueryColumns;
 import org.hotrod.runtime.livesql.util.ReflectionUtil;
+import org.hotrod.runtime.livesql.util.SubqueryUtil;
 
 class Select<R> extends AbstractSelect<R> {
 
@@ -65,16 +67,28 @@ class Select<R> extends AbstractSelect<R> {
       } catch (IllegalAccessException e) {
         throw new LiveSQLException("Could not expand AllColumns", e);
       } catch (ClassCastException e1) {
+
         try {
-          ColumnList cl = (ColumnList) c;
-          list.addAll(this.expandColumnList(cl));
+          AllSubqueryColumns asc = (AllSubqueryColumns) c;
+          list.addAll(this.expandSubqueryColumn(asc));
         } catch (ClassCastException e2) {
-          list.add(c);
+          try {
+            ColumnList cl = (ColumnList) c;
+            list.addAll(this.expandColumnList(cl));
+          } catch (ClassCastException e3) {
+            list.add(c);
+          }
         }
+
       }
 
     }
     return list;
+  }
+
+  // Do not use inheritance to avoid exposing internal methods to the end user
+  private List<ResultSetColumn> expandSubqueryColumn(final AllSubqueryColumns asc) {
+    return SubqueryUtil.listColumns(asc);
   }
 
   // Do not use inheritance to avoid exposing internal methods to the end user

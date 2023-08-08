@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.cursors.Cursor;
@@ -28,6 +29,8 @@ import org.hotrod.runtime.livesql.metadata.DatabaseObject;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLStructure;
+import org.hotrod.runtime.livesql.queries.subqueries.AllSubqueryColumns;
+import org.hotrod.runtime.livesql.util.SubqueryUtil;
 import org.hotrodorm.hotrod.utils.CUtil;
 import org.hotrodorm.hotrod.utils.HexaUtils;
 import org.hotrodorm.hotrod.utils.SUtil;
@@ -80,6 +83,10 @@ public abstract class AbstractSelect<R> extends Query {
       try {
         expandedColumns = new ArrayList<>();
         List<ResultSetColumn> columns = baseTableExpression.getColumns();
+        System.out.println("# baseTableExpression: " + baseTableExpression + "  --  columns[" + columns.size() + "]");
+        for (ResultSetColumn e : columns) {
+          System.out.println("### " + e);
+        }
 //            getColumnsField(baseTableExpression, "columns");
         for (ResultSetColumn e : columns) {
           expandedColumns.add(e);
@@ -105,10 +112,10 @@ public abstract class AbstractSelect<R> extends Query {
       while (it.hasNext()) {
         try {
           ResultSetColumn rsc = it.next();
-          List<Column> scols = getSubColumns(rsc);
+          List<ResultSetColumn> scols = getSubColumns(rsc);
           if (scols != null) {
             it.remove();
-            for (Column sc : scols) {
+            for (ResultSetColumn sc : scols) {
               it.add(sc);
             }
           }
@@ -147,11 +154,14 @@ public abstract class AbstractSelect<R> extends Query {
 
   }
 
-  private List<Column> getSubColumns(ResultSetColumn c) throws IllegalArgumentException, IllegalAccessException {
+  private List<ResultSetColumn> getSubColumns(final ResultSetColumn c)
+      throws IllegalArgumentException, IllegalAccessException {
     if (c instanceof AllColumns) {
       return getColumnsField(c, "columns");
     } else if (c instanceof ColumnSubset) {
       return getColumnsField(c, "columns");
+    } else if (c instanceof AllSubqueryColumns) {
+      return SubqueryUtil.listColumns((AllSubqueryColumns) c);
     }
     return null;
   }
@@ -636,17 +646,17 @@ public abstract class AbstractSelect<R> extends Query {
     }
   }
 
-  protected List<Column> getColumnsField(final Object cs, final String colName)
+  protected List<ResultSetColumn> getColumnsField(final Object cs, final String colName)
       throws IllegalArgumentException, IllegalAccessException {
     try {
       Field cf = ReflectionUtils.findField(cs.getClass(), colName);
-      System.out.println("cs (" + (cs == null ? "null" : cs.getClass().getName()) + ")");
+//      System.out.println("cs (" + (cs == null ? "null" : cs.getClass().getName()) + ")");
       if (cf != null) {
         cf.setAccessible(true);
         Object object = cf.get(cs);
         @SuppressWarnings("unchecked")
         List<Column> columns = (List<Column>) object;
-        return columns;
+        return columns.stream().map(c -> (ResultSetColumn) c).collect(Collectors.toList());
       } else {
         return new ArrayList<>();
       }
