@@ -4,13 +4,13 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 /**
  * <pre>
- *                    {I} ResultSetColumn
- *                          ^      ^        
- *                          |      |
- *  {I} ReferenceableExpression  Expression
- *           ^               ^    ^      ^
- *           |               |    |      |   
- *      AliasedExpression    Column     ...
+ *                    {I} ResultSetColumn <------+----------------+
+ *                          ^      ^             |                |
+ *                          |      |             |                |
+ *  {I} ReferenceableExpression  Expression  AllColumns   {I} ColumnList
+ *           ^               ^    ^      ^                      ^    ^
+ *           |               |    |      |                      |    |
+ *      AliasedExpression    Column     ...          ColumnAliased  ColumnSubset
  *
  *    
  * SelectSubquery&lt;ReferenceableExpression&gt;
