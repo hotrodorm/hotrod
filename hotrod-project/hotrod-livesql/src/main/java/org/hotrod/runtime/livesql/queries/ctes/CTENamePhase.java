@@ -17,8 +17,13 @@ public class CTENamePhase {
 
   // Next stages
 
-  public CTEHeaderPhase columnNames(final String... columnNames) {
-    return new CTEHeaderPhase(this.name, columnNames);
+  public CTEHeaderPhase columnNames(final String name, final String... columnNames) {
+    String[] all = new String[columnNames.length + 1];
+    all[0] = name;
+    for (int i = 0; i < columnNames.length; i++) {
+      all[i + 1] = columnNames[i];
+    }
+    return new CTEHeaderPhase(this.name, all);
   }
 
   public CTE as(ExecutableSelect<Row> select) {

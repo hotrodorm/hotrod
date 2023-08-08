@@ -125,6 +125,55 @@ public class SubqueryUtil {
     }
   }
 
+  // check for subquery columns
+  public static Expression castSubqueryColumnAsExternalLevelSubqueryColumn(final Subquery<?> subquery,
+      final ResultSetColumn c, final String alias) throws IllegalArgumentException, IllegalAccessException {
+    try {
+      @SuppressWarnings("unused")
+      NumberExpression nc = (NumberExpression) c;
+      return new SubqueryNumberColumn(subquery, alias);
+    } catch (ClassCastException e1) {
+      try {
+        @SuppressWarnings("unused")
+        StringExpression nc = (StringExpression) c;
+        return new SubqueryStringColumn(subquery, alias);
+      } catch (ClassCastException e2) {
+        try {
+          @SuppressWarnings("unused")
+          Predicate nc = (Predicate) c;
+          return new SubqueryBooleanColumn(subquery, alias);
+        } catch (ClassCastException e3) {
+          try {
+            @SuppressWarnings("unused")
+            DateTimeExpression nc = (DateTimeExpression) c;
+            return new SubqueryDateTimeColumn(subquery, alias);
+          } catch (ClassCastException e4) {
+            try {
+              @SuppressWarnings("unused")
+              ByteArrayExpression nc = (ByteArrayExpression) c;
+              return new SubqueryNumberColumn(subquery, alias);
+            } catch (ClassCastException e5) {
+              try {
+                @SuppressWarnings("unused")
+                ObjectExpression nc = (ObjectExpression) c;
+                return new SubqueryObjectColumn(subquery, alias);
+              } catch (ClassCastException e6) {
+                try {
+                  AliasedExpression nc = (AliasedExpression) c;
+                  Expression expr = ReflectionUtil.getExpressionField(nc, "expression");
+//                  String alias = ReflectionUtil.getStringField(nc, "alias");
+                  return castExpressionAsSubqueryColumn(subquery, expr, alias);
+                } catch (ClassCastException e7) {
+                  throw new IllegalArgumentException("Unknown subquery column type '" + c.getClass().getName() + "'");
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   // check for general expressions
   public static Expression castExpressionAsSubqueryColumn(final Subquery<?> subquery, final Expression c,
       final String alias) throws IllegalArgumentException, IllegalAccessException {
