@@ -17,11 +17,11 @@ public class CTENamePhase {
 
   // Next stages
 
-  public CTEHeaderPhase columnNames(final String name, final String... columnNames) {
-    String[] all = new String[columnNames.length + 1];
-    all[0] = name;
-    for (int i = 0; i < columnNames.length; i++) {
-      all[i + 1] = columnNames[i];
+  public CTEHeaderPhase columnNames(final String first, final String... rest) {
+    String[] all = new String[rest.length + 1];
+    all[0] = first;
+    for (int i = 0; i < rest.length; i++) {
+      all[i + 1] = rest[i];
     }
     return new CTEHeaderPhase(this.name, all);
   }

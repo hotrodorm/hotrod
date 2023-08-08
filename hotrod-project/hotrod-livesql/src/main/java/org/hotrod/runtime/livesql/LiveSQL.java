@@ -140,12 +140,12 @@ public class LiveSQL {
 
   // CTEs
 
-  public CTE cte(final String alias, final ExecutableSelect<Row> select) {
-    return new CTE(alias, select);
+  public CTE cte(final String name, final ExecutableSelect<Row> select) {
+    return new CTE(name, select);
   }
 
-  public CTENamePhase cte(final String cteName) {
-    return new CTENamePhase(cteName);
+  public CTENamePhase cte(final String name) {
+    return new CTENamePhase(name);
   }
 
   public SelectCTEPhase<Row> with(final CTE... ctes) {
