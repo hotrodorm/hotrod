@@ -185,8 +185,8 @@ public class App {
 
   private void recursiveCTEs() {
 
-    RecursiveCTE n = sql.recursiveCTE("n").columnNames("abc", "def");
-    n.as(sql.select());
+//    RecursiveCTE n = sql.recursiveCTE("n").columnNames("abc", "def");
+//    n.as(sql.select());
 
   }
 
