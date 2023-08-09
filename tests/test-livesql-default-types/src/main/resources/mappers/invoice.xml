@@ -19,9 +19,9 @@
   </sql>
 
   <resultMap id="allColumns" type="app.daos.InvoiceVO">
-    <id property="id" column="ID" />
-    <result property="amount" column="AMOUNT" />
-    <result property="branchId" column="BRANCH_ID" />
+    <id property="id" column="id" />
+    <result property="amount" column="amount" />
+    <result property="branchId" column="branch_id" />
   </resultMap>
 
   <!-- select by PK -->
@@ -29,7 +29,7 @@
   <select id="selectByPK" resultMap="allColumns">
     select
       <include refid="columns" />
-     from public.invoice
+     from hotrod.invoice
      where
       id = #{id,jdbcType=INTEGER}
   </select>
@@ -41,7 +41,7 @@
   <select id="selectByExample" resultMap="allColumns">
     select
       <include refid="columns" />
-     from public.invoice
+     from hotrod.invoice
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.id != null">
         and id = #{p.id,jdbcType=INTEGER}
@@ -67,7 +67,7 @@
   <!-- insert (no auto-generated columns) -->
 
   <insert id="insert">
-    insert into public.invoice (
+    insert into hotrod.invoice (
       <trim prefixOverrides=", ">
         <if test="true">, id</if>
         <if test="true">, amount</if>
@@ -85,7 +85,7 @@
   <!-- update by PK -->
 
   <update id="updateByPK">
-    update public.invoice set
+    update hotrod.invoice set
       amount = #{amount,jdbcType=INTEGER},
       branch_id = #{branchId,jdbcType=INTEGER}
      where
@@ -95,7 +95,7 @@
   <!-- delete by PK -->
 
   <delete id="deleteByPK">
-    delete from public.invoice
+    delete from hotrod.invoice
      where
       id = #{id,jdbcType=INTEGER}
   </delete>
@@ -103,7 +103,7 @@
   <!-- update by example -->
 
   <update id="updateByExample">
-    update public.invoice
+    update hotrod.invoice
     <set>
       <if test="values.id != null">id = #{values.id,jdbcType=INTEGER},</if>
       <if test="values.amount != null">amount = #{values.amount,jdbcType=INTEGER},</if>
@@ -131,7 +131,7 @@
   <!-- delete by example -->
 
   <delete id="deleteByExample">
-    delete from public.invoice
+    delete from hotrod.invoice
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="id != null">
         and id = #{id,jdbcType=INTEGER}

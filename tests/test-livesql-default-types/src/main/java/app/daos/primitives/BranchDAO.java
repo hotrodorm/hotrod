@@ -170,7 +170,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
   public UpdateSetCompletePhase update(final app.daos.primitives.AbstractBranchVO updateValues, final BranchDAO.BranchTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
     if (updateValues.getId() != null) values.put("id", updateValues.getId());
-    if (updateValues.getName() != null) values.put("\"NaMe\"", updateValues.getName());
+    if (updateValues.getName() != null) values.put("name", updateValues.getName());
     return new UpdateSetCompletePhase(tableOrView, this.liveSQLDialect, this.sqlSession,
       "mappers.branch.updateByCriteria", predicate, values);
   }
@@ -193,16 +193,16 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   public enum BranchOrderBy implements OrderBy {
 
-    ID("public.branch", "id", true), //
-    ID$DESC("public.branch", "id", false), //
-    NAME("public.branch", "\"NaMe\"", true), //
-    NAME$DESC("public.branch", "\"NaMe\"", false), //
-    NAME$CASEINSENSITIVE("public.branch", "lower(\"NaMe\")", true), //
-    NAME$CASEINSENSITIVE_STABLE_FORWARD("public.branch", "lower(\"NaMe\"), \"NaMe\"", true), //
-    NAME$CASEINSENSITIVE_STABLE_REVERSE("public.branch", "lower(\"NaMe\"), \"NaMe\"", false), //
-    NAME$DESC_CASEINSENSITIVE("public.branch", "lower(\"NaMe\")", false), //
-    NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("public.branch", "lower(\"NaMe\"), \"NaMe\"", false), //
-    NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("public.branch", "lower(\"NaMe\"), \"NaMe\"", true);
+    ID("hotrod.branch", "id", true), //
+    ID$DESC("hotrod.branch", "id", false), //
+    NAME("hotrod.branch", "name", true), //
+    NAME$DESC("hotrod.branch", "name", false), //
+    NAME$CASEINSENSITIVE("hotrod.branch", "lower(name)", true), //
+    NAME$CASEINSENSITIVE_STABLE_FORWARD("hotrod.branch", "lower(name), name", true), //
+    NAME$CASEINSENSITIVE_STABLE_REVERSE("hotrod.branch", "lower(name), name", false), //
+    NAME$DESC_CASEINSENSITIVE("hotrod.branch", "lower(name)", false), //
+    NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("hotrod.branch", "lower(name), name", false), //
+    NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("hotrod.branch", "lower(name), name", true);
 
     private BranchOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -255,12 +255,12 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     BranchTable() {
-      super(null, "PUBLIC", "BRANCH", "Table", null);
+      super("hotrod", null, "branch", "Table", null);
       initialize();
     }
 
     BranchTable(final String alias) {
-      super(null, "PUBLIC", "BRANCH", "Table", alias);
+      super("hotrod", null, "branch", "Table", alias);
       initialize();
     }
 
@@ -268,9 +268,9 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
+      this.id = new NumberColumn(this, "id", "id", "INT", 10, null);
       super.columns.add(this.id);
-      this.name = new StringColumn(this, "NaMe", "name", "CHARACTER VARYING", 20, 0);
+      this.name = new StringColumn(this, "name", "name", "VARCHAR", 20, null);
       super.columns.add(this.name);
     }
 

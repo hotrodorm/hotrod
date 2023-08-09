@@ -8,17 +8,17 @@
 
   <sql id="columns">
     id,
-    "NaMe"
+    name
   </sql>
 
   <sql id="columnsWithAlias">
     ${alias}.id,
-    ${alias}."NaMe"
+    ${alias}.name
   </sql>
 
   <resultMap id="allColumns" type="app.daos.BranchVO">
-    <id property="id" column="ID" />
-    <result property="name" column="NaMe" />
+    <id property="id" column="id" />
+    <result property="name" column="name" />
   </resultMap>
 
   <!-- select by PK -->
@@ -26,7 +26,7 @@
   <select id="selectByPK" resultMap="allColumns">
     select
       <include refid="columns" />
-     from public.branch
+     from hotrod.branch
      where
       id = #{id,jdbcType=INTEGER}
   </select>
@@ -38,13 +38,13 @@
   <select id="selectByExample" resultMap="allColumns">
     select
       <include refid="columns" />
-     from public.branch
+     from hotrod.branch
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.id != null">
         and id = #{p.id,jdbcType=INTEGER}
       </if>
       <if test="p.name != null">
-        and "NaMe" = #{p.name,jdbcType=VARCHAR}
+        and name = #{p.name,jdbcType=VARCHAR}
       </if>
     </trim>
     <if test="o != null">
@@ -61,10 +61,10 @@
   <!-- insert (no auto-generated columns) -->
 
   <insert id="insert">
-    insert into public.branch (
+    insert into hotrod.branch (
       <trim prefixOverrides=", ">
         <if test="true">, id</if>
-        <if test="true">, "NaMe"</if>
+        <if test="true">, name</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
@@ -77,8 +77,8 @@
   <!-- update by PK -->
 
   <update id="updateByPK">
-    update public.branch set
-      "NaMe" = #{name,jdbcType=VARCHAR}
+    update hotrod.branch set
+      name = #{name,jdbcType=VARCHAR}
      where
       id = #{id,jdbcType=INTEGER}
   </update>
@@ -86,7 +86,7 @@
   <!-- delete by PK -->
 
   <delete id="deleteByPK">
-    delete from public.branch
+    delete from hotrod.branch
      where
       id = #{id,jdbcType=INTEGER}
   </delete>
@@ -94,17 +94,17 @@
   <!-- update by example -->
 
   <update id="updateByExample">
-    update public.branch
+    update hotrod.branch
     <set>
       <if test="values.id != null">id = #{values.id,jdbcType=INTEGER},</if>
-      <if test="values.name != null">"NaMe" = #{values.name,jdbcType=VARCHAR},</if>
+      <if test="values.name != null">name = #{values.name,jdbcType=VARCHAR},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.id != null">
         and id = #{filter.id,jdbcType=INTEGER}
       </if>
       <if test="filter.name != null">
-        and "NaMe" = #{filter.name,jdbcType=VARCHAR}
+        and name = #{filter.name,jdbcType=VARCHAR}
       </if>
     </trim>
   </update>
@@ -118,13 +118,13 @@
   <!-- delete by example -->
 
   <delete id="deleteByExample">
-    delete from public.branch
+    delete from hotrod.branch
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="id != null">
         and id = #{id,jdbcType=INTEGER}
       </if>
       <if test="name != null">
-        and "NaMe" = #{name,jdbcType=VARCHAR}
+        and name = #{name,jdbcType=VARCHAR}
       </if>
     </trim>
   </delete>

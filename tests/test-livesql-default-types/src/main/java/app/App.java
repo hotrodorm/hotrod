@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
+import org.hotrod.runtime.livesql.queries.ctes.CTE;
+import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.SelectFromPhase;
 import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 import org.mybatis.spring.annotation.MapperScan;
@@ -21,7 +23,6 @@ import app.daos.primitives.BranchDAO;
 import app.daos.primitives.BranchDAO.BranchTable;
 import app.daos.primitives.InvoiceDAO;
 import app.daos.primitives.InvoiceDAO.InvoiceTable;
-import app.daos.primitives.NumbersDAO;
 
 @Configuration
 @SpringBootApplication
@@ -31,8 +32,8 @@ import app.daos.primitives.NumbersDAO;
 @MapperScan("mappers")
 public class App {
 
-  @Autowired
-  private NumbersDAO numbersDAO;
+//  @Autowired
+//  private NumbersDAO numbersDAO;
 
   @Autowired
   private InvoiceDAO invoiceDAO;
@@ -86,21 +87,106 @@ public class App {
 //      System.out.println("r=" + r);
 //    }
 
+    // Subqueries
+//    joinedTableExpressions();
+//    nestedTableExpressions();
+//    ctesWithoutNamedColumns();
+//    ctesWithNamedColumns();
+//    lateralJoins();
+    recursiveCTEs();
+
+  }
+
+  private void joinedTableExpressions() {
+
     InvoiceTable i = InvoiceDAO.newTable("i");
     BranchTable b = BranchDAO.newTable("b");
 
-    Subquery<Row> x = sql.subquery("x", sql.select(i.star(), i.id.plus(1).as("subtotal")).from(i));
-    Subquery<Row> y = sql.subquery("y", sql.select(b.star(), b.name.concat("//").as("title")).from(b));
+    // Two separate table expressions
+    Subquery x = sql.subquery("x", sql.select(i.star(), i.id.plus(1).as("subtotal")).from(i));
+    Subquery y = sql.subquery("y", sql.select(b.star(), b.name.concat("//").as("title")).from(b));
 
-    SelectFromPhase<Row> q = sql.select(x.num("id"), x.num("subtotal").mult(2).as("total"), y.chr("title")).from(x)
+    ExecutableSelect<Row> q = sql.select(x.num("id"), x.num("subtotal").mult(2).as("total"), y.str("title")).from(x)
         .leftJoin(y, y.num("id").eq(x.num("branchId")));
-    System.out.println("Query: " + q.getPreview());
+    System.out.println("1. Table Expressions: " + q.getPreview());
+    q.execute().forEach(r -> System.out.println("r=" + r));
+  }
 
-    List<Row> rows = q //
-        .execute();
-    for (Row r : rows) {
-      System.out.println("r=" + r);
-    }
+  private void nestedTableExpressions() {
+
+    InvoiceTable i = InvoiceDAO.newTable("i");
+    BranchTable b = BranchDAO.newTable("b");
+
+    Subquery x = sql.subquery("x", sql.select(i.star(), i.id.plus(1).as("subtotal")).from(i));
+    Subquery y = sql.subquery("y", sql.select(x.star(), x.num("id").plus(x.num("amount")).as("subtotal2")).from(x));
+//  ExecutableSelect<Row> q1 = sql.select().from(x);
+//    ExecutableSelect<Row> q1 = sql.select(x.num("id"), x.num("subtotal").mult(2).as("total")).from(x);
+    ExecutableSelect<Row> q1 = sql.select(y.star(), sql.val(123).as("sample")).from(y);
+    System.out.println("1.b: " + q1.getPreview());
+    q1.execute().forEach(r -> System.out.println("r=" + r));
+  }
+
+  private void ctesWithoutNamedColumns() {
+
+    InvoiceTable i = InvoiceDAO.newTable("i");
+    BranchTable b = BranchDAO.newTable("b");
+
+    // 2. CTEs without named columns
+
+    CTE a = sql.cte("x", sql.select(i.star(), i.id.plus(1).as("subtotal")).from(i));
+    CTE f = sql.cte("y", sql.select(b.star(), b.name.concat("//").as("title")).from(b));
+    ExecutableSelect<Row> q2 = sql.with(a, f).select().from(a).crossJoin(f);
+    System.out.println("2. CTEs without named columns: " + q2.getPreview());
+    q2.execute().forEach(r -> System.out.println("r=" + r));
+
+  }
+
+  private void ctesWithNamedColumns() {
+
+    InvoiceTable i = InvoiceDAO.newTable("i");
+    BranchTable b = BranchDAO.newTable("b");
+
+    CTE h = sql.cte("h").columnNames("abc", "def", "ghi", "jkl")
+        .as(sql.select(i.star(), i.id.plus(1).as("subtotal")).from(i));
+    CTE k = sql.cte("k").as(sql.select(b.star(), b.name.concat("//").as("title")).from(b));
+    ExecutableSelect<Row> q3 = sql.with(h, k).select().from(h).crossJoin(k);
+    System.out.println("3. CTEs with names columns: " + q3.getPreview());
+    q3.execute().forEach(r -> System.out.println("r=" + r));
+
+  }
+
+  private void lateralJoins() {
+
+    InvoiceTable i = InvoiceDAO.newTable("i");
+    BranchTable b = BranchDAO.newTable("b");
+
+    Subquery l = sql.subquery("l", //
+        sql.select(i.star()) //
+            .from(i) //
+            .where(i.branchId.eq(b.id)) //
+            .orderBy(i.amount.desc()) //
+            .limit(1) //
+    );
+
+    Subquery l2 = sql.subquery("l2", //
+        sql.select(i.star()) //
+            .from(i) //
+            .where(i.branchId.eq(b.id)) //
+            .orderBy(i.amount.desc()) //
+            .limit(1) //
+    );
+
+    ExecutableSelect<Row> q = sql.select().from(b).joinLateral(l).leftJoinLateral(l2);
+
+    System.out.println("lateral join: " + q.getPreview());
+    q.execute().forEach(r -> System.out.println("r=" + r));
+
+  }
+
+  private void recursiveCTEs() {
+
+    RecursiveCTE n = sql.recursiveCTE("n").columnNames("abc", "def");
+    n.as(sql.select());
 
   }
 

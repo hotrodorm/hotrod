@@ -196,12 +196,12 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
   public enum InvoiceOrderBy implements OrderBy {
 
-    ID("public.invoice", "id", true), //
-    ID$DESC("public.invoice", "id", false), //
-    AMOUNT("public.invoice", "amount", true), //
-    AMOUNT$DESC("public.invoice", "amount", false), //
-    BRANCH_ID("public.invoice", "branch_id", true), //
-    BRANCH_ID$DESC("public.invoice", "branch_id", false);
+    ID("hotrod.invoice", "id", true), //
+    ID$DESC("hotrod.invoice", "id", false), //
+    AMOUNT("hotrod.invoice", "amount", true), //
+    AMOUNT$DESC("hotrod.invoice", "amount", false), //
+    BRANCH_ID("hotrod.invoice", "branch_id", true), //
+    BRANCH_ID$DESC("hotrod.invoice", "branch_id", false);
 
     private InvoiceOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -255,12 +255,12 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     InvoiceTable() {
-      super(null, "PUBLIC", "INVOICE", "Table", null);
+      super("hotrod", null, "invoice", "Table", null);
       initialize();
     }
 
     InvoiceTable(final String alias) {
-      super(null, "PUBLIC", "INVOICE", "Table", alias);
+      super("hotrod", null, "invoice", "Table", alias);
       initialize();
     }
 
@@ -268,11 +268,11 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
+      this.id = new NumberColumn(this, "id", "id", "INT", 10, null);
       super.columns.add(this.id);
-      this.amount = new NumberColumn(this, "AMOUNT", "amount", "INTEGER", 32, 0);
+      this.amount = new NumberColumn(this, "amount", "amount", "INT", 10, null);
       super.columns.add(this.amount);
-      this.branchId = new NumberColumn(this, "BRANCH_ID", "branchId", "INTEGER", 32, 0);
+      this.branchId = new NumberColumn(this, "branch_id", "branchId", "INT", 10, null);
       super.columns.add(this.branchId);
     }
 
