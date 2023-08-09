@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.LiveSQLMapper;
+import org.hotrod.runtime.livesql.dialects.JoinRenderer;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.dialects.SetOperationRenderer.SetOperation;
@@ -83,10 +84,10 @@ public abstract class AbstractSelect<R> extends Query {
       try {
         expandedColumns = new ArrayList<>();
         List<ResultSetColumn> columns = baseTableExpression.getColumns();
-        System.out.println("# baseTableExpression: " + baseTableExpression + "  --  columns[" + columns.size() + "]");
-        for (ResultSetColumn e : columns) {
-          System.out.println("### " + e);
-        }
+//        System.out.println("# baseTableExpression: " + baseTableExpression + "  --  columns[" + columns.size() + "]");
+//        for (ResultSetColumn e : columns) {
+//          System.out.println("### " + e);
+//        }
 //            getColumnsField(baseTableExpression, "columns");
         for (ResultSetColumn e : columns) {
           expandedColumns.add(e);
@@ -298,9 +299,10 @@ public abstract class AbstractSelect<R> extends Query {
 
       // joins
 
-      for (Join j : this.joins) {
+      JoinRenderer joinRenderer = this.liveSQLDialect.getJoinRenderer();
 
-        w.write("\n" + this.liveSQLDialect.getJoinRenderer().renderJoinKeywords(j) + " ");
+      for (Join j : this.joins) {
+        w.write("\n" + joinRenderer.renderJoinKeywords(j) + " ");
         j.getTableExpression().renderTo(w, this.liveSQLDialect);
 
         try {
@@ -318,7 +320,8 @@ public abstract class AbstractSelect<R> extends Query {
             w.write(")");
           }
         } catch (ClassCastException e) {
-          // no predicate on join - continue
+          // lateral joins may have extra dummy predicates
+          w.write(joinRenderer.renderOptionalOnPredicate(j));
         }
       }
 

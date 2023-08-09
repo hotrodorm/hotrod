@@ -9,9 +9,9 @@ import org.hotrod.runtime.livesql.util.SubqueryUtil;
 
 public class AllSubqueryColumns implements ResultSetColumn {
 
-  private Subquery<?> subquery;
+  private Subquery subquery;
 
-  protected AllSubqueryColumns(final Subquery<?> subquery) {
+  protected AllSubqueryColumns(final Subquery subquery) {
     this.subquery = subquery;
   }
 

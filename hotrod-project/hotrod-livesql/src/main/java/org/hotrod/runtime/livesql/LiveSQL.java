@@ -172,8 +172,8 @@ public class LiveSQL {
 
   // Subqueries
 
-  public <T> Subquery<T> subquery(final String alias, final ExecutableSelect<T> select) {
-    return new Subquery<T>(alias, select);
+  public Subquery subquery(final String alias, final ExecutableSelect<?> select) {
+    return new Subquery(alias, select);
   }
 
   // Tuples

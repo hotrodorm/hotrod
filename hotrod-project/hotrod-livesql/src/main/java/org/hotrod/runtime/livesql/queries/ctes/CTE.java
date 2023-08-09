@@ -14,7 +14,7 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 import org.hotrod.runtime.livesql.util.SubqueryUtil;
 
-public class CTE extends Subquery<Row> {
+public class CTE extends Subquery {
 
   private String[] columnNames;
 

@@ -8,12 +8,12 @@ public class SubqueryNumberColumn extends NumberExpression {
 
   // Properties
 
-  private Subquery<?> subquery;
+  private Subquery subquery;
   private String columnName;
 
   // Constructor
 
-  public SubqueryNumberColumn(final Subquery<?> subquery, final String columnName) {
+  public SubqueryNumberColumn(final Subquery subquery, final String columnName) {
     super(Expression.PRECEDENCE_COLUMN);
     this.subquery = subquery;
     this.columnName = columnName;

@@ -1,5 +1,8 @@
 package org.hotrod.runtime.livesql.dialects;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.hotrod.runtime.livesql.metadata.DatabaseObject;
 
 public abstract class LiveSQLDialect {
@@ -9,6 +12,7 @@ public abstract class LiveSQLDialect {
   private String databaseVersion;
   private int databaseMajorVersion;
   private int databaseMinorVersion;
+  private int patchVersion;
 
   protected LiveSQLDialect(final boolean discovered, final String databaseName, final String databaseVersion,
       final int databaseMajorVersion, final int databaseMinorVersion) {
@@ -17,6 +21,7 @@ public abstract class LiveSQLDialect {
     this.databaseVersion = databaseVersion;
     this.databaseMajorVersion = databaseMajorVersion;
     this.databaseMinorVersion = databaseMinorVersion;
+    this.patchVersion = parsePatchVersion(this.databaseVersion);
   }
 
   public boolean getDiscovered() {
@@ -41,6 +46,12 @@ public abstract class LiveSQLDialect {
 
   // Version comparator
 
+  protected boolean versionIsAtLeast(final int major, final int minor, final int patch) {
+    return this.databaseMajorVersion > major //
+        || this.databaseMajorVersion == major && this.databaseMinorVersion > minor //
+        || this.databaseMajorVersion == major && this.databaseMinorVersion == minor && this.patchVersion >= patch;
+  }
+
   protected boolean versionIsAtLeast(final int major, final int minor) {
     return this.databaseMajorVersion > major
         || this.databaseMajorVersion == major && this.databaseMinorVersion >= minor;
@@ -52,6 +63,19 @@ public abstract class LiveSQLDialect {
 
   protected String renderVersion() {
     return "" + databaseMajorVersion + "." + databaseMinorVersion + " (" + databaseVersion + ")";
+  }
+
+  // Parsing
+
+  private int parsePatchVersion(final String databaseVersion) {
+    Pattern p = Pattern.compile("^[0-9]+\\.[0-9]+\\.([0-9]+).*$");
+    Matcher m = p.matcher(databaseVersion);
+    if (m.find()) {
+      String patch = m.group(1);
+      return Integer.parseInt(patch);
+    } else {
+      return 0;
+    }
   }
 
   // Renderers

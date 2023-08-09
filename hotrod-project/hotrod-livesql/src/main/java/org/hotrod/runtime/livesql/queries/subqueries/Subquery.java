@@ -19,12 +19,12 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.TableExpression;
 import org.hotrod.runtime.livesql.util.SubqueryUtil;
 
-public class Subquery<T> implements TableExpression {
+public class Subquery implements TableExpression {
 
   private String alias;
-  private ExecutableSelect<T> select;
+  private ExecutableSelect<?> select;
 
-  public Subquery(final String alias, final ExecutableSelect<T> select) {
+  public Subquery(final String alias, final ExecutableSelect<?> select) {
     this.alias = alias;
     this.select = select;
   }
@@ -35,7 +35,7 @@ public class Subquery<T> implements TableExpression {
     return alias;
   }
 
-  public ExecutableSelect<T> getSelect() {
+  public ExecutableSelect<?> getSelect() {
     return select;
   }
 

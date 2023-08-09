@@ -7,6 +7,8 @@ import org.hotrod.runtime.livesql.queries.select.CrossJoin;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.InnerJoin;
 import org.hotrod.runtime.livesql.queries.select.Join;
+import org.hotrod.runtime.livesql.queries.select.JoinLateral;
+import org.hotrod.runtime.livesql.queries.select.LeftJoinLateral;
 import org.hotrod.runtime.livesql.queries.select.LeftOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.NaturalFullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.NaturalInnerJoin;
@@ -41,9 +43,9 @@ public class MariaDBDialect extends LiveSQLDialect {
         if (join instanceof InnerJoin) {
           return "JOIN";
         } else if (join instanceof LeftOuterJoin) {
-          return "LEFT OUTER JOIN";
+          return "LEFT JOIN";
         } else if (join instanceof RightOuterJoin) {
-          return "RIGHT OUTER JOIN";
+          return "RIGHT JOIN";
         } else if (join instanceof FullOuterJoin) {
           throw new UnsupportedLiveSQLFeatureException("Full outer joins are not supported in MariaDB");
         } else if (join instanceof CrossJoin) {
@@ -51,16 +53,20 @@ public class MariaDBDialect extends LiveSQLDialect {
         } else if (join instanceof NaturalInnerJoin) {
           return "NATURAL JOIN";
         } else if (join instanceof NaturalLeftOuterJoin) {
-          return "NATURAL LEFT OUTER JOIN";
+          return "NATURAL LEFT JOIN";
         } else if (join instanceof NaturalRightOuterJoin) {
-          return "NATURAL RIGHT OUTER JOIN";
+          return "NATURAL RIGHT JOIN";
         } else if (join instanceof NaturalFullOuterJoin) {
-          return "NATURAL FULL OUTER JOIN";
+          return "NATURAL FULL JOIN";
+        } else if (join instanceof JoinLateral) {
+          throw new UnsupportedLiveSQLFeatureException("Lateral joins are not supported in the MariaDB database");
+        } else if (join instanceof LeftJoinLateral) {
+          throw new UnsupportedLiveSQLFeatureException("Lateral left joins are not supported in the MariaDB database");
         } else if (join instanceof UnionJoin) {
-          throw new UnsupportedLiveSQLFeatureException("Union joins are not supported in MariaDB database");
+          throw new UnsupportedLiveSQLFeatureException("Union joins are not supported in the MariaDB database");
         } else {
           throw new UnsupportedLiveSQLFeatureException(
-              "Invalid join type (" + join.getClass().getSimpleName() + ") in MariaDB database");
+              "Invalid join type (" + join.getClass().getSimpleName() + ") in the MariaDB database");
         }
       }
 

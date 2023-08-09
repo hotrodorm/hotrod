@@ -12,6 +12,7 @@ import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
+import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 
 public class SelectFromPhase<R> implements ExecutableSelect<R>, CombinableSelect<R> {
 
@@ -90,6 +91,16 @@ public class SelectFromPhase<R> implements ExecutableSelect<R>, CombinableSelect
 
   public SelectFromPhase<R> naturalFullJoin(final TableExpression tableViewOrSubquery) {
     this.select.addJoin(new NaturalFullOuterJoin(tableViewOrSubquery));
+    return this;
+  }
+
+  public SelectFromPhase<R> joinLateral(final Subquery subquery) {
+    this.select.addJoin(new JoinLateral(subquery));
+    return this;
+  }
+
+  public SelectFromPhase<R> leftJoinLateral(final Subquery subquery) {
+    this.select.addJoin(new LeftJoinLateral(subquery));
     return this;
   }
 

@@ -7,4 +7,8 @@ public abstract class JoinRenderer {
 
   public abstract String renderJoinKeywords(Join join) throws UnsupportedLiveSQLFeatureException;
 
+  public String renderOptionalOnPredicate(Join join) throws UnsupportedLiveSQLFeatureException {
+    return "";
+  }
+
 }

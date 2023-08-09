@@ -8,12 +8,12 @@ public class SubqueryByteArrayColumn extends ByteArrayExpression {
 
   // Properties
 
-  private Subquery<?> subquery;
+  private Subquery subquery;
   private String columnName;
 
   // Constructor
 
-  public SubqueryByteArrayColumn(final Subquery<?> subquery, final String columnName) {
+  public SubqueryByteArrayColumn(final Subquery subquery, final String columnName) {
     super(Expression.PRECEDENCE_COLUMN);
     this.subquery = subquery;
     this.columnName = columnName;

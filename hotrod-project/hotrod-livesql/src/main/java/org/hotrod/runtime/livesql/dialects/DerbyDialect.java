@@ -13,6 +13,8 @@ import org.hotrod.runtime.livesql.queries.select.CrossJoin;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.InnerJoin;
 import org.hotrod.runtime.livesql.queries.select.Join;
+import org.hotrod.runtime.livesql.queries.select.JoinLateral;
+import org.hotrod.runtime.livesql.queries.select.LeftJoinLateral;
 import org.hotrod.runtime.livesql.queries.select.LeftOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.NaturalFullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.NaturalInnerJoin;
@@ -52,7 +54,7 @@ public class DerbyDialect extends LiveSQLDialect {
         } else if (join instanceof RightOuterJoin) {
           return "RIGHT OUTER JOIN";
         } else if (join instanceof FullOuterJoin) {
-          throw new UnsupportedLiveSQLFeatureException("Full outer joins are not supported in Derby database");
+          throw new UnsupportedLiveSQLFeatureException("Full outer joins are not supported in the Derby database");
         } else if (join instanceof CrossJoin) {
           return "CROSS JOIN";
         } else if (join instanceof NaturalInnerJoin) {
@@ -63,8 +65,12 @@ public class DerbyDialect extends LiveSQLDialect {
           return "NATURAL RIGHT OUTER JOIN";
         } else if (join instanceof NaturalFullOuterJoin) {
           return "NATURAL FULL OUTER JOIN";
+        } else if (join instanceof JoinLateral) {
+          throw new UnsupportedLiveSQLFeatureException("Lateral joins are not supported in the Derby database");
+        } else if (join instanceof LeftJoinLateral) {
+          throw new UnsupportedLiveSQLFeatureException("Lateral left joins are not supported in the Derby database");
         } else if (join instanceof UnionJoin) {
-          throw new UnsupportedLiveSQLFeatureException("Union joins are not supported in Derby database");
+          throw new UnsupportedLiveSQLFeatureException("Union joins are not supported in the Derby database");
         } else {
           throw new UnsupportedLiveSQLFeatureException(
               "Invalid join type (" + join.getClass().getSimpleName() + ") in Derby database");

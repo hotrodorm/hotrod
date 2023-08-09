@@ -9,6 +9,8 @@ import org.hotrod.runtime.livesql.queries.select.CrossJoin;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.InnerJoin;
 import org.hotrod.runtime.livesql.queries.select.Join;
+import org.hotrod.runtime.livesql.queries.select.JoinLateral;
+import org.hotrod.runtime.livesql.queries.select.LeftJoinLateral;
 import org.hotrod.runtime.livesql.queries.select.LeftOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.NaturalFullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.NaturalInnerJoin;
@@ -58,6 +60,10 @@ public class HyperSQLDialect extends LiveSQLDialect {
           return "NATURAL RIGHT OUTER JOIN";
         } else if (join instanceof NaturalFullOuterJoin) {
           return "NATURAL FULL OUTER JOIN";
+        } else if (join instanceof JoinLateral) {
+          throw new UnsupportedLiveSQLFeatureException("Lateral joins are not supported in the HyperSQL database");
+        } else if (join instanceof LeftJoinLateral) {
+          throw new UnsupportedLiveSQLFeatureException("Lateral left joins are not supported in the HyperSQL database");
         } else if (join instanceof UnionJoin) {
           return "UNION JOIN";
         } else {

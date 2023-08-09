@@ -41,7 +41,7 @@ public class SubqueryUtil {
   }
 
   // Check for columns of a table or a view
-  public static Expression castPersistenceColumnAsSubqueryColumn(final Subquery<?> subquery, final ResultSetColumn c)
+  public static Expression castPersistenceColumnAsSubqueryColumn(final Subquery subquery, final ResultSetColumn c)
       throws IllegalArgumentException, IllegalAccessException {
     try {
       NumberColumn nc = (NumberColumn) c;
@@ -84,7 +84,7 @@ public class SubqueryUtil {
   }
 
   // check for subquery columns
-  public static Expression castSubqueryColumnAsExternalLevelSubqueryColumn(final Subquery<?> subquery,
+  public static Expression castSubqueryColumnAsExternalLevelSubqueryColumn(final Subquery subquery,
       final ResultSetColumn c) throws IllegalArgumentException, IllegalAccessException {
     try {
       SubqueryNumberColumn nc = (SubqueryNumberColumn) c;
@@ -126,7 +126,7 @@ public class SubqueryUtil {
   }
 
   // check for subquery columns
-  public static Expression castSubqueryColumnAsExternalLevelSubqueryColumn(final Subquery<?> subquery,
+  public static Expression castSubqueryColumnAsExternalLevelSubqueryColumn(final Subquery subquery,
       final ResultSetColumn c, final String alias) throws IllegalArgumentException, IllegalAccessException {
     try {
       @SuppressWarnings("unused")
@@ -175,7 +175,7 @@ public class SubqueryUtil {
   }
 
   // check for general expressions
-  public static Expression castExpressionAsSubqueryColumn(final Subquery<?> subquery, final Expression c,
+  public static Expression castExpressionAsSubqueryColumn(final Subquery subquery, final Expression c,
       final String alias) throws IllegalArgumentException, IllegalAccessException {
     try {
       @SuppressWarnings("unused")

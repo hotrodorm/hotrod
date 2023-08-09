@@ -14,3 +14,27 @@ LiveSQL:
 - sql.enclose()
 - Parameterize integers.
 
+
+
+LiveSQL experts names:
+----------------------
+guru
+master
+rover
+rogue
+expert
+hero
+ace
+champion
+paladin
+nomad
+roamer
+rebel
+heretic
+maverick
+agent
+spy
+navigator
+specialist
+scholar
+pundit

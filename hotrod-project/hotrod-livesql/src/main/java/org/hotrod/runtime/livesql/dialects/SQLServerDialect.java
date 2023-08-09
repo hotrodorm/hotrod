@@ -14,6 +14,8 @@ import org.hotrod.runtime.livesql.queries.select.CrossJoin;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.InnerJoin;
 import org.hotrod.runtime.livesql.queries.select.Join;
+import org.hotrod.runtime.livesql.queries.select.JoinLateral;
+import org.hotrod.runtime.livesql.queries.select.LeftJoinLateral;
 import org.hotrod.runtime.livesql.queries.select.LeftOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.NaturalFullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.NaturalInnerJoin;
@@ -49,27 +51,46 @@ public class SQLServerDialect extends LiveSQLDialect {
         if (join instanceof InnerJoin) {
           return "JOIN";
         } else if (join instanceof LeftOuterJoin) {
-          return "LEFT OUTER JOIN";
+          return "LEFT JOIN";
         } else if (join instanceof RightOuterJoin) {
-          return "RIGHT OUTER JOIN";
+          return "RIGHT JOIN";
         } else if (join instanceof FullOuterJoin) {
-          return "FULL OUTER JOIN";
+          return "FULL JOIN";
         } else if (join instanceof CrossJoin) {
           return "CROSS JOIN";
         } else if (join instanceof NaturalInnerJoin) {
           return "NATURAL JOIN";
         } else if (join instanceof NaturalLeftOuterJoin) {
-          return "NATURAL LEFT OUTER JOIN";
+          return "NATURAL LEFT JOIN";
         } else if (join instanceof NaturalRightOuterJoin) {
-          return "NATURAL RIGHT OUTER JOIN";
+          return "NATURAL RIGHT JOIN";
         } else if (join instanceof NaturalFullOuterJoin) {
-          return "NATURAL FULL OUTER JOIN";
+          return "NATURAL FULL JOIN";
+        } else if (join instanceof JoinLateral) {
+          if (versionIsAtLeast(12, 0)) {
+            return "CROSS APPLY";
+          }
+          throw new UnsupportedLiveSQLFeatureException(
+              "LiveSQL supports lateral joins in the SQL Server database starting in version 2014, "
+                  + "but the current version is reported as " + renderVersion());
+        } else if (join instanceof LeftJoinLateral) {
+          if (versionIsAtLeast(12, 0)) {
+            return "OUTER APPLY";
+          }
+          throw new UnsupportedLiveSQLFeatureException(
+              "LiveSQL supports lateral joins in the SQL Server database starting in version 2014, "
+                  + "but the current version is reported as " + renderVersion());
         } else if (join instanceof UnionJoin) {
           throw new UnsupportedLiveSQLFeatureException("Union joins are not supported in SQL Server database");
         } else {
           throw new UnsupportedLiveSQLFeatureException(
               "Invalid join type (" + join.getClass().getSimpleName() + ") in SQL Server database");
         }
+      }
+
+      @Override
+      public String renderOptionalOnPredicate(final Join join) throws UnsupportedLiveSQLFeatureException {
+        return "";
       }
 
     };
@@ -109,7 +130,7 @@ public class SQLServerDialect extends LiveSQLDialect {
           w.write("\nOFFSET 0 ROWS");
         }
         if (limit != null) {
-          w.write("FETCH NEXT " + limit + " ROWS ONLY");
+          w.write("\nFETCH NEXT " + limit + " ROWS ONLY");
         }
       }
 
