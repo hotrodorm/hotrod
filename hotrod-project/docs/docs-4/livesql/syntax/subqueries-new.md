@@ -48,7 +48,7 @@ allowed by the SQL Standard.
 
 The following examples illustrate the different types of subqueries. Each one includes the LiveSQL code and the corresponding SQL query that is run in the database.
 
-### IN/NOT IN Operators
+### 1. IN/NOT IN Operators
 
 The `[NOT] IN` operator can written in LiveSQL as:
 
@@ -81,7 +81,7 @@ WHERE a.branch_id not in (
 ------------------
 ```
 
-### EXISTS/NOT EXISTS Operators
+### 2. EXISTS/NOT EXISTS Operators
 
 The `[NOT] EXISTS` operator can written in LiveSQL as:
 
@@ -115,7 +115,7 @@ WHERE not exists (
 ------------------
 ```
 
-### Assymmetric Operators
+### 3. Assymmetric Operators
 
 Assymmetric operators can written in LiveSQL as:
 
@@ -154,11 +154,11 @@ WHERE i.unpaid_balance > any (
 ------------------
 ```
 
-### Scalar Subqueries
+### 4. Scalar Subqueries
 
-TBD
+*Pending*
 
-### Table Expressions - Basic Example
+### 5. Table Expressions - Basic Example
 
 LiveSQL uses the `Subquery` class to implement table expressions:
 
@@ -208,13 +208,11 @@ WHERE x.total > #{p2}
 ------------------
 ```
 
-### Table Expressions - Nested Table Expressions
+### 6. Table Expressions - Nested Table Expressions
 
+*Pending*
 
-TBD
-
-
-### Table Expressions - Joining Table Expressions
+### 7. Table Expressions - Joining Table Expressions
 
 Two or more table expressions can be joined following the syntax:
 
@@ -272,7 +270,7 @@ WHERE y."accountId" is null
 ------------------
 ```
 
-### Common Table Expressions (CTEs)
+### 8. Common Table Expressions (CTEs)
 
 The previous example can also be written with CTEs, as in:
 
@@ -333,11 +331,11 @@ WHERE y.aid is null
 ------------------
 ```
 
-### Recursive Common Table Expressions (CTEs)
+### 9. Recursive Common Table Expressions (CTEs)
 
-TBD
+*Pending*
 
-### Lateral Joins
+### 10. Lateral Joins
 
 Lateral joins &mdash; inner an outer ones &mdash; can be written as:
 
