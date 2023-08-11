@@ -46,7 +46,7 @@ allowed by the SQL Standard.
 
 ## Examples
 
-The following examples illustrate the different types of subqueries. They include the LiveSQL code and the corresponding LiveSQL generated SQL query that is run in the database.
+The following examples illustrate the different types of subqueries. Each one includes the LiveSQL code and the corresponding SQL query that is run in the database.
 
 ### IN/NOT IN Operators
 
