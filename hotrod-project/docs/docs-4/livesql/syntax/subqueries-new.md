@@ -99,7 +99,6 @@ ExecutableSelect<Row> q = sql.select()
 LiveSQL converts it behind the scenes to (in PostgreSQL's dialect):
 
 ```sql
---- SQL ----------
 SELECT
   a.id as id, 
   a.branch_id as "branchId"
@@ -135,7 +134,6 @@ LiveSQL converts it behind the scenes to (in PostgreSQL's dialect):
 
 
 ```sql
---- SQL ----------
 SELECT
   i.id as id, 
   i.account_id as "accountId", 
