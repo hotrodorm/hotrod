@@ -113,8 +113,8 @@ hand, will be processed in the Java application and only the result will be sent
 
 | SQL Operator | Description | In LiveSQL |
 | -- | -- | -- |
-| a IS NULL | IS NULL | `<a>.isNull(<a>)` |
-| a IS NOT NULL | IS NOT NULL | `<a>.isNotNull(<a>)` |
+| a IS NULL | IS NULL | `<a>.isNull()` |
+| a IS NOT NULL | IS NOT NULL | `<a>.isNotNull()` |
 | a LIKE b | LIKE | `<a>.like(<b>)` |
 | a NOT LIKE b | NOT LIKE | `<a>.notLike(<b>)` |
 | a BETWEEN b AND c | BETWEEN | `<a>.between(<b>, <c>)` |
@@ -124,7 +124,7 @@ hand, will be processed in the Java application and only the result will be sent
 | a [^1] IN (b, c, d, ...) | IN (list) | `<a>.in(<b>, <c>, <d>, ...)` |
 | a [^1] NOT IN (b, c, d, ...) | NOT IN (list) | `<a>.notIn(<b>, <c>, <d>, ...)` |
 | EXISTS (*subquery*) | EXISTS (subquery) | `sql.exists(sql.select()...)` |
-| NOT EXISTS (*subquery*) | NOT EXISTS (subquery) | `sql.exists(sql.select()...)` |
+| NOT EXISTS (*subquery*) | NOT EXISTS (subquery) | `sql.notExists(sql.select()...)` |
 | CASE WHEN a THEN b END | CASE | `sql.caseWhen(<a>, <b>).end()` |
 | CASE WHEN a THEN b ELSE e END | CASE | `sql.caseWhen(<a>, <b>).elseValue(e).end()` |
 | CASE WHEN a THEN b WHEN c THEN d ELSE e END | CASE | `sql.caseWhen(<a>, <b>).when(<c>, <d>).elseValue(e).end()` |
@@ -133,7 +133,7 @@ hand, will be processed in the Java application and only the result will be sent
 
 | SQL Operator | Description | In LiveSQL |
 | -- | -- | -- |
-| a IN (subquery) | IN (subquery) | `<a>.in(sql.select()...)` |
+| a IN (*subquery*) | IN (*subquery*) | `<a>.in(sql.select()...)` |
 | a NOT IN (*subquery*) | NOT IN (*subquery*) | `<a>.notIn(sql.select()...)` |
 | a = ANY (*subquery*) | a = ANY (*subquery*) | `<a>.eqAny(sql.select()...)` |
 | a <> ANY (*subquery*) | a <> ANY (*subquery*) | `<a>.neAny(sql.select()...)` |
