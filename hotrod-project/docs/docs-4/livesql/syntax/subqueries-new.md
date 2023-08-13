@@ -36,7 +36,7 @@ allowed by the SQL Standard.
 
 - **Common Table Expressions (CTEs)**: Common Table Expressions greatly simplify the use and reuse of table expressions by naming them in advance, and using them later. Plain and recursive CTEs  are implemented.
 
-- **Lateral Joins**: Inner and outer lateral joins are implemented. Since not all database engine supports them LiveSQL limits its use to specific engines and specific versions of them. In short, LiveSQL support lateral joins for the following databases:
+- **Lateral Joins**: Inner and outer lateral joins are implemented. Since not all database engines support them LiveSQL limits its use to specific engines and specific versions of them. In short, LiveSQL support lateral joins for the following databases:
     - Oracle 12c1 or newer
     - DB2 LUW 10.5 or newer
     - PostgreSQL 9.3 or newer
@@ -50,7 +50,19 @@ The following examples illustrate the different types of subqueries. Each one in
 
 ### 1. IN/NOT IN Operators
 
-The `[NOT] IN` operator can written in LiveSQL as:
+The following query uses the `NOT IN` operator:
+
+```sql
+SELECT *
+FROM public.account a
+WHERE a.branch_id not in (
+  SELECT b.id
+  FROM public.branch b
+  WHERE b.region = 'SOUTH'
+)
+```
+
+Using the method `.notIn(<subquery>)` it can be written in LiveSQL as:
 
 ```java
 AccountTable a = AccountDAO.newTable("a");
@@ -63,27 +75,19 @@ ExecutableSelect<Row> q = sql.select()
     ));
 ```
 
-LiveSQL converts it behind the scenes to (in PostgreSQL's dialect):
-
-```sql
-SELECT
-  a.id as id,
-  a.branch_id as "branchId"
-FROM public.account a
-WHERE a.branch_id not in (
-  SELECT
-    b.id as id
-  FROM public.branch b
-  WHERE b.region = #{p1}
-)
---- Parameters ---
- * p1 (java.lang.String, length=5): SOUTH
-------------------
-```
-
 ### 2. EXISTS/NOT EXISTS Operators
 
-The `[NOT] EXISTS` operator can written in LiveSQL as:
+The following query uses the `NOT EXISTS` operator:
+
+```sql
+SELECT *
+FROM public.account a
+WHERE not exists (
+  SELECT 1 FROM public.branch b WHERE b.id = a.branch_id and b.region = 'SOUTH'
+)
+```
+
+Using the method `.notExists(<subquery>)` it can be written in LiveSQL as:
 
 ```java
 AccountTable a = AccountDAO.newTable("a");
@@ -94,25 +98,6 @@ ExecutableSelect<Row> q = sql.select()
     .where(sql.notExists( 
         sql.select(sql.val(1)).from(b).where(b.id.eq(a.branchId).and(b.region.eq("SOUTH"))) 
     ));
-```
-
-LiveSQL converts it behind the scenes to (in PostgreSQL's dialect):
-
-```sql
-SELECT
-  a.id as id, 
-  a.branch_id as "branchId"
-FROM public.account a
-WHERE not exists (
-  SELECT
-    #{p1}
-  FROM public.branch b
-  WHERE b.id = a.branch_id and b.region = #{p2}
-)
---- Parameters ---
- * p1 (java.lang.Integer): 1
- * p2 (java.lang.String, length=5): SOUTH
-------------------
 ```
 
 ### 3. Assymmetric Operators
