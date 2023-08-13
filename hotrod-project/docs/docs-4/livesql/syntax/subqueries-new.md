@@ -6,6 +6,8 @@ covers most of the common and heavily syntax for subqueries.
 
 ## Overview
 
+The implementation of SQL subqueries changes dramatically in version 4.1.
+
 ### LiveSQL 3.0
 
 LiveSQL implements subqueries since version 3.0, although limited to a few specific cases. They are available for:
@@ -54,11 +56,9 @@ The following query uses the `NOT IN` operator:
 
 ```sql
 SELECT *
-FROM public.account a
-WHERE a.branch_id not in (
-  SELECT b.id
-  FROM public.branch b
-  WHERE b.region = 'SOUTH'
+FROM public.account
+WHERE branch_id not in (
+  SELECT id FROM public.branch WHERE region = 'SOUTH'
 )
 ```
 
@@ -102,7 +102,17 @@ ExecutableSelect<Row> q = sql.select()
 
 ### 3. Assymmetric Operators
 
-Assymmetric operators can written in LiveSQL as:
+The following query uses the `> ANY` operator:
+
+```sql
+SELECT *
+FROM public.invoice i
+WHERE i.unpaid_balance > ANY (
+  SELECT x.amount * 0.5 FROM public.invoice x WHERE x.account_id = i.account_id
+)
+```
+
+Using the method `.gtAny(<subquery>)` it can be written in LiveSQL as:
 
 ```java
 InvoiceTable i = InvoiceDAO.newTable("i");
@@ -113,30 +123,6 @@ ExecutableSelect<Row> q = sql.select()
     .where(i.unpaidBalance.gtAny( 
         sql.select(x.amount.mult(0.5)).from(x).where(x.accountId.eq(i.accountId)) 
     ));
-```
-
-LiveSQL converts it behind the scenes to (in PostgreSQL's dialect):
-
-
-```sql
-SELECT
-  i.id as id, 
-  i.account_id as "accountId", 
-  i.amount as amount, 
-  i.order_date as "orderDate", 
-  i.type as type, 
-  i.unpaid_balance as "unpaidBalance", 
-  i.status as status
-FROM public.invoice i
-WHERE i.unpaid_balance > any (
-  SELECT
-    x.amount * #{p1}
-  FROM public.invoice x
-  WHERE x.account_id = i.account_id
-)
---- Parameters ---
- * p1 (java.lang.Double): 0.5
-------------------
 ```
 
 ### 4. Scalar Subqueries
