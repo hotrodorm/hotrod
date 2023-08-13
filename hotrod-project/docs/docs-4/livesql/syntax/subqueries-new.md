@@ -56,9 +56,9 @@ The following query uses the `NOT IN` operator:
 
 ```sql
 SELECT *
-FROM public.account
+FROM account
 WHERE branch_id not in (
-  SELECT id FROM public.branch WHERE region = 'SOUTH'
+  SELECT id FROM branch WHERE region = 'SOUTH'
 )
 ```
 
@@ -81,9 +81,9 @@ The following query uses the `NOT EXISTS` operator:
 
 ```sql
 SELECT *
-FROM public.account a
+FROM account a
 WHERE not exists (
-  SELECT 1 FROM public.branch b WHERE b.id = a.branch_id and b.region = 'SOUTH'
+  SELECT 1 FROM branch b WHERE b.id = a.branch_id and b.region = 'SOUTH'
 )
 ```
 
@@ -106,9 +106,9 @@ The following query uses the `> ANY` operator:
 
 ```sql
 SELECT *
-FROM public.invoice i
+FROM invoice i
 WHERE i.unpaid_balance > ANY (
-  SELECT x.amount * 0.5 FROM public.invoice x WHERE x.account_id = i.account_id
+  SELECT x.amount * 0.5 FROM invoice x WHERE x.account_id = i.account_id
 )
 ```
 
