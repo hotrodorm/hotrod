@@ -13,8 +13,8 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
-import app.daos.primitives.AbstractBranchVO;
-import app.daos.BranchVO;
+import app.daos.primitives.AbstractProductVO;
+import app.daos.ProductVO;
 
 import java.lang.Override;
 import java.util.Map;
@@ -49,7 +49,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 @Component
-public class BranchDAO implements Serializable, ApplicationContextAware {
+public class ProductDAO implements Serializable, ApplicationContextAware {
 
   private static final long serialVersionUID = 1L;
 
@@ -72,21 +72,21 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   // Row Parser
 
-  public app.daos.BranchVO parseRow(Map<String, Object> m) {
+  public app.daos.ProductVO parseRow(Map<String, Object> m) {
     return parseRow(m, null, null);
   }
 
-  public app.daos.BranchVO parseRow(Map<String, Object> m, String prefix) {
+  public app.daos.ProductVO parseRow(Map<String, Object> m, String prefix) {
     return parseRow(m, prefix, null);
   }
 
-  public app.daos.BranchVO parseRow(Map<String, Object> m, String prefix, String suffix) {
-    app.daos.BranchVO mo = this.applicationContext.getBean(app.daos.BranchVO.class);
+  public app.daos.ProductVO parseRow(Map<String, Object> m, String prefix, String suffix) {
+    app.daos.ProductVO mo = this.applicationContext.getBean(app.daos.ProductVO.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
     mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
-    mo.setRegion((java.lang.String) m.get(p + "region" + s));
-    mo.setIsVip((java.lang.Boolean) m.get(p + "isVip" + s));
+    mo.setType((java.lang.String) m.get(p + "type" + s));
+    mo.setShipping(CastUtil.toInteger((Number) m.get(p + "shipping" + s)));
     return mo;
   }
 
@@ -96,26 +96,26 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<app.daos.BranchVO> select(final app.daos.primitives.AbstractBranchVO example, final BranchOrderBy... orderBies)
+  public List<app.daos.ProductVO> select(final app.daos.primitives.AbstractProductVO example, final ProductOrderBy... orderBies)
       {
-    DaoWithOrder<app.daos.primitives.AbstractBranchVO, BranchOrderBy> dwo = //
+    DaoWithOrder<app.daos.primitives.AbstractProductVO, ProductOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
-    return this.sqlSession.selectList("mappers.branch.selectByExample", dwo);
+    return this.sqlSession.selectList("mappers.product.selectByExample", dwo);
   }
 
-  public Cursor<app.daos.BranchVO> selectCursor(final app.daos.primitives.AbstractBranchVO example, final BranchOrderBy... orderBies)
+  public Cursor<app.daos.ProductVO> selectCursor(final app.daos.primitives.AbstractProductVO example, final ProductOrderBy... orderBies)
       {
-    DaoWithOrder<app.daos.primitives.AbstractBranchVO, BranchOrderBy> dwo = //
+    DaoWithOrder<app.daos.primitives.AbstractProductVO, ProductOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
-    return new MyBatisCursor<app.daos.BranchVO>(this.sqlSession.selectCursor("mappers.branch.selectByExample", dwo));
+    return new MyBatisCursor<app.daos.ProductVO>(this.sqlSession.selectCursor("mappers.product.selectByExample", dwo));
   }
 
   // select by criteria
 
-  public CriteriaWherePhase<app.daos.BranchVO> select(final BranchDAO.BranchTable from,
+  public CriteriaWherePhase<app.daos.ProductVO> select(final ProductDAO.ProductTable from,
       final Predicate predicate) {
-    return new CriteriaWherePhase<app.daos.BranchVO>(from, this.liveSQLDialect, this.sqlSession,
-        predicate, "mappers.branch.selectByCriteria");
+    return new CriteriaWherePhase<app.daos.ProductVO>(from, this.liveSQLDialect, this.sqlSession,
+        predicate, "mappers.product.selectByCriteria");
   }
 
   // select parent(s) by FKs: no imported keys found -- skipped
@@ -124,13 +124,13 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public app.daos.BranchVO insert(final app.daos.primitives.AbstractBranchVO vo) {
-    String id = "mappers.branch.insert";
+  public app.daos.ProductVO insert(final app.daos.primitives.AbstractProductVO vo) {
+    String id = "mappers.product.insert";
     this.sqlSession.insert(id, vo);
-    app.daos.BranchVO mo = new app.daos.BranchVO();
+    app.daos.ProductVO mo = new app.daos.ProductVO();
     mo.setId(vo.getId());
-    mo.setRegion(vo.getRegion());
-    mo.setIsVip(vo.getIsVip());
+    mo.setType(vo.getType());
+    mo.setShipping(vo.getShipping());
     return mo;
   }
 
@@ -140,55 +140,55 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int update(final app.daos.primitives.AbstractBranchVO example, final app.daos.primitives.AbstractBranchVO updateValues) {
-    UpdateByExampleDao<app.daos.primitives.AbstractBranchVO> fvd = //
-      new UpdateByExampleDao<app.daos.primitives.AbstractBranchVO>(example, updateValues);
-    return this.sqlSession.update("mappers.branch.updateByExample", fvd);
+  public int update(final app.daos.primitives.AbstractProductVO example, final app.daos.primitives.AbstractProductVO updateValues) {
+    UpdateByExampleDao<app.daos.primitives.AbstractProductVO> fvd = //
+      new UpdateByExampleDao<app.daos.primitives.AbstractProductVO>(example, updateValues);
+    return this.sqlSession.update("mappers.product.updateByExample", fvd);
   }
 
   // update by criteria
 
-  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractBranchVO updateValues, final BranchDAO.BranchTable tableOrView, final Predicate predicate) {
+  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractProductVO updateValues, final ProductDAO.ProductTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
     if (updateValues.getId() != null) values.put("id", updateValues.getId());
-    if (updateValues.getRegion() != null) values.put("region", updateValues.getRegion());
-    if (updateValues.getIsVip() != null) values.put("is_vip", updateValues.getIsVip());
+    if (updateValues.getType() != null) values.put("type", updateValues.getType());
+    if (updateValues.getShipping() != null) values.put("shipping", updateValues.getShipping());
     return new UpdateSetCompletePhase(tableOrView, this.liveSQLDialect, this.sqlSession,
-      "mappers.branch.updateByCriteria", predicate, values);
+      "mappers.product.updateByCriteria", predicate, values);
   }
 
 
   // delete by example
 
-  public int delete(final app.daos.primitives.AbstractBranchVO example) {
-    return this.sqlSession.delete("mappers.branch.deleteByExample", example);
+  public int delete(final app.daos.primitives.AbstractProductVO example) {
+    return this.sqlSession.delete("mappers.product.deleteByExample", example);
   }
 
   // delete by criteria
 
-  public DeleteWherePhase delete(final BranchDAO.BranchTable from, final Predicate predicate) {
+  public DeleteWherePhase delete(final ProductDAO.ProductTable from, final Predicate predicate) {
     return new DeleteWherePhase(from, this.liveSQLDialect, this.sqlSession,
-      "mappers.branch.deleteByCriteria", predicate);
+      "mappers.product.deleteByCriteria", predicate);
   }
 
   // DAO ordering
 
-  public enum BranchOrderBy implements OrderBy {
+  public enum ProductOrderBy implements OrderBy {
 
-    ID("public.branch", "id", true), //
-    ID$DESC("public.branch", "id", false), //
-    REGION("public.branch", "region", true), //
-    REGION$DESC("public.branch", "region", false), //
-    REGION$CASEINSENSITIVE("public.branch", "lower(region)", true), //
-    REGION$CASEINSENSITIVE_STABLE_FORWARD("public.branch", "lower(region), region", true), //
-    REGION$CASEINSENSITIVE_STABLE_REVERSE("public.branch", "lower(region), region", false), //
-    REGION$DESC_CASEINSENSITIVE("public.branch", "lower(region)", false), //
-    REGION$DESC_CASEINSENSITIVE_STABLE_FORWARD("public.branch", "lower(region), region", false), //
-    REGION$DESC_CASEINSENSITIVE_STABLE_REVERSE("public.branch", "lower(region), region", true), //
-    IS_VIP("public.branch", "is_vip", true), //
-    IS_VIP$DESC("public.branch", "is_vip", false);
+    ID("public.product", "id", true), //
+    ID$DESC("public.product", "id", false), //
+    TYPE("public.product", "type", true), //
+    TYPE$DESC("public.product", "type", false), //
+    TYPE$CASEINSENSITIVE("public.product", "lower(type)", true), //
+    TYPE$CASEINSENSITIVE_STABLE_FORWARD("public.product", "lower(type), type", true), //
+    TYPE$CASEINSENSITIVE_STABLE_REVERSE("public.product", "lower(type), type", false), //
+    TYPE$DESC_CASEINSENSITIVE("public.product", "lower(type)", false), //
+    TYPE$DESC_CASEINSENSITIVE_STABLE_FORWARD("public.product", "lower(type), type", false), //
+    TYPE$DESC_CASEINSENSITIVE_STABLE_REVERSE("public.product", "lower(type), type", true), //
+    SHIPPING("public.product", "shipping", true), //
+    SHIPPING$DESC("public.product", "shipping", false);
 
-    private BranchOrderBy(final String tableName, final String columnName,
+    private ProductOrderBy(final String tableName, final String columnName,
         boolean ascending) {
       this.tableName = tableName;
       this.columnName = columnName;
@@ -215,37 +215,37 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   // Database Table metadata
 
-  public static BranchTable newTable() {
-    return new BranchTable();
+  public static ProductTable newTable() {
+    return new ProductTable();
   }
 
-  public static BranchTable newTable(final String alias) {
-    return new BranchTable(alias);
+  public static ProductTable newTable(final String alias) {
+    return new ProductTable(alias);
   }
 
-  public static class BranchTable extends Table {
+  public static class ProductTable extends Table {
 
     // Properties
 
     public NumberColumn id;
-    public StringColumn region;
-    public BooleanColumn isVip;
+    public StringColumn type;
+    public NumberColumn shipping;
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this.id, this.region, this.isVip);
+      return new AllColumns(this.id, this.type, this.shipping);
     }
 
     // Constructors
 
-    BranchTable() {
-      super(null, "public", "branch", "Table", null);
+    ProductTable() {
+      super(null, "public", "product", "Table", null);
       initialize();
     }
 
-    BranchTable(final String alias) {
-      super(null, "public", "branch", "Table", alias);
+    ProductTable(final String alias) {
+      super(null, "public", "product", "Table", alias);
       initialize();
     }
 
@@ -255,10 +255,10 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
       super.columns = new ArrayList<>();
       this.id = new NumberColumn(this, "id", "id", "int4", 10, 0);
       super.columns.add(this.id);
-      this.region = new StringColumn(this, "region", "region", "varchar", 10, 0);
-      super.columns.add(this.region);
-      this.isVip = new BooleanColumn(this, "is_vip", "isVip", "bool", 1, 0);
-      super.columns.add(this.isVip);
+      this.type = new StringColumn(this, "type", "type", "varchar", 6, 0);
+      super.columns.add(this.type);
+      this.shipping = new NumberColumn(this, "shipping", "shipping", "int4", 10, 0);
+      super.columns.add(this.shipping);
     }
 
   }

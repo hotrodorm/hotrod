@@ -5,15 +5,15 @@ package app.daos.primitives;
 import java.io.Serializable;
 import org.hotrod.runtime.json.*;
 
-public class AbstractBranchVO implements Serializable {
+public class AbstractProductVO implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
   // VO Properties (table columns)
 
   protected java.lang.Integer id = null;
-  protected java.lang.String region = null;
-  protected java.lang.Boolean isVip = null;
+  protected java.lang.String type = null;
+  protected java.lang.Integer shipping = null;
 
   // getters & setters
 
@@ -25,20 +25,20 @@ public class AbstractBranchVO implements Serializable {
     this.id = id;
   }
 
-  public java.lang.String getRegion() {
-    return this.region;
+  public java.lang.String getType() {
+    return this.type;
   }
 
-  public void setRegion(final java.lang.String region) {
-    this.region = region;
+  public void setType(final java.lang.String type) {
+    this.type = type;
   }
 
-  public java.lang.Boolean getIsVip() {
-    return this.isVip;
+  public java.lang.Integer getShipping() {
+    return this.shipping;
   }
 
-  public void setIsVip(final java.lang.Boolean isVip) {
-    this.isVip = isVip;
+  public void setShipping(final java.lang.Integer shipping) {
+    this.shipping = shipping;
   }
 
   // to string
@@ -47,8 +47,8 @@ public class AbstractBranchVO implements Serializable {
     java.lang.StringBuilder sb = new java.lang.StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- id=" + this.id + "\n");
-    sb.append("- region=" + this.region + "\n");
-    sb.append("- isVip=" + this.isVip);
+    sb.append("- type=" + this.type + "\n");
+    sb.append("- shipping=" + this.shipping);
     return sb.toString();
   }
 
@@ -57,8 +57,8 @@ public class AbstractBranchVO implements Serializable {
   public String toJSON() {
     JSONObject obj = new JSONObject();
     obj.addProperty("id", this.id);
-    obj.addProperty("region", this.region);
-    obj.addProperty("isVip", this.isVip);
+    obj.addProperty("type", this.type);
+    obj.addProperty("shipping", this.shipping);
     return obj.render();
   }
 

@@ -85,22 +85,18 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
     mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
+    mo.setAccountId(CastUtil.toInteger((Number) m.get(p + "accountId" + s)));
     mo.setAmount(CastUtil.toInteger((Number) m.get(p + "amount" + s)));
-    mo.setBranchId(CastUtil.toInteger((Number) m.get(p + "branchId" + s)));
+    mo.setOrderDate((java.sql.Date) m.get(p + "orderDate" + s));
+    mo.setType((java.lang.String) m.get(p + "type" + s));
+    mo.setUnpaidBalance(CastUtil.toInteger((Number) m.get(p + "unpaidBalance" + s)));
+    mo.setStatus((java.lang.String) m.get(p + "status" + s));
     return mo;
   }
 
-  // select by primary key
+  // no select by PK generated, since the table does not have a PK.
 
-  public app.daos.InvoiceVO select(final java.lang.Integer id) {
-    if (id == null)
-      return null;
-    app.daos.InvoiceVO vo = new app.daos.InvoiceVO();
-    vo.setId(id);
-    return this.sqlSession.selectOne("mappers.invoice.selectByPK", vo);
-  }
-
-  // select by unique indexes: no unique indexes found (besides the PK) -- skipped
+  // select by unique indexes: no unique indexes found -- skipped
 
   // select by example
 
@@ -137,27 +133,18 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     this.sqlSession.insert(id, vo);
     app.daos.InvoiceVO mo = new app.daos.InvoiceVO();
     mo.setId(vo.getId());
+    mo.setAccountId(vo.getAccountId());
     mo.setAmount(vo.getAmount());
-    mo.setBranchId(vo.getBranchId());
+    mo.setOrderDate(vo.getOrderDate());
+    mo.setType(vo.getType());
+    mo.setUnpaidBalance(vo.getUnpaidBalance());
+    mo.setStatus(vo.getStatus());
     return mo;
   }
 
-  // update by PK
+  // no update by PK generated, since the table does not have a PK.
 
-  public int update(final app.daos.InvoiceVO vo) {
-    if (vo.id == null) return 0;
-    return this.sqlSession.update("mappers.invoice.updateByPK", vo);
-  }
-
-  // delete by PK
-
-  public int delete(final java.lang.Integer id) {
-    if (id == null) return 0;
-    app.daos.InvoiceVO vo = new app.daos.InvoiceVO();
-    vo.setId(id);
-    if (vo.id == null) return 0;
-    return this.sqlSession.delete("mappers.invoice.deleteByPK", vo);
-  }
+  // no delete by PK generated, since the table does not have a PK.
 
   // update by example
 
@@ -172,8 +159,12 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   public UpdateSetCompletePhase update(final app.daos.primitives.AbstractInvoiceVO updateValues, final InvoiceDAO.InvoiceTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
     if (updateValues.getId() != null) values.put("id", updateValues.getId());
+    if (updateValues.getAccountId() != null) values.put("account_id", updateValues.getAccountId());
     if (updateValues.getAmount() != null) values.put("amount", updateValues.getAmount());
-    if (updateValues.getBranchId() != null) values.put("branch_id", updateValues.getBranchId());
+    if (updateValues.getOrderDate() != null) values.put("order_date", updateValues.getOrderDate());
+    if (updateValues.getType() != null) values.put("type", updateValues.getType());
+    if (updateValues.getUnpaidBalance() != null) values.put("unpaid_balance", updateValues.getUnpaidBalance());
+    if (updateValues.getStatus() != null) values.put("status", updateValues.getStatus());
     return new UpdateSetCompletePhase(tableOrView, this.liveSQLDialect, this.sqlSession,
       "mappers.invoice.updateByCriteria", predicate, values);
   }
@@ -196,12 +187,32 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
   public enum InvoiceOrderBy implements OrderBy {
 
-    ID("hotrod.invoice", "id", true), //
-    ID$DESC("hotrod.invoice", "id", false), //
-    AMOUNT("hotrod.invoice", "amount", true), //
-    AMOUNT$DESC("hotrod.invoice", "amount", false), //
-    BRANCH_ID("hotrod.invoice", "branch_id", true), //
-    BRANCH_ID$DESC("hotrod.invoice", "branch_id", false);
+    ID("public.invoice", "id", true), //
+    ID$DESC("public.invoice", "id", false), //
+    ACCOUNT_ID("public.invoice", "account_id", true), //
+    ACCOUNT_ID$DESC("public.invoice", "account_id", false), //
+    AMOUNT("public.invoice", "amount", true), //
+    AMOUNT$DESC("public.invoice", "amount", false), //
+    ORDER_DATE("public.invoice", "order_date", true), //
+    ORDER_DATE$DESC("public.invoice", "order_date", false), //
+    TYPE("public.invoice", "type", true), //
+    TYPE$DESC("public.invoice", "type", false), //
+    TYPE$CASEINSENSITIVE("public.invoice", "lower(type)", true), //
+    TYPE$CASEINSENSITIVE_STABLE_FORWARD("public.invoice", "lower(type), type", true), //
+    TYPE$CASEINSENSITIVE_STABLE_REVERSE("public.invoice", "lower(type), type", false), //
+    TYPE$DESC_CASEINSENSITIVE("public.invoice", "lower(type)", false), //
+    TYPE$DESC_CASEINSENSITIVE_STABLE_FORWARD("public.invoice", "lower(type), type", false), //
+    TYPE$DESC_CASEINSENSITIVE_STABLE_REVERSE("public.invoice", "lower(type), type", true), //
+    UNPAID_BALANCE("public.invoice", "unpaid_balance", true), //
+    UNPAID_BALANCE$DESC("public.invoice", "unpaid_balance", false), //
+    STATUS("public.invoice", "status", true), //
+    STATUS$DESC("public.invoice", "status", false), //
+    STATUS$CASEINSENSITIVE("public.invoice", "lower(status)", true), //
+    STATUS$CASEINSENSITIVE_STABLE_FORWARD("public.invoice", "lower(status), status", true), //
+    STATUS$CASEINSENSITIVE_STABLE_REVERSE("public.invoice", "lower(status), status", false), //
+    STATUS$DESC_CASEINSENSITIVE("public.invoice", "lower(status)", false), //
+    STATUS$DESC_CASEINSENSITIVE_STABLE_FORWARD("public.invoice", "lower(status), status", false), //
+    STATUS$DESC_CASEINSENSITIVE_STABLE_REVERSE("public.invoice", "lower(status), status", true);
 
     private InvoiceOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -243,24 +254,28 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     // Properties
 
     public NumberColumn id;
+    public NumberColumn accountId;
     public NumberColumn amount;
-    public NumberColumn branchId;
+    public DateTimeColumn orderDate;
+    public StringColumn type;
+    public NumberColumn unpaidBalance;
+    public StringColumn status;
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this.id, this.amount, this.branchId);
+      return new AllColumns(this.id, this.accountId, this.amount, this.orderDate, this.type, this.unpaidBalance, this.status);
     }
 
     // Constructors
 
     InvoiceTable() {
-      super("hotrod", null, "invoice", "Table", null);
+      super(null, "public", "invoice", "Table", null);
       initialize();
     }
 
     InvoiceTable(final String alias) {
-      super("hotrod", null, "invoice", "Table", alias);
+      super(null, "public", "invoice", "Table", alias);
       initialize();
     }
 
@@ -268,12 +283,20 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.id = new NumberColumn(this, "id", "id", "INT", 10, null);
+      this.id = new NumberColumn(this, "id", "id", "int4", 10, 0);
       super.columns.add(this.id);
-      this.amount = new NumberColumn(this, "amount", "amount", "INT", 10, null);
+      this.accountId = new NumberColumn(this, "account_id", "accountId", "int4", 10, 0);
+      super.columns.add(this.accountId);
+      this.amount = new NumberColumn(this, "amount", "amount", "int4", 10, 0);
       super.columns.add(this.amount);
-      this.branchId = new NumberColumn(this, "branch_id", "branchId", "INT", 10, null);
-      super.columns.add(this.branchId);
+      this.orderDate = new DateTimeColumn(this, "order_date", "orderDate", "date", 13, 0);
+      super.columns.add(this.orderDate);
+      this.type = new StringColumn(this, "type", "type", "varchar", 10, 0);
+      super.columns.add(this.type);
+      this.unpaidBalance = new NumberColumn(this, "unpaid_balance", "unpaidBalance", "int4", 10, 0);
+      super.columns.add(this.unpaidBalance);
+      this.status = new StringColumn(this, "status", "status", "varchar", 10, 0);
+      super.columns.add(this.status);
     }
 
   }

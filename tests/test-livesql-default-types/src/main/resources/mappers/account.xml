@@ -2,26 +2,23 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="mappers.branch">
+<mapper namespace="mappers.account">
 
   <!-- columns -->
 
   <sql id="columns">
     id,
-    region,
-    is_vip
+    branch_id
   </sql>
 
   <sql id="columnsWithAlias">
     ${alias}.id,
-    ${alias}.region,
-    ${alias}.is_vip
+    ${alias}.branch_id
   </sql>
 
-  <resultMap id="allColumns" type="app.daos.BranchVO">
+  <resultMap id="allColumns" type="app.daos.AccountVO">
     <result property="id" column="id" />
-    <result property="region" column="region" />
-    <result property="isVip" column="is_vip" />
+    <result property="branchId" column="branch_id" />
   </resultMap>
 
   <!-- select by PK: no mapping generated, since the table does not have a PK -->
@@ -33,16 +30,13 @@
   <select id="selectByExample" resultMap="allColumns">
     select
       <include refid="columns" />
-     from public.branch
+     from public.account
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.id != null">
         and id = #{p.id,jdbcType=INTEGER}
       </if>
-      <if test="p.region != null">
-        and region = #{p.region,jdbcType=VARCHAR}
-      </if>
-      <if test="p.isVip != null">
-        and is_vip = #{p.isVip,jdbcType=BIT}
+      <if test="p.branchId != null">
+        and branch_id = #{p.branchId,jdbcType=INTEGER}
       </if>
     </trim>
     <if test="o != null">
@@ -59,17 +53,15 @@
   <!-- insert (no auto-generated columns) -->
 
   <insert id="insert">
-    insert into public.branch (
+    insert into public.account (
       <trim prefixOverrides=", ">
         <if test="true">, id</if>
-        <if test="true">, region</if>
-        <if test="true">, is_vip</if>
+        <if test="true">, branch_id</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
         <if test="true">, #{id,jdbcType=INTEGER}</if>
-        <if test="true">, #{region,jdbcType=VARCHAR}</if>
-        <if test="true">, #{isVip,jdbcType=BIT}</if>
+        <if test="true">, #{branchId,jdbcType=INTEGER}</if>
       </trim>
       )
   </insert>
@@ -81,21 +73,17 @@
   <!-- update by example -->
 
   <update id="updateByExample">
-    update public.branch
+    update public.account
     <set>
       <if test="values.id != null">id = #{values.id,jdbcType=INTEGER},</if>
-      <if test="values.region != null">region = #{values.region,jdbcType=VARCHAR},</if>
-      <if test="values.isVip != null">is_vip = #{values.isVip,jdbcType=BIT},</if>
+      <if test="values.branchId != null">branch_id = #{values.branchId,jdbcType=INTEGER},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.id != null">
         and id = #{filter.id,jdbcType=INTEGER}
       </if>
-      <if test="filter.region != null">
-        and region = #{filter.region,jdbcType=VARCHAR}
-      </if>
-      <if test="filter.isVip != null">
-        and is_vip = #{filter.isVip,jdbcType=BIT}
+      <if test="filter.branchId != null">
+        and branch_id = #{filter.branchId,jdbcType=INTEGER}
       </if>
     </trim>
   </update>
@@ -109,16 +97,13 @@
   <!-- delete by example -->
 
   <delete id="deleteByExample">
-    delete from public.branch
+    delete from public.account
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="id != null">
         and id = #{id,jdbcType=INTEGER}
       </if>
-      <if test="region != null">
-        and region = #{region,jdbcType=VARCHAR}
-      </if>
-      <if test="isVip != null">
-        and is_vip = #{isVip,jdbcType=BIT}
+      <if test="branchId != null">
+        and branch_id = #{branchId,jdbcType=INTEGER}
       </if>
     </trim>
   </delete>
