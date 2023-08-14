@@ -177,11 +177,11 @@ public abstract class FunctionRenderer {
     w.write(")");
   }
 
-  protected void write(final QueryWriter w, final String operator, final Expression a, final Expression b) {
-    a.renderTo(w);
-    w.write(" % ");
-    b.renderTo(w);
-  }
+//  protected void write(final QueryWriter w, final String operator, final Expression a, final Expression b) {
+//    a.renderTo(w);
+//    w.write(" % ");
+//    b.renderTo(w);
+//  }
 
   protected <T extends Expression> void write(final QueryWriter w, final String function, final List<T> x) {
     this.write(w, function, x, ", ");

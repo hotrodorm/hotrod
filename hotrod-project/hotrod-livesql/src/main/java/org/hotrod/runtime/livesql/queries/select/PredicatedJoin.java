@@ -7,12 +7,12 @@ import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLClauseException;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.Column;
 
-abstract class PredicatedJoin extends Join {
+public abstract class PredicatedJoin extends Join {
 
   private Predicate predicate;
   private List<Column> using;
 
-  PredicatedJoin(final TableExpression tableExpression, final Predicate predicate) {
+  public PredicatedJoin(final TableExpression tableExpression, final Predicate predicate) {
     super(tableExpression);
     if (predicate == null) {
       throw new InvalidLiveSQLClauseException("The join predicate cannot be null");
@@ -21,7 +21,7 @@ abstract class PredicatedJoin extends Join {
     this.using = null;
   }
 
-  PredicatedJoin(final TableExpression tableExpression, final Column... using) {
+  public PredicatedJoin(final TableExpression tableExpression, final Column... using) {
     super(tableExpression);
     if (using.length == 0) {
       throw new InvalidLiveSQLClauseException(

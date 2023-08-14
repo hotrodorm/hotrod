@@ -84,6 +84,12 @@ import org.hotrod.runtime.livesql.queries.InsertIntoPhase;
 import org.hotrod.runtime.livesql.queries.UpdateTablePhase;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.ctes.CTENamePhase;
+import org.hotrod.runtime.livesql.queries.scalarsubqueries.BooleanSelectColumnsPhase;
+import org.hotrod.runtime.livesql.queries.scalarsubqueries.ByteArraySelectColumnsPhase;
+import org.hotrod.runtime.livesql.queries.scalarsubqueries.DateTimeSelectColumnsPhase;
+import org.hotrod.runtime.livesql.queries.scalarsubqueries.NumberSelectColumnsPhase;
+import org.hotrod.runtime.livesql.queries.scalarsubqueries.ObjectSelectColumnsPhase;
+import org.hotrod.runtime.livesql.queries.scalarsubqueries.StringSelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.PGSelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.select.SelectCTEPhase;
@@ -136,6 +142,32 @@ public class LiveSQL {
   @Available(engine = Const.POSTGRESQL, since = Const.PG15)
   public PGSelectColumnsPhase<Row> selectDistinctOn(final ResultSetColumn... resultSetColumns) {
     return new PGSelectColumnsPhase<Row>(this.sqlDialect, this.sqlSession, this.liveSQLMapper, true, resultSetColumns);
+  }
+
+  // Scalar subqueries
+
+  public NumberSelectColumnsPhase selectScalar(final NumberExpression expression) {
+    return new NumberSelectColumnsPhase(this.sqlDialect, this.sqlSession, this.liveSQLMapper, false, expression);
+  }
+
+  public StringSelectColumnsPhase selectScalar(final StringExpression expression) {
+    return new StringSelectColumnsPhase(this.sqlDialect, this.sqlSession, this.liveSQLMapper, false, expression);
+  }
+
+  public BooleanSelectColumnsPhase selectScalar(final Predicate expression) {
+    return new BooleanSelectColumnsPhase(this.sqlDialect, this.sqlSession, this.liveSQLMapper, false, expression);
+  }
+
+  public DateTimeSelectColumnsPhase selectScalar(final DateTimeExpression expression) {
+    return new DateTimeSelectColumnsPhase(this.sqlDialect, this.sqlSession, this.liveSQLMapper, false, expression);
+  }
+
+  public ByteArraySelectColumnsPhase selectScalar(final ByteArrayExpression expression) {
+    return new ByteArraySelectColumnsPhase(this.sqlDialect, this.sqlSession, this.liveSQLMapper, false, expression);
+  }
+
+  public ObjectSelectColumnsPhase selectScalar(final ObjectExpression expression) {
+    return new ObjectSelectColumnsPhase(this.sqlDialect, this.sqlSession, this.liveSQLMapper, false, expression);
   }
 
   // CTEs

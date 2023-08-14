@@ -5,11 +5,11 @@ import org.hotrod.runtime.livesql.metadata.Column;
 
 public class LeftOuterJoin extends PredicatedJoin {
 
-  LeftOuterJoin(final TableExpression tableExpression, final Predicate predicate) {
+  public LeftOuterJoin(final TableExpression tableExpression, final Predicate predicate) {
     super(tableExpression, predicate);
   }
 
-  LeftOuterJoin(final TableExpression tableExpression, final Column... using) {
+  public LeftOuterJoin(final TableExpression tableExpression, final Column... using) {
     super(tableExpression, using);
   }
 

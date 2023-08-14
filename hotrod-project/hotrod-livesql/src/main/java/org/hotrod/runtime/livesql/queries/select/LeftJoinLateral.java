@@ -6,7 +6,7 @@ public class LeftJoinLateral extends Join {
 
   private TableExpression tableExpression;
 
-  LeftJoinLateral(final TableExpression tableExpression) {
+  public LeftJoinLateral(final TableExpression tableExpression) {
     super(tableExpression);
     if (tableExpression == null) {
       throw new InvalidLiveSQLClauseException("The table or view on a join cannot be null");

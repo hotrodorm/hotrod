@@ -5,11 +5,11 @@ import org.hotrod.runtime.livesql.metadata.Column;
 
 public class InnerJoin extends PredicatedJoin {
 
-  InnerJoin(final TableExpression tableExpression, final Predicate predicate) {
+  public InnerJoin(final TableExpression tableExpression, final Predicate predicate) {
     super(tableExpression, predicate);
   }
 
-  InnerJoin(final TableExpression tableExpression, final Column... using) {
+  public InnerJoin(final TableExpression tableExpression, final Column... using) {
     super(tableExpression, using);
   }
 

@@ -177,24 +177,24 @@ public abstract class AbstractSelect<R> extends Query {
     }
   }
 
-  void setBaseTableExpression(final TableExpression baseTableExpression) {
+  public void setBaseTableExpression(final TableExpression baseTableExpression) {
     this.baseTableExpression = baseTableExpression;
     this.joins = new ArrayList<Join>();
   }
 
-  void addJoin(final Join join) {
+  public void addJoin(final Join join) {
     this.joins.add(join);
   }
 
-  void setWhereCondition(final Predicate whereCondition) {
+  public void setWhereCondition(final Predicate whereCondition) {
     this.wherePredicate = whereCondition;
   }
 
-  void setGroupBy(final List<Expression> groupBy) {
+  public void setGroupBy(final List<Expression> groupBy) {
     this.groupBy = groupBy;
   }
 
-  void setHavingCondition(final Predicate havingCondition) {
+  public void setHavingCondition(final Predicate havingCondition) {
     this.havingPredicate = havingCondition;
   }
 
@@ -207,15 +207,15 @@ public abstract class AbstractSelect<R> extends Query {
     this.parent = parent;
   }
 
-  void setColumnOrderings(List<OrderingTerm> orderingTerms) {
+  public void setColumnOrderings(List<OrderingTerm> orderingTerms) {
     this.orderingTerms = orderingTerms;
   }
 
-  void setOffset(final int offset) {
+  public void setOffset(final int offset) {
     this.offset = offset;
   }
 
-  void setLimit(final int limit) {
+  public void setLimit(final int limit) {
     this.limit = limit;
   }
 
@@ -272,7 +272,7 @@ public abstract class AbstractSelect<R> extends Query {
     // distinct
 
     if (this.distinct) {
-      w.write(" distinct");
+      w.write(" DISTINCT");
     }
 
     // top offset & limit

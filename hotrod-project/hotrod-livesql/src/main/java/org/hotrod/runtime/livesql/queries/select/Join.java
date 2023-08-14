@@ -6,7 +6,7 @@ public abstract class Join {
 
   private TableExpression tableExpression;
 
-  Join(final TableExpression tableExpression) {
+  public Join(final TableExpression tableExpression) {
     if (tableExpression == null) {
       throw new InvalidLiveSQLClauseException("The table or view on a join cannot be null");
     }
