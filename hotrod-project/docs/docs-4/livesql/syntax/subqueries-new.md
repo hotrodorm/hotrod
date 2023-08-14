@@ -155,8 +155,8 @@ ExecutableSelect<Row> q = sql.select(
     sql.val(50).plus(sql.selectScalar(sql.max(i.amount)).from(p).where(p.amount.lt(1000)).div(2)).as("score"),
     sql.selectScalar(sql.max(b.status)).from(b).where(b.accountId.eq(i.accountId).and(b.id.ne(i.id)))
       .concat("/C").as("maxStatus"))
-    .from(i)
-    .where(i.status.eq("UNPAID"));
+  .from(i)
+  .where(i.status.eq("UNPAID"));
 ```
 
 **Notes**:
@@ -168,9 +168,36 @@ ExecutableSelect<Row> q = sql.select(
 
 *Pending*
 
-### 5. Table Expressions - Basic Example
+### 5. Table Expressions
 
-LiveSQL uses the `Subquery` class to implement table expressions:
+Table Expressions can take the place of a table or view in a query.
+
+**Basic Table Expression**
+
+The following query joins a table expression:
+
+```sql
+SELECT
+  a.id as id,
+  a.branch_id as "branchId",
+  sum(l."lineTotal") as "total"
+FROM public.account a
+JOIN (
+  SELECT
+    i.account_id as "accountId",
+    p.id as id,
+    sum(l.line_total) as "lineTotal"
+  FROM public.invoice i
+  JOIN public.invoice_line l ON l.invoice_id = i.id
+  JOIN public.product p ON p.id = l.product_id
+  WHERE p.type = 'OTC'
+  GROUP BY i.account_id, p.id
+) x ON x."accountId" = a.id
+WHERE x.total > 1000
+```
+
+The table expression `x` is defined in advanced, and the it takes the place of a traditional
+table in the `from()` or `join()` clauses:
 
 ```java
 AccountTable a = AccountDAO.newTable("a");
@@ -192,39 +219,40 @@ ExecutableSelect<Row> q = sql.select(a.star())
     .where(x.num("total").gt(1000));
 ```
 
-LiveSQL converts it behind the scenes to (in PostgreSQL's dialect):
-
-
-```sql
-SELECT
-  a.id as id, 
-  a.branch_id as "branchId"
-FROM public.account a
-JOIN (
-  SELECT
-    i.account_id as "accountId", 
-    p.id as id, 
-    sum(l.line_total) as total
-  FROM public.invoice i
-  JOIN public.invoice_line l ON l.invoice_id = i.id
-  JOIN public.product p ON p.id = l.product_id
-  WHERE p.type = #{p1}
-  GROUP BY i.account_id, p.id
-) x ON x."accountId" = a.id
-WHERE x.total > #{p2}
---- Parameters ---
- * p1 (java.lang.String, length=3): OTC
- * p2 (java.lang.Integer): 1000
-------------------
-```
-
-### 6. Table Expressions - Nested Table Expressions
+**Nested Table Expressions**
 
 *Pending*
 
-### 7. Table Expressions - Joining Table Expressions
+**Joining Table Expressions**
 
-Two or more table expressions can be joined following the syntax:
+Any number of table expressions can participate in a query. The following example
+joins two tables expressions:
+
+```sql
+SELECT
+  x."isVip",
+  x.id,
+  x."branchId"
+FROM (
+  SELECT
+    b.is_vip as "isVip", 
+    a.id as id, 
+    a.branch_id as "branchId"
+  FROM public.branch b
+  JOIN public.account a ON a.branch_id = b.id
+) x
+LEFT JOIN (
+  SELECT
+    i.account_id as "accountId"
+  FROM public.invoice i
+  JOIN public.invoice_line l ON l.invoice_id = i.id
+  JOIN public.product p ON p.id = l.product_id
+  WHERE p.shipping = 0
+) y ON y."accountId" = x.id
+WHERE y."accountId" is null
+```
+
+It can be written in LiveSQL as:
 
 ```java
 BranchTable b = BranchDAO.newTable("b");
@@ -250,39 +278,10 @@ ExecutableSelect<Row> q = sql.select(x.star())
     .where(y.num("accountId").isNull());
 ```
 
-LiveSQL converts it behind the scenes to (in PostgreSQL's dialect):
-
-
-```sql
-SELECT
-  x."isVip", 
-  x.id, 
-  x."branchId"
-FROM (
-  SELECT
-    b.is_vip as "isVip", 
-    a.id as id, 
-    a.branch_id as "branchId"
-  FROM public.branch b
-  JOIN public.account a ON a.branch_id = b.id
-) x
-LEFT JOIN (
-  SELECT
-    i.account_id as "accountId"
-  FROM public.invoice i
-  JOIN public.invoice_line l ON l.invoice_id = i.id
-  JOIN public.product p ON p.id = l.product_id
-  WHERE p.shipping = #{p1}
-) y ON y."accountId" = x.id
-WHERE y."accountId" is null
---- Parameters ---
- * p1 (java.lang.Integer): 0
-------------------
-```
-
 ### 8. Common Table Expressions (CTEs)
 
-The previous example can also be written with CTEs, as in:
+Common Table Expressions are also supported. For example, the example above can also 
+be written with CTEs:
 
 ```java
 BranchTable b = BranchDAO.newTable("b");
@@ -308,46 +307,44 @@ ExecutableSelect<Row> q = sql.with(x, y)
     .where(y.num("aid").isNull());
 ```
 
-LiveSQL converts it behind the scenes to (in PostgreSQL's dialect):
-
-
-```sql
-WITH
-x as (
-  SELECT
-    b.is_vip as "isVip", 
-    a.id as id, 
-    a.branch_id as "branchId"
-  FROM public.branch b
-  JOIN public.account a ON a.branch_id = b.id
-),
-y (aid) as (
-  SELECT
-    i.account_id as "accountId"
-  FROM public.invoice i
-  JOIN public.invoice_line l ON l.invoice_id = i.id
-  JOIN public.product p ON p.id = l.product_id
-  WHERE p.shipping = #{p1}
-)
-SELECT
-  x."isVip", 
-  x.id, 
-  x."branchId"
-FROM x
-LEFT JOIN y ON y.aid = x.id
-WHERE y.aid is null
---- Parameters ---
- * p1 (java.lang.Integer): 0
-------------------
-```
-
 ### 9. Recursive Common Table Expressions (CTEs)
 
 *Pending*
 
 ### 10. Lateral Joins
 
-Lateral joins &mdash; inner an outer ones &mdash; can be written as:
+Lateral joins are executed once per each row of the previous tables or table
+expression. Lateral joins can operate as inner or outer joins. 
+
+The following example shows both types:
+
+```sql
+SELECT
+  a.id as id, 
+  a.branch_id as "branchId", 
+  x."orderDate", 
+  y."lastPayment"
+FROM public.account a
+JOIN LATERAL (
+  SELECT
+    i.order_date as "orderDate"
+  FROM public.invoice i
+  WHERE i.account_id = a.id
+  ORDER BY i.order_date desc
+  LIMIT 2
+) x ON true
+LEFT JOIN LATERAL (
+  SELECT
+    p.payment_date as "lastPayment"
+  FROM public.payment p
+  WHERE p.invoice_id = a.id
+  ORDER BY p.payment_date desc
+  LIMIT 1
+) y ON true
+WHERE a.branch_id = 1014
+```
+
+This query can be written in LiveSQL as:
 
 ```java
 AccountTable a = AccountDAO.newTable("a");
@@ -377,33 +374,4 @@ ExecutableSelect<Row> q = sql.select()
 
 LiveSQL converts it behind the scenes to (in PostgreSQL's dialect):
 
-
-```sql
-SELECT
-  a.id as id, 
-  a.branch_id as "branchId", 
-  x."orderDate", 
-  y."lastPayment"
-FROM public.account a
-JOIN LATERAL (
-  SELECT
-    i.order_date as "orderDate"
-  FROM public.invoice i
-  WHERE i.account_id = a.id
-  ORDER BY i.order_date desc
-  LIMIT 2
-) x ON true
-LEFT JOIN LATERAL (
-  SELECT
-    p.payment_date as "lastPayment"
-  FROM public.payment p
-  WHERE p.invoice_id = a.id
-  ORDER BY p.payment_date desc
-  LIMIT 1
-) y ON true
-WHERE a.branch_id = #{p1}
---- Parameters ---
- * p1 (java.lang.Integer): 1014
-------------------
-```
 
