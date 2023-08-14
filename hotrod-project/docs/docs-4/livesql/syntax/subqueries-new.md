@@ -278,8 +278,37 @@ ExecutableSelect<Row> q = sql.select(x.star())
 
 ### 6. Common Table Expressions (CTEs)
 
-Common Table Expressions are also supported. For example, the example above can also 
-be written with CTEs:
+Common Table Expressions are also supported. For example, the query above can also
+be written with CTEs. It takes the form:
+
+```sql
+WITH
+x as (
+  SELECT
+    b.is_vip as "isVip", 
+    a.id as id, 
+    a.branch_id as "branchId"
+  FROM public.branch b
+  JOIN public.account a ON a.branch_id = b.id
+),
+y (aid) as (
+  SELECT
+    i.account_id as "accountId"
+  FROM public.invoice i
+  JOIN public.invoice_line l ON l.invoice_id = i.id
+  JOIN public.product p ON p.id = l.product_id
+  WHERE p.shipping = 0
+)
+SELECT
+  x."isVip", 
+  x.id, 
+  x."branchId"
+FROM x
+LEFT JOIN y ON y.aid = x.id
+WHERE y.aid is null
+```
+
+It's written in LiveSQl as:
 
 ```java
 BranchTable b = BranchDAO.newTable("b");
