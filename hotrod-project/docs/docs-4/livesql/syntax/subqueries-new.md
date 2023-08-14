@@ -219,7 +219,69 @@ ExecutableSelect<Row> q = sql.select(a.star())
 
 **Nested Table Expressions**
 
-*Pending*
+The following query nests one table expression in another one:
+
+```sql
+SELECT
+  y.grp,
+  min(y."orderDate") as start,
+  sum(y."unpaidBalance") as "groupBalance"
+FROM (
+  SELECT
+    x.id,
+    x."accountId",
+    x.amount, 
+    x."orderDate", 
+    x.type, 
+    x."unpaidBalance", 
+    x.status, 
+    x.inc, 
+    sum(x.inc) over(partition by x.id order by x."orderDate") as grp
+  FROM (
+    SELECT
+      i.id as id, 
+      i.account_id as "accountId", 
+      i.amount as amount, 
+      i.order_date as "orderDate", 
+      i.type as type, 
+      i.unpaid_balance as "unpaidBalance", 
+      i.status as status, 
+      case when (i.type <> lag(i.type) over(partition by i.id order by i.order_date)) then 1 else 0 end as inc
+    FROM public.invoice i
+    WHERE i.account_id = 1015
+  ) x
+) y
+GROUP BY y.grp
+```
+
+It can be written in LiveSQL as:
+
+```java
+InvoiceTable i = InvoiceDAO.newTable("i");
+InvoiceLineTable l = InvoiceLineDAO.newTable("l");
+ProductTable p = ProductDAO.newTable("p");
+
+Subquery x = sql.subquery("x",
+    sql.select( 
+        i.star(), 
+        sql.caseWhen(i.type.ne(sql.lag(i.type).over().partitionBy(i.id).orderBy(i.orderDate.asc()).end()), 1)
+            .elseValue(0).end().as("inc")) 
+        .from(i) 
+        .where(i.accountId.eq(1015)) 
+);
+Subquery y = sql.subquery("y", 
+    sql.select( 
+        x.star(), 
+        sql.sum(x.num("inc")).over().partitionBy(x.num("id")).orderBy(x.dt("orderDate").asc()).end().as("grp")) 
+        .from(x) 
+);
+ExecutableSelect<Row> q = sql.select( 
+    y.num("grp"), 
+    sql.min(y.dt("orderDate")).as("start"), 
+    sql.sum(y.num("unpaidBalance")).as("groupBalance")) 
+  .from(y) 
+  .groupBy(y.num("grp"));
+```
 
 **Joining Table Expressions**
 
