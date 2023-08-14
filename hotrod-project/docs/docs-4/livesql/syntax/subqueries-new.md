@@ -399,6 +399,3 @@ ExecutableSelect<Row> q = sql.select()
     .where(a.branchId.eq(1014));
 ```
 
-LiveSQL converts it behind the scenes to (in PostgreSQL's dialect):
-
-
