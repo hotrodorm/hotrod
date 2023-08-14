@@ -127,6 +127,45 @@ ExecutableSelect<Row> q = sql.select()
 
 ### 4. Scalar Subqueries
 
+Scalar subqueries evaluate to a single *scalar* value. They can appear in any place where a number
+can be included in the query; typically they are placed in the select list. The following query
+includes two scalar subqueries:
+
+
+```sql
+select
+  i.*,
+  50 + (select max(amount) from payment where amount < 1000) / 2 as "score",
+  (select max(b.status) from invoice b where b.account_id = i.account_id and b.id <> i.id)
+    || '/C' as "maxStatus"
+from invoice i
+where i.status = 'UNPAID'
+
+```
+
+Using `sql.selectScalar()` the query can be written as:
+
+```java
+InvoiceTable i = InvoiceDAO.newTable("i");
+InvoiceTable b = InvoiceDAO.newTable("b");
+PaymentTable p = PaymentDAO.newTable("p");
+
+ExecutableSelect<Row> q = sql.select(
+    i.star(),
+    sql.val(50).plus(sql.selectScalar(sql.max(i.amount)).from(p).where(p.amount.lt(1000)).div(2)).as("score"),
+    sql.selectScalar(sql.max(b.status)).from(b).where(b.accountId.eq(i.accountId).and(b.id.ne(i.id)))
+      .concat("/C").as("maxStatus"))
+    .from(i)
+    .where(i.status.eq("UNPAID"));
+```
+
+**Notes**:
+
+- The first scalar subquery takes the place of a number. As such it's divided by 2 and then it's added the value 50.
+- The first scalar subquery is not correlated; the second one is, since its value depends on the main driving table.
+- Depending on the parameter value, the type of the scalar subquery can be any of the six core types of LiveSQL. Namely: number, string, boolean, date/time, binary, and object. In this case the first one produces a number, and the second scalar subquery produces a string value.
+- Finally, remember that a scalar subquery can only include a single column. It must generate zero or one rows at the most. If more rows are generated, the whole query will fail with an error.
+
 *Pending*
 
 ### 5. Table Expressions - Basic Example
