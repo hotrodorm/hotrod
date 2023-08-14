@@ -166,8 +166,6 @@ ExecutableSelect<Row> q = sql.select(
 - Depending on the parameter value, the type of the scalar subquery can be any of the six core types of LiveSQL. Namely: number, string, boolean, date/time, binary, and object. In this case the first one produces a number, and the second scalar subquery produces a string value.
 - Finally, remember that a scalar subquery can only include a single column. It must generate zero or one rows at the most. If more rows are generated, the whole query will fail with an error.
 
-*Pending*
-
 ### 5. Table Expressions
 
 Table Expressions can take the place of a table or view in a query.
@@ -278,7 +276,7 @@ ExecutableSelect<Row> q = sql.select(x.star())
     .where(y.num("accountId").isNull());
 ```
 
-### 8. Common Table Expressions (CTEs)
+### 6. Common Table Expressions (CTEs)
 
 Common Table Expressions are also supported. For example, the example above can also 
 be written with CTEs:
@@ -307,11 +305,11 @@ ExecutableSelect<Row> q = sql.with(x, y)
     .where(y.num("aid").isNull());
 ```
 
-### 9. Recursive Common Table Expressions (CTEs)
+### 7. Recursive Common Table Expressions (CTEs)
 
 *Pending*
 
-### 10. Lateral Joins
+### 8. Lateral Joins
 
 Lateral joins are executed once per each row of the previous tables or table
 expression. Lateral joins can operate as inner or outer joins. 
