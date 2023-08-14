@@ -396,7 +396,7 @@ ExecutableSelect<Row> q = sql.with(x, y)
     .where(y.num("aid").isNull());
 ```
 
-### 7. Recursive Common Table Expressions (CTEs)
+### 7. Recursive Common Table Expressions (Recursive CTEs)
 
 *Pending*
 
