@@ -8,19 +8,19 @@ public class CTEHeaderPhase {
   // Properties
 
   private String name;
-  private String[] columnNames;
+  private String[] aliases;
 
   // Constructor
 
-  public CTEHeaderPhase(final String name, final String[] columnNames) {
+  public CTEHeaderPhase(final String name, final String[] aliases) {
     this.name = name;
-    this.columnNames = columnNames;
+    this.aliases = aliases;
   }
 
   // Next stages
 
   public CTE as(ExecutableSelect<Row> select) {
-    return new CTE(this.name, this.columnNames, select);
+    return new CTE(this.name, this.aliases, select);
   }
 
 }

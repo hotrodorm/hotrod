@@ -83,7 +83,7 @@ import org.hotrod.runtime.livesql.queries.DeleteFromPhase;
 import org.hotrod.runtime.livesql.queries.InsertIntoPhase;
 import org.hotrod.runtime.livesql.queries.UpdateTablePhase;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
-import org.hotrod.runtime.livesql.queries.ctes.CTENamePhase;
+import org.hotrod.runtime.livesql.queries.ctes.CTEHeaderPhase;
 import org.hotrod.runtime.livesql.queries.scalarsubqueries.BooleanSelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.scalarsubqueries.ByteArraySelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.scalarsubqueries.DateTimeSelectColumnsPhase;
@@ -176,8 +176,8 @@ public class LiveSQL {
     return new CTE(name, select);
   }
 
-  public CTENamePhase cte(final String name) {
-    return new CTENamePhase(name);
+  public CTEHeaderPhase cte(final String name, final String... aliases) {
+    return new CTEHeaderPhase(name, aliases);
   }
 
   public SelectCTEPhase<Row> with(final CTE... ctes) {

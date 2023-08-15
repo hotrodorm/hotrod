@@ -357,7 +357,7 @@ x as (
 ),
 y (aid) as (
   SELECT
-    i.account_id as "accountId"
+    i.account_id
   FROM public.invoice i
   JOIN public.invoice_line l ON l.invoice_id = i.id
   JOIN public.product p ON p.id = l.product_id
@@ -386,7 +386,7 @@ CTE x = sql.cte("x",
         .from(b) 
         .join(a, a.branchId.eq(b.id)) 
 );
-CTE y = sql.cte("y").columnNames("aid").as(sql.select(i.accountId) 
+CTE y = sql.cte("y", "aid").as(sql.select(i.accountId) 
     .from(i) 
     .join(l, l.invoiceId.eq(i.id)) 
     .join(p, p.id.eq(l.productId)) 
