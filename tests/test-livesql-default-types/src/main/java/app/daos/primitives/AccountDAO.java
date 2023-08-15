@@ -86,6 +86,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     String s = suffix == null ? "": suffix;
     mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
     mo.setBranchId(CastUtil.toInteger((Number) m.get(p + "branchId" + s)));
+    mo.setParentId(CastUtil.toInteger((Number) m.get(p + "parentId" + s)));
     return mo;
   }
 
@@ -129,6 +130,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     app.daos.AccountVO mo = new app.daos.AccountVO();
     mo.setId(vo.getId());
     mo.setBranchId(vo.getBranchId());
+    mo.setParentId(vo.getParentId());
     return mo;
   }
 
@@ -150,6 +152,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     Map<String, Object> values = new HashMap<>();
     if (updateValues.getId() != null) values.put("id", updateValues.getId());
     if (updateValues.getBranchId() != null) values.put("branch_id", updateValues.getBranchId());
+    if (updateValues.getParentId() != null) values.put("parent_id", updateValues.getParentId());
     return new UpdateSetCompletePhase(tableOrView, this.liveSQLDialect, this.sqlSession,
       "mappers.account.updateByCriteria", predicate, values);
   }
@@ -175,7 +178,9 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     ID("public.account", "id", true), //
     ID$DESC("public.account", "id", false), //
     BRANCH_ID("public.account", "branch_id", true), //
-    BRANCH_ID$DESC("public.account", "branch_id", false);
+    BRANCH_ID$DESC("public.account", "branch_id", false), //
+    PARENT_ID("public.account", "parent_id", true), //
+    PARENT_ID$DESC("public.account", "parent_id", false);
 
     private AccountOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -218,11 +223,12 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
     public NumberColumn id;
     public NumberColumn branchId;
+    public NumberColumn parentId;
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this.id, this.branchId);
+      return new AllColumns(this.id, this.branchId, this.parentId);
     }
 
     // Constructors
@@ -245,6 +251,8 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       super.columns.add(this.id);
       this.branchId = new NumberColumn(this, "branch_id", "branchId", "int4", 10, 0);
       super.columns.add(this.branchId);
+      this.parentId = new NumberColumn(this, "parent_id", "parentId", "int4", 10, 0);
+      super.columns.add(this.parentId);
     }
 
   }

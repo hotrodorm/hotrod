@@ -12,7 +12,8 @@ create table branch (
 
 create table account (
   id int,
-  branch_id int
+  branch_id int,
+  parent_id int
 );
 
 create table invoice (
