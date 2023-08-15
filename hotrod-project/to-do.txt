@@ -14,6 +14,11 @@ LiveSQL:
 - sql.enclose()
 - Parameterize integers.
 
+=== Pending ===
+- Scalar subqueries: Call validateTableReferences() and designateAliases(). 
+- Naming columns in table expressions (DB2, PostgreSQL, SQL Server, MySQL).
+- LAG() with one parameter crashes.
+- Consider .asc() ordering by default.
 
 
 LiveSQL experts names:
