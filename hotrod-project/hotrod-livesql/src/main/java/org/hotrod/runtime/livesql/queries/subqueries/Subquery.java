@@ -98,15 +98,17 @@ public class Subquery implements TableExpression {
 
   @Override
   public List<ResultSetColumn> getColumns() throws IllegalAccessException {
-//    System.out.println("#3 this.select: " + this.select);
-    List<ResultSetColumn> cols = this.select.listColumns();
+    return this.expandColumns(this.select.listColumns());
+  }
+
+  protected List<ResultSetColumn> expandColumns(final List<ResultSetColumn> cols) throws IllegalAccessException {
     List<ResultSetColumn> subqueryColumns = new ArrayList<>();
     for (ResultSetColumn c : cols) {
-//      System.out.println("#3.1 " + c);
       Expression expr = castAsSubqueryColumn(c);
       subqueryColumns.add(expr);
     }
     return subqueryColumns;
+
   }
 
   private Expression castAsSubqueryColumn(final ResultSetColumn c)

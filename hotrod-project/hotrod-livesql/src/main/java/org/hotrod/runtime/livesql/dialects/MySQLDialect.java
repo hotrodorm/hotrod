@@ -25,6 +25,13 @@ public class MySQLDialect extends LiveSQLDialect {
     super(discovered, productName, productVersion, majorVersion, minorVersion);
   }
 
+  // WITH rendering
+
+  @Override
+  public WithRenderer getWithRenderer() {
+    return (c) -> "WITH" + (c ? " RECURSIVE" : "");
+  }
+
   // From rendering
 
   @Override

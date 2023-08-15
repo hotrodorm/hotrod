@@ -19,7 +19,7 @@ public class CTEHeaderPhase {
 
   // Next stages
 
-  public CTE as(ExecutableSelect<Row> select) {
+  public CTE as(ExecutableSelect<?> select) {
     return new CTE(this.name, this.aliases, select);
   }
 

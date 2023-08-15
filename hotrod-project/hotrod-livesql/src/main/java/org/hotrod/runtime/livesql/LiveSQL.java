@@ -84,6 +84,8 @@ import org.hotrod.runtime.livesql.queries.InsertIntoPhase;
 import org.hotrod.runtime.livesql.queries.UpdateTablePhase;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.ctes.CTEHeaderPhase;
+import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
+import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.runtime.livesql.queries.scalarsubqueries.BooleanSelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.scalarsubqueries.ByteArraySelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.scalarsubqueries.DateTimeSelectColumnsPhase;
@@ -178,6 +180,20 @@ public class LiveSQL {
 
   public CTEHeaderPhase cte(final String name, final String... aliases) {
     return new CTEHeaderPhase(name, aliases);
+  }
+
+//  public RecursiveCTE recursiveCTE(final String name, final ExecutableSelect<?> anchor,
+//      final ExecutableSelect<?> recursive) {
+//    return new RecursiveCTE(name, null, anchor, true, recursive);
+//  }
+//
+//  public RecursiveCTE recursiveCTEUnion(final String name, final ExecutableSelect<?> anchor,
+//      final ExecutableSelect<?> recursive) {
+//    return new RecursiveCTE(name, null, anchor, false, recursive);
+//  }
+
+  public RecursiveCTE recursiveCTE(final String name, final String... aliases) {
+    return new RecursiveCTE(name, aliases);
   }
 
   public SelectCTEPhase<Row> with(final CTE... ctes) {

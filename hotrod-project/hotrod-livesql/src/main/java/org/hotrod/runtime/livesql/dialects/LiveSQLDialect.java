@@ -87,6 +87,8 @@ public abstract class LiveSQLDialect {
         + databaseMajorVersion + ", databaseMinorVersion=" + databaseMinorVersion + "]";
   }
 
+  public abstract WithRenderer getWithRenderer();
+
   public abstract FromRenderer getFromRenderer();
 
   public abstract JoinRenderer getJoinRenderer();

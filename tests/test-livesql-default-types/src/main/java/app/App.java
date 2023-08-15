@@ -1,11 +1,12 @@
 package app;
 
-import java.util.Date;
 import java.util.Map;
 
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
+import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
+import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 import org.mybatis.spring.annotation.MapperScan;
@@ -238,10 +239,10 @@ public class App {
 //    example3AssymmetricOperators();
 //    example4ScalarSubqueries();
 //    example5TableExpressions();
-    example5NestedTableExpressions();
+//    example5NestedTableExpressions();
 //    example5JoinedTableExpressions();
 //    example6CTEs();
-//    example7RecursiveCTEs();
+    example7RecursiveCTEs();
 //    example8LateralJoins();
   }
 
@@ -335,8 +336,7 @@ public class App {
     ExecutableSelect<Row> q = sql.select( //
         i.star(), //
         sql.val(50).mult(sql.selectScalar(sql.max(i.amount)).from(p).where(p.amount.lt(1000)).div(2)).as("score"),
-        sql.selectScalar(sql.val("a")).from(b).where(b.accountId.eq(i.accountId).and(b.id.ne(i.id)))
-        .substr(1, 3)
+        sql.selectScalar(sql.val("a")).from(b).where(b.accountId.eq(i.accountId).and(b.id.ne(i.id))).substr(1, 3)
             .as("otherUnpaid"))
         .from(i) //
         .where(i.status.eq("UNPAID"));
@@ -407,8 +407,9 @@ public class App {
     Subquery x = sql.subquery("x", //
         sql.select( //
             i.star(), //
-            sql.caseWhen(i.type.ne(sql.lag(i.type, 1, sql.val("a")).over().partitionBy(i.id).orderBy(i.orderDate.asc()).end()), 1)
-                .elseValue(0).end().as("inc")) //
+            sql.caseWhen(
+                i.type.ne(sql.lag(i.type, 1, sql.val("a")).over().partitionBy(i.id).orderBy(i.orderDate.asc()).end()),
+                1).elseValue(0).end().as("inc")) //
             .from(i) //
             .where(i.accountId.eq(1015)) //
     );
@@ -509,7 +510,7 @@ public class App {
             .from(b) //
             .join(a, a.branchId.eq(b.id)) //
     );
-    CTE y = sql.cte("y").columnNames("aid").as(sql.select(i.accountId) //
+    CTE y = sql.cte("y", "aid").as(sql.select(i.accountId) //
         .from(i) //
         .join(l, l.invoiceId.eq(i.id)) //
         .join(p, p.id.eq(l.productId)) //
@@ -529,6 +530,38 @@ public class App {
 
 //  7. Recursive CTEs -- Pending
 //
+  //    with recursive
+  //    g as (
+  //      select id from account where id = 1215
+  //     union all
+  //      select b.id
+  //      from g
+  //      join account b on b.parent_id = g.id
+  //    )
+  //    select g.id, i.amount
+  //    from g
+  //    join invoice i on i.account_id = g.id;
+
+    AccountTable a = AccountDAO.newTable("a");
+    AccountTable b = AccountDAO.newTable("b");
+    InvoiceTable i = InvoiceDAO.newTable("i");
+
+    RecursiveCTE g = sql.recursiveCTE("g");
+    g.as(sql.select(a.id) //
+        .from(a) //
+        .where(a.id.eq(1215)),
+        sql.select(b.id) //
+            .from(g) //
+            .join(b, b.parentId.eq(g.num("id"))) //
+            .where(b.parentId.eq(g.num("id"))));
+
+    ExecutableSelect<Row> q = sql.with(g) //
+        .select(g.num("id"), i.amount) //
+        .from(g) //
+        .join(i, i.accountId.eq(g.num("id")));
+
+    System.out.println(q.getPreview());
+    q.execute().forEach(r -> System.out.println("row: " + r));
 
   }
 

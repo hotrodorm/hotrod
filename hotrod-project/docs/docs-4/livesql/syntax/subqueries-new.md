@@ -400,7 +400,49 @@ ExecutableSelect<Row> q = sql.with(x, y)
 
 ### 7. Recursive Common Table Expressions (Recursive CTEs)
 
-*Pending*
+Recursive CTEs can be expressed in LiveSQL. Since the query definition references itself they
+need to be defined in two steps.
+
+The following query retrieves the account 1215 with all its subaccounts, and then gets the amounts
+of all the invoices related to them:
+
+```sql
+with recursive
+g as (
+  select id from account where id = 1215
+ union all
+  select b.id
+  from g
+  join account b on b.parent_id = g.id
+)
+select g.id, i.amount
+from g
+join invoice i on i.account_id = g.id
+```
+
+Using the methods `.recursiveCTE()` and `.as()` this query can be written in LiveSQL as:
+
+```java
+AccountTable a = AccountDAO.newTable("a");
+AccountTable b = AccountDAO.newTable("b");
+InvoiceTable i = InvoiceDAO.newTable("i");
+
+RecursiveCTE g = sql.recursiveCTE("g");
+g.as(sql.select(a.id) 
+    .from(a) 
+    .where(a.id.eq(1215)),
+    sql.select(b.id) 
+        .from(g) 
+        .join(b, b.parentId.eq(g.num("id"))) 
+        .where(b.parentId.eq(g.num("id"))));
+
+ExecutableSelect<Row> q = sql.with(g) 
+    .select(g.num("id"), i.amount) 
+    .from(g) 
+    .join(i, i.accountId.eq(g.num("id")));
+```
+
+There's also an alternative method `asUnion()` that implements recusive CTEs using the `UNION` operator rather than the `UNION ALL` operator. This variant is only supported in PostgreSQL, however.
 
 ### 8. Lateral Joins
 

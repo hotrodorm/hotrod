@@ -33,6 +33,13 @@ public class SQLServerDialect extends LiveSQLDialect {
     super(discovered, productName, productVersion, majorVersion, minorVersion);
   }
 
+  // WITH rendering
+
+  @Override
+  public WithRenderer getWithRenderer() {
+    return (c) -> "WITH";
+  }
+
   // From rendering
 
   @Override

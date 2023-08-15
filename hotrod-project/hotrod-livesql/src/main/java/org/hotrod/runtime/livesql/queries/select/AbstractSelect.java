@@ -243,7 +243,9 @@ public abstract class AbstractSelect<R> extends Query {
     // CTEs
 
     if (!this.ctes.isEmpty()) {
-      w.write("WITH\n");
+      boolean hasRecursiveCTEs = this.ctes.stream().map(c -> c.isRecursive()).reduce(false, (a, b) -> a | b);
+      w.write(this.liveSQLDialect.getWithRenderer().render(hasRecursiveCTEs));
+      w.write("\n");
       for (Iterator<CTE> it = this.ctes.iterator(); it.hasNext();) {
         CTE cte = it.next();
         cte.renderDefinitionTo(w, this.liveSQLDialect);
