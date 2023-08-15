@@ -442,7 +442,7 @@ ExecutableSelect<Row> q = sql.with(g)
     .join(i, i.accountId.eq(g.num("id")));
 ```
 
-There's also an alternative method `asUnion()` that implements recusive CTEs using the `UNION` operator rather than the `UNION ALL` operator. This variant is only supported in PostgreSQL, however.
+There's also an alternative method `asUnion()` that implements recusive CTEs using the `UNION` operator rather than the `UNION ALL` operator. This variant is only supported by the PostgreSQL and MariaDB databases.
 
 ### 8. Lateral Joins
 
