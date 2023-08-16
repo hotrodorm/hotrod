@@ -28,56 +28,77 @@ private void searching() {
 }
 ```
 
-The DAO is used to create one instance of the table to use in the `FROM` clause of the table. More instances of the same 
-or other tables can be used to join with or for self joins.
+The DAO is used to create one instance of the table to use in the `FROM` clause of the query. More
+instances of the same or other tables &mdash; and/or views &mdash; can be used to define queries with joins.
 
-The table instance can be used to reference the columns of the table (as in `e.name`) and to assemble complex expressions to use in the query. 
-Behind the scenes LiveSQL will assemble and run the query as:
+The table instance can be used to reference the columns of the table (as in `e.name`) and to
+assemble complex expressions to use in the query. Behind the scenes LiveSQL will assemble the query as:
 
 ```sql
 SELECT * FROM employee WHERE name like 'A%'
 ```
 
-Finally the `execute()` method runs the query and returns the result.
+Finally the `execute()` method runs the query and returns the result set as a list of rows.
+
+## LiveSQL Dialects
+
+While assembling the query LiveSQL generates the specific syntax according to the database engine in use, and this is fully transparent to the developer. Common clauses are very standardized so few differences can be noticed between each them. Bigger differences can be typically seen in more advanced, less used clauses.
+
+When the application is starting up, LiveSQL detects the specific database and version for each data source, and chooses the LiveSQLDialect to use for each one. This dialect deals automatically with all syntax changes behind the scenes when a query is executed.
+
+The LiveSQLDialect can also be specified in the `application.properties` file , in case the developer
+wants to disable the auto-detect functionality and prefers to declare it explicitly. This can be configured separately for each data source. See [Designating a LiveSQL Dialect](designating-a-livesql-dialect.md) for more details.
 
 
 ## LiveSQL Statements
 
-LiveSQL includes the four DML SQL statements: SELECT, INSERT, UPDATE, and DELETE. 
+LiveSQL includes the four DML SQL statements SELECT, INSERT, UPDATE, and DELETE.
 
-The SELECT statement has several sections that are described separately:
-- [The SELECT List](./syntax/select-list.md)
-- [The FROM and JOIN Clauses](./syntax/from-and-joins.md)
-    - [Selecting Without A FROM Clause](./syntax/selecting-without-a-from-clause.md)
-- [The WHERE Clause](./syntax/where.md)
-- [The GROUP BY Clause](./syntax/group-by.md)
-- [The HAVING Clause](./syntax/having.md)
-- [The ORDER BY Clause](./syntax/order-by.md)
-- [The OFFSET Clause](./syntax/offset.md)
-- [The LIMIT Clause](./syntax/limit.md)
+Note that all these statements participate in Spring transactions &mdash; in the same way as any other CRUD or Nitro query would do &mdash; according to the transaction demarcation and rules defined in the methods through Spring annotations.
 
-The INSERT statement has two main variations &ndash; using `VALUES` to provide the data or using a `SELECT` for it:
+The LiveSQL statements are described below:
 
-- [The INSERT Statement](./syntax/insert.md)
+- The [SELECT](./syntax/select.md) Statement
 
-The UPDATE statement has a single variation:
+    The SELECT statement, by far, has the most complex syntax and it's the only one that returns data rows. The SQL Standard defines a list of clauses to filter rows (WHERE), to join multiple tables (FROM and JOIN), to aggregate them (GROUP BY) and to sort them (ORDER BY). SELECT statements can also include subqueries to define more complex logic.
 
-- [The UPDATE Statement](./syntax/update.md)
+- The [INSERT](./syntax/insert.md) Statement
 
-The DELETE statement also has a single variation:
+    The INSERT statement inserts data into a table. The inserted values can be speficied as literal values in the statement itself or as the result of a query; both options are implemented in LiveSQL. Data can also be inserted into tables through views; however, each database defines different eligibility rules to decide which ones can be used for this purpose.
 
-- [The DELETE Statement](./syntax/delete.md)
+- The [UPDATE](./syntax/update.md) Statement
 
+    LiveSQL implements the SQL-92 version of the UPDATE statement. Subqueries can be used to compute values or to search for rows. Rows can also be updated through views depending on the specific database restrictions.
+
+- The [DELETE](./syntax/delete.md) Statement
+
+    LiveSQL implements the SQL-92 version of the DELETE statement. Subqueries can be used to compute values or to search for rows. Rows can also be deleted through views depending on the specific database restrictions.
 
 ## The Expression Language
 
 The Expression Language enhances the functionality of LiveSQL by allowing complex expressions for numeric computations, date and time arithmetic, boolean logic for predicates, advanced SQL features, etc. Each section below explains a different aspect of it:
 
 - [Expressions, Operators &amp; Functions](./syntax/expressions.md)
+
+    All the basic operators such as `+`, `-`, `*`, `/`, `=`, `<>`, `<`, `>`, `<=`, `>=`, `LIKE`, `BETWEEN`, `AND`, `OR`, `NOT`, `||`, etc., as well as common functions such as `ROUND()`,
+`SUBSTRING()`, `CURRENT_DATE()`, `COALESCE()`, etc. Expressions can be used in any place of the SQL query where a scalar value or a predicate can be used. In short, they can appear in the select list of the query or subquery, in the `WHERE` clause to define simple or complex search rules, in the `GROUP BY` clause, `ORDER BY` clause, etc. LiveSQL includes a basic list of predefined functions for each specific data type, that can be enhanced with custom functions.
+
 - [Aggregate Functions](./syntax/aggregate-functions.md)
+
+    The traditional aggregate functions such as `SUM()`, `MIN()`, and `MAX()`, etc. defined in the SQL-92 Standard. These functions are typically used when grouping rows using the `GROUP BY` clause; they compute a single value from a set of values from different rows.
+
 - [Window Functions](./syntax/window-functions.md)
+
+    Window functions &mdash; implemented with the `OVER()` clause &mdash; were defined in the SQL:2003 SQL Standard and they aggregate values from multiple rows. They don't consolidate rows, however, but keep rows in non-aggregated form. These functions enhance the traditional aggregate functions and define a new set of them to peek at and to compute values using related rows.
+
 - [Subqueries](./syntax/subqueries.md)
+
+    Subqueries are a standard feature of the SQL language that greatly enhances the expressiveness of a query. LiveSQL implements all typical subqueries such as scalar subqueries, table expressions, `IN/NOT IN`, `EXISTS/NOT EXISTS`, assymmetric operators, CTEs (Common Table Expressions), recursive CTEs, and lateral joins. Plain and correlated subqueries can be expressed in LiveSQL.
+
 - [Extending LiveSQL Functions](./extending-livesql-functions.md)
+
+    If a function is not included in the basic list of predefined functions it can be easily declared as a custom LiveSQL function. Once defined, custom functions can be used seamlessly as part of the LiveSQL syntax in any expression.
+
 
 
 ## Using Cursors

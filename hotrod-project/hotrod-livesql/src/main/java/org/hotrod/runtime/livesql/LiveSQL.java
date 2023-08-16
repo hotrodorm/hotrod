@@ -178,8 +178,8 @@ public class LiveSQL {
     return new CTE(name, select);
   }
 
-  public CTEHeaderPhase cte(final String name, final String... aliases) {
-    return new CTEHeaderPhase(name, aliases);
+  public CTEHeaderPhase cte(final String name, final String... columns) {
+    return new CTEHeaderPhase(name, columns);
   }
 
 //  public RecursiveCTE recursiveCTE(final String name, final ExecutableSelect<?> anchor,
@@ -192,8 +192,8 @@ public class LiveSQL {
 //    return new RecursiveCTE(name, null, anchor, false, recursive);
 //  }
 
-  public RecursiveCTE recursiveCTE(final String name, final String... aliases) {
-    return new RecursiveCTE(name, aliases);
+  public RecursiveCTE recursiveCTE(final String name, final String... columns) {
+    return new RecursiveCTE(name, columns);
   }
 
   public SelectCTEPhase<Row> with(final CTE... ctes) {
