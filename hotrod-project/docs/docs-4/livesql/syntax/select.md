@@ -33,15 +33,15 @@ The syntax includes the SELECT clauses with search criteria, joins, etc.
 
 The SELECT statement has several clauses that are described separately:
 
-    - [The SELECT List](./select-list.md)
-    - [The FROM and JOIN Clauses](./from-and-joins.md)
-    - [Selecting Without A FROM Clause](./selecting-without-a-from-clause.md)
-    - [The WHERE Clause](./where.md)
-    - [The GROUP BY Clause](./group-by.md)
-    - [The HAVING Clause](./having.md)
-    - [The ORDER BY Clause](./order-by.md)
-    - [The OFFSET Clause](./offset.md)
-    - [The LIMIT Clause](./limit.md)
+- [The SELECT List](./select-list.md)
+- [The FROM and JOIN Clauses](./from-and-joins.md)
+- [Selecting Without A FROM Clause](./selecting-without-a-from-clause.md)
+- [The WHERE Clause](./where.md)
+- [The GROUP BY Clause](./group-by.md)
+- [The HAVING Clause](./having.md)
+- [The ORDER BY Clause](./order-by.md)
+- [The OFFSET Clause](./offset.md)
+- [The LIMIT Clause](./limit.md)
 
 ## Subqueries
 
