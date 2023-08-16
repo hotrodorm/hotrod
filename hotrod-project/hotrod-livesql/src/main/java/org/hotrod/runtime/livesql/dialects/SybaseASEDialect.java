@@ -38,7 +38,8 @@ public class SybaseASEDialect extends LiveSQLDialect {
 
   @Override
   public WithRenderer getWithRenderer() {
-    return (c) -> "WITH";
+    throw new UnsupportedLiveSQLFeatureException(
+        "LiveSQL does not support Common Table Expressions (CTEs) SAP ASE/Sybase.");
   }
 
   // From rendering

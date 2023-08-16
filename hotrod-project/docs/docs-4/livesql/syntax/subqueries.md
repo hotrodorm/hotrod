@@ -186,7 +186,7 @@ PaymentTable p = PaymentDAO.newTable("p");
 
 List<Row> rows = sql.select(
     i.star(),
-    sql.val(50).plus(sql.selectScalar(sql.max(i.amount)).from(p).where(p.amount.lt(1000)).div(2)).as("score"),
+    sql.val(50).plus(sql.selectScalar(sql.max(p.amount)).from(p).where(p.amount.lt(1000)).div(2)).as("score"),
     sql.selectScalar(sql.max(b.status)).from(b).where(b.accountId.eq(i.accountId).and(b.id.ne(i.id)))
       .concat("/C").as("maxStatus"))
   .from(i)

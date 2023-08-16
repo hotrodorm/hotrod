@@ -29,7 +29,12 @@ public class MariaDBDialect extends LiveSQLDialect {
 
   @Override
   public WithRenderer getWithRenderer() {
-    return (c) -> "WITH" + (c ? " RECURSIVE" : "");
+    if (versionIsAtLeast(10, 2, 1)) {
+      return (c) -> "WITH" + (c ? " RECURSIVE" : "");
+    }
+    throw new UnsupportedLiveSQLFeatureException(
+        "LiveSQL supports Common Table Expressions (CTEs) in MariaDB 10.2.1 or newer, " + "but the current version is "
+            + renderVersion());
   }
 
   // From rendering
