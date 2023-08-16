@@ -466,9 +466,9 @@ of all the invoices related to them:
 
 ```sql
 WITH RECURSIVE
-g AS ( -- first the anchor member
+g AS ( -- first the anchor term
   SELECT id FROM account WHERE id = 1215
- UNION ALL -- now the recursive member
+ UNION ALL -- now the recursive term
   SELECT b.id
   FROM g
   JOIN account b ON b.parent_id = g.id
