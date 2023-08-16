@@ -2,6 +2,14 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
+## 4.1.0 (unreleased)
+
+- LiveSQL:
+    - All types of subqueries implemented. This new version adds table expressions, scalar subqueries, CTEs (Common Table Expressions), recursive CTEs, and lateral joins to the existing ones. Before this version subqueries for only IN/NOT IN, EXISTS/NOT EXISTS, and assymmetric operators were implemented.
+    - Explicit parenthesis added for expressions using sql.enclose().
+    - All literals (including integer numbers) are now parameterized to help with query optimization.
+      
+
 ## 4.0.0
 
 - Core:
