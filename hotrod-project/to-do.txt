@@ -1,26 +1,24 @@
+Done:
 
-
-
-For 3.4.x:
-- Change branch name to "3.x".
-
-For 4.0:
-- Simplify the configuration file, specially the <daos> tag.
-- Default types to java.time
-
-- Combine docs/to-do.txt
-
-LiveSQL:
 - sql.enclose()
 - Parameterize integers.
 
-=== Pending ===
-- CTE check if available in database and throw UnsupportedException.
-- Recursive CTE check if available in database and throw UnsupportedException.
-- Scalar subqueries: Call validateTableReferences() and designateAliases(). 
-- Naming columns in table expressions (DB2, PostgreSQL, SQL Server, MySQL).
-- LAG() with one parameter crashes.
-- Consider .asc() ordering by default.
+To Do:
+
+3.  Rethink DAOs, VOs, Model. Include config refactoring.
+4.  Normalize CRUD methods. (Maybe add checks for not null PK when deleting/updating?) 
+5.  LiveSQL: Add "CASE <expr> WHEN".
+7.  Upgrade Date/Time data types. Use java.time.* (LocalDate, LocalTime, LocalTimestamp, ZonedDateTime, 
+    OffsetDateTime, OffsetTime, Duration) instead of the old (java.sql.Timestamp, java.util.Date, java.sql.Time).
+8.  Torcs.
+9.  Implement LiveSQL specialized. Start with PostgreSQL 14?
+
+10. CTE check if available in database and throw UnsupportedException.
+11. Recursive CTE check if available in database and throw UnsupportedException.
+12. Scalar subqueries: Call validateTableReferences() and designateAliases(). 
+13. Naming columns in table expressions (DB2, PostgreSQL, SQL Server, MySQL).
+14. LAG() with one parameter crashes.
+15. Consider .asc() ordering by default.
 
 
 LiveSQL experts names:
