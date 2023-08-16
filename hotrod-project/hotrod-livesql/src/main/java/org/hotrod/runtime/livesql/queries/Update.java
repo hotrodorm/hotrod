@@ -19,7 +19,6 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLStructure;
 public class Update {
 
   private LiveSQLDialect sqlDialect;
-  @SuppressWarnings("unused")
   private SqlSession sqlSession;
   private String mapperStatement; // DAO.update(values, [t,] predicate)
   private LiveSQLMapper liveSQLMapper; // LiveSQL
