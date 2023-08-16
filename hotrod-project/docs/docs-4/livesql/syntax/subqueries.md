@@ -211,7 +211,7 @@ The following query joins a table with a table expression:
 
 ```sql
 SELECT
-  a.id as id,
+  a.id,
   a.branch_id,
   sum(l.line_total) as total
 FROM account a
