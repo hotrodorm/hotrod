@@ -504,8 +504,8 @@ List<Row> rows = sql.with(g)
     .execute();
 ```
 
-Notice the use of the `.as(anchor, recursive)` method. It specifies separately the anchor member
-from the recursive member subquery of the recursive CTE.
+Notice the use of the `.as(anchorTerm, recursiveTerm)` method. It specifies the anchor and recursive
+terms of the recursive CTE separately.
 
 Also, there's an alternative method `asUnion()` that implements recursive CTEs using the `UNION` operator rather than the default `UNION ALL` operator. This variant is only supported by the PostgreSQL and MariaDB databases.
 

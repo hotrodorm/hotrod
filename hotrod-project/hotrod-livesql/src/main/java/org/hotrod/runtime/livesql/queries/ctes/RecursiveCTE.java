@@ -15,9 +15,9 @@ public class RecursiveCTE extends CTE {
 
   private String[] aliases;
 
-  private ExecutableSelect<?> anchor;
+  private ExecutableSelect<?> anchorTerm;
   private boolean unionAll;
-  private ExecutableSelect<?> recursive;
+  private ExecutableSelect<?> recursiveTerm;
 
   // Constructor
 
@@ -26,16 +26,16 @@ public class RecursiveCTE extends CTE {
     this.aliases = aliases;
   }
 
-  public void as(final ExecutableSelect<?> anchor, final ExecutableSelect<?> recursive) {
-    this.anchor = anchor;
+  public void as(final ExecutableSelect<?> anchorTerm, final ExecutableSelect<?> recursiveTerm) {
+    this.anchorTerm = anchorTerm;
     this.unionAll = true;
-    this.recursive = recursive;
+    this.recursiveTerm = recursiveTerm;
   }
 
-  public void asUnion(final ExecutableSelect<?> anchor, final ExecutableSelect<?> recursive) {
-    this.anchor = anchor;
+  public void asUnion(final ExecutableSelect<?> anchorTerm, final ExecutableSelect<?> recursiveTerm) {
+    this.anchorTerm = anchorTerm;
     this.unionAll = false;
-    this.recursive = recursive;
+    this.recursiveTerm = recursiveTerm;
   }
 
   @Override
@@ -54,20 +54,20 @@ public class RecursiveCTE extends CTE {
     }
     w.enterLevel();
     w.write(" as (\n");
-    this.anchor.renderTo(w);
+    this.anchorTerm.renderTo(w);
     w.exitLevel();
     w.write("\n");
     w.write(this.unionAll ? "UNION ALL" : "UNION");
     w.write("\n");
     w.enterLevel();
-    this.recursive.renderTo(w);
+    this.recursiveTerm.renderTo(w);
     w.exitLevel();
     w.write("\n");
     w.write(")");
   }
 
   public List<ResultSetColumn> getColumns() throws IllegalAccessException {
-    return this.expandColumns(this.anchor.listColumns());
+    return this.expandColumns(this.anchorTerm.listColumns());
   }
 
 }
