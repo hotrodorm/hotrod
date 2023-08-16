@@ -85,7 +85,6 @@ import org.hotrod.runtime.livesql.queries.UpdateTablePhase;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.ctes.CTEHeaderPhase;
 import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
-import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.runtime.livesql.queries.scalarsubqueries.BooleanSelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.scalarsubqueries.ByteArraySelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.scalarsubqueries.DateTimeSelectColumnsPhase;
@@ -97,6 +96,7 @@ import org.hotrod.runtime.livesql.queries.select.PGSelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.select.SelectCTEPhase;
 import org.hotrod.runtime.livesql.queries.select.SelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
+import org.hotrod.runtime.livesql.queries.subqueries.SubqueryColumnsPhase;
 import org.hotrod.runtime.livesql.sysobjects.DualTable;
 import org.hotrod.runtime.livesql.sysobjects.SysDummy1Table;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -146,6 +146,16 @@ public class LiveSQL {
     return new PGSelectColumnsPhase<Row>(this.sqlDialect, this.sqlSession, this.liveSQLMapper, true, resultSetColumns);
   }
 
+  // Subqueries
+
+  public Subquery subquery(final String alias, final ExecutableSelect<?> select) {
+    return new Subquery(alias, null, select);
+  }
+
+  public SubqueryColumnsPhase subquery(final String alias, final String... columns) {
+    return new SubqueryColumnsPhase(alias, columns);
+  }
+
   // Scalar subqueries
 
   public NumberSelectColumnsPhase selectScalar(final NumberExpression expression) {
@@ -182,16 +192,6 @@ public class LiveSQL {
     return new CTEHeaderPhase(name, columns);
   }
 
-//  public RecursiveCTE recursiveCTE(final String name, final ExecutableSelect<?> anchor,
-//      final ExecutableSelect<?> recursive) {
-//    return new RecursiveCTE(name, null, anchor, true, recursive);
-//  }
-//
-//  public RecursiveCTE recursiveCTEUnion(final String name, final ExecutableSelect<?> anchor,
-//      final ExecutableSelect<?> recursive) {
-//    return new RecursiveCTE(name, null, anchor, false, recursive);
-//  }
-
   public RecursiveCTE recursiveCTE(final String name, final String... columns) {
     return new RecursiveCTE(name, columns);
   }
@@ -216,12 +216,6 @@ public class LiveSQL {
 
   public InsertIntoPhase insert(final TableOrView into) {
     return new InsertIntoPhase(this.sqlDialect, this.sqlSession, this.liveSQLMapper, into);
-  }
-
-  // Subqueries
-
-  public Subquery subquery(final String alias, final ExecutableSelect<?> select) {
-    return new Subquery(alias, select);
   }
 
   // Tuples

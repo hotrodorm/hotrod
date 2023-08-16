@@ -1,6 +1,8 @@
 package org.hotrod.runtime.livesql.dialects;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
@@ -43,6 +45,13 @@ public class PostgreSQLDialect extends LiveSQLDialect {
   @Override
   public FromRenderer getFromRenderer() {
     return () -> "";
+  }
+  // Table Expression rendering
+
+  @Override
+  public TableExpressionRenderer getTableExpressionRenderer() {
+    return (columns) -> " ("
+        + Arrays.stream(columns).map(c -> this.canonicalToNatural(c)).collect(Collectors.joining(", ")) + ")";
   }
 
   // Join rendering

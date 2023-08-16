@@ -91,6 +91,8 @@ public abstract class LiveSQLDialect {
 
   public abstract FromRenderer getFromRenderer();
 
+  public abstract TableExpressionRenderer getTableExpressionRenderer();
+
   public abstract JoinRenderer getJoinRenderer();
 
   public abstract PaginationRenderer getPaginationRenderer();

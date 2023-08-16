@@ -15,16 +15,12 @@ import org.hotrod.runtime.livesql.util.SubqueryUtil;
 
 public class CTE extends Subquery {
 
-  protected String[] aliases;
-
   public CTE(String name, ExecutableSelect<?> select) {
-    super(name, select);
-    this.aliases = null;
+    super(name, null, select);
   }
 
-  public CTE(String name, String[] aliases, ExecutableSelect<?> select) {
-    super(name, select);
-    this.aliases = aliases;
+  public CTE(String name, String[] columns, ExecutableSelect<?> select) {
+    super(name, columns, select);
   }
 
   public boolean isRecursive() {
@@ -40,9 +36,9 @@ public class CTE extends Subquery {
 
   public void renderDefinitionTo(QueryWriter w, LiveSQLDialect dialect) {
     w.write(w.getSqlDialect().canonicalToNatural(w.getSqlDialect().naturalToCanonical(super.getAlias())));
-    if (this.aliases != null && this.aliases.length > 0) {
+    if (this.columns != null && this.columns.length > 0) {
       w.write(" (");
-      w.write(Arrays.stream(this.aliases).map(a -> w.getSqlDialect().canonicalToNatural(a))
+      w.write(Arrays.stream(this.columns).map(a -> w.getSqlDialect().canonicalToNatural(a))
           .collect(Collectors.joining(", ")));
       w.write(")");
     }
@@ -55,16 +51,16 @@ public class CTE extends Subquery {
   }
 
   public List<ResultSetColumn> getColumns() throws IllegalAccessException {
-    if (this.aliases != null && this.aliases.length > 0) {
+    if (this.columns != null && this.columns.length > 0) {
       List<ResultSetColumn> cols = super.getSelect().listColumns();
-      if (this.aliases.length != cols.size()) {
+      if (this.columns.length != cols.size()) {
         throw new RuntimeException("The number of columns (" + cols.size() + ") in the CTE '" + super.getAlias()
-            + "' differs from the number of declared column names for it (" + this.aliases.length + ").");
+            + "' differs from the number of declared column names for it (" + this.columns.length + ").");
       }
       List<ResultSetColumn> fcols = new ArrayList<>();
-      for (int i = 0; i < this.aliases.length; i++) {
+      for (int i = 0; i < this.columns.length; i++) {
         ResultSetColumn rsc = cols.get(i);
-        Expression col = SubqueryUtil.castSubqueryColumnAsExternalLevelSubqueryColumn(this, rsc, this.aliases[i]);
+        Expression col = SubqueryUtil.castSubqueryColumnAsExternalLevelSubqueryColumn(this, rsc, this.columns[i]);
         fcols.add(col);
       }
       return fcols;

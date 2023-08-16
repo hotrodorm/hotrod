@@ -45,6 +45,14 @@ public class OracleDialect extends LiveSQLDialect {
     return () -> "FROM dual";
   }
 
+  // Table Expression rendering
+
+  @Override
+  public TableExpressionRenderer getTableExpressionRenderer() {
+    throw new UnsupportedLiveSQLFeatureException(
+        "Oracle does not support naming the columns of a table expression right after the table expression name.");
+  }
+
   // Join rendering
 
   @Override

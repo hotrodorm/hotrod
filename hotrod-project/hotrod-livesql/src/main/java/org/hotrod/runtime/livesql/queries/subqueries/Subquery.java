@@ -21,18 +21,20 @@ import org.hotrod.runtime.livesql.util.SubqueryUtil;
 
 public class Subquery implements TableExpression {
 
-  private String alias;
+  private String name;
+  protected String[] columns;
   private ExecutableSelect<?> select;
 
-  public Subquery(final String alias, final ExecutableSelect<?> select) {
-    this.alias = alias;
+  public Subquery(final String alias, final String[] columns, final ExecutableSelect<?> select) {
+    this.name = alias;
+    this.columns = columns;
     this.select = select;
   }
 
   // Getters
 
   public String getAlias() {
-    return alias;
+    return name;
   }
 
   public ExecutableSelect<?> getSelect() {
@@ -73,27 +75,30 @@ public class Subquery implements TableExpression {
 
   @Override
   public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-    ag.register(this.alias, null);
+    ag.register(this.name, null);
   }
 
   @Override
   public void designateAliases(final AliasGenerator ag) {
-    if (this.alias == null) {
-      this.alias = ag.next();
+    if (this.name == null) {
+      this.name = ag.next();
     }
   }
 
   // Rendering
 
   @Override
-  public void renderTo(QueryWriter w, LiveSQLDialect dialect) {
+  public void renderTo(final QueryWriter w, final LiveSQLDialect dialect) {
     w.enterLevel();
     w.write("(\n");
     this.select.renderTo(w);
     w.exitLevel();
     w.write("\n");
     w.write(") ");
-    w.write(w.getSqlDialect().canonicalToNatural(w.getSqlDialect().naturalToCanonical(this.alias)));
+    w.write(w.getSqlDialect().canonicalToNatural(w.getSqlDialect().naturalToCanonical(this.name)));
+    if (this.columns != null && this.columns.length > 0) {
+      w.write(w.getSqlDialect().getTableExpressionRenderer().renderNamedColumns(this.columns));
+    }
   }
 
   @Override

@@ -15,28 +15,7 @@ public class NumberConstant extends NumberExpression {
   public NumberConstant(final Number value) {
     super(Expression.PRECEDENCE_LITERAL);
     this.parameterize = true;
-//    this.parameterize = value != null && (this.isFloat(value) || this.isDouble(value));
     this.value = value;
-  }
-
-  // Utilities
-
-  private boolean isFloat(final Number n) {
-    try {
-      Float.class.cast(n);
-      return true;
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  private boolean isDouble(final Number n) {
-    try {
-      Double.class.cast(n);
-      return true;
-    } catch (ClassCastException e) {
-      return false;
-    }
   }
 
   // Rendering

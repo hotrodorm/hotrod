@@ -39,6 +39,14 @@ public class MariaDBDialect extends LiveSQLDialect {
     return () -> "";
   }
 
+  // Table Expression rendering
+
+  @Override
+  public TableExpressionRenderer getTableExpressionRenderer() {
+    throw new UnsupportedLiveSQLFeatureException(
+        "MariaDB does not support naming the columns of a table expression right after the table expression name.");
+  }
+
   // Join rendering
 
   @Override
