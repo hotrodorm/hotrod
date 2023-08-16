@@ -205,7 +205,7 @@ List<Row> rows = sql.select(
 
 Table Expressions can take the place of a table or view in a query. They can be joined to other table expressions and they can also be nested as needed to write complex logic.
 
-**A Query With One Table Expression**
+**5.1 Using One Table Expression**
 
 The following query joins a table with a table expression:
 
@@ -253,7 +253,7 @@ List<Row> rows = sql.select(a.star())
     .execute();
 ```
 
-**Nested Table Expressions**
+**5.2 Nesting Table Expressions**
 
 The following query nests one table expression into another one:
 
@@ -295,23 +295,23 @@ Subquery x = sql.subquery("x",
         .from(i)
         .where(i.accountId.eq(1015))
 );
-Subquery y = sql.subquery("y", 
-    sql.select( 
+Subquery y = sql.subquery("y",
+    sql.select(
         x.dt("orderDate"),
         x.num("unpaidBalance"),
-        sql.sum(x.num("inc")).over().partitionBy(x.num("id")).orderBy(x.dt("orderDate").asc()).end().as("grp")) 
-        .from(x) 
+        sql.sum(x.num("inc")).over().partitionBy(x.num("id")).orderBy(x.dt("orderDate").asc()).end().as("grp"))
+        .from(x)
 );
-List<Row> rows = sql.select( 
-    y.num("grp"), 
-    sql.min(y.dt("orderDate")).as("start"), 
-    sql.sum(y.num("unpaidBalance")).as("groupBalance")) 
-  .from(y) 
+List<Row> rows = sql.select(
+    y.num("grp"),
+    sql.min(y.dt("orderDate")).as("start"),
+    sql.sum(y.num("unpaidBalance")).as("groupBalance"))
+  .from(y)
   .groupBy(y.num("grp"))
   .execute();
 ```
 
-**Joining Table Expressions**
+** 5.3 Joining Table Expressions**
 
 Any number of table expressions can participate in a query. The following example
 joins two tables expressions:
@@ -348,23 +348,61 @@ InvoiceTable i = InvoiceDAO.newTable("i");
 InvoiceLineTable l = InvoiceLineDAO.newTable("l");
 ProductTable p = ProductDAO.newTable("p");
 
-Subquery x = sql.subquery("x", 
-    sql.select(b.isVip, a.star()) 
-        .from(b) 
-        .join(a, a.branchId.eq(b.id)) 
+Subquery x = sql.subquery("x",
+    sql.select(b.isVip, a.star())
+        .from(b)
+        .join(a, a.branchId.eq(b.id))
 );
-Subquery y = sql.subquery("y", 
-    sql.select(i.accountId) 
-        .from(i) 
-        .join(l, l.invoiceId.eq(i.id)) 
-        .join(p, p.id.eq(l.productId)) 
+Subquery y = sql.subquery("y",
+    sql.select(i.accountId)
+        .from(i)
+        .join(l, l.invoiceId.eq(i.id))
+        .join(p, p.id.eq(l.productId))
         .where(p.shipping.eq(0)));
-List<Row> rows = sql.select(x.star()) 
-    .from(x) 
-    .leftJoin(y, y.num("accountId").eq(x.num("id"))) 
+List<Row> rows = sql.select(x.star())
+    .from(x)
+    .leftJoin(y, y.num("accountId").eq(x.num("id")))
     .where(y.num("accountId").isNull())
     .execute();
 ```
+
+
+** 5.4 Naming the Columns of a Table Expression**
+
+The names of the resulting columns can be named in a table expression right after its name.
+
+In the following example the columns of the table expression `x` are named `vip` and `aid` respectively:
+
+```sql
+SELECT x.vip, x.aid
+FROM (
+  SELECT b.is_vip, a.id,
+  FROM branch b
+  JOIN account a ON a.branch_id = b.id
+) x (vip, aid)
+WHERE x.vip = 1
+```
+
+It can be written in LiveSQL as:
+
+```java
+BranchTable b = BranchDAO.newTable("b");
+AccountTable a = AccountDAO.newTable("a");
+
+Subquery x = sql.subquery("x", "vip", "aid")
+    .as(
+      sql.select(b.isVip, a.id)
+        .from(b)
+        .join(a, a.branchId.eq(b.id))
+    );
+List<Row> rows = sql.select(x.num("vip"), x.str("aid"))
+    .from(x)
+    .where(x.num("vip").eq(1))
+    .execute();
+```
+
+**Note**: Oracle and MariaDB do not support naming the columns externally. You can still
+use `.as()` in the subquery select list to name the columns.
 
 ### 6. Common Table Expressions (CTEs)
 
@@ -400,20 +438,20 @@ InvoiceTable i = InvoiceDAO.newTable("i");
 InvoiceLineTable l = InvoiceLineDAO.newTable("l");
 ProductTable p = ProductDAO.newTable("p");
 
-CTE x = sql.cte("x", 
-    sql.select(b.isVip, a.star()) 
-        .from(b) 
-        .join(a, a.branchId.eq(b.id)) 
+CTE x = sql.cte("x",
+    sql.select(b.isVip, a.star())
+        .from(b)
+        .join(a, a.branchId.eq(b.id))
 );
-CTE y = sql.cte("y", "aid").as(sql.select(i.accountId) 
-    .from(i) 
-    .join(l, l.invoiceId.eq(i.id)) 
-    .join(p, p.id.eq(l.productId)) 
+CTE y = sql.cte("y", "aid").as(sql.select(i.accountId)
+    .from(i)
+    .join(l, l.invoiceId.eq(i.id))
+    .join(p, p.id.eq(l.productId))
     .where(p.shipping.eq(0)));
-List<Row> rows = sql.with(x, y) 
-    .select(x.star()) 
-    .from(x) 
-    .leftJoin(y, y.num("aid").eq(x.num("id"))) 
+List<Row> rows = sql.with(x, y)
+    .select(x.star())
+    .from(x)
+    .leftJoin(y, y.num("aid").eq(x.num("id")))
     .where(y.num("aid").isNull())
     .execute();
 ```
@@ -459,9 +497,9 @@ g.as(
     .where(b.parentId.eq(g.num("id")))
 );
 
-List<Row> rows = sql.with(g) 
-    .select(g.num("id"), i.amount) 
-    .from(g) 
+List<Row> rows = sql.with(g)
+    .select(g.num("id"), i.amount)
+    .from(g)
     .join(i, i.accountId.eq(g.num("id")))
     .execute();
 ```
@@ -469,12 +507,12 @@ List<Row> rows = sql.with(g)
 Notice the use of the `.as(anchor, recursive)` method. It specifies separately the anchor member
 from the recursive member subquery of the recursive CTE.
 
-Also notice there's an alternative method `asUnion()` that implements recursive CTEs using the `UNION` operator rather than the default `UNION ALL` operator. This variant is only supported by the PostgreSQL and MariaDB databases.
+Also, there's an alternative method `asUnion()` that implements recursive CTEs using the `UNION` operator rather than the default `UNION ALL` operator. This variant is only supported by the PostgreSQL and MariaDB databases.
 
 ### 8. Lateral Joins
 
 Lateral joins are executed once per each row of the previous tables or table
-expression. Lateral joins can operate as inner or outer joins. 
+expression. Lateral joins can operate as inner or outer joins.
 
 The following example shows both types:
 

@@ -241,8 +241,9 @@ public class App {
 //    example5TableExpressions();
 //    example5NestedTableExpressions();
 //    example5JoinedTableExpressions();
+    example5NamedTableExpressions();
 //    example6CTEs();
-    example7RecursiveCTEs();
+//    example7RecursiveCTEs();
 //    example8LateralJoins();
   }
 
@@ -477,6 +478,52 @@ public class App {
 
   }
 
+  private void example5NamedTableExpressions() {
+
+//    5. Joining Table Expressions
+//
+//    select x.*
+//    from (
+//      select b.is_vip, a.* 
+//      from branch b
+//      join account a on a.branch_id = b.id
+//    ) x
+//    left join (
+//      select i.account_id
+//      from invoice i
+//      join invoice_line l on l.invoice_id = i.id
+//      join product p on p.id = l.product_id
+//      where p.shipping = 0
+//    ) y (aid) on y.account_id = x.id
+//    where y.account_id is null
+
+    BranchTable b = BranchDAO.newTable("b");
+    AccountTable a = AccountDAO.newTable("a");
+    InvoiceTable i = InvoiceDAO.newTable("i");
+    InvoiceLineTable l = InvoiceLineDAO.newTable("l");
+    ProductTable p = ProductDAO.newTable("p");
+
+    Subquery x = sql.subquery("x", //
+        sql.select(b.isVip, a.star()) //
+            .from(b) //
+            .join(a, a.branchId.eq(b.id)) //
+    );
+    Subquery y = sql.subquery("y", "ai#d") //
+        .as(sql.select(i.accountId) //
+            .from(i) //
+            .join(l, l.invoiceId.eq(i.id)) //
+            .join(p, p.id.eq(l.productId)) //
+            .where(p.shipping.eq(0)));
+    ExecutableSelect<Row> q = sql.select(x.star()) //
+        .from(x) //
+        .leftJoin(y, y.num("ai#d").eq(x.num("id"))) //
+        .where(y.num("ai#d").isNull());
+
+    System.out.println(q.getPreview());
+    q.execute().forEach(r -> System.out.println("row: " + r));
+
+  }
+
   private void example6CTEs() {
 
 //    6. CTEs (Common Table Expressions)
@@ -530,23 +577,23 @@ public class App {
 
 //  7. Recursive CTEs -- Pending
 //
-  //    with recursive
-  //    g as (
-  //      select id from account where id = 1215
-  //     union all
-  //      select b.id
-  //      from g
-  //      join account b on b.parent_id = g.id
-  //    )
-  //    select g.id, i.amount
-  //    from g
-  //    join invoice i on i.account_id = g.id;
+    // with recursive
+    // g as (
+    // select id from account where id = 1215
+    // union all
+    // select b.id
+    // from g
+    // join account b on b.parent_id = g.id
+    // )
+    // select g.id, i.amount
+    // from g
+    // join invoice i on i.account_id = g.id;
 
     AccountTable a = AccountDAO.newTable("a");
     AccountTable b = AccountDAO.newTable("b");
     InvoiceTable i = InvoiceDAO.newTable("i");
 
-    RecursiveCTE g = sql.recursiveCTE("g");
+    RecursiveCTE g = sql.recursiveCTE("g", "id");
     g.as(sql.select(a.id) //
         .from(a) //
         .where(a.id.eq(1215)),
