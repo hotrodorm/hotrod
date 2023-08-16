@@ -234,17 +234,17 @@ public class App {
 //  }
 
   private void liveSQLExamples() {
-//    example1InNotIn();
-//    example2ExistsNotExists();
-//    example3AssymmetricOperators();
-//    example4ScalarSubqueries();
-//    example5TableExpressions();
-//    example5NestedTableExpressions();
-//    example5JoinedTableExpressions();
+    example1InNotIn();
+    example2ExistsNotExists();
+    example3AssymmetricOperators();
+    example4ScalarSubqueries();
+    example5TableExpressions();
+    example5NestedTableExpressions();
+    example5JoinedTableExpressions();
     example5NamedTableExpressions();
-//    example6CTEs();
-//    example7RecursiveCTEs();
-//    example8LateralJoins();
+    example6CTEs();
+    example7RecursiveCTEs();
+    example8LateralJoins();
   }
 
   private void example1InNotIn() {
@@ -336,7 +336,7 @@ public class App {
 
     ExecutableSelect<Row> q = sql.select( //
         i.star(), //
-        sql.val(50).mult(sql.selectScalar(sql.max(i.amount)).from(p).where(p.amount.lt(1000)).div(2)).as("score"),
+        sql.val(50).mult(sql.selectScalar(sql.max(p.amount)).from(p).where(p.amount.lt(1000)).div(2)).as("score"),
         sql.selectScalar(sql.val("a")).from(b).where(b.accountId.eq(i.accountId).and(b.id.ne(i.id))).substr(1, 3)
             .as("otherUnpaid"))
         .from(i) //
@@ -375,6 +375,10 @@ public class App {
             .where(p.type.eq("OTC")) //
             .groupBy(i.accountId, p.id) //
     );
+    
+//    x.materialize("accounting.OTCInvoices");
+//    OTCInvoices x =  sql.materializedSubquery("x", "accounting.OTCInvoices", OTCInvoices.class, //
+    
     ExecutableSelect<Row> q = sql.select(a.star()) //
         .from(a) //
         .join(x, x.num("accountId").eq(a.id)) //
