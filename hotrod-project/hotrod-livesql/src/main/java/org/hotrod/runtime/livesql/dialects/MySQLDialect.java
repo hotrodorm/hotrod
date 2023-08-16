@@ -32,11 +32,11 @@ public class MySQLDialect extends LiveSQLDialect {
 
   @Override
   public WithRenderer getWithRenderer() {
-    if (versionIsAtLeast(8, 0, 14)) {
+    if (versionIsAtLeast(8, 0, 1)) {
       return (c) -> "WITH" + (c ? " RECURSIVE" : "");
     }
     throw new UnsupportedLiveSQLFeatureException(
-        "LiveSQL supports Common Table Expressions (CTEs) starting in MySQL 8.0.14 or newer, "
+        "LiveSQL supports Common Table Expressions (CTEs) starting in MySQL 8.0.1 or newer, "
             + "but the current version is " + renderVersion());
   }
 
