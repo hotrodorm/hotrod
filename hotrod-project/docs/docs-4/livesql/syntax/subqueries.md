@@ -213,7 +213,7 @@ The following query joins a table with a table expression:
 SELECT
   a.id,
   a.branch_id,
-  sum(l.line_total) as total
+  x.total
 FROM account a
 JOIN (
   SELECT
@@ -246,7 +246,7 @@ Subquery x = sql.subquery("x",
         .where(p.type.eq("OTC"))
         .groupBy(i.accountId, p.id)
 );
-List<Row> rows = sql.select(a.star())
+List<Row> rows = sql.select(a.id, a.branchId, x.num("total"))
     .from(a)
     .join(x, x.num("accountId").eq(a.id))
     .where(x.num("total").gt(1000))
@@ -311,7 +311,7 @@ List<Row> rows = sql.select(
   .execute();
 ```
 
-** 5.3 Joining Table Expressions**
+**5.3 Joining Table Expressions**
 
 Any number of table expressions can participate in a query. The following example
 joins two tables expressions:
@@ -367,7 +367,7 @@ List<Row> rows = sql.select(x.star())
 ```
 
 
-** 5.4 Naming the Columns of a Table Expression**
+**5.4 Naming the Columns of a Table Expression**
 
 The names of the resulting columns can be named in a table expression right after its name.
 
