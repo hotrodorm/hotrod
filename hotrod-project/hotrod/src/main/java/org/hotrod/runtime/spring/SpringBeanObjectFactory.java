@@ -1,5 +1,6 @@
 package org.hotrod.runtime.spring;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -28,20 +29,26 @@ public class SpringBeanObjectFactory extends DefaultObjectFactory implements App
   }
 
   @Override
-  public <T> T create(Class<T> type) {
+  public <T> T create(final Class<T> type) {
     if (this.isCollection(type)) {
       return super.create(type);
     } else if (type == List.class || type == Collection.class || type == Iterable.class || type == Map.class
         || type == SortedSet.class || type == Set.class || type == Row.class) {
       Class<?> clazz = super.resolveInterface(type);
-      try {
-        return (T) clazz.newInstance();
-      } catch (InstantiationException | IllegalAccessException e) {
-        throw new ReflectionException("Error instantiating " + type + " as a " + clazz.getName() + ". Cause: " + e, e);
-      }
+      return instantiatePOJO(type, clazz);
     } else {
       T bean = this.applicationContext.getBean(type);
       return bean;
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private <T> T instantiatePOJO(final Class<T> type, final Class<?> clazz) {
+    try {
+      return (T) clazz.getDeclaredConstructor().newInstance();
+    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+        | NoSuchMethodException | SecurityException e) {
+      throw new ReflectionException("Error instantiating " + type + " as a " + clazz.getName() + ". Cause: " + e, e);
     }
   }
 
