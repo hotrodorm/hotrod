@@ -1,0 +1,40 @@
+<project name="hotrod-loc" default="loc" basedir=".">
+
+  <target name="loc">
+    <taskdef name="loc"
+             classname="loc.LocCounterAntTask"
+             classpath="../attic/hotrod/lib/loc.jar" />
+    <tstamp>
+      <format property="now" pattern="yyyy.MM.dd-HH.mm" />
+    </tstamp>
+    <loc>
+      <consolereport />
+      <!--
+      <htmlfilereport filename="reports/loc/locreport-${now}.html" />
+      -->
+      <module name="hotrod" basedir="./hotrod">
+        <axis path="src/main/java" ext="java" />
+      </module>
+      <module name="hotrod-abstract-plugin" basedir="./hotrod-abstract-plugin">
+        <axis path="src/main/java" ext="java" />
+      </module>
+      <module name="hotrod-ant-plugin" basedir="./hotrod-ant-plugin">
+        <axis path="src/main/java" ext="java" />
+      </module>
+      <module name="hotrod-generator" basedir="./hotrod-generator">
+        <axis path="src/main/java" ext="java" />
+      </module>
+      <module name="hotrod-livesql" basedir="./hotrod-livesql">
+        <axis path="src/main/java" ext="java" />
+      </module>
+      <module name="hotrod-maven-plugin" basedir="./hotrod-maven-plugin">
+        <axis path="src/main/java" ext="java" />
+      </module>
+      <module name="hotrod-utils" basedir="./hotrod-utils">
+        <axis path="src/main/java" ext="java" />
+      </module>
+    </loc>
+  </target>
+
+</project>
+
