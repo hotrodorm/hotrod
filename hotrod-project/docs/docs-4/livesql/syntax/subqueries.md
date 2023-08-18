@@ -56,7 +56,7 @@ The following query uses the `NOT IN` operator:
 ```sql
 SELECT *
 FROM account
-WHERE branch_id not in (
+WHERE branch_id NOT IN (
   SELECT id FROM branch WHERE region = 'SOUTH'
 )
 ```
@@ -112,7 +112,7 @@ The following query uses the `NOT EXISTS` operator:
 ```sql
 SELECT *
 FROM account a
-WHERE not exists (
+WHERE NOT EXISTS (
   SELECT 1 FROM branch b WHERE b.id = a.branch_id and b.region = 'SOUTH'
 )
 ```
@@ -167,13 +167,13 @@ anywhere in the query. The following query includes two scalar subqueries:
 
 
 ```sql
-select
+SELECT
   i.*,
-  50 + (select max(amount) from payment where amount < 1000) / 2 as "score",
-  (select max(b.status) from invoice b where b.account_id = i.account_id and b.id <> i.id)
+  50 + (SELECT max(amount) FROM payment WHERE amount < 1000) / 2 AS "score",
+  (SELECT max(b.status) FROM invoice b WHERE b.account_id = i.account_id AND b.id <> i.id)
     || '/C' as "maxStatus"
-from invoice i
-where i.status = 'UNPAID'
+FROM invoice i
+WHERE i.status = 'UNPAID'
 
 ```
 
