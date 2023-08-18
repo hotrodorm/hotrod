@@ -44,7 +44,7 @@ allowed by the SQL Standard.
     - SQL Server 2014 or newer
     - MySQL 8.0.14 or newer
 
-### No Materialization of Subqueries
+### LiveSQL Subqueries Are Not Materialzed
 
 Even though subqueries are used in a very similar way as tables and views, they are treated differently by LiveSQL. Since the structure of tables and views is retrieved from the database in advance, their column names and types are fully known by LiveSQL.
 
@@ -95,10 +95,17 @@ List<Row> rows = sql.select()
 
 **Variation Using Tuples**
 
-Tuples are implemented using `sql.tuple(<expressions>)` and can be useful for the `IN` operator when
-comparing more than one column. Not all databases support the use of tuples this way, however.
+In some databases the `IN/NOT IN` operator can also accept tuples. The following query shows how tuples can be used this way.
 
-Tuples can be used in LiveSQL using the `sql.tuple()` method:
+```sql
+SELECT *
+FROM employee
+WHERE (type, region) NOT IN (
+  select type, region from codes where active = 1
+)
+```
+
+Tuples can be used in LiveSQL using the `sql.tuple()` method that accept one or more elements in it. The example above can be written in LiveSQL as:
 
 ```java
 EmployeeTable e = EmployeeDAO.newTable("e");
@@ -113,15 +120,7 @@ List<Row> rows = sql
     .execute();
 ```
 
-The resulting query is:
-
-```sql
-SELECT *
-FROM employee e
-WHERE (e.type, e.region) NOT IN (
-  select c.type, c.region from codes c where c.active = 1
-)
-```
+**Note**: Tuples are implemented for the `IN/NOT IN` operators at least in the Oracle, DB2 LUW, PostgreSQL, MySQL, MariaDB, H2 (version 2+), and HyperSQL databases. At the time of this writing SQL Server Sybase/SAP ASE, and Apache Derby do not support them.
 
 ### 2. EXISTS/NOT EXISTS Operators
 
@@ -131,7 +130,7 @@ The following query uses the `NOT EXISTS` operator:
 SELECT *
 FROM account a
 WHERE NOT EXISTS (
-  SELECT 1 FROM branch b WHERE b.id = a.branch_id and b.region = 'SOUTH'
+  SELECT 1 FROM branch b WHERE b.id = a.branch_id AND b.region = 'SOUTH'
 )
 ```
 
@@ -189,7 +188,7 @@ SELECT
   i.*,
   50 + (SELECT max(amount) FROM payment WHERE amount < 1000) / 2 AS "score",
   (SELECT max(b.status) FROM invoice b WHERE b.account_id = i.account_id AND b.id <> i.id)
-    || '/C' as "maxStatus"
+    || '/C' AS "maxStatus"
 FROM invoice i
 WHERE i.status = 'UNPAID'
 
@@ -232,7 +231,7 @@ The following query joins a table with a table expression:
 SELECT a.id, a.branch_id, x.total
 FROM account a
 JOIN (
-  SELECT i.account_id, p.id, sum(l.line_total) as total
+  SELECT i.account_id, p.id, sum(l.line_total) AS total
   FROM invoice i
   JOIN invoice_line l ON l.invoice_id = i.id
   JOIN product p ON p.id = l.product_id
@@ -273,18 +272,18 @@ The following query nests one table expression into another one:
 ```sql
 SELECT
   y.grp,
-  min(y.order_date) as start,
-  sum(y.unpaid_balance) as group_balance
+  min(y.order_date) AS start,
+  sum(y.unpaid_balance) AS group_balance
 FROM (
   SELECT
     x.order_date,
     x.unpaid_balance,
-    sum(x.inc) over(partition by x.id order by x.order_date) as grp
+    sum(x.inc) over(partition by x.id order by x.order_date) AS grp
   FROM (
     SELECT
       i.order_date,
       i.unpaid_balance,
-      case when (i.type <> lag(i.type) over(partition by i.id order by i.order_date)) then 1 else 0 end as inc
+      case when (i.type <> lag(i.type) over(partition by i.id order by i.order_date)) then 1 else 0 end AS inc
     FROM invoice i
     WHERE i.account_id = 1015
   ) x
@@ -412,17 +411,18 @@ List<Row> rows = sql.select(x.num("vip"), x.str("aid"))
 
 ### 6. Common Table Expressions (CTEs)
 
-Common Table Expressions are also supported. For example, the query above can also
-be written with CTEs. It takes the form:
+Common Table Expressions are subqueries defined separately before the main query, so they can be used them in the main query one or more times. Also any CTE can use any previously defined CTEs, according to the order they are defined.
+
+For example, the query above can also be written with CTEs. It takes the form:
 
 ```sql
 WITH
-x as (
+x AS (
   SELECT b.is_vip, a.id, a.branch_id
   FROM branch b
   JOIN account a ON a.branch_id = b.id
 ),
-y (aid) as (
+y (aid) AS (
   SELECT i.account_id
   FROM invoice i
   JOIN invoice_line l ON l.invoice_id = i.id
@@ -532,7 +532,7 @@ JOIN LATERAL (
   LIMIT 2
 ) x ON true
 LEFT JOIN LATERAL (
-  SELECT p.payment_date as last_payment
+  SELECT p.payment_date AS last_payment
   FROM payment p
   WHERE p.invoice_id = a.id
   ORDER BY p.payment_date desc
