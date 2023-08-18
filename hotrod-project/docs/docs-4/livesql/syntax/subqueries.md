@@ -32,7 +32,7 @@ It includes:
 typically used to produce values in the select list (or in other parts of the query) that are 
 computed by a query that needs to access system data, related tables, or unrelated tables.
 
-- **Table Expressions**: This is the most common type of subqueries that include the full syntax a `SELECT` statement. They are also known as *Derived Tables* or *Inline Views*. They can be included in the `FROM` and `JOIN` clauses and also allow nesting of subqueries as
+- **Table Expressions**: This is the most common type of subqueries that include the full syntax of a `SELECT` statement. They are also known as *Derived Tables* or *Inline Views*. They can be included in the `FROM` and `JOIN` clauses and also allow nesting of subqueries as
 allowed by the SQL Standard.
 
 - **Common Table Expressions (CTEs)**: Common Table Expressions greatly simplify the use and reuse of table expressions by naming them in advance, and using them later. Plain and recursive CTEs  are implemented.
