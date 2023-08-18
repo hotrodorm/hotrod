@@ -120,7 +120,7 @@ List<Row> rows = sql
     .execute();
 ```
 
-**Note**: Tuples are implemented for the `IN/NOT IN` operators in the Oracle, DB2 LUW, PostgreSQL, MySQL, MariaDB, H2 (version 2+), and HyperSQL databases. At the time of this writing SQL Server Sybase/SAP ASE, and Apache Derby do not support them.
+**Note**: Tuples are implemented for the `IN/NOT IN` operators in the Oracle, DB2 LUW, PostgreSQL, MySQL, MariaDB, H2 (version 2+), and HyperSQL databases. At the time of this writing SQL Server, Sybase/SAP ASE, and Apache Derby do not support them.
 
 ### 2. EXISTS/NOT EXISTS Operators
 
