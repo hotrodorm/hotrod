@@ -44,7 +44,7 @@ allowed by the SQL Standard.
     - SQL Server 2014 or newer
     - MySQL 8.0.14 or newer
 
-### LiveSQL Subqueries Are Not Materialzed
+### LiveSQL Subqueries Are Not Materialized
 
 Even though subqueries are used in a very similar way as tables and views, they are treated differently by LiveSQL. Since the structure of tables and views is retrieved from the database in advance, their column names and types are fully known by LiveSQL.
 
@@ -120,7 +120,7 @@ List<Row> rows = sql
     .execute();
 ```
 
-**Note**: Tuples are implemented for the `IN/NOT IN` operators at least in the Oracle, DB2 LUW, PostgreSQL, MySQL, MariaDB, H2 (version 2+), and HyperSQL databases. At the time of this writing SQL Server Sybase/SAP ASE, and Apache Derby do not support them.
+**Note**: Tuples are implemented for the `IN/NOT IN` operators in the Oracle, DB2 LUW, PostgreSQL, MySQL, MariaDB, H2 (version 2+), and HyperSQL databases. At the time of this writing SQL Server Sybase/SAP ASE, and Apache Derby do not support them.
 
 ### 2. EXISTS/NOT EXISTS Operators
 
