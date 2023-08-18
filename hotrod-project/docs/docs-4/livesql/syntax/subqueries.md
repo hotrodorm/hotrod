@@ -52,14 +52,14 @@ For example, if the table `CLIENT` has a column named `BRANCH_ID` LiveSQL can co
 
 On the other hand subqueries do produce on-the-fly columns but these are unknown to LiveSQL in advance and cannot be checked by the Java compiler while writing the query. In short, subquery columns are not ***materialized***.
 
-Therefore, to refer to non-materialized subquery columns in external statements LiveSQL includes six methods:
+Therefore, to refer to a non-materialized subquery column in an outer scope LiveSQL includes six methods:
 
-- `.num("columnName")` to reference a numeric subquery column.
-- `.str("columnName")` to reference a string/varchar subquery column.
-- `.dt("columnName")` to reference a date/time subquery column.
-- `.bool("columnName")` to reference a boolean subquery column.
-- `.bin("columnName")` to reference a binary subquery column.
-- `.obj("columnName")` to reference an object subquery column.
+- `.num("columnName")` to reference a numeric column of a subquery.
+- `.str("columnName")` to reference a string/varchar column of a subquery.
+- `.dt("columnName")` to reference a date/time column of a subquery.
+- `.bool("columnName")` to reference a boolean column of a subquery.
+- `.bin("columnName")` to reference a binary column of a subquery.
+- `.obj("columnName")` to reference an object column of a subquery.
 
 It's up to the developer to ensure the appropriate method is used to retrieve each subquery column with the appropriate type. Without subquery materialization LiveSQL has no means to check if the type of the column is appropriate, or if the name of the column is correct.
 
@@ -411,7 +411,7 @@ List<Row> rows = sql.select(x.num("vip"), x.str("aid"))
 
 ### 6. Common Table Expressions (CTEs)
 
-Common Table Expressions are subqueries defined separately before the main query, so they can be used them in the main query one or more times. Also any CTE can use any previously defined CTEs, according to the order they are defined.
+Common Table Expressions are subqueries defined separately before the main query, so they can be used in the main query one or more times. Moreover, any CTE can use any previously defined CTEs, in the order they are defined effectively reusing them, something that a traditional table expression cannot do.
 
 For example, the query above can also be written with CTEs. It takes the form:
 
@@ -461,6 +461,8 @@ List<Row> rows = sql.with(x, y)
     .where(y.num("aid").isNull())
     .execute();
 ```
+
+Note that the first CTE does not alias its columns, but the second one does. That means that the first one assumes the column names directly from the subquery.
 
 ### 7. Recursive Common Table Expressions (Recursive CTEs)
 
