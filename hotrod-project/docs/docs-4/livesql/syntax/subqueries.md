@@ -44,7 +44,7 @@ allowed by the SQL Standard.
     - SQL Server 2014 or newer
     - MySQL 8.0.14 or newer
 
-## No Materialization of Subqueries
+### No Materialization of Subqueries
 
 Even though subqueries are used in a very similar way to tables and views, they are treated differently by LiveSQL. Since the structure of tables and views is retrieved from the database in advance, their column names and types are fully known by LiveSQL.
 
