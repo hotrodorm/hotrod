@@ -44,6 +44,22 @@ allowed by the SQL Standard.
     - SQL Server 2014 or newer
     - MySQL 8.0.14 or newer
 
+## No Materialization of Subqueries
+
+Even though subqueries are used in a very similar way as tables or views, they are treated differently by LiveSQL. The structure of tables and views is retrieved from the database, and their column names and types are fully known by LiveSQL. If the table `CLIENT` has a column named `BRANCH_ID` LiveSQL can conveniently use this column as in `c.branchId` in the query definition.
+
+On the other hand subqueries do produce columns with names on the fly, but these are unknown to LiveSQL. Subquery columns are not *materialized*.
+
+To use subquery columns in external statements or clauses LiveSQL includes six methods:
+
+- `.num("columnName")` to reference a numeric subquery column.
+- `.str("columnName")` to reference a string/varchar subquery column.
+- `.dt("columnName")` to reference a date/time subquery column.
+- `.bool("columnName")` to reference a boolean subquery column.
+- `.bin("columnName")` to reference a binary subquery column.
+- `.obj("columnName")` to reference an object subquery column.
+
+It's up to the developer to ensure the appropriate method is used to retrieve each subquery column with the appropriate type. Without subquery materialization LiveSQL has no means to check if the type of the column is appropriate, or if the name of the column is correct.
 
 ## Examples
 
