@@ -50,7 +50,7 @@ Even though subqueries are used in a very similar way to tables and views, they 
 
 For example, if the table `CLIENT` has a column named `BRANCH_ID` LiveSQL can conveniently use this column as `c.branchId` in the LiveSQL query definition, and the Java compiler conveniently checks their existence and type.
 
-On the other hand subqueries do produce on-the-fly columns but these are unknown to LiveSQL in advance and cannot be checked by the Java compiler while writing the query. Subquery columns are not ***materialized***.
+On the other hand subqueries do produce on-the-fly columns but these are unknown to LiveSQL in advance and cannot be checked by the Java compiler while writing the query. In short, subquery columns are not ***materialized***.
 
 Therefore, to refer to non-materialized subquery columns in external statements LiveSQL includes six methods:
 
