@@ -163,7 +163,7 @@ List<Row> rows = sql.select()
 
 Scalar subqueries evaluate to a single *scalar* value. They can appear in any place where a value
 can be included in the query; typically they are placed in the select list, but can be placed 
-anywhere in the query . The following query includes two scalar subqueries:
+anywhere in the query. The following query includes two scalar subqueries:
 
 
 ```sql
@@ -197,29 +197,24 @@ List<Row> rows = sql.select(
 **Notes**:
 
 - The first scalar subquery takes the place of a number. As such it's divided by 2 and then it's added the value 50.
-- The first scalar subquery is not correlated; the second one is, since its value depends on the main driving table.
+- The first scalar subquery is not correlated; the second one is since its value depends on the driving table.
 - Depending on the parameter value, the type of the scalar subquery can be any of the six core types of LiveSQL. Namely: number, string, boolean, date/time, binary, and object. In this case the first one produces a number, and the second scalar subquery produces a string value.
-- Finally, remember that a scalar subquery can only include a single column. It must generate zero or one rows at the most. If more rows are generated, the whole query will fail with an error.
+- A scalar subquery can only produce a single column, not two or more.
+- A scalar subquery must generate one row at the most. If more rows are generated, the whole query will fail with an error. If zero rows are generated the scalar subquery evaluates to null.
 
 ### 5. Table Expressions
 
-Table Expressions can take the place of a table or view in a query. They can be joined to other table expressions and they can also be nested as needed to write complex logic.
+Table Expressions can take the place of a table or view in a query. They can be joined to other table expressions and they can also be nested as needed to write more complex logic.
 
 **5.1 Using One Table Expression**
 
 The following query joins a table with a table expression:
 
 ```sql
-SELECT
-  a.id,
-  a.branch_id,
-  x.total
+SELECT a.id, a.branch_id, x.total
 FROM account a
 JOIN (
-  SELECT
-    i.account_id,
-    p.id,
-    sum(l.line_total) as line_total
+  SELECT i.account_id, p.id, sum(l.line_total) as line_total
   FROM invoice i
   JOIN invoice_line l ON l.invoice_id = i.id
   JOIN product p ON p.id = l.product_id
@@ -317,15 +312,9 @@ Any number of table expressions can participate in a query. The following exampl
 joins two tables expressions:
 
 ```sql
-SELECT
-  x.is_vip,
-  x.id,
-  x.branch_id
+SELECT x.is_vip, x.id, x.branch_id
 FROM (
-  SELECT
-    b.is_vip,
-    a.id,
-    a.branch_id
+  SELECT b.is_vip, a.id, a.branch_id
   FROM branch b
   JOIN account a ON a.branch_id = b.id
 ) x
