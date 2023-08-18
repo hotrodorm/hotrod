@@ -390,8 +390,7 @@ List<Row> rows = sql.select(x.num("vip"), x.str("aid"))
     .execute();
 ```
 
-**Note**: Oracle and MariaDB do not support naming the columns externally. You can still
-use `.as()` in the subquery select list to name the columns.
+**Note**: Oracle and MariaDB do not support externally naming the columns of a table expression. You can still use `.as()` in the subquery select list to name the columns.
 
 ### 6. Common Table Expressions (CTEs)
 
@@ -506,7 +505,7 @@ expression. Lateral joins can operate as inner or outer joins.
 The following example shows both types:
 
 ```sql
-SELECT a.id, a.branch_id, x.order_date, y.last_payment
+SELECT a.*, x.*, y.*
 FROM account a
 JOIN LATERAL (
   SELECT i.order_date
