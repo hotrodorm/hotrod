@@ -232,7 +232,7 @@ The following query joins a table with a table expression:
 SELECT a.id, a.branch_id, x.total
 FROM account a
 JOIN (
-  SELECT i.account_id, p.id, sum(l.line_total) as line_total
+  SELECT i.account_id, p.id, sum(l.line_total) as total
   FROM invoice i
   JOIN invoice_line l ON l.invoice_id = i.id
   JOIN product p ON p.id = l.product_id
@@ -500,7 +500,6 @@ g.as(
   sql.select(b.id)
     .from(g)
     .join(b, b.parentId.eq(g.num("id")))
-    .where(b.parentId.eq(g.num("id")))
 );
 
 List<Row> rows = sql.with(g)
@@ -511,9 +510,9 @@ List<Row> rows = sql.with(g)
 ```
 
 Notice the use of the `.as(anchorTerm, recursiveTerm)` method. It specifies the anchor and recursive
-terms of the recursive CTE separately.
+terms of the recursive CTE separately. `UNION ALL` is the default linking operator.
 
-Also, there's an alternative method `asUnion()` that implements recursive CTEs using the `UNION` operator rather than the default `UNION ALL` operator. This variant is only supported by the PostgreSQL and MariaDB databases.
+There's the alternative method `.asUnion(anchorTerm, recursiveTerm)` that implements recursive CTEs using the `UNION` operator rather than the default `UNION ALL` operator. This variant is only supported by the PostgreSQL and MariaDB databases.
 
 ### 8. Lateral Joins
 
