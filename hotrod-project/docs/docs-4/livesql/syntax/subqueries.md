@@ -309,7 +309,7 @@ List<Row> rows = sql.select(
 **5.3 Joining Table Expressions**
 
 Any number of table expressions can participate in a query. The following example
-joins two tables expressions:
+joins two table expressions:
 
 ```sql
 SELECT x.is_vip, x.id, x.branch_id
