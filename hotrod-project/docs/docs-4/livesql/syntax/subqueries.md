@@ -46,7 +46,7 @@ allowed by the SQL Standard.
 
 ### No Materialization of Subqueries
 
-Even though subqueries are used in a very similar way to tables and views, they are treated differently by LiveSQL. Since the structure of tables and views is retrieved from the database in advance, their column names and types are fully known by LiveSQL.
+Even though subqueries are used in a very similar way as tables and views, they are treated differently by LiveSQL. Since the structure of tables and views is retrieved from the database in advance, their column names and types are fully known by LiveSQL.
 
 For example, if the table `CLIENT` has a column named `BRANCH_ID` LiveSQL can conveniently use this column as `c.branchId` in the LiveSQL query definition, and the Java compiler conveniently checks their existence and type.
 
