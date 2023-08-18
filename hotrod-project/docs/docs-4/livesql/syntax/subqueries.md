@@ -42,7 +42,7 @@ allowed by the SQL Standard.
     - DB2 LUW 10.5 or newer
     - PostgreSQL 9.3 or newer
     - SQL Server 2014 or newer
-    - MySQL 8.0.1 or newer
+    - MySQL 8.0.14 or newer
 
 
 ## Examples
