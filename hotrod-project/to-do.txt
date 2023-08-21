@@ -15,7 +15,7 @@ To Do:
 
 10. DONE -- CTE check if available in database and throw UnsupportedException.
 11. DONE -- Recursive CTE check if available in database and throw UnsupportedException.
-12. Scalar subqueries: Call validateTableReferences() and designateAliases(). 
+12. DONE -- Scalar subqueries: Call validateTableReferences() and designateAliases(). 
 13. DONE -- Naming columns in table expressions (DB2, PostgreSQL, SQL Server, MySQL).
 14. LAG() with one parameter crashes.
 15. Consider .asc() ordering by default.
