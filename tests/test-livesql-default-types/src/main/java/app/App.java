@@ -6,9 +6,10 @@ import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
-import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
+import org.hotrod.runtime.livesql.queries.select.ExecutableCriteriaSelect;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
+import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -18,7 +19,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
+import app.daos.InvoiceVO;
 import app.daos.primitives.AccountDAO;
 import app.daos.primitives.AccountDAO.AccountTable;
 import app.daos.primitives.BranchDAO;
@@ -34,20 +37,22 @@ import app.daos.primitives.ProductDAO.ProductTable;
 
 @Configuration
 @SpringBootApplication
-@ComponentScan
 @ComponentScan(basePackageClasses = LiveSQL.class)
 @MapperScan(basePackageClasses = LiveSQL.class)
 @MapperScan("mappers")
+@ComponentScan(basePackageClasses = SpringBeanObjectFactory.class)
+@PropertySource(value = { "file:application.properties",
+    "classpath:application.properties" }, ignoreResourceNotFound = true)
 public class App {
 
 //  @Autowired
 //  private NumbersDAO numbersDAO;
 
-  @Autowired
-  private BranchDAO branchDAO;
-
-  @Autowired
-  private AccountDAO accountDAO;
+//  @Autowired
+//  private BranchDAO branchDAO;
+//
+//  @Autowired
+//  private AccountDAO accountDAO;
 
   @Autowired
   private InvoiceDAO invoiceDAO;
@@ -234,17 +239,17 @@ public class App {
 //  }
 
   private void liveSQLExamples() {
-    example1InNotIn();
-    example2ExistsNotExists();
-    example3AssymmetricOperators();
-    example4ScalarSubqueries();
-    example5TableExpressions();
-    example5NestedTableExpressions();
+//    example1InNotIn();
+//    example2ExistsNotExists();
+//    example3AssymmetricOperators();
+//    example4ScalarSubqueries();
+//    example5TableExpressions();
+//    example5NestedTableExpressions();
     example5JoinedTableExpressions();
-    example5NamedTableExpressions();
-    example6CTEs();
-    example7RecursiveCTEs();
-    example8LateralJoins();
+//    example5NamedTableExpressions();
+//    example6CTEs();
+//    example7RecursiveCTEs();
+//    example8LateralJoins();
   }
 
   private void example1InNotIn() {
@@ -375,10 +380,10 @@ public class App {
             .where(p.type.eq("OTC")) //
             .groupBy(i.accountId, p.id) //
     );
-    
+
 //    x.materialize("accounting.OTCInvoices");
 //    OTCInvoices x =  sql.materializedSubquery("x", "accounting.OTCInvoices", OTCInvoices.class, //
-    
+
     ExecutableSelect<Row> q = sql.select(a.star()) //
         .from(a) //
         .join(x, x.num("accountId").eq(a.id)) //
@@ -598,13 +603,16 @@ public class App {
     InvoiceTable i = InvoiceDAO.newTable("i");
 
     RecursiveCTE g = sql.recursiveCTE("g", "id");
-    g.as(sql.select(a.id) //
-        .from(a) //
-        .where(a.id.eq(1215)),
+    g.as( //
+        sql.select(a.id) //
+            .from(a) //
+            .where(a.id.eq(1215)) //
+        , //
         sql.select(b.id) //
             .from(g) //
             .join(b, b.parentId.eq(g.num("id"))) //
-            .where(b.parentId.eq(g.num("id"))));
+            .where(b.parentId.eq(g.num("id"))) //
+    );
 
     ExecutableSelect<Row> q = sql.with(g) //
         .select(g.num("id"), i.amount) //
@@ -706,16 +714,19 @@ public class App {
 
   }
 
-//  private void selectByCriteria() {
-////    reinsert();
-//
-//    InvoiceTable i = InvoiceDAO.newTable("i");
-//    CriteriaWherePhase<InvoiceVO> q = this.invoiceDAO.select(i, i.branchId.eq(10));
-//    System.out.println("q=" + q.getPreview());
-//    for (InvoiceVO r : q.execute()) {
-//      System.out.println("r=" + r);
-//    }
-//  }
+  private void selectByCriteria() {
+//    reinsert();
+
+    InvoiceTable i = InvoiceDAO.newTable("i");
+
+    ExecutableCriteriaSelect<InvoiceVO> q = this.invoiceDAO.select(i, i.amount.gt(1));
+    System.out.println("q=" + q.getPreview());
+
+    for (InvoiceVO r : q.execute()) {
+      System.out.println("r=" + r);
+    }
+
+  }
 
 //  private void join() {
 //
