@@ -47,8 +47,8 @@ public class SpringBeanObjectFactory extends DefaultObjectFactory implements App
         throw new RuntimeException("Invalid value '" + this.voInstantiation
             + "' in property 'hotrod.vo.instantiation'. Must be either 'bean' (default) or 'pojo'.");
       }
-      System.out.println("[Object Factory (" + System.identityHashCode(this) + ") - HotRod Instantiation Type: "
-          + this.voInstantiationType + "]");
+      System.out.println(
+          "[HotRod object factory type: " + this.voInstantiationType + " -- @" + System.identityHashCode(this) + " ]");
     }
 
   }
