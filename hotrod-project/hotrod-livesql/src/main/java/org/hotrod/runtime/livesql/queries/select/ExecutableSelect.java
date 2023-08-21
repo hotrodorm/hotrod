@@ -20,8 +20,6 @@ public interface ExecutableSelect<R> {
 
   void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag);
 
-  void designateAliases(final AliasGenerator ag);
-
   List<ResultSetColumn> listColumns() throws IllegalAccessException;
 
   default void renderTree(final StringBuilder sb, final int level) {

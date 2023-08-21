@@ -197,11 +197,6 @@ public class SelectFromPhase<R> implements ExecutableSelect<R>, CombinableSelect
     this.select.validateTableReferences(tableReferences, ag);
   }
 
-  @Override
-  public void designateAliases(final AliasGenerator ag) {
-    this.select.assignNonDeclaredAliases(ag);
-  }
-
   // CombinableSelect
 
   @Override

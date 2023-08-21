@@ -11,6 +11,4 @@ public interface CombinableSelect<R> {
 
   void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag);
 
-  void designateAliases(final AliasGenerator ag);
-
 }

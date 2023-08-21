@@ -1,5 +1,7 @@
 package org.hotrod.runtime.livesql.expressions;
 
+import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.ReferenceableExpression;
 
@@ -18,6 +20,11 @@ public class AliasedExpression implements ReferenceableExpression {
     this.expression.renderTo(w);
     w.write(" as ");
     w.write(w.getSqlDialect().canonicalToNatural(this.alias));
+  }
+
+  @Override
+  public void validateTableReferences(TableReferences tableReferences, AliasGenerator ag) {
+    this.expression.validateTableReferences(tableReferences, ag);
   }
 
 }

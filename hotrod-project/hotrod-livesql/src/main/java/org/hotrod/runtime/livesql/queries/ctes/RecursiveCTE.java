@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
@@ -47,6 +49,18 @@ public class RecursiveCTE extends CTE {
   public boolean isRecursive() {
     return true;
   }
+
+  // Table References
+
+  @Override
+  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
+    if (!tableReferences.visited(this)) {
+      this.anchorTerm.validateTableReferences(tableReferences, ag);
+      this.recursiveTerm.validateTableReferences(tableReferences, ag);
+    }
+  }
+
+  // Rendering
 
   @Override
   public void renderDefinitionTo(final QueryWriter w, final LiveSQLDialect dialect) {

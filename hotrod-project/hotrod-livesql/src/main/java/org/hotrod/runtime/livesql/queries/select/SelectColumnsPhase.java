@@ -102,11 +102,6 @@ public class SelectColumnsPhase<R> implements ExecutableSelect<R>, CombinableSel
     this.select.validateTableReferences(tableReferences, ag);
   }
 
-  @Override
-  public void designateAliases(final AliasGenerator ag) {
-    this.select.assignNonDeclaredAliases(ag);
-  }
-
   // CombinableSelect
 
   @Override

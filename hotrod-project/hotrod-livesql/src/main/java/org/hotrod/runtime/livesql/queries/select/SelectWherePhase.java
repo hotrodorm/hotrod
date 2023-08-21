@@ -99,11 +99,6 @@ public class SelectWherePhase<R> implements ExecutableSelect<R>, CombinableSelec
     this.select.validateTableReferences(tableReferences, ag);
   }
 
-  @Override
-  public void designateAliases(final AliasGenerator ag) {
-    this.select.assignNonDeclaredAliases(ag);
-  }
-
   // CombinableSelect
 
   @Override

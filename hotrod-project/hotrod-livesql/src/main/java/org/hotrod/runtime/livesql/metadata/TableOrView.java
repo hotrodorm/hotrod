@@ -41,23 +41,25 @@ public abstract class TableOrView extends DatabaseObject implements TableExpress
 
   @Override
   public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-    tableReferences.register(this.alias, this);
-    ag.register(this.alias, this);
-  }
-
-  @Override
-  public void designateAliases(final AliasGenerator ag) {
     if (this.alias == null) {
       this.designatedAlias = ag.next();
     }
+    tableReferences.register(this.alias, this);
   }
 
   // Rendering
 
   @Override
-  public void renderTo(QueryWriter w, LiveSQLDialect dialect) {
-    String alias = this.alias == null ? null : dialect.canonicalToNatural(dialect.naturalToCanonical(this.alias));
+  public void renderTo(QueryWriter w) {
+    LiveSQLDialect dialect = w.getSqlDialect();
+    String alias = this.getAlias() == null ? null
+        : dialect.canonicalToNatural(dialect.naturalToCanonical(this.getAlias()));
     w.write(dialect.canonicalToNatural(this) + (alias != null ? (" " + alias) : ""));
   }
+
+  // --- Indexable methods (hashCode & equals) ---
+  // DO NOT implement these methods, since the code relies on the default
+  // [shallow] JVM implementation.
+  // ---------------------------------------------
 
 }

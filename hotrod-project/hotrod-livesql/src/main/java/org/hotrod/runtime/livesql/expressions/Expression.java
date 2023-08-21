@@ -29,7 +29,7 @@ import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrodorm.hotrod.utils.SUtil;
 
-public abstract class Expression implements ResultSetColumn {
+public abstract class Expression implements ResultSetColumn, Rendereable {
 
 //  private static final Logger log = LogManager.getLogger(Expression.class);
 
@@ -131,18 +131,6 @@ public abstract class Expression implements ResultSetColumn {
         throw new LiveSQLException("Table referenced in query cannot be null.", null);
       }
       t.validateTableReferences(tableReferences, ag);
-    }
-  }
-
-  public final void designateAliases(final AliasGenerator ag) {
-    for (Expression e : this.expressions) {
-      e.designateAliases(ag);
-    }
-    for (ExecutableSelect<?> s : this.subqueries) {
-      s.designateAliases(ag);
-    }
-    for (TableOrView t : this.tablesOrViews) {
-      t.designateAliases(ag);
     }
   }
 

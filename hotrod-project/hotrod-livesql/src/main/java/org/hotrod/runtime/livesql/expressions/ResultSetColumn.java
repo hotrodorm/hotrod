@@ -1,7 +1,5 @@
 package org.hotrod.runtime.livesql.expressions;
 
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
-
 /**
  * <pre>
  *                    {I} ResultSetColumn <------+----------------+
@@ -19,8 +17,6 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter;
  * </pre>
  */
 
-public interface ResultSetColumn {
-
-  void renderTo(QueryWriter w);
+public interface ResultSetColumn extends Rendereable {
 
 }

@@ -3,7 +3,6 @@ package org.hotrod.runtime.livesql.queries.subqueries;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
@@ -92,24 +91,18 @@ public class Subquery implements TableExpression {
     return new AllSubqueryColumns(this);
   }
 
-  // Validation
+  // Table References
 
   @Override
   public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
     ag.register(this.name, null);
-  }
-
-  @Override
-  public void designateAliases(final AliasGenerator ag) {
-    if (this.name == null) {
-      this.name = ag.next();
-    }
+    this.select.validateTableReferences(tableReferences, ag);
   }
 
   // Rendering
 
   @Override
-  public void renderTo(final QueryWriter w, final LiveSQLDialect dialect) {
+  public void renderTo(final QueryWriter w) {
     w.enterLevel();
     w.write("(\n");
     this.select.renderTo(w);

@@ -34,7 +34,7 @@ public class CTE extends Subquery {
   // Rendering
 
   @Override
-  public void renderTo(QueryWriter w, LiveSQLDialect dialect) {
+  public void renderTo(QueryWriter w) {
     w.write(w.getSqlDialect().canonicalToNatural(w.getSqlDialect().naturalToCanonical(super.getName())));
   }
 

@@ -52,11 +52,6 @@ public class SelectOffsetPhase<R> implements ExecutableSelect<R> {
   }
 
   @Override
-  public void designateAliases(final AliasGenerator ag) {
-    this.select.assignNonDeclaredAliases(ag);
-  }
-
-  @Override
   public String getPreview() {
     return this.select.getPreview();
   }

@@ -98,11 +98,6 @@ public class PGSelectColumnsPhase<R> implements ExecutableSelect<R>, CombinableS
     this.select.validateTableReferences(tableReferences, ag);
   }
 
-  @Override
-  public void designateAliases(final AliasGenerator ag) {
-    this.select.assignNonDeclaredAliases(ag);
-  }
-
   // CombinableSelect
 
   @Override

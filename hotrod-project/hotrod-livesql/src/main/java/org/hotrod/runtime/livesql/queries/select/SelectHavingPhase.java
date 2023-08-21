@@ -98,11 +98,6 @@ public class SelectHavingPhase<R> implements ExecutableSelect<R>, CombinableSele
     this.select.validateTableReferences(tableReferences, ag);
   }
 
-  @Override
-  public void designateAliases(final AliasGenerator ag) {
-    this.select.assignNonDeclaredAliases(ag);
-  }
-
   // CombinableSelect
 
   @Override

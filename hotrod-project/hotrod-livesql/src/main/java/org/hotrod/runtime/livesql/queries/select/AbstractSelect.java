@@ -27,8 +27,10 @@ import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.metadata.AllColumns.ColumnSubset;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.DatabaseObject;
+import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
+import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLStructure;
 import org.hotrod.runtime.livesql.queries.subqueries.AllSubqueryColumns;
 import org.hotrod.runtime.livesql.util.SubqueryUtil;
@@ -297,7 +299,7 @@ public abstract class AbstractSelect<R> extends Query {
     } else {
 
       w.write("\nFROM ");
-      this.baseTableExpression.renderTo(w, this.liveSQLDialect);
+      this.baseTableExpression.renderTo(w);
 
       // joins
 
@@ -305,7 +307,7 @@ public abstract class AbstractSelect<R> extends Query {
 
       for (Join j : this.joins) {
         w.write("\n" + joinRenderer.renderJoinKeywords(j) + " ");
-        j.getTableExpression().renderTo(w, this.liveSQLDialect);
+        j.getTableExpression().renderTo(w);
 
         try {
           PredicatedJoin pj = (PredicatedJoin) j;
@@ -506,11 +508,11 @@ public abstract class AbstractSelect<R> extends Query {
     AliasGenerator ag = new AliasGenerator();
     this.validateTableReferences(tableReferences, ag);
 
-    // 2. Designate aliases to tables/views that do not declare them
-
-    if (tableReferences.getTableReferences().size() > 1) {
-      this.assignNonDeclaredAliases(ag);
-    }
+//    // 2. Designate aliases to tables/views that do not declare them
+//
+//    if (tableReferences.getTableReferences().size() > 1) {
+//      this.assignNonDeclaredAliases(ag);
+//    }
 
   }
 
@@ -548,23 +550,26 @@ public abstract class AbstractSelect<R> extends Query {
 
   public static class TableReferences {
 
-    private Set<DatabaseObject> tableReferences = new HashSet<DatabaseObject>();
+    private Set<TableOrView> tableReferences = new HashSet<>();
+
+    private Set<RecursiveCTE> visitedRecursiveCTEs = new HashSet<>();
+    private Set<RecursiveCTE> visitedRecursiveCTEs2 = new HashSet<>();
+
     private Set<String> aliases = new HashSet<String>();
 
-    public void register(final String alias, final DatabaseObject databaseObject) {
-      if (this.tableReferences.contains(databaseObject)) {
-        throw new InvalidLiveSQLStatementException(
-            "An instance of the " + databaseObject.getType() + " " + databaseObject.renderUnescapedName()
-                + (alias == null ? " (with no alias)" : " (with alias '" + alias + "')")
-                + " is used multiple times in the Live SQL statement (in the FROM clause, JOIN clause, or a subquery). "
-                + "If you need to include the same " + databaseObject.getType()
-                + " multiple times in the query you can get more instances of it using the DAO method new"
-                + SUtil.upperFirst(databaseObject.getType()) + "().");
+    public void register(final String alias, final TableOrView tableOrView) {
+      if (this.tableReferences.contains(tableOrView)) {
+        throw new InvalidLiveSQLStatementException("An instance of the " + tableOrView.getType() + " "
+            + tableOrView.renderUnescapedName() + (alias == null ? " (with no alias)" : " (with alias '" + alias + "')")
+            + " is used multiple times in the Live SQL statement (in the FROM clause, JOIN clause, or a subquery). "
+            + "If you need to include the same " + tableOrView.getType()
+            + " multiple times in the query you can get more instances of it using the DAO method new"
+            + SUtil.upperFirst(tableOrView.getType()) + "(\"alias\").");
       }
-      this.tableReferences.add(databaseObject);
+      this.tableReferences.add(tableOrView);
     }
 
-    public Set<DatabaseObject> getTableReferences() {
+    public Set<TableOrView> getTableReferences() {
       return tableReferences;
     }
 
@@ -574,6 +579,22 @@ public abstract class AbstractSelect<R> extends Query {
 
     public int size() {
       return this.tableReferences.size();
+    }
+
+    public boolean visited(final RecursiveCTE cte) {
+      if (this.visitedRecursiveCTEs.contains(cte)) {
+        return true;
+      }
+      this.visitedRecursiveCTEs.add(cte);
+      return false;
+    }
+
+    public boolean visited2(final RecursiveCTE cte) {
+      if (this.visitedRecursiveCTEs2.contains(cte)) {
+        return true;
+      }
+      this.visitedRecursiveCTEs2.add(cte);
+      return false;
     }
 
   }
@@ -623,33 +644,36 @@ public abstract class AbstractSelect<R> extends Query {
 
   }
 
-  public void assignNonDeclaredAliases(final AliasGenerator ag) {
-    if (this.baseTableExpression != null) {
-      this.baseTableExpression.designateAliases(ag);
-    }
-    if (this.joins != null) {
-      for (Join j : this.joins) {
-        j.getTableExpression().designateAliases(ag);
-      }
-    }
-    if (this.wherePredicate != null) {
-      this.wherePredicate.designateAliases(ag);
-    }
-    if (this.groupBy != null) {
-      for (Expression e : this.groupBy) {
-        e.designateAliases(ag);
-      }
-    }
-    if (this.havingPredicate != null) {
-      this.havingPredicate.designateAliases(ag);
-    }
-    if (this.orderingTerms != null) {
-      for (@SuppressWarnings("unused")
-      OrderingTerm e : this.orderingTerms) {
-        //
-      }
-    }
-  }
+//  public void assignNonDeclaredAliases(final AliasGenerator ag) {
+//    System.out.println("assignNonDeclaredAliases() 1");
+//    if (this.baseTableExpression != null) {
+//      System.out.println("assignNonDeclaredAliases() 2");
+//      this.baseTableExpression.designateAliases(ag);
+//    }
+//    if (this.joins != null) {
+//      for (Join j : this.joins) {
+//        j.getTableExpression().designateAliases(ag);
+//      }
+//    }
+//    if (this.wherePredicate != null) {
+//      this.wherePredicate.designateAliases(ag);
+//    }
+//    if (this.groupBy != null) {
+//      for (Expression e : this.groupBy) {
+//        e.designateAliases(ag);
+//      }
+//    }
+//    if (this.havingPredicate != null) {
+//      this.havingPredicate.designateAliases(ag);
+//    }
+//    if (this.orderingTerms != null) {
+//      for (@SuppressWarnings("unused")
+//      OrderingTerm e : this.orderingTerms) {
+//        //
+//      }
+//    }
+//    System.out.println("assignNonDeclaredAliases() 10");
+//  }
 
   protected List<ResultSetColumn> getColumnsField(final Object cs, final String colName)
       throws IllegalArgumentException, IllegalAccessException {
