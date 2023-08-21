@@ -8,4 +8,8 @@ public class LiveSQLException extends RuntimeException {
     super(message, cause);
   }
 
+  public LiveSQLException(String message) {
+    super(message);
+  }
+
 }

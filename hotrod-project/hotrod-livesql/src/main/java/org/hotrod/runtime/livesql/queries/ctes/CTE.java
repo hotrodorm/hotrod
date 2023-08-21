@@ -15,6 +15,10 @@ import org.hotrod.runtime.livesql.util.SubqueryUtil;
 
 public class CTE extends Subquery {
 
+  protected CTE(String name, final String[] columns) {
+    super(name, columns);
+  }
+
   public CTE(String name, ExecutableSelect<?> select) {
     super(name, null, select);
   }
@@ -31,11 +35,11 @@ public class CTE extends Subquery {
 
   @Override
   public void renderTo(QueryWriter w, LiveSQLDialect dialect) {
-    w.write(w.getSqlDialect().canonicalToNatural(w.getSqlDialect().naturalToCanonical(super.getAlias())));
+    w.write(w.getSqlDialect().canonicalToNatural(w.getSqlDialect().naturalToCanonical(super.getName())));
   }
 
   public void renderDefinitionTo(QueryWriter w, LiveSQLDialect dialect) {
-    w.write(w.getSqlDialect().canonicalToNatural(w.getSqlDialect().naturalToCanonical(super.getAlias())));
+    w.write(w.getSqlDialect().canonicalToNatural(w.getSqlDialect().naturalToCanonical(super.getName())));
     if (this.columns != null && this.columns.length > 0) {
       w.write(" (");
       w.write(Arrays.stream(this.columns).map(a -> w.getSqlDialect().canonicalToNatural(a))
@@ -54,7 +58,7 @@ public class CTE extends Subquery {
     if (this.columns != null && this.columns.length > 0) {
       List<ResultSetColumn> cols = super.getSelect().listColumns();
       if (this.columns.length != cols.size()) {
-        throw new RuntimeException("The number of columns (" + cols.size() + ") in the CTE '" + super.getAlias()
+        throw new RuntimeException("The number of columns (" + cols.size() + ") in the CTE '" + super.getName()
             + "' differs from the number of declared column names for it (" + this.columns.length + ").");
       }
       List<ResultSetColumn> fcols = new ArrayList<>();

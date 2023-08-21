@@ -3,6 +3,7 @@ package org.hotrod.runtime.livesql.expressions;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.asymmetric.EqAll;
 import org.hotrod.runtime.livesql.expressions.asymmetric.EqAny;
 import org.hotrod.runtime.livesql.expressions.asymmetric.GeAll;
@@ -120,9 +121,15 @@ public abstract class Expression implements ResultSetColumn {
       e.validateTableReferences(tableReferences, ag);
     }
     for (ExecutableSelect<?> s : this.subqueries) {
+      if (s == null) {
+        throw new LiveSQLException("Subquery cannot be null.", null);
+      }
       s.validateTableReferences(tableReferences, ag);
     }
     for (TableOrView t : this.tablesOrViews) {
+      if (t == null) {
+        throw new LiveSQLException("Table referenced in query cannot be null.", null);
+      }
       t.validateTableReferences(tableReferences, ag);
     }
   }
@@ -162,68 +169,113 @@ public abstract class Expression implements ResultSetColumn {
   // In subquery
 
   public Predicate in(final ExecutableSelect<?> subquery) {
+    if (subquery == null) {
+      throw new LiveSQLException("Subquery cannot be null");
+    }
     return new InSubquery(this, subquery);
   }
 
   public Predicate notIn(final ExecutableSelect<?> subquery) {
+    if (subquery == null) {
+      throw new LiveSQLException("Subquery cannot be null");
+    }
     return new NotInSubquery(this, subquery);
   }
 
   // Any
 
   public Predicate eqAny(final ExecutableSelect<?> subquery) {
+    if (subquery == null) {
+      throw new LiveSQLException("Subquery cannot be null");
+    }
     return new EqAny(this, subquery);
   }
 
   public Predicate neAny(final ExecutableSelect<?> subquery) {
+    if (subquery == null) {
+      throw new LiveSQLException("Subquery cannot be null");
+    }
     return new NeAny(this, subquery);
   }
 
   public Predicate ltAny(final ExecutableSelect<?> subquery) {
+    if (subquery == null) {
+      throw new LiveSQLException("Subquery cannot be null");
+    }
     return new LtAny(this, subquery);
   }
 
   public Predicate leAny(final ExecutableSelect<?> subquery) {
+    if (subquery == null) {
+      throw new LiveSQLException("Subquery cannot be null");
+    }
     return new LeAny(this, subquery);
   }
 
   public Predicate gtAny(final ExecutableSelect<?> subquery) {
+    if (subquery == null) {
+      throw new LiveSQLException("Subquery cannot be null");
+    }
     return new GtAny(this, subquery);
   }
 
   public Predicate geAny(final ExecutableSelect<?> subquery) {
+    if (subquery == null) {
+      throw new LiveSQLException("Subquery cannot be null");
+    }
     return new GeAny(this, subquery);
   }
 
   // All
 
   public Predicate eqAll(final ExecutableSelect<?> subquery) {
+    if (subquery == null) {
+      throw new LiveSQLException("Subquery cannot be null");
+    }
     return new EqAll(this, subquery);
   }
 
   public Predicate neAll(final ExecutableSelect<?> subquery) {
+    if (subquery == null) {
+      throw new LiveSQLException("Subquery cannot be null");
+    }
     return new NeAll(this, subquery);
   }
 
   public Predicate ltAll(final ExecutableSelect<?> subquery) {
+    if (subquery == null) {
+      throw new LiveSQLException("Subquery cannot be null");
+    }
     return new LtAll(this, subquery);
   }
 
   public Predicate leAll(final ExecutableSelect<?> subquery) {
+    if (subquery == null) {
+      throw new LiveSQLException("Subquery cannot be null");
+    }
     return new LeAll(this, subquery);
   }
 
   public Predicate gtAll(final ExecutableSelect<?> subquery) {
+    if (subquery == null) {
+      throw new LiveSQLException("Subquery cannot be null");
+    }
     return new GtAll(this, subquery);
   }
 
   public Predicate geAll(final ExecutableSelect<?> subquery) {
+    if (subquery == null) {
+      throw new LiveSQLException("Subquery cannot be null");
+    }
     return new GeAll(this, subquery);
   }
 
   // Aliasing
 
   public AliasedExpression as(final String alias) {
+    if (SUtil.isEmpty(alias)) {
+      throw new LiveSQLException("An alias specified with the .as() method cannot be null");
+    }
     return new AliasedExpression(this, alias);
   }
 

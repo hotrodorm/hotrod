@@ -8,7 +8,7 @@ public abstract class Join {
 
   public Join(final TableExpression tableExpression) {
     if (tableExpression == null) {
-      throw new InvalidLiveSQLClauseException("The table or view on a join cannot be null");
+      throw new InvalidLiveSQLClauseException("The table, view, or subquery on a join cannot be null");
     }
     this.tableExpression = tableExpression;
   }

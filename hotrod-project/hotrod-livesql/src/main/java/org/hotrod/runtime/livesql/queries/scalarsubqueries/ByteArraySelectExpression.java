@@ -1,6 +1,7 @@
 package org.hotrod.runtime.livesql.queries.scalarsubqueries;
 
 import org.hotrod.runtime.livesql.Row;
+import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.binary.ByteArrayExpression;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect;
@@ -16,6 +17,11 @@ public class ByteArraySelectExpression extends ByteArrayExpression {
 
   public ByteArraySelectExpression(final AbstractSelect<Row> select) {
     super(Expression.PRECEDENCE_PARENTHESIS);
+
+    if (select == null) {
+      throw new LiveSQLException("Subquery select query cannot be null", null);
+    }
+
     this.select = select;
   }
 

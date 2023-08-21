@@ -9,7 +9,7 @@ import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 
 public interface TableExpression {
 
-  String getAlias();
+  String getName();
 
   void validateTableReferences(TableReferences tableReferences, AliasGenerator ag);
 

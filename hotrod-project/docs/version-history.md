@@ -8,13 +8,13 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
     - All types of subqueries implemented. This new version adds table expressions, scalar subqueries, CTEs (Common Table Expressions), recursive CTEs, and lateral joins to the existing ones. Before this version subqueries for only IN/NOT IN, EXISTS/NOT EXISTS, and assymmetric operators were implemented.
     - Explicit parenthesis added for expressions using sql.enclose().
     - All literals (including integer numbers) are now parameterized to help with query optimization.
-      
+    - VOs are by default instantiated as Spring beans (with full Spring context), but can be configured to be instantiated as plain POJOs (higher performance, no Spring context) using the `hotrod.vo.instantiation` prooperty.
 
 ## 4.0.0
 
 - Core:
-    - No-config implemented. The `hotrod.xml` file can now be omitted for rapid prototyping.
-    - Schema discovery implemented.
+    - No-config mode implemented. The `hotrod.xml` file can now be omitted for rapid prototyping.
+    - Schema discovery implemented. Tables and views are automatically discovered in one or more schemas.
     - Support for multiple datasources.
     - Aurora/PostgreSQL and Aurora/MySQL supported.
     - VOs are instantiated as Spring beans rather than as POJOs.
@@ -42,7 +42,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 - Nitro:
     - Select methods in entity tags (`<table>` and `<view>` tags) are restricted to return the corresponding entity VOs only. They don't allow the 'vo' attribute anymore.
     - Nitro defaults to `result-set` generation now. The `<select-generation>` tag can be omitted by default.
-    - `<foreach>` fixed.
+    - Dynamic SQL's `<foreach>` fixed.
 
 ## 3.5.1-SNAPSHOT
 

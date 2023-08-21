@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.binary.ByteArrayExpression;
@@ -18,6 +19,7 @@ import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.TableExpression;
 import org.hotrod.runtime.livesql.util.SubqueryUtil;
+import org.hotrodorm.hotrod.utils.SUtil;
 
 public class Subquery implements TableExpression {
 
@@ -25,15 +27,34 @@ public class Subquery implements TableExpression {
   protected String[] columns;
   private ExecutableSelect<?> select;
 
-  public Subquery(final String alias, final String[] columns, final ExecutableSelect<?> select) {
-    this.name = alias;
+  protected Subquery(final String name, final String[] columns) {
+    if (SUtil.isEmpty(name)) {
+      throw new LiveSQLException("Subquery name cannot be empty", null);
+    }
+
+    this.name = name;
     this.columns = columns;
+    this.select = null;
+  }
+
+  public Subquery(final String name, final String[] columns, final ExecutableSelect<?> select) {
+    if (SUtil.isEmpty(name)) {
+      throw new LiveSQLException("Subquery name cannot be empty", null);
+    }
+    this.name = name;
+
+    this.columns = columns;
+
+    if (select == null) {
+      throw new LiveSQLException("Subquery select query cannot be null", null);
+    }
+
     this.select = select;
   }
 
   // Getters
 
-  public String getAlias() {
+  public String getName() {
     return name;
   }
 

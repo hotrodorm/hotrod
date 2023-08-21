@@ -19,7 +19,7 @@ To Do:
 13. DONE -- Naming columns in table expressions (DB2, PostgreSQL, SQL Server, MySQL).
 14. LAG() with one parameter crashes.
 15. Consider .asc() ordering by default.
-16. Check the anchor and recursive terms are defined before executing a recursive CTE.
+16. DONE -- Check the anchor and recursive terms are defined before executing a recursive CTE.
 
 
 LiveSQL experts names:

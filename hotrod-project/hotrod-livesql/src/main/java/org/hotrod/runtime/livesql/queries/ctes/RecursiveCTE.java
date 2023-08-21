@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
@@ -13,20 +14,24 @@ public class RecursiveCTE extends CTE {
 
   // Properties
 
-  private String[] aliases;
-
   private ExecutableSelect<?> anchorTerm;
   private boolean unionAll;
   private ExecutableSelect<?> recursiveTerm;
 
   // Constructor
 
-  public RecursiveCTE(final String name, final String[] aliases) {
-    super(name, null);
-    this.aliases = aliases;
+  public RecursiveCTE(final String name, final String[] columns) {
+    super(name, columns);
   }
 
   public void as(final ExecutableSelect<?> anchorTerm, final ExecutableSelect<?> recursiveTerm) {
+    if (anchorTerm == null) {
+      throw new LiveSQLException("The anchor term of a recursive CTE cannot be null", null);
+    }
+    if (recursiveTerm == null) {
+      throw new LiveSQLException("The recursive term of a recursive CTE cannot be null", null);
+    }
+
     this.anchorTerm = anchorTerm;
     this.unionAll = true;
     this.recursiveTerm = recursiveTerm;
@@ -45,10 +50,10 @@ public class RecursiveCTE extends CTE {
 
   @Override
   public void renderDefinitionTo(final QueryWriter w, final LiveSQLDialect dialect) {
-    w.write(w.getSqlDialect().canonicalToNatural(w.getSqlDialect().naturalToCanonical(super.getAlias())));
-    if (this.aliases != null && this.aliases.length > 0) {
+    w.write(w.getSqlDialect().canonicalToNatural(w.getSqlDialect().naturalToCanonical(super.getName())));
+    if (this.columns != null && this.columns.length > 0) {
       w.write(" (");
-      w.write(Arrays.stream(this.aliases).map(a -> w.getSqlDialect().canonicalToNatural(a))
+      w.write(Arrays.stream(this.columns).map(a -> w.getSqlDialect().canonicalToNatural(a))
           .collect(Collectors.joining(", ")));
       w.write(")");
     }

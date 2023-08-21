@@ -1,5 +1,6 @@
 package org.hotrod.runtime.livesql.expressions.datetime;
 
+import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
@@ -13,6 +14,9 @@ public class EnclosedDateTimeExpression extends DateTimeExpression {
 
   public EnclosedDateTimeExpression(final DateTimeExpression expr) {
     super(Expression.PRECEDENCE_PARENTHESIS);
+    if (expr == null) {
+      throw new LiveSQLException("Enclosed expression cannot be null");
+    }
     this.expr = expr;
   }
 

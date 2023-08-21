@@ -6,6 +6,7 @@ import java.util.Date;
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.livesql.dialects.Const;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.aggregations.Avg;

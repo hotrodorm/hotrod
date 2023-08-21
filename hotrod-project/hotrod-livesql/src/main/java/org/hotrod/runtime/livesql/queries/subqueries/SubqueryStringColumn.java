@@ -23,7 +23,7 @@ public class SubqueryStringColumn extends StringExpression {
 
   @Override
   public void renderTo(final QueryWriter w) {
-    w.write(w.getSqlDialect().canonicalToNatural(w.getSqlDialect().naturalToCanonical(this.subquery.getAlias())));
+    w.write(w.getSqlDialect().canonicalToNatural(w.getSqlDialect().naturalToCanonical(this.subquery.getName())));
     w.write(".");
     w.write(w.getSqlDialect().canonicalToNatural(this.columnName));
   }
