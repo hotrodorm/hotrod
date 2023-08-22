@@ -6,7 +6,6 @@ import java.util.Date;
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.livesql.dialects.Const;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
-import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.aggregations.Avg;
@@ -377,15 +376,15 @@ public class LiveSQL {
   // === Lead Number ===
 
   public NumberLead lead(final NumberExpression expression) {
-    return new NumberLead(expression, null, null);
+    return new NumberLead(expression);
   }
 
   public NumberLead lead(final NumberExpression expression, final Number offset) {
-    return new NumberLead(expression, val(offset), null);
+    return new NumberLead(expression, val(offset));
   }
 
   public NumberLead lead(final NumberExpression expression, final NumberExpression offset) {
-    return new NumberLead(expression, offset, null);
+    return new NumberLead(expression, offset);
   }
 
   public NumberLead lead(final NumberExpression expression, final Number offset, final Number defaultValue) {
@@ -408,15 +407,15 @@ public class LiveSQL {
   // === Lead String ===
 
   public StringLead lead(final StringExpression expression) {
-    return new StringLead(expression, null, null);
+    return new StringLead(expression);
   }
 
   public StringLead lead(final StringExpression expression, final Number offset) {
-    return new StringLead(expression, val(offset), null);
+    return new StringLead(expression, val(offset));
   }
 
   public StringLead lead(final StringExpression expression, final NumberExpression offset) {
-    return new StringLead(expression, offset, null);
+    return new StringLead(expression, offset);
   }
 
   public StringLead lead(final StringExpression expression, final Number offset, final String defaultValue) {
@@ -439,15 +438,15 @@ public class LiveSQL {
   // === Lead DateTime ===
 
   public DateTimeLead lead(final DateTimeExpression expression) {
-    return new DateTimeLead(expression, null, null);
+    return new DateTimeLead(expression);
   }
 
   public DateTimeLead lead(final DateTimeExpression expression, final Number offset) {
-    return new DateTimeLead(expression, val(offset), null);
+    return new DateTimeLead(expression, val(offset));
   }
 
   public DateTimeLead lead(final DateTimeExpression expression, final NumberExpression offset) {
-    return new DateTimeLead(expression, offset, null);
+    return new DateTimeLead(expression, offset);
   }
 
   public DateTimeLead lead(final DateTimeExpression expression, final Number offset, final Date defaultValue) {
@@ -472,15 +471,15 @@ public class LiveSQL {
   // === Lead Boolean ===
 
   public BooleanLead lead(final Predicate expression) {
-    return new BooleanLead(expression, null, null);
+    return new BooleanLead(expression);
   }
 
   public BooleanLead lead(final Predicate expression, final Number offset) {
-    return new BooleanLead(expression, val(offset), null);
+    return new BooleanLead(expression, val(offset));
   }
 
   public BooleanLead lead(final Predicate expression, final NumberExpression offset) {
-    return new BooleanLead(expression, offset, null);
+    return new BooleanLead(expression, offset);
   }
 
   public BooleanLead lead(final Predicate expression, final Number offset, final Boolean defaultValue) {
@@ -502,15 +501,15 @@ public class LiveSQL {
   // === Lead ByteArray ===
 
   public ByteArrayLead lead(final ByteArrayExpression expression) {
-    return new ByteArrayLead(expression, null, null);
+    return new ByteArrayLead(expression);
   }
 
   public ByteArrayLead lead(final ByteArrayExpression expression, final Number offset) {
-    return new ByteArrayLead(expression, val(offset), null);
+    return new ByteArrayLead(expression, val(offset));
   }
 
   public ByteArrayLead lead(final ByteArrayExpression expression, final NumberExpression offset) {
-    return new ByteArrayLead(expression, offset, null);
+    return new ByteArrayLead(expression, offset);
   }
 
   public ByteArrayLead lead(final ByteArrayExpression expression, final Number offset, final byte[] defaultValue) {
@@ -535,15 +534,15 @@ public class LiveSQL {
   // === Lead Object ===
 
   public ObjectLead lead(final ObjectExpression expression) {
-    return new ObjectLead(expression, null, null);
+    return new ObjectLead(expression);
   }
 
   public ObjectLead lead(final ObjectExpression expression, final Number offset) {
-    return new ObjectLead(expression, val(offset), null);
+    return new ObjectLead(expression, val(offset));
   }
 
   public ObjectLead lead(final ObjectExpression expression, final NumberExpression offset) {
-    return new ObjectLead(expression, offset, null);
+    return new ObjectLead(expression, offset);
   }
 
   public ObjectLead lead(final ObjectExpression expression, final Number offset, final Object defaultValue) {
@@ -566,15 +565,15 @@ public class LiveSQL {
   // === Lag Number ===
 
   public NumberLag lag(final NumberExpression expression) {
-    return new NumberLag(expression, null, null);
+    return new NumberLag(expression);
   }
 
   public NumberLag lag(final NumberExpression expression, final Number offset) {
-    return new NumberLag(expression, val(offset), null);
+    return new NumberLag(expression, val(offset));
   }
 
   public NumberLag lag(final NumberExpression expression, final NumberExpression offset) {
-    return new NumberLag(expression, offset, null);
+    return new NumberLag(expression, offset);
   }
 
   public NumberLag lag(final NumberExpression expression, final Number offset, final Number defaultValue) {
@@ -597,15 +596,15 @@ public class LiveSQL {
   // === Lag String ===
 
   public StringLag lag(final StringExpression expression) {
-    return new StringLag(expression, null, null);
+    return new StringLag(expression);
   }
 
   public StringLag lag(final StringExpression expression, final Number offset) {
-    return new StringLag(expression, val(offset), null);
+    return new StringLag(expression, val(offset));
   }
 
   public StringLag lag(final StringExpression expression, final NumberExpression offset) {
-    return new StringLag(expression, offset, null);
+    return new StringLag(expression, offset);
   }
 
   public StringLag lag(final StringExpression expression, final Number offset, final String defaultValue) {
@@ -628,15 +627,15 @@ public class LiveSQL {
   // === Lag DateTime ===
 
   public DateTimeLag lag(final DateTimeExpression expression) {
-    return new DateTimeLag(expression, null, null);
+    return new DateTimeLag(expression);
   }
 
   public DateTimeLag lag(final DateTimeExpression expression, final Number offset) {
-    return new DateTimeLag(expression, val(offset), null);
+    return new DateTimeLag(expression, val(offset));
   }
 
   public DateTimeLag lag(final DateTimeExpression expression, final NumberExpression offset) {
-    return new DateTimeLag(expression, offset, null);
+    return new DateTimeLag(expression, offset);
   }
 
   public DateTimeLag lag(final DateTimeExpression expression, final Number offset, final Date defaultValue) {
@@ -660,11 +659,11 @@ public class LiveSQL {
   // === Lag Boolean ===
 
   public BooleanLag lag(final Predicate expression) {
-    return new BooleanLag(expression, null, null);
+    return new BooleanLag(expression);
   }
 
   public BooleanLag lag(final Predicate expression, final Number offset) {
-    return new BooleanLag(expression, val(offset), null);
+    return new BooleanLag(expression, val(offset));
   }
 
   public BooleanLag lag(final Predicate expression, final NumberExpression offset) {
@@ -690,15 +689,15 @@ public class LiveSQL {
   // === Lag ByteArray ===
 
   public ByteArrayLag lag(final ByteArrayExpression expression) {
-    return new ByteArrayLag(expression, null, null);
+    return new ByteArrayLag(expression);
   }
 
   public ByteArrayLag lag(final ByteArrayExpression expression, final Number offset) {
-    return new ByteArrayLag(expression, val(offset), null);
+    return new ByteArrayLag(expression, val(offset));
   }
 
   public ByteArrayLag lag(final ByteArrayExpression expression, final NumberExpression offset) {
-    return new ByteArrayLag(expression, offset, null);
+    return new ByteArrayLag(expression, offset);
   }
 
   public ByteArrayLag lag(final ByteArrayExpression expression, final Number offset, final byte[] defaultValue) {
@@ -723,15 +722,15 @@ public class LiveSQL {
   // === Lag Object ===
 
   public ObjectLag lag(final ObjectExpression expression) {
-    return new ObjectLag(expression, null, null);
+    return new ObjectLag(expression);
   }
 
   public ObjectLag lag(final ObjectExpression expression, final Number offset) {
-    return new ObjectLag(expression, val(offset), null);
+    return new ObjectLag(expression, val(offset));
   }
 
   public ObjectLag lag(final ObjectExpression expression, final NumberExpression offset) {
-    return new ObjectLag(expression, offset, null);
+    return new ObjectLag(expression, offset);
   }
 
   public ObjectLag lag(final ObjectExpression expression, final Number offset, final Object defaultValue) {
