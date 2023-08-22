@@ -240,16 +240,16 @@ public class App {
 
   private void liveSQLExamples() {
     example1InNotIn();
-    example2ExistsNotExists();
-    example3AssymmetricOperators();
-    example4ScalarSubqueries();
-    example5TableExpressions();
-    example5NestedTableExpressions();
-    example5JoinedTableExpressions();
-    example5NamedTableExpressions();
-    example6CTEs();
-    example7RecursiveCTEs();
-    example8LateralJoins();
+//    example2ExistsNotExists();
+//    example3AssymmetricOperators();
+//    example4ScalarSubqueries();
+//    example5TableExpressions();
+//    example5NestedTableExpressions();
+//    example5JoinedTableExpressions();
+//    example5NamedTableExpressions();
+//    example6CTEs();
+//    example7RecursiveCTEs();
+//    example8LateralJoins();
   }
 
   private void example1InNotIn() {
@@ -269,7 +269,8 @@ public class App {
         .from(a) //
         .where(a.branchId.notIn( //
             sql.select(b.id).from(b).where(b.region.eq("SOUTH")) //
-        ));
+        )) //
+        .orderBy(a.branchId, a.parentId.desc(), sql.caseWhen(a.branchId.lt(100), 3).elseValue(0).end().desc().nullsLast());
 
     System.out.println(q.getPreview());
     q.execute().forEach(r -> System.out.println("row: " + r));
