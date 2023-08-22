@@ -18,7 +18,7 @@ To Do:
 12. DONE -- Scalar subqueries: Call validateTableReferences() and designateAliases(). 
 13. DONE -- Naming columns in table expressions (DB2, PostgreSQL, SQL Server, MySQL).
 14. DONE -- LAG() with one parameter crashes.
-15. Consider .asc() ordering by default.
+15. DONE -- Consider .asc() ordering by default.
 16. DONE -- Check the anchor and recursive terms are defined before executing a recursive CTE.
 
 

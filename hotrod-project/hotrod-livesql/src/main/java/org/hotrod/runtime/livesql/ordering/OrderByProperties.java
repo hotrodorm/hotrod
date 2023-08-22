@@ -8,8 +8,8 @@ public class OrderByProperties {
 
   public static enum NullsOrdering {
 
-    NULLS_FIRST("nulls first"), //
-    NULLS_LAST("nulls last");
+    NULLS_FIRST("NULLS FIRST"), //
+    NULLS_LAST("NULLS LAST");
 
     private String rendered;
 
@@ -44,7 +44,7 @@ public class OrderByProperties {
   public void renderTo(final QueryWriter w) {
     this.expression.renderTo(w);
     if (!this.ascending) {
-      w.write(" desc");
+      w.write(" DESC");
     }
     if (this.nullsOrdering != null) {
       w.write(" ");

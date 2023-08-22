@@ -2,18 +2,17 @@ package org.hotrod.runtime.livesql.expressions;
 
 /**
  * <pre>
+ *                      {I} Rendereable
+ *                             ^
+ *                             | 
  *                    {I} ResultSetColumn <------+----------------+
  *                          ^      ^             |                |
  *                          |      |             |                |
  *  {I} ReferenceableExpression  Expression  AllColumns   {I} ColumnList
  *           ^               ^    ^      ^                      ^    ^
  *           |               |    |      |                      |    |
- *      AliasedExpression    Column     ...          ColumnAliased  ColumnSubset
+ *      AliasedExpression    Column   [Many...]      ColumnAliased  ColumnSubset
  *
- *    
- * SelectSubquery&lt;ReferenceableExpression&gt;
- * Select&lt;ResultSetColumn&gt;
- * 
  * </pre>
  */
 

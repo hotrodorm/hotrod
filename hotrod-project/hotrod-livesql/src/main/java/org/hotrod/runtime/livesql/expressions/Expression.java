@@ -23,13 +23,14 @@ import org.hotrod.runtime.livesql.expressions.predicates.IsNull;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.OrderByDirectionStage;
+import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrodorm.hotrod.utils.SUtil;
 
-public abstract class Expression implements ResultSetColumn, Rendereable {
+public abstract class Expression implements ResultSetColumn, Rendereable, OrderingTerm {
 
 //  private static final Logger log = LogManager.getLogger(Expression.class);
 
