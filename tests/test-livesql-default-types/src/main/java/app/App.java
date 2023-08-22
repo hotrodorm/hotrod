@@ -244,8 +244,8 @@ public class App {
 //    example3AssymmetricOperators();
 //    example4ScalarSubqueries();
 //    example5TableExpressions();
-//    example5NestedTableExpressions();
-    example5JoinedTableExpressions();
+    example5NestedTableExpressions();
+//    example5JoinedTableExpressions();
 //    example5NamedTableExpressions();
 //    example6CTEs();
 //    example7RecursiveCTEs();

@@ -234,12 +234,12 @@ public class InvoiceLineDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     InvoiceLineTable() {
-      super(null, "public", "invoice_line", "Table", null);
+      super(null, "PUBLIC", "INVOICE_LINE", "Table", null);
       initialize();
     }
 
     InvoiceLineTable(final String alias) {
-      super(null, "public", "invoice_line", "Table", alias);
+      super(null, "PUBLIC", "INVOICE_LINE", "Table", alias);
       initialize();
     }
 
@@ -247,11 +247,11 @@ public class InvoiceLineDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.invoiceId = new NumberColumn(this, "invoice_id", "invoiceId", "int4", 10, 0);
+      this.invoiceId = new NumberColumn(this, "INVOICE_ID", "invoiceId", "INTEGER", 32, 0);
       super.columns.add(this.invoiceId);
-      this.productId = new NumberColumn(this, "product_id", "productId", "int4", 10, 0);
+      this.productId = new NumberColumn(this, "PRODUCT_ID", "productId", "INTEGER", 32, 0);
       super.columns.add(this.productId);
-      this.lineTotal = new NumberColumn(this, "line_total", "lineTotal", "int4", 10, 0);
+      this.lineTotal = new NumberColumn(this, "LINE_TOTAL", "lineTotal", "INTEGER", 32, 0);
       super.columns.add(this.lineTotal);
     }
 

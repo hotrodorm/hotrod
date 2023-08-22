@@ -19,9 +19,9 @@
   </sql>
 
   <resultMap id="allColumns" type="app.daos.ProductVO">
-    <result property="id" column="id" />
-    <result property="type" column="type" />
-    <result property="shipping" column="shipping" />
+    <result property="id" column="ID" />
+    <result property="type" column="TYPE" />
+    <result property="shipping" column="SHIPPING" />
   </resultMap>
 
   <!-- select by PK: no mapping generated, since the table does not have a PK -->

@@ -112,6 +112,7 @@ create table branch (
 
 create table account (
   id int,
+  parent_id int,
   branch_id int
 );
 

@@ -240,12 +240,12 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     ProductTable() {
-      super(null, "public", "product", "Table", null);
+      super(null, "PUBLIC", "PRODUCT", "Table", null);
       initialize();
     }
 
     ProductTable(final String alias) {
-      super(null, "public", "product", "Table", alias);
+      super(null, "PUBLIC", "PRODUCT", "Table", alias);
       initialize();
     }
 
@@ -253,11 +253,11 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.id = new NumberColumn(this, "id", "id", "int4", 10, 0);
+      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
       super.columns.add(this.id);
-      this.type = new StringColumn(this, "type", "type", "varchar", 6, 0);
+      this.type = new StringColumn(this, "TYPE", "type", "CHARACTER VARYING", 6, 0);
       super.columns.add(this.type);
-      this.shipping = new NumberColumn(this, "shipping", "shipping", "int4", 10, 0);
+      this.shipping = new NumberColumn(this, "SHIPPING", "shipping", "INTEGER", 32, 0);
       super.columns.add(this.shipping);
     }
 
