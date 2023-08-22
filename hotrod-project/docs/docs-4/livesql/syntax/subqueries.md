@@ -8,7 +8,7 @@ They also add extra features &mdash; such as pre-aggregating, pre-filtering, lat
 
 ## Overview
 
-Since its inception in version 3.0 LiveSQL has included the syntax for subqueries, applied to a limited number of cases. Starting in version 4.1 LiveSQL now offers a full syntax that
+Since its inception in version 3.0 LiveSQL has included the syntax for subqueries, but only for a few use cases. Starting in version 4.1 LiveSQL now offers a full syntax that
 covers most &mdash; if not all &mdash; the types of subqueries.
 
 ### LiveSQL 3.0
