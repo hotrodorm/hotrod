@@ -1,14 +1,14 @@
 # LiveSQL Subqueries
 
 Subqueries are an integral part of the SQL Standard. They break down a query into phases that can
-pre-process data for a later use of one or more outer queries, in one or more phases.
+pre-process data for later use in one or more outer queries, in one or more phases.
 
-They mainly do this by dividing the writing of complex queries into smaller, more manageable parts.
+They mainly do this by dividing complex queries into smaller, more manageable parts.
 They also add extra features &mdash; such as pre-aggregating, pre-filtering, lateral seeking, recursion, etc. &mdash; that would not be possible with flat queries.
 
 ## Overview
 
-Since its inception in version 3.0 LiveSQL has included a subset of the syntax for subqueries that applies to a limited number of cases. Starting in version 4.1 LiveSQL now offers a full syntax that
+Since its inception in version 3.0 LiveSQL has included the syntax for subqueries, applied to a limited number of cases. Starting in version 4.1 LiveSQL now offers a full syntax that
 covers most &mdash; if not all &mdash; the types of subqueries.
 
 ### LiveSQL 3.0
