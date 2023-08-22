@@ -24,6 +24,8 @@ To Do:
 
 LiveSQL experts names:
 ----------------------
+explorer
+traveler
 guru
 master
 rover
