@@ -18,7 +18,6 @@ public abstract class StringFunction extends StringExpression {
 
   @Override
   public void renderTo(final QueryWriter w) {
-    System.out.println(">>> template=" + this.template);
     this.template.renderTo(w);
   }
 
