@@ -85,8 +85,8 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
     mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
-    mo.setParentId(CastUtil.toInteger((Number) m.get(p + "parentId" + s)));
     mo.setBranchId(CastUtil.toInteger((Number) m.get(p + "branchId" + s)));
+    mo.setParentId(CastUtil.toInteger((Number) m.get(p + "parentId" + s)));
     return mo;
   }
 
@@ -129,8 +129,8 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     this.sqlSession.insert(id, vo);
     app.daos.AccountVO mo = new app.daos.AccountVO();
     mo.setId(vo.getId());
-    mo.setParentId(vo.getParentId());
     mo.setBranchId(vo.getBranchId());
+    mo.setParentId(vo.getParentId());
     return mo;
   }
 
@@ -151,8 +151,8 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   public UpdateSetCompletePhase update(final app.daos.primitives.AbstractAccountVO updateValues, final AccountDAO.AccountTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
     if (updateValues.getId() != null) values.put("id", updateValues.getId());
-    if (updateValues.getParentId() != null) values.put("parent_id", updateValues.getParentId());
     if (updateValues.getBranchId() != null) values.put("branch_id", updateValues.getBranchId());
+    if (updateValues.getParentId() != null) values.put("parent_id", updateValues.getParentId());
     return new UpdateSetCompletePhase(tableOrView, this.liveSQLDialect, this.sqlSession,
       "mappers.account.updateByCriteria", predicate, values);
   }
@@ -177,10 +177,10 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
     ID("public.account", "id", true), //
     ID$DESC("public.account", "id", false), //
-    PARENT_ID("public.account", "parent_id", true), //
-    PARENT_ID$DESC("public.account", "parent_id", false), //
     BRANCH_ID("public.account", "branch_id", true), //
-    BRANCH_ID$DESC("public.account", "branch_id", false);
+    BRANCH_ID$DESC("public.account", "branch_id", false), //
+    PARENT_ID("public.account", "parent_id", true), //
+    PARENT_ID$DESC("public.account", "parent_id", false);
 
     private AccountOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -222,24 +222,24 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     // Properties
 
     public NumberColumn id;
-    public NumberColumn parentId;
     public NumberColumn branchId;
+    public NumberColumn parentId;
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this.id, this.parentId, this.branchId);
+      return new AllColumns(this.id, this.branchId, this.parentId);
     }
 
     // Constructors
 
     AccountTable() {
-      super(null, "PUBLIC", "ACCOUNT", "Table", null);
+      super(null, "public", "account", "Table", null);
       initialize();
     }
 
     AccountTable(final String alias) {
-      super(null, "PUBLIC", "ACCOUNT", "Table", alias);
+      super(null, "public", "account", "Table", alias);
       initialize();
     }
 
@@ -247,12 +247,12 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
+      this.id = new NumberColumn(this, "id", "id", "int4", 10, 0);
       super.columns.add(this.id);
-      this.parentId = new NumberColumn(this, "PARENT_ID", "parentId", "INTEGER", 32, 0);
-      super.columns.add(this.parentId);
-      this.branchId = new NumberColumn(this, "BRANCH_ID", "branchId", "INTEGER", 32, 0);
+      this.branchId = new NumberColumn(this, "branch_id", "branchId", "int4", 10, 0);
       super.columns.add(this.branchId);
+      this.parentId = new NumberColumn(this, "parent_id", "parentId", "int4", 10, 0);
+      super.columns.add(this.parentId);
     }
 
   }

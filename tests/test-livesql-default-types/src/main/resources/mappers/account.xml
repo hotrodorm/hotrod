@@ -8,20 +8,20 @@
 
   <sql id="columns">
     id,
-    parent_id,
-    branch_id
+    branch_id,
+    parent_id
   </sql>
 
   <sql id="columnsWithAlias">
     ${alias}.id,
-    ${alias}.parent_id,
-    ${alias}.branch_id
+    ${alias}.branch_id,
+    ${alias}.parent_id
   </sql>
 
   <resultMap id="allColumns" type="app.daos.AccountVO">
-    <result property="id" column="ID" />
-    <result property="parentId" column="PARENT_ID" />
-    <result property="branchId" column="BRANCH_ID" />
+    <result property="id" column="id" />
+    <result property="branchId" column="branch_id" />
+    <result property="parentId" column="parent_id" />
   </resultMap>
 
   <!-- select by PK: no mapping generated, since the table does not have a PK -->
@@ -38,11 +38,11 @@
       <if test="p.id != null">
         and id = #{p.id,jdbcType=INTEGER}
       </if>
-      <if test="p.parentId != null">
-        and parent_id = #{p.parentId,jdbcType=INTEGER}
-      </if>
       <if test="p.branchId != null">
         and branch_id = #{p.branchId,jdbcType=INTEGER}
+      </if>
+      <if test="p.parentId != null">
+        and parent_id = #{p.parentId,jdbcType=INTEGER}
       </if>
     </trim>
     <if test="o != null">
@@ -62,14 +62,14 @@
     insert into public.account (
       <trim prefixOverrides=", ">
         <if test="true">, id</if>
-        <if test="true">, parent_id</if>
         <if test="true">, branch_id</if>
+        <if test="true">, parent_id</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
         <if test="true">, #{id,jdbcType=INTEGER}</if>
-        <if test="true">, #{parentId,jdbcType=INTEGER}</if>
         <if test="true">, #{branchId,jdbcType=INTEGER}</if>
+        <if test="true">, #{parentId,jdbcType=INTEGER}</if>
       </trim>
       )
   </insert>
@@ -84,18 +84,18 @@
     update public.account
     <set>
       <if test="values.id != null">id = #{values.id,jdbcType=INTEGER},</if>
-      <if test="values.parentId != null">parent_id = #{values.parentId,jdbcType=INTEGER},</if>
       <if test="values.branchId != null">branch_id = #{values.branchId,jdbcType=INTEGER},</if>
+      <if test="values.parentId != null">parent_id = #{values.parentId,jdbcType=INTEGER},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.id != null">
         and id = #{filter.id,jdbcType=INTEGER}
       </if>
-      <if test="filter.parentId != null">
-        and parent_id = #{filter.parentId,jdbcType=INTEGER}
-      </if>
       <if test="filter.branchId != null">
         and branch_id = #{filter.branchId,jdbcType=INTEGER}
+      </if>
+      <if test="filter.parentId != null">
+        and parent_id = #{filter.parentId,jdbcType=INTEGER}
       </if>
     </trim>
   </update>
@@ -114,11 +114,11 @@
       <if test="id != null">
         and id = #{id,jdbcType=INTEGER}
       </if>
-      <if test="parentId != null">
-        and parent_id = #{parentId,jdbcType=INTEGER}
-      </if>
       <if test="branchId != null">
         and branch_id = #{branchId,jdbcType=INTEGER}
+      </if>
+      <if test="parentId != null">
+        and parent_id = #{parentId,jdbcType=INTEGER}
       </if>
     </trim>
   </delete>

@@ -12,8 +12,8 @@ public class AbstractAccountVO implements Serializable {
   // VO Properties (table columns)
 
   protected java.lang.Integer id = null;
-  protected java.lang.Integer parentId = null;
   protected java.lang.Integer branchId = null;
+  protected java.lang.Integer parentId = null;
 
   // getters & setters
 
@@ -25,14 +25,6 @@ public class AbstractAccountVO implements Serializable {
     this.id = id;
   }
 
-  public java.lang.Integer getParentId() {
-    return this.parentId;
-  }
-
-  public void setParentId(final java.lang.Integer parentId) {
-    this.parentId = parentId;
-  }
-
   public java.lang.Integer getBranchId() {
     return this.branchId;
   }
@@ -41,14 +33,22 @@ public class AbstractAccountVO implements Serializable {
     this.branchId = branchId;
   }
 
+  public java.lang.Integer getParentId() {
+    return this.parentId;
+  }
+
+  public void setParentId(final java.lang.Integer parentId) {
+    this.parentId = parentId;
+  }
+
   // to string
 
   public String toString() {
     java.lang.StringBuilder sb = new java.lang.StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- id=" + this.id + "\n");
-    sb.append("- parentId=" + this.parentId + "\n");
-    sb.append("- branchId=" + this.branchId);
+    sb.append("- branchId=" + this.branchId + "\n");
+    sb.append("- parentId=" + this.parentId);
     return sb.toString();
   }
 
@@ -57,8 +57,8 @@ public class AbstractAccountVO implements Serializable {
   public String toJSON() {
     JSONObject obj = new JSONObject();
     obj.addProperty("id", this.id);
-    obj.addProperty("parentId", this.parentId);
     obj.addProperty("branchId", this.branchId);
+    obj.addProperty("parentId", this.parentId);
     return obj.render();
   }
 

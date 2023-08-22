@@ -239,17 +239,17 @@ public class App {
 //  }
 
   private void liveSQLExamples() {
-//    example1InNotIn();
-//    example2ExistsNotExists();
-//    example3AssymmetricOperators();
-//    example4ScalarSubqueries();
-//    example5TableExpressions();
+    example1InNotIn();
+    example2ExistsNotExists();
+    example3AssymmetricOperators();
+    example4ScalarSubqueries();
+    example5TableExpressions();
     example5NestedTableExpressions();
-//    example5JoinedTableExpressions();
-//    example5NamedTableExpressions();
-//    example6CTEs();
-//    example7RecursiveCTEs();
-//    example8LateralJoins();
+    example5JoinedTableExpressions();
+    example5NamedTableExpressions();
+    example6CTEs();
+    example7RecursiveCTEs();
+    example8LateralJoins();
   }
 
   private void example1InNotIn() {

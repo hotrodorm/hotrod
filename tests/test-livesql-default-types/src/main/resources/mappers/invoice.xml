@@ -27,13 +27,13 @@
   </sql>
 
   <resultMap id="allColumns" type="app.daos.InvoiceVO">
-    <result property="id" column="ID" />
-    <result property="accountId" column="ACCOUNT_ID" />
-    <result property="amount" column="AMOUNT" />
-    <result property="orderDate" column="ORDER_DATE" />
-    <result property="type" column="TYPE" />
-    <result property="unpaidBalance" column="UNPAID_BALANCE" />
-    <result property="status" column="STATUS" />
+    <result property="id" column="id" />
+    <result property="accountId" column="account_id" />
+    <result property="amount" column="amount" />
+    <result property="orderDate" column="order_date" />
+    <result property="type" column="type" />
+    <result property="unpaidBalance" column="unpaid_balance" />
+    <result property="status" column="status" />
   </resultMap>
 
   <!-- select by PK: no mapping generated, since the table does not have a PK -->

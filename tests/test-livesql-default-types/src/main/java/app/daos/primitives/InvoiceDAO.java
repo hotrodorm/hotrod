@@ -270,12 +270,12 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     InvoiceTable() {
-      super(null, "PUBLIC", "INVOICE", "Table", null);
+      super(null, "public", "invoice", "Table", null);
       initialize();
     }
 
     InvoiceTable(final String alias) {
-      super(null, "PUBLIC", "INVOICE", "Table", alias);
+      super(null, "public", "invoice", "Table", alias);
       initialize();
     }
 
@@ -283,19 +283,19 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
+      this.id = new NumberColumn(this, "id", "id", "int4", 10, 0);
       super.columns.add(this.id);
-      this.accountId = new NumberColumn(this, "ACCOUNT_ID", "accountId", "INTEGER", 32, 0);
+      this.accountId = new NumberColumn(this, "account_id", "accountId", "int4", 10, 0);
       super.columns.add(this.accountId);
-      this.amount = new NumberColumn(this, "AMOUNT", "amount", "INTEGER", 32, 0);
+      this.amount = new NumberColumn(this, "amount", "amount", "int4", 10, 0);
       super.columns.add(this.amount);
-      this.orderDate = new DateTimeColumn(this, "ORDER_DATE", "orderDate", "DATE", 10, 0);
+      this.orderDate = new DateTimeColumn(this, "order_date", "orderDate", "date", 13, 0);
       super.columns.add(this.orderDate);
-      this.type = new StringColumn(this, "TYPE", "type", "CHARACTER VARYING", 10, 0);
+      this.type = new StringColumn(this, "type", "type", "varchar", 10, 0);
       super.columns.add(this.type);
-      this.unpaidBalance = new NumberColumn(this, "UNPAID_BALANCE", "unpaidBalance", "INTEGER", 32, 0);
+      this.unpaidBalance = new NumberColumn(this, "unpaid_balance", "unpaidBalance", "int4", 10, 0);
       super.columns.add(this.unpaidBalance);
-      this.status = new StringColumn(this, "STATUS", "status", "CHARACTER VARYING", 10, 0);
+      this.status = new StringColumn(this, "status", "status", "varchar", 10, 0);
       super.columns.add(this.status);
     }
 

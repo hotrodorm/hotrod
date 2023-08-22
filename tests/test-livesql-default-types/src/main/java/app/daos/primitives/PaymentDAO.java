@@ -234,12 +234,12 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     PaymentTable() {
-      super(null, "PUBLIC", "PAYMENT", "Table", null);
+      super(null, "public", "payment", "Table", null);
       initialize();
     }
 
     PaymentTable(final String alias) {
-      super(null, "PUBLIC", "PAYMENT", "Table", alias);
+      super(null, "public", "payment", "Table", alias);
       initialize();
     }
 
@@ -247,11 +247,11 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.paymentDate = new DateTimeColumn(this, "PAYMENT_DATE", "paymentDate", "DATE", 10, 0);
+      this.paymentDate = new DateTimeColumn(this, "payment_date", "paymentDate", "date", 13, 0);
       super.columns.add(this.paymentDate);
-      this.invoiceId = new NumberColumn(this, "INVOICE_ID", "invoiceId", "INTEGER", 32, 0);
+      this.invoiceId = new NumberColumn(this, "invoice_id", "invoiceId", "int4", 10, 0);
       super.columns.add(this.invoiceId);
-      this.amount = new NumberColumn(this, "AMOUNT", "amount", "INTEGER", 32, 0);
+      this.amount = new NumberColumn(this, "amount", "amount", "int4", 10, 0);
       super.columns.add(this.amount);
     }
 
