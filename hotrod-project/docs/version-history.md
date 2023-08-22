@@ -10,7 +10,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
     - All literals (including integer numbers) are now parameterized to help with query optimization.
     - VOs are by default instantiated as Spring beans (with full Spring context), but can be configured to be instantiated as plain POJOs (higher performance, no Spring context) using the `hotrod.vo.instantiation` prooperty.
     - LAG() and LEAD() fixed (when used with one and two parameters only).
-    - .asc() is not needed anymore when writing an ordering term. It's now the by default.
+    - The .asc() method is not needed anymore when writing an ordering term. It's now assumed by default.
 
 ## 4.0.0
 
