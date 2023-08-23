@@ -116,7 +116,8 @@ LiveSQL implements the most common types of join:
 | UNION JOIN | -- | `unionJoin(t)` | `UNION JOIN t` |
 
 
-Joins support subqueries, table expressions, CTEs (plain and recursive), and lateral joins. Tabular functions are not yet supported.
+Joins support subqueries, table expressions, CTEs (plain and recursive), and lateral joins. Tabular functions are not yet supported. 
+See [Subqueries](./subqueries.md) for details and examples.
 
 **Note**: Since the exact SQL Syntax may vary from database to database, LiveSQL adapts it automatically behind the scenes for each specific database.
 

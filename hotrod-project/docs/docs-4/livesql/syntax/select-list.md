@@ -56,6 +56,8 @@ FROM product p
 The query can name the specific list of columns to produce. This list can also include expressions that the database can 
 compute using functions and operators. 
 
+Scalar subqueries can also be included in the select list. See [Scalar Subqueries](./subqueries.md#4-scalar-subqueries).
+
 
 ### Aliasing Columns
 
