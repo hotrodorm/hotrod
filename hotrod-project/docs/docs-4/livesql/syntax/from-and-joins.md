@@ -1,21 +1,21 @@
 # The FROM and JOIN Clauses
 
-The `FROM` and `JOIN` clauses specify the tables and views where the data of a SELECT query comes from.
+The `FROM` and `JOIN` clauses specify the tables, views, and subqueries where the data of a SELECT query comes from. Subqueries
+are supported starting in version 4.1.
 
 A LiveSQL query can join multiple tables and views in a SELECT query.
 
 
 ## Example
 
- The following
-query joins two tables and a view.
+The following query joins two tables and a view.
 
 ```java
 AccountTable a = AccountDAO.newTable("a");
 TransactionTable t = TransactionDAO.newTable("t");
 BigAccountsView ba = BigAccountsDAO.newView("ba");
 
-List<Row> rows = this.sql 
+List<Row> rows = sql 
     .select() 
     .from(a) 
     .join(t, t.accountId.eq(a.id))
@@ -48,7 +48,7 @@ Tables and views are added to the query with the `from()` and `join()` clauses (
 
 ## Joining
 
-If the query includes more than a single table or view it will include one or more *join* clauses for them. The semantics 
+If the query includes more than a single table, view, or subquery it will include one or more *join* clauses for them. The semantics 
 of them follow the standard semantics of the SQL Standard.
 
 The first table or view is included in the `FROM` clause and the rest is included using `JOIN` clauses.
@@ -67,7 +67,7 @@ The following example illustrates a self-referencing join:
 EmployeeTable e = EmployeeDAO.newTable("e");
 EmployeeTable m = EmployeeDAO.newTable("m"); // same table with alias "m" for "manager"
 
-List<Row> rows = this.sql 
+List<Row> rows = sql 
     .select(e.name, m.name.as("manager_name")) 
     .from(e) 
     .leftJoin(m, m.id.eq(e.managerId))
@@ -116,9 +116,10 @@ LiveSQL implements the most common types of join:
 | UNION JOIN | -- | `unionJoin(t)` | `UNION JOIN t` |
 
 
-Joining subqueries, literal table expressions, tabular functions, lateral joins, and aliasing a table expression are not yet supported.
+Joins support subqueries, table expressions, ctes (plain and recursive), and lateral joins. Tabular functions are not yet supported.
 
-**Note**: The exact resulting SQL Syntax may vary from database to database. LiveSQL adapts it accordingly behind the scenes.
+**Note**: Since the exact SQL Syntax may vary from database to database, LiveSQL adapts it automatically behind the scenes for each specific database.
+
 
 
 

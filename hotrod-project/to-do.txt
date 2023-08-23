@@ -1,8 +1,3 @@
-Done:
-
-- sql.enclose()
-- Parameterize integers.
-
 To Do:
 
 3.  Rethink DAOs, VOs, Model. Include config refactoring.
@@ -20,6 +15,8 @@ To Do:
 14. DONE -- LAG() with one parameter crashes.
 15. DONE -- Consider .asc() ordering by default.
 16. DONE -- Check the anchor and recursive terms are defined before executing a recursive CTE.
+    DONE -- sql.enclose()
+    DONE -- Parameterize integers.
 
 
 LiveSQL experts names:
@@ -46,140 +43,6 @@ navigator
 specialist
 scholar
 pundit
-
-Subqueries implemented in 4.1:
-
-=== branch --< account --< invoice --< invoice_line >-- product
-===                                --< payment
-
-1. IN and NOT IN Operators
-
-select *
-from account
-where branch_id not in (
-  select id from branch where region = 'SOUTH'
-)
-
-2. EXISTS and NOT EXISTS Operators
-
-select *
-from account a
-where not exists (
-  select 1 from branch b where b.id = a.branch_id and b.region = 'SOUTH'
-)
-
-3. Assymmetric Operators (=, <>, <, >, <=, >= combined with ALL, ANY)
-
-select * 
-from invoice i
-where i.unpaid_balance > any (
-  select amount * 0.5 from invoice x where x.account_id = i.account_id
-)
-
-4. Scalar Subqueries
-
-select
-  i.*,
-  (select max(amount) from payment where amount < 1000) as hi_small_payment, 
-  (select sum(unpaid_balance) from invoice b where b.account_id = i.account_id and b.id <> i.id) as other_unpaid  
-from invoice i
-where i.status = 'UNPAID'
-
-=== branch --< account --< invoice --< invoice_line >-- product
-===                                --< payment
-
-5. Table Expressions
-
-select a.*
-from account a
-join (
-  select i.account_id, p.id, sum(l.amount) as total_amount
-  from invoice i
-  join invoice_line l on l.invoice_id = i.id
-  join product p on p.id = l.product_id
-  where p.type = 'OTC'
-  group by i.account_id, p.id
-) x on x.account_id = a.id
-where x.total_amount > 1000
-
-6. Nested Table Expressions
-
-select grp, min(order_date) as start, sum(payment) as group_payment 
-from (
-  select x.*, sum(inc) over(partition by id order by order_date) as grp
-  from (
-    select id, case when type <> lag(type) over(partition by id order by order_date) 
-                    then 1 else 0 end as inc
-    join invoice i 
-    where account_id = 1015 
-  ) x
-) y
-group by grp
-
-7. Joining Table Expressions
-
-select x.*
-from (
-  select b.is_vip, a.* 
-  from branch b
-  join account a on a.branch_id = b.id
-) x
-left join (
-  select i.account_id
-  from invoice i
-  join invoice_line l on l.invoice_id = i.id
-  join product p on p.id = l.product_id
-  where p.shipping = 0
-) y on y.account_id = x.id
-where y.account_id is null
-
-8. CTEs (Common Table Expressions)
-
-with
-x as (
-  select b.vip, a.* 
-  from branch b
-  join account a on a.branch_id = b.id
-),
-y (aid) as (
-  select i.account_id
-  from invoice i
-  join invoice_line l on l.account_id = i.id
-  join product p on p.id = l.product_id
-  where p.shipping = 0
-)
-select x.*
-from x
-left join y on y.aid = x.id 
-where y.aid is null
-
-9. Recursive CTEs -- To be implemented
-
-=== branch --< account --< invoice --< invoice_line >-- product
-===                                --< payment
-
-10. Lateral Joins
-
-select *
-from account a
-join lateral (
-  select order_date
-  from invoice i
-  where i.account_id = a.id
-  order by order_date desc
-  limit 2
-) x on true
-left join lateral (
-  select payment_date as last_payment_date
-  from payment p
-  where p.invoice_id = i.id
-  order by payment_date desc
-  limit 1
-) y on true
-where a.branch_id = 1014
-
-
-
 
 
 
