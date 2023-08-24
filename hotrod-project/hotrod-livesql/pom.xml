@@ -70,7 +70,7 @@
   <profiles>
 
     <profile>
-      <id>release</id>
+      <id>release-gurus</id>
 
       <build>
 
