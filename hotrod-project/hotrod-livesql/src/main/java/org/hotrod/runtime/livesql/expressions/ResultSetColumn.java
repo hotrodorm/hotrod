@@ -5,7 +5,7 @@ package org.hotrod.runtime.livesql.expressions;
  *                      {I} Rendereable
  *                             ^
  *                             | 
- *                    {I} ResultSetColumn <------+----------------+
+ *                    {I} ResultSetColumn &lt;------+----------------+
  *                          ^      ^             |                |
  *                          |      |             |                |
  *  {I} ReferenceableExpression  Expression  AllColumns   {I} ColumnList
