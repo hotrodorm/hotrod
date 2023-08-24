@@ -240,12 +240,12 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     BranchTable() {
-      super(null, "public", "branch", "Table", null);
+      super(null, "PUBLIC", "BRANCH", "Table", null);
       initialize();
     }
 
     BranchTable(final String alias) {
-      super(null, "public", "branch", "Table", alias);
+      super(null, "PUBLIC", "BRANCH", "Table", alias);
       initialize();
     }
 
@@ -253,11 +253,11 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.id = new NumberColumn(this, "id", "id", "int4", 10, 0);
+      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
       super.columns.add(this.id);
-      this.region = new StringColumn(this, "region", "region", "varchar", 10, 0);
+      this.region = new StringColumn(this, "REGION", "region", "CHARACTER VARYING", 10, 0);
       super.columns.add(this.region);
-      this.isVip = new BooleanColumn(this, "is_vip", "isVip", "bool", 1, 0);
+      this.isVip = new BooleanColumn(this, "IS_VIP", "isVip", "BOOLEAN", 1, 0);
       super.columns.add(this.isVip);
     }
 

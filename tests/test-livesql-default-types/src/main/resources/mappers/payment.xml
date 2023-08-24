@@ -19,9 +19,9 @@
   </sql>
 
   <resultMap id="allColumns" type="app.daos.PaymentVO">
-    <result property="paymentDate" column="payment_date" />
-    <result property="invoiceId" column="invoice_id" />
-    <result property="amount" column="amount" />
+    <result property="paymentDate" column="PAYMENT_DATE" />
+    <result property="invoiceId" column="INVOICE_ID" />
+    <result property="amount" column="AMOUNT" />
   </resultMap>
 
   <!-- select by PK: no mapping generated, since the table does not have a PK -->

@@ -19,9 +19,9 @@
   </sql>
 
   <resultMap id="allColumns" type="app.daos.InvoiceLineVO">
-    <result property="invoiceId" column="invoice_id" />
-    <result property="productId" column="product_id" />
-    <result property="lineTotal" column="line_total" />
+    <result property="invoiceId" column="INVOICE_ID" />
+    <result property="productId" column="PRODUCT_ID" />
+    <result property="lineTotal" column="LINE_TOTAL" />
   </resultMap>
 
   <!-- select by PK: no mapping generated, since the table does not have a PK -->
