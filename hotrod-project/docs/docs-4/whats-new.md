@@ -1,5 +1,29 @@
 # What's New in HotRod 4
 
+## What's New in HotRod 4.1
+
+HotRod 4.1 add subqueries to LiveSQL and adds a few extra enhancements to the LiveSQL syntax.
+
+### 1. LiveSQL Subqueries
+
+LiveSQL implements suqueries. These include Scalar Subqueries, Table Expressios, CTEs (plain and recursive) and Lateral Joins, in addition to IN/NOT IN, EXISTS/NOT EXISTS, and assymmetric operators. The extra syntax allows the developer to write complex SQL queries to adress more sophisticated data scenarios, without resorting to Nitro queries. Since writing LiveSQL code is faster than writing Nitro queries this enhancement can significantly speed up development for queries of mid-level complexity.
+
+
+### 2. POJO vs Bean VOs
+
+By default LiveSQL instantiate VOs as Spring beans. Now it's possible to instantiate them as POJOs instead, with the use of a system property. In one hand POJOs do not participate in the Spring context (to manage transactions for example), but in the other hand they are faster than beans.
+
+### 3. Other Features
+
+LiveSQL changes:
+
+- The `.asc()` method is not needed anymore when writing an ordering term. It's now assumed by default.
+- Explicit parenthesis added for expressions using `sql.enclose()`.
+- All literals (including integer numbers and safe strings) are now parameterized to help database engines with query caching and optimization.
+
+
+## What's New in HotRod 4.0
+
 HotRod 4.0 includes several major features as well as a many of minor improvements.
 
 ## 1. General Functionality
