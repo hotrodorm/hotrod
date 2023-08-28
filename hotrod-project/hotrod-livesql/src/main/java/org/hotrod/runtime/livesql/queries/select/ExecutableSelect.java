@@ -18,6 +18,8 @@ public interface ExecutableSelect<R> {
 
   String getPreview();
 
+  Select<R> getSelect();
+
   void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag);
 
   List<ResultSetColumn> listColumns() throws IllegalAccessException;

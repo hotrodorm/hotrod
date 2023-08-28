@@ -16,10 +16,8 @@ import org.hotrod.runtime.livesql.LiveSQLMapper;
 import org.hotrod.runtime.livesql.dialects.JoinRenderer;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
-import org.hotrod.runtime.livesql.dialects.SetOperationRenderer.SetOperation;
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
-import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
@@ -32,6 +30,7 @@ import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLStructure;
+import org.hotrod.runtime.livesql.queries.select.sets.SetOperator;
 import org.hotrod.runtime.livesql.queries.subqueries.AllSubqueryColumns;
 import org.hotrod.runtime.livesql.util.SubqueryUtil;
 import org.hotrodorm.hotrod.utils.CUtil;
@@ -50,17 +49,15 @@ public abstract class AbstractSelect<R> extends Query {
   private List<Expression> groupBy = null;
   private Predicate havingPredicate = null;
 
-  private SetOperation setOperation = null;
-  private CombinableSelect<R> combinedSelect = null;
-  private AbstractSelect<R> parent = null;
+  private SetOperator<R> parentOperator = null;
 
   private List<OrderingTerm> orderingTerms = null;
   private Integer offset = null;
   private Integer limit = null;
 
-  private SqlSession sqlSession;
-  private String mapperStatement;
-  private LiveSQLMapper liveSQLMapper;
+  protected SqlSession sqlSession;
+  protected String mapperStatement;
+  protected LiveSQLMapper liveSQLMapper;
 
   AbstractSelect(final LiveSQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession,
       final String mapperStatement, final LiveSQLMapper liveSQLMapper) {
@@ -69,6 +66,14 @@ public abstract class AbstractSelect<R> extends Query {
     this.sqlSession = sqlSession;
     this.mapperStatement = mapperStatement;
     this.liveSQLMapper = liveSQLMapper;
+  }
+
+  public void setParentOperator(final SetOperator<R> parentOperator) {
+    this.parentOperator = parentOperator;
+  }
+
+  public SetOperator<R> getParentOperator() {
+    return parentOperator;
   }
 
   protected abstract void writeColumns(final QueryWriter w, final TableExpression baseTableExpression,
@@ -198,15 +203,6 @@ public abstract class AbstractSelect<R> extends Query {
 
   public void setHavingCondition(final Predicate havingCondition) {
     this.havingPredicate = havingCondition;
-  }
-
-  void setCombinedSelect(final SetOperation setOperation, final CombinableSelect<R> combinedSelect) {
-    this.setOperation = setOperation;
-    this.combinedSelect = combinedSelect;
-  }
-
-  void setParent(final AbstractSelect<R> parent) {
-    this.parent = parent;
   }
 
   public void setColumnOrderings(List<OrderingTerm> orderingTerms) {
@@ -358,40 +354,31 @@ public abstract class AbstractSelect<R> extends Query {
         this.havingPredicate.renderTo(w);
       }
 
-      // combined select
-
-      if (this.combinedSelect != null) {
-        w.write("\n");
-        this.liveSQLDialect.getSetOperationRenderer().render(this.setOperation, w);
-        w.write("\n");
-        this.combinedSelect.renderTo(w);
-      }
-
       // order by
 
       if (this.orderingTerms != null && !this.orderingTerms.isEmpty()) {
 
-        if (this.combinedSelect != null || this.parent != null) {
-
-          // ORDER BY still unsupported for combined selects. Need to study this
-          // feature more.
-
-          // PostgreSQL only supports named columns from the initial SELECT as
-          // ordering columns; not expressions or functions. The error reads:
-          // Error: ERROR: invalid UNION/INTERSECT/EXCEPT ORDER BY clause
-          // Detail: Only result column names can be used, not expressions or
-          // functions.
-          // Hint: Add the expression/function to every SELECT, or move the
-          // UNION
-          // into a FROM clause.
-
-          // A valid ORDER BY would read: ORDER BY "currentBalance"
-          // Note that that's the alias of a column/expression, not the column
-          // itself.
-
-          throw new UnsupportedLiveSQLFeatureException(
-              "HotRod does not yet support ORDER BY for combined queries (UNION, UNION ALL, INTERSECT, INTERSECT ALL, EXCEPT, or EXCEPT ALL).");
-        }
+//        if (this.combinedSelect != null || this.parent != null) {
+//
+//          // ORDER BY still unsupported for combined selects. Need to study this
+//          // feature more.
+//
+//          // PostgreSQL only supports named columns from the initial SELECT as
+//          // ordering columns; not expressions or functions. The error reads:
+//          // Error: ERROR: invalid UNION/INTERSECT/EXCEPT ORDER BY clause
+//          // Detail: Only result column names can be used, not expressions or
+//          // functions.
+//          // Hint: Add the expression/function to every SELECT, or move the
+//          // UNION
+//          // into a FROM clause.
+//
+//          // A valid ORDER BY would read: ORDER BY "currentBalance"
+//          // Note that that's the alias of a column/expression, not the column
+//          // itself.
+//
+//          throw new UnsupportedLiveSQLFeatureException(
+//              "HotRod does not yet support ORDER BY for combined queries (UNION, UNION ALL, INTERSECT, INTERSECT ALL, EXCEPT, or EXCEPT ALL).");
+//        }
 
         w.write("\nORDER BY ");
         boolean first = true;
@@ -535,9 +522,6 @@ public abstract class AbstractSelect<R> extends Query {
     }
     if (this.havingPredicate != null) {
       this.havingPredicate.validateTableReferences(tableReferences, ag);
-    }
-    if (this.combinedSelect != null) {
-      this.combinedSelect.validateTableReferences(tableReferences, ag);
     }
     if (this.orderingTerms != null) {
       for (@SuppressWarnings("unused")

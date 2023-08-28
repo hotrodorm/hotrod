@@ -11,11 +11,11 @@ public class SelectLimitPhase<R> implements ExecutableSelect<R> {
 
   // Properties
 
-  private AbstractSelect<R> select;
+  private Select<R> select;
 
   // Constructor
 
-  SelectLimitPhase(final AbstractSelect<R> select, final int limit) {
+  SelectLimitPhase(final Select<R> select, final int limit) {
     this.select = select;
     this.select.setLimit(limit);
   }
@@ -53,6 +53,13 @@ public class SelectLimitPhase<R> implements ExecutableSelect<R> {
   @Override
   public List<ResultSetColumn> listColumns() throws IllegalAccessException {
     return this.select.listColumns();
+  }
+
+  // Executable Select
+
+  @Override
+  public Select<R> getSelect() {
+    return this.select;
   }
 
 }

@@ -50,6 +50,11 @@ public class Select<R> extends AbstractSelect<R> {
     this.resultSetColumns = resultSetColumns;
   }
 
+  public Select(final Select<R> select, final boolean distinct, final boolean doNotAliasColumns) {
+    super(select.liveSQLDialect, distinct, select.sqlSession, select.mapperStatement, select.liveSQLMapper);
+    this.doNotAliasColumns = doNotAliasColumns;
+  }
+
   // Setters
 
   public void setResultSetColumns(final List<ResultSetColumn> resultSetColumns) {
@@ -64,7 +69,7 @@ public class Select<R> extends AbstractSelect<R> {
   }
 
   @Override
-  List<ResultSetColumn> listColumns() {
+  public List<ResultSetColumn> listColumns() {
     return expandColumns(this.resultSetColumns);
   }
 

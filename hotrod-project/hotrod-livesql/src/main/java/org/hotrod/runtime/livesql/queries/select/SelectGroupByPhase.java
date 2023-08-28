@@ -11,15 +11,15 @@ import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 
-public class SelectGroupByPhase<R> implements ExecutableSelect<R>, CombinableSelect<R> {
+public class SelectGroupByPhase<R> implements ExecutableSelect<R> {
 
   // Properties
 
-  private AbstractSelect<R> select;
+  private Select<R> select;
 
   // Constructor
 
-  SelectGroupByPhase(final AbstractSelect<R> select, final Expression... expressions) {
+  SelectGroupByPhase(final Select<R> select, final Expression... expressions) {
     this.select = select;
     this.select.setGroupBy(Arrays.asList(expressions));
   }
@@ -100,13 +100,6 @@ public class SelectGroupByPhase<R> implements ExecutableSelect<R>, CombinableSel
     this.select.validateTableReferences(tableReferences, ag);
   }
 
-  // CombinableSelect
-
-  @Override
-  public void setParent(final AbstractSelect<R> parent) {
-    this.select.setParent(parent);
-  }
-
   @Override
   public String getPreview() {
     return this.select.getPreview();
@@ -115,6 +108,13 @@ public class SelectGroupByPhase<R> implements ExecutableSelect<R>, CombinableSel
   @Override
   public List<ResultSetColumn> listColumns() throws IllegalAccessException {
     return this.select.listColumns();
+  }
+
+  // Executable Select
+
+  @Override
+  public Select<R> getSelect() {
+    return this.select;
   }
 
 }

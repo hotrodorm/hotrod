@@ -2,6 +2,7 @@ package org.hotrod.runtime.livesql.dialects;
 
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
+@Deprecated
 public abstract class SetOperationRenderer {
 
   public enum SetOperation {

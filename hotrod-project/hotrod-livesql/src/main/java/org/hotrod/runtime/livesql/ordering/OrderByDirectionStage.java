@@ -12,6 +12,14 @@ public class OrderByDirectionStage implements OrderingTerm {
     this.ordering = new OrderByProperties(expression, ascending);
   }
 
+  public OrderByDirectionStage(final String alias, final boolean ascending) {
+    this.ordering = new OrderByProperties(alias, ascending);
+  }
+
+  public OrderByDirectionStage(final int ordinal, final boolean ascending) {
+    this.ordering = new OrderByProperties(ordinal, ascending);
+  }
+
   public OrderByNullsStage nullsFirst() {
     this.ordering.setNullsOrdering(NullsOrdering.NULLS_FIRST);
     return new OrderByNullsStage(this.ordering);

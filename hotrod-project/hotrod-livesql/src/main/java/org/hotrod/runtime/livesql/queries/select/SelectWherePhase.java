@@ -10,15 +10,15 @@ import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 
-public class SelectWherePhase<R> implements ExecutableSelect<R>, CombinableSelect<R> {
+public class SelectWherePhase<R> implements ExecutableSelect<R> {
 
   // Properties
 
-  private AbstractSelect<R> select;
+  private Select<R> select;
 
   // Constructors
 
-  SelectWherePhase(final AbstractSelect<R> select, final Predicate predicate) {
+  SelectWherePhase(final Select<R> select, final Predicate predicate) {
     this.select = select;
     this.select.setWhereCondition(predicate);
   }
@@ -99,13 +99,6 @@ public class SelectWherePhase<R> implements ExecutableSelect<R>, CombinableSelec
     this.select.validateTableReferences(tableReferences, ag);
   }
 
-  // CombinableSelect
-
-  @Override
-  public void setParent(final AbstractSelect<R> parent) {
-    this.select.setParent(parent);
-  }
-
   @Override
   public String getPreview() {
     return this.select.getPreview();
@@ -114,6 +107,13 @@ public class SelectWherePhase<R> implements ExecutableSelect<R>, CombinableSelec
   @Override
   public List<ResultSetColumn> listColumns() throws IllegalAccessException {
     return this.select.listColumns();
+  }
+
+  // Executable Select
+
+  @Override
+  public Select<R> getSelect() {
+    return this.select;
   }
 
 }

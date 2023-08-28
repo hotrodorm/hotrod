@@ -9,15 +9,15 @@ import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 
-public class SelectHavingPhase<R> implements ExecutableSelect<R>, CombinableSelect<R> {
+public class SelectHavingPhase<R> implements ExecutableSelect<R> {
 
   // Properties
 
-  private AbstractSelect<R> select;
+  private Select<R> select;
 
   // Constructor
 
-  SelectHavingPhase(final AbstractSelect<R> select, final Predicate predicate) {
+  SelectHavingPhase(final Select<R> select, final Predicate predicate) {
     this.select = select;
     if (predicate != null) {
       this.select.setHavingCondition(predicate);
@@ -26,7 +26,7 @@ public class SelectHavingPhase<R> implements ExecutableSelect<R>, CombinableSele
 
   // Same stage
 
-  // Next stages
+  // Next phases
 
   public SelectOrderByPhase<R> orderBy(final OrderingTerm... orderingTerms) {
     return new SelectOrderByPhase<R>(this.select, orderingTerms);
@@ -98,13 +98,6 @@ public class SelectHavingPhase<R> implements ExecutableSelect<R>, CombinableSele
     this.select.validateTableReferences(tableReferences, ag);
   }
 
-  // CombinableSelect
-
-  @Override
-  public void setParent(final AbstractSelect<R> parent) {
-    this.select.setParent(parent);
-  }
-
   @Override
   public String getPreview() {
     return this.select.getPreview();
@@ -113,6 +106,13 @@ public class SelectHavingPhase<R> implements ExecutableSelect<R>, CombinableSele
   @Override
   public List<ResultSetColumn> listColumns() throws IllegalAccessException {
     return this.select.listColumns();
+  }
+
+  // Executable Select
+
+  @Override
+  public Select<R> getSelect() {
+    return this.select;
   }
 
 }

@@ -1,4 +1,4 @@
-package org.hotrod.runtime.livesql.queries.select;
+package org.hotrod.runtime.livesql.queries.select.sets;
 
 import java.util.List;
 
@@ -6,8 +6,11 @@ import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
+import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.select.Select;
 
-public class SelectOffsetPhase<R> implements ExecutableSelect<R> {
+public class CombinedSelectLimitPhase<R> implements ExecutableSelect<R> {
 
   // Properties
 
@@ -15,15 +18,9 @@ public class SelectOffsetPhase<R> implements ExecutableSelect<R> {
 
   // Constructor
 
-  SelectOffsetPhase(final Select<R> select, final int offset) {
+  CombinedSelectLimitPhase(final Select<R> select, final int limit) {
     this.select = select;
-    this.select.setOffset(offset);
-  }
-
-  // Next stages
-
-  public SelectLimitPhase<R> limit(final int limit) {
-    return new SelectLimitPhase<R>(this.select, limit);
+    this.select.setLimit(limit);
   }
 
   // Rendering

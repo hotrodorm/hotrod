@@ -1,19 +1,20 @@
-package org.hotrod.runtime.livesql.queries.select;
+package org.hotrod.runtime.livesql.queries.select.sets;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.cursors.Cursor;
-import org.hotrod.runtime.livesql.LiveSQLMapper;
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.livesql.metadata.TableOrView;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.ordering.CombinedOrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
+import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.select.Select;
 
-public class PGSelectColumnsPhase<R> implements ExecutableSelect<R> {
+public class CombinedSelectGroupByPhase<R> implements ExecutableSelect<R> {
 
   // Properties
 
@@ -21,23 +22,27 @@ public class PGSelectColumnsPhase<R> implements ExecutableSelect<R> {
 
   // Constructor
 
-  public PGSelectColumnsPhase(final LiveSQLDialect sqlDialect, final SqlSession sqlSession,
-      final LiveSQLMapper liveSQLMapper, final boolean distinct, final ResultSetColumn... resultSetColumns) {
-    Select<R> s = new Select<R>(sqlDialect, distinct, sqlSession, liveSQLMapper, false);
-    s.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
-    this.select = s;
-  }
-
-  public PGSelectColumnsPhase(final Select<R> select, final boolean distinct,
-      final ResultSetColumn... resultSetColumns) {
-    select.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
+  CombinedSelectGroupByPhase(final Select<R> select, final Expression... expressions) {
     this.select = select;
+    this.select.setGroupBy(Arrays.asList(expressions));
   }
 
   // Next stages
 
-  public SelectFromPhase<R> from(final TableOrView t) {
-    return new SelectFromPhase<R>(this.select, t);
+  public CombinedSelectHavingPhase<R> having(final Predicate predicate) {
+    return new CombinedSelectHavingPhase<R>(this.select, predicate);
+  }
+
+  public CombinedSelectOrderByPhase<R> orderBy(final CombinedOrderingTerm... orderingTerms) {
+    return new CombinedSelectOrderByPhase<R>(this.select, orderingTerms);
+  }
+
+  public CombinedSelectOffsetPhase<R> offset(final int offset) {
+    return new CombinedSelectOffsetPhase<R>(this.select, offset);
+  }
+
+  public CombinedSelectLimitPhase<R> limit(final int limit) {
+    return new CombinedSelectLimitPhase<R>(this.select, limit);
   }
 
   // Set operations

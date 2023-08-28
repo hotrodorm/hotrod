@@ -12,12 +12,15 @@ import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
+import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectLinkingPhase;
+import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectPhase;
+import org.hotrod.runtime.livesql.queries.select.sets.UnionOperator;
 
-public class SelectColumnsPhase<R> implements ExecutableSelect<R>, CombinableSelect<R> {
+public class SelectColumnsPhase<R> implements ExecutableSelect<R> {
 
   // Properties
 
-  private AbstractSelect<R> select;
+  private Select<R> select;
 
   // Constructor
 
@@ -46,11 +49,19 @@ public class SelectColumnsPhase<R> implements ExecutableSelect<R>, CombinableSel
 
   // Set operations
 
-  // public SelectHavingPhase<R> union(final CombinableSelect<R> select) {
-  // this.select.setCombinedSelect(SetOperation.UNION, select);
-  // return new SelectHavingPhase<R>(this.select, null);
-  // }
-  //
+  // .select() .selectDistinct()
+  public CombinedSelectLinkingPhase<R> union() {
+    UnionOperator<R> op = new UnionOperator<R>(this.select);
+    return new CombinedSelectLinkingPhase<R>(op);
+  }
+
+  // .union()
+  public CombinedSelectPhase<R> union(final ExecutableSelect<R> select) {
+    UnionOperator<R> op = new UnionOperator<R>(this.select);
+    op.setRight(select.getSelect());
+    return new CombinedSelectPhase<R>(op);
+  }
+
   // public SelectHavingPhase<R> unionAll(final CombinableSelect<R> select) {
   // this.select.setCombinedSelect(SetOperation.UNION_ALL, select);
   // return new SelectHavingPhase<R>(this.select, null);
@@ -102,12 +113,7 @@ public class SelectColumnsPhase<R> implements ExecutableSelect<R>, CombinableSel
     this.select.validateTableReferences(tableReferences, ag);
   }
 
-  // CombinableSelect
-
-  @Override
-  public void setParent(final AbstractSelect<R> parent) {
-    this.select.setParent(parent);
-  }
+  // Utilities
 
   @Override
   public String getPreview() {
@@ -117,6 +123,13 @@ public class SelectColumnsPhase<R> implements ExecutableSelect<R>, CombinableSel
   @Override
   public List<ResultSetColumn> listColumns() throws IllegalAccessException {
     return this.select.listColumns();
+  }
+
+  // Executable Select
+
+  @Override
+  public Select<R> getSelect() {
+    return this.select;
   }
 
 }

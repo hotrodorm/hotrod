@@ -13,11 +13,11 @@ public class SelectOrderByPhase<R> implements ExecutableSelect<R> {
 
   // Properties
 
-  private AbstractSelect<R> select;
+  private Select<R> select;
 
   // Constructor
 
-  SelectOrderByPhase(final AbstractSelect<R> select, final OrderingTerm... orderingTerms) {
+  SelectOrderByPhase(final Select<R> select, final OrderingTerm... orderingTerms) {
     this.select = select;
     this.select.setColumnOrderings(Arrays.asList(orderingTerms));
   }
@@ -67,6 +67,13 @@ public class SelectOrderByPhase<R> implements ExecutableSelect<R> {
   @Override
   public List<ResultSetColumn> listColumns() throws IllegalAccessException {
     return this.select.listColumns();
+  }
+
+  // Executable Select
+
+  @Override
+  public Select<R> getSelect() {
+    return this.select;
   }
 
 }
