@@ -60,7 +60,7 @@ The LiveSQL statements are described below:
 
 - The [SELECT](./syntax/select.md) Statement
 
-    The SELECT statement, by far, has the most complex syntax and it's the only one that returns data rows. The SQL Standard defines a list of clauses to filter rows (WHERE), to join multiple tables (FROM and JOIN), to aggregate them (GROUP BY) and to sort them (ORDER BY). SELECT statements can also include subqueries to define more complex logic, including the syntax for the `WITH` clause, plain, and recursive CTEs.
+    The SELECT statement, by far, has the most complex syntax and it's the only one that returns data rows. The SQL Standard defines a list of clauses to filter rows (WHERE), to join multiple tables (FROM and JOIN), to aggregate them (GROUP BY) and to sort them (ORDER BY). SELECT statements can also include subqueries to define more complex logic. It implements the WITH clause, including it the WITH RECURSIVE variant.
 
 - The [INSERT](./syntax/insert.md) Statement
 
@@ -93,7 +93,7 @@ The Expression Language enhances the functionality of LiveSQL by allowing comple
 
 - [Subqueries](./syntax/subqueries.md)
 
-    Subqueries are a standard feature of the SQL language that greatly enhances the expressiveness of a query. LiveSQL implements all typical subqueries such as scalar subqueries, table expressions, `IN/NOT IN`, `EXISTS/NOT EXISTS`, assymmetric operators, CTEs (Common Table Expressions) &mdash; the `WITH` clause, recursive CTEs, and lateral joins. Plain and correlated subqueries can be expressed in LiveSQL.
+    Subqueries are a standard feature of the SQL language that greatly enhances the expressiveness of a query. LiveSQL implements all typical subqueries such as scalar subqueries, table expressions, `IN/NOT IN`, `EXISTS/NOT EXISTS`, assymmetric operators, CTEs (Common Table Expressions), and lateral joins. The `WITH` and `WITH RECURSIVE` clauses are implemented. Aditionally, plain and correlated subqueries can be expressed in LiveSQL.
 
 - [Extending LiveSQL Functions](./extending-livesql-functions.md)
 
