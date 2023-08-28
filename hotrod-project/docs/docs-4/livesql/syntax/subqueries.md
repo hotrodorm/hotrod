@@ -411,7 +411,7 @@ List<Row> rows = sql.select(x.num("vip"), x.str("aid"))
 
 **Note**: Oracle and MariaDB do not support externally naming the columns of a table expression. You can still use `.as()` in the subquery select list to name the columns.
 
-### 6. Common Table Expressions (CTEs)
+### 6. Common Table Expressions (CTEs) &mdash; the WITH clause
 
 Common Table Expressions are subqueries defined separately before the main query, so they can be used in the main query one or more times. Moreover, any CTE can use any previously defined CTEs, in the order they are defined effectively reusing them, something that a traditional table expression cannot do.
 
@@ -437,7 +437,7 @@ LEFT JOIN y ON y.aid = x.id
 WHERE y.aid is null
 ```
 
-It can be written in LiveSQl as:
+It can be written in LiveSQL as:
 
 ```java
 BranchTable b = BranchDAO.newTable("b");
@@ -466,7 +466,7 @@ List<Row> rows = sql.with(x, y)
 
 Note that the first CTE does not alias its columns, but the second one does. That means that the first one assumes the column names directly from the subquery.
 
-### 7. Recursive Common Table Expressions (Recursive CTEs)
+### 7. Recursive Common Table Expressions (Recursive CTEs)  &mdash; the WITH RECURSIVE clause
 
 Recursive CTEs can be expressed in LiveSQL. Since the query definition references itself they
 need to be defined in two steps.
