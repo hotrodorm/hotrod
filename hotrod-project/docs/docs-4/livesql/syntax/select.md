@@ -45,7 +45,7 @@ The SELECT statement has several clauses that are described separately:
 
 ## Subqueries
 
-A SELECT can participate as a top clause or as a subquery. As a top clause it returns rows 
+A SELECT can participate as a top clause or as a [subquery](./subqueries.md). As a top clause it returns rows 
 directly to the calling application. As a subquery it computes rows that are received by
 an upper level query that processes them accordingly; as subqueries SELECT clauses can 
 be nested in multiple levels as needed.
