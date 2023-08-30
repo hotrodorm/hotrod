@@ -40,7 +40,7 @@ The reference details how to activate all features, and how to use them.
 
 ## Guides
 
-These guides focus on specific features and show examples that enable and use them. 
+These guides focus on specific features and show examples enabling and using them.
 
 These guides cover:
 
