@@ -15,7 +15,7 @@ See HotRod in action with the [Hello World Example](./guides/hello-world.md).
 
 ## Modules
 
-HotRod functionality is divided in three modules that serve different purposes. From simple out-of-the-box functionality
+HotRod functionality is divided into three modules serving different purposes. From simple out-of-the-box functionality
 available for CRUD and LiveSQL to advanced querying capabilities provided by Nitro. 
 
 These modules are:
