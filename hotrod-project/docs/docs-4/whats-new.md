@@ -43,7 +43,7 @@ example to see it in action.
 
 Schema discovery can find tables and views in one or more schemas of the database
 and generate the persistence layer for them automatically. It's enabled in No Config
-mode and scans the current schema. Otherwise, it can be enabled in the configuration
+mode and scans the current schema. Alternatively, it can be enabled in the configuration
 to specify a list of schemas to scan. Rules can be defined with
 a Name Solver and Type Solver to tailor the name generation of classes and
 the type and names of properties in the persistence layer. See
