@@ -33,7 +33,7 @@ This functionality affects all the modules.
 ### 1.1 No Config Mode
 
 The main configuration file can be omitted for rapid prototyping. In this mode, a minimal
-setup of the Maven plugin produces a full persistence layer in no time. In this mode, HotRod 
+setup of the Maven plugin produces a full persistence layer in no time. Also in this mode, HotRod 
 generates the persistence layer by
 scanning the current database schema. Sensible defaults are defined for all configuration
 parameters for a standard persistence layer. See the [Hello World](guides/hello-world.md)
