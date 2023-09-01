@@ -51,8 +51,8 @@ the type and names of properties in the persistence layer. See
 
 ### 1.3 Support for Multiple Datasources
 
-Support for multiple datasources was added. These datasources can correspond to the same
-database engine or different ones. Each datasource generates a separated persistence
+Support for multiple datasources was added. These datasources may belong to the same
+database engine or to different ones. Each datasource generates a separated persistence
 layer that is used seamlessly by all the HotRod modules, including CRUD, LiveSQL, and Nitro,
 as well as all Spring features such as transaction management, AOP, etc. 
 See [Using Multiple Datasources](guides/using-multiple-datasources.md)
