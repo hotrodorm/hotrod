@@ -18,7 +18,7 @@ By default, LiveSQL instantiate VOs as Spring beans. Now it's possible to instan
 LiveSQL changes:
 
 - The `.asc()` method is not needed anymore when writing an ordering term. It's now assumed by default.
-- Explicit parenthesis added for expressions using `sql.enclose()`.
+- Explicit parentheses added for expressions using `sql.enclose()`.
 - All literals (including integer numbers and safe strings) are now parameterized to help database engines with query caching and optimization.
 
 
