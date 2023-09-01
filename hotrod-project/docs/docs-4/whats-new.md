@@ -11,7 +11,7 @@ LiveSQL implements subqueries. These include Scalar Subqueries, Table Expression
 
 ### 2. POJO vs Bean VOs
 
-By default LiveSQL instantiate VOs as Spring beans. Now it's possible to instantiate them as POJOs instead, with the use of a system property. In one hand POJOs do not participate in the Spring context (to manage transactions for example), but in the other hand they are faster than beans.
+By default, LiveSQL instantiate VOs as Spring beans. Now it's possible to instantiate them as POJOs instead, with the use of a system property. In one hand POJOs do not participate in the Spring context (to manage transactions for example), but in the other hand they are faster than beans.
 
 ### 3. Other Features
 
