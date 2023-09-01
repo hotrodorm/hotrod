@@ -6,7 +6,7 @@ HotRod 4.1 add subqueries to LiveSQL and adds a few extra enhancements to the Li
 
 ### 1. LiveSQL Subqueries
 
-LiveSQL implements suqueries. These include Scalar Subqueries, Table Expressios, CTEs (plain and recursive) and Lateral Joins, in addition to IN/NOT IN, EXISTS/NOT EXISTS, and assymmetric operators. The extra syntax allows the developer to write complex SQL queries to adress more sophisticated data scenarios, without resorting to Nitro queries. Since writing LiveSQL code is faster than writing Nitro queries this enhancement can significantly speed up development for queries of mid-level complexity.
+LiveSQL implements subqueries. These include Scalar Subqueries, Table Expressios, CTEs (plain and recursive) and Lateral Joins, in addition to IN/NOT IN, EXISTS/NOT EXISTS, and assymmetric operators. The extra syntax allows the developer to write complex SQL queries to adress more sophisticated data scenarios, without resorting to Nitro queries. Since writing LiveSQL code is faster than writing Nitro queries this enhancement can significantly speed up development for queries of mid-level complexity.
 
 
 ### 2. POJO vs Bean VOs
