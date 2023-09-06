@@ -1,51 +1,49 @@
 package org.hotrod.runtime.livesql.queries.select;
 
 import java.util.Arrays;
+import java.util.List;
 
-import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.livesql.Available;
-import org.hotrod.runtime.livesql.LiveSQLMapper;
 import org.hotrod.runtime.livesql.dialects.Const;
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 
 public class SelectCTEPhase<R> {
 
   // Properties
 
-  private Select<R> select;
+  private LiveSQLContext context;
+  private List<CTE> ctes;
 
   // Constructor
 
-  public SelectCTEPhase(final LiveSQLDialect sqlDialect, final SqlSession sqlSession, final LiveSQLMapper liveSQLMapper,
-      final CTE... ctes) {
-    Select<R> s = new Select<R>(sqlDialect, false, sqlSession, liveSQLMapper, false);
-    s.setCTEs(Arrays.asList(ctes));
-    this.select = s;
+  public SelectCTEPhase(final LiveSQLContext context, final CTE... ctes) {
+    this.context = context;
+    this.ctes = Arrays.asList(ctes);
   }
 
   // Next stages
 
   public SelectColumnsPhase<R> select() {
-    return new SelectColumnsPhase<R>(this.select, false);
+    return new SelectColumnsPhase<R>(this.context, null, false);
   }
 
   public SelectColumnsPhase<R> selectDistinct() {
-    return new SelectColumnsPhase<R>(this.select, true);
+    return new SelectColumnsPhase<R>(this.context, null, true);
   }
 
   public SelectColumnsPhase<R> select(final ResultSetColumn... resultSetColumns) {
-    return new SelectColumnsPhase<R>(this.select, false, resultSetColumns);
+    return new SelectColumnsPhase<R>(this.context, null, false, resultSetColumns);
   }
 
   public SelectColumnsPhase<R> selectDistinct(final ResultSetColumn... resultSetColumns) {
-    return new SelectColumnsPhase<R>(this.select, true, resultSetColumns);
+    return new SelectColumnsPhase<R>(this.context, null, true, resultSetColumns);
   }
 
   @Available(engine = Const.POSTGRESQL, since = Const.PG15)
   public PGSelectColumnsPhase<R> selectDistinctOn(final ResultSetColumn... resultSetColumns) {
-    return new PGSelectColumnsPhase<R>(this.select, true, resultSetColumns);
+    return new PGSelectColumnsPhase<R>(this.context, null, true, resultSetColumns);
   }
 
 }

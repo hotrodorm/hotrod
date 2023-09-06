@@ -2,9 +2,6 @@ package org.hotrod.runtime.livesql.queries;
 
 import java.util.LinkedHashMap;
 
-import org.apache.ibatis.session.SqlSession;
-import org.hotrod.runtime.livesql.LiveSQLMapper;
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
@@ -12,26 +9,21 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLStructure;
 
 public class Delete {
 
-  private LiveSQLDialect sqlDialect;
-  private SqlSession sqlSession;
+  private LiveSQLContext context;
+
   private String mapperStatement; // DAO.delete(t, predicate)
-  private LiveSQLMapper liveSQLMapper; // LiveSQL.delete()
 
   private TableOrView from;
   private Predicate wherePredicate;
 
-  Delete(final LiveSQLDialect sqlDialect, final SqlSession sqlSession, final LiveSQLMapper liveSQLMapper) {
-    this.sqlDialect = sqlDialect;
-    this.sqlSession = sqlSession;
+  Delete(final LiveSQLContext context) {
+    this.context = context;
     this.mapperStatement = null;
-    this.liveSQLMapper = liveSQLMapper;
   }
 
-  Delete(final LiveSQLDialect sqlDialect, final SqlSession sqlSession, final String mapperStatement) {
-    this.sqlDialect = sqlDialect;
-    this.sqlSession = sqlSession;
+  Delete(final LiveSQLContext context, final String mapperStatement) {
+    this.context = context;
     this.mapperStatement = mapperStatement;
-    this.liveSQLMapper = null;
   }
 
   void setFrom(final TableOrView from) {
@@ -52,19 +44,21 @@ public class Delete {
     LinkedHashMap<String, Object> parameters = q.getParameters();
     parameters.put("sql", q.getSQL());
     if (this.mapperStatement != null) {
-      this.sqlSession.delete(this.mapperStatement, q.getConsolidatedParameters());
+      this.context.getSQLSession().delete(this.mapperStatement, q.getConsolidatedParameters());
     } else {
-      this.liveSQLMapper.delete(parameters);
+      this.context.getLiveSQLMapper().delete(parameters);
     }
   }
 
   private LiveSQLStructure prepareQuery() {
-    QueryWriter w = new QueryWriter(this.sqlDialect);
+    QueryWriter w = new QueryWriter(this.context.getLiveSQLDialect());
     w.write("DELETE FROM ");
 
     String renderedAlias = this.from.getAlias() == null ? null
-        : this.sqlDialect.canonicalToNatural(this.sqlDialect.naturalToCanonical(this.from.getAlias()));
-    w.write(this.sqlDialect.canonicalToNatural(this.from) + (renderedAlias != null ? (" " + renderedAlias) : ""));
+        : this.context.getLiveSQLDialect()
+            .canonicalToNatural(this.context.getLiveSQLDialect().naturalToCanonical(this.from.getAlias()));
+    w.write(this.context.getLiveSQLDialect().canonicalToNatural(this.from)
+        + (renderedAlias != null ? (" " + renderedAlias) : ""));
     if (this.wherePredicate != null) {
       w.write("\nWHERE ");
       this.wherePredicate.renderTo(w);

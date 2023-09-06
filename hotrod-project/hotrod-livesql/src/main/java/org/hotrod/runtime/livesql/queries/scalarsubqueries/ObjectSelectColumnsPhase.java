@@ -1,13 +1,13 @@
 package org.hotrod.runtime.livesql.queries.scalarsubqueries;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.ibatis.session.SqlSession;
-import org.hotrod.runtime.livesql.LiveSQLMapper;
 import org.hotrod.runtime.livesql.Row;
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.object.ObjectExpression;
+import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.select.TableExpression;
 
@@ -15,9 +15,9 @@ public class ObjectSelectColumnsPhase extends ObjectSelectExpression {
 
   // Constructor
 
-  public ObjectSelectColumnsPhase(final LiveSQLDialect sqlDialect, final SqlSession sqlSession,
-      final LiveSQLMapper liveSQLMapper, final boolean distinct, final ObjectExpression expression) {
-    super(new Select<Row>(sqlDialect, distinct, sqlSession, liveSQLMapper, true,
+  public ObjectSelectColumnsPhase(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct,
+      final ObjectExpression expression) {
+    super(new Select<Row>(context, ctes, distinct, true,
         Arrays.asList(expression).stream().collect(Collectors.toList())));
   }
 

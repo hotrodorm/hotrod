@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.ibatis.session.SqlSession;
-import org.hotrod.runtime.livesql.LiveSQLMapper;
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
@@ -14,6 +11,8 @@ import org.hotrod.runtime.livesql.metadata.AllColumns.ColumnAliased;
 import org.hotrod.runtime.livesql.metadata.AllColumns.ColumnList;
 import org.hotrod.runtime.livesql.metadata.AllColumns.ColumnSubset;
 import org.hotrod.runtime.livesql.metadata.Column;
+import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.subqueries.AllSubqueryColumns;
 import org.hotrod.runtime.livesql.util.ReflectionUtil;
 import org.hotrod.runtime.livesql.util.SubqueryUtil;
@@ -23,36 +22,17 @@ public class Select<R> extends AbstractSelect<R> {
   private boolean doNotAliasColumns;
   private List<ResultSetColumn> resultSetColumns = new ArrayList<>();
 
-  public Select(final LiveSQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession,
-      final LiveSQLMapper liveSQLMapper, final boolean doNotAliasColumns) {
-    super(sqlDialect, distinct, sqlSession, null, liveSQLMapper);
+  public Select(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct,
+      final boolean doNotAliasColumns) {
+    super(context, ctes, distinct);
     this.doNotAliasColumns = doNotAliasColumns;
   }
 
-  public Select(final LiveSQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession,
-      final String mapperStatement, final boolean doNotAliasColumns) {
-    super(sqlDialect, distinct, sqlSession, mapperStatement, null);
-    this.doNotAliasColumns = doNotAliasColumns;
-  }
-
-  public Select(final LiveSQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession,
-      final LiveSQLMapper liveSQLMapper, final boolean doNotAliasColumns,
-      final List<ResultSetColumn> resultSetColumns) {
-    super(sqlDialect, distinct, sqlSession, null, liveSQLMapper);
+  public Select(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct,
+      final boolean doNotAliasColumns, final List<ResultSetColumn> resultSetColumns) {
+    super(context, ctes, distinct);
     this.doNotAliasColumns = doNotAliasColumns;
     this.resultSetColumns = resultSetColumns;
-  }
-
-  public Select(final LiveSQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession,
-      final String mapperStatement, final boolean doNotAliasColumns, final List<ResultSetColumn> resultSetColumns) {
-    super(sqlDialect, distinct, sqlSession, mapperStatement, null);
-    this.doNotAliasColumns = doNotAliasColumns;
-    this.resultSetColumns = resultSetColumns;
-  }
-
-  public Select(final Select<R> select, final boolean distinct, final boolean doNotAliasColumns) {
-    super(select.liveSQLDialect, distinct, select.sqlSession, select.mapperStatement, select.liveSQLMapper);
-    this.doNotAliasColumns = doNotAliasColumns;
   }
 
   // Setters

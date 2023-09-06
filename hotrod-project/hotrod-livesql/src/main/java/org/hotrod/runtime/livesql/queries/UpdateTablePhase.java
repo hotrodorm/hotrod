@@ -2,9 +2,6 @@ package org.hotrod.runtime.livesql.queries;
 
 import java.util.Date;
 
-import org.apache.ibatis.session.SqlSession;
-import org.hotrod.runtime.livesql.LiveSQLMapper;
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.binary.ByteArrayExpression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
@@ -28,9 +25,8 @@ public class UpdateTablePhase {
 
   // Constructor
 
-  public UpdateTablePhase(final LiveSQLDialect sqlDialect, final SqlSession sqlSession,
-      final LiveSQLMapper liveSQLMapper, final TableOrView tableOrView) {
-    this.update = new Update(sqlDialect, sqlSession, liveSQLMapper);
+  public UpdateTablePhase(final LiveSQLContext context, final TableOrView tableOrView) {
+    this.update = new Update(context);
     this.update.setTableOrView(tableOrView);
   }
 

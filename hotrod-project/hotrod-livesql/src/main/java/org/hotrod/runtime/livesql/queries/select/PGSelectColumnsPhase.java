@@ -4,12 +4,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.cursors.Cursor;
-import org.hotrod.runtime.livesql.LiveSQLMapper;
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
+import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 
@@ -21,11 +20,10 @@ public class PGSelectColumnsPhase<R> implements ExecutableSelect<R> {
 
   // Constructor
 
-  public PGSelectColumnsPhase(final LiveSQLDialect sqlDialect, final SqlSession sqlSession,
-      final LiveSQLMapper liveSQLMapper, final boolean distinct, final ResultSetColumn... resultSetColumns) {
-    Select<R> s = new Select<R>(sqlDialect, distinct, sqlSession, liveSQLMapper, false);
-    s.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
-    this.select = s;
+  public PGSelectColumnsPhase(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct,
+      final ResultSetColumn... resultSetColumns) {
+    this.select = new Select<R>(context, ctes, distinct, false);
+    this.select.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
   }
 
   public PGSelectColumnsPhase(final Select<R> select, final boolean distinct,

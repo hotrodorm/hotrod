@@ -4,12 +4,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.cursors.Cursor;
-import org.hotrod.runtime.livesql.LiveSQLMapper;
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectLinkingPhase;
@@ -24,21 +23,15 @@ public class SelectColumnsPhase<R> implements ExecutableSelect<R> {
 
   // Constructor
 
-  public SelectColumnsPhase(final LiveSQLDialect sqlDialect, final SqlSession sqlSession,
-      final LiveSQLMapper liveSQLMapper, final boolean distinct, final ResultSetColumn... resultSetColumns) {
-    Select<R> s = new Select<R>(sqlDialect, distinct, sqlSession, liveSQLMapper, false);
+  public SelectColumnsPhase(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct,
+      final ResultSetColumn... resultSetColumns) {
+    this.select = new Select<R>(context, ctes, distinct, false);
     for (ResultSetColumn c : resultSetColumns) {
       if (c == null) {
         throw new LiveSQLException("Select column cannot be null.");
       }
     }
-    s.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
-    this.select = s;
-  }
-
-  public SelectColumnsPhase(final Select<R> select, final boolean distinct, final ResultSetColumn... resultSetColumns) {
-    select.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
-    this.select = select;
+    this.select.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
   }
 
   // Next stages
@@ -49,16 +42,20 @@ public class SelectColumnsPhase<R> implements ExecutableSelect<R> {
 
   // Set operations
 
-  // .select() .selectDistinct()
+  // .union().select()...
+  // .union().selectDistinct()...
   public CombinedSelectLinkingPhase<R> union() {
-    UnionOperator<R> op = new UnionOperator<R>(this.select);
-    return new CombinedSelectLinkingPhase<R>(op);
+    UnionOperator<R> op = new UnionOperator<R>();
+    op.add(this.select);
+    return new CombinedSelectLinkingPhase<R>(op, this.select.getContext());
   }
 
-  // .union()
+  // .union(select()...)
+  // .union(selectDistinct()...)
   public CombinedSelectPhase<R> union(final ExecutableSelect<R> select) {
-    UnionOperator<R> op = new UnionOperator<R>(this.select);
-    op.setRight(select.getSelect());
+    UnionOperator<R> op = new UnionOperator<R>();
+    op.add(this.select);
+    op.add(select.getSelect());
     return new CombinedSelectPhase<R>(op);
   }
 

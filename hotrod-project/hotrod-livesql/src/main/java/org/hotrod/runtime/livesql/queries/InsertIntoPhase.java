@@ -3,9 +3,6 @@ package org.hotrod.runtime.livesql.queries;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.ibatis.session.SqlSession;
-import org.hotrod.runtime.livesql.LiveSQLMapper;
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
@@ -19,9 +16,8 @@ public class InsertIntoPhase {
 
   // Constructor
 
-  public InsertIntoPhase(final LiveSQLDialect sqlDialect, final SqlSession sqlSession,
-      final LiveSQLMapper liveSQLMapper, final TableOrView into) {
-    this.insert = new Insert(sqlDialect, sqlSession, liveSQLMapper);
+  public InsertIntoPhase(final LiveSQLContext context, final TableOrView into) {
+    this.insert = new Insert(context);
     this.insert.setInto(into);
   }
 

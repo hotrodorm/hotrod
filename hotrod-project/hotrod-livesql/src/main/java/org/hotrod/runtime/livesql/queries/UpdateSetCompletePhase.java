@@ -2,8 +2,6 @@ package org.hotrod.runtime.livesql.queries;
 
 import java.util.Map;
 
-import org.apache.ibatis.session.SqlSession;
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 
@@ -19,10 +17,9 @@ public class UpdateSetCompletePhase implements ExecutableQuery {
     this.update = update;
   }
 
-  public UpdateSetCompletePhase(final TableOrView tableOrView, final LiveSQLDialect sqlDialect,
-      final SqlSession sqlSession, final String mapperStatement, final Predicate predicate,
-      final Map<String, Object> extraSets) {
-    this.update = new Update(sqlDialect, sqlSession, mapperStatement);
+  public UpdateSetCompletePhase(final LiveSQLContext context, final TableOrView tableOrView,
+      final String mapperStatement, final Predicate predicate, final Map<String, Object> extraSets) {
+    this.update = new Update(context, mapperStatement);
     this.update.setTableOrView(tableOrView);
     this.update.setWherePredicate(predicate);
     this.update.setExtraSets(extraSets);

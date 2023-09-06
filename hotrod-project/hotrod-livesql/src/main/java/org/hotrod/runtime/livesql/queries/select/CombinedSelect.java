@@ -3,23 +3,16 @@ package org.hotrod.runtime.livesql.queries.select;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.ibatis.session.SqlSession;
-import org.hotrod.runtime.livesql.LiveSQLMapper;
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import org.hotrod.runtime.livesql.queries.ctes.CTE;
 
 class CombinedSelect<T> extends AbstractSelect<T> {
 
   private List<ResultSetColumn> resultSetColumns = null;
 
-  CombinedSelect(final LiveSQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession,
-      final LiveSQLMapper liveSQLMapper) {
-    super(sqlDialect, distinct, sqlSession, null, liveSQLMapper);
-  }
-
-  CombinedSelect(final LiveSQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession,
-      final String mapperStatement) {
-    super(sqlDialect, distinct, sqlSession, mapperStatement, null);
+  CombinedSelect(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct) {
+    super(context, ctes, distinct);
   }
 
   // Setters

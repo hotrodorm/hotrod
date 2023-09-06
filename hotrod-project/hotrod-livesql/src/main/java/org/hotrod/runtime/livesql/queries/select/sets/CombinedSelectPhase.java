@@ -56,6 +56,7 @@ public class CombinedSelectPhase<R> implements ExecutableSelect<R> {
 
   @Override
   public void renderTo(QueryWriter w) {
+    SetOperator<R> root = op.findRoot();
     // TODO Auto-generated method stub
 
   }

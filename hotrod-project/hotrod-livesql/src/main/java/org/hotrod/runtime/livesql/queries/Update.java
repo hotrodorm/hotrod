@@ -6,9 +6,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.ibatis.session.SqlSession;
-import org.hotrod.runtime.livesql.LiveSQLMapper;
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.Column;
@@ -18,10 +15,9 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLStructure;
 
 public class Update {
 
-  private LiveSQLDialect sqlDialect;
-  private SqlSession sqlSession;
+  private LiveSQLContext context;
+
   private String mapperStatement; // DAO.update(values, [t,] predicate)
-  private LiveSQLMapper liveSQLMapper; // LiveSQL
 
   private TableOrView tableOrView;
   private List<Assignment> sets = new ArrayList<>();
@@ -29,18 +25,15 @@ public class Update {
 
   private Map<String, Object> extraSets = new HashMap<>();
 
-  Update(final LiveSQLDialect sqlDialect, final SqlSession sqlSession, final LiveSQLMapper liveSQLMapper) {
-    this.sqlDialect = sqlDialect;
-    this.sqlSession = sqlSession;
+  Update(final LiveSQLContext context) {
+    this.context = context;
     this.mapperStatement = null;
-    this.liveSQLMapper = liveSQLMapper;
+
   }
 
-  Update(final LiveSQLDialect sqlDialect, final SqlSession sqlSession, final String mapperStatement) {
-    this.sqlDialect = sqlDialect;
-    this.sqlSession = sqlSession;
+  Update(final LiveSQLContext context, final String mapperStatement) {
+    this.context = context;
     this.mapperStatement = mapperStatement;
-    this.liveSQLMapper = null;
   }
 
   void setTableOrView(final TableOrView from) {
@@ -71,21 +64,22 @@ public class Update {
     parameters.put("extraSets", this.extraSets);
 
     if (this.mapperStatement != null) {
-      this.sqlSession.update(this.mapperStatement, q.getConsolidatedParameters());
+      this.context.getSQLSession().update(this.mapperStatement, q.getConsolidatedParameters());
     } else {
-      this.liveSQLMapper.update(parameters);
+      this.context.getLiveSQLMapper().update(parameters);
     }
   }
 
   private LiveSQLStructure prepareQuery() {
-    QueryWriter w = new QueryWriter(this.sqlDialect);
+    QueryWriter w = new QueryWriter(this.context.getLiveSQLDialect());
     w.write("UPDATE ");
 
     String renderedAlias = this.tableOrView.getAlias() == null ? null
-        : this.sqlDialect.canonicalToNatural(this.sqlDialect.naturalToCanonical(this.tableOrView.getAlias()));
+        : this.context.getLiveSQLDialect()
+            .canonicalToNatural(this.context.getLiveSQLDialect().naturalToCanonical(this.tableOrView.getAlias()));
 
-    w.write(
-        this.sqlDialect.canonicalToNatural(this.tableOrView) + (renderedAlias != null ? (" " + renderedAlias) : ""));
+    w.write(this.context.getLiveSQLDialect().canonicalToNatural(this.tableOrView)
+        + (renderedAlias != null ? (" " + renderedAlias) : ""));
 
     w.write("\nSET\n");
     boolean first = true;

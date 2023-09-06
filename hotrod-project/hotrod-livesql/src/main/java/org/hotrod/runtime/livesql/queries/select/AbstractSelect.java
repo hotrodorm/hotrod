@@ -10,11 +10,8 @@ import java.util.ListIterator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.cursors.Cursor;
-import org.hotrod.runtime.livesql.LiveSQLMapper;
 import org.hotrod.runtime.livesql.dialects.JoinRenderer;
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
@@ -27,9 +24,11 @@ import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.DatabaseObject;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
+import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLStructure;
+import org.hotrod.runtime.livesql.queries.select.sets.MultiSet;
 import org.hotrod.runtime.livesql.queries.select.sets.SetOperator;
 import org.hotrod.runtime.livesql.queries.subqueries.AllSubqueryColumns;
 import org.hotrod.runtime.livesql.util.SubqueryUtil;
@@ -39,7 +38,7 @@ import org.hotrodorm.hotrod.utils.SUtil;
 import org.hotrodorm.hotrod.utils.Separator;
 import org.springframework.util.ReflectionUtils;
 
-public abstract class AbstractSelect<R> extends Query {
+public abstract class AbstractSelect<R> extends Query implements MultiSet<R> {
 
   private List<CTE> ctes = new ArrayList<>();
   private boolean distinct;
@@ -49,31 +48,33 @@ public abstract class AbstractSelect<R> extends Query {
   private List<Expression> groupBy = null;
   private Predicate havingPredicate = null;
 
-  private SetOperator<R> parentOperator = null;
+  private SetOperator<R> parent = null;
 
   private List<OrderingTerm> orderingTerms = null;
   private Integer offset = null;
   private Integer limit = null;
 
-  protected SqlSession sqlSession;
-  protected String mapperStatement;
-  protected LiveSQLMapper liveSQLMapper;
+  private LiveSQLContext context;
 
-  AbstractSelect(final LiveSQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession,
-      final String mapperStatement, final LiveSQLMapper liveSQLMapper) {
-    super(sqlDialect);
+  AbstractSelect(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct) {
+    super(context.getLiveSQLDialect());
+    this.context = context;
+    this.setCTEs(ctes);
     this.distinct = distinct;
-    this.sqlSession = sqlSession;
-    this.mapperStatement = mapperStatement;
-    this.liveSQLMapper = liveSQLMapper;
   }
 
-  public void setParentOperator(final SetOperator<R> parentOperator) {
-    this.parentOperator = parentOperator;
+  @Override
+  public void setParentOperator(final SetOperator<R> parent) {
+    this.parent = parent;
   }
 
+  @Override
   public SetOperator<R> getParentOperator() {
-    return parentOperator;
+    return parent;
+  }
+
+  public LiveSQLContext getContext() {
+    return context;
   }
 
   protected abstract void writeColumns(final QueryWriter w, final TableExpression baseTableExpression,
@@ -176,7 +177,7 @@ public abstract class AbstractSelect<R> extends Query {
 
   // Setters
 
-  void setCTEs(final List<CTE> ctes) {
+  private void setCTEs(final List<CTE> ctes) {
     if (ctes != null) {
       for (CTE c : ctes) {
         this.ctes.add(c);
@@ -408,23 +409,32 @@ public abstract class AbstractSelect<R> extends Query {
   }
 
   public List<R> execute() {
+    return this.execute(null);
+  }
+
+  public List<R> execute(final String mapperStatement) {
 
     LiveSQLStructure q = this.prepareQuery();
 
-    if (this.mapperStatement == null) {
+    if (mapperStatement == null) {
       return executeLiveSQL(q);
     } else {
-      return this.sqlSession.selectList(this.mapperStatement, q.getConsolidatedParameters());
+      return this.context.getSQLSession().selectList(mapperStatement, q.getConsolidatedParameters());
     }
 
   }
 
   public Cursor<R> executeCursor() {
+    return this.executeCursor(null);
+  }
+
+  public Cursor<R> executeCursor(final String mapperStatement) {
     LiveSQLStructure q = this.prepareQuery();
-    if (this.mapperStatement == null) {
+    if (mapperStatement == null) {
       return executeLiveSQLCursor(q);
     } else {
-      return new MyBatisCursor<R>(this.sqlSession.selectCursor(this.mapperStatement, q.getConsolidatedParameters()));
+      return new MyBatisCursor<R>(
+          this.context.getSQLSession().selectCursor(mapperStatement, q.getConsolidatedParameters()));
     }
   }
 
@@ -432,14 +442,14 @@ public abstract class AbstractSelect<R> extends Query {
   private List<R> executeLiveSQL(final LiveSQLStructure q) {
     LinkedHashMap<String, Object> parameters = q.getParameters();
     parameters.put("sql", q.getSQL());
-    return (List<R>) this.liveSQLMapper.select(parameters);
+    return (List<R>) this.context.getLiveSQLMapper().select(parameters);
   }
 
   @SuppressWarnings("unchecked")
   private Cursor<R> executeLiveSQLCursor(final LiveSQLStructure q) {
     LinkedHashMap<String, Object> parameters = q.getParameters();
     parameters.put("sql", q.getSQL());
-    return (Cursor<R>) this.liveSQLMapper.selectCursor(parameters);
+    return (Cursor<R>) this.context.getLiveSQLMapper().selectCursor(parameters);
   }
 
   public String getPreview() {

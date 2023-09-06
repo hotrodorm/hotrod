@@ -78,9 +78,12 @@ import org.hotrod.runtime.livesql.expressions.strings.StringConstant;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
 import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
+import org.hotrod.runtime.livesql.ordering.AliasOrderingTerm;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
+import org.hotrod.runtime.livesql.ordering.OrdinalOrderingTerm;
 import org.hotrod.runtime.livesql.queries.DeleteFromPhase;
 import org.hotrod.runtime.livesql.queries.InsertIntoPhase;
+import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.UpdateTablePhase;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.ctes.CTEHeaderPhase;
@@ -110,40 +113,36 @@ public class LiveSQL {
 
   // Properties
 
-  private SqlSession sqlSession;
-  private LiveSQLDialect sqlDialect;
-  private LiveSQLMapper liveSQLMapper;
+  private LiveSQLContext context;
 
   // Setters
 
-  public LiveSQL(final SqlSession sqlSession, final @Qualifier("liveSQLDialect") LiveSQLDialect sqlDialect,
+  public LiveSQL(final SqlSession sqlSession, final @Qualifier("liveSQLDialect") LiveSQLDialect liveSQLDialect,
       final LiveSQLMapper liveSQLMapper) {
-    this.sqlSession = sqlSession;
-    this.sqlDialect = sqlDialect;
-    this.liveSQLMapper = liveSQLMapper;
+    this.context = new LiveSQLContext(liveSQLDialect, sqlSession, liveSQLMapper);
   }
 
   // Select
 
   public SelectColumnsPhase<Row> select() {
-    return new SelectColumnsPhase<Row>(this.sqlDialect, this.sqlSession, this.liveSQLMapper, false);
+    return new SelectColumnsPhase<Row>(this.context, null, false);
   }
 
   public SelectColumnsPhase<Row> selectDistinct() {
-    return new SelectColumnsPhase<Row>(this.sqlDialect, this.sqlSession, this.liveSQLMapper, true);
+    return new SelectColumnsPhase<Row>(this.context, null, true);
   }
 
   public SelectColumnsPhase<Row> select(final ResultSetColumn... resultSetColumns) {
-    return new SelectColumnsPhase<Row>(this.sqlDialect, this.sqlSession, this.liveSQLMapper, false, resultSetColumns);
+    return new SelectColumnsPhase<Row>(this.context, null, false, resultSetColumns);
   }
 
   public SelectColumnsPhase<Row> selectDistinct(final ResultSetColumn... resultSetColumns) {
-    return new SelectColumnsPhase<Row>(this.sqlDialect, this.sqlSession, this.liveSQLMapper, true, resultSetColumns);
+    return new SelectColumnsPhase<Row>(this.context, null, true, resultSetColumns);
   }
 
   @Available(engine = Const.POSTGRESQL, since = Const.PG15)
   public PGSelectColumnsPhase<Row> selectDistinctOn(final ResultSetColumn... resultSetColumns) {
-    return new PGSelectColumnsPhase<Row>(this.sqlDialect, this.sqlSession, this.liveSQLMapper, true, resultSetColumns);
+    return new PGSelectColumnsPhase<Row>(this.context, null, true, resultSetColumns);
   }
 
   // Subqueries
@@ -159,27 +158,27 @@ public class LiveSQL {
   // Scalar subqueries
 
   public NumberSelectColumnsPhase selectScalar(final NumberExpression expression) {
-    return new NumberSelectColumnsPhase(this.sqlDialect, this.sqlSession, this.liveSQLMapper, false, expression);
+    return new NumberSelectColumnsPhase(this.context, null, false, expression);
   }
 
   public StringSelectColumnsPhase selectScalar(final StringExpression expression) {
-    return new StringSelectColumnsPhase(this.sqlDialect, this.sqlSession, this.liveSQLMapper, false, expression);
+    return new StringSelectColumnsPhase(this.context, null, false, expression);
   }
 
   public BooleanSelectColumnsPhase selectScalar(final Predicate expression) {
-    return new BooleanSelectColumnsPhase(this.sqlDialect, this.sqlSession, this.liveSQLMapper, false, expression);
+    return new BooleanSelectColumnsPhase(this.context, null, false, expression);
   }
 
   public DateTimeSelectColumnsPhase selectScalar(final DateTimeExpression expression) {
-    return new DateTimeSelectColumnsPhase(this.sqlDialect, this.sqlSession, this.liveSQLMapper, false, expression);
+    return new DateTimeSelectColumnsPhase(this.context, null, false, expression);
   }
 
   public ByteArraySelectColumnsPhase selectScalar(final ByteArrayExpression expression) {
-    return new ByteArraySelectColumnsPhase(this.sqlDialect, this.sqlSession, this.liveSQLMapper, false, expression);
+    return new ByteArraySelectColumnsPhase(this.context, null, false, expression);
   }
 
   public ObjectSelectColumnsPhase selectScalar(final ObjectExpression expression) {
-    return new ObjectSelectColumnsPhase(this.sqlDialect, this.sqlSession, this.liveSQLMapper, false, expression);
+    return new ObjectSelectColumnsPhase(this.context, null, false, expression);
   }
 
   // CTEs
@@ -197,25 +196,25 @@ public class LiveSQL {
   }
 
   public SelectCTEPhase<Row> with(final CTE... ctes) {
-    return new SelectCTEPhase<Row>(this.sqlDialect, this.sqlSession, this.liveSQLMapper, ctes);
-  }
-
-  // Delete
-
-  public DeleteFromPhase delete(final TableOrView from) {
-    return new DeleteFromPhase(this.sqlDialect, this.sqlSession, this.liveSQLMapper, from);
-  }
-
-  // Update
-
-  public UpdateTablePhase update(final TableOrView tableOrView) {
-    return new UpdateTablePhase(this.sqlDialect, this.sqlSession, this.liveSQLMapper, tableOrView);
+    return new SelectCTEPhase<Row>(this.context, ctes);
   }
 
   // Insert
 
   public InsertIntoPhase insert(final TableOrView into) {
-    return new InsertIntoPhase(this.sqlDialect, this.sqlSession, this.liveSQLMapper, into);
+    return new InsertIntoPhase(this.context, into);
+  }
+
+  // Update
+
+  public UpdateTablePhase update(final TableOrView tableOrView) {
+    return new UpdateTablePhase(this.context, tableOrView);
+  }
+
+  // Delete
+
+  public DeleteFromPhase delete(final TableOrView from) {
+    return new DeleteFromPhase(this.context, from);
   }
 
   // Tuples
@@ -872,6 +871,16 @@ public class LiveSQL {
 
   public ObjectExpression enclose(final ObjectExpression value) {
     return new EnclosedObjectExpression(value);
+  }
+
+  // Ordering Terms
+
+  public AliasOrderingTerm ordering(final String column) {
+    return new AliasOrderingTerm(column);
+  }
+
+  public OrdinalOrderingTerm ordering(final int column) {
+    return new OrdinalOrderingTerm(column);
   }
 
 }

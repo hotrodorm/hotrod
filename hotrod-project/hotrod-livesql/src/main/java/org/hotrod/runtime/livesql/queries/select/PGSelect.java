@@ -3,25 +3,18 @@ package org.hotrod.runtime.livesql.queries.select;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.ibatis.session.SqlSession;
-import org.hotrod.runtime.livesql.LiveSQLMapper;
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import org.hotrod.runtime.livesql.queries.ctes.CTE;
 
 class PGSelect<R> extends AbstractSelect<R> {
 
   private boolean doNotAliasColumns;
   private List<ResultSetColumn> resultSetColumns = new ArrayList<>();
 
-  PGSelect(final LiveSQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession,
-      final LiveSQLMapper liveSQLMapper, final boolean doNotAliasColumns) {
-    super(sqlDialect, distinct, sqlSession, null, liveSQLMapper);
-    this.doNotAliasColumns = doNotAliasColumns;
-  }
-
-  PGSelect(final LiveSQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession,
-      final String mapperStatement, final boolean doNotAliasColumns) {
-    super(sqlDialect, distinct, sqlSession, mapperStatement, null);
+  PGSelect(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct,
+      final boolean doNotAliasColumns) {
+    super(context, ctes, distinct);
     this.doNotAliasColumns = doNotAliasColumns;
   }
 

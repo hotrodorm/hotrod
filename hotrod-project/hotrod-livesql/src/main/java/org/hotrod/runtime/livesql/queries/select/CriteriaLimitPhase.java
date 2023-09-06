@@ -7,9 +7,11 @@ import org.hotrod.runtime.cursors.Cursor;
 public class CriteriaLimitPhase<T> implements ExecutableCriteriaSelect<T> {
 
   private AbstractSelect<T> select;
+  private String mapperStatement;
 
-  CriteriaLimitPhase(final AbstractSelect<T> select) {
+  CriteriaLimitPhase(final AbstractSelect<T> select, final String mapperStatement) {
     this.select = select;
+    this.mapperStatement = mapperStatement;
   }
 
   // next phases
@@ -17,11 +19,11 @@ public class CriteriaLimitPhase<T> implements ExecutableCriteriaSelect<T> {
   // execute
 
   public List<T> execute() {
-    return this.select.execute();
+    return this.select.execute(this.mapperStatement);
   }
 
   public Cursor<T> executeCursor() {
-    return this.select.executeCursor();
+    return this.select.executeCursor(this.mapperStatement);
   }
 
   // rendering

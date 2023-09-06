@@ -3,9 +3,6 @@ package org.hotrod.runtime.livesql.queries;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.apache.ibatis.session.SqlSession;
-import org.hotrod.runtime.livesql.LiveSQLMapper;
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
@@ -15,20 +12,15 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLStructure;
 
 public class Insert {
 
-  private LiveSQLDialect sqlDialect;
-  @SuppressWarnings("unused")
-  private SqlSession sqlSession;
-  private LiveSQLMapper liveSQLMapper;
+  private LiveSQLContext context;
 
   private TableOrView into;
   private List<Column> columns;
   private List<Expression> values;
   private ExecutableSelect<?> select;
 
-  Insert(final LiveSQLDialect sqlDialect, final SqlSession sqlSession, final LiveSQLMapper liveSQLMapper) {
-    this.sqlDialect = sqlDialect;
-    this.sqlSession = sqlSession;
-    this.liveSQLMapper = liveSQLMapper;
+  Insert(final LiveSQLContext context) {
+    this.context = context;
   }
 
   void setInto(final TableOrView into) {
@@ -56,13 +48,13 @@ public class Insert {
     LiveSQLStructure q = this.prepareQuery();
     LinkedHashMap<String, Object> parameters = q.getParameters();
     parameters.put("sql", q.getSQL());
-    this.liveSQLMapper.insert(parameters);
+    this.context.getLiveSQLMapper().insert(parameters);
   }
 
   private LiveSQLStructure prepareQuery() {
-    QueryWriter w = new QueryWriter(this.sqlDialect);
+    QueryWriter w = new QueryWriter(this.context.getLiveSQLDialect());
     w.write("INSERT INTO ");
-    w.write(this.sqlDialect.canonicalToNatural(this.into));
+    w.write(this.context.getLiveSQLDialect().canonicalToNatural(this.into));
 
     if (this.columns != null) {
       w.write(" (");

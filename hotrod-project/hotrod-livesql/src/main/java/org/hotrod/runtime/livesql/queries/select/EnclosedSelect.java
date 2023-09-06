@@ -2,19 +2,17 @@ package org.hotrod.runtime.livesql.queries.select;
 
 import java.util.List;
 
-import org.apache.ibatis.session.SqlSession;
-import org.hotrod.runtime.livesql.LiveSQLMapper;
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
-import org.hotrod.runtime.livesql.dialects.SetOperationRenderer.SetOperation;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import org.hotrod.runtime.livesql.queries.ctes.CTE;
 
 public class EnclosedSelect<R> extends AbstractSelect<R> {
 
   private AbstractSelect<R> select;
 
-  public EnclosedSelect(final LiveSQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession,
-      final String mapperStatement, final AbstractSelect<R> select, final LiveSQLMapper liveSQLMapper) {
-    super(sqlDialect, distinct, sqlSession, mapperStatement, liveSQLMapper);
+  public EnclosedSelect(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct,
+      final AbstractSelect<R> select) {
+    super(context, ctes, distinct);
     this.select = select;
   }
 

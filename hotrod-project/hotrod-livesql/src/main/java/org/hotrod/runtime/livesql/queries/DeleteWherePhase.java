@@ -1,7 +1,5 @@
 package org.hotrod.runtime.livesql.queries;
 
-import org.apache.ibatis.session.SqlSession;
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 
@@ -18,9 +16,9 @@ public class DeleteWherePhase implements ExecutableQuery {
     this.delete.setWherePredicate(predicate);
   }
 
-  public DeleteWherePhase(final TableOrView from, final LiveSQLDialect sqlDialect, final SqlSession sqlSession,
-      final String mapperStatement, final Predicate predicate) {
-    this.delete = new Delete(sqlDialect, sqlSession, mapperStatement);
+  public DeleteWherePhase(final LiveSQLContext context, final TableOrView from, final String mapperStatement,
+      final Predicate predicate) {
+    this.delete = new Delete(context, mapperStatement);
     this.delete.setFrom(from);
     this.delete.setWherePredicate(predicate);
   }

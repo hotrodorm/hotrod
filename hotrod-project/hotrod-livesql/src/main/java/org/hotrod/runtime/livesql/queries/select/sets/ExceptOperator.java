@@ -1,11 +1,21 @@
 package org.hotrod.runtime.livesql.queries.select.sets;
 
-import org.hotrod.runtime.livesql.queries.select.Select;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class ExceptOperator<R> extends SetOperator<R> {
 
-  public ExceptOperator(Select<R> a) {
-    super(a);
+  public ExceptOperator() {
+    super();
+  }
+
+  @Override
+  protected void renderSetOperator(QueryWriter w) {
+    w.write("EXCEPT");
+  }
+
+  @Override
+  public int getPrecedence() {
+    return PRECEDENCE_EXCEPT;
   }
 
 }
