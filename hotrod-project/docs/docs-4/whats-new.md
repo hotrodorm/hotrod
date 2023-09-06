@@ -6,19 +6,19 @@ HotRod 4.1 add subqueries to LiveSQL and adds a few extra enhancements to the Li
 
 ### 1. LiveSQL Subqueries
 
-LiveSQL implements suqueries. These include Scalar Subqueries, Table Expressios, CTEs (plain and recursive) and Lateral Joins, in addition to IN/NOT IN, EXISTS/NOT EXISTS, and assymmetric operators. The extra syntax allows the developer to write complex SQL queries to adress more sophisticated data scenarios, without resorting to Nitro queries. Since writing LiveSQL code is faster than writing Nitro queries this enhancement can significantly speed up development for queries of mid-level complexity.
+LiveSQL implements subqueries. These include Scalar Subqueries, Table Expressions, CTEs (plain and recursive) and Lateral Joins, in addition to IN/NOT IN, EXISTS/NOT EXISTS, and asymmetric operators. The extra syntax allows the developer to write complex SQL queries to adress more sophisticated data scenarios, without resorting to Nitro queries. Since writing LiveSQL code is faster than writing Nitro queries, this enhancement can significantly speed up development for queries of mid-level complexity.
 
 
 ### 2. POJO vs Bean VOs
 
-By default LiveSQL instantiate VOs as Spring beans. Now it's possible to instantiate them as POJOs instead, with the use of a system property. In one hand POJOs do not participate in the Spring context (to manage transactions for example), but in the other hand they are faster than beans.
+By default, LiveSQL instantiate VOs as Spring beans. Now it's possible to instantiate them as POJOs instead, with the use of a system property. On the one hand, POJOs do not participate in the Spring context (to manage transactions for example), but on the other hand, they are faster than beans.
 
 ### 3. Other Features
 
 LiveSQL changes:
 
 - The `.asc()` method is not needed anymore when writing an ordering term. It's now assumed by default.
-- Explicit parenthesis added for expressions using `sql.enclose()`.
+- Explicit parentheses added for expressions using `sql.enclose()`.
 - All literals (including integer numbers and safe strings) are now parameterized to help database engines with query caching and optimization.
 
 
@@ -28,12 +28,12 @@ HotRod 4.0 includes several major features as well as a many of minor improvemen
 
 ## 1. General Functionality
 
-This functionality affect all the modules.
+This functionality affects all the modules.
 
 ### 1.1 No Config Mode
 
-The main configuration file can be omitted for rapid prototyping. In this mode a minimal
-setup of the Maven plugin produces a full persistence layer in no time. In this mode HotRod 
+The main configuration file can be omitted for rapid prototyping. In this mode, a minimal
+setup of the Maven plugin produces a full persistence layer in no time. Also in this mode, HotRod 
 generates the persistence layer by
 scanning the current database schema. Sensible defaults are defined for all configuration
 parameters for a standard persistence layer. See the [Hello World](guides/hello-world.md)
@@ -43,7 +43,7 @@ example to see it in action.
 
 Schema discovery can find tables and views in one or more schemas of the database
 and generate the persistence layer for them automatically. It's enabled in No Config
-mode and scans the current schema. Otherwise, it can be enabled in the configuration
+mode and scans the current schema. Alternatively, it can be enabled in the configuration
 to specify a list of schemas to scan. Rules can be defined with
 a Name Solver and Type Solver to tailor the name generation of classes and
 the type and names of properties in the persistence layer. See
@@ -51,8 +51,8 @@ the type and names of properties in the persistence layer. See
 
 ### 1.3 Support for Multiple Datasources
 
-Support for multiple datasources was added. These datasources can correspond to the same
-database engine or different ones. Each datasource generates a separated persistence
+Support for multiple datasources was added. These datasources may belong to the same
+database engine or to different ones. Each datasource generates a separated persistence
 layer that is used seamlessly by all the HotRod modules, including CRUD, LiveSQL, and Nitro,
 as well as all Spring features such as transaction management, AOP, etc. 
 See [Using Multiple Datasources](guides/using-multiple-datasources.md)
