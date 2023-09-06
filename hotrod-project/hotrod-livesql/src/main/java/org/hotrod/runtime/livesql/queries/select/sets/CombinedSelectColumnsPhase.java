@@ -8,8 +8,6 @@ import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.Select;
@@ -99,13 +97,6 @@ public class CombinedSelectColumnsPhase<R> implements ExecutableSelect<R> {
   @Override
   public Cursor<R> executeCursor() {
     return this.select.executeCursor();
-  }
-
-  // Validation
-
-  @Override
-  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-    this.select.validateTableReferences(tableReferences, ag);
   }
 
   // Utilities

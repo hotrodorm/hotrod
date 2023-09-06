@@ -3,7 +3,7 @@ package org.hotrod.runtime.livesql.queries;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 
-public class DeleteFromPhase implements ExecutableQuery {
+public class DeleteFromPhase implements Query {
 
   // Properties
 

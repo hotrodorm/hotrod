@@ -9,8 +9,6 @@ import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 
 public class PGSelectColumnsPhase<R> implements ExecutableSelect<R> {
 
@@ -90,11 +88,6 @@ public class PGSelectColumnsPhase<R> implements ExecutableSelect<R> {
   }
 
   // Validation
-
-  @Override
-  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-    this.select.validateTableReferences(tableReferences, ag);
-  }
 
   @Override
   public String getPreview() {

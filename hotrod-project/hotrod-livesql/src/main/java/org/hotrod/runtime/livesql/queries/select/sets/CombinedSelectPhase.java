@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.Select;
@@ -83,12 +81,6 @@ public class CombinedSelectPhase<R> implements ExecutableSelect<R> {
   public Select<R> getSelect() {
     // TODO Auto-generated method stub
     return null;
-  }
-
-  @Override
-  public void validateTableReferences(TableReferences tableReferences, AliasGenerator ag) {
-    // TODO Auto-generated method stub
-
   }
 
   @Override

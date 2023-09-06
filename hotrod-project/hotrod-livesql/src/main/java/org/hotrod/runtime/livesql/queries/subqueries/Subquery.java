@@ -16,6 +16,7 @@ import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.select.TableExpression;
 import org.hotrod.runtime.livesql.util.SubqueryUtil;
 import org.hotrodorm.hotrod.utils.SUtil;
@@ -24,7 +25,7 @@ public class Subquery implements TableExpression {
 
   private String name;
   protected String[] columns;
-  private ExecutableSelect<?> select;
+  private Select<?> select;
 
   protected Subquery(final String name, final String[] columns) {
     if (SUtil.isEmpty(name)) {
@@ -36,7 +37,7 @@ public class Subquery implements TableExpression {
     this.select = null;
   }
 
-  public Subquery(final String name, final String[] columns, final ExecutableSelect<?> select) {
+  public Subquery(final String name, final String[] columns, final ExecutableSelect<?> es) {
     if (SUtil.isEmpty(name)) {
       throw new LiveSQLException("Subquery name cannot be empty", null);
     }
@@ -44,11 +45,11 @@ public class Subquery implements TableExpression {
 
     this.columns = columns;
 
-    if (select == null) {
+    if (es == null) {
       throw new LiveSQLException("Subquery select query cannot be null", null);
     }
 
-    this.select = select;
+    this.select = es.getSelect();
   }
 
   // Getters
@@ -57,7 +58,7 @@ public class Subquery implements TableExpression {
     return name;
   }
 
-  public ExecutableSelect<?> getSelect() {
+  public Select<?> getSelect() {
     return select;
   }
 

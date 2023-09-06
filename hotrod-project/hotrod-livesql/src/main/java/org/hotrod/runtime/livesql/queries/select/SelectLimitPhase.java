@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 
 public class SelectLimitPhase<R> implements ExecutableSelect<R> {
 
@@ -39,11 +37,6 @@ public class SelectLimitPhase<R> implements ExecutableSelect<R> {
   }
 
   // Validation
-
-  @Override
-  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-    this.select.validateTableReferences(tableReferences, ag);
-  }
 
   @Override
   public String getPreview() {

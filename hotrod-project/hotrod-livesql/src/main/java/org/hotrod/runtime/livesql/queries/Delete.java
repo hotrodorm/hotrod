@@ -4,12 +4,11 @@ import java.util.LinkedHashMap;
 
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
+import org.hotrod.runtime.livesql.queries.select.AssembledQuery;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLStructure;
 
-public class Delete {
-
-  private LiveSQLContext context;
+public class Delete extends AssembledQuery {
 
   private String mapperStatement; // DAO.delete(t, predicate)
 
@@ -17,12 +16,12 @@ public class Delete {
   private Predicate wherePredicate;
 
   Delete(final LiveSQLContext context) {
-    this.context = context;
+    super(context);
     this.mapperStatement = null;
   }
 
   Delete(final LiveSQLContext context, final String mapperStatement) {
-    this.context = context;
+    super(context);
     this.mapperStatement = mapperStatement;
   }
 

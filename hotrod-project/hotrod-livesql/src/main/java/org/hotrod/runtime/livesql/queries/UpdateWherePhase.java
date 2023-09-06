@@ -2,7 +2,7 @@ package org.hotrod.runtime.livesql.queries;
 
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
-public class UpdateWherePhase implements ExecutableQuery {
+public class UpdateWherePhase implements Query {
 
   // Properties
 

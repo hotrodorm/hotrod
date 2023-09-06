@@ -10,12 +10,11 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
+import org.hotrod.runtime.livesql.queries.select.AssembledQuery;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLStructure;
 
-public class Update {
-
-  private LiveSQLContext context;
+public class Update extends AssembledQuery {
 
   private String mapperStatement; // DAO.update(values, [t,] predicate)
 
@@ -26,13 +25,12 @@ public class Update {
   private Map<String, Object> extraSets = new HashMap<>();
 
   Update(final LiveSQLContext context) {
-    this.context = context;
+    super(context);
     this.mapperStatement = null;
-
   }
 
   Update(final LiveSQLContext context, final String mapperStatement) {
-    this.context = context;
+    super(context);
     this.mapperStatement = mapperStatement;
   }
 

@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.dialects.JoinRenderer;
+import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
@@ -38,7 +39,7 @@ import org.hotrodorm.hotrod.utils.SUtil;
 import org.hotrodorm.hotrod.utils.Separator;
 import org.springframework.util.ReflectionUtils;
 
-public abstract class AbstractSelect<R> extends Query implements MultiSet<R> {
+public abstract class AbstractSelect<R> extends AssembledQuery implements MultiSet<R> {
 
   private List<CTE> ctes = new ArrayList<>();
   private boolean distinct;
@@ -57,7 +58,7 @@ public abstract class AbstractSelect<R> extends Query implements MultiSet<R> {
   private LiveSQLContext context;
 
   AbstractSelect(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct) {
-    super(context.getLiveSQLDialect());
+    super(context);
     this.context = context;
     this.setCTEs(ctes);
     this.distinct = distinct;
@@ -232,22 +233,24 @@ public abstract class AbstractSelect<R> extends Query implements MultiSet<R> {
 
   private LiveSQLStructure prepareQuery() {
     validateQuery();
-    QueryWriter w = new QueryWriter(this.liveSQLDialect);
+    QueryWriter w = new QueryWriter(this.context.getLiveSQLDialect());
     renderTo(w);
     return w.getPreparedQuery();
   }
 
   public void renderTo(final QueryWriter w) {
 
+    LiveSQLDialect liveSQLDialect = this.context.getLiveSQLDialect();
+
     // CTEs
 
     if (!this.ctes.isEmpty()) {
       boolean hasRecursiveCTEs = this.ctes.stream().map(c -> c.isRecursive()).reduce(false, (a, b) -> a | b);
-      w.write(this.liveSQLDialect.getWithRenderer().render(hasRecursiveCTEs));
+      w.write(liveSQLDialect.getWithRenderer().render(hasRecursiveCTEs));
       w.write("\n");
       for (Iterator<CTE> it = this.ctes.iterator(); it.hasNext();) {
         CTE cte = it.next();
-        cte.renderDefinitionTo(w, this.liveSQLDialect);
+        cte.renderDefinitionTo(w, liveSQLDialect);
         if (it.hasNext()) {
           w.write(",");
         }
@@ -257,13 +260,12 @@ public abstract class AbstractSelect<R> extends Query implements MultiSet<R> {
 
     // retrieve pagination type
 
-    PaginationType paginationType = this.liveSQLDialect.getPaginationRenderer().getPaginationType(this.offset,
-        this.limit);
+    PaginationType paginationType = liveSQLDialect.getPaginationRenderer().getPaginationType(this.offset, this.limit);
 
     // enclosing pagination - begin
 
     if ((this.offset != null || this.limit != null) && paginationType == PaginationType.ENCLOSE) {
-      this.liveSQLDialect.getPaginationRenderer().renderBeginEnclosingPagination(this.offset, this.limit, w);
+      liveSQLDialect.getPaginationRenderer().renderBeginEnclosingPagination(this.offset, this.limit, w);
     }
 
     // select
@@ -280,7 +282,7 @@ public abstract class AbstractSelect<R> extends Query implements MultiSet<R> {
 
     if ((this.offset != null || this.limit != null) && paginationType == PaginationType.TOP) {
       w.write("\n  ");
-      this.liveSQLDialect.getPaginationRenderer().renderTopPagination(this.offset, this.limit, w);
+      liveSQLDialect.getPaginationRenderer().renderTopPagination(this.offset, this.limit, w);
     }
 
     // query columns
@@ -291,7 +293,7 @@ public abstract class AbstractSelect<R> extends Query implements MultiSet<R> {
 
     if (this.baseTableExpression == null) {
 
-      w.write("\n" + this.liveSQLDialect.getFromRenderer().renderFromWithoutATable());
+      w.write("\n" + liveSQLDialect.getFromRenderer().renderFromWithoutATable());
 
     } else {
 
@@ -300,7 +302,7 @@ public abstract class AbstractSelect<R> extends Query implements MultiSet<R> {
 
       // joins
 
-      JoinRenderer joinRenderer = this.liveSQLDialect.getJoinRenderer();
+      JoinRenderer joinRenderer = liveSQLDialect.getJoinRenderer();
 
       for (Join j : this.joins) {
         w.write("\n" + joinRenderer.renderJoinKeywords(j) + " ");
@@ -397,13 +399,13 @@ public abstract class AbstractSelect<R> extends Query implements MultiSet<R> {
     // bottom offset & limit
 
     if ((this.offset != null || this.limit != null) && paginationType == PaginationType.BOTTOM) {
-      this.liveSQLDialect.getPaginationRenderer().renderBottomPagination(this.offset, this.limit, w);
+      liveSQLDialect.getPaginationRenderer().renderBottomPagination(this.offset, this.limit, w);
     }
 
     // enclosing pagination - end
 
     if ((this.offset != null || this.limit != null) && paginationType == PaginationType.ENCLOSE) {
-      this.liveSQLDialect.getPaginationRenderer().renderEndEnclosingPagination(this.offset, this.limit, w);
+      liveSQLDialect.getPaginationRenderer().renderEndEnclosingPagination(this.offset, this.limit, w);
     }
 
   }
@@ -412,14 +414,14 @@ public abstract class AbstractSelect<R> extends Query implements MultiSet<R> {
     return this.execute(null);
   }
 
-  public List<R> execute(final String mapperStatement) {
+  public List<R> execute(final String entityMapperStatement) {
 
     LiveSQLStructure q = this.prepareQuery();
 
-    if (mapperStatement == null) {
+    if (entityMapperStatement == null) {
       return executeLiveSQL(q);
     } else {
-      return this.context.getSQLSession().selectList(mapperStatement, q.getConsolidatedParameters());
+      return this.context.getSQLSession().selectList(entityMapperStatement, q.getConsolidatedParameters());
     }
 
   }
@@ -428,13 +430,13 @@ public abstract class AbstractSelect<R> extends Query implements MultiSet<R> {
     return this.executeCursor(null);
   }
 
-  public Cursor<R> executeCursor(final String mapperStatement) {
+  public Cursor<R> executeCursor(final String entityMapperStatement) {
     LiveSQLStructure q = this.prepareQuery();
-    if (mapperStatement == null) {
+    if (entityMapperStatement == null) {
       return executeLiveSQLCursor(q);
     } else {
       return new MyBatisCursor<R>(
-          this.context.getSQLSession().selectCursor(mapperStatement, q.getConsolidatedParameters()));
+          this.context.getSQLSession().selectCursor(entityMapperStatement, q.getConsolidatedParameters()));
     }
   }
 
@@ -499,17 +501,9 @@ public abstract class AbstractSelect<R> extends Query implements MultiSet<R> {
 
   private void validateQuery() {
 
-    // 1. Validate a table/view is not used more than once
-
     TableReferences tableReferences = new TableReferences();
     AliasGenerator ag = new AliasGenerator();
     this.validateTableReferences(tableReferences, ag);
-
-//    // 2. Designate aliases to tables/views that do not declare them
-//
-//    if (tableReferences.getTableReferences().size() > 1) {
-//      this.assignNonDeclaredAliases(ag);
-//    }
 
   }
 

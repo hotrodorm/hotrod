@@ -28,6 +28,7 @@ import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrodorm.hotrod.utils.SUtil;
 
 public abstract class Expression implements ResultSetColumn, Rendereable, OrderingTerm {
@@ -101,16 +102,16 @@ public abstract class Expression implements ResultSetColumn, Rendereable, Orderi
 
   // Apply aliases
 
-  private List<Expression> expressions = new ArrayList<Expression>();
-  private List<ExecutableSelect<?>> subqueries = new ArrayList<ExecutableSelect<?>>();
-  private List<TableOrView> tablesOrViews = new ArrayList<TableOrView>();
+  private List<Expression> expressions = new ArrayList<>();
+  private List<Select<?>> subqueries = new ArrayList<>();
+  private List<TableOrView> tablesOrViews = new ArrayList<>();
 
   protected void register(final Expression expression) {
     this.expressions.add(expression);
   }
 
   protected void register(final ExecutableSelect<?> subquery) {
-    this.subqueries.add(subquery);
+    this.subqueries.add(subquery.getSelect());
   }
 
   protected void register(final TableOrView tableOrView) {
@@ -121,7 +122,7 @@ public abstract class Expression implements ResultSetColumn, Rendereable, Orderi
     for (Expression e : this.expressions) {
       e.validateTableReferences(tableReferences, ag);
     }
-    for (ExecutableSelect<?> s : this.subqueries) {
+    for (Select<?> s : this.subqueries) {
       if (s == null) {
         throw new LiveSQLException("Subquery cannot be null.", null);
       }
@@ -282,18 +283,5 @@ public abstract class Expression implements ResultSetColumn, Rendereable, Orderi
   }
 
   public abstract void renderTo(final QueryWriter w);
-
-  public String renderTree() {
-    StringBuilder sb = new StringBuilder();
-    this.renderTree(sb, 0);
-    return sb.toString();
-  }
-
-  public void renderTree(final StringBuilder sb, final int level) {
-    sb.append(SUtil.getFiller(". ", level) + "+ [" + this.precedence + "] " + this.getClass().getName() + "\n");
-    this.expressions.forEach(e -> e.renderTree(sb, level + 1));
-    this.subqueries.forEach(e -> e.renderTree(sb, level + 1));
-    this.tablesOrViews.forEach(e -> e.renderTree(sb, level + 1));
-  }
 
 }

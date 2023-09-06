@@ -20,7 +20,7 @@ public interface ExecutableSelect<R> {
 
   Select<R> getSelect();
 
-  void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag);
+//  void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag);
 
   List<ResultSetColumn> listColumns() throws IllegalAccessException;
 

@@ -1,6 +1,6 @@
 package org.hotrod.runtime.livesql.queries;
 
-public class InsertSelectPhase implements ExecutableQuery {
+public class InsertSelectPhase implements Query {
 
   // Properties
 

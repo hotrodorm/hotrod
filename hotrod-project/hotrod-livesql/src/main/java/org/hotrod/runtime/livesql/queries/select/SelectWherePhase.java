@@ -7,8 +7,6 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 
 public class SelectWherePhase<R> implements ExecutableSelect<R> {
 
@@ -93,11 +91,6 @@ public class SelectWherePhase<R> implements ExecutableSelect<R> {
   }
 
   // Validation
-
-  @Override
-  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-    this.select.validateTableReferences(tableReferences, ag);
-  }
 
   @Override
   public String getPreview() {

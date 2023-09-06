@@ -16,7 +16,7 @@ import org.hotrod.runtime.livesql.metadata.ObjectColumn;
 import org.hotrod.runtime.livesql.metadata.StringColumn;
 import org.hotrod.runtime.livesql.util.BoxUtil;
 
-public class UpdateSetPhase implements ExecutableQuery {
+public class UpdateSetPhase implements Query {
 
   // Properties
 

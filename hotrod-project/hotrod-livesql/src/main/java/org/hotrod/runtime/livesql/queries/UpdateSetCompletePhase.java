@@ -5,7 +5,7 @@ import java.util.Map;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 
-public class UpdateSetCompletePhase implements ExecutableQuery {
+public class UpdateSetCompletePhase implements Query {
 
   // Properties
 

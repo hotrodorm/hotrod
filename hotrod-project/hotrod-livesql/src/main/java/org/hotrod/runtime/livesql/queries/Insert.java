@@ -7,12 +7,11 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
+import org.hotrod.runtime.livesql.queries.select.AssembledQuery;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLStructure;
 
-public class Insert {
-
-  private LiveSQLContext context;
+public class Insert extends AssembledQuery {
 
   private TableOrView into;
   private List<Column> columns;
@@ -20,7 +19,7 @@ public class Insert {
   private ExecutableSelect<?> select;
 
   Insert(final LiveSQLContext context) {
-    this.context = context;
+    super(context);
   }
 
   void setInto(final TableOrView into) {

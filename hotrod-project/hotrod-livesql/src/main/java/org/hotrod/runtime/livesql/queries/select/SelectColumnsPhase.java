@@ -105,10 +105,10 @@ public class SelectColumnsPhase<R> implements ExecutableSelect<R> {
 
   // Validation
 
-  @Override
-  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-    this.select.validateTableReferences(tableReferences, ag);
-  }
+//  @Override
+//  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
+//    this.select.validateTableReferences(tableReferences, ag);
+//  }
 
   // Utilities
 
