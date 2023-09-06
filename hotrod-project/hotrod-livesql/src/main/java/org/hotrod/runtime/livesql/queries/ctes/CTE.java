@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
+import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 import org.hotrod.runtime.livesql.util.SubqueryUtil;
@@ -19,11 +19,11 @@ public class CTE extends Subquery {
     super(name, columns);
   }
 
-  public CTE(String name, ExecutableSelect<?> select) {
+  public CTE(String name, Select<?> select) {
     super(name, null, select);
   }
 
-  public CTE(String name, String[] columns, ExecutableSelect<?> select) {
+  public CTE(String name, String[] columns, Select<?> select) {
     super(name, columns, select);
   }
 

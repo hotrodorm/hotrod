@@ -1,14 +1,16 @@
 package org.hotrod.runtime.livesql.queries;
 
-public class InsertValuesPhase implements Query {
+public class InsertValuesPhase implements DMLQuery {
 
   // Properties
 
-  private Insert insert;
+  private LiveSQLContext context;
+  private InsertObject insert;
 
   // Constructor
 
-  public InsertValuesPhase(final Insert insert) {
+  public InsertValuesPhase(final LiveSQLContext context, final InsertObject insert) {
+    this.context = context;
     this.insert = insert;
   }
 
@@ -18,13 +20,13 @@ public class InsertValuesPhase implements Query {
 
   @Override
   public String getPreview() {
-    return this.insert.getPreview();
+    return this.insert.getPreview(this.context);
   }
 
   // Execute
 
   public void execute() {
-    this.insert.execute();
+    this.insert.execute(this.context);
   }
 
 }

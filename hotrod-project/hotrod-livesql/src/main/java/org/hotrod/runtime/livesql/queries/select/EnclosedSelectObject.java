@@ -3,16 +3,14 @@ package org.hotrod.runtime.livesql.queries.select;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 
-public class EnclosedSelect<R> extends AbstractSelect<R> {
+public class EnclosedSelectObject<R> extends AbstractSelectObject<R> {
 
-  private AbstractSelect<R> select;
+  private AbstractSelectObject<R> select;
 
-  public EnclosedSelect(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct,
-      final AbstractSelect<R> select) {
-    super(context, ctes, distinct);
+  public EnclosedSelectObject(final List<CTE> ctes, final boolean distinct, final AbstractSelectObject<R> select) {
+    super(ctes, distinct);
     this.select = select;
   }
 

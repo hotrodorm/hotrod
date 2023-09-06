@@ -10,11 +10,10 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
-import org.hotrod.runtime.livesql.queries.select.AssembledQuery;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLStructure;
 
-public class Update extends AssembledQuery {
+public class UpdateObject extends QueryObject {
 
   private String mapperStatement; // DAO.update(values, [t,] predicate)
 
@@ -24,13 +23,13 @@ public class Update extends AssembledQuery {
 
   private Map<String, Object> extraSets = new HashMap<>();
 
-  Update(final LiveSQLContext context) {
-    super(context);
+  UpdateObject() {
+    super();
     this.mapperStatement = null;
   }
 
-  Update(final LiveSQLContext context, final String mapperStatement) {
-    super(context);
+  UpdateObject(final String mapperStatement) {
+    super();
     this.mapperStatement = mapperStatement;
   }
 
@@ -50,33 +49,33 @@ public class Update extends AssembledQuery {
     this.wherePredicate = predicate;
   }
 
-  public String getPreview() {
-    LiveSQLStructure pq = this.prepareQuery();
+  public String getPreview(final LiveSQLContext context) {
+    LiveSQLStructure pq = this.prepareQuery(context);
     return pq.render();
   }
 
-  public void execute() {
-    LiveSQLStructure q = this.prepareQuery();
+  public void execute(final LiveSQLContext context) {
+    LiveSQLStructure q = this.prepareQuery(context);
     LinkedHashMap<String, Object> parameters = q.getParameters();
     parameters.put("sql", q.getSQL());
     parameters.put("extraSets", this.extraSets);
 
     if (this.mapperStatement != null) {
-      this.context.getSQLSession().update(this.mapperStatement, q.getConsolidatedParameters());
+      context.getSQLSession().update(this.mapperStatement, q.getConsolidatedParameters());
     } else {
-      this.context.getLiveSQLMapper().update(parameters);
+      context.getLiveSQLMapper().update(parameters);
     }
   }
 
-  private LiveSQLStructure prepareQuery() {
-    QueryWriter w = new QueryWriter(this.context.getLiveSQLDialect());
+  private LiveSQLStructure prepareQuery(final LiveSQLContext context) {
+    QueryWriter w = new QueryWriter(context.getLiveSQLDialect());
     w.write("UPDATE ");
 
     String renderedAlias = this.tableOrView.getAlias() == null ? null
-        : this.context.getLiveSQLDialect()
-            .canonicalToNatural(this.context.getLiveSQLDialect().naturalToCanonical(this.tableOrView.getAlias()));
+        : context.getLiveSQLDialect()
+            .canonicalToNatural(context.getLiveSQLDialect().naturalToCanonical(this.tableOrView.getAlias()));
 
-    w.write(this.context.getLiveSQLDialect().canonicalToNatural(this.tableOrView)
+    w.write(context.getLiveSQLDialect().canonicalToNatural(this.tableOrView)
         + (renderedAlias != null ? (" " + renderedAlias) : ""));
 
     w.write("\nSET\n");

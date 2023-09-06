@@ -4,18 +4,18 @@ import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class StringSelectExpression extends StringExpression {
 
   // Properties
 
-  protected AbstractSelect<Row> select;
+  protected AbstractSelectObject<Row> select;
 
   // Constructor
 
-  public StringSelectExpression(final AbstractSelect<Row> select) {
+  public StringSelectExpression(final AbstractSelectObject<Row> select) {
     super(Expression.PRECEDENCE_PARENTHESIS);
 
     if (select == null) {

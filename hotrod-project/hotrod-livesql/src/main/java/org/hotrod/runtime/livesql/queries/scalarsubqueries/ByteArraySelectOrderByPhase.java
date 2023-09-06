@@ -4,13 +4,13 @@ import java.util.Arrays;
 
 import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject;
 
 public class ByteArraySelectOrderByPhase extends ByteArraySelectExpression {
 
   // Constructor
 
-  ByteArraySelectOrderByPhase(final AbstractSelect<Row> select, final OrderingTerm... orderingTerms) {
+  ByteArraySelectOrderByPhase(final AbstractSelectObject<Row> select, final OrderingTerm... orderingTerms) {
     super(select);
     this.select.setColumnOrderings(Arrays.asList(orderingTerms));
   }

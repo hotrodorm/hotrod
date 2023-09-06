@@ -7,7 +7,7 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject;
 import org.hotrod.runtime.livesql.queries.select.CrossJoin;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.InnerJoin;
@@ -27,7 +27,7 @@ public class BooleanSelectFromPhase extends BooleanSelectExpression {
 
   // Constructor
 
-  BooleanSelectFromPhase(final AbstractSelect<Row> select, final TableExpression t) {
+  BooleanSelectFromPhase(final AbstractSelectObject<Row> select, final TableExpression t) {
     super(select);
     this.select.setBaseTableExpression(t);
   }

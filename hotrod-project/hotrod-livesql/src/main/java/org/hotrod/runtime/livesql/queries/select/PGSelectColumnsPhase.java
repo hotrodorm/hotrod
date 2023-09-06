@@ -10,21 +10,23 @@ import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 
-public class PGSelectColumnsPhase<R> implements ExecutableSelect<R> {
+public class PGSelectColumnsPhase<R> implements Select<R> {
 
   // Properties
 
-  private Select<R> select;
+  private LiveSQLContext context;
+  private SelectObject<R> select;
 
   // Constructor
 
   public PGSelectColumnsPhase(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct,
       final ResultSetColumn... resultSetColumns) {
-    this.select = new Select<R>(context, ctes, distinct, false);
+    this.context = context;
+    this.select = new SelectObject<R>(ctes, distinct, false);
     this.select.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
   }
 
-  public PGSelectColumnsPhase(final Select<R> select, final boolean distinct,
+  public PGSelectColumnsPhase(final SelectObject<R> select, final boolean distinct,
       final ResultSetColumn... resultSetColumns) {
     select.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
     this.select = select;
@@ -33,7 +35,7 @@ public class PGSelectColumnsPhase<R> implements ExecutableSelect<R> {
   // Next stages
 
   public SelectFromPhase<R> from(final TableOrView t) {
-    return new SelectFromPhase<R>(this.select, t);
+    return new SelectFromPhase<R>(this.context, this.select, t);
   }
 
   // Set operations
@@ -69,40 +71,28 @@ public class PGSelectColumnsPhase<R> implements ExecutableSelect<R> {
   // return new SelectHavingPhase<R>(this.select, null);
   // }
 
-  // Rendering
-
-  @Override
-  public void renderTo(final QueryWriter w) {
-    this.select.renderTo(w);
-  }
-
   // Execute
 
   public List<R> execute() {
-    return this.select.execute();
+    return this.select.execute(this.context);
   }
 
   @Override
   public Cursor<R> executeCursor() {
-    return this.select.executeCursor();
+    return this.select.executeCursor(this.context);
   }
 
   // Validation
 
   @Override
   public String getPreview() {
-    return this.select.getPreview();
-  }
-
-  @Override
-  public List<ResultSetColumn> listColumns() throws IllegalAccessException {
-    return this.select.listColumns();
+    return this.select.getPreview(this.context);
   }
 
   // Executable Select
 
   @Override
-  public Select<R> getSelect() {
+  public SelectObject<R> getSelect() {
     return this.select;
   }
 

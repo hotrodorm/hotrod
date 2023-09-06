@@ -4,18 +4,18 @@ import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.binary.ByteArrayExpression;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class ByteArraySelectExpression extends ByteArrayExpression {
 
   // Properties
 
-  protected AbstractSelect<Row> select;
+  protected AbstractSelectObject<Row> select;
 
   // Constructor
 
-  public ByteArraySelectExpression(final AbstractSelect<Row> select) {
+  public ByteArraySelectExpression(final AbstractSelectObject<Row> select) {
     super(Expression.PRECEDENCE_PARENTHESIS);
 
     if (select == null) {

@@ -6,20 +6,19 @@ import java.util.List;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
-import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
-import org.hotrod.runtime.livesql.queries.select.AssembledQuery;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLStructure;
+import org.hotrod.runtime.livesql.queries.select.SelectObject;
 
-public class Insert extends AssembledQuery {
+public class InsertObject extends QueryObject {
 
   private TableOrView into;
   private List<Column> columns;
   private List<Expression> values;
-  private ExecutableSelect<?> select;
+  private SelectObject<?> select;
 
-  Insert(final LiveSQLContext context) {
-    super(context);
+  InsertObject() {
+    super();
   }
 
   void setInto(final TableOrView into) {
@@ -34,26 +33,26 @@ public class Insert extends AssembledQuery {
     this.values = values;
   }
 
-  void setSelect(final ExecutableSelect<?> select) {
+  void setSelect(final SelectObject<?> select) {
     this.select = select;
   }
 
-  public String getPreview() {
-    LiveSQLStructure pq = this.prepareQuery();
+  public String getPreview(final LiveSQLContext context) {
+    LiveSQLStructure pq = this.prepareQuery(context);
     return pq.render();
   }
 
-  public void execute() {
-    LiveSQLStructure q = this.prepareQuery();
+  public void execute(final LiveSQLContext context) {
+    LiveSQLStructure q = this.prepareQuery(context);
     LinkedHashMap<String, Object> parameters = q.getParameters();
     parameters.put("sql", q.getSQL());
-    this.context.getLiveSQLMapper().insert(parameters);
+    context.getLiveSQLMapper().insert(parameters);
   }
 
-  private LiveSQLStructure prepareQuery() {
-    QueryWriter w = new QueryWriter(this.context.getLiveSQLDialect());
+  private LiveSQLStructure prepareQuery(final LiveSQLContext context) {
+    QueryWriter w = new QueryWriter(context.getLiveSQLDialect());
     w.write("INSERT INTO ");
-    w.write(this.context.getLiveSQLDialect().canonicalToNatural(this.into));
+    w.write(context.getLiveSQLDialect().canonicalToNatural(this.into));
 
     if (this.columns != null) {
       w.write(" (");

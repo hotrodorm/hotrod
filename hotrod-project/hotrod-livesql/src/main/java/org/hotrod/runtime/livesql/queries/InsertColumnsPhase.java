@@ -3,17 +3,19 @@ package org.hotrod.runtime.livesql.queries;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
+import org.hotrod.runtime.livesql.queries.select.Select;
 
 public class InsertColumnsPhase {
 
   // Properties
 
-  private Insert insert;
+  private LiveSQLContext context;
+  private InsertObject insert;
 
   // Constructor
 
-  public InsertColumnsPhase(final Insert insert) {
+  public InsertColumnsPhase(final LiveSQLContext context, final InsertObject insert) {
+    this.context = context;
     this.insert = insert;
   }
 
@@ -21,12 +23,12 @@ public class InsertColumnsPhase {
 
   public InsertValuesPhase values(final List<Expression> values) {
     this.insert.setValues(values);
-    return new InsertValuesPhase(this.insert);
+    return new InsertValuesPhase(this.context, this.insert);
   }
 
-  public InsertSelectPhase select(final ExecutableSelect<?> select) {
-    this.insert.setSelect(select);
-    return new InsertSelectPhase(this.insert);
+  public InsertSelectPhase select(final Select<?> select) {
+    this.insert.setSelect(select.getSelect());
+    return new InsertSelectPhase(this.context, this.insert);
   }
 
 }

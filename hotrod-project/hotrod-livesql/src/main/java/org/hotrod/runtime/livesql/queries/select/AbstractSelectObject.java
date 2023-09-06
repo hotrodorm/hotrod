@@ -26,6 +26,7 @@ import org.hotrod.runtime.livesql.metadata.DatabaseObject;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import org.hotrod.runtime.livesql.queries.QueryObject;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLStructure;
@@ -39,7 +40,7 @@ import org.hotrodorm.hotrod.utils.SUtil;
 import org.hotrodorm.hotrod.utils.Separator;
 import org.springframework.util.ReflectionUtils;
 
-public abstract class AbstractSelect<R> extends AssembledQuery implements MultiSet<R> {
+public abstract class AbstractSelectObject<R> extends QueryObject implements MultiSet<R> {
 
   private List<CTE> ctes = new ArrayList<>();
   private boolean distinct;
@@ -55,11 +56,8 @@ public abstract class AbstractSelect<R> extends AssembledQuery implements MultiS
   private Integer offset = null;
   private Integer limit = null;
 
-  private LiveSQLContext context;
-
-  AbstractSelect(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct) {
-    super(context);
-    this.context = context;
+  AbstractSelectObject(final List<CTE> ctes, final boolean distinct) {
+    super();
     this.setCTEs(ctes);
     this.distinct = distinct;
   }
@@ -72,10 +70,6 @@ public abstract class AbstractSelect<R> extends AssembledQuery implements MultiS
   @Override
   public SetOperator<R> getParentOperator() {
     return parent;
-  }
-
-  public LiveSQLContext getContext() {
-    return context;
   }
 
   protected abstract void writeColumns(final QueryWriter w, final TableExpression baseTableExpression,
@@ -231,16 +225,16 @@ public abstract class AbstractSelect<R> extends AssembledQuery implements MultiS
 
   // Execute
 
-  private LiveSQLStructure prepareQuery() {
+  private LiveSQLStructure prepareQuery(final LiveSQLContext context) {
     validateQuery();
-    QueryWriter w = new QueryWriter(this.context.getLiveSQLDialect());
+    QueryWriter w = new QueryWriter(context.getLiveSQLDialect());
     renderTo(w);
     return w.getPreparedQuery();
   }
 
   public void renderTo(final QueryWriter w) {
 
-    LiveSQLDialect liveSQLDialect = this.context.getLiveSQLDialect();
+    LiveSQLDialect liveSQLDialect = w.getSqlDialect();
 
     // CTEs
 
@@ -410,53 +404,53 @@ public abstract class AbstractSelect<R> extends AssembledQuery implements MultiS
 
   }
 
-  public List<R> execute() {
-    return this.execute(null);
+  public List<R> execute(final LiveSQLContext context) {
+    return this.execute(context, null);
   }
 
-  public List<R> execute(final String entityMapperStatement) {
+  public List<R> execute(final LiveSQLContext context, final String entityMapperStatement) {
 
-    LiveSQLStructure q = this.prepareQuery();
+    LiveSQLStructure q = this.prepareQuery(context);
 
     if (entityMapperStatement == null) {
-      return executeLiveSQL(q);
+      return executeLiveSQL(context, q);
     } else {
-      return this.context.getSQLSession().selectList(entityMapperStatement, q.getConsolidatedParameters());
+      return context.getSQLSession().selectList(entityMapperStatement, q.getConsolidatedParameters());
     }
 
   }
 
-  public Cursor<R> executeCursor() {
-    return this.executeCursor(null);
+  public Cursor<R> executeCursor(final LiveSQLContext context) {
+    return this.executeCursor(context, null);
   }
 
-  public Cursor<R> executeCursor(final String entityMapperStatement) {
-    LiveSQLStructure q = this.prepareQuery();
+  public Cursor<R> executeCursor(final LiveSQLContext context, final String entityMapperStatement) {
+    LiveSQLStructure q = this.prepareQuery(context);
     if (entityMapperStatement == null) {
-      return executeLiveSQLCursor(q);
+      return executeLiveSQLCursor(context, q);
     } else {
       return new MyBatisCursor<R>(
-          this.context.getSQLSession().selectCursor(entityMapperStatement, q.getConsolidatedParameters()));
+          context.getSQLSession().selectCursor(entityMapperStatement, q.getConsolidatedParameters()));
     }
   }
 
   @SuppressWarnings("unchecked")
-  private List<R> executeLiveSQL(final LiveSQLStructure q) {
+  private List<R> executeLiveSQL(final LiveSQLContext context, final LiveSQLStructure q) {
     LinkedHashMap<String, Object> parameters = q.getParameters();
     parameters.put("sql", q.getSQL());
-    return (List<R>) this.context.getLiveSQLMapper().select(parameters);
+    return (List<R>) context.getLiveSQLMapper().select(parameters);
   }
 
   @SuppressWarnings("unchecked")
-  private Cursor<R> executeLiveSQLCursor(final LiveSQLStructure q) {
+  private Cursor<R> executeLiveSQLCursor(final LiveSQLContext context, final LiveSQLStructure q) {
     LinkedHashMap<String, Object> parameters = q.getParameters();
     parameters.put("sql", q.getSQL());
-    return (Cursor<R>) this.context.getLiveSQLMapper().selectCursor(parameters);
+    return (Cursor<R>) context.getLiveSQLMapper().selectCursor(parameters);
   }
 
-  public String getPreview() {
+  public String getPreview(final LiveSQLContext context) {
 
-    LiveSQLStructure q = this.prepareQuery();
+    LiveSQLStructure q = this.prepareQuery(context);
 
     StringBuilder sb = new StringBuilder();
     sb.append("--- SQL ----------\n");

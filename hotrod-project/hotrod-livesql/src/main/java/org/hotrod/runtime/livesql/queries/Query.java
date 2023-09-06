@@ -4,6 +4,4 @@ public interface Query {
 
   public String getPreview();
 
-  public void execute();
-
 }

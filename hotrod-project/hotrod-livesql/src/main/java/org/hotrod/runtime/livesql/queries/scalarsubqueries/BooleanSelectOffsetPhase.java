@@ -1,13 +1,13 @@
 package org.hotrod.runtime.livesql.queries.scalarsubqueries;
 
 import org.hotrod.runtime.livesql.Row;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject;
 
 public class BooleanSelectOffsetPhase extends BooleanSelectExpression {
 
   // Constructor
 
-  BooleanSelectOffsetPhase(final AbstractSelect<Row> select, final int offset) {
+  BooleanSelectOffsetPhase(final AbstractSelectObject<Row> select, final int offset) {
     super(select);
     this.select.setOffset(offset);
   }

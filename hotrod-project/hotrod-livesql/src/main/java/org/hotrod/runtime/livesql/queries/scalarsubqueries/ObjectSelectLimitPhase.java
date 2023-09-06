@@ -1,13 +1,13 @@
 package org.hotrod.runtime.livesql.queries.scalarsubqueries;
 
 import org.hotrod.runtime.livesql.Row;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject;
 
 public class ObjectSelectLimitPhase extends ObjectSelectExpression {
 
   // Constructor
 
-  ObjectSelectLimitPhase(final AbstractSelect<Row> select, final int limit) {
+  ObjectSelectLimitPhase(final AbstractSelectObject<Row> select, final int limit) {
     super(select);
     this.select.setLimit(limit);
   }

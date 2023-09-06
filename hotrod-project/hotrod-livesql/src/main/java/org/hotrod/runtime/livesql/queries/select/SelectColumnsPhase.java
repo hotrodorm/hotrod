@@ -9,23 +9,23 @@ import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectLinkingPhase;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectPhase;
 import org.hotrod.runtime.livesql.queries.select.sets.UnionOperator;
 
-public class SelectColumnsPhase<R> implements ExecutableSelect<R> {
+public class SelectColumnsPhase<R> implements Select<R> {
 
   // Properties
 
-  private Select<R> select;
+  private LiveSQLContext context;
+  private SelectObject<R> select;
 
   // Constructor
 
   public SelectColumnsPhase(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct,
       final ResultSetColumn... resultSetColumns) {
-    this.select = new Select<R>(context, ctes, distinct, false);
+    this.context = context;
+    this.select = new SelectObject<R>(ctes, distinct, false);
     for (ResultSetColumn c : resultSetColumns) {
       if (c == null) {
         throw new LiveSQLException("Select column cannot be null.");
@@ -37,7 +37,7 @@ public class SelectColumnsPhase<R> implements ExecutableSelect<R> {
   // Next stages
 
   public SelectFromPhase<R> from(final TableExpression tableViewOrSubquery) {
-    return new SelectFromPhase<R>(this.select, tableViewOrSubquery);
+    return new SelectFromPhase<R>(this.context, this.select, tableViewOrSubquery);
   }
 
   // Set operations
@@ -47,12 +47,12 @@ public class SelectColumnsPhase<R> implements ExecutableSelect<R> {
   public CombinedSelectLinkingPhase<R> union() {
     UnionOperator<R> op = new UnionOperator<R>();
     op.add(this.select);
-    return new CombinedSelectLinkingPhase<R>(op, this.select.getContext());
+    return new CombinedSelectLinkingPhase<R>(op, this.context);
   }
 
   // .union(select()...)
   // .union(selectDistinct()...)
-  public CombinedSelectPhase<R> union(final ExecutableSelect<R> select) {
+  public CombinedSelectPhase<R> union(final Select<R> select) {
     UnionOperator<R> op = new UnionOperator<R>();
     op.add(this.select);
     op.add(select.getSelect());
@@ -85,47 +85,28 @@ public class SelectColumnsPhase<R> implements ExecutableSelect<R> {
   // return new SelectHavingPhase<R>(this.select, null);
   // }
 
-  // Rendering
-
-  @Override
-  public void renderTo(final QueryWriter w) {
-    this.select.renderTo(w);
-  }
-
   // Execute
 
   public List<R> execute() {
-    return this.select.execute();
+    return this.select.execute(this.context);
   }
 
   @Override
   public Cursor<R> executeCursor() {
-    return this.select.executeCursor();
+    return this.select.executeCursor(this.context);
   }
-
-  // Validation
-
-//  @Override
-//  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-//    this.select.validateTableReferences(tableReferences, ag);
-//  }
 
   // Utilities
 
   @Override
   public String getPreview() {
-    return this.select.getPreview();
-  }
-
-  @Override
-  public List<ResultSetColumn> listColumns() throws IllegalAccessException {
-    return this.select.listColumns();
+    return this.select.getPreview(this.context);
   }
 
   // Executable Select
 
   @Override
-  public Select<R> getSelect() {
+  public SelectObject<R> getSelect() {
     return this.select;
   }
 

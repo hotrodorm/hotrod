@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.Select;
 
@@ -55,8 +55,8 @@ public class RecursiveCTE extends CTE {
   @Override
   public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
     if (!tableReferences.visited(this)) {
-      this.anchorTerm.validateTableReferences(tableReferences, ag);
-      this.recursiveTerm.validateTableReferences(tableReferences, ag);
+      this.anchorTerm.getSelect().validateTableReferences(tableReferences, ag);
+      this.recursiveTerm.getSelect().validateTableReferences(tableReferences, ag);
     }
   }
 
@@ -73,20 +73,20 @@ public class RecursiveCTE extends CTE {
     }
     w.enterLevel();
     w.write(" as (\n");
-    this.anchorTerm.renderTo(w);
+    this.anchorTerm.getSelect().renderTo(w);
     w.exitLevel();
     w.write("\n");
     w.write(this.unionAll ? "UNION ALL" : "UNION");
     w.write("\n");
     w.enterLevel();
-    this.recursiveTerm.renderTo(w);
+    this.recursiveTerm.getSelect().renderTo(w);
     w.exitLevel();
     w.write("\n");
     w.write(")");
   }
 
   public List<ResultSetColumn> getColumns() throws IllegalAccessException {
-    return this.expandColumns(this.anchorTerm.listColumns());
+    return this.expandColumns(this.anchorTerm.getSelect().listColumns());
   }
 
 }

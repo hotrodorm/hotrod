@@ -3,13 +3,13 @@ package org.hotrod.runtime.livesql.queries.scalarsubqueries;
 import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject;
 
 public class DateTimeSelectHavingPhase extends DateTimeSelectExpression {
 
   // Constructor
 
-  DateTimeSelectHavingPhase(final AbstractSelect<Row> select, final Predicate predicate) {
+  DateTimeSelectHavingPhase(final AbstractSelectObject<Row> select, final Predicate predicate) {
     super(select);
     if (predicate != null) {
       this.select.setHavingCondition(predicate);

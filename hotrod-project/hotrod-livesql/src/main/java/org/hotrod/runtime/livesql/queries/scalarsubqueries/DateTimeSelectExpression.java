@@ -4,18 +4,18 @@ import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class DateTimeSelectExpression extends DateTimeExpression {
 
   // Properties
 
-  protected AbstractSelect<Row> select;
+  protected AbstractSelectObject<Row> select;
 
   // Constructor
 
-  public DateTimeSelectExpression(final AbstractSelect<Row> select) {
+  public DateTimeSelectExpression(final AbstractSelectObject<Row> select) {
     super(Expression.PRECEDENCE_PARENTHESIS);
 
     if (select == null) {

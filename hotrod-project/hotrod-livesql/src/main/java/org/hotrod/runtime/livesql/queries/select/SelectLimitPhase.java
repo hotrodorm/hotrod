@@ -3,55 +3,45 @@ package org.hotrod.runtime.livesql.queries.select;
 import java.util.List;
 
 import org.hotrod.runtime.cursors.Cursor;
-import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 
-public class SelectLimitPhase<R> implements ExecutableSelect<R> {
+public class SelectLimitPhase<R> implements Select<R> {
 
   // Properties
 
-  private Select<R> select;
+  private LiveSQLContext context;
+  private SelectObject<R> select;
 
   // Constructor
 
-  SelectLimitPhase(final Select<R> select, final int limit) {
+  SelectLimitPhase(final LiveSQLContext context, final SelectObject<R> select, final int limit) {
+    this.context = context;
     this.select = select;
     this.select.setLimit(limit);
-  }
-
-  // Rendering
-
-  @Override
-  public void renderTo(final QueryWriter w) {
-    this.select.renderTo(w);
   }
 
   // Execute
 
   public List<R> execute() {
-    return this.select.execute();
+    return this.select.execute(this.context);
   }
 
   @Override
   public Cursor<R> executeCursor() {
-    return this.select.executeCursor();
+    return this.select.executeCursor(this.context);
   }
 
   // Validation
 
   @Override
   public String getPreview() {
-    return this.select.getPreview();
-  }
-
-  @Override
-  public List<ResultSetColumn> listColumns() throws IllegalAccessException {
-    return this.select.listColumns();
+    return this.select.getPreview(this.context);
   }
 
   // Executable Select
 
   @Override
-  public Select<R> getSelect() {
+  public SelectObject<R> getSelect() {
     return this.select;
   }
 

@@ -8,29 +8,30 @@ import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
-import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.Select;
+import org.hotrod.runtime.livesql.queries.select.SelectObject;
 import org.hotrod.runtime.livesql.queries.select.TableExpression;
 
-public class CombinedSelectColumnsPhase<R> implements ExecutableSelect<R> {
+public class CombinedSelectColumnsPhase<R> implements Select<R> {
 
   // Properties
 
-  private Select<R> select;
+  private LiveSQLContext context;
+  private SelectObject<R> select;
 
   // Constructor
 
   public CombinedSelectColumnsPhase(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct,
       final ResultSetColumn... resultSetColumns) {
-    this.select = new Select<R>(context, ctes, distinct, false);
+    this.context = context;
+    this.select = new SelectObject<R>(ctes, distinct, false);
     this.select.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
   }
 
   // Next stages
 
   public CombinedSelectFromPhase<R> from(final TableExpression tableViewOrSubquery) {
-    return new CombinedSelectFromPhase<R>(this.select, tableViewOrSubquery);
+    return new CombinedSelectFromPhase<R>(this.context, this.select, tableViewOrSubquery);
   }
 
   // Set operations
@@ -39,7 +40,7 @@ public class CombinedSelectColumnsPhase<R> implements ExecutableSelect<R> {
   public CombinedSelectLinkingPhase<R> union() {
     UnionOperator<R> op = new UnionOperator<R>();
     op.add(this.select);
-    return new CombinedSelectLinkingPhase<R>(op, this.select.getContext());
+    return new CombinedSelectLinkingPhase<R>(op, this.context);
   }
 
 //  // .select() .selectDistinct()
@@ -81,40 +82,28 @@ public class CombinedSelectColumnsPhase<R> implements ExecutableSelect<R> {
   // return new SelectHavingPhase<R>(this.select, null);
   // }
 
-  // Rendering
-
-  @Override
-  public void renderTo(final QueryWriter w) {
-    this.select.renderTo(w);
-  }
-
   // Execute
 
   public List<R> execute() {
-    return this.select.execute();
+    return this.select.execute(this.context);
   }
 
   @Override
   public Cursor<R> executeCursor() {
-    return this.select.executeCursor();
+    return this.select.executeCursor(this.context);
   }
 
   // Utilities
 
   @Override
   public String getPreview() {
-    return this.select.getPreview();
-  }
-
-  @Override
-  public List<ResultSetColumn> listColumns() throws IllegalAccessException {
-    return this.select.listColumns();
+    return this.select.getPreview(this.context);
   }
 
   // Executable Select
 
   @Override
-  public Select<R> getSelect() {
+  public SelectObject<R> getSelect() {
     return this.select;
   }
 

@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 import org.hotrod.runtime.livesql.expressions.AliasedExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class AllColumns implements ResultSetColumn {

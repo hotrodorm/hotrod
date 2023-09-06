@@ -6,19 +6,16 @@ import java.util.stream.Collectors;
 
 import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.expressions.object.ObjectExpression;
-import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
-import org.hotrod.runtime.livesql.queries.select.Select;
+import org.hotrod.runtime.livesql.queries.select.SelectObject;
 import org.hotrod.runtime.livesql.queries.select.TableExpression;
 
 public class ObjectSelectColumnsPhase extends ObjectSelectExpression {
 
   // Constructor
 
-  public ObjectSelectColumnsPhase(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct,
-      final ObjectExpression expression) {
-    super(new Select<Row>(context, ctes, distinct, true,
-        Arrays.asList(expression).stream().collect(Collectors.toList())));
+  public ObjectSelectColumnsPhase(final List<CTE> ctes, final boolean distinct, final ObjectExpression expression) {
+    super(new SelectObject<Row>(ctes, distinct, true, Arrays.asList(expression).stream().collect(Collectors.toList())));
   }
 
   // Next stages

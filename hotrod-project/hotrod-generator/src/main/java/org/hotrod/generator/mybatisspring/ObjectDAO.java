@@ -54,7 +54,9 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.OrderBy;
 import org.hotrod.runtime.interfaces.Selectable;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
+import org.hotrod.runtime.livesql.LiveSQLMapper;
 import org.hotrod.runtime.livesql.metadata.Column;
+import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.select.MyBatisCursor;
 import org.hotrod.runtime.livesql.util.CastUtil;
 import org.hotrod.runtime.spring.LazyParentClassLoading;
@@ -393,7 +395,9 @@ public class ObjectDAO extends GeneratableObject {
     imports.add("org.hotrod.runtime.spring.SpringBeanObjectFactory");
 
     imports.add("org.hotrod.runtime.livesql.dialects.LiveSQLDialect");
+    imports.add(LiveSQLMapper.class);
     imports.add(CastUtil.class);
+    imports.add("javax.annotation.PostConstruct");
     imports.add(Column.class);
     imports.add("org.hotrod.runtime.livesql.metadata.NumberColumn");
     imports.add("org.hotrod.runtime.livesql.metadata.StringColumn");
@@ -410,6 +414,8 @@ public class ObjectDAO extends GeneratableObject {
 
     imports.add("org.hotrod.runtime.livesql.metadata.View");
     imports.newLine();
+
+    imports.add(LiveSQLContext.class);
 
     imports.add("org.springframework.stereotype.Component");
     imports.add("org.springframework.beans.BeansException");
@@ -488,15 +494,31 @@ public class ObjectDAO extends GeneratableObject {
     }
     println("  private LiveSQLDialect liveSQLDialect;");
     println();
+
+    println("  @Autowired");
+    println("  private LiveSQLMapper liveSQLMapper;");
+    println();
+
     println("  @Autowired");
     println("  private SpringBeanObjectFactory springBeanObjectFactory;");
     println();
+
     println("  private ApplicationContext applicationContext;");
     println();
+
     println("  @Override");
     println("  public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {");
     println("    this.applicationContext = applicationContext;");
     println("    this.sqlSession.getConfiguration().setObjectFactory(this.springBeanObjectFactory);");
+    println("  }");
+    println();
+
+    println("  private LiveSQLContext context;");
+    println();
+
+    println("  @PostConstruct");
+    println("  public void initializeContext() {");
+    println("    this.context = new LiveSQLContext(this.liveSQLDialect, this.sqlSession, this.liveSQLMapper);");
     println("  }");
     println();
 
@@ -719,8 +741,8 @@ public class ObjectDAO extends GeneratableObject {
     println("  public CriteriaWherePhase<" + voFullClassName + "> select(final " + daoClassName + "."
         + this.metadataClassName + " from,");
     println("      final Predicate predicate) {");
-    println("    return new CriteriaWherePhase<" + voFullClassName + ">(from, this.liveSQLDialect, this.sqlSession,");
-    println("        predicate, \"" + mapperName + "\");");
+    println("    return new CriteriaWherePhase<" + voFullClassName + ">(this.context, \"" + mapperName + "\",");
+    println("        from, predicate);");
     println("  }");
 
     println();
@@ -1440,13 +1462,15 @@ public class ObjectDAO extends GeneratableObject {
     }
 
     print("    return new UpdateSetCompletePhase(");
+    print("this.context, ");
+    print("\"" + mapperName + "\", ");
     if (useEntity) {
       print("tableOrView, ");
     } else {
       print(this.getClassName() + (this.isTable() ? ".newTable()" : ".newView()") + ", ");
     }
-    println("this.liveSQLDialect, this.sqlSession,");
-    println("      \"" + mapperName + "\", predicate, values);");
+    println(" predicate, values);");
+
     println("  }");
     println();
   }
@@ -1535,14 +1559,17 @@ public class ObjectDAO extends GeneratableObject {
       print("final " + daoClassName + "." + this.metadataClassName + " from, ");
     }
     println("final Predicate predicate) {");
+
     print("    return new DeleteWherePhase(");
+    print("this.context, ");
+    print("\"" + mapperName + "\", ");
     if (useFrom) {
       print("from, ");
     } else {
       print(daoClassName + (this.isTable() ? ".newTable()" : ".newView()") + ", ");
     }
-    println("this.liveSQLDialect, this.sqlSession,");
-    println("      \"" + mapperName + "\", predicate);");
+    println("predicate);");
+
     println("  }");
     println();
   }

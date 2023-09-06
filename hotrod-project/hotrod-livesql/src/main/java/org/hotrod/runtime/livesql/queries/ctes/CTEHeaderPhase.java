@@ -1,6 +1,6 @@
 package org.hotrod.runtime.livesql.queries.ctes;
 
-import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
+import org.hotrod.runtime.livesql.queries.select.Select;
 
 public class CTEHeaderPhase {
 
@@ -18,7 +18,7 @@ public class CTEHeaderPhase {
 
   // Next stages
 
-  public CTE as(ExecutableSelect<?> select) {
+  public CTE as(Select<?> select) {
     return new CTE(this.name, this.aliases, select);
   }
 

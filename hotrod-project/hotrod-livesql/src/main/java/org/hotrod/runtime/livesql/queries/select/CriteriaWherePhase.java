@@ -11,12 +11,14 @@ import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 
 public class CriteriaWherePhase<T> implements ExecutableCriteriaSelect<T> {
 
-  private AbstractSelect<T> select;
+  private LiveSQLContext context;
+  private AbstractSelectObject<T> select;
   private String mapperStatement;
 
-  public CriteriaWherePhase(final TableOrView baseTable, final LiveSQLContext context, final String mapperStatement,
+  public CriteriaWherePhase(final LiveSQLContext context, final String mapperStatement, final TableOrView baseTable,
       final Predicate whereCondition) {
-    this.select = new Select<T>(context, null, false, true);
+    this.context = context;
+    this.select = new SelectObject<T>(null, false, true);
     this.select.setBaseTableExpression(baseTable);
     this.select.setWhereCondition(whereCondition);
     this.mapperStatement = mapperStatement;
@@ -28,27 +30,27 @@ public class CriteriaWherePhase<T> implements ExecutableCriteriaSelect<T> {
 
   public CriteriaOrderByPhase<T> orderBy(final OrderingTerm... orderingTerms) {
     this.select.setColumnOrderings(Arrays.asList(orderingTerms));
-    return new CriteriaOrderByPhase<T>(this.select, this.mapperStatement);
+    return new CriteriaOrderByPhase<T>(this.context, this.select, this.mapperStatement);
   }
 
   public CriteriaOffsetPhase<T> offset(final int offset) {
     this.select.setOffset(offset);
-    return new CriteriaOffsetPhase<T>(this.select, this.mapperStatement);
+    return new CriteriaOffsetPhase<T>(this.context, this.select, this.mapperStatement);
   }
 
   public CriteriaLimitPhase<T> limit(final int limit) {
     this.select.setLimit(limit);
-    return new CriteriaLimitPhase<T>(this.select, this.mapperStatement);
+    return new CriteriaLimitPhase<T>(this.context, this.select, this.mapperStatement);
   }
 
   // execute
 
   public List<T> execute() {
-    return this.select.execute(this.mapperStatement);
+    return this.select.execute(this.context, this.mapperStatement);
   }
 
   public Cursor<T> executeCursor() {
-    return this.select.executeCursor(this.mapperStatement);
+    return this.select.executeCursor(this.context, this.mapperStatement);
   }
 
   // rendering
@@ -60,7 +62,7 @@ public class CriteriaWherePhase<T> implements ExecutableCriteriaSelect<T> {
 
   @Override
   public String getPreview() {
-    return this.select.getPreview();
+    return this.select.getPreview(this.context);
   }
 
 }

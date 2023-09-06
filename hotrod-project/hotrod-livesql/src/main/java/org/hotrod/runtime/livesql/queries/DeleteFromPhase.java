@@ -3,37 +3,39 @@ package org.hotrod.runtime.livesql.queries;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 
-public class DeleteFromPhase implements Query {
+public class DeleteFromPhase implements DMLQuery {
 
   // Properties
 
-  private Delete delete;
+  private LiveSQLContext context;
+  private DeleteObject delete;
 
   // Constructor
 
   public DeleteFromPhase(final LiveSQLContext context, final TableOrView from) {
-    this.delete = new Delete(context);
+    this.context = context;
+    this.delete = new DeleteObject();
     this.delete.setFrom(from);
   }
 
   // Next stages
 
   public DeleteWherePhase where(final Predicate predicate) {
-    return new DeleteWherePhase(this.delete, predicate);
+    return new DeleteWherePhase(this.context, this.delete, predicate);
   }
 
   // Preview
 
   @Override
   public String getPreview() {
-    return this.delete.getPreview();
+    return this.delete.getPreview(this.context);
   }
 
   // Execute
 
   @Override
   public void execute() {
-    this.delete.execute();
+    this.delete.execute(this.context);
   }
 
 }

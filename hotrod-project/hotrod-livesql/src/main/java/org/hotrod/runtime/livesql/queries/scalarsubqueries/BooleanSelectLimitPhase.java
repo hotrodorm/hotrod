@@ -1,13 +1,13 @@
 package org.hotrod.runtime.livesql.queries.scalarsubqueries;
 
 import org.hotrod.runtime.livesql.Row;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject;
 
 public class BooleanSelectLimitPhase extends BooleanSelectExpression {
 
   // Constructor
 
-  BooleanSelectLimitPhase(final AbstractSelect<Row> select, final int limit) {
+  BooleanSelectLimitPhase(final AbstractSelectObject<Row> select, final int limit) {
     super(select);
     this.select.setLimit(limit);
   }

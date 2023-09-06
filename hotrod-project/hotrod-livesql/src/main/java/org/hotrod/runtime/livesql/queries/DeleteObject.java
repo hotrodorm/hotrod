@@ -4,24 +4,23 @@ import java.util.LinkedHashMap;
 
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
-import org.hotrod.runtime.livesql.queries.select.AssembledQuery;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLStructure;
 
-public class Delete extends AssembledQuery {
+public class DeleteObject extends QueryObject {
 
   private String mapperStatement; // DAO.delete(t, predicate)
 
   private TableOrView from;
   private Predicate wherePredicate;
 
-  Delete(final LiveSQLContext context) {
-    super(context);
+  DeleteObject() {
+    super();
     this.mapperStatement = null;
   }
 
-  Delete(final LiveSQLContext context, final String mapperStatement) {
-    super(context);
+  DeleteObject(final String mapperStatement) {
+    super();
     this.mapperStatement = mapperStatement;
   }
 
@@ -33,30 +32,30 @@ public class Delete extends AssembledQuery {
     this.wherePredicate = predicate;
   }
 
-  public String getPreview() {
-    LiveSQLStructure pq = this.prepareQuery();
+  public String getPreview(final LiveSQLContext context) {
+    LiveSQLStructure pq = this.prepareQuery(context);
     return pq.render();
   }
 
-  public void execute() {
-    LiveSQLStructure q = this.prepareQuery();
+  public void execute(final LiveSQLContext context) {
+    LiveSQLStructure q = this.prepareQuery(context);
     LinkedHashMap<String, Object> parameters = q.getParameters();
     parameters.put("sql", q.getSQL());
     if (this.mapperStatement != null) {
-      this.context.getSQLSession().delete(this.mapperStatement, q.getConsolidatedParameters());
+      context.getSQLSession().delete(this.mapperStatement, q.getConsolidatedParameters());
     } else {
-      this.context.getLiveSQLMapper().delete(parameters);
+      context.getLiveSQLMapper().delete(parameters);
     }
   }
 
-  private LiveSQLStructure prepareQuery() {
-    QueryWriter w = new QueryWriter(this.context.getLiveSQLDialect());
+  private LiveSQLStructure prepareQuery(final LiveSQLContext context) {
+    QueryWriter w = new QueryWriter(context.getLiveSQLDialect());
     w.write("DELETE FROM ");
 
     String renderedAlias = this.from.getAlias() == null ? null
-        : this.context.getLiveSQLDialect()
-            .canonicalToNatural(this.context.getLiveSQLDialect().naturalToCanonical(this.from.getAlias()));
-    w.write(this.context.getLiveSQLDialect().canonicalToNatural(this.from)
+        : context.getLiveSQLDialect()
+            .canonicalToNatural(context.getLiveSQLDialect().naturalToCanonical(this.from.getAlias()));
+    w.write(context.getLiveSQLDialect().canonicalToNatural(this.from)
         + (renderedAlias != null ? (" " + renderedAlias) : ""));
     if (this.wherePredicate != null) {
       w.write("\nWHERE ");

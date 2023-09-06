@@ -3,13 +3,17 @@ package org.hotrod.runtime.livesql.queries.select;
 import java.util.List;
 
 import org.hotrod.runtime.cursors.Cursor;
+import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 
 public class CriteriaOrderByPhase<T> implements ExecutableCriteriaSelect<T> {
 
-  private AbstractSelect<T> select;
+  private LiveSQLContext context;
+  private AbstractSelectObject<T> select;
   private String mapperStatement;
 
-  CriteriaOrderByPhase(final AbstractSelect<T> select, final String mapperStatement) {
+  CriteriaOrderByPhase(final LiveSQLContext context, final AbstractSelectObject<T> select,
+      final String mapperStatement) {
+    this.context = context;
     this.select = select;
     this.mapperStatement = mapperStatement;
   }
@@ -18,22 +22,22 @@ public class CriteriaOrderByPhase<T> implements ExecutableCriteriaSelect<T> {
 
   public CriteriaOffsetPhase<T> offset(final int offset) {
     this.offset(offset);
-    return new CriteriaOffsetPhase<T>(this.select, this.mapperStatement);
+    return new CriteriaOffsetPhase<T>(this.context, this.select, this.mapperStatement);
   }
 
   public CriteriaLimitPhase<T> limit(final int limit) {
     this.limit(limit);
-    return new CriteriaLimitPhase<T>(this.select, this.mapperStatement);
+    return new CriteriaLimitPhase<T>(this.context, this.select, this.mapperStatement);
   }
 
   // execute
 
   public List<T> execute() {
-    return this.select.execute(this.mapperStatement);
+    return this.select.execute(this.context, this.mapperStatement);
   }
 
   public Cursor<T> executeCursor() {
-    return this.select.executeCursor(this.mapperStatement);
+    return this.select.executeCursor(this.context, this.mapperStatement);
   }
 
   // rendering
@@ -45,7 +49,7 @@ public class CriteriaOrderByPhase<T> implements ExecutableCriteriaSelect<T> {
 
   @Override
   public String getPreview() {
-    return this.select.getPreview();
+    return this.select.getPreview(this.context);
   }
 
 }

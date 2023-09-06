@@ -6,21 +6,23 @@ import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.Available;
 import org.hotrod.runtime.livesql.dialects.Const;
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
+import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 
-public class SelectFromPhase<R> implements ExecutableSelect<R> {
+public class SelectFromPhase<R> implements Select<R> {
 
   // Properties
 
-  private Select<R> select;
+  private LiveSQLContext context;
+  private SelectObject<R> select;
 
   // Constructor
 
-  SelectFromPhase(final Select<R> select, final TableExpression t) {
+  SelectFromPhase(final LiveSQLContext context, final SelectObject<R> select, final TableExpression t) {
+    this.context = context;
     this.select = select;
     this.select.setBaseTableExpression(t);
   }
@@ -118,23 +120,23 @@ public class SelectFromPhase<R> implements ExecutableSelect<R> {
   // Next stages
 
   public SelectWherePhase<R> where(final Predicate predicate) {
-    return new SelectWherePhase<R>(this.select, predicate);
+    return new SelectWherePhase<R>(this.context, this.select, predicate);
   }
 
   public SelectGroupByPhase<R> groupBy(final Expression... columns) {
-    return new SelectGroupByPhase<R>(this.select, columns);
+    return new SelectGroupByPhase<R>(this.context, this.select, columns);
   }
 
   public SelectOrderByPhase<R> orderBy(final OrderingTerm... orderingTerms) {
-    return new SelectOrderByPhase<R>(this.select, orderingTerms);
+    return new SelectOrderByPhase<R>(this.context, this.select, orderingTerms);
   }
 
   public SelectOffsetPhase<R> offset(final int offset) {
-    return new SelectOffsetPhase<R>(this.select, offset);
+    return new SelectOffsetPhase<R>(this.context, this.select, offset);
   }
 
   public SelectLimitPhase<R> limit(final int limit) {
-    return new SelectLimitPhase<R>(this.select, limit);
+    return new SelectLimitPhase<R>(this.context, this.select, limit);
   }
 
   // Set operations
@@ -170,40 +172,28 @@ public class SelectFromPhase<R> implements ExecutableSelect<R> {
   // return new SelectHavingPhase<R>(this.select, null);
   // }
 
-  // Rendering
-
-  @Override
-  public void renderTo(final QueryWriter w) {
-    this.select.renderTo(w);
-  }
-
   // Execute
 
   public List<R> execute() {
-    return this.select.execute();
+    return this.select.execute(this.context);
   }
 
   @Override
   public Cursor<R> executeCursor() {
-    return this.select.executeCursor();
+    return this.select.executeCursor(this.context);
   }
 
   // Validation
 
   @Override
   public String getPreview() {
-    return this.select.getPreview();
-  }
-
-  @Override
-  public List<ResultSetColumn> listColumns() throws IllegalAccessException {
-    return this.select.listColumns();
+    return this.select.getPreview(this.context);
   }
 
   // Executable Select
 
   @Override
-  public Select<R> getSelect() {
+  public SelectObject<R> getSelect() {
     return this.select;
   }
 

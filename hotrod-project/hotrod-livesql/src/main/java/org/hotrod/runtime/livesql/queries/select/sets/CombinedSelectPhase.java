@@ -3,12 +3,10 @@ package org.hotrod.runtime.livesql.queries.select.sets;
 import java.util.List;
 
 import org.hotrod.runtime.cursors.Cursor;
-import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.Select;
+import org.hotrod.runtime.livesql.queries.select.SelectObject;
 
-public class CombinedSelectPhase<R> implements ExecutableSelect<R> {
+public class CombinedSelectPhase<R> implements Select<R> {
 
   private SetOperator<R> op;
 
@@ -50,15 +48,6 @@ public class CombinedSelectPhase<R> implements ExecutableSelect<R> {
 //    return new SelectLimitPhase<R>(this.select, limit);
 //  }
 
-  // ExecutableSelect
-
-  @Override
-  public void renderTo(QueryWriter w) {
-    SetOperator<R> root = op.findRoot();
-    // TODO Auto-generated method stub
-
-  }
-
   @Override
   public List<R> execute() {
     // TODO Auto-generated method stub
@@ -78,13 +67,7 @@ public class CombinedSelectPhase<R> implements ExecutableSelect<R> {
   }
 
   @Override
-  public Select<R> getSelect() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public List<ResultSetColumn> listColumns() throws IllegalAccessException {
+  public SelectObject<R> getSelect() {
     // TODO Auto-generated method stub
     return null;
   }

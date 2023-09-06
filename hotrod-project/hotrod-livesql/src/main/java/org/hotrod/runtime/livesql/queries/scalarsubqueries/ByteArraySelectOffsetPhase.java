@@ -1,13 +1,13 @@
 package org.hotrod.runtime.livesql.queries.scalarsubqueries;
 
 import org.hotrod.runtime.livesql.Row;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject;
 
 public class ByteArraySelectOffsetPhase extends ByteArraySelectExpression {
 
   // Constructor
 
-  ByteArraySelectOffsetPhase(final AbstractSelect<Row> select, final int offset) {
+  ByteArraySelectOffsetPhase(final AbstractSelectObject<Row> select, final int offset) {
     super(select);
     this.select.setOffset(offset);
   }

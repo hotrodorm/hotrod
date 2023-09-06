@@ -1,21 +1,17 @@
 package org.hotrod.runtime.livesql.queries.select;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 
-class PGSelect<R> extends AbstractSelect<R> {
+class CombinedSelectObject<T> extends AbstractSelectObject<T> {
 
-  private boolean doNotAliasColumns;
-  private List<ResultSetColumn> resultSetColumns = new ArrayList<>();
+  private List<ResultSetColumn> resultSetColumns = null;
 
-  PGSelect(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct,
-      final boolean doNotAliasColumns) {
-    super(context, ctes, distinct);
-    this.doNotAliasColumns = doNotAliasColumns;
+  CombinedSelectObject(final List<CTE> ctes, final boolean distinct) {
+    super(ctes, distinct);
   }
 
   // Setters
@@ -28,7 +24,8 @@ class PGSelect<R> extends AbstractSelect<R> {
 
   @Override
   protected void writeColumns(final QueryWriter w, final TableExpression baseTableExpression, final List<Join> joins) {
-    super.writeExpandedColumns(w, baseTableExpression, joins, this.resultSetColumns, this.doNotAliasColumns);
+    super.writeExpandedColumns(w, baseTableExpression, joins,
+        this.resultSetColumns.stream().collect(Collectors.toList()), true);
   }
 
   @Override

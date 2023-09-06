@@ -6,13 +6,13 @@ import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject;
 
 public class StringSelectGroupByPhase extends StringSelectExpression {
 
   // Constructor
 
-  StringSelectGroupByPhase(final AbstractSelect<Row> select, final Expression... expressions) {
+  StringSelectGroupByPhase(final AbstractSelectObject<Row> select, final Expression... expressions) {
     super(select);
     this.select.setGroupBy(Arrays.asList(expressions));
   }

@@ -1,6 +1,6 @@
 package org.hotrod.runtime.livesql.queries.subqueries;
 
-import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
+import org.hotrod.runtime.livesql.queries.select.Select;
 
 public class SubqueryColumnsPhase {
 
@@ -12,7 +12,7 @@ public class SubqueryColumnsPhase {
     this.columns = columns;
   }
 
-  public Subquery as(final ExecutableSelect<?> select) {
+  public Subquery as(final Select<?> select) {
     return new Subquery(name, columns, select);
 
   }

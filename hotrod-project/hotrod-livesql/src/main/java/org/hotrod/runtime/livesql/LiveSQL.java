@@ -94,8 +94,8 @@ import org.hotrod.runtime.livesql.queries.scalarsubqueries.DateTimeSelectColumns
 import org.hotrod.runtime.livesql.queries.scalarsubqueries.NumberSelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.scalarsubqueries.ObjectSelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.scalarsubqueries.StringSelectColumnsPhase;
-import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.PGSelectColumnsPhase;
+import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.select.SelectCTEPhase;
 import org.hotrod.runtime.livesql.queries.select.SelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
@@ -115,7 +115,7 @@ public class LiveSQL {
 
   private LiveSQLContext context;
 
-  // Setters
+  // Constructor
 
   public LiveSQL(final SqlSession sqlSession, final @Qualifier("liveSQLDialect") LiveSQLDialect liveSQLDialect,
       final LiveSQLMapper liveSQLMapper) {
@@ -147,7 +147,7 @@ public class LiveSQL {
 
   // Subqueries
 
-  public Subquery subquery(final String alias, final ExecutableSelect<?> select) {
+  public Subquery subquery(final String alias, final Select<?> select) {
     return new Subquery(alias, null, select);
   }
 
@@ -158,32 +158,32 @@ public class LiveSQL {
   // Scalar subqueries
 
   public NumberSelectColumnsPhase selectScalar(final NumberExpression expression) {
-    return new NumberSelectColumnsPhase(this.context, null, false, expression);
+    return new NumberSelectColumnsPhase(null, false, expression);
   }
 
   public StringSelectColumnsPhase selectScalar(final StringExpression expression) {
-    return new StringSelectColumnsPhase(this.context, null, false, expression);
+    return new StringSelectColumnsPhase(null, false, expression);
   }
 
   public BooleanSelectColumnsPhase selectScalar(final Predicate expression) {
-    return new BooleanSelectColumnsPhase(this.context, null, false, expression);
+    return new BooleanSelectColumnsPhase(null, false, expression);
   }
 
   public DateTimeSelectColumnsPhase selectScalar(final DateTimeExpression expression) {
-    return new DateTimeSelectColumnsPhase(this.context, null, false, expression);
+    return new DateTimeSelectColumnsPhase(null, false, expression);
   }
 
   public ByteArraySelectColumnsPhase selectScalar(final ByteArrayExpression expression) {
-    return new ByteArraySelectColumnsPhase(this.context, null, false, expression);
+    return new ByteArraySelectColumnsPhase(null, false, expression);
   }
 
   public ObjectSelectColumnsPhase selectScalar(final ObjectExpression expression) {
-    return new ObjectSelectColumnsPhase(this.context, null, false, expression);
+    return new ObjectSelectColumnsPhase(null, false, expression);
   }
 
   // CTEs
 
-  public CTE cte(final String name, final ExecutableSelect<Row> select) {
+  public CTE cte(final String name, final Select<Row> select) {
     return new CTE(name, select);
   }
 
@@ -231,11 +231,11 @@ public class LiveSQL {
 
   // Subquery existence
 
-  public <R> Predicate exists(final ExecutableSelect<R> subquery) {
+  public <R> Predicate exists(final Select<R> subquery) {
     return new Exists(subquery);
   }
 
-  public <R> Predicate notExists(final ExecutableSelect<R> subquery) {
+  public <R> Predicate notExists(final Select<R> subquery) {
     return new NotExists(subquery);
   }
 

@@ -21,12 +21,14 @@ public class UpdateTablePhase {
 
   // Properties
 
-  private Update update;
+  private LiveSQLContext context;
+  private UpdateObject update;
 
   // Constructor
 
   public UpdateTablePhase(final LiveSQLContext context, final TableOrView tableOrView) {
-    this.update = new Update(context);
+    this.context = context;
+    this.update = new UpdateObject();
     this.update.setTableOrView(tableOrView);
   }
 
@@ -34,62 +36,62 @@ public class UpdateTablePhase {
 
   public UpdateSetPhase set(final NumberColumn column, final NumberExpression expression) {
     this.update.addSet(column, expression);
-    return new UpdateSetPhase(this.update);
+    return new UpdateSetPhase(this.context, this.update);
   }
 
   public UpdateSetPhase set(final NumberColumn column, final Number n) {
     this.update.addSet(column, BoxUtil.box(n));
-    return new UpdateSetPhase(this.update);
+    return new UpdateSetPhase(this.context, this.update);
   }
 
   public UpdateSetPhase set(final StringColumn column, final StringExpression expression) {
     this.update.addSet(column, expression);
-    return new UpdateSetPhase(this.update);
+    return new UpdateSetPhase(this.context, this.update);
   }
 
   public UpdateSetPhase set(final StringColumn column, final String s) {
     this.update.addSet(column, BoxUtil.box(s));
-    return new UpdateSetPhase(this.update);
+    return new UpdateSetPhase(this.context, this.update);
   }
 
   public UpdateSetPhase set(final DateTimeColumn column, final DateTimeExpression expression) {
     this.update.addSet(column, expression);
-    return new UpdateSetPhase(this.update);
+    return new UpdateSetPhase(this.context, this.update);
   }
 
   public UpdateSetPhase set(final DateTimeColumn column, final Date dt) {
     this.update.addSet(column, BoxUtil.box(dt));
-    return new UpdateSetPhase(this.update);
+    return new UpdateSetPhase(this.context, this.update);
   }
 
   public UpdateSetPhase set(final BooleanColumn column, final Predicate expression) {
     this.update.addSet(column, expression);
-    return new UpdateSetPhase(this.update);
+    return new UpdateSetPhase(this.context, this.update);
   }
 
   public UpdateSetPhase set(final BooleanColumn column, final boolean b) {
     this.update.addSet(column, BoxUtil.box(b));
-    return new UpdateSetPhase(this.update);
+    return new UpdateSetPhase(this.context, this.update);
   }
 
   public UpdateSetPhase set(final ByteArrayColumn column, final ByteArrayExpression expression) {
     this.update.addSet(column, expression);
-    return new UpdateSetPhase(this.update);
+    return new UpdateSetPhase(this.context, this.update);
   }
 
   public UpdateSetPhase set(final ByteArrayColumn column, final byte[] a) {
     this.update.addSet(column, BoxUtil.box(a));
-    return new UpdateSetPhase(this.update);
+    return new UpdateSetPhase(this.context, this.update);
   }
 
   public UpdateSetPhase set(final ObjectColumn column, final ObjectExpression expression) {
     this.update.addSet(column, expression);
-    return new UpdateSetPhase(this.update);
+    return new UpdateSetPhase(this.context, this.update);
   }
 
   public UpdateSetPhase set(final ObjectColumn column, final Object o) {
     this.update.addSet(column, BoxUtil.box(o));
-    return new UpdateSetPhase(this.update);
+    return new UpdateSetPhase(this.context, this.update);
   }
 
 }

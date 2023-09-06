@@ -6,19 +6,17 @@ import java.util.stream.Collectors;
 
 import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.expressions.binary.ByteArrayExpression;
-import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
-import org.hotrod.runtime.livesql.queries.select.Select;
+import org.hotrod.runtime.livesql.queries.select.SelectObject;
 import org.hotrod.runtime.livesql.queries.select.TableExpression;
 
 public class ByteArraySelectColumnsPhase extends ByteArraySelectExpression {
 
   // Constructor
 
-  public ByteArraySelectColumnsPhase(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct,
+  public ByteArraySelectColumnsPhase(final List<CTE> ctes, final boolean distinct,
       final ByteArrayExpression expression) {
-    super(new Select<Row>(context, ctes, distinct, true,
-        Arrays.asList(expression).stream().collect(Collectors.toList())));
+    super(new SelectObject<Row>(ctes, distinct, true, Arrays.asList(expression).stream().collect(Collectors.toList())));
   }
 
   // Next stages
