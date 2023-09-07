@@ -29,13 +29,12 @@ import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.QueryObject;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLStructure;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.select.sets.MultiSet;
 import org.hotrod.runtime.livesql.queries.select.sets.SetOperator;
 import org.hotrod.runtime.livesql.queries.subqueries.AllSubqueryColumns;
+import org.hotrod.runtime.livesql.util.PreviewRenderer;
 import org.hotrod.runtime.livesql.util.SubqueryUtil;
-import org.hotrodorm.hotrod.utils.CUtil;
-import org.hotrodorm.hotrod.utils.HexaUtils;
 import org.hotrodorm.hotrod.utils.SUtil;
 import org.hotrodorm.hotrod.utils.Separator;
 import org.springframework.util.ReflectionUtils;
@@ -225,7 +224,7 @@ public abstract class AbstractSelectObject<R> extends QueryObject implements Mul
 
   // Execute
 
-  private LiveSQLStructure prepareQuery(final LiveSQLContext context) {
+  private LiveSQLPreparedQuery prepareQuery(final LiveSQLContext context) {
     validateQuery();
     QueryWriter w = new QueryWriter(context.getLiveSQLDialect());
     renderTo(w);
@@ -287,7 +286,8 @@ public abstract class AbstractSelectObject<R> extends QueryObject implements Mul
 
     if (this.baseTableExpression == null) {
 
-      w.write("\n" + liveSQLDialect.getFromRenderer().renderFromWithoutATable());
+      String rwt = liveSQLDialect.getFromRenderer().renderFromWithoutATable();
+      w.write(SUtil.isEmpty(rwt) ? "" : ("\n" + rwt));
 
     } else {
 
@@ -346,6 +346,7 @@ public abstract class AbstractSelectObject<R> extends QueryObject implements Mul
 
       // having
 
+    
       if (this.havingPredicate != null) {
         w.write("\nHAVING ");
         this.havingPredicate.renderTo(w);
@@ -392,10 +393,12 @@ public abstract class AbstractSelectObject<R> extends QueryObject implements Mul
 
     // bottom offset & limit
 
+    
     if ((this.offset != null || this.limit != null) && paginationType == PaginationType.BOTTOM) {
       liveSQLDialect.getPaginationRenderer().renderBottomPagination(this.offset, this.limit, w);
     }
 
+    
     // enclosing pagination - end
 
     if ((this.offset != null || this.limit != null) && paginationType == PaginationType.ENCLOSE) {
@@ -410,7 +413,7 @@ public abstract class AbstractSelectObject<R> extends QueryObject implements Mul
 
   public List<R> execute(final LiveSQLContext context, final String entityMapperStatement) {
 
-    LiveSQLStructure q = this.prepareQuery(context);
+    LiveSQLPreparedQuery q = this.prepareQuery(context);
 
     if (entityMapperStatement == null) {
       return executeLiveSQL(context, q);
@@ -425,80 +428,50 @@ public abstract class AbstractSelectObject<R> extends QueryObject implements Mul
   }
 
   public Cursor<R> executeCursor(final LiveSQLContext context, final String entityMapperStatement) {
-    LiveSQLStructure q = this.prepareQuery(context);
+
+    LiveSQLPreparedQuery q = this.prepareQuery(context);
     if (entityMapperStatement == null) {
       return executeLiveSQLCursor(context, q);
     } else {
       return new MyBatisCursor<R>(
           context.getSQLSession().selectCursor(entityMapperStatement, q.getConsolidatedParameters()));
     }
+
   }
 
   @SuppressWarnings("unchecked")
-  private List<R> executeLiveSQL(final LiveSQLContext context, final LiveSQLStructure q) {
+  private List<R> executeLiveSQL(final LiveSQLContext context, final LiveSQLPreparedQuery q) {
     LinkedHashMap<String, Object> parameters = q.getParameters();
     parameters.put("sql", q.getSQL());
     return (List<R>) context.getLiveSQLMapper().select(parameters);
   }
 
   @SuppressWarnings("unchecked")
-  private Cursor<R> executeLiveSQLCursor(final LiveSQLContext context, final LiveSQLStructure q) {
+  private Cursor<R> executeLiveSQLCursor(final LiveSQLContext context, final LiveSQLPreparedQuery q) {
     LinkedHashMap<String, Object> parameters = q.getParameters();
     parameters.put("sql", q.getSQL());
     return (Cursor<R>) context.getLiveSQLMapper().selectCursor(parameters);
   }
 
-  public String getPreview(final LiveSQLContext context) {
-
-    LiveSQLStructure q = this.prepareQuery(context);
-
-    StringBuilder sb = new StringBuilder();
-    sb.append("--- SQL ----------\n");
-    sb.append(q.getSQL());
-    sb.append("\n--- Parameters ---\n");
-    for (String name : q.getParameters().keySet()) {
-      Object value = q.getParameters().get(name);
-      Integer length = null;
-      String preview = null;
-      if (value instanceof String) {
-        String v = (String) value;
-        length = v.length();
-        if (length <= 250) {
-          preview = v;
-        } else {
-          preview = v.substring(0, 250) + "...";
-        }
-      } else if (value instanceof byte[]) {
-        byte[] v = (byte[]) value;
-        length = v.length;
-        if (v.length < 100) {
-          preview = HexaUtils.toHexa(v);
-        } else {
-          preview = HexaUtils.toHexa(v, 0, 100) + "...";
-        }
-      } else {
-        preview = "" + value;
-      }
-
-      sb.append(" * " + name
-          + (value == null ? ""
-              : " (" + CUtil.renderObjectClass(value) + (length == null ? "" : ", length=" + length) + ")")
-          + ": " + preview + "\n");
-
+  public MultiSet<R> findRoot() {
+    MultiSet<R> s = this;
+    while (s.getParentOperator() != null) {
+      s = s.getParentOperator();
     }
-    sb.append("------------------");
-    return sb.toString();
+    return s;
+  }
 
+  public String getPreview(final LiveSQLContext context) {
+    LiveSQLPreparedQuery q = this.prepareQuery(context);
+    return PreviewRenderer.render(q);
   }
 
   // Validation
 
   private void validateQuery() {
-
     TableReferences tableReferences = new TableReferences();
     AliasGenerator ag = new AliasGenerator();
     this.validateTableReferences(tableReferences, ag);
-
   }
 
   public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {

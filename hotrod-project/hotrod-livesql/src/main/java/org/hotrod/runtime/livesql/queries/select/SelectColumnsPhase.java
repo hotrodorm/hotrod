@@ -48,7 +48,7 @@ public class SelectColumnsPhase<R> implements ExecutableSelect<R> {
   public CombinedSelectLinkingPhase<R> union() {
     UnionOperator<R> op = new UnionOperator<R>();
     op.add(this.select);
-    return new CombinedSelectLinkingPhase<R>(op, this.context);
+    return new CombinedSelectLinkingPhase<R>(this.context, op);
   }
 
   // .union(select()...)

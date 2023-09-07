@@ -7,7 +7,7 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLStructure;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
 
 public class InsertObject extends QueryObject {
@@ -38,18 +38,18 @@ public class InsertObject extends QueryObject {
   }
 
   public String getPreview(final LiveSQLContext context) {
-    LiveSQLStructure pq = this.prepareQuery(context);
+    LiveSQLPreparedQuery pq = this.prepareQuery(context);
     return pq.render();
   }
 
   public void execute(final LiveSQLContext context) {
-    LiveSQLStructure q = this.prepareQuery(context);
+    LiveSQLPreparedQuery q = this.prepareQuery(context);
     LinkedHashMap<String, Object> parameters = q.getParameters();
     parameters.put("sql", q.getSQL());
     context.getLiveSQLMapper().insert(parameters);
   }
 
-  private LiveSQLStructure prepareQuery(final LiveSQLContext context) {
+  private LiveSQLPreparedQuery prepareQuery(final LiveSQLContext context) {
     QueryWriter w = new QueryWriter(context.getLiveSQLDialect());
     w.write("INSERT INTO ");
     w.write(context.getLiveSQLDialect().canonicalToNatural(this.into));
@@ -85,7 +85,7 @@ public class InsertObject extends QueryObject {
 
     }
 
-    LiveSQLStructure pq = w.getPreparedQuery();
+    LiveSQLPreparedQuery pq = w.getPreparedQuery();
     return pq;
   }
 

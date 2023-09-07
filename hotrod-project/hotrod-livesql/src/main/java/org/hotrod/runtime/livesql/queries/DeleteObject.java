@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLStructure;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLPreparedQuery;
 
 public class DeleteObject extends QueryObject {
 
@@ -33,12 +33,12 @@ public class DeleteObject extends QueryObject {
   }
 
   public String getPreview(final LiveSQLContext context) {
-    LiveSQLStructure pq = this.prepareQuery(context);
+    LiveSQLPreparedQuery pq = this.prepareQuery(context);
     return pq.render();
   }
 
   public void execute(final LiveSQLContext context) {
-    LiveSQLStructure q = this.prepareQuery(context);
+    LiveSQLPreparedQuery q = this.prepareQuery(context);
     LinkedHashMap<String, Object> parameters = q.getParameters();
     parameters.put("sql", q.getSQL());
     if (this.mapperStatement != null) {
@@ -48,7 +48,7 @@ public class DeleteObject extends QueryObject {
     }
   }
 
-  private LiveSQLStructure prepareQuery(final LiveSQLContext context) {
+  private LiveSQLPreparedQuery prepareQuery(final LiveSQLContext context) {
     QueryWriter w = new QueryWriter(context.getLiveSQLDialect());
     w.write("DELETE FROM ");
 
@@ -61,7 +61,7 @@ public class DeleteObject extends QueryObject {
       w.write("\nWHERE ");
       this.wherePredicate.renderTo(w);
     }
-    LiveSQLStructure pq = w.getPreparedQuery();
+    LiveSQLPreparedQuery pq = w.getPreparedQuery();
     return pq;
   }
 

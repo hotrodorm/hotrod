@@ -8,9 +8,9 @@ public class CombinedSelectLinkingPhase<R> {
   private SetOperator<R> op;
   private LiveSQLContext context;
 
-  public CombinedSelectLinkingPhase(final SetOperator<R> op, final LiveSQLContext context) {
-    this.op = op;
+  public CombinedSelectLinkingPhase(final LiveSQLContext context, final SetOperator<R> op) {
     this.context = context;
+    this.op = op;
   }
 
   // Select

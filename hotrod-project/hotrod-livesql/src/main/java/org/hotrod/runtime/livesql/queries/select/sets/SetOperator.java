@@ -1,9 +1,17 @@
 package org.hotrod.runtime.livesql.queries.select.sets;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.hotrod.runtime.cursors.Cursor;
+import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLPreparedQuery;
+import org.hotrod.runtime.livesql.util.PreviewRenderer;
 
 //                Union-2
 //                  / \
@@ -64,52 +72,72 @@ public abstract class SetOperator<R> implements MultiSet<R> {
     return root;
   }
 
+  // Execute
+
+  public List<R> execute(LiveSQLContext context) {
+    LiveSQLPreparedQuery q = this.prepareQuery(context);
+    return executeLiveSQL(context, q);
+  }
+
+  @SuppressWarnings("unchecked")
+  private List<R> executeLiveSQL(final LiveSQLContext context, final LiveSQLPreparedQuery q) {
+    LinkedHashMap<String, Object> parameters = q.getParameters();
+    parameters.put("sql", q.getSQL());
+    return (List<R>) context.getLiveSQLMapper().select(parameters);
+  }
+
+  // Execute Cursor
+
+  public Cursor<R> executeCursor(final LiveSQLContext context) {
+    LiveSQLPreparedQuery q = this.prepareQuery(context);
+    return executeLiveSQLCursor(context, q);
+  }
+
+  @SuppressWarnings("unchecked")
+  private Cursor<R> executeLiveSQLCursor(final LiveSQLContext context, final LiveSQLPreparedQuery q) {
+    LinkedHashMap<String, Object> parameters = q.getParameters();
+    parameters.put("sql", q.getSQL());
+    return (Cursor<R>) context.getLiveSQLMapper().selectCursor(parameters);
+  }
+
   // Rendering
 
   protected abstract void renderSetOperator(final QueryWriter w);
 
-  public void renderTo(final QueryWriter w) {
-//    this.left.renderTo(w);
-    this.renderSetOperator(w);
-//    this.right.renderTo(w);
+  public LiveSQLPreparedQuery prepareQuery(final LiveSQLContext context) {
+    validateQuery();
+    QueryWriter w = new QueryWriter(context.getLiveSQLDialect());
+    renderTo(w);
+    return w.getPreparedQuery();
   }
 
-//  // ExecutableSelect
-//
-//  @Override
-//  public List<R> execute() {
-//    // TODO Auto-generated method stub
-//    return null;
-//  }
-//
-//  @Override
-//  public Cursor<R> executeCursor() {
-//    // TODO Auto-generated method stub
-//    return null;
-//  }
-//
-//  @Override
-//  public String getPreview() {
-//    // TODO Auto-generated method stub
-//    return null;
-//  }
-//
-//  @Override
-//  public Select<R> getSelect() {
-//    // TODO Auto-generated method stub
-//    return null;
-//  }
-//
-//  @Override
-//  public void validateTableReferences(TableReferences tableReferences, AliasGenerator ag) {
-//    // TODO Auto-generated method stub
-//
-//  }
-//
-//  @Override
-//  public List<ResultSetColumn> listColumns() throws IllegalAccessException {
-//    // TODO Auto-generated method stub
-//    return null;
-//  }
+  private void validateQuery() {
+    TableReferences tableReferences = new TableReferences();
+    AliasGenerator ag = new AliasGenerator();
+    this.children.forEach(s -> s.validateTableReferences(tableReferences, ag));
+  }
+
+  public void renderTo(final QueryWriter w) {
+    Iterator<MultiSet<R>> it = this.children.iterator();
+    while (it.hasNext()) {
+      MultiSet<R> s = it.next();
+      s.renderTo(w);
+      if (it.hasNext()) {
+        w.write("\n");
+        this.renderSetOperator(w);
+        w.write("\n");
+      }
+    }
+  }
+
+  public String getPreview(final LiveSQLContext context) {
+    LiveSQLPreparedQuery q = this.prepareQuery(context);
+    return PreviewRenderer.render(q);
+  }
+
+  @Override
+  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
+    this.children.forEach(s -> s.validateTableReferences(tableReferences, ag));
+  }
 
 }

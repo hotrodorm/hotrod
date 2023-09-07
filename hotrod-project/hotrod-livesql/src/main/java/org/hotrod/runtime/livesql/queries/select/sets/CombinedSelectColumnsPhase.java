@@ -40,7 +40,7 @@ public class CombinedSelectColumnsPhase<R> implements ExecutableSelect<R> {
   public CombinedSelectLinkingPhase<R> union() {
     UnionOperator<R> op = new UnionOperator<R>();
     op.add(this.select);
-    return new CombinedSelectLinkingPhase<R>(op, this.context);
+    return new CombinedSelectLinkingPhase<R>(this.context, op);
   }
 
 //  // .select() .selectDistinct()
@@ -85,19 +85,19 @@ public class CombinedSelectColumnsPhase<R> implements ExecutableSelect<R> {
   // Execute
 
   public List<R> execute() {
-    return this.select.execute(this.context);
+    return this.select.findRoot().execute(this.context);
   }
 
   @Override
   public Cursor<R> executeCursor() {
-    return this.select.executeCursor(this.context);
+    return this.select.findRoot().executeCursor(this.context);
   }
 
   // Utilities
 
   @Override
   public String getPreview() {
-    return this.select.getPreview(this.context);
+    return this.select.findRoot().getPreview(this.context);
   }
 
   // Executable Select
