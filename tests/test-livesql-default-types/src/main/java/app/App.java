@@ -8,6 +8,7 @@ import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.runtime.livesql.queries.select.ExecutableCriteriaSelect;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
+import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.mybatis.spring.annotation.MapperScan;
@@ -201,45 +202,24 @@ public class App {
 //
 //  }
 
-//  private void livesql() {
-////    reinsert();
-//
-//    NumbersTable n = NumbersDAO.newTable("n");
-//
-////    SelectFromPhase<Row> q = this.sql.select().from(n);
-//    SelectFromPhase<Row> q = this.sql
-//        .select(n.star().filter(c -> c.getName().startsWith("INT")), n.num1.minus(n.num2).as("mainDiffLatest")).from(n);
-////    SelectFromPhase<Row> q = this.sql.select(n.int1).from(n);
-//
-//    System.out.println("q:" + q.getPreview());
-//    List<Row> rows = q.execute();
-//
-//    for (Map<String, Object> r : rows) {
-//      System.out.println("r=" + r);
-//
-//      NumbersVO nv = this.numbersDAO.parseRow(r);
-//
-//      System.out.println(render(r, "int1")); // 5 SMALLINT
-//      System.out.println(render(r, "int2")); // 4 INTEGER
-//      System.out.println(render(r, "int3")); // -5 BIGINT
-//      System.out.println(render(r, "int4")); // 5 SMALLINT
-//      System.out.println(render(r, "int5")); // 4 INTEGER
-//      System.out.println(render(r, "int6")); // -5 BIGINT
-//      System.out.println(render(r, "dec1")); // 2 NUMERIC
-//      System.out.println(render(r, "dec2")); // 2 NUMERIC
-//      System.out.println(render(r, "dec3")); // 2 NUMERIC
-//      System.out.println(render(r, "dec4")); // 2 NUMERIC
-//      System.out.println(render(r, "dec5")); // 2 NUMERIC
-//      System.out.println(render(r, "dec6")); // 2 NUMERIC
-//      System.out.println(render(r, "dec7")); // 2 NUMERIC
-//      System.out.println(render(r, "flo1")); // 7 REAL
-//      System.out.println(render(r, "flo2")); // 8 DOUBLE
-//    }
-//
-//  }
+  private void livesql1() {
+    AccountTable a = AccountDAO.newTable("a");
+    Select<Row> q = this.sql.select().from(a);
+
+    System.out.println(q.getPreview());
+    q.execute().forEach(r -> System.out.println("row: " + r));
+  }
 
   private void liveSQLExamples() {
-    example1InNotIn();
+
+    livesql1();
+
+    // Set Operators
+
+//    union();
+
+    // Subqueries
+//    example1InNotIn();
 //    example2ExistsNotExists();
 //    example3AssymmetricOperators();
 //    example4ScalarSubqueries();
@@ -250,6 +230,22 @@ public class App {
 //    example6CTEs();
 //    example7RecursiveCTEs();
 //    example8LateralJoins();
+
+  }
+
+  private void union() {
+
+//  1. IN and NOT IN Operators
+
+//select 123 as n
+//union select 456
+
+    ExecutableSelect<Row> q = sql.select(sql.val(123)) //
+        .union().select(sql.val(456));
+
+    System.out.println(q.getPreview());
+    q.execute().forEach(r -> System.out.println("row: " + r));
+
   }
 
   private void example1InNotIn() {
@@ -270,7 +266,8 @@ public class App {
         .where(a.branchId.notIn( //
             sql.select(b.id).from(b).where(b.region.eq("SOUTH")) //
         )) //
-        .orderBy(a.branchId, a.parentId.desc(), sql.caseWhen(a.branchId.lt(100), 3).elseValue(0).end().desc().nullsLast());
+        .orderBy(a.branchId, a.parentId.desc(),
+            sql.caseWhen(a.branchId.lt(100), 3).elseValue(0).end().desc().nullsLast());
 
     System.out.println(q.getPreview());
     q.execute().forEach(r -> System.out.println("row: " + r));

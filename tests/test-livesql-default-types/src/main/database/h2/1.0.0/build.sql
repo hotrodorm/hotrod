@@ -138,3 +138,10 @@ create table payment (
   amount int
 );
 
+insert into account (id, parent_id, branch_id) values
+  (1, null, 100),
+  (2, 1, 101),
+  (3, 1, 102),
+  (4, 3, 103),
+  (5, 4, 104);
+  

@@ -24,7 +24,9 @@ import java.util.HashMap;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.LiveSQLMapper;
 import org.hotrod.runtime.livesql.util.CastUtil;
+import javax.annotation.PostConstruct;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.NumberColumn;
 import org.hotrod.runtime.livesql.metadata.StringColumn;
@@ -40,6 +42,7 @@ import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
 import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.runtime.livesql.metadata.View;
 
+import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.BeansException;
 import org.springframework.context.annotation.Lazy;
@@ -60,6 +63,9 @@ public class InvoiceLineDAO implements Serializable, ApplicationContextAware {
   private LiveSQLDialect liveSQLDialect;
 
   @Autowired
+  private LiveSQLMapper liveSQLMapper;
+
+  @Autowired
   private SpringBeanObjectFactory springBeanObjectFactory;
 
   private ApplicationContext applicationContext;
@@ -68,6 +74,13 @@ public class InvoiceLineDAO implements Serializable, ApplicationContextAware {
   public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
     this.sqlSession.getConfiguration().setObjectFactory(this.springBeanObjectFactory);
+  }
+
+  private LiveSQLContext context;
+
+  @PostConstruct
+  public void initializeContext() {
+    this.context = new LiveSQLContext(this.liveSQLDialect, this.sqlSession, this.liveSQLMapper);
   }
 
   // Row Parser
@@ -114,8 +127,8 @@ public class InvoiceLineDAO implements Serializable, ApplicationContextAware {
 
   public CriteriaWherePhase<app.daos.InvoiceLineVO> select(final InvoiceLineDAO.InvoiceLineTable from,
       final Predicate predicate) {
-    return new CriteriaWherePhase<app.daos.InvoiceLineVO>(from, this.liveSQLDialect, this.sqlSession,
-        predicate, "mappers.invoiceLine.selectByCriteria");
+    return new CriteriaWherePhase<app.daos.InvoiceLineVO>(this.context, "mappers.invoiceLine.selectByCriteria",
+        from, predicate);
   }
 
   // select parent(s) by FKs: no imported keys found -- skipped
@@ -127,7 +140,7 @@ public class InvoiceLineDAO implements Serializable, ApplicationContextAware {
   public app.daos.InvoiceLineVO insert(final app.daos.primitives.AbstractInvoiceLineVO vo) {
     String id = "mappers.invoiceLine.insert";
     this.sqlSession.insert(id, vo);
-    app.daos.InvoiceLineVO mo = new app.daos.InvoiceLineVO();
+    app.daos.InvoiceLineVO mo = springBeanObjectFactory.create(app.daos.InvoiceLineVO.class);
     mo.setInvoiceId(vo.getInvoiceId());
     mo.setProductId(vo.getProductId());
     mo.setLineTotal(vo.getLineTotal());
@@ -153,8 +166,7 @@ public class InvoiceLineDAO implements Serializable, ApplicationContextAware {
     if (updateValues.getInvoiceId() != null) values.put("invoice_id", updateValues.getInvoiceId());
     if (updateValues.getProductId() != null) values.put("product_id", updateValues.getProductId());
     if (updateValues.getLineTotal() != null) values.put("line_total", updateValues.getLineTotal());
-    return new UpdateSetCompletePhase(tableOrView, this.liveSQLDialect, this.sqlSession,
-      "mappers.invoiceLine.updateByCriteria", predicate, values);
+    return new UpdateSetCompletePhase(this.context, "mappers.invoiceLine.updateByCriteria", tableOrView,  predicate, values);
   }
 
 
@@ -167,8 +179,7 @@ public class InvoiceLineDAO implements Serializable, ApplicationContextAware {
   // delete by criteria
 
   public DeleteWherePhase delete(final InvoiceLineDAO.InvoiceLineTable from, final Predicate predicate) {
-    return new DeleteWherePhase(from, this.liveSQLDialect, this.sqlSession,
-      "mappers.invoiceLine.deleteByCriteria", predicate);
+    return new DeleteWherePhase(this.context, "mappers.invoiceLine.deleteByCriteria", from, predicate);
   }
 
   // DAO ordering

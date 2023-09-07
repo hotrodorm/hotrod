@@ -24,7 +24,9 @@ import java.util.HashMap;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.LiveSQLMapper;
 import org.hotrod.runtime.livesql.util.CastUtil;
+import javax.annotation.PostConstruct;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.NumberColumn;
 import org.hotrod.runtime.livesql.metadata.StringColumn;
@@ -40,6 +42,7 @@ import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
 import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.runtime.livesql.metadata.View;
 
+import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.BeansException;
 import org.springframework.context.annotation.Lazy;
@@ -60,6 +63,9 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   private LiveSQLDialect liveSQLDialect;
 
   @Autowired
+  private LiveSQLMapper liveSQLMapper;
+
+  @Autowired
   private SpringBeanObjectFactory springBeanObjectFactory;
 
   private ApplicationContext applicationContext;
@@ -68,6 +74,13 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
     this.sqlSession.getConfiguration().setObjectFactory(this.springBeanObjectFactory);
+  }
+
+  private LiveSQLContext context;
+
+  @PostConstruct
+  public void initializeContext() {
+    this.context = new LiveSQLContext(this.liveSQLDialect, this.sqlSession, this.liveSQLMapper);
   }
 
   // Row Parser
@@ -114,8 +127,8 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   public CriteriaWherePhase<app.daos.ProductVO> select(final ProductDAO.ProductTable from,
       final Predicate predicate) {
-    return new CriteriaWherePhase<app.daos.ProductVO>(from, this.liveSQLDialect, this.sqlSession,
-        predicate, "mappers.product.selectByCriteria");
+    return new CriteriaWherePhase<app.daos.ProductVO>(this.context, "mappers.product.selectByCriteria",
+        from, predicate);
   }
 
   // select parent(s) by FKs: no imported keys found -- skipped
@@ -127,7 +140,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   public app.daos.ProductVO insert(final app.daos.primitives.AbstractProductVO vo) {
     String id = "mappers.product.insert";
     this.sqlSession.insert(id, vo);
-    app.daos.ProductVO mo = new app.daos.ProductVO();
+    app.daos.ProductVO mo = springBeanObjectFactory.create(app.daos.ProductVO.class);
     mo.setId(vo.getId());
     mo.setType(vo.getType());
     mo.setShipping(vo.getShipping());
@@ -153,8 +166,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     if (updateValues.getId() != null) values.put("id", updateValues.getId());
     if (updateValues.getType() != null) values.put("type", updateValues.getType());
     if (updateValues.getShipping() != null) values.put("shipping", updateValues.getShipping());
-    return new UpdateSetCompletePhase(tableOrView, this.liveSQLDialect, this.sqlSession,
-      "mappers.product.updateByCriteria", predicate, values);
+    return new UpdateSetCompletePhase(this.context, "mappers.product.updateByCriteria", tableOrView,  predicate, values);
   }
 
 
@@ -167,8 +179,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   // delete by criteria
 
   public DeleteWherePhase delete(final ProductDAO.ProductTable from, final Predicate predicate) {
-    return new DeleteWherePhase(from, this.liveSQLDialect, this.sqlSession,
-      "mappers.product.deleteByCriteria", predicate);
+    return new DeleteWherePhase(this.context, "mappers.product.deleteByCriteria", from, predicate);
   }
 
   // DAO ordering
