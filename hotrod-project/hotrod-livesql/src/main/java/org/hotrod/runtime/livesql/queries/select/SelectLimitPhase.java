@@ -5,7 +5,8 @@ import java.util.List;
 import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 
-public class SelectLimitPhase<R> implements Select<R> {
+@SuppressWarnings("deprecation")
+public class SelectLimitPhase<R> implements ExecutableSelect<R> {
 
   // Properties
 

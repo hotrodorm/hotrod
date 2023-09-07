@@ -10,7 +10,8 @@ import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 
-public class PGSelectColumnsPhase<R> implements Select<R> {
+@SuppressWarnings("deprecation")
+public class PGSelectColumnsPhase<R> implements ExecutableSelect<R> {
 
   // Properties
 

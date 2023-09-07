@@ -8,11 +8,11 @@ import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
-import org.hotrod.runtime.livesql.queries.select.Select;
+import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
 import org.hotrod.runtime.livesql.queries.select.TableExpression;
 
-public class CombinedSelectColumnsPhase<R> implements Select<R> {
+public class CombinedSelectColumnsPhase<R> implements ExecutableSelect<R> {
 
   // Properties
 

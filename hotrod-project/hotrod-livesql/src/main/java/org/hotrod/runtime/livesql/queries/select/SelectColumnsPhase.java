@@ -13,7 +13,8 @@ import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectLinkingPhase
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectPhase;
 import org.hotrod.runtime.livesql.queries.select.sets.UnionOperator;
 
-public class SelectColumnsPhase<R> implements Select<R> {
+@SuppressWarnings("deprecation")
+public class SelectColumnsPhase<R> implements ExecutableSelect<R> {
 
   // Properties
 
@@ -52,7 +53,7 @@ public class SelectColumnsPhase<R> implements Select<R> {
 
   // .union(select()...)
   // .union(selectDistinct()...)
-  public CombinedSelectPhase<R> union(final Select<R> select) {
+  public CombinedSelectPhase<R> union(final ExecutableSelect<R> select) {
     UnionOperator<R> op = new UnionOperator<R>();
     op.add(this.select);
     op.add(select.getSelect());

@@ -12,7 +12,8 @@ import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 
-public class SelectFromPhase<R> implements Select<R> {
+@SuppressWarnings("deprecation")
+public class SelectFromPhase<R> implements ExecutableSelect<R> {
 
   // Properties
 

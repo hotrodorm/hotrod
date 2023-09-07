@@ -8,10 +8,10 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.CombinedOrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
-import org.hotrod.runtime.livesql.queries.select.Select;
+import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
 
-public class CombinedSelectGroupByPhase<R> implements Select<R> {
+public class CombinedSelectGroupByPhase<R> implements ExecutableSelect<R> {
 
   // Properties
 

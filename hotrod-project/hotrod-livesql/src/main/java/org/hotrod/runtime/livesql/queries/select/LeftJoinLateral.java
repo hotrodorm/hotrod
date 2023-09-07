@@ -1,7 +1,5 @@
 package org.hotrod.runtime.livesql.queries.select;
 
-import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLClauseException;
-
 public class LeftJoinLateral extends Join {
 
   private TableExpression tableExpression;

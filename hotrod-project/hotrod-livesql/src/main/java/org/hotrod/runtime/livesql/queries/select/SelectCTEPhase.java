@@ -26,24 +26,24 @@ public class SelectCTEPhase<R> {
   // Next stages
 
   public SelectColumnsPhase<R> select() {
-    return new SelectColumnsPhase<R>(this.context, null, false);
+    return new SelectColumnsPhase<R>(this.context, this.ctes, false);
   }
 
   public SelectColumnsPhase<R> selectDistinct() {
-    return new SelectColumnsPhase<R>(this.context, null, true);
+    return new SelectColumnsPhase<R>(this.context, this.ctes, true);
   }
 
   public SelectColumnsPhase<R> select(final ResultSetColumn... resultSetColumns) {
-    return new SelectColumnsPhase<R>(this.context, null, false, resultSetColumns);
+    return new SelectColumnsPhase<R>(this.context, this.ctes, false, resultSetColumns);
   }
 
   public SelectColumnsPhase<R> selectDistinct(final ResultSetColumn... resultSetColumns) {
-    return new SelectColumnsPhase<R>(this.context, null, true, resultSetColumns);
+    return new SelectColumnsPhase<R>(this.context, this.ctes, true, resultSetColumns);
   }
 
   @Available(engine = Const.POSTGRESQL, since = Const.PG15)
   public PGSelectColumnsPhase<R> selectDistinctOn(final ResultSetColumn... resultSetColumns) {
-    return new PGSelectColumnsPhase<R>(this.context, null, true, resultSetColumns);
+    return new PGSelectColumnsPhase<R>(this.context, this.ctes, true, resultSetColumns);
   }
 
 }

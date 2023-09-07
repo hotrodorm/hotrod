@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
-import org.hotrod.runtime.livesql.queries.select.Select;
+import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
 
-public class CombinedSelectLimitPhase<R> implements Select<R> {
+public class CombinedSelectLimitPhase<R> implements ExecutableSelect<R> {
 
   // Properties
 

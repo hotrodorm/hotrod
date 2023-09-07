@@ -3,13 +3,13 @@ package org.hotrod.runtime.livesql.expressions.predicates;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
-import org.hotrod.runtime.livesql.queries.select.Select;
+import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 
 public class Exists extends Predicate {
 
-  private Select<?> subquery;
+  private ExecutableSelect<?> subquery;
 
-  public Exists(final Select<?> subquery) {
+  public Exists(final ExecutableSelect<?> subquery) {
     super(Expression.PRECEDENCE_EXISTS);
     if (subquery == null) {
       throw new LiveSQLException("Subquery cannot be null");

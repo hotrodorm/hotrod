@@ -26,7 +26,7 @@ import org.hotrod.runtime.livesql.ordering.OrderByDirectionStage;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
-import org.hotrod.runtime.livesql.queries.select.Select;
+import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
 import org.hotrodorm.hotrod.utils.SUtil;
@@ -110,7 +110,7 @@ public abstract class Expression implements ResultSetColumn, Rendereable, Orderi
     this.expressions.add(expression);
   }
 
-  protected void register(final Select<?> subquery) {
+  protected void register(final ExecutableSelect<?> subquery) {
     this.subqueries.add(subquery.getSelect());
   }
 
@@ -158,14 +158,14 @@ public abstract class Expression implements ResultSetColumn, Rendereable, Orderi
 
   // In subquery
 
-  public Predicate in(final Select<?> subquery) {
+  public Predicate in(final ExecutableSelect<?> subquery) {
     if (subquery == null) {
       throw new LiveSQLException("Subquery cannot be null");
     }
     return new InSubquery(this, subquery);
   }
 
-  public Predicate notIn(final Select<?> subquery) {
+  public Predicate notIn(final ExecutableSelect<?> subquery) {
     if (subquery == null) {
       throw new LiveSQLException("Subquery cannot be null");
     }
@@ -174,42 +174,42 @@ public abstract class Expression implements ResultSetColumn, Rendereable, Orderi
 
   // Any
 
-  public Predicate eqAny(final Select<?> subquery) {
+  public Predicate eqAny(final ExecutableSelect<?> subquery) {
     if (subquery == null) {
       throw new LiveSQLException("Subquery cannot be null");
     }
     return new EqAny(this, subquery);
   }
 
-  public Predicate neAny(final Select<?> subquery) {
+  public Predicate neAny(final ExecutableSelect<?> subquery) {
     if (subquery == null) {
       throw new LiveSQLException("Subquery cannot be null");
     }
     return new NeAny(this, subquery);
   }
 
-  public Predicate ltAny(final Select<?> subquery) {
+  public Predicate ltAny(final ExecutableSelect<?> subquery) {
     if (subquery == null) {
       throw new LiveSQLException("Subquery cannot be null");
     }
     return new LtAny(this, subquery);
   }
 
-  public Predicate leAny(final Select<?> subquery) {
+  public Predicate leAny(final ExecutableSelect<?> subquery) {
     if (subquery == null) {
       throw new LiveSQLException("Subquery cannot be null");
     }
     return new LeAny(this, subquery);
   }
 
-  public Predicate gtAny(final Select<?> subquery) {
+  public Predicate gtAny(final ExecutableSelect<?> subquery) {
     if (subquery == null) {
       throw new LiveSQLException("Subquery cannot be null");
     }
     return new GtAny(this, subquery);
   }
 
-  public Predicate geAny(final Select<?> subquery) {
+  public Predicate geAny(final ExecutableSelect<?> subquery) {
     if (subquery == null) {
       throw new LiveSQLException("Subquery cannot be null");
     }
@@ -218,42 +218,42 @@ public abstract class Expression implements ResultSetColumn, Rendereable, Orderi
 
   // All
 
-  public Predicate eqAll(final Select<?> subquery) {
+  public Predicate eqAll(final ExecutableSelect<?> subquery) {
     if (subquery == null) {
       throw new LiveSQLException("Subquery cannot be null");
     }
     return new EqAll(this, subquery);
   }
 
-  public Predicate neAll(final Select<?> subquery) {
+  public Predicate neAll(final ExecutableSelect<?> subquery) {
     if (subquery == null) {
       throw new LiveSQLException("Subquery cannot be null");
     }
     return new NeAll(this, subquery);
   }
 
-  public Predicate ltAll(final Select<?> subquery) {
+  public Predicate ltAll(final ExecutableSelect<?> subquery) {
     if (subquery == null) {
       throw new LiveSQLException("Subquery cannot be null");
     }
     return new LtAll(this, subquery);
   }
 
-  public Predicate leAll(final Select<?> subquery) {
+  public Predicate leAll(final ExecutableSelect<?> subquery) {
     if (subquery == null) {
       throw new LiveSQLException("Subquery cannot be null");
     }
     return new LeAll(this, subquery);
   }
 
-  public Predicate gtAll(final Select<?> subquery) {
+  public Predicate gtAll(final ExecutableSelect<?> subquery) {
     if (subquery == null) {
       throw new LiveSQLException("Subquery cannot be null");
     }
     return new GtAll(this, subquery);
   }
 
-  public Predicate geAll(final Select<?> subquery) {
+  public Predicate geAll(final ExecutableSelect<?> subquery) {
     if (subquery == null) {
       throw new LiveSQLException("Subquery cannot be null");
     }

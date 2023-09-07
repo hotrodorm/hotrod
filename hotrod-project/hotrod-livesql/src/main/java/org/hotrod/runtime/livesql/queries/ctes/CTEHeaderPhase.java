@@ -1,7 +1,8 @@
 package org.hotrod.runtime.livesql.queries.ctes;
 
-import org.hotrod.runtime.livesql.queries.select.Select;
+import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 
+@SuppressWarnings("deprecation")
 public class CTEHeaderPhase {
 
   // Properties
@@ -18,7 +19,7 @@ public class CTEHeaderPhase {
 
   // Next stages
 
-  public CTE as(Select<?> select) {
+  public CTE as(final ExecutableSelect<?> select) {
     return new CTE(this.name, this.aliases, select);
   }
 

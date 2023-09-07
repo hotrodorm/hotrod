@@ -7,7 +7,8 @@ import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 
-public class SelectHavingPhase<R> implements Select<R> {
+@SuppressWarnings("deprecation")
+public class SelectHavingPhase<R> implements ExecutableSelect<R> {
 
   // Properties
 

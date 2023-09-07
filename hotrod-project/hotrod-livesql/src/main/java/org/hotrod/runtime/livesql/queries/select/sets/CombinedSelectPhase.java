@@ -3,10 +3,10 @@ package org.hotrod.runtime.livesql.queries.select.sets;
 import java.util.List;
 
 import org.hotrod.runtime.cursors.Cursor;
-import org.hotrod.runtime.livesql.queries.select.Select;
+import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
 
-public class CombinedSelectPhase<R> implements Select<R> {
+public class CombinedSelectPhase<R> implements ExecutableSelect<R> {
 
   private SetOperator<R> op;
 

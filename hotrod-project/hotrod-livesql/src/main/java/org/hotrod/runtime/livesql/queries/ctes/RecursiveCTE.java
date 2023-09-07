@@ -9,16 +9,17 @@ import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
+import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
-import org.hotrod.runtime.livesql.queries.select.Select;
 
+@SuppressWarnings("deprecation")
 public class RecursiveCTE extends CTE {
 
   // Properties
 
-  private Select<?> anchorTerm;
+  private ExecutableSelect<?> anchorTerm;
   private boolean unionAll;
-  private Select<?> recursiveTerm;
+  private ExecutableSelect<?> recursiveTerm;
 
   // Constructor
 
@@ -26,7 +27,7 @@ public class RecursiveCTE extends CTE {
     super(name, columns);
   }
 
-  public void as(final Select<?> anchorTerm, final Select<?> recursiveTerm) {
+  public void as(final ExecutableSelect<?> anchorTerm, final ExecutableSelect<?> recursiveTerm) {
     if (anchorTerm == null) {
       throw new LiveSQLException("The anchor term of a recursive CTE cannot be null", null);
     }
@@ -39,7 +40,7 @@ public class RecursiveCTE extends CTE {
     this.recursiveTerm = recursiveTerm;
   }
 
-  public void asUnion(final Select<?> anchorTerm, final Select<?> recursiveTerm) {
+  public void asUnion(final ExecutableSelect<?> anchorTerm, final ExecutableSelect<?> recursiveTerm) {
     this.anchorTerm = anchorTerm;
     this.unionAll = false;
     this.recursiveTerm = recursiveTerm;

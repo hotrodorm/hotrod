@@ -21,13 +21,13 @@ import org.hotrod.runtime.livesql.queries.select.NaturalInnerJoin;
 import org.hotrod.runtime.livesql.queries.select.NaturalLeftOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.NaturalRightOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.RightOuterJoin;
-import org.hotrod.runtime.livesql.queries.select.Select;
+import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
 import org.hotrod.runtime.livesql.queries.select.TableExpression;
 import org.hotrod.runtime.livesql.queries.select.UnionJoin;
 import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 
-public class CombinedSelectFromPhase<R> implements Select<R> {
+public class CombinedSelectFromPhase<R> implements ExecutableSelect<R> {
 
   // Properties
 
