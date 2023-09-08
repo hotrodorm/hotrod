@@ -31,7 +31,6 @@ import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.select.sets.MultiSet;
-import org.hotrod.runtime.livesql.queries.select.sets.SetOperator;
 import org.hotrod.runtime.livesql.queries.subqueries.AllSubqueryColumns;
 import org.hotrod.runtime.livesql.util.PreviewRenderer;
 import org.hotrod.runtime.livesql.util.SubqueryUtil;
@@ -39,7 +38,7 @@ import org.hotrodorm.hotrod.utils.SUtil;
 import org.hotrodorm.hotrod.utils.Separator;
 import org.springframework.util.ReflectionUtils;
 
-public abstract class AbstractSelectObject<R> extends QueryObject implements MultiSet<R> {
+public abstract class AbstractSelectObject<R> extends MultiSet<R> implements QueryObject {
 
   private List<CTE> ctes = new ArrayList<>();
   private boolean distinct;
@@ -49,8 +48,6 @@ public abstract class AbstractSelectObject<R> extends QueryObject implements Mul
   private List<Expression> groupBy = null;
   private Predicate havingPredicate = null;
 
-  private SetOperator<R> parent = null;
-
   private List<OrderingTerm> orderingTerms = null;
   private Integer offset = null;
   private Integer limit = null;
@@ -59,16 +56,6 @@ public abstract class AbstractSelectObject<R> extends QueryObject implements Mul
     super();
     this.setCTEs(ctes);
     this.distinct = distinct;
-  }
-
-  @Override
-  public void setParentOperator(final SetOperator<R> parent) {
-    this.parent = parent;
-  }
-
-  @Override
-  public SetOperator<R> getParentOperator() {
-    return parent;
   }
 
   protected abstract void writeColumns(final QueryWriter w, final TableExpression baseTableExpression,
@@ -346,7 +333,6 @@ public abstract class AbstractSelectObject<R> extends QueryObject implements Mul
 
       // having
 
-    
       if (this.havingPredicate != null) {
         w.write("\nHAVING ");
         this.havingPredicate.renderTo(w);
@@ -393,12 +379,10 @@ public abstract class AbstractSelectObject<R> extends QueryObject implements Mul
 
     // bottom offset & limit
 
-    
     if ((this.offset != null || this.limit != null) && paginationType == PaginationType.BOTTOM) {
       liveSQLDialect.getPaginationRenderer().renderBottomPagination(this.offset, this.limit, w);
     }
 
-    
     // enclosing pagination - end
 
     if ((this.offset != null || this.limit != null) && paginationType == PaginationType.ENCLOSE) {

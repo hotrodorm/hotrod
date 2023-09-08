@@ -30,7 +30,7 @@ import org.hotrod.runtime.livesql.util.PreviewRenderer;
 //                /    \
 //          SELECT-b  SELECT-c
 
-public abstract class SetOperator<R> implements MultiSet<R> {
+public abstract class SetOperator<R> extends MultiSet<R> {
 
   public static final int PRECEDENCE_INTERSECT = 1;
   public static final int PRECEDENCE_INTERSECT_ALL = 1;
@@ -39,22 +39,11 @@ public abstract class SetOperator<R> implements MultiSet<R> {
   public static final int PRECEDENCE_EXCEPT = 3;
   public static final int PRECEDENCE_EXCEPT_ALL = 3;
 
-  private SetOperator<R> parent;
   private List<MultiSet<R>> children;
 
   public SetOperator() {
-    this.parent = null;
+    super.setParentOperator(null);
     this.children = new ArrayList<>();
-  }
-
-  @Override
-  public void setParentOperator(final SetOperator<R> parent) {
-    this.parent = parent;
-  }
-
-  @Override
-  public SetOperator<R> getParentOperator() {
-    return this.parent;
   }
 
   public void add(final MultiSet<R> child) {
@@ -66,8 +55,8 @@ public abstract class SetOperator<R> implements MultiSet<R> {
 
   public SetOperator<R> findRoot() {
     SetOperator<R> root = this;
-    while (root.parent != null) {
-      root = root.parent;
+    while (root.getParentOperator() != null) {
+      root = root.getParentOperator();
     }
     return root;
   }

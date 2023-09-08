@@ -7,7 +7,7 @@ import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLPreparedQuery;
 
-public class DeleteObject extends QueryObject {
+public class DeleteObject implements QueryObject {
 
   private String mapperStatement; // DAO.delete(t, predicate)
 

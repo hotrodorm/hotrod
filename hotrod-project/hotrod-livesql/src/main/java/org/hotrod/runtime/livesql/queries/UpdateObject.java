@@ -13,7 +13,7 @@ import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLPreparedQuery;
 
-public class UpdateObject extends QueryObject {
+public class UpdateObject implements QueryObject {
 
   private String mapperStatement; // DAO.update(values, [t,] predicate)
 

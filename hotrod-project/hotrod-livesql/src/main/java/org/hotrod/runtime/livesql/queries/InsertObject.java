@@ -10,7 +10,7 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
 
-public class InsertObject extends QueryObject {
+public class InsertObject implements QueryObject {
 
   private TableOrView into;
   private List<Column> columns;

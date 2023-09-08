@@ -8,20 +8,26 @@ import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGener
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
-public interface MultiSet<R> {
+public abstract class MultiSet<R> {
 
-  void setParentOperator(SetOperator<R> parent);
+  private SetOperator<R> parent;
 
-  SetOperator<R> getParentOperator();
+  public void setParentOperator(final SetOperator<R> parent) {
+    this.parent = parent;
+  }
 
-  void validateTableReferences(TableReferences tableReferences, AliasGenerator ag);
+  public SetOperator<R> getParentOperator() {
+    return this.parent;
+  }
 
-  void renderTo(QueryWriter w);
+  public abstract void validateTableReferences(TableReferences tableReferences, AliasGenerator ag);
 
-  String getPreview(LiveSQLContext context);
+  public abstract void renderTo(QueryWriter w);
 
-  List<R> execute(LiveSQLContext context);
+  public abstract String getPreview(LiveSQLContext context);
 
-  Cursor<R> executeCursor(LiveSQLContext context);
+  public abstract List<R> execute(LiveSQLContext context);
+
+  public abstract Cursor<R> executeCursor(LiveSQLContext context);
 
 }
