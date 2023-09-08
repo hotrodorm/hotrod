@@ -1,8 +1,5 @@
 package org.hotrod.runtime.livesql.queries.select;
 
-import java.util.List;
-
-import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.Available;
 import org.hotrod.runtime.livesql.dialects.Const;
 import org.hotrod.runtime.livesql.expressions.Expression;
@@ -10,21 +7,15 @@ import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import org.hotrod.runtime.livesql.queries.select.sets.AbstractSelectPhase;
 import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 
-@SuppressWarnings("deprecation")
-public class SelectFromPhase<R> implements ExecutableSelect<R> {
-
-  // Properties
-
-  private LiveSQLContext context;
-  private SelectObject<R> select;
+public class SelectFromPhase<R> extends AbstractSelectPhase<R> {
 
   // Constructor
 
   SelectFromPhase(final LiveSQLContext context, final SelectObject<R> select, final TableExpression t) {
-    this.context = context;
-    this.select = select;
+    super(context, select);
     this.select.setBaseTableExpression(t);
   }
 
@@ -172,30 +163,5 @@ public class SelectFromPhase<R> implements ExecutableSelect<R> {
   // this.select.setCombinedSelect(SetOperation.EXCEPT_ALL, select);
   // return new SelectHavingPhase<R>(this.select, null);
   // }
-
-  // Execute
-
-  public List<R> execute() {
-    return this.select.execute(this.context);
-  }
-
-  @Override
-  public Cursor<R> executeCursor() {
-    return this.select.executeCursor(this.context);
-  }
-
-  // Validation
-
-  @Override
-  public String getPreview() {
-    return this.select.getPreview(this.context);
-  }
-
-  // Executable Select
-
-  @Override
-  public SelectObject<R> getSelect() {
-    return this.select;
-  }
 
 }

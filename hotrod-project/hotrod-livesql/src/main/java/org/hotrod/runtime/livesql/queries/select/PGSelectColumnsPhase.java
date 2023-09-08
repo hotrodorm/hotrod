@@ -4,34 +4,27 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
+import org.hotrod.runtime.livesql.queries.select.sets.AbstractSelectPhase;
 
-@SuppressWarnings("deprecation")
-public class PGSelectColumnsPhase<R> implements ExecutableSelect<R> {
-
-  // Properties
-
-  private LiveSQLContext context;
-  private SelectObject<R> select;
+public class PGSelectColumnsPhase<R> extends AbstractSelectPhase<R> {
 
   // Constructor
 
   public PGSelectColumnsPhase(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct,
       final ResultSetColumn... resultSetColumns) {
-    this.context = context;
-    this.select = new SelectObject<R>(ctes, distinct, false);
+    super(context, new SelectObject<R>(ctes, distinct, false));
     this.select.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
   }
 
-  public PGSelectColumnsPhase(final SelectObject<R> select, final boolean distinct,
-      final ResultSetColumn... resultSetColumns) {
-    select.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
-    this.select = select;
-  }
+//  public PGSelectColumnsPhase(final SelectObject<R> select, final boolean distinct,
+//      final ResultSetColumn... resultSetColumns) {
+//    select.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
+//    this.select = select;
+//  }
 
   // Next stages
 
@@ -71,30 +64,5 @@ public class PGSelectColumnsPhase<R> implements ExecutableSelect<R> {
   // this.select.setCombinedSelect(SetOperation.EXCEPT_ALL, select);
   // return new SelectHavingPhase<R>(this.select, null);
   // }
-
-  // Execute
-
-  public List<R> execute() {
-    return this.select.execute(this.context);
-  }
-
-  @Override
-  public Cursor<R> executeCursor() {
-    return this.select.executeCursor(this.context);
-  }
-
-  // Validation
-
-  @Override
-  public String getPreview() {
-    return this.select.getPreview(this.context);
-  }
-
-  // Executable Select
-
-  @Override
-  public SelectObject<R> getSelect() {
-    return this.select;
-  }
 
 }

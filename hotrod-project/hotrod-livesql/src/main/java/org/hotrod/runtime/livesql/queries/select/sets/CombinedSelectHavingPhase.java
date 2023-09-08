@@ -1,26 +1,16 @@
 package org.hotrod.runtime.livesql.queries.select.sets;
 
-import java.util.List;
-
-import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.CombinedOrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
-import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
 
-public class CombinedSelectHavingPhase<R> implements ExecutableSelect<R> {
-
-  // Properties
-
-  private LiveSQLContext context;
-  private SelectObject<R> select;
+public class CombinedSelectHavingPhase<R> extends AbstractSelectPhase<R> {
 
   // Constructor
 
   CombinedSelectHavingPhase(final LiveSQLContext context, final SelectObject<R> select, final Predicate predicate) {
-    this.context = context;
-    this.select = select;
+    super(context, select);
     if (predicate != null) {
       this.select.setHavingCondition(predicate);
     }
@@ -74,28 +64,5 @@ public class CombinedSelectHavingPhase<R> implements ExecutableSelect<R> {
   // this.select.setCombinedSelect(SetOperation.EXCEPT_ALL, select);
   // return new SelectHavingPhase<R>(this.select, null);
   // }
-
-  // Execute
-
-  public List<R> execute() {
-    return this.select.execute(this.context);
-  }
-
-  @Override
-  public Cursor<R> executeCursor() {
-    return this.select.executeCursor(this.context);
-  }
-
-  @Override
-  public String getPreview() {
-    return this.select.getPreview(this.context);
-  }
-
-  // Executable Select
-
-  @Override
-  public SelectObject<R> getSelect() {
-    return this.select;
-  }
 
 }

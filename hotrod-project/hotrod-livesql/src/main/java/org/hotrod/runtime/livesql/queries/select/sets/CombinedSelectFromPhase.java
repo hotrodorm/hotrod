@@ -1,8 +1,5 @@
 package org.hotrod.runtime.livesql.queries.select.sets;
 
-import java.util.List;
-
-import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.Available;
 import org.hotrod.runtime.livesql.dialects.Const;
 import org.hotrod.runtime.livesql.expressions.Expression;
@@ -21,24 +18,17 @@ import org.hotrod.runtime.livesql.queries.select.NaturalInnerJoin;
 import org.hotrod.runtime.livesql.queries.select.NaturalLeftOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.NaturalRightOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.RightOuterJoin;
-import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
 import org.hotrod.runtime.livesql.queries.select.TableExpression;
 import org.hotrod.runtime.livesql.queries.select.UnionJoin;
 import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 
-public class CombinedSelectFromPhase<R> implements ExecutableSelect<R> {
-
-  // Properties
-
-  private LiveSQLContext context;
-  private SelectObject<R> select;
+public class CombinedSelectFromPhase<R> extends AbstractSelectPhase<R> {
 
   // Constructor
 
   CombinedSelectFromPhase(final LiveSQLContext context, final SelectObject<R> select, final TableExpression t) {
-    this.context = context;
-    this.select = select;
+    super(context, select);
     this.select.setBaseTableExpression(t);
   }
 
@@ -186,28 +176,5 @@ public class CombinedSelectFromPhase<R> implements ExecutableSelect<R> {
   // this.select.setCombinedSelect(SetOperation.EXCEPT_ALL, select);
   // return new SelectHavingPhase<R>(this.select, null);
   // }
-
-  // Execute
-
-  public List<R> execute() {
-    return this.select.execute(this.context);
-  }
-
-  @Override
-  public Cursor<R> executeCursor() {
-    return this.select.executeCursor(this.context);
-  }
-
-  @Override
-  public String getPreview() {
-    return this.select.getPreview(this.context);
-  }
-
-  // Executable Select
-
-  @Override
-  public SelectObject<R> getSelect() {
-    return this.select;
-  }
 
 }

@@ -4,29 +4,22 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
+import org.hotrod.runtime.livesql.queries.select.sets.AbstractSelectPhase;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectLinkingPhase;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectPhase;
 import org.hotrod.runtime.livesql.queries.select.sets.UnionOperator;
 
-@SuppressWarnings("deprecation")
-public class SelectColumnsPhase<R> implements ExecutableSelect<R> {
-
-  // Properties
-
-  private LiveSQLContext context;
-  private SelectObject<R> select;
+public class SelectColumnsPhase<R> extends AbstractSelectPhase<R> {
 
   // Constructor
 
   public SelectColumnsPhase(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct,
       final ResultSetColumn... resultSetColumns) {
-    this.context = context;
-    this.select = new SelectObject<R>(ctes, distinct, false);
+    super(context, new SelectObject<R>(ctes, distinct, false));
     for (ResultSetColumn c : resultSetColumns) {
       if (c == null) {
         throw new LiveSQLException("Select column cannot be null.");
@@ -53,7 +46,7 @@ public class SelectColumnsPhase<R> implements ExecutableSelect<R> {
 
   // .union(select()...)
   // .union(selectDistinct()...)
-  public CombinedSelectPhase<R> union(final ExecutableSelect<R> select) {
+  public CombinedSelectPhase<R> union(final Select<R> select) {
     UnionOperator<R> op = new UnionOperator<R>();
     op.add(this.select);
     op.add(select.getSelect());
@@ -85,30 +78,5 @@ public class SelectColumnsPhase<R> implements ExecutableSelect<R> {
   // this.select.setCombinedSelect(SetOperation.EXCEPT_ALL, select);
   // return new SelectHavingPhase<R>(this.select, null);
   // }
-
-  // Execute
-
-  public List<R> execute() {
-    return this.select.execute(this.context);
-  }
-
-  @Override
-  public Cursor<R> executeCursor() {
-    return this.select.executeCursor(this.context);
-  }
-
-  // Utilities
-
-  @Override
-  public String getPreview() {
-    return this.select.getPreview(this.context);
-  }
-
-  // Executable Select
-
-  @Override
-  public SelectObject<R> getSelect() {
-    return this.select;
-  }
 
 }

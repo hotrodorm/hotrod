@@ -1,16 +1,11 @@
 package org.hotrod.runtime.livesql.queries.select.sets;
 
-import java.util.List;
-
-import org.hotrod.runtime.cursors.Cursor;
-import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
-import org.hotrod.runtime.livesql.queries.select.SelectObject;
-
-public class CombinedSelectPhase<R> implements ExecutableSelect<R> {
+public class CombinedSelectPhase<R> extends AbstractSelectPhase<R> {
 
   private SetOperator<R> op;
 
-  public CombinedSelectPhase(SetOperator<R> op) {
+  public CombinedSelectPhase(final SetOperator<R> op) {
+    super(null, null);
     this.op = op;
   }
 
@@ -48,28 +43,28 @@ public class CombinedSelectPhase<R> implements ExecutableSelect<R> {
 //    return new SelectLimitPhase<R>(this.select, limit);
 //  }
 
-  @Override
-  public List<R> execute() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public Cursor<R> executeCursor() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public String getPreview() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public SelectObject<R> getSelect() {
-    // TODO Auto-generated method stub
-    return null;
-  }
+//  @Override
+//  public List<R> execute() {
+//    // TODO Auto-generated method stub
+//    return null;
+//  }
+//
+//  @Override
+//  public Cursor<R> executeCursor() {
+//    // TODO Auto-generated method stub
+//    return null;
+//  }
+//
+//  @Override
+//  public String getPreview() {
+//    // TODO Auto-generated method stub
+//    return null;
+//  }
+//
+//  @Override
+//  public SelectObject<R> getSelect() {
+//    // TODO Auto-generated method stub
+//    return null;
+//  }
 
 }
