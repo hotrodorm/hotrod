@@ -26,52 +26,49 @@ public class CombinedSelectColumnsPhase<R> extends AbstractSelectPhase<R> {
     return new CombinedSelectFromPhase<R>(this.context, this.select, tableViewOrSubquery);
   }
 
-  // Set operations
+  // Set Operatiors - Inline
 
   // .select() .selectDistinct()
+
   public CombinedSelectLinkingPhase<R> union() {
     UnionOperator<R> op = new UnionOperator<R>();
-    op.add(this.select);
-    return new CombinedSelectLinkingPhase<R>(this.context, op);
+    SetOperator<R> combinedOp = this.select.getParentOperator().combine(op);
+    return new CombinedSelectLinkingPhase<R>(this.context, combinedOp);
   }
 
-//  // .select() .selectDistinct()
-//  public CombinedSelectLinkingPhase<R> intersect() {
-//    IntersectOperator<R> op = new IntersectOperator<R>(this.select);
-//    return new CombinedSelectLinkingPhase<R>(op);
-//  }
-//
-//  // .union()
-//  public CombinedSelectPhase<R> union(final ExecutableSelect<R> select) {
-//    UnionOperator<R> op = new UnionOperator<R>(this.select);
-//    op.setRight(select.getSelect());
-//    return new CombinedSelectPhase<R>(op);
-//  }
+  public CombinedSelectLinkingPhase<R> unionAll() {
+    UnionAllOperator<R> op = new UnionAllOperator<R>();
+    SetOperator<R> combinedOp = this.select.getParentOperator().combine(op);
+    return new CombinedSelectLinkingPhase<R>(this.context, combinedOp);
+  }
 
-  // public SelectHavingPhase<R> unionAll(final CombinableSelect<R> select) {
-  // this.select.setCombinedSelect(SetOperation.UNION_ALL, select);
-  // return new SelectHavingPhase<R>(this.select, null);
-  // }
-  //
-  // public SelectHavingPhase<R> intersect(final CombinableSelect<R> select) {
-  // this.select.setCombinedSelect(SetOperation.INTERSECT, select);
-  // return new SelectHavingPhase<R>(this.select, null);
-  // }
-  //
-  // public SelectHavingPhase<R> intersectAll(final CombinableSelect<R> select)
-  // {
-  // this.select.setCombinedSelect(SetOperation.INTERSECT_ALL, select);
-  // return new SelectHavingPhase<R>(this.select, null);
-  // }
-  //
-  // public SelectHavingPhase<R> except(final CombinableSelect<R> select) {
-  // this.select.setCombinedSelect(SetOperation.EXCEPT, select);
-  // return new SelectHavingPhase<R>(this.select, null);
-  // }
-  //
-  // public SelectHavingPhase<R> exceptAll(final CombinableSelect<R> select) {
-  // this.select.setCombinedSelect(SetOperation.EXCEPT_ALL, select);
-  // return new SelectHavingPhase<R>(this.select, null);
-  // }
+  public CombinedSelectLinkingPhase<R> except() {
+    ExceptOperator<R> op = new ExceptOperator<R>();
+    SetOperator<R> combinedOp = this.select.getParentOperator().combine(op);
+    return new CombinedSelectLinkingPhase<R>(this.context, combinedOp);
+  }
+
+  public CombinedSelectLinkingPhase<R> exceptAll() {
+    ExceptAllOperator<R> op = new ExceptAllOperator<R>();
+    SetOperator<R> combinedOp = this.select.getParentOperator().combine(op);
+    return new CombinedSelectLinkingPhase<R>(this.context, combinedOp);
+  }
+
+  public CombinedSelectLinkingPhase<R> intersect() {
+    IntersectOperator<R> op = new IntersectOperator<R>();
+    SetOperator<R> combinedOp = this.select.getParentOperator().combine(op);
+    return new CombinedSelectLinkingPhase<R>(this.context, combinedOp);
+  }
+
+  public CombinedSelectLinkingPhase<R> intersectAll() {
+    IntersectAllOperator<R> op = new IntersectAllOperator<R>();
+    SetOperator<R> combinedOp = this.select.getParentOperator().combine(op);
+    return new CombinedSelectLinkingPhase<R>(this.context, combinedOp);
+  }
+
+  // Set Operators - Enclosed
+
+  // .union(select()...)
+  // .union(selectDistinct()...)
 
 }

@@ -6,7 +6,7 @@ public class CurrentDate extends BuiltInDateTimeFunction {
 
   @Override
   public void renderTo(final QueryWriter w) {
-    w.getSqlDialect().getFunctionRenderer().currentDate(w);
+    w.getSQLDialect().getFunctionRenderer().currentDate(w);
   }
 
 }

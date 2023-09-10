@@ -28,7 +28,7 @@ public class Substring extends BuiltInStringFunction {
 
   @Override
   public void renderTo(final QueryWriter w) {
-    w.getSqlDialect().getFunctionRenderer().substr(w, this.string, this.from, this.length);
+    w.getSQLDialect().getFunctionRenderer().substr(w, this.string, this.from, this.length);
   }
 
 }

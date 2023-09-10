@@ -14,7 +14,7 @@ public class Upper extends BuiltInStringFunction {
 
   @Override
   public void renderTo(final QueryWriter w) {
-    w.getSqlDialect().getFunctionRenderer().upper(w, this.string);
+    w.getSQLDialect().getFunctionRenderer().upper(w, this.string);
   }
 
 }

@@ -3,7 +3,6 @@ package org.hotrod.runtime.livesql.dialects;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.runtime.livesql.queries.select.CrossJoin;
@@ -182,32 +181,64 @@ public class MySQLDialect extends LiveSQLDialect {
   // Set operation rendering
 
   @Override
-  public SetOperationRenderer getSetOperationRenderer() {
-    return new SetOperationRenderer() {
+  public SetOperatorRenderer getSetOperationRenderer() {
+    return new SetOperatorRenderer() {
 
       @Override
-      public void render(final SetOperation setOperation, final QueryWriter w) {
-        switch (setOperation) {
-        case UNION:
-          w.write("UNION");
-          break;
-        case UNION_ALL:
-          w.write("UNION ALL");
-          break;
-        case INTERSECT:
-          throw new UnsupportedLiveSQLFeatureException("MySQL does not support the INTERSECT set operation. "
-              + "Nevertheless, it can be simulated using a semi join");
-        case INTERSECT_ALL:
-          throw new UnsupportedLiveSQLFeatureException("MySQL does not support the INTERSECT ALL set operation. "
-              + "Nevertheless, it can be simulated using a semi join");
-        case EXCEPT:
-          throw new UnsupportedLiveSQLFeatureException("MySQL does not support the EXCEPT set operation. "
-              + "Nevertheless, it can be simulated using an anti join");
-        case EXCEPT_ALL:
-          throw new UnsupportedLiveSQLFeatureException("MySQL does not support the EXCEPT ALL set operation. "
-              + "Nevertheless, it can be simulated using an anti join");
-        default:
-          throw new InvalidLiveSQLStatementException("Invalid set operation '" + setOperation + "'.");
+      public void renderUnion(final QueryWriter w) {
+        w.write("UNION");
+      }
+
+      @Override
+      public void renderUnionAll(final QueryWriter w) {
+        w.write("UNION ALL");
+      }
+
+      @Override
+      public void renderExcept(final QueryWriter w) {
+        if (w.getSQLDialect().versionIsAtLeast(8, 0, 31)) {
+          w.write("EXCEPT");
+        } else {
+          throw new UnsupportedLiveSQLFeatureException(
+              "MySQL does not support the EXCEPT set operator before version 8.0.31; " + "this version is "
+                  + w.getSQLDialect().renderVersion()
+                  + ". Nevertheless, this operator can be simulated using an anti join");
+        }
+      }
+
+      @Override
+      public void renderExceptAll(final QueryWriter w) {
+        if (w.getSQLDialect().versionIsAtLeast(8, 0, 31)) {
+          w.write("EXCEPT ALL");
+        } else {
+          throw new UnsupportedLiveSQLFeatureException(
+              "MySQL does not support the EXCEPT ALL set operator before version 8.0.31; " + "this version is "
+                  + w.getSQLDialect().renderVersion()
+                  + ". Nevertheless, this operator can be simulated using an anti join");
+        }
+      }
+
+      @Override
+      public void renderIntersect(final QueryWriter w) {
+        if (w.getSQLDialect().versionIsAtLeast(8, 0, 31)) {
+          w.write("INTERSECT");
+        } else {
+          throw new UnsupportedLiveSQLFeatureException(
+              "MySQL does not support the INTERSECT set operator before version 8.0.31; " + "this version is "
+                  + w.getSQLDialect().renderVersion()
+                  + ". Nevertheless, this operator can be simulated using a semi join");
+        }
+      }
+
+      @Override
+      public void renderIntersectAll(final QueryWriter w) {
+        if (w.getSQLDialect().versionIsAtLeast(8, 0, 31)) {
+          w.write("INTERSECT ALL");
+        } else {
+          throw new UnsupportedLiveSQLFeatureException(
+              "MySQL does not support the INTERSECT ALL set operator before version 8.0.31; " + "this version is "
+                  + w.getSQLDialect().renderVersion()
+                  + ". Nevertheless, this operator can be simulated using a semi join");
         }
       }
 

@@ -78,7 +78,7 @@ public class QueryWriter {
     }
   }
 
-  public LiveSQLDialect getSqlDialect() {
+  public LiveSQLDialect getSQLDialect() {
     return sqlDialect;
   }
 

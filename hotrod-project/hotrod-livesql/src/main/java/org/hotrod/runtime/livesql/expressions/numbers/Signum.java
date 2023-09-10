@@ -14,7 +14,7 @@ public class Signum extends BuiltInNumberFunction {
 
   @Override
   public void renderTo(final QueryWriter w) {
-    w.getSqlDialect().getFunctionRenderer().signum(w, this.value);
+    w.getSQLDialect().getFunctionRenderer().signum(w, this.value);
   }
 
 }

@@ -2,7 +2,6 @@ package org.hotrod.runtime.livesql.dialects;
 
 import java.util.List;
 
-import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
@@ -217,37 +216,57 @@ public class OracleDialect extends LiveSQLDialect {
     };
   }
 
-  // Set operation rendering
+  // Set Operator Rendering
 
   @Override
-  public SetOperationRenderer getSetOperationRenderer() {
-    return new SetOperationRenderer() {
+  public SetOperatorRenderer getSetOperationRenderer() {
+    return new SetOperatorRenderer() {
 
       @Override
-      public void render(final SetOperation setOperation, final QueryWriter w) {
-        switch (setOperation) {
-        case UNION:
-          w.write("UNION");
-          break;
-        case UNION_ALL:
-          w.write("UNION ALL");
-          break;
-        case INTERSECT:
-          w.write("INTERSECT");
-          break;
-        case INTERSECT_ALL:
-          throw new UnsupportedLiveSQLFeatureException(
-              "Oracle database does not support the INTERSECT ALL set operation. "
-                  + "Nevertheless, it can be simulated using a semi join");
-        case EXCEPT:
+      public void renderUnion(final QueryWriter w) {
+        w.write("UNION");
+      }
+
+      @Override
+      public void renderUnionAll(final QueryWriter w) {
+        w.write("UNION ALL");
+      }
+
+      @Override
+      public void renderExcept(final QueryWriter w) {
+        if (w.getSQLDialect().getMajorVersion() >= 21) {
+          w.write("EXCEPT");
+        } else {
           w.write("MINUS");
-          break;
-        case EXCEPT_ALL:
+        }
+      }
+
+      @Override
+      public void renderExceptAll(final QueryWriter w) {
+        if (w.getSQLDialect().getMajorVersion() >= 21) {
+          w.write("EXCEPT ALL");
+        } else {
           throw new UnsupportedLiveSQLFeatureException(
-              "Oracle database does not support the EXCEPT ALL (MINUS ALL) set operation. "
-                  + "Nevertheless, it can be simulated using an anti join");
-        default:
-          throw new InvalidLiveSQLStatementException("Invalid set operation '" + setOperation + "'.");
+              "LiveSQL supports the EXCEPT ALL (MINUS ALL) set operator for Oracle database starting in version 21c; "
+                  + "this version is " + w.getSQLDialect().renderVersion()
+                  + ". Nevertheless, this operator can be simulated using an anti join");
+        }
+      }
+
+      @Override
+      public void renderIntersect(final QueryWriter w) {
+        w.write("INTERSECT");
+      }
+
+      @Override
+      public void renderIntersectAll(final QueryWriter w) {
+        if (w.getSQLDialect().getMajorVersion() >= 21) {
+          w.write("INTERSECT ALL");
+        } else {
+          throw new UnsupportedLiveSQLFeatureException(
+              "LiveSQL supports the INTERSECT ALL set operator for Oracle database starting in version 21c; "
+                  + "this version is " + w.getSQLDialect().renderVersion()
+                  + ". Nevertheless, this operator can be simulated using a semi join");
         }
       }
 

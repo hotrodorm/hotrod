@@ -1,0 +1,42 @@
+
+## Same Operator (same level)
+    
+.select()   .select().union()   .select().union().select()   .select().union().select().union()   .select().union().select().union().select()
+    
+               op1*              op1                          op1/op2*                               op1
+              /                  / \                          / \                                   / | \
+    s1*      s1                 s1 s2*                       s1 s2                                s1  s2 s3*
+                                                                    
+SelectColumnsPhase              CombinedSelectColumnsPhase                                        CombinedSelectColumnsPhase
+            CombinedSelectLinkingPhase                       CombinedSelectLinkingPhase
+
+## Higher Precedence Operator
+
+                                                             .select().union().select().intersect()   .select().union().select().intersect().select()
+                                                             
+                                                              op1                                       op1
+                                                              / \                                       / \
+                                                             s1 op2*                                   s1 op2
+                                                                /                                         / \
+                                                               s2                                        s2 s3*
+
+
+## Lower Precedence Operator
+
+                                                             .select().union().select().except()   .select().union().select().except().select()
+                                                             
+                                                               op2*                                  op2
+                                                               /                                     / \
+                                                              op1                                   op1 s3*
+                                                              / \                                   / \
+                                                             s1 s2                                 s1 s2
+
+                                                               
+## Set Operators Examples
+
+Oracle (https://dbfiddle.uk/Id4xsSQr): Left-to-right precedence. Starting in Oracle 21c "EXCEPT" is a synonym of MINUS.
+DB2 (https://dbfiddle.uk/UvZaT7pb): Left-to-right precedence.
+PostgreSQL (https://dbfiddle.uk/3SlOtZlG): Left-to-right precedence.
+SQL Server (https://dbfiddle.uk/yYrGES96): Left-to-right precedence.
+MySQL (https://dbfiddle.uk/kqc6qfLI): EXCEPT implemented since MySQL 8.0.31.
+MariaDB (https://dbfiddle.uk/_BPl-tb5): EXCEPT implemented since MariaDB 10.4.

@@ -23,9 +23,9 @@ public class SubqueryNumberColumn extends NumberExpression {
 
   @Override
   public void renderTo(final QueryWriter w) {
-    w.write(w.getSqlDialect().canonicalToNatural(w.getSqlDialect().naturalToCanonical(this.subquery.getName())));
+    w.write(w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(this.subquery.getName())));
     w.write(".");
-    w.write(w.getSqlDialect().canonicalToNatural(this.columnName));
+    w.write(w.getSQLDialect().canonicalToNatural(this.columnName));
   }
 
 }

@@ -12,6 +12,7 @@ import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableRefer
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.util.PreviewRenderer;
+import org.hotrodorm.hotrod.utils.SUtil;
 
 //                Union-2
 //                  / \
@@ -51,6 +52,10 @@ public abstract class SetOperator<R> extends MultiSet<R> {
     child.setParentOperator(this);
   }
 
+  private MultiSet<R> removeLast() {
+    return this.children.remove(this.children.size() - 1);
+  }
+
   public abstract int getPrecedence();
 
   public SetOperator<R> findRoot() {
@@ -87,6 +92,53 @@ public abstract class SetOperator<R> extends MultiSet<R> {
     LinkedHashMap<String, Object> parameters = q.getParameters();
     parameters.put("sql", q.getSQL());
     return (Cursor<R>) context.getLiveSQLMapper().selectCursor(parameters);
+  }
+
+  // Combining
+
+  public SetOperator<R> combine(final SetOperator<R> op) {
+
+    // Case 1: Same Operator
+
+    if (this.getClass().equals(op.getClass())) {
+      System.out.println("-- combining -- Case 1: Same Operator");
+      log();
+      return this;
+    }
+
+    // Case 2: Higher Precedence Operator
+
+    if (op.getPrecedence() < this.getPrecedence()) {
+      System.out.println("-- combining -- Case 2: Higher Precedence Operator");
+      MultiSet<R> last = this.removeLast();
+      this.add(op);
+      op.add(last);
+      return op;
+    }
+
+    // Case 3: Lower Precedence Operator (same or lower precedence)
+
+    System.out.println("-- combining -- Case 3: Lower Precedence Operator (same or lower precedence)");
+    op.add(this);
+    return op;
+
+  }
+
+  // debug
+
+  public void log() {
+    log(this.findRoot(), 0, this);
+  }
+
+  private void log(MultiSet<R> p, int level, SetOperator<R> current) {
+    System.out.println(
+        SUtil.getFiller('.', level * 2) + "+- " + p.getClass().getSimpleName() + (current == p ? " -- CURRENT" : ""));
+    if (p instanceof SetOperator) {
+      SetOperator<R> op = (SetOperator<R>) p;
+      for (MultiSet<R> c : op.children) {
+        log(c, level + 1, current);
+      }
+    }
   }
 
   // Rendering

@@ -51,7 +51,7 @@ public abstract class TableOrView extends DatabaseObject implements TableExpress
 
   @Override
   public void renderTo(QueryWriter w) {
-    LiveSQLDialect dialect = w.getSqlDialect();
+    LiveSQLDialect dialect = w.getSQLDialect();
     String alias = this.getAlias() == null ? null
         : dialect.canonicalToNatural(dialect.naturalToCanonical(this.getAlias()));
     w.write(dialect.canonicalToNatural(this) + (alias != null ? (" " + alias) : ""));

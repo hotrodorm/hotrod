@@ -134,7 +134,7 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
       if (!doNotAliasColumns) {
         try {
           Column col = (Column) c;
-          w.write(" as " + w.getSqlDialect().canonicalToNatural(col.getProperty()));
+          w.write(" as " + w.getSQLDialect().canonicalToNatural(col.getProperty()));
         } catch (ClassCastException e) {
           // Not a plain table/view column -- no need to alias it
         }
@@ -220,7 +220,7 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
 
   public void renderTo(final QueryWriter w) {
 
-    LiveSQLDialect liveSQLDialect = w.getSqlDialect();
+    LiveSQLDialect liveSQLDialect = w.getSQLDialect();
 
     // CTEs
 

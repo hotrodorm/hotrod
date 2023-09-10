@@ -14,7 +14,7 @@ public class Lower extends BuiltInStringFunction {
 
   @Override
   public void renderTo(final QueryWriter w) {
-    w.getSqlDialect().getFunctionRenderer().lower(w, this.string);
+    w.getSQLDialect().getFunctionRenderer().lower(w, this.string);
   }
 
 }

@@ -12,7 +12,7 @@ public abstract class MultiSet<R> {
 
   private SetOperator<R> parent;
 
-  public void setParentOperator(final SetOperator<R> parent) {
+  public void setParentOperator(SetOperator<R> parent) {
     this.parent = parent;
   }
 

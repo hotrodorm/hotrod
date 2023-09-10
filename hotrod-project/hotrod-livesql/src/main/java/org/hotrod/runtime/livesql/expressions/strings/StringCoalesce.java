@@ -18,7 +18,7 @@ public class StringCoalesce extends StringExpression {
 
   @Override
   public void renderTo(final QueryWriter w) {
-    w.getSqlDialect().getFunctionRenderer().coalesce(w, this.expressions);
+    w.getSQLDialect().getFunctionRenderer().coalesce(w, this.expressions);
   }
 
 }

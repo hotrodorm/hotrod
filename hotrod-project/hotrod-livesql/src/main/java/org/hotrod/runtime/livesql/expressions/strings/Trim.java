@@ -14,7 +14,7 @@ public class Trim extends BuiltInStringFunction {
 
   @Override
   public void renderTo(final QueryWriter w) {
-    w.getSqlDialect().getFunctionRenderer().trim(w, this.string);
+    w.getSQLDialect().getFunctionRenderer().trim(w, this.string);
   }
 
 }

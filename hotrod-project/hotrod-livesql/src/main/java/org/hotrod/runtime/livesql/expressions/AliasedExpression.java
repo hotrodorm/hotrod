@@ -19,7 +19,7 @@ public class AliasedExpression implements ReferenceableExpression {
   public void renderTo(final QueryWriter w) {
     this.expression.renderTo(w);
     w.write(" as ");
-    w.write(w.getSqlDialect().canonicalToNatural(this.alias));
+    w.write(w.getSQLDialect().canonicalToNatural(this.alias));
   }
 
   @Override

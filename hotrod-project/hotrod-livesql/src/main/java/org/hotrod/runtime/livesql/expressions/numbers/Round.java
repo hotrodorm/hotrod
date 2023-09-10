@@ -17,7 +17,7 @@ public class Round extends BuiltInNumberFunction {
 
   @Override
   public void renderTo(final QueryWriter w) {
-    w.getSqlDialect().getFunctionRenderer().round(w, this.value, this.places);
+    w.getSQLDialect().getFunctionRenderer().round(w, this.value, this.places);
   }
 
 }

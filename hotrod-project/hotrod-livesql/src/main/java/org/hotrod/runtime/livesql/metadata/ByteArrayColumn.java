@@ -36,7 +36,7 @@ public class ByteArrayColumn extends ByteArrayExpression implements Column {
   public void renderTo(final QueryWriter w) {
     if (this.objectInstance.getAlias() != null) {
       w.write(
-          w.getSqlDialect().canonicalToNatural(w.getSqlDialect().naturalToCanonical(this.objectInstance.getAlias())));
+          w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(this.objectInstance.getAlias())));
       w.write(".");
     }
     renderUnqualifiedNameTo(w);
@@ -44,7 +44,7 @@ public class ByteArrayColumn extends ByteArrayExpression implements Column {
 
   @Override
   public void renderUnqualifiedNameTo(final QueryWriter w) {
-    w.write(w.getSqlDialect().canonicalToNatural(this.name));
+    w.write(w.getSQLDialect().canonicalToNatural(this.name));
   }
 
   // Getters

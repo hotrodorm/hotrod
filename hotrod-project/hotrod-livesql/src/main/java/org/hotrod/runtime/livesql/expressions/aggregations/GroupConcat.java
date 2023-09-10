@@ -30,7 +30,7 @@ public class GroupConcat extends StringFunction implements WindowableAggregation
 
   @Override
   public void renderTo(final QueryWriter w) {
-    w.getSqlDialect().getFunctionRenderer().groupConcat(w, false, this.expression, this.ordering, this.separator);
+    w.getSQLDialect().getFunctionRenderer().groupConcat(w, false, this.expression, this.ordering, this.separator);
   }
 
 }

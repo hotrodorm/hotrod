@@ -23,7 +23,7 @@ public class GroupConcatDistinct extends StringFunction implements NonWindowable
 
   @Override
   public void renderTo(final QueryWriter w) {
-    w.getSqlDialect().getFunctionRenderer().groupConcat(w, true, this.expression, this.ordering, this.separator);
+    w.getSQLDialect().getFunctionRenderer().groupConcat(w, true, this.expression, this.ordering, this.separator);
   }
 
 }

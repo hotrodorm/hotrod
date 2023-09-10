@@ -36,14 +36,14 @@ public class CTE extends Subquery {
 
   @Override
   public void renderTo(QueryWriter w) {
-    w.write(w.getSqlDialect().canonicalToNatural(w.getSqlDialect().naturalToCanonical(super.getName())));
+    w.write(w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(super.getName())));
   }
 
   public void renderDefinitionTo(QueryWriter w, LiveSQLDialect dialect) {
-    w.write(w.getSqlDialect().canonicalToNatural(w.getSqlDialect().naturalToCanonical(super.getName())));
+    w.write(w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(super.getName())));
     if (this.columns != null && this.columns.length > 0) {
       w.write(" (");
-      w.write(Arrays.stream(this.columns).map(a -> w.getSqlDialect().canonicalToNatural(a))
+      w.write(Arrays.stream(this.columns).map(a -> w.getSQLDialect().canonicalToNatural(a))
           .collect(Collectors.joining(", ")));
       w.write(")");
     }

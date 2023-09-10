@@ -111,9 +111,9 @@ public class Subquery implements TableExpression {
     w.exitLevel();
     w.write("\n");
     w.write(") ");
-    w.write(w.getSqlDialect().canonicalToNatural(w.getSqlDialect().naturalToCanonical(this.name)));
+    w.write(w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(this.name)));
     if (this.columns != null && this.columns.length > 0) {
-      w.write(w.getSqlDialect().getTableExpressionRenderer().renderNamedColumns(this.columns));
+      w.write(w.getSQLDialect().getTableExpressionRenderer().renderNamedColumns(this.columns));
     }
   }
 

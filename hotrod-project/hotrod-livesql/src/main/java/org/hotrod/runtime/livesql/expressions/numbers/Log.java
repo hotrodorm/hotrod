@@ -17,7 +17,7 @@ public class Log extends BuiltInNumberFunction {
 
   @Override
   public void renderTo(final QueryWriter w) {
-    w.getSqlDialect().getFunctionRenderer().logarithm(w, this.value, this.base);
+    w.getSQLDialect().getFunctionRenderer().logarithm(w, this.value, this.base);
   }
 
 }

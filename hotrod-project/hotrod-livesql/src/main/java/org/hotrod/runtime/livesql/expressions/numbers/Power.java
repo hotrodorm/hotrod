@@ -17,7 +17,7 @@ public class Power extends BuiltInNumberFunction {
 
   @Override
   public void renderTo(final QueryWriter w) {
-    w.getSqlDialect().getFunctionRenderer().power(w, this.value, this.exponent);
+    w.getSQLDialect().getFunctionRenderer().power(w, this.value, this.exponent);
   }
 
 }

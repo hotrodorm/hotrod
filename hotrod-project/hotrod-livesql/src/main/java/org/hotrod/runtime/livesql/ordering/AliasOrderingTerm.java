@@ -20,7 +20,7 @@ public class AliasOrderingTerm implements CombinedOrderingTerm {
 
   @Override
   public void renderTo(QueryWriter w) {
-    w.write(w.getSqlDialect().canonicalToNatural(this.alias));
+    w.write(w.getSQLDialect().canonicalToNatural(this.alias));
   }
 
 }

@@ -78,7 +78,7 @@ public class OrderByProperties {
     if (this.expression != null) {
       this.expression.renderTo(w);
     } else if (this.alias != null) {
-      w.write(w.getSqlDialect().canonicalToNatural(this.alias));
+      w.write(w.getSQLDialect().canonicalToNatural(this.alias));
     } else {
       w.write("" + this.ordinal);
     }

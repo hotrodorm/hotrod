@@ -16,7 +16,7 @@ public class Length extends NumberExpression {
 
   @Override
   public void renderTo(final QueryWriter w) {
-    w.getSqlDialect().getFunctionRenderer().length(w, this.string);
+    w.getSQLDialect().getFunctionRenderer().length(w, this.string);
   }
 
 }

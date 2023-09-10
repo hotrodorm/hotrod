@@ -23,7 +23,7 @@ public class Concat extends BuiltInStringFunction {
 
   @Override
   public void renderTo(final QueryWriter w) {
-    w.getSqlDialect().getFunctionRenderer().concat(w, this.strings);
+    w.getSQLDialect().getFunctionRenderer().concat(w, this.strings);
   }
 
 }
