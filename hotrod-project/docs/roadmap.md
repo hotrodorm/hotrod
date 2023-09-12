@@ -7,7 +7,7 @@ they will be assessed and may be included or not in the versions mentioned below
 
 Version 4.2:
 
-- Query Set Operators. Combine queries with UNION, INTERSECT, and EXCEPT including their DISTINCT and ALL variants.
+- Set Operators. Combine queries with UNION, INTERSECT, and EXCEPT including their DISTINCT and ALL variants.
 
 Version 5.0:
 
@@ -19,7 +19,11 @@ Version 5.1:
 
 Version 5.2:
 
-- Implement the `MERGE` SQL statement.
+- Pessimistic locking. Include FOR UPDATE, LOCK, etc., according to specific engines.
+
+Version 5.3:
+
+- Implement the MERGE (aka UPSERT) SQL statement.
 
 Version 6.0:
 
