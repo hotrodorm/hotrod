@@ -17,6 +17,10 @@ Version 5.1:
 
 - Torcs CTP Module. Ranks queries and extracts query execution plans in CTP (checktheplan.com) format, for Oracle, DB2 LUW, PostgreSQL, and SQL Server.
 
+Version 5.2:
+
+- Implement the `MERGE` SQL statement.
+
 Version 6.0:
 
 - LiveSQL Gurus. Tailored versions of LiveSQL for specific databases, that implement its custom SQL syntax.
