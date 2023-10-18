@@ -12,11 +12,14 @@ import org.hotrod.runtime.livesql.queries.select.TableExpression;
 
 public class CombinedSelectColumnsPhase<R> extends AbstractSelectPhase<R> {
 
+//  private CombinedMultiSet<R> cm;
+
   // Constructor
 
   public CombinedSelectColumnsPhase(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct,
-      final ResultSetColumn... resultSetColumns) {
+      final CombinedSelectObject<R> cm, final ResultSetColumn... resultSetColumns) {
     super(context, new SelectObject<R>(ctes, distinct, false));
+//    this.cm = cm;
     this.select.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
   }
 
@@ -26,44 +29,32 @@ public class CombinedSelectColumnsPhase<R> extends AbstractSelectPhase<R> {
     return new CombinedSelectFromPhase<R>(this.context, this.select, tableViewOrSubquery);
   }
 
-  // Set Operatiors - Inline
+  // Set Operators - Inline
 
   // .select() .selectDistinct()
 
   public CombinedSelectLinkingPhase<R> union() {
-    UnionOperator<R> op = new UnionOperator<R>();
-    SetOperator<R> combinedOp = this.select.getParentOperator().combine(op);
-    return new CombinedSelectLinkingPhase<R>(this.context, combinedOp);
+    return new CombinedSelectLinkingPhase<>(this.context, this.select, new UnionOperator<>());
   }
 
   public CombinedSelectLinkingPhase<R> unionAll() {
-    UnionAllOperator<R> op = new UnionAllOperator<R>();
-    SetOperator<R> combinedOp = this.select.getParentOperator().combine(op);
-    return new CombinedSelectLinkingPhase<R>(this.context, combinedOp);
+    return new CombinedSelectLinkingPhase<>(this.context, this.select, new UnionAllOperator<>());
   }
 
   public CombinedSelectLinkingPhase<R> except() {
-    ExceptOperator<R> op = new ExceptOperator<R>();
-    SetOperator<R> combinedOp = this.select.getParentOperator().combine(op);
-    return new CombinedSelectLinkingPhase<R>(this.context, combinedOp);
+    return new CombinedSelectLinkingPhase<>(this.context, this.select, new ExceptOperator<>());
   }
 
   public CombinedSelectLinkingPhase<R> exceptAll() {
-    ExceptAllOperator<R> op = new ExceptAllOperator<R>();
-    SetOperator<R> combinedOp = this.select.getParentOperator().combine(op);
-    return new CombinedSelectLinkingPhase<R>(this.context, combinedOp);
+    return new CombinedSelectLinkingPhase<>(this.context, this.select, new ExceptAllOperator<>());
   }
 
   public CombinedSelectLinkingPhase<R> intersect() {
-    IntersectOperator<R> op = new IntersectOperator<R>();
-    SetOperator<R> combinedOp = this.select.getParentOperator().combine(op);
-    return new CombinedSelectLinkingPhase<R>(this.context, combinedOp);
+    return new CombinedSelectLinkingPhase<>(this.context, this.select, new IntersectOperator<>());
   }
 
   public CombinedSelectLinkingPhase<R> intersectAll() {
-    IntersectAllOperator<R> op = new IntersectAllOperator<R>();
-    SetOperator<R> combinedOp = this.select.getParentOperator().combine(op);
-    return new CombinedSelectLinkingPhase<R>(this.context, combinedOp);
+    return new CombinedSelectLinkingPhase<>(this.context, this.select, new IntersectAllOperator<>());
   }
 
   // Set Operators - Enclosed

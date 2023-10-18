@@ -4,7 +4,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
@@ -32,7 +31,6 @@ import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.select.sets.MultiSet;
 import org.hotrod.runtime.livesql.queries.subqueries.AllSubqueryColumns;
-import org.hotrod.runtime.livesql.util.PreviewRenderer;
 import org.hotrod.runtime.livesql.util.SubqueryUtil;
 import org.hotrodorm.hotrod.utils.SUtil;
 import org.hotrodorm.hotrod.utils.Separator;
@@ -211,13 +209,6 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
 
   // Execute
 
-  private LiveSQLPreparedQuery prepareQuery(final LiveSQLContext context) {
-    validateQuery();
-    QueryWriter w = new QueryWriter(context.getLiveSQLDialect());
-    renderTo(w);
-    return w.getPreparedQuery();
-  }
-
   public void renderTo(final QueryWriter w) {
 
     LiveSQLDialect liveSQLDialect = w.getSQLDialect();
@@ -391,6 +382,7 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
 
   }
 
+  @Override
   public List<R> execute(final LiveSQLContext context) {
     return this.execute(context, null);
   }
@@ -407,6 +399,7 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
 
   }
 
+  @Override
   public Cursor<R> executeCursor(final LiveSQLContext context) {
     return this.executeCursor(context, null);
   }
@@ -423,39 +416,12 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
 
   }
 
-  @SuppressWarnings("unchecked")
-  private List<R> executeLiveSQL(final LiveSQLContext context, final LiveSQLPreparedQuery q) {
-    LinkedHashMap<String, Object> parameters = q.getParameters();
-    parameters.put("sql", q.getSQL());
-    return (List<R>) context.getLiveSQLMapper().select(parameters);
-  }
-
-  @SuppressWarnings("unchecked")
-  private Cursor<R> executeLiveSQLCursor(final LiveSQLContext context, final LiveSQLPreparedQuery q) {
-    LinkedHashMap<String, Object> parameters = q.getParameters();
-    parameters.put("sql", q.getSQL());
-    return (Cursor<R>) context.getLiveSQLMapper().selectCursor(parameters);
-  }
-
   public MultiSet<R> findRoot() {
     MultiSet<R> s = this;
-    while (s.getParentOperator() != null) {
-      s = s.getParentOperator();
+    while (s.getParent() != null) {
+      s = s.getParent();
     }
     return s;
-  }
-
-  public String getPreview(final LiveSQLContext context) {
-    LiveSQLPreparedQuery q = this.prepareQuery(context);
-    return PreviewRenderer.render(q);
-  }
-
-  // Validation
-
-  private void validateQuery() {
-    TableReferences tableReferences = new TableReferences();
-    AliasGenerator ag = new AliasGenerator();
-    this.validateTableReferences(tableReferences, ag);
   }
 
   public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {

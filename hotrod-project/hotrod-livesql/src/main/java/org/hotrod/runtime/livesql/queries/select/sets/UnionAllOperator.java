@@ -9,9 +9,8 @@ public class UnionAllOperator<R> extends SetOperator<R> {
   }
 
   @Override
-  protected void renderSetOperator(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     w.getSQLDialect().getSetOperationRenderer().renderUnionAll(w);
-    w.write("UNION ALL");
   }
 
   @Override

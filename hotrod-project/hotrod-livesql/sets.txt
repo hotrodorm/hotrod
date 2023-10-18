@@ -3,9 +3,9 @@
     
 .select()   .select().union()   .select().union().select()   .select().union().select().union()   .select().union().select().union().select()
     
-               op1*              op1                          op1/op2*                               op1
-              /                  / \                          / \                                   / | \
-    s1*      s1                 s1 s2*                       s1 s2                                s1  s2 s3*
+               op1*              op1                          op1/op2*                              op1
+              /                  / \                          / \                                  / | \
+    s1*      s1                 s1 s2*                       s1 s2                                s1 s2 s3*
                                                                     
 SelectColumnsPhase              CombinedSelectColumnsPhase                                        CombinedSelectColumnsPhase
             CombinedSelectLinkingPhase                       CombinedSelectLinkingPhase
@@ -19,6 +19,14 @@ SelectColumnsPhase              CombinedSelectColumnsPhase                      
                                                              s1 op2*                                   s1 op2
                                                                 /                                         / \
                                                                s2                                        s2 s3*
+
+                                                                                                       .select().union().select().intersect().select().union().select()
+                                                             
+                                                                                                          op1
+                                                                                                         / | \
+                                                                                                       s1 op2 s4*
+                                                                                                          / \
+                                                                                                         s2 s3
 
 
 ## Lower Precedence Operator
@@ -40,3 +48,29 @@ PostgreSQL (https://dbfiddle.uk/3SlOtZlG): Left-to-right precedence.
 SQL Server (https://dbfiddle.uk/yYrGES96): Left-to-right precedence.
 MySQL (https://dbfiddle.uk/kqc6qfLI): EXCEPT implemented since MySQL 8.0.31.
 MariaDB (https://dbfiddle.uk/_BPl-tb5): EXCEPT implemented since MariaDB 10.4.
+
+.select()   .select().union(sql.select())   .select().union(sql.select()).union(sql.select())
+    
+               op1*                           op1*
+               / \                           / | \
+    s1*       s1  s2                        s1 s2 s3
+
+.select()   .select().union(sql.select())   .select().union(sql.select()).intersect(sql.select())   .select().union(sql.select()).intersect(sql.select()).union(sql.select())
+    
+               op1*                           op1                                                        
+               / \                            / \
+    s1*       s1  s2                        s1  op2*
+                                                / \
+                                               s2 s3
+
+.select()   .select().union(sql.select())   .select().union(sql.select()).except(sql.select())
+    
+               op1*                           op2*
+               / \                            / \
+    s1*       s1  s2                         op1 s3
+                                             / \
+                                            s1 s2
+    
+                                                                    
+SelectColumnsPhase              CombinedSelectColumnsPhase                                        CombinedSelectColumnsPhase
+            CombinedSelectLinkingPhase                       CombinedSelectLinkingPhase

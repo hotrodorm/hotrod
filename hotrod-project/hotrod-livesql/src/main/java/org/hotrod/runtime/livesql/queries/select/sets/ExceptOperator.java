@@ -9,8 +9,8 @@ public class ExceptOperator<R> extends SetOperator<R> {
   }
 
   @Override
-  protected void renderSetOperator(QueryWriter w) {
-    w.write("EXCEPT");
+  protected void renderTo(final QueryWriter w) {
+    w.getSQLDialect().getSetOperationRenderer().renderExcept(w);
   }
 
   @Override

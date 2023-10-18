@@ -9,12 +9,14 @@ import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.select.sets.AbstractSelectPhase;
+import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectLinkingPhase;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectPhase;
 import org.hotrod.runtime.livesql.queries.select.sets.ExceptAllOperator;
 import org.hotrod.runtime.livesql.queries.select.sets.ExceptOperator;
 import org.hotrod.runtime.livesql.queries.select.sets.IntersectAllOperator;
 import org.hotrod.runtime.livesql.queries.select.sets.IntersectOperator;
+import org.hotrod.runtime.livesql.queries.select.sets.SetOperatorTerm;
 import org.hotrod.runtime.livesql.queries.select.sets.UnionAllOperator;
 import org.hotrod.runtime.livesql.queries.select.sets.UnionOperator;
 
@@ -45,39 +47,27 @@ public class SelectColumnsPhase<R> extends AbstractSelectPhase<R> {
   // .union().selectDistinct()...
 
   public CombinedSelectLinkingPhase<R> union() {
-    UnionOperator<R> op = new UnionOperator<R>();
-    op.add(this.select);
-    return new CombinedSelectLinkingPhase<R>(this.context, op);
+    return new CombinedSelectLinkingPhase<>(this.context, this.select, new UnionOperator<>());
   }
 
   public CombinedSelectLinkingPhase<R> unionAll() {
-    UnionAllOperator<R> op = new UnionAllOperator<R>();
-    op.add(this.select);
-    return new CombinedSelectLinkingPhase<R>(this.context, op);
+    return new CombinedSelectLinkingPhase<>(this.context, this.select, new UnionAllOperator<>());
   }
 
   public CombinedSelectLinkingPhase<R> except() {
-    ExceptOperator<R> op = new ExceptOperator<R>();
-    op.add(this.select);
-    return new CombinedSelectLinkingPhase<R>(this.context, op);
+    return new CombinedSelectLinkingPhase<>(this.context, this.select, new ExceptOperator<>());
   }
 
   public CombinedSelectLinkingPhase<R> exceptAll() {
-    ExceptAllOperator<R> op = new ExceptAllOperator<R>();
-    op.add(this.select);
-    return new CombinedSelectLinkingPhase<R>(this.context, op);
+    return new CombinedSelectLinkingPhase<>(this.context, this.select, new ExceptAllOperator<>());
   }
 
   public CombinedSelectLinkingPhase<R> intersect() {
-    IntersectOperator<R> op = new IntersectOperator<R>();
-    op.add(this.select);
-    return new CombinedSelectLinkingPhase<R>(this.context, op);
+    return new CombinedSelectLinkingPhase<>(this.context, this.select, new IntersectOperator<>());
   }
 
   public CombinedSelectLinkingPhase<R> intersectAll() {
-    IntersectAllOperator<R> op = new IntersectAllOperator<R>();
-    op.add(this.select);
-    return new CombinedSelectLinkingPhase<R>(this.context, op);
+    return new CombinedSelectLinkingPhase<>(this.context, this.select, new IntersectAllOperator<>());
   }
 
   // Set Operators - Enclosed
@@ -86,10 +76,9 @@ public class SelectColumnsPhase<R> extends AbstractSelectPhase<R> {
   // .union(selectDistinct()...)
 
   public CombinedSelectPhase<R> union(final Select<R> select) {
-    UnionOperator<R> op = new UnionOperator<R>();
-    op.add(this.select);
-    op.add(select.getSelect());
-    return new CombinedSelectPhase<R>(op);
+    CombinedSelectObject<R> cm = new CombinedSelectObject<>(this.select);
+    cm.add(new SetOperatorTerm<>(new UnionOperator<>(), select.getSelect()));
+    return new CombinedSelectPhase<>(cm);
   }
 
 }

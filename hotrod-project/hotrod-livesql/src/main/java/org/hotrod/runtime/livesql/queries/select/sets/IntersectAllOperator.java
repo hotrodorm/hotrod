@@ -9,8 +9,8 @@ public class IntersectAllOperator<R> extends SetOperator<R> {
   }
 
   @Override
-  protected void renderSetOperator(QueryWriter w) {
-    w.write("INTERSECT ALL");
+  protected void renderTo(final QueryWriter w) {
+    w.getSQLDialect().getSetOperationRenderer().renderIntersectAll(w);
   }
 
   @Override

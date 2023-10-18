@@ -94,10 +94,14 @@ import org.hotrod.runtime.livesql.queries.scalarsubqueries.DateTimeSelectColumns
 import org.hotrod.runtime.livesql.queries.scalarsubqueries.NumberSelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.scalarsubqueries.ObjectSelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.scalarsubqueries.StringSelectColumnsPhase;
-import org.hotrod.runtime.livesql.queries.select.PGSelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
+import org.hotrod.runtime.livesql.queries.select.PGSelectColumnsPhase;
+import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.select.SelectCTEPhase;
 import org.hotrod.runtime.livesql.queries.select.SelectColumnsPhase;
+import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
+import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectLinkingPhase;
+import org.hotrod.runtime.livesql.queries.select.sets.UnionOperator;
 import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 import org.hotrod.runtime.livesql.queries.subqueries.SubqueryColumnsPhase;
 import org.hotrod.runtime.livesql.sysobjects.DualTable;
@@ -240,6 +244,12 @@ public class LiveSQL {
   }
 
   // Enclosing queries
+
+//  public <R> CombinedSelectLinkingPhase<R> enclose(final Select<R> select) {
+//    UnionOperator<R> op = new UnionOperator<R>();
+//    op.add(select.getSelect());
+//    return new CombinedMultiSet<>(select);
+//  }
 
   // public <R> AbstractSelect<R> encloseSelect(final AbstractSelect<R>
   // select) {

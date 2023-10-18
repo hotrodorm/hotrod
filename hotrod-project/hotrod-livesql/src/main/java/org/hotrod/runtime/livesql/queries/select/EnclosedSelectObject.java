@@ -5,6 +5,7 @@ import java.util.List;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 
+@Deprecated
 public class EnclosedSelectObject<R> extends AbstractSelectObject<R> {
 
   private AbstractSelectObject<R> select;

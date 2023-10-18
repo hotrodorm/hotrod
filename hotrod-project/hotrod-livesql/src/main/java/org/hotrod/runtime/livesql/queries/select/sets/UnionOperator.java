@@ -9,8 +9,8 @@ public class UnionOperator<R> extends SetOperator<R> {
   }
 
   @Override
-  protected void renderSetOperator(QueryWriter w) {
-    w.write("UNION");
+  protected void renderTo(final QueryWriter w) {
+    w.getSQLDialect().getSetOperationRenderer().renderUnion(w);
   }
 
   @Override
