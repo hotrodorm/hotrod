@@ -31,6 +31,7 @@ import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.select.sets.MultiSet;
 import org.hotrod.runtime.livesql.queries.subqueries.AllSubqueryColumns;
+import org.hotrod.runtime.livesql.util.IdUtil;
 import org.hotrod.runtime.livesql.util.SubqueryUtil;
 import org.hotrodorm.hotrod.utils.SUtil;
 import org.hotrodorm.hotrod.utils.Separator;
@@ -210,6 +211,15 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
   // Execute
 
   public void renderTo(final QueryWriter w) {
+    this.renderTo(w, false);
+  }
+
+  @Override
+  public void renderTo(final QueryWriter w, final boolean inline) {
+
+    if (inline) {
+      w.write("\n");
+    }
 
     LiveSQLDialect liveSQLDialect = w.getSQLDialect();
 
@@ -584,7 +594,6 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
       throws IllegalArgumentException, IllegalAccessException {
     try {
       Field cf = ReflectionUtils.findField(cs.getClass(), colName);
-//      System.out.println("cs (" + (cs == null ? "null" : cs.getClass().getName()) + ")");
       if (cf != null) {
         cf.setAccessible(true);
         Object object = cf.get(cs);
@@ -601,5 +610,9 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
   }
 
   abstract List<ResultSetColumn> listColumns();
+
+  public final String toString() {
+    return "s" + IdUtil.id(this);
+  }
 
 }

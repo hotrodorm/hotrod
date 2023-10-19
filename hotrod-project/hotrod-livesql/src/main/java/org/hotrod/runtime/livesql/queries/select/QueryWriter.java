@@ -41,6 +41,10 @@ public class QueryWriter {
     this.level--;
   }
 
+  public int getLevel() {
+    return this.level;
+  }
+
   public void write(final String txt) {
     if (txt != null) {
       String[] lines = txt.split("\n");

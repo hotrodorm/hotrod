@@ -13,19 +13,23 @@ import org.hotrod.runtime.livesql.util.PreviewRenderer;
 
 public abstract class MultiSet<R> {
 
-  private MultiSet<R> parent;
+  private CombinedSelectObject<R> parent;
 
-  public void setParent(MultiSet<R> parent) {
+  public void setParent(final CombinedSelectObject<R> parent) {
     this.parent = parent;
   }
 
-  public MultiSet<R> getParent() {
+  public CombinedSelectObject<R> getParent() {
     return this.parent;
   }
 
   public abstract void validateTableReferences(TableReferences tableReferences, AliasGenerator ag);
 
-  public abstract void renderTo(QueryWriter w);
+//  public abstract void combinedPreRenderTo(QueryWriter w);
+
+  public abstract void renderTo(QueryWriter w, boolean inline);
+
+//  public abstract void combinedPostRenderTo(QueryWriter w);
 
   // Execution
 
@@ -49,7 +53,7 @@ public abstract class MultiSet<R> {
     // Render
 
     QueryWriter w = new QueryWriter(context.getLiveSQLDialect());
-    renderTo(w);
+    renderTo(w, false);
     return w.getPreparedQuery();
   }
 

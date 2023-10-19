@@ -62,6 +62,7 @@ import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.datetime.EnclosedDateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.general.TupleExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.EnclosedNumberExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.IntegerLiteral;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberConstant;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.runtime.livesql.expressions.object.EnclosedObjectExpression;
@@ -76,6 +77,7 @@ import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.expressions.strings.EnclosedStringExpression;
 import org.hotrod.runtime.livesql.expressions.strings.StringConstant;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
+import org.hotrod.runtime.livesql.expressions.strings.StringLiteral;
 import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.AliasOrderingTerm;
@@ -94,14 +96,12 @@ import org.hotrod.runtime.livesql.queries.scalarsubqueries.DateTimeSelectColumns
 import org.hotrod.runtime.livesql.queries.scalarsubqueries.NumberSelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.scalarsubqueries.ObjectSelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.scalarsubqueries.StringSelectColumnsPhase;
+import org.hotrod.runtime.livesql.queries.select.EnclosedSelectPhase;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.PGSelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.select.SelectCTEPhase;
 import org.hotrod.runtime.livesql.queries.select.SelectColumnsPhase;
-import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
-import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectLinkingPhase;
-import org.hotrod.runtime.livesql.queries.select.sets.UnionOperator;
 import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 import org.hotrod.runtime.livesql.queries.subqueries.SubqueryColumnsPhase;
 import org.hotrod.runtime.livesql.sysobjects.DualTable;
@@ -245,16 +245,9 @@ public class LiveSQL {
 
   // Enclosing queries
 
-//  public <R> CombinedSelectLinkingPhase<R> enclose(final Select<R> select) {
-//    UnionOperator<R> op = new UnionOperator<R>();
-//    op.add(select.getSelect());
-//    return new CombinedMultiSet<>(select);
-//  }
-
-  // public <R> AbstractSelect<R> encloseSelect(final AbstractSelect<R>
-  // select) {
-  // return new EnclosedSelect<R>(sqlDialect, false, sqlSession, null, select);
-  // }
+  public <R> EnclosedSelectPhase<R> enclose(final Select<R> select) {
+    return new EnclosedSelectPhase<>(this.context, select.getSelect());
+  }
 
   // Aggregation expressions, that are NOT window functions
 
@@ -855,6 +848,16 @@ public class LiveSQL {
 
   public ObjectConstant val(final Object value) {
     return new ObjectConstant(value);
+  }
+
+  // Literals
+
+  public IntegerLiteral literal(final long value) {
+    return new IntegerLiteral(value);
+  }
+
+  public StringLiteral literal(final String value) {
+    return new StringLiteral(value);
   }
 
   // Parenthesis

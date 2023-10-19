@@ -18,4 +18,10 @@ public class SetOperatorTerm<R> {
     return multiset;
   }
 
+  public String toString() {
+    String k = this.operator.getClass().getSimpleName();
+    String acronym = k.substring(0, 1).toLowerCase() + (k.endsWith("AllOperator") ? "a" : "");
+    return acronym + "/" + this.multiset.toString();
+  }
+
 }

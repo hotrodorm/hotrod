@@ -16,6 +16,7 @@ public class CombinedSelectLinkingPhase<R> {
     this.so = so;
     this.cm = null;
     this.op = op;
+    System.out.println("Linking 1:");
   }
 
   public CombinedSelectLinkingPhase(final LiveSQLContext context, final CombinedSelectObject<R> cm,
@@ -24,6 +25,7 @@ public class CombinedSelectLinkingPhase<R> {
     this.so = null;
     this.cm = cm;
     this.op = op;
+    System.out.println("Linking 2: cm=" + this.cm.toString());
   }
 
   // Select
@@ -59,6 +61,7 @@ public class CombinedSelectLinkingPhase<R> {
         resultSetColumns);
     cs.getSelect().setParent(targetObj);
     targetObj.add(new SetOperatorTerm<>(this.op, cs.getSelect()));
+    System.out.println("Resulting: " + targetObj.toString());
     return cs;
 
   }

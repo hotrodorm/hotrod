@@ -27,6 +27,7 @@ public class CombinedSelectColumnsPhase<R> extends AbstractSelectPhase<R> {
 
   public CombinedSelectFromPhase<R> from(final TableExpression tableViewOrSubquery) {
     return new CombinedSelectFromPhase<R>(this.context, this.select, tableViewOrSubquery);
+
   }
 
   // Set Operators - Inline
@@ -34,27 +35,27 @@ public class CombinedSelectColumnsPhase<R> extends AbstractSelectPhase<R> {
   // .select() .selectDistinct()
 
   public CombinedSelectLinkingPhase<R> union() {
-    return new CombinedSelectLinkingPhase<>(this.context, this.select, new UnionOperator<>());
+    return new CombinedSelectLinkingPhase<>(this.context, this.select.getParent(), new UnionOperator<>());
   }
 
   public CombinedSelectLinkingPhase<R> unionAll() {
-    return new CombinedSelectLinkingPhase<>(this.context, this.select, new UnionAllOperator<>());
+    return new CombinedSelectLinkingPhase<>(this.context, this.select.getParent(), new UnionAllOperator<>());
   }
 
   public CombinedSelectLinkingPhase<R> except() {
-    return new CombinedSelectLinkingPhase<>(this.context, this.select, new ExceptOperator<>());
+    return new CombinedSelectLinkingPhase<>(this.context, this.select.getParent(), new ExceptOperator<>());
   }
 
   public CombinedSelectLinkingPhase<R> exceptAll() {
-    return new CombinedSelectLinkingPhase<>(this.context, this.select, new ExceptAllOperator<>());
+    return new CombinedSelectLinkingPhase<>(this.context, this.select.getParent(), new ExceptAllOperator<>());
   }
 
   public CombinedSelectLinkingPhase<R> intersect() {
-    return new CombinedSelectLinkingPhase<>(this.context, this.select, new IntersectOperator<>());
+    return new CombinedSelectLinkingPhase<>(this.context, this.select.getParent(), new IntersectOperator<>());
   }
 
   public CombinedSelectLinkingPhase<R> intersectAll() {
-    return new CombinedSelectLinkingPhase<>(this.context, this.select, new IntersectAllOperator<>());
+    return new CombinedSelectLinkingPhase<>(this.context, this.select.getParent(), new IntersectAllOperator<>());
   }
 
   // Set Operators - Enclosed
