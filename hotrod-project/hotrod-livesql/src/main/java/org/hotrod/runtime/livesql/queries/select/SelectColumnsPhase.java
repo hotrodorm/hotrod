@@ -8,19 +8,13 @@ import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
-import org.hotrod.runtime.livesql.queries.select.sets.AbstractSelectPhase;
+import org.hotrod.runtime.livesql.queries.select.sets.CombinableSelectPhase;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
-import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectLinkingPhase;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectPhase;
-import org.hotrod.runtime.livesql.queries.select.sets.ExceptAllOperator;
-import org.hotrod.runtime.livesql.queries.select.sets.ExceptOperator;
-import org.hotrod.runtime.livesql.queries.select.sets.IntersectAllOperator;
-import org.hotrod.runtime.livesql.queries.select.sets.IntersectOperator;
 import org.hotrod.runtime.livesql.queries.select.sets.SetOperatorTerm;
-import org.hotrod.runtime.livesql.queries.select.sets.UnionAllOperator;
 import org.hotrod.runtime.livesql.queries.select.sets.UnionOperator;
 
-public class SelectColumnsPhase<R> extends AbstractSelectPhase<R> {
+public class SelectColumnsPhase<R> extends CombinableSelectPhase<R> {
 
   // Constructor
 
@@ -40,8 +34,6 @@ public class SelectColumnsPhase<R> extends AbstractSelectPhase<R> {
   public SelectFromPhase<R> from(final TableExpression tableViewOrSubquery) {
     return new SelectFromPhase<R>(this.context, this.select, tableViewOrSubquery);
   }
-
-
 
   // Set Operators - Enclosed
 

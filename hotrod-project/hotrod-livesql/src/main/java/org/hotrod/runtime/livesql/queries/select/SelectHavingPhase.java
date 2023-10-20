@@ -3,9 +3,9 @@ package org.hotrod.runtime.livesql.queries.select;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
-import org.hotrod.runtime.livesql.queries.select.sets.AbstractSelectPhase;
+import org.hotrod.runtime.livesql.queries.select.sets.CombinableSelectPhase;
 
-public class SelectHavingPhase<R> extends AbstractSelectPhase<R> {
+public class SelectHavingPhase<R> extends CombinableSelectPhase<R> {
 
   // Constructor
 
@@ -16,7 +16,7 @@ public class SelectHavingPhase<R> extends AbstractSelectPhase<R> {
     }
   }
 
-  // Same stage
+  // Same phase
 
   // Next phases
 
@@ -31,38 +31,5 @@ public class SelectHavingPhase<R> extends AbstractSelectPhase<R> {
   public SelectLimitPhase<R> limit(final int limit) {
     return new SelectLimitPhase<R>(this.context, this.select, limit);
   }
-
-  // Set operations
-
-  // public SelectHavingPhase<R> union(final CombinableSelect<R> select) {
-  // this.select.setCombinedSelect(SetOperation.UNION, select);
-  // return new SelectHavingPhase<R>(this.select, null);
-  // }
-  //
-  // public SelectHavingPhase<R> unionAll(final CombinableSelect<R> select) {
-  // this.select.setCombinedSelect(SetOperation.UNION_ALL, select);
-  // return new SelectHavingPhase<R>(this.select, null);
-  // }
-  //
-  // public SelectHavingPhase<R> intersect(final CombinableSelect<R> select) {
-  // this.select.setCombinedSelect(SetOperation.INTERSECT, select);
-  // return new SelectHavingPhase<R>(this.select, null);
-  // }
-  //
-  // public SelectHavingPhase<R> intersectAll(final CombinableSelect<R> select)
-  // {
-  // this.select.setCombinedSelect(SetOperation.INTERSECT_ALL, select);
-  // return new SelectHavingPhase<R>(this.select, null);
-  // }
-  //
-  // public SelectHavingPhase<R> except(final CombinableSelect<R> select) {
-  // this.select.setCombinedSelect(SetOperation.EXCEPT, select);
-  // return new SelectHavingPhase<R>(this.select, null);
-  // }
-  //
-  // public SelectHavingPhase<R> exceptAll(final CombinableSelect<R> select) {
-  // this.select.setCombinedSelect(SetOperation.EXCEPT_ALL, select);
-  // return new SelectHavingPhase<R>(this.select, null);
-  // }
 
 }

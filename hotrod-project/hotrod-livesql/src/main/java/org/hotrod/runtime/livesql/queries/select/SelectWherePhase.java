@@ -4,9 +4,9 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
-import org.hotrod.runtime.livesql.queries.select.sets.AbstractSelectPhase;
+import org.hotrod.runtime.livesql.queries.select.sets.CombinableSelectPhase;
 
-public class SelectWherePhase<R> extends AbstractSelectPhase<R> {
+public class SelectWherePhase<R> extends CombinableSelectPhase<R> {
 
   // Constructors
 
