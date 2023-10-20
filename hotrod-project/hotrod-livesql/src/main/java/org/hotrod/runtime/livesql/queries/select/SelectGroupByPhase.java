@@ -6,9 +6,9 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
-import org.hotrod.runtime.livesql.queries.select.sets.CombinableSelectPhase;
+import org.hotrod.runtime.livesql.queries.select.sets.IndividualSelectPhase;
 
-public class SelectGroupByPhase<R> extends CombinableSelectPhase<R> {
+public class SelectGroupByPhase<R> extends IndividualSelectPhase<R> {
 
   // Constructor
 

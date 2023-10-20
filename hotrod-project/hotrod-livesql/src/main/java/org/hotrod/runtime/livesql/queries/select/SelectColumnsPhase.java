@@ -8,13 +8,9 @@ import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
-import org.hotrod.runtime.livesql.queries.select.sets.CombinableSelectPhase;
-import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
-import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectPhase;
-import org.hotrod.runtime.livesql.queries.select.sets.SetOperatorTerm;
-import org.hotrod.runtime.livesql.queries.select.sets.UnionOperator;
+import org.hotrod.runtime.livesql.queries.select.sets.IndividualSelectPhase;
 
-public class SelectColumnsPhase<R> extends CombinableSelectPhase<R> {
+public class SelectColumnsPhase<R> extends IndividualSelectPhase<R> {
 
   // Constructor
 
@@ -33,17 +29,6 @@ public class SelectColumnsPhase<R> extends CombinableSelectPhase<R> {
 
   public SelectFromPhase<R> from(final TableExpression tableViewOrSubquery) {
     return new SelectFromPhase<R>(this.context, this.select, tableViewOrSubquery);
-  }
-
-  // Set Operators - Enclosed
-
-  // .union(select()...)
-  // .union(selectDistinct()...)
-
-  public CombinedSelectPhase<R> union(final Select<R> select) {
-    CombinedSelectObject<R> cm = new CombinedSelectObject<>(this.select);
-    cm.add(new SetOperatorTerm<>(new UnionOperator<>(), select.getSelect()));
-    return new CombinedSelectPhase<>(cm);
   }
 
 }

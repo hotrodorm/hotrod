@@ -7,10 +7,10 @@ import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
-import org.hotrod.runtime.livesql.queries.select.sets.CombinableSelectPhase;
+import org.hotrod.runtime.livesql.queries.select.sets.IndividualSelectPhase;
 import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 
-public class SelectFromPhase<R> extends CombinableSelectPhase<R> {
+public class SelectFromPhase<R> extends IndividualSelectPhase<R> {
 
   // Constructor
 

@@ -1,10 +1,10 @@
 package org.hotrod.runtime.livesql.queries.select.sets;
 
-public class CombinedSelectPhase<R> extends AbstractSelectPhase<R> {
+public class XCombinedSelectPhase<R> extends AbstractSelectPhase<R> {
 
   private CombinedSelectObject<R> multiset;
 
-  public CombinedSelectPhase(final CombinedSelectObject<R> multiset) {
+  public XCombinedSelectPhase(final CombinedSelectObject<R> multiset) {
     super(null, null);
     this.multiset = multiset;
   }
