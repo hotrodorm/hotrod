@@ -23,7 +23,7 @@ import org.hotrod.runtime.livesql.queries.select.TableExpression;
 import org.hotrod.runtime.livesql.queries.select.UnionJoin;
 import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 
-public class CombinedSelectFromPhase<R> extends CombinedCombinableSelectPhase<R> {
+public class CombinedSelectFromPhase<R> extends CombinedSelectPhase<R> {
 
   // Constructor
 

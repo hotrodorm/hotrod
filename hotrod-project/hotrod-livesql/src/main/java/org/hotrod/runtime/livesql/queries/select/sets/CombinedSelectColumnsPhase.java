@@ -10,7 +10,7 @@ import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
 import org.hotrod.runtime.livesql.queries.select.TableExpression;
 
-public class CombinedSelectColumnsPhase<R> extends CombinedCombinableSelectPhase<R> {
+public class CombinedSelectColumnsPhase<R> extends CombinedSelectPhase<R> {
 
 //  private CombinedMultiSet<R> cm;
 

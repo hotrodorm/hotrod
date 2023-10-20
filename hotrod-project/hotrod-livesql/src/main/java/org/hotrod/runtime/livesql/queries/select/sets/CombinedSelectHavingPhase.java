@@ -5,7 +5,7 @@ import org.hotrod.runtime.livesql.ordering.CombinedOrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
 
-public class CombinedSelectHavingPhase<R> extends CombinedCombinableSelectPhase<R> {
+public class CombinedSelectHavingPhase<R> extends CombinedSelectPhase<R> {
 
   // Constructor
 
