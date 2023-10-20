@@ -11,7 +11,7 @@ public class IdUtil {
     if (o == null) {
       return 0;
     }
-    Integer hc = new Integer(System.identityHashCode(o));
+    Integer hc = Integer.valueOf(System.identityHashCode(o));
     if (ids.containsKey(hc)) {
       return ids.get(hc);
     } else {

@@ -10,16 +10,16 @@ public class AliasOrderingTerm implements CombinedOrderingTerm {
     this.alias = alias;
   }
 
-  public final OrderByDirectionStage asc() {
-    return new OrderByDirectionStage(this.alias, true);
+  public final CombinedOrderByDirectionPhase asc() {
+    return new CombinedOrderByDirectionPhase(this.alias, true);
   }
 
-  public final OrderByDirectionStage desc() {
-    return new OrderByDirectionStage(this.alias, false);
+  public final CombinedOrderByDirectionPhase desc() {
+    return new CombinedOrderByDirectionPhase(this.alias, false);
   }
 
   @Override
-  public void renderTo(QueryWriter w) {
+  public void renderTo(final QueryWriter w) {
     w.write(w.getSQLDialect().canonicalToNatural(this.alias));
   }
 

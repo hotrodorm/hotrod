@@ -8,23 +8,22 @@ import java.util.stream.Collectors;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 import org.hotrod.runtime.livesql.util.SubqueryUtil;
 
-@SuppressWarnings("deprecation")
 public class CTE extends Subquery {
 
-  protected CTE(String name, final String[] columns) {
+  protected CTE(final String name, final String[] columns) {
     super(name, columns);
   }
 
-  public CTE(String name, ExecutableSelect<?> select) {
+  public CTE(final String name, final Select<?> select) {
     super(name, null, select);
   }
 
-  public CTE(String name, String[] columns, ExecutableSelect<?> select) {
+  public CTE(final String name, final String[] columns, final Select<?> select) {
     super(name, columns, select);
   }
 
@@ -35,7 +34,7 @@ public class CTE extends Subquery {
   // Rendering
 
   @Override
-  public void renderTo(QueryWriter w) {
+  public void renderTo(final QueryWriter w) {
     w.write(w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(super.getName())));
   }
 

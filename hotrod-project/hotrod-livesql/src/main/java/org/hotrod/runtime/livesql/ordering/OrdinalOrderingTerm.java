@@ -10,12 +10,12 @@ public class OrdinalOrderingTerm implements CombinedOrderingTerm {
     this.ordinal = ordinal;
   }
 
-  public final OrderByDirectionStage asc() {
-    return new OrderByDirectionStage(this.ordinal, true);
+  public final OrderByDirectionPhase asc() {
+    return new OrderByDirectionPhase(this.ordinal, true);
   }
 
-  public final OrderByDirectionStage desc() {
-    return new OrderByDirectionStage(this.ordinal, false);
+  public final OrderByDirectionPhase desc() {
+    return new OrderByDirectionPhase(this.ordinal, false);
   }
 
   @Override

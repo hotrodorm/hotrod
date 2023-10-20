@@ -11,7 +11,7 @@ public class BooleanWindowFunctionFrameBoundStage {
     this.function = function;
   }
 
-  // Next stages BooleanWindowFunction
+  // Next phases BooleanWindowFunction
 
   public BooleanWindowFunctionFrameExcludeStage excludeCurrentRow() {
     this.function.setFrameExclusion(FrameExclusion.EXCLUDE_CURRENT_ROW);

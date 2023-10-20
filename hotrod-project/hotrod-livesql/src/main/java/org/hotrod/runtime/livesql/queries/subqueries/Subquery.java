@@ -14,14 +14,13 @@ import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
-import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
 import org.hotrod.runtime.livesql.queries.select.TableExpression;
 import org.hotrod.runtime.livesql.util.SubqueryUtil;
 import org.hotrodorm.hotrod.utils.SUtil;
 
-@SuppressWarnings("deprecation")
 public class Subquery implements TableExpression {
 
   private String name;
@@ -38,7 +37,7 @@ public class Subquery implements TableExpression {
     this.select = null;
   }
 
-  public Subquery(final String name, final String[] columns, final ExecutableSelect<?> es) {
+  public Subquery(final String name, final String[] columns, final Select<?> es) {
     if (SUtil.isEmpty(name)) {
       throw new LiveSQLException("Subquery name cannot be empty", null);
     }

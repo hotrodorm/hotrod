@@ -4,30 +4,30 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.ordering.OrderByProperties.NullsOrdering;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
-public class OrderByDirectionStage implements OrderingTerm {
+public class CombinedOrderByDirectionPhase implements CombinedOrderingTerm {
 
   private OrderByProperties ordering;
 
-  public OrderByDirectionStage(final Expression expression, final boolean ascending) {
+  public CombinedOrderByDirectionPhase(final Expression expression, final boolean ascending) {
     this.ordering = new OrderByProperties(expression, ascending);
   }
 
-  public OrderByDirectionStage(final String alias, final boolean ascending) {
+  public CombinedOrderByDirectionPhase(final String alias, final boolean ascending) {
     this.ordering = new OrderByProperties(alias, ascending);
   }
 
-  public OrderByDirectionStage(final int ordinal, final boolean ascending) {
+  public CombinedOrderByDirectionPhase(final int ordinal, final boolean ascending) {
     this.ordering = new OrderByProperties(ordinal, ascending);
   }
 
-  public OrderByNullsStage nullsFirst() {
+  public CombinedOrderByNullsPhase nullsFirst() {
     this.ordering.setNullsOrdering(NullsOrdering.NULLS_FIRST);
-    return new OrderByNullsStage(this.ordering);
+    return new CombinedOrderByNullsPhase(this.ordering);
   }
 
-  public OrderByNullsStage nullsLast() {
+  public CombinedOrderByNullsPhase nullsLast() {
     this.ordering.setNullsOrdering(NullsOrdering.NULLS_LAST);
-    return new OrderByNullsStage(this.ordering);
+    return new CombinedOrderByNullsPhase(this.ordering);
   }
 
   @Override

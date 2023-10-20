@@ -97,7 +97,6 @@ import org.hotrod.runtime.livesql.queries.scalarsubqueries.NumberSelectColumnsPh
 import org.hotrod.runtime.livesql.queries.scalarsubqueries.ObjectSelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.scalarsubqueries.StringSelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.select.EnclosedSelectPhase;
-import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.PGSelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.select.SelectCTEPhase;
@@ -151,7 +150,7 @@ public class LiveSQL {
 
   // Subqueries
 
-  public Subquery subquery(final String alias, final ExecutableSelect<?> select) {
+  public Subquery subquery(final String alias, final Select<?> select) {
     return new Subquery(alias, null, select);
   }
 
@@ -187,7 +186,7 @@ public class LiveSQL {
 
   // CTEs
 
-  public CTE cte(final String name, final ExecutableSelect<Row> select) {
+  public CTE cte(final String name, final Select<Row> select) {
     return new CTE(name, select);
   }
 
@@ -235,11 +234,11 @@ public class LiveSQL {
 
   // Subquery existence
 
-  public <R> Predicate exists(final ExecutableSelect<R> subquery) {
+  public <R> Predicate exists(final Select<R> subquery) {
     return new Exists(subquery);
   }
 
-  public <R> Predicate notExists(final ExecutableSelect<R> subquery) {
+  public <R> Predicate notExists(final Select<R> subquery) {
     return new NotExists(subquery);
   }
 

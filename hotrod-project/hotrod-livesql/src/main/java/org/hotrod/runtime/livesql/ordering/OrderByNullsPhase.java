@@ -2,11 +2,11 @@ package org.hotrod.runtime.livesql.ordering;
 
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
-public class OrderByNullsStage implements OrderingTerm {
+public class OrderByNullsPhase implements OrderingTerm {
 
   private OrderByProperties ordering;
 
-  public OrderByNullsStage(final OrderByProperties ordering) {
+  public OrderByNullsPhase(final OrderByProperties ordering) {
     this.ordering = ordering;
   }
 
