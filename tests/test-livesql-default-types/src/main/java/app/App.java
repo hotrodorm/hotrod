@@ -212,11 +212,11 @@ public class App {
 
   private void liveSQLExamples() {
 
-    livesql1();
+//    livesql1();
 
     // Set Operators
 
-//    union();
+    union();
 
     // Subqueries
 //    example1InNotIn();
@@ -235,16 +235,82 @@ public class App {
 
   private void union() {
 
-//  1. IN and NOT IN Operators
+    AccountTable a = AccountDAO.newTable("a");
 
-//select 123 as n
-//union select 456
+//    // 1. UNION + UNION
 
-    ExecutableSelect<Row> q = sql.select(sql.val(123)) //
-        .union().select(sql.val(456));
+    Select<Row> q = sql.select(sql.literal(123).as("abc")) //
+//        .union().select(sql.literal(456)) //
+        .union().select(sql.literal(789)) //
+        .orderBy(sql.ordering("abc").desc(), sql.ordering(1)) //
+    ;
 
     System.out.println(q.getPreview());
     q.execute().forEach(r -> System.out.println("row: " + r));
+
+//    // 2. UNION + EXCEPT
+
+//    Select<Row> q = sql.select(sql.literal(123)) //
+//        .union().select(sql.literal(456)) //
+//        .except().select(sql.literal(789));
+//
+//    System.out.println(q.getPreview());
+//    q.execute().forEach(r -> System.out.println("row: " + r));
+
+    // 3. UNION + INTERSECT
+
+//    Select<Row> q = sql.select(sql.literal(123)) //
+//        .unionAll().select(sql.literal(456)) //
+//        .intersect().select(sql.literal(789));
+//
+//    System.out.println(q.getPreview());
+//    q.execute().forEach(r -> System.out.println("row: " + r));
+
+    // 4. INTERSECT + UNION
+
+//    Select<Row> q = sql.select(sql.literal(123)) //
+//        .intersect().select(sql.literal(456)) //
+//        .union().select(sql.literal(789));
+//
+//    System.out.println(q.getPreview());
+//    q.execute().forEach(r -> System.out.println("row: " + r));
+
+    // 5. UNION + INTERSECT + EXCEPT
+
+//    Select<Row> q = sql.select(sql.literal(123)) //
+//        .unionAll().select(sql.literal(456)) //
+//        .intersect().select(sql.literal(789)) //
+//        .except().select(sql.literal(100))
+//        ;
+//
+//    System.out.println(q.getPreview());
+//    q.execute().forEach(r -> System.out.println("row: " + r));
+
+    // 6. INTERSECT + EXCEPT + INTERSECT + UNION
+
+//    Select<Row> q = sql.select(sql.literal(123).as("def")) //
+//        .intersect().select(sql.literal(456)) //
+//        .except().select(sql.literal(789)) //
+//        .intersect().select(sql.literal(100)) //
+//        .union() //
+//        .select(sql.literal(100)) //
+////        .orderBy(sql.ordering(1).desc(), sql.ordering("def"))
+//    //
+//    ;
+//
+//    System.out.println(q.getPreview());
+//    q.execute().forEach(r -> System.out.println("row: " + r));
+
+    // 7. INTERSECT + ENCLOSE (UNION) + INTERSECT
+
+//    Select<Row> q = 
+//        sql.enclose(
+//        sql.enclose(sql.select(sql.literal(123)).union().select(sql.literal(456))  )) //
+//        .intersect().select(sql.literal(789)) //
+//    ;
+//
+//    System.out.println(q.getPreview());
+//    q.execute().forEach(r -> System.out.println("row: " + r));
 
   }
 
