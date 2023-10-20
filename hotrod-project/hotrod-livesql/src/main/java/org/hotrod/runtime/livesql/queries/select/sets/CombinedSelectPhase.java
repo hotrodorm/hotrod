@@ -9,26 +9,6 @@ public class CombinedSelectPhase<R> extends AbstractSelectPhase<R> {
     this.multiset = multiset;
   }
 
-  // Set phases
-
-  public void union() {
-  }
-
-  public void unionAll() {
-  }
-
-  public void except() {
-  }
-
-  public void exceptAll() {
-  }
-
-  public void intersect() {
-  }
-
-  public void intersectAll() {
-  }
-
   // Next phases
 
 //  public SelectOrderByPhase<R> orderBy(final OrderingTerm... orderingTerms) {
