@@ -23,16 +23,11 @@ public class CombinedSelectColumnsPhase<R> extends CombinedSelectPhase<R> {
     this.select.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
   }
 
-  // Next stages
+  // Next phases
 
   public CombinedSelectFromPhase<R> from(final TableExpression tableViewOrSubquery) {
     return new CombinedSelectFromPhase<R>(this.context, this.select, tableViewOrSubquery);
 
   }
-
-  // Set Operators - Enclosed
-
-  // .union(select()...)
-  // .union(selectDistinct()...)
 
 }

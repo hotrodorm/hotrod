@@ -16,9 +16,9 @@ public class CombinedSelectOrderByPhase<R> extends AbstractSelectPhase<R> {
     this.select.setColumnOrderings(Arrays.asList(orderingTerms));
   }
 
-  // Same stage
+  // Same phase
 
-  // Next stages
+  // Next phases
 
   public CombinedSelectOffsetPhase<R> offset(final int offset) {
     return new CombinedSelectOffsetPhase<R>(this.context, this.select, offset);

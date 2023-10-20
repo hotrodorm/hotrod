@@ -12,7 +12,7 @@ public class SelectOffsetPhase<R> extends AbstractSelectPhase<R> {
     this.select.setOffset(offset);
   }
 
-  // Next stages
+  // Next phases
 
   public SelectLimitPhase<R> limit(final int limit) {
     return new SelectLimitPhase<R>(this.context, this.select, limit);

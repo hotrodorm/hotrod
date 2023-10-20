@@ -15,9 +15,9 @@ public class SelectOrderByPhase<R> extends AbstractSelectPhase<R> {
     this.select.setColumnOrderings(Arrays.asList(orderingTerms));
   }
 
-  // Same stage
+  // Same phase
 
-  // Next stages
+  // Next phases
 
   public SelectOffsetPhase<R> offset(final int offset) {
     return new SelectOffsetPhase<R>(this.context, this.select, offset);

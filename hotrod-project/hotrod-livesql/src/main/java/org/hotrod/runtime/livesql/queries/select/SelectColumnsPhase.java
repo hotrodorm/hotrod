@@ -25,7 +25,7 @@ public class SelectColumnsPhase<R> extends IndividualSelectPhase<R> {
     this.select.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
   }
 
-  // Next stages
+  // Next phases
 
   public SelectFromPhase<R> from(final TableExpression tableViewOrSubquery) {
     return new SelectFromPhase<R>(this.context, this.select, tableViewOrSubquery);

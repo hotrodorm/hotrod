@@ -9,9 +9,7 @@ public class CombinedSelectPhase<R> extends AbstractSelectPhase<R> {
     super(context, select);
   }
 
-  // Set Operators - Inline
-
-  // .select() .selectDistinct()
+  // Inline Set Operators
 
   public CombinedSelectLinkingPhase<R> union() {
     return new CombinedSelectLinkingPhase<>(this.context, this.select.getParent(), new UnionOperator<>());
