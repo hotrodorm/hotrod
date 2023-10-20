@@ -186,7 +186,7 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
     this.havingPredicate = havingCondition;
   }
 
-  public void setColumnOrderings(List<OrderingTerm> orderingTerms) {
+  public void setColumnOrderings(final List<OrderingTerm> orderingTerms) {
     this.orderingTerms = orderingTerms;
   }
 
@@ -339,42 +339,20 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
         this.havingPredicate.renderTo(w);
       }
 
-      // order by
+    }
 
-      if (this.orderingTerms != null && !this.orderingTerms.isEmpty()) {
+    // order by (combined selects can have ORDER BY without a FROM clause
 
-//        if (this.combinedSelect != null || this.parent != null) {
-//
-//          // ORDER BY still unsupported for combined selects. Need to study this
-//          // feature more.
-//
-//          // PostgreSQL only supports named columns from the initial SELECT as
-//          // ordering columns; not expressions or functions. The error reads:
-//          // Error: ERROR: invalid UNION/INTERSECT/EXCEPT ORDER BY clause
-//          // Detail: Only result column names can be used, not expressions or
-//          // functions.
-//          // Hint: Add the expression/function to every SELECT, or move the
-//          // UNION
-//          // into a FROM clause.
-//
-//          // A valid ORDER BY would read: ORDER BY "currentBalance"
-//          // Note that that's the alias of a column/expression, not the column
-//          // itself.
-//
-//          throw new UnsupportedLiveSQLFeatureException(
-//              "HotRod does not yet support ORDER BY for combined queries (UNION, UNION ALL, INTERSECT, INTERSECT ALL, EXCEPT, or EXCEPT ALL).");
-//        }
-
-        w.write("\nORDER BY ");
-        boolean first = true;
-        for (OrderingTerm term : this.orderingTerms) {
-          if (first) {
-            first = false;
-          } else {
-            w.write(", ");
-          }
-          term.renderTo(w);
+    if (this.orderingTerms != null && !this.orderingTerms.isEmpty()) {
+      w.write("\nORDER BY ");
+      boolean first = true;
+      for (OrderingTerm term : this.orderingTerms) {
+        if (first) {
+          first = false;
+        } else {
+          w.write(", ");
         }
+        term.renderTo(w);
       }
     }
 
