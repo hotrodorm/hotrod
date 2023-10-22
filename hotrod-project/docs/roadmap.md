@@ -27,5 +27,5 @@ Version 5.3:
 
 Version 6.0:
 
-- LiveSQL Project Babel. Customized versions of LiveSQL for specific databases that enhances generic LiveSQL with extended SQL syntax.
+- LiveSQL Project Babel. Customized versions of LiveSQL for specific databases that enhance generic LiveSQL with extended SQL syntax.
 
