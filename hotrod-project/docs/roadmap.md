@@ -27,5 +27,5 @@ Version 5.3:
 
 Version 6.0:
 
-- LiveSQL Gurus. Tailored versions of LiveSQL for specific databases, that implement its custom SQL syntax.
+- LiveSQL Project Babel. Customized versions of LiveSQL for specific databases that enhances generic LiveSQL with extended SQL syntax.
 
