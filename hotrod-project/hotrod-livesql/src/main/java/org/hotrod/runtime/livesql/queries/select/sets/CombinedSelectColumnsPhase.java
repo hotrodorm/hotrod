@@ -13,14 +13,12 @@ import org.hotrod.runtime.livesql.queries.select.TableExpression;
 
 public class CombinedSelectColumnsPhase<R> extends CombinedSelectPhase<R> {
 
-//  private CombinedMultiSet<R> cm;
-
   // Constructor
 
   public CombinedSelectColumnsPhase(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct,
-      final CombinedSelectObject<R> cm, final ResultSetColumn... resultSetColumns) {
+      final CombinedSelectObject<R> cs, final ResultSetColumn... resultSetColumns) {
     super(context, new SelectObject<R>(ctes, distinct, false));
-//    this.cm = cm;
+    this.select.setParent(cs);
     this.select.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
   }
 

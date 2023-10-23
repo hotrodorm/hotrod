@@ -12,27 +12,35 @@ public class IndividualSelectPhase<R> extends AbstractSelectPhase<R> {
   // Inline Set Operators
 
   public CombinedSelectLinkingPhase<R> union() {
-    return new CombinedSelectLinkingPhase<>(this.context, this.select, new UnionOperator<>());
+    return new CombinedSelectLinkingPhase<>(this.context, boxSelect(), new UnionOperator<>());
   }
 
   public CombinedSelectLinkingPhase<R> unionAll() {
-    return new CombinedSelectLinkingPhase<>(this.context, this.select, new UnionAllOperator<>());
+    return new CombinedSelectLinkingPhase<>(this.context, boxSelect(), new UnionAllOperator<>());
   }
 
   public CombinedSelectLinkingPhase<R> except() {
-    return new CombinedSelectLinkingPhase<>(this.context, this.select, new ExceptOperator<>());
+    return new CombinedSelectLinkingPhase<>(this.context, boxSelect(), new ExceptOperator<>());
   }
 
   public CombinedSelectLinkingPhase<R> exceptAll() {
-    return new CombinedSelectLinkingPhase<>(this.context, this.select, new ExceptAllOperator<>());
+    return new CombinedSelectLinkingPhase<>(this.context, boxSelect(), new ExceptAllOperator<>());
   }
 
   public CombinedSelectLinkingPhase<R> intersect() {
-    return new CombinedSelectLinkingPhase<>(this.context, this.select, new IntersectOperator<>());
+    return new CombinedSelectLinkingPhase<>(this.context, boxSelect(), new IntersectOperator<>());
   }
 
   public CombinedSelectLinkingPhase<R> intersectAll() {
-    return new CombinedSelectLinkingPhase<>(this.context, this.select, new IntersectAllOperator<>());
+    return new CombinedSelectLinkingPhase<>(this.context, boxSelect(), new IntersectAllOperator<>());
+  }
+
+  // Utils
+
+  private CombinedSelectObject<R> boxSelect() {
+    CombinedSelectObject<R> boxed = new CombinedSelectObject<>(this.select);
+    this.select.setParent(boxed);
+    return boxed;
   }
 
 }
