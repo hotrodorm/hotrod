@@ -7,11 +7,11 @@ they will be assessed and may be included or not in the versions mentioned below
 
 Version 4.2:
 
-- Set Operators. Combine queries with UNION, INTERSECT, and EXCEPT including their DISTINCT and ALL variants.
+- LiveSQL set operators. Add builder for UNION, INTERSECT, and EXCEPT including their DISTINCT and ALL variants, to build multi-level set algebra.
 
 Version 5.0:
 
-- Torcs Module. Ranks queries, provide query statistics, and inspect and dumps SQL queries.
+- Torcs Module. Rank queries, provide query statistics, dump and inspect SQL queries.
 
 Version 5.1:
 
@@ -19,13 +19,13 @@ Version 5.1:
 
 Version 5.2:
 
-- Pessimistic locking. Include FOR UPDATE, LOCK, etc., according to specific engines.
+- LiveSQL Pessimistic locking. Include FOR UPDATE, LOCK, etc., according to specific engines.
 
 Version 5.3:
 
-- Implement the MERGE (aka UPSERT) SQL statement.
+- LiveSQL MERGE statement (a.k.a. UPSERT).
 
 Version 6.0:
 
-- LiveSQL Gurus. Tailored versions of LiveSQL for specific databases, that implement its custom SQL syntax.
+- LiveSQL Project Babel. Customized versions of LiveSQL for specific databases that enhance generic LiveSQL with extended SQL syntax.
 
