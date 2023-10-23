@@ -5,11 +5,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.hotrod.runtime.cursors.Cursor;
+import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLPreparedQuery;
+import org.hotrod.runtime.livesql.queries.select.SelectObject;
 import org.hotrod.runtime.livesql.util.IdUtil;
 
 public class CombinedSelectObject<R> extends MultiSet<R> {
@@ -28,17 +30,44 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
 
   private MultiSet<R> first;
   private List<SetOperatorTerm<R>> combined;
+  private SelectObject<R> lastSelect;
 
   public CombinedSelectObject(final MultiSet<R> first) {
     this.first = first;
     this.combined = new ArrayList<>();
+    this.lastSelect = null;
   }
 
-  public void add(final SetOperatorTerm<R> term) {
+  public CombinedSelectObject(final SelectObject<R> first) {
+    this.first = first;
+    this.combined = new ArrayList<>();
+    this.lastSelect = first;
+  }
+
+  public void add(final SetOperator operator, final MultiSet<R> multiset) {
+    SetOperatorTerm<R> term = new SetOperatorTerm<>(operator, multiset);
     this.combined.add(term);
   }
 
+  public void add(final SetOperator operator, final SelectObject<R> select) {
+    SetOperatorTerm<R> term = new SetOperatorTerm<>(operator, select);
+    this.combined.add(term);
+    this.lastSelect = select;
+  }
+
   // Rendering
+
+  public MultiSet<R> findRoot() {
+    MultiSet<R> s = this;
+    while (s.getParent() != null) {
+      s = s.getParent();
+    }
+    return s;
+  }
+
+  public void renderTo(final QueryWriter w) {
+    this.renderTo(w, false);
+  }
 
   public void renderTo(final QueryWriter w, final boolean inline) {
 
@@ -75,7 +104,7 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
 
   // Combining
 
-  public CombinedSelectObject<R> prepareCombinationWith(final SetOperator<R> op) {
+  public CombinedSelectObject<R> prepareCombinationWith(final SetOperator op) {
 
     if (this.combined.isEmpty()) {
       System.out.println("// 0 no precedence yet");
@@ -145,6 +174,16 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
   public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
     this.first.validateTableReferences(tableReferences, ag);
     this.combined.forEach(s -> s.getMultiset().validateTableReferences(tableReferences, ag));
+  }
+
+  // Combining
+
+  public final SelectObject<R> getLastSelect() {
+    return this.lastSelect;
+  }
+
+  public List<ResultSetColumn> listColumns() {
+    return this.first.listColumns();
   }
 
   // MultiSet execution

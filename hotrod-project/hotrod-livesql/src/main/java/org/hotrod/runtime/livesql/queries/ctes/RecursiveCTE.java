@@ -56,8 +56,8 @@ public class RecursiveCTE extends CTE {
   @Override
   public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
     if (!tableReferences.visited(this)) {
-      this.anchorTerm.getSelect().validateTableReferences(tableReferences, ag);
-      this.recursiveTerm.getSelect().validateTableReferences(tableReferences, ag);
+      this.anchorTerm.getCombinedSelect().validateTableReferences(tableReferences, ag);
+      this.recursiveTerm.getCombinedSelect().validateTableReferences(tableReferences, ag);
     }
   }
 
@@ -74,20 +74,20 @@ public class RecursiveCTE extends CTE {
     }
     w.enterLevel();
     w.write(" as (\n");
-    this.anchorTerm.getSelect().renderTo(w);
+    this.anchorTerm.getCombinedSelect().renderTo(w);
     w.exitLevel();
     w.write("\n");
     w.write(this.unionAll ? "UNION ALL" : "UNION");
     w.write("\n");
     w.enterLevel();
-    this.recursiveTerm.getSelect().renderTo(w);
+    this.recursiveTerm.getCombinedSelect().renderTo(w);
     w.exitLevel();
     w.write("\n");
     w.write(")");
   }
 
   public List<ResultSetColumn> getColumns() throws IllegalAccessException {
-    return this.expandColumns(this.anchorTerm.getSelect().listColumns());
+    return this.expandColumns(this.anchorTerm.getCombinedSelect().listColumns());
   }
 
 }

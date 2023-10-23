@@ -2,7 +2,7 @@ package org.hotrod.runtime.livesql.queries.select.sets;
 
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
-public class UnionOperator<R> extends SetOperator<R> {
+public class UnionOperator extends SetOperator {
 
   public UnionOperator() {
     super();

@@ -245,7 +245,7 @@ public class LiveSQL {
   // Enclosing queries
 
   public <R> EnclosedSelectPhase<R> enclose(final Select<R> select) {
-    return new EnclosedSelectPhase<>(this.context, select.getSelect());
+    return new EnclosedSelectPhase<>(this.context, select.getCombinedSelect());
   }
 
   // Aggregation expressions, that are NOT window functions

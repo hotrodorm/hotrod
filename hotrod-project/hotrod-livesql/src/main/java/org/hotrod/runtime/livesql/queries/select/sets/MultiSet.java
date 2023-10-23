@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.hotrod.runtime.cursors.Cursor;
+import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
@@ -25,11 +26,9 @@ public abstract class MultiSet<R> {
 
   public abstract void validateTableReferences(TableReferences tableReferences, AliasGenerator ag);
 
-//  public abstract void combinedPreRenderTo(QueryWriter w);
+  public abstract List<ResultSetColumn> listColumns();
 
   public abstract void renderTo(QueryWriter w, boolean inline);
-
-//  public abstract void combinedPostRenderTo(QueryWriter w);
 
   // Execution
 

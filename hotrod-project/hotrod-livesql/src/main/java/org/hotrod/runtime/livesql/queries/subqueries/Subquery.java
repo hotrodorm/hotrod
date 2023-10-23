@@ -16,8 +16,8 @@ import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGener
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.Select;
-import org.hotrod.runtime.livesql.queries.select.SelectObject;
 import org.hotrod.runtime.livesql.queries.select.TableExpression;
+import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
 import org.hotrod.runtime.livesql.util.SubqueryUtil;
 import org.hotrodorm.hotrod.utils.SUtil;
 
@@ -25,7 +25,7 @@ public class Subquery implements TableExpression {
 
   private String name;
   protected String[] columns;
-  private SelectObject<?> select;
+  private CombinedSelectObject<?> select;
 
   protected Subquery(final String name, final String[] columns) {
     if (SUtil.isEmpty(name)) {
@@ -49,7 +49,7 @@ public class Subquery implements TableExpression {
       throw new LiveSQLException("Subquery select query cannot be null", null);
     }
 
-    this.select = es.getSelect();
+    this.select = es.getCombinedSelect();
   }
 
   // Getters
@@ -58,7 +58,7 @@ public class Subquery implements TableExpression {
     return name;
   }
 
-  public SelectObject<?> getSelect() {
+  public CombinedSelectObject<?> getSelect() {
     return select;
   }
 

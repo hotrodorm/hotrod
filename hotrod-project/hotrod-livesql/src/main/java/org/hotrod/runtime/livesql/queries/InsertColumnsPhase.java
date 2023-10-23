@@ -27,7 +27,7 @@ public class InsertColumnsPhase {
   }
 
   public InsertSelectPhase select(final Select<?> select) {
-    this.insert.setSelect(select.getSelect());
+    this.insert.setSelect(select.getCombinedSelect().getLastSelect());
     return new InsertSelectPhase(this.context, this.insert);
   }
 

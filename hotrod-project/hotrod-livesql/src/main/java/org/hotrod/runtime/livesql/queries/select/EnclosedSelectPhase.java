@@ -17,10 +17,10 @@ public class EnclosedSelectPhase<R> extends AbstractSelectPhase<R> {
 
   // Constructor
 
-  public EnclosedSelectPhase(final LiveSQLContext context, final SelectObject<R> select) {
-    super(context, select);
-    CombinedSelectObject<R> mid = new CombinedSelectObject<>(select.findRoot());
-    select.setParent(mid);
+  public EnclosedSelectPhase(final LiveSQLContext context, final CombinedSelectObject<R> combined) {
+    super(context, combined);
+    CombinedSelectObject<R> mid = new CombinedSelectObject<>(combined.findRoot());
+    combined.setParent(mid);
     this.external = new CombinedSelectObject<>(mid);
     mid.setParent(this.external);
   }
@@ -28,32 +28,27 @@ public class EnclosedSelectPhase<R> extends AbstractSelectPhase<R> {
   // Set Operators - Inline
 
   public CombinedSelectLinkingPhase<R> union() {
-    return new CombinedSelectLinkingPhase<>(this.context, this.external, new UnionOperator<>());
+    return new CombinedSelectLinkingPhase<>(this.context, this.external, new UnionOperator());
   }
 
   public CombinedSelectLinkingPhase<R> unionAll() {
-    return new CombinedSelectLinkingPhase<>(this.context, this.external, new UnionAllOperator<>());
+    return new CombinedSelectLinkingPhase<>(this.context, this.external, new UnionAllOperator());
   }
 
   public CombinedSelectLinkingPhase<R> except() {
-    return new CombinedSelectLinkingPhase<>(this.context, this.external, new ExceptOperator<>());
+    return new CombinedSelectLinkingPhase<>(this.context, this.external, new ExceptOperator());
   }
 
   public CombinedSelectLinkingPhase<R> exceptAll() {
-    return new CombinedSelectLinkingPhase<>(this.context, this.external, new ExceptAllOperator<>());
+    return new CombinedSelectLinkingPhase<>(this.context, this.external, new ExceptAllOperator());
   }
 
   public CombinedSelectLinkingPhase<R> intersect() {
-    return new CombinedSelectLinkingPhase<>(this.context, this.external, new IntersectOperator<>());
+    return new CombinedSelectLinkingPhase<>(this.context, this.external, new IntersectOperator());
   }
 
   public CombinedSelectLinkingPhase<R> intersectAll() {
-    return new CombinedSelectLinkingPhase<>(this.context, this.external, new IntersectAllOperator<>());
+    return new CombinedSelectLinkingPhase<>(this.context, this.external, new IntersectAllOperator());
   }
-
-  // Set Operators - Enclosed
-
-  // .union(select()...)
-  // .union(selectDistinct()...)
 
 }

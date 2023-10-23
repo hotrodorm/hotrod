@@ -29,6 +29,7 @@ import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableRefer
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
+import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
 import org.hotrodorm.hotrod.utils.SUtil;
 
 public abstract class Expression implements ResultSetColumn, Rendereable, OrderingTerm {
@@ -103,7 +104,7 @@ public abstract class Expression implements ResultSetColumn, Rendereable, Orderi
   // Apply aliases
 
   private List<Expression> expressions = new ArrayList<>();
-  private List<SelectObject<?>> subqueries = new ArrayList<>();
+  private List<CombinedSelectObject<?>> subqueries = new ArrayList<>();
   private List<TableOrView> tablesOrViews = new ArrayList<>();
 
   protected void register(final Expression expression) {
@@ -111,7 +112,7 @@ public abstract class Expression implements ResultSetColumn, Rendereable, Orderi
   }
 
   protected void register(final Select<?> subquery) {
-    this.subqueries.add(subquery.getSelect());
+    this.subqueries.add(subquery.getCombinedSelect());
   }
 
   protected void register(final TableOrView tableOrView) {
@@ -122,7 +123,7 @@ public abstract class Expression implements ResultSetColumn, Rendereable, Orderi
     for (Expression e : this.expressions) {
       e.validateTableReferences(tableReferences, ag);
     }
-    for (SelectObject<?> s : this.subqueries) {
+    for (CombinedSelectObject<?> s : this.subqueries) {
       if (s == null) {
         throw new LiveSQLException("Subquery cannot be null.", null);
       }

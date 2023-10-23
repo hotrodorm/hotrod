@@ -19,7 +19,7 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 //                /    \
 //          SELECT-b  SELECT-c
 
-public abstract class SetOperator<R> {
+public abstract class SetOperator {
 
   public static final int PRECEDENCE_INTERSECT = 1;
   public static final int PRECEDENCE_INTERSECT_ALL = 1;

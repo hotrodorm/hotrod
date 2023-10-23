@@ -9,6 +9,7 @@ import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.select.sets.AbstractSelectPhase;
+import org.hotrod.runtime.livesql.queries.select.sets.MultiSet;
 
 public class PGSelectColumnsPhase<R> extends AbstractSelectPhase<R> {
 
@@ -16,53 +17,16 @@ public class PGSelectColumnsPhase<R> extends AbstractSelectPhase<R> {
 
   public PGSelectColumnsPhase(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct,
       final ResultSetColumn... resultSetColumns) {
-    super(context, new SelectObject<R>(ctes, distinct, false));
-    this.select.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
+    super(context, ctes, distinct, false);
+    MultiSet<R> m = this.combined.getLastSelect();
+    SelectObject<R> s = (SelectObject<R>) m;
+    s.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
   }
-
-//  public PGSelectColumnsPhase(final SelectObject<R> select, final boolean distinct,
-//      final ResultSetColumn... resultSetColumns) {
-//    select.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
-//    this.select = select;
-//  }
 
   // Next stages
 
   public SelectFromPhase<R> from(final TableOrView t) {
-    return new SelectFromPhase<R>(this.context, this.select, t);
+    return new SelectFromPhase<R>(this.context, this.combined, t);
   }
-
-  // Set operations
-
-  // public SelectHavingPhase<R> union(final CombinableSelect<R> select) {
-  // this.select.setCombinedSelect(SetOperation.UNION, select);
-  // return new SelectHavingPhase<R>(this.select, null);
-  // }
-  //
-  // public SelectHavingPhase<R> unionAll(final CombinableSelect<R> select) {
-  // this.select.setCombinedSelect(SetOperation.UNION_ALL, select);
-  // return new SelectHavingPhase<R>(this.select, null);
-  // }
-  //
-  // public SelectHavingPhase<R> intersect(final CombinableSelect<R> select) {
-  // this.select.setCombinedSelect(SetOperation.INTERSECT, select);
-  // return new SelectHavingPhase<R>(this.select, null);
-  // }
-  //
-  // public SelectHavingPhase<R> intersectAll(final CombinableSelect<R> select)
-  // {
-  // this.select.setCombinedSelect(SetOperation.INTERSECT_ALL, select);
-  // return new SelectHavingPhase<R>(this.select, null);
-  // }
-  //
-  // public SelectHavingPhase<R> except(final CombinableSelect<R> select) {
-  // this.select.setCombinedSelect(SetOperation.EXCEPT, select);
-  // return new SelectHavingPhase<R>(this.select, null);
-  // }
-  //
-  // public SelectHavingPhase<R> exceptAll(final CombinableSelect<R> select) {
-  // this.select.setCombinedSelect(SetOperation.EXCEPT_ALL, select);
-  // return new SelectHavingPhase<R>(this.select, null);
-  // }
 
 }

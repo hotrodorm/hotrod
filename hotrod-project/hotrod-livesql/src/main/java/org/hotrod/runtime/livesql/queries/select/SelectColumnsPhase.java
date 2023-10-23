@@ -9,6 +9,7 @@ import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.select.sets.IndividualSelectPhase;
+import org.hotrod.runtime.livesql.queries.select.sets.MultiSet;
 
 public class SelectColumnsPhase<R> extends IndividualSelectPhase<R> {
 
@@ -16,19 +17,21 @@ public class SelectColumnsPhase<R> extends IndividualSelectPhase<R> {
 
   public SelectColumnsPhase(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct,
       final ResultSetColumn... resultSetColumns) {
-    super(context, new SelectObject<R>(ctes, distinct, false));
+    super(context, ctes, distinct, false);
     for (ResultSetColumn c : resultSetColumns) {
       if (c == null) {
         throw new LiveSQLException("Select column cannot be null.");
       }
     }
-    this.select.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
+    MultiSet<R> m = this.combined.getLastSelect();
+    SelectObject<R> s = (SelectObject<R>) m;
+    s.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
   }
 
   // Next phases
 
   public SelectFromPhase<R> from(final TableExpression tableViewOrSubquery) {
-    return new SelectFromPhase<R>(this.context, this.select, tableViewOrSubquery);
+    return new SelectFromPhase<R>(this.context, this.combined, tableViewOrSubquery);
   }
 
 }

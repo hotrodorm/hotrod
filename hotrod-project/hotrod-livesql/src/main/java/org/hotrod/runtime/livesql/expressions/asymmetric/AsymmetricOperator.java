@@ -25,7 +25,7 @@ public abstract class AsymmetricOperator extends Predicate {
     super.renderInner(this.value, w);
     w.write(" " + this.operator + " (\n");
     w.enterLevel();
-    this.subquery.getSelect().renderTo(w);
+    this.subquery.getCombinedSelect().renderTo(w);
     w.exitLevel();
     w.write("\n)");
   }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.queries.Query;
+import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
 
 public interface Select<R> extends Query {
 
@@ -11,6 +12,6 @@ public interface Select<R> extends Query {
 
   Cursor<R> executeCursor();
 
-  SelectObject<R> getSelect();
+  CombinedSelectObject<R> getCombinedSelect();
 
 }

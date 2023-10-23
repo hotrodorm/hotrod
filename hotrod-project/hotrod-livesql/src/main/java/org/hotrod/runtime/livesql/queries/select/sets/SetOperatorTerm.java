@@ -2,15 +2,15 @@ package org.hotrod.runtime.livesql.queries.select.sets;
 
 public class SetOperatorTerm<R> {
 
-  private SetOperator<R> operator;
+  private SetOperator operator;
   private MultiSet<R> multiset;
 
-  public SetOperatorTerm(final SetOperator<R> operator, final MultiSet<R> multiset) {
+  public SetOperatorTerm(final SetOperator operator, final MultiSet<R> multiset) {
     this.operator = operator;
     this.multiset = multiset;
   }
 
-  public SetOperator<R> getOperator() {
+  public SetOperator getOperator() {
     return operator;
   }
 

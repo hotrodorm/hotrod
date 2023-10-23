@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
 
@@ -13,37 +14,49 @@ public class AbstractSelectPhase<R> implements ExecutableSelect<R> {
   // Properties
 
   protected LiveSQLContext context;
-  protected SelectObject<R> select;
+  protected CombinedSelectObject<R> combined;
 
-  public AbstractSelectPhase(final LiveSQLContext context, final SelectObject<R> select) {
+  public AbstractSelectPhase(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct,
+      final boolean doNotAliasColumns) {
     this.context = context;
-    this.select = select;
+    SelectObject<R> s = new SelectObject<>(ctes, distinct, doNotAliasColumns);
+    this.combined = new CombinedSelectObject<>(s);
+    s.setParent(this.combined);
+  }
+
+  public AbstractSelectPhase(final LiveSQLContext context, final CombinedSelectObject<R> combined) {
+    this.context = context;
+    this.combined = combined;
+  }
+
+  // Getters
+
+  @Override
+  public CombinedSelectObject<R> getCombinedSelect() {
+    return this.combined;
+  }
+
+  public SelectObject<R> getLastSelect() {
+    return this.combined.getLastSelect();
   }
 
   // Execute
 
   @Override
   public final List<R> execute() {
-    return this.select.findRoot().execute(this.context);
+    return this.combined.findRoot().execute(this.context);
   }
 
   @Override
   public final Cursor<R> executeCursor() {
-    return this.select.findRoot().executeCursor(this.context);
+    return this.combined.findRoot().executeCursor(this.context);
   }
 
   // Utilities
 
   @Override
   public final String getPreview() {
-    return this.select.findRoot().getPreview(this.context);
-  }
-
-  // Executable Select
-
-  @Override
-  public final SelectObject<R> getSelect() {
-    return this.select;
+    return this.combined.findRoot().getPreview(this.context);
   }
 
 }

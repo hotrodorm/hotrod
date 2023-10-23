@@ -6,14 +6,15 @@ import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 public class CombinedSelectLinkingPhase<R> {
 
   private LiveSQLContext context;
-  private CombinedSelectObject<R> cs;
-  private SetOperator<R> op;
+  private CombinedSelectObject<R> combined;
+  private SetOperator op;
 
-  public CombinedSelectLinkingPhase(final LiveSQLContext context, final CombinedSelectObject<R> cs,
-      final SetOperator<R> op) {
+  public CombinedSelectLinkingPhase(final LiveSQLContext context, final CombinedSelectObject<R> combined,
+      final SetOperator op) {
     this.context = context;
-    this.cs = cs;
+    this.combined = combined;
     this.op = op;
+    System.out.println("- ini: " + this.combined.toString());
   }
 
   // Select
@@ -36,11 +37,15 @@ public class CombinedSelectLinkingPhase<R> {
 
   private CombinedSelectColumnsPhase<R> preparePhase(final boolean distinct,
       final ResultSetColumn... resultSetColumns) {
-    CombinedSelectObject<R> newCS = this.cs.prepareCombinationWith(this.op);
+    System.out.println("- pre: " + this.combined.toString());
+    CombinedSelectObject<R> newCS = this.combined.prepareCombinationWith(this.op);
     CombinedSelectColumnsPhase<R> ph = new CombinedSelectColumnsPhase<>(this.context, null, distinct, newCS,
         resultSetColumns);
-    newCS.add(new SetOperatorTerm<>(this.op, ph.getSelect()));
-    System.out.println("Resulting: " + newCS.toString());
+    newCS.add(this.op, ph.getLastSelect());
+    ph.getLastSelect().setParent(newCS);
+    ph.setCombinedSelectObject(newCS);
+    System.out.println("+ Resulting: " + newCS.toString());
+    System.out.println("+ Resulting (p): " + ph.getCombinedSelect().toString());
     return ph;
   }
 

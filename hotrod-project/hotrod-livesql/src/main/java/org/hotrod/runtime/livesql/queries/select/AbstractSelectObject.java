@@ -404,14 +404,6 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
 
   }
 
-  public MultiSet<R> findRoot() {
-    MultiSet<R> s = this;
-    while (s.getParent() != null) {
-      s = s.getParent();
-    }
-    return s;
-  }
-
   public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
     if (this.baseTableExpression != null) {
       this.baseTableExpression.validateTableReferences(tableReferences, ag);
@@ -587,7 +579,6 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
     }
   }
 
-  abstract List<ResultSetColumn> listColumns();
 
   public final String toString() {
     return "s" + IdUtil.id(this);

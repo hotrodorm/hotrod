@@ -22,7 +22,7 @@ public class NotExists extends Predicate {
   public void renderTo(final QueryWriter w) {
     w.write("not exists (\n");
     w.enterLevel();
-    this.subquery.getSelect().renderTo(w);
+    this.subquery.getCombinedSelect().renderTo(w);
     w.exitLevel();
     w.write("\n)");
   }
