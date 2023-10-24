@@ -239,14 +239,14 @@ public class App {
 
 //    // 1. UNION + UNION
 
-    Select<Row> q = sql.select(sql.literal(123).as("abc")) //
-//        .union().select(sql.literal(456)) //
-        .union().select(sql.literal(789)) //
-        .orderBy(sql.ordering("abc").desc(), sql.ordering(1)) //
-    ;
-
-    System.out.println(q.getPreview());
-    q.execute().forEach(r -> System.out.println("row: " + r));
+//    Select<Row> q = sql.select(sql.literal(123).as("abc")) //
+////        .union().select(sql.literal(456)) //
+//        .union().select(sql.literal(789)) //
+//        .orderBy(sql.ordering("abc").desc(), sql.ordering(1)) //
+//    ;
+//
+//    System.out.println(q.getPreview());
+//    q.execute().forEach(r -> System.out.println("row: " + r));
 
 //    // 2. UNION + EXCEPT
 
@@ -286,15 +286,16 @@ public class App {
 //    System.out.println(q.getPreview());
 //    q.execute().forEach(r -> System.out.println("row: " + r));
 
-    // 6. INTERSECT + EXCEPT + INTERSECT + UNION
+    // 6. INTERSECT + EXCEPT + INTERSECT + INTERSECT + UNION
 
 //    Select<Row> q = sql.select(sql.literal(123).as("def")) //
 //        .intersect().select(sql.literal(456)) //
 //        .except().select(sql.literal(789)) //
 //        .intersect().select(sql.literal(100)) //
+//        .intersect().select(sql.literal(101)) //
 //        .union() //
 //        .select(sql.literal(100)) //
-////        .orderBy(sql.ordering(1).desc(), sql.ordering("def"))
+//        .orderBy(sql.ordering(1).desc(), sql.ordering("def"))
 //    //
 //    ;
 //
@@ -303,14 +304,38 @@ public class App {
 
     // 7. INTERSECT + ENCLOSE (UNION) + INTERSECT
 
-//    Select<Row> q = 
-//        sql.enclose(
-//        sql.enclose(sql.select(sql.literal(123)).union().select(sql.literal(456))  )) //
-//        .intersect().select(sql.literal(789)) //
-//    ;
+//    Select<Row> q = //
+//        sql.enclose( //
+////        sql.select(sql.literal(1))
+////        sql.enclose( //
+//            sql.select(sql.literal(123).as("abc")).union().select(sql.literal(456)) //
+////        ) //
+//        ) //
+//            .intersect().select(sql.literal(789)) //
+//            .orderBy(sql.ordering("abc"));
+////        sql.select(sql.literal(99)).from(a).orderBy(a.id);
 //
 //    System.out.println(q.getPreview());
+//    System.out.println("tree: " + q.getCombinedSelect().toString());
 //    q.execute().forEach(r -> System.out.println("row: " + r));
+
+    // 8. NESTED-UNION
+
+    Select<Row> q = sql.select(sql.literal(123).as("def")) //
+//        .union() //
+//        .select(sql.literal(100)) //
+        .union(sql.select(sql.literal(200)).except().select(sql.literal(300)).union( //
+            sql.select(sql.literal(400)) //
+                .from(a) //
+                .orderBy(a.id).limit(100) //
+        )) //
+        .orderBy(sql.ordering(1))
+    //
+    ;
+
+    System.out.println("tree: " + q.getCombinedSelect().toString());
+    System.out.println(q.getPreview());
+    q.execute().forEach(r -> System.out.println("row: " + r));
 
   }
 
