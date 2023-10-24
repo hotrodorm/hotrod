@@ -194,6 +194,11 @@ Particularly using nested set operators multi-level, complex queries can be writ
 
 Inline and nested set operators can be intermixed seamlessly as needed in any part of the query.
 
+Nesting set operators can quickly become complex. For example if `A`, `B`, `C`, `D`, `E`, `F`, 
+and `G` represent SELECT-subqueries then LiveSQL set syntax can be used to express them using
+set algebra to represent, for example, `(A &#x222a; (B &#x2229; (C - D &#x2229; E) - F &#x222a; G)`,
+or any other complex set operation.
+
 
 ## Column Names
 
