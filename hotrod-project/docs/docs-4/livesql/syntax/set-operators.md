@@ -77,13 +77,13 @@ The SQL Standard defined the following six standard operators:
 
 - UNION [DISTINCT]
 - UNION ALL
-- INTERSECT `[DISTINCT]`
+- INTERSECT [DISTINCT]
 - INTERSECT ALL
-- EXCEPT \[DISTINCT\]
+- EXCEPT [DISTINCT]
 - EXCEPT ALL
 
-The difference between the `Distinct` variant &mdash; the default one &mdash; and the `All` variant
-is that the former revomes duplicate rows, essentially working as a traditional set operator. The second one does not remove duplicates and treats all result sets as *multi-sets*; that is, they can include duplicate rows.
+The difference between the `DISTINCT` variant &mdash; that is the default one &mdash; and the
+`ALL` variant is that the former removes duplicate rows, essentially working as a traditional set operator. The second one does not remove duplicate rows and treats all result sets as *multi-sets*; that is, they can include duplicate rows. This is valid for union, intersection, and set subtraction.
 
 
 ## Number of Columns and Column Types
@@ -96,10 +96,10 @@ be compatible.
 The SQL Standard defines that `INTERSECT` has a higher precedence compared to `UNION` or `EXCEPT`. Regarding `UNION` and `EXCEPT` they should be processed in the order they are defined,
 from left to right.
 
-Unfortunately, not all database engines adhere to this precedence, notably Oracle database and H2 database.
+Unfortunately, not all database engines adhere to this precedence. Notably Oracle database and H2 database have a different default precedence.
 
-For portability and consistency purposes across databases, LiveSQL adheres to the SQL Standard and automatically add parenthesis when set operators of difference precedence are combined in any section 
-the LiveSQL query.
+For portability and consistency across databases, LiveSQL adheres to the SQL Standard and automatically add parenthesis when set operators of difference precedence are combined in any section of a
+LiveSQL query.
 
 For example:
 
@@ -112,7 +112,7 @@ List<Row> rows = sql.select(sql.val(100))
     .execute();
 ```
 
-Produces the query:
+Always produces the query:
 
 ```sql
 select 100
@@ -159,12 +159,12 @@ List<Row> rows =
 ```
 
 
-## Single and Multi-Level Algebra
+## Inline and Nested Set Operators
 
 As shown in the previous examples the set operators can be placed all in the same level, or with
 strict precedence by the use of parenthesis. LiveSQL's set operators come in two flavors: inline and nested.
 
-Inline operators don't include any parameters when used. For example `.union()`. That means a `.select()` query comes right after it and inline precedence is used to assemble them. For example:
+Inline set operators don't include any parameters when used. For example `.union()`. That means a `.select()` query comes right after it and inline precedence is used to assemble them. For example:
 
 ```java
 List<Row> rows = sql.select(sql.val(100))
@@ -175,7 +175,7 @@ List<Row> rows = sql.select(sql.val(100))
     .execute();
 ```
 
-Nested operators do include a SELECT query as a parameters. This nested query can be as simple as
+Nested set operators do include a SELECT query as a parameters. This nested query can be as simple as
 as plain SELECT or can include any number of variations, including full SELECT syntax, and more nested
 subqueries. For example:
 
@@ -190,12 +190,14 @@ List<Row> rows = sql.select(sql.val(100))
     .execute();
 ```
 
-Single-level and multi-level algebra can be intermixed seamlessly as needed.
+Particularly using nested set operators multi-level, complex queries can be written using LiveSQL.
+
+Inline and nested set operators can be intermixed seamlessly as needed in any part of the query.
 
 
 ## Column Names
 
-The SQL result set that a set operator produces includes column names that take their names from the original column names (from tables or by aliasing with `AS`) of the first combined SELECT in the level. Column names or aliases from the second sub-SELECT and on in the set algebra are ignored.
+The SQL result set that a set operator produces includes column names that take their names from the original column names (from tables or expressions aliased with `AS`) of the first combined SELECT in the level. Column names or aliases from the second sub-SELECT and on in the set algebra are ignored.
 
 Even though they look identical to the original column names of the first sub-SELECT, these names are not related to them anymore; they belong to the operator scope, not the table. Therefore they cannot
 be qualified with table prefixes (as in `a.amount`) but only as plain identifiers (just `amount`).
