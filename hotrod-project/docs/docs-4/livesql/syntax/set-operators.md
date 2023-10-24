@@ -202,7 +202,7 @@ The SQL result set that a set operator produces includes column names that take 
 Even though they look identical to the original column names of the first sub-SELECT, these names are not related to them anymore; they belong to the operator scope, not the table. Therefore they cannot
 be qualified with table prefixes (as in `a.amount`) but only as plain identifiers (just `amount`).
 
-This has implications when referring to these, specifically when set operators are used as part of a generic subquery or when ordering result sets.
+This has implications when referring to these columns, specifically when set operators are used as part of a generic subquery or when ordering result sets.
 
 
 ## Ordering
@@ -236,7 +236,9 @@ List<Row> rows = sql
 Ordering can combine multiple ordering terms using names or ordinals interchangeably.
 
 As opposed to plain SELECT queries, expression language is not allowed when specifying the ordering
-of queries combined with set operators, but only plain columns.
+of queries combined with set operators, but only plain columns. That is, LiveSQL does not accept
+composite expressions such as `sql.ordering("rid").plus(10).desc()`, but only plain ordering terms such
+as `sql.ordering("rid").desc()`.
 
 
 ## Offsets and Limits
@@ -245,28 +247,25 @@ The result set of a set operator can be subject to the offset and limit clauses,
 SELECT query.
 
 For example the following query skips 50 rows and then limits the result set of the combined query 
-to to 10 rows:
+to 10 rows:
 
 
 ```java
 AccountTable a = AccountDAO.newTable("a");
 ContractorTable c = ContractorDAO.newTable("c");
 
-List<Row> rows = sql.select(a.id, a.name)
-    .from(a)
-    .where(a.region.eq(1201))
+List<Row> rows = sql
+    .select(a.id, a.name).from(a).where(a.region.eq(1201))
     .union()
-    .select(c.cid, a.contractorName)
-    .from(c)
-    .where(c.regionId.eq(1201))
+    .select(c.cid, a.contractorName).from(c).where(c.regionId.eq(1201))
     .orderBy(sql.ordering(1), sql.ordering(2))
     .offset(50)
     .limit(10)
     .execute();
 ```
 
-**Note**: Althoug it's not strictly necesarry, it's a good practice to use `ORDER BY` before offsetting
-and limiting.
+**Note**: Although it's not strictly necesarry, it's a good practice to use `ORDER BY` before
+offsetting and limiting.
 
 
 
