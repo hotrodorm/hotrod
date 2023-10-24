@@ -12,7 +12,8 @@ public class CombinedSelectOrderByPhase<R> extends AbstractSelectPhase<R> {
   CombinedSelectOrderByPhase(final LiveSQLContext context, final CombinedSelectObject<R> combined,
       final CombinedOrderingTerm... orderingTerms) {
     super(context, combined);
-    this.getLastSelect().setColumnOrderings(Arrays.asList(orderingTerms));
+    combined.setColumnOrderings(Arrays.asList(orderingTerms));
+//    System.out.println(">>> COMBINED ORDERING on: " + combined);
   }
 
   // Same phase

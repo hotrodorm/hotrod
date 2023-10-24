@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
+import org.hotrod.runtime.livesql.queries.select.Select;
 
 public class IndividualSelectPhase<R> extends AbstractSelectPhase<R> {
 
@@ -44,18 +45,34 @@ public class IndividualSelectPhase<R> extends AbstractSelectPhase<R> {
 
   // Nested Set Operators
 
-//  public CombinedSelectLinkingPhase<R> union(final Select<R> select) {
-//    CombinedSelectObject<R> cs = boxSelect();
-//    SetOperator<R> op = new UnionOperator<>();
-//    CombinedSelectObject<R> newCS = cs.prepareCombinationWith(op);
-//
-//    CombinedSelectPhase<R> ph = new CombinedSelectPhase<R><>(this.context, null, distinct, newCS,
-//        resultSetColumns);
-//
-//    newCS.add(new SetOperatorTerm<>(this.op, ph.getSelect()));
-//    System.out.println("Resulting: " + newCS.toString());
-//
-//    return new CombinedSelectLinkingPhase<>(this.context, boxSelect(), new UnionOperator<>());
-//  }
+  public CombinedSelectPhase<R> union(final Select<R> select) {
+    return combine(select, new UnionOperator());
+  }
+
+  public CombinedSelectPhase<R> unionAll(final Select<R> select) {
+    return combine(select, new UnionAllOperator());
+  }
+
+  public CombinedSelectPhase<R> except(final Select<R> select) {
+    return combine(select, new ExceptOperator());
+  }
+
+  public CombinedSelectPhase<R> exceptAll(final Select<R> select) {
+    return combine(select, new ExceptAllOperator());
+  }
+
+  public CombinedSelectPhase<R> intersect(final Select<R> select) {
+    return combine(select, new IntersectOperator());
+  }
+
+  public CombinedSelectPhase<R> intersectAll(final Select<R> select) {
+    return combine(select, new IntersectAllOperator());
+  }
+
+  private CombinedSelectPhase<R> combine(final Select<R> select, final SetOperator op) {
+    CombinedSelectObject<R> newCombined = this.combined.prepareCombinationWith(op);
+    newCombined.add(op, select.getCombinedSelect());
+    return new CombinedSelectPhase<>(this.context, newCombined);
+  }
 
 }

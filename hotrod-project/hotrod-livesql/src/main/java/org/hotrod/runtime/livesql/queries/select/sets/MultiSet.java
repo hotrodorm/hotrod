@@ -49,14 +49,21 @@ public abstract class MultiSet<R> {
     AliasGenerator ag = new AliasGenerator();
     this.validateTableReferences(tableReferences, ag);
 
+    // Flatten levels
+
+    this.flatten();
+
     // Render
 
     QueryWriter w = new QueryWriter(context.getLiveSQLDialect());
     renderTo(w, false);
     return w.getPreparedQuery();
+
   }
 
-  // Utils
+  public abstract void flatten();
+
+  // Utilities
 
   @SuppressWarnings("unchecked")
   protected List<R> executeLiveSQL(final LiveSQLContext context, final LiveSQLPreparedQuery q) {

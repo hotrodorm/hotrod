@@ -8,7 +8,7 @@ public class CombinedSelectOffsetPhase<R> extends AbstractSelectPhase<R> {
 
   CombinedSelectOffsetPhase(final LiveSQLContext context, final CombinedSelectObject<R> combined, final int offset) {
     super(context, combined);
-    this.getLastSelect().setOffset(offset);
+    combined.setOffset(offset);
   }
 
   // Next phases

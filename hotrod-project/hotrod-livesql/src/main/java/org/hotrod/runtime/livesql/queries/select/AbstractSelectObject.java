@@ -579,9 +579,8 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
     }
   }
 
-
   public final String toString() {
-    return "s" + IdUtil.id(this);
+    return "s" + IdUtil.id(this) + (this.orderingTerms != null ? "o" : "");
   }
 
 }

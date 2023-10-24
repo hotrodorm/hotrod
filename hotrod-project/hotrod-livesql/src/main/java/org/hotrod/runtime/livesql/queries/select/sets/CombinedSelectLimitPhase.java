@@ -8,7 +8,7 @@ public class CombinedSelectLimitPhase<R> extends AbstractSelectPhase<R> {
 
   CombinedSelectLimitPhase(final LiveSQLContext context, final CombinedSelectObject<R> combined, final int limit) {
     super(context, combined);
-    this.getLastSelect().setLimit(limit);
+    combined.setLimit(limit);
   }
 
 }

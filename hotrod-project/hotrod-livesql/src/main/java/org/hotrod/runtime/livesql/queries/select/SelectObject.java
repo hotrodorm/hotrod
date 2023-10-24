@@ -117,4 +117,9 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
     return list;
   }
 
+  @Override
+  public void flatten() {
+    // Nothing to do. It's already a single level
+  }
+
 }

@@ -5,7 +5,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.hotrod.runtime.cursors.Cursor;
+import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.livesql.ordering.CombinedOrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
@@ -28,42 +31,90 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
    * </pre>
    */
 
+  private boolean forceParenthesis;
   private MultiSet<R> first;
   private List<SetOperatorTerm<R>> combined;
-  private SelectObject<R> lastSelect;
+  private SelectObject<R> lastSelect; // TODO: Remove?
+
+  private List<CombinedOrderingTerm> orderingTerms = null;
+  private Integer offset = null;
+  private Integer limit = null;
 
   public CombinedSelectObject(final MultiSet<R> first) {
+    initialize(first, false);
+  }
+
+  public CombinedSelectObject(final MultiSet<R> first, final boolean forceParenthesis) {
+    initialize(first, forceParenthesis);
+  }
+
+  private void initialize(final MultiSet<R> first, final boolean forceParenthesis) {
+    this.forceParenthesis = forceParenthesis;
     this.first = first;
     this.combined = new ArrayList<>();
     this.lastSelect = null;
+    first.setParent(this);
   }
 
   public CombinedSelectObject(final SelectObject<R> first) {
+    this.forceParenthesis = false;
     this.first = first;
     this.combined = new ArrayList<>();
     this.lastSelect = first;
+    first.setParent(this);
   }
 
   public void add(final SetOperator operator, final MultiSet<R> multiset) {
     SetOperatorTerm<R> term = new SetOperatorTerm<>(operator, multiset);
     this.combined.add(term);
+    multiset.setParent(this);
   }
 
   public void add(final SetOperator operator, final SelectObject<R> select) {
     SetOperatorTerm<R> term = new SetOperatorTerm<>(operator, select);
     this.combined.add(term);
     this.lastSelect = select;
+    select.setParent(this);
+  }
+
+  public void setColumnOrderings(final List<CombinedOrderingTerm> orderingTerms) {
+    this.orderingTerms = orderingTerms;
+  }
+
+  public void setOffset(final Integer offset) {
+    this.offset = offset;
+  }
+
+  public void setLimit(final Integer limit) {
+    this.limit = limit;
+  }
+
+  public boolean forcesParenthesis() {
+    return forceParenthesis;
+  }
+
+  // tree: [4f [1 s2, u/s3], ]
+
+  @Override
+  public void flatten() {
+    if (this.combined.isEmpty()) {
+      try {
+        CombinedSelectObject<R> nestedFirst = (CombinedSelectObject<R>) this.first;
+        if (!nestedFirst.forceParenthesis) {
+          this.first = nestedFirst.first;
+          this.combined = nestedFirst.combined;
+        }
+      } catch (ClassCastException e) {
+        // Nothing to do
+      }
+    }
+
+    this.first.flatten();
+    this.combined.forEach(c -> c.getMultiset().flatten());
+
   }
 
   // Rendering
-
-  public MultiSet<R> findRoot() {
-    MultiSet<R> s = this;
-    while (s.getParent() != null) {
-      s = s.getParent();
-    }
-    return s;
-  }
 
   public void renderTo(final QueryWriter w) {
     this.renderTo(w, false);
@@ -71,19 +122,38 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
 
   public void renderTo(final QueryWriter w, final boolean inline) {
 
-    System.out.println(" --- level: " + w.getLevel() + "  inline=" + inline + " -- parent=" + this.getParent());
+//    System.out.println(" --- level: " + w.getLevel() + "  inline=" + inline + " -- parent=" + this.getParent());
+
+    LiveSQLDialect liveSQLDialect = w.getSQLDialect();
+    PaginationType paginationType = liveSQLDialect.getPaginationRenderer().getPaginationType(this.offset, this.limit);
+
+    // Entering level
 
     if (inline) {
       w.write(" ");
     }
 
-    if (this.getParent() != null) {
-      w.write("(\n");
-    }
+    // Entering level when no forced parenthesis
 
-    if (this.getParent() != null) {
+    if (!this.forceParenthesis && this.getParent() != null) {
+      w.write("(\n");
       w.enterLevel();
     }
+
+    // Enclosing pagination - begin
+
+    if ((this.offset != null || this.limit != null) && paginationType == PaginationType.ENCLOSE) {
+      liveSQLDialect.getPaginationRenderer().renderBeginEnclosingPagination(this.offset, this.limit, w);
+    }
+
+    // Entering level when forced parenthesis
+
+    if (this.forceParenthesis) {
+      w.write("(\n");
+      w.enterLevel();
+    }
+
+    // Sub-queries
 
     this.first.renderTo(w, false);
 
@@ -93,13 +163,47 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
       t.getMultiset().renderTo(w, true);
     }
 
-    if (this.getParent() != null) {
-      w.exitLevel();
-    }
+    // Exiting level when forced parenthesis
 
-    if (this.getParent() != null) {
+    if (this.forceParenthesis) {
+      w.exitLevel();
       w.write("\n)");
     }
+
+    // ORDER BY
+
+    if (this.orderingTerms != null && !this.orderingTerms.isEmpty()) {
+      w.write("\nORDER BY ");
+      boolean first = true;
+      for (CombinedOrderingTerm term : this.orderingTerms) {
+        if (first) {
+          first = false;
+        } else {
+          w.write(", ");
+        }
+        term.renderTo(w);
+      }
+    }
+
+    // Bottom OFFSET and LIMIT
+
+    if ((this.offset != null || this.limit != null) && paginationType == PaginationType.BOTTOM) {
+      liveSQLDialect.getPaginationRenderer().renderBottomPagination(this.offset, this.limit, w);
+    }
+
+    // Enclosing pagination - end
+
+    if ((this.offset != null || this.limit != null) && paginationType == PaginationType.ENCLOSE) {
+      liveSQLDialect.getPaginationRenderer().renderEndEnclosingPagination(this.offset, this.limit, w);
+    }
+
+    // Exiting level when not forced parenthesis
+
+    if (!this.forceParenthesis && this.getParent() != null) {
+      w.exitLevel();
+      w.write("\n)");
+    }
+
   }
 
   // Combining
@@ -107,19 +211,19 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
   public CombinedSelectObject<R> prepareCombinationWith(final SetOperator op) {
 
     if (this.combined.isEmpty()) {
-      System.out.println("// 0 no precedence yet");
+//      System.out.println("// 0 no precedence yet");
       return this;
     }
 
     int currentPrecedence = this.combined.get(0).getOperator().getPrecedence();
 
     if (op.getPrecedence() == currentPrecedence) {
-      System.out.println("// 1 equal precedence");
+//      System.out.println("// 1 equal precedence");
 
       return this;
 
     } else if (op.getPrecedence() < currentPrecedence) { // e.g. INTERSECT after UNION
-      System.out.println("// 2 higher precedence");
+//      System.out.println("// 2 higher precedence");
 
       /**
        * <pre>
@@ -140,7 +244,7 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
       return o;
 
     } else { // e.g. UNION after INTERSECT
-      System.out.println("// 3 lower precedence");
+//      System.out.println("// 3 lower precedence");
 
       /**
        * <pre>
@@ -202,7 +306,8 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
 
   public final String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("[" + IdUtil.id(this) + " ");
+    sb.append(
+        "[" + IdUtil.id(this) + (this.forceParenthesis ? "f" : "") + (this.orderingTerms != null ? "o" : "") + " ");
     sb.append(this.first.toString());
     sb.append(", ");
     sb.append(this.combined.stream().map(c -> c.toString()).collect(Collectors.joining(", ")));

@@ -44,19 +44,19 @@ public class AbstractSelectPhase<R> implements ExecutableSelect<R> {
 
   @Override
   public final List<R> execute() {
-    return this.combined.findRoot().execute(this.context);
+    return this.combined.execute(this.context);
   }
 
   @Override
   public final Cursor<R> executeCursor() {
-    return this.combined.findRoot().executeCursor(this.context);
+    return this.combined.executeCursor(this.context);
   }
 
   // Utilities
 
   @Override
   public final String getPreview() {
-    return this.combined.findRoot().getPreview(this.context);
+    return this.combined.getPreview(this.context);
   }
 
 }

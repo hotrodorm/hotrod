@@ -34,4 +34,9 @@ class PGSelectObject<R> extends AbstractSelectObject<R> {
     return this.resultSetColumns;
   }
 
+  @Override
+  public void flatten() {
+    // Nothing to do. It's already a single level
+  }
+
 }

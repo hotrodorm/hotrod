@@ -14,7 +14,7 @@ public class CombinedSelectLinkingPhase<R> {
     this.context = context;
     this.combined = combined;
     this.op = op;
-    System.out.println("- ini: " + this.combined.toString());
+//    System.out.println("- ini: " + this.combined.toString());
   }
 
   // Select
@@ -37,15 +37,15 @@ public class CombinedSelectLinkingPhase<R> {
 
   private CombinedSelectColumnsPhase<R> preparePhase(final boolean distinct,
       final ResultSetColumn... resultSetColumns) {
-    System.out.println("- pre: " + this.combined.toString());
+//    System.out.println("- pre: " + this.combined.toString());
     CombinedSelectObject<R> newCS = this.combined.prepareCombinationWith(this.op);
     CombinedSelectColumnsPhase<R> ph = new CombinedSelectColumnsPhase<>(this.context, null, distinct, newCS,
         resultSetColumns);
     newCS.add(this.op, ph.getLastSelect());
     ph.getLastSelect().setParent(newCS);
     ph.setCombinedSelectObject(newCS);
-    System.out.println("+ Resulting: " + newCS.toString());
-    System.out.println("+ Resulting (p): " + ph.getCombinedSelect().toString());
+//    System.out.println("+ Resulting: " + newCS.toString());
+//    System.out.println("+ Resulting (p): " + ph.getCombinedSelect().toString());
     return ph;
   }
 
