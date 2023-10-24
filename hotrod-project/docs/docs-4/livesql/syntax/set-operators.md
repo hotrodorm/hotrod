@@ -197,7 +197,7 @@ LiveSQL. Nesting set operators can quickly become complex and difficult to debug
 if A, B, C, D, E, F, and G represent SELECT-subqueries then LiveSQL's set syntax can be used to
 represent, for example:
 
-> (A &#x222a; (B &#x2229; (C - D &#x2229; E) - F &#x222a; G). 
+(A &#x222a; (B &#x2229; (C - D &#x2229; E) - F &#x222a; G)
 
 As you can see, this is not trivial anymore, to interpret or to debug.
 
