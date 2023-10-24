@@ -199,9 +199,9 @@ and `G` represent SELECT-subqueries then LiveSQL set syntax can be used to expre
 set algebra to represent, for example, `(A &#8592; (B &#x2229; (C - D &#x2229; E) - F &#x222a; G)`,
 or any other complex set operation:
 
-(A &#8592; (B &#x2229; (C - D &#x2229; E) - F &#x222a; G)
+(`A` &#x222a; (`B` &#x2229; (`C` - `D` &#x2229; `E`) - `F` &#x222a; `G`)
 
-    (Z &#8592; (B &#x2229; (C - D &#x2229; E) - F &#x222a; G)
+(A &#8592; (B &#x2229; (C - D &#x2229; E) - F &#x222a; G)
 
 
 ## Column Names
