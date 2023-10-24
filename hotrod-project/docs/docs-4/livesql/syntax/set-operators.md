@@ -1,11 +1,19 @@
 # LiveSQL Set Operators
 
-Set Operators play an integral part of SQL to consolidate separate subqueries into
-a single one according to traditional set algebra.
+Set Operators play an integral part of the SQL Standard to consolidate separate subqueries into
+a single one according to traditional set algebra, using UNION, INTERSECT, and EXCEPT to combine them.
 
 Each element in this set algebra is a select query. These select queries can be combined into
 complex set expressions including any combination of the set operators and any number of nested
 parenthesis to group them.
+
+
+## Background
+
+This important functionality is available starting in version 4.2. Although some efforts were made
+in version 3.0 to include the set operators they were not made public until version 4.2, where
+they were included with all variants an options.
+
 
 ## Examples
 
@@ -158,6 +166,8 @@ List<Row> rows =
     .execute();
 ```
 
+Parenthesis can also be included using nested set operators, as discussed in the next section.
+
 
 ## Inline and Nested Set Operators
 
@@ -242,10 +252,11 @@ List<Row> rows = sql
 
 Ordering can combine multiple ordering terms using names or ordinals interchangeably.
 
-As opposed to plain SELECT queries, expression language is not allowed when specifying the ordering
-of queries combined with set operators, but only plain columns. That is, LiveSQL does not accept
-composite expressions such as `sql.ordering("rid").plus(10).desc()`, but only plain ordering terms such
-as `sql.ordering("rid").desc()`.
+As opposed to plain SELECT queries, expressions are not allowed when specifying the ordering
+of queries combined with set operators. Only plain columns are allowed. That is, LiveSQL does
+not accept composite expressions such as `rid + 10` or `rid + balance`, but only plain ordering terms such as `rid`.
+
+Nevertheless, ordering terms can include the ordering direction and the nulls ordering clause as well. For example, the ordering `rid DESC NULLS LAST` (LiveSQL's `sql.ordering("rid").desc().nullsLast()`) is perfectly valid.
 
 
 ## Offsets and Limits

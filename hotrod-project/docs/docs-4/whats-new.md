@@ -1,5 +1,19 @@
 # What's New in HotRod 4
 
+## What's New in HotRod 4.2 (unreleased)
+
+HotRod 4.2 add set operators (UNION, INTERSECT, EXCEPT) to LiveSQL and adds a few extra enhancements to the LiveSQL syntax.
+
+### 1. Set Operators
+
+The set operators UNION [ALL], INTERSECT [ALL], and EXCEPT [ALL] are included in the LiveSQL syntax. This implementation also includes nesting set operators using parenthesis, managing default and explicit precedence. It also includes set ordering, offsets, and limiting.
+
+### 2. Literal Scalars
+
+Using `sql.literal()` plain, non-parameterized values can be included in a SQL query for all integers,
+and short and safe Strings (max 100-char, no special chars).
+
+
 ## What's New in HotRod 4.1
 
 HotRod 4.1 add subqueries to LiveSQL and adds a few extra enhancements to the LiveSQL syntax.
@@ -19,7 +33,7 @@ LiveSQL changes:
 
 - The `.asc()` method is not needed anymore when writing an ordering term. It's now assumed by default.
 - Explicit parentheses added for expressions using `sql.enclose()`.
-- All literals (including integer numbers and safe strings) are now parameterized to help database engines with query caching and optimization.
+- All scalar values (including integer numbers and strings) are now parameterized to help database engines with query caching and optimization.
 
 
 ## What's New in HotRod 4.0
