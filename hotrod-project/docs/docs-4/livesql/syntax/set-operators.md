@@ -93,11 +93,17 @@ The SQL Standard defined the following six standard operators:
 The difference between the `DISTINCT` variant &mdash; that is the default one &mdash; and the
 `ALL` variant is that the former removes duplicate rows, essentially working as a traditional set operator. The second one does not remove duplicate rows and treats all result sets as *multi-sets*; that is, they can include duplicate rows. This is valid for union, intersection, and set subtraction.
 
+Not all database engines support all these operators. Particularly, EXCEPT was implemented recently
+by MariaDB (since 10.4) and MYSQL (since 8.0.31), and INTERSECT ALL and EXCEPT ALL are not available
+in several databases. LiveSQL's dialect detects the engine and its version and throws an error
+message if an operator is not available and does not execute the query in the database.
+
 
 ## Number of Columns and Column Types
 
 All sub-SELECT of a set operator must have the same number of columns. The column types must also
 be compatible.
+
 
 ## Precedence
 
