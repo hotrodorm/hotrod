@@ -75,11 +75,11 @@ as well as subqueries, and the full LiveSQL expression language.
 
 The SQL Standard defined the following six standard operators:
 
-- UNION ``[DISTINCT]``
+- UNION [DISTINCT]
 - UNION ALL
-- INTERSECT ``[DISTINCT]``
+- INTERSECT `[DISTINCT]`
 - INTERSECT ALL
-- EXCEPT ``[DISTINCT]``
+- EXCEPT \[DISTINCT\]
 - EXCEPT ALL
 
 The difference between the `Distinct` variant &mdash; the default one &mdash; and the `All` variant
