@@ -96,7 +96,7 @@ The difference between the `DISTINCT` variant &mdash; that is the default one &m
 Not all database engines support all these operators. Particularly, EXCEPT was implemented recently
 by MariaDB (since 10.4) and MYSQL (since 8.0.31), and INTERSECT ALL and EXCEPT ALL are not available
 in several databases. LiveSQL's dialect detects the engine and its version and throws an error
-message if an operator is not available and does not execute the query in the database.
+message if an operator is not available; in these cases, it does not execute the query in the database.
 
 
 ## Number of Columns and Column Types
