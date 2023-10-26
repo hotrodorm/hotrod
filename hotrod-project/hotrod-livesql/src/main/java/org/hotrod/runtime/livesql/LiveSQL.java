@@ -1,5 +1,7 @@
 package org.hotrod.runtime.livesql;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -61,6 +63,7 @@ import org.hotrod.runtime.livesql.expressions.datetime.DateTimeConstant;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.datetime.EnclosedDateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.general.TupleExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.DecimalLiteral;
 import org.hotrod.runtime.livesql.expressions.numbers.EnclosedNumberExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.IntegerLiteral;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberConstant;
@@ -851,8 +854,22 @@ public class LiveSQL {
 
   // Literals
 
+  // Covers: byte, short, int, and long
   public IntegerLiteral literal(final long value) {
     return new IntegerLiteral(value);
+  }
+
+  public IntegerLiteral literal(final BigInteger value) {
+    return new IntegerLiteral(value);
+  }
+
+  // Covers: float and double
+  public DecimalLiteral literal(final double value, final int decimalPlaces) {
+    return new DecimalLiteral(value, decimalPlaces);
+  }
+
+  public DecimalLiteral literal(final BigDecimal value, final int decimalPlaces) {
+    return new DecimalLiteral(value, decimalPlaces);
   }
 
   public StringLiteral literal(final String value) {

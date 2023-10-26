@@ -119,6 +119,10 @@ public class SUtil {
     return getFiller(c, length);
   }
 
+  public static String repeat(final char c, final int length) {
+    return getFiller(c, length);
+  }
+
   public static String getFiller(final char c, final int length) {
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < length; i++) {

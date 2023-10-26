@@ -1,26 +1,21 @@
 package org.hotrod.runtime.livesql.expressions.numbers;
 
+import java.math.BigInteger;
+
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
-public class IntegerLiteral extends NumberExpression {
-
-  // Properties
-
-  private long value;
+public class IntegerLiteral extends NumberLiteral {
 
   // Constructor
 
   public IntegerLiteral(final long value) {
     super(Expression.PRECEDENCE_LITERAL);
-    this.value = value;
+    this.formatted = "" + value;
   }
 
-  // Rendering
-
-  @Override
-  public void renderTo(final QueryWriter w) {
-    w.write("" + this.value);
+  public IntegerLiteral(final BigInteger value) {
+    super(Expression.PRECEDENCE_LITERAL);
+    this.formatted = "" + value;
   }
 
 }
