@@ -2,23 +2,25 @@
 
 ## What's New in HotRod 4.2 (unreleased)
 
-HotRod 4.2 add set operators (UNION, INTERSECT, EXCEPT) to LiveSQL and adds a few extra enhancements to the LiveSQL syntax.
+HotRod 4.2 adds set operators (UNION, INTERSECT, EXCEPT) and literal scalar values to the LiveSQL syntax.
 
 ### 1. Set Operators
 
-The set operators UNION [ALL], INTERSECT [ALL], and EXCEPT [ALL] are included in the LiveSQL syntax. This implementation also includes nesting set operators using parenthesis, managing default and explicit precedence. It also includes set ordering, offsets, and limiting.
+The set operators UNION [ALL], INTERSECT [ALL], EXCEPT [ALL], and combinations of them are now included in the LiveSQL syntax. This implementation also includes nesting set operators using parenthesis, managing default and explicit precedence. Finally, it also includes set ordering, offsets, and limiting.
 
 ### 2. Literal Scalars
 
-Using `sql.literal()` plain, non-parameterized values can be included in a SQL query for all integers,
-and short and safe Strings (max 100-char, no special chars).
+Using `sql.literal()` literal scalar values can now be included in the query. Until now, the traditional option &mdash; `sql.val(constant)` &mdash;
+produces a query with a JDBC parameter where the constant is applied, to generate SQL Injection-safe queries and to allow database optimizers to 
+cache parameterized queries to ease the effort in the engine. On the flip side, literals provide more information to the optimizer to do its job
+better; however, constantly changing literals values defeat the cache and require the database optimizer to work harder.
 
 
 ## What's New in HotRod 4.1
 
 HotRod 4.1 add subqueries to LiveSQL and adds a few extra enhancements to the LiveSQL syntax.
 
-### 1. LiveSQL Subqueries
+### 1. Subqueries
 
 LiveSQL implements subqueries. These include Scalar Subqueries, Table Expressions, CTEs (plain and recursive) and Lateral Joins, in addition to IN/NOT IN, EXISTS/NOT EXISTS, and asymmetric operators. The extra syntax allows the developer to write complex SQL queries to adress more sophisticated data scenarios, without resorting to Nitro queries. Since writing LiveSQL code is faster than writing Nitro queries, this enhancement can significantly speed up development for queries of mid-level complexity.
 
@@ -44,16 +46,7 @@ HotRod 4.0 includes several major features as well as a many of minor improvemen
 
 This functionality affects all the modules.
 
-### 1.1 No Config Mode
-
-The main configuration file can be omitted for rapid prototyping. In this mode, a minimal
-setup of the Maven plugin produces a full persistence layer in no time. Also in this mode, HotRod 
-generates the persistence layer by
-scanning the current database schema. Sensible defaults are defined for all configuration
-parameters for a standard persistence layer. See the [Hello World](guides/hello-world.md)
-example to see it in action.
-
-### 1.2 Schema Discovery
+### 1.1 Schema Discovery
 
 Schema discovery can find tables and views in one or more schemas of the database
 and generate the persistence layer for them automatically. It's enabled in No Config
@@ -62,6 +55,15 @@ to specify a list of schemas to scan. Rules can be defined with
 a Name Solver and Type Solver to tailor the name generation of classes and
 the type and names of properties in the persistence layer. See
 [Schema Discovery](guides/schema-discovery.md) for details.
+
+### 1.2 No Config Mode
+
+The main configuration file can be omitted for rapid prototyping. In this mode, a minimal
+setup of the Maven plugin produces a full persistence layer in no time. Also in this mode, HotRod 
+generates the persistence layer by
+scanning the current database schema. Sensible defaults are defined for all configuration
+parameters for a standard persistence layer. See the [Hello World](guides/hello-world.md)
+example to see it in action.
 
 ### 1.3 Support for Multiple Datasources
 

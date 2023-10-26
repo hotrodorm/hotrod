@@ -4,7 +4,7 @@ import java.math.BigInteger;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
 
-public class IntegerLiteral extends NumberLiteral {
+public class IntegerLiteral extends NumericLiteral {
 
   // Constructor
 

@@ -1,5 +1,6 @@
 package org.hotrod.runtime.livesql.dialects;
 
+import org.hotrod.runtime.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.runtime.livesql.queries.select.CrossJoin;
@@ -256,6 +257,35 @@ public class MariaDBDialect extends LiveSQLDialect {
     if (canonical == null)
       return null;
     return "`" + canonical.replace("`", "``") + "`";
+  }
+
+  @Override
+  public DateTimeLiteralRenderer getDateTimeLiteralRenderer() {
+    return new DateTimeLiteralRenderer() {
+
+      @Override
+      public String renderDate(final String isoFormat) {
+        return "DATE '" + isoFormat + "'";
+      }
+
+      @Override
+      public String renderTime(final String isoFormat, final int precision) {
+        if (precision > 6) {
+          throw new InvalidLiteralException(
+              "MariaDB's TIME literals accept a maximum precision of 6, but " + precision + " was specified");
+        }
+        return "TIME '" + isoFormat + "'";
+      }
+
+      @Override
+      public String renderTimestamp(final String isoFormat, final int precision) {
+        if (precision > 6) {
+          throw new InvalidLiteralException(
+              "MariaDB's TIMESTAMP literals accept a maximum precision of 6, but " + precision + " was specified");
+        }
+        return "TIMESTAMP '" + isoFormat + "'";
+      }
+    };
   }
 
 }

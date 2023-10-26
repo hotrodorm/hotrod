@@ -3,6 +3,7 @@ package org.hotrod.runtime.livesql.dialects;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import org.hotrod.runtime.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.runtime.livesql.queries.select.CrossJoin;
@@ -296,6 +297,35 @@ public class MySQLDialect extends LiveSQLDialect {
     if (canonical == null)
       return null;
     return "`" + canonical.replace("`", "``") + "`";
+  }
+
+  @Override
+  public DateTimeLiteralRenderer getDateTimeLiteralRenderer() {
+    return new DateTimeLiteralRenderer() {
+
+      @Override
+      public String renderDate(final String isoFormat) {
+        return "DATE '" + isoFormat + "'";
+      }
+
+      @Override
+      public String renderTime(final String isoFormat, final int precision) {
+        if (precision > 6) {
+          throw new InvalidLiteralException(
+              "MySQL's TIME literals accept a maximum precision of 6, but " + precision + " was specified");
+        }
+        return "TIME '" + isoFormat + "'";
+      }
+
+      @Override
+      public String renderTimestamp(final String isoFormat, final int precision) {
+        if (precision > 6) {
+          throw new InvalidLiteralException(
+              "MySQL's TIMESTAMP literals accept a maximum precision of 6, but " + precision + " was specified");
+        }
+        return "TIMESTAMP '" + isoFormat + "'";
+      }
+    };
   }
 
 }

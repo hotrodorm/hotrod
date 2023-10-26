@@ -322,4 +322,25 @@ public class DB2Dialect extends LiveSQLDialect {
     }
   }
 
+  @Override
+  public DateTimeLiteralRenderer getDateTimeLiteralRenderer() {
+    return new DateTimeLiteralRenderer() {
+
+      @Override
+      public String renderDate(final String isoFormat) {
+        return "DATE '" + isoFormat + "'";
+      }
+
+      @Override
+      public String renderTime(final String isoFormat, final int precision) {
+        return "TIME '" + isoFormat + "'";
+      }
+
+      @Override
+      public String renderTimestamp(final String isoFormat, final int precision) {
+        return "TIMESTAMP '" + isoFormat + "'";
+      }
+    };
+  }
+
 }

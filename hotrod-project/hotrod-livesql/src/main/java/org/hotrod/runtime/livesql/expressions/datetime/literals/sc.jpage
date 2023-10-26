@@ -1,0 +1,12 @@
+java.time.format.DateTimeFormatter f = java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss.SSSSSSSSS");
+
+int hour = 14;
+int minute = 4;
+int second = 36;
+int nanosecond = 73890346;
+
+java.time.LocalTime d = java.time.LocalTime.of(hour, minute, second);
+java.time.LocalTime e = java.time.LocalTime.of(hour, minute, second, nanosecond);
+
+System.out.println("d="+d.format(f));
+System.out.println("e="+e.format(f));

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.hotrod.runtime.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression;
@@ -388,6 +389,31 @@ public class SQLServerDialect extends LiveSQLDialect {
     } else {
       return "\"" + canonical.replace("\"", "\"\"").replace("]", "]]") + "\"";
     }
+  }
+
+  @Override
+  public DateTimeLiteralRenderer getDateTimeLiteralRenderer() {
+    return new DateTimeLiteralRenderer() {
+
+      @Override
+      public String renderDate(final String isoFormat) {
+        return "cast('" + isoFormat + "' as DATE)";
+      }
+
+      @Override
+      public String renderTime(final String isoFormat, final int precision) {
+        if (precision > 7) {
+          throw new InvalidLiteralException(
+              "SQL Server's TIME literals accept a maximum precision of 7, but " + precision + " was specified");
+        }
+        return "cast('" + isoFormat + "' as TIME)";
+      }
+
+      @Override
+      public String renderTimestamp(final String isoFormat, final int precision) {
+        return "cast('" + isoFormat + "' as DATETIME2)";
+      }
+    };
   }
 
 }

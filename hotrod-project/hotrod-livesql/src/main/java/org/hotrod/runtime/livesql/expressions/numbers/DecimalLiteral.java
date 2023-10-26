@@ -7,7 +7,7 @@ import org.hotrod.runtime.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrodorm.hotrod.utils.SUtil;
 
-public class DecimalLiteral extends NumberLiteral {
+public class DecimalLiteral extends NumericLiteral {
 
   private static final int MAX_DECIMAL_PLACES = 40;
 

@@ -2,13 +2,13 @@ package org.hotrod.runtime.livesql.expressions.numbers;
 
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
-public abstract class NumberLiteral extends NumberExpression {
+public abstract class NumericLiteral extends NumberExpression {
 
   // Properties
 
   protected String formatted;
 
-  protected NumberLiteral(int precedence) {
+  protected NumericLiteral(int precedence) {
     super(precedence);
   }
 

@@ -2,6 +2,7 @@ package org.hotrod.runtime.livesql.dialects;
 
 import java.util.List;
 
+import org.hotrod.runtime.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
@@ -409,6 +410,27 @@ public class OracleDialect extends LiveSQLDialect {
     } else {
       return "\"" + canonical.replace("\"", "\"\"").replace("'", "''") + "\"";
     }
+  }
+
+  @Override
+  public DateTimeLiteralRenderer getDateTimeLiteralRenderer() {
+    return new DateTimeLiteralRenderer() {
+
+      @Override
+      public String renderDate(final String isoFormat) {
+        return "DATE '" + isoFormat + "'";
+      }
+
+      @Override
+      public String renderTime(final String isoFormat, final int precision) {
+        throw new InvalidLiteralException("Oracle database does not implement TIME literals");
+      }
+
+      @Override
+      public String renderTimestamp(final String isoFormat, final int precision) {
+        return "TIMESTAMP '" + isoFormat + "'";
+      }
+    };
   }
 
 }

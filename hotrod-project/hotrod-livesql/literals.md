@@ -172,7 +172,7 @@ Approximate-value numeric literals are represented in scientific notation with a
 DATEs:
 
 - In Oracle DATEs always include a time component. The precision of the DATE type is one second.
-- DATEs without a time component can be rendered (with ISO format) as `DATE '1998-12-25`.
+- DATEs without a time component can be rendered (with ISO format) as `DATE '1998-12-25'`.
 - DATEs with a time component can be rendered (with ISO format) as `TO_DATE('1998-12-25 17:30:45','YYYY-MM-DD HH24:MI:SS')`.
 
 TIMESTAMPs:
@@ -258,7 +258,7 @@ TIME and TIMESTAMP can have zero to 6 decimal places for the seconds term.
 
     cast('2023-01-01' as date)
     cast('2023-01-02 12:34:56.123456' as datetime) -- precision: 1/300 of a second
-    cast('2023-01-02 12:34:56.123456' as bigdatetime) -- precision: microsecond 
+    cast('2023-01-02 12:34:56.123456' as bigdatetime) -- precision: microsecond
     cast('12:34:56.123456' as time) -- 00:00:00 am to 23:59:59:999 (storage size is 4 bytes)
 
 ### H2
@@ -287,7 +287,7 @@ TIMESTAMP, TIMESTAMP WITH TIME ZONE, TIME, and TIME WITH TIME ZONE can have a fr
     DATE('1994-02-23')
     TIMESTAMP('1962-09-23 03:23:34.234')
     TIME('15:09:02')
-    
+
 TIME can have zero to 3 decimal places for the seconds term.
 TIMESTAMP can have zero to 9 decimal places for the seconds term.
 

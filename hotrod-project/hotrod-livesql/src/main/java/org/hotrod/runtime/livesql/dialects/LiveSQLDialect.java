@@ -101,6 +101,8 @@ public abstract class LiveSQLDialect {
 
   public abstract FunctionRenderer getFunctionRenderer();
 
+  public abstract DateTimeLiteralRenderer getDateTimeLiteralRenderer();
+
   // New SQL Identifier rendering
 
   public abstract String naturalToCanonical(final String natural);

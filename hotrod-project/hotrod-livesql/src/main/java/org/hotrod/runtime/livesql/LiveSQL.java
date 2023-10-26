@@ -2,6 +2,9 @@ package org.hotrod.runtime.livesql;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -62,6 +65,9 @@ import org.hotrod.runtime.livesql.expressions.datetime.DateTime;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeConstant;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.datetime.EnclosedDateTimeExpression;
+import org.hotrod.runtime.livesql.expressions.datetime.literals.LocalDateLiteral;
+import org.hotrod.runtime.livesql.expressions.datetime.literals.LocalTimeLiteral;
+import org.hotrod.runtime.livesql.expressions.datetime.literals.LocalTimestampLiteral;
 import org.hotrod.runtime.livesql.expressions.general.TupleExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.DecimalLiteral;
 import org.hotrod.runtime.livesql.expressions.numbers.EnclosedNumberExpression;
@@ -852,7 +858,7 @@ public class LiveSQL {
     return new ObjectConstant(value);
   }
 
-  // Literals
+  // Literals (numbers)
 
   // Covers: byte, short, int, and long
   public IntegerLiteral literal(final long value) {
@@ -864,16 +870,36 @@ public class LiveSQL {
   }
 
   // Covers: float and double
-  public DecimalLiteral literal(final double value, final int decimalPlaces) {
-    return new DecimalLiteral(value, decimalPlaces);
+  public DecimalLiteral literal(final double value, final int precision) {
+    return new DecimalLiteral(value, precision);
   }
 
-  public DecimalLiteral literal(final BigDecimal value, final int decimalPlaces) {
-    return new DecimalLiteral(value, decimalPlaces);
+  public DecimalLiteral literal(final BigDecimal value, final int precision) {
+    return new DecimalLiteral(value, precision);
   }
+
+  // Literals (String)
 
   public StringLiteral literal(final String value) {
     return new StringLiteral(value);
+  }
+
+  // Literals (DateTime)
+
+  public LocalDateLiteral literal(final LocalDate value) {
+    return new LocalDateLiteral(this.context, value);
+  }
+
+  public LocalDateLiteral literal(final Date value) {
+    return new LocalDateLiteral(this.context, value);
+  }
+
+  public LocalTimeLiteral literal(final LocalTime value, final int precision) {
+    return new LocalTimeLiteral(this.context, value, precision);
+  }
+
+  public LocalTimestampLiteral literal(final LocalDateTime value, final int precision) {
+    return new LocalTimestampLiteral(this.context, value, precision);
   }
 
   // Parenthesis
