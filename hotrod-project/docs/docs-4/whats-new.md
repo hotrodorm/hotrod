@@ -2,7 +2,7 @@
 
 ## What's New in HotRod 4.2 (unreleased)
 
-HotRod 4.2 adds set operators (UNION, INTERSECT, EXCEPT) and literal scalar values to the LiveSQL syntax.
+Version 4.2 adds SQL set operators (UNION, INTERSECT, EXCEPT) and literal values to the LiveSQL syntax.
 
 ### 1. Set Operators
 
@@ -13,7 +13,7 @@ The set operators UNION [ALL], INTERSECT [ALL], EXCEPT [ALL], and combinations o
 Using `sql.literal()` literal scalar values can now be included in the query. Until now, the traditional option &mdash; `sql.val(constant)` &mdash;
 produces a query with a JDBC parameter where the constant is applied, to generate SQL Injection-safe queries and to allow database optimizers to 
 cache parameterized queries to ease the effort in the engine. On the flip side, literals provide more information to the optimizer to do its job
-better; however, constantly changing literals values defeat the cache and require the database optimizer to work harder.
+better; however, constantly changing literals values defeats the cache and may require the database optimizer to work harder.
 
 
 ## What's New in HotRod 4.1
@@ -23,7 +23,6 @@ HotRod 4.1 add subqueries to LiveSQL and adds a few extra enhancements to the Li
 ### 1. Subqueries
 
 LiveSQL implements subqueries. These include Scalar Subqueries, Table Expressions, CTEs (plain and recursive) and Lateral Joins, in addition to IN/NOT IN, EXISTS/NOT EXISTS, and asymmetric operators. The extra syntax allows the developer to write complex SQL queries to adress more sophisticated data scenarios, without resorting to Nitro queries. Since writing LiveSQL code is faster than writing Nitro queries, this enhancement can significantly speed up development for queries of mid-level complexity.
-
 
 ### 2. POJO vs Bean VOs
 
