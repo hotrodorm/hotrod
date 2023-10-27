@@ -1,5 +1,11 @@
 package app;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.ZoneOffset;
 import java.util.Map;
 
 import org.hotrod.runtime.livesql.LiveSQL;
@@ -233,6 +239,8 @@ public class App {
 
   }
 
+  // TODO: Nothing to do, just a marker.
+
   private void union() {
 
     AccountTable a = AccountDAO.newTable("a");
@@ -321,21 +329,71 @@ public class App {
 
     // 8. NESTED-UNION
 
-    Select<Row> q = sql.select(sql.literal(123).as("def")) //
-//        .union() //
-//        .select(sql.literal(100)) //
-        .union(sql.select(sql.literal(200)).except().select(sql.literal(300)).union( //
-            sql.select(sql.literal(400)) //
-                .from(a) //
-                .orderBy(a.id).limit(100) //
-        )) //
-        .orderBy(sql.ordering(1))
-    //
-    ;
+    LocalDate ld = LocalDate.now();
+
+//    Select<Row> q = sql.select(sql.literal(123).as("def")) //
+////        .union() //
+////        .select(sql.literal(100)) //
+//        .union(sql.select(sql.literal(200)).except().select(sql.literal(300)).union( //
+//            sql.select(sql.literal(Math.PI, 6)) //
+//                .from(a) //
+//                .orderBy(a.id).limit(100) //
+//        )) //
+//        .orderBy(sql.ordering(1))
+//    //
+//    ;
+//
+//    System.out.println("tree: " + q.getCombinedSelect().toString());
+//    System.out.println(q.getPreview());
+//    q.execute().forEach(r -> System.out.println("row: " + r));
+
+    // 9. DateTime Literals
+
+    LocalDate today = LocalDate.now();
+    LocalTime currentTime = LocalTime.now();
+    LocalDateTime now = LocalDateTime.now();
+
+    OffsetTime x = OffsetTime.of(17, 9, 31, 72000000, ZoneOffset.ofHours(-4));
+    OffsetDateTime y = OffsetDateTime.of(2023, 12, 25, 17, 9, 31, 72000000, ZoneOffset.ofHours(-4));
+
+    OffsetTime ocurrentTime = OffsetTime.now();
+    OffsetDateTime onow = OffsetDateTime.now();
+
+    Select<Row> q = sql.select( //
+        sql.literal(today).as("today"), //
+        sql.literal(currentTime, 3).as("current time"), //
+        sql.literal(now, 6).as("now"), //
+        sql.literal(onow, 6).as("onow"), //
+        sql.literal(ocurrentTime, 3).as("ocurrent time") //
+    );
+
+//  SELECT
+//  'Hello', -- a character literal
+//  14, -- an numeric integer literal
+//  10680.52, -- a numeric decimal literal
+//  DATE '2023-12-25', -- a date literal
+//  TIMESTAMP '2018-03-22 08:30:58.123456', -- a timestamp literal
+//  TIME '17:05:48.624', -- a time literal
+//  TIMESTAMP WITH TIME ZONE '2018-03-22 08:30:58.123456+08:15', -- a timestamp with time offset literal
+//  TIME WITH TIME ZONE '17:05:48.624-03:30' -- a time with time offset literal
+
+//    Select<Row> q2 = sql.select( //
+//        sql.literal("Hello"), //
+//        sql.literal(14), //
+//        sql.literal(10680.52, 2), //
+//        sql.literal(LocalDate.of(2023, 12, 25)), //
+//        sql.literal(LocalDateTime.of(2018, 3, 22, 8, 30, 58, 123456000), 6), //
+//        sql.literal(LocalTime.of(17, 5, 48, 624000000), 3), //
+//        sql.literal(OffsetDateTime.of(2018, 3, 22, 8, 30, 58, 123456000, ZoneOffset.ofHoursMinutes(-8, 15)), 6), //
+//        sql.literal(OffsetTime.of(17, 5, 48, 624000000, ZoneOffset.ofHoursMinutes(-3, 30)), 3) //
+//    );
 
     System.out.println("tree: " + q.getCombinedSelect().toString());
     System.out.println(q.getPreview());
-    q.execute().forEach(r -> System.out.println("row: " + r));
+    q.execute().forEach(r -> {
+      Object o = r.get("now");
+      System.out.println("row: " + r + " now:" + o.getClass().getName());
+    });
 
   }
 
