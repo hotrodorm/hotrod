@@ -125,9 +125,9 @@ Then both queries would look identical to the optimizer and the effort of optimi
 
 So, which one is it?
 
-Well, the rule of thumb seems to be to use literal scalars when the range of possible values is very, very limited. For example, when querying against a `status` column that has few possible values. Boolean ones are great candidates since they can have two values (or three if we include null).
+When it comes to literal in the filtering predicates (typically in the `WHERE` or `HAVING` clauses), the rule of thumb seems to be to use literal scalars when the range of possible values is very, very limited. For example, when querying against a `status` column that has few possible values. Boolean ones are great candidates since they can have two values (or three if we include null). When the literals show up in the select list or other part of the query then it doesn't make too much of a difference to the optimizer.
 
-This seems to be the case for partial indexes as well since they are quite fit for this strategy. For example, consider the following indexes:
+Partial indexes are a great example of how a literal can make all the difference compared to a parameterized scalar. For example, consider the following indexes:
 
 ```sql
 create index ix1 on purchases (client, status);
