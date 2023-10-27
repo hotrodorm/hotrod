@@ -83,7 +83,9 @@ String with non-ASCII characters can still be used in LiveSQL queries, but as pa
 
 ## Query Performance Side Effects
 
-When using scalar values a JDBC query can take two form, depending if the scalar is typed directly in the SQL statement or parameterized. For example, with a literal value:
+When using scalar values a JDBC query can take two forms, depending if the scalar is typed directly in the SQL statement or parameterized instead.
+
+The following query uses a literal value in the `WHERE` clause::
 
 ```sql
 select * from client where name = 'Anne Smith';
@@ -95,11 +97,11 @@ The same query can be written with JDBC parameters as:
 select * from client where name = ?;
 ```
 
-Later on &mdash; and before the query is actually executed &mdash; the parameter is bound by *applying* the value `Anne Smith` to the query.
+Later on for the second query &mdash; and before the query is actually executed &mdash; the parameter is bound by *applying* the value `Anne Smith` to the query.
 
-The key point here is that the query optimization happens when the query is submitted to the database engine. In the first, case the optimizer knows what `name` is compared against exactly. In the second case, it doesn't because the exact parameter value will be applied later, when the optimization and execution plan selection already took place.
+The key point here is that the query optimization happens when the query is submitted to the database engine. In the first, case the optimizer knows exactly what the column `name` is compared against. In the second case it doesn't, because the actual parameter value will be applied later, when the optimization and execution plan selection already took place.
 
-When the optimizer doesn't know the exact value, then there's no much optimization that can be done in this respect. On the flip side, when the exact parameter values are known at optimization time, there's a variety of options available: histograms can be inspected to obtain more precise selectivities for predicates, partial indexes become available to use by the execution plan, table partitions and tablespaces can be fixed immediately, etc. Providing specific values to the optimizer is particularly useful in access and filtering predicates, such as the ones included in the `WHERE` clause.
+When the optimizer doesn't know the exact parameter value, then there's no much optimization that can be done in this respect. On the flip side, when the exact parameter values are known at optimization time, there's a variety of options available: histograms can be inspected to obtain more precise selectivities for predicates, partial indexes become available to use by the execution plan, table partitions and tablespaces can be fixed immediately, etc. Providing specific values to the optimizer is particularly useful in access and filtering predicates, such as the ones included in the `WHERE` clause.
 
 So, you would ask, should we use literals in all the queries all the time? Not so fast.
 
@@ -110,7 +112,7 @@ select * from client where name = 'Anne Smith';
 select * from client where name = 'Steve McQuinn';
 ```
 
-When the first query is executed, the optimizer goes through the process of finding the best execution plan of it and caches it. Later on, when the second query is run, the optimizer looks for the query in the cache **and does not find it**; since it defeats the cache, the optimizer needs to optimize the second query from scratch. And that will happen over and over again, if you run the same query thousands of times with different values. This will also fill the database optimizer cache with a myriam of cached plans, and may even keep some really important plans out of the cache.
+When the first query is executed, the optimizer goes through the process of finding the best execution plan of it and caches it. Later on, when the second query is run, the optimizer looks for the query in the cache **and does not find it**; since it defeats the cache, the optimizer needs to optimize the second query from scratch. And that will happen over and over again, if you run the same query thousands of times with different values. This will also fill the database optimizer cache with a myriad of cached plans, and may even keep some really important plans out of it.
 
 If the value were parameterized, as in:
 
@@ -123,7 +125,7 @@ Then both queries would look identical to the optimizer and the effort of optimi
 
 So, which one is it?
 
-Well, the rule of thumb seems to be to use literal scalars when the possible values is very limited. For example, when querying against a `status` column that has few possible values. Boolean ones are great candidates since they can have two values (or three if we include null).
+Well, the rule of thumb seems to be to use literal scalars when the range of possible values is very, very limited. For example, when querying against a `status` column that has few possible values. Boolean ones are great candidates since they can have two values (or three if we include null).
 
 This seems to be the case for partial indexes as well since they are quite fit for this strategy. For example, consider the following indexes:
 
@@ -135,11 +137,11 @@ create index ix2 on purchases (client) where status = 'OPEN';
 Now, if the following queries are executed:
 
 ```sql
-select * from purchases where client_id = 178003 and status = ?;
-select * from purchases where client_id = 178003 and status = 'OPEN';
+select * from purchases where client_id = 1780035 and status = ?;
+select * from purchases where client_id = 1780035 and status = 'OPEN';
 ```
 
-For the first query &mdash; that is parameterized &mdash; the optimizer will only be able to use index `ix1`. For the second one &mdash; that has a literal in it &mdash; the optimizer will be able to use any of those two indexes, and will probably choose the second one, that fares much better if the table is big.
+For the first query &mdash; that is parameterized &mdash; the optimizer will only be able to use index `ix1`. For the second one &mdash; that has a literal in it &mdash; the optimizer will be able to use any of those two indexes, and will probably choose the second one, that fares much better if the table is big and has few open purchases.
 
 
 ## Date/Time Literal Compatibility
