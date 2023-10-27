@@ -91,13 +91,13 @@ The following query uses a literal value in the `WHERE` clause::
 select * from client where name = 'Anne Smith';
 ```
 
-The same query can be written with JDBC parameters as:
+The same query can be written using JDBC parameters as:
 
 ```sql
 select * from client where name = ?;
 ```
 
-Later on for the second query &mdash; and before the query is actually executed &mdash; the parameter is bound by *applying* the value `Anne Smith` to the query.
+Later on &mdash; before the query is actually executed &mdash; and as a separate phase for the second query the parameter is bound by *applying* the value `Anne Smith` to the query.
 
 The key point here is that the query optimization happens when the query is submitted to the database engine. In the first, case the optimizer knows exactly what the column `name` is compared against. In the second case it doesn't, because the actual parameter value will be applied later, when the optimization and execution plan selection already took place.
 
