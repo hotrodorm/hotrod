@@ -894,10 +894,6 @@ public class LiveSQL {
     return new LocalDateLiteral(this.context, value);
   }
 
-  public LocalDateLiteral literal(final Date value) {
-    return new LocalDateLiteral(this.context, value);
-  }
-
   public LocalTimeLiteral literal(final LocalTime value, final int precision) {
     return new LocalTimeLiteral(this.context, value, precision);
   }
