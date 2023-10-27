@@ -97,7 +97,7 @@ The same query can be written using JDBC parameters as:
 select * from client where name = ?;
 ```
 
-Later on &mdash; before the query is actually executed &mdash; and as a separate phase for the second query the parameter is bound by *applying* the value `Anne Smith` to the query.
+Later on &mdash; but before the query is actually executed &mdash; and as a separate phase for the second query the parameter is bound by *applying* the value `Anne Smith` to the query.
 
 The key point here is that the query optimization happens when the query is submitted to the database engine. In the first, case the optimizer knows exactly what the column `name` is compared against. In the second case it doesn't, because the actual parameter value will be applied later, when the optimization and execution plan selection already took place.
 
@@ -146,11 +146,11 @@ For the first query &mdash; that is parameterized &mdash; the optimizer will onl
 
 ## Date/Time Literal Compatibility
 
-Since different databases support different data types, LiveSQL will prevent some literals to be created if not available for the specific database.
+Since different databases support different data types, LiveSQL prevents some literals to be created if a type is not available for a specific database.
 
-The precision of TIME and TIMESTAMP literals data types available on a specific database can also be limited. If an invalid precision is specified LiveSQL also prevent the literal value to be created.
+The precision of TIME and TIMESTAMP literals data types also varies between different database. If an invalid precision is specified LiveSQL also prevents the literal value to be created.
 
-The following table shows which types of literals are valid in each database, incuding their maximum precision (decimal places for the seconds component) between parenthesis:
+The following table shows which types of literals are valid in each database, including their maximum precision (decimal places for the seconds component) between parenthesis:
 
 | Database   | DATE | TIMESTAMP | TIME     | TIMESTAMP WITH TIME ZONE | TIME WITH TIME ZONE |
 |------------|:----:|:---------:|:--------:|:------------------------:|:-------:|
