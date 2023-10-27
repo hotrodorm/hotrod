@@ -27,5 +27,5 @@ Version 5.3:
 
 Version 6.0:
 
-- LiveSQL Project Babel. Customized versions of LiveSQL for specific databases that enhance generic LiveSQL with extended SQL syntax.
+- LiveSQL Project Babel. "Nomads" (customized versions of LiveSQL for specific databases) enhance generic LiveSQL with extended, per-database SQL syntax.
 
