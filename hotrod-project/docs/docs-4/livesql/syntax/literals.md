@@ -1,6 +1,6 @@
 # LiveSQL Literals
 
-Literal scalars are values that don't take the form of a parameterized value, but as a direct
+Literal scalars are values that are not parameterized, but are added as inline
 literals in the SQL statement.
 
 For example, the following SQL statement (in PostgreSQL) has eight literals in it:
@@ -34,6 +34,7 @@ Literal values can be created using the `sql.literal()` method. This method has 
 | `sql.literal(OffsetTime value, int precision)` | creates a time with time offset. The time is included in the query according to the specific database dialect, and displays the specific number of decimal places according to the `precision` parameter. For example, `sql.literal(OffsetTime.of(17, 9, 31, 72000000, ZoneOffset.ofHours(-4)), 3)` is rendered as `TIME '17:09:31.072-04:00' in PostgreSQL |
 | `sql.literal(OffsetDateTime value, int precision)` | creates a timestamp with time offset. The timestamp takes the formatting according to the specific database dialect, and display the specific number of decimal places according to the `precision` parameter. For example, `sql.literal(OffsetDateTime.of(2023, 12, 25, 17, 9, 31, 72000000, ZoneOffset.ofHours(-4)), 3)` is rendered as `TIME '2023-12-15 17:09:31.072-04:00' in PostgreSQL, but as  `CAST('2023-12-15 17:09:31.072 -04:00' as DATETIMEOFFSET)` in SQL Server |
 
+What if I prefer to parameterize a scalar? Well, in that case, use `sql.val(value)` instead. `sql.val(value)` always parameterize a value.
 
 ## Examples
 
