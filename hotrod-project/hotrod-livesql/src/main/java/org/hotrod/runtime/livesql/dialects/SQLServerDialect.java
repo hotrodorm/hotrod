@@ -411,6 +411,10 @@ public class SQLServerDialect extends LiveSQLDialect {
 
       @Override
       public String renderTimestamp(final String isoTimestamp, final int precision) {
+        if (precision > 7) {
+          throw new InvalidLiteralException("SQL Server's DATETIME2 literals accept a maximum precision of 7, " + "but "
+              + precision + " was specified.");
+        }
         return "cast('" + isoTimestamp + "' as DATETIME2)";
       }
 
