@@ -1,7 +1,7 @@
 # LiveSQL Literals
 
 Literal scalars are values that are not parameterized, but are added as inline
-literals in the SQL statement.
+literals in the SQL statement. Literal Scalars are available since LiveSQL 4.2.
 
 For example, the following SQL statement (in PostgreSQL) has eight literals in it:
 
@@ -144,13 +144,13 @@ select * from purchases where client_id = 1780035 and status = 'OPEN';
 For the first query &mdash; that is parameterized &mdash; the optimizer will only be able to use index `ix1`. For the second one &mdash; that has a literal in it &mdash; the optimizer will be able to use any of those two indexes, and will probably choose the second one, that fares much better if the table is big and has few open purchases.
 
 
-## Date/Time Literal Compatibility
+## DATE, TIME, and TIMESTAMP Compatibility
 
 Since different databases support different data types, LiveSQL prevents some literals to be created if a type is not available for a specific database.
 
-The precision of TIME and TIMESTAMP literals data types also varies between different database. If an invalid precision is specified LiveSQL also prevents the literal value to be created.
+The precision of TIME and TIMESTAMP literals data types also varies between different databases. If an invalid precision is specified LiveSQL also prevents the literal to be created.
 
-The following table shows which types of literals are valid in each database, including their maximum precision (decimal places for the seconds component) between parenthesis:
+The following table shows which types of literals are valid for each database, including their maximum precision in parenthesis:
 
 | Database   | DATE | TIMESTAMP | TIME     | TIMESTAMP WITH TIME ZONE | TIME WITH TIME ZONE |
 |------------|:----:|:---------:|:--------:|:------------------------:|:-------:|
