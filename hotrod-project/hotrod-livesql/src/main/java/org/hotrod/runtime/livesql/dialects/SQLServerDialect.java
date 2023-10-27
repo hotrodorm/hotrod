@@ -396,23 +396,38 @@ public class SQLServerDialect extends LiveSQLDialect {
     return new DateTimeLiteralRenderer() {
 
       @Override
-      public String renderDate(final String isoFormat) {
-        return "cast('" + isoFormat + "' as DATE)";
+      public String renderDate(final String isoDate) {
+        return "cast('" + isoDate + "' as DATE)";
       }
 
       @Override
-      public String renderTime(final String isoFormat, final int precision) {
+      public String renderTime(final String isoTime, final int precision) {
         if (precision > 7) {
           throw new InvalidLiteralException(
-              "SQL Server's TIME literals accept a maximum precision of 7, but " + precision + " was specified");
+              "SQL Server's TIME literals accept a maximum precision of 7, but " + precision + " was specified.");
         }
-        return "cast('" + isoFormat + "' as TIME)";
+        return "cast('" + isoTime + "' as TIME)";
       }
 
       @Override
-      public String renderTimestamp(final String isoFormat, final int precision) {
-        return "cast('" + isoFormat + "' as DATETIME2)";
+      public String renderTimestamp(final String isoTimestamp, final int precision) {
+        return "cast('" + isoTimestamp + "' as DATETIME2)";
       }
+
+      @Override
+      public String renderOffsetTime(final String isoTime, final String isoOffset, final int precision) {
+        throw new InvalidLiteralException("SQL Server does not implement the TIME WITH TIME ZONE data type.");
+      }
+
+      @Override
+      public String renderOffsetTimestamp(final String isoTimestamp, final String isoOffset, final int precision) {
+        if (precision > 7) {
+          throw new InvalidLiteralException("SQL Server's DATETIMEOFFSET literals accept a maximum precision of 7, but "
+              + precision + " was specified.");
+        }
+        return "cast('" + isoTimestamp + " " + isoOffset + "' as DATETIMEOFFSET)";
+      }
+
     };
   }
 

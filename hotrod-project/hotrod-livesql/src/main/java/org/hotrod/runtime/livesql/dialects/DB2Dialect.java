@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.hotrod.runtime.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
@@ -340,6 +341,17 @@ public class DB2Dialect extends LiveSQLDialect {
       public String renderTimestamp(final String isoFormat, final int precision) {
         return "TIMESTAMP '" + isoFormat + "'";
       }
+
+      @Override
+      public String renderOffsetTime(final String isoTime, final String isoOffset, final int precision) {
+        throw new InvalidLiteralException("DB2 does not implement the TIME WITH TIME ZONE data type.");
+      }
+
+      @Override
+      public String renderOffsetTimestamp(final String isoTimestamp, final String isoOffset, final int precision) {
+        throw new InvalidLiteralException("DB2 does not implement the TIMESTAMP WITH TIME ZONE data type.");
+      }
+
     };
   }
 

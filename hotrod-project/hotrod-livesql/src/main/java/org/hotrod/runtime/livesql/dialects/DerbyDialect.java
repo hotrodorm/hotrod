@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.hotrod.runtime.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression;
@@ -303,19 +304,32 @@ public class DerbyDialect extends LiveSQLDialect {
     return new DateTimeLiteralRenderer() {
 
       @Override
-      public String renderDate(final String isoFormat) {
-        return "date('" + isoFormat + "')";
+      public String renderDate(final String isoDate) {
+        return "date('" + isoDate + "')";
       }
 
       @Override
-      public String renderTime(final String isoFormat, final int precision) {
-        return "time('" + isoFormat + "')";
+      public String renderTime(final String isoTime, final int precision) {
+        return "time('" + isoTime + "')";
       }
 
       @Override
-      public String renderTimestamp(final String isoFormat, final int precision) {
-        return "timestamp('" + isoFormat + "')";
+      public String renderTimestamp(final String isoTimestamp, final int precision) {
+        return "timestamp('" + isoTimestamp + "')";
       }
+
+      @Override
+      public String renderOffsetTime(final String isoTime, final String isoOffset, final int precision) {
+        throw new InvalidLiteralException("Apache Derby does not implement the TIME WITH TIME ZONE data type.");
+      }
+
+      @Override
+      public String renderOffsetTimestamp(final String isoTimestamp, final String isoOffset, final int precision) {
+        throw new InvalidLiteralException("Apache Derby does not implement the TIMESTAMP WITH TIME ZONE data type.");
+      }
+
     };
+
   }
+
 }

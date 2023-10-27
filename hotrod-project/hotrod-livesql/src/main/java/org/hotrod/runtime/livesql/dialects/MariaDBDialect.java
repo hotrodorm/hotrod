@@ -264,27 +264,38 @@ public class MariaDBDialect extends LiveSQLDialect {
     return new DateTimeLiteralRenderer() {
 
       @Override
-      public String renderDate(final String isoFormat) {
-        return "DATE '" + isoFormat + "'";
+      public String renderDate(final String isoDate) {
+        return "DATE '" + isoDate + "'";
       }
 
       @Override
-      public String renderTime(final String isoFormat, final int precision) {
+      public String renderTime(final String isoTime, final int precision) {
         if (precision > 6) {
           throw new InvalidLiteralException(
-              "MariaDB's TIME literals accept a maximum precision of 6, but " + precision + " was specified");
+              "MariaDB's TIME literals accept a maximum precision of 6, but " + precision + " was specified.");
         }
-        return "TIME '" + isoFormat + "'";
+        return "TIME '" + isoTime + "'";
       }
 
       @Override
-      public String renderTimestamp(final String isoFormat, final int precision) {
+      public String renderTimestamp(final String isoTimestamp, final int precision) {
         if (precision > 6) {
           throw new InvalidLiteralException(
-              "MariaDB's TIMESTAMP literals accept a maximum precision of 6, but " + precision + " was specified");
+              "MariaDB's TIMESTAMP literals accept a maximum precision of 6, but " + precision + " was specified.");
         }
-        return "TIMESTAMP '" + isoFormat + "'";
+        return "TIMESTAMP '" + isoTimestamp + "'";
       }
+
+      @Override
+      public String renderOffsetTime(final String isoTime, final String isoOffset, final int precision) {
+        throw new InvalidLiteralException("MariaDB does not implement the TIME WITH TIME ZONE data type.");
+      }
+
+      @Override
+      public String renderOffsetTimestamp(final String isoTimestamp, final String isoOffset, final int precision) {
+        throw new InvalidLiteralException("MariaDB does not implement the TIMESTAMP WITH TIME ZONE data type.");
+      }
+
     };
   }
 

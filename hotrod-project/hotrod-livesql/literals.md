@@ -232,6 +232,8 @@ INTERVALs: TBD
 
 ### SQL Server
 
+The ISO Format is: `YYYY-MM-DD hh:mm:ss[.nnnnnnn] [{+|-}hh:mm]`
+
     cast('2023-01-01' as date),
     cast('2023-01-02 12:34:56.123' as datetime), -- datetime max 3 decimals
     cast('2023-01-02 12:34:56.123456789' as datetime2), -- datetime max 7 decimals (accepts 9 but ignores the last 2)

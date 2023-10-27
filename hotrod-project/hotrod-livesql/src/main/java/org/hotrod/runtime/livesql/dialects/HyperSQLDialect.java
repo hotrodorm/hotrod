@@ -283,20 +283,32 @@ public class HyperSQLDialect extends LiveSQLDialect {
     return new DateTimeLiteralRenderer() {
 
       @Override
-      public String renderDate(final String isoFormat) {
-        return "DATE '" + isoFormat + "'";
+      public String renderDate(final String isoDate) {
+        return "DATE '" + isoDate + "'";
       }
 
       @Override
-      public String renderTime(final String isoFormat, final int precision) {
-        return "TIME '" + isoFormat + "'";
+      public String renderTime(final String isoTime, final int precision) {
+        return "TIME '" + isoTime + "'";
       }
 
       @Override
-      public String renderTimestamp(final String isoFormat, final int precision) {
-        return "TIMESTAMP '" + isoFormat + "'";
+      public String renderTimestamp(final String isoTimestamp, final int precision) {
+        return "TIMESTAMP '" + isoTimestamp + "'";
       }
+
+      @Override
+      public String renderOffsetTime(final String isoTime, final String isoOffset, final int precision) {
+        return "TIME '" + isoTime + isoOffset + "'";
+      }
+
+      @Override
+      public String renderOffsetTimestamp(final String isoTimestamp, final String isoOffset, final int precision) {
+        return "TIMESTAMP '" + isoTimestamp + isoOffset + "'";
+      }
+
     };
+
   }
 
 }

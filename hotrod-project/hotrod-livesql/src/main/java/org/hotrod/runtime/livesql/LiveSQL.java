@@ -5,6 +5,8 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -68,6 +70,8 @@ import org.hotrod.runtime.livesql.expressions.datetime.EnclosedDateTimeExpressio
 import org.hotrod.runtime.livesql.expressions.datetime.literals.LocalDateLiteral;
 import org.hotrod.runtime.livesql.expressions.datetime.literals.LocalTimeLiteral;
 import org.hotrod.runtime.livesql.expressions.datetime.literals.LocalTimestampLiteral;
+import org.hotrod.runtime.livesql.expressions.datetime.literals.OffsetTimeLiteral;
+import org.hotrod.runtime.livesql.expressions.datetime.literals.OffsetTimestampLiteral;
 import org.hotrod.runtime.livesql.expressions.general.TupleExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.DecimalLiteral;
 import org.hotrod.runtime.livesql.expressions.numbers.EnclosedNumberExpression;
@@ -900,6 +904,14 @@ public class LiveSQL {
 
   public LocalTimestampLiteral literal(final LocalDateTime value, final int precision) {
     return new LocalTimestampLiteral(this.context, value, precision);
+  }
+
+  public OffsetTimeLiteral literal(final OffsetTime value, final int precision) {
+    return new OffsetTimeLiteral(this.context, value, precision);
+  }
+
+  public OffsetTimestampLiteral literal(final OffsetDateTime value, final int precision) {
+    return new OffsetTimestampLiteral(this.context, value, precision);
   }
 
   // Parenthesis
