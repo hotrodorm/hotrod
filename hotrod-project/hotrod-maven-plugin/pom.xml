@@ -5,7 +5,8 @@
   <packaging>maven-plugin</packaging>
 
   <name>hotrod-maven-plugin</name>
-  <url>http://maven.apache.org</url>
+  <description>HotRod is an ORM for Java, Spring and SpringBoot.</description>
+  <url>https://github.com/hotrodorm/hotrod</url>
 
   <parent>
     <groupId>org.hotrodorm.hotrod</groupId>

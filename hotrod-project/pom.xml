@@ -9,11 +9,7 @@
   <packaging>pom</packaging>
 
   <name>hotrod-project</name>
-
-  <description>
-    ORM Generator for High Performance Apps.
-  </description>
-
+  <description>HotRod is an ORM for Java, Spring and SpringBoot.</description>
   <url>https://github.com/hotrodorm/hotrod</url>
 
   <licenses>
