@@ -16,14 +16,14 @@ public class StringLiteral extends StringExpression {
 
   // Properties
 
-  private String value;
+  private String formatted;
 
   // Constructor
 
   public StringLiteral(final String value) {
     super(Expression.PRECEDENCE_LITERAL);
     if (value == null) {
-      throw new InvalidLiteralException("A literal String value cannot be null. " + RULE);
+      throw new InvalidLiteralException("A null value is not accepted for a LiveSQL String literal. " + RULE);
     }
     Matcher matcher = VALID_PATTERN.matcher(value);
     if (!matcher.find()) {
@@ -31,14 +31,14 @@ public class StringLiteral extends StringExpression {
           "A literal String value can only include ASCII chars between <space> and tilde (~) but it's '" + value + "'. "
               + RULE);
     }
-    this.value = value.replace("'", "''");
+    this.formatted = value.replace("'", "''");
   }
 
   // Rendering
 
   @Override
   public void renderTo(final QueryWriter w) {
-    w.write("'" + this.value + "'");
+    w.write("'" + this.formatted + "'");
   }
 
 }
