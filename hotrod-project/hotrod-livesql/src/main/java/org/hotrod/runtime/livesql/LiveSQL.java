@@ -866,6 +866,14 @@ public class LiveSQL {
 
   // Literals (numbers)
 
+  public IntegerLiteral ZERO() {
+    return IntegerLiteral.getZero();
+  }
+
+  public IntegerLiteral ONE() {
+    return IntegerLiteral.getOne();
+  }
+
   // Covers: byte, short, int, and long
   public IntegerLiteral literal(final long value) {
     return new IntegerLiteral(value);
