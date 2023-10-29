@@ -84,11 +84,10 @@ import org.hotrod.runtime.livesql.expressions.object.ObjectExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.BooleanConstant;
 import org.hotrod.runtime.livesql.expressions.predicates.EnclosedBooleanExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Exists;
-import org.hotrod.runtime.livesql.expressions.predicates.FalseLiteral;
 import org.hotrod.runtime.livesql.expressions.predicates.Not;
 import org.hotrod.runtime.livesql.expressions.predicates.NotExists;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
-import org.hotrod.runtime.livesql.expressions.predicates.TrueLiteral;
+import org.hotrod.runtime.livesql.expressions.predicates.PredicateLiteral;
 import org.hotrod.runtime.livesql.expressions.strings.EnclosedStringExpression;
 import org.hotrod.runtime.livesql.expressions.strings.StringConstant;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
@@ -866,13 +865,8 @@ public class LiveSQL {
 
   // Literals (numbers)
 
-  public IntegerLiteral ZERO() {
-    return IntegerLiteral.getZero();
-  }
-
-  public IntegerLiteral ONE() {
-    return IntegerLiteral.getOne();
-  }
+  public final IntegerLiteral ZERO = IntegerLiteral.getZero();
+  public final IntegerLiteral ONE = IntegerLiteral.getOne();
 
   // Covers: byte, short, int, and long
   public IntegerLiteral literal(final long value) {
@@ -920,15 +914,10 @@ public class LiveSQL {
     return new OffsetTimestampLiteral(this.context, value, precision);
   }
 
-  // Boolean Literals
+  // Literals (Boolean)
 
-  public Predicate TRUE() {
-    return new TrueLiteral(this.context);
-  }
-
-  public Predicate FALSE() {
-    return new FalseLiteral(this.context);
-  }
+  public final Predicate FALSE = PredicateLiteral.getFalse();
+  public final Predicate TRUE = PredicateLiteral.getTrue();
 
   // Parenthesis
 

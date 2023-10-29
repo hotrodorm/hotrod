@@ -12,7 +12,6 @@ import org.hotrod.runtime.livesql.expressions.numbers.NumberConstant;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
-import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.select.CrossJoin;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.InnerJoin;
@@ -441,12 +440,12 @@ public class SQLServerDialect extends LiveSQLDialect {
     return new BooleanLiteralRenderer() {
 
       @Override
-      public void renderTrue(final LiveSQLContext context, final QueryWriter w) {
+      public void renderTrue(final QueryWriter w) {
         w.write("1 = 1");
       }
 
       @Override
-      public void renderFalse(final LiveSQLContext context, final QueryWriter w) {
+      public void renderFalse(final QueryWriter w) {
         w.write("1 = 0");
       }
 

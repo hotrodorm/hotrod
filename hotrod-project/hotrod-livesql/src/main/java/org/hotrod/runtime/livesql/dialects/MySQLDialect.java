@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import org.hotrod.runtime.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
-import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.select.CrossJoin;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.InnerJoin;
@@ -345,12 +344,12 @@ public class MySQLDialect extends LiveSQLDialect {
     return new BooleanLiteralRenderer() {
 
       @Override
-      public void renderTrue(final LiveSQLContext context, final QueryWriter w) {
+      public void renderTrue(final QueryWriter w) {
         w.write("true");
       }
 
       @Override
-      public void renderFalse(final LiveSQLContext context, final QueryWriter w) {
+      public void renderFalse(final QueryWriter w) {
         w.write("false");
       }
 
