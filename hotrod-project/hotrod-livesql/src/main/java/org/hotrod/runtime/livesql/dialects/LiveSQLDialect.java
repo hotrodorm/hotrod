@@ -103,6 +103,8 @@ public abstract class LiveSQLDialect {
 
   public abstract DateTimeLiteralRenderer getDateTimeLiteralRenderer();
 
+  public abstract BooleanLiteralRenderer getBooleanLiteralRenderer();
+
   // New SQL Identifier rendering
 
   public abstract String naturalToCanonical(final String natural);

@@ -3,6 +3,7 @@ package org.hotrod.runtime.livesql.dialects;
 import org.hotrod.runtime.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
+import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.select.CrossJoin;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.InnerJoin;
@@ -294,6 +295,23 @@ public class MariaDBDialect extends LiveSQLDialect {
       @Override
       public String renderOffsetTimestamp(final String isoTimestamp, final String isoOffset, final int precision) {
         throw new InvalidLiteralException("MariaDB does not implement the TIMESTAMP WITH TIME ZONE data type.");
+      }
+
+    };
+  }
+
+  @Override
+  public BooleanLiteralRenderer getBooleanLiteralRenderer() {
+    return new BooleanLiteralRenderer() {
+
+      @Override
+      public void renderTrue(final LiveSQLContext context, final QueryWriter w) {
+        w.write("true");
+      }
+
+      @Override
+      public void renderFalse(final LiveSQLContext context, final QueryWriter w) {
+        w.write("false");
       }
 
     };

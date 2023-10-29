@@ -84,9 +84,11 @@ import org.hotrod.runtime.livesql.expressions.object.ObjectExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.BooleanConstant;
 import org.hotrod.runtime.livesql.expressions.predicates.EnclosedBooleanExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Exists;
+import org.hotrod.runtime.livesql.expressions.predicates.FalseLiteral;
 import org.hotrod.runtime.livesql.expressions.predicates.Not;
 import org.hotrod.runtime.livesql.expressions.predicates.NotExists;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.expressions.predicates.TrueLiteral;
 import org.hotrod.runtime.livesql.expressions.strings.EnclosedStringExpression;
 import org.hotrod.runtime.livesql.expressions.strings.StringConstant;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
@@ -908,6 +910,16 @@ public class LiveSQL {
 
   public OffsetTimestampLiteral literal(final OffsetDateTime value, final int precision) {
     return new OffsetTimestampLiteral(this.context, value, precision);
+  }
+
+  // Boolean Literals
+
+  public Predicate TRUE() {
+    return new TrueLiteral(this.context);
+  }
+
+  public Predicate FALSE() {
+    return new FalseLiteral(this.context);
   }
 
   // Parenthesis

@@ -8,6 +8,7 @@ import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
+import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.select.CrossJoin;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.InnerJoin;
@@ -439,6 +440,31 @@ public class OracleDialect extends LiveSQLDialect {
       @Override
       public String renderOffsetTimestamp(final String isoTimestamp, final String isoOffset, final int precision) {
         return "TIMESTAMP '" + isoTimestamp + " " + isoOffset + "'";
+      }
+
+    };
+  }
+
+  @Override
+  public BooleanLiteralRenderer getBooleanLiteralRenderer() {
+    return new BooleanLiteralRenderer() {
+
+      @Override
+      public void renderTrue(final LiveSQLContext context, final QueryWriter w) {
+        if (context.getLiveSQLDialect().versionIsAtLeast(23)) {
+          w.write("true");
+        } else {
+          w.write("1 = 1");
+        }
+      }
+
+      @Override
+      public void renderFalse(final LiveSQLContext context, final QueryWriter w) {
+        if (context.getLiveSQLDialect().versionIsAtLeast(23)) {
+          w.write("false");
+        } else {
+          w.write("1 = 0");
+        }
       }
 
     };

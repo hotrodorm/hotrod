@@ -9,6 +9,7 @@ import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
+import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.select.CrossJoin;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.InnerJoin;
@@ -350,6 +351,23 @@ public class DB2Dialect extends LiveSQLDialect {
       @Override
       public String renderOffsetTimestamp(final String isoTimestamp, final String isoOffset, final int precision) {
         throw new InvalidLiteralException("DB2 does not implement the TIMESTAMP WITH TIME ZONE data type.");
+      }
+
+    };
+  }
+
+  @Override
+  public BooleanLiteralRenderer getBooleanLiteralRenderer() {
+    return new BooleanLiteralRenderer() {
+
+      @Override
+      public void renderTrue(final LiveSQLContext context, final QueryWriter w) {
+        w.write("1 = 1");
+      }
+
+      @Override
+      public void renderFalse(final LiveSQLContext context, final QueryWriter w) {
+        w.write("1 = 0");
       }
 
     };
