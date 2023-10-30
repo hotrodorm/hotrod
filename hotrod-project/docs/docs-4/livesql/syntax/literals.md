@@ -54,18 +54,17 @@ While ZERO or ONE can be included in any place in the query, FALSE and TRUE are 
 For example, boolean literals can be used in `reduce` operations as shown below:
 
 ```java
-  // Get a list of search predicates accoring to the user's input (should use dynamic logic)
+  // Get a list of search predicates according to the user's input (should use dynamic logic)
   List<Predicate> predicates = new ArrayList<>();
-  predicates.add(a.branchId.eq(101));
-  predicates.add(a.regionId.in(4, 7, 10));
-  predicates.add(a.status.ne("REJECTED"));
+  predicates.add(t.branchId.eq(101));
+  predicates.add(t.regionId.in(4, 7, 10));
+  predicates.add(t.status.ne("REJECTED"));
 
-  // Assemble the final filter predicate
+  // Assemble the final filter predicate using AND operators
   Predicate filter = predicates.stream().reduce(sql.TRUE, (p, q) -> p.and(q));
 
   // Use the filter in the query
-  sql.select().from(t).where(filter).execute()
-    .forEach(r -> {System.out.println("row: " + r); });
+  List<Row> rows = sql.select().from(t).where(filter).execute();
 ```
 
 
