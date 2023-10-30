@@ -40,7 +40,7 @@ What if I prefer to parameterize a scalar? Well, in that case, use `sql.val(valu
 
 ## Built-In Literals
 
-LiveSQL includes four built-in literals:
+LiveSQL includes the following built-in literals:
 
 | Literal | Description |
 | --- | --- |
