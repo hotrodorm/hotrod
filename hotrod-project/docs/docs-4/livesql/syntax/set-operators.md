@@ -238,6 +238,9 @@ List<Row> rows = sql
   .execute();
 ```
 
+Again, the example above shows each SELECT part having a most basic form. Consider that each one of these inner SELECTs can have their corresponding FROM, JOIN, WHERE, GROUP BY, HAVING, ORDER BY, OFFSET, and/or LIMIT clauses, as well as any number of subqueries in them.
+
+
 ## Column Names
 
 The SQL result set that a set operator produces includes column names that take their names from the original column names &mdash; from tables or expressions aliased with `AS` &mdash; of the first combined SELECT in the level. Column names or aliases from the second sub-SELECT (and on) in the set algebra are ignored by the SQL set operators.
@@ -246,6 +249,61 @@ Even though they look identical to the original column names of the first sub-SE
 be qualified with table prefixes (as in `a.amount`) but only as plain identifiers (just `amount`).
 
 This has implications when referring to these columns, specifically when set operators are used as part of a generic subquery or when ordering result sets.
+
+
+## Ordering, Offsets, and Limiting in Sets
+
+When combining multiple SELECTs using set operators, the ordering, offsets, and limiting is applied
+to the combined set, not each inner SELECT individually. For example, consider the following query:
+
+```sql
+select a as k, b from t
+union all
+select c, d from u
+union all
+select e, f from v
+union all
+select g, h from w
+order by k, b desc
+```
+
+The ORDER BY (as well as LIMIT/OFFSET) is applied to the *combined set* and, thus, appears at the
+end of the combined queries, after the last one. The ORDER BY, OFFSET, and LIMIT clauses cannot be
+applied to the first, second, or third queries individually, but only to the entire combined set.
+Even though it may appear so, in the example the ORDER BY clause is not qualifying the fourth inner query, but the entire combined set, after combining all inner SELECTs using the set operators.
+
+Now, if ORDER BY, OFFSET, and LIMIT need to be applied to the inner SELECTs before they are combined
+you can use `sql.enclose(select)` (for the first SELECT) or nest the subsequent SELECTs, as needed.
+For example, if the first and second queries need to be limited, as in:
+
+```sql
+(select a as k, b from t order by b offset 50 limit 10)
+union all
+(select c, d from u order by c offset 30 limit 5)
+union all
+select e, f from v
+union all
+select g, h from w
+order by k, b desc
+```
+
+You can write the corresponding LiveSQL query as:
+
+```java
+List<Row> rows = sql
+  sql.enclose( // using sql.enclose() -- for the first inner SELECT
+    sql.select(t.a.as("k"), t.b).from(t).orderBy(t.b).offset(50).limit(10)
+  )
+  .unionAll( // nesting -- for the subsequent inner SELECTs
+    sql.select(u.c, u.d).from(u).orderBy(u.c).offset(30).limit(5)
+  )
+  .unionAll()
+  .select(v.e, v.f).from(v)
+  .unionAll()
+  .select(w.g, w.h).from(w)
+  .orderBy(sql.ordering("k"), sql.ordering("b").desc()) // orders the combined set
+  .execute();
+```
 
 
 ## Ordering
