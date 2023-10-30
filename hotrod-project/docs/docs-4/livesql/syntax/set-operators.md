@@ -208,15 +208,34 @@ List<Row> rows = sql.select(sql.val(100))
 
 Inline and nested set operators can be intermixed seamlessly as needed in any part of the query.
 
-Particularly using nested set operators, multi-level and complex queries can be written using 
-LiveSQL. Nesting set operators can quickly become complex and difficult to debug. For example,
-if A, B, C, D, E, F, and G represent SELECT-subqueries then LiveSQL's set syntax can be used to
+Particularly using nested set operators, multi-level and complex queries can be written using
+LiveSQL. Nesting set operators can quickly become complex and tricky to debug. For example,
+if A, B, C, D, E, F, and G represent SELECT queries then LiveSQL's set syntax can be used to
 represent, for example:
 
 (A &#x222a; (B &#x2229; (C - D &#x2229; E) - F &#x222a; G)
 
-As you can see, this is not trivial anymore, to interpret or to debug.
+As you can see, this is not trivial anymore, to interpret or to debug. The corresponding LiveSQL query could take a form similar to:
 
+```java
+List<Row> rows = sql
+  .select().from(a) //
+  .union(
+    sql.select().from(b)
+    .intersect(
+      sql.select().from(c)
+      .except()
+      .select().from(d)
+      .intersect()
+      .select().from(e)
+    )
+    .except()
+    .select().from(f)
+    .union()
+    .select().from(g)
+  )
+  .execute();
+```
 
 ## Column Names
 
