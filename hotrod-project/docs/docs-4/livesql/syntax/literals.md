@@ -47,10 +47,10 @@ LiveSQL includes the following built-in literals:
 | sql.NULL  | Produces a NULL literal (untyped) |
 | sql.ZERO  | Produces the numeric literal value zero (0) |
 | sql.ONE   | Produces the numeric literal value one (1) |
-| sql.FALSE | Produces the boolean value FALSE. Depending on the database (and its version) this can be generated differently, for example as `false` or `1 = 0` |
-| sql.TRUE  | Produces the boolean value TRUE. Depending on the database (and its version) this can be generated differently, for example as `true` or `1 = 1` |
+| sql.FALSE | Produces the boolean value FALSE. Depending on the database (and its version) this can be generated differently, for example as `false` or as `1 = 0` |
+| sql.TRUE  | Produces the boolean value TRUE. Depending on the database (and its version) this can be generated differently, for example as `true` or as `1 = 1` |
 
-While ZERO or ONE can be included in any place in the query, FALSE and TRUE are most likely to be used to assemble dynamic predicates.
+While ZERO, ONE, or NULL can be included in any place in the query, FALSE and TRUE are most likely to be used to assemble dynamic predicates.
 
 For example, boolean literals can be used in `reduce` operations as shown below:
 
