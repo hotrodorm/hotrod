@@ -21,7 +21,7 @@ HotRod 4.1 add subqueries to LiveSQL and adds a few extra enhancements to the Li
 
 ### 1. Subqueries
 
-LiveSQL now implements [subqueries](./livesql/syntax/subqueries.md). These include Scalar Subqueries, Table Expressions, CTEs (plain and recursive) and Lateral Joins, in addition to IN/NOT IN, EXISTS/NOT EXISTS, and asymmetric operators. The extra syntax allows the developer to write complex SQL queries to adress more sophisticated data scenarios, without resorting to Nitro queries. Since writing LiveSQL code is faster than writing Nitro queries, this enhancement can significantly speed up development for queries of mid-level complexity.
+[Subqueries](./livesql/syntax/subqueries.md) include Scalar Subqueries, Table Expressions, Common Table Expressions (plain and recursive CTEs), Lateral Joins, in addition to IN/NOT IN, EXISTS/NOT EXISTS, and asymmetric operators. The extra syntax allows the developer to write complex SQL queries to adress more sophisticated data scenarios, without resorting to Nitro queries. Since writing LiveSQL code is faster than writing Nitro queries, this enhancement can significantly speed up development for queries of mid-level complexity.
 
 ### 2. POJO vs Bean VOs
 
@@ -95,7 +95,7 @@ When a configuration setting is not specified a well-defined default behavior is
 This feature goes hand in hand with the No Config mode.
 
 
-## 2. The LiveSQL Module
+## 2. LiveSQL
 
 ### 2.1 The SQL Wildcard *
 
@@ -133,7 +133,7 @@ with column aliasing to handle multiple VOs resulting from joined tables and vie
 [Aliasing Wildcard Columns](livesql/syntax/select-list.md#aliasing-wildcard-columns).
 
 
-## 3. The CRUD Module
+## 3. CRUD Module
 
 ### 3.1 DAO Methods Renamed
 
@@ -160,7 +160,7 @@ renderer and parser. At the same the change log was largely rendered obsolete by
 predicates that cover all these searched and other much more complex ones.
 
 
-## 4. The Nitro Module
+## 4. Nitro
 
 ### 4.1 Entity SELECTs Return Entity VOs
 
