@@ -60,7 +60,7 @@ For example, boolean literals can be used in `reduce` operations as shown below:
   predicates.add(t.regionId.in(4, 7, 10));
   predicates.add(t.status.ne("REJECTED"));
 
-  // Assemble the final filter predicate using AND operators
+  // Assemble the filter using AND operators
   Predicate filter = predicates.stream().reduce(sql.TRUE, (p, q) -> p.and(q));
 
   // Use the filter in the query
