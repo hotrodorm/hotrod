@@ -87,7 +87,7 @@ SELECT
 Can be written in LiveSQL as:
 
 ```java
-    Select<Row> q2 = sql.select(
+    List<Row> rows = sql.select(
         sql.literal("Hello"),
         sql.literal(14),
         sql.literal(10680.52, 2),
@@ -96,7 +96,8 @@ Can be written in LiveSQL as:
         sql.literal(LocalTime.of(17, 5, 48, 624000000), 3),
         sql.literal(OffsetDateTime.of(2018, 3, 22, 8, 30, 58, 123456000, ZoneOffset.ofHoursMinutes(-8, 15)), 6),
         sql.literal(OffsetTime.of(17, 5, 48, 624000000, ZoneOffset.ofHoursMinutes(-3, 30)), 3)
-    );
+      )
+      .execute();
 ```
 
 
