@@ -44,6 +44,7 @@ LiveSQL includes four built-in literals:
 
 | Literal | Description |
 | --- | --- |
+| sql.NULL  | Produces a NULL literal |
 | sql.ZERO  | Produces the numeric literal value zero (0) |
 | sql.ONE   | Produces the numeric literal value one (1) |
 | sql.FALSE | Produces the boolean value FALSE. Depending on the database (and its version) this can be generated differently, for example as `false` or `1 = 0` |

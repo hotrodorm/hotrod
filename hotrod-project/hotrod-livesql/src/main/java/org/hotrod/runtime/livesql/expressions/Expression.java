@@ -18,30 +18,30 @@ import org.hotrodorm.hotrod.utils.SUtil;
 
 public abstract class Expression implements ResultSetColumn, Rendereable, OrderingTerm {
 
-  public static final int PRECEDENCE_LITERAL = 1;
-  public static final int PRECEDENCE_COLUMN = 1;
-  public static final int PRECEDENCE_PARENTHESIS = 1;
+  protected static final int PRECEDENCE_LITERAL = 1;
+  protected static final int PRECEDENCE_COLUMN = 1;
+  protected static final int PRECEDENCE_PARENTHESIS = 1;
 
-  public static final int PRECEDENCE_CASE = 2;
-  public static final int PRECEDENCE_FUNCTION = 2;
-  public static final int PRECEDENCE_TUPLE = 2;
-  public static final int PRECEDENCE_UNARY_MINUS = 2;
+  protected static final int PRECEDENCE_CASE = 2;
+  protected static final int PRECEDENCE_FUNCTION = 2;
+  protected static final int PRECEDENCE_TUPLE = 2;
+  protected static final int PRECEDENCE_UNARY_MINUS = 2;
 
-  public static final int PRECEDENCE_MULT_DIV_MOD = 3;
+  protected static final int PRECEDENCE_MULT_DIV_MOD = 3;
 
-  public static final int PRECEDENCE_PLUS_MINUS = 4;
+  protected static final int PRECEDENCE_PLUS_MINUS = 4;
 
-  public static final int PRECEDENCE_BETWEEN = 6;
-  public static final int PRECEDENCE_EQ_NE_LT_LE_GT_GE = 6;
-  public static final int PRECEDENCE_LIKE = 6;
-  public static final int PRECEDENCE_IS_NULL = 6;
-  public static final int PRECEDENCE_IN = 6;
-  public static final int PRECEDENCE_EXISTS = 6;
-  public static final int PRECEDENCE_ANY_ALL_EQ_NE_LT_LE_GT_GE = 6;
+  protected static final int PRECEDENCE_BETWEEN = 6;
+  protected static final int PRECEDENCE_EQ_NE_LT_LE_GT_GE = 6;
+  protected static final int PRECEDENCE_LIKE = 6;
+  protected static final int PRECEDENCE_IS_NULL = 6;
+  protected static final int PRECEDENCE_IN = 6;
+  protected static final int PRECEDENCE_EXISTS = 6;
+  protected static final int PRECEDENCE_ANY_ALL_EQ_NE_LT_LE_GT_GE = 6;
 
-  public static final int PRECEDENCE_NOT = 10;
-  public static final int PRECEDENCE_AND = 11;
-  public static final int PRECEDENCE_OR = 12;
+  protected static final int PRECEDENCE_NOT = 10;
+  protected static final int PRECEDENCE_AND = 11;
+  protected static final int PRECEDENCE_OR = 12;
 
   /**
    * <pre>

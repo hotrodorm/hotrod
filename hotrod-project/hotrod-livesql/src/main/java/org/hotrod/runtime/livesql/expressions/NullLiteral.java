@@ -4,9 +4,7 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class NullLiteral extends Expression {
 
-  public static final NullLiteral NULL = new NullLiteral();
-
-  protected NullLiteral() {
+  public NullLiteral() {
     super(Expression.PRECEDENCE_LITERAL);
   }
 

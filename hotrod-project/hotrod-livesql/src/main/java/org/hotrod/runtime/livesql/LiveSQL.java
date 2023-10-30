@@ -866,7 +866,7 @@ public class LiveSQL {
 
   // Literal NULL
 
-  public final NullLiteral NULL = NullLiteral.NULL;
+  public final NullLiteral NULL = new NullLiteral();
 
   // Literals (numbers)
 
