@@ -1,6 +1,6 @@
 package org.hotrod.runtime.livesql.queries.select;
 
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
@@ -18,7 +18,7 @@ public class SelectWherePhase<R> extends IndividualSelectPhase<R> {
 
   // Next phases
 
-  public SelectGroupByPhase<R> groupBy(final Expression... columns) {
+  public SelectGroupByPhase<R> groupBy(final ComparableExpression... columns) {
     return new SelectGroupByPhase<R>(this.context, this.combined, columns);
   }
 

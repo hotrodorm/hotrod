@@ -3,7 +3,7 @@ package org.hotrod.runtime.livesql.queries.scalarsubqueries;
 import org.hotrod.runtime.livesql.Available;
 import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.dialects.Const;
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
@@ -128,7 +128,7 @@ public class ByteArraySelectFromPhase extends ByteArraySelectExpression {
     return new ByteArraySelectWherePhase(this.select, predicate);
   }
 
-  public ByteArraySelectGroupByPhase groupBy(final Expression... columns) {
+  public ByteArraySelectGroupByPhase groupBy(final ComparableExpression... columns) {
     return new ByteArraySelectGroupByPhase(this.select, columns);
   }
 

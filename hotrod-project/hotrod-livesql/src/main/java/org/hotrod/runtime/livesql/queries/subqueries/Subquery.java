@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.binary.ByteArrayExpression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
@@ -124,14 +124,14 @@ public class Subquery implements TableExpression {
   protected List<ResultSetColumn> expandColumns(final List<ResultSetColumn> cols) throws IllegalAccessException {
     List<ResultSetColumn> subqueryColumns = new ArrayList<>();
     for (ResultSetColumn c : cols) {
-      Expression expr = castAsSubqueryColumn(c);
+      ComparableExpression expr = castAsSubqueryColumn(c);
       subqueryColumns.add(expr);
     }
     return subqueryColumns;
 
   }
 
-  private Expression castAsSubqueryColumn(final ResultSetColumn c)
+  private ComparableExpression castAsSubqueryColumn(final ResultSetColumn c)
       throws IllegalArgumentException, IllegalAccessException {
     return SubqueryUtil.castPersistenceColumnAsSubqueryColumn(this, c);
   }

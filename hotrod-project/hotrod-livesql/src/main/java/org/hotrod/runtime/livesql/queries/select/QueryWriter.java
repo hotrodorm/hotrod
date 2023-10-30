@@ -4,7 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 
 public class QueryWriter {
 
@@ -76,7 +76,7 @@ public class QueryWriter {
     }
   }
 
-  public void write(final Expression expression) {
+  public void write(final ComparableExpression expression) {
     if (expression != null) {
       expression.renderTo(this);
     }

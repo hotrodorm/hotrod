@@ -2,7 +2,7 @@ package org.hotrod.runtime.livesql.dialects;
 
 import java.util.List;
 
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
@@ -18,7 +18,7 @@ public abstract class FunctionRenderer {
 
   // General purpose functions
 
-  public <T extends Expression> void coalesce(final QueryWriter w, final List<T> values) {
+  public <T extends ComparableExpression> void coalesce(final QueryWriter w, final List<T> values) {
     this.write(w, "coalesce", values);
   }
 
@@ -166,11 +166,11 @@ public abstract class FunctionRenderer {
 
   // Write utilities
 
-  protected void write(final QueryWriter w, final String function, final Expression... expressions) {
+  protected void write(final QueryWriter w, final String function, final ComparableExpression... expressions) {
     w.write(function);
     w.write("(");
     Separator sep = new Separator();
-    for (Expression expr : expressions) {
+    for (ComparableExpression expr : expressions) {
       w.write(sep.render());
       expr.renderTo(w);
     }
@@ -183,16 +183,16 @@ public abstract class FunctionRenderer {
 //    b.renderTo(w);
 //  }
 
-  protected <T extends Expression> void write(final QueryWriter w, final String function, final List<T> x) {
+  protected <T extends ComparableExpression> void write(final QueryWriter w, final String function, final List<T> x) {
     this.write(w, function, x, ", ");
   }
 
-  protected <T extends Expression> void write(final QueryWriter w, final String function, final List<T> x,
+  protected <T extends ComparableExpression> void write(final QueryWriter w, final String function, final List<T> x,
       final String separator) {
     w.write(function);
     w.write("(");
     Separator sep = new Separator(separator);
-    for (Expression expr : x) {
+    for (ComparableExpression expr : x) {
       w.write(sep.render());
       expr.renderTo(w);
     }

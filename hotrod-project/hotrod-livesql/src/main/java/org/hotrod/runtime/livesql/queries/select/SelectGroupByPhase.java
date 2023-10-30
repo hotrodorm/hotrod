@@ -2,7 +2,7 @@ package org.hotrod.runtime.livesql.queries.select;
 
 import java.util.Arrays;
 
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
@@ -14,7 +14,7 @@ public class SelectGroupByPhase<R> extends IndividualSelectPhase<R> {
   // Constructor
 
   SelectGroupByPhase(final LiveSQLContext context, final CombinedSelectObject<R> combined,
-      final Expression... expressions) {
+      final ComparableExpression... expressions) {
     super(context, combined);
     this.getLastSelect().setGroupBy(Arrays.asList(expressions));
   }

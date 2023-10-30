@@ -1,9 +1,10 @@
 package org.hotrod.runtime.livesql.expressions.datetime;
 
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
-public class DateTimeFieldExpression extends Expression {
+public class DateTimeFieldExpression extends ComparableExpression {
 
   private DateTimeField field;
 

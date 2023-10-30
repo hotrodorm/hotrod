@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression.DateTimeField;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Between;
@@ -21,7 +21,7 @@ import org.hotrod.runtime.livesql.expressions.predicates.NotInList;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.util.BoxUtil;
 
-public abstract class DateTimeExpression extends Expression {
+public abstract class DateTimeExpression extends ComparableExpression {
 
   protected DateTimeExpression(final int precedence) {
     super(precedence);

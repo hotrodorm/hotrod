@@ -1,6 +1,6 @@
 package org.hotrod.runtime.livesql.ordering;
 
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.ordering.OrderByProperties.NullsOrdering;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
@@ -8,7 +8,7 @@ public class OrderByDirectionPhase implements OrderingTerm {
 
   private OrderByProperties ordering;
 
-  public OrderByDirectionPhase(final Expression expression, final boolean ascending) {
+  public OrderByDirectionPhase(final ComparableExpression expression, final boolean ascending) {
     this.ordering = new OrderByProperties(expression, ascending);
   }
 

@@ -2,7 +2,7 @@ package org.hotrod.runtime.livesql.expressions.analytics;
 
 import java.util.List;
 
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrodorm.hotrod.utils.Separator;
@@ -100,7 +100,7 @@ public class WindowExpression {
 
   // Properties
 
-  private List<Expression> partitionBy;
+  private List<ComparableExpression> partitionBy;
   private List<OrderingTerm> orderBy;
 
   private FrameUnit frameUnit;
@@ -125,7 +125,7 @@ public class WindowExpression {
 
   // Setters
 
-  void setPartitionBy(final List<Expression> partitionBy) {
+  void setPartitionBy(final List<ComparableExpression> partitionBy) {
     this.partitionBy = partitionBy;
   }
 
@@ -165,7 +165,7 @@ public class WindowExpression {
     if (hasPartitionBy) {
       w.write("partition by ");
       Separator sep = new Separator();
-      for (Expression expr : this.partitionBy) {
+      for (ComparableExpression expr : this.partitionBy) {
         w.write(sep.render());
         expr.renderTo(w);
       }

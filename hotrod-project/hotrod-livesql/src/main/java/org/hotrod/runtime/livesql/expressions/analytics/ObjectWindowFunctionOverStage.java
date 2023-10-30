@@ -2,7 +2,7 @@ package org.hotrod.runtime.livesql.expressions.analytics;
 
 import java.util.Arrays;
 
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.object.ObjectExpression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 
@@ -16,7 +16,7 @@ public class ObjectWindowFunctionOverStage {
 
   // Next stages
 
-  public ObjectWindowFunctionPartitioningStage partitionBy(final Expression... expressions) {
+  public ObjectWindowFunctionPartitioningStage partitionBy(final ComparableExpression... expressions) {
     this.function.setPartitionBy(Arrays.asList(expressions));
     return new ObjectWindowFunctionPartitioningStage(this.function);
   }

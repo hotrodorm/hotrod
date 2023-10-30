@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.AliasedExpression;
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.binary.ByteArrayExpression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
@@ -41,7 +41,7 @@ public class SubqueryUtil {
   }
 
   // Check for columns of a table or a view
-  public static Expression castPersistenceColumnAsSubqueryColumn(final Subquery subquery, final ResultSetColumn c)
+  public static ComparableExpression castPersistenceColumnAsSubqueryColumn(final Subquery subquery, final ResultSetColumn c)
       throws IllegalArgumentException, IllegalAccessException {
     try {
       NumberColumn nc = (NumberColumn) c;
@@ -69,7 +69,7 @@ public class SubqueryUtil {
               } catch (ClassCastException e6) {
                 try {
                   AliasedExpression nc = (AliasedExpression) c;
-                  Expression expr = ReflectionUtil.getExpressionField(nc, "expression");
+                  ComparableExpression expr = ReflectionUtil.getExpressionField(nc, "expression");
                   String alias = ReflectionUtil.getStringField(nc, "alias");
                   return castExpressionAsSubqueryColumn(subquery, expr, alias);
                 } catch (ClassCastException e7) {
@@ -84,7 +84,7 @@ public class SubqueryUtil {
   }
 
   // check for subquery columns
-  public static Expression castSubqueryColumnAsExternalLevelSubqueryColumn(final Subquery subquery,
+  public static ComparableExpression castSubqueryColumnAsExternalLevelSubqueryColumn(final Subquery subquery,
       final ResultSetColumn c) throws IllegalArgumentException, IllegalAccessException {
     try {
       SubqueryNumberColumn nc = (SubqueryNumberColumn) c;
@@ -126,7 +126,7 @@ public class SubqueryUtil {
   }
 
   // check for subquery columns
-  public static Expression castSubqueryColumnAsExternalLevelSubqueryColumn(final Subquery subquery,
+  public static ComparableExpression castSubqueryColumnAsExternalLevelSubqueryColumn(final Subquery subquery,
       final ResultSetColumn c, final String alias) throws IllegalArgumentException, IllegalAccessException {
     try {
       @SuppressWarnings("unused")
@@ -160,7 +160,7 @@ public class SubqueryUtil {
               } catch (ClassCastException e6) {
                 try {
                   AliasedExpression nc = (AliasedExpression) c;
-                  Expression expr = ReflectionUtil.getExpressionField(nc, "expression");
+                  ComparableExpression expr = ReflectionUtil.getExpressionField(nc, "expression");
 //                  String alias = ReflectionUtil.getStringField(nc, "alias");
                   return castExpressionAsSubqueryColumn(subquery, expr, alias);
                 } catch (ClassCastException e7) {
@@ -175,7 +175,7 @@ public class SubqueryUtil {
   }
 
   // check for general expressions
-  public static Expression castExpressionAsSubqueryColumn(final Subquery subquery, final Expression c,
+  public static ComparableExpression castExpressionAsSubqueryColumn(final Subquery subquery, final ComparableExpression c,
       final String alias) throws IllegalArgumentException, IllegalAccessException {
     try {
       @SuppressWarnings("unused")

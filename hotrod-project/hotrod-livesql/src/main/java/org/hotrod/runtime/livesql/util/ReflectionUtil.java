@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.springframework.util.ReflectionUtils;
@@ -68,14 +68,14 @@ public class ReflectionUtil {
     }
   }
 
-  public static Expression getExpressionField(final Object obj, final String property)
+  public static ComparableExpression getExpressionField(final Object obj, final String property)
       throws IllegalArgumentException, IllegalAccessException {
     try {
       Field f = ReflectionUtils.findField(obj.getClass(), property);
       if (f != null) {
         f.setAccessible(true);
         Object object = f.get(obj);
-        Expression s = (Expression) object;
+        ComparableExpression s = (ComparableExpression) object;
         return s;
       } else {
         throw new IllegalArgumentException("Could not find property '" + property + "' in object.");

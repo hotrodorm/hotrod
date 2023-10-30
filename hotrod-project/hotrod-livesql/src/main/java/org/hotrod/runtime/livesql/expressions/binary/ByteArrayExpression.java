@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Between;
 import org.hotrod.runtime.livesql.expressions.predicates.Equal;
 import org.hotrod.runtime.livesql.expressions.predicates.GreaterThan;
@@ -18,7 +18,7 @@ import org.hotrod.runtime.livesql.expressions.predicates.NotInList;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.util.BoxUtil;
 
-public abstract class ByteArrayExpression extends Expression {
+public abstract class ByteArrayExpression extends ComparableExpression {
 
   protected ByteArrayExpression(final int precedence) {
     super(precedence);

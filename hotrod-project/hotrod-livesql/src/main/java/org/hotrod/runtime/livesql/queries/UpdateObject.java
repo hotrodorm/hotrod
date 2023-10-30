@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
@@ -37,7 +37,7 @@ public class UpdateObject implements QueryObject {
     this.tableOrView = from;
   }
 
-  void addSet(final Column c, final Expression e) {
+  void addSet(final Column c, final ComparableExpression e) {
     this.sets.add(new Assignment(c, e));
   }
 
@@ -115,9 +115,9 @@ public class UpdateObject implements QueryObject {
 
   private static class Assignment {
     private Column c;
-    private Expression e;
+    private ComparableExpression e;
 
-    public Assignment(Column c, Expression e) {
+    public Assignment(Column c, ComparableExpression e) {
       super();
       this.c = c;
       this.e = e;
@@ -127,7 +127,7 @@ public class UpdateObject implements QueryObject {
       return c;
     }
 
-    public Expression getExpression() {
+    public ComparableExpression getExpression() {
       return e;
     }
 

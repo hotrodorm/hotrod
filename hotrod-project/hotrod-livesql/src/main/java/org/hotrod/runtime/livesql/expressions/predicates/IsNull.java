@@ -1,5 +1,6 @@
 package org.hotrod.runtime.livesql.expressions.predicates;
 
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 

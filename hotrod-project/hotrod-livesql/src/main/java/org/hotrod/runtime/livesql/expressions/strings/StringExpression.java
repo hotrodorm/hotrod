@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 
 import org.hotrod.runtime.livesql.Available;
 import org.hotrod.runtime.livesql.dialects.Const;
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberConstant;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Between;
@@ -25,7 +25,7 @@ import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.expressions.strings.postgresql.Ascii;
 import org.hotrod.runtime.livesql.util.BoxUtil;
 
-public abstract class StringExpression extends Expression {
+public abstract class StringExpression extends ComparableExpression {
 
   protected StringExpression(final int precedence) {
     super(precedence);

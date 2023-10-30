@@ -2,7 +2,7 @@ package org.hotrod.runtime.livesql.queries;
 
 import java.util.List;
 
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.queries.select.Select;
 
 public class InsertColumnsPhase {
@@ -21,7 +21,7 @@ public class InsertColumnsPhase {
 
   // Next stages
 
-  public InsertValuesPhase values(final List<Expression> values) {
+  public InsertValuesPhase values(final List<ComparableExpression> values) {
     this.insert.setValues(values);
     return new InsertValuesPhase(this.context, this.insert);
   }

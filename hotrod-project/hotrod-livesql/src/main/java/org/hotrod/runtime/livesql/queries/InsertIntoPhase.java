@@ -3,7 +3,7 @@ package org.hotrod.runtime.livesql.queries;
 import java.util.Arrays;
 import java.util.List;
 
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.select.Select;
@@ -30,7 +30,7 @@ public class InsertIntoPhase {
     return new InsertColumnsPhase(this.context, this.insert);
   }
 
-  public InsertValuesPhase values(final Expression... values) {
+  public InsertValuesPhase values(final ComparableExpression... values) {
     this.insert.setValues(Arrays.asList(values));
     return new InsertValuesPhase(this.context, this.insert);
   }

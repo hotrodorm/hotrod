@@ -3,7 +3,7 @@ package org.hotrod.runtime.livesql.queries;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
@@ -14,7 +14,7 @@ public class InsertObject implements QueryObject {
 
   private TableOrView into;
   private List<Column> columns;
-  private List<Expression> values;
+  private List<ComparableExpression> values;
   private SelectObject<?> select;
 
   InsertObject() {
@@ -29,7 +29,7 @@ public class InsertObject implements QueryObject {
     this.columns = columns;
   }
 
-  void setValues(final List<Expression> values) {
+  void setValues(final List<ComparableExpression> values) {
     this.values = values;
   }
 
@@ -70,7 +70,7 @@ public class InsertObject implements QueryObject {
 
       w.write("\nVALUES (");
       for (int i = 0; i < this.values.size(); i++) {
-        Expression e = this.values.get(i);
+        ComparableExpression e = this.values.get(i);
         e.renderTo(w);
         if (i < this.values.size() - 1) {
           w.write(", ");

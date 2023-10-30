@@ -1,7 +1,7 @@
 package org.hotrod.runtime.livesql.queries.scalarsubqueries;
 
 import org.hotrod.runtime.livesql.Row;
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject;
@@ -17,7 +17,7 @@ public class DateTimeSelectWherePhase extends DateTimeSelectExpression {
 
   // Next stages
 
-  public DateTimeSelectGroupByPhase groupBy(final Expression... columns) {
+  public DateTimeSelectGroupByPhase groupBy(final ComparableExpression... columns) {
     return new DateTimeSelectGroupByPhase(this.select, columns);
   }
 

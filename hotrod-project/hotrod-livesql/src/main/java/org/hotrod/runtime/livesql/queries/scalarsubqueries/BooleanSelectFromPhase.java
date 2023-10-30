@@ -3,7 +3,7 @@ package org.hotrod.runtime.livesql.queries.scalarsubqueries;
 import org.hotrod.runtime.livesql.Available;
 import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.dialects.Const;
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
@@ -128,7 +128,7 @@ public class BooleanSelectFromPhase extends BooleanSelectExpression {
     return new BooleanSelectWherePhase(this.select, predicate);
   }
 
-  public BooleanSelectGroupByPhase groupBy(final Expression... columns) {
+  public BooleanSelectGroupByPhase groupBy(final ComparableExpression... columns) {
     return new BooleanSelectGroupByPhase(this.select, columns);
   }
 

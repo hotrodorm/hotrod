@@ -13,7 +13,8 @@ import java.util.Date;
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.livesql.dialects.Const;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
+import org.hotrod.runtime.livesql.expressions.NullLiteral;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.aggregations.Avg;
 import org.hotrod.runtime.livesql.expressions.aggregations.AvgDistinct;
@@ -236,7 +237,7 @@ public class LiveSQL {
 
   // Tuples
 
-  public TupleExpression tuple(final Expression... expressions) {
+  public TupleExpression tuple(final ComparableExpression... expressions) {
     return new TupleExpression(expressions);
   }
 
@@ -268,7 +269,7 @@ public class LiveSQL {
     return new CountRows();
   }
 
-  public CountDistinct countDistinct(final Expression expression) {
+  public CountDistinct countDistinct(final ComparableExpression expression) {
     return new CountDistinct(expression);
   }
 
@@ -374,15 +375,15 @@ public class LiveSQL {
     return new RowNumber();
   }
 
-  public Rank rank(final Expression expression) {
+  public Rank rank(final ComparableExpression expression) {
     return new Rank(expression);
   }
 
-  public DenseRank denseRank(final Expression expression) {
+  public DenseRank denseRank(final ComparableExpression expression) {
     return new DenseRank(expression);
   }
 
-  public NTile ntile(final Expression expression) {
+  public NTile ntile(final ComparableExpression expression) {
     return new NTile(expression);
   }
 
@@ -862,6 +863,10 @@ public class LiveSQL {
   public ObjectConstant val(final Object value) {
     return new ObjectConstant(value);
   }
+
+  // Literal NULL
+
+  public final NullLiteral NULL = NullLiteral.NULL;
 
   // Literals (numbers)
 

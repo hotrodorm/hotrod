@@ -1,9 +1,10 @@
 package org.hotrod.runtime.livesql.expressions.predicates;
 
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
-public class NotBetween<T extends Expression> extends Predicate {
+public class NotBetween<T extends ComparableExpression> extends Predicate {
 
   private T value;
   private T from;

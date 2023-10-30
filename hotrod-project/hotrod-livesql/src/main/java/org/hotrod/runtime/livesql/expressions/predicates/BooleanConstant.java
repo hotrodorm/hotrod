@@ -8,14 +8,11 @@ public class BooleanConstant extends Predicate {
   // Properties
 
   private Boolean value;
-  private boolean parameterize;
 
   // Constructor
 
   public BooleanConstant(final Boolean value) {
     super(Expression.PRECEDENCE_LITERAL);
-    this.parameterize = true;
-//    this.parameterize = false;
     this.value = value;
   }
 
@@ -23,13 +20,7 @@ public class BooleanConstant extends Predicate {
 
   @Override
   public void renderTo(final QueryWriter w) {
-    if (this.parameterize) {
-      String name = w.registerParameter(this.value);
-      w.write("#{" + name);
-      w.write("}");
-    } else {
-      w.write("" + this.value);
-    }
+    w.write("" + this.value);
   }
 
 }

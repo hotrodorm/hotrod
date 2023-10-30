@@ -15,7 +15,7 @@ import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
@@ -44,7 +44,7 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
   private TableExpression baseTableExpression = null;
   private List<Join> joins = null;
   private Predicate wherePredicate = null;
-  private List<Expression> groupBy = null;
+  private List<ComparableExpression> groupBy = null;
   private Predicate havingPredicate = null;
 
   private List<OrderingTerm> orderingTerms = null;
@@ -178,7 +178,7 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
     this.wherePredicate = whereCondition;
   }
 
-  public void setGroupBy(final List<Expression> groupBy) {
+  public void setGroupBy(final List<ComparableExpression> groupBy) {
     this.groupBy = groupBy;
   }
 
@@ -322,7 +322,7 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
       if (this.groupBy != null && !this.groupBy.isEmpty()) {
         w.write("\nGROUP BY ");
         boolean first = true;
-        for (Expression expr : this.groupBy) {
+        for (ComparableExpression expr : this.groupBy) {
           if (first) {
             first = false;
           } else {
@@ -417,7 +417,7 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
       this.wherePredicate.validateTableReferences(tableReferences, ag);
     }
     if (this.groupBy != null) {
-      for (Expression e : this.groupBy) {
+      for (ComparableExpression e : this.groupBy) {
         e.validateTableReferences(tableReferences, ag);
       }
     }

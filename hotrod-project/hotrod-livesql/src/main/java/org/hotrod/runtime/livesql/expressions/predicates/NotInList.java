@@ -2,11 +2,12 @@ package org.hotrod.runtime.livesql.expressions.predicates;
 
 import java.util.List;
 
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrodorm.hotrod.utils.Separator;
 
-public class NotInList<T extends Expression> extends Predicate {
+public class NotInList<T extends ComparableExpression> extends Predicate {
 
   private T value;
   private List<T> expressions;

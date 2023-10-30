@@ -14,7 +14,7 @@ public class Like extends BinaryPredicate {
   }
 
   public Like(final StringExpression a, final StringExpression b, final StringExpression escape) {
-    super(a, "like", b, PRECEDENCE_LIKE);
+    super(a, "like", b, Expression.PRECEDENCE_LIKE);
     this.escape = escape;
   }
 

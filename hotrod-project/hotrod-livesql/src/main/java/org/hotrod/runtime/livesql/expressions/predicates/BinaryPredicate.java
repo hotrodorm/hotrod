@@ -1,15 +1,15 @@
 package org.hotrod.runtime.livesql.expressions.predicates;
 
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public abstract class BinaryPredicate extends Predicate {
 
-  private Expression left;
+  private ComparableExpression left;
   private String operator;
-  private Expression right;
+  private ComparableExpression right;
 
-  protected <T> BinaryPredicate(final Expression left, final String operator, final Expression right,
+  protected <T> BinaryPredicate(final ComparableExpression left, final String operator, final ComparableExpression right,
       final int operatorPrecedence) {
     super(operatorPrecedence);
     if (operator == null || operator.trim().isEmpty()) {

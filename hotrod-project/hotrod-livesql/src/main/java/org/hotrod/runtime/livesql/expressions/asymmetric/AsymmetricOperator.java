@@ -1,5 +1,6 @@
 package org.hotrod.runtime.livesql.expressions.asymmetric;
 
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
@@ -7,11 +8,11 @@ import org.hotrod.runtime.livesql.queries.select.Select;
 
 public abstract class AsymmetricOperator extends Predicate {
 
-  private Expression value;
+  private ComparableExpression value;
   private String operator;
   private Select<?> subquery;
 
-  protected AsymmetricOperator(final Expression value, final String operator, final Select<?> subquery) {
+  protected AsymmetricOperator(final ComparableExpression value, final String operator, final Select<?> subquery) {
     super(Expression.PRECEDENCE_ANY_ALL_EQ_NE_LT_LE_GT_GE);
     this.value = value;
     this.operator = operator;

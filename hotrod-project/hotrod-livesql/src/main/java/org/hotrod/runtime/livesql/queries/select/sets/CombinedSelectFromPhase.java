@@ -2,7 +2,7 @@ package org.hotrod.runtime.livesql.queries.select.sets;
 
 import org.hotrod.runtime.livesql.Available;
 import org.hotrod.runtime.livesql.dialects.Const;
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
@@ -127,7 +127,7 @@ public class CombinedSelectFromPhase<R> extends CombinedSelectPhase<R> {
     return new CombinedSelectWherePhase<R>(this.context, this.combined, predicate);
   }
 
-  public CombinedSelectGroupByPhase<R> groupBy(final Expression... columns) {
+  public CombinedSelectGroupByPhase<R> groupBy(final ComparableExpression... columns) {
     return new CombinedSelectGroupByPhase<R>(this.context, this.combined, columns);
   }
 

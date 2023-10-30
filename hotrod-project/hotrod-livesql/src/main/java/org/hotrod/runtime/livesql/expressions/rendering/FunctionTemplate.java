@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.exceptions.InvalidFunctionException;
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 // Parameters:
@@ -31,7 +31,7 @@ public class FunctionTemplate {
   private String pattern;
   private List<TemplateSegment> segments;
 
-  public FunctionTemplate(final String pattern, final Expression... parameters) {
+  public FunctionTemplate(final String pattern, final ComparableExpression... parameters) {
     if (pattern == null) {
       throw new InvalidFunctionException("Function cannot have an empty pattern.");
     }
@@ -134,9 +134,9 @@ public class FunctionTemplate {
   }
 
   private class Parameter implements TemplateSegment {
-    private Expression expression;
+    private ComparableExpression expression;
 
-    public Parameter(final Expression expression) {
+    public Parameter(final ComparableExpression expression) {
       this.expression = expression;
     }
 
@@ -153,7 +153,7 @@ public class FunctionTemplate {
     private Parameter parameter;
     private Verbatim suffix;
 
-    public VarArg(final String prefix, final Expression parameter, final String suffix) {
+    public VarArg(final String prefix, final ComparableExpression parameter, final String suffix) {
       this.prefix = new Verbatim(prefix);
       this.parameter = new Parameter(parameter);
       this.suffix = new Verbatim(suffix);

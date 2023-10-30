@@ -2,6 +2,7 @@ package org.hotrod.runtime.livesql.expressions.analytics;
 
 import java.util.List;
 
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.analytics.WindowExpression.FrameBound;
 import org.hotrod.runtime.livesql.expressions.analytics.WindowExpression.FrameExclusion;
@@ -27,7 +28,7 @@ public class DateTimeWindowExpression extends DateTimeExpression {
 
   // Setters
 
-  public void setPartitionBy(final List<Expression> partitionBy) {
+  public void setPartitionBy(final List<ComparableExpression> partitionBy) {
     this.windowExpression.setPartitionBy(partitionBy);
   }
 

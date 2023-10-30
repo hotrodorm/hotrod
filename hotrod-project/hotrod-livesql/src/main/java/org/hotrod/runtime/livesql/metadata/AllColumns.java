@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.hotrod.runtime.livesql.expressions.AliasedExpression;
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
@@ -31,7 +31,7 @@ public class AllColumns implements ResultSetColumn {
   public ColumnAliased as(final ColumnRenamer aliaser) {
     return new ColumnAliased(this.columns.stream() //
         .map(c -> {
-          return new AliasedExpression((Expression) c, aliaser.newName(c));
+          return new AliasedExpression((ComparableExpression) c, aliaser.newName(c));
         }) //
         .collect(Collectors.toList()));
   }
@@ -60,7 +60,7 @@ public class AllColumns implements ResultSetColumn {
     public ColumnAliased as(final ColumnRenamer aliaser) {
       return new ColumnAliased(this.columns.stream() //
           .map(c -> {
-            return new AliasedExpression((Expression) c, aliaser.newName(c));
+            return new AliasedExpression((ComparableExpression) c, aliaser.newName(c));
           }) //
           .collect(Collectors.toList()));
     }

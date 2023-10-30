@@ -1,15 +1,16 @@
 package org.hotrod.runtime.livesql.expressions.predicates;
 
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class Between extends Predicate {
 
-  private Expression value;
-  private Expression from;
-  private Expression to;
+  private ComparableExpression value;
+  private ComparableExpression from;
+  private ComparableExpression to;
 
-  public <T extends Expression> Between(final T value, final T from, final T to) {
+  public <T extends ComparableExpression> Between(final T value, final T from, final T to) {
     super(Expression.PRECEDENCE_BETWEEN);
     this.value = value;
     this.from = from;

@@ -4,10 +4,10 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.util.BoxUtil;
 
-public abstract class Predicate extends Expression {
+public abstract class Predicate extends ComparableExpression {
 
   protected Predicate(final int precedence) {
     super(precedence);
