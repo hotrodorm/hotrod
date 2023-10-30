@@ -118,7 +118,8 @@ LiveSQL query.
 For example:
 
 ```java
-List<Row> rows = sql.select(sql.val(100))
+List<Row> rows = sql
+    .select(sql.val(100))
     .union()
     .select(sql.val(200))
     .intersect()
@@ -213,13 +214,13 @@ LiveSQL. Nesting set operators can quickly become complex and tricky to debug. F
 if A, B, C, D, E, F, and G represent SELECT queries then LiveSQL's set syntax can be used to
 represent, for example:
 
-(A &#x222a; (B &#x2229; (C - D &#x2229; E) - F &#x222a; G)
+A &#x222a; (B &#x2229; (C - D &#x2229; E) - F &#x222a; G)
 
-As you can see, this is not trivial anymore, to interpret or to debug. The corresponding LiveSQL query could take a form similar to:
+As you can see, this is not trivial anymore, to interpret or to debug. The corresponding LiveSQL query, that combines inline and nested set operators, can take a form similar to:
 
 ```java
 List<Row> rows = sql
-  .select().from(a) //
+  .select().from(a)
   .union(
     sql.select().from(b)
     .intersect(
@@ -239,7 +240,7 @@ List<Row> rows = sql
 
 ## Column Names
 
-The SQL result set that a set operator produces includes column names that take their names from the original column names (from tables or expressions aliased with `AS`) of the first combined SELECT in the level. Column names or aliases from the second sub-SELECT and on in the set algebra are ignored.
+The SQL result set that a set operator produces includes column names that take their names from the original column names &mdash; from tables or expressions aliased with `AS` &mdash; of the first combined SELECT in the level. Column names or aliases from the second sub-SELECT (and on) in the set algebra are ignored by the SQL set operators.
 
 Even though they look identical to the original column names of the first sub-SELECT, these names are not related to them anymore; they belong to the operator scope, not the table. Therefore they cannot
 be qualified with table prefixes (as in `a.amount`) but only as plain identifiers (just `amount`).
@@ -307,7 +308,7 @@ List<Row> rows = sql
     .execute();
 ```
 
-**Note**: Although it's not strictly necesarry, it's a good practice to use `ORDER BY` before
+**Note**: Although it's not strictly necessary, it's a good practice to use `ORDER BY` before
 offsetting and limiting.
 
 
