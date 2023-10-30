@@ -19,6 +19,7 @@ SELECT
 
 LiveSQL implements literals for Strings, numeric values, and date/time values.
 
+
 ## Use
 
 Literal values can be created using the `sql.literal()` method. This method has the following variations:
@@ -35,6 +36,38 @@ Literal values can be created using the `sql.literal()` method. This method has 
 | `sql.literal(OffsetDateTime value, int precision)` | creates a timestamp with time offset. The timestamp takes the formatting according to the specific database dialect, and display the specific number of decimal places according to the `precision` parameter. For example, `sql.literal(OffsetDateTime.of(2023, 12, 25, 17, 9, 31, 72000000, ZoneOffset.ofHours(-4)), 3)` is rendered as `TIME '2023-12-15 17:09:31.072-04:00'` in PostgreSQL, but as  `CAST('2023-12-15 17:09:31.072 -04:00' as DATETIMEOFFSET)` in SQL Server |
 
 What if I prefer to parameterize a scalar? Well, in that case, use `sql.val(value)` instead. `sql.val(value)` always parameterizes values.
+
+
+## Built-In Literals
+
+LiveSQL includes four built-in literals:
+
+| Literal | Description |
+| --- | --- |
+| sql.ZERO  | Produces the numeric literal value zero (0) |
+| sql.ONE   | Produces the numeric literal value one (1) |
+| sql.FALSE | Produces the boolean value FALSE. Depending on the database (and its version) this can be generated differently, for example as `false` or `1 = 0` |
+| sql.TRUE  | Produces the boolean value TRUE. Depending on the database (and its version) this can be generated differently, for example as `true` or `1 = 1` |
+
+While ZERO or ONE can be included in any place in the query, FALSE and TRUE are most likely to be used to assemble dynamic predicates.
+
+For example, boolean literals can be used in `reduce` operations as shown below:
+
+```java
+  // Get a list of search predicates accoring to the user's input (should use dynamic logic)
+  List<Predicate> predicates = new ArrayList<>();
+  predicates.add(a.branchId.eq(101));
+  predicates.add(a.regionId.in(4, 7, 10));
+  predicates.add(a.status.ne("REJECTED"));
+
+  // Assemble the final filter predicate
+  Predicate filter = predicates.stream().reduce(sql.TRUE, (p, q) -> p.and(q));
+
+  // Use the filter in the query
+  sql.select().from(t).where(filter).execute()
+    .forEach(r -> {System.out.println("row: " + r); });
+```
+
 
 ## Examples
 
