@@ -57,15 +57,23 @@ For example, boolean literals can be used in `reduce` operations as shown below:
 ```java
   // Get a list of search predicates according to the user's input (should use dynamic logic)
   List<Predicate> predicates = new ArrayList<>();
-  predicates.add(t.branchId.eq(101));
-  predicates.add(t.regionId.in(4, 7, 10));
-  predicates.add(t.status.ne("REJECTED"));
+  predicates.add(t.storeId.eq(101));
+  predicates.add(t.typeId.in(4, 7, 10));
+  predicates.add(t.status.ne("RECALLED"));
 
   // Assemble the filter using AND operators
   Predicate filter = predicates.stream().reduce(sql.TRUE, (p, q) -> p.and(q));
 
   // Use the filter in the query
-  List<Row> rows = sql.select().from(t).where(filter).execute();
+  List<Toy> rows = sql.select().from(t).where(filter).execute();
+```
+
+To produce a query like:
+
+```sql
+SELECT *
+FROM toys
+WHERE 1 = 1 AND store_id = 101 AND type_id in (4, 7, 10) AND status <> 'RECALLED'
 ```
 
 
