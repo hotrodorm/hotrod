@@ -1,7 +1,9 @@
 # LiveSQL Literals
 
 Literal scalars are values that are not parameterized, but are added as inline
-literals in the SQL statement. Literal Scalars are available since LiveSQL 4.2.
+literals in the SQL statement.
+
+Literal Scalars are available since LiveSQL 4.2.
 
 For example, the following SQL statement (in PostgreSQL) has eight literals in it:
 
