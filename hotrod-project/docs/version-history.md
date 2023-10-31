@@ -8,10 +8,15 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
     - Set Operators: All variants of them, including UNION [ALL], INTERSECT [ALL], and EXCEPT [ALL], along with nesting using parenthesis, default and explicit precedence, as well as set ordering, offsets, and limiting.
     - Literal scalars: Using `sql.literal()` plain, non-parameterized values can be included in a SQL query.
 
+## 4.1.1
+
+- Core:
+    - Applying bug fixes to Spring beans instantiation.
+
 ## 4.1.0
 
 - LiveSQL:
-    - Most types of subqueries are implemented. The new subqueries include: Table Expressions, Scalar Subqueries, CTEs (Common Table Expressions), Recursive CTEs, and Lateral Joins. Before this version subqueries for only `IN/NOT IN`, `EXISTS/NOT EXISTS`, and assymmetric operators were implemented.
+    - Subqueries. LiveSQL now includes Table Expressions, Scalar Subqueries, CTEs (Common Table Expressions), Recursive CTEs, and Lateral Joins. Before this version subqueries for only `IN/NOT IN`, `EXISTS/NOT EXISTS`, and assymmetric operators were implemented.
     - Explicit parenthesis added for expressions using `sql.enclose()`.
     - All literals (including integer numbers and safe strings) are now parameterized to help with query optimization.
     - `LAG()` and `LEAD()` fixed (when used with one and two parameters only).
