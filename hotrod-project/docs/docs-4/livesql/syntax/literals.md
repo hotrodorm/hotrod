@@ -68,12 +68,20 @@ For example, boolean literals can be used in `reduce` operations as shown below:
   List<Toy> rows = sql.select().from(t).where(filter).execute();
 ```
 
-To produce a query like:
+To produce a query in Oracle like:
 
 ```sql
 SELECT *
-FROM toys
+FROM toy
 WHERE 1 = 1 AND store_id = 101 AND type_id in (4, 7, 10) AND status <> 'RECALLED'
+```
+
+Or in PostgreSQL as:
+
+```sql
+SELECT *
+FROM toy
+WHERE true AND store_id = 101 AND type_id in (4, 7, 10) AND status <> 'RECALLED'
 ```
 
 

@@ -3,16 +3,11 @@
 Set Operators play an integral part of the SQL Standard to consolidate separate subqueries into
 a single one according to traditional set algebra, using UNION, INTERSECT, and EXCEPT to combine them.
 
-Each element in this set algebra is a select query. These select queries can be combined into
+Set operators are available since LiveSQL 4.2.
+
+Each element in the set operator syntax is a select query. These select queries can be combined into
 complex set expressions including any combination of the set operators and any number of nested
 parenthesis to group them.
-
-
-## Background
-
-This important functionality is available starting in version 4.2. Although some efforts were made
-in version 3.0 to include the set operators they were not made public until version 4.2, where
-they were included with all variants an options.
 
 
 ## Examples
