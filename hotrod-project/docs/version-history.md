@@ -2,7 +2,7 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
-## 4.2.0
+## 4.2.0 (unreleased)
 
 - LiveSQL:
     - Set Operators: All variants of them, including UNION [ALL], INTERSECT [ALL], and EXCEPT [ALL], along with nesting using parenthesis, default and explicit precedence, as well as set ordering, offsets, and limiting.
@@ -37,7 +37,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
     - Converter's `java-intermediate-type` attribute renamed as `java-raw-type`.
     - `primitives` subfolder removed in the location of mappers.
     - Deprecated tag `<mybatis-configuration-template>` removed.
-- LiveSQL: 
+- LiveSQL:
     - Wildcard (`*`) implemented with the `star()` method, enhanced with filtering and aliasing.
     - Core versions of INSERT, UPDATE, and DELETE implemented.
     - Row parser implemented with support for joins. Rows can can now be retrieved as tuples of tables/views.
@@ -54,14 +54,20 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
     - Nitro defaults to `result-set` generation now. The `<select-generation>` tag can be omitted by default.
     - Dynamic SQL's `<foreach>` fixed.
 
-## 3.5.1-SNAPSHOT
+## 3.5.2
+
+- Core: Fixing Spring instantiation for VOs.
+- Core: Fixing access to Spring properties (using getters instead of members dircetly).
+
+## 3.5.1
 
 - LiveSQL: Backport of filtering and aliasing for the star() method.
 - LiveSQL: Backport Oracle MOD() function bugfix.
 - LiveSQL: Backport of row parser with support for joins. Tuples can now be retrieved.
 - DynamicSQL: Backport of `<foreach>` bugfix.
 - Core: Backport of default values for the `<mappers>` tag. It can be now omitted in the configuration file.
-- Core: B of VOs as Spring beans.
+- Core: Backport of VOs instantiated as Spring beans.
+
 
 ## 3.5.0
 
