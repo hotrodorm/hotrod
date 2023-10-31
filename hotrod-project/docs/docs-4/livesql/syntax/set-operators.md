@@ -136,7 +136,7 @@ union (
 The parenthesis were added automatically by LiveSQL to ensure proper precedence.
 
 
-## Explicit Parentesis
+## Explicit Parenthesis
 
 Now, if in the previous example the first two subqueries need to be enclosed in parenthesis instead 
 of the last two, LiveSQL includes the `sql.enclose()` method to explicitly establish the correct 
