@@ -11,12 +11,17 @@ Tables and views are modeled as value objects (VOs) and their columns are modele
 The persistence methods to retrieve and update data are modeled in separate Data Access Objects (DAOs) with
 methods for each one.
 
+> [!NOTE]
+> :warning: Check this is correct!
+
 > [!IMPORTANT]
+> :warning: Check this is correct!
+
+> [!WARNING]
 > :warning: Check this is correct!
 
 The CRUD model is also used by LiveSQL queries and by Nitro's graph selects.
 
-- [ ] :warning: Check this is correct!
 
 ## The VOs
 
