@@ -137,7 +137,7 @@ String with non-ASCII characters can still be used in LiveSQL queries, but as pa
 
 When using scalar values a JDBC query can take two forms, depending if the scalar is typed directly in the SQL statement or parameterized instead.
 
-The following query uses a literal value in the `WHERE` clause::
+The following query uses a literal value in the `WHERE` clause:
 
 ```sql
 select * from client where name = 'Anne Smith';
