@@ -50,7 +50,7 @@ LiveSQL includes the following built-in literals:
 | sql.FALSE | Produces the boolean value FALSE. Depending on the database (and its version) this can be generated differently, for example as `false` or as `1 = 0` |
 | sql.TRUE  | Produces the boolean value TRUE. Depending on the database (and its version) this can be generated differently, for example as `true` or as `1 = 1` |
 
-While ZERO, ONE, or NULL can be included in any place in the query, FALSE and TRUE are most likely to be used to assemble dynamic predicates.
+While ZERO, ONE, or NULL can be included in any place in the query, FALSE and TRUE are most likely to be used to assemble dynamic predicates. Nevertheless, some databases accept booleans in the select list or to update values, particularly those that implement the boolean data type or similar.
 
 For example, boolean literals can be used in `reduce` operations as shown below:
 

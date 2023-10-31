@@ -209,7 +209,7 @@ LiveSQL. Nesting set operators can quickly become complex and tricky to debug. F
 if A, B, C, D, E, F, and G represent SELECT queries then LiveSQL's set syntax can be used to
 represent, for example:
 
-A &#x222a; (B &#x2229; (C - D &#x2229; E) - F &#x222a; G)
+A &#x222a; (B &#x2229; ((C - D) &#x2229; E) - F &#x222a; G)
 
 As you can see, this is not trivial anymore, to interpret or to debug. The corresponding LiveSQL query, that combines inline and nested set operators, can take a form similar to:
 
@@ -219,9 +219,11 @@ List<Row> rows = sql
   .union(
     sql.select().from(b)
     .intersect(
-      sql.select().from(c)
-      .except()
-      .select().from(d)
+      sql.enclose(
+        sql.select().from(c)
+        .except()
+        .select().from(d)
+      )
       .intersect()
       .select().from(e)
     )
@@ -305,8 +307,8 @@ List<Row> rows = sql
 
 There are two ways of defining the ordering of a query with set operators: using column names, or using column numbers (ordinals).
 
-When using column names, the query accepts aliases coming from the first sub-SELECT (as explained in 
-the section above) and not column names anymore. For example:
+When using column names, the query accepts aliases coming from the first sub-SELECT (as explained
+in a previous section) and not table column names anymore. For example:
 
 ```java
 List<Row> rows = sql
