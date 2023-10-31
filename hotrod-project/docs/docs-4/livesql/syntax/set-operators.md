@@ -214,7 +214,7 @@ LiveSQL. Nesting set operators can quickly become complex and tricky to debug. F
 if A, B, C, D, E, F, and G represent SELECT queries then LiveSQL's set syntax can be used to
 represent, for example:
 
-A &#x222a; (B &#x2229; (C - D &#x2229; E) - F &#x222a; G)
+A &#x222a; (B &#x2229; ((C - D) &#x2229; E) - F &#x222a; G)
 
 As you can see, this is not trivial anymore, to interpret or to debug. The corresponding LiveSQL query, that combines inline and nested set operators, can take a form similar to:
 
@@ -224,9 +224,11 @@ List<Row> rows = sql
   .union(
     sql.select().from(b)
     .intersect(
-      sql.select().from(c)
-      .except()
-      .select().from(d)
+      sql.enclose(
+        sql.select().from(c)
+        .except()
+        .select().from(d)
+      )
       .intersect()
       .select().from(e)
     )
