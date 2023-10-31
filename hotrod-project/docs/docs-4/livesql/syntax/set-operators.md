@@ -312,8 +312,8 @@ List<Row> rows = sql
 
 There are two ways of defining the ordering of a query with set operators: using column names, or using column numbers (ordinals).
 
-When using column names, the query accepts aliases coming from the first sub-SELECT (as explained in 
-the section above) and not column names anymore. For example:
+When using column names, the query accepts aliases coming from the first sub-SELECT (as explained
+in a previous section) and not table column names anymore. For example:
 
 ```java
 List<Row> rows = sql
