@@ -81,7 +81,7 @@ The Expression Language enhances the functionality of LiveSQL by allowing comple
 - [Expressions, Operators &amp; Functions](./syntax/expressions.md)
 
     All the basic operators such as `+`, `-`, `*`, `/`, `=`, `<>`, `<`, `>`, `<=`, `>=`, `LIKE`, `BETWEEN`, `AND`, `OR`, `NOT`, `||`, etc., as well as common functions such as `ROUND()`,
-`SUBSTRING()`, `CURRENT_DATE()`, `COALESCE()`, etc. Expressions can be used in any place of the SQL query where a scalar value or a predicate can be used. In short, they can appear in the select list of the query or subquery, in the `WHERE` clause to define simple or complex search rules, in the `GROUP BY` clause, `ORDER BY` clause, etc. LiveSQL includes a basic list of predefined functions for each specific data type, that can be enhanced with custom functions.
+`SUBSTRING()`, `CURRENT_DATE()`, `COALESCE()`, etc. Expressions can be used in any place of the SQL query where a scalar value or a predicate can be used. In short, they can appear in the select list of the query or subquery, in the `WHERE` clause to define simple or complex search rules, in the `GROUP BY` clause, `ORDER BY` clause, etc. LiveSQL includes a basic list of predefined functions for each specific data type, that can be enhanced with custom functions. Parameterized scalars (`sql.val()`) and literal scalars (`sql.literal()`) are included in the LiveSQL syntax.
 
 - [Subqueries](./syntax/subqueries.md)
 
