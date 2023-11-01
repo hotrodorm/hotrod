@@ -4,6 +4,12 @@ RELEASING & PUBLISHING
 All-in-one
 ======================================================================
 
+Verify:
+
+- The version is up to date. Use `mvn versions:set` (described below) to fix.
+- The build is working. Use `mvn clean install` to check.
+- All files are commited to the repository. Use `git status` to check.
+
 Verify the build is ready:
 
  $ export GPG_TTY=$(tty) && mvn -P release clean install
