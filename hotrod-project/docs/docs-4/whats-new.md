@@ -11,7 +11,7 @@ The [set operators](./livesql/syntax/set-operators.md) UNION [ALL], INTERSECT [A
 ### 2. Literal Scalars
 
 [Literal scalar values](./livesql/syntax/literals.md) can now be included in the query using `sql.literal()`. Literals are easier to read in the SQL
-clause and, if used wisely, can provide critical information to the database optimizer to do its job
+clause and can provide information to the database optimizer to do its job
 better.
 
 
