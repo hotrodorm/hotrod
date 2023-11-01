@@ -2,7 +2,7 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
-## 4.2.0 (unreleased)
+## 4.2.0
 
 - LiveSQL:
     - Set Operators: All variants of them, including UNION [ALL], INTERSECT [ALL], and EXCEPT [ALL], along with nesting using parenthesis, default and explicit precedence, as well as set ordering, offsets, and limiting.

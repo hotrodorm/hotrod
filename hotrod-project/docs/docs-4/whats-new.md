@@ -1,6 +1,6 @@
 # What's New in HotRod 4
 
-## What's New in HotRod 4.2 (unreleased)
+## What's New in HotRod 4.2
 
 Version 4.2 adds SQL set operators (UNION, INTERSECT, EXCEPT) and literal values to the LiveSQL syntax.
 

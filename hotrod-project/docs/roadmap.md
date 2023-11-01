@@ -5,10 +5,6 @@ they will be assessed and may be included or not in the versions mentioned below
 
 **Note**: These features and version numbers are non-binding and are subject to change without notice.
 
-Version 4.2:
-
-- LiveSQL set operators. Add builder for UNION, INTERSECT, and EXCEPT including their DISTINCT and ALL variants, to build multi-level set algebra.
-
 Version 5.0:
 
 - Torcs Module. Rank queries, provide query statistics, dump and inspect SQL queries.
