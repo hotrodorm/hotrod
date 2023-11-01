@@ -6,10 +6,13 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.runtime.livesql.queries.select.ExecutableCriteriaSelect;
@@ -360,6 +363,12 @@ public class App {
     OffsetDateTime onow = OffsetDateTime.now();
 
     Select<Row> q = sql.select( //
+        sql.ZERO.as("zero"), //
+        sql.ONE.as("one"), //
+        sql.FALSE.as("false"), //
+        sql.TRUE, //
+        sql.NULL.isNull().as("null is null"), //
+        sql.NULL.isNotNull().as("null is NOT null"), //
         sql.literal(today).as("today"), //
         sql.literal(currentTime, 3).as("current time"), //
         sql.literal(now, 6).as("now"), //
