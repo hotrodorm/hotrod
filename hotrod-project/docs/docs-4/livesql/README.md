@@ -81,7 +81,7 @@ The Expression Language enhances the functionality of LiveSQL by allowing comple
 - [Expressions, Operators &amp; Functions](./syntax/expressions.md)
 
     All the basic operators such as `+`, `-`, `*`, `/`, `=`, `<>`, `<`, `>`, `<=`, `>=`, `LIKE`, `BETWEEN`, `AND`, `OR`, `NOT`, `||`, etc., as well as common functions such as `ROUND()`,
-`SUBSTRING()`, `CURRENT_DATE()`, `COALESCE()`, etc. Expressions can be used in any place of the SQL query where a scalar value or a predicate can be used. In short, they can appear in the select list of the query or subquery, in the `WHERE` clause to define simple or complex search rules, in the `GROUP BY` clause, `ORDER BY` clause, etc. LiveSQL includes a basic list of predefined functions for each specific data type, that can be enhanced with custom functions. Parameterized scalars (`sql.val()`) and literal scalars (`sql.literal()`) are included in the LiveSQL syntax.
+`SUBSTRING()`, `CURRENT_DATE()`, `COALESCE()`, etc. Expressions can be used in any place of the SQL query where a scalar value or a predicate can be used. In short, they can appear in the select list of the query or subquery, in the `WHERE` clause to define simple or complex search rules, in the `GROUP BY` clause, `ORDER BY` clause, etc.
 
 - [Subqueries](./syntax/subqueries.md)
 
@@ -91,6 +91,10 @@ The Expression Language enhances the functionality of LiveSQL by allowing comple
 
     The set operators UNION [ALL], INTERSECT [ALL], EXCEPT [ALL] combine two or more SELECT queries into a single SELECT. Set operators can be inlined in the same level or nested using parenthesis, and can use ordering, offsets, and limiting, according to the SQL Standard.
 
+- [Predefined Functions](./syntax/expressions.md)
+
+    LiveSQL includes a basic list of predefined functions for each specific data type, that can be enhanced with custom functions.
+
 - [Aggregate Functions](./syntax/aggregate-functions.md)
 
     The traditional aggregate functions such as `SUM()`, `MIN()`, and `MAX()`, etc. defined in the SQL-92 Standard. These functions are typically used when grouping rows using the `GROUP BY` clause; they compute a single value from a set of values from different rows.
@@ -98,6 +102,11 @@ The Expression Language enhances the functionality of LiveSQL by allowing comple
 - [Window Functions](./syntax/window-functions.md)
 
     Window functions &mdash; implemented with the `OVER()` clause &mdash; were defined in the SQL:2003 SQL Standard and they aggregate values from multiple rows. They don't consolidate rows, however, but keep rows in non-aggregated form. These functions enhance the traditional aggregate functions and define a new set of them to peek at and to compute values using related rows.
+
+- [Parameterized Scalars](./syntax/expressions.md#boxing-scalars) and [Literal Scalars](./syntax/literals.md)
+
+    Parameterized scalars are included using `sql.val()` or autoboxed by default in the LiveSQL syntax. Literal scalars can be explicitly added using `sql.literal()` when needed for specific cases, or to
+improve query performance.
 
 - [Extending LiveSQL Functions](./extending-livesql-functions.md)
 
