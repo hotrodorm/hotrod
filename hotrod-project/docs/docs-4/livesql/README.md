@@ -4,7 +4,7 @@ This is the LiveSQL Module of the [HotRod ORM](../README.md).
 
 The LiveSQL module allows the developer to write flexible SQL `SELECT` queries from Java programming code only.
 
-LiveSQL uses tables, views, and columns &mdash; modeled by the CRUD module &mdash; to assemble and execute 
+LiveSQL uses tables, views, and columns &mdash; modeled by the CRUD module &mdash; to assemble and execute
 `SELECT`, `INSERT`, `UPDATE`, and `DELETE` queries.
 
 
@@ -83,6 +83,14 @@ The Expression Language enhances the functionality of LiveSQL by allowing comple
     All the basic operators such as `+`, `-`, `*`, `/`, `=`, `<>`, `<`, `>`, `<=`, `>=`, `LIKE`, `BETWEEN`, `AND`, `OR`, `NOT`, `||`, etc., as well as common functions such as `ROUND()`,
 `SUBSTRING()`, `CURRENT_DATE()`, `COALESCE()`, etc. Expressions can be used in any place of the SQL query where a scalar value or a predicate can be used. In short, they can appear in the select list of the query or subquery, in the `WHERE` clause to define simple or complex search rules, in the `GROUP BY` clause, `ORDER BY` clause, etc. LiveSQL includes a basic list of predefined functions for each specific data type, that can be enhanced with custom functions.
 
+- [Subqueries](./syntax/subqueries.md)
+
+    Subqueries are a standard feature of the SQL language that greatly enhances the expressiveness of a query. LiveSQL implements all typical subqueries such as scalar subqueries, table expressions, `IN/NOT IN`, `EXISTS/NOT EXISTS`, assymmetric operators, CTEs (Common Table Expressions), and lateral joins. The `WITH` and `WITH RECURSIVE` clauses are implemented. Aditionally, plain and correlated subqueries can be expressed in LiveSQL.
+
+- [Set Operators](./syntax/set-operators.md)
+
+    The set operators UNION [ALL], INTERSECT [ALL], EXCEPT [ALL] combine two or more SELECT queries into a single SELECT. Set operators can be inlined in the same level or nested using parenthesis, and can use ordering, offsets, and limiting, according to the SQL Standard.
+
 - [Aggregate Functions](./syntax/aggregate-functions.md)
 
     The traditional aggregate functions such as `SUM()`, `MIN()`, and `MAX()`, etc. defined in the SQL-92 Standard. These functions are typically used when grouping rows using the `GROUP BY` clause; they compute a single value from a set of values from different rows.
@@ -90,10 +98,6 @@ The Expression Language enhances the functionality of LiveSQL by allowing comple
 - [Window Functions](./syntax/window-functions.md)
 
     Window functions &mdash; implemented with the `OVER()` clause &mdash; were defined in the SQL:2003 SQL Standard and they aggregate values from multiple rows. They don't consolidate rows, however, but keep rows in non-aggregated form. These functions enhance the traditional aggregate functions and define a new set of them to peek at and to compute values using related rows.
-
-- [Subqueries](./syntax/subqueries.md)
-
-    Subqueries are a standard feature of the SQL language that greatly enhances the expressiveness of a query. LiveSQL implements all typical subqueries such as scalar subqueries, table expressions, `IN/NOT IN`, `EXISTS/NOT EXISTS`, assymmetric operators, CTEs (Common Table Expressions), and lateral joins. The `WITH` and `WITH RECURSIVE` clauses are implemented. Aditionally, plain and correlated subqueries can be expressed in LiveSQL.
 
 - [Extending LiveSQL Functions](./extending-livesql-functions.md)
 
