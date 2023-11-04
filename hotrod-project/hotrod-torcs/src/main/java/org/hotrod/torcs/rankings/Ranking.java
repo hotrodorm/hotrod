@@ -2,14 +2,12 @@ package org.hotrod.torcs.rankings;
 
 import java.util.List;
 
-public interface Ranking {
+import org.hotrod.torcs.QueryConsumer;
 
-  String getTitle();
+public abstract class Ranking extends QueryConsumer {
 
-  void clear();
+  public abstract void reset();
 
-  void add(Query q);
-
-  List<Query> list();
+  public abstract List<RankingEntry> getRanking();
 
 }

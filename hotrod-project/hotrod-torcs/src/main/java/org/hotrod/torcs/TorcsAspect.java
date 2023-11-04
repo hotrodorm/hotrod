@@ -18,6 +18,8 @@ public class TorcsAspect {
   @Autowired
   private TorcsMetrics sqlMetrics;
 
+  // Intercepting the DataSouce object
+
   @Around(value = "execution(* javax.sql.DataSource.getConnection())")
   private Object measureGetConnection(final ProceedingJoinPoint joinPoint) throws Throwable {
     try {
@@ -33,6 +35,8 @@ public class TorcsAspect {
       throw e;
     }
   }
+
+  // Intercepting the Connection object
 
   @Around(value = "execution(* java.sql.Connection.prepareStatement(..)) && args(sql)")
   private Object measurePrepareStatement(final ProceedingJoinPoint joinPoint, final String sql) throws Throwable {
@@ -68,7 +72,7 @@ public class TorcsAspect {
     }
   }
 
-  // java.sql.PreparedStatement declared methods
+  // Intercepting the PreparedStatement (declared methods)
 
   @Around(value = "execution(* java.sql.PreparedStatement.execute(..))")
   private Object adviceExecute(final ProceedingJoinPoint joinPoint) throws Throwable {
@@ -90,7 +94,7 @@ public class TorcsAspect {
     return measureSQLExecution(joinPoint, this.sql.get());
   }
 
-  // java.sql.Statement declared methods
+  // Intercepting the java.sql.Statement (declared methods)
 
   @Around(value = "execution(* java.sql.Statement.execute(..)) && args(sql)")
   private Object adviceExecute(final ProceedingJoinPoint joinPoint, final String sql) throws Throwable {
@@ -178,19 +182,19 @@ public class TorcsAspect {
     return measureSQLExecution(joinPoint, sql);
   }
 
-  // Helper
+  // Measuring
 
   private Object measureSQLExecution(final ProceedingJoinPoint joinPoint, final String sql) throws Throwable {
     long start = System.currentTimeMillis();
     try {
       Object ps = joinPoint.proceed();
       long end = System.currentTimeMillis();
-      this.sqlMetrics.record(sql, end - start, null);
+      this.sqlMetrics.record(sql, (int) (end - start), null);
       return ps;
 
     } catch (Throwable t) {
       long end = System.currentTimeMillis();
-      this.sqlMetrics.record(sql, end - start, t);
+      this.sqlMetrics.record(sql, (int) (end - start), t);
       throw t;
     }
   }

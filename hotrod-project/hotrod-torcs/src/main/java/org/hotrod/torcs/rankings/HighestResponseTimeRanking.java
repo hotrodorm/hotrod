@@ -1,31 +1,31 @@
 package org.hotrod.torcs.rankings;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class HighestResponseTimeRanking implements Ranking {
+public class HighestResponseTimeRanking extends Ranking {
 
-  private static final int DEFAULT_LIMIT = 3;
-  private static final int MIN_LIMIT = 1;
-  private static final int MAX_LIMIT = 100;
+  private static final int DEFAULT_SIZE = 10;
+  private static final int MIN_SIZE = 1;
+  private static final int MAX_SIZE = 100;
 
-  private int limit;
-  private ArrayList<Query> list = new ArrayList<>();
+  private int size;
 
   public HighestResponseTimeRanking() {
-    this.limit = DEFAULT_LIMIT;
+    this.size = DEFAULT_SIZE;
   }
 
-  public HighestResponseTimeRanking(int limit) {
-    if (limit < MIN_LIMIT) {
-      throw new RuntimeException("limit must be greater or equal to " + MIN_LIMIT + " but it's " + limit + ".");
+  public HighestResponseTimeRanking(int size) {
+    if (size < MIN_SIZE) {
+      throw new RuntimeException("Ranking size must be greater or equal to " + MIN_SIZE + " but it's " + size + ".");
     }
-    if (limit > MAX_LIMIT) {
-      throw new RuntimeException("limit must be less than or equal to " + MAX_LIMIT + " but it's " + limit + ".");
+    if (size > MAX_SIZE) {
+      throw new RuntimeException("Ranking size must be less than or equal to " + MAX_SIZE + " but it's " + size + ".");
     }
-    this.limit = limit;
-    clear();
+    this.size = size;
+    reset();
   }
 
   @Override
@@ -34,35 +34,84 @@ public class HighestResponseTimeRanking implements Ranking {
   }
 
   @Override
-  public void clear() {
-    this.list.clear();
+  public synchronized void reset() {
+    this.sorted.clear();
   }
 
-  @Override
-  public synchronized void add(Query q) {
-    int pos = findPosition(q);
-    // TODO implement add+remove into a single change for highest performance
-    this.list.add(pos, q);
+  /**
+   * <pre>
+   * pos   RT SQL
+   * --- ---- -----------------------------
+   *   1  500 select 1
+   *   2  200 select 2
+   *   3   70 select 3
+   *   4   40 select 4
+   * </pre>
+   */
 
-    if (this.list.size() > this.limit) {
-      this.list.remove(this.limit);
+  private ArrayList<RankingEntry> sorted = new ArrayList<>();
+  private HashMap<String, RankingEntry> bySQL = new HashMap<>();
+
+  @Override
+  public synchronized void consume(final Query q) {
+
+    // 1. Maybe it's already in the ranking
+
+    RankingEntry hrtq = this.bySQL.get(q.getSQL());
+    if (hrtq != null) {
+
+      if (q.getResponseTime() > hrtq.getMaxTime()) {
+        upgradePosition(hrtq);
+        hrtq.maxTime = q.getResponseTime();
+      }
+
+    } else { // 2. New query (not in the ranking)
+
+      insert(hrtq);
+
+    }
+
+  }
+
+  private void upgradePosition(final RankingEntry hrtq) {
+    boolean searching = true;
+    for (RankingEntry q : this.sorted) {
+      if (searching) {
+        if (q.maxTime < hrtq.maxTime) {
+          this.sorted.remove(hrtq.pos);
+          this.sorted.add(q.pos, hrtq);
+          hrtq.pos = q.pos;
+          q.pos++;
+          searching = false;
+        }
+      } else {
+        q.pos++;
+      }
     }
   }
 
-  private int findPosition(Query q) {
-    // TODO: Implement binary search for highest performance
-    int pos = 0;
-    Iterator<Query> it = this.list.iterator();
-    Query c;
-    while (it.hasNext() && (c = it.next()) != null && c.getResponseTime() >= q.getResponseTime()) {
-      pos++;
+  private void insert(final RankingEntry hrtq) {
+    boolean searching = true;
+    for (RankingEntry q : this.sorted) {
+      if (searching) {
+        if (q.maxTime < hrtq.maxTime) {
+          this.sorted.add(q.pos, hrtq);
+          hrtq.pos = q.pos;
+          q.pos++;
+          searching = false;
+        }
+      } else {
+        q.pos++;
+      }
     }
-    return pos;
+    if (!searching && this.sorted.size() > this.size) {
+      this.sorted.remove(this.size);
+    }
   }
 
   @Override
-  public List<Query> list() {
-    return this.list;
+  public List<RankingEntry> getRanking() {
+    return this.sorted;
   }
 
 }
