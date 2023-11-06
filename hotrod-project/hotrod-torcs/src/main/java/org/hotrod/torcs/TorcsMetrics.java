@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.torcs.rankings.HighestResponseTimeRanking;
-import org.hotrod.torcs.rankings.Query;
+import org.hotrod.torcs.rankings.QueryExecution;
 import org.hotrod.torcs.rankings.Ranking;
 import org.hotrod.torcs.rankings.RankingEntry;
 import org.springframework.stereotype.Component;
@@ -15,13 +15,13 @@ public class TorcsMetrics {
   private boolean active;
 
   private List<Ranking> rankings;
-  private HighestResponseTimeRanking hrt;
+  private HighestResponseTimeRanking rtRanking;
 
   public TorcsMetrics() {
     this.active = true;
     this.rankings = new ArrayList<>();
-    this.hrt = new HighestResponseTimeRanking();
-    this.rankings.add(this.hrt);
+    this.rtRanking = new HighestResponseTimeRanking();
+    this.rankings.add(this.rtRanking);
   }
 
   public void add(final Ranking ranking) {
@@ -48,7 +48,7 @@ public class TorcsMetrics {
 
   void record(final String sql, final int responseTime, final Throwable t) {
     if (this.active) {
-      Query q = new Query(sql, responseTime, t);
+      QueryExecution q = new QueryExecution(sql, responseTime, t);
       for (Ranking r : this.rankings) {
         if (r.isActive()) {
           r.consume(q);
@@ -66,8 +66,8 @@ public class TorcsMetrics {
 
   // Get stats
 
-  public List<RankingEntry> getByHighestResponseTime() {
-    return this.hrt.getRanking();
+  public List<RankingEntry> getHighResponseTime() {
+    return this.rtRanking.getRanking();
   }
 
 //  public List<Statement> getByHighestResponseTime() {

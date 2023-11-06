@@ -1,6 +1,6 @@
 package org.hotrod.torcs;
 
-import java.sql.PreparedStatement;
+import java.util.WeakHashMap;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -13,59 +13,83 @@ import org.springframework.stereotype.Component;
 @Component
 public class TorcsAspect {
 
-  private ThreadLocal<String> sql = new ThreadLocal<String>();
+  private ThreadLocal<String> threadSQL = new ThreadLocal<String>();
 
   @Autowired
   private TorcsMetrics sqlMetrics;
 
-  // Intercepting the DataSouce object
+  // Adding aspect to the Connection
+
+  private WeakHashMap<Integer, Object> connProxies = new WeakHashMap<>();
 
   @Around(value = "execution(* javax.sql.DataSource.getConnection())")
   private Object measureGetConnection(final ProceedingJoinPoint joinPoint) throws Throwable {
+    System.out.println("measureGetConnection()");
     try {
       Object conn = joinPoint.proceed();
 
+      Object proxy = this.connProxies.get(System.identityHashCode(conn));
+      if (proxy != null) {
+        return proxy;
+      }
+
       AspectJProxyFactory proxyFactory = new AspectJProxyFactory(conn);
       proxyFactory.addAspect(this);
-      Object proxyConn = proxyFactory.getProxy();
-
-      return proxyConn;
+      proxy = proxyFactory.getProxy();
+      this.connProxies.put(System.identityHashCode(conn), proxy);
+      return proxy;
 
     } catch (Throwable e) {
       throw e;
     }
   }
 
-  // Intercepting the Connection object
+  // Adding aspect to the PreparedStatement
+
+  private WeakHashMap<Integer, Object> psProxies = new WeakHashMap<>();
 
   @Around(value = "execution(* java.sql.Connection.prepareStatement(..)) && args(sql)")
   private Object measurePrepareStatement(final ProceedingJoinPoint joinPoint, final String sql) throws Throwable {
-    try {
-      this.sql.set(sql);
-      Object ps = joinPoint.proceed();
-
-      AspectJProxyFactory proxyFactory = new AspectJProxyFactory(ps);
-      proxyFactory.addAspect(this);
-      PreparedStatement proxyPS = proxyFactory.getProxy();
-
-      return proxyPS;
-
-    } catch (Throwable e) {
-      throw e;
-    }
+    System.out.println("measurePrepareStatement()");
+    return addProxy(joinPoint, sql, this.psProxies);
   }
+
+  // Adding aspect to the Statement
+
+  private WeakHashMap<Integer, Object> stProxies = new WeakHashMap<>();
+
+  @Around(value = "execution(* java.sql.Connection.createStatement(..)) && args(sql)")
+  private Object measureStatement(final ProceedingJoinPoint joinPoint, final String sql) throws Throwable {
+    System.out.println("measureStatement()");
+    return addProxy(joinPoint, sql, this.stProxies);
+  }
+
+  // Adding aspect the the CallablaStatement
+
+  private WeakHashMap<Integer, Object> csProxies = new WeakHashMap<>();
 
   @Around(value = "execution(* java.sql.Connection.prepareCall(..)) && args(sql)")
   private Object measurePrepareCall(final ProceedingJoinPoint joinPoint, final String sql) throws Throwable {
+    System.out.println("measurePrepareCall()");
+    return addProxy(joinPoint, sql, this.csProxies);
+  }
+
+  private Object addProxy(final ProceedingJoinPoint joinPoint, final String sql,
+      final WeakHashMap<Integer, Object> proxies) throws Throwable {
     try {
-      this.sql.set(sql);
-      Object cs = joinPoint.proceed();
+      this.threadSQL.set(sql);
+      Object obj = joinPoint.proceed();
 
-      AspectJProxyFactory proxyFactory = new AspectJProxyFactory(cs);
+      Object proxy = proxies.get(System.identityHashCode(obj));
+      if (proxy != null) {
+        return proxy;
+      }
+
+      AspectJProxyFactory proxyFactory = new AspectJProxyFactory(obj);
       proxyFactory.addAspect(this);
-      PreparedStatement proxyPS = proxyFactory.getProxy();
-
-      return proxyPS;
+      proxy = proxyFactory.getProxy();
+      proxies.put(System.identityHashCode(obj), proxy);
+      return proxy;
 
     } catch (Throwable e) {
       throw e;
@@ -76,22 +100,22 @@ public class TorcsAspect {
 
   @Around(value = "execution(* java.sql.PreparedStatement.execute(..))")
   private Object adviceExecute(final ProceedingJoinPoint joinPoint) throws Throwable {
-    return measureSQLExecution(joinPoint, this.sql.get());
+    return measureSQLExecution(joinPoint, this.threadSQL.get());
   }
 
   @Around(value = "execution(* java.sql.PreparedStatement.executeLargeUpdate(..))")
   private Object adviceExecuteLargeUpdate(final ProceedingJoinPoint joinPoint) throws Throwable {
-    return measureSQLExecution(joinPoint, this.sql.get());
+    return measureSQLExecution(joinPoint, this.threadSQL.get());
   }
 
   @Around(value = "execution(* java.sql.PreparedStatement.executeQuery(..))")
   private Object adviceExecExecuteQuery(final ProceedingJoinPoint joinPoint) throws Throwable {
-    return measureSQLExecution(joinPoint, this.sql.get());
+    return measureSQLExecution(joinPoint, this.threadSQL.get());
   }
 
   @Around(value = "execution(* java.sql.PreparedStatement.executeUpdate(..))")
   private Object adviceExecuteUpdate(final ProceedingJoinPoint joinPoint) throws Throwable {
-    return measureSQLExecution(joinPoint, this.sql.get());
+    return measureSQLExecution(joinPoint, this.threadSQL.get());
   }
 
   // Intercepting the java.sql.Statement (declared methods)
@@ -119,16 +143,14 @@ public class TorcsAspect {
     return measureSQLExecution(joinPoint, sql);
   }
 
-  // TODO Check how batches work
   @Around(value = "execution(* java.sql.Statement.executeBatch(..))")
   private Object adviceExecuteBatch(final ProceedingJoinPoint joinPoint) throws Throwable {
-    return measureSQLExecution(joinPoint, this.sql.get());
+    return measureSQLExecution(joinPoint, this.threadSQL.get());
   }
 
-  // TODO Check how batches work
   @Around(value = "execution(* java.sql.Statement.executeLargeBatch(..))")
   private Object adviceExecuteLargeBatch(final ProceedingJoinPoint joinPoint) throws Throwable {
-    return measureSQLExecution(joinPoint, this.sql.get());
+    return measureSQLExecution(joinPoint, this.threadSQL.get());
   }
 
   @Around(value = "execution(* java.sql.Statement.executeLargeUpdate(..)) && args(sql)")
@@ -185,16 +207,19 @@ public class TorcsAspect {
   // Measuring
 
   private Object measureSQLExecution(final ProceedingJoinPoint joinPoint, final String sql) throws Throwable {
+    System.out.println("Measuring: " + sql);
     long start = System.currentTimeMillis();
     try {
       Object ps = joinPoint.proceed();
       long end = System.currentTimeMillis();
       this.sqlMetrics.record(sql, (int) (end - start), null);
+      System.out.println("Measured: " + (end - start) + "ms");
       return ps;
 
     } catch (Throwable t) {
       long end = System.currentTimeMillis();
       this.sqlMetrics.record(sql, (int) (end - start), t);
+      System.out.println("Measured (exception): " + (end - start) + "ms");
       throw t;
     }
   }

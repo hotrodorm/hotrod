@@ -6,7 +6,8 @@ import java.util.stream.Collectors;
 
 import org.hotrodorm.hotrod.utils.XUtil;
 
-public class Statement implements Item {
+@Deprecated
+public class Statement {
 
   private String actualSQL;
 
@@ -134,11 +135,6 @@ public class Statement implements Item {
   private String compact(final String txt) {
     return txt == null ? null
         : Arrays.stream(txt.split("\n")).map(s -> s.trim()).filter(s -> !s.isEmpty()).collect(Collectors.joining(" "));
-  }
-
-  @Override
-  public String getKey() {
-    return this.actualSQL;
   }
 
 }

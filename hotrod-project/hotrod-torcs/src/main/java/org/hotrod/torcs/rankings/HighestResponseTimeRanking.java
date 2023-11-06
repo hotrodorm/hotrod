@@ -3,7 +3,6 @@ package org.hotrod.torcs.rankings;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class HighestResponseTimeRanking extends Ranking {
 
@@ -53,59 +52,87 @@ public class HighestResponseTimeRanking extends Ranking {
   private HashMap<String, RankingEntry> bySQL = new HashMap<>();
 
   @Override
-  public synchronized void consume(final Query q) {
+  public synchronized void consume(final QueryExecution execution) {
 
-    // 1. Maybe it's already in the ranking
+    RankingEntry entry = this.bySQL.get(execution.getSQL());
 
-    RankingEntry hrtq = this.bySQL.get(q.getSQL());
-    if (hrtq != null) {
+    if (entry != null) { // 1. It's already in the ranking
+      System.out.println(">>> Entry already in the ranking.");
 
-      if (q.getResponseTime() > hrtq.getMaxTime()) {
-        upgradePosition(hrtq);
-        hrtq.maxTime = q.getResponseTime();
+      entry.apply(execution);
+      if (execution.getResponseTime() > entry.getMaxTime()) {
+        upgradePosition(entry);
       }
 
     } else { // 2. New query (not in the ranking)
+      System.out.println(">>> Entry is new.");
 
-      insert(hrtq);
+      entry = new RankingEntry(execution);
+      if (insert(entry)) {
+        this.bySQL.put(execution.getSQL(), entry);
+      }
+      System.out.println(">>> Entry was not inserted");
 
     }
 
+    System.out
+        .println(">>> [Stats] this.sorted.size()=" + this.sorted.size() + " this.bySQL.size()=" + this.bySQL.size());
+
   }
 
-  private void upgradePosition(final RankingEntry hrtq) {
+  private void upgradePosition(final RankingEntry entry) {
     boolean searching = true;
-    for (RankingEntry q : this.sorted) {
+    for (RankingEntry current : this.sorted) {
       if (searching) {
-        if (q.maxTime < hrtq.maxTime) {
-          this.sorted.remove(hrtq.pos);
-          this.sorted.add(q.pos, hrtq);
-          hrtq.pos = q.pos;
-          q.pos++;
+        if (current.maxTime < entry.maxTime) {
+          this.sorted.remove(entry.pos);
+          this.sorted.add(current.pos, entry);
+          entry.pos = current.pos;
+          current.pos++;
           searching = false;
         }
       } else {
-        q.pos++;
+        current.pos++;
       }
     }
   }
 
-  private void insert(final RankingEntry hrtq) {
-    boolean searching = true;
-    for (RankingEntry q : this.sorted) {
-      if (searching) {
-        if (q.maxTime < hrtq.maxTime) {
-          this.sorted.add(q.pos, hrtq);
-          hrtq.pos = q.pos;
-          q.pos++;
-          searching = false;
+  private boolean insert(final RankingEntry entry) {
+    if (this.sorted.isEmpty()) {
+      entry.pos = 0;
+      this.sorted.add(entry.pos, entry);
+      return true;
+    } else {
+      boolean inserted = false;
+      for (RankingEntry current : this.sorted) {
+        if (!inserted) {
+          if (entry.maxTime > current.maxTime) {
+            entry.pos = current.pos;
+            this.sorted.add(entry.pos, entry);
+            current.pos++;
+            inserted = true;
+            break;
+          }
+        } else {
+          current.pos++;
+        }
+      }
+
+      if (inserted) {
+        if (this.sorted.size() > this.size) {
+          RankingEntry removed = this.sorted.remove(this.size);
+          this.bySQL.remove(removed.getSQL());
         }
       } else {
-        q.pos++;
+        if (this.sorted.size() < this.size) {
+          entry.pos = this.sorted.size();
+          this.sorted.add(entry);
+          inserted = true;
+        }
       }
-    }
-    if (!searching && this.sorted.size() > this.size) {
-      this.sorted.remove(this.size);
+
+      return inserted;
+
     }
   }
 
