@@ -6,20 +6,19 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.runtime.livesql.queries.select.ExecutableCriteriaSelect;
-import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 import org.hotrod.runtime.spring.SpringBeanObjectFactory;
+import org.hotrod.torcs.TorcsMetrics;
+import org.hotrod.torcs.rankings.RankingEntry;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -73,8 +72,8 @@ public class App {
   @Autowired
   private LiveSQL sql;
 
-//  @Autowired
-//  private TorcsCTP torcsCTP;
+  @Autowired
+  private TorcsMetrics torcsMetrics;
 
   public static void main(String[] args) {
     SpringApplication.run(App.class, args);
@@ -225,7 +224,7 @@ public class App {
 
     // Set Operators
 
-    union();
+//    union();
 
     // Subqueries
 //    example1InNotIn();
@@ -239,6 +238,8 @@ public class App {
 //    example6CTEs();
 //    example7RecursiveCTEs();
 //    example8LateralJoins();
+
+    torcs();
 
   }
 
@@ -376,34 +377,38 @@ public class App {
         sql.literal(ocurrentTime, 3).as("ocurrent time") //
     );
 
-//  SELECT
-//  'Hello', -- a character literal
-//  14, -- an numeric integer literal
-//  10680.52, -- a numeric decimal literal
-//  DATE '2023-12-25', -- a date literal
-//  TIMESTAMP '2018-03-22 08:30:58.123456', -- a timestamp literal
-//  TIME '17:05:48.624', -- a time literal
-//  TIMESTAMP WITH TIME ZONE '2018-03-22 08:30:58.123456+08:15', -- a timestamp with time offset literal
-//  TIME WITH TIME ZONE '17:05:48.624-03:30' -- a time with time offset literal
-
-//    Select<Row> q2 = sql.select( //
-//        sql.literal("Hello"), //
-//        sql.literal(14), //
-//        sql.literal(10680.52, 2), //
-//        sql.literal(LocalDate.of(2023, 12, 25)), //
-//        sql.literal(LocalDateTime.of(2018, 3, 22, 8, 30, 58, 123456000), 6), //
-//        sql.literal(LocalTime.of(17, 5, 48, 624000000), 3), //
-//        sql.literal(OffsetDateTime.of(2018, 3, 22, 8, 30, 58, 123456000, ZoneOffset.ofHoursMinutes(-8, 15)), 6), //
-//        sql.literal(OffsetTime.of(17, 5, 48, 624000000, ZoneOffset.ofHoursMinutes(-3, 30)), 3) //
-//    );
-
-    System.out.println("tree: " + q.getCombinedSelect().toString());
-    System.out.println(q.getPreview());
     q.execute().forEach(r -> {
       Object o = r.get("now");
       System.out.println("row: " + r + " now:" + o.getClass().getName());
     });
 
+  }
+
+  private void torcs() {
+
+    Random rand = new Random(1234);
+
+    for (int i = 0; i < 80; i++) {
+      int loops = 20000 * (1 + rand.nextInt(12));
+      Select<Row> select = buildRecursiveCTE(loops);
+      select.execute().forEach(r -> {
+      });
+      System.out.println("exe #" + i + " (" + loops + " loops) complete: ");
+    }
+
+    System.out.println("--- Torcs Ranking ---");
+    for (RankingEntry e : this.torcsMetrics.getHighResponseTime()) {
+      System.out.println(e);
+    }
+    System.out.println("--- End of Torcs Ranking ---");
+
+  }
+
+  private Select<Row> buildRecursiveCTE(final int loops) {
+    RecursiveCTE n = sql.recursiveCTE("n", "X");
+    n.as(sql.select(sql.literal(1).as("X")),
+        sql.select(n.num("X").plus(sql.literal(1))).from(n).where(n.num("X").lt(sql.literal(loops))));
+    return sql.with(n).select().from(n);
   }
 
   private void example1InNotIn() {
@@ -419,7 +424,7 @@ public class App {
     AccountTable a = AccountDAO.newTable("a");
     BranchTable b = BranchDAO.newTable("b");
 
-    ExecutableSelect<Row> q = sql.select() //
+    Select<Row> q = sql.select() //
         .from(a) //
         .where(a.branchId.notIn( //
             sql.select(b.id).from(b).where(b.region.eq("SOUTH")) //
@@ -445,7 +450,7 @@ public class App {
     AccountTable a = AccountDAO.newTable("a");
     BranchTable b = BranchDAO.newTable("b");
 
-    ExecutableSelect<Row> q = sql.select() //
+    Select<Row> q = sql.select() //
         .from(a) //
         .where(sql.notExists( //
             sql.select(sql.val(1)).from(b).where(b.id.eq(a.branchId).and(b.region.eq("SOUTH"))) //
@@ -469,7 +474,7 @@ public class App {
     InvoiceTable i = InvoiceDAO.newTable("i");
     InvoiceTable x = InvoiceDAO.newTable("x");
 
-    ExecutableSelect<Row> q = sql.select() //
+    Select<Row> q = sql.select() //
         .from(i) //
         .where(i.unpaidBalance.gtAny( //
             sql.select(x.amount.mult(0.5)).from(x).where(x.accountId.eq(i.accountId)) //
@@ -495,7 +500,7 @@ public class App {
     InvoiceTable b = InvoiceDAO.newTable("b");
     PaymentTable p = PaymentDAO.newTable("p");
 
-    ExecutableSelect<Row> q = sql.select( //
+    Select<Row> q = sql.select( //
         i.star(), //
         sql.val(50).mult(sql.selectScalar(sql.max(p.amount)).from(p).where(p.amount.lt(1000)).div(2)).as("score"),
         sql.selectScalar(sql.val("a")).from(b).where(b.accountId.eq(i.accountId).and(b.id.ne(i.id))).substr(1, 3)
@@ -540,7 +545,7 @@ public class App {
 //    x.materialize("accounting.OTCInvoices");
 //    OTCInvoices x =  sql.materializedSubquery("x", "accounting.OTCInvoices", OTCInvoices.class, //
 
-    ExecutableSelect<Row> q = sql.select(a.star()) //
+    Select<Row> q = sql.select(a.star()) //
         .from(a) //
         .join(x, x.num("accountId").eq(a.id)) //
         .where(x.num("total").gt(1000));
@@ -585,7 +590,7 @@ public class App {
             sql.sum(x.num("inc")).over().partitionBy(x.num("id")).orderBy(x.dt("orderDate").asc()).end().as("grp")) //
             .from(x) //
     );
-    ExecutableSelect<Row> q = sql.select( //
+    Select<Row> q = sql.select( //
         y.num("grp"), //
         sql.min(y.dt("orderDate")).as("start"), //
         sql.sum(y.num("unpaidBalance")).as("groupBalance")) //
@@ -633,7 +638,7 @@ public class App {
             .join(l, l.invoiceId.eq(i.id)) //
             .join(p, p.id.eq(l.productId)) //
             .where(p.shipping.eq(0)));
-    ExecutableSelect<Row> q = sql.select(x.star()) //
+    Select<Row> q = sql.select(x.star()) //
         .from(x) //
         .leftJoin(y, y.num("accountId").eq(x.num("id"))) //
         .where(y.num("accountId").isNull());
@@ -679,7 +684,7 @@ public class App {
             .join(l, l.invoiceId.eq(i.id)) //
             .join(p, p.id.eq(l.productId)) //
             .where(p.shipping.eq(0)));
-    ExecutableSelect<Row> q = sql.select(x.star()) //
+    Select<Row> q = sql.select(x.star()) //
         .from(x) //
         .leftJoin(y, y.num("ai#d").eq(x.num("id"))) //
         .where(y.num("ai#d").isNull());
@@ -727,7 +732,7 @@ public class App {
         .join(l, l.invoiceId.eq(i.id)) //
         .join(p, p.id.eq(l.productId)) //
         .where(p.shipping.eq(0)));
-    ExecutableSelect<Row> q = sql.with(x, y) //
+    Select<Row> q = sql.with(x, y) //
         .select(x.star()) //
         .from(x) //
         .leftJoin(y, y.num("aid").eq(x.num("id"))) //
@@ -770,7 +775,7 @@ public class App {
             .where(b.parentId.eq(g.num("id"))) //
     );
 
-    ExecutableSelect<Row> q = sql.with(g) //
+    Select<Row> q = sql.with(g) //
         .select(g.num("id"), i.amount) //
         .from(g) //
         .join(i, i.accountId.eq(g.num("id")));
@@ -820,7 +825,7 @@ public class App {
             .orderBy(p.paymentDate.desc()) //
             .limit(1) //
     );
-    ExecutableSelect<Row> q = sql.select() //
+    Select<Row> q = sql.select() //
         .from(a) //
         .joinLateral(x) //
         .leftJoinLateral(y) //
