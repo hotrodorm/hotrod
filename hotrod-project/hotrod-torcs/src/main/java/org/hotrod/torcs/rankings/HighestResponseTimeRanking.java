@@ -3,6 +3,7 @@ package org.hotrod.torcs.rankings;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 
 public class HighestResponseTimeRanking extends Ranking {
 
@@ -59,10 +60,10 @@ public class HighestResponseTimeRanking extends Ranking {
     if (entry != null) { // 1. It's already in the ranking
       System.out.println(">>> Entry already in the ranking.");
 
-      entry.apply(execution);
       if (execution.getResponseTime() > entry.getMaxTime()) {
         upgradePosition(entry);
       }
+      entry.apply(execution);
 
     } else { // 2. New query (not in the ranking)
       System.out.println(">>> Entry is new.");
@@ -71,20 +72,20 @@ public class HighestResponseTimeRanking extends Ranking {
       if (insert(entry)) {
         this.bySQL.put(execution.getSQL(), entry);
       }
-      System.out.println(">>> Entry was not inserted");
 
     }
 
-    System.out
-        .println(">>> [Stats] this.sorted.size()=" + this.sorted.size() + " this.bySQL.size()=" + this.bySQL.size());
+//    System.out
+//        .println(">>> [Stats] this.sorted.size()=" + this.sorted.size() + " this.bySQL.size()=" + this.bySQL.size());
 
   }
 
   private void upgradePosition(final RankingEntry entry) {
+    System.out.println("### enrty: " + entry);
     boolean searching = true;
     for (RankingEntry current : this.sorted) {
       if (searching) {
-        if (current.maxTime < entry.maxTime) {
+        if (entry.maxTime > current.maxTime) {
           this.sorted.remove(entry.pos);
           this.sorted.add(current.pos, entry);
           entry.pos = current.pos;
@@ -104,26 +105,45 @@ public class HighestResponseTimeRanking extends Ranking {
       return true;
     } else {
       boolean inserted = false;
-      for (RankingEntry current : this.sorted) {
+      ListIterator<RankingEntry> lit = this.sorted.listIterator();
+      while (lit.hasNext()) {
+        RankingEntry current = lit.next();
         if (!inserted) {
           if (entry.maxTime > current.maxTime) {
+            System.out.println(">>> Inserting at pos=" + current.pos);
             entry.pos = current.pos;
-            this.sorted.add(entry.pos, entry);
+            lit.previous();
+            lit.add(entry);
+            lit.next();
             current.pos++;
             inserted = true;
-            break;
           }
         } else {
           current.pos++;
         }
       }
 
-      if (inserted) {
+//      for (RankingEntry current : this.sorted) {
+//        if (!inserted) {
+//          if (entry.maxTime > current.maxTime) {
+//            System.out.println(">>> Inserting at pos=" + current.pos);
+//            entry.pos = current.pos;
+//            this.sorted.add(entry.pos, entry);
+//            current.pos++;
+//            inserted = true;
+//            break;
+//          }
+//        } else {
+//          current.pos++;
+//        }
+//      }
+//
+      if (inserted) { // remove excess element
         if (this.sorted.size() > this.size) {
           RankingEntry removed = this.sorted.remove(this.size);
           this.bySQL.remove(removed.getSQL());
         }
-      } else {
+      } else { // insert at the end
         if (this.sorted.size() < this.size) {
           entry.pos = this.sorted.size();
           this.sorted.add(entry);
