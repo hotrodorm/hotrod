@@ -94,14 +94,19 @@ public class RankingEntry {
     return lastExceptionTimestamp;
   }
 
+  public long getAverageTime() {
+    int successfulExecutions = this.executions - this.errors;
+    return successfulExecutions > 0 ? (this.sum / successfulExecutions) : -1;
+  }
+
   public String toString() {
     String le = this.lastExecuted == 0 ? "never" : new Date(this.lastExecuted).toString();
     if (this.lastException == null) {
-      return this.executions + " exe" + ", " + this.errors + " errors" + ", avg " + (this.sum / this.executions)
+      return this.executions + " executions" + ", " + this.errors + " errors" + ", avg " + getAverageTime()
           + " ms, \u03c3 " + Math.round(this.getTimeStandardDeviation()) + " [" + this.minTime + "-" + this.maxTime
           + " ms], last executed: " + le + ", last exception: N/A -- " + this.compactSQL;
     } else {
-      return this.executions + " exe" + ", " + this.errors + " errors" + ", avg " + (this.sum / this.executions)
+      return this.executions + " executions" + ", " + this.errors + " errors" + ", avg " + getAverageTime()
           + " ms, \u03c3 " + Math.round(this.getTimeStandardDeviation()) + " [" + this.minTime + "-" + this.maxTime
           + " ms], last executed: " + le + ", last exception at " + new Date(this.lastExceptionTimestamp) + ": "
           + this.lastException.getClass().getName() + " -- " + this.compactSQL;
