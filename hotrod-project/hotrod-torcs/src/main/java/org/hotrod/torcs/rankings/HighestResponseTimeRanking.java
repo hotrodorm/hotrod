@@ -5,13 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.hotrod.torcs.QueryExecution;
+import org.hotrod.torcs.QuerySample;
 
 public class HighestResponseTimeRanking extends Ranking {
 
   private static final int DEFAULT_SIZE = 10;
   private static final int MIN_SIZE = 1;
-  private static final int MAX_SIZE = 100;
+  private static final int MAX_SIZE = 1000;
 
   private int size;
 
@@ -40,22 +40,11 @@ public class HighestResponseTimeRanking extends Ranking {
     this.sorted.clear();
   }
 
-  /**
-   * <pre>
-   * pos   RT SQL
-   * --- ---- -----------------------------
-   *   1  500 select 1
-   *   2  200 select 2
-   *   3   70 select 3
-   *   4   40 select 4
-   * </pre>
-   */
-
   private ArrayList<RankingEntry> sorted = new ArrayList<>();
   private HashMap<String, RankingEntry> bySQL = new HashMap<>();
 
   @Override
-  public synchronized void consume(final QueryExecution sample) {
+  public synchronized void consume(final QuerySample sample) {
 
     RankingEntry entry = this.bySQL.get(sample.getSQL());
 
@@ -104,6 +93,7 @@ public class HighestResponseTimeRanking extends Ranking {
       } else {
         if (current == entry) {
           lit.remove();
+          return;
         }
       }
     }

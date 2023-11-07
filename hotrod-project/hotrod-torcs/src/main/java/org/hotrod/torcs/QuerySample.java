@@ -1,12 +1,12 @@
 package org.hotrod.torcs;
 
-public class QueryExecution {
+public class QuerySample {
 
   public String sql;
   public int responseTime;
   public Throwable exception;
 
-  public QueryExecution(final String sql, final int responseTime, final Throwable exception) {
+  public QuerySample(final String sql, final int responseTime, final Throwable exception) {
     this.sql = sql;
     this.responseTime = responseTime;
     this.exception = exception;

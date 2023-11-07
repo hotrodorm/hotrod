@@ -1,6 +1,6 @@
 package org.hotrod.torcs.loggers;
 
-import org.hotrod.torcs.QueryExecution;
+import org.hotrod.torcs.QuerySample;
 
 public class ConsoleQueryLogger extends QueryLogger {
 
@@ -10,7 +10,7 @@ public class ConsoleQueryLogger extends QueryLogger {
   }
 
   @Override
-  public void consume(final QueryExecution q) {
+  public void consume(final QuerySample q) {
     System.out.println("[query] " + q.getSQL());
   }
 

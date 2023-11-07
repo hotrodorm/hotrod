@@ -16,7 +16,7 @@ public class TorcsAspect {
   private ThreadLocal<String> threadSQL = new ThreadLocal<String>();
 
   @Autowired
-  private TorcsMetrics sqlMetrics;
+  private Torcs sqlMetrics;
 
   // Adding aspect to the Connection
 

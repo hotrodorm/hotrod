@@ -9,14 +9,14 @@ import org.hotrod.torcs.rankings.RankingEntry;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TorcsMetrics {
+public class Torcs {
 
   private boolean active;
 
   private List<Ranking> rankings;
   private HighestResponseTimeRanking rtRanking;
 
-  public TorcsMetrics() {
+  public Torcs() {
     this.active = true;
     this.rankings = new ArrayList<>();
     this.rtRanking = new HighestResponseTimeRanking();
@@ -47,7 +47,7 @@ public class TorcsMetrics {
 
   void record(final String sql, final int responseTime, final Throwable t) {
     if (this.active) {
-      QueryExecution q = new QueryExecution(sql, responseTime, t);
+      QuerySample q = new QuerySample(sql, responseTime, t);
       for (Ranking r : this.rankings) {
         if (r.isActive()) {
           r.consume(q);
@@ -65,7 +65,7 @@ public class TorcsMetrics {
 
   // Get stats
 
-  public List<RankingEntry> getHighResponseTime() {
+  public List<RankingEntry> rankingByResponseTime() {
     return this.rtRanking.getRanking();
   }
 

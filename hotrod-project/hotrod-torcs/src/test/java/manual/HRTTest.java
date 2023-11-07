@@ -1,17 +1,17 @@
 package manual;
 
-import org.hotrod.torcs.QueryExecution;
+import org.hotrod.torcs.QuerySample;
 import org.hotrod.torcs.rankings.HighestResponseTimeRanking;
 
 public class HRTTest {
 
-  private static final int RANKING_SIZE = 4;
+  private static final int RANKING_SIZE = 2;
 
   public static void main(final String[] args) {
 
-    QueryExecution q1 = new QueryExecution("sql1", 30, null);
-    QueryExecution q2 = new QueryExecution("sql2", 10, null);
-    QueryExecution q3 = new QueryExecution("sql3", 20, null);
+    QuerySample q1 = new QuerySample("sql1", 30, null);
+    QuerySample q2 = new QuerySample("sql2", 10, null);
+    QuerySample q3 = new QuerySample("sql3", 20, null);
 
     HighestResponseTimeRanking rk = new HighestResponseTimeRanking(RANKING_SIZE);
 
@@ -23,9 +23,9 @@ public class HRTTest {
     rk.getRanking().stream().forEach(q -> System.out.println(q));
     System.out.println("");
 
-    rk.consume(new QueryExecution("sql1", 5, null));
-    rk.consume(new QueryExecution("sql3", 20, null));
-    rk.consume(new QueryExecution("sql2", 30, null));
+    rk.consume(new QuerySample("sql1", 5, null));
+    rk.consume(new QuerySample("sql3", 20, null));
+    rk.consume(new QuerySample("sql2", 25, null));
 
     System.out.println("--- Torcs Ranking TOP " + RANKING_SIZE + " ---");
     rk.getRanking().stream().forEach(q -> System.out.println(q));

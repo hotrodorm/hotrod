@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.stream.Collectors;
 
-import org.hotrod.torcs.QueryExecution;
+import org.hotrod.torcs.QuerySample;
 
 public class RankingEntry {
 
@@ -23,13 +23,13 @@ public class RankingEntry {
   Throwable lastException = null;
   long lastExceptionTimestamp = 0;
 
-  public RankingEntry(final QueryExecution execution) {
+  public RankingEntry(final QuerySample execution) {
     this.sql = execution.sql;
     this.compressedSQL = this.compressSQL(this.sql);
     apply(execution);
   }
 
-  public void apply(final QueryExecution execution) {
+  public void apply(final QuerySample execution) {
     this.lastExecuted = System.currentTimeMillis();
     long elapsedTime = execution.getResponseTime();
     if (this.executions == 0 || elapsedTime < this.minTime) {

@@ -2,9 +2,9 @@ package org.hotrod.torcs.rankings;
 
 import java.util.List;
 
-import org.hotrod.torcs.QueryExecutionConsumer;
+import org.hotrod.torcs.QuerySampleConsumer;
 
-public abstract class Ranking extends QueryExecutionConsumer {
+public abstract class Ranking extends QuerySampleConsumer {
 
   public abstract void reset();
 

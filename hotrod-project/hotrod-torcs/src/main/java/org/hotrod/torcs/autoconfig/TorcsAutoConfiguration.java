@@ -1,6 +1,6 @@
 package org.hotrod.torcs.autoconfig;
 
-import org.hotrod.torcs.TorcsMetrics;
+import org.hotrod.torcs.Torcs;
 import org.hotrod.torcs.TorcsAspect;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Configuration;
 public class TorcsAutoConfiguration {
 
   @Bean
-  public TorcsMetrics getSQLMetrics() {
-    return new TorcsMetrics();
+  public Torcs getSQLMetrics() {
+    return new Torcs();
   }
 
   @Bean
