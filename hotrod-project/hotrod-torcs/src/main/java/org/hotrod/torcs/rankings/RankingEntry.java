@@ -1,15 +1,13 @@
 package org.hotrod.torcs.rankings;
 
-import java.util.Arrays;
 import java.util.Date;
-import java.util.stream.Collectors;
 
 import org.hotrod.torcs.QuerySample;
 
 public class RankingEntry {
 
   private String sql;
-  private String compressedSQL;
+  private String compactSQL;
 
   long minTime = 0;
   long maxTime = 0;
@@ -25,7 +23,7 @@ public class RankingEntry {
 
   public RankingEntry(final QuerySample execution) {
     this.sql = execution.sql;
-    this.compressedSQL = this.compressSQL(this.sql);
+    this.compactSQL = QuerySample.compactSQL(this.sql);
     apply(execution);
   }
 
@@ -54,6 +52,10 @@ public class RankingEntry {
 
   public String getSQL() {
     return sql;
+  }
+
+  public String getCompactSQL() {
+    return compactSQL;
   }
 
   public long getMinTime() {
@@ -97,12 +99,12 @@ public class RankingEntry {
     if (this.lastException == null) {
       return this.executions + " exe" + ", " + this.errors + " errors" + ", avg " + (this.sum / this.executions)
           + " ms, \u03c3 " + Math.round(this.getTimeStandardDeviation()) + " [" + this.minTime + "-" + this.maxTime
-          + " ms], last executed: " + le + ", last exception: N/A -- " + this.compressedSQL;
+          + " ms], last executed: " + le + ", last exception: N/A -- " + this.compactSQL;
     } else {
       return this.executions + " exe" + ", " + this.errors + " errors" + ", avg " + (this.sum / this.executions)
           + " ms, \u03c3 " + Math.round(this.getTimeStandardDeviation()) + " [" + this.minTime + "-" + this.maxTime
           + " ms], last executed: " + le + ", last exception at " + new Date(this.lastExceptionTimestamp) + ": "
-          + this.lastException.getClass().getName() + " -- " + this.compressedSQL;
+          + this.lastException.getClass().getName() + " -- " + this.compactSQL;
     }
   }
 
@@ -118,10 +120,6 @@ public class RankingEntry {
             (this.sumSQ - 1.0 * this.sum * this.sum / this.executions) //
                 / //
                 (this.executions - 0));
-  }
-
-  private String compressSQL(final String sql) {
-    return Arrays.stream(sql.split("\n")).map(l -> l.trim()).collect(Collectors.joining(" "));
   }
 
 }

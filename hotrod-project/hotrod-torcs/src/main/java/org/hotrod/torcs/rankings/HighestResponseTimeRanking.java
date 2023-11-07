@@ -20,6 +20,10 @@ public class HighestResponseTimeRanking extends Ranking {
   }
 
   public HighestResponseTimeRanking(int size) {
+    setSize(size);
+  }
+
+  public synchronized void setSize(int size) {
     if (size < MIN_SIZE) {
       throw new RuntimeException("Ranking size must be greater or equal to " + MIN_SIZE + " but it's " + size + ".");
     }

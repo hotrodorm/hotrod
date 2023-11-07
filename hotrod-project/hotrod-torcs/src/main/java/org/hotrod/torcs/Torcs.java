@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.torcs.rankings.HighestResponseTimeRanking;
-import org.hotrod.torcs.rankings.Ranking;
 import org.hotrod.torcs.rankings.RankingEntry;
 import org.springframework.stereotype.Component;
 
@@ -13,18 +12,18 @@ public class Torcs {
 
   private boolean active;
 
-  private List<Ranking> rankings;
+  private List<QuerySampleConsumer> queryConsumers;
   private HighestResponseTimeRanking rtRanking;
 
   public Torcs() {
     this.active = true;
-    this.rankings = new ArrayList<>();
+    this.queryConsumers = new ArrayList<>();
     this.rtRanking = new HighestResponseTimeRanking();
-    this.rankings.add(this.rtRanking);
+    this.queryConsumers.add(this.rtRanking);
   }
 
-  public void add(final Ranking ranking) {
-    this.rankings.add(ranking);
+  public void register(final QuerySampleConsumer consumer) {
+    this.queryConsumers.add(consumer);
   }
 
   public void activate() {
@@ -40,15 +39,19 @@ public class Torcs {
   }
 
   public void reset() {
-    for (Ranking r : this.rankings) {
+    for (QuerySampleConsumer r : this.queryConsumers) {
       r.reset();
     }
+  }
+
+  public HighestResponseTimeRanking getDefaultConsumer() {
+    return rtRanking;
   }
 
   void record(final String sql, final int responseTime, final Throwable t) {
     if (this.active) {
       QuerySample q = new QuerySample(sql, responseTime, t);
-      for (Ranking r : this.rankings) {
+      for (QuerySampleConsumer r : this.queryConsumers) {
         if (r.isActive()) {
           r.consume(q);
         }

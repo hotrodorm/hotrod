@@ -1,5 +1,8 @@
 package org.hotrod.torcs;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 public class QuerySample {
 
   public String sql;
@@ -22,6 +25,10 @@ public class QuerySample {
 
   public Throwable getException() {
     return exception;
+  }
+
+  public static String compactSQL(final String sql) {
+    return Arrays.stream(sql.split("\n")).map(l -> l.trim()).collect(Collectors.joining(" "));
   }
 
 }

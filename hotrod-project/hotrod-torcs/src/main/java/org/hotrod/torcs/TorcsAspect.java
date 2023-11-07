@@ -24,7 +24,7 @@ public class TorcsAspect {
 
   @Around(value = "execution(* javax.sql.DataSource.getConnection())")
   private Object measureGetConnection(final ProceedingJoinPoint joinPoint) throws Throwable {
-    System.out.println("measureGetConnection()");
+//    System.out.println("measureGetConnection()");
     try {
       Object conn = joinPoint.proceed();
 
@@ -50,7 +50,7 @@ public class TorcsAspect {
 
   @Around(value = "execution(* java.sql.Connection.prepareStatement(..)) && args(sql)")
   private Object measurePrepareStatement(final ProceedingJoinPoint joinPoint, final String sql) throws Throwable {
-    System.out.println("measurePrepareStatement()");
+//    System.out.println("measurePrepareStatement()");
     return addProxy(joinPoint, sql, this.psProxies);
   }
 
@@ -60,7 +60,7 @@ public class TorcsAspect {
 
   @Around(value = "execution(* java.sql.Connection.createStatement(..)) && args(sql)")
   private Object measureStatement(final ProceedingJoinPoint joinPoint, final String sql) throws Throwable {
-    System.out.println("measureStatement()");
+//    System.out.println("measureStatement()");
     return addProxy(joinPoint, sql, this.stProxies);
   }
 
@@ -70,7 +70,7 @@ public class TorcsAspect {
 
   @Around(value = "execution(* java.sql.Connection.prepareCall(..)) && args(sql)")
   private Object measurePrepareCall(final ProceedingJoinPoint joinPoint, final String sql) throws Throwable {
-    System.out.println("measurePrepareCall()");
+//    System.out.println("measurePrepareCall()");
     return addProxy(joinPoint, sql, this.csProxies);
   }
 
@@ -207,19 +207,19 @@ public class TorcsAspect {
   // Measuring
 
   private Object measureSQLExecution(final ProceedingJoinPoint joinPoint, final String sql) throws Throwable {
-    System.out.println("Measuring: " + sql);
+//    System.out.println("Measuring: " + sql);
     long start = System.currentTimeMillis();
     try {
       Object ps = joinPoint.proceed();
       long end = System.currentTimeMillis();
       this.sqlMetrics.record(sql, (int) (end - start), null);
-      System.out.println("Measured: " + (end - start) + "ms");
+//      System.out.println("Measured: " + (end - start) + "ms");
       return ps;
 
     } catch (Throwable t) {
       long end = System.currentTimeMillis();
       this.sqlMetrics.record(sql, (int) (end - start), t);
-      System.out.println("Measured (exception): " + (end - start) + "ms");
+//      System.out.println("Measured (exception): " + (end - start) + "ms");
       throw t;
     }
   }
