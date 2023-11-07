@@ -356,4 +356,9 @@ public class MySQLDialect extends LiveSQLDialect {
     };
   }
 
+  @Override
+  public boolean mandatoryColumnNamesInRecursiveCTEs() {
+    return false;
+  }
+
 }

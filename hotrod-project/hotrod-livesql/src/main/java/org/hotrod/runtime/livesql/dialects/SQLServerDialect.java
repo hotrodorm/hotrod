@@ -452,4 +452,9 @@ public class SQLServerDialect extends LiveSQLDialect {
     };
   }
 
+  @Override
+  public boolean mandatoryColumnNamesInRecursiveCTEs() {
+    return false;
+  }
+
 }

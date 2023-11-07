@@ -349,4 +349,9 @@ public class DerbyDialect extends LiveSQLDialect {
     };
   }
 
+  @Override
+  public boolean mandatoryColumnNamesInRecursiveCTEs() {
+    return false;
+  }
+
 }

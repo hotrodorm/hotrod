@@ -311,4 +311,9 @@ public class H2Dialect extends LiveSQLDialect {
     };
   }
 
+  @Override
+  public boolean mandatoryColumnNamesInRecursiveCTEs() {
+    return true;
+  }
+
 }

@@ -5,8 +5,6 @@ import org.hotrod.runtime.livesql.queries.select.ReferenceableExpression;
 
 public interface Column extends ReferenceableExpression {
 
-  String getName();
-
   TableOrView getObjectInstance();
 
   String getCatalog();

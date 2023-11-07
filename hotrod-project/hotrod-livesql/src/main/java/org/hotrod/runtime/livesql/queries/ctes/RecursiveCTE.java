@@ -9,17 +9,16 @@ import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
-import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.select.Select;
 
-@SuppressWarnings("deprecation")
 public class RecursiveCTE extends CTE {
 
   // Properties
 
-  private ExecutableSelect<?> anchorTerm;
+  private Select<?> anchorTerm;
   private boolean unionAll;
-  private ExecutableSelect<?> recursiveTerm;
+  private Select<?> recursiveTerm;
 
   // Constructor
 
@@ -27,7 +26,7 @@ public class RecursiveCTE extends CTE {
     super(name, columns);
   }
 
-  public void as(final ExecutableSelect<?> anchorTerm, final ExecutableSelect<?> recursiveTerm) {
+  public void as(final Select<?> anchorTerm, final Select<?> recursiveTerm) {
     if (anchorTerm == null) {
       throw new LiveSQLException("The anchor term of a recursive CTE cannot be null", null);
     }
@@ -40,7 +39,7 @@ public class RecursiveCTE extends CTE {
     this.recursiveTerm = recursiveTerm;
   }
 
-  public void asUnion(final ExecutableSelect<?> anchorTerm, final ExecutableSelect<?> recursiveTerm) {
+  public void asUnion(final Select<?> anchorTerm, final Select<?> recursiveTerm) {
     this.anchorTerm = anchorTerm;
     this.unionAll = false;
     this.recursiveTerm = recursiveTerm;
@@ -66,12 +65,32 @@ public class RecursiveCTE extends CTE {
   @Override
   public void renderDefinitionTo(final QueryWriter w, final LiveSQLDialect dialect) {
     w.write(w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(super.getName())));
-    if (this.columns != null && this.columns.length > 0) {
-      w.write(" (");
-      w.write(Arrays.stream(this.columns).map(a -> w.getSQLDialect().canonicalToNatural(a))
-          .collect(Collectors.joining(", ")));
-      w.write(")");
+
+    if (w.getSQLDialect().mandatoryColumnNamesInRecursiveCTEs()) {
+      if (this.columns != null && this.columns.length > 0) { // explicit column names
+        w.write(" (");
+        w.write(Arrays.stream(this.columns).map(a -> w.getSQLDialect().canonicalToNatural(a))
+            .collect(Collectors.joining(", ")));
+        w.write(")");
+      } else { // implicit column names from the anchor term
+        w.write(" (");
+        boolean first = true;
+        try {
+          for (ResultSetColumn rc : this.getColumns()) {
+            if (first) {
+              first = false;
+            } else {
+              w.write(", ");
+            }
+            rc.renderTo(w);
+          }
+        } catch (IllegalAccessException e) {
+          e.printStackTrace();
+        }
+        w.write(")");
+      }
     }
+
     w.enterLevel();
     w.write(" as (\n");
     this.anchorTerm.getCombinedSelect().renderTo(w);

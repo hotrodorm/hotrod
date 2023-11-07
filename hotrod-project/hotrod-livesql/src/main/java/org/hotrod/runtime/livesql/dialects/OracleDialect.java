@@ -469,4 +469,9 @@ public class OracleDialect extends LiveSQLDialect {
     };
   }
 
+  @Override
+  public boolean mandatoryColumnNamesInRecursiveCTEs() {
+    return true;
+  }
+
 }

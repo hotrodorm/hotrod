@@ -27,4 +27,9 @@ public class AliasedExpression implements ReferenceableExpression {
     this.expression.validateTableReferences(tableReferences, ag);
   }
 
+  @Override
+  public String getName() {
+    return this.alias;
+  }
+
 }

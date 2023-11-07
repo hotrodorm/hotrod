@@ -328,4 +328,9 @@ public class HyperSQLDialect extends LiveSQLDialect {
     };
   }
 
+  @Override
+  public boolean mandatoryColumnNamesInRecursiveCTEs() {
+    return true;
+  }
+
 }

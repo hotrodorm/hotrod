@@ -17,5 +17,5 @@ package org.hotrod.runtime.livesql.expressions;
  */
 
 public interface ResultSetColumn extends Rendereable {
-
+  
 }

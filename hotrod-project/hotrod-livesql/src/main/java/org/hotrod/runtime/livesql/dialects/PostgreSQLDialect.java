@@ -394,4 +394,9 @@ public class PostgreSQLDialect extends LiveSQLDialect {
     };
   }
 
+  @Override
+  public boolean mandatoryColumnNamesInRecursiveCTEs() {
+    return false;
+  }
+
 }

@@ -392,4 +392,9 @@ public class SybaseASEDialect extends LiveSQLDialect {
     };
   }
 
+  @Override
+  public boolean mandatoryColumnNamesInRecursiveCTEs() {
+    return false;
+  }
+
 }

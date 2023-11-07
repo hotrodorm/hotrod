@@ -372,4 +372,9 @@ public class DB2Dialect extends LiveSQLDialect {
     };
   }
 
+  @Override
+  public boolean mandatoryColumnNamesInRecursiveCTEs() {
+    return true;
+  }
+
 }

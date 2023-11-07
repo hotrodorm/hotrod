@@ -105,6 +105,8 @@ public abstract class LiveSQLDialect {
 
   public abstract BooleanLiteralRenderer getBooleanLiteralRenderer();
 
+  public abstract boolean mandatoryColumnNamesInRecursiveCTEs();
+
   // New SQL Identifier rendering
 
   public abstract String naturalToCanonical(final String natural);
