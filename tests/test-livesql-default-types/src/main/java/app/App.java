@@ -17,7 +17,7 @@ import org.hotrod.runtime.livesql.queries.select.ExecutableCriteriaSelect;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 import org.hotrod.runtime.spring.SpringBeanObjectFactory;
-import org.hotrod.torcs.TorcsMetrics;
+import org.hotrod.torcs.Torcs;
 import org.hotrod.torcs.rankings.RankingEntry;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +73,7 @@ public class App {
   private LiveSQL sql;
 
   @Autowired
-  private TorcsMetrics torcsMetrics;
+  private Torcs torcs;
 
   public static void main(String[] args) {
     SpringApplication.run(App.class, args);
@@ -239,7 +239,7 @@ public class App {
 //    example7RecursiveCTEs();
 //    example8LateralJoins();
 
-    torcs();
+    testTorcs();
 
   }
 
@@ -384,20 +384,43 @@ public class App {
 
   }
 
-  private void torcs() {
+  private void testTorcs() {
+
+//    this.torcs.getDefaultConsumer().deactivate();
+    this.torcs.getDefaultConsumer().setSize(4);
+
+//    this.torcs.register(new QuerySampleConsumer() {
+//
+//      @Override
+//      public String getTitle() {
+//        return "Console Query Logger";
+//      }
+//
+//      @Override
+//      public void consume(final QuerySample sample) {
+//        System.out.println("[query] " + sample.getResponseTime() + " ms" + " (exception: "
+//            + (sample.getException() == null ? "N/A" : sample.getException().getClass().getName()) + ")" + ": "
+//            + QuerySample.compactSQL(sample.getSQL()));
+//      }
+//
+//      @Override
+//      public void reset() {
+//        // Nothing to do
+//      }
+//    });
 
     Random rand = new Random(1234);
 
-    for (int i = 0; i < 80; i++) {
+    for (int i = 0; i < 60; i++) {
       int loops = 20000 * (1 + rand.nextInt(12));
       Select<Row> select = buildRecursiveCTE(loops);
       select.execute().forEach(r -> {
       });
-      System.out.println("exe #" + i + " (" + loops + " loops) complete: ");
+//      System.out.println("exe #" + i + " (" + loops + " loops) complete: ");
     }
 
     System.out.println("--- Torcs Ranking ---");
-    for (RankingEntry e : this.torcsMetrics.getHighResponseTime()) {
+    for (RankingEntry e : this.torcs.rankingByResponseTime()) {
       System.out.println(e);
     }
     System.out.println("--- End of Torcs Ranking ---");
