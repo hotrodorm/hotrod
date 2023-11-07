@@ -4,9 +4,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.stream.Collectors;
 
-public class RankingEntry {
+import org.hotrod.torcs.QueryExecution;
 
-  int pos;
+public class RankingEntry {
 
   private String sql;
   private String compressedSQL;
@@ -50,15 +50,7 @@ public class RankingEntry {
 
   // Setters
 
-  void setPos(int pos) {
-    this.pos = pos;
-  }
-
   // Getters
-
-  public int getPos() {
-    return pos;
-  }
 
   public String getSQL() {
     return sql;
@@ -103,16 +95,14 @@ public class RankingEntry {
   public String toString() {
     String le = this.lastExecuted == 0 ? "never" : new Date(this.lastExecuted).toString();
     if (this.lastException == null) {
-      return "#" + (this.pos + 1) + ": " + this.executions + " exe" + ", " + this.errors + " errors" + ", avg "
-          + (this.sum / this.executions) + " ms, \u03c3 " + Math.round(this.getTimeStandardDeviation()) + " ["
-          + this.minTime + "-" + this.maxTime + " ms], last executed: " + le + ", last exception: N/A -- "
-          + this.compressedSQL;
+      return this.executions + " exe" + ", " + this.errors + " errors" + ", avg " + (this.sum / this.executions)
+          + " ms, \u03c3 " + Math.round(this.getTimeStandardDeviation()) + " [" + this.minTime + "-" + this.maxTime
+          + " ms], last executed: " + le + ", last exception: N/A -- " + this.compressedSQL;
     } else {
-      return "#" + (this.pos + 1) + ": " + this.executions + " exe" + ", " + this.errors + " errors" + ", avg "
-          + (this.sum / this.executions) + " ms, \u03c3 " + Math.round(this.getTimeStandardDeviation()) + " ["
-          + this.minTime + "-" + this.maxTime + " ms], last executed: " + le + ", last exception at "
-          + new Date(this.lastExceptionTimestamp) + ": " + this.lastException.getClass().getName() + " -- "
-          + this.compressedSQL;
+      return this.executions + " exe" + ", " + this.errors + " errors" + ", avg " + (this.sum / this.executions)
+          + " ms, \u03c3 " + Math.round(this.getTimeStandardDeviation()) + " [" + this.minTime + "-" + this.maxTime
+          + " ms], last executed: " + le + ", last exception at " + new Date(this.lastExceptionTimestamp) + ": "
+          + this.lastException.getClass().getName() + " -- " + this.compressedSQL;
     }
   }
 

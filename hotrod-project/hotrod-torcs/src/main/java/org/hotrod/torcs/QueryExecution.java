@@ -1,10 +1,10 @@
-package org.hotrod.torcs.rankings;
+package org.hotrod.torcs;
 
 public class QueryExecution {
 
-  protected String sql;
-  protected int responseTime;
-  protected Throwable exception;
+  public String sql;
+  public int responseTime;
+  public Throwable exception;
 
   public QueryExecution(final String sql, final int responseTime, final Throwable exception) {
     this.sql = sql;

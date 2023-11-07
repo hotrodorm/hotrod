@@ -1,8 +1,6 @@
 package org.hotrod.torcs;
 
-import org.hotrod.torcs.rankings.QueryExecution;
-
-public abstract class QueryConsumer {
+public abstract class QueryExecutionConsumer {
 
   private boolean active = true;
 
@@ -20,6 +18,6 @@ public abstract class QueryConsumer {
 
   public abstract String getTitle();
 
-  public abstract void consume(QueryExecution q);
+  public abstract void consume(QueryExecution sample);
 
 }

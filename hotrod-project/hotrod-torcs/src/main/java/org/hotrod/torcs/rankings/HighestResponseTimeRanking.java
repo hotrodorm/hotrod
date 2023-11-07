@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 
+import org.hotrod.torcs.QueryExecution;
+
 public class HighestResponseTimeRanking extends Ranking {
 
   private static final int DEFAULT_SIZE = 10;
@@ -53,55 +55,64 @@ public class HighestResponseTimeRanking extends Ranking {
   private HashMap<String, RankingEntry> bySQL = new HashMap<>();
 
   @Override
-  public synchronized void consume(final QueryExecution execution) {
+  public synchronized void consume(final QueryExecution sample) {
 
-    RankingEntry entry = this.bySQL.get(execution.getSQL());
+    RankingEntry entry = this.bySQL.get(sample.getSQL());
 
     if (entry != null) { // 1. It's already in the ranking
-      System.out.println(">>> Entry already in the ranking.");
+//      System.out.println(">>> Entry already in the ranking.");
 
-      if (execution.getResponseTime() > entry.getMaxTime()) {
-        upgradePosition(entry);
+      if (sample.getResponseTime() > entry.getMaxTime()) {
+        upgradePosition(entry, sample.getResponseTime());
       }
-      entry.apply(execution);
+      entry.apply(sample);
 
     } else { // 2. New query (not in the ranking)
-      System.out.println(">>> Entry is new.");
+//      System.out.println(">>> Entry is new.");
 
-      entry = new RankingEntry(execution);
+      entry = new RankingEntry(sample);
       if (insert(entry)) {
-        this.bySQL.put(execution.getSQL(), entry);
+        this.bySQL.put(sample.getSQL(), entry);
       }
 
     }
-
-//    System.out
-//        .println(">>> [Stats] this.sorted.size()=" + this.sorted.size() + " this.bySQL.size()=" + this.bySQL.size());
 
   }
 
-  private void upgradePosition(final RankingEntry entry) {
-    System.out.println("### enrty: " + entry);
+  private void upgradePosition(final RankingEntry entry, final int newResponseTime) {
+//    System.out.println("### Upgrading entry: " + entry);
     boolean searching = true;
-    for (RankingEntry current : this.sorted) {
+
+    ListIterator<RankingEntry> lit = this.sorted.listIterator();
+//    int pos = 0;
+    while (lit.hasNext()) {
+      RankingEntry current = lit.next();
+//      System.out
+//          .println("-- Walking (searching=" + searching + "): " + current.getSQL() + " -- maxTime=" + current.maxTime);
       if (searching) {
-        if (entry.maxTime > current.maxTime) {
-          this.sorted.remove(entry.pos);
-          this.sorted.add(current.pos, entry);
-          entry.pos = current.pos;
-          current.pos++;
-          searching = false;
+        if (newResponseTime > current.maxTime) {
+//          System.out.println("current.pos == 0: " + (current.pos == 0) + "  current == entry: " + (current == entry));
+          if (current == entry) {
+            return;
+          } else {
+            lit.previous();
+            lit.add(entry);
+            lit.next();
+            searching = false;
+          }
         }
       } else {
-        current.pos++;
+        if (current == entry) {
+          lit.remove();
+        }
       }
     }
+
   }
 
   private boolean insert(final RankingEntry entry) {
     if (this.sorted.isEmpty()) {
-      entry.pos = 0;
-      this.sorted.add(entry.pos, entry);
+      this.sorted.add(entry);
       return true;
     } else {
       boolean inserted = false;
@@ -110,34 +121,14 @@ public class HighestResponseTimeRanking extends Ranking {
         RankingEntry current = lit.next();
         if (!inserted) {
           if (entry.maxTime > current.maxTime) {
-            System.out.println(">>> Inserting at pos=" + current.pos);
-            entry.pos = current.pos;
             lit.previous();
             lit.add(entry);
             lit.next();
-            current.pos++;
             inserted = true;
           }
-        } else {
-          current.pos++;
         }
       }
 
-//      for (RankingEntry current : this.sorted) {
-//        if (!inserted) {
-//          if (entry.maxTime > current.maxTime) {
-//            System.out.println(">>> Inserting at pos=" + current.pos);
-//            entry.pos = current.pos;
-//            this.sorted.add(entry.pos, entry);
-//            current.pos++;
-//            inserted = true;
-//            break;
-//          }
-//        } else {
-//          current.pos++;
-//        }
-//      }
-//
       if (inserted) { // remove excess element
         if (this.sorted.size() > this.size) {
           RankingEntry removed = this.sorted.remove(this.size);
@@ -145,7 +136,6 @@ public class HighestResponseTimeRanking extends Ranking {
         }
       } else { // insert at the end
         if (this.sorted.size() < this.size) {
-          entry.pos = this.sorted.size();
           this.sorted.add(entry);
           inserted = true;
         }

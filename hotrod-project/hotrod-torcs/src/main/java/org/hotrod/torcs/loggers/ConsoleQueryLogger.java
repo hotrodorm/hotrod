@@ -1,6 +1,6 @@
 package org.hotrod.torcs.loggers;
 
-import org.hotrod.torcs.rankings.QueryExecution;
+import org.hotrod.torcs.QueryExecution;
 
 public class ConsoleQueryLogger extends QueryLogger {
 

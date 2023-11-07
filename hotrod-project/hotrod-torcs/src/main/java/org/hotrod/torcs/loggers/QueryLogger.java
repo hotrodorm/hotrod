@@ -1,7 +1,7 @@
 package org.hotrod.torcs.loggers;
 
-import org.hotrod.torcs.QueryConsumer;
+import org.hotrod.torcs.QueryExecutionConsumer;
 
-public abstract class QueryLogger extends QueryConsumer {
+public abstract class QueryLogger extends QueryExecutionConsumer {
 
 }

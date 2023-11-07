@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.torcs.rankings.HighestResponseTimeRanking;
-import org.hotrod.torcs.rankings.QueryExecution;
 import org.hotrod.torcs.rankings.Ranking;
 import org.hotrod.torcs.rankings.RankingEntry;
 import org.springframework.stereotype.Component;
