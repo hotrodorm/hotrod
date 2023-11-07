@@ -11,7 +11,7 @@ Version 5.0:
 
 Version 5.1:
 
-- Torcs CTP Module. Ranks queries and extracts query execution plans in CTP (checktheplan.com) format, for Oracle, DB2 LUW, PostgreSQL, and SQL Server.
+- Torcs CTP Module. Ranks queries and extracts query execution plans in CTP format (checktheplan.com) for Oracle, DB2 LUW, PostgreSQL, and SQL Server.
 
 Version 5.2:
 
