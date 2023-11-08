@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
-import org.hotrod.torcs.Statement;
+import org.hotrod.torcs.QuerySample;
 import org.hotrod.torcs.ctp.PlanRetriever;
 import org.springframework.stereotype.Component;
 
@@ -13,13 +13,13 @@ import org.springframework.stereotype.Component;
 public class SQLServerPlanRetriever implements PlanRetriever {
 
   @Override
-  public String getEstimatedCTPExecutionPlan(Statement st) {
+  public String getEstimatedCTPExecutionPlan(QuerySample sample) {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public String getActualCTPExecutionPlan(Statement st) {
+  public String getActualCTPExecutionPlan(QuerySample sample) {
     // TODO Auto-generated method stub
     return null;
   }

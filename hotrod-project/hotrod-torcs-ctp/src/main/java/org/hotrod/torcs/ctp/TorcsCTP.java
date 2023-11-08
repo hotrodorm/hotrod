@@ -1,6 +1,6 @@
 package org.hotrod.torcs.ctp;
 
-import org.hotrod.torcs.Statement;
+import org.hotrod.torcs.QuerySample;
 import org.hotrod.torcs.ctp.PlanRetrieverFactory.TorcsDatabaseNotSupportedException;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.FatalBeanException;
@@ -26,12 +26,12 @@ public class TorcsCTP implements ApplicationContextAware {
     }
   }
 
-  public String getEstimatedCTPExecutionPlan(final Statement st) {
-    return this.planRetriever.getEstimatedCTPExecutionPlan(st);
+  public String getEstimatedCTPExecutionPlan(final QuerySample sample) {
+    return this.planRetriever.getEstimatedCTPExecutionPlan(sample);
   }
 
-  public String getActualCTPExecutionPlan(final Statement st) {
-    return this.planRetriever.getActualCTPExecutionPlan(st);
+  public String getActualCTPExecutionPlan(final QuerySample sample) {
+    return this.planRetriever.getActualCTPExecutionPlan(sample);
   }
 
 }

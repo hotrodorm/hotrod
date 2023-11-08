@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
-import org.hotrod.torcs.Statement;
+import org.hotrod.torcs.QuerySample;
 import org.hotrod.torcs.ctp.PlanRetriever;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,8 +23,8 @@ public class PostgreSQLPlanRetriever implements PlanRetriever {
   private AtomicLong n = new AtomicLong();
 
   @Override
-  public String getEstimatedCTPExecutionPlan(Statement st) {
-    PreparedSQL ps = new PreparedSQL(st.getActualSQL());
+  public String getEstimatedCTPExecutionPlan(final QuerySample sample) {
+    PreparedSQL ps = new PreparedSQL(sample.getSQL());
     System.out.println("ps=" + ps);
     Map<String, Object> params = new HashMap<>();
     params.put("planName", "plan" + n.getAndIncrement());
@@ -37,9 +37,9 @@ public class PostgreSQLPlanRetriever implements PlanRetriever {
   }
 
   @Override
-  public String getActualCTPExecutionPlan(Statement st) {
+  public String getActualCTPExecutionPlan(final QuerySample sample) {
     Map<String, Object> params = new HashMap<>();
-    params.put("sql", st.getActualSQL());
+    params.put("sql", sample.getSQL());
     List<String> r = this.mapper.getActualPlan(params);
     return r.stream().collect(Collectors.joining(" "));
   }
