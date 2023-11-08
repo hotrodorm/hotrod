@@ -24,23 +24,6 @@
 
   <dependencies>
 
-    <!-- HotRod Dependencies -->
-
-<!-- 
-    <dependency>
-      <groupId>org.hotrodorm.hotrod</groupId>
-      <artifactId>hotrod</artifactId>
-      <version>4.2.1-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.hotrodorm.hotrod</groupId>
-      <artifactId>hotrod-utils</artifactId>
-      <version>4.2.1-SNAPSHOT</version>
-    </dependency>
- -->
- 
-
     <!-- Spring AOP -->
 
     <dependency>
@@ -49,7 +32,7 @@
       <version>2.3.4.RELEASE</version>
     </dependency>
     
-    <!-- Generate XLSX -->
+    <!-- Generate XLSX - not included as dependency, but client app can include it if XLSX is needed -->
 
     <dependency>
       <groupId>org.apache.poi</groupId>
@@ -64,38 +47,6 @@
       <version>5.2.0</version>
       <scope>provided</scope>
     </dependency>
-
-    <!-- Spring
-
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-aop</artifactId>
-      <version>5.2.0.RELEASE</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-tx</artifactId>
-      <version>5.2.0.RELEASE</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-      <version>5.2.0.RELEASE</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-jdbc</artifactId>
-      <version>5.2.0.RELEASE</version>
-      <scope>provided</scope>
-    </dependency>
-    
-    -->
 
   </dependencies>
 

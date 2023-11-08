@@ -71,7 +71,6 @@
 
     <!-- Only needed when generating rankings to XLSX -->
 
-<!-- 
     <dependency>
       <groupId>org.apache.poi</groupId>
       <artifactId>poi-ooxml-full</artifactId>
@@ -83,7 +82,9 @@
       <artifactId>poi-ooxml</artifactId>
       <version>5.2.0</version>
     </dependency>
+<!-- 
  -->
+
   </dependencies>
 
   <build>
