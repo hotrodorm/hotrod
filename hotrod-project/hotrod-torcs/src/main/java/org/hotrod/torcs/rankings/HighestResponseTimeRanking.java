@@ -49,7 +49,7 @@ public class HighestResponseTimeRanking extends Ranking {
   private HashMap<String, RankingEntry> bySQL = new HashMap<>();
 
   @Override
-  public synchronized void consume(final QuerySample sample) {
+  public synchronized void apply(final QuerySample sample) {
 
     RankingEntry entry = this.bySQL.get(sample.getSQL());
 

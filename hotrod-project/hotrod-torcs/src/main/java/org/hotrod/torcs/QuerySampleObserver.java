@@ -1,6 +1,6 @@
 package org.hotrod.torcs;
 
-public abstract class QuerySampleConsumer {
+public abstract class QuerySampleObserver {
 
   private boolean active = true;
 
@@ -18,7 +18,7 @@ public abstract class QuerySampleConsumer {
 
   public abstract String getTitle();
 
-  public abstract void consume(QuerySample sample);;
+  public abstract void apply(QuerySample sample);
 
   public abstract void reset();
 

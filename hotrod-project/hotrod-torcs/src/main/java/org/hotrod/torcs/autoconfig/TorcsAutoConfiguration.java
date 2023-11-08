@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 public class TorcsAutoConfiguration {
 
   @Bean
-  public Torcs getSQLMetrics() {
+  public Torcs getTorcs() {
     return new Torcs();
   }
 

@@ -15,17 +15,17 @@ public class HRTTest {
 
     HighestResponseTimeRanking rk = new HighestResponseTimeRanking(RANKING_SIZE);
 
-    rk.consume(q1);
-    rk.consume(q2);
-    rk.consume(q3);
+    rk.apply(q1);
+    rk.apply(q2);
+    rk.apply(q3);
 
     System.out.println("--- Torcs Ranking TOP " + RANKING_SIZE + " ---");
     rk.getRanking().stream().forEach(q -> System.out.println(q));
     System.out.println("");
 
-    rk.consume(new QuerySample("sql1", 5, null));
-    rk.consume(new QuerySample("sql3", 20, null));
-    rk.consume(new QuerySample("sql2", 25, null));
+    rk.apply(new QuerySample("sql1", 5, null));
+    rk.apply(new QuerySample("sql3", 20, null));
+    rk.apply(new QuerySample("sql2", 25, null));
 
     System.out.println("--- Torcs Ranking TOP " + RANKING_SIZE + " ---");
     rk.getRanking().stream().forEach(q -> System.out.println(q));

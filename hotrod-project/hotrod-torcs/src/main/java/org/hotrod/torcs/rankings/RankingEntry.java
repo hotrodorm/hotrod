@@ -11,8 +11,8 @@ public class RankingEntry {
 
   long minTime = 0;
   long maxTime = 0;
-  long sum = 0;
-  long sumSQ = 0;
+  long sumElapsed = 0;
+  long sumElapsedSQ = 0;
 
   int executions = 0;
   int errors = 0;
@@ -48,8 +48,8 @@ public class RankingEntry {
       this.lastExceptionTimestamp = this.lastExecution;
       this.lastException = sample.exception;
     }
-    this.sum += elapsedTime;
-    this.sumSQ += elapsedTime * elapsedTime;
+    this.sumElapsed += elapsedTime;
+    this.sumElapsedSQ += elapsedTime * elapsedTime;
   }
 
   // Setters
@@ -72,12 +72,12 @@ public class RankingEntry {
     return maxTime;
   }
 
-  public long getSum() {
-    return sum;
+  public long getSumElapsed() {
+    return sumElapsed;
   }
 
-  public long getSumSQ() {
-    return sumSQ;
+  public long getSumElapsedSQ() {
+    return sumElapsedSQ;
   }
 
   public int getExecutions() {
@@ -88,7 +88,11 @@ public class RankingEntry {
     return errors;
   }
 
-  public long getLastExecuted() {
+  public long getFirstExecution() {
+    return firstExecution;
+  }
+
+  public long getLastExecution() {
     return lastExecution;
   }
 
@@ -102,11 +106,11 @@ public class RankingEntry {
 
   public long getAverageTime() {
     int successfulExecutions = this.executions - this.errors;
-    return successfulExecutions > 0 ? (this.sum / successfulExecutions) : -1;
+    return successfulExecutions > 0 ? (this.sumElapsed / successfulExecutions) : -1;
   }
 
   public long getTotalElapsedTime() {
-    return this.sum;
+    return this.sumElapsed;
   }
 
   public String toString() {
@@ -114,11 +118,12 @@ public class RankingEntry {
     if (this.lastException == null) {
       return this.executions + " executions" + ", " + this.errors + " errors" + ", avg " + getAverageTime()
           + " ms, \u03c3 " + Math.round(this.getTimeStandardDeviation()) + " [" + this.minTime + "-" + this.maxTime
-          + " ms], TET " + this.sum + " ms, last executed: " + le + ", last exception: N/A -- " + this.compactSQL;
+          + " ms], TET " + this.sumElapsed + " ms, last executed: " + le + ", last exception: N/A -- "
+          + this.compactSQL;
     } else {
       return this.executions + " executions" + ", " + this.errors + " errors" + ", avg " + getAverageTime()
           + " ms, \u03c3 " + Math.round(this.getTimeStandardDeviation()) + " [" + this.minTime + "-" + this.maxTime
-          + " ms], TET " + this.sum + " ms, last executed: " + le + ", last exception at "
+          + " ms], TET " + this.sumElapsed + " ms, last executed: " + le + ", last exception at "
           + new Date(this.lastExceptionTimestamp) + ": " + this.lastException.getClass().getName() + " -- "
           + this.compactSQL;
     }
@@ -133,7 +138,7 @@ public class RankingEntry {
   public double getTimeStandardDeviation() {
     return this.executions < 2 ? 0
         : Math.sqrt( //
-            (this.sumSQ - 1.0 * this.sum * this.sum / this.executions) //
+            (this.sumElapsedSQ - 1.0 * this.sumElapsed * this.sumElapsed / this.executions) //
                 / //
                 (this.executions - 0));
   }

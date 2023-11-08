@@ -46,7 +46,7 @@ public class InitialQueriesRanking extends Ranking {
   private LinkedHashMap<String, RankingEntry> bySQL = new LinkedHashMap<>();
 
   @Override
-  public synchronized void consume(final QuerySample sample) {
+  public synchronized void apply(final QuerySample sample) {
     RankingEntry entry = this.bySQL.get(sample.getSQL());
     if (entry != null) {
       entry.apply(sample);
@@ -88,7 +88,7 @@ public class InitialQueriesRanking extends Ranking {
   }
 
   public Collection<RankingEntry> getRankingByMostRecentlyExecuted() {
-    return this.bySQL.values().stream().sorted((a, b) -> -Long.compare(a.getLastExecuted(), b.getLastExecuted()))
+    return this.bySQL.values().stream().sorted((a, b) -> -Long.compare(a.getLastExecution(), b.getLastExecution()))
         .collect(Collectors.toList());
   }
 
@@ -99,7 +99,7 @@ public class InitialQueriesRanking extends Ranking {
 
   public Collection<RankingEntry> getRankingErrorsByMostRecent() {
     return this.bySQL.values().stream().filter(a -> a.getErrors() > 0)
-        .sorted((a, b) -> -Long.compare(a.getLastExecuted(), b.getLastExecuted())).collect(Collectors.toList());
+        .sorted((a, b) -> -Long.compare(a.getLastExecution(), b.getLastExecution())).collect(Collectors.toList());
   }
 
 }
