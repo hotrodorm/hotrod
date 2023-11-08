@@ -1,9 +1,5 @@
 package app;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -249,8 +245,6 @@ public class App {
 
   }
 
-  // TODO: Nothing to do, just a marker.
-
   private void union() {
 
     AccountTable a = AccountDAO.newTable("a");
@@ -390,6 +384,8 @@ public class App {
 
   }
 
+  // TODO: Nothing to do, just a marker.
+
   private void testTorcs() {
 
 //    this.torcs.getDefaultConsumer().deactivate();
@@ -451,14 +447,14 @@ public class App {
     }
     System.out.println("--- End of Ranking ---");
 
-    String xlsxName = "ranking-by-max-response-time.xlsx";
-    try (OutputStream os = new FileOutputStream(new File(xlsxName));) {
-      torcs.getDefaultRanking().saveAsXLSX(os);
-      System.out.println("Ranking saved as: " + xlsxName);
-    } catch (IOException e) {
-      System.out.println("Could not save rankins as XLSX");
-      e.printStackTrace();
-    }
+//    String xlsxName = "ranking-by-max-response-time.xlsx";
+//    try (OutputStream os = new FileOutputStream(new File(xlsxName));) {
+//      torcs.getDefaultRanking().saveAsXLSX(os);
+//      System.out.println("Ranking saved as: " + xlsxName);
+//    } catch (IOException e) {
+//      System.out.println("Could not save ranking as XLSX");
+//      e.printStackTrace();
+//    }
 
 //    try {
 //      Thread.sleep(61 * 1000L);
