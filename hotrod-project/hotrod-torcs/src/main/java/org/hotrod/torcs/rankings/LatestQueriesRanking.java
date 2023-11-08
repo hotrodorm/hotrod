@@ -2,11 +2,12 @@ package org.hotrod.torcs.rankings;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.hotrod.torcs.QuerySample;
 
-public class InitialQueriesRanking extends Ranking {
+public class LatestQueriesRanking extends Ranking {
 
   private static final int DEFAULT_SIZE = 10;
   private static final int MIN_SIZE = 1;
@@ -14,11 +15,11 @@ public class InitialQueriesRanking extends Ranking {
 
   private int size;
 
-  public InitialQueriesRanking() {
+  public LatestQueriesRanking() {
     this.size = DEFAULT_SIZE;
   }
 
-  public InitialQueriesRanking(int size) {
+  public LatestQueriesRanking(int size) {
     setSize(size);
   }
 
@@ -35,7 +36,7 @@ public class InitialQueriesRanking extends Ranking {
 
   @Override
   public String getTitle() {
-    return "Initial Queries (max: " + this.size + ")";
+    return "Latest Queries (max: " + this.size + ")";
   }
 
   @Override
@@ -43,7 +44,13 @@ public class InitialQueriesRanking extends Ranking {
     this.bySQL.clear();
   }
 
-  private LinkedHashMap<String, RankingEntry> bySQL = new LinkedHashMap<>();
+  private LinkedHashMap<String, RankingEntry> bySQL = new LinkedHashMap<String, RankingEntry>() {
+    private static final long serialVersionUID = 1L;
+
+    protected boolean removeEldestEntry(final Map.Entry<String, RankingEntry> eldest) {
+      return size() > size;
+    }
+  };
 
   @Override
   public synchronized void apply(final QuerySample sample) {
@@ -51,10 +58,8 @@ public class InitialQueriesRanking extends Ranking {
     if (entry != null) {
       entry.apply(sample);
     } else {
-      if (this.bySQL.size() < this.size) {
-        entry = new RankingEntry(sample);
-        this.bySQL.put(sample.getSQL(), entry);
-      }
+      entry = new RankingEntry(sample);
+      this.bySQL.put(sample.getSQL(), entry);
     }
   }
 

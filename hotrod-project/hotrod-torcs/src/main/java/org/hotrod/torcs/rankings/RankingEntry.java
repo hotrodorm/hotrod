@@ -29,6 +29,25 @@ public class RankingEntry {
     apply(sample, this.firstExecution);
   }
 
+  private RankingEntry(final RankingEntry re) {
+    this.sql = re.sql;
+    this.compactSQL = re.compactSQL;
+
+    this.minTime = re.minTime;
+    this.maxTime = re.maxTime;
+    this.sumElapsed = re.sumElapsed;
+    this.sumElapsedSQ = re.sumElapsedSQ;
+
+    this.executions = re.executions;
+    this.errors = re.errors;
+    this.firstExecution = re.firstExecution;
+    this.lastExecution = re.lastExecution;
+
+    this.lastException = re.lastException;
+    this.lastExceptionTimestamp = re.lastExceptionTimestamp;
+
+  }
+
   public void apply(final QuerySample sample) {
     apply(sample, System.currentTimeMillis());
   }
@@ -52,7 +71,11 @@ public class RankingEntry {
     this.sumElapsedSQ += elapsedTime * elapsedTime;
   }
 
-  // Setters
+  // Cloning
+
+  public RankingEntry clone() {
+    return new RankingEntry(this);
+  }
 
   // Getters
 
@@ -114,19 +137,15 @@ public class RankingEntry {
   }
 
   public String toString() {
-    String le = this.lastExecution == 0 ? "never" : new Date(this.lastExecution).toString();
-    if (this.lastException == null) {
-      return this.executions + " executions" + ", " + this.errors + " errors" + ", avg " + getAverageTime()
-          + " ms, \u03c3 " + Math.round(this.getTimeStandardDeviation()) + " [" + this.minTime + "-" + this.maxTime
-          + " ms], TET " + this.sumElapsed + " ms, last executed: " + le + ", last exception: N/A -- "
-          + this.compactSQL;
-    } else {
-      return this.executions + " executions" + ", " + this.errors + " errors" + ", avg " + getAverageTime()
-          + " ms, \u03c3 " + Math.round(this.getTimeStandardDeviation()) + " [" + this.minTime + "-" + this.maxTime
-          + " ms], TET " + this.sumElapsed + " ms, last executed: " + le + ", last exception at "
-          + new Date(this.lastExceptionTimestamp) + ": " + this.lastException.getClass().getName() + " -- "
-          + this.compactSQL;
-    }
+    String fe = this.firstExecution == 0 ? "N/A" : new Date(this.firstExecution).toString();
+    String le = this.lastExecution == 0 ? "N/A" : new Date(this.lastExecution).toString();
+    return this.executions + " executions" + ", " + this.errors + " errors" + ", avg " + getAverageTime()
+        + " ms, \u03c3 " + Math.round(this.getTimeStandardDeviation()) + " [" + this.minTime + "-" + this.maxTime
+        + " ms], TET " + this.sumElapsed + " ms, executed: " + fe + " - " + le
+        + (this.lastException == null ? ", last exception: N/A"
+            : ", last exception at " + new Date(this.lastExceptionTimestamp) + ": "
+                + this.lastException.getClass().getName())
+        + " -- " + this.compactSQL;
   }
 
   /**

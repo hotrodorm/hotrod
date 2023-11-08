@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.stream.Collectors;
 
 import org.hotrod.torcs.QuerySample;
 
@@ -143,7 +144,7 @@ public class HighestResponseTimeRanking extends Ranking {
 
   @Override
   public List<RankingEntry> getRanking() {
-    return this.sorted;
+    return this.sorted.stream().map(e -> e.clone()).collect(Collectors.toList());
   }
 
 }
