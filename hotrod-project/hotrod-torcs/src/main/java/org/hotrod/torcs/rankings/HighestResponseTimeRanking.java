@@ -36,12 +36,13 @@ public class HighestResponseTimeRanking extends Ranking {
 
   @Override
   public String getTitle() {
-    return "Highest Response Time";
+    return "Highest Response Time (max: " + this.size + ")";
   }
 
   @Override
   public synchronized void reset() {
     this.sorted.clear();
+    this.bySQL.clear();
   }
 
   private ArrayList<RankingEntry> sorted = new ArrayList<>();

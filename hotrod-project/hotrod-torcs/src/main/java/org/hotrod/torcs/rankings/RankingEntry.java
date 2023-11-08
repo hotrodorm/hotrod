@@ -16,20 +16,26 @@ public class RankingEntry {
 
   int executions = 0;
   int errors = 0;
-  long lastExecuted = 0;
+  long firstExecution = 0;
+  long lastExecution = 0;
 
   Throwable lastException = null;
   long lastExceptionTimestamp = 0;
 
-  public RankingEntry(final QuerySample execution) {
-    this.sql = execution.sql;
+  public RankingEntry(final QuerySample sample) {
+    this.sql = sample.sql;
     this.compactSQL = QuerySample.compactSQL(this.sql);
-    apply(execution);
+    this.firstExecution = System.currentTimeMillis();
+    apply(sample, this.firstExecution);
   }
 
-  public void apply(final QuerySample execution) {
-    this.lastExecuted = System.currentTimeMillis();
-    long elapsedTime = execution.getResponseTime();
+  public void apply(final QuerySample sample) {
+    apply(sample, System.currentTimeMillis());
+  }
+
+  public void apply(final QuerySample sample, final long currentTime) {
+    this.lastExecution = currentTime;
+    long elapsedTime = sample.getResponseTime();
     if (this.executions == 0 || elapsedTime < this.minTime) {
       this.minTime = elapsedTime;
     }
@@ -37,10 +43,10 @@ public class RankingEntry {
       this.maxTime = elapsedTime;
     }
     this.executions++;
-    if (execution.exception != null) {
+    if (sample.exception != null) {
       this.errors++;
-      this.lastExceptionTimestamp = this.lastExecuted;
-      this.lastException = execution.exception;
+      this.lastExceptionTimestamp = this.lastExecution;
+      this.lastException = sample.exception;
     }
     this.sum += elapsedTime;
     this.sumSQ += elapsedTime * elapsedTime;
@@ -83,7 +89,7 @@ public class RankingEntry {
   }
 
   public long getLastExecuted() {
-    return lastExecuted;
+    return lastExecution;
   }
 
   public Throwable getLastException() {
@@ -99,17 +105,22 @@ public class RankingEntry {
     return successfulExecutions > 0 ? (this.sum / successfulExecutions) : -1;
   }
 
+  public long getTotalElapsedTime() {
+    return this.sum;
+  }
+
   public String toString() {
-    String le = this.lastExecuted == 0 ? "never" : new Date(this.lastExecuted).toString();
+    String le = this.lastExecution == 0 ? "never" : new Date(this.lastExecution).toString();
     if (this.lastException == null) {
       return this.executions + " executions" + ", " + this.errors + " errors" + ", avg " + getAverageTime()
           + " ms, \u03c3 " + Math.round(this.getTimeStandardDeviation()) + " [" + this.minTime + "-" + this.maxTime
-          + " ms], last executed: " + le + ", last exception: N/A -- " + this.compactSQL;
+          + " ms], TET " + this.sum + " ms, last executed: " + le + ", last exception: N/A -- " + this.compactSQL;
     } else {
       return this.executions + " executions" + ", " + this.errors + " errors" + ", avg " + getAverageTime()
           + " ms, \u03c3 " + Math.round(this.getTimeStandardDeviation()) + " [" + this.minTime + "-" + this.maxTime
-          + " ms], last executed: " + le + ", last exception at " + new Date(this.lastExceptionTimestamp) + ": "
-          + this.lastException.getClass().getName() + " -- " + this.compactSQL;
+          + " ms], TET " + this.sum + " ms, last executed: " + le + ", last exception at "
+          + new Date(this.lastExceptionTimestamp) + ": " + this.lastException.getClass().getName() + " -- "
+          + this.compactSQL;
     }
   }
 

@@ -1,11 +1,11 @@
 package org.hotrod.torcs.rankings;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.hotrod.torcs.QuerySampleConsumer;
 
 public abstract class Ranking extends QuerySampleConsumer {
 
-  public abstract List<RankingEntry> getRanking();
+  public abstract Collection<RankingEntry> getRanking();
 
 }

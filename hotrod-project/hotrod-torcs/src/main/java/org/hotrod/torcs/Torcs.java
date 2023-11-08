@@ -44,7 +44,7 @@ public class Torcs {
     }
   }
 
-  public HighestResponseTimeRanking getDefaultConsumer() {
+  public HighestResponseTimeRanking getDefaultRanking() {
     return rtRanking;
   }
 
@@ -67,10 +67,10 @@ public class Torcs {
   }
 
   // Get stats
-
-  public List<RankingEntry> rankingByResponseTime() {
-    return this.rtRanking.getRanking();
-  }
+//
+//  public List<RankingEntry> rankingByResponseTime() {
+//    return this.rtRanking.getRanking();
+//  }
 
 //  public List<Statement> getByHighestResponseTime() {
 //    return this.metrics.values().stream().sorted((a, b) -> -Long.compare(a.getMaxTime(), b.getMaxTime()))
