@@ -18,6 +18,7 @@ import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.hotrod.torcs.Torcs;
+import org.hotrod.torcs.rankings.InitialQueriesRanking;
 import org.hotrod.torcs.rankings.RankingEntry;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -387,7 +388,7 @@ public class App {
   private void testTorcs() {
 
 //    this.torcs.getDefaultConsumer().deactivate();
-    this.torcs.getDefaultConsumer().setSize(4);
+    this.torcs.getDefaultRanking().setSize(4);
 
 //    this.torcs.register(new QuerySampleConsumer() {
 //
@@ -409,25 +410,41 @@ public class App {
 //      }
 //    });
 
+    this.torcs.getDefaultRanking().deactivate();
+
+    InitialQueriesRanking iqr = new InitialQueriesRanking(8);
+    this.torcs.register(iqr);
+
     Random rand = new Random(1234);
 
-    for (int i = 0; i < 60; i++) {
-      int loops = 20000 * (1 + rand.nextInt(12));
-      Select<Row> select = buildRecursiveCTE(loops);
+    for (int i = 0; i < 30; i++) {
+      int loops = 10000 * (1 + rand.nextInt(12));
+      Select<Row> select = buildRecursiveCTEQuery(loops);
       select.execute().forEach(r -> {
       });
-//      System.out.println("exe #" + i + " (" + loops + " loops) complete: ");
     }
 
     System.out.println("--- Torcs Ranking ---");
-    for (RankingEntry e : this.torcs.rankingByResponseTime()) {
+    for (RankingEntry e : this.torcs.getDefaultRanking().getRanking()) {
       System.out.println(e);
     }
     System.out.println("--- End of Torcs Ranking ---");
 
+    System.out.println("--- " + "Ranking: " + iqr.getTitle() + " ---");
+    for (RankingEntry re : iqr.getRanking()) {
+      System.out.println(re);
+    }
+    System.out.println("--- End of Ranking ---");
+
+    System.out.println("--- " + "Ranking: " + iqr.getTitle() + " TET ---");
+    for (RankingEntry re : iqr.getRankingByTotalElapsedTime()) {
+      System.out.println(re);
+    }
+    System.out.println("--- End of Ranking ---");
+
   }
 
-  private Select<Row> buildRecursiveCTE(final int loops) {
+  private Select<Row> buildRecursiveCTEQuery(final int loops) {
     RecursiveCTE n = sql.recursiveCTE("n", "X");
     n.as(sql.select(sql.literal(1).as("X")),
         sql.select(n.num("X").plus(sql.literal(1))).from(n).where(n.num("X").lt(sql.literal(loops))));
