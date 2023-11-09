@@ -1,4 +1,4 @@
-package org.hotrod.torcs.ctp.plans;
+package org.hotrod.torcs.ctp.postgresql;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,10 +7,9 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
 import org.hotrod.torcs.QuerySample;
 import org.hotrod.torcs.ctp.PlanRetriever;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -96,34 +95,6 @@ public class PostgreSQLPlanRetriever implements PlanRetriever {
     public String toString() {
       return "[" + this.numberOfParams + "]" + this.sql;
     }
-
-  }
-
-//  deallocate sql1;
-//
-//  prepare sql1 (unknown) as 
-//  SELECT
-//    i.id, 
-//    i.amount, 
-//    i.branch_id
-//  FROM public.invoice i
-//  WHERE i.branch_id = $1
-//
-//  explain (format json) execute sql1(null);  
-
-  @Mapper
-  public static interface PostgreSQLPlanMapper {
-
-    // planName: plan1
-    // paramTypes: unknown x n
-    // sql: select ...
-    // values: null x n
-
-    @Select("prepare ${planName} (${paramTypes}) as ${sql}; explain (format json) execute ${planName} (${paramValues}); deallocate ${planName};")
-    public List<String> getEstimatedPlan(Map<String, Object> parameters);
-
-    @Select("prepare ${planName} (${paramTypes}) as ${sql}; explain (format json, analyze) execute ${planName} (${paramValues}); deallocate ${planName};")
-    public List<String> getActualPlan(Map<String, Object> parameters);
 
   }
 

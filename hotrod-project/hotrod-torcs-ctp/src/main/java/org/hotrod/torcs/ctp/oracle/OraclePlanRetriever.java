@@ -1,4 +1,4 @@
-package org.hotrod.torcs.ctp.plans;
+package org.hotrod.torcs.ctp.oracle;
 
 import java.util.List;
 import java.util.Map;
@@ -10,7 +10,7 @@ import org.hotrod.torcs.ctp.PlanRetriever;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DB2PlanRetriever implements PlanRetriever {
+public class OraclePlanRetriever implements PlanRetriever {
 
   @Override
   public String getEstimatedCTPExecutionPlan(QuerySample sample) {
@@ -25,7 +25,7 @@ public class DB2PlanRetriever implements PlanRetriever {
   }
 
   @Mapper
-  public static interface DB2SQLPlanMapper {
+  public static interface OracleSQLPlanMapper {
 
     @Select("explain (format json) ${sql}")
     public List<String> getEstimatedPlan(Map<String, Object> parameters);

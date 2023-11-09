@@ -2,25 +2,23 @@ package org.hotrod.torcs.ctp;
 
 import org.hotrod.torcs.QuerySample;
 import org.hotrod.torcs.ctp.PlanRetrieverFactory.TorcsDatabaseNotSupportedException;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.FatalBeanException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TorcsCTP implements ApplicationContextAware {
+public class TorcsCTP {
 
   @Autowired
-  private PlanRetrieverFactory factory;
+  private PlanRetrieverFactory planRetrieverFactory;
 
   private PlanRetriever planRetriever;
 
-  @Override
-  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+  public TorcsCTP(final PlanRetrieverFactory planRetrieverFactory) {
+    this.planRetrieverFactory = planRetrieverFactory;
+    System.out.println("TorcsCTP() -- this.factory=" + this.planRetrieverFactory);
     try {
-      this.planRetriever = this.factory.getPlanRetriever();
+      this.planRetriever = this.planRetrieverFactory.getPlanRetriever();
     } catch (TorcsDatabaseNotSupportedException e) {
       throw new FatalBeanException(e.getMessage(), e);
     }

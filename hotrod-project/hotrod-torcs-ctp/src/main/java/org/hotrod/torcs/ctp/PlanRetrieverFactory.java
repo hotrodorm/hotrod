@@ -1,10 +1,10 @@
 package org.hotrod.torcs.ctp;
 
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
-import org.hotrod.torcs.ctp.plans.DB2PlanRetriever;
-import org.hotrod.torcs.ctp.plans.OraclePlanRetriever;
-import org.hotrod.torcs.ctp.plans.PostgreSQLPlanRetriever;
-import org.hotrod.torcs.ctp.plans.SQLServerPlanRetriever;
+import org.hotrod.torcs.ctp.db2.DB2PlanRetriever;
+import org.hotrod.torcs.ctp.oracle.OraclePlanRetriever;
+import org.hotrod.torcs.ctp.postgresql.PostgreSQLPlanRetriever;
+import org.hotrod.torcs.ctp.sqlserver.SQLServerPlanRetriever;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,19 +14,15 @@ public class PlanRetrieverFactory {
   @Autowired
   private LiveSQLDialect liveSQLDialect;
 
-  @Autowired
-  private OraclePlanRetriever oraclePlanRetriever;
+  private OraclePlanRetriever oraclePlanRetriever = new OraclePlanRetriever();
+  private DB2PlanRetriever db2PlanRetriever = new DB2PlanRetriever();
+  private PostgreSQLPlanRetriever PostgreSQLPlanRetriever = new PostgreSQLPlanRetriever();
+  private SQLServerPlanRetriever sqlServerPlanRetriever = new SQLServerPlanRetriever();
 
-  @Autowired
-  private DB2PlanRetriever db2PlanRetriever;
-
-  @Autowired
-  private PostgreSQLPlanRetriever PostgreSQLPlanRetriever;
-
-  @Autowired
-  private SQLServerPlanRetriever sqlServerPlanRetriever;
+  private DummyH2PlanRetriever dummyH2PlanRetriever = new DummyH2PlanRetriever();
 
   public PlanRetriever getPlanRetriever() throws TorcsDatabaseNotSupportedException {
+    System.out.println(">>> PlanRetrieverFactory() 1 this.liveSQLDialect=" + liveSQLDialect);
     String name = this.liveSQLDialect.getProductName();
     String uName = name.toUpperCase();
     if (name.equalsIgnoreCase("ORACLE")) {
@@ -37,11 +33,14 @@ public class PlanRetrieverFactory {
       return this.PostgreSQLPlanRetriever;
     } else if (name.startsWith("Microsoft SQL Server")) {
       return this.sqlServerPlanRetriever;
+    } else if (name.startsWith("H2")) {
+      return this.dummyH2PlanRetriever;
     }
+    System.out.println(">>> PlanRetrieverFactory() 2");
     throw new TorcsDatabaseNotSupportedException("Database not supported by Torcs CTP: "
         + this.liveSQLDialect.getProductName() + " version " + this.liveSQLDialect.getMajorVersion() + "."
         + this.liveSQLDialect.getMinorVersion() + " (" + this.liveSQLDialect.getProductVersion()
-        + "). The supported databases are Oracle, DB2, PostgreSQL, and SQL Server.");
+        + "). The databases supported by Torcs CTP are: Oracle, DB2, PostgreSQL, and SQL Server.");
   }
 
   public static class TorcsDatabaseNotSupportedException extends Exception {

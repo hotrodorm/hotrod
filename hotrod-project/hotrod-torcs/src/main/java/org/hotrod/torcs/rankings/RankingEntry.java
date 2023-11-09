@@ -22,6 +22,8 @@ public class RankingEntry {
   Throwable lastException = null;
   long lastExceptionTimestamp = 0;
 
+  private QuerySample slowestSample; // highest response time
+
   public RankingEntry(final QuerySample sample) {
     this.sql = sample.sql;
     this.compactSQL = QuerySample.compactSQL(this.sql);
@@ -46,6 +48,8 @@ public class RankingEntry {
     this.lastException = re.lastException;
     this.lastExceptionTimestamp = re.lastExceptionTimestamp;
 
+    this.slowestSample = re.slowestSample;
+
   }
 
   public void apply(final QuerySample sample) {
@@ -60,6 +64,7 @@ public class RankingEntry {
     }
     if (this.executions == 0 || elapsedTime > this.maxTime) {
       this.maxTime = elapsedTime;
+      this.slowestSample = sample;
     }
     this.executions++;
     if (sample.exception != null) {
@@ -130,6 +135,10 @@ public class RankingEntry {
   public long getAverageTime() {
     int successfulExecutions = this.executions - this.errors;
     return successfulExecutions > 0 ? (this.sumElapsed / successfulExecutions) : -1;
+  }
+
+  public QuerySample getSlowestSample() {
+    return slowestSample;
   }
 
   public long getTotalElapsedTime() {
