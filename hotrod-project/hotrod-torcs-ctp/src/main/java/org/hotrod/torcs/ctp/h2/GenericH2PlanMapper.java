@@ -18,7 +18,7 @@ import org.apache.ibatis.annotations.Select;
 //explain (format json) execute sql1(null);  
 
 @Mapper
-public interface DummyH2PlanMapper {
+public interface GenericH2PlanMapper {
 
 // planName: plan1
 // paramTypes: unknown x n

@@ -9,12 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DummyH2PlanRetriever implements PlanRetriever {
+public class GenericH2PlanRetriever implements PlanRetriever {
 
   @Autowired
-  private DummyH2PlanMapper mapper;
+  private GenericH2PlanMapper mapper;
 
-  public DummyH2PlanRetriever(final DummyH2PlanMapper mapper) {
+  public GenericH2PlanRetriever(final GenericH2PlanMapper mapper) {
     this.mapper = mapper;
   }
 
