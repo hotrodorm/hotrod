@@ -2,7 +2,7 @@ package org.hotrod.torcs.rankings;
 
 import java.util.Date;
 
-import org.hotrod.torcs.QuerySample;
+import org.hotrod.torcs.QueryExecution;
 
 public class RankingEntry {
 
@@ -16,19 +16,22 @@ public class RankingEntry {
 
   int executions = 0;
   int errors = 0;
-  long firstExecution = 0;
-  long lastExecution = 0;
+  long firstExecutionAt = 0;
+  long lastExecutionAt = 0;
 
   Throwable lastException = null;
   long lastExceptionTimestamp = 0;
 
-  private QuerySample slowestSample; // highest response time
+  private QueryExecution slowestExecution;
+  private QueryExecution fastestExecution;
+  private QueryExecution firstExecution;
+  private QueryExecution lastExecution;
 
-  public RankingEntry(final QuerySample sample) {
-    this.sql = sample.sql;
-    this.compactSQL = QuerySample.compactSQL(this.sql);
-    this.firstExecution = System.currentTimeMillis();
-    apply(sample, this.firstExecution);
+  public RankingEntry(final QueryExecution execution) {
+    this.sql = execution.sql;
+    this.compactSQL = QueryExecution.compactSQL(this.sql);
+    this.firstExecutionAt = System.currentTimeMillis();
+    apply(execution, this.firstExecutionAt);
   }
 
   private RankingEntry(final RankingEntry re) {
@@ -42,35 +45,40 @@ public class RankingEntry {
 
     this.executions = re.executions;
     this.errors = re.errors;
-    this.firstExecution = re.firstExecution;
-    this.lastExecution = re.lastExecution;
+    this.firstExecutionAt = re.firstExecutionAt;
+    this.lastExecutionAt = re.lastExecutionAt;
 
     this.lastException = re.lastException;
     this.lastExceptionTimestamp = re.lastExceptionTimestamp;
 
-    this.slowestSample = re.slowestSample;
+    this.slowestExecution = re.slowestExecution;
 
   }
 
-  public void apply(final QuerySample sample) {
-    apply(sample, System.currentTimeMillis());
+  public void apply(final QueryExecution execution) {
+    apply(execution, System.currentTimeMillis());
   }
 
-  public void apply(final QuerySample sample, final long currentTime) {
-    this.lastExecution = currentTime;
-    long elapsedTime = sample.getResponseTime();
+  public void apply(final QueryExecution execution, final long currentTime) {
+    this.lastExecutionAt = currentTime;
+    long elapsedTime = execution.getResponseTime();
     if (this.executions == 0 || elapsedTime < this.minTime) {
       this.minTime = elapsedTime;
+      this.fastestExecution = execution;
     }
     if (this.executions == 0 || elapsedTime > this.maxTime) {
       this.maxTime = elapsedTime;
-      this.slowestSample = sample;
+      this.slowestExecution = execution;
     }
     this.executions++;
-    if (sample.exception != null) {
+    if (this.firstExecution == null) {
+      this.firstExecution = execution;
+    }
+    this.lastExecution = execution;
+    if (execution.exception != null) {
       this.errors++;
-      this.lastExceptionTimestamp = this.lastExecution;
-      this.lastException = sample.exception;
+      this.lastExceptionTimestamp = this.lastExecutionAt;
+      this.lastException = execution.exception;
     }
     this.sumElapsed += elapsedTime;
     this.sumElapsedSQ += elapsedTime * elapsedTime;
@@ -116,12 +124,12 @@ public class RankingEntry {
     return errors;
   }
 
-  public long getFirstExecution() {
-    return firstExecution;
+  public long getFirstExecutionAt() {
+    return firstExecutionAt;
   }
 
-  public long getLastExecution() {
-    return lastExecution;
+  public long getLastExecutionAt() {
+    return lastExecutionAt;
   }
 
   public Throwable getLastException() {
@@ -137,17 +145,13 @@ public class RankingEntry {
     return successfulExecutions > 0 ? (this.sumElapsed / successfulExecutions) : -1;
   }
 
-  public QuerySample getSlowestSample() {
-    return slowestSample;
-  }
-
   public long getTotalElapsedTime() {
     return this.sumElapsed;
   }
 
   public String toString() {
-    String fe = this.firstExecution == 0 ? "N/A" : new Date(this.firstExecution).toString();
-    String le = this.lastExecution == 0 ? "N/A" : new Date(this.lastExecution).toString();
+    String fe = this.firstExecutionAt == 0 ? "N/A" : new Date(this.firstExecutionAt).toString();
+    String le = this.lastExecutionAt == 0 ? "N/A" : new Date(this.lastExecutionAt).toString();
     return this.executions + " executions" + ", " + this.errors + " errors" + ", avg " + getAverageTime()
         + " ms, \u03c3 " + Math.round(this.getTimeStandardDeviation()) + " [" + this.minTime + "-" + this.maxTime
         + " ms], TET " + this.sumElapsed + " ms, executed: " + fe + " - " + le
@@ -169,6 +173,24 @@ public class RankingEntry {
             (this.sumElapsedSQ - 1.0 * this.sumElapsed * this.sumElapsed / this.executions) //
                 / //
                 (this.executions - 0));
+  }
+
+  // Executions
+
+  public QueryExecution getSlowestExecution() {
+    return slowestExecution;
+  }
+
+  public QueryExecution getFastestExecution() {
+    return fastestExecution;
+  }
+
+  public QueryExecution getFirstExecution() {
+    return firstExecution;
+  }
+
+  public QueryExecution getLastExecution() {
+    return lastExecution;
   }
 
 }

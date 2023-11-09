@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.hotrod.torcs.QuerySample;
+import org.hotrod.torcs.QueryExecution;
 
 public class LatestQueriesRanking extends Ranking {
 
@@ -53,13 +53,13 @@ public class LatestQueriesRanking extends Ranking {
   };
 
   @Override
-  public synchronized void apply(final QuerySample sample) {
-    RankingEntry entry = this.bySQL.get(sample.getSQL());
+  public synchronized void apply(final QueryExecution execution) {
+    RankingEntry entry = this.bySQL.get(execution.getSQL());
     if (entry != null) {
-      entry.apply(sample);
+      entry.apply(execution);
     } else {
-      entry = new RankingEntry(sample);
-      this.bySQL.put(sample.getSQL(), entry);
+      entry = new RankingEntry(execution);
+      this.bySQL.put(execution.getSQL(), entry);
     }
   }
 
@@ -94,7 +94,7 @@ public class LatestQueriesRanking extends Ranking {
 
   public Collection<RankingEntry> getRankingByMostRecentlyExecuted() {
     return this.bySQL.values().stream().map(e -> e.clone())
-        .sorted((a, b) -> -Long.compare(a.getLastExecution(), b.getLastExecution())).collect(Collectors.toList());
+        .sorted((a, b) -> -Long.compare(a.getLastExecutionAt(), b.getLastExecutionAt())).collect(Collectors.toList());
   }
 
   public Collection<RankingEntry> getRankingByMostErrors() {
@@ -104,7 +104,7 @@ public class LatestQueriesRanking extends Ranking {
 
   public Collection<RankingEntry> getRankingErrorsByMostRecent() {
     return this.bySQL.values().stream().filter(a -> a.getErrors() > 0).map(e -> e.clone())
-        .sorted((a, b) -> -Long.compare(a.getLastExecution(), b.getLastExecution())).collect(Collectors.toList());
+        .sorted((a, b) -> -Long.compare(a.getLastExecutionAt(), b.getLastExecutionAt())).collect(Collectors.toList());
   }
 
 }

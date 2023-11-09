@@ -149,9 +149,9 @@ public class XLSXRankingWriter {
           col = addCell(r, col, dataRightStyle, df.format(re.getErrors()));
           col = addCell(r, col, dataRightStyle, df.format(re.getExecutions() - re.getErrors()));
           col = addCell(r, col, dataCenterStyle,
-              re.getFirstExecution() == 0 ? "N/A" : format(re.getFirstExecution(), tsf));
+              re.getFirstExecutionAt() == 0 ? "N/A" : format(re.getFirstExecutionAt(), tsf));
           col = addCell(r, col, dataCenterStyle,
-              re.getLastExecution() == 0 ? "N/A" : format(re.getLastExecution(), tsf));
+              re.getLastExecutionAt() == 0 ? "N/A" : format(re.getLastExecutionAt(), tsf));
           col = addCell(r, col, dataCenterStyle,
               re.getLastExceptionTimestamp() == 0 ? "N/A" : format(re.getLastExceptionTimestamp(), tsf));
         }

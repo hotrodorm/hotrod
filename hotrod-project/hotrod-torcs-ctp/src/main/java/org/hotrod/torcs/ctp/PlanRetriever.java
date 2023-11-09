@@ -1,11 +1,11 @@
 package org.hotrod.torcs.ctp;
 
-import org.hotrod.torcs.QuerySample;
+import org.hotrod.torcs.QueryExecution;
 
 public interface PlanRetriever {
 
-  String getEstimatedCTPExecutionPlan(QuerySample sample);
+  String getEstimatedCTPExecutionPlan(QueryExecution execution);
 
-  String getActualCTPExecutionPlan(QuerySample sample);
+  String getActualCTPExecutionPlan(QueryExecution execution);
 
 }

@@ -18,7 +18,7 @@ public abstract class QuerySampleObserver {
 
   public abstract String getTitle();
 
-  public abstract void apply(QuerySample sample);
+  public abstract void apply(QueryExecution execution);
 
   public abstract void reset();
 

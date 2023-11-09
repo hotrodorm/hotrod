@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.stream.Collectors;
 
-import org.hotrod.torcs.QuerySample;
+import org.hotrod.torcs.QueryExecution;
 
 public class HighestResponseTimeRanking extends Ranking {
 
@@ -50,24 +50,24 @@ public class HighestResponseTimeRanking extends Ranking {
   private HashMap<String, RankingEntry> bySQL = new HashMap<>();
 
   @Override
-  public synchronized void apply(final QuerySample sample) {
+  public synchronized void apply(final QueryExecution execution) {
 
-    RankingEntry entry = this.bySQL.get(sample.getSQL());
+    RankingEntry entry = this.bySQL.get(execution.getSQL());
 
     if (entry != null) { // 1. It's already in the ranking
 //      System.out.println(">>> Entry already in the ranking.");
 
-      if (sample.getResponseTime() > entry.getMaxTime()) {
-        upgradePosition(entry, sample.getResponseTime());
+      if (execution.getResponseTime() > entry.getMaxTime()) {
+        upgradePosition(entry, execution.getResponseTime());
       }
-      entry.apply(sample);
+      entry.apply(execution);
 
     } else { // 2. New query (not in the ranking)
 //      System.out.println(">>> Entry is new.");
 
-      entry = new RankingEntry(sample);
+      entry = new RankingEntry(execution);
       if (insert(entry)) {
-        this.bySQL.put(sample.getSQL(), entry);
+        this.bySQL.put(execution.getSQL(), entry);
       }
 
     }

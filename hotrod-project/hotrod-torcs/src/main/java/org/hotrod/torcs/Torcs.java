@@ -88,7 +88,7 @@ public class Torcs {
 
   void record(final String sql, final int responseTime, final Throwable t) {
     if (this.active) {
-      QuerySample s = new QuerySample(sql, responseTime, t);
+      QueryExecution s = new QueryExecution(sql, responseTime, t);
       for (QuerySampleObserver o : this.observers) {
         if (o.isActive()) {
           o.apply(s);

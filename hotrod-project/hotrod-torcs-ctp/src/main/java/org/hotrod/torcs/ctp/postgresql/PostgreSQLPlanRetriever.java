@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
-import org.hotrod.torcs.QuerySample;
+import org.hotrod.torcs.QueryExecution;
 import org.hotrod.torcs.ctp.PlanRetriever;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +22,8 @@ public class PostgreSQLPlanRetriever implements PlanRetriever {
   private AtomicLong n = new AtomicLong();
 
   @Override
-  public String getEstimatedCTPExecutionPlan(final QuerySample sample) {
-    PreparedSQL ps = new PreparedSQL(sample.getSQL());
+  public String getEstimatedCTPExecutionPlan(final QueryExecution execution) {
+    PreparedSQL ps = new PreparedSQL(execution.getSQL());
     System.out.println("ps=" + ps);
     Map<String, Object> params = new HashMap<>();
     params.put("planName", "plan" + n.getAndIncrement());
@@ -36,9 +36,9 @@ public class PostgreSQLPlanRetriever implements PlanRetriever {
   }
 
   @Override
-  public String getActualCTPExecutionPlan(final QuerySample sample) {
+  public String getActualCTPExecutionPlan(final QueryExecution execution) {
     Map<String, Object> params = new HashMap<>();
-    params.put("sql", sample.getSQL());
+    params.put("sql", execution.getSQL());
     List<String> r = this.mapper.getActualPlan(params);
     return r.stream().collect(Collectors.joining(" "));
   }

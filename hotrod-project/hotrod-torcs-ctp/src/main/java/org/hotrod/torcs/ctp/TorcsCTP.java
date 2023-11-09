@@ -1,7 +1,8 @@
 package org.hotrod.torcs.ctp;
 
-import org.hotrod.torcs.QuerySample;
+import org.hotrod.torcs.QueryExecution;
 import org.hotrod.torcs.ctp.PlanRetrieverFactory.TorcsDatabaseNotSupportedException;
+import org.hotrod.torcs.ctp.h2.DummyH2PlanMapper;
 import org.springframework.beans.FatalBeanException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,22 +15,22 @@ public class TorcsCTP {
 
   private PlanRetriever planRetriever;
 
-  public TorcsCTP(final PlanRetrieverFactory planRetrieverFactory) {
+  public TorcsCTP(final PlanRetrieverFactory planRetrieverFactory, final DummyH2PlanMapper h2Mapper) {
     this.planRetrieverFactory = planRetrieverFactory;
     System.out.println("TorcsCTP() -- this.factory=" + this.planRetrieverFactory);
     try {
-      this.planRetriever = this.planRetrieverFactory.getPlanRetriever();
+      this.planRetriever = this.planRetrieverFactory.getPlanRetriever(h2Mapper);
     } catch (TorcsDatabaseNotSupportedException e) {
       throw new FatalBeanException(e.getMessage(), e);
     }
   }
 
-  public String getEstimatedCTPExecutionPlan(final QuerySample sample) {
-    return this.planRetriever.getEstimatedCTPExecutionPlan(sample);
+  public String getEstimatedCTPExecutionPlan(final QueryExecution execution) {
+    return this.planRetriever.getEstimatedCTPExecutionPlan(execution);
   }
 
-  public String getActualCTPExecutionPlan(final QuerySample sample) {
-    return this.planRetriever.getActualCTPExecutionPlan(sample);
+  public String getActualCTPExecutionPlan(final QueryExecution execution) {
+    return this.planRetriever.getActualCTPExecutionPlan(execution);
   }
 
 }

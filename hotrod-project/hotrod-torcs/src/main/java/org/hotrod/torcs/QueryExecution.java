@@ -3,13 +3,13 @@ package org.hotrod.torcs;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class QuerySample {
+public class QueryExecution {
 
   public String sql;
   public int responseTime;
   public Throwable exception;
 
-  public QuerySample(final String sql, final int responseTime, final Throwable exception) {
+  public QueryExecution(final String sql, final int responseTime, final Throwable exception) {
     this.sql = sql;
     this.responseTime = responseTime;
     this.exception = exception;
