@@ -1,6 +1,6 @@
 package org.hotrod.torcs;
 
-public abstract class QuerySampleObserver {
+public abstract class QueryExecutionObserver {
 
   private boolean active = true;
 

@@ -18,7 +18,7 @@ public class Torcs {
 
   private boolean active;
 
-  private List<QuerySampleObserver> observers;
+  private List<QueryExecutionObserver> observers;
   private HighestResponseTimeRanking responseTimeRanking;
 
   private ScheduledExecutorService scheduleService;
@@ -37,7 +37,7 @@ public class Torcs {
 
   }
 
-  public void register(final QuerySampleObserver observer) {
+  public void register(final QueryExecutionObserver observer) {
     this.observers.add(observer);
   }
 
@@ -77,7 +77,7 @@ public class Torcs {
 
   public void reset() {
     System.out.println("[TORCS Reset]");
-    for (QuerySampleObserver o : this.observers) {
+    for (QueryExecutionObserver o : this.observers) {
       o.reset();
     }
   }
@@ -89,7 +89,7 @@ public class Torcs {
   void record(final String sql, final int responseTime, final Throwable t) {
     if (this.active) {
       QueryExecution s = new QueryExecution(sql, responseTime, t);
-      for (QuerySampleObserver o : this.observers) {
+      for (QueryExecutionObserver o : this.observers) {
         if (o.isActive()) {
           o.apply(s);
         }
