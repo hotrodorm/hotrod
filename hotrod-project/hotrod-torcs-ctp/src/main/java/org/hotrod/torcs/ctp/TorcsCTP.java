@@ -2,7 +2,7 @@ package org.hotrod.torcs.ctp;
 
 import org.hotrod.torcs.QueryExecution;
 import org.hotrod.torcs.ctp.PlanRetrieverFactory.TorcsDatabaseNotSupportedException;
-import org.hotrod.torcs.ctp.h2.GenericH2PlanMapper;
+import org.hotrod.torcs.ctp.h2.GenericH2PlanRetriever.GenericH2PlanMapper;
 import org.springframework.beans.FatalBeanException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

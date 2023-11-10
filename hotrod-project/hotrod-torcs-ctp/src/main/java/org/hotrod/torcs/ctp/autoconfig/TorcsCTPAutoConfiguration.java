@@ -2,7 +2,7 @@ package org.hotrod.torcs.ctp.autoconfig;
 
 import org.hotrod.torcs.ctp.PlanRetrieverFactory;
 import org.hotrod.torcs.ctp.TorcsCTP;
-import org.hotrod.torcs.ctp.h2.GenericH2PlanMapper;
+import org.hotrod.torcs.ctp.h2.GenericH2PlanRetriever.GenericH2PlanMapper;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

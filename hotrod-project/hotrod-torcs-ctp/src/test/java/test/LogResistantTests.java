@@ -13,8 +13,8 @@ public class LogResistantTests {
   public static void main(final String[] args)
       throws IOException, CouldNotReadFromFileException, InvalidLogDataException {
 
-    render();
-//    parse();
+//    render();
+    parse();
   }
 
   private static void render() throws CouldNotReadFromFileException, IOException {

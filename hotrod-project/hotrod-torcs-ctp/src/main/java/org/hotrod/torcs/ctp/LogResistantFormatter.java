@@ -20,12 +20,32 @@ import java.util.zip.Inflater;
 
 public class LogResistantFormatter {
 
-  private static final int LINE_SIZE = 120;
+  private static final int DEFAULT_LINE_SIZE = 120;
+  private static final int MIN_LINE_SIZE = 40;
+  private static final int MAX_LINE_SIZE = 100000;
 
   private static final String MESSAGE_DIGEST_ALGORITHM = "SHA-256";
 
   private static final boolean USE_FAST_GZIP = true;
   private static final int COMPRESSION_LEVEL = 5;
+
+  private int lineSize;
+
+  public LogResistantFormatter() {
+    this.lineSize = DEFAULT_LINE_SIZE;
+  }
+
+  public LogResistantFormatter(final int lineSize) {
+    this.lineSize = lineSize;
+    if (lineSize < MIN_LINE_SIZE) {
+      throw new IllegalArgumentException(
+          "Line size must be greater or equal to " + MIN_LINE_SIZE + ", but it's " + lineSize + ".");
+    }
+    if (lineSize > MAX_LINE_SIZE) {
+      throw new IllegalArgumentException(
+          "Line size must less or equal to " + MAX_LINE_SIZE + ", but it's " + lineSize + ".");
+    }
+  }
 
   public String[] render(final String plan) throws IOException {
     byte[] binaryHashed = encodeAndHash(plan);
@@ -183,7 +203,7 @@ public class LogResistantFormatter {
   }
 
   private String[] splitAndShield(final String base64) {
-    String[] lines = splitBySize(base64, LINE_SIZE);
+    String[] lines = splitBySize(base64, this.lineSize);
     String[] shielded = shield(lines);
     return shielded;
   }

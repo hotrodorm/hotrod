@@ -36,6 +36,9 @@
       <module name="hotrod-torcs" basedir="./hotrod-torcs">
         <axis path="src/main/java" ext="java" />
       </module>
+      <module name="hotrod-torcs-ctp" basedir="./hotrod-torcs-ctp">
+        <axis path="src/main/java" ext="java" />
+      </module>
     </loc>
   </target>
 

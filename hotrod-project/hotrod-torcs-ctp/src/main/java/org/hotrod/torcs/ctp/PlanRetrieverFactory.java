@@ -2,8 +2,8 @@ package org.hotrod.torcs.ctp;
 
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.torcs.ctp.db2.DB2PlanRetriever;
-import org.hotrod.torcs.ctp.h2.GenericH2PlanMapper;
 import org.hotrod.torcs.ctp.h2.GenericH2PlanRetriever;
+import org.hotrod.torcs.ctp.h2.GenericH2PlanRetriever.GenericH2PlanMapper;
 import org.hotrod.torcs.ctp.oracle.OraclePlanRetriever;
 import org.hotrod.torcs.ctp.postgresql.PostgreSQLPlanRetriever;
 import org.hotrod.torcs.ctp.sqlserver.SQLServerPlanRetriever;
