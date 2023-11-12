@@ -26,6 +26,10 @@ public class TorcsAspect {
   private Object measureGetConnection(final ProceedingJoinPoint joinPoint) throws Throwable {
 //    System.out.println("measureGetConnection()");
     try {
+      Object caller = joinPoint.getThis();
+      System.out.println(
+          "caller=" + System.identityHashCode(caller) + ":" + (caller == null ? "null" : caller.getClass().getName()));
+
       Object conn = joinPoint.proceed();
 
       Object proxy = this.connProxies.get(System.identityHashCode(conn));
