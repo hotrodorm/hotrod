@@ -1,0 +1,33 @@
+package org.hotrod.torcs.plan;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.sql.DataSource;
+
+import org.hotrod.torcs.rankings.RankingEntry;
+
+public class H2TorcsPlanRetriever implements TorcsPlanRetriever {
+
+  public String getEstimatedExecutionPlan(final RankingEntry entry) throws SQLException {
+    DataSource ds = entry.getDataSourceReference().getDataSource();
+    try (Connection conn = ds.getConnection();) {
+      conn.setAutoCommit(false);
+      try (PreparedStatement ps = conn.prepareStatement("explain " + entry.getSQL());
+          ResultSet rs = ps.executeQuery();) {
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        while (rs.next()) {
+          sb.append((first ? "" : "\n") + rs.getString(1));
+          first = false;
+        }
+        return sb.toString();
+      } finally {
+        conn.rollback();
+      }
+    }
+  }
+
+}

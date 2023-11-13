@@ -7,6 +7,7 @@ import org.hotrod.torcs.ctp.h2.GenericH2PlanRetriever.GenericH2PlanMapper;
 import org.hotrod.torcs.ctp.oracle.OraclePlanRetriever;
 import org.hotrod.torcs.ctp.postgresql.PostgreSQLPlanRetriever;
 import org.hotrod.torcs.ctp.sqlserver.SQLServerPlanRetriever;
+import org.hotrod.torcs.plan.PlanRetrieverFactory.UnsupportedTorcsDatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +24,7 @@ public class PlanRetrieverFactory {
 
   private GenericH2PlanRetriever dummyH2PlanRetriever;
 
-  public PlanRetriever getPlanRetriever(final GenericH2PlanMapper h2Mapper) throws TorcsDatabaseNotSupportedException {
+  public PlanRetriever getPlanRetriever(final GenericH2PlanMapper h2Mapper) throws UnsupportedTorcsDatabaseException {
     System.out.println(">>> PlanRetrieverFactory() 1 this.liveSQLDialect=" + liveSQLDialect);
     String name = this.liveSQLDialect.getProductName();
     String uName = name.toUpperCase();
@@ -41,20 +42,10 @@ public class PlanRetrieverFactory {
       return this.dummyH2PlanRetriever;
     }
     System.out.println(">>> PlanRetrieverFactory() 2");
-    throw new TorcsDatabaseNotSupportedException("Database not supported by Torcs CTP: "
+    throw new UnsupportedTorcsDatabaseException("Database not supported by Torcs CTP: "
         + this.liveSQLDialect.getProductName() + " version " + this.liveSQLDialect.getMajorVersion() + "."
         + this.liveSQLDialect.getMinorVersion() + " (" + this.liveSQLDialect.getProductVersion()
         + "). The databases supported by Torcs CTP are: Oracle, DB2, PostgreSQL, and SQL Server.");
-  }
-
-  public static class TorcsDatabaseNotSupportedException extends Exception {
-
-    private static final long serialVersionUID = 1L;
-
-    protected TorcsDatabaseNotSupportedException(String message) {
-      super(message);
-    }
-
   }
 
 }

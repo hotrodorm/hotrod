@@ -1,8 +1,8 @@
 package org.hotrod.torcs.ctp;
 
 import org.hotrod.torcs.QueryExecution;
-import org.hotrod.torcs.ctp.PlanRetrieverFactory.TorcsDatabaseNotSupportedException;
 import org.hotrod.torcs.ctp.h2.GenericH2PlanRetriever.GenericH2PlanMapper;
+import org.hotrod.torcs.plan.PlanRetrieverFactory.UnsupportedTorcsDatabaseException;
 import org.springframework.beans.FatalBeanException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ public class TorcsCTP {
     System.out.println("TorcsCTP() -- this.factory=" + this.planRetrieverFactory);
     try {
       this.planRetriever = this.planRetrieverFactory.getPlanRetriever(h2Mapper);
-    } catch (TorcsDatabaseNotSupportedException e) {
+    } catch (UnsupportedTorcsDatabaseException e) {
       throw new FatalBeanException(e.getMessage(), e);
     }
   }

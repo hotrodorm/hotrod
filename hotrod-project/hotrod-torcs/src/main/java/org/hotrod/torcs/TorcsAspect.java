@@ -42,8 +42,8 @@ public class TorcsAspect {
     try {
 
       Object caller = joinPoint.getThis();
-      System.out.println(
-          "caller=" + System.identityHashCode(caller) + ":" + (caller == null ? "null" : caller.getClass().getName()));
+//      System.out.println(
+//          "caller=" + System.identityHashCode(caller) + ":" + (caller == null ? "null" : caller.getClass().getName()));
       DataSource ds = (DataSource) caller;
       this.threadData.get().dataSource = ds;
 
