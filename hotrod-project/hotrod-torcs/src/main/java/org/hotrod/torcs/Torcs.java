@@ -6,6 +6,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import javax.sql.DataSource;
+
 import org.hotrod.torcs.rankings.HighestResponseTimeRanking;
 import org.springframework.stereotype.Component;
 
@@ -86,12 +88,12 @@ public class Torcs {
     return this.responseTimeRanking;
   }
 
-  void record(final String sql, final int responseTime, final Throwable t) {
+  void record(final DataSource dataSource, final String sql, final int responseTime, final Throwable t) {
     if (this.active) {
-      QueryExecution s = new QueryExecution(sql, responseTime, t);
+      QueryExecution qe = new QueryExecution(dataSource, sql, responseTime, t);
       for (QueryExecutionObserver o : this.observers) {
         if (o.isActive()) {
-          o.apply(s);
+          o.apply(qe);
         }
       }
     }

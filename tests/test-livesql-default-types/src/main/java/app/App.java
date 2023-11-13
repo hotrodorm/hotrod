@@ -439,8 +439,8 @@ public class App {
     System.out.println("--- Torcs Ranking ---");
     for (RankingEntry e : this.torcs.getDefaultRanking().getRanking()) {
       System.out.println(e);
-      String ctpPlan = this.torcsCTP.getEstimatedCTPExecutionPlan(e.getSlowestExecution());
-      System.out.println("CTP Plan: " + ctpPlan);
+//      String ctpPlan = this.torcsCTP.getEstimatedCTPExecutionPlan(e.getSlowestExecution());
+//      System.out.println("CTP Plan: " + ctpPlan);
     }
     System.out.println("--- End of Torcs Ranking ---");
 

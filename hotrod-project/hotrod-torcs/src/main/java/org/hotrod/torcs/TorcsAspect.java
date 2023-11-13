@@ -2,6 +2,8 @@ package org.hotrod.torcs;
 
 import java.util.WeakHashMap;
 
+import javax.sql.DataSource;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -13,10 +15,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class TorcsAspect {
 
-  private ThreadLocal<String> threadSQL = new ThreadLocal<String>();
+  private ThreadLocal<QueryData> threadData = new ThreadLocal<>();
+
+  public class QueryData {
+    private DataSource dataSource;
+    private String sql;
+  }
 
   @Autowired
-  private Torcs sqlMetrics;
+  private Torcs torcs;
 
   // Adding aspect to the Connection
 
@@ -24,11 +31,19 @@ public class TorcsAspect {
 
   @Around(value = "execution(* javax.sql.DataSource.getConnection())")
   private Object measureGetConnection(final ProceedingJoinPoint joinPoint) throws Throwable {
-//    System.out.println("measureGetConnection()");
+//    System.out.println("measureGetConnection()");   
+
+    if (this.threadData.get() == null) {
+      this.threadData.set(new QueryData());
+    }
+
     try {
+
       Object caller = joinPoint.getThis();
       System.out.println(
           "caller=" + System.identityHashCode(caller) + ":" + (caller == null ? "null" : caller.getClass().getName()));
+      DataSource ds = (DataSource) caller;
+      this.threadData.get().dataSource = ds;
 
       Object conn = joinPoint.proceed();
 
@@ -81,7 +96,7 @@ public class TorcsAspect {
   private Object addProxy(final ProceedingJoinPoint joinPoint, final String sql,
       final WeakHashMap<Integer, Object> proxies) throws Throwable {
     try {
-      this.threadSQL.set(sql);
+      this.threadData.get().sql = sql;
       Object obj = joinPoint.proceed();
 
       Object proxy = proxies.get(System.identityHashCode(obj));
@@ -104,22 +119,22 @@ public class TorcsAspect {
 
   @Around(value = "execution(* java.sql.PreparedStatement.execute(..))")
   private Object adviceExecute(final ProceedingJoinPoint joinPoint) throws Throwable {
-    return measureSQLExecution(joinPoint, this.threadSQL.get());
+    return measureSQLExecution(joinPoint);
   }
 
   @Around(value = "execution(* java.sql.PreparedStatement.executeLargeUpdate(..))")
   private Object adviceExecuteLargeUpdate(final ProceedingJoinPoint joinPoint) throws Throwable {
-    return measureSQLExecution(joinPoint, this.threadSQL.get());
+    return measureSQLExecution(joinPoint);
   }
 
   @Around(value = "execution(* java.sql.PreparedStatement.executeQuery(..))")
   private Object adviceExecExecuteQuery(final ProceedingJoinPoint joinPoint) throws Throwable {
-    return measureSQLExecution(joinPoint, this.threadSQL.get());
+    return measureSQLExecution(joinPoint);
   }
 
   @Around(value = "execution(* java.sql.PreparedStatement.executeUpdate(..))")
   private Object adviceExecuteUpdate(final ProceedingJoinPoint joinPoint) throws Throwable {
-    return measureSQLExecution(joinPoint, this.threadSQL.get());
+    return measureSQLExecution(joinPoint);
   }
 
   // Intercepting the java.sql.Statement (declared methods)
@@ -149,12 +164,12 @@ public class TorcsAspect {
 
   @Around(value = "execution(* java.sql.Statement.executeBatch(..))")
   private Object adviceExecuteBatch(final ProceedingJoinPoint joinPoint) throws Throwable {
-    return measureSQLExecution(joinPoint, this.threadSQL.get());
+    return measureSQLExecution(joinPoint);
   }
 
   @Around(value = "execution(* java.sql.Statement.executeLargeBatch(..))")
   private Object adviceExecuteLargeBatch(final ProceedingJoinPoint joinPoint) throws Throwable {
-    return measureSQLExecution(joinPoint, this.threadSQL.get());
+    return measureSQLExecution(joinPoint);
   }
 
   @Around(value = "execution(* java.sql.Statement.executeLargeUpdate(..)) && args(sql)")
@@ -210,19 +225,23 @@ public class TorcsAspect {
 
   // Measuring
 
+  private Object measureSQLExecution(final ProceedingJoinPoint joinPoint) throws Throwable {
+    return measureSQLExecution(joinPoint, this.threadData.get().sql);
+  }
+
   private Object measureSQLExecution(final ProceedingJoinPoint joinPoint, final String sql) throws Throwable {
 //    System.out.println("Measuring: " + sql);
     long start = System.currentTimeMillis();
     try {
       Object ps = joinPoint.proceed();
       long end = System.currentTimeMillis();
-      this.sqlMetrics.record(sql, (int) (end - start), null);
+      this.torcs.record(this.threadData.get().dataSource, sql, (int) (end - start), null);
 //      System.out.println("Measured: " + (end - start) + "ms");
       return ps;
 
     } catch (Throwable t) {
       long end = System.currentTimeMillis();
-      this.sqlMetrics.record(sql, (int) (end - start), t);
+      this.torcs.record(this.threadData.get().dataSource, sql, (int) (end - start), t);
 //      System.out.println("Measured (exception): " + (end - start) + "ms");
       throw t;
     }
