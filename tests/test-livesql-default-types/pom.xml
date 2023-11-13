@@ -47,14 +47,7 @@
       <version>${hotrod.version}</version>
     </dependency>
 
-    <dependency>
-      <groupId>org.hotrodorm.hotrod</groupId>
-      <artifactId>hotrod-torcs-ctp</artifactId>
-      <version>${hotrod.version}</version>
-    </dependency>
-
 <!--
-
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-torcs-ctp</artifactId>

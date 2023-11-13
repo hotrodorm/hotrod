@@ -6,9 +6,17 @@ import java.util.WeakHashMap;
 
 import javax.sql.DataSource;
 
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.hotrod.torcs.setters.DoubleSetter;
+import org.hotrod.torcs.setters.FloatSetter;
+import org.hotrod.torcs.setters.IntSetter;
+import org.hotrod.torcs.setters.LongSetter;
+import org.hotrod.torcs.setters.Setter;
+import org.hotrod.torcs.setters.ShortSetter;
 import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,6 +30,54 @@ public class TorcsAspect {
   public class QueryData {
     private DataSource dataSource;
     private String sql;
+//    private Map<Integer, PreparedParameter> parameters;
+    private Map<Integer, Setter> setters;
+
+    public void clearParameters() {
+//      this.parameters = new HashMap<>();
+      this.setters = new HashMap<>();
+    }
+
+//    private void registerParameter(final int index, final Object value, final int type) {
+//      System.out.println("**** param #" + index + ": " + value + " (" + type + ")");
+//      this.parameters.put(index, new PreparedParameter(index, value, type));
+//    }
+
+    public void registerSetter(final Setter setter) {
+      System.out
+          .println("**** Setter (" + setter.getClass().getName() + "): #" + setter.getIndex() + ": " + setter.value());
+      this.setters.put(setter.getIndex(), setter);
+    }
+  }
+
+  public class PreparedParameter {
+
+    private int index;
+    private Object value;
+    private int type;
+
+    protected PreparedParameter(int index, Object value, int type) {
+      this.index = index;
+      this.value = value;
+      this.type = type;
+    }
+
+    public int getIndex() {
+      return index;
+    }
+
+    public Object getValue() {
+      return value;
+    }
+
+    public int getType() {
+      return type;
+    }
+
+    public String toString() {
+      return "#" + this.index + ": type=" + this.type + " value=" + value;
+    }
+
   }
 
   @Autowired
@@ -72,6 +128,7 @@ public class TorcsAspect {
   @Around(value = "execution(* java.sql.Connection.prepareStatement(..)) && args(sql)")
   private Object measurePrepareStatement(final ProceedingJoinPoint joinPoint, final String sql) throws Throwable {
 //    System.out.println("measurePrepareStatement()");
+    this.threadData.get().clearParameters();
     return addProxy(joinPoint, sql, this.psProxies);
   }
 
@@ -92,6 +149,7 @@ public class TorcsAspect {
   @Around(value = "execution(* java.sql.Connection.prepareCall(..)) && args(sql)")
   private Object measurePrepareCall(final ProceedingJoinPoint joinPoint, final String sql) throws Throwable {
 //    System.out.println("measurePrepareCall()");
+    this.threadData.get().clearParameters();
     return addProxy(joinPoint, sql, this.csProxies);
   }
 
@@ -225,6 +283,52 @@ public class TorcsAspect {
     return measureSQLExecution(joinPoint, sql);
   }
 
+  // ===============================
+  // PreparedStatement.set() methods
+  // ===============================
+
+//  @Before(value = "execution(* java.sql.PreparedStatement.setArray(..)) && args(parameterIndex, x)")
+//  private void adviceSet(final JoinPoint joinPoint, final int parameterIndex, final Array x) throws Throwable {
+//    this.threadData.get().registerParameter(parameterIndex, x, java.sql.Types.ARRAY);
+//  }
+
+  @Before(value = "execution(* java.sql.PreparedStatement.setInt(..)) && args(parameterIndex, x)")
+  private void adviceSetInt(final JoinPoint joinPoint, final int parameterIndex, final int x) throws Throwable {
+    this.threadData.get().registerSetter(new IntSetter(parameterIndex, x));
+  }
+
+  @Before(value = "execution(* java.sql.PreparedStatement.setLong(..)) && args(parameterIndex, x)")
+  private void adviceSetLong(final JoinPoint joinPoint, final int parameterIndex, final long x) throws Throwable {
+    this.threadData.get().registerSetter(new LongSetter(parameterIndex, x));
+  }
+
+  @Before(value = "execution(* java.sql.PreparedStatement.setShort(..)) && args(parameterIndex, x)")
+  private void adviceSetShort(final JoinPoint joinPoint, final int parameterIndex, final short x) throws Throwable {
+    this.threadData.get().registerSetter(new ShortSetter(parameterIndex, x));
+  }
+
+  @Before(value = "execution(* java.sql.PreparedStatement.setFloat(..)) && args(parameterIndex, x)")
+  private void adviceSetFloat(final JoinPoint joinPoint, final int parameterIndex, final float x) throws Throwable {
+    this.threadData.get().registerSetter(new FloatSetter(parameterIndex, x));
+  }
+
+  @Before(value = "execution(* java.sql.PreparedStatement.setDouble(..)) && args(parameterIndex, x)")
+  private void adviceSetDouble(final JoinPoint joinPoint, final int parameterIndex, final double x) throws Throwable {
+    this.threadData.get().registerSetter(new DoubleSetter(parameterIndex, x));
+  }
+
+//  @Before(value = "execution(* java.sql.PreparedStatement.setObject(..)) && args(parameterIndex, x)")
+//  private void adviceSetObject(final JoinPoint joinPoint, final int parameterIndex, final Object x) throws Throwable {
+//    System.out.println("=== adviceSetObject()");
+//  }
+
+//  @Around(value = "execution(* java.sql.PreparedStatement.setObject(..)) && args(parameterIndex, x, targetSqlType)")
+//  private void adviceSetObject2(final ProceedingJoinPoint joinPoint, final int parameterIndex, final Object x,
+//      final int targetSqlType) throws Throwable {
+////    this.threadData.get().registerParameter(parameterIndex, x, targetSqlType);
+//    joinPoint.proceed();
+//  }
+
   // Measuring
 
   private Object measureSQLExecution(final ProceedingJoinPoint joinPoint, final String sql) throws Throwable {
@@ -235,13 +339,13 @@ public class TorcsAspect {
       Object ps = joinPoint.proceed();
       long end = System.currentTimeMillis();
 
-      this.torcs.record(r, sql, (int) (end - start), null);
+      this.torcs.record(r, sql, this.threadData.get().setters, (int) (end - start), null);
 //      System.out.println("Measured: " + (end - start) + "ms");
       return ps;
 
     } catch (Throwable t) {
       long end = System.currentTimeMillis();
-      this.torcs.record(r, sql, (int) (end - start), t);
+      this.torcs.record(r, sql, this.threadData.get().setters, (int) (end - start), t);
 //      System.out.println("Measured (exception): " + (end - start) + "ms");
       throw t;
     }

@@ -3,14 +3,15 @@ package org.hotrod.torcs;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.hotrod.torcs.plan.PlanRetriever;
 import org.hotrod.torcs.plan.PlanRetrieverFactory.UnsupportedTorcsDatabaseException;
-import org.hotrod.torcs.plan.TorcsPlanRetriever;
 import org.hotrod.torcs.rankings.HighestResponseTimeRanking;
-import org.hotrod.torcs.rankings.RankingEntry;
+import org.hotrod.torcs.setters.Setter;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -90,9 +91,10 @@ public class Torcs {
     return this.responseTimeRanking;
   }
 
-  void record(final DataSourceReference dsr, final String sql, final int responseTime, final Throwable t) {
+  void record(final DataSourceReference dsr, final String sql, final Map<Integer, Setter> setters,
+      final int responseTime, final Throwable t) {
     if (this.active) {
-      QueryExecution qe = new QueryExecution(dsr, sql, responseTime, t);
+      QueryExecution qe = new QueryExecution(dsr, sql, setters, responseTime, t);
       for (QueryExecutionObserver o : this.observers) {
         if (o.isActive()) {
           o.apply(qe);
@@ -103,9 +105,10 @@ public class Torcs {
 
   // Generic Execution Plan
 
-  public String getEstimatedExecutionPlan(final RankingEntry entry) throws SQLException, UnsupportedTorcsDatabaseException {
-    TorcsPlanRetriever r = entry.getDataSourceReference().getPlanRetriever();
-    return r.getEstimatedExecutionPlan(entry);
+  public String getEstimatedExecutionPlan(final QueryExecution execution)
+      throws SQLException, UnsupportedTorcsDatabaseException {
+    PlanRetriever r = execution.getDataSourceReference().getPlanRetriever();
+    return r.getEstimatedExecutionPlan(execution);
   }
 
 }

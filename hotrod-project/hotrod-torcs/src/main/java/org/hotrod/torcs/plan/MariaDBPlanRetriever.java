@@ -7,15 +7,17 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import org.hotrod.torcs.QueryExecution;
 import org.hotrod.torcs.rankings.RankingEntry;
 
-public class H2TorcsPlanRetriever implements TorcsPlanRetriever {
+public class MariaDBPlanRetriever implements PlanRetriever {
 
-  public String getEstimatedExecutionPlan(final RankingEntry entry) throws SQLException {
-    DataSource ds = entry.getDataSourceReference().getDataSource();
+  @Override
+  public String getEstimatedExecutionPlan(final QueryExecution execution) throws SQLException {
+    DataSource ds = execution.getDataSourceReference().getDataSource();
     try (Connection conn = ds.getConnection();) {
       conn.setAutoCommit(false);
-      try (PreparedStatement ps = conn.prepareStatement("explain " + entry.getSQL());
+      try (PreparedStatement ps = conn.prepareStatement("explain " + execution.getSQL());
           ResultSet rs = ps.executeQuery();) {
         StringBuilder sb = new StringBuilder();
         boolean first = true;

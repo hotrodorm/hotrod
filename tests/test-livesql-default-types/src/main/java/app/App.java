@@ -1,5 +1,6 @@
 package app;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -18,8 +19,7 @@ import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.hotrod.torcs.Torcs;
-import org.hotrod.torcs.ctp.PlanRetrieverFactory;
-import org.hotrod.torcs.ctp.TorcsCTP;
+import org.hotrod.torcs.plan.PlanRetrieverFactory.UnsupportedTorcsDatabaseException;
 import org.hotrod.torcs.rankings.RankingEntry;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,11 +74,11 @@ public class App {
   @Autowired
   private Torcs torcs;
 
-  @Autowired
-  private TorcsCTP torcsCTP;
-
-  @Autowired
-  private PlanRetrieverFactory factory;
+//  @Autowired
+//  private TorcsCTP torcsCTP;
+//
+//  @Autowired
+//  private PlanRetrieverFactory factory;
 
   public static void main(String[] args) {
     SpringApplication.run(App.class, args);
@@ -100,7 +100,7 @@ public class App {
     };
   }
 
-  private void livesql() {
+  private void livesql() throws SQLException, UnsupportedTorcsDatabaseException {
 //    for (Row r : this.sql.select(sql.val("abc").ascii().as("code")).execute()) {
 //      System.out.println("r=" + r);
 //    }
@@ -223,7 +223,7 @@ public class App {
     q.execute().forEach(r -> System.out.println("row: " + r));
   }
 
-  private void liveSQLExamples() {
+  private void liveSQLExamples() throws SQLException, UnsupportedTorcsDatabaseException {
 
 //    livesql1();
 
@@ -389,11 +389,7 @@ public class App {
 
   // TODO: Nothing to do, just a marker.
 
-  private void testTorcs() {
-
-    System.out.println("::: this.torcs=" + this.torcs);
-    System.out.println("::: this.factory=" + this.factory);
-//    System.out.println("::: this.torcsCTP=" + this.torcsCTP);
+  private void testTorcs() throws SQLException, UnsupportedTorcsDatabaseException {
 
 //    this.torcs.getDefaultConsumer().deactivate();
     this.torcs.getDefaultRanking().setSize(4);
@@ -431,16 +427,18 @@ public class App {
 
     for (int i = 0; i < 2; i++) {
       int loops = 10000 * (1 + rand.nextInt(12));
+      loops = 123;
       Select<Row> select = buildRecursiveCTEQuery(loops);
       select.execute().forEach(r -> {
       });
     }
 
     System.out.println("--- Torcs Ranking ---");
+    int pos = 1;
     for (RankingEntry e : this.torcs.getDefaultRanking().getRanking()) {
-      System.out.println(e);
-//      String ctpPlan = this.torcsCTP.getEstimatedCTPExecutionPlan(e.getSlowestExecution());
-//      System.out.println("CTP Plan: " + ctpPlan);
+      System.out.println("#" + pos++ + " " + e);
+      String plan = this.torcs.getEstimatedExecutionPlan(e.getSlowestExecution());
+      System.out.println("Execution Plan: " + plan);
     }
     System.out.println("--- End of Torcs Ranking ---");
 
@@ -496,7 +494,7 @@ public class App {
   private Select<Row> buildRecursiveCTEQuery(final int loops) {
     RecursiveCTE n = sql.recursiveCTE("n", "X");
     n.as(sql.select(sql.literal(1).as("X")),
-        sql.select(n.num("X").plus(sql.literal(1))).from(n).where(n.num("X").lt(sql.literal(loops))));
+        sql.select(n.num("X").plus(sql.literal(1))).from(n).where(n.num("X").lt(sql.val(loops))));
     return sql.with(n).select().from(n);
   }
 

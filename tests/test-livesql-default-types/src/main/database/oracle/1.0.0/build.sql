@@ -1,20 +1,27 @@
 create table branch (
   id number(6) primary key not null,
-  "NaMe" varchar2(20)
+  "NaMe" varchar2(20),
+  region varchar2(10),
+  is_vip varchar2(1)
 );
 
-insert into branch (id, "NaMe") values (101, 'South');
-insert into branch (id, "NaMe") values (102, 'East');
+insert into branch (id, "NaMe", region) values (101, 'South', 'South');
+insert into branch (id, "NaMe", region) values (102, 'East', 'East');
 
 create table invoice (
   id number(6) primary key not null,
   amount number(6),
-  branch_id number(6) references branch (id)
+  branch_id number(6) references branch (id),
+  account_id number(6),
+  status varchar(6),
+  type varchar(6),
+  order_date date,
+  unpaid_balance number(6)
 );
 
-insert into invoice (id, amount, branch_id) values (10, 1500, 101);
-insert into invoice (id, amount, branch_id) values (11, 2500, 101);
-insert into invoice (id, amount, branch_id) values (12, 4000, 102);
+insert into invoice (id, amount, branch_id, account_id, status) values (10, 1500, 101, 15, 'PAID');
+insert into invoice (id, amount, branch_id, account_id, status) values (11, 2500, 101, 15, 'UNPAID');
+insert into invoice (id, amount, branch_id, account_id, status) values (12, 4000, 102, 15, 'LATE');
 
 -- Types
 

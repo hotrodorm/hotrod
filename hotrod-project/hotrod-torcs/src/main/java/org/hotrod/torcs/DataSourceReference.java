@@ -6,13 +6,13 @@ import javax.sql.DataSource;
 
 import org.hotrod.torcs.plan.PlanRetrieverFactory;
 import org.hotrod.torcs.plan.PlanRetrieverFactory.UnsupportedTorcsDatabaseException;
-import org.hotrod.torcs.plan.TorcsPlanRetriever;
+import org.hotrod.torcs.plan.PlanRetriever;
 
 public class DataSourceReference {
 
   private int id;
   private DataSource dataSource;
-  private TorcsPlanRetriever planRetriever;
+  private PlanRetriever planRetriever;
 
   protected DataSourceReference(final int id, final DataSource dataSource) {
     this.id = id;
@@ -28,7 +28,7 @@ public class DataSourceReference {
     return dataSource;
   }
 
-  public TorcsPlanRetriever getPlanRetriever() throws SQLException, UnsupportedTorcsDatabaseException {
+  public PlanRetriever getPlanRetriever() throws SQLException, UnsupportedTorcsDatabaseException {
     if (this.planRetriever == null) {
       preparePlanRetriever();
     }

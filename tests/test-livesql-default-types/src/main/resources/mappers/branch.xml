@@ -8,25 +8,36 @@
 
   <sql id="columns">
     id,
+    "NaMe",
     region,
     is_vip
   </sql>
 
   <sql id="columnsWithAlias">
     ${alias}.id,
+    ${alias}."NaMe",
     ${alias}.region,
     ${alias}.is_vip
   </sql>
 
   <resultMap id="allColumns" type="app.daos.BranchVO">
-    <result property="id" column="ID" />
-    <result property="region" column="REGION" />
-    <result property="isVip" column="IS_VIP" />
+    <id property="id" column="id" />
+    <result property="name" column="NaMe" />
+    <result property="region" column="region" />
+    <result property="isVip" column="is_vip" />
   </resultMap>
 
-  <!-- select by PK: no mapping generated, since the table does not have a PK -->
+  <!-- select by PK -->
 
-  <!-- select by unique indexes: no mappings generated, since the table does not have UIs -->
+  <select id="selectByPK" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from public.branch
+     where
+      id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!-- no select by unique indexes since there are no UI (besides the PK) -->
 
   <!-- select by example -->
 
@@ -38,11 +49,14 @@
       <if test="p.id != null">
         and id = #{p.id,jdbcType=INTEGER}
       </if>
+      <if test="p.name != null">
+        and "NaMe" = #{p.name,jdbcType=VARCHAR}
+      </if>
       <if test="p.region != null">
         and region = #{p.region,jdbcType=VARCHAR}
       </if>
       <if test="p.isVip != null">
-        and is_vip = #{p.isVip,jdbcType=BOOLEAN}
+        and is_vip = #{p.isVip,jdbcType=BIT}
       </if>
     </trim>
     <if test="o != null">
@@ -62,21 +76,38 @@
     insert into public.branch (
       <trim prefixOverrides=", ">
         <if test="true">, id</if>
+        <if test="true">, "NaMe"</if>
         <if test="true">, region</if>
         <if test="true">, is_vip</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
         <if test="true">, #{id,jdbcType=INTEGER}</if>
+        <if test="true">, #{name,jdbcType=VARCHAR}</if>
         <if test="true">, #{region,jdbcType=VARCHAR}</if>
-        <if test="true">, #{isVip,jdbcType=BOOLEAN}</if>
+        <if test="true">, #{isVip,jdbcType=BIT}</if>
       </trim>
       )
   </insert>
 
-  <!-- update by PK: no update mapping generated, since the table does not have a PK -->
+  <!-- update by PK -->
 
-  <!-- delete by PK: no delete mapping generated, since the table does not have a PK -->
+  <update id="updateByPK">
+    update public.branch set
+      "NaMe" = #{name,jdbcType=VARCHAR},
+      region = #{region,jdbcType=VARCHAR},
+      is_vip = #{isVip,jdbcType=BIT}
+     where
+      id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- delete by PK -->
+
+  <delete id="deleteByPK">
+    delete from public.branch
+     where
+      id = #{id,jdbcType=INTEGER}
+  </delete>
 
   <!-- update by example -->
 
@@ -84,18 +115,22 @@
     update public.branch
     <set>
       <if test="values.id != null">id = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.name != null">"NaMe" = #{values.name,jdbcType=VARCHAR},</if>
       <if test="values.region != null">region = #{values.region,jdbcType=VARCHAR},</if>
-      <if test="values.isVip != null">is_vip = #{values.isVip,jdbcType=BOOLEAN},</if>
+      <if test="values.isVip != null">is_vip = #{values.isVip,jdbcType=BIT},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.id != null">
         and id = #{filter.id,jdbcType=INTEGER}
       </if>
+      <if test="filter.name != null">
+        and "NaMe" = #{filter.name,jdbcType=VARCHAR}
+      </if>
       <if test="filter.region != null">
         and region = #{filter.region,jdbcType=VARCHAR}
       </if>
       <if test="filter.isVip != null">
-        and is_vip = #{filter.isVip,jdbcType=BOOLEAN}
+        and is_vip = #{filter.isVip,jdbcType=BIT}
       </if>
     </trim>
   </update>
@@ -114,11 +149,14 @@
       <if test="id != null">
         and id = #{id,jdbcType=INTEGER}
       </if>
+      <if test="name != null">
+        and "NaMe" = #{name,jdbcType=VARCHAR}
+      </if>
       <if test="region != null">
         and region = #{region,jdbcType=VARCHAR}
       </if>
       <if test="isVip != null">
-        and is_vip = #{isVip,jdbcType=BOOLEAN}
+        and is_vip = #{isVip,jdbcType=BIT}
       </if>
     </trim>
   </delete>
