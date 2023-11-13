@@ -38,6 +38,7 @@ public class RankingEntry {
   }
 
   private RankingEntry(final RankingEntry re) {
+    this.dsr = re.dsr;
     this.sql = re.sql;
     this.compactSQL = re.compactSQL;
 
@@ -165,7 +166,7 @@ public class RankingEntry {
         + (this.lastException == null ? ", last exception: N/A"
             : ", last exception at " + new Date(this.lastExceptionTimestamp) + ": "
                 + this.lastException.getClass().getName())
-        + " -- " + this.compactSQL;
+        + " -- " + (this.dsr.getId() >= 0 ? "[ds" + this.dsr.getId() + "] " : "") + this.compactSQL;
   }
 
   /**

@@ -256,6 +256,10 @@ public class TorcsAspect {
   private Map<Integer, DataSourceReference> dataSourcesByHash = new HashMap<>();
   private int nextReferenceId = 0;
 
+  public boolean multipleDataSources() {
+    return this.dataSourcesByHash.size() > 1;
+  }
+
   private DataSourceReference getDataSourceReference(final DataSource dataSource) {
     DataSourceReference r = this.dataSourcesByHash.get(System.identityHashCode(dataSource));
     if (r == null) {
