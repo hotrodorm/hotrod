@@ -2,10 +2,12 @@ package org.hotrod.torcs.rankings;
 
 import java.util.Date;
 
+import org.hotrod.torcs.DataSourceReference;
 import org.hotrod.torcs.QueryExecution;
 
 public class RankingEntry {
 
+  private DataSourceReference dsr;
   private String sql;
   private String compactSQL;
 
@@ -28,6 +30,7 @@ public class RankingEntry {
   private QueryExecution lastExecution;
 
   public RankingEntry(final QueryExecution execution) {
+    this.dsr = execution.dsr;
     this.sql = execution.sql;
     this.compactSQL = QueryExecution.compactSQL(this.sql);
     this.firstExecutionAt = System.currentTimeMillis();
@@ -91,6 +94,10 @@ public class RankingEntry {
   }
 
   // Getters
+
+  public DataSourceReference getDataSourceReference() {
+    return dsr;
+  }
 
   public String getSQL() {
     return sql;

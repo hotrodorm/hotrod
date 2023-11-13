@@ -3,24 +3,23 @@ package org.hotrod.torcs;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import javax.sql.DataSource;
-
 public class QueryExecution {
 
-  public DataSource ds;
+  public DataSourceReference dsr;
   public String sql;
   public int responseTime;
   public Throwable exception;
 
-  public QueryExecution(final DataSource ds, final String sql, final int responseTime, final Throwable exception) {
-    this.ds = ds;
+  public QueryExecution(final DataSourceReference dsr, final String sql, final int responseTime,
+      final Throwable exception) {
+    this.dsr = dsr;
     this.sql = sql;
     this.responseTime = responseTime;
     this.exception = exception;
   }
 
-  public DataSource getDataSource() {
-    return ds;
+  public DataSourceReference getDataSourceReference() {
+    return dsr;
   }
 
   public String getSQL() {

@@ -40,20 +40,24 @@ public class InitialQueriesRanking extends Ranking {
 
   @Override
   public synchronized void reset() {
-    this.bySQL.clear();
+    this.cacheByDSSQL.clear();
   }
 
-  private LinkedHashMap<String, RankingEntry> bySQL = new LinkedHashMap<>();
+  private LinkedHashMap<String, RankingEntry> cacheByDSSQL = new LinkedHashMap<>();
+
+  private String getCacheId(final QueryExecution execution) {
+    return "ds" + execution.dsr.getId() + ":" + execution.sql;
+  }
 
   @Override
   public synchronized void apply(final QueryExecution execution) {
-    RankingEntry entry = this.bySQL.get(execution.getSQL());
+    RankingEntry entry = this.cacheByDSSQL.get(this.getCacheId(execution));
     if (entry != null) {
       entry.apply(execution);
     } else {
-      if (this.bySQL.size() < this.size) {
+      if (this.cacheByDSSQL.size() < this.size) {
         entry = new RankingEntry(execution);
-        this.bySQL.put(execution.getSQL(), entry);
+        this.cacheByDSSQL.put(this.getCacheId(execution), entry);
       }
     }
   }
@@ -62,43 +66,43 @@ public class InitialQueriesRanking extends Ranking {
 
   @Override
   public Collection<RankingEntry> getRanking() {
-    return this.bySQL.values().stream().map(e -> e.clone()).collect(Collectors.toList());
+    return this.cacheByDSSQL.values().stream().map(e -> e.clone()).collect(Collectors.toList());
   }
 
   // Ranking entries by other orderings
 
   public Collection<RankingEntry> getRankingByHighestResponseTime() {
-    return this.bySQL.values().stream().map(e -> e.clone())
+    return this.cacheByDSSQL.values().stream().map(e -> e.clone())
         .sorted((a, b) -> -Long.compare(a.getMaxTime(), b.getMaxTime())).collect(Collectors.toList());
   }
 
   public Collection<RankingEntry> getRankingByHighestAvgResponseTime() {
-    return this.bySQL.values().stream().map(e -> e.clone())
+    return this.cacheByDSSQL.values().stream().map(e -> e.clone())
         .sorted((a, b) -> -Long.compare(a.getAverageTime(), b.getAverageTime())).collect(Collectors.toList());
   }
 
   public Collection<RankingEntry> getRankingByMostExecuted() {
-    return this.bySQL.values().stream().map(e -> e.clone())
+    return this.cacheByDSSQL.values().stream().map(e -> e.clone())
         .sorted((a, b) -> -Long.compare(a.getExecutions(), b.getExecutions())).collect(Collectors.toList());
   }
 
   public Collection<RankingEntry> getRankingByTotalElapsedTime() {
-    return this.bySQL.values().stream().map(e -> e.clone())
+    return this.cacheByDSSQL.values().stream().map(e -> e.clone())
         .sorted((a, b) -> -Long.compare(a.getTotalElapsedTime(), b.getTotalElapsedTime())).collect(Collectors.toList());
   }
 
   public Collection<RankingEntry> getRankingByMostRecentlyExecuted() {
-    return this.bySQL.values().stream().map(e -> e.clone())
+    return this.cacheByDSSQL.values().stream().map(e -> e.clone())
         .sorted((a, b) -> -Long.compare(a.getLastExecutionAt(), b.getLastExecutionAt())).collect(Collectors.toList());
   }
 
   public Collection<RankingEntry> getRankingByMostErrors() {
-    return this.bySQL.values().stream().map(e -> e.clone())
+    return this.cacheByDSSQL.values().stream().map(e -> e.clone())
         .sorted((a, b) -> -Long.compare(a.getErrors(), b.getErrors())).collect(Collectors.toList());
   }
 
   public Collection<RankingEntry> getRankingErrorsByMostRecent() {
-    return this.bySQL.values().stream().filter(a -> a.getErrors() > 0).map(e -> e.clone())
+    return this.cacheByDSSQL.values().stream().filter(a -> a.getErrors() > 0).map(e -> e.clone())
         .sorted((a, b) -> -Long.compare(a.getLastExecutionAt(), b.getLastExecutionAt())).collect(Collectors.toList());
   }
 

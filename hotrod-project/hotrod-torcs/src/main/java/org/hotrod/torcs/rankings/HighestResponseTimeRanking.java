@@ -43,16 +43,24 @@ public class HighestResponseTimeRanking extends Ranking {
   @Override
   public synchronized void reset() {
     this.sorted.clear();
-    this.bySQL.clear();
+    this.cacheByDSSQL.clear();
   }
 
   private ArrayList<RankingEntry> sorted = new ArrayList<>();
-  private HashMap<String, RankingEntry> bySQL = new HashMap<>();
+  private HashMap<String, RankingEntry> cacheByDSSQL = new HashMap<>();
+
+  private String getCacheId(final QueryExecution execution) {
+    return "ds" + execution.dsr.getId() + ":" + execution.sql;
+  }
+
+  private String getCacheId(final RankingEntry entry) {
+    return "ds" + entry.getDataSourceReference().getId() + ":" + entry.getSQL();
+  }
 
   @Override
   public synchronized void apply(final QueryExecution execution) {
 
-    RankingEntry entry = this.bySQL.get(execution.getSQL());
+    RankingEntry entry = this.cacheByDSSQL.get(this.getCacheId(execution));
 
     if (entry != null) { // 1. It's already in the ranking
 //      System.out.println(">>> Entry already in the ranking.");
@@ -67,7 +75,7 @@ public class HighestResponseTimeRanking extends Ranking {
 
       entry = new RankingEntry(execution);
       if (insert(entry)) {
-        this.bySQL.put(execution.getSQL(), entry);
+        this.cacheByDSSQL.put(this.getCacheId(execution), entry);
       }
 
     }
@@ -128,7 +136,7 @@ public class HighestResponseTimeRanking extends Ranking {
       if (inserted) { // remove excess element
         if (this.sorted.size() > this.size) {
           RankingEntry removed = this.sorted.remove(this.size);
-          this.bySQL.remove(removed.getSQL());
+          this.cacheByDSSQL.remove(this.getCacheId(removed));
         }
       } else { // insert at the end
         if (this.sorted.size() < this.size) {

@@ -1,5 +1,7 @@
 package org.hotrod.torcs;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.WeakHashMap;
 
 import javax.sql.DataSource;
@@ -225,26 +227,47 @@ public class TorcsAspect {
 
   // Measuring
 
-  private Object measureSQLExecution(final ProceedingJoinPoint joinPoint) throws Throwable {
-    return measureSQLExecution(joinPoint, this.threadData.get().sql);
-  }
-
   private Object measureSQLExecution(final ProceedingJoinPoint joinPoint, final String sql) throws Throwable {
 //    System.out.println("Measuring: " + sql);
     long start = System.currentTimeMillis();
+    DataSourceReference r = this.getDataSourceReference(this.threadData.get().dataSource);
     try {
       Object ps = joinPoint.proceed();
       long end = System.currentTimeMillis();
-      this.torcs.record(this.threadData.get().dataSource, sql, (int) (end - start), null);
+
+      this.torcs.record(r, sql, (int) (end - start), null);
 //      System.out.println("Measured: " + (end - start) + "ms");
       return ps;
 
     } catch (Throwable t) {
       long end = System.currentTimeMillis();
-      this.torcs.record(this.threadData.get().dataSource, sql, (int) (end - start), t);
+      this.torcs.record(r, sql, (int) (end - start), t);
 //      System.out.println("Measured (exception): " + (end - start) + "ms");
       throw t;
     }
+  }
+
+  // DataSource references cache
+
+  private Object measureSQLExecution(final ProceedingJoinPoint joinPoint) throws Throwable {
+    return measureSQLExecution(joinPoint, this.threadData.get().sql);
+  }
+
+  private Map<Integer, DataSourceReference> dataSourcesByHash = new HashMap<>();
+  private int nextReferenceId = 0;
+
+  private DataSourceReference getDataSourceReference(final DataSource dataSource) {
+    DataSourceReference r = this.dataSourcesByHash.get(System.identityHashCode(dataSource));
+    if (r == null) {
+      r = addDataSourceReference(dataSource);
+    }
+    return r;
+  }
+
+  private synchronized DataSourceReference addDataSourceReference(final DataSource dataSource) {
+    DataSourceReference r = new DataSourceReference(this.nextReferenceId++, dataSource);
+    this.dataSourcesByHash.put(System.identityHashCode(dataSource), r);
+    return r;
   }
 
 }
