@@ -1,5 +1,9 @@
 package app;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,8 +22,12 @@ import org.hotrod.runtime.livesql.queries.select.ExecutableCriteriaSelect;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 import org.hotrod.runtime.spring.SpringBeanObjectFactory;
+import org.hotrod.torcs.QueryExecution;
+import org.hotrod.torcs.QueryExecutionObserver;
 import org.hotrod.torcs.Torcs;
 import org.hotrod.torcs.plan.PlanRetrieverFactory.UnsupportedTorcsDatabaseException;
+import org.hotrod.torcs.rankings.InitialQueriesRanking;
+import org.hotrod.torcs.rankings.LatestQueriesRanking;
 import org.hotrod.torcs.rankings.RankingEntry;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -244,7 +252,7 @@ public class App {
 //    example7RecursiveCTEs();
 //    example8LateralJoins();
 
-    testTorcs();
+    torcs();
 
   }
 
@@ -389,48 +397,135 @@ public class App {
 
   // TODO: Nothing to do, just a marker.
 
-  private void testTorcs() throws SQLException, UnsupportedTorcsDatabaseException {
+  private void torcs() throws SQLException, UnsupportedTorcsDatabaseException {
+//  disableTorcs();
+//  enableTorcs();
+//  deactivateDefaultObserverTorcs();
+//  changeDefaultObserverSize();
+//  changeTorcsResetPeriodTo24Hours();
+//  addingAnInitialQueriesRankingToTorcs();
+//  addingALatestQueriesRankingToTorcs();
+//  getARankingByNonDefaultOrdering();
+//  saveARankingAsXLSX();
+//  addingAQueryLogger();
+    getSlowestQueryExecutionPlan();
+  }
 
-//    this.torcs.getDefaultConsumer().deactivate();
+  private void disableTorcs() {
+    // Torcs starts enabled by default
+    this.torcs.deactivate();
+  }
+
+  private void enableTorcs() {
+    this.torcs.activate();
+  }
+
+  private void deactivateDefaultObserverTorcs() {
+    // Torcs starts with one observer active (the Default Ranking)
+    this.torcs.getDefaultRanking().deactivate();
+  }
+
+  private void changeDefaultObserverSize() {
+    // Reduce the ranking size to 4 entries. The default size of the default ranking
+    // is 10 (that records the Top 10 slowest queries)
+    // Setting the size of the ranking automatically resets and empties it.
     this.torcs.getDefaultRanking().setSize(4);
+  }
 
-//    this.torcs.register(new QuerySampleConsumer() {
-//
-//      @Override
-//      public String getTitle() {
-//        return "Console Query Logger";
-//      }
-//
-//      @Override
-//      public void consume(final QuerySample sample) {
-//        System.out.println("[query] " + sample.getResponseTime() + " ms" + " (exception: "
-//            + (sample.getException() == null ? "N/A" : sample.getException().getClass().getName()) + ")" + ": "
-//            + QuerySample.compactSQL(sample.getSQL()));
-//      }
-//
-//      @Override
-//      public void reset() {
-//        // Nothing to do
-//      }
-//    });
+  private void changeTorcsResetPeriodTo24Hours() {
+    // Changes the reset period of time (minutes). Upon reaching this period of
+    // time, all rankings and observers are reset/emptied. By default all Torcs
+    // observers are reset every 60 minutes.
+    this.torcs.setResetPeriodInMinutes(60 * 24);
+  }
 
-//    this.torcs.setResetPeriodInMinutes(1);
-////    this.torcs.getDefaultRanking().deactivate();
-//
-//    InitialQueriesRanking iqr = new InitialQueriesRanking(6);
-//    this.torcs.register(iqr);
-//
-//    LatestQueriesRanking lqr = new LatestQueriesRanking(4);
-//    this.torcs.register(lqr);
+  private void addingAnInitialQueriesRankingToTorcs() {
+    // The following InitialQueriesRanking will keep the first 50 queries ran
+    InitialQueriesRanking iqr = new InitialQueriesRanking(50);
+    this.torcs.register(iqr);
+
+    // After some time the queries will be run the ranking will have recorded them
+    System.out.println("--- " + "Ranking: " + iqr.getTitle() + " Execution Order ---");
+    for (RankingEntry re : iqr.getRanking()) {
+      System.out.println(re);
+    }
+    System.out.println("--- End of Ranking ---");
+
+  }
+
+  private void addingALatestQueriesRankingToTorcs() {
+    // The following LatestQueriesRanking will keep the last 20 queries ran
+    LatestQueriesRanking lqr = new LatestQueriesRanking(20);
+    this.torcs.register(lqr);
+
+    // After some time the queries will be run the ranking will have recorded them
+    System.out.println("--- " + "Ranking: " + lqr.getTitle() + " Execution Order ---");
+    for (RankingEntry re : lqr.getRanking()) {
+      System.out.println(re);
+    }
+    System.out.println("--- End of Ranking ---");
+  }
+
+  private void getARankingByNonDefaultOrdering() {
+    InitialQueriesRanking iqr = new InitialQueriesRanking(50);
+    this.torcs.register(iqr);
+    // Get the ranking entries sorted by total impact/TET (total elapsed time)
+    System.out.println("--- " + "Ranking: " + iqr.getTitle() + " TET ---");
+    for (RankingEntry re : iqr.getRankingByTotalElapsedTime()) {
+      System.out.println(re);
+    }
+    System.out.println("--- End of Ranking ---");
+
+  }
+
+  private void saveARankingAsXLSX() {
+    String xlsxName = "ranking-by-max-response-time.xlsx";
+    try (OutputStream os = new FileOutputStream(new File(xlsxName))) {
+      torcs.getDefaultRanking().saveAsXLSX(os);
+      System.out.println("Ranking saved as: " + xlsxName);
+    } catch (IOException e) {
+      System.out.println("Could not save ranking as XLSX");
+      e.printStackTrace();
+    }
+  }
+
+  private void addingAQueryLogger() {
+    this.torcs.register(new QueryExecutionObserver() {
+
+      @Override
+      public String getTitle() {
+        return "Console Query Logger";
+      }
+
+      @Override
+      public void apply(final QueryExecution sample) {
+        System.out.println("[query] " + sample.getResponseTime() + " ms" + " (exception: "
+            + (sample.getException() == null ? "N/A" : sample.getException().getClass().getName()) + ")" + ": "
+            + QueryExecution.compactSQL(sample.getSQL()));
+      }
+
+      @Override
+      public void reset() {
+        // Nothing to do
+      }
+    });
+
+  }
+
+  private void getSlowestQueryExecutionPlan() throws SQLException, UnsupportedTorcsDatabaseException {
+
+    InvoiceTable i = InvoiceDAO.newTable("i");
+    BranchTable b = BranchDAO.newTable("b");
 
     Random rand = new Random(1234);
-
-    for (int i = 0; i < 2; i++) {
-      int loops = 10000 * (1 + rand.nextInt(12));
-      loops = 123;
-      Select<Row> select = buildRecursiveCTEQuery(loops);
-      select.execute().forEach(r -> {
-      });
+    for (int x = 0; x < 3; x++) { // run three times with different parameters
+      int minAmount = 100 + rand.nextInt(500);
+      sql.select() //
+          .from(i) //
+          .join(b, b.id.eq(i.branchId)) //
+          .where(b.region.eq("SOUTH").and(i.status.ne("UNPAID").and(i.amount.ge(minAmount)))) //
+          .orderBy(i.orderDate.desc()) //
+          .execute();
     }
 
     System.out.println("--- Torcs Ranking ---");
@@ -441,53 +536,6 @@ public class App {
       System.out.println("Execution Plan: " + plan);
     }
     System.out.println("--- End of Torcs Ranking ---");
-
-//    System.out.println("--- " + "Ranking: " + iqr.getTitle() + " Execution Order ---");
-//    for (RankingEntry re : iqr.getRanking()) {
-//      System.out.println(re);
-//    }
-//    System.out.println("--- End of Ranking ---");
-//
-//    System.out.println("--- " + "Ranking: " + lqr.getTitle() + " Execution Order ---");
-//    for (RankingEntry re : lqr.getRanking()) {
-//      System.out.println(re);
-//    }
-//    System.out.println("--- End of Ranking ---");
-//
-//    String xlsxName = "ranking-by-max-response-time.xlsx";
-//    try (OutputStream os = new FileOutputStream(new File(xlsxName))) {
-//      torcs.getDefaultRanking().saveAsXLSX(os);
-//      System.out.println("Ranking saved as: " + xlsxName);
-//    } catch (IOException e) {
-//      System.out.println("Could not save ranking as XLSX");
-//      e.printStackTrace();
-//    }
-
-//    try {
-//      Thread.sleep(61 * 1000L);
-//    } catch (InterruptedException e) {
-//      e.printStackTrace();
-//    }
-//    
-//    for (int i = 0; i < 1; i++) {
-//      int loops = 30000 * (1 + rand.nextInt(12));
-//      Select<Row> select = buildRecursiveCTEQuery(loops);
-//      select.execute().forEach(r -> {
-//      });
-//    }
-//
-//    
-//    System.out.println("--- " + "Ranking: " + lqr.getTitle() + " Execution Order ---");
-//    for (RankingEntry re : lqr.getRanking()) {
-//      System.out.println(re);
-//    }
-//    System.out.println("--- End of Ranking ---");
-
-//    System.out.println("--- " + "Ranking: " + iqr.getTitle() + " TET ---");
-//    for (RankingEntry re : iqr.getRankingByTotalElapsedTime()) {
-//      System.out.println(re);
-//    }
-//    System.out.println("--- End of Ranking ---");
 
   }
 

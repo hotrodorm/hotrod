@@ -98,23 +98,14 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
     mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
-    mo.setName((java.lang.String) m.get(p + "name" + s));
     mo.setRegion((java.lang.String) m.get(p + "region" + s));
     mo.setIsVip((java.lang.Boolean) m.get(p + "isVip" + s));
     return mo;
   }
 
-  // select by primary key
+  // no select by PK generated, since the table does not have a PK.
 
-  public app.daos.BranchVO select(final java.lang.Integer id) {
-    if (id == null)
-      return null;
-    app.daos.BranchVO vo = new app.daos.BranchVO();
-    vo.setId(id);
-    return this.sqlSession.selectOne("mappers.branch.selectByPK", vo);
-  }
-
-  // select by unique indexes: no unique indexes found (besides the PK) -- skipped
+  // select by unique indexes: no unique indexes found -- skipped
 
   // select by example
 
@@ -151,28 +142,14 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     this.sqlSession.insert(id, vo);
     app.daos.BranchVO mo = springBeanObjectFactory.create(app.daos.BranchVO.class);
     mo.setId(vo.getId());
-    mo.setName(vo.getName());
     mo.setRegion(vo.getRegion());
     mo.setIsVip(vo.getIsVip());
     return mo;
   }
 
-  // update by PK
+  // no update by PK generated, since the table does not have a PK.
 
-  public int update(final app.daos.BranchVO vo) {
-    if (vo.getId() == null) return 0;
-    return this.sqlSession.update("mappers.branch.updateByPK", vo);
-  }
-
-  // delete by PK
-
-  public int delete(final java.lang.Integer id) {
-    if (id == null) return 0;
-    app.daos.BranchVO vo = new app.daos.BranchVO();
-    vo.setId(id);
-    if (vo.getId() == null) return 0;
-    return this.sqlSession.delete("mappers.branch.deleteByPK", vo);
-  }
+  // no delete by PK generated, since the table does not have a PK.
 
   // update by example
 
@@ -187,7 +164,6 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
   public UpdateSetCompletePhase update(final app.daos.primitives.AbstractBranchVO updateValues, final BranchDAO.BranchTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
     if (updateValues.getId() != null) values.put("id", updateValues.getId());
-    if (updateValues.getName() != null) values.put("\"NaMe\"", updateValues.getName());
     if (updateValues.getRegion() != null) values.put("region", updateValues.getRegion());
     if (updateValues.getIsVip() != null) values.put("is_vip", updateValues.getIsVip());
     return new UpdateSetCompletePhase(this.context, "mappers.branch.updateByCriteria", tableOrView,  predicate, values);
@@ -212,14 +188,6 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
     ID("public.branch", "id", true), //
     ID$DESC("public.branch", "id", false), //
-    NAME("public.branch", "\"NaMe\"", true), //
-    NAME$DESC("public.branch", "\"NaMe\"", false), //
-    NAME$CASEINSENSITIVE("public.branch", "lower(\"NaMe\")", true), //
-    NAME$CASEINSENSITIVE_STABLE_FORWARD("public.branch", "lower(\"NaMe\"), \"NaMe\"", true), //
-    NAME$CASEINSENSITIVE_STABLE_REVERSE("public.branch", "lower(\"NaMe\"), \"NaMe\"", false), //
-    NAME$DESC_CASEINSENSITIVE("public.branch", "lower(\"NaMe\")", false), //
-    NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("public.branch", "lower(\"NaMe\"), \"NaMe\"", false), //
-    NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("public.branch", "lower(\"NaMe\"), \"NaMe\"", true), //
     REGION("public.branch", "region", true), //
     REGION$DESC("public.branch", "region", false), //
     REGION$CASEINSENSITIVE("public.branch", "lower(region)", true), //
@@ -271,25 +239,24 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     // Properties
 
     public NumberColumn id;
-    public StringColumn name;
     public StringColumn region;
     public BooleanColumn isVip;
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this.id, this.name, this.region, this.isVip);
+      return new AllColumns(this.id, this.region, this.isVip);
     }
 
     // Constructors
 
     BranchTable() {
-      super(null, "public", "branch", "Table", null);
+      super(null, "PUBLIC", "BRANCH", "Table", null);
       initialize();
     }
 
     BranchTable(final String alias) {
-      super(null, "public", "branch", "Table", alias);
+      super(null, "PUBLIC", "BRANCH", "Table", alias);
       initialize();
     }
 
@@ -297,13 +264,11 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.id = new NumberColumn(this, "id", "id", "int4", 10, 0);
+      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
       super.columns.add(this.id);
-      this.name = new StringColumn(this, "NaMe", "name", "varchar", 20, 0);
-      super.columns.add(this.name);
-      this.region = new StringColumn(this, "region", "region", "varchar", 20, 0);
+      this.region = new StringColumn(this, "REGION", "region", "CHARACTER VARYING", 10, 0);
       super.columns.add(this.region);
-      this.isVip = new BooleanColumn(this, "is_vip", "isVip", "bool", 1, 0);
+      this.isVip = new BooleanColumn(this, "IS_VIP", "isVip", "BOOLEAN", 1, 0);
       super.columns.add(this.isVip);
     }
 

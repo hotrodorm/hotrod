@@ -120,6 +120,7 @@ create table invoice (
   id int,
   account_id int,
   amount int,
+  branch_id int,
   order_date date,
   type varchar(10),
   unpaid_balance int,
