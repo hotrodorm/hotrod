@@ -1,7 +1,7 @@
 # Generic Execution Plan Samples
 
 There's no standard way of obtaining the execution plan of a query across databases. Each one
-provides different methods to get them, different relevant/non-relevant information, in wildly different
+provides very different techniques to get them, offer different levels of detail, in wildly different
 formats.
 
 The following LiveSQL query was run in all databases supported by HotRod:
@@ -10,13 +10,10 @@ The following LiveSQL query was run in all databases supported by HotRod:
 InvoiceTable i = InvoiceDAO.newTable("i");
 BranchTable b = BranchDAO.newTable("b");
 
-Random rand = new Random(1234);
-int minAmount = 100 + rand.nextInt(500);
-
 sql.select()
    .from(i)
    .join(b, b.id.eq(i.branchId))
-   .where(b.region.eq("SOUTH").and(i.status.ne("UNPAID").and(i.amount.ge(minAmount))))
+   .where(b.region.eq("SOUTH").and(i.status.ne("UNPAID").and(i.amount.ge(228))))
    .orderBy(i.orderDate.desc())
    .execute();
 ```
