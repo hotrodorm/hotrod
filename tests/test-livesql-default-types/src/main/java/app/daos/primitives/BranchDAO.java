@@ -266,9 +266,9 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
       super.columns = new ArrayList<>();
       this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
       super.columns.add(this.id);
-      this.region = new StringColumn(this, "REGION", "region", "CHARACTER VARYING", 10, 0);
+      this.region = new StringColumn(this, "REGION", "region", "VARCHAR", 10, null);
       super.columns.add(this.region);
-      this.isVip = new BooleanColumn(this, "IS_VIP", "isVip", "BOOLEAN", 1, 0);
+      this.isVip = new BooleanColumn(this, "IS_VIP", "isVip", "BOOLEAN", 0, null);
       super.columns.add(this.isVip);
     }
 

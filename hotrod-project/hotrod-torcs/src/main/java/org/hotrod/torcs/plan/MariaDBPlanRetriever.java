@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 import org.hotrod.torcs.QueryExecution;
-import org.hotrod.torcs.rankings.RankingEntry;
 
 public class MariaDBPlanRetriever implements PlanRetriever {
 
@@ -17,7 +16,7 @@ public class MariaDBPlanRetriever implements PlanRetriever {
     DataSource ds = execution.getDataSourceReference().getDataSource();
     try (Connection conn = ds.getConnection();) {
       conn.setAutoCommit(false);
-      try (PreparedStatement ps = conn.prepareStatement("explain " + execution.getSQL());
+      try (PreparedStatement ps = conn.prepareStatement("explain tree " + execution.getSQL());
           ResultSet rs = ps.executeQuery();) {
         StringBuilder sb = new StringBuilder();
         boolean first = true;

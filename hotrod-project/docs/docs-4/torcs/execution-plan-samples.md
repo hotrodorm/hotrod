@@ -1,5 +1,12 @@
-The following query was run in different databases:
+# Generic Execution Plan Samples
 
+There's no standard way of obtaining the execution plan of a query across databases. Each one
+provides different methods to get them, different relevant/non-relevant information, in wildly different
+formats.
+
+The following LiveSQL query was run in all databases supported by HotRod:
+
+```java
 InvoiceTable i = InvoiceDAO.newTable("i");
 BranchTable b = BranchDAO.newTable("b");
 
@@ -12,11 +19,16 @@ sql.select()
    .where(b.region.eq("SOUTH").and(i.status.ne("UNPAID").and(i.amount.ge(minAmount))))
    .orderBy(i.orderDate.desc())
    .execute();
+```
 
 Torcs retrieved the following execution plans on each one:
 
-# Oracle Execution Plan:
+## Oracle Execution Plan
 
+Notice the tabular default format for the plan. Other formats are available, but this one is simple enough,
+and also useful.
+
+```txt
 Plan hash value: 3305857414
  
 ----------------------------------------------------------------------------------------------
@@ -41,10 +53,16 @@ Predicate Information (identified by operation id):
 Note
 -----
    - dynamic statistics used: dynamic sampling (level=2)
+```
 
+## DB2 Execution Plan
 
-# DB2 Execution Plan:
+DB2 does not offer any generic format for the execution plan. It saves the plan details into a database structure across  
+several tables. 
 
+An ad-hoc query was used to retrieve the plan and render it as a tree:
+
+```txt
 Execution Plan: RETURN
 .  144 << TBSCAN (13 rows, 37 io) 
 .  .  144 SORT (13 rows, 37 io) 
@@ -62,10 +80,13 @@ Predicates:
 Legend:
 << Reads from the heap.
 $ Operation is at least 20% more expensive than its combined children.
+```
 
+## PostgreSQL Execution Plan
 
-# PostgreSQL Execution Plan:
+PostgreSQL produces the execution plan in TEXT format, as well as JSON, YAML, and XML. The TEXT format is shown below:
 
+```txt
 Sort  (cost=36.80..36.80 rows=1 width=221)
   Sort Key: i.order_date DESC
   ->  Hash Join  (cost=16.79..36.79 rows=1 width=221)
@@ -75,30 +96,46 @@ Sort  (cost=36.80..36.80 rows=1 width=221)
         ->  Hash  (cost=16.75..16.75 rows=3 width=121)
               ->  Seq Scan on branch b  (cost=0.00..16.75 rows=3 width=121)
                     Filter: ((region)::text = 'SOUTH'::text)
+```
 
-# SQL Server Execution Plan:
+## SQL Server Execution Plan
 
+SQL Server produces the plan in TEXT format as well as XML. The TEXT format is shown below:
+
+```txt
   |--Nested Loops(Inner Join, WHERE:([master].[dbo].[invoice].[branch_id] as [i].[branch_id]=[master].[dbo].[branch].[id] as [b].[id]))
        |--Sort(ORDER BY:([i].[order_date] DESC))
        |    |--Clustered Index Scan(OBJECT:([master].[dbo].[invoice].[PK__invoice__3213E83FC85FD236] AS [i]), WHERE:([master].[dbo].[invoice].[amount] as [i].[amount]>=(228) AND [master].[dbo].[invoice].[status] as [i].[status]<>'UNPAID'))
        |--Clustered Index Scan(OBJECT:([master].[dbo].[branch].[PK__branch__3213E83FF5EAF6FD] AS [b]), WHERE:([master].[dbo].[branch].[region] as [b].[region]='SOUTH'))
+```
 
-# MySQL Execution Plan:
+## MySQL Execution Plan
 
+MySQL provides the plan in tabular format, JSON, and TREE format. The tabular format is shown below:
+
+```txt
 id  select_type  table  partitions  type    possible_keys  key      key_len  ref                 rows  filtered  Extra                      
 --  -----------  -----  ----------  ------  -------------  -------  -------  ------------------  ----  --------  ---------------------------
  1  SIMPLE       i      <null>      ALL     <null>         <null>   <null>   <null>                 3     33.33  Using where; Using filesort
  1  SIMPLE       b      <null>      eq_ref  PRIMARY        PRIMARY  4        hotrod.i.branch_id     1        50  Using where                
+```
 
-# MariaDB Execution Plan:
+## MariaDB Execution Plan
 
+MySQL provides the plan in tabular format and JSON format. The tabular format is shown below:
+
+```txt
 id  select_type  table  type  possible_keys  key     key_len  ref     rows  Extra                                          
 --  -----------  -----  ----  -------------  ------  -------  ------  ----  -----------------------------------------------
  1  SIMPLE       b      ALL   PRIMARY        <null>  <null>   <null>     2  Using where                                    
  1  SIMPLE       i      ALL   <null>         <null>  <null>   <null>     3  Using where; Using join buffer (flat, BNL join)
+```
 
-# Sybase ASE Execution plan:
+## Sybase ASE Execution plan
 
+Sybase ASE provides the plan in prose-like format with a tree indentation:
+
+```txt
 QUERY PLAN FOR STATEMENT 1 (at line 1).
 Optimized using Serial Mode
 
@@ -136,9 +173,13 @@ The type of query is SELECT.
  |   |   |   |    id ASC
  |   |   |   |  Using I/O Size 2 Kbytes for data pages.
  |   |   |   |  With LRU Buffer Replacement Strategy for data pages.
+```
 
-# H2 Execution Plan:
+## H2 Execution Plan
 
+H2's execution plan just decorate the parsed query with the operators used to access and filter the tables, as shown below:
+
+```txt
 SELECT
     "I"."ID" AS "id",
     "I"."ACCOUNT_ID" AS "accountId",
@@ -164,9 +205,13 @@ WHERE ("B"."ID" = "I"."BRANCH_ID")
     AND ("B"."REGION" = ?1)
     AND ("I"."STATUS" <> ?2)
 ORDER BY 5 DESC
+```
 
-# HyperSQL Execution Plan
+## HyperSQL Execution Plan
 
+HyperSQL's execution plan include limited information regarding the access and filtering of data:
+
+```txt
 isDistinctSelect=[false]
 isGrouped=[false]
 isAggregated=[false]
@@ -238,15 +283,19 @@ DESC
 ]
 PARAMETERS=[]
 SUBQUERIES[]
+```
 
-# Apache Derby
+## Apache Derby
 
 Apache Derby does not produce execution plans, but can provide statistics of recently executed queries. For a simple query, like:
 
+```sql
 select * from countries;
+```
 
 The statistics take the form:
 
+```txt
 Statement Name:
         null
 Statement Text:
@@ -288,4 +337,5 @@ null    qualifiers:
 None
         optimizer estimated row count:          119.00
         optimizer estimated cost:           69.35
+```
 
