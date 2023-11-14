@@ -103,10 +103,14 @@ Sort  (cost=36.80..36.80 rows=1 width=221)
 SQL Server produces the plan in TEXT format as well as XML. The TEXT format is shown below:
 
 ```txt
-  |--Nested Loops(Inner Join, WHERE:([master].[dbo].[invoice].[branch_id] as [i].[branch_id]=[master].[dbo].[branch].[id] as [b].[id]))
+  |--Nested Loops(Inner Join, WHERE:([master].[dbo].[invoice].[branch_id] as [i].[branch_id]=
+         [master].[dbo].[branch].[id] as [b].[id]))
        |--Sort(ORDER BY:([i].[order_date] DESC))
-       |    |--Clustered Index Scan(OBJECT:([master].[dbo].[invoice].[PK__invoice__3213E83FC85FD236] AS [i]), WHERE:([master].[dbo].[invoice].[amount] as [i].[amount]>=(228) AND [master].[dbo].[invoice].[status] as [i].[status]<>'UNPAID'))
-       |--Clustered Index Scan(OBJECT:([master].[dbo].[branch].[PK__branch__3213E83FF5EAF6FD] AS [b]), WHERE:([master].[dbo].[branch].[region] as [b].[region]='SOUTH'))
+       |    |--Clustered Index Scan(OBJECT:([master].[dbo].[invoice].[PK__invoice__3213E83FC85FD236] AS [i]), 
+                 WHERE:([master].[dbo].[invoice].[amount] as [i].[amount]>=(228) AND
+                 [master].[dbo].[invoice].[status] as [i].[status]<>'UNPAID'))
+       |--Clustered Index Scan(OBJECT:([master].[dbo].[branch].[PK__branch__3213E83FF5EAF6FD] AS [b]), 
+            WHERE:([master].[dbo].[branch].[region] as [b].[region]='SOUTH'))
 ```
 
 ## MySQL Execution Plan
