@@ -32,7 +32,7 @@ public class HighestResponseTimeRanking extends Ranking {
       throw new RuntimeException("Ranking size must be less than or equal to " + MAX_SIZE + " but it's " + size + ".");
     }
     this.size = size;
-    reset();
+    restart();
   }
 
   @Override
@@ -41,7 +41,7 @@ public class HighestResponseTimeRanking extends Ranking {
   }
 
   @Override
-  public synchronized void reset() {
+  public synchronized void restart() {
     this.sorted.clear();
     this.cacheByDSSQL.clear();
   }
