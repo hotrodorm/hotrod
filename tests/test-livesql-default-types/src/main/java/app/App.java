@@ -533,7 +533,7 @@ public class App {
     for (RankingEntry e : this.torcs.getDefaultRanking().getRanking()) {
       System.out.println("#" + pos++ + " " + e);
       String plan = this.torcs.getEstimatedExecutionPlan(e.getSlowestExecution());
-      System.out.println("Execution Plan: " + plan);
+      System.out.println("Execution Plan:\n" + plan);
     }
     System.out.println("--- End of Torcs Ranking ---");
 
