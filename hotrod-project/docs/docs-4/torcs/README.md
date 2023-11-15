@@ -11,11 +11,11 @@ Torcs is not to be confused with the Torcs CTP module. The latter focuses on mor
 
 Torcs does not aim to replace the official database statistical information. This information is much more comprehensive compared to what Torcs can provide. Nevertheless, Torcs can easily provide a wealth of information to a savvy developer (e.g. by using the application logs), who can start detecting and improving slow queries, without the assistance of an expensive or elusive DBA.
 
-Torcs is local to the application instance and only sees queries ran by the application instance. It does not see the queries ran by other instances or queries executed by other applications or internal database scheduled processes that may slow down the database for other unrelated causes.
+Torcs is local to the application instance and only sees queries ran by the application instance. It does not see the queries ran by other instances, queries executed by other applications, or internal database scheduled processes that may slow down the database for other unrelated causes.
 
 ## Features
 
-Even though the features are explained in the sections below, this is a mile-high summary of them:
+This is a mile-high summary of the features explained in the sections below:
 
 - Ranks queries using multiple criteria
 - Can log query executions
