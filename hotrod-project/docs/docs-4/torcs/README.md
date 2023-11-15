@@ -304,7 +304,7 @@ The application can also register other built-in observers. For example, to use 
   this.torcs.register(lqrObserver);
 ```
 
-Observers are active by default when instantiated. To activate/deactivate then the application can do so in the same way as above:
+Observers are active by default when instantiated. To activate/deactivate them, the application can do so in the same way as shown before:
 
 ```java
   lqrObserver.deactivate();
