@@ -75,7 +75,7 @@ As shown above, a ranking entry includes at least the following information, in 
 - Average response time and standard deviation of it
 - Minimum and maximum response times (in brackets)
 - TET (total elapsed time) to measure the overall impact of a query
-- First and last recorded query executions
+- First and last recorded query executions timestamps
 - Last thrown exception, if any
 - Datasource where the query ran
 - SQL Query
