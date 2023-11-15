@@ -1,13 +1,13 @@
 # The Torcs Module
 
 Torcs records queries run by the application instance and consolidates statistical data
-to detect slow running queries and their execution plans.
+to detect slow running queries and get their execution plans.
 
-Even though it's a part of HotRod, Torcs can be used separatedly without HotRod ORM, in any Spring or SpringBoot application.
+Even though it's a part of HotRod, Torcs can be used separatedly without the HotRod ORM, in any Spring or SpringBoot application.
 
-Torcs does not aim to replace the official database statistical information. This information is much more comprehensive that what Torcs can provide. Nevertheless, Torcs can easily provide a wealth of information to a savvy developer (e.g using the application logs), who can start detecting and improving queries, without the assistance of an expensive or elusive DBA.
+Torcs does not aim to replace the official database statistical information. This information is much more comprehensive compared to what Torcs can provide. Nevertheless, Torcs can easily provide a wealth of information to a savvy developer (e.g using the application logs), who can start detecting and improving queries, without the assistance of an expensive or elusive DBA.
 
-Torcs is local to the application instance and only sees queries ran by the application instance. It does not see the queries ran by other instances or queries executed by other applications that may slow down the remote database for other unrelated causes.
+Torcs is local to the application instance and only sees queries ran by the application instance. It does not see the queries ran by other instances or queries executed by other applications or internal database scheduled processes that may slow down the database for other unrelated causes.
 
 ## Enabling Torcs
 
@@ -33,7 +33,7 @@ This is the starting point to manage the module, its observers, and to retrieve 
 
 ## Example
 
-To get the Top 10 slowest queries, the application can do as simple as:
+To get the Top 10 slowest queries, the application can do:
 
 ```java
   for (RankingEntry e : this.torcs.getDefaultRanking().getRanking()) {
