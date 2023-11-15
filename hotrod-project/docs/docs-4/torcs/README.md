@@ -7,7 +7,7 @@ Even though it's a part of HotRod, Torcs can be used separatedly without HotRod 
 
 Torcs does not aim to replace the official database statistical information. This information is much more comprehensive that what Torcs can provide. Nevertheless, Torcs can easily provide a wealth of information to a savvy developer (e.g in the application logs), who can start detecting and improving queries, without the help of any DBA.
 
-Torcs is local to the application instance and does not see the queries running in other instances or queries executed by other applications that may slow down the database for external causes.
+Torcs is local to the application instance and does not see the queries running in other instances or queries executed by other applications that may slow down the remote database for other application-unrelated causes.
 
 ## Enabling Torcs
 
@@ -44,8 +44,11 @@ To get the Top 10 slowest queries, the application can do as simple as:
 Assuming only two queries were executed (but adding up to 16 total executions together) the ranking could display something like:
 
 ```txt
-4 executions, 0 errors, avg 47 ms, σ 3 [38-55 ms], TET 188 ms, executed: Mon Nov 13 19:44:08 EST 2023 - Mon Nov 13 19:48:10 EST 2023, last exception: N/A -- [ds0] SELECT name FROM invoice WHERE client_id = ? ORDER BY created_at
-12 executions, 0 errors, avg 6 ms, σ 2 [4-9 ms], TET 87 ms, executed: Mon Nov 13 19:44:08 EST 2023 - Mon Nov 13 19:47:35 EST 2023, last exception: N/A -- [ds0] SELECT name FROM client WHERE id = ?
+4 executions, 0 errors, avg 47 ms, σ 3 [38-55 ms], TET 188 ms, executed: Mon Nov 13 19:44:08 EST 2023 - Mon
+  Nov 13 19:48:10 EST 2023, last exception: N/A -- [ds0] SELECT name FROM invoice WHERE client_id = ? ORDER BY
+  created_at
+12 executions, 0 errors, avg 6 ms, σ 2 [4-9 ms], TET 87 ms, executed: Mon Nov 13 19:44:08 EST 2023 - Mon Nov 13
+  19:47:35 EST 2023, last exception: N/A -- [ds0] SELECT name FROM client WHERE id = ?
 ```
 
 
@@ -203,11 +206,13 @@ For example, to retrieve the estimated execution plan for the slowest execution 
     + this.torcs.getEstimatedExecutionPlan(re.getSlowestExecution()));
 ```
 
+Since Torcs is data source-aware, it automatically uses the correct execution plan retrieval logic, according to the specific ranking entry.
+
 To display something like (in Oracle):
 
 ```txt
 Plan hash value: 3305857414
- 
+
 ----------------------------------------------------------------------------------------------
 | Id  | Operation                     | Name         | Rows  | Bytes | Cost (%CPU)| Time     |
 ----------------------------------------------------------------------------------------------
