@@ -178,7 +178,7 @@ The type of query is SELECT.
 
 ## H2 Execution Plan
 
-H2's execution plan just decorate the parsed query with the operators used to access and filter the tables, as shown below:
+H2's execution plan just decorates the parsed query with the operators used to access and filter the tables, as shown below:
 
 ```txt
 SELECT
