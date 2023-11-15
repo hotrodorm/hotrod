@@ -87,11 +87,11 @@ Torcs restarts the observers periodically to record fresh data. By default it re
 
 ## Retrieving Statistical Query Data
 
-The built-in rankings can provide crucial information on which queries are slowing down an application.  The application is not limited to these and can also register any custom observers that suit its needs.
+The built-in rankings can provide crucial information on which queries are slowing down an application. Again, the application is not limited to the following observers and can register any custom observers as needed.
 
 ### The HighestResponseTimeRanking Observer
 
-As the name implies this ranking records a limited number of queris that took the longest time to execute.
+As the name implies this ranking records a limited number of queries that took the longest time to execute.
 
 By default this ranking records the 10 slowest queries. To change the number of recorded queries (the size of it) the application can use the `Ranking.setSize(int)` method. For example, to increase the size to 60 entries:
 
@@ -103,7 +103,7 @@ Changing the size of a ranking restarts it automatically.
 
 Also, consider that multiple query executions of the same query still use a single entry in this ranking. This means that parameterized queries use a single entry in the ranking even if they are execution thousands of times with different parameters.
 
-The method `List&lt;RankingEntry> getRanking()` provides the list of ranked queries in order, starting with the slowest ones.
+The method `List<RankingEntry> getRanking()` provides the list of ranked queries in order, starting with the slowest ones.
 
 Again, each ranking entry correspond to a summary of all recorded execution of a query, not to a single execution of it. The entry provides the following data:
 
@@ -120,7 +120,7 @@ Again, each ranking entry correspond to a summary of all recorded execution of a
 | long getLastExecutionAt() |  The timestamp of the last recorded execution |
 | Throwable getLastException() | The last recorded exception, if any |
 | long getLastExceptionTimestamp() | The last recorded exception timestamp, if any |
-| getAverageTime() | The average execution time for the successful executions |
+| long getAverageTime() | The average execution time for the successful executions |
 | long getTotalElapsedTime() | The total elapsed time. This is the sum of all elapsed times of all recorded execution. The TET value can be considered the *load* a query put in the database, and can be important to determine which queries deserve to be optimized
 | toString() | Provides a summary of the ranking entry |
 | double getTimeStandardDeviation() | The standard deviation of the execution time |
@@ -152,12 +152,12 @@ Each ranking entry includes all the information described in the previous sectio
 
 ### The LatestQueriesRanking Observer
 
-This ranking records the latest queries ran by the application and ignoring the earliest ones.
+This ranking records the latest queries ran by the application and ignores the earliest ones.
 
 The size of the ranking can be set when instantiating it, or later on, using the
 `Ranking.setSize(int)` method.
 
-This ranking provides the entries in multiple ordering, using the same methods as the previous ranking.
+This ranking provides the entries in multiple orderings, using the same methods as the previous ranking.
 
 Each ranking entry includes all the information described in the previous section.
 
@@ -206,7 +206,7 @@ For example, to retrieve the estimated execution plan for the slowest execution 
     + this.torcs.getEstimatedExecutionPlan(re.getSlowestExecution()));
 ```
 
-Since Torcs is data source-aware, it automatically uses the correct execution plan retrieval logic, according to the specific ranking entry.
+Since Torcs is data source-aware, it automatically retrieves execution plan, tailored to the specific ranking entry's database.
 
 To display something like (in Oracle):
 
