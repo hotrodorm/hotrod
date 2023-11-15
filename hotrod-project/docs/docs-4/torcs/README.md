@@ -51,6 +51,17 @@ Assuming only two queries were executed (but adding up to 16 total executions to
   19:47:35 EST 2023, last exception: N/A -- [ds0] SELECT name FROM client WHERE id = ?
 ```
 
+As shown above, a ranking entry includes at least the following information, in order:
+
+- Number of total executions, and number of failed ones
+- Average response time and standard deviation of it
+- Minimum and maximum response times (in brackets)
+- TET (total elapsed time) to measure the overall impact of a query
+- First and last recorded query executions
+- Last thrown exception, if any
+- Datasource where the query ran
+- SQL Query
+
 
 ## Multi Data Source Aware
 
@@ -63,10 +74,10 @@ In the example above, the section `[ds0]` indicates that both queries were execu
 
 ## Query Execution Observers
 
-Torcs uses observers to handle query execution statistics. By default there's only one observer included and active when the application starts: the `HighestResponseTimeRanking`. This observer ranks the top 10 slowest queries in the application instance, and provide the details of them.
+Torcs uses observers to gather query execution statistics. By default there's only one observer registered and active that starts automatically with Torcs: the `HighestResponseTimeRanking`. This observer ranks the top 10 slowest queries in the application instance, and provide the details of them.
 
-The application can register more observers for other needs, and can also enable or disable them
-programatically. This includes the default observer.
+The application can register more observers for other uses, and can also enable or disable them
+programatically, including the default observer.
 
 Torcs comes with three built-in observers:
 
