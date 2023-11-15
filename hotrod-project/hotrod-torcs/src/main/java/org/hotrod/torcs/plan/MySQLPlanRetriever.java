@@ -56,19 +56,18 @@ public class MySQLPlanRetriever implements PlanRetriever {
             sb.append((first ? "" : "\n") + rs.getString(1));
             first = false;
 
-            int col = 1;
-            long id = rs.getLong(col++); // id
-            String selectType = rs.getString(col++); // select_type
-            String table = rs.getString(col++); // table
-            String partitions = rs.getString(col++); // partitions
-            String type = rs.getString(col++); // type
-            String possibleKeys = rs.getString(col++); // possible_keys
-            String key = rs.getString(col++); // key
-            String keyLen = rs.getString(col++); // key_len
-            String ref = rs.getString(col++); // ref
-            long rows = rs.getLong(col++); // rows
-            double filtered = rs.getDouble(col++); // filtered
-            String extra = rs.getString(col++); // Extra
+            long id = rs.getLong("id"); // id
+            String selectType = rs.getString("select_type"); // select_type
+            String table = rs.getString("table"); // table
+            String partitions = rs.getString("partitions"); // partitions
+            String type = rs.getString("type"); // type
+            String possibleKeys = rs.getString("possible_keys"); // possible_keys
+            String key = rs.getString("key"); // key
+            String keyLen = rs.getString("key_len"); // key_len
+            String ref = rs.getString("ref"); // ref
+            long rows = rs.getLong("rows"); // rows
+            double filtered = rs.getDouble("filtered"); // filtered
+            String extra = rs.getString("Extra"); // Extra
 
             t.addCell("" + id, right);
             t.addCell(selectType, left);
