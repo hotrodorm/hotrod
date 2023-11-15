@@ -1,6 +1,6 @@
 # The Torcs Module
 
-Torcs gathers and consolidates statistical data of queries run by the application, with the aim of detecting slow running queries and of shedding light into their overall impact in the application performance. It also helps finding the root causes of the queries' slowness by retrieving their execution plans.
+Torcs gathers and consolidates statistical data of queries run by the application, with the aims of detecting slow running queries and of shedding light into their overall impact in the application performance. It also helps finding the root causes of the queries' slowness by retrieving their execution plans.
 
 Even though it's a part of HotRod, Torcs can be used separatedly without the HotRod ORM, in any Spring or SpringBoot application.
 
@@ -8,7 +8,7 @@ Torcs is not to be confused with the Torcs CTP module. The latter focuses on mor
 
 ## Limitations
 
-Torcs does not aim to replace the official database statistical information. This information is much more comprehensive compared to what Torcs can provide. Nevertheless, Torcs can easily provide a wealth of information to a savvy developer (e.g. by using the application logs), who can start detecting and improving slow queries, without the assistance of an expensive or elusive DBA.
+Torcs does not aim to replace the official database statistical information produced by a DBA using the engine's sophisticated mechanisms. This information is much more comprehensive compared to what Torcs can provide. Nevertheless, Torcs can easily provide a wealth of information to a crafty developer (e.g. maybe by using the application logs), who can start detecting and improving slow queries, without the assistance of an expensive or elusive DBA.
 
 Torcs is local to the application instance and only sees queries ran by the application instance. It does not see the queries ran by other instances, queries executed by other applications, or internal database scheduled processes that may slow down the database for other unrelated causes.
 
