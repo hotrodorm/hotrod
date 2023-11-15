@@ -289,7 +289,7 @@ Then the application can use the `Ranking.saveAsXLSX(os)` method to save any ran
 
 Torcs can be configured programatically to activate and deactivate the whole Torcs module, a subset of the observers, to register more observers, and to set configuration properties to them.
 
-### Disabling and Enablig Torcs
+### Disabling and Enabling Torcs
 
 The application can deactivate or reactivate Torcs at any time by doing:
 
@@ -357,7 +357,7 @@ For example, if the application needs to log all query executions that exceed 15
     }
 
   };
-  
+
   this.torcs.register(slowQueriesLogger);
 ```
 
