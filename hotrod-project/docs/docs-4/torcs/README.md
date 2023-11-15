@@ -161,32 +161,6 @@ This ranking provides the entries in multiple orderings, using the same methods 
 
 Each ranking entry includes all the information described in the previous section.
 
-### Saving a Ranking in XLSX Format
-
-Torcs can use Apache POI to save a ranking in XLSX format. To do this add the Apache POI dependencies to the application:
-
-```xml
-  <dependency>
-    <groupId>org.apache.poi</groupId>
-    <artifactId>poi-ooxml-full</artifactId>
-    <version>5.2.0</version>
-  </dependency>
-
-  <dependency>
-    <groupId>org.apache.poi</groupId>
-    <artifactId>poi-ooxml</artifactId>
-    <version>5.2.0</version>
-  </dependency>
-```
-
-Then the application can use the `Ranking.saveAsXLSX(os)` method to save any ranking in XLSX format. For example:
-
-```java
-  try (OutputStream os = new FileOutputStream(new File("ranking1.xlsx"))) {
-    torcs.getDefaultRanking().saveAsXLSX(os);
-  }
-```
-
 ### Retrieving Generic Execution Plans
 
 Torcs can retrieve the generic execution plan of a ranking entry. Specifically, of one of the recorded executions the ranking entry keeps.
@@ -208,7 +182,7 @@ For example, to retrieve the estimated execution plan for the slowest execution 
 
 Since Torcs is data source-aware, it automatically retrieves execution plan, tailored to the specific ranking entry's database.
 
-To display something like (in Oracle):
+The Java code above can display something like (e.g. Oracle):
 
 ```txt
 Plan hash value: 3305857414
@@ -237,7 +211,7 @@ Note
    - dynamic statistics used: dynamic sampling (level=2)
 ```
 
-Or for the same query in PostgreSQL:
+For the same query in PostgreSQL it could display:
 
 ```txt
 Sort  (cost=36.80..36.80 rows=1 width=221)
@@ -252,6 +226,32 @@ Sort  (cost=36.80..36.80 rows=1 width=221)
 ```
 
 The generic format of the execution plan depends on each database. High end databases tend to produce more useful information than simpler databases. See [Examples of Generic Execution Plans](./generic-execution-plan-samples.md).
+
+### Saving a Ranking in XLSX Format
+
+Torcs can use Apache POI to save a ranking in XLSX format. To do this add the Apache POI dependencies to the application:
+
+```xml
+  <dependency>
+    <groupId>org.apache.poi</groupId>
+    <artifactId>poi-ooxml-full</artifactId>
+    <version>5.2.0</version>
+  </dependency>
+
+  <dependency>
+    <groupId>org.apache.poi</groupId>
+    <artifactId>poi-ooxml</artifactId>
+    <version>5.2.0</version>
+  </dependency>
+```
+
+Then the application can use the `Ranking.saveAsXLSX(os)` method to save any ranking in XLSX format. For example:
+
+```java
+  try (OutputStream os = new FileOutputStream(new File("ranking1.xlsx"))) {
+    torcs.getDefaultRanking().saveAsXLSX(os);
+  }
+```
 
 ## Configuring Torcs
 
