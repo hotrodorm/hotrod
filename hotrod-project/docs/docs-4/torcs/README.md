@@ -54,11 +54,12 @@ Assuming only two queries were executed (but adding up to 16 total executions to
 
 ## Multi Data Source Aware
 
-Queries are recorded including the data source they belong to. The data source information can be
-useful if later on an execution plan is of interest for the application.
+Queries are recorded including the data source were they were executed in. The data source information can be useful if later on an execution plan is of interest for the application.
 
 Two identical queries ran into different datasources (same or different engine type) are always
 considered separate and occupy separate entries in the rankings. This can prove useful if one database endpoint is slow for some reason but not the other one(s). Torcs will clearly identify it from the others.
+
+In the example above the section `[ds0]` indicates that both queries were executed in the same data source: the data source #0.
 
 ## Query Execution Observers
 
