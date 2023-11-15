@@ -1,13 +1,13 @@
 # The Torcs Module
 
 Torcs records queries run by the application instance and consolidates statistical data
-to detect slow running queries.
+to detect slow running queries and their execution plans.
 
 Even though it's a part of HotRod, Torcs can be used separatedly without HotRod ORM, in any Spring or SpringBoot application.
 
-Torcs does not aim to replace the official database statistical information. This information is much more comprehensive that what Torcs can provide. Nevertheless, Torcs can easily provide a wealth of information to a savvy developer (e.g in the application logs), who can start detecting and improving queries, without the help of any DBA.
+Torcs does not aim to replace the official database statistical information. This information is much more comprehensive that what Torcs can provide. Nevertheless, Torcs can easily provide a wealth of information to a savvy developer (e.g using the application logs), who can start detecting and improving queries, without the assistance of an expensive or elusive DBA.
 
-Torcs is local to the application instance and does not see the queries running in other instances or queries executed by other applications that may slow down the remote database for other application-unrelated causes.
+Torcs is local to the application instance and only sees queries ran by the application instance. It does not see the queries ran by other instances or queries executed by other applications that may slow down the remote database for other unrelated causes.
 
 ## Enabling Torcs
 
@@ -29,7 +29,7 @@ from the dependency declaration above. To use Torcs, any Spring bean can declare
   private Torcs torcs;
 ```
 
-This is the starting point to manage the module and to retrieve statistical information.
+This is the starting point to manage the module, its observers, and to retrieve statistical information and execution plans.
 
 ## Example
 
