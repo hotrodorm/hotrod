@@ -51,11 +51,11 @@ This is the starting point to manage the module, its observers, and to retrieve 
 
 ## Example
 
-To get the Top 10 slowest queries, the application can do:
+To get the Top 10 slowest queries &mdash; ranked by maximum response time &mdash; the application can do:
 
 ```java
-  for (RankingEntry e : this.torcs.getDefaultRanking().getRanking()) {
-    System.out.println(e);
+  for (RankingEntry re : this.torcs.getDefaultRanking().getRanking()) {
+    System.out.println(re);
   }
 ```
 
