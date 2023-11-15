@@ -113,9 +113,7 @@ By default this ranking records the 10 slowest queries. To change the number of 
 
 Changing the size of a ranking resets it automatically.
 
-Also, consider that multiple query executions of the same query still use a single entry in this ranking. This means that parameterized queries use a single entry in the ranking even if they are execution thousands of times with different parameters.
-
-Otherwise, if the parameters are added as literal values in the query, all executions will be considered separate queries by Torcs and this could clog the ranking, defeating its purpose.
+Also, consider that multiple query executions of the same query still use a single entry in this ranking. This means that parameterized queries use a single entry in the ranking even if they are executed thousands of times with different parameters. Otherwise, if the parameters are added as literal values in the query, all executions will be considered separate queries by Torcs and this could clog the ranking, defeating its purpose.
 
 The method `List<RankingEntry> getRanking()` provides the list of ranked queries in order, starting with the slowest ones.
 
