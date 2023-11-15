@@ -126,10 +126,10 @@ id select_type table partitions type   possible_keys key     key_len ref        
 MySQL provides the plan in tabular format and JSON format. The tabular format is shown below:
 
 ```txt
-id select_type table type possible_keys key    key_len ref    rows Extra                                          
--- ----------- ----- ---- ------------- ------ ------- ------ ---- -----------------------------------------------
- 1 SIMPLE      b     ALL  PRIMARY       <null> <null>  <null>    2 Using where                                    
- 1 SIMPLE      i     ALL  <null>        <null> <null>  <null>    3 Using where; Using join buffer (flat, BNL join)
+id select_type table type possible_keys key  key_len ref  rows Extra                                          
+-- ----------- ----- ---- ------------- ---- ------- ---- ---- -----------------------------------------------
+ 1 SIMPLE      b     ALL  PRIMARY       null null    null    2 Using where                                    
+ 1 SIMPLE      i     ALL  null          null null    null    3 Using where; Using join buffer (flat, BNL join)
 ```
 
 ## Sybase ASE Execution plan
