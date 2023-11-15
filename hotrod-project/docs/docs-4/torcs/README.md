@@ -5,15 +5,31 @@ to detect slow running queries and get their execution plans.
 
 Even though it's a part of HotRod, Torcs can be used separatedly without the HotRod ORM, in any Spring or SpringBoot application.
 
-Torcs does not aim to replace the official database statistical information. This information is much more comprehensive compared to what Torcs can provide. Nevertheless, Torcs can easily provide a wealth of information to a savvy developer (e.g using the application logs), who can start detecting and improving queries, without the assistance of an expensive or elusive DBA.
+Torcs is not to be confused with the Torcs CTP module. The latter produces more comprehensive execution plans for a subset of databases, that can be visualized and analized in the Check The Plan (http://checktheplan.com) 's web site.
+
+## Limitations
+
+Torcs does not aim to replace the official database statistical information. This information is much more comprehensive compared to what Torcs can provide. Nevertheless, Torcs can easily provide a wealth of information to a savvy developer (e.g. by using the application logs), who can start detecting and improving slow queries, without the assistance of an expensive or elusive DBA.
 
 Torcs is local to the application instance and only sees queries ran by the application instance. It does not see the queries ran by other instances or queries executed by other applications or internal database scheduled processes that may slow down the database for other unrelated causes.
 
-Torcs is not to be confused with the Torcs CTP module. The latter produces more comprehensive execution plans for a subset of databases, that can be visualized and analized in the Check The Plan (http://checktheplan.com) 's web site.
+## Features
+
+The features are explained in sections below. This is a mile-high summary of them:
+
+- Ranks queries using multiple criteria
+- Can log query executions
+- Can find slow queries
+- Can provide execution plans for queries
+- Include three built-in query observers, for different purposes
+- Allows custom observers to gather query execution stats with any custom logic
+- Multi-data source aware, even with different database engines
+- Automatically starts out-of-the-box when the app starts with senseful defaults
+- Saves rankings to XLSX
 
 ## Enabling Torcs
 
-The module is enabled by adding the dependency in Maven, as in:
+The module is enabled by adding the dependency to Maven's pom.xml, as in:
 
 ```xml
   <dependency>
@@ -31,7 +47,7 @@ from the dependency declaration above. To use Torcs, any Spring bean can declare
   private Torcs torcs;
 ```
 
-This is the starting point to manage the module, its observers, and to retrieve statistical information and execution plans.
+This is the starting point to manage the module, its observers, and to retrieve query statistical information and execution plans.
 
 ## Example
 
