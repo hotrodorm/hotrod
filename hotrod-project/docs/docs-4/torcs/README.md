@@ -59,14 +59,14 @@ Queries are recorded including the data source were they were executed in. The d
 Two identical queries ran into different datasources (same or different engine type) are always
 considered separate and occupy separate entries in the rankings. This can prove useful if one database endpoint is slow for some reason but not the other one(s). Torcs will clearly identify it from the others.
 
-In the example above the section `[ds0]` indicates that both queries were executed in the same data source: the data source #0.
+In the example above, the section `[ds0]` indicates that both queries were executed in the same data source: the data source #0.
 
 ## Query Execution Observers
 
-Torcs uses observers to handle query execution statistics. By default there's only one observer included and active when the application start: the `HighestResponseTimeRanking`. This observer ranks the top 10 slowest queries in the application instance, and provide the details of them.
+Torcs uses observers to handle query execution statistics. By default there's only one observer included and active when the application starts: the `HighestResponseTimeRanking`. This observer ranks the top 10 slowest queries in the application instance, and provide the details of them.
 
-The application can register more observers for any purpose, and can also enable or disable them
-programatically, including the default observer.
+The application can register more observers for other needs, and can also enable or disable them
+programatically. This includes the default observer.
 
 Torcs comes with three built-in observers:
 
@@ -80,7 +80,7 @@ The application can register more observers for any other need. An observer must
 
 ## Restarting Observers
 
-Torcs restarts the observers periodically to record fresh data. By default it restarts all observers every 60 minutes. This can be changed using:
+Torcs restarts the observers periodically to record fresh data. By default it restarts all observers every 60 minutes. This can be changed using the `setRestartPeriodInMinutes(int)` method, as in:
 
 ```java
   this.torcs.setRestartPeriodInMinutes(60 * 24); // Restart observers once a day
@@ -88,7 +88,7 @@ Torcs restarts the observers periodically to record fresh data. By default it re
 
 ## Retrieving Statistical Query Data
 
-The built-in rankings can provide crucial information on which queries are slowing down an application. Again, the application is not limited to the following observers and can register any custom observers as needed.
+The built-in rankings provide information of the queries, each one with their own intent. Again, the application is not limited to the following observers and can register any custom observers as needed.
 
 ### The HighestResponseTimeRanking Observer
 
