@@ -20,6 +20,6 @@ public abstract class QueryExecutionObserver {
 
   public abstract void apply(QueryExecution execution);
 
-  public abstract void restart();
+  public abstract void reset();
 
 }

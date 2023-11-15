@@ -27,7 +27,7 @@ public class Torcs {
   private HighestResponseTimeRanking responseTimeRanking;
 
   private ScheduledExecutorService scheduleService;
-  private int restartPeriodInMinutes;
+  private int resetPeriodInMinutes;
 
   public Torcs() {
 
@@ -37,8 +37,8 @@ public class Torcs {
     this.observers.add(this.responseTimeRanking);
     this.scheduleService = Executors.newScheduledThreadPool(1);
 
-    this.restartPeriodInMinutes = DEFAULT_RESET_PERIOD_IN_MINUTES;
-    scheduleRestart();
+    this.resetPeriodInMinutes = DEFAULT_RESET_PERIOD_IN_MINUTES;
+    scheduleReset();
 
   }
 
@@ -46,26 +46,26 @@ public class Torcs {
     this.observers.add(observer);
   }
 
-  public void setRestartPeriodInMinutes(final int minutes) {
+  public void setResetPeriodInMinutes(final int minutes) {
     if (minutes < MIN_RESET_PERIOD_IN_MINUTES) {
-      throw new RuntimeException("The restart period (in minutes) must be greater or equal to "
+      throw new RuntimeException("The reset period (in minutes) must be greater or equal to "
           + MIN_RESET_PERIOD_IN_MINUTES + " but it's " + minutes + ".");
     }
     if (minutes > MAX_RESET_PERIOD_IN_MINUTES) {
-      throw new RuntimeException("The restart period (in minutes) must be less than or equal to "
+      throw new RuntimeException("The reset period (in minutes) must be less than or equal to "
           + MAX_RESET_PERIOD_IN_MINUTES + " but it's " + minutes + ".");
     }
-    this.restartPeriodInMinutes = minutes;
-    scheduleRestart();
+    this.resetPeriodInMinutes = minutes;
+    scheduleReset();
   }
 
-  private void scheduleRestart() {
+  private void scheduleReset() {
     this.scheduleService.scheduleAtFixedRate(new Runnable() {
       @Override
       public void run() {
         reset();
       }
-    }, this.restartPeriodInMinutes, this.restartPeriodInMinutes, TimeUnit.MINUTES);
+    }, this.resetPeriodInMinutes, this.resetPeriodInMinutes, TimeUnit.MINUTES);
   }
 
   public void activate() {
@@ -83,7 +83,7 @@ public class Torcs {
   public void reset() {
     System.out.println("[TORCS Reset]");
     for (QueryExecutionObserver o : this.observers) {
-      o.restart();
+      o.reset();
     }
   }
 

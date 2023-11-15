@@ -31,7 +31,7 @@ public class LatestQueriesRanking extends Ranking {
       throw new RuntimeException("Ranking size must be less than or equal to " + MAX_SIZE + " but it's " + size + ".");
     }
     this.size = size;
-    restart();
+    reset();
   }
 
   @Override
@@ -40,7 +40,7 @@ public class LatestQueriesRanking extends Ranking {
   }
 
   @Override
-  public synchronized void restart() {
+  public synchronized void reset() {
     this.cacheByDSSQL.clear();
   }
 

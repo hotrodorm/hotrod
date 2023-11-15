@@ -436,7 +436,7 @@ public class App {
     // Changes the reset period of time (minutes). Upon reaching this period of
     // time, all rankings and observers are reset/emptied. By default all Torcs
     // observers are reset every 60 minutes.
-    this.torcs.setRestartPeriodInMinutes(60 * 24);
+    this.torcs.setResetPeriodInMinutes(60 * 24);
   }
 
   private void addingAnInitialQueriesRankingToTorcs() {
@@ -505,7 +505,7 @@ public class App {
       }
 
       @Override
-      public void restart() {
+      public void reset() {
         // Nothing to do
       }
     });

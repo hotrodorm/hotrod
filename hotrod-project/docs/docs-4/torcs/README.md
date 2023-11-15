@@ -76,14 +76,14 @@ Torcs comes with three built-in observers:
 | InitialQueriesRanking | Not registered &amp; inactive | Records the first 10 queries run in the application instance and discard the next ones |
 | LatestQueriesRanking | Not Registered &amp; inactive | Records the last 10 queries in the application instance discarding earlier ones |
 
-The application can register more observers for any other need. An observer must implement the `org.hotrod.torcs.QueryExecutionObserver` interface.
+The application can register more observers for any other need. An observer must implement the `org.hotrod.torcs.QueryExecutionObserver` interface. For an example on how to implement a custom observer see [Registering A Custom Observer](#registering-a-custom-observer).
 
-## Restarting Observers
+## Resetting Observers
 
-Torcs restarts the observers periodically to record fresh data. By default it restarts all observers every 60 minutes. This can be changed using the `setRestartPeriodInMinutes(int)` method, as in:
+Torcs resets the observers periodically to record fresh data. By default it resets all observers every 60 minutes. This can be changed using the `setResetPeriodInMinutes(int)` method, as in:
 
 ```java
-  this.torcs.setRestartPeriodInMinutes(60 * 24); // Restart observers once a day
+  this.torcs.setResetPeriodInMinutes(60 * 24); // Reset observers once a day
 ```
 
 ## Retrieving Statistical Query Data
@@ -166,12 +166,14 @@ Each ranking entry includes all the information described in the previous sectio
 
 Torcs can retrieve the generic execution plan of a ranking entry. Specifically, of one of the recorded executions the ranking entry keeps.
 
+**Note**: Retrieving execution plans can produce some [mild] overhead in the database engine. Use cautiously, for the queries that deserve attention, and not for every query ran in the database.
+
 Each ranking entry keeps four query executions:
 
 - Slowest execution (maximum response time).
 - Fastest execution (minimum response time).
-- First execution.
-- Last execution.
+- First recorded execution.
+- Last recorded execution.
 
 For example, to retrieve the estimated execution plan for the slowest execution of a ranking entry the application can do:
 
@@ -199,20 +201,20 @@ Plan hash value: 3305857414
 |*  5 |     INDEX UNIQUE SCAN         | SYS_C0016733 |     1 |       |     0   (0)| 00:00:01 |
 |*  6 |    TABLE ACCESS BY INDEX ROWID| BRANCH       |     1 |    34 |     1   (0)| 00:00:01 |
 ----------------------------------------------------------------------------------------------
- 
+
 Predicate Information (identified by operation id):
 ---------------------------------------------------
- 
+
    4 - filter("I"."STATUS"<>:2 AND "I"."AMOUNT">=:3)
    5 - access("B"."ID"="I"."BRANCH_ID")
    6 - filter("B"."REGION"=:1)
- 
+
 Note
 -----
    - dynamic statistics used: dynamic sampling (level=2)
 ```
 
-For the same query in PostgreSQL it could display:
+If the same query was ran in PostgreSQL it could display something like:
 
 ```txt
 Sort  (cost=36.80..36.80 rows=1 width=221)
@@ -313,7 +315,7 @@ The application can register any class that implements the `org.hotrod.torcs.Que
     }
 
     @Override
-    public void restart() {
+    public void reset() {
       // Nothing to do
     }
   });
