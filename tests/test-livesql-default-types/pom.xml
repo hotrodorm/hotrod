@@ -60,16 +60,9 @@
       <version>2.1.3</version>
     </dependency>
 
-
-
-    <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>42.3.3</version>
-    </dependency>
-
     <!-- Only needed when generating rankings to XLSX -->
 
+<!-- 
     <dependency>
       <groupId>org.apache.poi</groupId>
       <artifactId>poi-ooxml-full</artifactId>
@@ -81,10 +74,22 @@
       <artifactId>poi-ooxml</artifactId>
       <version>5.2.0</version>
     </dependency>
-<!-- 
  -->
 
+    <dependency>
+      <groupId>com.sybase</groupId>
+      <artifactId>jdbc4</artifactId>
+      <version>16.0.0</version>
+    </dependency>
+
   </dependencies>
+
+  <repositories>
+    <repository>
+      <id>local-maven-repository</id>
+      <url>file:///${project.basedir}/local-maven-repository</url>
+    </repository>
+  </repositories>
 
   <build>
 
@@ -559,7 +564,6 @@
 
     </profile>
 
-
     <profile>
       <id>mariadb</id>
 
@@ -651,6 +655,98 @@
 
     </profile>
 
+    <profile>
+      <id>sybasease</id>
+
+      <properties>
+        <jdbcdrivergroupid>com.sybase</jdbcdrivergroupid>
+        <jdbcdriverartifactid>jdbc4</jdbcdriverartifactid>
+        <jdbcdriverversion>16.0.0</jdbcdriverversion>
+
+        <jdbcdriverclass>com.sybase.jdbc4.jdbc.SybDriver</jdbcdriverclass>
+        <jdbcurl>jdbc:sybase:Tds:192.168.56.52:5000</jdbcurl>
+        <jdbcusername>sa</jdbcusername>
+        <jdbcpassword>pass12</jdbcpassword>
+        <jdbccatalog>master</jdbccatalog>
+        <jdbcschema>dbo</jdbcschema>
+      </properties>
+
+      <dependencies>
+        <dependency>
+          <groupId>${jdbcdrivergroupid}</groupId>
+          <artifactId>${jdbcdriverartifactid}</artifactId>
+          <version>${jdbcdriverversion}</version>
+        </dependency>
+      </dependencies>
+
+      <build>
+        <plugins>
+
+          <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <version>2.3.4.RELEASE</version>
+            <configuration>
+              <arguments>
+                <argument>--spring.config.location=src/main/database/mariadb/</argument>
+              </arguments>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>repackage</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.nocrala.tools.database.debbie</groupId>
+            <artifactId>debbie-maven-plugin</artifactId>
+            <version>${debbie.version}</version>
+            <configuration>
+              <sourcedir>src/main/database/sybasease</sourcedir>
+              <targetversion>1.0.0</targetversion>
+              <jdbcdriverclass>${jdbcdriverclass}</jdbcdriverclass>
+              <jdbcurl>${jdbcurl}</jdbcurl>
+              <jdbcusername>${jdbcusername}</jdbcusername>
+              <jdbcpassword>${jdbcpassword}</jdbcpassword>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>${jdbcdrivergroupid}</groupId>
+                <artifactId>${jdbcdriverartifactid}</artifactId>
+                <version>${jdbcdriverversion}</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+
+          <plugin>
+            <groupId>org.hotrodorm.hotrod</groupId>
+            <artifactId>hotrod-maven-plugin</artifactId>
+            <version>${hotrod.version}</version>
+            <configuration>
+              <configfile>src/main/database/sybasease/hotrod.xml</configfile>
+              <jdbcdriverclass>${jdbcdriverclass}</jdbcdriverclass>
+              <jdbcurl>${jdbcurl}</jdbcurl>
+              <jdbcusername>${jdbcusername}</jdbcusername>
+              <jdbcpassword>${jdbcpassword}</jdbcpassword>
+              <jdbccatalog>${jdbccatalog}</jdbccatalog>
+              <jdbcschema>${jdbcschema}</jdbcschema>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>${jdbcdrivergroupid}</groupId>
+                <artifactId>${jdbcdriverartifactid}</artifactId>
+                <version>${jdbcdriverversion}</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+
+        </plugins>
+      </build>
+
+    </profile>
     <profile>
       <id>h2</id>
 

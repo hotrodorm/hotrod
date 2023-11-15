@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLWarning;
 
 import javax.sql.DataSource;
 
@@ -16,16 +17,21 @@ public class SybaseASEPlanRetriever implements PlanRetriever {
     DataSource ds = execution.getDataSourceReference().getDataSource();
     try (Connection conn = ds.getConnection();) {
       conn.setAutoCommit(false);
-      try (PreparedStatement ps = conn.prepareStatement("explain " + execution.getSQL());
-          ResultSet rs = ps.executeQuery();) {
-        StringBuilder sb = new StringBuilder();
-        boolean first = true;
-        while (rs.next()) {
-          sb.append((first ? "" : "\n") + rs.getString(1));
-          first = false;
+      try (PreparedStatement psIni = conn.prepareStatement("set showplan on");) {
+        psIni.execute();
+        try (PreparedStatement ps = conn.prepareStatement(execution.getSQL()); ResultSet rs = ps.executeQuery();) {
+          StringBuilder sb = new StringBuilder();
+          boolean first = true;
+          SQLWarning w;
+          while ((w = ps.getWarnings()) != null) {
+            sb.append((first ? "" : "\n") + w.getMessage());
+          }
+          return sb.toString();
         }
-        return sb.toString();
       } finally {
+        try (PreparedStatement psEnd = conn.prepareStatement("set showplan off");) {
+          psEnd.execute();
+        }
         conn.rollback();
       }
     }
