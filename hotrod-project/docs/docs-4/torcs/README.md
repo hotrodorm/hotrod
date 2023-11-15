@@ -1,7 +1,6 @@
 # The Torcs Module
 
-Torcs records queries run by the application instance and consolidates statistical data
-to detect slow running queries and get their execution plans.
+Torcs gathers and consolidates statistical data of queries run by the application with the aim of detecting slow running queries and finding out the root causes of their slowness using their execution plans.
 
 Even though it's a part of HotRod, Torcs can be used separatedly without the HotRod ORM, in any Spring or SpringBoot application.
 
@@ -25,7 +24,7 @@ This is a mile-high summary of the features explained in the sections below. Tor
 - Allows custom observers to gather query execution stats with custom logic
 - Is multi-data source aware, when using the same or different database engines
 - Automatically starts out-of-the-box when the app starts with senseful defaults
-- Saves rankings to XLSX
+- Can save rankings using Excel (XLSX) format
 
 ## Enabling Torcs
 
