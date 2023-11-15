@@ -56,7 +56,7 @@ As shown above, a ranking entry includes at least the following information, in 
 - Number of total executions, and number of failed ones
 - Average response time and standard deviation of it
 - Minimum and maximum response times (in brackets)
-- TET (total elapsed time) to measure the overall impact of a query
+- TET (total elapsed time) to measure the overall `impact of a query
 - First and last recorded query executions
 - Last thrown exception, if any
 - Datasource where the query ran
@@ -74,7 +74,7 @@ In the example above, the section `[ds0]` indicates that both queries were execu
 
 ## Query Execution Observers
 
-Torcs uses observers to gather query execution statistics. By default there's only one observer registered and active that starts automatically with Torcs: the `HighestResponseTimeRanking`. This observer ranks the top 10 slowest queries in the application instance, and provide the details of them.
+Torcs uses observers to gather query execution statistics. By default there's only one observer registered and active that starts automatically with Torcs: the `HighestResponseTimeRanking`. This observer ranks the top 10 (default size) slowest queries in the application instance, and provide the details of them.
 
 The application can register more observers for other uses, and can also enable or disable them
 programatically, including the default observer.
@@ -105,15 +105,17 @@ The built-in rankings provide information of the queries, each one with their ow
 
 As the name implies this ranking records a limited number of queries that took the longest time to execute.
 
-By default this ranking records the 10 slowest queries. To change the number of recorded queries (the size of it) the application can use the `Ranking.setSize(int)` method. For example, to increase the size to 60 entries:
+By default this ranking records the 10 slowest queries. To change the number of recorded queries (the size of it) the application can use the `Ranking.setSize(int)` method. For example, to increase the size to 100 ranking entries:
 
 ```java
-  this.torcs.getDefaultRanking().setSize(60);
+  this.torcs.getDefaultRanking().setSize(100);
 ```
 
-Changing the size of a ranking restarts it automatically.
+Changing the size of a ranking resets it automatically.
 
 Also, consider that multiple query executions of the same query still use a single entry in this ranking. This means that parameterized queries use a single entry in the ranking even if they are execution thousands of times with different parameters.
+
+Otherwise, if the parameters are added as literal values in the query, all executions will be considered separate queries by Torcs and this could clog the ranking, defeating its purpose.
 
 The method `List<RankingEntry> getRanking()` provides the list of ranked queries in order, starting with the slowest ones.
 
