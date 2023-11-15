@@ -162,7 +162,7 @@ This ranking provides the entries in multiple orderings, using the same methods 
 
 Each ranking entry includes all the information described in the previous section.
 
-### Retrieving Generic Execution Plans
+## Execution Plans
 
 Torcs can retrieve the generic execution plan of a ranking entry. Specifically, of one of the recorded executions the ranking entry keeps.
 
@@ -228,7 +228,7 @@ Sort  (cost=36.80..36.80 rows=1 width=221)
 
 The generic format of the execution plan depends on each database. High end databases tend to produce more useful information than simpler databases. See [Examples of Generic Execution Plans](./generic-execution-plan-samples.md).
 
-### Saving a Ranking in XLSX Format
+## Saving a Ranking in XLSX Format
 
 Torcs can use Apache POI to save a ranking in XLSX format. To do this add the Apache POI dependencies to the application:
 
