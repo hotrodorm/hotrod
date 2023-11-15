@@ -298,7 +298,10 @@ Observers start activated. To activate/deactivate them the application can do so
 
 ### Registering A Custom Observer
 
-The application can register any class that implements the `org.hotrod.torcs.QueryExecutionObserver` interface. For example, if the application needs to log all query executions it can do so by adding the following observer:
+The application can register as an observer, any object that implements the `org.hotrod.torcs.QueryExecutionObserver` interface. Once registered the object will start receiving
+query execution events.
+
+For example, if the application needs to log all query executions that exceed 30 seconds of running time, it can do so by adding the following observer:
 
 ```java
   this.torcs.register(new QueryExecutionObserver() {
@@ -310,8 +313,10 @@ The application can register any class that implements the `org.hotrod.torcs.Que
 
     @Override
     public void apply(QueryExecution execution) {
-      System.out.println(execution.getResponseTime() + " ms" + " (exception: "
-        + execution.getException() + ")" + ": " + QueryExecution.compactSQL(execution.getSQL()));
+      if (execution.getResponseTime() > 30000) {
+        System.out.println(execution.getResponseTime() + " ms" + " (exception: "
+          + execution.getException() + ")" + ": " + QueryExecution.compactSQL(execution.getSQL()));
+      }
     }
 
     @Override
