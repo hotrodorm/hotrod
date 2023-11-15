@@ -9,6 +9,8 @@ Torcs does not aim to replace the official database statistical information. Thi
 
 Torcs is local to the application instance and only sees queries ran by the application instance. It does not see the queries ran by other instances or queries executed by other applications or internal database scheduled processes that may slow down the database for other unrelated causes.
 
+Torcs is not to be confused with the Torcs CTP module. The latter produces more comprehensive execution plans for a subset of databases, that can be visualized and analized by Check The Plan (http://checktheplan.com) web site.
+
 ## Enabling Torcs
 
 The module is enabled by adding the dependency in Maven, as in:
@@ -113,11 +115,11 @@ By default this ranking records the 10 slowest queries. To change the number of 
 
 Changing the size of a ranking resets it automatically.
 
-Also, consider that multiple query executions of the same query still use a single entry in this ranking. This means that parameterized queries use a single entry in the ranking even if they are executed thousands of times with different parameters. Otherwise, if the parameters are added as literal values in the query, all executions will be considered separate queries by Torcs and this could clog the ranking, defeating its purpose.
+Also, consider that multiple query executions of the same query still use a single entry in this ranking. This means that parameterized queries use a single entry in the ranking even if they are executed thousands of times with different parameters. On the other hand, if the parameters are added as literal values in the query, all executions will be considered as separate ranking entries by Torcs (since they are technically different queries) and this could clog the ranking, defeating its purpose.
 
 The method `List<RankingEntry> getRanking()` provides the list of ranked queries in order, starting with the slowest ones.
 
-Again, each ranking entry correspond to a summary of all recorded execution of a query, not to a single execution of it. The entry provides the following data:
+Each ranking entry correspond to a summary of all recorded execution of a queryan provides the following data:
 
 | Property | Description |
 | -- | -- |
@@ -194,9 +196,9 @@ For example, to retrieve the estimated execution plan for the slowest execution 
     + this.torcs.getEstimatedExecutionPlan(re.getSlowestExecution()));
 ```
 
-Since Torcs is data source-aware, it automatically retrieves execution plan, tailored to the specific ranking entry's database.
+Since Torcs is data source-aware, it automatically retrieves execution plan, according to the specific database.
 
-The Java code above can display something like (e.g. Oracle):
+For example, if the query was ran in the Oracle database the Java code above could display something like:
 
 ```txt
 Plan hash value: 3305857414
@@ -280,7 +282,7 @@ The application can disable or enable Torcs at any time by doing:
   this.torcs.activate();
 ```
 
-### Access the Manage The Default Observer
+### Configuring The Default Observer
 
 The application can access the default observer with `this.torcs.getDefaultRanking()`. It can them deactivate it or activate it using:
 
@@ -289,7 +291,7 @@ The application can access the default observer with `this.torcs.getDefaultRanki
   this.torcs.getDefaultRanking().activate();
 ```
 
-Other observers follow the same strategy for activation/deactivation.
+Other observers follow the same strategy for activation/deactivation purposes.
 
 ### Registering Another Built-In Observer
 
@@ -300,7 +302,7 @@ The application can also register other built-in observers. For example, to regi
   this.torcs.register(lqrObserver);
 ```
 
-Observers start activated. To activate/deactivate them the application can do so in the same way as above:
+Observers are active by default when instantiated. To activate/deactivate them the application can do so in the same way as above:
 
 ```java
   lqrObserver.deactivate();
@@ -309,23 +311,24 @@ Observers start activated. To activate/deactivate them the application can do so
 
 ### Registering A Custom Observer
 
-The application can register as an observer, any object that implements the `org.hotrod.torcs.QueryExecutionObserver` interface. Once registered the object will start receiving
-query execution events.
+The application can register any custom observer in Torcs as needed. A custom observer object must  implement the `org.hotrod.torcs.QueryExecutionObserver` interface.
 
-For example, if the application needs to log all query executions that exceed 30 seconds of running time, it can do so by adding the following observer:
+Once registered the object will start receiving query execution events immediately, and will continue to receive them as long as it remains active. It will also receive `reset()` events.
+
+For example, if the application needs to log all query executions that exceed 15 seconds of response time, it can do so by adding the following observer:
 
 ```java
   this.torcs.register(new QueryExecutionObserver() {
 
     @Override
     public String getTitle() {
-      return "Console Query Logger";
+      return "Slow Queries Logger";
     }
 
     @Override
     public void apply(QueryExecution execution) {
-      if (execution.getResponseTime() > 30000) {
-        System.out.println(execution.getResponseTime() + " ms" + " (exception: "
+      if (execution.getResponseTime() > 15000) {
+        System.out.println("Slow query: " + execution.getResponseTime() + " ms" + " (exception: "
           + execution.getException() + ")" + ": " + QueryExecution.compactSQL(execution.getSQL()));
       }
     }
