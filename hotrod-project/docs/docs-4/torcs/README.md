@@ -21,9 +21,9 @@ The features are explained in sections below. This is a mile-high summary of the
 - Can log query executions
 - Can find slow queries
 - Can provide execution plans for queries
-- Include three built-in query observers, for different purposes
-- Allows custom observers to gather query execution stats with any custom logic
-- Multi-data source aware, even with different database engines
+- Include three built-in query observers for different purposes
+- Allows custom observers to gather query execution stats with custom logic
+- Multi-data source aware, when using the same or different database engines
 - Automatically starts out-of-the-box when the app starts with senseful defaults
 - Saves rankings to XLSX
 
