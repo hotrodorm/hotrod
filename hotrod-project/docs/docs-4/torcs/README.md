@@ -275,16 +275,18 @@ Torcs can be configured programatically to activate and deactivate the whole Tor
 
 ### Disabling and Enablig Torcs
 
-The application can disable or enable Torcs at any time by doing:
+The application can deactivate or reactivate Torcs at any time by doing:
 
 ```java
   this.torcs.deactivate();
   this.torcs.activate();
 ```
 
+When deactivated, the observers won't receive any events.
+
 ### Configuring The Default Observer
 
-The application can access the default observer with `this.torcs.getDefaultRanking()`. It can them deactivate it or activate it using:
+The application can access the default observer with `this.torcs.getDefaultRanking()`. It can then deactivate it or activate it using:
 
 ```java
   this.torcs.getDefaultRanking().deactivate();
@@ -295,14 +297,14 @@ Other observers follow the same strategy for activation/deactivation purposes.
 
 ### Registering Another Built-In Observer
 
-The application can also register other built-in observers. For example, to register the `LatestQueriesRanking` the application can do:
+The application can also register other built-in observers. For example, to use the `LatestQueriesRanking` to record the last 50 queries ran, the application can do:
 
 ```java
   LatestQueriesRanking lqrObserver = new LatestQueriesRanking(50);
   this.torcs.register(lqrObserver);
 ```
 
-Observers are active by default when instantiated. To activate/deactivate them the application can do so in the same way as above:
+Observers are active by default when instantiated. To activate/deactivate then the application can do so in the same way as above:
 
 ```java
   lqrObserver.deactivate();
