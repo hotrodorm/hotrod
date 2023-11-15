@@ -9,7 +9,7 @@ Torcs does not aim to replace the official database statistical information. Thi
 
 Torcs is local to the application instance and only sees queries ran by the application instance. It does not see the queries ran by other instances or queries executed by other applications or internal database scheduled processes that may slow down the database for other unrelated causes.
 
-Torcs is not to be confused with the Torcs CTP module. The latter produces more comprehensive execution plans for a subset of databases, that can be visualized and analized in the Check The Plan (http://checktheplan.com)'s web site.
+Torcs is not to be confused with the Torcs CTP module. The latter produces more comprehensive execution plans for a subset of databases, that can be visualized and analized in the Check The Plan (http://checktheplan.com) 's web site.
 
 ## Enabling Torcs
 
