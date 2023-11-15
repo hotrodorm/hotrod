@@ -15,15 +15,15 @@ Torcs is local to the application instance and only sees queries ran by the appl
 
 ## Features
 
-This is a mile-high summary of the features explained in the sections below:
+This is a mile-high summary of the features explained in the sections below. Torcs:
 
 - Ranks queries using multiple criteria
 - Can log query executions
 - Can find slow queries
 - Can provide execution plans for queries
-- Include three built-in query observers for different purposes
+- Includes three built-in query observers for different purposes
 - Allows custom observers to gather query execution stats with custom logic
-- Multi-data source aware, when using the same or different database engines
+- Is multi-data source aware, when using the same or different database engines
 - Automatically starts out-of-the-box when the app starts with senseful defaults
 - Saves rankings to XLSX
 
