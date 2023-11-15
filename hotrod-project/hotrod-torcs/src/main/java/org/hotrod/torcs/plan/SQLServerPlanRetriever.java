@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.sql.DataSource;
 
@@ -17,8 +18,8 @@ public class SQLServerPlanRetriever implements PlanRetriever {
     DataSource ds = execution.getDataSourceReference().getDataSource();
     try (Connection conn = ds.getConnection();) {
       conn.setAutoCommit(false);
-      try (PreparedStatement psIni = conn.prepareStatement("set showplan_text on;");) {
-        boolean p1 = psIni.execute();
+      try (Statement psIni = conn.createStatement();) {
+        boolean p1 = psIni.execute("set showplan_text on");
         System.out.println(">>> p1=" + p1);
         try (PreparedStatement ps = conn.prepareStatement(execution.getSQL());) {
           for (Setter s : execution.getSetters()) {
@@ -26,7 +27,7 @@ public class SQLServerPlanRetriever implements PlanRetriever {
             s.applyTo(ps);
           }
           boolean more = ps.execute();
-          System.out.println("--- more=" + more);
+          System.out.println("--- more1=" + more);
           StringBuilder sb = new StringBuilder();
           while (more) {
             System.out.println("--- RESULT SET STARTS ---");
@@ -40,7 +41,7 @@ public class SQLServerPlanRetriever implements PlanRetriever {
               first = false;
             }
             more = ps.getMoreResults();
-            System.out.println("--- more=" + more);
+            System.out.println("--- more2=" + more);
           }
           return sb.toString();
 
@@ -65,8 +66,8 @@ public class SQLServerPlanRetriever implements PlanRetriever {
 //          }
         }
       } finally {
-        try (PreparedStatement psEnd = conn.prepareStatement("set showplan_text off");) {
-          psEnd.execute();
+        try (Statement psEnd = conn.createStatement();) {
+          psEnd.execute("set showplan_text off");
         } finally {
           conn.rollback();
         }

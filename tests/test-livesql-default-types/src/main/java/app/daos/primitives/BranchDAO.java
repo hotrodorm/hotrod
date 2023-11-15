@@ -100,7 +100,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
     mo.setName((java.lang.String) m.get(p + "name" + s));
     mo.setRegion((java.lang.String) m.get(p + "region" + s));
-    mo.setIsVip(m.get(p + "isVip" + s));
+    mo.setIsVip(CastUtil.toInteger((Number) m.get(p + "isVip" + s)));
     return mo;
   }
 
@@ -210,26 +210,26 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   public enum BranchOrderBy implements OrderBy {
 
-    ID("database1.branch", "id", true), //
-    ID$DESC("database1.branch", "id", false), //
-    NAME("database1.branch", "name", true), //
-    NAME$DESC("database1.branch", "name", false), //
-    NAME$CASEINSENSITIVE("database1.branch", "lower(name)", true), //
-    NAME$CASEINSENSITIVE_STABLE_FORWARD("database1.branch", "lower(name), name", true), //
-    NAME$CASEINSENSITIVE_STABLE_REVERSE("database1.branch", "lower(name), name", false), //
-    NAME$DESC_CASEINSENSITIVE("database1.branch", "lower(name)", false), //
-    NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("database1.branch", "lower(name), name", false), //
-    NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("database1.branch", "lower(name), name", true), //
-    REGION("database1.branch", "region", true), //
-    REGION$DESC("database1.branch", "region", false), //
-    REGION$CASEINSENSITIVE("database1.branch", "lower(region)", true), //
-    REGION$CASEINSENSITIVE_STABLE_FORWARD("database1.branch", "lower(region), region", true), //
-    REGION$CASEINSENSITIVE_STABLE_REVERSE("database1.branch", "lower(region), region", false), //
-    REGION$DESC_CASEINSENSITIVE("database1.branch", "lower(region)", false), //
-    REGION$DESC_CASEINSENSITIVE_STABLE_FORWARD("database1.branch", "lower(region), region", false), //
-    REGION$DESC_CASEINSENSITIVE_STABLE_REVERSE("database1.branch", "lower(region), region", true), //
-    IS_VIP("database1.branch", "is_vip", true), //
-    IS_VIP$DESC("database1.branch", "is_vip", false);
+    ID("master.dbo.branch", "id", true), //
+    ID$DESC("master.dbo.branch", "id", false), //
+    NAME("master.dbo.branch", "name", true), //
+    NAME$DESC("master.dbo.branch", "name", false), //
+    NAME$CASEINSENSITIVE("master.dbo.branch", "lower(name)", true), //
+    NAME$CASEINSENSITIVE_STABLE_FORWARD("master.dbo.branch", "lower(name), name", true), //
+    NAME$CASEINSENSITIVE_STABLE_REVERSE("master.dbo.branch", "lower(name), name", false), //
+    NAME$DESC_CASEINSENSITIVE("master.dbo.branch", "lower(name)", false), //
+    NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("master.dbo.branch", "lower(name), name", false), //
+    NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("master.dbo.branch", "lower(name), name", true), //
+    REGION("master.dbo.branch", "region", true), //
+    REGION$DESC("master.dbo.branch", "region", false), //
+    REGION$CASEINSENSITIVE("master.dbo.branch", "lower(region)", true), //
+    REGION$CASEINSENSITIVE_STABLE_FORWARD("master.dbo.branch", "lower(region), region", true), //
+    REGION$CASEINSENSITIVE_STABLE_REVERSE("master.dbo.branch", "lower(region), region", false), //
+    REGION$DESC_CASEINSENSITIVE("master.dbo.branch", "lower(region)", false), //
+    REGION$DESC_CASEINSENSITIVE_STABLE_FORWARD("master.dbo.branch", "lower(region), region", false), //
+    REGION$DESC_CASEINSENSITIVE_STABLE_REVERSE("master.dbo.branch", "lower(region), region", true), //
+    IS_VIP("master.dbo.branch", "is_vip", true), //
+    IS_VIP$DESC("master.dbo.branch", "is_vip", false);
 
     private BranchOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -273,7 +273,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     public NumberColumn id;
     public StringColumn name;
     public StringColumn region;
-    public ObjectColumn isVip;
+    public NumberColumn isVip;
 
     // Getters
 
@@ -284,12 +284,12 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     BranchTable() {
-      super("database1", null, "branch", "Table", null);
+      super("master", "dbo", "branch", "Table", null);
       initialize();
     }
 
     BranchTable(final String alias) {
-      super("database1", null, "branch", "Table", alias);
+      super("master", "dbo", "branch", "Table", alias);
       initialize();
     }
 
@@ -297,13 +297,13 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.id = new NumberColumn(this, "id", "id", "INT", 10, 0);
+      this.id = new NumberColumn(this, "id", "id", "int", 10, 0);
       super.columns.add(this.id);
-      this.name = new StringColumn(this, "name", "name", "VARCHAR", 20, null);
+      this.name = new StringColumn(this, "NaMe", "name", "varchar", 20, null);
       super.columns.add(this.name);
-      this.region = new StringColumn(this, "region", "region", "VARCHAR", 20, null);
+      this.region = new StringColumn(this, "region", "region", "varchar", 10, null);
       super.columns.add(this.region);
-      this.isVip = new ObjectColumn(this, "is_vip", "isVip", "BIT", 3, 0);
+      this.isVip = new NumberColumn(this, "is_vip", "isVip", "int", 10, 0);
       super.columns.add(this.isVip);
     }
 

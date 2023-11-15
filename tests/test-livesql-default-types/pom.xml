@@ -688,7 +688,7 @@
             <version>2.3.4.RELEASE</version>
             <configuration>
               <arguments>
-                <argument>--spring.config.location=src/main/database/mariadb/</argument>
+                <argument>--spring.config.location=src/main/database/sybasease/</argument>
               </arguments>
             </configuration>
             <executions>

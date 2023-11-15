@@ -100,11 +100,11 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
     mo.setAmount(CastUtil.toInteger((Number) m.get(p + "amount" + s)));
     mo.setBranchId(CastUtil.toInteger((Number) m.get(p + "branchId" + s)));
-    mo.setAccountId(CastUtil.toInteger((Number) m.get(p + "accountId" + s)));
-    mo.setUnpaidBalance(CastUtil.toInteger((Number) m.get(p + "unpaidBalance" + s)));
-    mo.setType((java.lang.String) m.get(p + "type" + s));
     mo.setStatus((java.lang.String) m.get(p + "status" + s));
     mo.setOrderDate((java.sql.Date) m.get(p + "orderDate" + s));
+    mo.setUnpaidBalance(CastUtil.toInteger((Number) m.get(p + "unpaidBalance" + s)));
+    mo.setAccountId(CastUtil.toInteger((Number) m.get(p + "accountId" + s)));
+    mo.setType((java.lang.String) m.get(p + "type" + s));
     return mo;
   }
 
@@ -157,11 +157,11 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     mo.setId(vo.getId());
     mo.setAmount(vo.getAmount());
     mo.setBranchId(vo.getBranchId());
-    mo.setAccountId(vo.getAccountId());
-    mo.setUnpaidBalance(vo.getUnpaidBalance());
-    mo.setType(vo.getType());
     mo.setStatus(vo.getStatus());
     mo.setOrderDate(vo.getOrderDate());
+    mo.setUnpaidBalance(vo.getUnpaidBalance());
+    mo.setAccountId(vo.getAccountId());
+    mo.setType(vo.getType());
     return mo;
   }
 
@@ -197,11 +197,11 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     if (updateValues.getId() != null) values.put("id", updateValues.getId());
     if (updateValues.getAmount() != null) values.put("amount", updateValues.getAmount());
     if (updateValues.getBranchId() != null) values.put("branch_id", updateValues.getBranchId());
-    if (updateValues.getAccountId() != null) values.put("account_id", updateValues.getAccountId());
-    if (updateValues.getUnpaidBalance() != null) values.put("unpaid_balance", updateValues.getUnpaidBalance());
-    if (updateValues.getType() != null) values.put("type", updateValues.getType());
     if (updateValues.getStatus() != null) values.put("status", updateValues.getStatus());
     if (updateValues.getOrderDate() != null) values.put("order_date", updateValues.getOrderDate());
+    if (updateValues.getUnpaidBalance() != null) values.put("unpaid_balance", updateValues.getUnpaidBalance());
+    if (updateValues.getAccountId() != null) values.put("account_id", updateValues.getAccountId());
+    if (updateValues.getType() != null) values.put("type", updateValues.getType());
     return new UpdateSetCompletePhase(this.context, "mappers.invoice.updateByCriteria", tableOrView,  predicate, values);
   }
 
@@ -222,34 +222,34 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
   public enum InvoiceOrderBy implements OrderBy {
 
-    ID("database1.invoice", "id", true), //
-    ID$DESC("database1.invoice", "id", false), //
-    AMOUNT("database1.invoice", "amount", true), //
-    AMOUNT$DESC("database1.invoice", "amount", false), //
-    BRANCH_ID("database1.invoice", "branch_id", true), //
-    BRANCH_ID$DESC("database1.invoice", "branch_id", false), //
-    ACCOUNT_ID("database1.invoice", "account_id", true), //
-    ACCOUNT_ID$DESC("database1.invoice", "account_id", false), //
-    UNPAID_BALANCE("database1.invoice", "unpaid_balance", true), //
-    UNPAID_BALANCE$DESC("database1.invoice", "unpaid_balance", false), //
-    TYPE("database1.invoice", "type", true), //
-    TYPE$DESC("database1.invoice", "type", false), //
-    TYPE$CASEINSENSITIVE("database1.invoice", "lower(type)", true), //
-    TYPE$CASEINSENSITIVE_STABLE_FORWARD("database1.invoice", "lower(type), type", true), //
-    TYPE$CASEINSENSITIVE_STABLE_REVERSE("database1.invoice", "lower(type), type", false), //
-    TYPE$DESC_CASEINSENSITIVE("database1.invoice", "lower(type)", false), //
-    TYPE$DESC_CASEINSENSITIVE_STABLE_FORWARD("database1.invoice", "lower(type), type", false), //
-    TYPE$DESC_CASEINSENSITIVE_STABLE_REVERSE("database1.invoice", "lower(type), type", true), //
-    STATUS("database1.invoice", "status", true), //
-    STATUS$DESC("database1.invoice", "status", false), //
-    STATUS$CASEINSENSITIVE("database1.invoice", "lower(status)", true), //
-    STATUS$CASEINSENSITIVE_STABLE_FORWARD("database1.invoice", "lower(status), status", true), //
-    STATUS$CASEINSENSITIVE_STABLE_REVERSE("database1.invoice", "lower(status), status", false), //
-    STATUS$DESC_CASEINSENSITIVE("database1.invoice", "lower(status)", false), //
-    STATUS$DESC_CASEINSENSITIVE_STABLE_FORWARD("database1.invoice", "lower(status), status", false), //
-    STATUS$DESC_CASEINSENSITIVE_STABLE_REVERSE("database1.invoice", "lower(status), status", true), //
-    ORDER_DATE("database1.invoice", "order_date", true), //
-    ORDER_DATE$DESC("database1.invoice", "order_date", false);
+    ID("master.dbo.invoice", "id", true), //
+    ID$DESC("master.dbo.invoice", "id", false), //
+    AMOUNT("master.dbo.invoice", "amount", true), //
+    AMOUNT$DESC("master.dbo.invoice", "amount", false), //
+    BRANCH_ID("master.dbo.invoice", "branch_id", true), //
+    BRANCH_ID$DESC("master.dbo.invoice", "branch_id", false), //
+    STATUS("master.dbo.invoice", "status", true), //
+    STATUS$DESC("master.dbo.invoice", "status", false), //
+    STATUS$CASEINSENSITIVE("master.dbo.invoice", "lower(status)", true), //
+    STATUS$CASEINSENSITIVE_STABLE_FORWARD("master.dbo.invoice", "lower(status), status", true), //
+    STATUS$CASEINSENSITIVE_STABLE_REVERSE("master.dbo.invoice", "lower(status), status", false), //
+    STATUS$DESC_CASEINSENSITIVE("master.dbo.invoice", "lower(status)", false), //
+    STATUS$DESC_CASEINSENSITIVE_STABLE_FORWARD("master.dbo.invoice", "lower(status), status", false), //
+    STATUS$DESC_CASEINSENSITIVE_STABLE_REVERSE("master.dbo.invoice", "lower(status), status", true), //
+    ORDER_DATE("master.dbo.invoice", "order_date", true), //
+    ORDER_DATE$DESC("master.dbo.invoice", "order_date", false), //
+    UNPAID_BALANCE("master.dbo.invoice", "unpaid_balance", true), //
+    UNPAID_BALANCE$DESC("master.dbo.invoice", "unpaid_balance", false), //
+    ACCOUNT_ID("master.dbo.invoice", "account_id", true), //
+    ACCOUNT_ID$DESC("master.dbo.invoice", "account_id", false), //
+    TYPE("master.dbo.invoice", "type", true), //
+    TYPE$DESC("master.dbo.invoice", "type", false), //
+    TYPE$CASEINSENSITIVE("master.dbo.invoice", "lower(type)", true), //
+    TYPE$CASEINSENSITIVE_STABLE_FORWARD("master.dbo.invoice", "lower(type), type", true), //
+    TYPE$CASEINSENSITIVE_STABLE_REVERSE("master.dbo.invoice", "lower(type), type", false), //
+    TYPE$DESC_CASEINSENSITIVE("master.dbo.invoice", "lower(type)", false), //
+    TYPE$DESC_CASEINSENSITIVE_STABLE_FORWARD("master.dbo.invoice", "lower(type), type", false), //
+    TYPE$DESC_CASEINSENSITIVE_STABLE_REVERSE("master.dbo.invoice", "lower(type), type", true);
 
     private InvoiceOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -293,27 +293,27 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     public NumberColumn id;
     public NumberColumn amount;
     public NumberColumn branchId;
-    public NumberColumn accountId;
-    public NumberColumn unpaidBalance;
-    public StringColumn type;
     public StringColumn status;
     public DateTimeColumn orderDate;
+    public NumberColumn unpaidBalance;
+    public NumberColumn accountId;
+    public StringColumn type;
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this.id, this.amount, this.branchId, this.accountId, this.unpaidBalance, this.type, this.status, this.orderDate);
+      return new AllColumns(this.id, this.amount, this.branchId, this.status, this.orderDate, this.unpaidBalance, this.accountId, this.type);
     }
 
     // Constructors
 
     InvoiceTable() {
-      super("database1", null, "invoice", "Table", null);
+      super("master", "dbo", "invoice", "Table", null);
       initialize();
     }
 
     InvoiceTable(final String alias) {
-      super("database1", null, "invoice", "Table", alias);
+      super("master", "dbo", "invoice", "Table", alias);
       initialize();
     }
 
@@ -321,22 +321,22 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.id = new NumberColumn(this, "id", "id", "INT", 10, 0);
+      this.id = new NumberColumn(this, "id", "id", "int", 10, 0);
       super.columns.add(this.id);
-      this.amount = new NumberColumn(this, "amount", "amount", "INT", 10, 0);
+      this.amount = new NumberColumn(this, "amount", "amount", "int", 10, 0);
       super.columns.add(this.amount);
-      this.branchId = new NumberColumn(this, "branch_id", "branchId", "INT", 10, 0);
+      this.branchId = new NumberColumn(this, "branch_id", "branchId", "int", 10, 0);
       super.columns.add(this.branchId);
-      this.accountId = new NumberColumn(this, "account_id", "accountId", "INT", 10, 0);
-      super.columns.add(this.accountId);
-      this.unpaidBalance = new NumberColumn(this, "unpaid_balance", "unpaidBalance", "INT", 10, 0);
-      super.columns.add(this.unpaidBalance);
-      this.type = new StringColumn(this, "type", "type", "VARCHAR", 10, null);
-      super.columns.add(this.type);
-      this.status = new StringColumn(this, "status", "status", "VARCHAR", 10, null);
+      this.status = new StringColumn(this, "status", "status", "varchar", 10, null);
       super.columns.add(this.status);
-      this.orderDate = new DateTimeColumn(this, "order_date", "orderDate", "DATE", 10, null);
+      this.orderDate = new DateTimeColumn(this, "order_date", "orderDate", "date", 10, 0);
       super.columns.add(this.orderDate);
+      this.unpaidBalance = new NumberColumn(this, "unpaid_balance", "unpaidBalance", "int", 10, 0);
+      super.columns.add(this.unpaidBalance);
+      this.accountId = new NumberColumn(this, "account_id", "accountId", "int", 10, 0);
+      super.columns.add(this.accountId);
+      this.type = new StringColumn(this, "type", "type", "varchar", 10, null);
+      super.columns.add(this.type);
     }
 
   }
