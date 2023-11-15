@@ -115,10 +115,10 @@ SQL Server produces the plan in TEXT format as well as XML. The TEXT format is s
 MySQL provides the plan in tabular format, JSON, and TREE format. The tabular format is shown below:
 
 ```txt
-id select_type table partitions type   possible_keys key     key_len ref         rows filtered Extra
--- ----------- ----- ---------- ------ ------------- ------- ------- ----------- ---- -------- ---------------------
- 1 SIMPLE      i     <null>     ALL    <null>        <null>  <null>  <null>         3    33.33 Using where; filesort
- 1 SIMPLE      b     <null>     eq_ref PRIMARY       PRIMARY 4       i.branch_id    1       50 Using where
+id select_type table partit type   possible_keys key     key_len ref         rows filtered Extra
+-- ----------- ----- ------ ------ ------------- ------- ------- ----------- ---- -------- ---------------------
+ 1 SIMPLE      i     <null> ALL    <null>        <null>  <null>  <null>         3    33.33 Using where; filesort
+ 1 SIMPLE      b     <null> eq_ref PRIMARY       PRIMARY 4       i.branch_id    1       50 Using where
 ```
 
 ## MariaDB Execution Plan
