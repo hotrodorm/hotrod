@@ -15,7 +15,7 @@ Torcs is local to the application instance and only sees queries ran by the appl
 
 ## Features
 
-The features are explained in sections below. This is a mile-high summary of them:
+Even though the features are explained in the sections below, this is a mile-high summary of them:
 
 - Ranks queries using multiple criteria
 - Can log query executions
@@ -83,7 +83,7 @@ As shown above, a ranking entry includes at least the following information, in 
 
 ## Multi Data Source Aware
 
-Queries are recorded including the data source were they were executed in. The data source information can be useful if later on an execution plan is of interest for the application.
+Queries are recorded including the data source were they were executed in. The data source information can be useful if later on an execution plan is of interest to the application.
 
 Two identical queries ran into different datasources (same or different engine type) are always
 considered separate and occupy separate entries in the rankings. This can prove useful if one database endpoint is slow for some reason but not the other one(s). Torcs will clearly identify it from the others.
