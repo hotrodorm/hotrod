@@ -5,19 +5,19 @@ they will be assessed and may be included or not in the versions mentioned below
 
 **Note**: These features and version numbers are non-binding and are subject to change without notice.
 
-Version 5.0:
-
-- Torcs Module. Rank queries, provide query statistics, dump and inspect SQL queries.
-
-Version 5.1:
+Version 4.4:
 
 - Torcs CTP Module. Ranks queries and extracts query execution plans in CTP format (checktheplan.com) for Oracle, DB2 LUW, PostgreSQL, and SQL Server.
 
-Version 5.2:
+Version 5.0:
+
+- CRUD enhancements: add index access, foreign keys access with/without optimization. CRUD methods normalization. 
+
+Version 5.1:
 
 - LiveSQL Pessimistic locking. Include FOR UPDATE, LOCK, etc., according to specific engines.
 
-Version 5.3:
+Version 5.2:
 
 - LiveSQL MERGE statement (a.k.a. UPSERT).
 

@@ -5,7 +5,7 @@ HotRod is an open source ORM for Spring and Spring Boot geared toward high perfo
 A persistence layer is generated with a minimal configuration to no configuration and the CRUD and LiveSQL functionalities
 can quickly help to start prototyping an application.
 
-See [What's New](./whats-new.md) in HotRod 4, [Version History](../version-history.md), and the [Roadmap](../roadmap.md). 
+See [What's New](./whats-new.md) in HotRod 4, [Version History](../version-history.md), and the [Roadmap](../roadmap.md).
 
 
 ## Hello World
@@ -15,15 +15,15 @@ See HotRod in action with the [Hello World Example](./guides/hello-world.md).
 
 ## Modules
 
-HotRod functionality is divided into three modules serving different purposes. From simple out-of-the-box functionality
-available for CRUD and LiveSQL to advanced querying capabilities provided by Nitro. 
+HotRod functionality is divided into four modules serving different purposes. From simple
+out-of-the-box functionality available for CRUD and LiveSQL to advanced querying capabilities provided by Nitro and query optimization with Torcs.
 
 These modules are:
 
 - [CRUD](crud/README.md) &mdash; Quick and simple persistence for rapid prototyping
 - [LiveSQL](livesql/README.md) &mdash; Flexible querying from Java
-- [Nitro](nitro/README.md) &mdash; All the power of [Dynamic SQL](nitro/nitro-dynamic-sql.md) combined with [Graph Queries](nitro/nitro-graph-selects.md) and native SQL
-- [Torcs](torcs/README.md) &mdash; Detect slow queries and analyze them.
+- [Nitro](nitro/README.md) &mdash; All the power of [Dynamic SQL](nitro/nitro-dynamic-sql.md) combined with [Graph Queries](nitro/nitro-graph-selects.md) and Native SQL when you need it
+- [Torcs](torcs/README.md) &mdash; Detect slow queries at runtime and analyze them
 
 
 ## Reference

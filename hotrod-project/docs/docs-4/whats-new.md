@@ -1,5 +1,19 @@
 # What's New in HotRod 4
 
+
+## What's New in HotRod 4.3
+
+Version 4.3 adds the Torcs module to observe query executions at runtime and detect and analize slow ones.
+
+### 1. Torcs
+
+Torcs spies on the SQL executions and records ranking(s) of query execution, that become available to the application. The ranking provides a sorted list of queries, with statistics, and also offer the ability to retrieve execution plans, should the application request it.
+
+### 2. Other
+
+LiveSQL MySQL and MariaDB rendering has been fixed for non-default schema tables and views.
+
+
 ## What's New in HotRod 4.2
 
 Version 4.2 adds SQL set operators (UNION, INTERSECT, EXCEPT) and literal values to the LiveSQL syntax.
@@ -27,7 +41,7 @@ HotRod 4.1 add subqueries to LiveSQL and adds a few extra enhancements to the Li
 
 By default, LiveSQL instantiate VOs as Spring beans. Now it's possible to instantiate them as POJOs instead, with the use of a system property. On the one hand, POJOs do not participate in the Spring context (to manage transactions for example), but on the other hand, they are faster than beans.
 
-### 3. Other Features
+### 3. Other
 
 LiveSQL changes:
 
