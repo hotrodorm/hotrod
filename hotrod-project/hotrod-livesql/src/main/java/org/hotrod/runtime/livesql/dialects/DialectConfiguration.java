@@ -25,7 +25,7 @@ public class DialectConfiguration {
     LiveSQLDialect liveSQLDialect = LiveSQLDialectFactory.getLiveSQLDialect(dataSource, this.liveSQLDialectName,
         this.liveSQLDialectDatabaseName, this.liveSQLDialectVersionString, this.liveSQLDialectMajorVersion,
         this.liveSQLDialectMinorVersion);
-    System.out.println("[auto-config] liveSQLDialect=" + liveSQLDialect);
+    System.out.println("[HotRod auto-config] liveSQLDialect=" + liveSQLDialect);
     return liveSQLDialect;
   }
 
