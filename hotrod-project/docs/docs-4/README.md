@@ -23,6 +23,7 @@ These modules are:
 - [CRUD](crud/README.md) &mdash; Quick and simple persistence for rapid prototyping
 - [LiveSQL](livesql/README.md) &mdash; Flexible querying from Java
 - [Nitro](nitro/README.md) &mdash; All the power of [Dynamic SQL](nitro/nitro-dynamic-sql.md) combined with [Graph Queries](nitro/nitro-graph-selects.md) and native SQL
+- [Torcs](torcs/README.md) &mdash; Detect slow queries and analyze them.
 
 
 ## Reference
