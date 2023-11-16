@@ -6,7 +6,7 @@ Torcs is available since HotRod version 4.3.
 
 Even though it's a part of HotRod, Torcs can be used separatedly without the HotRod ORM, in any Spring or SpringBoot application.
 
-Torcs is not to be confused with the Torcs CTP module. The latter focuses on more comprehensive execution plans for mid-to-high end databases, that can be visualized and analized using Check The Plan (http://checktheplan.com) 's web site.
+Torcs is not to be confused with the Torcs CTP module. The latter focuses on more comprehensive execution plans for middle tier to high end databases, that can be visualized and analized using Check The Plan (http://checktheplan.com) 's web site.
 
 ## Limitations
 
