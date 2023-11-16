@@ -20,5 +20,15 @@ create table invoice (
 
 insert into invoice (id, amount, branch_id, status) values (10, 1500, 101, 'ABC'), (11, 2500, 101, 'DEF'), (12, 4000, 102, 'GHI');
 
+-- Test multi-result set
 
+-- @delimiter // solo
 
+create procedure dualselect
+@a integer
+as
+begin
+  select @a + 2;
+  select @a + 4;
+end
+//

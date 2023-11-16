@@ -26,24 +26,35 @@ public class SQLServerPlanRetriever implements PlanRetriever {
             System.out.println(">>> applying setter #" + s.getIndex() + " value=" + s.value());
             s.applyTo(ps);
           }
-          boolean more = ps.execute();
-          System.out.println("--- more1=" + more);
-          StringBuilder sb = new StringBuilder();
-          while (more) {
-            System.out.println("--- RESULT SET STARTS ---");
-            sb.append("--- RESULT SET STARTS ---\n");
-            ResultSet rs = ps.getResultSet();
-            boolean first = true;
-            while (rs.next()) {
-              String s = rs.getString(1);
-              System.out.println("--- LINE: " + s);
-              sb.append((first ? "" : "\n") + rs.getString(1));
-              first = false;
-            }
-            more = ps.getMoreResults();
-            System.out.println("--- more2=" + more);
-          }
-          return sb.toString();
+          System.out.println(">>> sql=" + execution.getSQL());
+          boolean more1 = ps.execute();
+
+          System.out.println("more1=" + more1);
+          read(ps);
+
+          boolean more2 = ps.getMoreResults();
+          System.out.println("more2=" + more2);
+          read(ps);
+
+          return "no plan yet";
+
+//          System.out.println("--- more1=" + more1);
+//          StringBuilder sb = new StringBuilder();
+//          while (more1) {
+//            System.out.println("--- RESULT SET STARTS ---");
+//            sb.append("--- RESULT SET STARTS ---\n");
+//            ResultSet rs = ps.getResultSet();
+//            boolean first = true;
+//            while (rs.next()) {
+//              String s = rs.getString(1);
+//              System.out.println("--- LINE: " + s);
+//              sb.append((first ? "" : "\n") + rs.getString(1));
+//              first = false;
+//            }
+//            more1 = ps.getMoreResults();
+//            System.out.println("--- more2=" + more1);
+//          }
+//          return sb.toString();
 
 //          while (rsx.next()) {
 //            String s1 = rsx.getString(1);
@@ -72,6 +83,15 @@ public class SQLServerPlanRetriever implements PlanRetriever {
           conn.rollback();
         }
       }
+    }
+  }
+
+  private void read(PreparedStatement ps) throws SQLException {
+    ResultSet rs = ps.getResultSet();
+
+    while (rs.next()) {
+      int val = rs.getInt(1);
+      System.out.println("val=" + val);
     }
   }
 

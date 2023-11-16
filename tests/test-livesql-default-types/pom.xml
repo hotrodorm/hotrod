@@ -74,12 +74,19 @@
       <artifactId>poi-ooxml</artifactId>
       <version>5.2.0</version>
     </dependency>
- -->
-
+    
     <dependency>
       <groupId>com.sybase</groupId>
       <artifactId>jdbc4</artifactId>
       <version>16.0.0</version>
+    </dependency>
+ -->
+
+    <dependency>
+      <groupId>com.microsoft.sqlserver</groupId>
+      <artifactId>mssql-jdbc</artifactId>
+      <version>10.2.0.jre8</version>
+      <scope>test</scope>
     </dependency>
 
   </dependencies>
@@ -385,7 +392,7 @@
         <configbasedir>src/main/database/sqlserver</configbasedir>
         <jdbcdrivergroupid>com.microsoft.sqlserver</jdbcdrivergroupid>
         <jdbcdriverartifactid>mssql-jdbc</jdbcdriverartifactid>
-        <jdbcdriverversion>10.2.0.jre8  </jdbcdriverversion>
+        <jdbcdriverversion>10.2.0.jre8</jdbcdriverversion>
 
         <jdbcdriverclass>com.microsoft.sqlserver.jdbc.SQLServerDriver</jdbcdriverclass>
         <jdbcurl>jdbc:sqlserver://192.168.56.51:1433;encrypt=true;trustServerCertificate=true</jdbcurl>
