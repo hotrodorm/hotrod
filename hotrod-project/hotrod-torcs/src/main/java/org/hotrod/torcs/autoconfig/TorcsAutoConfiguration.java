@@ -10,7 +10,6 @@ public class TorcsAutoConfiguration {
 
   @Bean
   public Torcs getTorcs() {
-    System.out.println("getTorcs() -- 1");
     return new Torcs();
   }
 
