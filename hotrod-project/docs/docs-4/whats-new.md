@@ -7,7 +7,7 @@ Version 4.3 adds the Torcs module to observe query executions at runtime and det
 
 ### 1. Torcs
 
-Torcs spies on the SQL executions and records ranking(s) of query execution, that become available to the application. The ranking provides a sorted list of queries, with statistics, and also offer the ability to retrieve execution plans, should the application request it.
+[Torcs](./torcs/README.md) inspects SQL query executions and records ranking(s) of query execution, that become available to the application. The ranking provides a sorted list of queries, with statistics, and also offer the ability to retrieve execution plans, should the application request it.
 
 ### 2. LiveSQL
 
