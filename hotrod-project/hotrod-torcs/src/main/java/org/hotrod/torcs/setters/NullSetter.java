@@ -39,4 +39,9 @@ public class NullSetter extends Setter {
     return this.sqlType;
   }
 
+  @Override
+  public String guessSQLServerDataType() throws CouldNotToGuessDataTypeException {
+    throw new CouldNotToGuessDataTypeException();
+  }
+
 }

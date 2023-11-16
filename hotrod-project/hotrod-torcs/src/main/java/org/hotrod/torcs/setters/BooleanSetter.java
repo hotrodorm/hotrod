@@ -22,4 +22,9 @@ public class BooleanSetter extends Setter {
     return this.value;
   }
 
+  @Override
+  public String guessSQLServerDataType() throws DataTypeNotImplementedException {
+    throw new DataTypeNotImplementedException();
+  }
+
 }

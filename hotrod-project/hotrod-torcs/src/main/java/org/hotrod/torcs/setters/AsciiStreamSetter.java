@@ -51,4 +51,9 @@ public class AsciiStreamSetter extends Setter {
     return this.x;
   }
 
+  @Override
+  public String guessSQLServerDataType() throws CouldNotToGuessDataTypeException {
+    throw new CouldNotToGuessDataTypeException();
+  }
+
 }

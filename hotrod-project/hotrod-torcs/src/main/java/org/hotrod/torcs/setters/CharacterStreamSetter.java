@@ -51,4 +51,9 @@ public class CharacterStreamSetter extends Setter {
     return this.reader;
   }
 
+  @Override
+  public String guessSQLServerDataType() throws CouldNotToGuessDataTypeException {
+    throw new CouldNotToGuessDataTypeException();
+  }
+
 }

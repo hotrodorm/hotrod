@@ -54,4 +54,9 @@ public class BlobSetter extends Setter {
     return this.blob;
   }
 
+  @Override
+  public String guessSQLServerDataType() {
+    return "binary";
+  }
+
 }

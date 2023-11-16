@@ -35,7 +35,7 @@ public class T2S {
     
 //    PreparedStatement ps = conn.prepareStatement("select name from account");
     Statement ps = conn.createStatement();
-    boolean more1 = ps.execute("declare @abc varchar; select concat(name, @abc)  from account");
+    boolean more1 = ps.execute("declare @abc varchar; declare @def varchar; select amount_granted + @abc + @def from account");
     int ct1 = ps.getUpdateCount();
     System.out.println("more1=" + more1 + " ct1=" + ct1);
     

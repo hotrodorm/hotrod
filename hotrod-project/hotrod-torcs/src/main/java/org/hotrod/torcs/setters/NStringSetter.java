@@ -24,4 +24,9 @@ public class NStringSetter extends Setter {
     return this.value;
   }
 
+  @Override
+  public String guessSQLServerDataType() {
+    return "varchar";
+  }
+
 }

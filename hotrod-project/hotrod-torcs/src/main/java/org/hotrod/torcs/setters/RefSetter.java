@@ -25,4 +25,10 @@ public class RefSetter extends Setter {
     return this.x;
   }
 
+  @Override
+  public String guessSQLServerDataType() throws DataTypeNotImplementedException {
+    throw new DataTypeNotImplementedException();
+  }
+
+  
 }

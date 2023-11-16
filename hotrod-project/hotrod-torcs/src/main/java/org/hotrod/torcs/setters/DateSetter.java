@@ -41,4 +41,9 @@ public class DateSetter extends Setter {
     return this.x;
   }
 
+  @Override
+  public String guessSQLServerDataType() {
+    return "date";
+  }
+
 }

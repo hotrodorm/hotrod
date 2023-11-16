@@ -22,4 +22,9 @@ public class DoubleSetter extends Setter {
     return this.value;
   }
 
+  @Override
+  public String guessSQLServerDataType() {
+    return "numeric";
+  }
+
 }

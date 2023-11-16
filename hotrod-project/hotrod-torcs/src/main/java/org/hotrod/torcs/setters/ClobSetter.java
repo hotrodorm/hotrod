@@ -53,4 +53,9 @@ public class ClobSetter extends Setter {
     return this.x;
   }
 
+  @Override
+  public String guessSQLServerDataType() {
+    return "varchar";
+  }
+
 }

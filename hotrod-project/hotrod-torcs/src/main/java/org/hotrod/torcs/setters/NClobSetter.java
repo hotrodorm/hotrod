@@ -51,4 +51,9 @@ public class NClobSetter extends Setter {
     return this.value;
   }
 
+  @Override
+  public String guessSQLServerDataType() {
+    return "varchar";
+  }
+
 }

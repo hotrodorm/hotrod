@@ -25,4 +25,9 @@ public class SQLXMLSetter extends Setter {
     return this.xmlObject;
   }
 
+  @Override
+  public String guessSQLServerDataType() {
+    return "xml";
+  }
+
 }

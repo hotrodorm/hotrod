@@ -22,4 +22,9 @@ public class IntSetter extends Setter {
     return this.value;
   }
 
+  @Override
+  public String guessSQLServerDataType() {
+    return "numeric";
+  }
+
 }

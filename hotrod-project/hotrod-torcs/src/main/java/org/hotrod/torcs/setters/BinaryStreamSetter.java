@@ -51,4 +51,9 @@ public class BinaryStreamSetter extends Setter {
     return this.value;
   }
 
+  @Override
+  public String guessSQLServerDataType() throws CouldNotToGuessDataTypeException {
+    throw new CouldNotToGuessDataTypeException();
+  }
+
 }

@@ -25,4 +25,9 @@ public class RowIdSetter extends Setter {
     return this.x;
   }
 
+  @Override
+  public String guessSQLServerDataType() throws DataTypeNotImplementedException {
+    throw new DataTypeNotImplementedException();
+  }
+
 }

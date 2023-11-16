@@ -41,4 +41,9 @@ public class TimeSetter extends Setter {
     return this.x;
   }
 
+  @Override
+  public String guessSQLServerDataType() {
+    return "time";
+  }
+
 }

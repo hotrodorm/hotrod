@@ -78,14 +78,9 @@ public class TorcsAspect {
       this.setters = new HashMap<>();
     }
 
-//    private void registerParameter(final int index, final Object value, final int type) {
-//      System.out.println("**** param #" + index + ": " + value + " (" + type + ")");
-//      this.parameters.put(index, new PreparedParameter(index, value, type));
-//    }
-
     public void registerSetter(final Setter setter) {
-      System.out
-          .println("**** Setter (" + setter.getClass().getName() + "): #" + setter.getIndex() + ": " + setter.value());
+//      System.out
+//          .println("**** Setter (" + setter.getClass().getName() + "): #" + setter.getIndex() + ": " + setter.value());
       this.setters.put(setter.getIndex(), setter);
     }
   }

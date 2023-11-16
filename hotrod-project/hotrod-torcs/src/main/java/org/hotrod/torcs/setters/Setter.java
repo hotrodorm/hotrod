@@ -19,6 +19,8 @@ public abstract class Setter {
 
   public abstract Object value();
 
+  public abstract String guessSQLServerDataType() throws DataTypeNotImplementedException, CouldNotToGuessDataTypeException;
+
 }
 
 //void  setArray(int parameterIndex, Array x)

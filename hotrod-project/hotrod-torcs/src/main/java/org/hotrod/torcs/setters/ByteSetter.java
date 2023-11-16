@@ -22,4 +22,9 @@ public class ByteSetter extends Setter {
     return this.value;
   }
 
+  @Override
+  public String guessSQLServerDataType() {
+    return "binary";
+  }
+
 }

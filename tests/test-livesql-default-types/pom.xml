@@ -80,7 +80,6 @@
       <artifactId>jdbc4</artifactId>
       <version>16.0.0</version>
     </dependency>
- -->
 
     <dependency>
       <groupId>com.microsoft.sqlserver</groupId>
@@ -88,6 +87,8 @@
       <version>10.2.0.jre8</version>
       <scope>test</scope>
     </dependency>
+ -->
+
 
   </dependencies>
 
