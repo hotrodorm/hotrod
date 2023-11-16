@@ -5,16 +5,14 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 ## 4.3.0
 
 - Torcs:
-    - The Torcs module is added to HotRods's ecosystem, to gather and consolidate statistical data of queries run by the application, with the aims of detecting slow running queries.
-    - Ranks queries using multiple criteria.
-    - Can log query executions.
-    - Can find slow queries.
-    - Can provide execution plans for queries.
-    - Includes three built-in query observers for different purposes.
-    - Allows custom observers to gather query execution stats with custom logic.
-    - Is multi-data source aware, when using the same or different database engines.
-    - Automatically starts out-of-the-box when the app starts with senseful defaults.
-    - Can save rankings using Excel (XLSX) format.
+    - Gathers and consolidates statistical data of queries run by the application, with the aim of detecting slow running queries.
+    - Three built-in rankings (highest response time, initial queries, latest queries).
+    - Execution plans extraction for queries for all databases (except Derby).
+    - Ability to add custom observers for any custom purpose.
+    - Ability to log all/some query executions.
+    - Multi-data source aware.
+    - Auto-start feature.
+    - Saves rankings using Excel (XLSX) format.
 
 - LiveSQL:
     - Fixing LiveSQL's rendering of catalog/schema for MySQL and MariaDB.
