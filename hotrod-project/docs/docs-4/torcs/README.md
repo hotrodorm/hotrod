@@ -70,6 +70,8 @@ Assuming only two queries were executed (but adding up to 16 total executions to
   19:47:35 EST 2023, last exception: N/A -- [ds0] SELECT name FROM client WHERE id = ?
 ```
 
+The default ranking sorts queries by maximum response time. The first query ranks first since the max response time for it was 55 ms, compared to 9 ms for the second one.
+
 As shown above, a ranking entry includes at least the following information, in order:
 
 - Number of total executions, and number of failed ones
