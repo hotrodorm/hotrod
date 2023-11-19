@@ -1,24 +1,21 @@
 package org.hotrod.torcs.ctp.autoconfig;
 
-import org.hotrod.torcs.ctp.PlanRetrieverFactory;
+import org.hotrod.torcs.ctp.CTPPlanRetrieverFactory;
 import org.hotrod.torcs.ctp.TorcsCTP;
-import org.hotrod.torcs.ctp.h2.GenericH2PlanRetriever.GenericH2PlanMapper;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@MapperScan(basePackageClasses = TorcsCTP.class)
 public class TorcsCTPAutoConfiguration {
 
   @Bean
-  public PlanRetrieverFactory getPlanRetrieverFactory() {
-    return new PlanRetrieverFactory();
+  public CTPPlanRetrieverFactory getPlanRetrieverFactory() {
+    return new CTPPlanRetrieverFactory();
   }
 
   @Bean
-  public TorcsCTP getTorcsCTP(final PlanRetrieverFactory planRetrieverFactory, final GenericH2PlanMapper h2Mapper) {
-    return new TorcsCTP(planRetrieverFactory, h2Mapper);
+  public TorcsCTP getTorcsCTP() {
+    return new TorcsCTP();
   }
 
 }

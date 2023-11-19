@@ -11,6 +11,7 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.ZoneOffset;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Random;
 
@@ -25,6 +26,9 @@ import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.hotrod.torcs.QueryExecution;
 import org.hotrod.torcs.QueryExecutionObserver;
 import org.hotrod.torcs.Torcs;
+import org.hotrod.torcs.ctp.CTPPlanRetrieverFactory.UnsupportedTorcsCTPDatabaseException;
+import org.hotrod.torcs.ctp.LogResistantFormatter;
+import org.hotrod.torcs.ctp.TorcsCTP;
 import org.hotrod.torcs.plan.PlanRetrieverFactory.UnsupportedTorcsDatabaseException;
 import org.hotrod.torcs.rankings.InitialQueriesRanking;
 import org.hotrod.torcs.rankings.LatestQueriesRanking;
@@ -82,6 +86,9 @@ public class App {
   @Autowired
   private Torcs torcs;
 
+  @Autowired
+  private TorcsCTP torcsCTP;
+
 //  @Autowired
 //  private TorcsCTP torcsCTP;
 //
@@ -99,9 +106,9 @@ public class App {
 //      crud();
 //      join();
 //      join();
-      livesql();
+//      livesql();
 //      selectByCriteria();
-//      torcs();
+      torcs();
 //      star();
 //      noFrom();
       System.out.println("[ Example complete ]");
@@ -252,8 +259,6 @@ public class App {
 //    example7RecursiveCTEs();
 //    example8LateralJoins();
 
-    torcs();
-
   }
 
   private void union() {
@@ -397,7 +402,8 @@ public class App {
 
   // TODO: Nothing to do, just a marker.
 
-  private void torcs() throws SQLException, UnsupportedTorcsDatabaseException {
+  private void torcs()
+      throws SQLException, UnsupportedTorcsDatabaseException, UnsupportedTorcsCTPDatabaseException, IOException {
 //  disableTorcs();
 //  enableTorcs();
 //  deactivateDefaultObserverTorcs();
@@ -408,7 +414,9 @@ public class App {
 //  getARankingByNonDefaultOrdering();
 //  saveARankingAsXLSX();
 //  addingAQueryLogger();
-    getSlowestQueryExecutionPlan();
+//    getSlowestQueryExecutionPlan();
+
+    getSlowestCTPQueryExecutionPlan();
   }
 
   private void disableTorcs() {
@@ -534,6 +542,44 @@ public class App {
       System.out.println("#" + pos++ + " " + e);
       String plan = this.torcs.getEstimatedExecutionPlan(e.getSlowestExecution());
       System.out.println("Execution Plan:\n" + plan);
+    }
+    System.out.println("--- End of Torcs Ranking ---");
+
+  }
+
+  // TODO: Nothing to do, just a marker.
+
+  private void getSlowestCTPQueryExecutionPlan()
+      throws SQLException, UnsupportedTorcsDatabaseException, UnsupportedTorcsCTPDatabaseException, IOException {
+
+    InvoiceTable i = InvoiceDAO.newTable("i");
+    BranchTable b = BranchDAO.newTable("b");
+
+    Random rand = new Random(1234);
+    for (int x = 0; x < 3; x++) { // run three times with different parameters
+      int minAmount = 100 + rand.nextInt(500);
+      sql.select() //
+          .from(i) //
+          .join(b, b.id.eq(i.branchId)) //
+          .where(b.region.eq("SOUTH").and(i.status.ne("UNPAID").and(i.amount.ge(minAmount)))) //
+          .orderBy(i.orderDate.desc()) //
+          .execute();
+    }
+
+    System.out.println("--- Torcs Ranking ---");
+    int pos = 1;
+    for (RankingEntry e : this.torcs.getDefaultRanking().getRanking()) {
+      System.out.println("#" + pos++ + " " + e);
+      String plan = this.torcs.getEstimatedExecutionPlan(e.getSlowestExecution());
+      System.out.println("Execution Plan:\n" + plan);
+      String ctpPlan = this.torcsCTP.getEstimatedCTPExecutionPlan(e.getSlowestExecution());
+      System.out
+          .println("Execution CTP Plan (" + (ctpPlan == null ? "N/A" : ctpPlan.length() + " chars") + "):\n" + ctpPlan);
+
+      LogResistantFormatter lrf = new LogResistantFormatter(180);
+      String[] lines = lrf.render(ctpPlan);
+      Arrays.stream(lines).forEach(l -> System.out.println("LRF: " + l));
+
     }
     System.out.println("--- End of Torcs Ranking ---");
 

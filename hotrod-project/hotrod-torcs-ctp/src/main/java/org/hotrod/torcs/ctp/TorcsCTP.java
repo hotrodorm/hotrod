@@ -1,9 +1,11 @@
 package org.hotrod.torcs.ctp;
 
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.hotrod.torcs.QueryExecution;
-import org.hotrod.torcs.ctp.h2.GenericH2PlanRetriever.GenericH2PlanMapper;
-import org.hotrod.torcs.plan.PlanRetrieverFactory.UnsupportedTorcsDatabaseException;
-import org.springframework.beans.FatalBeanException;
+import org.hotrod.torcs.ctp.CTPPlanRetrieverFactory.UnsupportedTorcsCTPDatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -11,26 +13,37 @@ import org.springframework.stereotype.Component;
 public class TorcsCTP {
 
   @Autowired
-  private PlanRetrieverFactory planRetrieverFactory;
+  private CTPPlanRetrieverFactory ctpPlanRetrieverFactory;
 
-  private PlanRetriever planRetriever;
+  private Map<Integer, CTPPlanRetriever> planRetrievers = new HashMap<>();
 
-  public TorcsCTP(final PlanRetrieverFactory planRetrieverFactory, final GenericH2PlanMapper h2Mapper) {
-    this.planRetrieverFactory = planRetrieverFactory;
-    System.out.println("TorcsCTP() -- this.factory=" + this.planRetrieverFactory);
-    try {
-      this.planRetriever = this.planRetrieverFactory.getPlanRetriever(h2Mapper);
-    } catch (UnsupportedTorcsDatabaseException e) {
-      throw new FatalBeanException(e.getMessage(), e);
+  public String getEstimatedCTPExecutionPlan(final QueryExecution execution)
+      throws SQLException, UnsupportedTorcsCTPDatabaseException {
+    CTPPlanRetriever r = this.planRetrievers.get(execution.getDataSourceReference().getId());
+    if (r == null) {
+      r = get(execution);
     }
+    return r.getEstimatedCTPExecutionPlan(execution);
   }
 
-  public String getEstimatedCTPExecutionPlan(final QueryExecution execution) {
-    return this.planRetriever.getEstimatedCTPExecutionPlan(execution);
+  public String getActualCTPExecutionPlan(final QueryExecution execution)
+      throws SQLException, UnsupportedTorcsCTPDatabaseException {
+    System.out.println(">>> ! getActualCTPExecutionPlan()");
+    CTPPlanRetriever r = this.planRetrievers.get(execution.getDataSourceReference().getId());
+    if (r == null) {
+      r = get(execution);
+    }
+    return r.getActualCTPExecutionPlan(execution);
   }
 
-  public String getActualCTPExecutionPlan(final QueryExecution execution) {
-    return this.planRetriever.getActualCTPExecutionPlan(execution);
+  private synchronized CTPPlanRetriever get(final QueryExecution execution)
+      throws SQLException, UnsupportedTorcsCTPDatabaseException {
+    CTPPlanRetriever r = this.planRetrievers.get(execution.getDataSourceReference().getId());
+    if (r == null) {
+      r = this.ctpPlanRetrieverFactory.getTorcsCTPPlanRetriever(execution);
+      this.planRetrievers.put(execution.getDataSourceReference().getId(), r);
+    }
+    return r;
   }
 
 }

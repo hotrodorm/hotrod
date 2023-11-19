@@ -29,21 +29,21 @@ public class LogResistantFormatter {
   private static final boolean USE_FAST_GZIP = true;
   private static final int COMPRESSION_LEVEL = 5;
 
-  private int lineSize;
+  private int payloadChunkSize;
 
   public LogResistantFormatter() {
-    this.lineSize = DEFAULT_LINE_SIZE;
+    this.payloadChunkSize = DEFAULT_LINE_SIZE;
   }
 
-  public LogResistantFormatter(final int lineSize) {
-    this.lineSize = lineSize;
-    if (lineSize < MIN_LINE_SIZE) {
+  public LogResistantFormatter(final int payloadChunkSize) {
+    this.payloadChunkSize = payloadChunkSize;
+    if (payloadChunkSize < MIN_LINE_SIZE) {
       throw new IllegalArgumentException(
-          "Line size must be greater or equal to " + MIN_LINE_SIZE + ", but it's " + lineSize + ".");
+          "Line size must be greater or equal to " + MIN_LINE_SIZE + ", but it's " + payloadChunkSize + ".");
     }
-    if (lineSize > MAX_LINE_SIZE) {
+    if (payloadChunkSize > MAX_LINE_SIZE) {
       throw new IllegalArgumentException(
-          "Line size must less or equal to " + MAX_LINE_SIZE + ", but it's " + lineSize + ".");
+          "Line size must less or equal to " + MAX_LINE_SIZE + ", but it's " + payloadChunkSize + ".");
     }
   }
 
@@ -203,7 +203,7 @@ public class LogResistantFormatter {
   }
 
   private String[] splitAndShield(final String base64) {
-    String[] lines = splitBySize(base64, this.lineSize);
+    String[] lines = splitBySize(base64, this.payloadChunkSize);
     String[] shielded = shield(lines);
     return shielded;
   }
