@@ -8,6 +8,4 @@ public interface CTPPlanRetriever {
 
   String getEstimatedCTPExecutionPlan(QueryExecution execution) throws SQLException;
 
-  String getActualCTPExecutionPlan(QueryExecution execution) throws SQLException;
-
 }

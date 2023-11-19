@@ -8,8 +8,10 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.OptionalInt;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -89,11 +91,12 @@ public class LogResistantFormatter {
 
   public String parse(final String[] logLines) throws InvalidLogDataException {
     List<Segment> segments = extractUnshield(logLines);
-    segments.stream().forEach(s -> System.out.println("> " + s));
+//    segments.stream().forEach(s -> System.out.println("> " + s));
     if (segments.isEmpty()) {
       throw new InvalidLogDataException("There are no log segments in this log.");
     }
-    String consolidated = validateSortConsolidate(segments);
+    List<Segment> deduplicated = deduplicate(segments);
+    String consolidated = validateSortConsolidate(deduplicated);
     byte[] compressed = decodeBase64(consolidated);
     byte[] hashed;
     try {
@@ -127,6 +130,30 @@ public class LogResistantFormatter {
       segments.add(new Segment(Integer.valueOf(line), Integer.valueOf(total), content));
     }
     return segments;
+  }
+
+  private List<Segment> deduplicate(final List<Segment> segments) throws InvalidLogDataException {
+    Map<Integer, Segment> byLine = new HashMap<>();
+    for (Segment s : segments) {
+      Segment existing = byLine.get(s.getLine());
+      if (existing == null) {
+        byLine.put(s.getLine(), s);
+      } else {
+        if (existing.getTotal() != s.getTotal()) {
+          throw new InvalidLogDataException("Multiple segments found for line #" + s.getLine()
+              + ", but with different total values (" + s.getTotal() + " and " + existing.getTotal() + ").");
+        }
+        if (!equalStrings(existing.getContent(), s.getContent())) {
+          throw new InvalidLogDataException(
+              "Multiple segments found for line #" + s.getLine() + ", but with different content.");
+        }
+      }
+    }
+    return new ArrayList<>(byLine.values());
+  }
+
+  private boolean equalStrings(final String a, final String b) {
+    return a == null ? b == null : a.equals(b);
   }
 
   private String validateSortConsolidate(final List<Segment> segments) throws InvalidLogDataException {

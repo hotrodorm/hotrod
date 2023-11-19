@@ -116,13 +116,4 @@ public class OracleCTPPlanRetriever implements CTPPlanRetriever {
 
   }
 
-  @Override
-  public String getActualCTPExecutionPlan(QueryExecution execution) {
-    throw new UnsupportedOperationException("Torcs CTP cannot retrieve actual execution plans in the Oracle database. "
-        + "To produce it an Oracle DBA will need to enable statistics gathering (statistics_level = 'ALL'). "
-        + "Then the queries can be run normally; "
-        + "As a final step, the actual plan can be retrieved with an extra privileged procedure. "
-        + "This is out of reach for Torcs CTP.");
-  }
-
 }

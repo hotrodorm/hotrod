@@ -26,16 +26,6 @@ public class TorcsCTP {
     return r.getEstimatedCTPExecutionPlan(execution);
   }
 
-  public String getActualCTPExecutionPlan(final QueryExecution execution)
-      throws SQLException, UnsupportedTorcsCTPDatabaseException {
-    System.out.println(">>> ! getActualCTPExecutionPlan()");
-    CTPPlanRetriever r = this.planRetrievers.get(execution.getDataSourceReference().getId());
-    if (r == null) {
-      r = get(execution);
-    }
-    return r.getActualCTPExecutionPlan(execution);
-  }
-
   private synchronized CTPPlanRetriever get(final QueryExecution execution)
       throws SQLException, UnsupportedTorcsCTPDatabaseException {
     CTPPlanRetriever r = this.planRetrievers.get(execution.getDataSourceReference().getId());

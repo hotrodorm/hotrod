@@ -226,11 +226,4 @@ public class DB2CTPPlanRetriever implements CTPPlanRetriever {
     }
   }
 
-  @Override
-  public String getActualCTPExecutionPlan(QueryExecution execution) {
-    throw new UnsupportedOperationException("Torcs CTP cannot retrieve actual execution plans in DB2. "
-        + "To produce it an event monitor needs to be enabled in the engine by a qualified IBM DB2 DBA. "
-        + "This is out of reach for Torcs CTP.");
-  }
-
 }

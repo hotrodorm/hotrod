@@ -31,36 +31,16 @@ public class SQLServerPlanRetriever implements PlanRetriever {
       conn.setAutoCommit(false);
       try (Statement stIni = conn.createStatement();) {
         boolean p1 = stIni.execute("set showplan_" + PLAN_TYPE + " on");
-//        System.out.println(">>> p1=" + p1);
-
         try (Statement st = conn.createStatement();) {
-
           SQLServerPlanSQL pp = new SQLServerPlanSQL(execution.getSQL(), execution.getSetters());
           String sql = pp.render();
-
-//          System.out.println(">>> --- sql ---\n" + execution.getSQL() + "\n---");
-          boolean more1 = st.execute(sql);
-          int ct1 = st.getUpdateCount();
-//          System.out.println("more1=" + more1 + " ct1=" + ct1);
-
+          st.execute(sql);
           if (PLAN_TYPE == PlanType.XML) {
-
-            String plan = getResult(st);
-            return plan;
-
+            return getResult(st);
           } else {
-
-            String engineSQL = getResult(st);
-//          System.out.println("engineSQL:\n" + engineSQL);
-
-            boolean more2 = st.getMoreResults();
-            int ct2 = st.getUpdateCount();
-//            System.out.println("more2=" + more2 + " ct2=" + ct2);
-
-            String plan = getResult(st);
-//          System.out.println("plan:\n" + plan);
-
-            return plan;
+            getResult(st);
+            st.getMoreResults();
+            return getResult(st);
           }
         }
       } finally {
@@ -80,7 +60,6 @@ public class SQLServerPlanRetriever implements PlanRetriever {
     private String psql;
 
     private SQLServerPlanSQL(final String sql, final Collection<Setter> setters) {
-//      System.out.println("--- ORIGINAL SQL\n" + sql + "\n---");
       if (sql == null) {
         throw new IllegalArgumentException("SQL statement cannot be null");
       }
@@ -92,19 +71,14 @@ public class SQLServerPlanRetriever implements PlanRetriever {
       while (pos < sql.length()) {
         int apos = sql.indexOf('\'', pos);
         int qm = sql.indexOf('?', pos);
-//        System.out.println("::: pos=" + pos + " apos=" + apos + " qm=" + qm);
         if (apos == -1 && qm == -1) { // none
-//          System.out.println("::: none");
           sb.append(sql.substring(pos));
           pos = sql.length();
         } else if (apos != -1 && qm == -1) { // apos
-//          System.out.println("::: apos");
           pos = processApostrophe(sql, sb, pos, apos);
         } else if (apos == -1 && qm != -1) { // qm
-//          System.out.println("::: qm");
           pos = processQuestionMark(sql, sb, pos, qm);
         } else { // both
-//          System.out.println("::: both - apos < qm = " + (apos < qm));
           if (apos < qm) {
             pos = processApostrophe(sql, sb, pos, apos);
           } else {
@@ -147,10 +121,7 @@ public class SQLServerPlanRetriever implements PlanRetriever {
       return qm + 1;
     }
 
-//    declare @abc varchar; declare @def varchar; select amount_granted + @abc + @def from account
-
     private String render() {
-//      System.out.println("||| " + this.parameters.size() + " parameters to render");
       StringBuilder sb = new StringBuilder();
       Iterator<Setter> it = this.setters.iterator();
       for (String p : this.parameters) {
