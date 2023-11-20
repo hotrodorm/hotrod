@@ -23,7 +23,7 @@ public interface Generator {
    * 
    * @throws UncontrolledException             When a technical error is found
    * @throws ControlledException               When a configuration error is found
-   * @throws InvalidConfigurationFileException
+   * @throws InvalidConfigurationFileException When an invalid configuration setting is found
    */
   void prepareGeneration() throws UncontrolledException, ControlledException, InvalidConfigurationFileException;
 

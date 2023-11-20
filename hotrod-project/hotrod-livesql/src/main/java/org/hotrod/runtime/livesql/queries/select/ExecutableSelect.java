@@ -6,7 +6,7 @@ package org.hotrod.runtime.livesql.queries.select;
  * 
  * @author valarcon
  *
- * @param <R>
+ * @param <R> The object that represents a row read from the database
  */
 
 @Deprecated
