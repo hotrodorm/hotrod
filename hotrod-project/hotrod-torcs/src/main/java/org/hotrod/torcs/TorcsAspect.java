@@ -70,11 +70,9 @@ public class TorcsAspect {
   public class QueryData {
     private DataSource dataSource;
     private String sql;
-//    private Map<Integer, PreparedParameter> parameters;
     private Map<Integer, Setter> setters;
 
     public void clearParameters() {
-//      this.parameters = new HashMap<>();
       this.setters = new HashMap<>();
     }
 
@@ -124,7 +122,7 @@ public class TorcsAspect {
 
   @Around(value = "execution(* javax.sql.DataSource.getConnection())")
   private Object measureGetConnection(final ProceedingJoinPoint joinPoint) throws Throwable {
-//    System.out.println("measureGetConnection()");   
+    System.out.println("measureGetConnection()");
 
     if (this.threadData.get() == null) {
       this.threadData.set(new QueryData());
@@ -133,8 +131,8 @@ public class TorcsAspect {
     try {
 
       Object caller = joinPoint.getThis();
-//      System.out.println(
-//          "caller=" + System.identityHashCode(caller) + ":" + (caller == null ? "null" : caller.getClass().getName()));
+      System.out.println(
+          "caller=" + System.identityHashCode(caller) + ":" + (caller == null ? "null" : caller.getClass().getName()));
       DataSource ds = (DataSource) caller;
       this.threadData.get().dataSource = ds;
 
@@ -162,7 +160,7 @@ public class TorcsAspect {
 
   @Around(value = "execution(* java.sql.Connection.prepareStatement(..)) && args(sql)")
   private Object measurePrepareStatement(final ProceedingJoinPoint joinPoint, final String sql) throws Throwable {
-//    System.out.println("measurePrepareStatement()");
+    System.out.println("measurePrepareStatement()");
     this.threadData.get().clearParameters();
     return addProxy(joinPoint, sql, this.psProxies);
   }
@@ -171,10 +169,24 @@ public class TorcsAspect {
 
   private WeakHashMap<Integer, Object> stProxies = new WeakHashMap<>();
 
-  @Around(value = "execution(* java.sql.Connection.createStatement(..)) && args(sql)")
-  private Object measureStatement(final ProceedingJoinPoint joinPoint, final String sql) throws Throwable {
-//    System.out.println("measureStatement()");
-    return addProxy(joinPoint, sql, this.stProxies);
+  @Around(value = "execution(* java.sql.Connection.createStatement(..)) && args()")
+  private Object measureStatement(final ProceedingJoinPoint joinPoint) throws Throwable {
+    System.out.println("measureStatement() #1");
+    return addProxy(joinPoint, null, this.stProxies);
+  }
+
+  @Around(value = "execution(* java.sql.Connection.createStatement(..)) && args(resultSetType, resultSetConcurrency)")
+  private Object measureStatement(final ProceedingJoinPoint joinPoint, final int resultSetType,
+      final int resultSetConcurrency) throws Throwable {
+    System.out.println("measureStatement() #2");
+    return addProxy(joinPoint, null, this.stProxies);
+  }
+
+  @Around(value = "execution(* java.sql.Connection.createStatement(..)) && args(resultSetType, resultSetConcurrency, resultSetHoldability)")
+  private Object measureStatement(final ProceedingJoinPoint joinPoint, final int resultSetType,
+      final int resultSetConcurrency, final int resultSetHoldability) throws Throwable {
+    System.out.println("measureStatement() #3");
+    return addProxy(joinPoint, null, this.stProxies);
   }
 
   // Adding aspect the the CallablaStatement
@@ -183,7 +195,7 @@ public class TorcsAspect {
 
   @Around(value = "execution(* java.sql.Connection.prepareCall(..)) && args(sql)")
   private Object measurePrepareCall(final ProceedingJoinPoint joinPoint, final String sql) throws Throwable {
-//    System.out.println("measurePrepareCall()");
+    System.out.println("measurePrepareCall()");
     this.threadData.get().clearParameters();
     return addProxy(joinPoint, sql, this.csProxies);
   }
@@ -292,6 +304,7 @@ public class TorcsAspect {
 
   @Around(value = "execution(* java.sql.Statement.executeQuery(..)) && args(sql)")
   private Object adviceExecuteQuery(final ProceedingJoinPoint joinPoint, final String sql) throws Throwable {
+    System.out.println("st.executeQuery(sql) sql=" + sql);
     return measureSQLExecution(joinPoint, sql);
   }
 

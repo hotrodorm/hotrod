@@ -11,7 +11,6 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.ZoneOffset;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -26,8 +25,6 @@ import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.hotrod.torcs.QueryExecution;
 import org.hotrod.torcs.QueryExecutionObserver;
 import org.hotrod.torcs.Torcs;
-import org.hotrod.torcs.ctp.CTPPlanRetrieverFactory.UnsupportedTorcsCTPDatabaseException;
-import org.hotrod.torcs.ctp.TorcsCTP;
 import org.hotrod.torcs.plan.PlanRetrieverFactory.UnsupportedTorcsDatabaseException;
 import org.hotrod.torcs.rankings.InitialQueriesRanking;
 import org.hotrod.torcs.rankings.LatestQueriesRanking;
@@ -36,11 +33,9 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 import app.daos.InvoiceVO;
@@ -57,8 +52,8 @@ import app.daos.primitives.PaymentDAO.PaymentTable;
 import app.daos.primitives.ProductDAO;
 import app.daos.primitives.ProductDAO.ProductTable;
 
-@Configuration
-@SpringBootApplication
+//@Configuration
+//@SpringBootApplication
 @ComponentScan(basePackageClasses = LiveSQL.class)
 @MapperScan(basePackageClasses = LiveSQL.class)
 @MapperScan("mappers")
@@ -401,8 +396,7 @@ public class App {
 
   // TODO: Nothing to do, just a marker.
 
-  private void torcs()
-      throws SQLException, UnsupportedTorcsDatabaseException, UnsupportedTorcsCTPDatabaseException, IOException {
+  private void torcs() throws SQLException, UnsupportedTorcsDatabaseException, IOException {
 //  disableTorcs();
 //  enableTorcs();
 //  deactivateDefaultObserverTorcs();
@@ -548,8 +542,7 @@ public class App {
 
   // TODO: Nothing to do, just a marker.
 
-  private void getSlowestCTPQueryExecutionPlan()
-      throws SQLException, UnsupportedTorcsDatabaseException, UnsupportedTorcsCTPDatabaseException, IOException {
+  private void getSlowestCTPQueryExecutionPlan() throws SQLException, UnsupportedTorcsDatabaseException, IOException {
 
     InvoiceTable i = InvoiceDAO.newTable("i");
     BranchTable b = BranchDAO.newTable("b");
