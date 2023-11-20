@@ -2,6 +2,11 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
+## 4.3.1
+
+- Torcs:
+    - Adding generic execution plan variations for each database.
+
 ## 4.3.0
 
 - Torcs:
