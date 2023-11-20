@@ -20,7 +20,7 @@ public class PostgreSQLCTPPlanRetriever implements CTPPlanRetriever {
     DataSource ds = execution.getDataSourceReference().getDataSource();
     try (Connection conn = ds.getConnection();) {
       conn.setAutoCommit(false);
-      try (PreparedStatement ps = conn.prepareStatement("explain " + execution.getSQL());) {
+      try (PreparedStatement ps = conn.prepareStatement("explain (format json)\n" + execution.getSQL());) {
         for (Setter s : execution.getSetters()) {
           s.applyTo(ps);
         }
