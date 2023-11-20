@@ -2,6 +2,7 @@ package test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.hotrod.torcs.ctp.LogResistantFormatter;
 import org.hotrod.torcs.ctp.LogResistantFormatter.InvalidLogDataException;
@@ -22,9 +23,9 @@ public class LogResistantTests {
     System.out.println("--- Plan (orig) ---\n" + plan + "\n\n");
 
     LogResistantFormatter f = new LogResistantFormatter();
-    String[] lines = f.render(plan);
+    List<String> lines = f.render(plan);
 
-    System.out.println("--- Plan (" + lines.length + " lines) ---");
+    System.out.println("--- Plan (" + lines.size() + " lines) ---");
     for (String l : lines) {
       System.out.println(l);
     }

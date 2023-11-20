@@ -11,7 +11,7 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.ZoneOffset;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -27,7 +27,6 @@ import org.hotrod.torcs.QueryExecution;
 import org.hotrod.torcs.QueryExecutionObserver;
 import org.hotrod.torcs.Torcs;
 import org.hotrod.torcs.ctp.CTPPlanRetrieverFactory.UnsupportedTorcsCTPDatabaseException;
-import org.hotrod.torcs.ctp.LogResistantFormatter;
 import org.hotrod.torcs.ctp.TorcsCTP;
 import org.hotrod.torcs.plan.PlanRetrieverFactory.UnsupportedTorcsDatabaseException;
 import org.hotrod.torcs.rankings.InitialQueriesRanking;
@@ -572,14 +571,9 @@ public class App {
       System.out.println("#" + pos++ + " " + e);
       String plan = this.torcs.getEstimatedExecutionPlan(e.getSlowestExecution());
       System.out.println("Execution Plan:\n" + plan);
-      String ctpPlan = this.torcsCTP.getEstimatedCTPExecutionPlan(e.getSlowestExecution());
-      System.out
-          .println("Execution CTP Plan (" + (ctpPlan == null ? "N/A" : ctpPlan.length() + " chars") + "):\n" + ctpPlan);
-
-      LogResistantFormatter lrf = new LogResistantFormatter(180);
-      String[] lines = lrf.render(ctpPlan);
-      Arrays.stream(lines).forEach(l -> System.out.println("LRF: " + l));
-
+//      this.torcsCTP.setSegmentSize(180);
+      List<String> ctpPlan = this.torcsCTP.getEstimatedCTPExecutionPlan(e.getSlowestExecution());
+      ctpPlan.stream().forEach(l -> System.out.println("CTP: " + l));
     }
     System.out.println("--- End of Torcs Ranking ---");
 

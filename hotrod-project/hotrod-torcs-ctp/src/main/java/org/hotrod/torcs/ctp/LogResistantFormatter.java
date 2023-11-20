@@ -22,40 +22,44 @@ import java.util.zip.Inflater;
 
 public class LogResistantFormatter {
 
-  private static final int DEFAULT_LINE_SIZE = 120;
-  private static final int MIN_LINE_SIZE = 40;
-  private static final int MAX_LINE_SIZE = 100000;
+  private static final int DEFAULT_SEGMENT_SIZE = 120;
+  private static final int MIN_SEGMENT_SIZE = 40;
+  private static final int MAX_SEGMENT_SIZE = 100000;
 
   private static final String MESSAGE_DIGEST_ALGORITHM = "SHA-256";
 
   private static final boolean USE_FAST_GZIP = true;
   private static final int COMPRESSION_LEVEL = 5;
 
-  private int payloadChunkSize;
+  private int segmentSize;
 
   public LogResistantFormatter() {
-    this.payloadChunkSize = DEFAULT_LINE_SIZE;
+    this.segmentSize = DEFAULT_SEGMENT_SIZE;
   }
 
-  public LogResistantFormatter(final int payloadChunkSize) {
-    this.payloadChunkSize = payloadChunkSize;
-    if (payloadChunkSize < MIN_LINE_SIZE) {
+  public LogResistantFormatter(final int segmentSize) {
+    setSegmentSize(segmentSize);
+  }
+
+  public void setSegmentSize(final int segmentSize) {
+    this.segmentSize = segmentSize;
+    if (segmentSize < MIN_SEGMENT_SIZE) {
       throw new IllegalArgumentException(
-          "Line size must be greater or equal to " + MIN_LINE_SIZE + ", but it's " + payloadChunkSize + ".");
+          "Segment size must be greater or equal to " + MIN_SEGMENT_SIZE + ", but it's " + segmentSize + ".");
     }
-    if (payloadChunkSize > MAX_LINE_SIZE) {
+    if (segmentSize > MAX_SEGMENT_SIZE) {
       throw new IllegalArgumentException(
-          "Line size must less or equal to " + MAX_LINE_SIZE + ", but it's " + payloadChunkSize + ".");
+          "Segment size must less or equal to " + MAX_SEGMENT_SIZE + ", but it's " + segmentSize + ".");
     }
   }
 
-  public String[] render(final String plan) throws IOException {
+  public List<String> render(final String plan) throws IOException {
     byte[] binaryHashed = encodeAndHash(plan);
     byte[] compressed = compress(binaryHashed, COMPRESSION_LEVEL, USE_FAST_GZIP);
     String base64 = encodeBase64(compressed);
-    String[] lines = splitAndShield(base64);
-    System.out.println("binaryHashed[" + binaryHashed.length + "] compressed[" + compressed.length + "] base64["
-        + base64.length() + "] lines[" + lines.length + "]");
+    List<String> lines = splitAndShield(base64);
+//    System.out.println("binaryHashed[" + binaryHashed.length + "] compressed[" + compressed.length + "] base64["
+//        + base64.length() + "] lines[" + lines.length + "]");
     return lines;
   }
 
@@ -229,10 +233,10 @@ public class LogResistantFormatter {
     }
   }
 
-  private String[] splitAndShield(final String base64) {
-    String[] lines = splitBySize(base64, this.payloadChunkSize);
+  private List<String> splitAndShield(final String base64) {
+    String[] lines = splitBySize(base64, this.segmentSize);
     String[] shielded = shield(lines);
-    return shielded;
+    return Arrays.asList(shielded);
   }
 
   // Utilities
