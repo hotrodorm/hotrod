@@ -18,24 +18,32 @@ import org.hotrod.torcs.setters.Setter;
 
 public class SQLServerPlanRetriever implements PlanRetriever {
 
-  private enum PlanType {
-    TEXT, XML
-  };
-
-  private static final PlanType PLAN_TYPE = PlanType.XML;
-
   @Override
-  public String getEstimatedExecutionPlan(final QueryExecution execution) throws SQLException {
+  public String getEstimatedExecutionPlan(final QueryExecution execution, final int variation) throws SQLException {
+
+    String variationKeyword;
+    switch (variation) {
+    case 0:
+      variationKeyword = "TEXT";
+      break;
+    case 1:
+      variationKeyword = "XML";
+      break;
+    default:
+      throw new SQLException(
+          "Invalid SQL Server plan variation " + "'" + variation + "'. Valid values are: 0 (TEXT), 1 (XML).");
+    }
+
     DataSource ds = execution.getDataSourceReference().getDataSource();
     try (Connection conn = ds.getConnection();) {
       conn.setAutoCommit(false);
       try (Statement stIni = conn.createStatement();) {
-        boolean p1 = stIni.execute("set showplan_" + PLAN_TYPE + " on");
+        boolean p1 = stIni.execute("set showplan_" + variationKeyword + " on");
         try (Statement st = conn.createStatement();) {
           SQLServerPlanSQL pp = new SQLServerPlanSQL(execution.getSQL(), execution.getSetters());
           String sql = pp.render();
           st.execute(sql);
-          if (PLAN_TYPE == PlanType.XML) {
+          if (variationKeyword.equals("XML")) {
             return getResult(st);
           } else {
             getResult(st);
@@ -45,7 +53,7 @@ public class SQLServerPlanRetriever implements PlanRetriever {
         }
       } finally {
         try (Statement stEnd = conn.createStatement();) {
-          stEnd.execute("set showplan_" + PLAN_TYPE + " off");
+          stEnd.execute("set showplan_" + variationKeyword + " off");
         } finally {
           conn.rollback();
         }

@@ -14,7 +14,10 @@ import org.hotrod.torcs.setters.Setter;
 public class SybaseASEPlanRetriever implements PlanRetriever {
 
   @Override
-  public String getEstimatedExecutionPlan(final QueryExecution execution) throws SQLException {
+  public String getEstimatedExecutionPlan(final QueryExecution execution, final int variation) throws SQLException {
+    if (variation != 0) {
+      throw new SQLException("Invalid Sybase ASE plan variation " + "'" + variation + "'. The only valid value is 0.");
+    }
     DataSource ds = execution.getDataSourceReference().getDataSource();
     try (Connection conn = ds.getConnection();) {
       conn.setAutoCommit(false);

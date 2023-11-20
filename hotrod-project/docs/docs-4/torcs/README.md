@@ -262,6 +262,35 @@ Sort  (cost=36.80..36.80 rows=1 width=221)
 
 The generic format of the execution plan depends on each database. High end databases tend to produce more useful information than simpler databases. See [Examples of Generic Execution Plans](./generic-execution-plan-samples.md).
 
+### Execution Plan Variations
+
+Each database may produce one or multiple variations of the execution plans. By default Torcs retrieves the main variation of the execution plan &mdash; that is, variation #0.
+
+The application can request a different variation by adding the `variation` parameter when retrieving the plan, as in `this.torcs.getEstimatedExecutionPlan(QueryExecution execution, int variation)`. The following table specifies which variations are available for each database:
+
+| Database | Variation #0 | Variation #1 | Variation #2 | Variation #3 |
+| -- | -- | -- | -- | -- |
+| Oracle | TYPICAL | BASIC | ALL | -- |
+| DB2 | TREE (custom-2) | -- | -- | -- |
+| PostgreSQL| TEXT | XML | JSON | YAML |
+| SQL Server | TEXT | XML | -- | -- |
+| MySQL | TRADITIONAL | JSON | TREE | -- |
+| MariaDB | TRADITIONAL | JSON | -- | -- |
+| Sybase ASE | TREE | -- | -- | -- |
+| H2 | ANNOTATED | -- | -- | -- |
+| HyperSQL| TEXT | -- | -- | -- |
+| Derby | -- | -- | -- | -- |
+
+For example, to get a PostgreSQL execution plan of an execution in JSON format (variation #2) the application can use:
+
+```java
+  String plan = this.torcs.getEstimatedExecutionPlan(re.getSlowestExecution(), 2);
+```
+
+
+Some of the variations in the table may not be supported by older versions of your database. Check the manual of the specific database version you are using to validate if the format is available in it.
+
+
 ## Saving a Ranking in XLSX Format
 
 Torcs can use Apache POI to save a ranking in XLSX format. To do this add the Apache POI dependencies to the application:

@@ -21,11 +21,28 @@ import org.nocrala.tools.texttablefmt.Table;
 public class MySQLPlanRetriever implements PlanRetriever {
 
   @Override
-  public String getEstimatedExecutionPlan(final QueryExecution execution) throws SQLException {
+  public String getEstimatedExecutionPlan(final QueryExecution execution, final int variation) throws SQLException {
+
+    String typeClause;
+    switch (variation) {
+    case 0:
+      typeClause = " format = traditional";
+      break;
+    case 1:
+      typeClause = " format = json";
+      break;
+    case 2:
+      typeClause = " format = tree";
+      break;
+    default:
+      throw new SQLException("Invalid MYSQL plan variation " + "'" + variation
+          + "'. Valid values are: 0 (TRADITIONAL), 1 (JSON), and 2 (TREE).");
+    }
+
     DataSource ds = execution.getDataSourceReference().getDataSource();
     try (Connection conn = ds.getConnection();) {
       conn.setAutoCommit(false);
-      try (PreparedStatement ps = conn.prepareStatement("explain " + execution.getSQL());) {
+      try (PreparedStatement ps = conn.prepareStatement("explain" + typeClause + " " + execution.getSQL());) {
         for (Setter s : execution.getSetters()) {
           s.applyTo(ps);
         }
@@ -60,7 +77,7 @@ public class MySQLPlanRetriever implements PlanRetriever {
             String selectType = rs.getString("select_type"); // select_type
             String table = rs.getString("table"); // table
             String partitions = rs.getString("partitions"); // partitions
-            String type = rs.getString("type"); // type
+            String otype = rs.getString("type"); // type
             String possibleKeys = rs.getString("possible_keys"); // possible_keys
             String key = rs.getString("key"); // key
             String keyLen = rs.getString("key_len"); // key_len
@@ -73,7 +90,7 @@ public class MySQLPlanRetriever implements PlanRetriever {
             t.addCell(selectType, left);
             t.addCell(table, left);
             t.addCell(partitions, left);
-            t.addCell(type, left);
+            t.addCell(otype, left);
             t.addCell(possibleKeys, left);
             t.addCell(key, left);
             t.addCell(keyLen, right);

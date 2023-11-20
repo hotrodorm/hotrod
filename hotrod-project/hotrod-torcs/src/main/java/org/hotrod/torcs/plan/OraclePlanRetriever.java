@@ -13,7 +13,23 @@ import org.hotrod.torcs.setters.Setter;
 public class OraclePlanRetriever implements PlanRetriever {
 
   @Override
-  public String getEstimatedExecutionPlan(final QueryExecution execution) throws SQLException {
+  public String getEstimatedExecutionPlan(final QueryExecution execution, final int variation) throws SQLException {
+
+    String variationName;
+    switch (variation) {
+    case 0:
+      variationName = "typical";
+      break;
+    case 1:
+      variationName = "basic";
+      break;
+    case 2:
+      variationName = "all";
+      break;
+    default:
+      throw new SQLException("Invalid Oracle plan variation " + "'" + variation + "'. Valid values are between 0 and 2.");
+    }
+
     DataSource ds = execution.getDataSourceReference().getDataSource();
     try (Connection conn = ds.getConnection();) {
       conn.setAutoCommit(false);
@@ -24,7 +40,7 @@ public class OraclePlanRetriever implements PlanRetriever {
         ps.execute();
         try (
             PreparedStatement psr = conn.prepareStatement(
-                "select plan_table_output from table(dbms_xplan.display('sys.plan_table$', null,'typical'))");
+                "select plan_table_output from table(dbms_xplan.display('sys.plan_table$', null,'" + variationName + "'))");
             ResultSet rs = psr.executeQuery();) {
           StringBuilder sb = new StringBuilder();
           boolean first = true;

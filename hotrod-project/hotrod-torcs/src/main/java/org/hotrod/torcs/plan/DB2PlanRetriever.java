@@ -143,7 +143,10 @@ public class DB2PlanRetriever implements PlanRetriever {
           ") x order by orden";
 
   @Override
-  public String getEstimatedExecutionPlan(final QueryExecution execution) throws SQLException {
+  public String getEstimatedExecutionPlan(final QueryExecution execution, final int variation) throws SQLException {
+    if (variation != 0) {
+      throw new SQLException("Invalid DB2 plan variation " + "'" + variation + "'. The only valid value is 0.");
+    }
     DataSource ds = execution.getDataSourceReference().getDataSource();
     try (Connection conn = ds.getConnection();) {
       conn.setAutoCommit(false);
@@ -154,19 +157,13 @@ public class DB2PlanRetriever implements PlanRetriever {
         psd.execute(); // clean up previous plans, if any
 
         String planSave = "explain plan set querytag='" + uuid + "' for\n" + execution.getSQL();
-//        System.out.println("--- planSave ---\n" + planSave + "\n------------------------");
         try (PreparedStatement ps = conn.prepareStatement(planSave);) {
           for (Setter s : execution.getSetters()) {
             s.applyTo(ps);
-//            System.out.println("--- Setting Param: " + p);
-//            ps.setInt(1, 15);
-//            ps.setObject(1, 15, java.sql.Types.NUMERIC);
-//            ps.setObject(p.getIndex(), p.getValue(), p.getType());
           }
           ps.execute(); // save the plan
 
           String extractPlan = TREE_PLAN_HEAD + uuid + TREE_PLAN_TAIL;
-//          System.out.println("--- extractPlan ---\n" + extractPlan + "\n------------------------");
           try (PreparedStatement pse = conn.prepareStatement(extractPlan);) {
             try (ResultSet rs = pse.executeQuery();) {
               StringBuilder sb = new StringBuilder();

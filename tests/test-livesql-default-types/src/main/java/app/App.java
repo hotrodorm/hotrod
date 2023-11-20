@@ -85,8 +85,8 @@ public class App {
   @Autowired
   private Torcs torcs;
 
-  @Autowired
-  private TorcsCTP torcsCTP;
+//  @Autowired
+//  private TorcsCTP torcsCTP;
 
 //  @Autowired
 //  private TorcsCTP torcsCTP;
@@ -569,11 +569,11 @@ public class App {
     int pos = 1;
     for (RankingEntry e : this.torcs.getDefaultRanking().getRanking()) {
       System.out.println("#" + pos++ + " " + e);
-      String plan = this.torcs.getEstimatedExecutionPlan(e.getSlowestExecution());
+      String plan = this.torcs.getEstimatedExecutionPlan(e.getSlowestExecution(), 2);
       System.out.println("Execution Plan:\n" + plan);
 //      this.torcsCTP.setSegmentSize(180);
-      List<String> ctpPlan = this.torcsCTP.getEstimatedCTPExecutionPlan(e.getSlowestExecution());
-      ctpPlan.stream().forEach(l -> System.out.println("CTP: " + l));
+//      List<String> ctpPlan = this.torcsCTP.getEstimatedCTPExecutionPlan(e.getSlowestExecution());
+//      ctpPlan.stream().forEach(l -> System.out.println("CTP: " + l));
     }
     System.out.println("--- End of Torcs Ranking ---");
 

@@ -111,4 +111,10 @@ public class Torcs {
     return r.getEstimatedExecutionPlan(execution);
   }
 
+  public String getEstimatedExecutionPlan(final QueryExecution execution, final int variation)
+      throws SQLException, UnsupportedTorcsDatabaseException {
+    PlanRetriever r = execution.getDataSourceReference().getPlanRetriever();
+    return r.getEstimatedExecutionPlan(execution, variation);
+  }
+
 }
