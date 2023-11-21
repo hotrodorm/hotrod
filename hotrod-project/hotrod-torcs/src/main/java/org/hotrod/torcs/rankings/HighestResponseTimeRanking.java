@@ -151,8 +151,14 @@ public class HighestResponseTimeRanking extends Ranking {
   }
 
   @Override
-  public List<RankingEntry> getRanking() {
+  public List<RankingEntry> getEntries() {
     return this.sorted.stream().map(e -> e.clone()).collect(Collectors.toList());
+  }
+
+  @Override
+  @Deprecated
+  public List<RankingEntry> getRanking() {
+    return this.getEntries();
   }
 
 }

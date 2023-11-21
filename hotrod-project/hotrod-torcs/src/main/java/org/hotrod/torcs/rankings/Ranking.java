@@ -10,6 +10,12 @@ import org.hotrod.torcs.QueryExecutionObserver;
 
 public abstract class Ranking extends QueryExecutionObserver {
 
+  public abstract Collection<RankingEntry> getEntries();
+
+  /**
+   * Use getEntries() instead
+   */
+  @Deprecated
   public abstract Collection<RankingEntry> getRanking();
 
   public void saveAsXLSX(final File file) throws IOException {

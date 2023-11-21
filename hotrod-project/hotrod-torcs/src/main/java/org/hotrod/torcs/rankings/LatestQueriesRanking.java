@@ -70,8 +70,14 @@ public class LatestQueriesRanking extends Ranking {
   // Default ranking, sorted by execution order
 
   @Override
-  public Collection<RankingEntry> getRanking() {
+  public Collection<RankingEntry> getEntries() {
     return this.cacheByDSSQL.values().stream().map(e -> e.clone()).collect(Collectors.toList());
+  }
+
+  @Override
+  @Deprecated
+  public Collection<RankingEntry> getRanking() {
+    return this.getEntries();
   }
 
   // Ranking entries by other orderings
