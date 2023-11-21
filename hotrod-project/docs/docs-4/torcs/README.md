@@ -196,9 +196,9 @@ Each ranking entry includes all the information described in the previous sectio
 
 ## Execution Plans
 
-Torcs can retrieve execution plans from ranking entries. Specifically, of any of the sampled executions each ranking entry keeps.
+Torcs can retrieve execution plans from any ranking entry. More specifically from any of the sampled query executions each ranking entry keeps.
 
-**Note**: Retrieving execution plans can produce some [mild] overhead in the database engine. Use cautiously, for the queries that deserve attention, and not for every query ran in the database.
+**Note**: Retrieving execution plans can produce some mild overhead in the database engine. Use cautiously, for the queries that deserve attention, and not for every query ran in the database.
 
 Each ranking entry keeps four query samples:
 
@@ -207,7 +207,7 @@ Each ranking entry keeps four query samples:
 - First recorded execution.
 - Last recorded execution.
 
-For example, to retrieve the estimated execution plan for the slowest execution of a ranking entry the application can do:
+For example, to retrieve the estimated execution plan for the slowest sample of a ranking entry the application can do:
 
 ```java
   RankingEntry re = ...
@@ -262,9 +262,9 @@ Sort  (cost=36.80..36.80 rows=1 width=221)
 
 The format of the execution plan depends on each database. High end databases tend to produce more useful information than simpler databases. See [Examples of Generic Execution Plans](./generic-execution-plan-samples.md).
 
-### Execution Plan Variations
+### Execution Plan Format Variations
 
-Each database may produce one or multiple variations of the execution plans. By default Torcs retrieves the main variation of the execution plan &mdash; that is, variation #0.
+Each database may produce one or multiple format variations of the execution plans. By default Torcs retrieves the most common format of the execution plan &mdash; that is, variation #0.
 
 The application can request a different variation by adding the `variation` parameter when retrieving the plan, as in `getEstimatedExecutionPlan(QueryExecution execution, int variation)`. The following table specifies which variations are available for each database:
 
