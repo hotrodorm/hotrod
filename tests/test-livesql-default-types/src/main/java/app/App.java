@@ -447,7 +447,7 @@ public class App {
 
     // After some time the queries will be run the ranking will have recorded them
     System.out.println("--- " + "Ranking: " + iqr.getTitle() + " Execution Order ---");
-    for (RankingEntry re : iqr.getRanking()) {
+    for (RankingEntry re : iqr.getEntries()) {
       System.out.println(re);
     }
     System.out.println("--- End of Ranking ---");
@@ -461,7 +461,7 @@ public class App {
 
     // After some time the queries will be run the ranking will have recorded them
     System.out.println("--- " + "Ranking: " + lqr.getTitle() + " Execution Order ---");
-    for (RankingEntry re : lqr.getRanking()) {
+    for (RankingEntry re : lqr.getEntries()) {
       System.out.println(re);
     }
     System.out.println("--- End of Ranking ---");
@@ -531,7 +531,7 @@ public class App {
 
     System.out.println("--- Torcs Ranking ---");
     int pos = 1;
-    for (RankingEntry e : this.torcs.getDefaultRanking().getRanking()) {
+    for (RankingEntry e : this.torcs.getDefaultRanking().getEntries()) {
       System.out.println("#" + pos++ + " " + e);
       String plan = this.torcs.getEstimatedExecutionPlan(e.getSlowestExecution());
       System.out.println("Execution Plan:\n" + plan);
@@ -560,7 +560,7 @@ public class App {
 
     System.out.println("--- Torcs Ranking ---");
     int pos = 1;
-    for (RankingEntry e : this.torcs.getDefaultRanking().getRanking()) {
+    for (RankingEntry e : this.torcs.getDefaultRanking().getEntries()) {
       System.out.println("#" + pos++ + " " + e);
       String plan = this.torcs.getEstimatedExecutionPlan(e.getSlowestExecution(), 2);
       System.out.println("Execution Plan:\n" + plan);

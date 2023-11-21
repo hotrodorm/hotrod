@@ -55,7 +55,7 @@ This is the starting point to manage the module, its observers, and to retrieve 
 To get the Top 10 slowest queries &mdash; ranked by maximum response time &mdash; the application can do:
 
 ```java
-  for (RankingEntry re : this.torcs.getDefaultRanking().getRanking()) {
+  for (RankingEntry re : this.torcs.getDefaultRanking().getEntries()) {
     System.out.println(re);
   }
 ```
@@ -136,7 +136,7 @@ Changing the size of a ranking resets it automatically.
 
 Also, consider that multiple query executions of the same query still use a single entry in this ranking. This means that parameterized queries use a single entry in the ranking even if they are executed thousands of times with different parameters. On the other hand, if the parameters are added as literal values in the query, all executions will be considered as separate ranking entries by Torcs (since they are technically different queries) and this could clog the ranking, defeating its purpose.
 
-The method `List<RankingEntry> getRanking()` provides the list of ranked queries in order, starting with the slowest ones.
+The method `List<RankingEntry> getEntries()` provides the list of ranked queries in order, starting with the slowest ones.
 
 Each ranking entry correspond to a summary of all recorded execution of a queryan provides the following data:
 
