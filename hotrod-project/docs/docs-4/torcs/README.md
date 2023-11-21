@@ -196,7 +196,7 @@ Each ranking entry includes all the information described in the previous sectio
 
 ## Execution Plans
 
-Torcs can retrieve execution plans from any ranking entry. More specifically from any of the sampled query executions each ranking entry keeps.
+Torcs can retrieve execution plans from any ranking entry. More specifically, from any of the sampled query executions each ranking entry keeps.
 
 **Note**: Retrieving execution plans can produce some mild overhead in the database engine. Use cautiously, for the queries that deserve attention, and not for every query ran in the database.
 
@@ -215,7 +215,7 @@ For example, to retrieve the estimated execution plan for the slowest sample of 
     + this.torcs.getEstimatedExecutionPlan(re.getSlowestExecution()));
 ```
 
-Since Torcs is data source-aware, it automatically retrieves execution plan, according to the specific database.
+Since Torcs is data source-aware, it automatically retrieves an execution plan according to the specific database of the sample.
 
 For example, if the query was ran in the Oracle database the Java code above could display something like:
 
