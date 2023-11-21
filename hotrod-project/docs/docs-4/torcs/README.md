@@ -260,7 +260,7 @@ Sort  (cost=36.80..36.80 rows=1 width=221)
                     Filter: ((region)::text = 'SOUTH'::text)
 ```
 
-The format of the execution plan depends on each database. High end databases tend to produce more useful information than simpler databases. See [Examples of Generic Execution Plans](./generic-execution-plan-samples.md).
+The format of the execution plan depends on each database. High end databases tend to produce more useful information than simpler databases. See [Examples of Execution Plans](./generic-execution-plan-samples.md).
 
 ### Execution Plan Format Variations
 
