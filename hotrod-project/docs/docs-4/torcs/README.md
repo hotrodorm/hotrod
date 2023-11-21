@@ -368,7 +368,7 @@ Once registered the object will start receiving query execution events immediate
 For example, if the application needs to log all query executions that exceed 15 seconds of response time, it can do so by adding the following observer:
 
 ```java
-  QueryExecutionObserver slowQueriesLogger = new QueryExecutionObserver() {
+  QueryExecutionObserver myObserver = new QueryExecutionObserver() {
 
     @Override
     public String getTitle() {
@@ -390,8 +390,10 @@ For example, if the application needs to log all query executions that exceed 15
 
   };
 
-  this.torcs.register(slowQueriesLogger);
+  this.torcs.register(myObserver);
 ```
+
+The new observer will start receiving query events immediately. To activate or deactivate it use `myObserver.activate()` and `myObserver.deactivate()` respectively.
 
 The `QueryExecution` parameter includes the following information:
 
