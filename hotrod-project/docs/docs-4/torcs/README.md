@@ -264,14 +264,14 @@ The format of the execution plan depends on each database. High end databases te
 
 ### Execution Plan Formats
 
-Each database may produce the execution plans in one or more format variations. By default Torcs retrieves the most common format of the execution plan &mdash; that is, format #0 in the table below.
+Each database may produce the execution plans in one or more format variations. By default Torcs retrieves the most common format of the execution plan &mdash; that is, Format #0 in the table below.
 
-The application can request a different format by adding the `format` parameter when retrieving the plan, as in `getEstimatedExecutionPlan(QueryExecution execution, int format)`. The following table specifies which format are available for each database:
+The application can request a different format by adding the `format` parameter when retrieving the plan, as in `getEstimatedExecutionPlan(QueryExecution execution, int format)`. The following table specifies which formats are available for each database:
 
 | Database | Format #0 | Format #1 | Format #2 | Format #3 |
 | -- | -- | -- | -- | -- |
 | Oracle | TYPICAL | BASIC | ALL | -- |
-| DB2 | TREE (custom-2) | -- | -- | -- |
+| DB2 | TREE (custom-2b) | -- | -- | -- |
 | PostgreSQL| TEXT | XML | JSON | YAML |
 | SQL Server | TEXT | XML | -- | -- |
 | MySQL | TRADITIONAL | JSON | TREE | -- |
@@ -281,7 +281,7 @@ The application can request a different format by adding the `format` parameter 
 | HyperSQL| TEXT | -- | -- | -- |
 | Derby | -- | -- | -- | -- |
 
-For example, to get a PostgreSQL execution plan in JSON format (format #2) the application can use:
+For example, to get a PostgreSQL execution plan in JSON format (Format #2) the application can use:
 
 ```java
   String plan = this.torcs.getEstimatedExecutionPlan(re.getSlowestExecution(), 2);
