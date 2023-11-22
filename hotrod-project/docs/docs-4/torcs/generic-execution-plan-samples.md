@@ -65,7 +65,7 @@ RETURN
     +-144 SORT (13 rows, 37 io) 
       +-144 HSJOIN (13 rows, 37 io) 
         +-75 << FETCH *5 (320 rows, 19 io) INVOICE
-          +-27 IXSCAN (1000 rows, 4 io) SQL231114120832880 on INVOICE (+ID)
+        | +-27 IXSCAN (1000 rows, 4 io) SQL231114120832880 on INVOICE (+ID)
         +-68 << FETCH *7 (40 rows, 18 io) BRANCH
           +-27 IXSCAN (1000 rows, 4 io) SQL231114120832360 on BRANCH (+ID)
  
