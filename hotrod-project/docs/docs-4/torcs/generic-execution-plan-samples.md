@@ -79,7 +79,7 @@ Legend:
 $ Operation is at least 20% more expensive than its combined children.
 ```
 
-The db2-custom-2b format produces a tree of operator, where each one includes the following information:
+The db2-custom-2b format produces a tree of operators, where each one includes the following information:
 
 - Estimated Cost
 - Flags
