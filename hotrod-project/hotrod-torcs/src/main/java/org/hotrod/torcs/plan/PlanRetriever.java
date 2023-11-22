@@ -10,6 +10,6 @@ public interface PlanRetriever {
     return getEstimatedExecutionPlan(execution, 0);
   }
 
-  String getEstimatedExecutionPlan(QueryExecution execution, int variation) throws SQLException;
+  String getEstimatedExecutionPlan(QueryExecution execution, int format) throws SQLException;
 
 }

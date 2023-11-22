@@ -19,31 +19,30 @@ import org.hotrod.torcs.setters.Setter;
 public class SQLServerPlanRetriever implements PlanRetriever {
 
   @Override
-  public String getEstimatedExecutionPlan(final QueryExecution execution, final int variation) throws SQLException {
+  public String getEstimatedExecutionPlan(final QueryExecution execution, final int format) throws SQLException {
 
-    String variationKeyword;
-    switch (variation) {
+    String formatKeyword;
+    switch (format) {
     case 0:
-      variationKeyword = "TEXT";
+      formatKeyword = "TEXT";
       break;
     case 1:
-      variationKeyword = "XML";
+      formatKeyword = "XML";
       break;
     default:
-      throw new SQLException(
-          "Invalid SQL Server plan variation " + "'" + variation + "'. Valid values are: 0 (TEXT), 1 (XML).");
+      throw new SQLException("Invalid SQL Server plan format '" + format + "'. Valid values are: 0 (TEXT), 1 (XML).");
     }
 
     DataSource ds = execution.getDataSourceReference().getDataSource();
     try (Connection conn = ds.getConnection();) {
       conn.setAutoCommit(false);
       try (Statement stIni = conn.createStatement();) {
-        stIni.execute("set showplan_" + variationKeyword + " on");
+        stIni.execute("set showplan_" + formatKeyword + " on");
         try (Statement st = conn.createStatement();) {
           SQLServerPlanSQL pp = new SQLServerPlanSQL(execution.getSQL(), execution.getSetters());
           String sql = pp.render();
           st.execute(sql);
-          if (variationKeyword.equals("XML")) {
+          if (formatKeyword.equals("XML")) {
             return getResult(st);
           } else {
             getResult(st);
@@ -53,7 +52,7 @@ public class SQLServerPlanRetriever implements PlanRetriever {
         }
       } finally {
         try (Statement stEnd = conn.createStatement();) {
-          stEnd.execute("set showplan_" + variationKeyword + " off");
+          stEnd.execute("set showplan_" + formatKeyword + " off");
         } finally {
           conn.rollback();
         }

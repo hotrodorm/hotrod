@@ -216,8 +216,7 @@ public class DB2PlanRetriever implements PlanRetriever {
       + "      else case when a.last_in_lvl = 1 then i.no_link else i.link_to_mate end\n" + "   end,\n"
       + "   d.prompt),\n" + "    d.ord, d.lvl, d.title, a.last_in_lvl, a.has_children, a.parent_ord\n"
       + "  from tree_node_developed d, tree_node_augmented a, tree_icon i\n" + "  where d.pcr = a.ord\n" + ")\n"
-      + "select label from (\n"
-      + "  select prompt || title as label, ord from tree_node_developed where pcr is null\n"
+      + "select label from (\n" + "  select prompt || title as label, ord from tree_node_developed where pcr is null\n"
       + "  union all select ' ', 'a' from sysibm.sysdummy1\n"
       + "  union all select 'Predicates:', 'b' from sysibm.sysdummy1\n"
       + "  union all select '*' || p.operator_id || ' ' || trim(p.how_applied) || ' ' || p.predicate_text,\n"
@@ -229,9 +228,9 @@ public class DB2PlanRetriever implements PlanRetriever {
       + ") x order by ord";
 
   @Override
-  public String getEstimatedExecutionPlan(final QueryExecution execution, final int variation) throws SQLException {
-    if (variation != 0) {
-      throw new SQLException("Invalid DB2 plan variation " + "'" + variation + "'. The only valid value is 0.");
+  public String getEstimatedExecutionPlan(final QueryExecution execution, final int format) throws SQLException {
+    if (format != 0) {
+      throw new SQLException("Invalid DB2 plan format '" + format + "'. The only valid value is 0.");
     }
     DataSource ds = execution.getDataSourceReference().getDataSource();
     try (Connection conn = ds.getConnection();) {

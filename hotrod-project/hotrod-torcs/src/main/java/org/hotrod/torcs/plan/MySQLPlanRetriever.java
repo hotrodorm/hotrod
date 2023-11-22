@@ -21,28 +21,28 @@ import org.nocrala.tools.texttablefmt.Table;
 public class MySQLPlanRetriever implements PlanRetriever {
 
   @Override
-  public String getEstimatedExecutionPlan(final QueryExecution execution, final int variation) throws SQLException {
+  public String getEstimatedExecutionPlan(final QueryExecution execution, final int format) throws SQLException {
 
-    String typeClause;
-    switch (variation) {
+    String formatClause;
+    switch (format) {
     case 0:
-      typeClause = " format = traditional";
+      formatClause = " format = traditional";
       break;
     case 1:
-      typeClause = " format = json";
+      formatClause = " format = json";
       break;
     case 2:
-      typeClause = " format = tree";
+      formatClause = " format = tree";
       break;
     default:
-      throw new SQLException("Invalid MYSQL plan variation " + "'" + variation
-          + "'. Valid values are: 0 (TRADITIONAL), 1 (JSON), and 2 (TREE).");
+      throw new SQLException(
+          "Invalid MYSQL plan format '" + format + "'. Valid values are: 0 (TRADITIONAL), 1 (JSON), and 2 (TREE).");
     }
 
     DataSource ds = execution.getDataSourceReference().getDataSource();
     try (Connection conn = ds.getConnection();) {
       conn.setAutoCommit(false);
-      try (PreparedStatement ps = conn.prepareStatement("explain" + typeClause + " " + execution.getSQL());) {
+      try (PreparedStatement ps = conn.prepareStatement("explain" + formatClause + " " + execution.getSQL());) {
         for (Setter s : execution.getSetters()) {
           s.applyTo(ps);
         }
