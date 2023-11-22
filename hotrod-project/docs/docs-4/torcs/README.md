@@ -262,13 +262,13 @@ Sort  (cost=36.80..36.80 rows=1 width=221)
 
 The format of the execution plan depends on each database. High end databases tend to produce more useful information than simpler databases. See [Examples of Execution Plans](./generic-execution-plan-samples.md).
 
-### Execution Plan Format Variations
+### Execution Plan Formats
 
-Each database may produce one or multiple format variations of the execution plans. By default Torcs retrieves the most common format of the execution plan &mdash; that is, variation #0.
+Each database may produce the execution plans in one or more format variations. By default Torcs retrieves the most common format of the execution plan &mdash; that is, format #0 in the table below.
 
-The application can request a different variation by adding the `variation` parameter when retrieving the plan, as in `getEstimatedExecutionPlan(QueryExecution execution, int variation)`. The following table specifies which variations are available for each database:
+The application can request a different format by adding the `format` parameter when retrieving the plan, as in `getEstimatedExecutionPlan(QueryExecution execution, int format)`. The following table specifies which format are available for each database:
 
-| Database | Variation #0 | Variation #1 | Variation #2 | Variation #3 |
+| Database | Format #0 | Format #1 | Format #2 | Format #3 |
 | -- | -- | -- | -- | -- |
 | Oracle | TYPICAL | BASIC | ALL | -- |
 | DB2 | TREE (custom-2) | -- | -- | -- |
@@ -281,14 +281,13 @@ The application can request a different variation by adding the `variation` para
 | HyperSQL| TEXT | -- | -- | -- |
 | Derby | -- | -- | -- | -- |
 
-For example, to get a PostgreSQL execution plan in JSON format (variation #2) the application can use:
+For example, to get a PostgreSQL execution plan in JSON format (format #2) the application can use:
 
 ```java
   String plan = this.torcs.getEstimatedExecutionPlan(re.getSlowestExecution(), 2);
 ```
 
-
-Some of the variations in the table may not be supported by older versions of your database. Check the manual of the specific database version you are using to validate if the format is available in it.
+Some of the formats in the table may not be supported by older versions of your database. Check the manual of the specific database version you are using to validate if the format is available in it.
 
 
 ## Saving a Ranking in XLSX Format
