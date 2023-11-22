@@ -79,6 +79,15 @@ Legend:
 $ Operation is at least 20% more expensive than its combined children.
 ```
 
+The db2-custom-2b format produces a tree of operator, where each one includes the following information:
+
+- Estimated Cost
+- Flags
+- Operator Name
+- Predicates References
+- Estimated Returned Rows and I/O cost
+- Database Objects (table, view, or index name and composition)
+
 ## PostgreSQL Execution Plan
 
 PostgreSQL produces the execution plan in TEXT format, as well as JSON, YAML, and XML. The TEXT format is shown below:
