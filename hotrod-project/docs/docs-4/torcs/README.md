@@ -280,7 +280,7 @@ The application can request a different format by adding the `format` parameter 
 | Database | Format #0 | Format #1 | Format #2 | Format #3 |
 | -- | -- | -- | -- | -- |
 | Oracle | TYPICAL | BASIC | ALL | -- |
-| DB2 | TREE (custom-2b) | -- | -- | -- |
+| DB2 | TREE (db2-custom-2b) | -- | -- | -- |
 | PostgreSQL| TEXT | XML | JSON | YAML |
 | SQL Server | TEXT | XML | -- | -- |
 | MySQL | TRADITIONAL | JSON | TREE | -- |
