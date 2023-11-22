@@ -196,7 +196,16 @@ Each ranking entry includes all the information described in the previous sectio
 
 ## Execution Plans
 
-Torcs can retrieve execution plans from any ranking entry. More specifically, from any of the sampled query executions each ranking entry keeps.
+Generally speaking, there are three types of execution plans that databases provide:
+
+- **Estimated Sample**: The query is not actually executed and the engine receives all parameter values to simulate what it would do to run the query with this specific set of parameter values. All optimization related to specific values can take place. The plan is retrieved for a specific *sample* of the ranking entry.
+- **Estimated Generic**: The query is not actually executed and the engine does not receive any parameter value. No optimization related to specific parameter values can take place, so the plan is generic. The plan should be retrieved for an *entry* of the ranking, not a sample of it. It seems that only PostgreSQL and SQL Server can produce this type of plans.
+- **Actual**: The query is actually executed and the database provides real statistics of it.
+
+Torcs only implements the first type of execution plan. It can retrieve execution plans from any ranking entry's sample.
+
+**Note**: The first and second types are equivalent when the query does not have any parameters, or when all parameters are literal values instead of being parameterized.
+
 
 **Note**: Retrieving execution plans can produce some mild overhead in the database engine. Use cautiously, for the queries that deserve attention, and not for every query ran in the database.
 

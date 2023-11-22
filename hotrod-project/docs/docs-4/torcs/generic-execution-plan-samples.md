@@ -57,17 +57,17 @@ Note
 DB2 does not offer any generic format for the execution plan. It saves the plan details into a database structure across  
 several tables. 
 
-An ad-hoc query was used to retrieve the plan and render it as a tree:
+This plan was retrieved using "db2-custom-2b" format, using a ad-hoc query to retrieve it:
 
 ```txt
-Execution Plan: RETURN
-.  144 << TBSCAN (13 rows, 37 io) 
-.  .  144 SORT (13 rows, 37 io) 
-.  .  |  144 HSJOIN (13 rows, 37 io) 
-.  .  |  .  75 << FETCH *5 (320 rows, 19 io) INVOICE
-.  .  |  .  .  27 IXSCAN (1000 rows, 4 io) SQL231114120832880 on INVOICE (+ID)
-.  .  |  .  68 << FETCH *7 (40 rows, 18 io) BRANCH
-.  .  |  .  .  27 IXSCAN (1000 rows, 4 io) SQL231114120832360 on BRANCH (+ID)
+RETURN
+  +-144 << TBSCAN (13 rows, 37 io) 
+    +-144 SORT (13 rows, 37 io) 
+      +-144 HSJOIN (13 rows, 37 io) 
+        +-75 << FETCH *5 (320 rows, 19 io) INVOICE
+          +-27 IXSCAN (1000 rows, 4 io) SQL231114120832880 on INVOICE (+ID)
+        +-68 << FETCH *7 (40 rows, 18 io) BRANCH
+          +-27 IXSCAN (1000 rows, 4 io) SQL231114120832360 on BRANCH (+ID)
  
 Predicates:
 *5 SARG (? <= Q1.AMOUNT)
