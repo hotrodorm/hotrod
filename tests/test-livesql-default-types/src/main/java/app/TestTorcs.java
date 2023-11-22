@@ -22,8 +22,13 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-//@Configuration
-//@SpringBootApplication
+import app.daos.primitives.BranchDAO;
+import app.daos.primitives.BranchDAO.BranchTable;
+import app.daos.primitives.InvoiceDAO;
+import app.daos.primitives.InvoiceDAO.InvoiceTable;
+
+@Configuration
+@SpringBootApplication
 @ComponentScan(basePackageClasses = LiveSQL.class)
 @MapperScan(basePackageClasses = LiveSQL.class)
 @MapperScan("mappers")
@@ -57,7 +62,7 @@ public class TestTorcs {
       for (RankingEntry re : this.torcs.getDefaultRanking().getEntries()) {
         System.out.println(re);
         String plan = this.torcs.getEstimatedExecutionPlan(re.getSlowestExecution());
-        System.out.println("Plan;\n" + plan);
+        System.out.println("Plan:\n" + plan);
       }
       System.out.println("-- End of Ranking ---");
 
@@ -75,6 +80,23 @@ public class TestTorcs {
   }
 
   private void executeSelect() {
+
+    InvoiceTable i = InvoiceDAO.newTable("i");
+    BranchTable b = BranchDAO.newTable("b");
+    InvoiceTable j = InvoiceDAO.newTable("j");
+    InvoiceTable k = InvoiceDAO.newTable("k");
+
+    this.sql.select() //
+        .from(i) //
+        .leftJoin(b, b.id.eq(i.branchId)) //
+        .where(i.branchId.notIn( //
+            this.sql.select(sql.min(j.branchId)).from(j) //
+                .where(j.type.ne("VIP")
+                    .and(j.amount.gtAny(this.sql.select(k.amount).from(k)
+                        .where(k.accountId.ne(i.accountId).and(k.accountId.ne(j.accountId)))))))
+            .or(i.amount.ge(b.id.mult(1000).minus(b.isVip)))) //
+        .execute();
+
     this.sql.select(sql.literal(3).mult(7)).execute();
   }
 

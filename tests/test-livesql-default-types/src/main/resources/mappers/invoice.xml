@@ -29,14 +29,14 @@
   </sql>
 
   <resultMap id="allColumns" type="app.daos.InvoiceVO">
-    <id property="id" column="id" />
-    <result property="amount" column="amount" />
-    <result property="branchId" column="branch_id" />
-    <result property="accountId" column="account_id" />
-    <result property="unpaidBalance" column="unpaid_balance" />
-    <result property="type" column="type" />
-    <result property="status" column="status" />
-    <result property="orderDate" column="order_date" />
+    <id property="id" column="ID" />
+    <result property="amount" column="AMOUNT" />
+    <result property="branchId" column="BRANCH_ID" />
+    <result property="accountId" column="ACCOUNT_ID" />
+    <result property="unpaidBalance" column="UNPAID_BALANCE" />
+    <result property="type" column="TYPE" />
+    <result property="status" column="STATUS" />
+    <result property="orderDate" column="ORDER_DATE" />
   </resultMap>
 
   <!-- select by PK -->
@@ -44,7 +44,7 @@
   <select id="selectByPK" resultMap="allColumns">
     select
       <include refid="columns" />
-     from public.invoice
+     from user1.invoice
      where
       id = #{id,jdbcType=INTEGER}
   </select>
@@ -56,7 +56,7 @@
   <select id="selectByExample" resultMap="allColumns">
     select
       <include refid="columns" />
-     from public.invoice
+     from user1.invoice
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.id != null">
         and id = #{p.id,jdbcType=INTEGER}
@@ -97,7 +97,7 @@
   <!-- insert (no auto-generated columns) -->
 
   <insert id="insert">
-    insert into public.invoice (
+    insert into user1.invoice (
       <trim prefixOverrides=", ">
         <if test="true">, id</if>
         <if test="true">, amount</if>
@@ -125,7 +125,7 @@
   <!-- update by PK -->
 
   <update id="updateByPK">
-    update public.invoice set
+    update user1.invoice set
       amount = #{amount,jdbcType=INTEGER},
       branch_id = #{branchId,jdbcType=INTEGER},
       account_id = #{accountId,jdbcType=INTEGER},
@@ -140,7 +140,7 @@
   <!-- delete by PK -->
 
   <delete id="deleteByPK">
-    delete from public.invoice
+    delete from user1.invoice
      where
       id = #{id,jdbcType=INTEGER}
   </delete>
@@ -148,7 +148,7 @@
   <!-- update by example -->
 
   <update id="updateByExample">
-    update public.invoice
+    update user1.invoice
     <set>
       <if test="values.id != null">id = #{values.id,jdbcType=INTEGER},</if>
       <if test="values.amount != null">amount = #{values.amount,jdbcType=INTEGER},</if>
@@ -196,7 +196,7 @@
   <!-- delete by example -->
 
   <delete id="deleteByExample">
-    delete from public.invoice
+    delete from user1.invoice
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="id != null">
         and id = #{id,jdbcType=INTEGER}

@@ -106,13 +106,15 @@ public final class LineChart {
         new CellRangeAddress(DATA_START_ROW, DATA_START_ROW + DATA_SIZE - 1, 0, 2),
         new XSSFClientAnchor(0, 0, 0, 0, 3, 1, 20, DATA_START_ROW + 20));
 
-    SXSSFWorkbook sWb = new SXSSFWorkbook(wb);
-    SXSSFSheet sSheet = sWb.getSheetAt(0);
-    streamDataIntoSXSSFWorkbook(sSheet, DATA_START_ROW, DATA_SIZE);
+    try (SXSSFWorkbook sWb = new SXSSFWorkbook(wb);) {
+      SXSSFSheet sSheet = sWb.getSheetAt(0);
+      streamDataIntoSXSSFWorkbook(sSheet, DATA_START_ROW, DATA_SIZE);
 
-    FileOutputStream fileOut = new FileOutputStream("chart-1.xlsx");
-    sWb.write(fileOut);
-    fileOut.close();
-    sWb.dispose();
-  }
+      FileOutputStream fileOut = new FileOutputStream("chart-1.xlsx");
+      sWb.write(fileOut);
+      fileOut.close();
+      sWb.dispose();
+    }
+  } 
+
 }

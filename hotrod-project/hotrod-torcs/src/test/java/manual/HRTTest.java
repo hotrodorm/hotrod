@@ -20,7 +20,7 @@ public class HRTTest {
     rk.apply(q3);
 
     System.out.println("--- Torcs Ranking TOP " + RANKING_SIZE + " ---");
-    rk.getRanking().stream().forEach(q -> System.out.println(q));
+    rk.getEntries().stream().forEach(q -> System.out.println(q));
     System.out.println("");
 
     rk.apply(new QueryExecution(null, "sql1", null, 5, null));
@@ -28,7 +28,7 @@ public class HRTTest {
     rk.apply(new QueryExecution(null, "sql2", null, 25, null));
 
     System.out.println("--- Torcs Ranking TOP " + RANKING_SIZE + " ---");
-    rk.getRanking().stream().forEach(q -> System.out.println(q));
+    rk.getEntries().stream().forEach(q -> System.out.println(q));
 
 //    --- Ranking B ---
 //    #1: 1 exe, 0 errors, avg 40 ms, σ 0 [40-40 ms], last executed: Mon Nov 06 21:25:20 EST 2023, last exception: N/A -- sql4

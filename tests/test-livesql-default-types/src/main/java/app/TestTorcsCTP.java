@@ -24,8 +24,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-@Configuration
-@SpringBootApplication
+//@Configuration
+//@SpringBootApplication
 @ComponentScan(basePackageClasses = LiveSQL.class)
 @MapperScan(basePackageClasses = LiveSQL.class)
 @MapperScan("mappers")
@@ -63,7 +63,7 @@ public class TestTorcsCTP {
         System.out.println(re);
 //        String plan = this.torcs.getEstimatedExecutionPlan(re.getSlowestExecution());
         List<String> ctp = this.torcsCTP.getEstimatedCTPExecutionPlan(re.getSlowestExecution());
-        System.out.println("CTP Plan:\n");
+        System.out.println("CTP Plan:");
         ctp.stream().forEach(l -> System.out.println(l));
       }
       System.out.println("-- End of Ranking ---");

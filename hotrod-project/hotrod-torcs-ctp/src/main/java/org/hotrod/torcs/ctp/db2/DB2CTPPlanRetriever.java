@@ -16,10 +16,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class DB2CTPPlanRetriever implements CTPPlanRetriever {
 
-  private static final String TREE_PLAN_HEAD = //
+  private static final String DB2_CTP1_PLAN_HEAD = //
       "with params (querytag) as (values '";
 
-  private static final String TREE_PLAN_TAIL = //
+  private static final String DB2_CTP1_PLAN_TAIL = //
       "'),\n" + //
           "t as (select s.* from explain_statement s cross join params p where s.explain_level = 'P' and s.querytag = p.querytag),\n"
           + //
@@ -206,7 +206,7 @@ public class DB2CTPPlanRetriever implements CTPPlanRetriever {
           }
           ps.execute(); // save the plan
 
-          String extractPlan = TREE_PLAN_HEAD + uuid + TREE_PLAN_TAIL;
+          String extractPlan = DB2_CTP1_PLAN_HEAD + uuid + DB2_CTP1_PLAN_TAIL;
 //          System.out.println("--- extractPlan ---\n" + extractPlan + "\n------------------------");
           try (PreparedStatement pse = conn.prepareStatement(extractPlan);) {
             try (ResultSet rs = pse.executeQuery();) {

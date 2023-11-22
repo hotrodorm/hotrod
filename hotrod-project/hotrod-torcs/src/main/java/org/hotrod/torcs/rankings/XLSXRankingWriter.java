@@ -135,7 +135,7 @@ public class XLSXRankingWriter {
       DecimalFormat df = new DecimalFormat("0");
       DateTimeFormatter tsf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-      for (RankingEntry re : ranking.getRanking()) {
+      for (RankingEntry re : ranking.getEntries()) {
         {
           Row r = sheet.createRow(line++);
           col = 0;

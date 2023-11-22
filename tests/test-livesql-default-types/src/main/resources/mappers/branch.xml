@@ -21,10 +21,10 @@
   </sql>
 
   <resultMap id="allColumns" type="app.daos.BranchVO">
-    <id property="id" column="id" />
+    <id property="id" column="ID" />
     <result property="name" column="NaMe" />
-    <result property="region" column="region" />
-    <result property="isVip" column="is_vip" />
+    <result property="region" column="REGION" />
+    <result property="isVip" column="IS_VIP" />
   </resultMap>
 
   <!-- select by PK -->
@@ -32,7 +32,7 @@
   <select id="selectByPK" resultMap="allColumns">
     select
       <include refid="columns" />
-     from public.branch
+     from user1.branch
      where
       id = #{id,jdbcType=INTEGER}
   </select>
@@ -44,7 +44,7 @@
   <select id="selectByExample" resultMap="allColumns">
     select
       <include refid="columns" />
-     from public.branch
+     from user1.branch
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.id != null">
         and id = #{p.id,jdbcType=INTEGER}
@@ -56,7 +56,7 @@
         and region = #{p.region,jdbcType=VARCHAR}
       </if>
       <if test="p.isVip != null">
-        and is_vip = #{p.isVip,jdbcType=BIT}
+        and is_vip = #{p.isVip,jdbcType=INTEGER}
       </if>
     </trim>
     <if test="o != null">
@@ -73,7 +73,7 @@
   <!-- insert (no auto-generated columns) -->
 
   <insert id="insert">
-    insert into public.branch (
+    insert into user1.branch (
       <trim prefixOverrides=", ">
         <if test="true">, id</if>
         <if test="true">, "NaMe"</if>
@@ -85,7 +85,7 @@
         <if test="true">, #{id,jdbcType=INTEGER}</if>
         <if test="true">, #{name,jdbcType=VARCHAR}</if>
         <if test="true">, #{region,jdbcType=VARCHAR}</if>
-        <if test="true">, #{isVip,jdbcType=BIT}</if>
+        <if test="true">, #{isVip,jdbcType=INTEGER}</if>
       </trim>
       )
   </insert>
@@ -93,10 +93,10 @@
   <!-- update by PK -->
 
   <update id="updateByPK">
-    update public.branch set
+    update user1.branch set
       "NaMe" = #{name,jdbcType=VARCHAR},
       region = #{region,jdbcType=VARCHAR},
-      is_vip = #{isVip,jdbcType=BIT}
+      is_vip = #{isVip,jdbcType=INTEGER}
      where
       id = #{id,jdbcType=INTEGER}
   </update>
@@ -104,7 +104,7 @@
   <!-- delete by PK -->
 
   <delete id="deleteByPK">
-    delete from public.branch
+    delete from user1.branch
      where
       id = #{id,jdbcType=INTEGER}
   </delete>
@@ -112,12 +112,12 @@
   <!-- update by example -->
 
   <update id="updateByExample">
-    update public.branch
+    update user1.branch
     <set>
       <if test="values.id != null">id = #{values.id,jdbcType=INTEGER},</if>
       <if test="values.name != null">"NaMe" = #{values.name,jdbcType=VARCHAR},</if>
       <if test="values.region != null">region = #{values.region,jdbcType=VARCHAR},</if>
-      <if test="values.isVip != null">is_vip = #{values.isVip,jdbcType=BIT},</if>
+      <if test="values.isVip != null">is_vip = #{values.isVip,jdbcType=INTEGER},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.id != null">
@@ -130,7 +130,7 @@
         and region = #{filter.region,jdbcType=VARCHAR}
       </if>
       <if test="filter.isVip != null">
-        and is_vip = #{filter.isVip,jdbcType=BIT}
+        and is_vip = #{filter.isVip,jdbcType=INTEGER}
       </if>
     </trim>
   </update>
@@ -144,7 +144,7 @@
   <!-- delete by example -->
 
   <delete id="deleteByExample">
-    delete from public.branch
+    delete from user1.branch
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="id != null">
         and id = #{id,jdbcType=INTEGER}
@@ -156,7 +156,7 @@
         and region = #{region,jdbcType=VARCHAR}
       </if>
       <if test="isVip != null">
-        and is_vip = #{isVip,jdbcType=BIT}
+        and is_vip = #{isVip,jdbcType=INTEGER}
       </if>
     </trim>
   </delete>

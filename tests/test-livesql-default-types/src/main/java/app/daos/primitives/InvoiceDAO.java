@@ -222,34 +222,34 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
   public enum InvoiceOrderBy implements OrderBy {
 
-    ID("public.invoice", "id", true), //
-    ID$DESC("public.invoice", "id", false), //
-    AMOUNT("public.invoice", "amount", true), //
-    AMOUNT$DESC("public.invoice", "amount", false), //
-    BRANCH_ID("public.invoice", "branch_id", true), //
-    BRANCH_ID$DESC("public.invoice", "branch_id", false), //
-    ACCOUNT_ID("public.invoice", "account_id", true), //
-    ACCOUNT_ID$DESC("public.invoice", "account_id", false), //
-    UNPAID_BALANCE("public.invoice", "unpaid_balance", true), //
-    UNPAID_BALANCE$DESC("public.invoice", "unpaid_balance", false), //
-    TYPE("public.invoice", "type", true), //
-    TYPE$DESC("public.invoice", "type", false), //
-    TYPE$CASEINSENSITIVE("public.invoice", "lower(type)", true), //
-    TYPE$CASEINSENSITIVE_STABLE_FORWARD("public.invoice", "lower(type), type", true), //
-    TYPE$CASEINSENSITIVE_STABLE_REVERSE("public.invoice", "lower(type), type", false), //
-    TYPE$DESC_CASEINSENSITIVE("public.invoice", "lower(type)", false), //
-    TYPE$DESC_CASEINSENSITIVE_STABLE_FORWARD("public.invoice", "lower(type), type", false), //
-    TYPE$DESC_CASEINSENSITIVE_STABLE_REVERSE("public.invoice", "lower(type), type", true), //
-    STATUS("public.invoice", "status", true), //
-    STATUS$DESC("public.invoice", "status", false), //
-    STATUS$CASEINSENSITIVE("public.invoice", "lower(status)", true), //
-    STATUS$CASEINSENSITIVE_STABLE_FORWARD("public.invoice", "lower(status), status", true), //
-    STATUS$CASEINSENSITIVE_STABLE_REVERSE("public.invoice", "lower(status), status", false), //
-    STATUS$DESC_CASEINSENSITIVE("public.invoice", "lower(status)", false), //
-    STATUS$DESC_CASEINSENSITIVE_STABLE_FORWARD("public.invoice", "lower(status), status", false), //
-    STATUS$DESC_CASEINSENSITIVE_STABLE_REVERSE("public.invoice", "lower(status), status", true), //
-    ORDER_DATE("public.invoice", "order_date", true), //
-    ORDER_DATE$DESC("public.invoice", "order_date", false);
+    ID("user1.invoice", "id", true), //
+    ID$DESC("user1.invoice", "id", false), //
+    AMOUNT("user1.invoice", "amount", true), //
+    AMOUNT$DESC("user1.invoice", "amount", false), //
+    BRANCH_ID("user1.invoice", "branch_id", true), //
+    BRANCH_ID$DESC("user1.invoice", "branch_id", false), //
+    ACCOUNT_ID("user1.invoice", "account_id", true), //
+    ACCOUNT_ID$DESC("user1.invoice", "account_id", false), //
+    UNPAID_BALANCE("user1.invoice", "unpaid_balance", true), //
+    UNPAID_BALANCE$DESC("user1.invoice", "unpaid_balance", false), //
+    TYPE("user1.invoice", "type", true), //
+    TYPE$DESC("user1.invoice", "type", false), //
+    TYPE$CASEINSENSITIVE("user1.invoice", "lcase(type)", true), //
+    TYPE$CASEINSENSITIVE_STABLE_FORWARD("user1.invoice", "lcase(type), type", true), //
+    TYPE$CASEINSENSITIVE_STABLE_REVERSE("user1.invoice", "lcase(type), type", false), //
+    TYPE$DESC_CASEINSENSITIVE("user1.invoice", "lcase(type)", false), //
+    TYPE$DESC_CASEINSENSITIVE_STABLE_FORWARD("user1.invoice", "lcase(type), type", false), //
+    TYPE$DESC_CASEINSENSITIVE_STABLE_REVERSE("user1.invoice", "lcase(type), type", true), //
+    STATUS("user1.invoice", "status", true), //
+    STATUS$DESC("user1.invoice", "status", false), //
+    STATUS$CASEINSENSITIVE("user1.invoice", "lcase(status)", true), //
+    STATUS$CASEINSENSITIVE_STABLE_FORWARD("user1.invoice", "lcase(status), status", true), //
+    STATUS$CASEINSENSITIVE_STABLE_REVERSE("user1.invoice", "lcase(status), status", false), //
+    STATUS$DESC_CASEINSENSITIVE("user1.invoice", "lcase(status)", false), //
+    STATUS$DESC_CASEINSENSITIVE_STABLE_FORWARD("user1.invoice", "lcase(status), status", false), //
+    STATUS$DESC_CASEINSENSITIVE_STABLE_REVERSE("user1.invoice", "lcase(status), status", true), //
+    ORDER_DATE("user1.invoice", "order_date", true), //
+    ORDER_DATE$DESC("user1.invoice", "order_date", false);
 
     private InvoiceOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -308,12 +308,12 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     InvoiceTable() {
-      super(null, "public", "invoice", "Table", null);
+      super(null, "USER1", "INVOICE", "Table", null);
       initialize();
     }
 
     InvoiceTable(final String alias) {
-      super(null, "public", "invoice", "Table", alias);
+      super(null, "USER1", "INVOICE", "Table", alias);
       initialize();
     }
 
@@ -321,21 +321,21 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.id = new NumberColumn(this, "id", "id", "int4", 10, 0);
+      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 10, 0);
       super.columns.add(this.id);
-      this.amount = new NumberColumn(this, "amount", "amount", "int4", 10, 0);
+      this.amount = new NumberColumn(this, "AMOUNT", "amount", "INTEGER", 10, 0);
       super.columns.add(this.amount);
-      this.branchId = new NumberColumn(this, "branch_id", "branchId", "int4", 10, 0);
+      this.branchId = new NumberColumn(this, "BRANCH_ID", "branchId", "INTEGER", 10, 0);
       super.columns.add(this.branchId);
-      this.accountId = new NumberColumn(this, "account_id", "accountId", "int4", 10, 0);
+      this.accountId = new NumberColumn(this, "ACCOUNT_ID", "accountId", "INTEGER", 10, 0);
       super.columns.add(this.accountId);
-      this.unpaidBalance = new NumberColumn(this, "unpaid_balance", "unpaidBalance", "int4", 10, 0);
+      this.unpaidBalance = new NumberColumn(this, "UNPAID_BALANCE", "unpaidBalance", "INTEGER", 10, 0);
       super.columns.add(this.unpaidBalance);
-      this.type = new StringColumn(this, "type", "type", "varchar", 10, 0);
+      this.type = new StringColumn(this, "TYPE", "type", "VARCHAR", 10, null);
       super.columns.add(this.type);
-      this.status = new StringColumn(this, "status", "status", "varchar", 10, 0);
+      this.status = new StringColumn(this, "STATUS", "status", "VARCHAR", 10, null);
       super.columns.add(this.status);
-      this.orderDate = new DateTimeColumn(this, "order_date", "orderDate", "date", 13, 0);
+      this.orderDate = new DateTimeColumn(this, "ORDER_DATE", "orderDate", "DATE", 10, null);
       super.columns.add(this.orderDate);
     }
 

@@ -38,7 +38,7 @@ public class SQLServerPlanRetriever implements PlanRetriever {
     try (Connection conn = ds.getConnection();) {
       conn.setAutoCommit(false);
       try (Statement stIni = conn.createStatement();) {
-        boolean p1 = stIni.execute("set showplan_" + variationKeyword + " on");
+        stIni.execute("set showplan_" + variationKeyword + " on");
         try (Statement st = conn.createStatement();) {
           SQLServerPlanSQL pp = new SQLServerPlanSQL(execution.getSQL(), execution.getSetters());
           String sql = pp.render();
