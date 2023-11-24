@@ -195,7 +195,7 @@ public class DB2CTPPlanRetriever implements CTPPlanRetriever {
         psd.execute(); // clean up previous plans, if any
 
         String planSave = "explain plan set querytag='" + uuid + "' for\n" + execution.getSQL();
-        System.out.println("--- planSave ---\n" + planSave + "\n------------------------");
+//        System.out.println("--- planSave ---\n" + planSave + "\n------------------------");
         try (PreparedStatement ps = conn.prepareStatement(planSave);) {
           for (Setter s : execution.getSetters()) {
             s.applyTo(ps);

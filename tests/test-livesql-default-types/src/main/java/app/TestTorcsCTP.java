@@ -61,16 +61,14 @@ public class TestTorcsCTP {
       System.out.println("[ Torcs Starting example ]");
 
 //      this.executeSampleSql();
-//      this.executeSelect();
-      this.executeSelect2();
+      this.executeSelect();
+//      this.executeSelect2();
 
       System.out.println("-- Ranking ---");
       for (RankingEntry re : this.torcs.getDefaultRanking().getEntries()) {
-        System.out.println(re);
-//        String plan = this.torcs.getEstimatedExecutionPlan(re.getSlowestExecution());
-        List<String> ctp = this.torcsCTP.getEstimatedCTPExecutionPlan(re.getSlowestExecution());
-        System.out.println("CTP Plan:");
-        ctp.stream().forEach(l -> System.out.println(l));
+        System.out.println("SQL:\n" + re.getSQL() + "\nCTP Plan:");
+        this.torcsCTP.getEstimatedCTPExecutionPlan(re.getSlowestExecution()).stream()
+            .forEach(l -> System.out.println(l));
       }
       System.out.println("-- End of Ranking ---");
 
