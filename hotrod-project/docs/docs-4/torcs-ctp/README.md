@@ -30,8 +30,7 @@ The module is enabled by adding the dependency to Maven's pom.xml, as in:
   </dependency>
 ```
 
-Torcs CTP automatically includes Torcs behind the scenes, so there's no need to declare the Torcs dependency. Torcs in its own, also comes with auto-start configuration and there's no need to do anything to start it up apart
-from the dependency declaration above. To use Torcs CTP and Torcs, any Spring bean can declare an autowired properties, such as:
+Torcs CTP automatically includes Torcs behind the scenes, so there's no need to declare the Torcs dependency. Torcs in its own, also comes with auto-start configuration and there's no need to do anything to start it up apart from the dependency declaration above. To use Torcs CTP and Torcs, any Spring bean can declare an autowired properties, such as:
 
 ```java
   @Autowired
@@ -55,7 +54,7 @@ To visualize the execution plan for the slowest query &mdash; the first one in t
   plan.stream().forEach(l -> System.out.println(l));
 ```
 
-The plan is generated as a list of line strings. For convenience the string has been compressed into the web safe Base-64 format, to look like:
+The plan is generated as a list of line strings. For convenience the string has been compressed into the web safe Base-64 format, to look like (a simplified plan, not real):
 
 ```txt
 {1/9:7VTNbzUoj4uTSVd2d2bfeWn00bkbRWYlokRC3XdksgjoPjqEJVn4Gn4EW4ceGAOMCdE2/Ajdm106ZphHgAFDmJv/nmm8/jmb2o1U+zPA2L+k6t}
@@ -69,14 +68,14 @@ The plan is generated as a list of line strings. For convenience the string has 
 {9/9:aNj0vry1/n0duPT46ffHr27cfnB96Xhz/v33kU/25/P+59ePr47tc/}
 ```
 
-Go to https://checktheplan.com, copy these lines in it, and click on "Check". The plan is displayed in tree format.
+You can go to https://checktheplan.com, copy these lines in it, and click on "Check". The plan is displayed in tree format.
 
 
 ## Generic Visualization
 
 Nonwithstanding the source database of the plan, they are all visualized in the same way. In the end, all plans are trees of operators with leaf nodes that represent data access into the tablespaces of the database.
 
-Details on the different available views, operator properties, and highlights are available in the Help of the web s
+Details on the different views available, operator properties, and highlights are available in the Help of the web site.
 
 
 ## Log Resistant Format
