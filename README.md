@@ -16,8 +16,8 @@ See HotRod in action with the [Hello World Example](./hotrod-project/docs/docs-4
 
 ## Modules
 
-HotRod functionality is divided into four modules serving different purposes. From simple
-out-of-the-box functionality available for CRUD and LiveSQL to advanced querying capabilities provided by Nitro and query optimization with Torcs.
+The HotRod functionality is divided into five modules serving different purposes. From simple
+out-of-the-box functionality available in CRUD and LiveSQL to advanced querying capabilities provided by Nitro and query optimization with Torcs and Torcs CTP.
 
 These modules are:
 
@@ -25,6 +25,7 @@ These modules are:
 - [LiveSQL](./hotrod-project/docs/docs-4/livesql/README.md) &mdash; Flexible querying from Java
 - [Nitro](./hotrod-project/docs/docs-4/nitro/README.md) &mdash; All the power of [Dynamic SQL](nitro/nitro-dynamic-sql.md) combined with [Graph Queries](nitro/nitro-graph-selects.md) and Native SQL when you need it
 - [Torcs](./hotrod-project/docs/docs-4/torcs/README.md) &mdash; Detect slow queries at runtime and analyze them
+- [Torcs CTP](./hotrod-project/docs/docs-4/torcs-ctp/README.md) &mdash; Generate execution plans of slow queries to visualize in Check The Plan
 
 
 ## Reference
