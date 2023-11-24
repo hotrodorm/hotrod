@@ -2,18 +2,18 @@
 
 Torcs CTP produces execution plans in *Check The Plan* format, to be visualized in the https://checktheplan.com web site.
 
-It's available for Oracle, DB2, PostgreSQL, and SQL Server databases only. Behind the scenes, it uses Torcs to find slow queries and their samples. With that Torcs CTP can generate plans using the databases internal information.
+It's available for Oracle, DB2 LUW, PostgreSQL, and SQL Server databases. Behind the scenes, it uses Torcs to find slow queries and their samples. With that Torcs CTP can generate plans using the databases internal information.
 
 Torcs CTP is available since HotRod version 4.4.
 
 Even though it's a part of HotRod, Torcs CTP only requires Torcs and can be used separatedly without the entire HotRod ORM, in any Spring or SpringBoot application.
 
-Torcs CTP is not to be confused with the Torcs module. The latter is the engine that finds slow queries and generates generic execution plans. Torcs CTP is shipped separately from Torcs, since many applications may want to use plain Torcs and not Torcs CTP.
+Torcs CTP is not to be confused with the Torcs module. The latter is the engine that finds slow queries and generates generic execution plans, while Torcs CTP generated enhanced plans. It's shipped separately from Torcs, since many applications may want to use the plain Torcs module and not Torcs CTP.
 
 
 ## Limitations
 
-Torcs CTP only produces plans for four databases. Namely: Oracle, DB2, PostreSQL, and SQL Server.
+Torcs CTP only produces plans for four databases. Namely: Oracle, DB2 LUW, PostreSQL, and SQL Server.
 
 The strategy to generate plans depends on the database account having privileges to SELECT from the information schema tables. Some highly secured database setups could prevent this access.
 
@@ -30,7 +30,7 @@ The module is enabled by adding the dependency to Maven's pom.xml, as in:
   </dependency>
 ```
 
-Torcs CTP automatically includes Torcs behind the scenes, so there's no need to include the Torcs dependency. Torcs in its own, also comes with auto-start configuration and there's no need to do anything to start it up apart
+Torcs CTP automatically includes Torcs behind the scenes, so there's no need to declare the Torcs dependency. Torcs in its own, also comes with auto-start configuration and there's no need to do anything to start it up apart
 from the dependency declaration above. To use Torcs CTP and Torcs, any Spring bean can declare an autowired properties, such as:
 
 ```java
