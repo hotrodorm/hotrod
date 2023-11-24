@@ -82,8 +82,6 @@
     <module>hotrod-archetype-sm-jar-app</module>
     <module>hotrod-torcs</module>
     <module>hotrod-torcs-ctp</module>
-    <!-- 
-    -->
   </modules>
 
   <build>

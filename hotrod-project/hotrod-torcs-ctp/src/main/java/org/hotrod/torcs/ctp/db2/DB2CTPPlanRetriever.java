@@ -199,15 +199,10 @@ public class DB2CTPPlanRetriever implements CTPPlanRetriever {
         try (PreparedStatement ps = conn.prepareStatement(planSave);) {
           for (Setter s : execution.getSetters()) {
             s.applyTo(ps);
-//            System.out.println("--- Setting Param: " + p);
-//            ps.setInt(1, 15);
-//            ps.setObject(1, 15, java.sql.Types.NUMERIC);
-//            ps.setObject(p.getIndex(), p.getValue(), p.getType());
           }
           ps.execute(); // save the plan
 
           String extractPlan = DB2_CTP1_PLAN_HEAD + uuid + DB2_CTP1_PLAN_TAIL;
-//          System.out.println("--- extractPlan ---\n" + extractPlan + "\n------------------------");
           try (PreparedStatement pse = conn.prepareStatement(extractPlan);) {
             try (ResultSet rs = pse.executeQuery();) {
               StringBuilder sb = new StringBuilder();

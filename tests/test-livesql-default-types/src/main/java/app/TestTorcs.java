@@ -27,8 +27,8 @@ import app.daos.primitives.BranchDAO.BranchTable;
 import app.daos.primitives.InvoiceDAO;
 import app.daos.primitives.InvoiceDAO.InvoiceTable;
 
-@Configuration
-@SpringBootApplication
+//@Configuration
+//@SpringBootApplication
 @ComponentScan(basePackageClasses = LiveSQL.class)
 @MapperScan(basePackageClasses = LiveSQL.class)
 @MapperScan("mappers")
