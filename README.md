@@ -11,7 +11,21 @@ For documentation on the previous version see [HotRod 3 Documentation](./hotrod-
 
 ## Hello World
 
-See HotRod in action with the [Hello World Example](./hotrod-project/docs/docs-4/guides/hello-world.md).
+See HotRod in action with the [Hello World Example](./hotrod-project/docs/docs-4/guides/hello-world.md). It demonstrates a basic use of CRUD by reading a row using a primary key, and also a LiveSQL join between two tables. These queries can take the form:
+
+```java
+  Employee emp = this.employeeDAO.select(1045); // selects by PK value
+
+  EmployeeTable e = EmployeeDAO.newTable("e");
+  BranchTable b = BranchDAO.newTable("b");
+
+  List<Row> rows = this.sql
+    .select(e.star(), b.branchName)
+    .from(e)
+    .join(b, b.id.eq(e.branchId))
+    .where(e.lastName.like("%Smith%"))
+    .execute();
+```
 
 
 ## Modules
