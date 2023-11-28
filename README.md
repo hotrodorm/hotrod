@@ -28,7 +28,7 @@ It also shows a simple join between two tables using LiveSQL:
     .from(e)
     .join(b, b.id.eq(e.branchId))
     .where(e.lastName.lower().like("%smith%").and(b.type.in(2, 6, 7)))
-    .orderBy(b.name, e.updatedAt.desc())
+    .orderBy(b.name, e.lastName.desc())
     .execute();
 ```
 
