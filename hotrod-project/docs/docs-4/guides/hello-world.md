@@ -335,6 +335,15 @@ public class App {
 }
 ```
 
+The LiveSQL above executes the following query:
+
+```sql
+    SELECT e.*, b.name AS "BranchName"
+    FROM employee e
+    JOIN branch b ON b.id = e.branch_id
+    WHERE lower(e.last_name) LIKE '%smith%' AND b.type IN (2, 6, 7)
+    ORDER BY b.name, e.last_name DESC
+```
 
 ### Prepare the Runtime Properties File
 
@@ -377,15 +386,7 @@ Employees with last names that include smith from branches of type 1, 6, or 7:
 
 We can see:
 - The CRUD query `select id, name from employee where id = 123081` was run and returned 1 row.
-- The LiveSQL query shown below returned 3 rows:
-
-```sql
-    SELECT e.*, b.name AS "BranchName"
-    FROM employee e
-    JOIN branch b ON b.id = e.branch_id
-    WHERE lower(e.last_name) LIKE '%smith%' AND b.type IN (2, 6, 7)
-    ORDER BY b.name, e.last_name DESC
-```
+- The LiveSQL query returned 3 rows using the correct search criteria and ordering.
 
 That's it! You just generated the persistence code from the database and ran an app using it. Later on, when the
 database suffers changes (it will), you can just rerun the generation step to apply the changes of columns, tables,
