@@ -24,7 +24,7 @@ It also shows a simple join between two tables using LiveSQL:
   BranchTable b = BranchDAO.newTable("b");
 
   List<Row> rows = this.sql
-    .select(e.star(), b.branchName)
+    .select(e.star(), b.name.as("branchName"))
     .from(e)
     .join(b, b.id.eq(e.branchId))
     .where(e.lastName.like("%Smith%"))
