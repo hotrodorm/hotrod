@@ -228,7 +228,7 @@ We see the code generation details:
 [INFO] Table BRANCH included.
 [INFO] Table EMPLOYEE included.
 [INFO]  
-[INFO] Total of: 1 table, 0 views, 0 enums, 0 DAOs, and 0 sequences
+[INFO] Total of: 2 tables, 0 views, 0 enums, 0 DAOs, and 0 sequences -- including 0 select methods, and 0 query methods.
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
@@ -276,6 +276,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import app.daos.EmployeeVO;
+import app.daos.primitives.BranchDAO;
+import app.daos.primitives.BranchDAO.BranchTable;
 import app.daos.primitives.EmployeeDAO;
 import app.daos.primitives.EmployeeDAO.EmployeeTable;
 
@@ -313,14 +315,18 @@ public class App {
 
   private void demoLiveSQL() {
 
-    System.out.println("Employees with names that start with 'A':");
+    System.out.println("Employees with last names that include smith from branches of type 1, 6, or 7:");
+
     EmployeeTable e = EmployeeDAO.newTable("e");
+    BranchTable b = BranchDAO.newTable("b");
 
     List<Row> rows = this.sql
-        .select()
-        .from(e)
-        .where(e.name.like("A%"))
-        .execute();
+      .select(e.star(), b.name.as("branchName"))
+      .from(e)
+      .join(b, b.id.eq(e.branchId))
+      .where(e.lastName.lower().like("%smith%").and(b.type.in(2, 6, 7)))
+      .orderBy(b.name, e.updatedAt.desc())
+      .execute();
 
     rows.stream().forEach(r -> System.out.println(r));
 
