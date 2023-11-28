@@ -377,14 +377,14 @@ Employees with last names that include smith from branches of type 1, 6, or 7:
 ```
 
 We can see:
-- The CRUD SQL statement `select id, name from employee where id = 123081` was run and returned 1 row.
-- The LiveSQL SQL statement below returned 2 rows:
+- The CRUD query `select id, name from employee where id = 123081` was run and returned 1 row.
+- The LiveSQL query shown below returned 3 rows:
 
 ```sql
-    SELECT e.*, b.name as "BranchName"
+    SELECT e.*, b.name AS "BranchName"
     FROM employee e
     JOIN branch b ON b.id = e.branch_id
-    WHERE lower(e.last_name) like '%smith%' AND b.type IN (2, 6, 7)
+    WHERE lower(e.last_name) LIKE '%smith%' AND b.type IN (2, 6, 7)
     ORDER BY b.name, e.last_name DESC
 ```
 
