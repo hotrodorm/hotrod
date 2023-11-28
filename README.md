@@ -14,7 +14,7 @@ For documentation on the previous version see [HotRod 3 Documentation](./hotrod-
 See HotRod in action with the [Hello World Example](./hotrod-project/docs/docs-4/guides/hello-world.md). It demonstrates the use of CRUD by reading a row using a primary key, as in:
 
 ```java
-  EmployeeVO emp = this.employeeDAO.select(1045);
+  EmployeeVO emp = this.employeeDAO.select(134081);
 ```
 
 It also shows a simple join between two tables using LiveSQL:

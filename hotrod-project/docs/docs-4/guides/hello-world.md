@@ -65,13 +65,13 @@ The complete `pom.xml` file will look like:
     <dependency> <!-- Required. The main HotRod library -->
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod</artifactId>
-      <version>4.0.0</version>
+      <version>4.4.0</version>
     </dependency>
 
     <dependency> <!-- Required. HotRod's LiveSQL library -->
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
-      <version>4.0.0</version>
+      <version>4.4.0</version>
     </dependency>
 
     <dependency> <!-- Required. The generator uses MyBatis for database connectivity -->
@@ -108,7 +108,7 @@ The complete `pom.xml` file will look like:
       <plugin>
         <groupId>org.hotrodorm.hotrod</groupId>
         <artifactId>hotrod-maven-plugin</artifactId>
-        <version>4.0.0</version>
+        <version>4.4.0</version>
         <configuration>
           <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
           <jdbcurl>jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1</jdbcurl>
@@ -135,7 +135,7 @@ The complete `pom.xml` file will look like:
 Also, create the empty source folders, if they are not yet created. In linux you can do:
 
 ```bash
-mkdir -p src/main/java
+mkdir -p src/main/java/app
 mkdir -p src/main/resources
 ```
 
@@ -160,16 +160,38 @@ In this part we create an in-memory table in H2 database and we generate the per
 Create the file `schema.sql` with the following SQL content:
 
 ```sql
+drop table if exists branch; 
 drop table if exists employee; 
+
+create table branch (
+  id int primary key not null,
+  name varchar(15) not null,
+  type int
+);
+
+insert into branch (id, name, type) values
+  (1, 'South', 5),
+  (2, 'North', 2),
+  (3, 'Mountain', 4),
+  (4, 'VIP', 4),
+  (5, 'West', 6),
+  (6, 'East Coast', 6),
+  (7, 'Lakeside', 7);
 
 create table employee (
   id int primary key not null,
-  name varchar(20) not null
+  first_name varchar(20) not null,
+  last_name varchar(20) not null,
+  branch_id int references branch (id)
 );
 
-insert into employee (id, name) values (45, 'Anne');
-insert into employee (id, name) values (123, 'Alice');
-insert into employee (id, name) values (6097, 'Steve');
+insert into employee (id, first_name, last_name, branch_id) values
+  (101457, 'Anne', 'Smith', 2),
+  (609792, 'Steve', 'Locksmith', 6),
+  (899288, 'Ronald', 'Kaminkow', 7),
+  (134081, 'Alice', 'Badell', 1),
+  (207121, 'Julia', 'Whitesmith', 2),
+  (610043, 'John', 'Gardener', 4);
 ```
 
 
@@ -191,7 +213,7 @@ We see the code generation details:
 [INFO] --------------------------------[ jar ]---------------------------------
 [INFO] 
 [INFO] --- hotrod-maven-plugin:4.0.0 (default-cli) @ myapp ---
-[INFO] HotRod version 4.0.0 (build 20221102-152614) - Generate
+[INFO] HotRod version 4.4.0 (build 20221102-152614) - Generate
 [INFO] Database URL: jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1
 [INFO] Database Name: H2 - version 2.1 (2.1.214 (2022-06-13))
 [INFO] JDBC Driver: H2 JDBC Driver - version 2.1 (2.1.214 (2022-06-13)) - implements JDBC Specification 4.2
@@ -203,6 +225,7 @@ We see the code generation details:
 [INFO] 
 [INFO] Generating all facets.
 [INFO]  
+[INFO] Table BRANCH included.
 [INFO] Table EMPLOYEE included.
 [INFO]  
 [INFO] Total of: 1 table, 0 views, 0 enums, 0 DAOs, and 0 sequences
@@ -277,20 +300,18 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       System.out.println("[ Starting example ]");
-      demo();
+      demoCRUD();
+      demoLiveSQL();
       System.out.println("[ Example complete ]");
     };
   }
 
-  private void demo() {
-
-    // 1. Use CRUD to search for employee #123
-
-    Integer id = 123;
-    EmployeeVO vo = this.employeeDAO.select(id);
+  private void demoCRUD() {
+    EmployeeVO vo = this.employeeDAO.select(134081);
     System.out.println("Employee #" + id + " Name: " + vo.getName());
+  }
 
-    // 2. Use LiveSQL to search for employees whose name starts with 'A'
+  private void demoLiveSQL() {
 
     System.out.println("Employees with names that start with 'A':");
     EmployeeTable e = EmployeeDAO.newTable("e");
@@ -302,8 +323,6 @@ public class App {
         .execute();
 
     rows.stream().forEach(r -> System.out.println(r));
-
-    // 3. Add a configuration file (not included in this example) to define Nitro queries
 
   }
 
