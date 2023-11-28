@@ -338,7 +338,7 @@ public class App {
 The LiveSQL above executes the following query:
 
 ```sql
-    SELECT e.*, b.name AS "BranchName"
+    SELECT e.*, b.name AS "branchName"
     FROM employee e
     JOIN branch b ON b.id = e.branch_id
     WHERE lower(e.last_name) LIKE '%smith%' AND b.type IN (2, 6, 7)
