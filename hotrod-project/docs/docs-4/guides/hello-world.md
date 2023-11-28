@@ -344,7 +344,6 @@ The runtime properties are used when running the application. Create the file `a
 # General configuration of the app
 
 mybatis.mapper-locations=mappers/**/*.xml
-
 logging.level.root=INFO
 
 # Default datasource configuration
