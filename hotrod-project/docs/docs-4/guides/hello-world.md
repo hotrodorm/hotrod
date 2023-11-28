@@ -310,7 +310,7 @@ public class App {
 
   private void demoCRUD() {
     EmployeeVO vo = this.employeeDAO.select(134081);
-    System.out.println("Employee #" + id + " Name: " + vo.getName());
+    System.out.println("Employee #123081's name: " + emp.getFirstName());
   }
 
   private void demoLiveSQL() {
@@ -325,7 +325,7 @@ public class App {
       .from(e)
       .join(b, b.id.eq(e.branchId))
       .where(e.lastName.lower().like("%smith%").and(b.type.in(2, 6, 7)))
-      .orderBy(b.name, e.updatedAt.desc())
+      .orderBy(b.name, e.lastName.desc())
       .execute();
 
     rows.stream().forEach(r -> System.out.println(r));
@@ -343,6 +343,8 @@ The runtime properties are used when running the application. Create the file `a
 ```properties
 # General configuration of the app
 
+mybatis.mapper-locations=mappers/**/*.xml
+
 logging.level.root=INFO
 
 # Default datasource configuration
@@ -351,7 +353,6 @@ spring.datasource.driver-class-name=org.h2.Driver
 spring.datasource.url=jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1
 spring.datasource.username=sa
 spring.datasource.password=
-mybatis.mapper-locations=mappers/**/*.xml
 ```
 
 
@@ -367,16 +368,25 @@ The Spring Boot application starts, connects to the database and run both querie
 
 ```log
 [ Starting example ]
-Employee #123 Name: Alice
-Employees with names that start with 'A':
-{name=Anne, id=45}
-{name=Alice, id=123}
+Employee #123081's name: Alice
+Employees with last names that include smith from branches of type 1, 6, or 7:
+{firstName=Steve, lastName=Locksmith, branchId=6, branchName=East Coast, id=609792}
+{firstName=Julia, lastName=Whitesmith, branchId=2, branchName=North, id=207121}
+{firstName=Anne, lastName=Smith, branchId=2, branchName=North, id=101457}
 [ Example complete ]
 ```
 
 We can see:
-- The CRUD SQL statement `select id, name from employee where id = 123` was run and returned 1 row.
-- The LiveSQL SQL statement `SELECT * FROM employee WHERE name like 'A%'` was run and returned 2 rows.
+- The CRUD SQL statement `select id, name from employee where id = 123081` was run and returned 1 row.
+- The LiveSQL SQL statement below returned 2 rows:
+
+```sql
+    SELECT e.*, b.name as "BranchName"
+    FROM employee e
+    JOIN branch b ON b.id = e.branch_id
+    WHERE lower(e.last_name) like '%smith%' AND b.type IN (2, 6, 7)
+    ORDER BY b.name, e.last_name DESC
+```
 
 That's it! You just generated the persistence code from the database and ran an app using it. Later on, when the
 database suffers changes (it will), you can just rerun the generation step to apply the changes of columns, tables,
