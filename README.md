@@ -27,7 +27,7 @@ It also shows a simple join between two tables using LiveSQL:
     .select(e.star(), b.name.as("branchName"))
     .from(e)
     .join(b, b.id.eq(e.branchId))
-    .where(e.lastName.like("%Smith%"))
+    .where(e.lastName.lower().like("%mith%").and(b.type.in(2, 6, 7)))
     .execute();
 ```
 
