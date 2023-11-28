@@ -309,7 +309,7 @@ public class App {
   }
 
   private void demoCRUD() {
-    EmployeeVO vo = this.employeeDAO.select(134081);
+    EmployeeVO emp = this.employeeDAO.select(134081);
     System.out.println("Employee #123081's name: " + emp.getFirstName());
   }
 
