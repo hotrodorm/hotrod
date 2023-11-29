@@ -315,7 +315,7 @@ public class App {
 
   private void demoLiveSQL() {
 
-    System.out.println("Employees with last names that include smith from branches of type 1, 6, or 7:");
+    System.out.println("Employees with last names that include smith from branches of type 2, 6, or 7:");
 
     EmployeeTable e = EmployeeDAO.newTable("e");
     BranchTable b = BranchDAO.newTable("b");
@@ -335,7 +335,7 @@ public class App {
 }
 ```
 
-The LiveSQL above executes the following query:
+The LiveSQL code above executes the following query:
 
 ```sql
     SELECT e.*, b.name AS "branchName"
