@@ -338,11 +338,11 @@ public class App {
 The LiveSQL code above executes the following query:
 
 ```sql
-    SELECT e.*, b.name AS "branchName"
-    FROM employee e
-    JOIN branch b ON b.id = e.branch_id
-    WHERE lower(e.last_name) LIKE '%smith%' AND b.type IN (2, 6, 7)
-    ORDER BY b.name, e.last_name DESC
+  SELECT e.*, b.name AS "branchName"
+  FROM employee e
+  JOIN branch b ON b.id = e.branch_id
+  WHERE lower(e.last_name) LIKE '%smith%' AND b.type IN (2, 6, 7)
+  ORDER BY b.name, e.last_name DESC
 ```
 
 ### Prepare the Runtime Properties File
