@@ -11,15 +11,6 @@ Tables and views are modeled as value objects (VOs) and their columns are modele
 The persistence methods to retrieve and update data are modeled in separate Data Access Objects (DAOs) with
 methods for each one.
 
-> [!NOTE]
-> :warning: Check this is correct!
-
-> [!IMPORTANT]
-> :warning: Check this is correct!
-
-> [!WARNING]
-> :warning: Check this is correct!
-
 The CRUD model is also used by LiveSQL queries and by Nitro's graph selects.
 
 
@@ -41,7 +32,6 @@ The generated methods differ between a table and a view:
 | -- | :--: | :--: | :--: |
 | [Select by Primary Key](./select-by-primary-key.md) | :heavy_check_mark: | &mdash; | &mdash; |
 | [Select by Unique Index](./select-by-unique-index.md) | :heavy_check_mark: | &mdash; | &mdash; |
-| `Select by Index Range` | :heavy_check_mark: | :heavy_check_mark: | &mdash; |
 | [Select by Example](./select-by-example.md) | :heavy_check_mark: | :heavy_check_mark: | &mdash; |
 | [Select by Criteria](./select-by-criteria.md) | :heavy_check_mark: | :heavy_check_mark: | &mdash; |
 | [Select Parent by Foreign Key](./select-parent-by-foreign-key.md) | :heavy_check_mark: | &mdash; | &mdash; |
@@ -53,19 +43,14 @@ The generated methods differ between a table and a view:
 | [Delete by Primary Key](./delete-by-primary-key.md) | :heavy_check_mark: | :heavy_check_mark: [^1] | :heavy_check_mark: |
 | [Delete by Example](./delete-by-example.md) | :heavy_check_mark: | :heavy_check_mark: [^1] | &mdash; |
 
-**Note**: Prepend "\_NoIndex\_" to selectChildren() when there's no index in the exported key. Alternatively,
-mark the method as "Deprecated".
 
-
-[^1]: CRUD does not make a strong differentiation between tables and views. Typically databases do not inform 
+[^1]: CRUD does not make a strong differentiation between tables and views. Typically databases do not inform
 if a view is updatable or not, so CRUD adds data modification methods to all view DAOs. It's up to the developer
-to decide if these methods can actually be used on each view or not. By and large databases consider a view 
-updatable if it does have a 1:1 relationship with the underlying *driving* table and the primary key of this 
-table is available in the result set of the view. This is not written in stone, however, so it's crucial to 
+to decide if these methods can actually be used on each view or not. By and large databases consider a view updatable if it does have a 1:1 relationship with the underlying *driving* table and the primary key of this
+table is available in the result set of the view. This is not written in stone, however, so it's crucial to
 consult the specific database documentation to decide on this.
 
-Extra queries can be added to these DAOS as methods by combining [Nitro](../nitro/nitro.md) functionality into 
-CRUD DAOs.
+Also, note that extra queries can be added to these DAOS as methods by combining [Nitro](../nitro/nitro.md) functionality into CRUD DAOs.
 
 
 ## Configuration

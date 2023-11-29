@@ -46,6 +46,19 @@ These modules are:
 - [Torcs](./hotrod-project/docs/docs-4/torcs/README.md) &mdash; Detect slow queries at runtime and analyze them
 - [Torcs CTP](./hotrod-project/docs/docs-4/torcs-ctp/README.md) &mdash; Generate execution plans of slow queries and visualize them in Check The Plan
 
+## Examples
+
+See [Hello CRUD!](./hotrod-project/docs/docs-4/crud/hello-crud.md) for the out-of-the-box functionality and its basic setup and to run other CRUD examples. 
+
+<!--
+For the basic usage of each module and more examples of each one see:
+ - [Hello CRUD]() &amp; more [CRUD Examples]().
+ - [Hello LiveSQL]() &amp; more [LiveSQL Examples]().
+ - [Hello Nitro]() &amp; more [Nitro Examples]().
+ - [Hello Torcs]() &amp; more [Torcs Examples]().
+ - [Hello Torcs CTP]() &amp; more Torcs CTP Examples]().
+-->
+
 
 ## Reference
 
