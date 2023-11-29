@@ -26,13 +26,10 @@ This can be written in LiveSQL as:
 AccountTable a = AccountDAO.newTable("a");
 ContractorTable c = ContractorDAO.newTable("c");
 
-List<Row> rows = sql.select(a.id, a.name)
-    .from(a)
-    .where(a.region.eq(1201))
+List<Row> rows = sql
+    .select(a.id, a.name) .from(a) .where(a.region.eq(1201))
     .union()
-    .select(c.cid, a.contractorName)
-    .from(c)
-    .where(c.regionId.eq(1201))
+    .select(c.cid, a.contractorName) .from(c) .where(c.regionId.eq(1201))
     .execute();
 ```
 
