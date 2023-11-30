@@ -32,19 +32,22 @@ on the database.
 The generated methods differ between a table and a view:
 
 abc$\color{blue}{Col2}$$\color{blue}{Col2}$def
+
 abc $\color{blue}{Col2}$ $\color{blue}{Col2}$ def
+
 abc$\color{blue}{Col2}$ $\color{blue}{Col2}$def
+
 abc$\color{blue}{Col2}$ $\color{blue}{Col2}$ def
 
 
 | Persistence Method | Method on Table Entity | Method on View Entity | Optimistic Locking |
 | -- | :-- | :-- | :--: |
 | [Select by Primary Key](./select-by-primary-key.md) | select($\color{red}{pkColumns...}$) | &mdash; | &mdash; |
-| [Select by Unique Index](./select-by-unique-index.md) | selectByUI $\color{red}{Col1}$$\color{blue}{Col2}$ ($\color{red}{Col1}$, $\color{blue}{Col2}$) | &mdash; | &mdash; |
+| [Select by Unique Index](./select-by-unique-index.md) | selectByUI $\color{red}{Col1}$ $\color{blue}{Col2}$ ($\color{red}{Col1}$, $\color{blue}{Col2}$ ) | &mdash; | &mdash; |
 | [Select by Example](./select-by-example.md) | select(example) | select(example) | &mdash; |
 | [Select by Criteria](./select-by-criteria.md) | select(t, predicate) | select(v, predicate) | &mdash; |
-| [Select Parent by Foreign Key](./select-parent-by-foreign-key.md) | selectParentProductOf(h).fromProductId().toId() | &mdash; | &mdash; |
-| [Select Children by Foreign Key](./select-children-by-foreign-key.md) | selectChildrenPriceOf(p).fromId().toProductId() | &mdash; | &mdash; |
+| [Select Parent by Foreign Key](./select-parent-by-foreign-key.md) | selectParent $\color{red}{Product}$ Of(h).from $\color{red}{ProductId}$ ().to $\color{blue}{Id}$ () | &mdash; | &mdash; |
+| [Select Children by Foreign Key](./select-children-by-foreign-key.md) | selectChildren $\color{red}{Price}$ Of(p).from $\color{red}{Id}$ ().to $\color{blue}{ProductId}$ () | &mdash; | &mdash; |
 | [Insert](./insert.md) | insert(model) | &mdash; | &mdash; |
 | [Insert By Example](./insert-by-example.md) | &mdash; | insert(model) [^1] | &mdash; |
 | [Update By Primary Key](./update-by-primary-key.md) | update(model) | &mdash; | :heavy_check_mark: |
