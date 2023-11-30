@@ -31,10 +31,16 @@ on the database.
 
 The generated methods differ between a table and a view:
 
+abc$\color{blue}{Col2}$$\color{blue}{Col2}$def
+abc $\color{blue}{Col2}$ $\color{blue}{Col2}$ def
+abc$\color{blue}{Col2}$ $\color{blue}{Col2}$def
+abc$\color{blue}{Col2}$ $\color{blue}{Col2}$ def
+
+
 | Persistence Method | Method on Table Entity | Method on View Entity | Optimistic Locking |
 | -- | :-- | :-- | :--: |
 | [Select by Primary Key](./select-by-primary-key.md) | select($\color{red}{pkColumns...}$) | &mdash; | &mdash; |
-| [Select by Unique Index](./select-by-unique-index.md) | selectByUI$\color{red}{Col1}$$\color{blue}{Col2}$($\color{red}{Col1}$, $\color{blue}{Col2}$) | &mdash; | &mdash; |
+| [Select by Unique Index](./select-by-unique-index.md) | selectByUI $\color{red}{Col1}$$\color{blue}{Col2}$ ($\color{red}{Col1}$, $\color{blue}{Col2}$) | &mdash; | &mdash; |
 | [Select by Example](./select-by-example.md) | select(example) | select(example) | &mdash; |
 | [Select by Criteria](./select-by-criteria.md) | select(t, predicate) | select(v, predicate) | &mdash; |
 | [Select Parent by Foreign Key](./select-parent-by-foreign-key.md) | selectParentProductOf(h).fromProductId().toId() | &mdash; | &mdash; |
