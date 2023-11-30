@@ -31,29 +31,20 @@ on the database.
 
 The generated methods differ between a table and a view:
 
-abc$\color{blue}{Col2}$$\color{blue}{Col2}$def
-
-abc $\color{blue}{Col2}$ $\color{blue}{Col2}$ def
-
-abc$\color{blue}{Col2}$ $\color{blue}{Col2}$def
-
-abc$\color{blue}{Col2}$ $\color{blue}{Col2}$ def
-
-
 | Persistence Method | Method on Table Entity | Method on View Entity | Optimistic Locking |
 | -- | :-- | :-- | :--: |
-| [Select by Primary Key](./select-by-primary-key.md) | select($\color{red}{pkColumns...}$) | &mdash; | &mdash; |
-| [Select by Unique Index](./select-by-unique-index.md) | selectByUI $\color{red}{Col1}$ $\color{blue}{Col2}$ ($\color{red}{Col1}$, $\color{blue}{Col2}$ ) | &mdash; | &mdash; |
+| [Select by Primary Key](./select-by-primary-key.md) | select(<b>pkColumns</b>...) | &mdash; | &mdash; |
+| [Select by Unique Index](./select-by-unique-index.md) | selectByUI<b>Col1Col2...</b>(<b>col1</b>, <b>col2</b>, ...) | &mdash; | &mdash; |
 | [Select by Example](./select-by-example.md) | select(example) | select(example) | &mdash; |
 | [Select by Criteria](./select-by-criteria.md) | select(t, predicate) | select(v, predicate) | &mdash; |
-| [Select Parent by Foreign Key](./select-parent-by-foreign-key.md) | selectParent $\color{red}{Product}$ Of(h).from $\color{red}{ProductId}$ ().to $\color{blue}{Id}$ () | &mdash; | &mdash; |
-| [Select Children by Foreign Key](./select-children-by-foreign-key.md) | selectChildren $\color{red}{Price}$ Of(p).from $\color{red}{Id}$ ().to $\color{blue}{ProductId}$ () | &mdash; | &mdash; |
+| [Select Parent by Foreign Key](./select-parent-by-foreign-key.md) | selectParent<b>Product</b>Of(h).from<b>ProductId</b>().to<b>Id</b>() | &mdash; | &mdash; |
+| [Select Children by Foreign Key](./select-children-by-foreign-key.md) | selectChildren<b>Price</b>Of(p).from<b>Id</b>().to<b>ProductId</b>() | &mdash; | &mdash; |
 | [Insert](./insert.md) | insert(model) | &mdash; | &mdash; |
 | [Insert By Example](./insert-by-example.md) | &mdash; | insert(model) [^1] | &mdash; |
 | [Update By Primary Key](./update-by-primary-key.md) | update(model) | &mdash; | :heavy_check_mark: |
 | [Update by Example](./update-by-example.md) | update(example, newValues) | update(example, newValues) [^1] | &mdash; |
 | [Update by Criteria](./update-by-criteria.md) | update(newValues, t, predicate) | update(newValues, v, predicate) [^1] | &mdash; |
-| [Delete by Primary Key](./delete-by-primary-key.md) | delete(pkColumns...) | &mdash; | :heavy_check_mark: |
+| [Delete by Primary Key](./delete-by-primary-key.md) | delete(<b>pkColumns</b>...) | &mdash; | :heavy_check_mark: |
 | [Delete by Example](./delete-by-example.md) | delete(example) | delete(example) [^1] | &mdash; |
 | [Delete by Criteria](./delete-by-criteria.md) | delete(t, predicate) | delete(v, predicate) [^1] | &mdash; |
 
@@ -63,7 +54,7 @@ to decide if these methods can actually be used on each view or not. By and larg
 table is available in the result set of the view. This is not written in stone, however, so it's crucial to
 consult the specific database documentation to decide on this.
 
-These methods are present or absent according to the specific details of each table or view. For example, if a table does not
+These methods are present or absent according to the specifics of each table. For example, if a table does not
 have a primary key, then the method `select(pkColumns...)` will not be available for that table. Foreign keys and indexes also
 affect the list of available methods in the Entity DAOs.
 
