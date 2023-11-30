@@ -1,6 +1,6 @@
 # Select by Primary Key
 
-The `selectByPK()` method is implemented in DAOs related to a table that has a primary key.
+The `select()` method is implemented in DAOs related to a table that has a primary key.
 
 The method receives as parameter all primary key columns and returns a VO with the selected row.
 
