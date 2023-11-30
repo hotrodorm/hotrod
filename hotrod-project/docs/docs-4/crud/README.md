@@ -74,10 +74,10 @@ general form of Nitro DAOs instead of the bounded form of the Entity DAOs.
 With Discovery Mode enabled CRUD inspects an entire schema or schemas, and automatically generates the persistence
 layer for all tables and views discovered in them.
 
-With Discovery Mode disabled CRUD includes only the tables and views explicitly mentioned in the
+With Discovery Mode disabled CRUD includes only the tables and views explicitly declared in the
 [Configuration File](../config/configuration-file-structure.md).
 
-CRUD can also mix the Discovery Mode with explicitly mentioned tables and views. In this case all tables and views
+CRUD can also mix the Discovery Mode with explicitly declared tables and views. In this case all tables and views
 from both sources make up the persistence layer; the explicit configuration supersedes the details provided by the
 discovery mechanism.
 
