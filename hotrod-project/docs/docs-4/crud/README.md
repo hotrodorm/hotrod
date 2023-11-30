@@ -71,16 +71,17 @@ general form of Nitro DAOs instead of the bounded form of the Entity DAOs.
 
 ## Configuration
 
-With Discovery Mode enabled CRUD inspects an entire schema or schemas, and automatically generated the persistence
-layer for all tables and views discovered in it/them.
+With Discovery Mode enabled CRUD inspects an entire schema or schemas, and automatically generates the persistence
+layer for all tables and views discovered in them.
 
 With Discovery Mode disabled CRUD includes only the tables and views explicitly mentioned in the
 [Configuration File](../config/configuration-file-structure.md).
 
 CRUD can also mix the Discovery Mode with explicitly mentioned tables and views. In this case all tables and views
-from both sources make up the persistence layer; the explicit configuration supersedes the discovery details.
+from both sources make up the persistence layer; the explicit configuration supersedes the details provided by the
+discovery mechanism.
 
-For each table and view inlcuded, CRUD adds one VO and one DAO to the persistence layer. VOs and DAOs are configured
+For each table and view included, CRUD adds one VO and one DAO to the persistence layer. VOs and DAOs are configured
 with the [Generator](../config/tags/mybatis-spring.md) tag. VOs can be further customized with the
 [Table](../config/tags/table.md) and [View](../config/tags/view.md) tags as well as
 with the [Name Solver](../config/tags/name-solver.md) to define rules for VOs, DAOs, and property names, and the
