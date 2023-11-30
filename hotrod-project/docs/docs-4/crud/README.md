@@ -33,7 +33,7 @@ The generated methods differ between a table and a view:
 
 | Persistence Method | Method on Table Entity | Method on View Entity | Optimistic Locking |
 | -- | :-- | :-- | :--: |
-| [Select by Primary Key](./select-by-primary-key.md) | select(<b>pkColumns</b>... <span style="color:orange;">In Orange</span>) | &mdash; | &mdash; |
+| [Select by Primary Key](./select-by-primary-key.md) | select(<b>pkColumns</b>... $\color{green}{test}$) | &mdash; | &mdash; |
 | [Select by Unique Index](./select-by-unique-index.md) | selectByUICol1Col2(indexColumns...) | &mdash; | &mdash; |
 | [Select by Example](./select-by-example.md) | select(example) | select(example) | &mdash; |
 | [Select by Criteria](./select-by-criteria.md) | select(t, predicate) | select(v, predicate) | &mdash; |
