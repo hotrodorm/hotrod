@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<Context antiResourceLocking="true">
+
+  <Manager pathname="" />
+
+  <Resource name="jdbc/myDS" auth="Container" type="javax.sql.DataSource"
+    maxActive="100" maxIdle="30" maxWait="10000" 
+    driverClassName="org.h2.Driver"
+    url="jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1"
+    username="sa"
+    password="" />
+
+<!--
+     url="jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1" 
+ -->
+</Context>
