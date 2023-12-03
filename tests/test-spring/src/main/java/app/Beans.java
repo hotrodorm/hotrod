@@ -23,7 +23,7 @@ public class Beans {
   private static EmployeeDAO employeeDAO;
 
   public static void initialize() throws SQLException {
-    context = new AnnotationConfigApplicationContext(ApplicationConfig.class);
+    context = new AnnotationConfigApplicationContext(ApplicationConfig.class, LiveSQL.class);
     hello = context.getBean(Hello.class);
     bye = context.getBean(Bye.class);
     dataSource = context.getBean(DataSource.class);

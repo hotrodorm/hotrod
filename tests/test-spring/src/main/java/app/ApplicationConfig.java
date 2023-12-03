@@ -3,13 +3,23 @@ package app;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.hotrod.runtime.livesql.LiveSQL;
+import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.dialects.LiveSQLDialectFactory;
+import org.hotrod.runtime.spring.SpringBeanObjectFactory;
+import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jndi.JndiTemplate;
 
 @Configuration
-@ComponentScan(basePackages = "app")
+@ComponentScan(basePackageClasses = ApplicationConfig.class)
+@ComponentScan(basePackageClasses = SpringBeanObjectFactory.class)
+@MapperScan(basePackageClasses = LiveSQL.class)
 public class ApplicationConfig {
 
   @Bean
@@ -24,6 +34,32 @@ public class ApplicationConfig {
     }
     System.out.println("### DATASOURCE 2 - dataSource=" + dataSource);
     return dataSource;
+  }
+
+//  @Bean
+//  public MapperFactoryBean<LiveSQLMapper> liveSQLMapper() throws Exception {
+//    MapperFactoryBean<LiveSQLMapper> factoryBean = new MapperFactoryBean<>(LiveSQLMapper.class);
+//    factoryBean.setSqlSessionFactory(sqlSessionFactory());
+//    return factoryBean;
+//  }
+
+  @Bean
+  public LiveSQLDialect liveSQLDialect(DataSource dataSource) throws Exception {
+    LiveSQLDialect liveSQLDialect = LiveSQLDialectFactory.getLiveSQLDialect(dataSource, null, null, null, null, null);
+    System.out.println("[HotRod auto-config] liveSQLDialect=" + liveSQLDialect);
+    return liveSQLDialect;
+  }
+
+  @Bean
+  public SqlSessionFactory sqlSessionFactory() throws Exception {
+    SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
+    sessionFactory.setDataSource(dataSource());
+    return sessionFactory.getObject();
+  }
+
+  @Bean
+  public SqlSessionTemplate sqlSession(final SqlSessionFactory sqlSessionFactory) throws Exception {
+    return new SqlSessionTemplate(sqlSessionFactory);
   }
 
 }
