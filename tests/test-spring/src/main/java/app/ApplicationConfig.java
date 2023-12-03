@@ -36,13 +36,6 @@ public class ApplicationConfig {
     return dataSource;
   }
 
-//  @Bean
-//  public MapperFactoryBean<LiveSQLMapper> liveSQLMapper() throws Exception {
-//    MapperFactoryBean<LiveSQLMapper> factoryBean = new MapperFactoryBean<>(LiveSQLMapper.class);
-//    factoryBean.setSqlSessionFactory(sqlSessionFactory());
-//    return factoryBean;
-//  }
-
   @Bean
   public LiveSQLDialect liveSQLDialect(DataSource dataSource) throws Exception {
     LiveSQLDialect liveSQLDialect = LiveSQLDialectFactory.getLiveSQLDialect(dataSource, null, null, null, null, null);
