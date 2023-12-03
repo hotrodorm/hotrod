@@ -50,8 +50,6 @@
     <delete includeemptydirs="true">
       <fileset dir="/home/valarcon/apps/apache-tomcat-7.0.67-xc/webapps" includes="**/*" />
     </delete>
-    <!--
-    -->
     <copy file="schema.sql" todir="/home/valarcon/apps/apache-tomcat-7.0.67-xc" />
     <copy file="build/app.war" tofile="/home/valarcon/apps/apache-tomcat-7.0.67-xc/webapps/app.war" />
   </target>
