@@ -24,7 +24,6 @@ public class ApplicationConfig {
 
   @Bean
   public DataSource dataSource() {
-    System.out.println("### DATASOURCE 1");
     DataSource dataSource = null;
     JndiTemplate jndi = new JndiTemplate();
     try {
@@ -32,14 +31,12 @@ public class ApplicationConfig {
     } catch (NamingException e) {
       e.printStackTrace();
     }
-    System.out.println("### DATASOURCE 2 - dataSource=" + dataSource);
     return dataSource;
   }
 
   @Bean
   public LiveSQLDialect liveSQLDialect(DataSource dataSource) throws Exception {
     LiveSQLDialect liveSQLDialect = LiveSQLDialectFactory.getLiveSQLDialect(dataSource, null, null, null, null, null);
-    System.out.println("[HotRod auto-config] liveSQLDialect=" + liveSQLDialect);
     return liveSQLDialect;
   }
 

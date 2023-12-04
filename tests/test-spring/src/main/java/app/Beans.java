@@ -1,7 +1,5 @@
 package app;
 
-import java.sql.SQLException;
-
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -16,7 +14,7 @@ public class Beans {
   private static BranchDAO branchDAO;
   private static EmployeeDAO employeeDAO;
 
-  public static void initialize() throws SQLException {
+  public static void initialize() {
     context = new AnnotationConfigApplicationContext(ApplicationConfig.class, LiveSQL.class);
 
     liveSQL = context.getBean(LiveSQL.class);
