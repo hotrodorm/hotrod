@@ -17,13 +17,25 @@ See HotRod in action with the [Hello World Example](./hotrod-project/docs/docs-4
   EmployeeVO emp = this.employeeDAO.select(134081);
 ```
 
-It also shows a simple join between two tables using LiveSQL:
+The example also selects employees by a complex criteria using LiveSQL:
 
 ```java
-  EmployeeTable e = EmployeeDAO.newTable("e");
-  BranchTable b = BranchDAO.newTable("b");
+  List<EmployeeVO> employees = this.employeeDAO
+    .select(e, e.type.ne("MANAGER").and(sql.exists(
+        sql.select()
+           .from(m)
+           .where(m.branchId.ne(e.branchId).and(m.firstName.eq(e.firstName)))
+        )
+      )
+    )
+    .orderBy(e.branchId.desc(), e.firstName)
+    .execute();
+```
 
-  List<Row> rows = this.sql
+And shows a simple join:
+
+```java
+  List<Row> rows = sql
     .select(e.star(), b.name.as("branchName"))
     .from(e)
     .join(b, b.id.eq(e.branchId))
