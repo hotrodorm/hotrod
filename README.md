@@ -26,7 +26,7 @@ To update the status of an invoice:
 ```
 
 
-## LiveSQL At Your Fingertips
+## The Power Of LiveSQL At Your Fingertips
 
 LiveSQL can express SELECT, UPDATE, DELETE, and INSERT queries. A basic select with a simple condition
 can look like:
