@@ -42,10 +42,10 @@ The criteria can include parenthesis, complex predicates, subqueries, etc. For e
 ```java
   List<Employee> employees = this.employeeDAO
     .select(e, e.type.ne("MANAGER").and(sql.exists(
-        sql.select() .from(m) .where(m.branchId.ne(e.branchId).and(m.firstName.eq(e.firstName)))
+        sql.select().from(m).where(m.branchId.ne(e.branchId).and(m.name.eq(e.name)))
       ))
     )
-    .orderBy(e.branchId.desc(), e.firstName)
+    .orderBy(e.branchId.desc(), e.name.nullsFirst())
     .execute();
 ```
 
