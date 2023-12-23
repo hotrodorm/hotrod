@@ -33,7 +33,7 @@ can look like:
 
 ```java
   List<Employee> employees = this.employeeDAO
-    .select(e, e.branchId.eq(1015).and(e.type.ne("VIP").or(e.regionId.eq(2))))
+    .select(e, e.salary.plus(e.bonuses).ge(40000).and(e.type.ne("VIP")))
     .execute();
 ```
 
@@ -42,11 +42,8 @@ The criteria can include parenthesis, complex predicates, subqueries, etc. For e
 ```java
   List<Employee> employees = this.employeeDAO
     .select(e, e.type.ne("MANAGER").and(sql.exists(
-        sql.select()
-           .from(m)
-           .where(m.branchId.ne(e.branchId).and(m.firstName.eq(e.firstName)))
-        )
-      )
+        sql.select() .from(m) .where(m.branchId.ne(e.branchId).and(m.firstName.eq(e.firstName)))
+      ))
     )
     .orderBy(e.branchId.desc(), e.firstName)
     .execute();
