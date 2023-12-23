@@ -7,7 +7,7 @@ The persistence layer provides CRUD and LiveSQL functionalities to quickly start
 See [What's New](./hotrod-project/docs/docs-4/whats-new.md) in HotRod 4, [Version History](./hotrod-project/docs/version-history.md), and the [Roadmap](./hotrod-project/docs/roadmap.md). For documentation on the previous version see [HotRod 3 Documentation](./hotrod-project/docs/docs-3.4/README.md).
 
 
-## Easy CRUD
+## The Simplicity of CRUD
 
 The out-of-the-box CRUD methods can access rows by primary keys, foreign keys, or by example. SELECT, UPDATE, INSERT, and DELETE methods are automatically included in the CRUD persistence layer.
 
