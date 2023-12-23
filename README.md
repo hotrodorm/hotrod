@@ -45,7 +45,7 @@ The criteria can include parenthesis, complex predicates, subqueries, etc. For e
         sql.select().from(m).where(m.branchId.ne(e.branchId).and(m.name.eq(e.name)))
       ))
     )
-    .orderBy(e.branchId.desc(), e.name.nullsFirst())
+    .orderBy(e.branchId.desc(), e.name)
     .execute();
 ```
 
