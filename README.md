@@ -11,18 +11,35 @@ For documentation on the previous version see [HotRod 3 Documentation](./hotrod-
 
 ## Easy CRUD
 
-The out-of-the-box CRUD methods can access rows by primary keys, foreign keys, or by example. For example:
+The out-of-the-box CRUD methods can access rows by primary keys, foreign keys, or by example. SELECT, UPDATE, INSERT, and DELETE methods are automatically included in the CRUD persistence layer.
+
+For example, to find an employee by primary key:
 
 ```java
   Employee emp = this.employeeDAO.select(134081);
 ```
 
-SELECT, UPDATE, INSERT, and DELETE queries are automatically added to the CRUD persistence layer.
+To update the status of an invoice:
+
+```java
+  Invoice inv = this.invoiceDAO.select(54081);
+  inv.setStatus("PAID");
+  this.invoiceDAO.update(inv);
+```
 
 
 ## Intuitive LiveSQL
 
-LiveSQL can select employees by more complex criteria, including subqueries. For example:
+LiveSQL can express SELECT, UPDATE, DELETE, and INSERT queries. A basic select with a simple condition
+can look like:
+
+```java
+  List<Employee> employees = this.employeeDAO
+    .select(e, e.branchId.eq(1015).and(e.type.ne("VIP").or(e.regionId.eq(2))))
+    .execute();
+```
+
+The criteria can include parenthesis, complex predicates, subqueries, etc. For example, a more complex search condition can take the form:
 
 ```java
   List<Employee> employees = this.employeeDAO
@@ -37,7 +54,7 @@ LiveSQL can select employees by more complex criteria, including subqueries. For
     .execute();
 ```
 
-LiveSQL extensive SQL syntax can express joins, aggregations, functions, subqueries, CTEs, set operators, express complex numeric, string, and boolean expressions anywhere in the queries, and much more. For example a simple join can look like:
+LiveSQL extensive SQL syntax can express complex expressions (numeric, string, date/time, boolean, and binary), joins, aggregations, functions, subqueries, set operators, traditional and recursive CTEs, lateral queries, etc. For example a simple join can look like:
 
 ```java
   List<Row> rows = sql
@@ -46,6 +63,7 @@ LiveSQL extensive SQL syntax can express joins, aggregations, functions, subquer
     .join(b, b.id.eq(e.branchId))
     .where(e.lastName.lower().like("%smith%").and(b.type.in(2, 6, 7)))
     .orderBy(b.name, e.lastName.desc())
+    .limit(50)
     .execute();
 ```
 
