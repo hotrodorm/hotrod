@@ -2,11 +2,9 @@
 
 HotRod 4 is an open source ORM for Spring and Spring Boot geared toward high performance persistence for relational databases.
 
-It generates a persistence layer with minimal to no configuration and the CRUD and LiveSQL functionalities can quickly help to start prototyping an application.
+The persistence layer provides CRUD and LiveSQL functionalities to quickly start prototyping an application.
 
-See [What's New](./hotrod-project/docs/docs-4/whats-new.md) in HotRod 4, [Version History](./hotrod-project/docs/version-history.md), and the [Roadmap](./hotrod-project/docs/roadmap.md).
-
-For documentation on the previous version see [HotRod 3 Documentation](./hotrod-project/docs/docs-3.4/README.md).
+See [What's New](./hotrod-project/docs/docs-4/whats-new.md) in HotRod 4, [Version History](./hotrod-project/docs/version-history.md), and the [Roadmap](./hotrod-project/docs/roadmap.md). For documentation on the previous version see [HotRod 3 Documentation](./hotrod-project/docs/docs-3.4/README.md).
 
 
 ## Easy CRUD
@@ -22,7 +20,7 @@ For example, to find an employee by primary key:
 To update the status of an invoice:
 
 ```java
-  Invoice inv = this.invoiceDAO.select(54081);
+  Invoice inv = this.invoiceDAO.select(5470);
   inv.setStatus("PAID");
   this.invoiceDAO.update(inv);
 ```
@@ -54,7 +52,22 @@ The criteria can include parenthesis, complex predicates, subqueries, etc. For e
     .execute();
 ```
 
-LiveSQL extensive SQL syntax can express complex expressions (numeric, string, date/time, boolean, and binary), joins, aggregations, functions, subqueries, set operators, traditional and recursive CTEs, lateral queries, etc. For example a simple join can look like:
+LiveSQL extensive SQL syntax can express complex expressions (of numeric, string, date/time, boolean, and binary types), functions, joins, aggregations, window functions, ordering, limiting, multilevel subqueries, multilevel set operators, traditional and recursive CTEs, lateral queries, etc. 
+
+A simple join can look like:
+
+```java
+  List<Row> rows = sql
+    .select(e.star(), b.name.as("branchName"))
+    .from(e)
+    .join(b, b.id.eq(e.branchId))
+    .where(e.lastName.lower().like("%smith%").and(b.type.in(2, 6, 7)))
+    .orderBy(b.name, e.lastName.desc())
+    .limit(50)
+    .execute();
+```
+
+While a more complex query can look like:
 
 ```java
   List<Row> rows = sql
