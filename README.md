@@ -33,7 +33,7 @@ can look like:
 
 ```java
   List<Employee> employees = this.employeeDAO
-    .select(e, e.salary.plus(e.bonuses).ge(40000).and(e.type.ne("EXT")))
+    .select(e, e.salary.plus(e.bonuses).ge(40000).and(e.type.in("EXT", "REM")))
     .execute();
 ```
 
