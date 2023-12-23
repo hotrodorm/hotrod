@@ -9,18 +9,23 @@ See [What's New](./hotrod-project/docs/docs-4/whats-new.md) in HotRod 4, [Versio
 For documentation on the previous version see [HotRod 3 Documentation](./hotrod-project/docs/docs-3.4/README.md).
 
 
-## Hello World
+## Easy CRUD
 
-See HotRod in action with the [Hello World Example](./hotrod-project/docs/docs-4/guides/hello-world.md). It demonstrates the use of CRUD by reading a row using a primary key, as in:
+The out-of-the-box CRUD methods can access rows by primary keys, foreign keys, or by example. For example:
 
 ```java
-  EmployeeVO emp = this.employeeDAO.select(134081);
+  Employee emp = this.employeeDAO.select(134081);
 ```
 
-The example also selects employees by a complex criteria using LiveSQL:
+SELECT, UPDATE, INSERT, and DELETE queries are automatically added to the CRUD persistence layer.
+
+
+## Intuitive LiveSQL
+
+LiveSQL can select employees by more complex criteria, including subqueries. For example:
 
 ```java
-  List<EmployeeVO> employees = this.employeeDAO
+  List<Employee> employees = this.employeeDAO
     .select(e, e.type.ne("MANAGER").and(sql.exists(
         sql.select()
            .from(m)
@@ -32,7 +37,7 @@ The example also selects employees by a complex criteria using LiveSQL:
     .execute();
 ```
 
-And shows a simple join:
+LiveSQL extensive SQL syntax can express joins, aggregations, functions, subqueries, CTEs, set operators, express complex numeric, string, and boolean expressions anywhere in the queries, and much more. For example a simple join can look like:
 
 ```java
   List<Row> rows = sql
@@ -43,6 +48,11 @@ And shows a simple join:
     .orderBy(b.name, e.lastName.desc())
     .execute();
 ```
+
+
+## Hello World
+
+See HotRod in action with the [Hello World Example](./hotrod-project/docs/docs-4/guides/hello-world.md). It's a runnable simple example to run the queries shown above.
 
 
 ## Modules
