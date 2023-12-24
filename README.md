@@ -79,7 +79,8 @@ CTE y = sql.cte("y", "aid").as(sql.select(i.accountId)
     .join(p, p.id.eq(l.productId))
     .where(p.shipping.eq(0)));
 
-List<Row> rows = sql.with(x, y)
+List<Row> rows = sql
+    .with(x, y)
     .select(x.star())
     .from(x)
     .leftJoin(y, y.num("aid").eq(x.num("id")))
