@@ -111,7 +111,7 @@ The following query uses Dynamic SQL to assemble the query dynamically and to *a
   </select>
 ```
 
-Nitro makes this query available to be called in Java as:
+Nitro makes this query available in Java as:
 
 ```java
   List<Vehicle> searchVehicles(String brandName, Integer minYear, Integer ordering)
