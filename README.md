@@ -45,7 +45,7 @@ The criteria can include parenthesis, complex predicates, subqueries, etc. The q
         sql.select().from(m).where(m.branchId.ne(e.branchId).and(m.name.eq(e.name)))
       ))
     )
-    .orderBy(e.branchId.desc(), e.name)
+    .orderBy(e.branchId, e.salary.plus(e.bonus).desc())
     .execute();
 ```
 
