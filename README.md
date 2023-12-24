@@ -90,7 +90,9 @@ List<Row> rows = sql
 
 ## The Power of Nitro
 
-Nitro queries enhance SQL capabilities with dynamically assembled SQL queries, graph queries, and access to native SQL features. Any or all of these features can be combined into any SELECT, UPDATE, INSERT, or DELETE, or in any valid database query.
+Nitro queries enhance SQL capabilities with dynamically assembled SQL queries, graph queries, and access to native SQL features. Nitro can be used to gain access to all the features of a database, as well as to squeeze performance from it by tweaking queries.
+
+Any or all of these features can be combined into any SELECT, UPDATE, INSERT, or DELETE, or in any valid database query.
 
 The following query uses Dynamic SQL to assemble the query dynamically and to *apply* parameter values to it. It also uses a piece of Native SQL (an optimizer hint):
 
