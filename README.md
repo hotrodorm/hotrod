@@ -150,7 +150,7 @@ The query is available in Java as:
 
 ## Hello World
 
-See HotRod in action with the [Hello World Example](./hotrod-project/docs/docs-4/guides/hello-world.md). It's an example that shows the simplicity of HotRod.
+See HotRod in action with the [Hello World Example](./hotrod-project/docs/docs-4/guides/hello-world.md). It's an example that shows the simplicity of using HotRod.
 
 
 ## Modules
