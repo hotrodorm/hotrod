@@ -67,13 +67,23 @@ A simple join can look like:
 While a more complex query can look like:
 
 ```java
-  List<Row> rows = sql
-    .select(e.star(), b.name.as("branchName"))
-    .from(e)
-    .join(b, b.id.eq(e.branchId))
-    .where(e.lastName.lower().like("%smith%").and(b.type.in(2, 6, 7)))
-    .orderBy(b.name, e.lastName.desc())
-    .limit(50)
+CTE x = sql.cte("x",
+    sql.select(b.isVip, a.star())
+        .from(b)
+        .join(a, a.branchId.eq(b.id))
+);
+
+CTE y = sql.cte("y", "aid").as(sql.select(i.accountId)
+    .from(i)
+    .join(l, l.invoiceId.eq(i.id))
+    .join(p, p.id.eq(l.productId))
+    .where(p.shipping.eq(0)));
+
+List<Row> rows = sql.with(x, y)
+    .select(x.star())
+    .from(x)
+    .leftJoin(y, y.num("aid").eq(x.num("id")))
+    .where(y.num("aid").isNull())
     .execute();
 ```
 
