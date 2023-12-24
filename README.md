@@ -88,10 +88,69 @@ List<Row> rows = sql
     .execute();
 ```
 
+## The Power of Nitro
+
+Nitro queries enhance SQL capabilities with dynamically assembled SQL queries, Graph queries and access to Native SQL. Any or all of these features can be combined into a single SELECT or DML query.
+
+The following query uses Dynamic SQL to assemble the query dynamically and to *apply* parameter values to it. It also uses a piece of native SQL (an optimizer hint):
+
+```xml
+  <select method="searchVehicles" vo="Vehicle">
+    <parameter name="brandName" java-type="String" />
+    <parameter name="minYear" java-type="Integer" />
+    <parameter name="ordering" java-type="Integer" />
+    select /*+ FIRST_ROWS(10) */ *
+    from vehicle
+    where brand like = '%' || ${brandName} || '%'
+      <if test="minYear != null">and year >= #{minYear}</if>
+    <choose>
+      <if test="ordering == 1">order by price</if>
+      <if test="ordering == 2">order by price DESC</if>
+      <if test="ordering == 3">order by avg_reviews DESC</if>
+    </choose>
+  </select>
+```
+
+Nitro makes this query available to be called in Java as:
+
+```java
+  List<Vehicle> searchVehicles(String brandName, Integer minYear, Integer ordering)
+```
+
+Graph queries assemble the rows and columns of SELECT queries into trees of objects. For example, the following query:
+
+```xml
+  <select method="searchInvoices">
+    <parameter name="customerId" java-type="Integer" />
+    <parameter name="minAmount" java-type="Integer" />
+    select
+      <columns>
+        <vo table="invoice" extended-vo="InvoiceWithLines" alias="i">
+          <association table="customer" property="customer" alias="c" />
+          <collection table="invoice_line" property="lines" alias="il" />
+        </vo>
+      </columns>
+    from invoice i
+    join customer c on c.id = i.customer_id
+    join invoice_line il on il.invoice_id = i.id
+    where i.customer_id = ${customerId}
+      <if test="minAmount != null">and i.amount >= ${minAmount}</if>
+    order by i.id
+  </select>
+```
+
+Returns a list of `InvoiceWithLines` objects. It returns one of these first-level objects for each invoice. Each first-level object includes `customer` property for the a second-level `Customer` object (1:1 cardinality) that holds the data coming from the `customer` table. It also includes a `lines` property that includes the list of second-level `InvoiceLine` objects (1:N cardinality) with their corresponding properties.
+
+The query is available in Java as:
+
+```java
+  List<InvoiceWithLines> searchInvoices(Integer customerId, Integer minamount)
+```
+
 
 ## Hello World
 
-See HotRod in action with the [Hello World Example](./hotrod-project/docs/docs-4/guides/hello-world.md). It's a runnable simple example to run the queries shown above.
+See HotRod in action with the [Hello World Example](./hotrod-project/docs/docs-4/guides/hello-world.md). It's an example that shows the simplicity of HotRod.
 
 
 ## Modules
