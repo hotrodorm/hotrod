@@ -37,7 +37,7 @@ can look like:
     .execute();
 ```
 
-The criteria can include parenthesis, complex predicates, subqueries, etc. For example, a more complex search condition can take the form:
+The criteria can include parenthesis, complex predicates, subqueries, etc. The query can include ordering and limiting as well. A more complex search condition can take the form:
 
 ```java
   List<Employee> employees = this.employeeDAO
