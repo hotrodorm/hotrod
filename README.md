@@ -26,14 +26,14 @@ To update the status of an invoice:
 ```
 
 
-## The Flexibility Of LiveSQL
+## The Flexibility of LiveSQL
 
 LiveSQL can express SELECT, UPDATE, DELETE, and INSERT queries. A basic select with a simple condition
 can look like:
 
 ```java
   List<Employee> employees = this.employeeDAO
-    .select(e, e.salary.plus(e.bonuses).ge(40000).and(e.type.in("EXT", "REM")))
+    .select(e, e.salary.plus(e.bonuses).ge(40000).and(e.type.substring(2, 3).eq("ASC")))
     .execute();
 ```
 

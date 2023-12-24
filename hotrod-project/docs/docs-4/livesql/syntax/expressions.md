@@ -75,8 +75,8 @@ hand, will be processed in the Java application and only the result will be sent
 | -- | -- | -- |
 | a \|\| b \|\| c | String concatenation | `<a>.concat(<b>).concat(<c>)` |
 | length(a) | String length | `<a>.length()` |
-| locate(a, b, f) | String search | `<a>.locate(<b>, <f>)` |
-| substring(a, b, c) | Substring | `<a>.substring(<b>, <c>)` |
+| locate(s, searched, from) | String search | `<s>.locate(<searched>, <from>)` |
+| substring(s, from, len) | Substring | `<s>.substring(<from>, <len>)` |
 | lower(a) | Lower case transformation | `<a>.lower()` |
 | upper(a) | Upper case transformation | `<a>.upper()` |
 | trim(a) | Trimming blanks at both ends | `<a>.trim()` |
