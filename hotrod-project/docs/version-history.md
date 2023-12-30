@@ -2,6 +2,29 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
+## 4.4.1
+
+- LiveSQL:
+    - INSERT, UPDATE, and DELETE now return the number of inserted, updated, and deleted rows respectively, to support Optimistic Locking in LiveSQL.
+
+## 4.4.0
+
+- Torcs CTP:
+    - Torcs CTP generates plans for [Check The Plan](https://checktheplan.com) visualization and analysis for the Oracle, DB2 LUW, PostgreSQL, and SQL Server databases.
+
+- Torcs:
+    - DB2 plan improved.
+
+## 4.3.3
+
+- Torcs:
+    - Improving API names.
+
+## 4.3.2
+
+- Torcs:
+    - Fixing bug in Torcs aspect.
+
 ## 4.3.1
 
 - Torcs:
