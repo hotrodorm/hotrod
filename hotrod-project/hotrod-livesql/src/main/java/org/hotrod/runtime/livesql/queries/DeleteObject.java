@@ -37,14 +37,14 @@ public class DeleteObject implements QueryObject {
     return pq.render();
   }
 
-  public void execute(final LiveSQLContext context) {
+  public int execute(final LiveSQLContext context) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     LinkedHashMap<String, Object> parameters = q.getParameters();
     parameters.put("sql", q.getSQL());
     if (this.mapperStatement != null) {
-      context.getSQLSession().delete(this.mapperStatement, q.getConsolidatedParameters());
+      return context.getSQLSession().delete(this.mapperStatement, q.getConsolidatedParameters());
     } else {
-      context.getLiveSQLMapper().delete(parameters);
+      return context.getLiveSQLMapper().delete(parameters);
     }
   }
 

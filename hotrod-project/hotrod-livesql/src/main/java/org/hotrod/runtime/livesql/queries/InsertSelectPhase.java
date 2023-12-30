@@ -25,8 +25,9 @@ public class InsertSelectPhase implements DMLQuery {
 
   // Execute
 
-  public void execute() {
-    this.insert.execute(this.context);
+  @Override
+  public int execute() {
+    return this.insert.execute(this.context);
   }
 
 }

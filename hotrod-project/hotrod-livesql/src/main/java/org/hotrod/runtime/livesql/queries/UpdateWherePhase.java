@@ -28,8 +28,9 @@ public class UpdateWherePhase implements DMLQuery {
 
   // Execute
 
-  public void execute() {
-    this.update.execute(this.context);
+  @Override
+  public int execute() {
+    return this.update.execute(this.context);
   }
 
 }

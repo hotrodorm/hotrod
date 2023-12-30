@@ -42,11 +42,11 @@ public class InsertObject implements QueryObject {
     return pq.render();
   }
 
-  public void execute(final LiveSQLContext context) {
+  public int execute(final LiveSQLContext context) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     LinkedHashMap<String, Object> parameters = q.getParameters();
     parameters.put("sql", q.getSQL());
-    context.getLiveSQLMapper().insert(parameters);
+    return context.getLiveSQLMapper().insert(parameters);
   }
 
   private LiveSQLPreparedQuery prepareQuery(final LiveSQLContext context) {

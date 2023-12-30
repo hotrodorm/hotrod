@@ -19,12 +19,12 @@ public interface LiveSQLMapper {
   public Cursor<Row> selectCursor(Map<String, Object> parameters);
 
   @Delete("${sql}")
-  public void delete(Map<String, Object> parameters);
+  public int delete(Map<String, Object> parameters);
 
   @Update("${sql}")
-  public void update(Map<String, Object> parameters);
+  public int update(Map<String, Object> parameters);
 
   @Update("${sql}")
-  public void insert(Map<String, Object> parameters);
+  public int insert(Map<String, Object> parameters);
 
 }

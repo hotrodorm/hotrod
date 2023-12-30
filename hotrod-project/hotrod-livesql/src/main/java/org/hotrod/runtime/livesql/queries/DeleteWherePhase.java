@@ -37,8 +37,9 @@ public class DeleteWherePhase implements DMLQuery {
 
   // Execute
 
-  public void execute() {
-    this.delete.execute(this.context);
+  @Override
+  public int execute() {
+    return this.delete.execute(this.context);
   }
 
 }

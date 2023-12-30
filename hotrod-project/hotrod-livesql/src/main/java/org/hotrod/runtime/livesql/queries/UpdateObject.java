@@ -54,16 +54,16 @@ public class UpdateObject implements QueryObject {
     return pq.render();
   }
 
-  public void execute(final LiveSQLContext context) {
+  public int execute(final LiveSQLContext context) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     LinkedHashMap<String, Object> parameters = q.getParameters();
     parameters.put("sql", q.getSQL());
     parameters.put("extraSets", this.extraSets);
 
     if (this.mapperStatement != null) {
-      context.getSQLSession().update(this.mapperStatement, q.getConsolidatedParameters());
+      return context.getSQLSession().update(this.mapperStatement, q.getConsolidatedParameters());
     } else {
-      context.getLiveSQLMapper().update(parameters);
+      return context.getLiveSQLMapper().update(parameters);
     }
   }
 

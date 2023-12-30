@@ -108,8 +108,8 @@ public class UpdateSetPhase implements DMLQuery {
   // Execute
 
   @Override
-  public void execute() {
-    this.update.execute(this.context);
+  public int execute() {
+    return this.update.execute(this.context);
   }
 
 }
