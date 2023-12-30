@@ -21,7 +21,7 @@ public class CriteriaOffsetPhase<T> implements ExecutableCriteriaSelect<T> {
   // next phases
 
   public CriteriaLimitPhase<T> limit(final int limit) {
-    this.limit(limit);
+    this.select.setLimit(limit);
     return new CriteriaLimitPhase<T>(this.context, this.select, this.mapperStatement);
   }
 

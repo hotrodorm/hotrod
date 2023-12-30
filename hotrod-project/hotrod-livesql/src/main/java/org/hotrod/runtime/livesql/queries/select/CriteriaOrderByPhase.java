@@ -21,12 +21,12 @@ public class CriteriaOrderByPhase<T> implements ExecutableCriteriaSelect<T> {
   // next phases
 
   public CriteriaOffsetPhase<T> offset(final int offset) {
-    this.offset(offset);
+    this.select.setOffset(offset);
     return new CriteriaOffsetPhase<T>(this.context, this.select, this.mapperStatement);
   }
 
   public CriteriaLimitPhase<T> limit(final int limit) {
-    this.limit(limit);
+    this.select.setLimit(limit);
     return new CriteriaLimitPhase<T>(this.context, this.select, this.mapperStatement);
   }
 
