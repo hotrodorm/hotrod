@@ -16,6 +16,7 @@ import java.util.Random;
 
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
+import org.hotrod.runtime.livesql.queries.DMLQuery;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.runtime.livesql.queries.select.ExecutableCriteriaSelect;
@@ -33,9 +34,11 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 import app.daos.InvoiceVO;
@@ -52,8 +55,8 @@ import app.daos.primitives.PaymentDAO.PaymentTable;
 import app.daos.primitives.ProductDAO;
 import app.daos.primitives.ProductDAO.ProductTable;
 
-//@Configuration
-//@SpringBootApplication
+@Configuration
+@SpringBootApplication
 @ComponentScan(basePackageClasses = LiveSQL.class)
 @MapperScan(basePackageClasses = LiveSQL.class)
 @MapperScan("mappers")
@@ -100,9 +103,9 @@ public class App {
 //      crud();
 //      join();
 //      join();
-//      livesql();
+      livesql();
 //      selectByCriteria();
-      torcs();
+//      torcs();
 //      star();
 //      noFrom();
       System.out.println("[ Example complete ]");
@@ -134,7 +137,9 @@ public class App {
 //    lateralJoins();
 //    recursiveCTEs();
 
-    liveSQLExamples();
+//    liveSQLExamples();
+
+    update();
 
   }
 //
@@ -223,6 +228,37 @@ public class App {
 //    q.execute().forEach(r -> System.out.println("r=" + r));
 //
 //  }
+
+  private void update() {
+
+    InvoiceTable i = InvoiceDAO.newTable("i");
+    BranchTable b = BranchDAO.newTable("b");
+    BranchTable c = BranchDAO.newTable("c");
+
+//    // update branch set region = 'x' where id >= 4 and not is_vip
+//
+//    DMLQuery q = sql.update(b).set(b.region, "x").where(b.id.ge(sql.literal(4)).and(sql.not(b.isVip)));
+//    System.out.println("1. Update: " + q.getPreview());
+//    int rows = q.execute();
+//    System.out.println("updated rows=" + rows);
+
+//    // delete from branch where id >= 4 and not is_vip
+//
+//    DMLQuery q = sql.delete(b).where(b.id.ge(sql.literal(4)).and(sql.not(b.isVip)));
+//    System.out.println("1. Update: " + q.getPreview());
+//    int rows = q.execute();
+//    System.out.println("updated rows=" + rows);
+
+    // insert into branch select id+ 10, region, is_vip from branch where id >= 4
+    // and not is_vip
+
+    DMLQuery q = sql.insert(b).select(sql.select(c.id.plus(sql.literal(10)), c.region, c.isVip).from(c)
+        .where(c.id.ge(sql.literal(4)).and(sql.not(c.isVip))));
+    System.out.println("1. Update: " + q.getPreview());
+    int rows = q.execute();
+    System.out.println("updated rows=" + rows);
+
+  }
 
   private void livesql1() {
     AccountTable a = AccountDAO.newTable("a");

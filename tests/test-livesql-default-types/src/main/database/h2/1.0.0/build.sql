@@ -146,3 +146,15 @@ insert into account (id, parent_id, branch_id) values
   (4, 3, 103),
   (5, 4, 104);
   
+insert into branch (id, region, is_vip) values
+  (1, 'N', true),
+  (2, 'S', true),
+  (3, 'W', false),
+  (4, 'E', false),
+  (5, 'NE', false),
+  (6, 'NW', true),
+  (7, 'SE', false);
+  
+  -- update branch set region = 'x' where id >= 4 and not is_vip
+  
+
