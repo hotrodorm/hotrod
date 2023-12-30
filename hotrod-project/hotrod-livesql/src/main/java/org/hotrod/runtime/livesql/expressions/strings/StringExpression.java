@@ -41,6 +41,16 @@ public abstract class StringExpression extends ComparableExpression {
     return new StringCoalesce(this, new StringConstant(a));
   }
 
+  // NullIf
+
+  public StringExpression nullIf(final StringExpression a) {
+    return new StringNullIf(this, a);
+  }
+
+  public StringExpression nullIf(final String a) {
+    return new StringNullIf(this, new StringConstant(a));
+  }
+
   // Locate
 
   public NumberExpression locate(final StringExpression substring, final NumberExpression from) {

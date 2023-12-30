@@ -37,6 +37,16 @@ public abstract class DateTimeExpression extends ComparableExpression {
     return new DateTimeCoalesce(this, new DateTimeConstant(a));
   }
 
+  // NullIf
+
+  public DateTimeExpression nullIf(final DateTimeExpression a) {
+    return new DateTimeNullIf(this, a);
+  }
+
+  public DateTimeExpression nullIf(final Date a) {
+    return new DateTimeNullIf(this, new DateTimeConstant(a));
+  }
+
   // DateTime Functions
 
   public DateTimeExpression date() {

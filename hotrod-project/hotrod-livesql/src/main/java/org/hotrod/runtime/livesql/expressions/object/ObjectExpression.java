@@ -34,6 +34,16 @@ public abstract class ObjectExpression extends ComparableExpression {
     return new ObjectCoalesce(this, BoxUtil.box(a));
   }
 
+  // NullIf
+
+  public ObjectExpression nullIf(final ObjectExpression a) {
+    return new ObjectNullIf(this, a);
+  }
+
+  public ObjectExpression nullIf(final Object a) {
+    return new ObjectNullIf(this, BoxUtil.box(a));
+  }
+
   // Scalar comparisons
 
   // Equal

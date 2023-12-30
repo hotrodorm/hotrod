@@ -23,6 +23,16 @@ public abstract class Predicate extends ComparableExpression {
     return new BooleanCoalesce(this, BoxUtil.box(a));
   }
 
+  // NullIf
+
+  public Predicate nullIf(final Predicate a) {
+    return new BooleanNullIf(this, a);
+  }
+
+  public Predicate nullIf(final Boolean a) {
+    return new BooleanNullIf(this, BoxUtil.box(a));
+  }
+
   // Predicate operators
 
   public Predicate and(final Predicate p) {

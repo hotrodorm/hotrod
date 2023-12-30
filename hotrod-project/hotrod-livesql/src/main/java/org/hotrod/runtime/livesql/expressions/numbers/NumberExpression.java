@@ -34,6 +34,16 @@ public abstract class NumberExpression extends ComparableExpression {
     return new NumberCoalesce(this, BoxUtil.box(a));
   }
 
+  // NullIf
+
+  public NumberExpression nullIf(final NumberExpression a) {
+    return new NumberNullIf(this, a);
+  }
+
+  public NumberExpression nullIf(final Number a) {
+    return new NumberNullIf(this, BoxUtil.box(a));
+  }
+
   // Basic arithmetic
 
   public NumberExpression plus(final NumberExpression n) {

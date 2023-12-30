@@ -22,6 +22,10 @@ public abstract class FunctionRenderer {
     this.write(w, "coalesce", values);
   }
 
+  public <T extends ComparableExpression> void nullif(final QueryWriter w, final T a, final T b) {
+    this.write(w, "nullif", a, b);
+  }
+
   public void groupConcat(final QueryWriter w, final boolean distinct, final StringExpression value,
       final List<OrderingTerm> ordering, final StringExpression separator) {
     w.write("group_concat(");

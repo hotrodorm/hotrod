@@ -34,6 +34,16 @@ public abstract class ByteArrayExpression extends ComparableExpression {
     return new ByteArrayCoalesce(this, new ByteArrayConstant(a));
   }
 
+  // NullIf
+
+  public ByteArrayExpression nullIf(final ByteArrayExpression a) {
+    return new ByteArrayNullIf(this, a);
+  }
+
+  public ByteArrayExpression nullIf(final byte[] a) {
+    return new ByteArrayNullIf(this, new ByteArrayConstant(a));
+  }
+
   // Scalar comparisons
 
   // Equal
