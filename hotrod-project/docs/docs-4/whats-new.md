@@ -1,6 +1,18 @@
 # What's New in HotRod 4
 
 
+## What's New in HotRod 4.4
+
+### 1. Torcs CTP
+
+[Torcs CTP](./torcs-ctp/README.md) generates execution plans for visualization and analysis in the
+[Check The Plan](https://checktheplan.com) web site, for the Oracle, DB2 LUW, PostgreSQL, and SQL Server databases.
+
+### 2. LiveSQL Optimistic Locking
+
+The INSERT, UPDATE, and DELETE statements of LiveSQL now return the number of inserted, updated, and deleted rows respectively, to support Optimistic Locking.
+
+
 ## What's New in HotRod 4.3
 
 Version 4.3 adds the Torcs module to observe query executions at runtime and detect and analize slow ones.
@@ -8,6 +20,8 @@ Version 4.3 adds the Torcs module to observe query executions at runtime and det
 ### 1. Torcs
 
 [Torcs](./torcs/README.md) inspects SQL query executions and records ranking(s) of query execution, that become available to the application. The ranking provides a sorted list of queries, with statistics, and also offer the ability to retrieve execution plans, should the application request it.
+
+Torcs also generates execution plans for each database in multiple formats available in each database.
 
 ### 2. LiveSQL
 
