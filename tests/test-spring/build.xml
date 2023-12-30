@@ -1,0 +1,79 @@
+<project name="spring" default="deploy">
+
+  <target name="clean">
+    <mkdir dir="build/java" />
+    <delete includeemptydirs="true">
+      <fileset dir="build" includes="**/*" />
+    </delete>
+    <mkdir dir="build/java" />
+  </target>
+
+  <target name="compile" depends="clean">
+    <javac destdir="build/java"
+           includes="**/*.java"
+           debug="true"
+           source="1.8"
+           target="1.8"
+           includeantruntime="false"
+           fork="true"
+           deprecation="true">
+      <src path="src/main/java" />
+      <classpath>
+        <fileset dir="lib" />
+        <fileset dir="libc" />
+        <fileset file="libhotrod/hotrod-4.4.0.jar" />
+        <fileset file="libhotrod/hotrod-utils-4.4.0.jar" />
+        <fileset file="libhotrod/hotrod-livesql-4.4.0.jar" />
+        <fileset file="libhotrod/mybatis-3.5.9.jar" />
+        <fileset file="libhotrod/mybatis-spring-2.0.6.jar" />
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="war" depends="compile">
+    <war destfile="build/app.war" webxml="webcontent/WEB-INF/web.xml">
+      <lib file="lib/*.jar" />
+      <lib file="libhotrod/hotrod-4.4.0.jar" />
+      <lib file="libhotrod/hotrod-utils-4.4.0.jar" />
+      <lib file="libhotrod/hotrod-livesql-4.4.0.jar" />
+      <lib file="libhotrod/mybatis-3.5.9.jar" />
+      <lib file="libhotrod/mybatis-spring-2.0.6.jar" />
+      <fileset dir="webcontent">
+        <exclude name="WEB-INF/web.xml" />
+      </fileset>
+      <classes dir="build/java" />
+      <metainf file="conf/context.xml" />
+    </war>
+  </target>
+
+  <target name="deploy" depends="war">
+    <delete includeemptydirs="true">
+      <fileset dir="/home/valarcon/apps/apache-tomcat-7.0.67-xc/webapps" includes="**/*" />
+    </delete>
+    <copy file="schema.sql" todir="/home/valarcon/apps/apache-tomcat-7.0.67-xc" />
+    <copy file="build/app.war" tofile="/home/valarcon/apps/apache-tomcat-7.0.67-xc/webapps/app.war" />
+  </target>
+
+  <target name="gen">
+
+    <mkdir dir="src/main/java/app/daos" />
+    <mkdir dir="src/main/resources/mappers" />
+
+    <taskdef name="hotrod_gen" classname="org.hotrod.plugin.ant.GenAntTask">
+      <classpath>
+        <fileset dir="libhotrod">
+          <include name="**/*.jar" />
+        </fileset>
+        <pathelement location="libc/h2-2.1.214.jar"/>        
+      </classpath>
+    </taskdef>
+
+    <hotrod_gen jdbcdriverclass="org.h2.Driver"
+                jdbcurl="jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1"
+                jdbcusername="sa"
+                jdbcpassword=""
+                jdbcschema="PUBLIC" />
+
+  </target>
+
+</project>

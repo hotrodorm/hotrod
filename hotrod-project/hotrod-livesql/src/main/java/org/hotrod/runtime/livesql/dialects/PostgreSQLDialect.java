@@ -274,7 +274,7 @@ public class PostgreSQLDialect extends LiveSQLDialect {
           this.write(w, "strpos", string, substring);
         } else {
           throw new UnsupportedLiveSQLFeatureException(
-              "PostgreSQL does not support the parameter 'from' in the LOCATE function ('strpos' in PostgreSQL lingo)");
+              "PostgreSQL does not support the parameter 'from' in the LOCATE function ('strpos' in PostgreSQL dialect)");
         }
       }
 

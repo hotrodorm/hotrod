@@ -2,35 +2,157 @@
 
 HotRod 4 is an open source ORM for Spring and Spring Boot geared toward high performance persistence for relational databases.
 
-It generates a persistence layer with minimal to no configuration and the CRUD and LiveSQL functionalities can quickly help to start prototyping an application.
+The persistence layer provides CRUD and LiveSQL functionalities to quickly start prototyping an application.
 
-See [What's New](./hotrod-project/docs/docs-4/whats-new.md) in HotRod 4, [Version History](./hotrod-project/docs/version-history.md), and the [Roadmap](./hotrod-project/docs/roadmap.md).
-
-For documentation on the previous version see [HotRod 3 Documentation](./hotrod-project/docs/docs-3.4/README.md).
+See [What's New](./hotrod-project/docs/docs-4/whats-new.md) in HotRod 4, [Version History](./hotrod-project/docs/version-history.md), and the [Roadmap](./hotrod-project/docs/roadmap.md). For documentation on the previous version see [HotRod 3 Documentation](./hotrod-project/docs/docs-3.4/README.md).
 
 
-## Hello World
+## The Simplicity of CRUD
 
-See HotRod in action with the [Hello World Example](./hotrod-project/docs/docs-4/guides/hello-world.md). It demonstrates the use of CRUD by reading a row using a primary key, as in:
+The out-of-the-box CRUD methods can access rows by primary keys, foreign keys, or by example. SELECT, UPDATE, INSERT, and DELETE methods are automatically included in the CRUD persistence layer.
+
+For example, to find an employee by primary key:
 
 ```java
-  EmployeeVO emp = this.employeeDAO.select(134081);
+  Employee emp = this.employeeDAO.select(134081);
 ```
 
-It also shows a simple join between two tables using LiveSQL:
+To update the status of an invoice:
 
 ```java
-  EmployeeTable e = EmployeeDAO.newTable("e");
-  BranchTable b = BranchDAO.newTable("b");
+  Invoice inv = this.invoiceDAO.select(5470);
+  inv.setStatus("PAID");
+  this.invoiceDAO.update(inv);
+```
 
-  List<Row> rows = this.sql
+
+## The Flexibility of LiveSQL
+
+LiveSQL can express SELECT, UPDATE, DELETE, and INSERT queries. A basic select with a simple condition
+can look like:
+
+```java
+  List<Employee> employees = this.employeeDAO
+    .select(e, e.salary.plus(e.bonus).ge(40000).and(e.type.substring(2, 3).eq("ASC")))
+    .execute();
+```
+
+The criteria can include parenthesis, complex predicates, subqueries, etc. The query can include ordering and limiting as well. A more complex search condition that includes EXISTS and a subquery could take the form:
+
+```java
+  List<Employee> employees = this.employeeDAO
+    .select(e, e.type.ne("MANAGER").and(sql.exists(
+        sql.select().from(m).where(m.branchId.ne(e.branchId).and(m.name.eq(e.name)))
+      ))
+    )
+    .orderBy(e.branchId, e.salary.plus(e.bonus).desc())
+    .execute();
+```
+
+LiveSQL extensive SQL syntax can express complex expressions (of numeric, string, date/time, boolean, and binary types), functions, joins, aggregations, window functions, ordering, limiting, multilevel subqueries, multilevel set operators, traditional and recursive CTEs, lateral queries, etc. 
+
+A simple join can look like:
+
+```java
+  List<Row> rows = sql
     .select(e.star(), b.name.as("branchName"))
     .from(e)
     .join(b, b.id.eq(e.branchId))
     .where(e.lastName.lower().like("%smith%").and(b.type.in(2, 6, 7)))
     .orderBy(b.name, e.lastName.desc())
+    .limit(50)
     .execute();
 ```
+
+While a more complex query can look like:
+
+```java
+CTE x = sql.cte("x",
+    sql.select(b.isVip, a.star())
+        .from(b)
+        .join(a, a.branchId.eq(b.id))
+);
+
+CTE y = sql.cte("y", "aid").as(sql.select(i.accountId)
+    .from(i)
+    .join(l, l.invoiceId.eq(i.id))
+    .join(p, p.id.eq(l.productId))
+    .where(p.shipping.eq(0)));
+
+List<Row> rows = sql
+    .with(x, y)
+    .select(x.star())
+    .from(x)
+    .leftJoin(y, y.num("aid").eq(x.num("id")))
+    .where(y.num("aid").isNull())
+    .execute();
+```
+
+## The Power of Nitro
+
+Nitro queries enhance SQL capabilities with dynamically assembled SQL queries, graph queries, and access to native SQL features. Nitro can be used to gain access to all the features of a database, as well as to squeeze performance from it by tweaking queries.
+
+Any or all of these features can be combined into any SELECT, UPDATE, INSERT, or DELETE, or in any valid database query.
+
+The following query uses Dynamic SQL to assemble the query dynamically and to *apply* parameter values to it. It also uses a piece of Native SQL (an optimizer hint):
+
+```xml
+  <select method="searchVehicles" vo="Vehicle">
+    <parameter name="brandName" java-type="String" />
+    <parameter name="minYear" java-type="Integer" />
+    <parameter name="ordering" java-type="Integer" />
+    select /*+ FIRST_ROWS(10) */ *
+    from vehicle
+    where brand like = '%' || ${brandName} || '%'
+      <if test="minYear != null">and year >= #{minYear}</if>
+    <choose>
+      <if test="ordering == 1">order by price</if>
+      <if test="ordering == 2">order by price DESC</if>
+      <if test="ordering == 3">order by avg_reviews DESC</if>
+    </choose>
+  </select>
+```
+
+Nitro makes this query available in Java as:
+
+```java
+  List<Vehicle> searchVehicles(String brandName, Integer minYear, Integer ordering)
+```
+
+Graph queries assemble the rows and columns of SELECT queries into trees of objects. For example, the following query:
+
+```xml
+  <select method="searchInvoices">
+    <parameter name="customerId" java-type="Integer" />
+    <parameter name="minAmount" java-type="Integer" />
+    select
+      <columns>
+        <vo table="invoice" extended-vo="InvoiceWithLines" alias="i">
+          <association table="customer" property="customer" alias="c" />
+          <collection table="invoice_line" property="lines" alias="il" />
+        </vo>
+      </columns>
+    from invoice i
+    join customer c on c.id = i.customer_id
+    join invoice_line il on il.invoice_id = i.id
+    where i.customer_id = ${customerId}
+      <if test="minAmount != null">and i.amount >= ${minAmount}</if>
+    order by i.id
+  </select>
+```
+
+Returns a list of `InvoiceWithLines` objects. It returns one of these first-level objects for each invoice. Each first-level object includes a `customer` property for the second-level `Customer` object (1:1 cardinality) that holds the data coming from the `customer` table. It also includes a `lines` property that includes the list of second-level `InvoiceLine` objects (1:N cardinality) with their corresponding properties.
+
+The query is available in Java as:
+
+```java
+  List<InvoiceWithLines> searchInvoices(Integer customerId, Integer minamount)
+```
+
+
+## Hello World
+
+See HotRod in action with the [Hello World Example](./hotrod-project/docs/docs-4/guides/hello-world.md). It's an example that shows the simplicity of using HotRod.
 
 
 ## Modules
