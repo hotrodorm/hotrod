@@ -5,7 +5,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 ## 4.5.0
 
 - LiveSQL:
-    - Row locking using SELECT ... FOR UPDATE (and variations of it).
+    - Pessimistic locking using SELECT ... FOR UPDATE (and variations of it).
     - NULLIF() implemented for completeness.
     - Fixed aliases in UPDATE statement.
     - Fixed SELECT by criteria ordering and limiting.
