@@ -112,6 +112,7 @@ import org.hotrod.runtime.livesql.queries.scalarsubqueries.NumberSelectColumnsPh
 import org.hotrod.runtime.livesql.queries.scalarsubqueries.ObjectSelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.scalarsubqueries.StringSelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.select.EnclosedSelectPhase;
+import org.hotrod.runtime.livesql.queries.select.NonLockableSelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.select.PGSelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.select.SelectCTEPhase;
@@ -146,16 +147,16 @@ public class LiveSQL {
     return new SelectColumnsPhase<Row>(this.context, null, false);
   }
 
-  public SelectColumnsPhase<Row> selectDistinct() {
-    return new SelectColumnsPhase<Row>(this.context, null, true);
+  public NonLockableSelectColumnsPhase<Row> selectDistinct() {
+    return new NonLockableSelectColumnsPhase<Row>(this.context, null, true);
   }
 
   public SelectColumnsPhase<Row> select(final ResultSetColumn... resultSetColumns) {
     return new SelectColumnsPhase<Row>(this.context, null, false, resultSetColumns);
   }
 
-  public SelectColumnsPhase<Row> selectDistinct(final ResultSetColumn... resultSetColumns) {
-    return new SelectColumnsPhase<Row>(this.context, null, true, resultSetColumns);
+  public NonLockableSelectColumnsPhase<Row> selectDistinct(final ResultSetColumn... resultSetColumns) {
+    return new NonLockableSelectColumnsPhase<Row>(this.context, null, true, resultSetColumns);
   }
 
   @Available(engine = Const.POSTGRESQL, since = Const.PG15)

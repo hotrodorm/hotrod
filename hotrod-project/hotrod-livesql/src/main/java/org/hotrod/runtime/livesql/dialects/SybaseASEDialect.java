@@ -141,6 +141,14 @@ public class SybaseASEDialect extends LiveSQLDialect {
     };
   }
 
+  // For Update rendering
+
+  @Override
+  public ForUpdateRenderer getForUpdateRenderer() {
+    throw new UnsupportedLiveSQLFeatureException(
+        "Sybase ASE does not support locking rows with the FOR UPDATE clause for plain SELECTs outside cursors and procedures");
+  }
+
   // Set operation rendering
 
   @Override
@@ -395,6 +403,20 @@ public class SybaseASEDialect extends LiveSQLDialect {
   @Override
   public boolean mandatoryColumnNamesInRecursiveCTEs() {
     return false;
+  }
+
+  // Update rendering
+
+  @Override
+  public UpdateRenderer getUpdateRenderer() {
+    return new UpdateRenderer() {
+
+      @Override
+      public boolean removeMainTableAlias() {
+        return true;
+      }
+
+    };
   }
 
 }

@@ -5,9 +5,9 @@ import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
-import org.hotrod.runtime.livesql.queries.select.sets.IndividualSelectPhase;
+import org.hotrod.runtime.livesql.queries.select.sets.LockableSelectPhase;
 
-public class SelectWherePhase<R> extends IndividualSelectPhase<R> {
+public class SelectWherePhase<R> extends LockableSelectPhase<R> {
 
   // Constructors
 
@@ -22,16 +22,16 @@ public class SelectWherePhase<R> extends IndividualSelectPhase<R> {
     return new SelectGroupByPhase<R>(this.context, this.combined, columns);
   }
 
-  public SelectOrderByPhase<R> orderBy(final OrderingTerm... orderingTerms) {
-    return new SelectOrderByPhase<R>(this.context, this.combined, orderingTerms);
+  public LockableSelectOrderByPhase<R> orderBy(final OrderingTerm... orderingTerms) {
+    return new LockableSelectOrderByPhase<R>(this.context, this.combined, orderingTerms);
   }
 
-  public SelectOffsetPhase<R> offset(final int offset) {
-    return new SelectOffsetPhase<R>(this.context, this.combined, offset);
+  public LockableSelectOffsetPhase<R> offset(final int offset) {
+    return new LockableSelectOffsetPhase<R>(this.context, this.combined, offset);
   }
 
-  public SelectLimitPhase<R> limit(final int limit) {
-    return new SelectLimitPhase<R>(this.context, this.combined, limit);
+  public LockableSelectLimitPhase<R> limit(final int limit) {
+    return new LockableSelectLimitPhase<R>(this.context, this.combined, limit);
   }
 
 }

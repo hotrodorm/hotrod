@@ -133,6 +133,13 @@ public class HyperSQLDialect extends LiveSQLDialect {
     };
   }
 
+  // For Update rendering
+
+  @Override
+  public ForUpdateRenderer getForUpdateRenderer() {
+    throw new UnsupportedLiveSQLFeatureException("HyperSQL does not support locking rows with the FOR UPDATE clause");
+  }
+
   // Set operation rendering
 
   @Override
@@ -331,6 +338,20 @@ public class HyperSQLDialect extends LiveSQLDialect {
   @Override
   public boolean mandatoryColumnNamesInRecursiveCTEs() {
     return true;
+  }
+
+  // Update rendering
+
+  @Override
+  public UpdateRenderer getUpdateRenderer() {
+    return new UpdateRenderer() {
+
+      @Override
+      public boolean removeMainTableAlias() {
+        return false;
+      }
+
+    };
   }
 
 }

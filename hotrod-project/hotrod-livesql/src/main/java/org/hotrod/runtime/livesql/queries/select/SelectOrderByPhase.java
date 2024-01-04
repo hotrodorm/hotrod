@@ -4,10 +4,10 @@ import java.util.Arrays;
 
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
-import org.hotrod.runtime.livesql.queries.select.sets.AbstractSelectPhase;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
+import org.hotrod.runtime.livesql.queries.select.sets.IndividualSelectPhase;
 
-public class SelectOrderByPhase<R> extends AbstractSelectPhase<R> {
+public class SelectOrderByPhase<R> extends IndividualSelectPhase<R> {
 
   // Constructor
 

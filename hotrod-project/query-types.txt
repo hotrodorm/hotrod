@@ -2,6 +2,9 @@
 --- Performant Queries ---
 
 1. CRUD Query: accesses 0-1 row
+Atomic
+Atomic Heavy
+
 2. Transactional Query: accesses 0/10/100 rows
 3. Targeted Search Query: accesses 0-1000 rows
 

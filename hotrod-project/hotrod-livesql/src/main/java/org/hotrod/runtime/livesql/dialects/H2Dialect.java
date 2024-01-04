@@ -132,6 +132,25 @@ public class H2Dialect extends LiveSQLDialect {
     };
   }
 
+  // For Update rendering
+
+  @Override
+  public ForUpdateRenderer getForUpdateRenderer() {
+    return new ForUpdateRenderer() {
+
+      @Override
+      public String renderAfterFromClause() {
+        return null;
+      }
+
+      @Override
+      public String renderAfterLimitClause() {
+        return "FOR UPDATE";
+      }
+
+    };
+  }
+
   // Set operation rendering
 
   @Override
@@ -314,6 +333,20 @@ public class H2Dialect extends LiveSQLDialect {
   @Override
   public boolean mandatoryColumnNamesInRecursiveCTEs() {
     return true;
+  }
+
+  // Update rendering
+
+  @Override
+  public UpdateRenderer getUpdateRenderer() {
+    return new UpdateRenderer() {
+
+      @Override
+      public boolean removeMainTableAlias() {
+        return false;
+      }
+
+    };
   }
 
 }

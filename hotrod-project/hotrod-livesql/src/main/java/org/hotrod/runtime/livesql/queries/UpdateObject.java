@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hotrod.runtime.livesql.dialects.UpdateRenderer;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.Column;
@@ -71,6 +72,11 @@ public class UpdateObject implements QueryObject {
     QueryWriter w = new QueryWriter(context.getLiveSQLDialect());
     w.write("UPDATE ");
 
+    UpdateRenderer ur = context.getLiveSQLDialect().getUpdateRenderer();
+    if (ur.removeMainTableAlias()) {
+      this.tableOrView.removeAlias();
+    }
+
     String renderedAlias = this.tableOrView.getAlias() == null ? null
         : context.getLiveSQLDialect()
             .canonicalToNatural(context.getLiveSQLDialect().naturalToCanonical(this.tableOrView.getAlias()));
@@ -88,7 +94,7 @@ public class UpdateObject implements QueryObject {
         w.write(", ");
       }
       Assignment s = this.sets.get(i);
-      s.getColumn().renderTo(w);
+      s.getColumn().renderUnqualifiedNameTo(w);
       w.write(" = ");
       s.getExpression().renderTo(w);
       w.write("\n");

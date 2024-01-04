@@ -135,6 +135,25 @@ public class MariaDBDialect extends LiveSQLDialect {
     };
   }
 
+  // For Update rendering
+
+  @Override
+  public ForUpdateRenderer getForUpdateRenderer() {
+    return new ForUpdateRenderer() {
+
+      @Override
+      public String renderAfterFromClause() {
+        return null;
+      }
+
+      @Override
+      public String renderAfterLimitClause() {
+        return "FOR UPDATE";
+      }
+
+    };
+  }
+
   // Set operation rendering
 
   @Override
@@ -333,6 +352,20 @@ public class MariaDBDialect extends LiveSQLDialect {
     }
     sb.append(this.canonicalToNatural(databaseObject.getName()));
     return sb.toString();
+  }
+
+  // Update rendering
+
+  @Override
+  public UpdateRenderer getUpdateRenderer() {
+    return new UpdateRenderer() {
+
+      @Override
+      public boolean removeMainTableAlias() {
+        return false;
+      }
+
+    };
   }
 
 }

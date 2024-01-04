@@ -10,11 +10,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.hotrod.runtime.cursors.Cursor;
+import org.hotrod.runtime.livesql.dialects.ForUpdateRenderer;
 import org.hotrod.runtime.livesql.dialects.JoinRenderer;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
+import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
@@ -50,6 +52,8 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
   private List<OrderingTerm> orderingTerms = null;
   private Integer offset = null;
   private Integer limit = null;
+
+  private boolean forUpdate = false;
 
   AbstractSelectObject(final List<CTE> ctes, final boolean distinct) {
     super();
@@ -198,6 +202,14 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
     this.limit = limit;
   }
 
+  public void setForUpdate() {
+    if (this.distinct) {
+      throw new UnsupportedLiveSQLFeatureException(
+          "FOR UPDATE cannot be applied to queries that use the DISTINCT clause in the SELECT list");
+    }
+    this.forUpdate = true;
+  }
+
   // Getters
 
   Predicate getWhereCondition() {
@@ -272,6 +284,8 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
 
     // base table
 
+    ForUpdateRenderer forUpdateRenderer = liveSQLDialect.getForUpdateRenderer();
+
     if (this.baseTableExpression == null) {
 
       String rwt = liveSQLDialect.getFromRenderer().renderFromWithoutATable();
@@ -281,6 +295,11 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
 
       w.write("\nFROM ");
       this.baseTableExpression.renderTo(w);
+
+      String fc = forUpdateRenderer.renderAfterFromClause();
+      if (fc != null) {
+        w.write(" " + fc);
+      }
 
       // joins
 
@@ -362,11 +381,20 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
       liveSQLDialect.getPaginationRenderer().renderBottomPagination(this.offset, this.limit, w);
     }
 
+    // For Update clause
+
+    String lc = forUpdateRenderer.renderAfterLimitClause();
+    if (lc != null) {
+      w.write("\n" + lc);
+    }
+
     // enclosing pagination - end
 
     if ((this.offset != null || this.limit != null) && paginationType == PaginationType.ENCLOSE) {
       liveSQLDialect.getPaginationRenderer().renderEndEnclosingPagination(this.offset, this.limit, w);
     }
+
+    liveSQLDialect.getForUpdateRenderer();
 
   }
 

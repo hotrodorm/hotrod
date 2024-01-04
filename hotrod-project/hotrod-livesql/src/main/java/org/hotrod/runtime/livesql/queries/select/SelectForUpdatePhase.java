@@ -4,15 +4,13 @@ import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
 import org.hotrod.runtime.livesql.queries.select.sets.IndividualSelectPhase;
 
-public class SelectLimitPhase<R> extends IndividualSelectPhase<R> {
+public class SelectForUpdatePhase<R> extends IndividualSelectPhase<R> {
 
   // Constructor
 
-  SelectLimitPhase(final LiveSQLContext context, final CombinedSelectObject<R> combined, final int limit) {
+  public SelectForUpdatePhase(final LiveSQLContext context, final CombinedSelectObject<R> combined) {
     super(context, combined);
-    this.getLastSelect().setLimit(limit);
+    this.getLastSelect().setForUpdate();
   }
-
-  // Next phases
 
 }

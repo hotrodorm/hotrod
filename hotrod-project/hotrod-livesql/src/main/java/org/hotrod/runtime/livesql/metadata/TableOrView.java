@@ -27,6 +27,11 @@ public abstract class TableOrView extends DatabaseObject implements TableExpress
     return this.alias != null ? this.alias : this.designatedAlias;
   }
 
+  public void removeAlias() {
+    this.alias = null;
+    this.designatedAlias = null;
+  }
+
   public String renderTree() {
     StringBuilder sb = new StringBuilder();
     this.renderTree(sb, 0);

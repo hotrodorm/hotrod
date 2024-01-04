@@ -1,10 +1,10 @@
 package org.hotrod.runtime.livesql.queries.select;
 
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
-import org.hotrod.runtime.livesql.queries.select.sets.AbstractSelectPhase;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
+import org.hotrod.runtime.livesql.queries.select.sets.IndividualSelectPhase;
 
-public class SelectOffsetPhase<R> extends AbstractSelectPhase<R> {
+public class SelectOffsetPhase<R> extends IndividualSelectPhase<R> {
 
   // Constructor
 
