@@ -1,5 +1,7 @@
 package org.hotrod.runtime.livesql.dialects;
 
+import java.util.logging.Logger;
+
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -8,6 +10,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration(proxyBeanMethods = false)
 public class DialectConfiguration {
+
+  private static Logger log = Logger.getLogger(DialectConfiguration.class.getName());
 
   @Value("${livesql.livesqldialectname:#{null}}")
   private String liveSQLDialectName;
@@ -25,7 +29,7 @@ public class DialectConfiguration {
     LiveSQLDialect liveSQLDialect = LiveSQLDialectFactory.getLiveSQLDialect(dataSource, this.liveSQLDialectName,
         this.liveSQLDialectDatabaseName, this.liveSQLDialectVersionString, this.liveSQLDialectMajorVersion,
         this.liveSQLDialectMinorVersion);
-    System.out.println("[HotRod auto-config] liveSQLDialect=" + liveSQLDialect);
+    log.info("[HotRod auto-config] liveSQLDialect=" + liveSQLDialect);
     return liveSQLDialect;
   }
 

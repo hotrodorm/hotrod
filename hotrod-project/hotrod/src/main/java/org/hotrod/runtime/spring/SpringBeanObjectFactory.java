@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.logging.Logger;
 
 import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
 import org.hotrod.runtime.livesql.Row;
@@ -20,6 +21,8 @@ import org.springframework.stereotype.Component;
 public class SpringBeanObjectFactory extends DefaultObjectFactory implements ApplicationContextAware {
 
   private static final long serialVersionUID = 1L;
+
+  private static Logger log = Logger.getLogger(SpringBeanObjectFactory.class.getName());
 
   private ApplicationContext applicationContext;
 
@@ -47,7 +50,7 @@ public class SpringBeanObjectFactory extends DefaultObjectFactory implements App
         throw new RuntimeException("Invalid value '" + this.voInstantiation
             + "' in property 'hotrod.vo.instantiation'. Must be either 'bean' (default) or 'pojo'.");
       }
-      System.out.println(
+      log.info(
           "[HotRod object factory type: " + this.voInstantiationType + " -- @" + System.identityHashCode(this) + " ]");
     }
 
