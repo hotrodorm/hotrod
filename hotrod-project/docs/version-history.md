@@ -2,6 +2,14 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
+## 4.5.0
+
+- LiveSQL:
+    - Row locking using SELECT ... FOR UPDATE (and variations of it).
+    - NULLIF() implemented for completeness.
+    - Fixed aliases in UPDATE statement.
+    - Fixed SELECT by criteria ordering and limiting.
+
 ## 4.4.1
 
 - LiveSQL:
