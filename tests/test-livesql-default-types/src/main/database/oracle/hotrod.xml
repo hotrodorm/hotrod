@@ -10,5 +10,6 @@
   <table name="branch" />
 
   <table name="numbers" />
+  <table name="types_date_time" />
 
 </hotrod>

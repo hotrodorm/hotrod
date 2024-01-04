@@ -17,7 +17,6 @@ import java.util.Random;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.queries.DMLQuery;
-import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.runtime.livesql.queries.select.ExecutableCriteriaSelect;
 import org.hotrod.runtime.livesql.queries.select.Select;
@@ -70,15 +69,18 @@ public class App {
 
 //  @Autowired
 //  private BranchDAO branchDAO;
-//
-//  @Autowired
-//  private AccountDAO accountDAO;
+
+  @Autowired
+  private AccountDAO accountDAO;
 
   @Autowired
   private InvoiceDAO invoiceDAO;
 
   @Autowired
   private LiveSQL sql;
+
+  @Autowired
+  private BusinessLogic businessLogic;
 
   @Autowired
   private Torcs torcs;
@@ -137,9 +139,9 @@ public class App {
 //    lateralJoins();
 //    recursiveCTEs();
 
-//    liveSQLExamples();
+    liveSQLExamples();
 
-    update();
+//    update();
 
   }
 //
@@ -253,7 +255,7 @@ public class App {
     // and not is_vip
 
     DMLQuery q = sql.insert(b).select(sql.select(c.id.plus(sql.literal(10)), c.region, c.isVip).from(c)
-        .where(c.id.ge(sql.literal(4)).and(sql.not(c.isVip))));
+        .where(c.id.ge(sql.literal(4)).and(sql.not(c.isVip.eq("VIP")))));
     System.out.println("1. Update: " + q.getPreview());
     int rows = q.execute();
     System.out.println("updated rows=" + rows);
@@ -262,15 +264,39 @@ public class App {
 
   private void livesql1() {
     AccountTable a = AccountDAO.newTable("a");
-    Select<Row> q = this.sql.select().from(a);
 
-    System.out.println(q.getPreview());
-    q.execute().forEach(r -> System.out.println("row: " + r));
+//    List<AccountVO> accounts = this.accountDAO //
+//        .select(a, a.branchId.ge(102)) //
+//        .orderBy(a.branchId) //
+//        .offset(1) //
+//        .limit(2) //
+//        .execute();
+//    accounts.stream().forEach(r -> System.out.println("row: " + r));
+
+//    List<Row> rows = this.sql.select(a.branchId, a.branchId.nullIf(102).as("x")).from(a).execute();
+//
+//    System.out.println("rows:");
+//    rows.stream().forEach(r -> System.out.println("row: " + r));
+
+//    List<Employee> employees = this.employeeDAO
+//        .select(e, e.type.ne("MANAGER").and(sql.exists(
+//            sql.select().from(m).where(m.branchId.ne(e.branchId).and(m.name.eq(e.name)))
+//          ))
+//        )
+//        .orderBy(e.branchId, e.salary.plus(e.bonus).desc())
+//        .execute();    
+
+  }
+
+  private void println(String prompt, Object v) {
+    System.out.println("- " + prompt + ": " + v + " (" + (v == null ? "null" : v.getClass().getName()) + ")");
   }
 
   private void liveSQLExamples() throws SQLException, UnsupportedTorcsDatabaseException {
 
 //    livesql1();
+//    dates();
+    forUpdate();
 
     // Set Operators
 
@@ -289,6 +315,26 @@ public class App {
 //    example7RecursiveCTEs();
 //    example8LateralJoins();
 
+  }
+
+  private void dates() {
+//    TypesDateTimeTable t = TypesDateTimeDAO.newTable("t");
+//
+//    List<Row> rows = this.sql.select().from(t).execute();
+//
+//    System.out.println("rows:");
+//
+//    for (Row r : rows) {
+//      System.out.println("Row:");
+//      println("dat1 (DATE)", r.get("dat1"));
+//      println("dat2 (TIMESTAMP)", r.get("dat2"));
+//      println("dat3 (TIMESTAMP WITH TIME ZONE)", r.get("dat3"));
+//      println("dat4 (TIMESTAMP WITH LOCAL TIME ZONE)", r.get("dat3"));
+//    }
+  }
+
+  private void forUpdate() {
+    this.businessLogic.forUpdate();
   }
 
   private void union() {
@@ -625,19 +671,19 @@ public class App {
 //      select id from branch where region = 'SOUTH'
 //    )
 
-    AccountTable a = AccountDAO.newTable("a");
-    BranchTable b = BranchDAO.newTable("b");
-
-    Select<Row> q = sql.select() //
-        .from(a) //
-        .where(a.branchId.notIn( //
-            sql.select(b.id).from(b).where(b.region.eq("SOUTH")) //
-        )) //
-        .orderBy(a.branchId, a.parentId.desc(),
-            sql.caseWhen(a.branchId.lt(100), 3).elseValue(0).end().desc().nullsLast());
-
-    System.out.println(q.getPreview());
-    q.execute().forEach(r -> System.out.println("row: " + r));
+//    AccountTable a = AccountDAO.newTable("a");
+//    BranchTable b = BranchDAO.newTable("b");
+//
+//    Select<Row> q = sql.select() //
+//        .from(a) //
+//        .where(a.branchId.notIn( //
+//            sql.select(b.id).from(b).where(b.region.eq("SOUTH")) //
+//        )) //
+//        .orderBy(a.branchId, a.parentId.desc(),
+//            sql.caseWhen(a.branchId.lt(100), 3).elseValue(0).end().desc().nullsLast());
+//
+//    System.out.println(q.getPreview());
+//    q.execute().forEach(r -> System.out.println("row: " + r));
 
   }
 
@@ -654,14 +700,14 @@ public class App {
     AccountTable a = AccountDAO.newTable("a");
     BranchTable b = BranchDAO.newTable("b");
 
-    Select<Row> q = sql.select() //
-        .from(a) //
-        .where(sql.notExists( //
-            sql.select(sql.val(1)).from(b).where(b.id.eq(a.branchId).and(b.region.eq("SOUTH"))) //
-        ));
-
-    System.out.println(q.getPreview());
-    q.execute().forEach(r -> System.out.println("row: " + r));
+//    Select<Row> q = sql.select() //
+//        .from(a) //
+//        .where(sql.notExists( //
+//            sql.select(sql.val(1)).from(b).where(b.id.eq(a.branchId).and(b.region.eq("SOUTH"))) //
+//        ));
+//
+//    System.out.println(q.getPreview());
+//    q.execute().forEach(r -> System.out.println("row: " + r));
 
   }
 
@@ -825,30 +871,30 @@ public class App {
 //    ) y on y.account_id = x.id
 //    where y.account_id is null
 
-    BranchTable b = BranchDAO.newTable("b");
-    AccountTable a = AccountDAO.newTable("a");
-    InvoiceTable i = InvoiceDAO.newTable("i");
-    InvoiceLineTable l = InvoiceLineDAO.newTable("l");
-    ProductTable p = ProductDAO.newTable("p");
-
-    Subquery x = sql.subquery("x", //
-        sql.select(b.isVip, a.star()) //
-            .from(b) //
-            .join(a, a.branchId.eq(b.id)) //
-    );
-    Subquery y = sql.subquery("y", //
-        sql.select(i.accountId) //
-            .from(i) //
-            .join(l, l.invoiceId.eq(i.id)) //
-            .join(p, p.id.eq(l.productId)) //
-            .where(p.shipping.eq(0)));
-    Select<Row> q = sql.select(x.star()) //
-        .from(x) //
-        .leftJoin(y, y.num("accountId").eq(x.num("id"))) //
-        .where(y.num("accountId").isNull());
-
-    System.out.println(q.getPreview());
-    q.execute().forEach(r -> System.out.println("row: " + r));
+//    BranchTable b = BranchDAO.newTable("b");
+//    AccountTable a = AccountDAO.newTable("a");
+//    InvoiceTable i = InvoiceDAO.newTable("i");
+//    InvoiceLineTable l = InvoiceLineDAO.newTable("l");
+//    ProductTable p = ProductDAO.newTable("p");
+//
+//    Subquery x = sql.subquery("x", //
+//        sql.select(b.isVip, a.star()) //
+//            .from(b) //
+//            .join(a, a.branchId.eq(b.id)) //
+//    );
+//    Subquery y = sql.subquery("y", //
+//        sql.select(i.accountId) //
+//            .from(i) //
+//            .join(l, l.invoiceId.eq(i.id)) //
+//            .join(p, p.id.eq(l.productId)) //
+//            .where(p.shipping.eq(0)));
+//    Select<Row> q = sql.select(x.star()) //
+//        .from(x) //
+//        .leftJoin(y, y.num("accountId").eq(x.num("id"))) //
+//        .where(y.num("accountId").isNull());
+//
+//    System.out.println(q.getPreview());
+//    q.execute().forEach(r -> System.out.println("row: " + r));
 
   }
 
@@ -871,30 +917,30 @@ public class App {
 //    ) y (aid) on y.account_id = x.id
 //    where y.account_id is null
 
-    BranchTable b = BranchDAO.newTable("b");
-    AccountTable a = AccountDAO.newTable("a");
-    InvoiceTable i = InvoiceDAO.newTable("i");
-    InvoiceLineTable l = InvoiceLineDAO.newTable("l");
-    ProductTable p = ProductDAO.newTable("p");
-
-    Subquery x = sql.subquery("x", //
-        sql.select(b.isVip, a.star()) //
-            .from(b) //
-            .join(a, a.branchId.eq(b.id)) //
-    );
-    Subquery y = sql.subquery("y", "ai#d") //
-        .as(sql.select(i.accountId) //
-            .from(i) //
-            .join(l, l.invoiceId.eq(i.id)) //
-            .join(p, p.id.eq(l.productId)) //
-            .where(p.shipping.eq(0)));
-    Select<Row> q = sql.select(x.star()) //
-        .from(x) //
-        .leftJoin(y, y.num("ai#d").eq(x.num("id"))) //
-        .where(y.num("ai#d").isNull());
-
-    System.out.println(q.getPreview());
-    q.execute().forEach(r -> System.out.println("row: " + r));
+//    BranchTable b = BranchDAO.newTable("b");
+//    AccountTable a = AccountDAO.newTable("a");
+//    InvoiceTable i = InvoiceDAO.newTable("i");
+//    InvoiceLineTable l = InvoiceLineDAO.newTable("l");
+//    ProductTable p = ProductDAO.newTable("p");
+//
+//    Subquery x = sql.subquery("x", //
+//        sql.select(b.isVip, a.star()) //
+//            .from(b) //
+//            .join(a, a.branchId.eq(b.id)) //
+//    );
+//    Subquery y = sql.subquery("y", "ai#d") //
+//        .as(sql.select(i.accountId) //
+//            .from(i) //
+//            .join(l, l.invoiceId.eq(i.id)) //
+//            .join(p, p.id.eq(l.productId)) //
+//            .where(p.shipping.eq(0)));
+//    Select<Row> q = sql.select(x.star()) //
+//        .from(x) //
+//        .leftJoin(y, y.num("ai#d").eq(x.num("id"))) //
+//        .where(y.num("ai#d").isNull());
+//
+//    System.out.println(q.getPreview());
+//    q.execute().forEach(r -> System.out.println("row: " + r));
 
   }
 
@@ -920,30 +966,30 @@ public class App {
 //    left join y on y.account_id = x.id 
 //    where y.account_id is null
 
-    BranchTable b = BranchDAO.newTable("b");
-    AccountTable a = AccountDAO.newTable("a");
-    InvoiceTable i = InvoiceDAO.newTable("i");
-    InvoiceLineTable l = InvoiceLineDAO.newTable("l");
-    ProductTable p = ProductDAO.newTable("p");
-
-    CTE x = sql.cte("x", //
-        sql.select(b.isVip, a.star()) //
-            .from(b) //
-            .join(a, a.branchId.eq(b.id)) //
-    );
-    CTE y = sql.cte("y", "aid").as(sql.select(i.accountId) //
-        .from(i) //
-        .join(l, l.invoiceId.eq(i.id)) //
-        .join(p, p.id.eq(l.productId)) //
-        .where(p.shipping.eq(0)));
-    Select<Row> q = sql.with(x, y) //
-        .select(x.star()) //
-        .from(x) //
-        .leftJoin(y, y.num("aid").eq(x.num("id"))) //
-        .where(y.num("aid").isNull());
-
-    System.out.println(q.getPreview());
-    q.execute().forEach(r -> System.out.println("row: " + r));
+//    BranchTable b = BranchDAO.newTable("b");
+//    AccountTable a = AccountDAO.newTable("a");
+//    InvoiceTable i = InvoiceDAO.newTable("i");
+//    InvoiceLineTable l = InvoiceLineDAO.newTable("l");
+//    ProductTable p = ProductDAO.newTable("p");
+//
+//    CTE x = sql.cte("x", //
+//        sql.select(b.isVip, a.star()) //
+//            .from(b) //
+//            .join(a, a.branchId.eq(b.id)) //
+//    );
+//    CTE y = sql.cte("y", "aid").as(sql.select(i.accountId) //
+//        .from(i) //
+//        .join(l, l.invoiceId.eq(i.id)) //
+//        .join(p, p.id.eq(l.productId)) //
+//        .where(p.shipping.eq(0)));
+//    Select<Row> q = sql.with(x, y) //
+//        .select(x.star()) //
+//        .from(x) //
+//        .leftJoin(y, y.num("aid").eq(x.num("id"))) //
+//        .where(y.num("aid").isNull());
+//
+//    System.out.println(q.getPreview());
+//    q.execute().forEach(r -> System.out.println("row: " + r));
 
   }
 
@@ -963,29 +1009,29 @@ public class App {
     // from g
     // join invoice i on i.account_id = g.id;
 
-    AccountTable a = AccountDAO.newTable("a");
-    AccountTable b = AccountDAO.newTable("b");
-    InvoiceTable i = InvoiceDAO.newTable("i");
-
-    RecursiveCTE g = sql.recursiveCTE("g", "id");
-    g.as( //
-        sql.select(a.id) //
-            .from(a) //
-            .where(a.id.eq(1215)) //
-        , //
-        sql.select(b.id) //
-            .from(g) //
-            .join(b, b.parentId.eq(g.num("id"))) //
-            .where(b.parentId.eq(g.num("id"))) //
-    );
-
-    Select<Row> q = sql.with(g) //
-        .select(g.num("id"), i.amount) //
-        .from(g) //
-        .join(i, i.accountId.eq(g.num("id")));
-
-    System.out.println(q.getPreview());
-    q.execute().forEach(r -> System.out.println("row: " + r));
+//    AccountTable a = AccountDAO.newTable("a");
+//    AccountTable b = AccountDAO.newTable("b");
+//    InvoiceTable i = InvoiceDAO.newTable("i");
+//
+//    RecursiveCTE g = sql.recursiveCTE("g", "id");
+//    g.as( //
+//        sql.select(a.id) //
+//            .from(a) //
+//            .where(a.id.eq(1215)) //
+//        , //
+//        sql.select(b.id) //
+//            .from(g) //
+//            .join(b, b.parentId.eq(g.num("id"))) //
+//            .where(b.parentId.eq(g.num("id"))) //
+//    );
+//
+//    Select<Row> q = sql.with(g) //
+//        .select(g.num("id"), i.amount) //
+//        .from(g) //
+//        .join(i, i.accountId.eq(g.num("id")));
+//
+//    System.out.println(q.getPreview());
+//    q.execute().forEach(r -> System.out.println("row: " + r));
 
   }
 
@@ -1011,32 +1057,32 @@ public class App {
 //    ) y on true
 //    where a.branch_id = 1014
 
-    AccountTable a = AccountDAO.newTable("a");
-    InvoiceTable i = InvoiceDAO.newTable("i");
-    PaymentTable p = PaymentDAO.newTable("p");
-
-    Subquery x = sql.subquery("x", //
-        sql.select(i.orderDate) //
-            .from(i) //
-            .where(i.accountId.eq(a.id)) //
-            .orderBy(i.orderDate.desc()) //
-            .limit(2) //
-    );
-    Subquery y = sql.subquery("y", //
-        sql.select(p.paymentDate.as("lastPayment")) //
-            .from(p) //
-            .where(p.invoiceId.eq(a.id)) //
-            .orderBy(p.paymentDate.desc()) //
-            .limit(1) //
-    );
-    Select<Row> q = sql.select() //
-        .from(a) //
-        .joinLateral(x) //
-        .leftJoinLateral(y) //
-        .where(a.branchId.eq(1014));
-
-    System.out.println(q.getPreview());
-    q.execute().forEach(r -> System.out.println("row: " + r));
+//    AccountTable a = AccountDAO.newTable("a");
+//    InvoiceTable i = InvoiceDAO.newTable("i");
+//    PaymentTable p = PaymentDAO.newTable("p");
+//
+//    Subquery x = sql.subquery("x", //
+//        sql.select(i.orderDate) //
+//            .from(i) //
+//            .where(i.accountId.eq(a.id)) //
+//            .orderBy(i.orderDate.desc()) //
+//            .limit(2) //
+//    );
+//    Subquery y = sql.subquery("y", //
+//        sql.select(p.paymentDate.as("lastPayment")) //
+//            .from(p) //
+//            .where(p.invoiceId.eq(a.id)) //
+//            .orderBy(p.paymentDate.desc()) //
+//            .limit(1) //
+//    );
+//    Select<Row> q = sql.select() //
+//        .from(a) //
+//        .joinLateral(x) //
+//        .leftJoinLateral(y) //
+//        .where(a.branchId.eq(1014));
+//
+//    System.out.println(q.getPreview());
+//    q.execute().forEach(r -> System.out.println("row: " + r));
 
   }
 

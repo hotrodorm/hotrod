@@ -102,7 +102,7 @@ public class TestTorcsCTP {
                 .where(j.type.ne("VIP")
                     .and(j.amount.gtAny(this.sql.select(k.amount).from(k)
                         .where(k.accountId.ne(i.accountId).and(k.accountId.ne(j.accountId)))))))
-            .or(i.amount.ge(b.id.mult(1000).minus(b.isVip)))) //
+            .or(i.amount.ge(b.id.mult(1000).minus(b.id)))) //
         .execute();
   }
 

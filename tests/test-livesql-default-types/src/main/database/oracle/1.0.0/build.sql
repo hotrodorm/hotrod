@@ -19,9 +19,9 @@ create table invoice (
   unpaid_balance number(6)
 );
 
-insert into invoice (id, amount, branch_id, account_id, status) values (10, 1500, 101, 15, 'PAID');
-insert into invoice (id, amount, branch_id, account_id, status) values (11, 2500, 101, 15, 'UNPAID');
-insert into invoice (id, amount, branch_id, account_id, status) values (12, 4000, 102, 15, 'LATE');
+insert into invoice (id, amount, branch_id, account_id, status, unpaid_balance) values (10, 1500, 101, 15, 'PAID', 200);
+insert into invoice (id, amount, branch_id, account_id, status, unpaid_balance) values (11, 2500, 101, 15, 'UNPAID', 200);
+insert into invoice (id, amount, branch_id, account_id, status, unpaid_balance) values (12, 4000, 102, 15, 'LATE', 200);
 
 -- Types
 
