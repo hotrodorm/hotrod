@@ -13,6 +13,6 @@ connect to a database.
 | MySQL      | mysql                   | mysql-connector-java | 8.0.28            | com.mysql.cj.jdbc.Driver                     | 
 | H2         | com.h2database          | h2                   | 2.1.210           | org.h2.Driver                                | 
 | HyperSQL   | org.hsqldb              | hsqldb               | 2.6.1             | org.hsqldb.jdbc.JDBCDriver                   | 
-| Derby      | org.apache.derby        | derby                | 10.15.2.0         | org.apache.derby.jdbc.ClientDriver           |       
+| Derby      | org.apache.derby        | derbyclient          | 10.13.1.1         | org.apache.derby.jdbc.ClientDriver           |       
 
 
