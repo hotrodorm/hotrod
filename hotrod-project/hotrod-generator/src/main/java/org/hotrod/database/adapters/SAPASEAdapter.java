@@ -378,11 +378,11 @@ public class SAPASEAdapter extends DatabaseAdapter {
     if (catalog == null) {
       throw new InvalidSchemaException(JdbcUtils.getCatalogs(conn.getMetaData()));
     }
-    if (schema == null) {
-      throw new InvalidSchemaException(JdbcUtils.getSchemas(conn.getMetaData(), catalog));
-    }
+//    if (schema == null) {
+//      throw new InvalidSchemaException(JdbcUtils.getSchemas(conn.getMetaData(), catalog));
+//    }
     conn.setCatalog(catalog);
-    conn.setSchema(schema);
+    // conn.setSchema(schema);
   }
 
 }

@@ -16,7 +16,6 @@ import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
-import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
@@ -203,10 +202,6 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
   }
 
   public void setForUpdate() {
-    if (this.distinct) {
-      throw new UnsupportedLiveSQLFeatureException(
-          "FOR UPDATE cannot be applied to queries that use the DISTINCT clause in the SELECT list");
-    }
     this.forUpdate = true;
   }
 
@@ -284,8 +279,6 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
 
     // base table
 
-    ForUpdateRenderer forUpdateRenderer = liveSQLDialect.getForUpdateRenderer();
-
     if (this.baseTableExpression == null) {
 
       String rwt = liveSQLDialect.getFromRenderer().renderFromWithoutATable();
@@ -296,9 +289,12 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
       w.write("\nFROM ");
       this.baseTableExpression.renderTo(w);
 
-      String fc = forUpdateRenderer.renderAfterFromClause();
-      if (fc != null) {
-        w.write(" " + fc);
+      if (this.forUpdate) {
+        ForUpdateRenderer forUpdateRenderer = liveSQLDialect.getForUpdateRenderer();
+        String fc = forUpdateRenderer.renderAfterFromClause();
+        if (fc != null) {
+          w.write(" " + fc);
+        }
       }
 
       // joins
@@ -383,9 +379,12 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
 
     // For Update clause
 
-    String lc = forUpdateRenderer.renderAfterLimitClause();
-    if (lc != null) {
-      w.write("\n" + lc);
+    if (this.forUpdate) {
+      ForUpdateRenderer forUpdateRenderer = liveSQLDialect.getForUpdateRenderer();
+      String lc = forUpdateRenderer.renderAfterLimitClause();
+      if (lc != null) {
+        w.write("\n" + lc);
+      }
     }
 
     // enclosing pagination - end
@@ -393,8 +392,6 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
     if ((this.offset != null || this.limit != null) && paginationType == PaginationType.ENCLOSE) {
       liveSQLDialect.getPaginationRenderer().renderEndEnclosingPagination(this.offset, this.limit, w);
     }
-
-    liveSQLDialect.getForUpdateRenderer();
 
   }
 
