@@ -146,19 +146,8 @@ public class DerbyDialect extends LiveSQLDialect {
 
   @Override
   public ForUpdateRenderer getForUpdateRenderer() {
-    return new ForUpdateRenderer() {
-
-      @Override
-      public String renderAfterFromClause() {
-        return null;
-      }
-
-      @Override
-      public String renderAfterLimitClause() {
-        return "FOR UPDATE";
-      }
-
-    };
+    throw new UnsupportedLiveSQLFeatureException(
+        "Apache Derby does not support locking rows with the FOR UPDATE clause in queries that do not use cursors.");
   }
 
   // Set operation rendering

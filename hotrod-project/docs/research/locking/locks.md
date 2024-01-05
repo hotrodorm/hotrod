@@ -30,11 +30,12 @@ PG:
 | Sybase ASE | -- *2      | --        | --      | --         | --          | --               | --                |
 | H2         | Yes        | --        | Yes     | Yes        | Yes         | --               | --                |
 | HyperSQL   | -- *3      | --        | --      | --         | --          | --               | --                |
-| Derby      | Yes        | --        | --      | --         | --          | --               | Yes               |
+| Derby      | -- *4      | --        | --      | --         | --          | --               | Yes               |
 
 *1 SQL Server locks "pages of rows" not specific rows. A FOR UPDATE (`with (updlock)`) could become inefficient in high concurrency situations.
 *2 Locking is only available for cursors or in stored procedures.
 *3 FOR UPDATE is only available in HyperSQL when using cursors.
+*4 FOR UPDATE is only available in Apache Derby when using cursors.
 
 
 ## Oracle

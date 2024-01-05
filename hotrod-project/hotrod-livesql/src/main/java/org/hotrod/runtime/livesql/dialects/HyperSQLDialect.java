@@ -137,7 +137,7 @@ public class HyperSQLDialect extends LiveSQLDialect {
 
   @Override
   public ForUpdateRenderer getForUpdateRenderer() {
-    throw new UnsupportedLiveSQLFeatureException("HyperSQL does not support locking rows with the FOR UPDATE clause");
+    throw new UnsupportedLiveSQLFeatureException("HyperSQL does not support locking rows with the FOR UPDATE clause in queries that do not use cursors.");
   }
 
   // Set operation rendering
