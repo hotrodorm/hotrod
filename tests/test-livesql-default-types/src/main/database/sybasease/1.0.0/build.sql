@@ -1,5 +1,3 @@
-drop table branch
-
 create table branch (
   id int primary key not null,
   [NaMe] varchar(20),

@@ -186,12 +186,12 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
 
   public enum PaymentOrderBy implements OrderBy {
 
-    PAYMENT_DATE("public.payment", "payment_date", true), //
-    PAYMENT_DATE$DESC("public.payment", "payment_date", false), //
-    INVOICE_ID("public.payment", "invoice_id", true), //
-    INVOICE_ID$DESC("public.payment", "invoice_id", false), //
-    AMOUNT("public.payment", "amount", true), //
-    AMOUNT$DESC("public.payment", "amount", false);
+    PAYMENT_DATE("schema1.payment", "payment_date", true), //
+    PAYMENT_DATE$DESC("schema1.payment", "payment_date", false), //
+    INVOICE_ID("schema1.payment", "invoice_id", true), //
+    INVOICE_ID$DESC("schema1.payment", "invoice_id", false), //
+    AMOUNT("schema1.payment", "amount", true), //
+    AMOUNT$DESC("schema1.payment", "amount", false);
 
     private PaymentOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -245,12 +245,12 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     PaymentTable() {
-      super(null, "PUBLIC", "PAYMENT", "Table", null);
+      super(null, "SCHEMA1", "PAYMENT", "Table", null);
       initialize();
     }
 
     PaymentTable(final String alias) {
-      super(null, "PUBLIC", "PAYMENT", "Table", alias);
+      super(null, "SCHEMA1", "PAYMENT", "Table", alias);
       initialize();
     }
 
@@ -260,9 +260,9 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
       super.columns = new ArrayList<>();
       this.paymentDate = new DateTimeColumn(this, "PAYMENT_DATE", "paymentDate", "DATE", 10, 0);
       super.columns.add(this.paymentDate);
-      this.invoiceId = new NumberColumn(this, "INVOICE_ID", "invoiceId", "INTEGER", 32, 0);
+      this.invoiceId = new NumberColumn(this, "INVOICE_ID", "invoiceId", "INTEGER", 10, 0);
       super.columns.add(this.invoiceId);
-      this.amount = new NumberColumn(this, "AMOUNT", "amount", "INTEGER", 32, 0);
+      this.amount = new NumberColumn(this, "AMOUNT", "amount", "INTEGER", 10, 0);
       super.columns.add(this.amount);
     }
 

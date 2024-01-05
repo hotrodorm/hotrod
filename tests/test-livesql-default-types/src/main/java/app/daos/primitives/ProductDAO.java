@@ -186,18 +186,18 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   public enum ProductOrderBy implements OrderBy {
 
-    ID("public.product", "id", true), //
-    ID$DESC("public.product", "id", false), //
-    TYPE("public.product", "type", true), //
-    TYPE$DESC("public.product", "type", false), //
-    TYPE$CASEINSENSITIVE("public.product", "lower(type)", true), //
-    TYPE$CASEINSENSITIVE_STABLE_FORWARD("public.product", "lower(type), type", true), //
-    TYPE$CASEINSENSITIVE_STABLE_REVERSE("public.product", "lower(type), type", false), //
-    TYPE$DESC_CASEINSENSITIVE("public.product", "lower(type)", false), //
-    TYPE$DESC_CASEINSENSITIVE_STABLE_FORWARD("public.product", "lower(type), type", false), //
-    TYPE$DESC_CASEINSENSITIVE_STABLE_REVERSE("public.product", "lower(type), type", true), //
-    SHIPPING("public.product", "shipping", true), //
-    SHIPPING$DESC("public.product", "shipping", false);
+    ID("schema1.product", "id", true), //
+    ID$DESC("schema1.product", "id", false), //
+    TYPE("schema1.product", "type", true), //
+    TYPE$DESC("schema1.product", "type", false), //
+    TYPE$CASEINSENSITIVE("schema1.product", "lower(type)", true), //
+    TYPE$CASEINSENSITIVE_STABLE_FORWARD("schema1.product", "lower(type), type", true), //
+    TYPE$CASEINSENSITIVE_STABLE_REVERSE("schema1.product", "lower(type), type", false), //
+    TYPE$DESC_CASEINSENSITIVE("schema1.product", "lower(type)", false), //
+    TYPE$DESC_CASEINSENSITIVE_STABLE_FORWARD("schema1.product", "lower(type), type", false), //
+    TYPE$DESC_CASEINSENSITIVE_STABLE_REVERSE("schema1.product", "lower(type), type", true), //
+    SHIPPING("schema1.product", "shipping", true), //
+    SHIPPING$DESC("schema1.product", "shipping", false);
 
     private ProductOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -251,12 +251,12 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     ProductTable() {
-      super(null, "PUBLIC", "PRODUCT", "Table", null);
+      super(null, "SCHEMA1", "PRODUCT", "Table", null);
       initialize();
     }
 
     ProductTable(final String alias) {
-      super(null, "PUBLIC", "PRODUCT", "Table", alias);
+      super(null, "SCHEMA1", "PRODUCT", "Table", alias);
       initialize();
     }
 
@@ -264,11 +264,11 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
+      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 10, 0);
       super.columns.add(this.id);
-      this.type = new StringColumn(this, "TYPE", "type", "CHARACTER VARYING", 6, 0);
+      this.type = new StringColumn(this, "TYPE", "type", "VARCHAR", 6, null);
       super.columns.add(this.type);
-      this.shipping = new NumberColumn(this, "SHIPPING", "shipping", "INTEGER", 32, 0);
+      this.shipping = new NumberColumn(this, "SHIPPING", "shipping", "INTEGER", 10, 0);
       super.columns.add(this.shipping);
     }
 

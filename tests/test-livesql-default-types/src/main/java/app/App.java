@@ -255,11 +255,20 @@ public class App {
     // and not is_vip
 
     DMLQuery q = sql.insert(b).select(sql.select(c.id.plus(sql.literal(10)), c.region, c.isVip).from(c)
-        .where(c.id.ge(sql.literal(4)).and(sql.not(c.isVip.eq("VIP")))));
+        .where(c.id.ge(sql.literal(4)).and(sql.not(c.isVip.eq(1)))));
     System.out.println("1. Update: " + q.getPreview());
     int rows = q.execute();
     System.out.println("updated rows=" + rows);
 
+  }
+
+  private void livesql2() {
+    InvoiceTable i = InvoiceDAO.newTable("i");
+    Select<Row> q = this.sql.select() //
+        .from(i) //
+        .where(i.amount.le(sql.literal(2000)).or(i.branchId.eq(sql.literal(102))));
+    System.out.println(q.getPreview());
+    q.execute().forEach(r -> System.out.println("row: " + r));
   }
 
   private void livesql1() {
@@ -295,8 +304,9 @@ public class App {
   private void liveSQLExamples() throws SQLException, UnsupportedTorcsDatabaseException {
 
 //    livesql1();
+    livesql2();
 //    dates();
-    forUpdate();
+//    forUpdate();
 
     // Set Operators
 

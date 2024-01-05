@@ -64,6 +64,13 @@
 
   </dependencies>
 
+   <repositories>
+     <repository>
+       <id>local-maven-repository</id>
+       <url>file:///${project.basedir}/local-maven-repository</url>
+     </repository>
+   </repositories>
+   
   <build>
 
     <plugins>
@@ -798,7 +805,6 @@
               <jdbcusername>${jdbcusername}</jdbcusername>
               <jdbcpassword>${jdbcpassword}</jdbcpassword>
               <jdbccatalog>${jdbccatalog}</jdbccatalog>
-              <jdbcschema>${jdbcschema}</jdbcschema>
             </configuration>
             <dependencies>
               <dependency>

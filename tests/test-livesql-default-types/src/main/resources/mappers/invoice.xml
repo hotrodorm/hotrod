@@ -10,33 +10,33 @@
     id,
     amount,
     branch_id,
-    account_id,
     status,
-    type,
     order_date,
-    unpaid_balance
+    unpaid_balance,
+    account_id,
+    type
   </sql>
 
   <sql id="columnsWithAlias">
     ${alias}.id,
     ${alias}.amount,
     ${alias}.branch_id,
-    ${alias}.account_id,
     ${alias}.status,
-    ${alias}.type,
     ${alias}.order_date,
-    ${alias}.unpaid_balance
+    ${alias}.unpaid_balance,
+    ${alias}.account_id,
+    ${alias}.type
   </sql>
 
   <resultMap id="allColumns" type="app.daos.InvoiceVO">
-    <id property="id" column="ID" />
-    <result property="amount" column="AMOUNT" />
-    <result property="branchId" column="BRANCH_ID" />
-    <result property="accountId" column="ACCOUNT_ID" />
-    <result property="status" column="STATUS" />
-    <result property="type" column="TYPE" />
-    <result property="orderDate" column="ORDER_DATE" />
-    <result property="unpaidBalance" column="UNPAID_BALANCE" />
+    <id property="id" column="id" />
+    <result property="amount" column="amount" />
+    <result property="branchId" column="branch_id" />
+    <result property="status" column="status" />
+    <result property="orderDate" column="order_date" />
+    <result property="unpaidBalance" column="unpaid_balance" />
+    <result property="accountId" column="account_id" />
+    <result property="type" column="type" />
   </resultMap>
 
   <!-- select by PK -->
@@ -44,9 +44,9 @@
   <select id="selectByPK" resultMap="allColumns">
     select
       <include refid="columns" />
-     from user1.invoice
+     from master.dbo.invoice
      where
-      id = #{id,jdbcType=NUMERIC}
+      id = #{id,jdbcType=INTEGER}
   </select>
 
   <!-- no select by unique indexes since there are no UI (besides the PK) -->
@@ -56,31 +56,31 @@
   <select id="selectByExample" resultMap="allColumns">
     select
       <include refid="columns" />
-     from user1.invoice
+     from master.dbo.invoice
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.id != null">
-        and id = #{p.id,jdbcType=NUMERIC}
+        and id = #{p.id,jdbcType=INTEGER}
       </if>
       <if test="p.amount != null">
-        and amount = #{p.amount,jdbcType=NUMERIC}
+        and amount = #{p.amount,jdbcType=INTEGER}
       </if>
       <if test="p.branchId != null">
-        and branch_id = #{p.branchId,jdbcType=NUMERIC}
-      </if>
-      <if test="p.accountId != null">
-        and account_id = #{p.accountId,jdbcType=NUMERIC}
+        and branch_id = #{p.branchId,jdbcType=INTEGER}
       </if>
       <if test="p.status != null">
         and status = #{p.status,jdbcType=VARCHAR}
       </if>
-      <if test="p.type != null">
-        and type = #{p.type,jdbcType=VARCHAR}
-      </if>
       <if test="p.orderDate != null">
-        and order_date = #{p.orderDate,jdbcType=TIMESTAMP}
+        and order_date = #{p.orderDate,jdbcType=DATE}
       </if>
       <if test="p.unpaidBalance != null">
-        and unpaid_balance = #{p.unpaidBalance,jdbcType=NUMERIC}
+        and unpaid_balance = #{p.unpaidBalance,jdbcType=INTEGER}
+      </if>
+      <if test="p.accountId != null">
+        and account_id = #{p.accountId,jdbcType=INTEGER}
+      </if>
+      <if test="p.type != null">
+        and type = #{p.type,jdbcType=VARCHAR}
       </if>
     </trim>
     <if test="o != null">
@@ -97,27 +97,27 @@
   <!-- insert (no auto-generated columns) -->
 
   <insert id="insert">
-    insert into user1.invoice (
+    insert into master.dbo.invoice (
       <trim prefixOverrides=", ">
         <if test="true">, id</if>
         <if test="true">, amount</if>
         <if test="true">, branch_id</if>
-        <if test="true">, account_id</if>
         <if test="true">, status</if>
-        <if test="true">, type</if>
         <if test="true">, order_date</if>
         <if test="true">, unpaid_balance</if>
+        <if test="true">, account_id</if>
+        <if test="true">, type</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
-        <if test="true">, #{id,jdbcType=NUMERIC}</if>
-        <if test="true">, #{amount,jdbcType=NUMERIC}</if>
-        <if test="true">, #{branchId,jdbcType=NUMERIC}</if>
-        <if test="true">, #{accountId,jdbcType=NUMERIC}</if>
+        <if test="true">, #{id,jdbcType=INTEGER}</if>
+        <if test="true">, #{amount,jdbcType=INTEGER}</if>
+        <if test="true">, #{branchId,jdbcType=INTEGER}</if>
         <if test="true">, #{status,jdbcType=VARCHAR}</if>
+        <if test="true">, #{orderDate,jdbcType=DATE}</if>
+        <if test="true">, #{unpaidBalance,jdbcType=INTEGER}</if>
+        <if test="true">, #{accountId,jdbcType=INTEGER}</if>
         <if test="true">, #{type,jdbcType=VARCHAR}</if>
-        <if test="true">, #{orderDate,jdbcType=TIMESTAMP}</if>
-        <if test="true">, #{unpaidBalance,jdbcType=NUMERIC}</if>
       </trim>
       )
   </insert>
@@ -125,64 +125,64 @@
   <!-- update by PK -->
 
   <update id="updateByPK">
-    update user1.invoice set
-      amount = #{amount,jdbcType=NUMERIC},
-      branch_id = #{branchId,jdbcType=NUMERIC},
-      account_id = #{accountId,jdbcType=NUMERIC},
+    update master.dbo.invoice set
+      amount = #{amount,jdbcType=INTEGER},
+      branch_id = #{branchId,jdbcType=INTEGER},
       status = #{status,jdbcType=VARCHAR},
-      type = #{type,jdbcType=VARCHAR},
-      order_date = #{orderDate,jdbcType=TIMESTAMP},
-      unpaid_balance = #{unpaidBalance,jdbcType=NUMERIC}
+      order_date = #{orderDate,jdbcType=DATE},
+      unpaid_balance = #{unpaidBalance,jdbcType=INTEGER},
+      account_id = #{accountId,jdbcType=INTEGER},
+      type = #{type,jdbcType=VARCHAR}
      where
-      id = #{id,jdbcType=NUMERIC}
+      id = #{id,jdbcType=INTEGER}
   </update>
 
   <!-- delete by PK -->
 
   <delete id="deleteByPK">
-    delete from user1.invoice
+    delete from master.dbo.invoice
      where
-      id = #{id,jdbcType=NUMERIC}
+      id = #{id,jdbcType=INTEGER}
   </delete>
 
   <!-- update by example -->
 
   <update id="updateByExample">
-    update user1.invoice
+    update master.dbo.invoice
     <set>
-      <if test="values.id != null">id = #{values.id,jdbcType=NUMERIC},</if>
-      <if test="values.amount != null">amount = #{values.amount,jdbcType=NUMERIC},</if>
-      <if test="values.branchId != null">branch_id = #{values.branchId,jdbcType=NUMERIC},</if>
-      <if test="values.accountId != null">account_id = #{values.accountId,jdbcType=NUMERIC},</if>
+      <if test="values.id != null">id = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.amount != null">amount = #{values.amount,jdbcType=INTEGER},</if>
+      <if test="values.branchId != null">branch_id = #{values.branchId,jdbcType=INTEGER},</if>
       <if test="values.status != null">status = #{values.status,jdbcType=VARCHAR},</if>
+      <if test="values.orderDate != null">order_date = #{values.orderDate,jdbcType=DATE},</if>
+      <if test="values.unpaidBalance != null">unpaid_balance = #{values.unpaidBalance,jdbcType=INTEGER},</if>
+      <if test="values.accountId != null">account_id = #{values.accountId,jdbcType=INTEGER},</if>
       <if test="values.type != null">type = #{values.type,jdbcType=VARCHAR},</if>
-      <if test="values.orderDate != null">order_date = #{values.orderDate,jdbcType=TIMESTAMP},</if>
-      <if test="values.unpaidBalance != null">unpaid_balance = #{values.unpaidBalance,jdbcType=NUMERIC},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.id != null">
-        and id = #{filter.id,jdbcType=NUMERIC}
+        and id = #{filter.id,jdbcType=INTEGER}
       </if>
       <if test="filter.amount != null">
-        and amount = #{filter.amount,jdbcType=NUMERIC}
+        and amount = #{filter.amount,jdbcType=INTEGER}
       </if>
       <if test="filter.branchId != null">
-        and branch_id = #{filter.branchId,jdbcType=NUMERIC}
-      </if>
-      <if test="filter.accountId != null">
-        and account_id = #{filter.accountId,jdbcType=NUMERIC}
+        and branch_id = #{filter.branchId,jdbcType=INTEGER}
       </if>
       <if test="filter.status != null">
         and status = #{filter.status,jdbcType=VARCHAR}
       </if>
-      <if test="filter.type != null">
-        and type = #{filter.type,jdbcType=VARCHAR}
-      </if>
       <if test="filter.orderDate != null">
-        and order_date = #{filter.orderDate,jdbcType=TIMESTAMP}
+        and order_date = #{filter.orderDate,jdbcType=DATE}
       </if>
       <if test="filter.unpaidBalance != null">
-        and unpaid_balance = #{filter.unpaidBalance,jdbcType=NUMERIC}
+        and unpaid_balance = #{filter.unpaidBalance,jdbcType=INTEGER}
+      </if>
+      <if test="filter.accountId != null">
+        and account_id = #{filter.accountId,jdbcType=INTEGER}
+      </if>
+      <if test="filter.type != null">
+        and type = #{filter.type,jdbcType=VARCHAR}
       </if>
     </trim>
   </update>
@@ -196,31 +196,31 @@
   <!-- delete by example -->
 
   <delete id="deleteByExample">
-    delete from user1.invoice
+    delete from master.dbo.invoice
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="id != null">
-        and id = #{id,jdbcType=NUMERIC}
+        and id = #{id,jdbcType=INTEGER}
       </if>
       <if test="amount != null">
-        and amount = #{amount,jdbcType=NUMERIC}
+        and amount = #{amount,jdbcType=INTEGER}
       </if>
       <if test="branchId != null">
-        and branch_id = #{branchId,jdbcType=NUMERIC}
-      </if>
-      <if test="accountId != null">
-        and account_id = #{accountId,jdbcType=NUMERIC}
+        and branch_id = #{branchId,jdbcType=INTEGER}
       </if>
       <if test="status != null">
         and status = #{status,jdbcType=VARCHAR}
       </if>
-      <if test="type != null">
-        and type = #{type,jdbcType=VARCHAR}
-      </if>
       <if test="orderDate != null">
-        and order_date = #{orderDate,jdbcType=TIMESTAMP}
+        and order_date = #{orderDate,jdbcType=DATE}
       </if>
       <if test="unpaidBalance != null">
-        and unpaid_balance = #{unpaidBalance,jdbcType=NUMERIC}
+        and unpaid_balance = #{unpaidBalance,jdbcType=INTEGER}
+      </if>
+      <if test="accountId != null">
+        and account_id = #{accountId,jdbcType=INTEGER}
+      </if>
+      <if test="type != null">
+        and type = #{type,jdbcType=VARCHAR}
       </if>
     </trim>
   </delete>

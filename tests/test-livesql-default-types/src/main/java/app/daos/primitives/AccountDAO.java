@@ -186,12 +186,12 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   public enum AccountOrderBy implements OrderBy {
 
-    ID("public.account", "id", true), //
-    ID$DESC("public.account", "id", false), //
-    PARENT_ID("public.account", "parent_id", true), //
-    PARENT_ID$DESC("public.account", "parent_id", false), //
-    BRANCH_ID("public.account", "branch_id", true), //
-    BRANCH_ID$DESC("public.account", "branch_id", false);
+    ID("schema1.account", "id", true), //
+    ID$DESC("schema1.account", "id", false), //
+    PARENT_ID("schema1.account", "parent_id", true), //
+    PARENT_ID$DESC("schema1.account", "parent_id", false), //
+    BRANCH_ID("schema1.account", "branch_id", true), //
+    BRANCH_ID$DESC("schema1.account", "branch_id", false);
 
     private AccountOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -245,12 +245,12 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     AccountTable() {
-      super(null, "PUBLIC", "ACCOUNT", "Table", null);
+      super(null, "SCHEMA1", "ACCOUNT", "Table", null);
       initialize();
     }
 
     AccountTable(final String alias) {
-      super(null, "PUBLIC", "ACCOUNT", "Table", alias);
+      super(null, "SCHEMA1", "ACCOUNT", "Table", alias);
       initialize();
     }
 
@@ -258,11 +258,11 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
+      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 10, 0);
       super.columns.add(this.id);
-      this.parentId = new NumberColumn(this, "PARENT_ID", "parentId", "INTEGER", 32, 0);
+      this.parentId = new NumberColumn(this, "PARENT_ID", "parentId", "INTEGER", 10, 0);
       super.columns.add(this.parentId);
-      this.branchId = new NumberColumn(this, "BRANCH_ID", "branchId", "INTEGER", 32, 0);
+      this.branchId = new NumberColumn(this, "BRANCH_ID", "branchId", "INTEGER", 10, 0);
       super.columns.add(this.branchId);
     }
 
