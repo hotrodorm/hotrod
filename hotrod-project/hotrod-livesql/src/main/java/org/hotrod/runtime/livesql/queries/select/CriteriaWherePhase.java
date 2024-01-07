@@ -1,30 +1,20 @@
 package org.hotrod.runtime.livesql.queries.select;
 
 import java.util.Arrays;
-import java.util.List;
 
-import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 
-public class CriteriaWherePhase<T> implements ExecutableCriteriaSelect<T> {
-
-  private LiveSQLContext context;
-  private AbstractSelectObject<T> select;
-  private String mapperStatement;
+public class CriteriaWherePhase<T> extends CriteriaPhase<T> {
 
   public CriteriaWherePhase(final LiveSQLContext context, final String mapperStatement, final TableOrView baseTable,
       final Predicate whereCondition) {
-    this.context = context;
-    this.select = new SelectObject<T>(null, false, true);
-    this.select.setBaseTableExpression(baseTable);
-    this.select.setWhereCondition(whereCondition);
-    this.mapperStatement = mapperStatement;
+    super(context, new SelectObject<T>(null, false, true), mapperStatement);
+    super.select.setBaseTableExpression(baseTable);
+    super.select.setWhereCondition(whereCondition);
   }
-
-  // same phase
 
   // next phases
 
@@ -43,26 +33,9 @@ public class CriteriaWherePhase<T> implements ExecutableCriteriaSelect<T> {
     return new CriteriaLimitPhase<T>(this.context, this.select, this.mapperStatement);
   }
 
-  // execute
-
-  public List<T> execute() {
-    return this.select.execute(this.context, this.mapperStatement);
-  }
-
-  public Cursor<T> executeCursor() {
-    return this.select.executeCursor(this.context, this.mapperStatement);
-  }
-
-  // rendering
-
-  @Override
-  public void renderTo(QueryWriter w) {
-    this.select.renderTo(w);
-  }
-
-  @Override
-  public String getPreview() {
-    return this.select.getPreview(this.context);
+  public CriteriaForUpdatePhase<T> forUpdate() {
+    this.select.setForUpdate();
+    return new CriteriaForUpdatePhase<T>(this.context, this.select, this.mapperStatement);
   }
 
 }
