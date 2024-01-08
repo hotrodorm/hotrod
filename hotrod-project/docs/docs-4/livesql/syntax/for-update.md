@@ -41,6 +41,36 @@ The `forUpdate()` clause ensures the selected row is not modified before it's up
 method is annotated with `@Transactional`; this ensures the lock is kept between the execution of the
 SELECT statement and the UPDATE statement.
 
+## Combining FOR UPDATE with Other Clauses
+
+The FOR UPDATE always need a FROM clause. It can be combined with the WHERE, ORDER BY, OFFSET, and LIMIT clauses.
+
+FOR UPDATE is not available to queries that use:
+
+- DISTINCT
+- GROUP BY
+- HAVING
+- UNION [ALL], INTERSECT [ALL], EXCEPT [ALL]
+
+Generally speaking, any of these clauses prevent the use of FOR UPDATE since they do not keep a 1:1
+relationship between the source rows from a table and resulting rows of the query.
+
+The following query combines other clauses:
+
+```java
+  InvoiceTable i = InvoiceDAO.newTable("i");
+
+  List<Row> rows = sql
+    .select()
+    .from(i)
+    .where(i.clientId.eq(1547))
+    .orderBy(i.purchaseDate.desc())
+    .offset(60)
+    .limit(20)
+    .forUpdate()
+    .execute();
+```
+
 
 ## Performance Considerations
 
