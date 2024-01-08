@@ -23,13 +23,13 @@ public void debit(Integer accountId) {
 
   AccountTable a = AccountDAO.newTable("a");
 
-  List<Account> rows = this.accountDAO
+  List<Account> accts = this.accountDAO
     .select(a, a.id.eq(accountId))
     .forUpdate()
     .execute();
     
-  if (rows.empty()) throw new RuntimeException("Account not found");
-  if (rows.get(0).getBalance() < 1500) throw new RuntimeException("Insufficient funds");
+  if (accts.empty()) throw new RuntimeException("Account not found");
+  if (accts.get(0).getBalance() < 1500) throw new RuntimeException("Insufficient funds");
 
   sql.update(a)
      .set(a.balance, a.balance.minus(1000))
@@ -42,7 +42,7 @@ method is annotated with `@Transactional`; this ensures the lock is kept between
 SELECT statement and the UPDATE statement.
 
 
-## Performance Impact
+## Performance Considerations
 
 Locking rows serves as a strategy to perform consistent data read and updates in critical code sections.
 As such, locking should be used sparely, only when needed, and for very short period of times. Keeping
