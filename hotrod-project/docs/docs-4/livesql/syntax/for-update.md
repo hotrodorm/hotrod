@@ -56,8 +56,9 @@ a simple strategy is to lock the main row(s) for a transaction &mdash; the entry
 of locking all possible rows affected by it. This way if all application changes follow the same strategy,
 just a minimal number of locks are required with the same effect as locking the entire set of data rows.
 
-All the rows selected by the filtering predicate (WHERE clause) are affected by the lock even if the application
-process a subset of them. This means the search criteria must be as narrow as possible. 
+All the rows selected by the filtering predicate (the WHERE clause) are locked even if the application
+processes only a subset of them. This means the search criteria must be as narrow as possible to avoid
+consuming an unnecessary amount of database resources. 
 
 In most databases a lock requires a write-to-disk operation, even for SELECTs. This necessarily is more
 resource intensive than a simple SELECT.
