@@ -1,13 +1,13 @@
 # The FOR UPDATE Clause
 
-The `FOR UPDATE` clause obtains a FOR UPDATE lock on the selected rows. 
+The FOR UPDATE clause obtains an UPDATE lock on the selected rows. 
 
-Any other SQL statement that tries to obtain a FOR UPDATE lock on one of these rows will wait (or timeout)
-for the lock to be released. The lock is automatically released when the transaction ends, either with
+Any other SQL statement that tries to obtain a FOR UPDATE lock on one of these rows will wait
+for the lock to be released (or will timeout). The lock is automatically released when the transaction ends, either with
 a commit or a rollback.
 
 Other SELECT statements that don't request a lock will be able to select these rows normally, when ran
-in the default isolation level. Higher isolation levels may also force the concurrent SELECTs to wait for
+in the default (typically READ COMMITTED) isolation level. Higher isolation levels may also force the concurrent SELECTs to wait for
 the rows to be released by the query that is holding them.
 
 FOR UPDATE is available for LiveSQL's SELECT statements, and for CRUD's Select By Criteria method.
@@ -53,8 +53,11 @@ In short, it's advised to get the lock(s), quickly perform the required changes,
 
 Keep in mind that locking many rows may also negatively affect the database performance. Most of the time
 a simple strategy is to lock the main row(s) for a transaction &mdash; the entry point of data &mdash; instead
-of locking all possible rows affected by it. This way if all applicaton changes follow the same strategy,
+of locking all possible rows affected by it. This way if all application changes follow the same strategy,
 just a minimal number of locks are required with the same effect as locking the entire set of data rows.
+
+All the rows selected by the filtering predicate (WHERE clause) are affected by the lock even if the application
+process a subset of them. This means the search criteria must be as narrow as possible. 
 
 In most databases a lock requires a write-to-disk operation, even for SELECTs. This necessarily is more
 resource intensive than a simple SELECT.
