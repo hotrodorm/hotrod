@@ -69,16 +69,14 @@ While a more complex query can look like:
 ```java
 CTE x = sql.cte("x",
     sql.select(b.isVip, a.star())
-        .from(b)
-        .join(a, a.branchId.eq(b.id))
-);
-
-CTE y = sql.cte("y", "aid").as(sql.select(i.accountId)
-    .from(i)
-    .join(l, l.invoiceId.eq(i.id))
-    .join(p, p.id.eq(l.productId))
-    .where(p.shipping.eq(0)));
-
+       .from(b)
+       .join(a, a.branchId.eq(b.id)));
+CTE y = sql.cte("y", "aid").as(
+    sql.select(i.accountId)
+       .from(i)
+       .join(l, l.invoiceId.eq(i.id))
+       .join(p, p.id.eq(l.productId))
+       .where(p.shipping.eq(0)));
 List<Row> rows = sql
     .with(x, y)
     .select(x.star())
@@ -90,9 +88,13 @@ List<Row> rows = sql
 
 ## The Power of Nitro
 
-Nitro queries enhance SQL capabilities with dynamically assembled SQL queries, graph queries, and access to native SQL features. Nitro can be used to gain access to all the features of a database, as well as to squeeze performance from it by tweaking queries.
+Nitro queries enhance SQL capabilities with:
 
-Any or all of these features can be combined into any SELECT, UPDATE, INSERT, or DELETE, or in any valid database query.
+- Dynamic SQL
+- Graph queries
+- Native SQL
+
+Nitro can be used to gain access to all the features of a database, as well as to squeeze performance from it by tweaking queries. Any or all of these features can be combined into any SELECT, UPDATE, INSERT, or DELETE, or in any other valid database query.
 
 The following query uses Dynamic SQL to assemble the query dynamically and to *apply* parameter values to it. It also uses a piece of Native SQL (an optimizer hint):
 

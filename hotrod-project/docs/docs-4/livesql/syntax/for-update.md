@@ -1,6 +1,6 @@
 # The FOR UPDATE Clause
 
-The `FOR UPDATE` clause obtains a FOR UPDATE lock on all the selected rows. 
+The `FOR UPDATE` clause obtains a FOR UPDATE lock on the selected rows. 
 
 Any other SQL statement that tries to obtain a FOR UPDATE lock on one of these rows will wait (or timeout)
 for the lock to be released. The lock is automatically released when the transaction ends, either with
@@ -37,12 +37,14 @@ public void debit(Integer accountId) {
 }
 ```
 
-The `forUpdate()` clause ensures the selected row is not modified before it's updated.
+The `forUpdate()` clause ensures the selected row is not modified before it's updated. Note that the
+method is annotated with `@Transactional`; this ensures the lock is kept between the execution of the
+SELECT statement and the UPDATE statement.
 
 
 ## Performance Impact
 
-Locking rows serves as a strategy to perform consistent date read or updates in critical code sections.
+Locking rows serves as a strategy to perform consistent data read and updates in critical code sections.
 As such, locking should be used sparely, only when needed, and for very short period of times. Keeping
 a lock for a longer time will harm database concurrency and could degrade the performance of your application.
 
@@ -51,14 +53,14 @@ In short, it's advised to get the lock(s), quickly perform the required changes,
 
 Keep in mind that locking many rows may also negatively affect the database performance. Most of the time
 a simple strategy is to lock the main row(s) for a transaction &mdash; the entry point of data &mdash; instead
-of locking all possible rows affected by it. This way just a minimal number of locks are required with 
-the same effect as locking the entire set of data rows.
+of locking all possible rows affected by it. This way if all applicaton changes follow the same strategy,
+just a minimal number of locks are required with the same effect as locking the entire set of data rows.
 
-In most database a lock requires a write-to-disk operation, even for SELECTs. This necessarily is more
+In most databases a lock requires a write-to-disk operation, even for SELECTs. This necessarily is more
 resource intensive than a simple SELECT.
 
 The UPDATE, DELETE, and INSERT statements demarcated by a transaction will automatically acquire locks 
-that can compete between them, and also with the FOR UPDATE statement.
+that can compete between them, and also with the SELECT FOR UPDATE statements.
 
 Finally, even considering the performance drawbacks stated above, using a good strategy can dramatically
 reduce the performance impact of locking, and will bring all the benefits that a critical section of code
@@ -67,7 +69,8 @@ requires.
 
 ## Supported Databases
 
-The following table shows which databases do support the FOR UPDATE clause. The specific SQL syntax may vary, but not the functionality of it.
+The following table shows which databases do support the FOR UPDATE clause. The specific SQL syntax may vary
+from database to database, but not the functionality of it.
 
 | Database   | FOR UPDATE |
 | ---------- | :--------: |  
@@ -82,11 +85,11 @@ The following table shows which databases do support the FOR UPDATE clause. The 
 | HyperSQL   | --         |
 | Derby      | --         | 
 
-Other extra features related to lockinsg such as FOR SHARE, WAIT, SKIP LOCKED, and table/column narrowing are
+**Note**: Other extra features related to locking such as FOR SHARE, WAIT, SKIP LOCKED, and table/column narrowing are
 not implemented in the FOR UPDATE clause, since they represent more exotic uses of locking and don't add 
 value to normal usage of it.
 
-*Note*: Because of the internals of the SQL Server engine, some version of this database may lock entire data pages
+**Note**: Because of the internals of the SQL Server engine, some version of this database may lock entire data pages
 rather than single rows. Use locks with caution in this database.
 
  
