@@ -18,7 +18,8 @@ import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.queries.DMLQuery;
 import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
-import org.hotrod.runtime.livesql.queries.select.ExecutableCriteriaSelect;
+import org.hotrod.runtime.livesql.queries.select.CriteriaForUpdatePhase;
+import org.hotrod.runtime.livesql.queries.select.EntitySelect;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 import org.hotrod.runtime.spring.SpringBeanObjectFactory;
@@ -255,7 +256,7 @@ public class App {
     // and not is_vip
 
     DMLQuery q = sql.insert(b).select(sql.select(c.id.plus(sql.literal(10)), c.region, c.isVip).from(c)
-        .where(c.id.ge(sql.literal(4)).and(sql.not(c.isVip.eq(1)))));
+        .where(c.id.ge(sql.literal(4)).and(sql.not(c.isVip))));
     System.out.println("1. Update: " + q.getPreview());
     int rows = q.execute();
     System.out.println("updated rows=" + rows);
@@ -269,6 +270,34 @@ public class App {
         .where(i.amount.le(sql.literal(2000)).or(i.branchId.eq(sql.literal(102))));
     System.out.println(q.getPreview());
     q.execute().forEach(r -> System.out.println("row: " + r));
+  }
+
+  private void livesql3() {
+    InvoiceTable i = InvoiceDAO.newTable("i");
+
+    CriteriaForUpdatePhase<InvoiceVO> q = this.invoiceDAO //
+        .select(i, i.amount.ge(500)) //
+        .orderBy(i.branchId.desc()) //
+        .offset(1) //
+        .limit(5) //
+        .forUpdate();
+    System.out.println(q.getPreview());
+
+    q.execute().forEach(r -> System.out.println("row: " + r));
+  }
+
+  private void livesql4() {
+    InvoiceTable i = InvoiceDAO.newTable("i");
+
+    DMLQuery q = this.sql.update(i) //
+//        .set(i.amount, 1) //
+//        .set(i.amount, (Integer) null) //
+        .set(i.amount, sql.NULL) //
+        .where(i.id.eq(12));
+    System.out.println(q.getPreview());
+
+    int c = q.execute();
+    System.out.println("count: " + c);
   }
 
   private void livesql1() {
@@ -304,7 +333,9 @@ public class App {
   private void liveSQLExamples() throws SQLException, UnsupportedTorcsDatabaseException {
 
 //    livesql1();
-    livesql2();
+//    livesql2();
+//    livesql3();
+    livesql4();
 //    dates();
 //    forUpdate();
 
@@ -1140,7 +1171,7 @@ public class App {
 
     InvoiceTable i = InvoiceDAO.newTable("i");
 
-    ExecutableCriteriaSelect<InvoiceVO> q = this.invoiceDAO.select(i, i.amount.gt(1));
+    EntitySelect<InvoiceVO> q = this.invoiceDAO.select(i, i.amount.gt(1));
     System.out.println("q=" + q.getPreview());
 
     for (InvoiceVO r : q.execute()) {

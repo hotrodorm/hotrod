@@ -186,12 +186,12 @@ public class InvoiceLineDAO implements Serializable, ApplicationContextAware {
 
   public enum InvoiceLineOrderBy implements OrderBy {
 
-    INVOICE_ID("schema1.invoice_line", "invoice_id", true), //
-    INVOICE_ID$DESC("schema1.invoice_line", "invoice_id", false), //
-    PRODUCT_ID("schema1.invoice_line", "product_id", true), //
-    PRODUCT_ID$DESC("schema1.invoice_line", "product_id", false), //
-    LINE_TOTAL("schema1.invoice_line", "line_total", true), //
-    LINE_TOTAL$DESC("schema1.invoice_line", "line_total", false);
+    INVOICE_ID("public.invoice_line", "invoice_id", true), //
+    INVOICE_ID$DESC("public.invoice_line", "invoice_id", false), //
+    PRODUCT_ID("public.invoice_line", "product_id", true), //
+    PRODUCT_ID$DESC("public.invoice_line", "product_id", false), //
+    LINE_TOTAL("public.invoice_line", "line_total", true), //
+    LINE_TOTAL$DESC("public.invoice_line", "line_total", false);
 
     private InvoiceLineOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -245,12 +245,12 @@ public class InvoiceLineDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     InvoiceLineTable() {
-      super(null, "SCHEMA1", "INVOICE_LINE", "Table", null);
+      super(null, "PUBLIC", "INVOICE_LINE", "Table", null);
       initialize();
     }
 
     InvoiceLineTable(final String alias) {
-      super(null, "SCHEMA1", "INVOICE_LINE", "Table", alias);
+      super(null, "PUBLIC", "INVOICE_LINE", "Table", alias);
       initialize();
     }
 
@@ -258,11 +258,11 @@ public class InvoiceLineDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.invoiceId = new NumberColumn(this, "INVOICE_ID", "invoiceId", "INTEGER", 10, 0);
+      this.invoiceId = new NumberColumn(this, "INVOICE_ID", "invoiceId", "INTEGER", 32, 0);
       super.columns.add(this.invoiceId);
-      this.productId = new NumberColumn(this, "PRODUCT_ID", "productId", "INTEGER", 10, 0);
+      this.productId = new NumberColumn(this, "PRODUCT_ID", "productId", "INTEGER", 32, 0);
       super.columns.add(this.productId);
-      this.lineTotal = new NumberColumn(this, "LINE_TOTAL", "lineTotal", "INTEGER", 10, 0);
+      this.lineTotal = new NumberColumn(this, "LINE_TOTAL", "lineTotal", "INTEGER", 32, 0);
       super.columns.add(this.lineTotal);
     }
 

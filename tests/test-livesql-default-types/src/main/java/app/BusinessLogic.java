@@ -3,11 +3,13 @@ package app;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.queries.DMLQuery;
+import org.hotrod.runtime.livesql.queries.select.EntitySelect;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import app.daos.InvoiceVO;
 import app.daos.primitives.InvoiceDAO;
 import app.daos.primitives.InvoiceDAO.InvoiceTable;
 
@@ -17,9 +19,16 @@ public class BusinessLogic {
   @Autowired
   private LiveSQL sql;
 
+  @Autowired
+  private InvoiceDAO invoiceDAO;
+
   @Transactional
   public void forUpdate() {
+//    generic();
+    selectByCriteria();
+  }
 
+  private void generic() {
     InvoiceTable i = InvoiceDAO.newTable("i");
 
     Select<Row> q = this.sql //
@@ -40,7 +49,27 @@ public class BusinessLogic {
     int modified = u.execute();
 
     System.out.println("> " + modified + " modified rows:");
+  }
 
+  private void selectByCriteria() {
+    InvoiceTable i = InvoiceDAO.newTable("i");
+
+    EntitySelect<InvoiceVO> q = this.invoiceDAO //
+        .select(i, i.status.eq("UNPAID")) //
+        .orderBy(i.amount)
+        .offset(3)
+        .limit(1)
+        .forUpdate();
+
+    System.out.println(q.getPreview());
+    System.out.println("rows:");
+    q.execute().forEach(r -> System.out.println("invoice: " + r));
+
+    DMLQuery u = this.sql.update(i).set(i.unpaidBalance, i.unpaidBalance.minus(1)).where(i.status.eq("UNPAID"));
+    System.out.println(u.getPreview());
+
+    int modified = u.execute();
+    System.out.println("> " + modified + " modified rows:");
   }
 
 }

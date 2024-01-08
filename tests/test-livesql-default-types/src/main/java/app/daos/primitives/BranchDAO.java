@@ -100,7 +100,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
     mo.setName((java.lang.String) m.get(p + "name" + s));
     mo.setRegion((java.lang.String) m.get(p + "region" + s));
-    mo.setIsVip(CastUtil.toInteger((Number) m.get(p + "isVip" + s)));
+    mo.setIsVip((java.lang.Boolean) m.get(p + "isVip" + s));
     return mo;
   }
 
@@ -187,7 +187,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
   public UpdateSetCompletePhase update(final app.daos.primitives.AbstractBranchVO updateValues, final BranchDAO.BranchTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
     if (updateValues.getId() != null) values.put("id", updateValues.getId());
-    if (updateValues.getName() != null) values.put("NaMe", updateValues.getName());
+    if (updateValues.getName() != null) values.put("\"NaMe\"", updateValues.getName());
     if (updateValues.getRegion() != null) values.put("region", updateValues.getRegion());
     if (updateValues.getIsVip() != null) values.put("is_vip", updateValues.getIsVip());
     return new UpdateSetCompletePhase(this.context, "mappers.branch.updateByCriteria", tableOrView,  predicate, values);
@@ -210,26 +210,26 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   public enum BranchOrderBy implements OrderBy {
 
-    ID("master.dbo.branch", "id", true), //
-    ID$DESC("master.dbo.branch", "id", false), //
-    NAME("master.dbo.branch", "NaMe", true), //
-    NAME$DESC("master.dbo.branch", "NaMe", false), //
-    NAME$CASEINSENSITIVE("master.dbo.branch", "lower(NaMe)", true), //
-    NAME$CASEINSENSITIVE_STABLE_FORWARD("master.dbo.branch", "lower(NaMe), NaMe", true), //
-    NAME$CASEINSENSITIVE_STABLE_REVERSE("master.dbo.branch", "lower(NaMe), NaMe", false), //
-    NAME$DESC_CASEINSENSITIVE("master.dbo.branch", "lower(NaMe)", false), //
-    NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("master.dbo.branch", "lower(NaMe), NaMe", false), //
-    NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("master.dbo.branch", "lower(NaMe), NaMe", true), //
-    REGION("master.dbo.branch", "region", true), //
-    REGION$DESC("master.dbo.branch", "region", false), //
-    REGION$CASEINSENSITIVE("master.dbo.branch", "lower(region)", true), //
-    REGION$CASEINSENSITIVE_STABLE_FORWARD("master.dbo.branch", "lower(region), region", true), //
-    REGION$CASEINSENSITIVE_STABLE_REVERSE("master.dbo.branch", "lower(region), region", false), //
-    REGION$DESC_CASEINSENSITIVE("master.dbo.branch", "lower(region)", false), //
-    REGION$DESC_CASEINSENSITIVE_STABLE_FORWARD("master.dbo.branch", "lower(region), region", false), //
-    REGION$DESC_CASEINSENSITIVE_STABLE_REVERSE("master.dbo.branch", "lower(region), region", true), //
-    IS_VIP("master.dbo.branch", "is_vip", true), //
-    IS_VIP$DESC("master.dbo.branch", "is_vip", false);
+    ID("public.branch", "id", true), //
+    ID$DESC("public.branch", "id", false), //
+    NAME("public.branch", "\"NaMe\"", true), //
+    NAME$DESC("public.branch", "\"NaMe\"", false), //
+    NAME$CASEINSENSITIVE("public.branch", "lower(\"NaMe\")", true), //
+    NAME$CASEINSENSITIVE_STABLE_FORWARD("public.branch", "lower(\"NaMe\"), \"NaMe\"", true), //
+    NAME$CASEINSENSITIVE_STABLE_REVERSE("public.branch", "lower(\"NaMe\"), \"NaMe\"", false), //
+    NAME$DESC_CASEINSENSITIVE("public.branch", "lower(\"NaMe\")", false), //
+    NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("public.branch", "lower(\"NaMe\"), \"NaMe\"", false), //
+    NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("public.branch", "lower(\"NaMe\"), \"NaMe\"", true), //
+    REGION("public.branch", "region", true), //
+    REGION$DESC("public.branch", "region", false), //
+    REGION$CASEINSENSITIVE("public.branch", "lower(region)", true), //
+    REGION$CASEINSENSITIVE_STABLE_FORWARD("public.branch", "lower(region), region", true), //
+    REGION$CASEINSENSITIVE_STABLE_REVERSE("public.branch", "lower(region), region", false), //
+    REGION$DESC_CASEINSENSITIVE("public.branch", "lower(region)", false), //
+    REGION$DESC_CASEINSENSITIVE_STABLE_FORWARD("public.branch", "lower(region), region", false), //
+    REGION$DESC_CASEINSENSITIVE_STABLE_REVERSE("public.branch", "lower(region), region", true), //
+    IS_VIP("public.branch", "is_vip", true), //
+    IS_VIP$DESC("public.branch", "is_vip", false);
 
     private BranchOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -273,7 +273,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     public NumberColumn id;
     public StringColumn name;
     public StringColumn region;
-    public NumberColumn isVip;
+    public BooleanColumn isVip;
 
     // Getters
 
@@ -284,12 +284,12 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     BranchTable() {
-      super("master", "dbo", "branch", "Table", null);
+      super(null, "public", "branch", "Table", null);
       initialize();
     }
 
     BranchTable(final String alias) {
-      super("master", "dbo", "branch", "Table", alias);
+      super(null, "public", "branch", "Table", alias);
       initialize();
     }
 
@@ -297,13 +297,13 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.id = new NumberColumn(this, "id", "id", "int", 10, 0);
+      this.id = new NumberColumn(this, "id", "id", "int4", 10, 0);
       super.columns.add(this.id);
-      this.name = new StringColumn(this, "NaMe", "name", "varchar", 20, null);
+      this.name = new StringColumn(this, "NaMe", "name", "varchar", 20, 0);
       super.columns.add(this.name);
-      this.region = new StringColumn(this, "region", "region", "varchar", 10, null);
+      this.region = new StringColumn(this, "region", "region", "varchar", 20, 0);
       super.columns.add(this.region);
-      this.isVip = new NumberColumn(this, "is_vip", "isVip", "int", 10, 0);
+      this.isVip = new BooleanColumn(this, "is_vip", "isVip", "bool", 1, 0);
       super.columns.add(this.isVip);
     }
 

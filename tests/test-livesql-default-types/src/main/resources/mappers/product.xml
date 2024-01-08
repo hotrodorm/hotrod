@@ -33,7 +33,7 @@
   <select id="selectByExample" resultMap="allColumns">
     select
       <include refid="columns" />
-     from schema1.product
+     from public.product
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.id != null">
         and id = #{p.id,jdbcType=INTEGER}
@@ -59,7 +59,7 @@
   <!-- insert (no auto-generated columns) -->
 
   <insert id="insert">
-    insert into schema1.product (
+    insert into public.product (
       <trim prefixOverrides=", ">
         <if test="true">, id</if>
         <if test="true">, type</if>
@@ -81,7 +81,7 @@
   <!-- update by example -->
 
   <update id="updateByExample">
-    update schema1.product
+    update public.product
     <set>
       <if test="values.id != null">id = #{values.id,jdbcType=INTEGER},</if>
       <if test="values.type != null">type = #{values.type,jdbcType=VARCHAR},</if>
@@ -109,7 +109,7 @@
   <!-- delete by example -->
 
   <delete id="deleteByExample">
-    delete from schema1.product
+    delete from public.product
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="id != null">
         and id = #{id,jdbcType=INTEGER}

@@ -8,14 +8,14 @@
 
   <sql id="columns">
     id,
-    NaMe,
+    "NaMe",
     region,
     is_vip
   </sql>
 
   <sql id="columnsWithAlias">
     ${alias}.id,
-    ${alias}.NaMe,
+    ${alias}."NaMe",
     ${alias}.region,
     ${alias}.is_vip
   </sql>
@@ -32,7 +32,7 @@
   <select id="selectByPK" resultMap="allColumns">
     select
       <include refid="columns" />
-     from master.dbo.branch
+     from public.branch
      where
       id = #{id,jdbcType=INTEGER}
   </select>
@@ -44,19 +44,19 @@
   <select id="selectByExample" resultMap="allColumns">
     select
       <include refid="columns" />
-     from master.dbo.branch
+     from public.branch
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.id != null">
         and id = #{p.id,jdbcType=INTEGER}
       </if>
       <if test="p.name != null">
-        and NaMe = #{p.name,jdbcType=VARCHAR}
+        and "NaMe" = #{p.name,jdbcType=VARCHAR}
       </if>
       <if test="p.region != null">
         and region = #{p.region,jdbcType=VARCHAR}
       </if>
       <if test="p.isVip != null">
-        and is_vip = #{p.isVip,jdbcType=INTEGER}
+        and is_vip = #{p.isVip,jdbcType=BIT}
       </if>
     </trim>
     <if test="o != null">
@@ -73,10 +73,10 @@
   <!-- insert (no auto-generated columns) -->
 
   <insert id="insert">
-    insert into master.dbo.branch (
+    insert into public.branch (
       <trim prefixOverrides=", ">
         <if test="true">, id</if>
-        <if test="true">, NaMe</if>
+        <if test="true">, "NaMe"</if>
         <if test="true">, region</if>
         <if test="true">, is_vip</if>
       </trim>
@@ -85,7 +85,7 @@
         <if test="true">, #{id,jdbcType=INTEGER}</if>
         <if test="true">, #{name,jdbcType=VARCHAR}</if>
         <if test="true">, #{region,jdbcType=VARCHAR}</if>
-        <if test="true">, #{isVip,jdbcType=INTEGER}</if>
+        <if test="true">, #{isVip,jdbcType=BIT}</if>
       </trim>
       )
   </insert>
@@ -93,10 +93,10 @@
   <!-- update by PK -->
 
   <update id="updateByPK">
-    update master.dbo.branch set
-      NaMe = #{name,jdbcType=VARCHAR},
+    update public.branch set
+      "NaMe" = #{name,jdbcType=VARCHAR},
       region = #{region,jdbcType=VARCHAR},
-      is_vip = #{isVip,jdbcType=INTEGER}
+      is_vip = #{isVip,jdbcType=BIT}
      where
       id = #{id,jdbcType=INTEGER}
   </update>
@@ -104,7 +104,7 @@
   <!-- delete by PK -->
 
   <delete id="deleteByPK">
-    delete from master.dbo.branch
+    delete from public.branch
      where
       id = #{id,jdbcType=INTEGER}
   </delete>
@@ -112,25 +112,25 @@
   <!-- update by example -->
 
   <update id="updateByExample">
-    update master.dbo.branch
+    update public.branch
     <set>
       <if test="values.id != null">id = #{values.id,jdbcType=INTEGER},</if>
-      <if test="values.name != null">NaMe = #{values.name,jdbcType=VARCHAR},</if>
+      <if test="values.name != null">"NaMe" = #{values.name,jdbcType=VARCHAR},</if>
       <if test="values.region != null">region = #{values.region,jdbcType=VARCHAR},</if>
-      <if test="values.isVip != null">is_vip = #{values.isVip,jdbcType=INTEGER},</if>
+      <if test="values.isVip != null">is_vip = #{values.isVip,jdbcType=BIT},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.id != null">
         and id = #{filter.id,jdbcType=INTEGER}
       </if>
       <if test="filter.name != null">
-        and NaMe = #{filter.name,jdbcType=VARCHAR}
+        and "NaMe" = #{filter.name,jdbcType=VARCHAR}
       </if>
       <if test="filter.region != null">
         and region = #{filter.region,jdbcType=VARCHAR}
       </if>
       <if test="filter.isVip != null">
-        and is_vip = #{filter.isVip,jdbcType=INTEGER}
+        and is_vip = #{filter.isVip,jdbcType=BIT}
       </if>
     </trim>
   </update>
@@ -144,19 +144,19 @@
   <!-- delete by example -->
 
   <delete id="deleteByExample">
-    delete from master.dbo.branch
+    delete from public.branch
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="id != null">
         and id = #{id,jdbcType=INTEGER}
       </if>
       <if test="name != null">
-        and NaMe = #{name,jdbcType=VARCHAR}
+        and "NaMe" = #{name,jdbcType=VARCHAR}
       </if>
       <if test="region != null">
         and region = #{region,jdbcType=VARCHAR}
       </if>
       <if test="isVip != null">
-        and is_vip = #{isVip,jdbcType=INTEGER}
+        and is_vip = #{isVip,jdbcType=BIT}
       </if>
     </trim>
   </delete>
