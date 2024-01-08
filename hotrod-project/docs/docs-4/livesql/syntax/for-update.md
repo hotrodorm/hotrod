@@ -37,13 +37,14 @@ public void debit(Integer accountId) {
 }
 ```
 
-The `forUpdate()` clause ensures the selected row is not modified before it's updated. Note that the
+The FOR UPDATE clause ensures the selected row is not modified before it's updated. Note that the
 method is annotated with `@Transactional`; this ensures the lock is kept between the execution of the
-SELECT statement and the UPDATE statement.
+SELECT statement and the execution of the UPDATE statement.
+
 
 ## Combining FOR UPDATE with Other Clauses
 
-The FOR UPDATE always need a FROM clause. It can be combined with the WHERE, ORDER BY, OFFSET, and LIMIT clauses.
+The FOR UPDATE clause always need a FROM clause. It can be combined with the WHERE, ORDER BY, OFFSET, and LIMIT clauses.
 
 FOR UPDATE is not available to queries that use:
 
