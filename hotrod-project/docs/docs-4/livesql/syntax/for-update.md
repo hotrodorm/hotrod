@@ -31,7 +31,7 @@ public void debit(Integer accountId) {
   if (accts.empty()) throw new RuntimeException("Account not found");
   if (accts.get(0).getBalance() < 1500) throw new RuntimeException("Insufficient funds");
   
-  // perform other validations...
+  // perform validations in other tables...
 
   sql.update(a)
      .set(a.balance, a.balance.minus(1000))
