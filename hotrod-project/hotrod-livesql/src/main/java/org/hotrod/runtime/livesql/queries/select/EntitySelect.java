@@ -5,7 +5,7 @@ import java.util.List;
 import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.queries.Query;
 
-public interface ExecutableCriteriaSelect<R> extends Query {
+public interface EntitySelect<R> extends Query {
 
   void renderTo(final QueryWriter w);
 

@@ -5,7 +5,7 @@ import java.util.List;
 import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 
-public abstract class CriteriaPhase<T> implements ExecutableCriteriaSelect<T> {
+public abstract class CriteriaPhase<T> implements EntitySelect<T> {
 
   protected LiveSQLContext context;
   protected AbstractSelectObject<T> select;
