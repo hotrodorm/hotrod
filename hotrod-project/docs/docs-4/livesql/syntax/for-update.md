@@ -124,7 +124,7 @@ from database to database, but not the functionality of it.
 not implemented in LiveSQL, since they represent more exotic uses of locking and don't add too much 
 value to normal usage of locking.
 
-**Note**: Because of the internals of the SQL Server engine, some version of this database may lock entire data pages
+**Note**: Because of the internals of the SQL Server engine, some versions of this database may lock entire data pages
 rather than single rows. Use locks with caution in this database.
 
  
