@@ -72,7 +72,7 @@ requires.
 The following table shows which databases do support the FOR UPDATE clause. The specific SQL syntax may vary
 from database to database, but not the functionality of it.
 
-| Database   | FOR UPDATE |
+| Database   | Supports FOR UPDATE |
 | ---------- | :--------: |  
 | Oracle     | Yes        |
 | DB2        | Yes        |
@@ -86,8 +86,8 @@ from database to database, but not the functionality of it.
 | Derby      | --         | 
 
 **Note**: Other extra features related to locking such as FOR SHARE, WAIT, SKIP LOCKED, and table/column narrowing are
-not implemented in the FOR UPDATE clause, since they represent more exotic uses of locking and don't add 
-value to normal usage of it.
+not implemented in LiveSQL, since they represent more exotic uses of locking and don't add too much 
+value to normal usage of locking.
 
 **Note**: Because of the internals of the SQL Server engine, some version of this database may lock entire data pages
 rather than single rows. Use locks with caution in this database.
