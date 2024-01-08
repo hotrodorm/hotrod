@@ -42,6 +42,7 @@ The SELECT statement has several clauses that are described separately:
 - [The ORDER BY Clause](./order-by.md)
 - [The OFFSET Clause](./offset.md)
 - [The LIMIT Clause](./limit.md)
+- [The FOR UPDATE Clause](./for-update.md)
 
 ## Subqueries
 

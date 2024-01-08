@@ -5,17 +5,18 @@ they will be assessed and may be included or not in the versions mentioned below
 
 **Note**: These features and version numbers are non-binding and are subject to change without notice.
 
+Version 4.6:
+
+- LiveSQL correlated UPDATE and DELETE statements.
+
+Version 4.7:
+
+- LiveSQL MERGE/UPSERT statement.
+
 Version 5.0:
 
-- CRUD enhancements: add index access, foreign keys access with/without optimization. CRUD methods normalization. 
-
-Version 5.1:
-
-- LiveSQL Pessimistic locking. Include FOR UPDATE, LOCK, etc., according to specific engines.
-
-Version 5.2:
-
-- LiveSQL MERGE statement (a.k.a. UPSERT).
+- DAO, VO, Model configuration normalization.
+- CRUD enhancements: add index access, foreign keys access with/without optimization.
 
 Version 6.0:
 

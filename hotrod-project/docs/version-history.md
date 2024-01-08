@@ -2,6 +2,13 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
+## 4.5.1
+
+- LiveSQL:
+    - Added FOR UPDATE to select by criteria.
+    - The UPDATE statement now accepts the sql.NULL value in the SET clause.
+    - Fixing messaging for forUpdate() in Derby and HyperSQL.
+
 ## 4.5.0
 
 - LiveSQL:
