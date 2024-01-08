@@ -2,6 +2,7 @@ package org.hotrod.runtime.livesql.queries;
 
 import java.util.Date;
 
+import org.hotrod.runtime.livesql.expressions.NullLiteral;
 import org.hotrod.runtime.livesql.expressions.binary.ByteArrayExpression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
@@ -44,6 +45,11 @@ public class UpdateTablePhase {
     return new UpdateSetPhase(this.context, this.update);
   }
 
+  public UpdateSetPhase set(final NumberColumn column, final NullLiteral n) {
+    this.update.addSet(column, n);
+    return new UpdateSetPhase(this.context, this.update);
+  }
+
   public UpdateSetPhase set(final StringColumn column, final StringExpression expression) {
     this.update.addSet(column, expression);
     return new UpdateSetPhase(this.context, this.update);
@@ -51,6 +57,11 @@ public class UpdateTablePhase {
 
   public UpdateSetPhase set(final StringColumn column, final String s) {
     this.update.addSet(column, BoxUtil.box(s));
+    return new UpdateSetPhase(this.context, this.update);
+  }
+
+  public UpdateSetPhase set(final StringColumn column, final NullLiteral n) {
+    this.update.addSet(column, n);
     return new UpdateSetPhase(this.context, this.update);
   }
 
@@ -64,6 +75,11 @@ public class UpdateTablePhase {
     return new UpdateSetPhase(this.context, this.update);
   }
 
+  public UpdateSetPhase set(final DateTimeColumn column, final NullLiteral n) {
+    this.update.addSet(column, n);
+    return new UpdateSetPhase(this.context, this.update);
+  }
+
   public UpdateSetPhase set(final BooleanColumn column, final Predicate expression) {
     this.update.addSet(column, expression);
     return new UpdateSetPhase(this.context, this.update);
@@ -71,6 +87,11 @@ public class UpdateTablePhase {
 
   public UpdateSetPhase set(final BooleanColumn column, final boolean b) {
     this.update.addSet(column, BoxUtil.box(b));
+    return new UpdateSetPhase(this.context, this.update);
+  }
+
+  public UpdateSetPhase set(final BooleanColumn column, final NullLiteral n) {
+    this.update.addSet(column, n);
     return new UpdateSetPhase(this.context, this.update);
   }
 
@@ -84,6 +105,11 @@ public class UpdateTablePhase {
     return new UpdateSetPhase(this.context, this.update);
   }
 
+  public UpdateSetPhase set(final ByteArrayColumn column, final NullLiteral n) {
+    this.update.addSet(column, n);
+    return new UpdateSetPhase(this.context, this.update);
+  }
+
   public UpdateSetPhase set(final ObjectColumn column, final ObjectExpression expression) {
     this.update.addSet(column, expression);
     return new UpdateSetPhase(this.context, this.update);
@@ -91,6 +117,11 @@ public class UpdateTablePhase {
 
   public UpdateSetPhase set(final ObjectColumn column, final Object o) {
     this.update.addSet(column, BoxUtil.box(o));
+    return new UpdateSetPhase(this.context, this.update);
+  }
+
+  public UpdateSetPhase set(final ObjectColumn column, final NullLiteral n) {
+    this.update.addSet(column, n);
     return new UpdateSetPhase(this.context, this.update);
   }
 

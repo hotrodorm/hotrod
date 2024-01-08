@@ -18,7 +18,6 @@ import org.hotrod.runtime.livesql.expressions.asymmetric.NotInSubquery;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderByDirectionPhase;
 import org.hotrod.runtime.livesql.queries.select.Select;
-import org.hotrodorm.hotrod.utils.SUtil;
 
 public abstract class ComparableExpression extends Expression {
 
