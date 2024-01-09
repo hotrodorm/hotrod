@@ -2,6 +2,11 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
+## 4.5.2
+
+- LiveSQL:
+    - Implemented .executeOne() that returns a single row.
+
 ## 4.5.1
 
 - LiveSQL:
@@ -14,7 +19,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 - LiveSQL:
     - Pessimistic locking using SELECT ... FOR UPDATE (and variations of it).
     - NULLIF() implemented for completeness.
-    - Fixed aliases in UPDATE statement.
+    - Fixed aliases in the UPDATE statement.
     - Fixed SELECT by criteria ordering and limiting.
 
 ## 4.4.1
