@@ -71,7 +71,22 @@ However, setting a literal null can be problematic since the Java compiler won't
    .set(c.address, null) // Invalid -- does not compile
 ```
 
-To set a null you need to add a type to it. The code above should be written as:
+To set a null you can:
+
+```java
+   .set(c.address, sql.NULL) // Valid
+```
+
+or:
+
+```java
+   String a = null;
+   ...
+   
+   .set(c.address, a) // Valid
+```
+
+The latter has the same effect as:
 
 ```java
    .set(c.address, (String) null) // Valid
