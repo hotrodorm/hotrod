@@ -113,12 +113,21 @@ improve query performance.
     If a function is not included in the basic list of predefined functions it can be easily declared as a custom LiveSQL function. Once defined, custom functions can be used seamlessly as part of the LiveSQL syntax in any expression.
 
 
+## Optimistic and Pessimistic Locking
 
-## Using Cursors
+While updating database rows, LiveSQL can be used to implement Optimistic Locking  using several
+strategies that could suit different scenarios or existing database tables. See
+[Optimisting Locking](optimistic-locking.md) for details.
 
-Instead of using the method `execute()` it's also possible to use the method `executeCursor()`. This method avoids 
+LiveSQL also includes Pessimistic Locking that is implemented by the use of row-level lockings. These locks are
+acquired by the use of the FOR UPDATE clause (and their variations in different databases). See
+[Pessimistic Locking](syntax/for-update.md) for details.
+
+## Using Read Cursors
+
+Instead of using the method `execute()` it's also possible to use the method `executeCursor()`. This method avoids
 materializing the whole result set at once into a `java.util.List` and uses buffering to read rows one at a time. This
-option can reduce drastically the memory consumption of the application. 
+option can reduce drastically the memory consumption of the application.
 
 The example above using a cursor takes the form:
 
@@ -137,7 +146,7 @@ private void searching() {
 }
 ```
 
-Consider that cursors only live between the boundaries of a database transaction &ndash; that is, methods annotated with the 
+Consider that cursors only live between the boundaries of a database transaction &ndash; that is, methods annotated with the
 `@Transactional` annotation &ndash; and that they are automatically closed when the transaction ends.
 
 

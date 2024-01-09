@@ -1,16 +1,26 @@
-# The FOR UPDATE Clause
+# The FOR UPDATE Clause &mdash; Pessimistic Locking in LiveSQL
 
-The FOR UPDATE clause obtains an UPDATE lock on the selected rows. 
+The FOR UPDATE clause obtains an UPDATE lock on the selected rows.
 
-Any other SQL statement that tries to obtain a FOR UPDATE lock on one of these rows will wait
-for the lock to be released (or will timeout). The lock is automatically released when the transaction ends, either with
-a commit or a rollback.
+The FOR UPDATE clause is used to implement the **Pessimistic Locking** strategy in the database
+where rows are locked so their value is not changed by other concurrent sessions until the end of the 
+transaction. 
 
-Other SELECT statements that don't request a lock will be able to select these rows normally, when ran
-in the default (typically READ COMMITTED) isolation level. Higher isolation levels may also force the concurrent SELECTs to wait for
-the rows to be released by the query that is holding them.
+Alternatively, it's also possible to use [Optimistic Locking](../optimistic-locking.md) 
+in LiveSQL, a strategy that actually avoids the use of locks and could reach higher concurrency.
 
 FOR UPDATE is available for LiveSQL's SELECT statements, and for CRUD's Select By Criteria method.
+
+
+## Locks Mechanics
+
+While a lock has been acquired (in one or more rows), any other SQL statement that tries to obtain a FOR UPDATE 
+lock on one of these rows will wait for the lock to be released, or will eventually timeout. Locks are 
+automatically released when transactions end, either with commits or rollbacks.
+
+In any case, other SELECT statements that don't request a lock will be able to select these rows normally, when ran
+in the default (typically READ COMMITTED) isolation level. Higher isolation levels may also force the concurrent SELECTs to wait for
+the rows to be released by the query that is holding them.
  
 
 ## Example
