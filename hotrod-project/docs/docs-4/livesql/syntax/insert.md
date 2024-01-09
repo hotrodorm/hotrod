@@ -1,8 +1,15 @@
 # The INSERT Statement
 
-INSERT statements insert new data into a table or view from literal values included in the statement itself or from a select query.
+INSERT statements insert new data into a table or view.
 
-The following examples illustrate both cases:
+The only return of the INSERT statement (as well as for the UPDATE and DELETE statements) is the number of updated rows.
+
+
+
+## Examples
+
+The inserted value can be provided as direct values in the INSERT query itself or can be provided by a 
+select query. The following examples illustrate both cases:
 
 ```sql
 insert into product (id, name, price) values (1007, 'Seiko KL-101', 399.95);
@@ -25,14 +32,16 @@ Can be written in LiveSQL as:
 
 ```java
 ProductTable p = ProductDAO.newTable();
-sql.insert(p)
-   .columns(p.id, p.name, p.price)
-   .values(sql.val(1007), sql.val("Seiko KL-101"), sql.val(399.95))
-   .execute();
+int count = sql.insert(p)
+               .columns(p.id, p.name, p.price)
+               .values(sql.val(1007), sql.val("Seiko KL-101"), sql.val(399.95))
+               .execute();
 ```
 
 Not all columns of the may participate in the INSERT. In that case the columns that are not mentioned will be inserted as nulls
 or will use a DEFAULT value, as specified by the table constraints.
+
+In this case the `count` will always be 1.
 
 
 ## Inserting From a SELECT
@@ -51,14 +60,17 @@ Can be written in LiveSQL as:
 ```java
 ProductTable p = ProductDAO.newTable();
 NewCatalogTable c = NewCatalogDAO.newTable();
-sql.insert(p)
-   .columns(p.id, p.name, p.price)
-   .select(sql.select(c.id, c.name, c.price).from(c).where(c.stock.gt(0)))
-   .execute();
+int count = sql.insert(p)
+               .columns(p.id, p.name, p.price)
+               .select(sql.select(c.id, c.name, c.price).from(c).where(c.stock.gt(0)))
+               .execute();
 ```
 
 The SELECT statement is a general SQL select that can take any complexity as needed including joins, search predicates and the 
 full expression language.
+
+Receiving the count of inserted rows is optional and can be discarded. Some applications, however,
+can benefit from the counts for debugging purposes.
 
 
 ## Inserting Through Views

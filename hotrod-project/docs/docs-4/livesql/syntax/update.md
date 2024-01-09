@@ -1,8 +1,10 @@
 # The UPDATE Statement
 
-UPDATE statements update existing data in a table. They can operate directly on a table and also through a database view.
+UPDATE statements in SQL update existing data in a table. They can operate directly on a table and sometimes also through a database view.
 
-They can specify the entirety of columns and/or rows to be modified or just subsets of them.
+They can specify the entire list of columns and/or rows to be modified or just subsets of them.
+
+The only return of the UPDATE statement (as well as for the INSERT an DELETE statements) is the number of updated rows.
 
 
 ## Examples
@@ -35,17 +37,37 @@ It can be written as:
 
 ```java
 ProductTable p = ProductDAO.newTable();
-sql.update(p)
-   .set(p.promotion, "BOGO")
-   .set(p.salePrice, p.price.mult(0.90))
-   .set(p.salesCode, 704)
-   .where(p.catalogId.eq(1015).and(p.type.ne("VIP")))
-   .execute();
+int count = sql.update(p)
+               .set(p.promotion, "BOGO")
+               .set(p.salePrice, p.price.mult(0.90))
+               .set(p.salesCode, 704)
+               .where(p.catalogId.eq(1015).and(p.type.ne("VIP")))
+               .execute();
 ```
 
 Note that the second parameter of the `set()` method accepts typed LiveSQL Expressions such as `p.price.mult(0.90)` (of type `NumberExpression`) or Java literals such as `704` (an Integer). The type of the second parameter is bound according to the type of the first parameter.
 
 The filtering predicate in the WHERE clause can be as simple or as complex as needed according to the Expression Language.
+
+The UPDATE functionality returns the number of affected rows by the update query. This can be used to implement [Optimistic Locking](../optimistic-locking.md).
+
+
+## Parameterized Values vs Literal Values
+
+As in any other LiveSQL query, Java literals are by default parameterized. This typically helps with
+database optimization, as explained in [Literals - Performance Side Effects](./literals). However, sometimes it could be beneficial to render them as plain SQL literals instead. For example, in this case the line:
+
+```java
+               .set(p.promotion, "BOGO")              // Generates: p.promotion = ?
+```
+
+can be written as:
+
+```java
+               .set(p.promotion, sql.literal("BOGO")) // Generates: p.promotion = 'BOGO'
+```
+
+Use SQL literals sparely, when you consider it makes sense to do it.
 
 
 ## Setting Nulls
@@ -74,7 +96,7 @@ However, setting a literal null can be problematic since the Java compiler won't
 You can set a literal null:
 
 ```java
-   .set(c.address, sql.NULL) // Valid (literal NULL)
+   .set(c.address, sql.NULL) // Valid (SQL literal NULL)
 ```
 
 or a parameterized one:
@@ -88,7 +110,7 @@ The latter has the same effect as:
 ```java
    String a = null;
    ...
-   
+
    .set(c.address, a) // Valid (parameterized NULL)
 ```
 
