@@ -15,7 +15,8 @@ FOR UPDATE is available for LiveSQL's SELECT statements, and for CRUD's Select B
 
 ## Example
 
-The following method debits the amount of $1000 from an account, only if the account balance is at least $1500:
+The following method debits the amount of $1000 from an account, only if the account balance is at least $1500 and validations
+in other tables are successful:
 
 ```java
 @Transactional
