@@ -71,10 +71,25 @@ However, setting a literal null can be problematic since the Java compiler won't
    .set(c.address, null) // Invalid -- does not compile
 ```
 
-To set a null you need to add a type to it. The code above should be written as:
+You can set a literal null:
 
 ```java
-   .set(c.address, (String) null) // Valid
+   .set(c.address, sql.NULL) // Valid (literal NULL)
+```
+
+or a parameterized one:
+
+```java
+   .set(c.address, (String) null) // Valid (parameterized NULL)
+```
+
+The latter has the same effect as:
+
+```java
+   String a = null;
+   ...
+   
+   .set(c.address, a) // Valid (parameterized NULL)
 ```
 
 The same rule applies to set nulls for numeric columns, date/time, boolean, binary, and object ones.
