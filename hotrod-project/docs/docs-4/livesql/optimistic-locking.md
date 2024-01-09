@@ -1,11 +1,11 @@
 # Optimistic Locking in LiveSQL
 
-**Optimistic Locking** is a strategy to read database rows and then modify them, while
-checking that no other concurrent database session has changed it in the meantime.
+Optimistic Locking is a strategy to read database rows and then modify them, while
+checking that no other concurrent database session has changed them in the meantime.
 
 While the alternative strategy of [Pessimistic Locking](syntax/for-update.md) prevents
-data changes by actually acquires locks on the database rows, the Optimistic Locking
-avoids locks, by checking the data has not been modified during the update phase of the change.
+data changes by actually acquiring locks on the database rows, the Optimistic Locking
+avoids these locks, by checking the data has not been modified during the update phase of the change.
 
 
 ## Strategies

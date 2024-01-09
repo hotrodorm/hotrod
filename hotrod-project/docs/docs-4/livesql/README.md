@@ -117,7 +117,7 @@ improve query performance.
 
 While updating database rows, LiveSQL can be used to implement Optimistic Locking  using several
 strategies that could suit different scenarios or existing database tables. See
-[Optimisting Locking](optimistic-locking.md) for details.
+[Optimistic Locking](optimistic-locking.md) for details.
 
 LiveSQL also includes Pessimistic Locking that is implemented by the use of row-level lockings. These locks are
 acquired by the use of the FOR UPDATE clause (and their variations in different databases). See
