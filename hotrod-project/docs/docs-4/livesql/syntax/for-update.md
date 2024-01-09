@@ -71,7 +71,8 @@ SELECT statement and the execution of the UPDATE statement.
 
 ## Combining FOR UPDATE with Other Clauses
 
-The FOR UPDATE clause always need a FROM clause. It can be combined with the WHERE, ORDER BY, OFFSET, and LIMIT clauses.
+The FOR UPDATE clause always need a FROM clause that references a table, or in some cases updatable views.
+It can be combined with the WHERE, ORDER BY, OFFSET, and LIMIT clauses.
 
 FOR UPDATE is not available to queries that use:
 
