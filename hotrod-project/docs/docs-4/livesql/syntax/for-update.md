@@ -25,13 +25,16 @@ the rows to be released by the query that is holding them.
 
 ## Weaknesses
 
-There are two main weaknesses to Optimistic Locking.
+There are three main weaknesses to Pessimistic Locking:
 
-For once, it's typically more resource intensive in the database, compared to Optimistic Locking, and 
+- For once, it's typically more resource intensive in the database, compared to Optimistic Locking, and 
 that could reduce application concurrency or performance.
-
-Second, for higher concurrency it may become impossible to obtain a lock on one or more rows, and this
+- Second, for higher concurrency it may become impossible to obtain a lock on one or more rows, and this
 would lead to SELECT ... FOR UPDATE timeouts, that the application will need to deal with gracefully.
+- Also, some databases may not implement row-level locking at all, or could implement it in a less
+desirable way. For example, Sybase ASE or HyperSQL do not implement row-level locking; SQL Sever, on
+the other hand, does implement it but it ends up locking entire disk pages instead of single rows,
+locking much more data than intended, and that could lead to higher chances of SELECT timeouts.
  
 
 ## Example
