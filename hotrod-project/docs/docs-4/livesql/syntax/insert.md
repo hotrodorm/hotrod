@@ -8,7 +8,7 @@ The only return of the INSERT statement (as well as for the UPDATE and DELETE st
 
 ## Examples
 
-The inserted value can be provided as direct values in the INSERT query itself or can be provided by a 
+The inserted values can be provided as direct values in the INSERT query itself or can be provided by a 
 select query. The following examples illustrate both cases:
 
 ```sql
@@ -92,7 +92,7 @@ In LiveSQL the insertion could take the form:
 ```java
 VipProductView p = VipProductDAO.newView();
 sql.insert(p)
-   .columns(p.id, p.name, p.price, p.product_type)
+   .columns(p.id, p.name, p.price, p.productType)
    .values(sql.val(2514), sql.val("Tohoku AB"), sql.val(14.50), sql.val("VIP"))
    .execute();
 ```
@@ -118,8 +118,8 @@ In LiveSQL the insertion could take the form:
 VipProductView p = VipProductDAO.newView();
 NewCatalogTable c = NewCatalogDAO.newTable();
 sql.insert(p)
-   .columns(p.id, p.name, p.price, p.product_type)
-   .select(sql.select(c.id, c.name, c.price, c.product_type).from(c).where(c.stock.gt(0)))
+   .columns(p.id, p.name, p.price, p.productType)
+   .select(sql.select(c.id, c.name, c.price, c.productType).from(c).where(c.stock.gt(0)))
    .execute();
 ```
 
