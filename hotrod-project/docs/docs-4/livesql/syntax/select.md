@@ -43,6 +43,7 @@ The SELECT statement has several clauses that are described separately:
 - [The OFFSET Clause](./offset.md)
 - [The LIMIT Clause](./limit.md)
 - [The FOR UPDATE Clause](./for-update.md)
+- [The UNION/INTERSECT/EXCEPT [ALL] Clauses](./set-operators.md)
 
 
 ## Subqueries
@@ -60,16 +61,16 @@ the query to return a list of rows (or entities in the case of the Select by Cri
 
 However, a LiveSQL SELECT query can have three ways of returning its result:
 
-- *List<Row> execute()*
+- *List&lt;Row&gt; execute()*
 - *Row executeOne()*
-- *Cursor<Row> executeCursor()*
+- *Cursor&lt;Row&gt; executeCursor()*
 
 These methods have a corresponding form for entities. For example, if the `InvoiceDAO` for the table INVOICE
 is used to select invoices, these methods are included in the `InvoiceDAO` as:
 
-- *List<Invoice> execute()*
+- *List&lt;Invoice&gt; execute()*
 - *Invoice executeOne()*
-- *Cursor<Invoice> executeCursor()*
+- *Cursor&lt;Invoice&gt; executeCursor()*
 
 ### Returning a List
 
