@@ -429,6 +429,22 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
 
   }
 
+  @Override
+  public R executeOne(final LiveSQLContext context) {
+    return this.executeOne(context, null);
+  }
+
+  public R executeOne(final LiveSQLContext context, final String entityMapperStatement) {
+
+    LiveSQLPreparedQuery q = this.prepareQuery(context);
+    if (entityMapperStatement == null) {
+      return executeLiveSQLOne(context, q);
+    } else {
+      return context.getSQLSession().selectOne(entityMapperStatement, q.getConsolidatedParameters());
+    }
+
+  }
+
   public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
     if (this.baseTableExpression != null) {
       this.baseTableExpression.validateTableReferences(tableReferences, ag);

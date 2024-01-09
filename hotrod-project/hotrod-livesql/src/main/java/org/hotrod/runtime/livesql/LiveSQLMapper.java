@@ -18,6 +18,9 @@ public interface LiveSQLMapper {
   @Select("${sql}")
   public Cursor<Row> selectCursor(Map<String, Object> parameters);
 
+  @Select("${sql}")
+  public Row selectOne(Map<String, Object> parameters);
+
   @Delete("${sql}")
   public int delete(Map<String, Object> parameters);
 

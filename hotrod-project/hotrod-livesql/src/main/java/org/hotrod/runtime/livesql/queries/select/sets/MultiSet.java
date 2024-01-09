@@ -36,6 +36,8 @@ public abstract class MultiSet<R> {
 
   public abstract Cursor<R> executeCursor(final LiveSQLContext context);
 
+  public abstract R executeOne(final LiveSQLContext context);
+
   public String getPreview(final LiveSQLContext context) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     return PreviewRenderer.render(q);
@@ -77,6 +79,13 @@ public abstract class MultiSet<R> {
     LinkedHashMap<String, Object> parameters = q.getParameters();
     parameters.put("sql", q.getSQL());
     return (Cursor<R>) context.getLiveSQLMapper().selectCursor(parameters);
+  }
+
+  @SuppressWarnings("unchecked")
+  protected R executeLiveSQLOne(final LiveSQLContext context, final LiveSQLPreparedQuery q) {
+    LinkedHashMap<String, Object> parameters = q.getParameters();
+    parameters.put("sql", q.getSQL());
+    return (R) context.getLiveSQLMapper().selectOne(parameters);
   }
 
 }

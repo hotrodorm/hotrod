@@ -304,6 +304,12 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
     return executeLiveSQLCursor(context, q);
   }
 
+  @Override
+  public R executeOne(final LiveSQLContext context) {
+    LiveSQLPreparedQuery q = this.prepareQuery(context);
+    return executeLiveSQLOne(context, q);
+  }
+
   public final String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append(

@@ -52,6 +52,11 @@ public class AbstractSelectPhase<R> implements ExecutableSelect<R> {
     return this.combined.executeCursor(this.context);
   }
 
+  @Override
+  public final R executeOne() {
+    return this.combined.executeOne(this.context);
+  }
+
   // Utilities
 
   @Override

@@ -12,6 +12,8 @@ public interface Select<R> extends Query {
 
   Cursor<R> executeCursor();
 
+  R executeOne();
+
   CombinedSelectObject<R> getCombinedSelect();
 
 }
