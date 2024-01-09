@@ -65,8 +65,8 @@ However, a LiveSQL SELECT query can have three ways of returning its result:
 - *Row executeOne()*
 - *Cursor&lt;Row&gt; executeCursor()*
 
-These methods have a corresponding form for entities. For example, if the `InvoiceDAO` for the table INVOICE
-is used to select invoices, these methods are included in the `InvoiceDAO` as:
+These methods have a corresponding form for entities. For example, if the `InvoiceDAO` object is 
+used to handle the table INVOICE persistence, these methods are included in it as:
 
 - *List&lt;Invoice&gt; execute()*
 - *Invoice executeOne()*
