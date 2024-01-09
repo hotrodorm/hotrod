@@ -123,28 +123,7 @@ LiveSQL also includes Pessimistic Locking that is implemented by the use of row-
 acquired by the use of the FOR UPDATE clause (and their variations in different databases). See
 [Pessimistic Locking](syntax/for-update.md) for details.
 
-## Using Read Cursors
 
-Instead of using the method `execute()` it's also possible to use the method `executeCursor()`. This method avoids
-materializing the whole result set at once into a `java.util.List` and uses buffering to read rows one at a time. This
-option can reduce drastically the memory consumption of the application.
-
-The example above using a cursor takes the form:
-
-```java
-@Autowired
-private LiveSQL sql;
-
-private void searching() {
-  EmployeeTable e = EmployeeDAO.newTable();
-
-  Cursor<Row> rows = this.sql
-    .select()
-    .from(e)
-    .where(e.name.like("A%"))
-    .executeCursor();
-}
-```
 
 Consider that cursors only live between the boundaries of a database transaction &ndash; that is, methods annotated with the
 `@Transactional` annotation &ndash; and that they are automatically closed when the transaction ends.

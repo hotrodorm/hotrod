@@ -85,15 +85,14 @@ The application will first read the row for an account (e.g. 6704):
 
 ```java
   BankAccountTable a = BankAccountDAO.newTable("a");
-  List<BankAccount> accounts = sql.select().from(a).where(a.id.eq(6704)).execute();
-  if (accounts.isEmpty()) throw new RuntimeException("Account not found");
-  BankAccount ba = accounts.get(0);
+  BankAccount account = sql.select().from(a).where(a.id.eq(6704)).executeOne();
+  if (account == null) throw new RuntimeException("Account not found");
 ```
 
 The application will then compute some new values according to some business logic (e.g. add $100 to the balance):
 
 ```java
-  int newBalance = ba.getBalance() + 100;
+  int newBalance = account.getBalance() + 100;
 ```
 
 Finally, the application will try to update the row:
@@ -102,30 +101,35 @@ Finally, the application will try to update the row:
   int count = sql.update(a)
                  .set(a.balance, newBalance)
                  .set(a.rowVersion, a.rowVersion.plus(1))
-                 .where(a.id.eq(6704).and(a.rowVersion.eq(ba.getRowVersion())));
+                 .where(a.id.eq(6704).and(a.rowVersion.eq(account.getRowVersion())));
   if (count == 0) throw new RuntimeException("Could not update account -- concurrent changes detected.");
 ```
 
 The `count` tell us how many rows were updated, and that tells us if the row was untouched or had any changes in it.
 If the count is 1 then the row had no changes and the UPDATE was successful; if the count was zero, then the
-row hab been changed, and the UPDATE was not successful.
+row suffered some changes in the meantime, and the UPDATE was not successful.
 
 
 ## Conclusion
 
+Optimistic locking can successfully update rows according to the business logic and detect if data has been
+modified while it's being used.
+
+The example above demonstrates how to use Optimistic Locking in LiveSQL using Strategy #1 "Version Number".
 The other two strategies are implemented in a similar way, all of them detecting changes by counting how
-many rows were updates. All comparison of values must be done in the database, not in the application, to make
-sure the count is accurate.
+many rows were updated. In all cases the comparison of values must be done in the database and not in the
+application, to make sure the count is accurate.
 
-This strategy may fail more often when there's high number of concurrent sessions. At the same time this
-strategy is faster than acquiring locks so the possibility of changes happening between reads and updates is reduced.
+Optimistic Locking may fail more often when there's high number of concurrent sessions. At the same time
+Optimistic Locking is faster than acquiring locks so the possibility of changes happening between reads
+and updates is reduced.
 
-In any case, the locking strategy of the alternative Pessimistic Locking can also fail, under stress when too many
-concurrent sessions try to lock a row, and these are not released timely; in these cases fails will be due to 
-locking timeouts. 
+In any case, the locking strategy of the alternative Pessimistic Locking can also fail, specially under stress
+when too many concurrent sessions try to lock a row, and these are not released timely; in these cases fails
+will be due to locking timeouts.
 
-In case the update fails, then the application will need to deal with that case gracefully. Maybe pointing out the issue
-with the end user and ask to verify the new values and to resubmit the change.
+When detecting Optimistic Locking update failures, the application will need to deal with that case gracefully. 
+Maybe pointing out the issue with the end user and ask to verify the new values and to resubmit the change.
 
 Finally, Optimistic Locking can be quite advantageous for high concurrency, since it avoid acquiring database locks
 in the database.

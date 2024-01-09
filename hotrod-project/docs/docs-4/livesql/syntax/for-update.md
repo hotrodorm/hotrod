@@ -34,13 +34,13 @@ public void debit(Integer accountId) {
 
   AccountTable a = AccountDAO.newTable("a");
 
-  List<Account> accts = this.accountDAO
+  Account acct = this.accountDAO
     .select(a, a.id.eq(accountId))
     .forUpdate()
-    .execute();
+    .executeOne();
     
-  if (accts.empty()) throw new RuntimeException("Account not found");
-  if (accts.get(0).getBalance() < 1500) throw new RuntimeException("Insufficient funds");
+  if (acct == null) throw new RuntimeException("Account not found");
+  if (acct.getBalance() < 1500) throw new RuntimeException("Insufficient funds");
   
   // perform validations in other tables...
 
@@ -115,6 +115,16 @@ that can compete between them, and also with the SELECT FOR UPDATE statements.
 Finally, even considering the performance drawbacks stated above, using a good strategy can dramatically
 reduce the performance impact of locking, and will bring all the benefits that a critical section of code
 requires.
+
+
+## Benefits
+
+Compared to Optimistic Locking, Pessimistic Locking is far easier to code. The example above is much shorter
+and simpler to write and to debug than the corresponding code using Optimistic Locking.
+
+Once the rows are selected and the lock(s) are acquired Pessimistic Locking ensures the transaction can be
+completed. Well, as long as there's not a catastrophic database failure. This is not true for Optimistic
+Locking.
 
 
 ## Weaknesses
