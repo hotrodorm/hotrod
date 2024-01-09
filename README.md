@@ -105,7 +105,7 @@ The following query uses Dynamic SQL to assemble the query dynamically and to *a
     <parameter name="ordering" java-type="Integer" />
     select /*+ FIRST_ROWS(10) */ *
     from vehicle
-    where brand like = '%' || ${brandName} || '%'
+    where brand like = '%' || #{brandName} || '%'
       <if test="minYear != null">and year >= #{minYear}</if>
     <choose>
       <if test="ordering == 1">order by price</if>
@@ -137,8 +137,8 @@ Graph queries assemble the rows and columns of SELECT queries into trees of obje
     from invoice i
     join customer c on c.id = i.customer_id
     join invoice_line il on il.invoice_id = i.id
-    where i.customer_id = ${customerId}
-      <if test="minAmount != null">and i.amount >= ${minAmount}</if>
+    where i.customer_id = #{customerId}
+      <if test="minAmount != null">and i.amount >= #{minAmount}</if>
     order by i.id
   </select>
 ```
