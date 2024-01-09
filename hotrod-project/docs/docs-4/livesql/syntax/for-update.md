@@ -56,10 +56,11 @@ FOR UPDATE is not available to queries that use:
 - HAVING
 - UNION [ALL], INTERSECT [ALL], EXCEPT [ALL]
 
-Generally speaking, any of these clauses prevent the use of FOR UPDATE since they do not keep a 1:1
+Generally speaking, any of these clauses above prevent the use of FOR UPDATE since they do not keep a 1:1
 relationship between the source rows from a table and resulting rows of the query.
 
-The following query combines other clauses:
+The following query combines all the other clauses. Consider each expression or filtering condition can be
+as simple (as shown here) or as complex as needed:
 
 ```java
   InvoiceTable i = InvoiceDAO.newTable("i");
