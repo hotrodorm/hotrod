@@ -23,20 +23,6 @@ in the default (typically READ COMMITTED) isolation level. Higher isolation leve
 the rows to be released by the query that is holding them.
 
 
-## Weaknesses
-
-There are three main weaknesses to Pessimistic Locking:
-
-- For once, it's typically more resource intensive in the database, compared to Optimistic Locking, and 
-that could reduce application concurrency or performance.
-- Second, for higher concurrency it may become impossible to obtain a lock on one or more rows, and this
-would lead to SELECT ... FOR UPDATE timeouts, that the application will need to deal with gracefully.
-- Also, some databases may not implement row-level locking at all, or could implement it in a less
-desirable way. For example, Sybase ASE or HyperSQL do not implement row-level locking; SQL Sever, on
-the other hand, does implement it but it ends up locking entire disk pages instead of single rows,
-locking much more data than intended, and that could lead to higher chances of SELECT timeouts.
- 
-
 ## Example
 
 The following method debits the amount of $1000 from an account, only if the account balance is at least $1500 and validations
@@ -129,6 +115,20 @@ that can compete between them, and also with the SELECT FOR UPDATE statements.
 Finally, even considering the performance drawbacks stated above, using a good strategy can dramatically
 reduce the performance impact of locking, and will bring all the benefits that a critical section of code
 requires.
+
+
+## Weaknesses
+
+There are three main weaknesses to Pessimistic Locking:
+
+- For once, it's typically more resource intensive in the database, compared to Optimistic Locking, and 
+that could reduce application concurrency or performance.
+- Second, for higher concurrency it may become impossible to obtain a lock on one or more rows, and this
+would lead to SELECT ... FOR UPDATE timeouts, that the application will need to deal with gracefully.
+- Also, some databases may not implement row-level locking at all, or could implement it in a less
+desirable way. For example, Sybase ASE or HyperSQL do not implement row-level locking; SQL Sever, on
+the other hand, does implement it but it ends up locking entire disk pages instead of single rows,
+locking much more data than intended, and that could lead to higher chances of SELECT timeouts.
 
 
 ## Supported Databases
