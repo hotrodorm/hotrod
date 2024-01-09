@@ -2,7 +2,7 @@
 
 INSERT statements insert new data into a table or view.
 
-The only return of the INSERT statement (as well as for the UPDATE and DELETE statements) is the number of updated rows.
+The only return of the INSERT statement (as well as for the UPDATE and DELETE statements) is the number of inserted rows.
 
 
 

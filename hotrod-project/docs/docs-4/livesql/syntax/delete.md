@@ -5,7 +5,7 @@ DELETE statements delete rows from a table or view. They can delete the entirety
 Most business-grade application never delete rows from a table, but they only phase them out. It's common, however, to delete
 rows from non-fact tables or from temporary ones.
 
-The only return of the DELETE statement (as well as for the INSERT an UPDATE statements) is the number of updated rows.
+The only return of the DELETE statement (as well as for the INSERT an UPDATE statements) is the number of deleted rows.
 
 
 ## Examples
