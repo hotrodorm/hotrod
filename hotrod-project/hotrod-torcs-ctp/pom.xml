@@ -12,7 +12,7 @@
   <parent>
     <groupId>org.hotrodorm.hotrod</groupId>
     <artifactId>hotrod-project</artifactId>
-    <version>4.5.2-SNAPSHOT</version>
+    <version>4.5.2</version>
   </parent>
 
   <properties>
@@ -26,7 +26,7 @@
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-torcs</artifactId>
-      <version>4.5.2-SNAPSHOT</version>
+      <version>4.5.2</version>
     </dependency>
     
   </dependencies>
