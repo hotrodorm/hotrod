@@ -17,6 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.Constants;
+import org.hotrod.config.ConverterTag;
 import org.hotrod.config.EnumTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.MyBatisSpringTag;
@@ -673,7 +674,20 @@ public class ObjectDAO extends GeneratableObject {
       String javaType = resolveType(cm);
       String property = cm.getId().getJavaMemberName();
 
-      if ("java.lang.Byte".equals(javaType) || //
+      if (cm.getConverter() != null) {
+        ConverterTag ct = cm.getConverter();
+        
+        println("    mo."
+            + cm.getId().getJavaSetter() 
+            + "(new "
+            + ct.getJavaClass()
+            + "().decode(("
+            + ct.getJavaRawType()
+            + ") m.get(p + \""
+            + JUtils.escapeJavaString(property)
+            + "\" + s), this.sqlSession.getConnection()));");
+                
+      } else if ("java.lang.Byte".equals(javaType) || //
           "java.lang.Short".equals(javaType) || //
           "java.lang.Integer".equals(javaType) || //
           "java.lang.Long".equals(javaType) || //
