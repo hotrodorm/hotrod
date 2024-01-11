@@ -5,6 +5,8 @@ package app.daos.primitives;
 import java.io.Serializable;
 import org.hotrod.runtime.json.*;
 
+import app.test.Table;
+
 public class AbstractAccountVO implements Serializable {
 
   private static final long serialVersionUID = 1L;
