@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,9 +13,11 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.queries.DMLQuery;
@@ -41,6 +45,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
+import app.daos.AccountVO;
+import app.daos.BranchVO;
 import app.daos.InvoiceVO;
 import app.daos.primitives.AccountDAO;
 import app.daos.primitives.AccountDAO.AccountTable;
@@ -54,6 +60,8 @@ import app.daos.primitives.PaymentDAO;
 import app.daos.primitives.PaymentDAO.PaymentTable;
 import app.daos.primitives.ProductDAO;
 import app.daos.primitives.ProductDAO.ProductTable;
+import app.daos.primitives.TypesDateTimeDAO;
+import app.daos.primitives.TypesDateTimeDAO.TypesDateTimeTable;
 
 @Configuration
 @SpringBootApplication
@@ -68,8 +76,8 @@ public class App {
 //  @Autowired
 //  private NumbersDAO numbersDAO;
 
-//  @Autowired
-//  private BranchDAO branchDAO;
+  @Autowired
+  private BranchDAO branchDAO;
 
   @Autowired
   private AccountDAO accountDAO;
@@ -95,6 +103,29 @@ public class App {
 //  @Autowired
 //  private PlanRetrieverFactory factory;
 
+//  @Bean
+//  public DataSource dataSource() throws SQLException {
+//
+//    System.getProperties().setProperty("oracle.jdbc.J2EE13Compliant", "true");
+//
+//    OracleDataSource ds = new OracleDataSource();
+//
+//    ds.setURL("jdbc:oracle:thin:@192.168.56.95:1521:orcl");
+//    ds.setUser("user1");
+//    ds.setPassword("pass1");
+//
+////    ds.setFastConnectionFailoverEnabled(true);
+////    ds.setImplicitCachingEnabled(true);
+////    ds.setConnectionCachingEnabled(true);
+//
+//    Properties props = new Properties();
+//    props.setProperty("oracle.jdbc.J2EE13Compliant", "true");
+//
+//    ds.setConnectionProperties(props);
+//    return ds;
+//
+//  }
+
   public static void main(String[] args) {
     SpringApplication.run(App.class, args);
   }
@@ -103,6 +134,9 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       System.out.println("[ Starting example ]");
+
+      System.getProperties().setProperty("oracle.jdbc.J2EE13Compliant", "true");
+
 //      crud();
 //      join();
 //      join();
@@ -330,13 +364,36 @@ public class App {
     System.out.println("- " + prompt + ": " + v + " (" + (v == null ? "null" : v.getClass().getName()) + ")");
   }
 
+  private void converter() {
+    AccountTable a = AccountDAO.newTable("a");
+    BranchTable b = BranchDAO.newTable("b");
+
+    Row r = this.sql
+        .select(
+          a.star().as(c -> "a:" + c.getProperty()), 
+          b.star().as(c -> "b:" + c.getProperty())
+        )
+        .from(b)
+        .join(a, a.branchId.eq(b.id))
+        .where(b.region.like("N%"))
+        .orderBy(b.id.desc())
+        .limit(1)
+        .executeOne();
+
+    AccountVO account = this.accountDAO.parseRow(r, "a:");
+    BranchVO branch = this.branchDAO.parseRow(r, "b:");
+    
+    System.out.println("account=" + account + "\nbranch=" + branch);
+  }
+
   private void liveSQLExamples() throws SQLException, UnsupportedTorcsDatabaseException {
 
 //    livesql1();
 //    livesql2();
 //    livesql3();
-    livesql4();
+//    livesql4();
 //    dates();
+    converter();
 //    forUpdate();
 
     // Set Operators
@@ -358,20 +415,44 @@ public class App {
 
   }
 
+  @Autowired
+  private TypesDateTimeDAO td;
+
+  @Autowired
+  private SqlSession sqlSession;
+
   private void dates() {
-//    TypesDateTimeTable t = TypesDateTimeDAO.newTable("t");
-//
-//    List<Row> rows = this.sql.select().from(t).execute();
-//
-//    System.out.println("rows:");
-//
-//    for (Row r : rows) {
-//      System.out.println("Row:");
-//      println("dat1 (DATE)", r.get("dat1"));
-//      println("dat2 (TIMESTAMP)", r.get("dat2"));
-//      println("dat3 (TIMESTAMP WITH TIME ZONE)", r.get("dat3"));
-//      println("dat4 (TIMESTAMP WITH LOCAL TIME ZONE)", r.get("dat3"));
+    TypesDateTimeTable t = TypesDateTimeDAO.newTable("t");
+
+//    System.out.println("ENV PROPERTIES");
+//    Map<String, String> env = System.getenv();
+//    for (String name : env.keySet()) {
+//      String value = env.get(name);
+//      System.out.println(" - " + name + "=" + value);
 //    }
+
+    System.out.println("ARGUMENTS");
+    RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
+    List<String> arguments = runtimeMxBean.getInputArguments();
+    for (String a : arguments) {
+      System.out.println(" - " + a);
+    }
+    System.out.println("------------------------------------");
+
+//    org.apache.ibatis.session.Configuration conf = this.sqlSession.getConfiguration();
+//    conf.getEnvironment()
+
+    List<Row> rows = this.sql.select().from(t).execute();
+
+    System.out.println("rows:");
+
+    for (Row r : rows) {
+      System.out.println("Row:");
+      println("dat1 (DATE)", r.get("dat1"));
+      println("dat2 (TIMESTAMP)", r.get("dat2"));
+      println("dat3 (TIMESTAMP WITH TIME ZONE)", r.get("dat3"));
+      println("dat4 (TIMESTAMP WITH LOCAL TIME ZONE)", r.get("dat3"));
+    }
   }
 
   private void forUpdate() {

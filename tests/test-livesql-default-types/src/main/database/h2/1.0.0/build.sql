@@ -107,7 +107,7 @@ create table product (
 create table branch (
   id int,
   region varchar(10),
-  is_vip boolean
+  is_vip int
 );
 
 create table account (
@@ -147,13 +147,13 @@ insert into account (id, parent_id, branch_id) values
   (5, 4, 104);
   
 insert into branch (id, region, is_vip) values
-  (1, 'N', true),
-  (2, 'S', true),
-  (3, 'W', false),
-  (4, 'E', false),
-  (5, 'NE', false),
-  (6, 'NW', true),
-  (7, 'SE', false);
+  (101, 'N', true),
+  (102, 'S', true),
+  (103, 'W', false),
+  (104, 'E', false),
+  (105, 'NE', false),
+  (106, 'NW', 1),
+  (107, 'SE', false);
   
   -- update branch set region = 'x' where id >= 4 and not is_vip
   
