@@ -1,6 +1,18 @@
 # What's New in HotRod 4
 
 
+## What's New in HotRod 4.5
+
+### 1. LiveSQL Pessimistic Locking
+
+The SELECT ... FOR UPDATE locking feature was implemented in the LiveSQL syntax.
+
+### 2. LiveSQL executeOne()
+
+This convenience method was added to return single rows or VOs when it's known that the queries
+will return one row at the most.
+
+
 ## What's New in HotRod 4.4
 
 ### 1. Torcs CTP

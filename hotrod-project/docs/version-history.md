@@ -6,6 +6,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 
 - LiveSQL:
     - Implemented .executeOne() that returns a single row.
+    - Converters handled correctly by the parseRow() methods.
 
 ## 4.5.1
 
