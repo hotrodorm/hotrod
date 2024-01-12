@@ -143,7 +143,11 @@ Graph queries assemble the rows and columns of SELECT queries into trees of obje
   </select>
 ```
 
-Returns a list of `InvoiceWithLines` objects. It returns one of these first-level objects for each invoice. Each first-level object includes a `customer` property for the second-level `Customer` object (1:1 cardinality) that holds the data coming from the `customer` table. It also includes a `lines` property that includes the list of second-level `InvoiceLine` objects (1:N cardinality) with their corresponding properties.
+Returns a list of composite objects `InvoiceWithLines` as shown below:
+
+![Graph Query Result - Nitro](hotrod-project/docs/docs-4/nitro/images/graph-query-vos.png)
+
+It returns one of these first-level objects for each invoice. Each first-level object includes a `customer` property for the second-level `Customer` object (1:1 cardinality) that holds the data coming from the `customer` table. It also includes a `lines` property that includes the list of second-level `InvoiceLine` objects (1:N cardinality) with their corresponding properties.
 
 The query is available in Java as:
 
