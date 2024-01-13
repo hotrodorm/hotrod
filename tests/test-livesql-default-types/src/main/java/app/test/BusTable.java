@@ -1,11 +1,12 @@
 package app.test;
 
-public class BusTable<BusVO> extends Table<VO> {
+public class BusTable<T> extends Table<T> {
+
+  private T t;
 
   @Override
-  public VO getVO() {
-    // TODO Auto-generated method stub
-    return null;
+  public T getVO() {
+    return t;
   }
 
 }

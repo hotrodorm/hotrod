@@ -1,6 +1,6 @@
 package app.test;
 
-public class AutoTable<T extends VO> extends Table<VO> {
+public class AutoTable<T> extends Table<T> {
 
   private T t;
 

@@ -2,6 +2,8 @@ package app.test;
 
 import java.util.List;
 
+import app.test.list.List2;
+
 public class Test1 {
 
   public static void main(String[] args) {
@@ -10,26 +12,41 @@ public class Test1 {
 
   private static void m1() {
     SQL sql = new SQL();
-    AutoTable<Auto> a = AutoDAO.newTable();
-    BusTable<Bus> b = BusDAO.newTable();
 
-    Select1<AutoTable<Auto>, Auto> s = new Select1<>(a, new Auto());
-    List<Auto> l1 = s.execute();
+    AutoTable<AutoVO> t = AutoDAO.newTable();
+    BusTable<BusVO> u = BusDAO.newTable();
 
-    Select2<AutoTable<Auto>, BusTable<Bus>> s2 = s.join(b);
-//    List2<Auto, Bus> rows = 
-    s2.execute();
+    List<AutoVO> rows = sql.selectFrom(t).execute();
+
+    List2<AutoVO, BusVO> rows2 = sql.selectFrom(t).join(u).execute();
+
   }
 
-  private static void m2() {
-    Auto a = new Auto();
-    Bus b = new Bus();
+//  private static <T extends Table<VO>, V extends VO> Select1<T, V> select(T a, V v) {
+//    return new Select1<T, V>(a, v);
+//  }
 
-//    List2<Auto, Bus> rows = new Select1<>(a, new Auto()).join(b).execute();
+//  private static <T extends Table<VO>, V extends VO> Select1<T, V> select(T a, V v) {
+//    return new Select1<T, V>(a,(V) a.getVO());
+//  }
+
+//  private static <V extends VO, T extends Table<V>> Select1<V, T> select(T t) {
+//    return new Select1<V, T>(t, t.getVO());
+//  }
+
+  private static <T extends Table<V>, V> Select1<V> from(T t) {
+    V v = t.getVO();
+    return new Select1<V>(t, v);
+//    return null;
   }
 
-//  private Select1<T> select(Table<VO> t, VO v) {
-//
+//  private static <T extends Table<V>, V extends VO> Select1<V> from(T t) {
+//    V v = t.getVO();
+//    Picker<V> p = new Picker<V>(t);
+//    V v2 = p.first();
+//    
+//    return p.first();
+////    return null;
 //  }
 
 }

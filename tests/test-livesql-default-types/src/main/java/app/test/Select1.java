@@ -3,24 +3,25 @@ package app.test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Select1<A extends Table<VO>, V> {
+public class Select1<A> {
 
   private A a;
-  private V v;
 
-  public Select1(A e, V v) {
-    this.a = e;
-    this.v = v;
+  public Select1(Table<?> t, A a) {
+    this.a = a;
   }
 
-  public List<V> execute() {
-    List<V> list = new ArrayList<>();
-    list.add(this.v);
+  public List<A> execute() {
+    List<A> list = new ArrayList<>();
     return list;
   }
 
-  public <B extends Table<VO>> Select2<A, B> join(B b) {
-    return new Select2<>(a, b);
+  public <B, T extends Table<B>> Select2<A, B> join(T t) {
+    return new Select2<A, B>(t, a, t.getVO());
   }
+
+//  public static <T extends Table<V>, V> Select1<V> selectFrom(T t) {
+//    return new Select1<V>(t, t.getVO());
+//  }
 
 }

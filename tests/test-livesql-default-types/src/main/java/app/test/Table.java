@@ -1,6 +1,6 @@
 package app.test;
 
-public abstract class Table<T extends VO> {
+public abstract class Table<V> {
 
-  public abstract T getVO();
+  public abstract V getVO();
 }
