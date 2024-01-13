@@ -1,10 +1,10 @@
-package app.test.list;
+package app.test.assembly;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import app.test.list.List2.Tuple2;
+import app.test.assembly.List2.Tuple2;
 
 public class List2<A, B> implements Iterable<Tuple2<A, B>> {
 
@@ -19,20 +19,20 @@ public class List2<A, B> implements Iterable<Tuple2<A, B>> {
     return this.list.iterator();
   }
 
-  public static class Tuple2<X, Y> {
-    private X a;
-    private Y b;
+  public static class Tuple2<A, B> {
+    private A a;
+    private B b;
 
-    protected Tuple2(X a, Y b) {
+    protected Tuple2(A a, B b) {
       this.a = a;
       this.b = b;
     }
 
-    public X getA() {
+    public A get1() {
       return a;
     }
 
-    public Y getB() {
+    public B get2() {
       return b;
     }
 

@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 import org.hotrod.runtime.json.JSONObject;
 
-import app.test.Table;
+import app.test.base.Table;
 
 public class AbstractBinariesVO implements Serializable {
 

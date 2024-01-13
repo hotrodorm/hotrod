@@ -1,4 +1,4 @@
-package app.test;
+package app.test.base;
 
 public abstract class Table<V> {
 

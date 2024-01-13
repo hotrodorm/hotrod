@@ -2,7 +2,22 @@ package app.test;
 
 import java.util.List;
 
-import app.test.list.List2;
+import app.test.assembly.List2;
+import app.test.assembly.List2.Tuple2;
+import app.test.assembly.List3;
+import app.test.assembly.List3.Tuple3;
+import app.test.assembly.SQL;
+import app.test.assembly.Select1;
+import app.test.base.Table;
+import app.test.domain.AutoDAO;
+import app.test.domain.AutoTable;
+import app.test.domain.AutoVO;
+import app.test.domain.BusDAO;
+import app.test.domain.BusTable;
+import app.test.domain.BusVO;
+import app.test.domain.CarDAO;
+import app.test.domain.CarTable;
+import app.test.domain.CarVO;
 
 public class Test1 {
 
@@ -15,10 +30,28 @@ public class Test1 {
 
     AutoTable<AutoVO> t = AutoDAO.newTable();
     BusTable<BusVO> u = BusDAO.newTable();
+    CarTable<CarVO> v = CarDAO.newTable();
 
     List<AutoVO> rows = sql.selectFrom(t).execute();
 
+    for (AutoVO a : rows) {
+
+    }
+
     List2<AutoVO, BusVO> rows2 = sql.selectFrom(t).join(u).execute();
+
+    for (Tuple2<AutoVO, BusVO> r : rows2) {
+      AutoVO auto = r.get1();
+      BusVO bus = r.get2();
+    }
+
+    List3<AutoVO, BusVO, CarVO> rows3 = sql.selectFrom(t).join(u).join(v).execute();
+
+    for (Tuple3<AutoVO, BusVO, CarVO> r : rows3) {
+      AutoVO auto = r.get1();
+      BusVO bus = r.get2();
+      CarVO car = r.get3();
+    }
 
   }
 

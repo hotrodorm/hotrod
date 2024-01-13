@@ -1,4 +1,6 @@
-package app.test;
+package app.test.assembly;
+
+import app.test.base.Table;
 
 public class SQL {
 

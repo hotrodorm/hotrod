@@ -1,4 +1,4 @@
-package app.test;
+package app.test.domain;
 
 public class BusDAO {
 
