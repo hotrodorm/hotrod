@@ -1,0 +1,60 @@
+LiveSQL
+select() -> SelectColumnsPhase (extends IndividualSelectPhase)
+
+    from() -> SelectFromPhase (extends LockableSelectPhase)
+        join() -> SelectFromPhase*
+        where() -> SelectWherePhase (extends LockableSelectPhase)
+            groupBy() -> SelectGroupByPhase*
+            orderBy() -> SelectOrderByPhase*
+            offset() -> SelectOffsetPhase*
+            limit() -> SelectLimitPhase*
+        groupBy() -> SelectGroupByPhase (extends IndividualSelectPhase)
+            having() -> SelectHavingPhase (extends IndividualSelectPhase)
+                orderBy() -> SelectOrderByPhase*
+                offset() -> SelectOffsetPhase*
+                limit() -> SelectLimitPhase*
+            orderBy() -> SelectOrderByPhase*
+                offset() -> SelectOffsetPhase*
+                limit() -> SelectLimitPhase*
+            offset() -> SelectOffsetPhase*
+                limit() -> SelectLimitPhase*
+            limit() -> SelectLimitPhase*
+        orderBy() -> SelectOrderByPhase (extends IndividualSelectPhase)
+        offset() -> SelectOffsetPhase (extends IndividualSelectPhase)
+        limit() -> SelectLimitPhase (extends IndividualSelectPhase)
+        
+IndividualSelectPhase
+    union(), unionAll(), except(), exceptAll(), intersect(), intersectAll() -> CombinedSelectLinkingPhase
+        select() -> CombinedSelectColumnsPhase (extends CombinedSelectPhase)
+            from() -> CombinedSelectFromPhase (extends CombinedSelectPhase)
+                join() -> CombinedSelectFromPhase (extends CombinedSelectPhase)
+                    where() -> CombinedSelectWherePhase (extends CombinedSelectPhase)
+                        groupBy() -> CombinedSelectGroupByPhase*
+                    groupBy() -> CombinedSelectGroupByPhase (extends CombinedSelectPhase)
+                        having() -> CombinedSelectHavingPhase (extends CombinedSelectPhase)
+
+    union(), unionAll(), except(), exceptAll(), intersect(), intersectAll() -> CombinedSelectPhase
+        union(), unionAll(), except(), exceptAll(), intersect(), intersectAll() -> CombinedSelectLinkingPhase
+        orderBy() -> CombinedSelectOrderByPhase
+            offset -> CombinedSelectOffsetPhase*
+            limit -> CombinedSelectLimitPhase*
+        offset -> CombinedSelectOffsetPhase
+            limit -> CombinedSelectLimitPhase*
+        limit -> CombinedSelectLimitPhase
+        
+        
+
+selectDistinct() -> NonLockableSelectColumnsPhase
+selectScalar() -> SelectExpression...
+subquery() -> SubqueryColumnsPhase
+cte() -> CTE
+cte() -> CTEHeaderPhase
+recursiveCTE -> RecursiveCTE
+with() -> SelectCTEPhase
+
+
+
+
+
+
+

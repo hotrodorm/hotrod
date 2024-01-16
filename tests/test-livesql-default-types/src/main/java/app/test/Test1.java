@@ -32,12 +32,15 @@ public class Test1 {
     BusTable<BusVO> u = BusDAO.newTable();
     CarTable<CarVO> v = CarDAO.newTable();
 
+    // One entity
+    
     List<AutoVO> rows = sql.selectFrom(t).execute();
 
     for (AutoVO a : rows) {
-
     }
 
+    // Two entities
+    
     List2<AutoVO, BusVO> rows2 = sql.selectFrom(t).join(u).execute();
 
     for (Tuple2<AutoVO, BusVO> r : rows2) {
@@ -45,6 +48,8 @@ public class Test1 {
       BusVO bus = r.get2();
     }
 
+    // Three entities
+    
     List3<AutoVO, BusVO, CarVO> rows3 = sql.selectFrom(t).join(u).join(v).execute();
 
     for (Tuple3<AutoVO, BusVO, CarVO> r : rows3) {
