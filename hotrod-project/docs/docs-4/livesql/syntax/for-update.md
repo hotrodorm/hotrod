@@ -25,6 +25,16 @@ the rows to be released by the query that is holding them.
 
 ## Example
 
+This example implements Pessimistic Locking on the table ACCOUNT defined as:
+
+```sql
+create table account (
+  id int primary key,
+  acc_num varchar(16),
+  balance int
+);
+```
+
 The following method debits the amount of $1000 from account #6704, only if the account balance
 is at least $1500 and validations in other tables are successful:
 
