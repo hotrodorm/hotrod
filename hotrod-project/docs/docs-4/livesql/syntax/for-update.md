@@ -46,7 +46,7 @@ public void debit() {
   
   Account account = this.accountDAO
     .select(a, a.id.eq(6704))
-    .forUpdate() // Obtain a lock in the selected row
+    .forUpdate() // Obtains a lock in the selected row(s)
     .executeOne();
   
   if (account == null) throw new RuntimeException("Account not found");
