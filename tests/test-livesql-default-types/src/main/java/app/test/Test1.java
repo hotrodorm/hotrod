@@ -2,13 +2,11 @@ package app.test;
 
 import java.util.List;
 
-import app.test.assembly.List2;
-import app.test.assembly.List2.Tuple2;
-import app.test.assembly.List3;
-import app.test.assembly.List3.Tuple3;
 import app.test.assembly.SQL;
-import app.test.assembly.Select1;
-import app.test.base.Table;
+import app.test.assembly.Tuple1;
+import app.test.assembly.Tuple2;
+import app.test.assembly.Tuple3;
+import app.test.assembly.UnboundColumns;
 import app.test.domain.AutoDAO;
 import app.test.domain.AutoTable;
 import app.test.domain.AutoVO;
@@ -32,59 +30,36 @@ public class Test1 {
     BusTable<BusVO> u = BusDAO.newTable();
     CarTable<CarVO> v = CarDAO.newTable();
 
-    // One entity
-    
-    List<AutoVO> rows = sql.selectFrom(t).execute();
+    // Una entidad
 
-    for (AutoVO a : rows) {
+    List<Tuple1<AutoVO>> rows = sql.select().from(t).entities().execute();
+
+    for (Tuple1<AutoVO> r : rows) {
+      AutoVO auto = r.get(AutoVO.class);
+      UnboundColumns unboundCols = r.getUnboundColumns();
     }
 
-    // Two entities
-    
-    List2<AutoVO, BusVO> rows2 = sql.selectFrom(t).join(u).execute();
+    // Dos entidades
+
+    List<Tuple2<AutoVO, BusVO>> rows2 = sql.select().from(t).join(u).entities().execute();
 
     for (Tuple2<AutoVO, BusVO> r : rows2) {
-      AutoVO auto = r.get1();
-      BusVO bus = r.get2();
+      AutoVO auto = r.get(AutoVO.class);
+      BusVO bus = r.get(BusVO.class);
+      UnboundColumns unboundCols = r.getUnboundColumns();
     }
 
-    // Three entities
-    
-    List3<AutoVO, BusVO, CarVO> rows3 = sql.selectFrom(t).join(u).join(v).execute();
+    // Tres entidades
+
+    List<Tuple3<AutoVO, BusVO, CarVO>> rows3 = sql.select().from(t).join(u).join(v).entities().execute();
 
     for (Tuple3<AutoVO, BusVO, CarVO> r : rows3) {
-      AutoVO auto = r.get1();
-      BusVO bus = r.get2();
-      CarVO car = r.get3();
+      AutoVO auto = r.get(AutoVO.class);
+      BusVO bus = r.get(BusVO.class);
+      CarVO car = r.get(CarVO.class);
+      UnboundColumns unboundCols = r.getUnboundColumns();
     }
 
   }
-
-//  private static <T extends Table<VO>, V extends VO> Select1<T, V> select(T a, V v) {
-//    return new Select1<T, V>(a, v);
-//  }
-
-//  private static <T extends Table<VO>, V extends VO> Select1<T, V> select(T a, V v) {
-//    return new Select1<T, V>(a,(V) a.getVO());
-//  }
-
-//  private static <V extends VO, T extends Table<V>> Select1<V, T> select(T t) {
-//    return new Select1<V, T>(t, t.getVO());
-//  }
-
-  private static <T extends Table<V>, V> Select1<V> from(T t) {
-    V v = t.getVO();
-    return new Select1<V>(t, v);
-//    return null;
-  }
-
-//  private static <T extends Table<V>, V extends VO> Select1<V> from(T t) {
-//    V v = t.getVO();
-//    Picker<V> p = new Picker<V>(t);
-//    V v2 = p.first();
-//    
-//    return p.first();
-////    return null;
-//  }
 
 }
