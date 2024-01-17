@@ -25,27 +25,28 @@ the rows to be released by the query that is holding them.
 
 ## Example
 
-The following method debits the amount of $1000 from an account, only if the account balance is at least $1500 and validations
-in other tables are successful:
+The following method debits the amount of $1000 from account #6704, only if the account balance
+is at least $1500 and validations in other tables are successful:
 
 ```java
 @Transactional
-public void debit(Integer accountId) {
-
+public void debit() {
+  
   AccountTable a = AccountDAO.newTable("a");
-
-  Account acct = this.accountDAO
-    .select(a, a.id.eq(accountId))
-    .forUpdate()
+  
+  Account account = this.accountDAO
+    .select(a, a.id.eq(6704))
+    .forUpdate() // Obtain a lock in the selected row
     .executeOne();
-    
-  if (acct == null) throw new RuntimeException("Account not found");
-  if (acct.getBalance() < 1500) throw new RuntimeException("Insufficient funds");
+  
+  if (account == null) throw new RuntimeException("Account not found");
+  if (account.getBalance() < 1500) throw new RuntimeException("Insufficient funds");
   
   // perform validations in other tables...
-
+  
   sql.update(a)
      .set(a.balance, a.balance.minus(1000))
+     .where(a.id.eq(6704));
      .execute();
 }
 ```
@@ -136,7 +137,7 @@ that could reduce application concurrency or performance.
 - Second, for higher concurrency it may become impossible to obtain a lock on one or more rows, and this
 would lead to SELECT ... FOR UPDATE timeouts, that the application will need to deal with gracefully.
 - Also, some databases may not implement row-level locking at all, or could implement it in a less
-desirable way. For example, Sybase ASE or HyperSQL do not implement row-level locking; SQL Sever, on
+desirable way. For example, Sybase ASE or HyperSQL do not implement row-level locking; SQL Server, on
 the other hand, does implement it but it ends up locking entire disk pages instead of single rows,
 locking much more data than intended, and that could lead to higher chances of SELECT timeouts.
 
@@ -147,7 +148,7 @@ The following table shows which databases do support the FOR UPDATE clause. The 
 from database to database, but not the functionality of it.
 
 | Database   | Supports FOR UPDATE |
-| ---------- | :--------: |  
+| ---------- | :--------: |
 | Oracle     | Yes        |
 | DB2        | Yes        |
 | PostgreSQL | Yes        |
@@ -157,13 +158,14 @@ from database to database, but not the functionality of it.
 | Sybase ASE | --         |
 | H2         | Yes        |
 | HyperSQL   | --         |
-| Derby      | --         | 
+| Derby      | --         |
 
-**Note**: Other extra features related to locking such as FOR SHARE, WAIT, SKIP LOCKED, and table/column narrowing are
+**Notes**:
+
+- Other extra features related to locking such as FOR SHARE, WAIT, SKIP LOCKED, and table/column narrowing are
 not implemented in LiveSQL, since they represent more exotic uses of locking and don't add too much 
 value to normal usage of locking.
-
-**Note**: Because of the internals of the SQL Server engine, some versions of this database may lock entire data pages
+- Because of the internals of the SQL Server engine, some versions of this database may lock entire data pages
 rather than single rows. Use locks with caution in this database.
 
  

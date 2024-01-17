@@ -73,7 +73,7 @@ low-to-medium expected concurrency.
 The following example will use strategy #1, with an extra column called `row_version`:
 
 ```sql
-create table bank_account (
+create table account (
   id int primary key,
   acc_num varchar(16),
   balance int,
@@ -81,29 +81,31 @@ create table bank_account (
 );
 ```
 
-The application will first read the row for an account (e.g. 6704):
+The following example debits the amount of $1000 from account #6704, only if the account balance
+is at least $1500 and validations in other tables are successful:
 
 ```java
-  BankAccountTable a = BankAccountDAO.newTable("a");
-  BankAccount account = sql.select().from(a).where(a.id.eq(6704)).executeOne();
+  AccountTable a = AccountDAO.newTable("a");
+  
+  Account account = sql.select()
+    .from(a)
+    .where(a.id.eq(6704))
+    .executeOne();
+  
   if (account == null) throw new RuntimeException("Account not found");
-```
-
-The application will then compute some new values according to some business logic (e.g. add $100 to the balance):
-
-```java
-  int newBalance = account.getBalance() + 100;
-```
-
-Finally, the application will try to update the row:
-
-```java
+  if (account.getBalance() < 1500) throw new RuntimeException("Insufficient funds");
+  
+  // perform validations in other tables...
+  
   int count = sql.update(a)
-                 .set(a.balance, newBalance)
+                 .set(a.balance, a.getBalance().minus(1000))
                  .set(a.rowVersion, a.rowVersion.plus(1))
                  .where(a.id.eq(6704).and(a.rowVersion.eq(account.getRowVersion())));
   if (count == 0) throw new RuntimeException("Could not update account -- concurrent changes detected.");
 ```
+
+Note that the example does not need to be enclosed in a transaction to work correctly. There's no
+need to annotate the method with the `@Transactional` annotation.
 
 The `count` tell us how many rows were updated, and that tells us if the row was untouched or had any changes in it.
 If the count is 1 then the row had no changes and the UPDATE was successful; if the count was zero, then the
