@@ -70,14 +70,14 @@ low-to-medium expected concurrency.
 
 ## Example
 
-The following example will use strategy #1, with an extra column called `row_version`:
+The following example will use strategy #1 of Optimistic Locking, by adding an extra column called `row_version` to the table ACCOUNT:
 
 ```sql
 create table account (
   id int primary key,
   acc_num varchar(16),
   balance int,
-  row_version int
+  row_version int -- extra column to implement Optimistic Locking
 );
 ```
 
@@ -87,9 +87,8 @@ is at least $1500 and validations in other tables are successful:
 ```java
   AccountTable a = AccountDAO.newTable("a");
   
-  Account account = sql.select()
-    .from(a)
-    .where(a.id.eq(6704))
+  Account account = this.accountDAO
+    .select(a, a.id.eq(6704))
     .executeOne();
   
   if (account == null) throw new RuntimeException("Account not found");
@@ -107,9 +106,10 @@ is at least $1500 and validations in other tables are successful:
 Note that the example does not need to be enclosed in a transaction to work correctly. There's no
 need to annotate the method with the `@Transactional` annotation.
 
-The `count` tell us how many rows were updated, and that tells us if the row was untouched or had any changes in it.
-If the count is 1 then the row had no changes and the UPDATE was successful; if the count was zero, then the
-row suffered some changes in the meantime, and the UPDATE was not successful.
+The `count` tell us how many rows were updated, and that tells us if the row was untouched or had any changes in it:
+
+- If the count is one, then the row had no changes and the UPDATE was successful.
+- If the count is zero, then the row suffered some changes in the meantime, and the UPDATE was not successful.
 
 
 ## Conclusion
