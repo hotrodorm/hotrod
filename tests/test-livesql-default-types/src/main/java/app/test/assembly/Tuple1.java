@@ -1,5 +1,7 @@
 package app.test.assembly;
 
+import java.util.Map;
+
 public class Tuple1<A> {
   private A a;
 
@@ -19,7 +21,7 @@ public class Tuple1<A> {
     return null;
   }
 
-  public UnboundColumns getUnboundColumns() {
+  public Map<String, Object> getUnboundColumns() {
     return null;
   }
 

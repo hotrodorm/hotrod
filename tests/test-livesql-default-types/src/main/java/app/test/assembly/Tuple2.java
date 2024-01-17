@@ -1,5 +1,7 @@
 package app.test.assembly;
 
+import java.util.Map;
+
 public class Tuple2<A, B> {
   private A a;
   private B b;
@@ -13,6 +15,10 @@ public class Tuple2<A, B> {
     return a;
   }
 
+  public B get2() {
+    return b;
+  }
+
   public <T> T get(Class<T> t) {
     return get(t, 1);
   }
@@ -21,15 +27,7 @@ public class Tuple2<A, B> {
     return null;
   }
 
-  public B get2() {
-    return b;
-  }
-
-//  public B get(B b, int index) {
-//    return a;
-//  }
-
-  public UnboundColumns getUnboundColumns() {
+  public Map<String, Object> getUnboundColumns() {
     return null;
   }
 

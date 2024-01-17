@@ -1,12 +1,12 @@
 package app.test;
 
 import java.util.List;
+import java.util.Map;
 
 import app.test.assembly.SQL;
 import app.test.assembly.Tuple1;
 import app.test.assembly.Tuple2;
 import app.test.assembly.Tuple3;
-import app.test.assembly.UnboundColumns;
 import app.test.domain.AutoDAO;
 import app.test.domain.AutoTable;
 import app.test.domain.AutoVO;
@@ -36,7 +36,8 @@ public class Test1 {
 
     for (Tuple1<AutoVO> r : rows) {
       AutoVO auto = r.get(AutoVO.class);
-      UnboundColumns unboundCols = r.getUnboundColumns();
+      // UnboundColumns unboundCols = r.getUnboundColumns();
+      Map<String, Object> unboundCols = r.getUnboundColumns();
     }
 
     // Dos entidades
@@ -46,7 +47,8 @@ public class Test1 {
     for (Tuple2<AutoVO, BusVO> r : rows2) {
       AutoVO auto = r.get(AutoVO.class);
       BusVO bus = r.get(BusVO.class);
-      UnboundColumns unboundCols = r.getUnboundColumns();
+      // UnboundColumns unboundCols = r.getUnboundColumns();
+      Map<String, Object> unboundCols = r.getUnboundColumns();
     }
 
     // Tres entidades
@@ -57,7 +59,8 @@ public class Test1 {
       AutoVO auto = r.get(AutoVO.class);
       BusVO bus = r.get(BusVO.class);
       CarVO car = r.get(CarVO.class);
-      UnboundColumns unboundCols = r.getUnboundColumns();
+      // UnboundColumns unboundCols = r.getUnboundColumns();
+      Map<String, Object> unboundCols = r.getUnboundColumns();
     }
 
   }
