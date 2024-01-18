@@ -39,7 +39,7 @@ defined by the SQL Standard.
 
 - **Common Table Expressions (CTEs)**: Common Table Expressions greatly simplify the reuse of table expressions by naming them in advance, and using them later. Plain and recursive CTEs are implemented.
 
-- **Lateral Joins**: Lateral joins are performant queries that resolve related seeks for the driving tables of the query. The inner and outer forms of lateral joins are implemented. Since not all database engines support them LiveSQL limits its use to specific engines and specific versions of them. In short, LiveSQL support lateral joins for the following databases:
+- **Lateral Joins**: Lateral joins are performant queries that resolve related seeks for the driving tables of the query. The inner and outer forms of lateral joins are implemented. Since not all database engines support them LiveSQL limits its use to specific engines and specific versions of them. In short, LiveSQL supports lateral joins for the following databases:
     - Oracle 12c1 or newer
     - DB2 LUW 10.5 or newer
     - PostgreSQL 9.3 or newer
