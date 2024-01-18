@@ -33,7 +33,7 @@ List<Row> rows = sql
     .execute();
 ```
 
-A more complex (purposedly concise for brevity) multi-level query with set algebra can take the form:
+A more complex multi-level query (purposedly concise for brevity) with set algebra can take the form:
 
 ```sql
 select 101 as n
