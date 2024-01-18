@@ -46,6 +46,14 @@ defined by the SQL Standard.
     - SQL Server 2014 or newer
     - MySQL 8.0.14 or newer
 
+
+### LiveSQL 4.2
+
+[Set Operators](./set-operators.md) enhance LiveSQL by giving the ability to combine multiple subqueries into a single
+one using the UNION, EXCEPT, and INTERSECT set operators. The multi-set variations UNION ALL,
+EXCEPT ALL, and INTERSECT ALL are also included with this enhancement.
+
+
 ### LiveSQL Subqueries Are Not Materialized
 
 Even though subqueries are used in a very similar way as tables and views, they are treated differently by LiveSQL. Since the structure of tables and views is retrieved from the database in advance, their column names and types are fully known by LiveSQL.
