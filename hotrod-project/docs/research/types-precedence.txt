@@ -1,0 +1,18 @@
+
+create table t (
+  reported_at TIMESTAMP WITH TIME ZONE -- e.g. Oracle
+);
+
+
+(1) CRUD Declared Column Type/Converter : java.time.OffSetDateTime | CRUD Highest Precedence
+                                                                   |
+(2) CRUD Type Solver                    : java.time.DateTime       | 
+                                                                   |
+(3) CRUD Default Type                   : java.sql.Timestamp       | CRUD Lowest Precedence
+
+(4) JDBC Driver Type                    : java.oracle.Timestamp    | LiveSQL
+
+(5) java.sql.Types                      : TIMESTAMP
+
+(6) Database Type                       : TIMESTAMP WITH TIME ZONE
+
