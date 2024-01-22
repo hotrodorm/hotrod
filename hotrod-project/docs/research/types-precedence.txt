@@ -9,7 +9,8 @@ create table t (
 (2) CRUD Type Solver                    : java.time.DateTime       | 
                                                                    |
 (3) CRUD Default Type                   : java.sql.Timestamp       | CRUD Lowest Precedence
-    ResultSet.getObject(n, class);
+    ResultSet.get<Type>(n); // Boolean, Integer, String
+    ResultSet.getObject(n, class); // OffsetDateTime.class
 
 (4) JDBC Driver Type                    : java.oracle.Timestamp    | LiveSQL
     ResultSet.getObject(n);
