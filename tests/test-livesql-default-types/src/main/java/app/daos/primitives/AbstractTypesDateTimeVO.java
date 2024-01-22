@@ -14,7 +14,7 @@ public class AbstractTypesDateTimeVO implements Serializable {
   protected java.lang.Integer id = null;
   protected java.util.Date dat1 = null;
   protected java.sql.Timestamp dat2 = null;
-  protected java.sql.Timestamp dat3 = null;
+  protected java.time.OffsetDateTime dat3 = null;
   protected java.sql.Timestamp dat4 = null;
 
   // getters & setters
@@ -43,11 +43,11 @@ public class AbstractTypesDateTimeVO implements Serializable {
     this.dat2 = dat2;
   }
 
-  public java.sql.Timestamp getDat3() {
+  public java.time.OffsetDateTime getDat3() {
     return this.dat3;
   }
 
-  public void setDat3(final java.sql.Timestamp dat3) {
+  public void setDat3(final java.time.OffsetDateTime dat3) {
     this.dat3 = dat3;
   }
 

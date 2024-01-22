@@ -6,10 +6,21 @@
     </mybatis-spring>
   </generators>
 
+  <converter name="odtconverter"
+    java-raw-type="java.lang.Object"
+    java-type="java.time.OffsetDateTime"
+    class="app.OffSetDateTimeConverter"
+  />
+
   <table name="invoice" />
   <table name="branch" />
 
   <table name="numbers" />
-  <table name="types_date_time" />
+  <table name="types_date_time">
+    <column name="DAT3" java-type="java.time.OffsetDateTime" jdbc-type="TIMESTAMP" />
+<!--
+    <column name="dat3" converter="odtconverter" />
+-->
+  </table>
 
 </hotrod>

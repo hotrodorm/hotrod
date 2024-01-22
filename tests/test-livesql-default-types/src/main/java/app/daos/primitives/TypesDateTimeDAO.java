@@ -57,7 +57,7 @@ public class TypesDateTimeDAO implements Serializable, ApplicationContextAware {
   private static final long serialVersionUID = 1L;
 
   @Autowired
-  private SqlSession sqlSession;
+  public SqlSession sqlSession;
 
   @Autowired
   private LiveSQLDialect liveSQLDialect;
@@ -100,7 +100,7 @@ public class TypesDateTimeDAO implements Serializable, ApplicationContextAware {
     mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
     mo.setDat1((java.util.Date) m.get(p + "dat1" + s));
     mo.setDat2((java.sql.Timestamp) m.get(p + "dat2" + s));
-    mo.setDat3((java.sql.Timestamp) m.get(p + "dat3" + s));
+    mo.setDat3((java.time.OffsetDateTime) m.get(p + "dat3" + s));
     mo.setDat4((java.sql.Timestamp) m.get(p + "dat4" + s));
     return mo;
   }
@@ -266,7 +266,7 @@ public class TypesDateTimeDAO implements Serializable, ApplicationContextAware {
     public NumberColumn id;
     public DateTimeColumn dat1;
     public DateTimeColumn dat2;
-    public DateTimeColumn dat3;
+    public ObjectColumn dat3;
     public DateTimeColumn dat4;
 
     // Getters
@@ -291,13 +291,13 @@ public class TypesDateTimeDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.id = new NumberColumn(this, "ID", "id", "NUMBER", 9, 0);
+      this.id = new NumberColumn(this, "ID", "id", "NUMBER", 6, 0);
       super.columns.add(this.id);
       this.dat1 = new DateTimeColumn(this, "DAT1", "dat1", "DATE", 7, null);
       super.columns.add(this.dat1);
       this.dat2 = new DateTimeColumn(this, "DAT2", "dat2", "TIMESTAMP(6)", 11, 6);
       super.columns.add(this.dat2);
-      this.dat3 = new DateTimeColumn(this, "DAT3", "dat3", "TIMESTAMP(6) WITH TIME ZONE", 13, 6);
+      this.dat3 = new ObjectColumn(this, "DAT3", "dat3", "TIMESTAMP(6) WITH TIME ZONE", 13, 6);
       super.columns.add(this.dat3);
       this.dat4 = new DateTimeColumn(this, "DAT4", "dat4", "TIMESTAMP(6) WITH LOCAL TIME ZONE", 11, 6);
       super.columns.add(this.dat4);

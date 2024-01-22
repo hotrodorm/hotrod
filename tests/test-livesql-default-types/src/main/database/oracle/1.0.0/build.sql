@@ -48,3 +48,18 @@ create table numbers (
   num22 int
 );
 
+create table types_date_time (
+  id number(6) primary key not null,
+  dat1 date,
+  dat2 timestamp,
+  dat3 timestamp with time zone,
+  dat4 timestamp with local time zone
+);
+
+insert into types_date_time (id, dat1, dat2, dat3, dat4) values (
+  1,
+  timestamp '2024-01-01 12:34:56',
+  timestamp '2024-01-01 12:34:56+03:00',
+  timestamp '2024-01-01 12:34:56+03:00',
+  timestamp '2024-01-01 12:34:56+03:00'
+);

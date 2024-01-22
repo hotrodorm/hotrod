@@ -1,12 +1,11 @@
 package app;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -15,7 +14,6 @@ import java.time.OffsetTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.livesql.LiveSQL;
@@ -27,13 +25,6 @@ import org.hotrod.runtime.livesql.queries.select.EntitySelect;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 import org.hotrod.runtime.spring.SpringBeanObjectFactory;
-import org.hotrod.torcs.QueryExecution;
-import org.hotrod.torcs.QueryExecutionObserver;
-import org.hotrod.torcs.Torcs;
-import org.hotrod.torcs.plan.PlanRetrieverFactory.UnsupportedTorcsDatabaseException;
-import org.hotrod.torcs.rankings.InitialQueriesRanking;
-import org.hotrod.torcs.rankings.LatestQueriesRanking;
-import org.hotrod.torcs.rankings.RankingEntry;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -48,6 +39,7 @@ import org.springframework.context.annotation.PropertySource;
 import app.daos.AccountVO;
 import app.daos.BranchVO;
 import app.daos.InvoiceVO;
+import app.daos.TypesDateTimeVO;
 import app.daos.primitives.AccountDAO;
 import app.daos.primitives.AccountDAO.AccountTable;
 import app.daos.primitives.BranchDAO;
@@ -86,13 +78,16 @@ public class App {
   private InvoiceDAO invoiceDAO;
 
   @Autowired
+  private TypesDateTimeDAO typesDateTimeDAO;
+
+  @Autowired
   private LiveSQL sql;
 
   @Autowired
   private BusinessLogic businessLogic;
 
-  @Autowired
-  private Torcs torcs;
+//  @Autowired
+//  private Torcs torcs;
 
 //  @Autowired
 //  private TorcsCTP torcsCTP;
@@ -135,7 +130,7 @@ public class App {
     return args -> {
       System.out.println("[ Starting example ]");
 
-      System.getProperties().setProperty("oracle.jdbc.J2EE13Compliant", "true");
+//      System.getProperties().setProperty("oracle.jdbc.J2EE13Compliant", "true");
 
 //      crud();
 //      join();
@@ -149,7 +144,7 @@ public class App {
     };
   }
 
-  private void livesql() throws SQLException, UnsupportedTorcsDatabaseException {
+  private void livesql() throws SQLException {
 //    for (Row r : this.sql.select(sql.val("abc").ascii().as("code")).execute()) {
 //      System.out.println("r=" + r);
 //    }
@@ -290,7 +285,7 @@ public class App {
     // and not is_vip
 
     DMLQuery q = sql.insert(b).select(sql.select(c.id.plus(sql.literal(10)), c.region, c.isVip).from(c)
-        .where(c.id.ge(sql.literal(4)).and(sql.not(c.isVip))));
+        .where(c.id.ge(sql.literal(4)).and(sql.not(c.isVip.eq("VIP")))));
     System.out.println("1. Update: " + q.getPreview());
     int rows = q.execute();
     System.out.println("updated rows=" + rows);
@@ -368,32 +363,23 @@ public class App {
     AccountTable a = AccountDAO.newTable("a");
     BranchTable b = BranchDAO.newTable("b");
 
-    Row r = this.sql
-        .select(
-          a.star().as(c -> "a:" + c.getProperty()), 
-          b.star().as(c -> "b:" + c.getProperty())
-        )
-        .from(b)
-        .join(a, a.branchId.eq(b.id))
-        .where(b.region.like("N%"))
-        .orderBy(b.id.desc())
-        .limit(1)
-        .executeOne();
+    Row r = this.sql.select(a.star().as(c -> "a:" + c.getProperty()), b.star().as(c -> "b:" + c.getProperty())).from(b)
+        .join(a, a.branchId.eq(b.id)).where(b.region.like("N%")).orderBy(b.id.desc()).limit(1).executeOne();
 
     AccountVO account = this.accountDAO.parseRow(r, "a:");
     BranchVO branch = this.branchDAO.parseRow(r, "b:");
-    
+
     System.out.println("account=" + account + "\nbranch=" + branch);
   }
 
-  private void liveSQLExamples() throws SQLException, UnsupportedTorcsDatabaseException {
+  private void liveSQLExamples() throws SQLException {
 
 //    livesql1();
 //    livesql2();
 //    livesql3();
 //    livesql4();
-//    dates();
-    converter();
+    dates();
+//    converter();
 //    forUpdate();
 
     // Set Operators
@@ -421,7 +407,7 @@ public class App {
   @Autowired
   private SqlSession sqlSession;
 
-  private void dates() {
+  private void dates() throws SQLException {
     TypesDateTimeTable t = TypesDateTimeDAO.newTable("t");
 
 //    System.out.println("ENV PROPERTIES");
@@ -431,29 +417,40 @@ public class App {
 //      System.out.println(" - " + name + "=" + value);
 //    }
 
-    System.out.println("ARGUMENTS");
-    RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
-    List<String> arguments = runtimeMxBean.getInputArguments();
-    for (String a : arguments) {
-      System.out.println(" - " + a);
-    }
-    System.out.println("------------------------------------");
+//    System.out.println("ARGUMENTS");
+//    RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
+//    List<String> arguments = runtimeMxBean.getInputArguments();
+//    for (String a : arguments) {
+//      System.out.println(" - " + a);
+//    }
+//    System.out.println("------------------------------------");
 
 //    org.apache.ibatis.session.Configuration conf = this.sqlSession.getConfiguration();
 //    conf.getEnvironment()
 
-    List<Row> rows = this.sql.select().from(t).execute();
+    List<TypesDateTimeVO> types = this.typesDateTimeDAO.select(new TypesDateTimeVO());
 
-    System.out.println("rows:");
-
-    for (Row r : rows) {
-      System.out.println("Row:");
-      println("dat1 (DATE)", r.get("dat1"));
-      println("dat2 (TIMESTAMP)", r.get("dat2"));
-      println("dat3 (TIMESTAMP WITH TIME ZONE)", r.get("dat3"));
-      println("dat4 (TIMESTAMP WITH LOCAL TIME ZONE)", r.get("dat3"));
+    for (TypesDateTimeVO tp : types) {
+      System.out.println("t:" + tp);
     }
+
+//    Map<String, Object> parameters = new HashMap<>();
+//    parameters.
+//    List<Object> list = this.typesDateTimeDAO.sqlSession.selectList("", parameters);
+
+//    List<Row> rows = this.sql.select().from(t).execute();
+//
+//    System.out.println("rows:");
+//
+//    for (Row r : rows) {
+//      System.out.println("Row:");
+//      println("dat1 (DATE)", r.get("dat1"));
+//      println("dat2 (TIMESTAMP)", r.get("dat2"));
+//      println("dat3 (TIMESTAMP WITH TIME ZONE)", r.get("dat3"));
+//      println("dat4 (TIMESTAMP WITH LOCAL TIME ZONE)", r.get("dat3"));
+//    }
   }
+
 
   private void forUpdate() {
     this.businessLogic.forUpdate();
@@ -600,7 +597,7 @@ public class App {
 
   // TODO: Nothing to do, just a marker.
 
-  private void torcs() throws SQLException, UnsupportedTorcsDatabaseException, IOException {
+  private void torcs() throws SQLException,  IOException {
 //  disableTorcs();
 //  enableTorcs();
 //  deactivateDefaultObserverTorcs();
@@ -613,168 +610,168 @@ public class App {
 //  addingAQueryLogger();
 //    getSlowestQueryExecutionPlan();
 
-    getSlowestCTPQueryExecutionPlan();
+//    getSlowestCTPQueryExecutionPlan();
   }
-
-  private void disableTorcs() {
-    // Torcs starts enabled by default
-    this.torcs.deactivate();
-  }
-
-  private void enableTorcs() {
-    this.torcs.activate();
-  }
-
-  private void deactivateDefaultObserverTorcs() {
-    // Torcs starts with one observer active (the Default Ranking)
-    this.torcs.getDefaultRanking().deactivate();
-  }
-
-  private void changeDefaultObserverSize() {
-    // Reduce the ranking size to 4 entries. The default size of the default ranking
-    // is 10 (that records the Top 10 slowest queries)
-    // Setting the size of the ranking automatically resets and empties it.
-    this.torcs.getDefaultRanking().setSize(4);
-  }
-
-  private void changeTorcsResetPeriodTo24Hours() {
-    // Changes the reset period of time (minutes). Upon reaching this period of
-    // time, all rankings and observers are reset/emptied. By default all Torcs
-    // observers are reset every 60 minutes.
-    this.torcs.setResetPeriodInMinutes(60 * 24);
-  }
-
-  private void addingAnInitialQueriesRankingToTorcs() {
-    // The following InitialQueriesRanking will keep the first 50 queries ran
-    InitialQueriesRanking iqr = new InitialQueriesRanking(50);
-    this.torcs.register(iqr);
-
-    // After some time the queries will be run the ranking will have recorded them
-    System.out.println("--- " + "Ranking: " + iqr.getTitle() + " Execution Order ---");
-    for (RankingEntry re : iqr.getEntries()) {
-      System.out.println(re);
-    }
-    System.out.println("--- End of Ranking ---");
-
-  }
-
-  private void addingALatestQueriesRankingToTorcs() {
-    // The following LatestQueriesRanking will keep the last 20 queries ran
-    LatestQueriesRanking lqr = new LatestQueriesRanking(20);
-    this.torcs.register(lqr);
-
-    // After some time the queries will be run the ranking will have recorded them
-    System.out.println("--- " + "Ranking: " + lqr.getTitle() + " Execution Order ---");
-    for (RankingEntry re : lqr.getEntries()) {
-      System.out.println(re);
-    }
-    System.out.println("--- End of Ranking ---");
-  }
-
-  private void getARankingByNonDefaultOrdering() {
-    InitialQueriesRanking iqr = new InitialQueriesRanking(50);
-    this.torcs.register(iqr);
-    // Get the ranking entries sorted by total impact/TET (total elapsed time)
-    System.out.println("--- " + "Ranking: " + iqr.getTitle() + " TET ---");
-    for (RankingEntry re : iqr.getRankingByTotalElapsedTime()) {
-      System.out.println(re);
-    }
-    System.out.println("--- End of Ranking ---");
-
-  }
-
-  private void saveARankingAsXLSX() {
-    String xlsxName = "ranking-by-max-response-time.xlsx";
-    try (OutputStream os = new FileOutputStream(new File(xlsxName))) {
-      torcs.getDefaultRanking().saveAsXLSX(os);
-      System.out.println("Ranking saved as: " + xlsxName);
-    } catch (IOException e) {
-      System.out.println("Could not save ranking as XLSX");
-      e.printStackTrace();
-    }
-  }
-
-  private void addingAQueryLogger() {
-    this.torcs.register(new QueryExecutionObserver() {
-
-      @Override
-      public String getTitle() {
-        return "Console Query Logger";
-      }
-
-      @Override
-      public void apply(final QueryExecution sample) {
-        System.out.println("[query] " + sample.getResponseTime() + " ms" + " (exception: "
-            + (sample.getException() == null ? "N/A" : sample.getException().getClass().getName()) + ")" + ": "
-            + QueryExecution.compactSQL(sample.getSQL()));
-      }
-
-      @Override
-      public void reset() {
-        // Nothing to do
-      }
-    });
-
-  }
-
-  private void getSlowestQueryExecutionPlan() throws SQLException, UnsupportedTorcsDatabaseException {
-
-    InvoiceTable i = InvoiceDAO.newTable("i");
-    BranchTable b = BranchDAO.newTable("b");
-
-    Random rand = new Random(1234);
-    for (int x = 0; x < 3; x++) { // run three times with different parameters
-      int minAmount = 100 + rand.nextInt(500);
-      sql.select() //
-          .from(i) //
-          .join(b, b.id.eq(i.branchId)) //
-          .where(b.region.eq("SOUTH").and(i.status.ne("UNPAID").and(i.amount.ge(minAmount)))) //
-          .orderBy(i.orderDate.desc()) //
-          .execute();
-    }
-
-    System.out.println("--- Torcs Ranking ---");
-    int pos = 1;
-    for (RankingEntry e : this.torcs.getDefaultRanking().getEntries()) {
-      System.out.println("#" + pos++ + " " + e);
-      String plan = this.torcs.getEstimatedExecutionPlan(e.getSlowestExecution());
-      System.out.println("Execution Plan:\n" + plan);
-    }
-    System.out.println("--- End of Torcs Ranking ---");
-
-  }
-
-  // TODO: Nothing to do, just a marker.
-
-  private void getSlowestCTPQueryExecutionPlan() throws SQLException, UnsupportedTorcsDatabaseException, IOException {
-
-    InvoiceTable i = InvoiceDAO.newTable("i");
-    BranchTable b = BranchDAO.newTable("b");
-
-    Random rand = new Random(1234);
-    for (int x = 0; x < 3; x++) { // run three times with different parameters
-      int minAmount = 100 + rand.nextInt(500);
-      sql.select() //
-          .from(i) //
-          .join(b, b.id.eq(i.branchId)) //
-          .where(b.region.eq("SOUTH").and(i.status.ne("UNPAID").and(i.amount.ge(minAmount)))) //
-          .orderBy(i.orderDate.desc()) //
-          .execute();
-    }
-
-    System.out.println("--- Torcs Ranking ---");
-    int pos = 1;
-    for (RankingEntry e : this.torcs.getDefaultRanking().getEntries()) {
-      System.out.println("#" + pos++ + " " + e);
-      String plan = this.torcs.getEstimatedExecutionPlan(e.getSlowestExecution(), 2);
-      System.out.println("Execution Plan:\n" + plan);
-//      this.torcsCTP.setSegmentSize(180);
-//      List<String> ctpPlan = this.torcsCTP.getEstimatedCTPExecutionPlan(e.getSlowestExecution());
-//      ctpPlan.stream().forEach(l -> System.out.println("CTP: " + l));
-    }
-    System.out.println("--- End of Torcs Ranking ---");
-
-  }
+//
+//  private void disableTorcs() {
+//    // Torcs starts enabled by default
+//    this.torcs.deactivate();
+//  }
+//
+//  private void enableTorcs() {
+//    this.torcs.activate();
+//  }
+//
+//  private void deactivateDefaultObserverTorcs() {
+//    // Torcs starts with one observer active (the Default Ranking)
+//    this.torcs.getDefaultRanking().deactivate();
+//  }
+//
+//  private void changeDefaultObserverSize() {
+//    // Reduce the ranking size to 4 entries. The default size of the default ranking
+//    // is 10 (that records the Top 10 slowest queries)
+//    // Setting the size of the ranking automatically resets and empties it.
+//    this.torcs.getDefaultRanking().setSize(4);
+//  }
+//
+//  private void changeTorcsResetPeriodTo24Hours() {
+//    // Changes the reset period of time (minutes). Upon reaching this period of
+//    // time, all rankings and observers are reset/emptied. By default all Torcs
+//    // observers are reset every 60 minutes.
+//    this.torcs.setResetPeriodInMinutes(60 * 24);
+//  }
+//
+//  private void addingAnInitialQueriesRankingToTorcs() {
+//    // The following InitialQueriesRanking will keep the first 50 queries ran
+//    InitialQueriesRanking iqr = new InitialQueriesRanking(50);
+//    this.torcs.register(iqr);
+//
+//    // After some time the queries will be run the ranking will have recorded them
+//    System.out.println("--- " + "Ranking: " + iqr.getTitle() + " Execution Order ---");
+//    for (RankingEntry re : iqr.getEntries()) {
+//      System.out.println(re);
+//    }
+//    System.out.println("--- End of Ranking ---");
+//
+//  }
+//
+//  private void addingALatestQueriesRankingToTorcs() {
+//    // The following LatestQueriesRanking will keep the last 20 queries ran
+//    LatestQueriesRanking lqr = new LatestQueriesRanking(20);
+//    this.torcs.register(lqr);
+//
+//    // After some time the queries will be run the ranking will have recorded them
+//    System.out.println("--- " + "Ranking: " + lqr.getTitle() + " Execution Order ---");
+//    for (RankingEntry re : lqr.getEntries()) {
+//      System.out.println(re);
+//    }
+//    System.out.println("--- End of Ranking ---");
+//  }
+//
+//  private void getARankingByNonDefaultOrdering() {
+//    InitialQueriesRanking iqr = new InitialQueriesRanking(50);
+//    this.torcs.register(iqr);
+//    // Get the ranking entries sorted by total impact/TET (total elapsed time)
+//    System.out.println("--- " + "Ranking: " + iqr.getTitle() + " TET ---");
+//    for (RankingEntry re : iqr.getRankingByTotalElapsedTime()) {
+//      System.out.println(re);
+//    }
+//    System.out.println("--- End of Ranking ---");
+//
+//  }
+//
+//  private void saveARankingAsXLSX() {
+//    String xlsxName = "ranking-by-max-response-time.xlsx";
+//    try (OutputStream os = new FileOutputStream(new File(xlsxName))) {
+//      torcs.getDefaultRanking().saveAsXLSX(os);
+//      System.out.println("Ranking saved as: " + xlsxName);
+//    } catch (IOException e) {
+//      System.out.println("Could not save ranking as XLSX");
+//      e.printStackTrace();
+//    }
+//  }
+//
+//  private void addingAQueryLogger() {
+//    this.torcs.register(new QueryExecutionObserver() {
+//
+//      @Override
+//      public String getTitle() {
+//        return "Console Query Logger";
+//      }
+//
+//      @Override
+//      public void apply(final QueryExecution sample) {
+//        System.out.println("[query] " + sample.getResponseTime() + " ms" + " (exception: "
+//            + (sample.getException() == null ? "N/A" : sample.getException().getClass().getName()) + ")" + ": "
+//            + QueryExecution.compactSQL(sample.getSQL()));
+//      }
+//
+//      @Override
+//      public void reset() {
+//        // Nothing to do
+//      }
+//    });
+//
+//  }
+//
+//  private void getSlowestQueryExecutionPlan() throws SQLException, UnsupportedTorcsDatabaseException {
+//
+//    InvoiceTable i = InvoiceDAO.newTable("i");
+//    BranchTable b = BranchDAO.newTable("b");
+//
+//    Random rand = new Random(1234);
+//    for (int x = 0; x < 3; x++) { // run three times with different parameters
+//      int minAmount = 100 + rand.nextInt(500);
+//      sql.select() //
+//          .from(i) //
+//          .join(b, b.id.eq(i.branchId)) //
+//          .where(b.region.eq("SOUTH").and(i.status.ne("UNPAID").and(i.amount.ge(minAmount)))) //
+//          .orderBy(i.orderDate.desc()) //
+//          .execute();
+//    }
+//
+//    System.out.println("--- Torcs Ranking ---");
+//    int pos = 1;
+//    for (RankingEntry e : this.torcs.getDefaultRanking().getEntries()) {
+//      System.out.println("#" + pos++ + " " + e);
+//      String plan = this.torcs.getEstimatedExecutionPlan(e.getSlowestExecution());
+//      System.out.println("Execution Plan:\n" + plan);
+//    }
+//    System.out.println("--- End of Torcs Ranking ---");
+//
+//  }
+//
+//  // TODO: Nothing to do, just a marker.
+//
+//  private void getSlowestCTPQueryExecutionPlan() throws SQLException, UnsupportedTorcsDatabaseException, IOException {
+//
+//    InvoiceTable i = InvoiceDAO.newTable("i");
+//    BranchTable b = BranchDAO.newTable("b");
+//
+//    Random rand = new Random(1234);
+//    for (int x = 0; x < 3; x++) { // run three times with different parameters
+//      int minAmount = 100 + rand.nextInt(500);
+//      sql.select() //
+//          .from(i) //
+//          .join(b, b.id.eq(i.branchId)) //
+//          .where(b.region.eq("SOUTH").and(i.status.ne("UNPAID").and(i.amount.ge(minAmount)))) //
+//          .orderBy(i.orderDate.desc()) //
+//          .execute();
+//    }
+//
+//    System.out.println("--- Torcs Ranking ---");
+//    int pos = 1;
+//    for (RankingEntry e : this.torcs.getDefaultRanking().getEntries()) {
+//      System.out.println("#" + pos++ + " " + e);
+//      String plan = this.torcs.getEstimatedExecutionPlan(e.getSlowestExecution(), 2);
+//      System.out.println("Execution Plan:\n" + plan);
+////      this.torcsCTP.setSegmentSize(180);
+////      List<String> ctpPlan = this.torcsCTP.getEstimatedCTPExecutionPlan(e.getSlowestExecution());
+////      ctpPlan.stream().forEach(l -> System.out.println("CTP: " + l));
+//    }
+//    System.out.println("--- End of Torcs Ranking ---");
+//
+//  }
 
   private Select<Row> buildRecursiveCTEQuery(final int loops) {
     RecursiveCTE n = sql.recursiveCTE("n", "X");
