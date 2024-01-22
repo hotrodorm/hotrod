@@ -4,18 +4,19 @@ create table t (
 );
 
 
-(1) CRUD Declared Column Type/Converter : java.time.OffSetDateTime | CRUD Highest Precedence
-                                                                   |
-(2) CRUD Type Solver                    : java.time.DateTime       | 
-                                                                   |
-(3) CRUD Default Type                   : java.sql.Timestamp       | CRUD Lowest Precedence
-    ResultSet.get<Type>(n); // Boolean, Integer, String
-    ResultSet.getObject(n, class); // OffsetDateTime.class
+(1) CRUD Declared Column Type : java.time.OffSetDateTime | CRUD Highest Precedence
+(2) CRUD Type Solver          : java.time.DateTime       | 
+(3) CRUD Default Type         : java.sql.Timestamp       | CRUD Lowest Precedence
+    ResultSet.getObject(n, OffsetDateTime); // OffsetDateTime.class
+    ResultSet.get<Type>(n);                 // Boolean, Integer, String (or other specific getter)
 
-(4) JDBC Driver Type                    : java.oracle.Timestamp    | LiveSQL
-    ResultSet.getObject(n);
+(4) CRUD Converter
+    ResultSet.getObject(n); // oracle.sql.TIMESTAMPTZ
 
-(5) java.sql.Types                      : TIMESTAMP
+(5) JDBC Driver Type          : java.oracle.Timestamp    | LiveSQL
+    ResultSet.getObject(n); // oracle.sql.TIMESTAMPTZ
 
-(6) Database Type                       : TIMESTAMP WITH TIME ZONE
+(6) java.sql.Types            : TIMESTAMP
+
+(7) Database Type             : TIMESTAMP WITH TIME ZONE
 
