@@ -9,8 +9,10 @@ create table t (
 (2) CRUD Type Solver                    : java.time.DateTime       | 
                                                                    |
 (3) CRUD Default Type                   : java.sql.Timestamp       | CRUD Lowest Precedence
+    ResultSet.getObject(n, class);
 
 (4) JDBC Driver Type                    : java.oracle.Timestamp    | LiveSQL
+    ResultSet.getObject(n);
 
 (5) java.sql.Types                      : TIMESTAMP
 

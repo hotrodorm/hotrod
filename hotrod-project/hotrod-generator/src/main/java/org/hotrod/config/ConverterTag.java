@@ -178,6 +178,9 @@ public class ConverterTag extends AbstractConfigurationTag {
     ACCESSORS.put("java.sql.RowId", new Accessors("getRowId", "setRowId"));
     ACCESSORS.put("java.sql.Ref", new Accessors("getRef", "setRef"));
 
+    ACCESSORS.put("Object", new Accessors("getObject", "setObject"));
+    ACCESSORS.put("java.lang.Object", new Accessors("getObject", "setObject"));
+
   }
 
   // Getters
