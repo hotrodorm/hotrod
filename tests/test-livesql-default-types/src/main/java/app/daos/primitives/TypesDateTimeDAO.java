@@ -57,7 +57,7 @@ public class TypesDateTimeDAO implements Serializable, ApplicationContextAware {
   private static final long serialVersionUID = 1L;
 
   @Autowired
-  public SqlSession sqlSession;
+  private SqlSession sqlSession;
 
   @Autowired
   private LiveSQLDialect liveSQLDialect;
@@ -291,7 +291,7 @@ public class TypesDateTimeDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.id = new NumberColumn(this, "ID", "id", "NUMBER", 6, 0);
+      this.id = new NumberColumn(this, "ID", "id", "NUMBER", 9, 0);
       super.columns.add(this.id);
       this.dat1 = new DateTimeColumn(this, "DAT1", "dat1", "DATE", 7, null);
       super.columns.add(this.dat1);

@@ -1,11 +1,7 @@
 package app;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -14,8 +10,9 @@ import java.time.OffsetTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
-import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.queries.DMLQuery;
@@ -52,8 +49,12 @@ import app.daos.primitives.PaymentDAO;
 import app.daos.primitives.PaymentDAO.PaymentTable;
 import app.daos.primitives.ProductDAO;
 import app.daos.primitives.ProductDAO.ProductTable;
+import app.daos.primitives.TypesBinaryDAO;
+import app.daos.primitives.TypesCharDAO;
 import app.daos.primitives.TypesDateTimeDAO;
 import app.daos.primitives.TypesDateTimeDAO.TypesDateTimeTable;
+import app.daos.primitives.TypesNumericDAO;
+import app.daos.primitives.TypesOtherDAO;
 
 @Configuration
 @SpringBootApplication
@@ -378,7 +379,8 @@ public class App {
 //    livesql2();
 //    livesql3();
 //    livesql4();
-    dates();
+//    dates();
+    types();
 //    converter();
 //    forUpdate();
 
@@ -402,10 +404,54 @@ public class App {
   }
 
   @Autowired
+  private TypesNumericDAO tn;
+
+  @Autowired
+  private TypesCharDAO tc;
+
+  @Autowired
   private TypesDateTimeDAO td;
 
   @Autowired
-  private SqlSession sqlSession;
+  private TypesBinaryDAO tb;
+
+  @Autowired
+  private TypesOtherDAO to;
+
+  private void types() throws SQLException {
+//    System.out.println("\nTYPES_NUMERIC");
+//    print(this.sql.select().from(TypesNumericDAO.newTable()).execute());
+//
+//    System.out.println("\nTYPES_CHAR");
+//    print(this.sql.select().from(TypesCharDAO.newTable()).execute());
+
+    System.out.println("\nTYPES_DATE_TIME");
+//    print(
+List<?> li=        this.sql.select().from(TypesDateTimeDAO.newTable()).execute();
+for (Object obj : li) {
+  System.out.println("obj: "+obj.getClass().getName()); 
+  TypesDateTimeVO vo = (TypesDateTimeVO) obj;
+  System.out.println("vo: "+vo);   
+}
+
+//        );
+
+//    System.out.println("\nTYPES_BINARY");
+//    print(this.sql.select().from(TypesBinaryDAO.newTable()).execute());
+//
+//    System.out.println("\nTYPES_OTHER");
+//    print(this.sql.select().from(TypesOtherDAO.newTable()).execute());
+}
+
+  private void print(List<Row> rows) {
+    for (Row r : rows) {
+      Set<String> ko = new TreeSet<>(r.keySet());
+      for (String k : ko) {
+        Object v = r.get(k);
+        System.out.println(k + "=" + v + " (" + (v == null ? "null" : v.getClass().getName()) + ")");
+      }
+    }
+  }
 
   private void dates() throws SQLException {
     TypesDateTimeTable t = TypesDateTimeDAO.newTable("t");
@@ -450,7 +496,6 @@ public class App {
 //      println("dat4 (TIMESTAMP WITH LOCAL TIME ZONE)", r.get("dat3"));
 //    }
   }
-
 
   private void forUpdate() {
     this.businessLogic.forUpdate();
@@ -597,7 +642,7 @@ public class App {
 
   // TODO: Nothing to do, just a marker.
 
-  private void torcs() throws SQLException,  IOException {
+  private void torcs() throws SQLException, IOException {
 //  disableTorcs();
 //  enableTorcs();
 //  deactivateDefaultObserverTorcs();

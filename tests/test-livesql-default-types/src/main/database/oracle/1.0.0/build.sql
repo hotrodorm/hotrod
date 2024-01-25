@@ -1,12 +1,12 @@
 create table branch (
   id number(6) primary key not null,
-  "NaMe" varchar2(20),
+  name varchar2(20),
   region varchar2(10),
   is_vip varchar2(1)
 );
 
-insert into branch (id, "NaMe", region) values (101, 'South', 'South');
-insert into branch (id, "NaMe", region) values (102, 'East', 'East');
+insert into branch (id, name, region) values (101, 'South', 'South');
+insert into branch (id, name, region) values (102, 'East', 'East');
 
 create table invoice (
   id number(6) primary key not null,
@@ -23,10 +23,12 @@ insert into invoice (id, amount, branch_id, account_id, status, unpaid_balance) 
 insert into invoice (id, amount, branch_id, account_id, status, unpaid_balance) values (11, 2500, 101, 15, 'UNPAID', 200);
 insert into invoice (id, amount, branch_id, account_id, status, unpaid_balance) values (12, 4000, 102, 15, 'LATE', 200);
 
--- Types
+-- =========
+-- All Types
+-- =========
 
-create table numbers (
-  id number(9) primary key not null,
+create table types_numeric (
+  id number(9) not null primary key,
   
 -- number, numeric, decimal, dec
   num1 number(2), -- max 38 digits
@@ -34,7 +36,7 @@ create table numbers (
   num3 number(9), -- max 38 digits
   num4 number(18), -- max 38 digits
   num5 number(38), -- max 38 digits
-  num6 number(10, 2), -- max 38 digits
+  num6 number(10,2), -- max 38 digits
   num7 number,
   
   num8 binary_float, -- 32-bit single-precision floating point
@@ -48,18 +50,82 @@ create table numbers (
   num22 int
 );
 
+insert into types_numeric(id, num1, num2, num3, num4, num5, num6, num7, num8, num9, num10, num11, num12, num20, num21, num22) values(
+  1, 12, 1234, 123456789, 123456789012345678, 12345678901234567890123456789012345678, 123456.78, 901.234,
+  123.456, 234.567, 345.678, 456.789, 567.890,
+  12345, 123456789, 123456789
+);
+
+create table types_char (
+  id number(9) not null primary key,
+  
+  cha1 char(10), -- max 2000
+  cha2 varchar(20), -- max 4000
+  cha3 varchar2(20), -- max 4000
+  cha4 nchar(30), -- max 2000 bytes (2000 or less characters)
+  cha5 nvarchar2(40), -- max 4000 (4000 or less characters)
+  cha6 clob, -- max 128 TB
+  cha7 nclob -- max 128 TB
+  -- cha10 long -- max 2 GB -- unsupported by MyBatis?
+);
+
+insert into types_char (id, cha1, cha2,  cha3,  cha4,  cha5,  cha6,  cha7) values (
+  1, 'abcdef', 'abcdef', 'abcdef', 'abcdef', 'abcdef', 'abcdef', 'abcdef' 
+);
+
 create table types_date_time (
-  id number(6) primary key not null,
-  dat1 date,
-  dat2 timestamp,
-  dat3 timestamp with time zone,
-  dat4 timestamp with local time zone
+  id number(9) not null primary key,
+  
+  -- all types include dates in the range January 1, 4712 BCE through December 31, 9999 CE
+  dat1 date, -- NO fractional seconds
+  dat2 timestamp, -- WITH fractional seconds
+  dat3 timestamp with time zone, -- WITH time zone, WITH fractional seconds
+  dat4 timestamp with local time zone -- WITH relative time zone, WITH fractional seconds
 );
 
 insert into types_date_time (id, dat1, dat2, dat3, dat4) values (
   1,
   timestamp '2024-01-01 12:34:56',
-  timestamp '2024-01-01 12:34:56+03:00',
-  timestamp '2024-01-01 12:34:56+03:00',
-  timestamp '2024-01-01 12:34:56+03:00'
+  timestamp '2024-01-01 12:34:56.123456789+03:00',
+  timestamp '2024-01-01 12:34:56.123456789+03:00',
+  timestamp '2024-01-01 12:34:56.123456789+03:00'
 );
+
+-- Not yet supported: bfile
+create table types_binary (
+  id number(9) not null primary key,
+  
+  bin1 raw(500), -- Deprecated. Still usable. Size must be specified.
+  bin2 long raw, -- Deprecated. Still usable, max 2GB; only 1 long raw column per table.
+  bin3 blob -- 128 TB
+  --bin4 bfile -- Deprecated. Read-only binary file. Size is limited by the OS/file system.  
+);
+
+insert into types_binary (id, bin3) values (1, 'abcdef');
+
+create type namearray2 as varray(3) of varchar2(10);
+
+create type person_struct2 as object (id number(6), date_of_birth date);
+
+create table types_other (
+  id number(9) not null primary key,
+  
+--  row1 UROWID, -- not supported by this version of MyBatis?
+  itv2 interval year to month,
+  itv4 interval day to second,
+--  oth1 XMLType, -- not supported by this version of MyBatis?
+  oth2 UriType,
+  names namearray2, 
+  stu1 person_struct2,
+  ref1 ref person_struct2
+);
+
+insert into types_other (id, itv2, itv4, oth2, names, stu1, ref1) values (
+  1, INTERVAL '40' MONTH, INTERVAL '40' DAY, 
+  httpuritype.createuri('http://abc.com'), 
+  namearray2(('abc'), ('def')),
+  null,
+  null
+);
+
+

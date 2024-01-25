@@ -3,6 +3,8 @@ package app.test;
 import java.util.List;
 import java.util.Map;
 
+import app.daos.primitives.AccountDAO;
+import app.daos.primitives.AccountDAO.AccountTable;
 import app.test.assembly.SQL;
 import app.test.assembly.Tuple1;
 import app.test.assembly.Tuple2;
@@ -26,9 +28,12 @@ public class Test1 {
   private static void m1() {
     SQL sql = new SQL();
 
-    AutoTable<AutoVO> t = AutoDAO.newTable();
-    BusTable<BusVO> u = BusDAO.newTable();
-    CarTable<CarVO> v = CarDAO.newTable();
+//    AccountTable a = AccountDAO.newTable("a");
+
+    
+    AutoTable<AutoVO> t = AutoDAO.entity();
+    BusTable<BusVO> u = BusDAO.entity();
+    CarTable<CarVO> v = CarDAO.entity();
 
     // Una entidad
 

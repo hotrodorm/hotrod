@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.typesOther">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    id,
+    itv2,
+    itv4,
+    oth2,
+    names,
+    stu1,
+    ref1
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.id,
+    ${alias}.itv2,
+    ${alias}.itv4,
+    ${alias}.oth2,
+    ${alias}.names,
+    ${alias}.stu1,
+    ${alias}.ref1
+  </sql>
+
+  <resultMap id="allColumns" type="app.daos.TypesOtherVO">
+    <id property="id" column="ID" />
+    <result property="itv2" column="ITV2" />
+    <result property="itv4" column="ITV4" />
+    <result property="oth2" column="OTH2" />
+    <result property="names" column="NAMES" />
+    <result property="stu1" column="STU1" />
+    <result property="ref1" column="REF1" />
+  </resultMap>
+
+  <!-- select by PK -->
+
+  <select id="selectByPK" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from user1.types_other
+     where
+      id = #{id,jdbcType=NUMERIC}
+  </select>
+
+  <!-- no select by unique indexes since there are no UI (besides the PK) -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from user1.types_other
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="p.id != null">
+        and id = #{p.id,jdbcType=NUMERIC}
+      </if>
+      <if test="p.itv2 != null">
+        and itv2 = #{p.itv2,jdbcType=OTHER}
+      </if>
+      <if test="p.itv4 != null">
+        and itv4 = #{p.itv4,jdbcType=OTHER}
+      </if>
+      <if test="p.oth2 != null">
+        and oth2 = #{p.oth2,jdbcType=OTHER}
+      </if>
+      <if test="p.names != null">
+        and names = #{p.names,jdbcType=ARRAY}
+      </if>
+      <if test="p.stu1 != null">
+        and stu1 = #{p.stu1,jdbcType=STRUCT}
+      </if>
+      <if test="p.ref1 != null">
+        and ref1 = #{p.ref1,jdbcType=STRUCT}
+      </if>
+    </trim>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into user1.types_other (
+      <trim prefixOverrides=", ">
+        <if test="true">, id</if>
+        <if test="true">, itv2</if>
+        <if test="true">, itv4</if>
+        <if test="true">, oth2</if>
+        <if test="true">, names</if>
+        <if test="true">, stu1</if>
+        <if test="true">, ref1</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{id,jdbcType=NUMERIC}</if>
+        <if test="true">, #{itv2,jdbcType=OTHER}</if>
+        <if test="true">, #{itv4,jdbcType=OTHER}</if>
+        <if test="true">, #{oth2,jdbcType=OTHER}</if>
+        <if test="true">, #{names,jdbcType=ARRAY}</if>
+        <if test="true">, #{stu1,jdbcType=STRUCT}</if>
+        <if test="true">, #{ref1,jdbcType=STRUCT}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK -->
+
+  <update id="updateByPK">
+    update user1.types_other set
+      itv2 = #{itv2,jdbcType=OTHER},
+      itv4 = #{itv4,jdbcType=OTHER},
+      oth2 = #{oth2,jdbcType=OTHER},
+      names = #{names,jdbcType=ARRAY},
+      stu1 = #{stu1,jdbcType=STRUCT},
+      ref1 = #{ref1,jdbcType=STRUCT}
+     where
+      id = #{id,jdbcType=NUMERIC}
+  </update>
+
+  <!-- delete by PK -->
+
+  <delete id="deleteByPK">
+    delete from user1.types_other
+     where
+      id = #{id,jdbcType=NUMERIC}
+  </delete>
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update user1.types_other
+    <set>
+      <if test="values.id != null">id = #{values.id,jdbcType=NUMERIC},</if>
+      <if test="values.itv2 != null">itv2 = #{values.itv2,jdbcType=OTHER},</if>
+      <if test="values.itv4 != null">itv4 = #{values.itv4,jdbcType=OTHER},</if>
+      <if test="values.oth2 != null">oth2 = #{values.oth2,jdbcType=OTHER},</if>
+      <if test="values.names != null">names = #{values.names,jdbcType=ARRAY},</if>
+      <if test="values.stu1 != null">stu1 = #{values.stu1,jdbcType=STRUCT},</if>
+      <if test="values.ref1 != null">ref1 = #{values.ref1,jdbcType=STRUCT},</if>
+    </set>
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="filter.id != null">
+        and id = #{filter.id,jdbcType=NUMERIC}
+      </if>
+      <if test="filter.itv2 != null">
+        and itv2 = #{filter.itv2,jdbcType=OTHER}
+      </if>
+      <if test="filter.itv4 != null">
+        and itv4 = #{filter.itv4,jdbcType=OTHER}
+      </if>
+      <if test="filter.oth2 != null">
+        and oth2 = #{filter.oth2,jdbcType=OTHER}
+      </if>
+      <if test="filter.names != null">
+        and names = #{filter.names,jdbcType=ARRAY}
+      </if>
+      <if test="filter.stu1 != null">
+        and stu1 = #{filter.stu1,jdbcType=STRUCT}
+      </if>
+      <if test="filter.ref1 != null">
+        and ref1 = #{filter.ref1,jdbcType=STRUCT}
+      </if>
+    </trim>
+  </update>
+
+  <!-- update by criteria -->
+
+  <select id="updateByCriteria">
+    ${sql}
+  </select>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from user1.types_other
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="id != null">
+        and id = #{id,jdbcType=NUMERIC}
+      </if>
+      <if test="itv2 != null">
+        and itv2 = #{itv2,jdbcType=OTHER}
+      </if>
+      <if test="itv4 != null">
+        and itv4 = #{itv4,jdbcType=OTHER}
+      </if>
+      <if test="oth2 != null">
+        and oth2 = #{oth2,jdbcType=OTHER}
+      </if>
+      <if test="names != null">
+        and names = #{names,jdbcType=ARRAY}
+      </if>
+      <if test="stu1 != null">
+        and stu1 = #{stu1,jdbcType=STRUCT}
+      </if>
+      <if test="ref1 != null">
+        and ref1 = #{ref1,jdbcType=STRUCT}
+      </if>
+    </trim>
+  </delete>
+
+  <!-- delete by criteria -->
+
+  <select id="deleteByCriteria">
+    ${sql}
+  </select>
+
+</mapper>

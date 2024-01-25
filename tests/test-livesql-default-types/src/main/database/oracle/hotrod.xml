@@ -15,12 +15,15 @@
   <table name="invoice" />
   <table name="branch" />
 
-  <table name="numbers" />
+  <table name="types_numeric" />
+  <table name="types_char" />
   <table name="types_date_time">
     <column name="DAT3" java-type="java.time.OffsetDateTime" jdbc-type="TIMESTAMP" />
 <!--
     <column name="dat3" converter="odtconverter" />
 -->
   </table>
+  <table name="types_binary" />
+  <table name="types_other" /> 
 
 </hotrod>

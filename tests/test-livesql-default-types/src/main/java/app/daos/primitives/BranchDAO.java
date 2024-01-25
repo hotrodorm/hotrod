@@ -187,7 +187,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
   public UpdateSetCompletePhase update(final app.daos.primitives.AbstractBranchVO updateValues, final BranchDAO.BranchTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
     if (updateValues.getId() != null) values.put("id", updateValues.getId());
-    if (updateValues.getName() != null) values.put("\"NaMe\"", updateValues.getName());
+    if (updateValues.getName() != null) values.put("name", updateValues.getName());
     if (updateValues.getRegion() != null) values.put("region", updateValues.getRegion());
     if (updateValues.getIsVip() != null) values.put("is_vip", updateValues.getIsVip());
     return new UpdateSetCompletePhase(this.context, "mappers.branch.updateByCriteria", tableOrView,  predicate, values);
@@ -212,14 +212,14 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
     ID("user1.branch", "id", true), //
     ID$DESC("user1.branch", "id", false), //
-    NAME("user1.branch", "\"NaMe\"", true), //
-    NAME$DESC("user1.branch", "\"NaMe\"", false), //
-    NAME$CASEINSENSITIVE("user1.branch", "lower(\"NaMe\")", true), //
-    NAME$CASEINSENSITIVE_STABLE_FORWARD("user1.branch", "lower(\"NaMe\"), \"NaMe\"", true), //
-    NAME$CASEINSENSITIVE_STABLE_REVERSE("user1.branch", "lower(\"NaMe\"), \"NaMe\"", false), //
-    NAME$DESC_CASEINSENSITIVE("user1.branch", "lower(\"NaMe\")", false), //
-    NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("user1.branch", "lower(\"NaMe\"), \"NaMe\"", false), //
-    NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("user1.branch", "lower(\"NaMe\"), \"NaMe\"", true), //
+    NAME("user1.branch", "name", true), //
+    NAME$DESC("user1.branch", "name", false), //
+    NAME$CASEINSENSITIVE("user1.branch", "lower(name)", true), //
+    NAME$CASEINSENSITIVE_STABLE_FORWARD("user1.branch", "lower(name), name", true), //
+    NAME$CASEINSENSITIVE_STABLE_REVERSE("user1.branch", "lower(name), name", false), //
+    NAME$DESC_CASEINSENSITIVE("user1.branch", "lower(name)", false), //
+    NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("user1.branch", "lower(name), name", false), //
+    NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("user1.branch", "lower(name), name", true), //
     REGION("user1.branch", "region", true), //
     REGION$DESC("user1.branch", "region", false), //
     REGION$CASEINSENSITIVE("user1.branch", "lower(region)", true), //
@@ -305,7 +305,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
       super.columns = new ArrayList<>();
       this.id = new NumberColumn(this, "ID", "id", "NUMBER", 6, 0);
       super.columns.add(this.id);
-      this.name = new StringColumn(this, "NaMe", "name", "VARCHAR2", 20, null);
+      this.name = new StringColumn(this, "NAME", "name", "VARCHAR2", 20, null);
       super.columns.add(this.name);
       this.region = new StringColumn(this, "REGION", "region", "VARCHAR2", 10, null);
       super.columns.add(this.region);

@@ -2,29 +2,29 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="mappers.branch">
+<mapper namespace="mappers.typesBinary">
 
   <!-- columns -->
 
   <sql id="columns">
     id,
-    name,
-    region,
-    is_vip
+    bin1,
+    bin2,
+    bin3
   </sql>
 
   <sql id="columnsWithAlias">
     ${alias}.id,
-    ${alias}.name,
-    ${alias}.region,
-    ${alias}.is_vip
+    ${alias}.bin1,
+    ${alias}.bin2,
+    ${alias}.bin3
   </sql>
 
-  <resultMap id="allColumns" type="app.daos.BranchVO">
+  <resultMap id="allColumns" type="app.daos.TypesBinaryVO">
     <id property="id" column="ID" />
-    <result property="name" column="NAME" />
-    <result property="region" column="REGION" />
-    <result property="isVip" column="IS_VIP" />
+    <result property="bin1" column="BIN1" />
+    <result property="bin2" column="BIN2" />
+    <result property="bin3" column="BIN3" />
   </resultMap>
 
   <!-- select by PK -->
@@ -32,7 +32,7 @@
   <select id="selectByPK" resultMap="allColumns">
     select
       <include refid="columns" />
-     from user1.branch
+     from user1.types_binary
      where
       id = #{id,jdbcType=NUMERIC}
   </select>
@@ -44,19 +44,19 @@
   <select id="selectByExample" resultMap="allColumns">
     select
       <include refid="columns" />
-     from user1.branch
+     from user1.types_binary
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.id != null">
         and id = #{p.id,jdbcType=NUMERIC}
       </if>
-      <if test="p.name != null">
-        and name = #{p.name,jdbcType=VARCHAR}
+      <if test="p.bin1 != null">
+        and bin1 = #{p.bin1,jdbcType=VARBINARY}
       </if>
-      <if test="p.region != null">
-        and region = #{p.region,jdbcType=VARCHAR}
+      <if test="p.bin2 != null">
+        and bin2 = #{p.bin2,jdbcType=LONGVARBINARY}
       </if>
-      <if test="p.isVip != null">
-        and is_vip = #{p.isVip,jdbcType=VARCHAR}
+      <if test="p.bin3 != null">
+        and bin3 = #{p.bin3,jdbcType=BLOB}
       </if>
     </trim>
     <if test="o != null">
@@ -73,19 +73,19 @@
   <!-- insert (no auto-generated columns) -->
 
   <insert id="insert">
-    insert into user1.branch (
+    insert into user1.types_binary (
       <trim prefixOverrides=", ">
         <if test="true">, id</if>
-        <if test="true">, name</if>
-        <if test="true">, region</if>
-        <if test="true">, is_vip</if>
+        <if test="true">, bin1</if>
+        <if test="true">, bin2</if>
+        <if test="true">, bin3</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
         <if test="true">, #{id,jdbcType=NUMERIC}</if>
-        <if test="true">, #{name,jdbcType=VARCHAR}</if>
-        <if test="true">, #{region,jdbcType=VARCHAR}</if>
-        <if test="true">, #{isVip,jdbcType=VARCHAR}</if>
+        <if test="true">, #{bin1,jdbcType=VARBINARY}</if>
+        <if test="true">, #{bin2,jdbcType=LONGVARBINARY}</if>
+        <if test="true">, #{bin3,jdbcType=BLOB}</if>
       </trim>
       )
   </insert>
@@ -93,10 +93,10 @@
   <!-- update by PK -->
 
   <update id="updateByPK">
-    update user1.branch set
-      name = #{name,jdbcType=VARCHAR},
-      region = #{region,jdbcType=VARCHAR},
-      is_vip = #{isVip,jdbcType=VARCHAR}
+    update user1.types_binary set
+      bin1 = #{bin1,jdbcType=VARBINARY},
+      bin2 = #{bin2,jdbcType=LONGVARBINARY},
+      bin3 = #{bin3,jdbcType=BLOB}
      where
       id = #{id,jdbcType=NUMERIC}
   </update>
@@ -104,7 +104,7 @@
   <!-- delete by PK -->
 
   <delete id="deleteByPK">
-    delete from user1.branch
+    delete from user1.types_binary
      where
       id = #{id,jdbcType=NUMERIC}
   </delete>
@@ -112,25 +112,25 @@
   <!-- update by example -->
 
   <update id="updateByExample">
-    update user1.branch
+    update user1.types_binary
     <set>
       <if test="values.id != null">id = #{values.id,jdbcType=NUMERIC},</if>
-      <if test="values.name != null">name = #{values.name,jdbcType=VARCHAR},</if>
-      <if test="values.region != null">region = #{values.region,jdbcType=VARCHAR},</if>
-      <if test="values.isVip != null">is_vip = #{values.isVip,jdbcType=VARCHAR},</if>
+      <if test="values.bin1 != null">bin1 = #{values.bin1,jdbcType=VARBINARY},</if>
+      <if test="values.bin2 != null">bin2 = #{values.bin2,jdbcType=LONGVARBINARY},</if>
+      <if test="values.bin3 != null">bin3 = #{values.bin3,jdbcType=BLOB},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.id != null">
         and id = #{filter.id,jdbcType=NUMERIC}
       </if>
-      <if test="filter.name != null">
-        and name = #{filter.name,jdbcType=VARCHAR}
+      <if test="filter.bin1 != null">
+        and bin1 = #{filter.bin1,jdbcType=VARBINARY}
       </if>
-      <if test="filter.region != null">
-        and region = #{filter.region,jdbcType=VARCHAR}
+      <if test="filter.bin2 != null">
+        and bin2 = #{filter.bin2,jdbcType=LONGVARBINARY}
       </if>
-      <if test="filter.isVip != null">
-        and is_vip = #{filter.isVip,jdbcType=VARCHAR}
+      <if test="filter.bin3 != null">
+        and bin3 = #{filter.bin3,jdbcType=BLOB}
       </if>
     </trim>
   </update>
@@ -144,19 +144,19 @@
   <!-- delete by example -->
 
   <delete id="deleteByExample">
-    delete from user1.branch
+    delete from user1.types_binary
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="id != null">
         and id = #{id,jdbcType=NUMERIC}
       </if>
-      <if test="name != null">
-        and name = #{name,jdbcType=VARCHAR}
+      <if test="bin1 != null">
+        and bin1 = #{bin1,jdbcType=VARBINARY}
       </if>
-      <if test="region != null">
-        and region = #{region,jdbcType=VARCHAR}
+      <if test="bin2 != null">
+        and bin2 = #{bin2,jdbcType=LONGVARBINARY}
       </if>
-      <if test="isVip != null">
-        and is_vip = #{isVip,jdbcType=VARCHAR}
+      <if test="bin3 != null">
+        and bin3 = #{bin3,jdbcType=BLOB}
       </if>
     </trim>
   </delete>
