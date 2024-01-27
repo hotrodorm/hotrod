@@ -233,7 +233,7 @@ In a nutshell HotRod's features are:
 - Index-aware persistence layer. Indexes shape the persistence functionality
 - Auto discovery of tables and views that can be used by CRUD and LiveSQL off the shelf
 - Domain objects can be extended with custom properties and custom methods
-- Seamlessly applies database changes to the data model, without losing custom properties or methods
+- Seamlessly applies database changes to the data model without losing custom properties or methods
 - Includes powerful Dynamic SQL for more demanding needs
 - Implements Optimistic Locking for concurrency control on a per-table basis
 - Full access to Native SQL when needed
