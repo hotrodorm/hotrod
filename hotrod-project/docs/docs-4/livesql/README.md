@@ -105,7 +105,7 @@ The Expression Language enhances the functionality of LiveSQL by allowing comple
 
 - [Parameterized Scalars](./syntax/expressions.md#boxing-scalars) and [Literal Scalars](./syntax/literals.md)
 
-    Parameterized scalars are included using `sql.val()` or autoboxed by default in the LiveSQL syntax. Literal scalars can be explicitly added using `sql.literal()` when needed for specific cases, or to
+    Parameterized scalars are included using `sql.val()` or autoboxed by default in the LiveSQL syntax. Literal scalars can be explicitly added using `sql.literal()` when needed for specific cases or to
 improve query performance.
 
 - [Extending LiveSQL Functions](./extending-livesql-functions.md)
