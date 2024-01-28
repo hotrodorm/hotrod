@@ -32,7 +32,7 @@ The DAO is used to create one instance of the table that will be used within the
 instances of the same or other tables &mdash; and/or views &mdash; can be used to define queries with joins.
 
 The table instance can be used to reference the columns of the table (as in `e.name`) and to
-assemble complex expressions to use in the query. Behind the scenes LiveSQL will assemble the query as:
+assemble complex expressions to use in the query. Behind the scenes, LiveSQL will assemble the query as:
 
 ```sql
 SELECT * FROM employee WHERE name like 'A%'
