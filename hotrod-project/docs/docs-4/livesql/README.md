@@ -60,7 +60,7 @@ The LiveSQL statements are described below:
 
 - The [SELECT](./syntax/select.md) Statement
 
-    The SELECT statement, by far, has the most complex syntax and it's the only one that returns data rows. The SQL Standard defines a list of clauses to filter rows (WHERE), to join multiple tables (FROM and JOIN), to aggregate them (GROUP BY) and to sort them (ORDER BY). SELECT statements can also include subqueries to define more complex logic. It implements the WITH clause, including it the WITH RECURSIVE variant.
+    The SELECT statement, by far, has the most complex syntax and it's the only one that returns data rows. The SQL Standard defines a list of clauses to filter rows (WHERE), to join multiple tables (FROM and JOIN), to aggregate them (GROUP BY) and to sort them (ORDER BY). SELECT statements can also include subqueries to define more complex logic. It implements the WITH clause, including the WITH RECURSIVE variant.
 
 - The [INSERT](./syntax/insert.md) Statement
 
