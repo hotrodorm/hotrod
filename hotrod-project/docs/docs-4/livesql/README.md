@@ -125,8 +125,8 @@ acquired by the use of the FOR UPDATE clause (and their variations in different 
 
 
 
-Consider that cursors only live between the boundaries of a database transaction &ndash; that is, methods annotated with the
-`@Transactional` annotation &ndash; and that they are automatically closed when the transaction ends.
+Consider that cursors only live between the boundaries of a database transaction &mdash;that is, methods annotated with the
+`@Transactional` annotation&mdash; and that they are automatically closed when the transaction ends.
 
 
 ## Extra Functionality
