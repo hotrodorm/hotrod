@@ -28,7 +28,7 @@ private void searching() {
 }
 ```
 
-The DAO is used to create one instance of the table to use in the `FROM` clause of the query. More
+The DAO is used to create one instance of the table that will be used within the `FROM` query clause. More
 instances of the same or other tables &mdash; and/or views &mdash; can be used to define queries with joins.
 
 The table instance can be used to reference the columns of the table (as in `e.name`) and to
