@@ -10,7 +10,7 @@ LiveSQL uses tables, views, and columns &mdash; modeled by the CRUD module &mdas
 
 ## Example
 
-If the database includes a table `EMPLOYEE` with a few columns, the related DAO can be used to create a table instance to write the query,
+If the database includes an `EMPLOYEE` table with a few columns, the related DAO can be used to create a table instance to write the query,
 as shown below:
 
 ```java
