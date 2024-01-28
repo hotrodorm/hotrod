@@ -205,7 +205,7 @@ The reference details how to activate all features, and how to use them.
 
 These guides focus on specific features and show examples enabling and using them.
 
-These guides cover:
+These guides are the following:
 
 - [Schema Discovery](./hotrod-project/docs/docs-4/guides/schema-discovery.md)
 - [Using Multiple DataSources](./hotrod-project/docs/docs-4/guides/using-multiple-datasources.md)
