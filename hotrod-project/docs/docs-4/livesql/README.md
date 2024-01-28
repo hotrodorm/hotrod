@@ -44,7 +44,7 @@ Finally the `execute()` method runs the query and returns the result set as a li
 
 While assembling the query, LiveSQL generates the specific syntax according to the database engine in use, and this is fully transparent to the developer. Common clauses are very standardized so few differences can be noticed between each of them. Bigger differences can be typically seen in more advanced, less used clauses.
 
-When the application is starting up, LiveSQL detects the specific database and version for each data source, and chooses the LiveSQLDialect to use for each one. This dialect deals automatically with all syntax changes behind the scenes when a query is executed.
+When the application is starting up, LiveSQL detects the specific database and version for each data source, and it also chooses for each one the LiveSQLDialect to be used. This dialect deals automatically with all syntax changes behind the scenes when a query is executed.
 
 The LiveSQLDialect can also be specified in the `application.properties` file , in case the developer
 wants to disable the auto-detect functionality and prefers to declare it explicitly. This can be configured separately for each data source. See [Designating a LiveSQL Dialect](designating-a-livesql-dialect.md) for more details.
