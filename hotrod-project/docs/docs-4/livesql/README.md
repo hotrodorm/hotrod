@@ -89,7 +89,7 @@ The Expression Language enhances the functionality of LiveSQL by allowing comple
 
 - [Set Operators](./syntax/set-operators.md)
 
-    The set operators UNION [ALL], INTERSECT [ALL], EXCEPT [ALL] combine two or more SELECT queries into a single SELECT. Set operators can be inlined in the same level or nested using parenthesis, and can use ordering, offsets, and limiting, according to the SQL Standard.
+    The set operators UNION [ALL], INTERSECT [ALL], EXCEPT [ALL] combine two or more SELECT queries into a single SELECT. Set operators can be inlined in the same level or nested using parentheses, and they can use ordering, offsets, and limiting, according to the SQL Standard.
 
 - [Predefined Functions](./syntax/expressions.md)
 
