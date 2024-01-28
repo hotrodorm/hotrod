@@ -97,7 +97,7 @@ The Expression Language enhances the functionality of LiveSQL by allowing comple
 
 - [Aggregate Functions](./syntax/aggregate-functions.md)
 
-    The traditional aggregate functions such as `SUM()`, `MIN()`, and `MAX()`, etc. defined in the SQL-92 Standard. These functions are typically used when grouping rows using the `GROUP BY` clause; they compute a single value from a set of values from different rows.
+    The traditional aggregate functions such as `SUM()`, `MIN()`, and `MAX()`, etc., are defined in the SQL-92 Standard. These functions are typically used when grouping rows using the `GROUP BY` clause; they compute a single value from a set of values from different rows.
 
 - [Window Functions](./syntax/window-functions.md)
 
