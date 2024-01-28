@@ -42,7 +42,7 @@ Finally the `execute()` method runs the query and returns the result set as a li
 
 ## LiveSQL Dialects
 
-While assembling the query LiveSQL generates the specific syntax according to the database engine in use, and this is fully transparent to the developer. Common clauses are very standardized so few differences can be noticed between each them. Bigger differences can be typically seen in more advanced, less used clauses.
+While assembling the query, LiveSQL generates the specific syntax according to the database engine in use, and this is fully transparent to the developer. Common clauses are very standardized so few differences can be noticed between each of them. Bigger differences can be typically seen in more advanced, less used clauses.
 
 When the application is starting up, LiveSQL detects the specific database and version for each data source, and chooses the LiveSQLDialect to use for each one. This dialect deals automatically with all syntax changes behind the scenes when a query is executed.
 
