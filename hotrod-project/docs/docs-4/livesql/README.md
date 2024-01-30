@@ -54,7 +54,7 @@ wants to disable the auto-detect functionality and prefers to declare it explici
 
 LiveSQL includes the four DML SQL statements SELECT, INSERT, UPDATE, and DELETE.
 
-Note that all these statements participate in Spring transactions &mdash; in the same way as any other CRUD or Nitro query would do &mdash; according to the transaction demarcation and rules defined in the methods through Spring annotations.
+Note that all these statements participate in Spring transactions &mdash;in the same way as any other CRUD or Nitro query would do&mdash; according to the transaction demarcation and rules defined in the methods through Spring annotations.
 
 The LiveSQL statements are described below:
 
