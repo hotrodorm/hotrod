@@ -3,53 +3,39 @@
 package app.daos.primitives;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
 
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.cursors.Cursor;
-import org.hotrod.runtime.livesql.queries.select.MyBatisCursor;
-
 import org.hotrod.runtime.interfaces.DaoWithOrder;
-import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
-
-import app.daos.primitives.AbstractBranchVO;
-import app.daos.BranchVO;
-
-import java.lang.Override;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.spring.SpringBeanObjectFactory;
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.livesql.LiveSQLMapper;
-import org.hotrod.runtime.livesql.util.CastUtil;
-import javax.annotation.PostConstruct;
-import org.hotrod.runtime.livesql.metadata.Column;
-import org.hotrod.runtime.livesql.metadata.NumberColumn;
-import org.hotrod.runtime.livesql.metadata.StringColumn;
-import org.hotrod.runtime.livesql.metadata.DateTimeColumn;
-import org.hotrod.runtime.livesql.metadata.BooleanColumn;
-import org.hotrod.runtime.livesql.metadata.ByteArrayColumn;
-import org.hotrod.runtime.livesql.metadata.ObjectColumn;
-import org.hotrod.runtime.livesql.metadata.Table;
+import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
-import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
+import org.hotrod.runtime.livesql.metadata.NumberColumn;
+import org.hotrod.runtime.livesql.metadata.StringColumn;
+import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
-import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
-import org.hotrod.runtime.livesql.metadata.View;
-
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
-import org.springframework.stereotype.Component;
+import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
+import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
+import org.hotrod.runtime.livesql.queries.select.MyBatisCursor;
+import org.hotrod.runtime.livesql.util.CastUtil;
+import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
+
+import app.daos.BranchVO;
 
 @Component
 public class BranchDAO implements Serializable, ApplicationContextAware {
@@ -264,15 +250,15 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   // Database Table metadata
 
-  public static BranchTable newTable() {
-    return new BranchTable();
+  public static BranchTable<BranchVO> newTable() {
+    return new BranchTable<BranchVO>();
   }
 
-  public static BranchTable newTable(final String alias) {
-    return new BranchTable(alias);
+  public static BranchTable<BranchVO> newTable(final String alias) {
+    return new BranchTable<BranchVO>(alias);
   }
 
-  public static class BranchTable extends Table {
+  public static class BranchTable<T> extends Table {
 
     // Properties
 
