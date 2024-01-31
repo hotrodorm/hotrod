@@ -1,4 +1,4 @@
-# Hello Nitro!
+# Hello Graph Queries!
 
 This guide runs a Spring Boot project with Maven and the H2 in-memory database. It implements a Graph Query from the Nitro functionality.
 
@@ -15,6 +15,7 @@ After following all the steps of this guide our main project folder will include
 ```bash
 pom.xml                    # The Maven project file
 schema.sql                 # A SQL script that creates a table and data for this example
+hotrod.xml                 # Defines your graph queries
 src/main/java              # Your Java app and the generated DAOs and VOs
 src/main/resources         # All resources, including the generated mappers
 application.properties     # The runtime properties
@@ -110,6 +111,7 @@ The complete `pom.xml` file will look like:
         <artifactId>hotrod-maven-plugin</artifactId>
         <version>4.5.3</version>
         <configuration>
+          <configfile>./hotrod.xml</configfile>
           <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
           <jdbcurl>jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1</jdbcurl>
           <jdbcusername>sa</jdbcusername>
@@ -411,8 +413,14 @@ The Spring Boot application starts, connects to the database and run both querie
 
 ```log
 [ Starting example ]
-ivl={ "id": 1014, "customerId": 1, "purchaseDate": "2024-01-15T05:00:00.000Z", "paid": 1, "customer": { "id": 1, "name": "John Smith" }, "lines": [ { "invoiceId": 1014, "productId": 21, "qty": 1, "q2": 2, "product": { "id": 21, "name": "Piano Forte", "categoryId": 51, "category": { "id": 51, "name": "Music" } } } ] }
-ivl={ "id": 1015, "customerId": 2, "purchaseDate": "2024-01-16T05:00:00.000Z", "paid": 0, "customer": { "id": 2, "name": "Peter Ubisie" }, "lines": [ { "invoiceId": 1015, "productId": 20, "qty": 1, "q2": 2, "product": { "id": 20, "name": "Daguerrotype", "categoryId": 50, "category": { "id": 50, "name": "Gadgets" } } }, { "invoiceId": 1015, "productId": 21, "qty": 2, "q2": 4, "product": { "id": 21, "name": "Piano Forte", "categoryId": 51, "category": { "id": 51, "name": "Music" } } } ] }
+ivl={ "id": 1014, "customerId": 1, "purchaseDate": "2024-01-15T05:00:00.000Z", "paid": 1, "customer": { "id": 1,
+"name": "John Smith" }, "lines": [ { "invoiceId": 1014, "productId": 21, "qty": 1, "q2": 2, "product": { "id": 21,
+"name": "Piano Forte", "categoryId": 51, "category": { "id": 51, "name": "Music" } } } ] }
+ivl={ "id": 1015, "customerId": 2, "purchaseDate": "2024-01-16T05:00:00.000Z", "paid": 0, "customer": { "id": 2,
+"name": "Peter Ubisie" }, "lines": [ { "invoiceId": 1015, "productId": 20, "qty": 1, "q2": 2, "product": { "id": 20,
+"name": "Daguerrotype", "categoryId": 50, "category": { "id": 50, "name": "Gadgets" } } }, { "invoiceId": 1015,
+"productId": 21, "qty": 2, "q2": 4, "product": { "id": 21, "name": "Piano Forte", "categoryId": 51, "category":
+{ "id": 51, "name": "Music" } } } ] }
 [ Example complete ]
 ```
 
