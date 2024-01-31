@@ -178,7 +178,7 @@ These modules are:
 - [LiveSQL](./hotrod-project/docs/docs-4/livesql/README.md) &mdash; Flexible querying from Java
 - [Nitro](./hotrod-project/docs/docs-4/nitro/README.md) &mdash; All the power of [Dynamic SQL](./hotrod-project/docs/docs-4/nitro/nitro-dynamic-sql.md) combined with [Graph Queries](./hotrod-project/docs/docs-4/nitro/nitro-graph-selects.md) and Native SQL when you need it
 - [Torcs](./hotrod-project/docs/docs-4/torcs/README.md) &mdash; Detect slow queries at runtime and analyze them
-- [Torcs CTP](./hotrod-project/docs/docs-4/torcs-ctp/README.md) &mdash; Generate execution plans of slow queries and visualize them in Check The Plan
+- [Torcs CTP](./hotrod-project/docs/docs-4/torcs-ctp/README.md) &mdash; Generate execution plans of slow queries and visualize them in *Check The Plan*
 
 ## Examples
 
@@ -211,7 +211,7 @@ The reference details how to activate all features, and how to use them.
 
 These guides focus on specific features and show examples enabling and using them.
 
-These guides cover:
+These guides are the following:
 
 - [Schema Discovery](./hotrod-project/docs/docs-4/guides/schema-discovery.md)
 - [Using Multiple DataSources](./hotrod-project/docs/docs-4/guides/using-multiple-datasources.md)
@@ -237,9 +237,9 @@ In a nutshell HotRod's features are:
 - Support for major relational databases
 - Flexible querying from Java using LiveSQL
 - Index-aware persistence layer. Indexes shape the persistence functionality
-- Auto-discovery of tables and views that can be used by CRUD and LiveSQL off-the-shelf
+- Auto discovery of tables and views that can be used by CRUD and LiveSQL off the shelf
 - Domain objects can be extended with custom properties and custom methods
-- Seamlessly applies database changes to the data model, without losing custom properties or methods
+- Seamlessly applies database changes to the data model without losing custom properties or methods
 - Includes powerful Dynamic SQL for more demanding needs
 - Implements Optimistic Locking for concurrency control on a per-table basis
 - Full access to Native SQL when needed
