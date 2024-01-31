@@ -152,7 +152,7 @@ mvn clean compile
 It should report `BUILD SUCCESS` at the end.
 
 
-## Part 2 &mdash; Creating a Table and Generating the Persistence Code
+## Part 2 &mdash; Preparing the Database, the Query, and Generating the Persistence Layer
 
 In this part we define the Graph query and we define the tables in the in-memory H2 database. With them we generate the persistence layer.
 
