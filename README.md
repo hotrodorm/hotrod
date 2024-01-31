@@ -125,17 +125,15 @@ Graph queries assemble the rows and columns of SELECT queries into trees of obje
 
 ```xml
 <select method="searchInvoices">
-  <parameter name="customerId" java-type="Integer" />
-  <parameter name="minAmount" java-type="Integer" />
   select
     <columns>
       <vo table="invoice" extended-vo="InvoiceWithLines" alias="i">
-        <association table="customer" property="customer" alias="c" />
         <collection table="invoice_line" extended-vo="LineExt" property="lines" alias="l">
           <association table="product" extended-vo="ProductExt" property="product" alias="p">
             <association table="category" property="category" alias="t" />
           </association>
         </collection>
+        <association table="customer" property="customer" alias="c" />
       </vo>
     </columns>
   from invoice i
@@ -143,24 +141,22 @@ Graph queries assemble the rows and columns of SELECT queries into trees of obje
   join invoice_line l on l.invoice_id = i.id
   join product p on p.id = l.product_id
   join category t on t.id = p.category_id
-  where i.customer_id = #{customerId}
-    <if test="minAmount != null">and i.amount >= #{minAmount}</if>
   order by i.id
 </select>
 ```
 
-Returns a list of composite objects `InvoiceWithLines` as shown below:
+Returns a list where each element is a composite object `InvoiceWithLines` as shown below:
 
 ![Graph Query Result - Nitro](hotrod-project/docs/docs-4/nitro/images/graph-query-vos.png)
 
-In short, it returns one of these first-level objects for each invoice. Each first-level object includes a `customer` property for the second-level `Customer` object (1:1 cardinality) that holds the data coming from the `customer` table. It also includes a `lines` property that includes the list of second-level `InvoiceLine` objects (1:N cardinality) with their corresponding properties. Associations and collections can be nested in multiple levels.
-
-The query is available in Java as:
+The query is available for your application as a simple method call:
 
 ```java
-  List<InvoiceWithLines> searchInvoices(Integer customerId, Integer minamount)
+  List<InvoiceWithLines> searchInvoices()
 ```
 
+Graph Queries can include parameters, entities, extra expressions, and can also combine 
+Dynamic SQL and Native SQL as needed.
 
 ## Hello World
 
