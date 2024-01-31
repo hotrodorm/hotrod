@@ -18,6 +18,7 @@ import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VOMetadata.VOMember;
 import org.hotrod.metadata.VORegistry.SelectVOClass;
+import org.hotrod.runtime.json.JSONArray;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ImportsRenderer;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
@@ -103,7 +104,7 @@ public class SelectAbstractVO {
 
       writeToString();
 
-      writePropertiesChangeLog();
+      writeToJSON();
 
       writeClassFooter();
 
@@ -160,6 +161,7 @@ public class SelectAbstractVO {
     if (!this.associationMembers.isEmpty() || !this.collectionMembers.isEmpty()) {
       imports.newLine();
     }
+    imports.add("org.hotrod.runtime.json.*;");
 
     this.w.write(imports.render());
 
@@ -229,7 +231,7 @@ public class SelectAbstractVO {
         println();
 
         String setter = cm.getId().getJavaSetter();
-        writeSetter(property, javaType, setter, true);
+        writeSetter(property, javaType, setter);
       }
     }
 
@@ -243,7 +245,7 @@ public class SelectAbstractVO {
       println();
 
       String setter = a.getId().getJavaSetter();
-      writeSetter(property, javaType, setter, false);
+      writeSetter(property, javaType, setter);
     }
 
     for (VOMember c : this.collectionMembers) {
@@ -256,19 +258,15 @@ public class SelectAbstractVO {
       println();
 
       String setter = c.getId().getJavaSetter();
-      writeSetter(property, "List<" + javaType + ">", setter, false);
+      writeSetter(property, "List<" + javaType + ">", setter);
     }
 
   }
 
-  private void writeSetter(final String property, final String javaType, final String setter,
-      final boolean recordChanges) throws IOException {
+  private void writeSetter(final String property, final String javaType, final String setter) throws IOException {
     println("  public final void " + setter + "(final " + javaType + " " + property + ") {");
     println("    this." + property + " = " + property + ";");
     String name = property + "WasSet";
-    if (recordChanges) {
-      println("    this.propertiesChangeLog." + name + " = true;");
-    }
     println("  }");
     println();
   }
@@ -302,38 +300,47 @@ public class SelectAbstractVO {
 
   }
 
-  /**
-   * <pre>
-   * // Properties change log
-   * 
-   * private PropertiesChangeLog propertiesChangeLog = new PropertiesChangeLog();
-   * 
-   * public class PropertiesChangeLog {
-   *   boolean idWasSet = false;
-   *   boolean nameWasSet = false;
-   *   boolean typeWasSet = false;
-   *   boolean currentBalanceWasSet = false;
-   *   boolean createdOnWasSet = false;
-   * }
-   * </pre>
-   * 
-   * @throws IOException
-   */
-  private void writePropertiesChangeLog() throws IOException {
-    println("  // Properties change log");
+  private void writeToJSON() throws IOException, UnresolvableDataTypeException {
+    println("  // to JSON Object");
     println();
-    println("  public PropertiesChangeLog propertiesChangeLog = new PropertiesChangeLog();");
-    println();
-    println("  public class PropertiesChangeLog {");
+    println("  public JSONObject toJSONObject() {");
+
+    // Entity Properties
+
+    println("    JSONObject obj = super.toJSONObject();");
+
+    // Expressions
 
     for (ColumnMetadata cm : this.columns) {
-      String name = cm.getId().getJavaMemberName() + "WasSet";
-      println("    public boolean " + name + " = false;");
+      String prop = cm.getId().getJavaMemberName();
+      println("    obj.addProperty(\"" + prop + "\", " + "this." + prop + ");");
     }
 
+    // Associations
+
+    for (VOMember a : this.associationMembers) {
+      String prop = a.getProperty();
+      println("    obj.addProperty(\"" + prop + "\", " + "this." + prop + ".toJSONObject());");
+    }
+
+    // Collections
+
+    for (VOMember c : this.collectionMembers) {
+      String prop = c.getProperty();
+      println("    obj.addProperty(\"" + prop + "\", this." + prop
+          + ".stream().map(e -> e.toJSONObject()).collect(JSONArray.toJSONArray()));");
+    }
+
+    println("    return obj;");
     println("  }");
     println();
 
+    println("  // to JSON String");
+    println();
+    println("  public String toJSON() {");
+    println("    return toJSONObject().render();");
+    println("  }");
+    println();
   }
 
   private void writeClassFooter() throws IOException {

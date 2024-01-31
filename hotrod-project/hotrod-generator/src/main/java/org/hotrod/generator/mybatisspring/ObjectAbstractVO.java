@@ -90,9 +90,6 @@ public class ObjectAbstractVO extends GeneratableObject {
 
       writeToJSON();
 
-// propertiesChangeLog is now obsolete      
-//      writePropertiesChangeLog();
-
       writeClassFooter();
 
       super.markGenerated();
@@ -361,10 +358,10 @@ public class ObjectAbstractVO extends GeneratableObject {
   }
 
   private void writeToJSON() throws IOException, UnresolvableDataTypeException {
-    println("  // to JSON");
+    println("  // to JSON Object");
     println();
 
-    println("  public String toJSON() {");
+    println("  public JSONObject toJSONObject() {");
     println("    JSONObject obj = new JSONObject();");
 
     for (ColumnMetadata cm : this.metadata.getColumns()) {
@@ -372,49 +369,17 @@ public class ObjectAbstractVO extends GeneratableObject {
       println("    obj.addProperty(\"" + prop + "\", " + "this." + prop + ");");
     }
 
-    println("    return obj.render();");
-    println("  }");
-    println();
-  }
-
-  /**
-   * <pre>
-   * // Properties change log
-   * 
-   * private PropertiesChangeLog propertiesChangeLog = new PropertiesChangeLog();
-   * 
-   * public class PropertiesChangeLog {
-   *   boolean idWasSet = false;
-   *   boolean nameWasSet = false;
-   *   boolean typeWasSet = false;
-   *   boolean currentBalanceWasSet = false;
-   *   boolean createdOnWasSet = false;
-   * }
-   * </pre>
-   * 
-   * @throws IOException
-   */
-  @SuppressWarnings("unused")
-  private void writePropertiesChangeLog() throws IOException {
-    println("  // Properties change log");
-    println();
-    println("  private PropertiesChangeLog propertiesChangeLog = new PropertiesChangeLog();");
-    println();
-    println("  protected PropertiesChangeLog getPropertiesChangeLog() {");
-    println("    return propertiesChangeLog;");
-    println("  }");
-    println();
-    println("  protected class PropertiesChangeLog {");
-
-    for (ColumnMetadata cm : this.metadata.getColumns()) {
-      String name = cm.getId().getJavaMemberName() + "WasSet";
-      println("    public boolean " + name + " = false;");
-    }
-
+    println("    return obj;");
     println("  }");
     println();
 
-  }
+    println("  // to JSON String");
+    println();
+    println("  public String toJSON() {");
+    println("    return toJSONObject().render();");
+    println("  }");
+    println();
+}
 
   private void writeClassFooter() throws IOException {
     println("}");
