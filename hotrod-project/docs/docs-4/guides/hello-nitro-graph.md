@@ -424,8 +424,11 @@ ivl={ "id": 1015, "customerId": 2, "purchaseDate": "2024-01-16T05:00:00.000Z", "
 [ Example complete ]
 ```
 
-We can see:
-- The Graph query finds two invoices, and returns them along with data from related tables (customer, products, categories).
+According to its definition of nested objects, the query produces a list of `InvoiceWihtLines` objects. Each one, includes one or more other entity objects following the structure:
+
+![Graph Query Result - Nitro](../nitro/images/graph-query-vos.png)
+
+The Graph query finds two invoices and returns them along with data from the related tables (customer, products, categories, etc.).
 
 That's it! You just generated the persistence code from the database and ran an app using it. Later on, when the
 database suffers changes (it will), you can just rerun the generation step to apply the changes of columns, tables,
