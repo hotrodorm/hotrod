@@ -131,12 +131,18 @@ Graph queries assemble the rows and columns of SELECT queries into trees of obje
       <columns>
         <vo table="invoice" extended-vo="InvoiceWithLines" alias="i">
           <association table="customer" property="customer" alias="c" />
-          <collection table="invoice_line" property="lines" alias="il" />
+          <collection table="invoice_line" extended-vo="LineWithProduct" property="lines" alias="l">
+            <association table="product" extended-vo="ProductWithCategory" property="product" alias="p">
+              <association table="category" property="category" alias="t" />
+            </association>
+          </collection>
         </vo>
       </columns>
     from invoice i
     join customer c on c.id = i.customer_id
-    join invoice_line il on il.invoice_id = i.id
+    join invoice_line l on l.invoice_id = i.id
+    join product p on p.id = l.product_id
+    join category t on t.id = p.category_id
     where i.customer_id = #{customerId}
       <if test="minAmount != null">and i.amount >= #{minAmount}</if>
     order by i.id
