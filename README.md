@@ -149,7 +149,7 @@ Returns a list where each element is a composite object `InvoiceWithLines` as sh
 
 ![Graph Query Result - Nitro](hotrod-project/docs/docs-4/nitro/images/graph-query-vos.png)
 
-In combination with the `.toJSON()` method, this strategy can produce JSON objects for entire
+In combination with the `.toJSON()` methods, this strategy can produce JSON objects for entire
 branches of database data with a few lines of code. The query is available for your application
 as the method call:
 
