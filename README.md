@@ -131,8 +131,8 @@ Graph queries assemble the rows and columns of SELECT queries into trees of obje
       <columns>
         <vo table="invoice" extended-vo="InvoiceWithLines" alias="i">
           <association table="customer" property="customer" alias="c" />
-          <collection table="invoice_line" extended-vo="LineWithProduct" property="lines" alias="l">
-            <association table="product" extended-vo="ProductWithCategory" property="product" alias="p">
+          <collection table="invoice_line" extended-vo="LineExtended" property="lines" alias="l">
+            <association table="product" extended-vo="ProductExtended" property="product" alias="p">
               <association table="category" property="category" alias="t" />
             </association>
           </collection>
