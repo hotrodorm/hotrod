@@ -180,7 +180,10 @@ These modules are:
 
 ## Examples
 
-See [Hello CRUD!](./hotrod-project/docs/docs-4/crud/hello-crud.md) for the out-of-the-box functionality and its basic setup and to run other CRUD examples. 
+See [Hello CRUD!](./hotrod-project/docs/docs-4/crud/hello-crud.md) for the out-of-the-box functionality and its basic setup and to run other CRUD examples.
+
+See [Hello Graph Queries](./hotrod-project/docs/docs-4/guides/hello-nitro-graph.md) that shows
+a Nitro Graph Query in action.
 
 <!--
 For the basic usage of each module and more examples of each one see:
