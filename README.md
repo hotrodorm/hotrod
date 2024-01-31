@@ -99,20 +99,20 @@ Nitro can be used to gain access to all the features of a database, as well as t
 The following query uses Dynamic SQL to assemble the query dynamically and to *apply* parameter values to it. It also uses a piece of Native SQL (an optimizer hint):
 
 ```xml
-  <select method="searchVehicles" vo="Vehicle">
-    <parameter name="brandName" java-type="String" />
-    <parameter name="minYear" java-type="Integer" />
-    <parameter name="ordering" java-type="Integer" />
-    select /*+ FIRST_ROWS(10) */ *
-    from vehicle
-    where brand like = '%' || #{brandName} || '%'
-      <if test="minYear != null">and year >= #{minYear}</if>
-    <choose>
-      <if test="ordering == 1">order by price</if>
-      <if test="ordering == 2">order by price DESC</if>
-      <if test="ordering == 3">order by avg_reviews DESC</if>
-    </choose>
-  </select>
+<select method="searchVehicles" vo="Vehicle">
+  <parameter name="brandName" java-type="String" />
+  <parameter name="minYear" java-type="Integer" />
+  <parameter name="ordering" java-type="Integer" />
+  select /*+ FIRST_ROWS(10) */ *
+  from vehicle
+  where brand like = '%' || #{brandName} || '%'
+    <if test="minYear != null">and year >= #{minYear}</if>
+  <choose>
+    <if test="ordering == 1">order by price</if>
+    <if test="ordering == 2">order by price DESC</if>
+    <if test="ordering == 3">order by avg_reviews DESC</if>
+  </choose>
+</select>
 ```
 
 Nitro makes this query available in Java as:
@@ -124,29 +124,30 @@ Nitro makes this query available in Java as:
 Graph queries assemble the rows and columns of SELECT queries into trees of objects. For example, the following query:
 
 ```xml
-  <select method="searchInvoices">
-    <parameter name="customerId" java-type="Integer" />
-    <parameter name="minAmount" java-type="Integer" />
-    select
-      <columns>
-        <vo table="invoice" extended-vo="InvoiceWithLines" alias="i">
-          <association table="customer" property="customer" alias="c" />
-          <collection table="invoice_line" extended-vo="LineExtended" property="lines" alias="l">
-            <association table="product" extended-vo="ProductExtended" property="product" alias="p">
-              <association table="category" property="category" alias="t" />
-            </association>
-          </collection>
-        </vo>
-      </columns>
-    from invoice i
-    join customer c on c.id = i.customer_id
-    join invoice_line l on l.invoice_id = i.id
-    join product p on p.id = l.product_id
-    join category t on t.id = p.category_id
-    where i.customer_id = #{customerId}
-      <if test="minAmount != null">and i.amount >= #{minAmount}</if>
-    order by i.id
-  </select>
+<select method="searchInvoices">
+  <parameter name="customerId" java-type="Integer" />
+  <parameter name="minAmount" java-type="Integer" />
+  select
+    <columns>
+      <vo table="invoice" extended-vo="InvoiceWithLines" alias="i">
+        <association table="customer" property="customer" alias="c" />
+        <collection table="invoice_line" extended-vo="LineExtended" property="lines" alias="l">
+          <association table="product" extended-vo="ProductExtended"
+              property="product" alias="p">
+            <association table="category" property="category" alias="t" />
+          </association>
+        </collection>
+      </vo>
+    </columns>
+  from invoice i
+  join customer c on c.id = i.customer_id
+  join invoice_line l on l.invoice_id = i.id
+  join product p on p.id = l.product_id
+  join category t on t.id = p.category_id
+  where i.customer_id = #{customerId}
+    <if test="minAmount != null">and i.amount >= #{minAmount}</if>
+  order by i.id
+</select>
 ```
 
 Returns a list of composite objects `InvoiceWithLines` as shown below:
