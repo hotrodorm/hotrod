@@ -67,7 +67,7 @@ public class SelectVO {
         w.write("@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)\n");
         w.write("public class " + this.className + " extends " + this.abstractVO.getName());
 
-        if (this.soloVO.getImplementClasses() != null) {
+        if (this.soloVO != null && this.soloVO.getImplementClasses() != null) {
           w.write(" implements " + this.soloVO.getImplementClasses());
         }
 

@@ -446,6 +446,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
       if (sm.isStructured()) { // graph columns
 
         StructuredColumnsMetadata structCols = sm.getStructuredColumns();
+        this.mode = sm.getResultSetMode();
         if (structCols.getSoloVOClass() == null) { // it's a connected VO
           log.trace(">>> it's a connected VO (1)");
           this.soloVO = null;

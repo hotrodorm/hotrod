@@ -338,8 +338,6 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
   public List<TableTag> getFacetTables() {
     log.debug("this.chosenFacets=" + this.chosenFacets.stream().map(f -> f.getName()).collect(Collectors.joining(",")));
     if (this.chosenFacets.isEmpty()) {
-      log.debug("'player' tables="
-          + this.allFacets.getTables().stream().filter(t -> t.getDatabaseObject().getName().equals("player")).count());
       return this.allFacets.getTables();
     } else {
       computeSelectedFacets();

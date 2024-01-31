@@ -149,9 +149,9 @@ public class ViewTag extends AbstractEntityDAOTag {
           + "> cannot be empty. " + "Must specify a database view name.");
     }
 
-    if (this.catalog == null && this.schema == null) {
-      this.applyCurrentSchema(currentCS);
-    }
+//    if (this.catalog == null && this.schema == null) {
+//      this.applyCurrentSchema(currentCS);
+//    }
 
     // catalog
 

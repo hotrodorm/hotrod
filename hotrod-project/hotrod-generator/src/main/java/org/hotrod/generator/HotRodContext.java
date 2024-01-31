@@ -31,6 +31,7 @@ import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnrecognizedDatabaseException;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
+import org.hotrodorm.hotrod.utils.SUtil;
 import org.hotrodorm.hotrod.utils.XUtil;
 import org.nocrala.tools.database.tartarus.connectors.DatabaseConnectorFactory.UnsupportedDatabaseException;
 import org.nocrala.tools.database.tartarus.core.CatalogSchema;
@@ -127,10 +128,10 @@ public class HotRodContext {
 
       // Loading Configuration
 
+      CatalogSchema currentCS = loc.getCatalogSchema();
       if (configFile != null) {
         try {
-          this.config = ConfigurationLoader.loadPrimary(baseDir, configFile, adapter, facetNames,
-              loc.getCatalogSchema());
+          this.config = ConfigurationLoader.loadPrimary(baseDir, configFile, adapter, facetNames, currentCS);
         } catch (ControlledException e) {
           if (e.getLocation() != null) {
             throw new ControlledException("\n" + e.getMessage() + "\n  in " + e.getLocation().render());
@@ -148,8 +149,7 @@ public class HotRodContext {
         }
         log.debug("Main Configuration loaded.");
       } else {
-        this.config = ConfigurationLoader.prepareNoConfig(baseDir, configFile, adapter, facetNames,
-            loc.getCatalogSchema());
+        this.config = ConfigurationLoader.prepareNoConfig(baseDir, configFile, adapter, facetNames, currentCS);
       }
 
       // Apply current schema to declared tables with no schema and no catalog
@@ -182,7 +182,7 @@ public class HotRodContext {
 
         log.debug("gen 1");
         if (mst.getSelectGeneration().getStrategy() == SelectStrategy.RESULT_SET) {
-          if (discover) {
+          if (discover) { // 1. Discover
 
             List<CatalogSchema> discoverCSs = new ArrayList<>();
             Set<DatabaseObject> excludeIds = new HashSet<>();
@@ -198,7 +198,8 @@ public class HotRodContext {
             }
 
             log.debug("gen 2");
-            this.db = new JdbcDatabase(conn, loc.getCatalogSchema(), tables, views, discoverCSs, excludeIds);
+            this.db = new JdbcDatabase(conn, currentCS, tables, views, discoverCSs, excludeIds);
+            removeCurrentCatalogSchema(currentCS);
             log.debug("gen 3");
             this.config.getFacetTables();// FIXME
 
@@ -220,17 +221,19 @@ public class HotRodContext {
             }
             this.config.getFacetTables();// FIXME
 
-          } else {
+          } else { // 2. No Discover
 
             log.debug("gen 4");
-            this.db = new JdbcDatabase(conn, loc.getCatalogSchema(), tables, views);
+            this.db = new JdbcDatabase(conn, currentCS, tables, views);
+            removeCurrentCatalogSchema(currentCS);
             log.debug("gen 5");
 
           }
-        } else {
+        } else { // 3. Create View Strategy
 
           log.debug("gen 6");
           this.db = new JdbcDatabase(loc, tables, views);
+          removeCurrentCatalogSchema(currentCS);
           log.debug("gen 7");
 
         }
@@ -333,6 +336,21 @@ public class HotRodContext {
       }
     }
 
+  }
+
+  private void removeCurrentCatalogSchema(CatalogSchema currentCS) {
+    for (JdbcTable t : this.db.getTables()) {
+      if (SUtil.equals(t.getCatalog(), currentCS.getCatalog()) && SUtil.equals(t.getSchema(), currentCS.getSchema())) {
+        t.setCatalog(null);
+        t.setSchema(null);
+      }
+    }
+    for (JdbcTable t : this.db.getViews()) {
+      if (SUtil.equals(t.getCatalog(), currentCS.getCatalog()) && SUtil.equals(t.getSchema(), currentCS.getSchema())) {
+        t.setCatalog(null);
+        t.setSchema(null);
+      }
+    }
   }
 
   // Getters

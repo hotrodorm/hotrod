@@ -204,9 +204,9 @@ public class TableTag extends AbstractEntityDAOTag {
           + "> cannot be empty. " + "Must specify a database table name.");
     }
 
-    if (this.catalog == null && this.schema == null) {
-      this.applyCurrentSchema(currentCS);
-    }
+//    if (this.catalog == null && this.schema == null) {
+//      this.applyCurrentSchema(currentCS);
+//    }
 
     // catalog
 

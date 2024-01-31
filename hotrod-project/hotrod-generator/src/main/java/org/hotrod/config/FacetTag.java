@@ -16,9 +16,11 @@ import org.apache.logging.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrodorm.hotrod.utils.SUtil;
+import org.hotrodorm.hotrod.utils.TUtil;
 import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 import org.nocrala.tools.database.tartarus.core.DatabaseObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
+import org.nocrala.tools.database.tartarus.utils.XUtil;
 
 @XmlRootElement(name = "facet")
 public class FacetTag extends AbstractConfigurationTag {
@@ -138,24 +140,9 @@ public class FacetTag extends AbstractConfigurationTag {
   }
 
   private void mergeTable(final TableTag table) {
-    log.debug("merge: " + table.toString() + " stack: " + Stream.of(Thread.currentThread().getStackTrace()).skip(1)
-        .limit(20).map(s -> s.getClassName() + "(" + s.getLineNumber() + ")").collect(Collectors.joining(", ")));
-    if (table.getDatabaseObject().getName().equals("player")) {
-      log.debug(">> Before: 'player' ids=" + this.tableIds.stream().filter(t -> t.getName().equals("player")).count() //
-          + " table: " + table.toString() //
-          + " found: "
-          + this.tableIds.stream().filter(t -> t.getName().equals("player")).map(t -> t.toString())
-              .collect(Collectors.joining(", ")) //
-          + " tables=" + this.tables.stream().filter(t -> t.getDatabaseObject().getName().equals("player")).count() //
-          + " contains=" + this.tableIds.contains(table.getDatabaseObject().getId()));
-    }
     if (!this.tableIds.contains(table.getDatabaseObject().getId())) {
       this.tableIds.add(table.getDatabaseObject().getId());
       this.tables.add(table);
-    }
-    if (table.getDatabaseObject().getName().equals("player")) {
-      log.debug(">> After: 'player' ids=" + this.tableIds.stream().filter(t -> t.getName().equals("player")).count()
-          + " tables=" + this.tables.stream().filter(t -> t.getDatabaseObject().getName().equals("player")).count());
     }
   }
 

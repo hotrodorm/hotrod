@@ -135,9 +135,9 @@ public class EnumTag extends AbstractEntityDAOTag {
           + "> cannot be empty. " + "Must specify the name of a database table.");
     }
 
-    if (this.catalog == null && this.schema == null) {
-      this.applyCurrentSchema(currentCS);
-    }
+//    if (this.catalog == null && this.schema == null) {
+//      this.applyCurrentSchema(currentCS);
+//    }
 
     // catalog
 
