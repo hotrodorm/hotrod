@@ -149,14 +149,16 @@ Returns a list where each element is a composite object `InvoiceWithLines` as sh
 
 ![Graph Query Result - Nitro](hotrod-project/docs/docs-4/nitro/images/graph-query-vos.png)
 
-The query is available for your application as a simple method call:
+In combination with the `.toJSON()` method, this strategy can produce JSON objects for entire
+branches of database data with a few lines of code. The query is available for your application
+as the method call:
 
 ```java
   List<InvoiceWithLines> searchInvoices()
 ```
 
-Graph Queries can include parameters, entities, extra expressions, and can also combine 
-Dynamic SQL and Native SQL as needed.
+Graph Queries can include parameters, entities, extra expressions, and can also combine
+Dynamic SQL and Native SQL.
 
 ## Hello World
 
