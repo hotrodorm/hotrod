@@ -174,7 +174,7 @@ Tell HotRod about the tables you have and the Graph query you want to define. Cr
   <table name="invoice_line" />
   <table name="product" />
   <table name="category" />
- 
+  
   <dao name="InvoiceQueries">
 
     <select method="searchInvoices">
@@ -195,6 +195,7 @@ Tell HotRod about the tables you have and the Graph query you want to define. Cr
       join invoice_line l on l.invoice_id = i.id
       join product p on p.id = l.product_id
       join category t on t.id = p.category_id
+      order by i.id
     </select>
 
   </dao>
@@ -208,11 +209,11 @@ Tell HotRod about the tables you have and the Graph query you want to define. Cr
 Create the file `schema.sql` with the following SQL content:
 
 ```sql
-drop table if exists invoice_line; 
-drop table if exists invoice; 
+drop table if exists invoice_line;
+drop table if exists invoice;
 drop table if exists customer;
-drop table if exists product; 
-drop table if exists category; 
+drop table if exists product;
+drop table if exists category;
 
 create table customer (
   id int primary key not null,
@@ -308,7 +309,8 @@ We see the code generation details:
 [INFO] DAO WebDAO included.
 [INFO]  - Select searchInvoices included.
 [INFO]  
-[INFO] Total of: 5 tables, 0 views, 0 enums, 1 DAO, and 0 sequences -- including 1 select method, and 0 query methods.
+[INFO] Total of: 5 tables, 0 views, 0 enums, 1 DAO, and 0 sequences -- including 1 select method, 
+       and 0 query methods.
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
@@ -384,7 +386,7 @@ public class App {
 
 ### Prepare the Runtime Properties File
 
-The runtime properties are used when running the application. Create the file `application.properties` as:
+The runtime properties are used when running the application. Create the file `./application.properties` as:
 
 ```properties
 # General configuration of the app
