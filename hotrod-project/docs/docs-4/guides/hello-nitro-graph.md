@@ -34,7 +34,7 @@ steps below. Alternatively, you can use your favorite IDE to create a blank Mave
 The `pom.xml` will include:
 - The Spring Boot Starter dependency and the Spring Boot Plugin.
 - The JDBC driver dependency according to your specific database.
-- The HotRod, HotRod LiveSQL, and MyBatis Libraries. 
+- The HotRod, HotRod LiveSQL, and MyBatis Libraries.
 - The HotRod Generator Plugin.
 
 The complete `pom.xml` file will look like:
@@ -182,9 +182,9 @@ Tell HotRod about the tables you have and the Graph query you want to define. Cr
         <columns>
           <vo table="invoice" extended-vo="InvoiceWithLines" alias="i">
             <association table="customer" property="customer" alias="c" />
-            <collection table="invoice_line" extended-vo="LineWithProduct" property="lines" alias="l"> 
+            <collection table="invoice_line" extended-vo="LineExt" property="lines" alias="l">
               <expression property="q2">l.qty * 2</expression>
-              <association table="product" extended-vo="ProductWithCategory" property="product" alias="p">
+              <association table="product" extended-vo="ProductExt" property="product" alias="p">
                 <association table="category" property="category" alias="t" />
               </association>
             </collection>
@@ -309,7 +309,7 @@ We see the code generation details:
 [INFO] DAO WebDAO included.
 [INFO]  - Select searchInvoices included.
 [INFO]  
-[INFO] Total of: 5 tables, 0 views, 0 enums, 1 DAO, and 0 sequences -- including 1 select method, 
+[INFO] Total of: 5 tables, 0 views, 0 enums, 1 DAO, and 0 sequences -- including 1 select method,
        and 0 query methods.
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
@@ -411,7 +411,7 @@ Now, let's run the application. Type:
 mvn spring-boot:run
 ```
 
-The Spring Boot application starts, connects to the database and run both queries. We see the result shown below:
+The Spring Boot application starts, connects to the database and runs the query. We see the result shown below:
 
 ```log
 [ Starting example ]
