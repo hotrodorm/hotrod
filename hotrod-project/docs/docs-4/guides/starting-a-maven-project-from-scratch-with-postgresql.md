@@ -402,7 +402,7 @@ Now, let's run the application. Type:
 mvn spring-boot:run
 ```
 
-The Spring Boot application starts, connects to the database and run both queries. We see the result shown below:
+The Spring Boot application starts, connects to the database and runs both queries. We see the result shown below:
 
 ```log
 [ Starting example ]
