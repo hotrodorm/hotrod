@@ -90,7 +90,7 @@ In this way, the above function can be called with an Expression as in `sin(a.an
 
 # Function Pattern
 
-The function pattern specifies the rendering details of the function. For example `sin(#{})` renders as `sin(x)` where `x` is replaced by the given parameter when executing the query. A pattern can include two types of parameters:
+The function pattern specifies the rendering details of the function. For example, `sin(#{})` renders as `sin(x)` where `x` is replaced by the given parameter when executing the query. A pattern can include two types of parameters:
 
  - *Single positional parameters* as `#{}`.
  - *Varargs parameters* as `#{prefix?suffix}` or `#{firstprefix?prefix?suffix}`.
