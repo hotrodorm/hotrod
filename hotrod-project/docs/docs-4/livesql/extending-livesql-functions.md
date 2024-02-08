@@ -86,7 +86,7 @@ public NumberFunction sin(Number x) { // accepts any java.lang.Number
 }
 ```
 
-This way, the above function can be called with an Expression as in `sin(a.angle)`, or with a primitive value as in `sin(123)`.
+In this way, the above function can be called with an Expression as in `sin(a.angle)`, or with a primitive value as in `sin(123)`.
 
 # Function Pattern
 
