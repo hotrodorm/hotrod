@@ -161,7 +161,7 @@ To produce the result `124`.
 ## Examples
 
 The examples below were tested in PostgrrSQL 12. PostgreSQL implements functions with varied patterns. Some use the traditional comma as separator 
-while other ones use keywords; most have parenthesis, some don't; there are also some functions that use the syntax as of operators.
+while other ones use keywords; most have parentheses, some don't; there are also some functions that use the syntax as of operators.
 
 - **Example #1:** Function `localtimestamp` with no parameters and no parenthesis.
  
