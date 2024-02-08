@@ -62,7 +62,7 @@ Notice the function factory receives either a vararg (`Expression...`) or a *sin
 
 ## Parameters Boxing
 
-Primitives values and simple parameters like:
+Primitive values and simple parameters like:
 
  - Any `java.lang.Number` such as `int`, `Integer`, or `Float`
  - `String`
