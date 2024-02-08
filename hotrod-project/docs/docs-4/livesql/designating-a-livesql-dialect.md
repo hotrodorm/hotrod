@@ -67,9 +67,9 @@ The most important property is the first one. The rest can be useful in cases wh
 
 ## Designating the LiveSQL Dialect for Multiple DataSources
 
-When an application uses multiple datasources &ndash; either different databases or the several instances of the same database &ndash; 
-the defaul datasource configuration cannot be used, but each datasource needs to be specified separately, including their dialects.
-See [Using Multiple DataSources](../guides/using-multiple-datasources.md) for an example on how to define multiple datasources.
+When an application uses multiple DataSources &ndash; either different databases or the several instances of the same database &ndash; 
+the default DataSource configuration cannot be used, but each DataSource needs to be specified separately, including their dialects.
+See [Using Multiple DataSources](../guides/using-multiple-datasources.md) for an example on how to define multiple DataSources.
 
 The `application.properties` file can take the form:
 
