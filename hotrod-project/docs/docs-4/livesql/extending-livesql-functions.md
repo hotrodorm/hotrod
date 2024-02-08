@@ -99,7 +99,7 @@ Please note that varargs can only be placed as the last parameter of the pattern
 
 ## Pattern Examples
 
-The following examples illustrate the patterns to use if you wanted to add a few PostgreSQL built-in functions into the LiveSQL syntax:
+The following examples illustrate the patterns to use if you want to add a few PostgreSQL built-in functions into the LiveSQL syntax:
 
  - `localtimestamp` -- function with no parenthesis.
  - `random()` -- no parameters.
