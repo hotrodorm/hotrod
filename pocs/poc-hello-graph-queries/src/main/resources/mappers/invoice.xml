@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.invoice">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    id,
+    customer_id,
+    purchase_date,
+    paid
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.id,
+    ${alias}.customer_id,
+    ${alias}.purchase_date,
+    ${alias}.paid
+  </sql>
+
+  <resultMap id="allColumns" type="app.daos.InvoiceVO">
+    <id property="id" column="ID" />
+    <result property="customerId" column="CUSTOMER_ID" />
+    <result property="purchaseDate" column="PURCHASE_DATE" />
+    <result property="paid" column="PAID" />
+  </resultMap>
+
+  <!-- select by PK -->
+
+  <select id="selectByPK" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from invoice
+     where
+      id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!-- no select by unique indexes since there are no UI (besides the PK) -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from invoice
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="p.id != null">
+        and id = #{p.id,jdbcType=INTEGER}
+      </if>
+      <if test="p.customerId != null">
+        and customer_id = #{p.customerId,jdbcType=INTEGER}
+      </if>
+      <if test="p.purchaseDate != null">
+        and purchase_date = #{p.purchaseDate,jdbcType=DATE}
+      </if>
+      <if test="p.paid != null">
+        and paid = #{p.paid,jdbcType=INTEGER}
+      </if>
+    </trim>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into invoice (
+      <trim prefixOverrides=", ">
+        <if test="true">, id</if>
+        <if test="true">, customer_id</if>
+        <if test="true">, purchase_date</if>
+        <if test="true">, paid</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{id,jdbcType=INTEGER}</if>
+        <if test="true">, #{customerId,jdbcType=INTEGER}</if>
+        <if test="true">, #{purchaseDate,jdbcType=DATE}</if>
+        <if test="true">, #{paid,jdbcType=INTEGER}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK -->
+
+  <update id="updateByPK">
+    update invoice set
+      customer_id = #{customerId,jdbcType=INTEGER},
+      purchase_date = #{purchaseDate,jdbcType=DATE},
+      paid = #{paid,jdbcType=INTEGER}
+     where
+      id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- delete by PK -->
+
+  <delete id="deleteByPK">
+    delete from invoice
+     where
+      id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update invoice
+    <set>
+      <if test="values.id != null">id = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.customerId != null">customer_id = #{values.customerId,jdbcType=INTEGER},</if>
+      <if test="values.purchaseDate != null">purchase_date = #{values.purchaseDate,jdbcType=DATE},</if>
+      <if test="values.paid != null">paid = #{values.paid,jdbcType=INTEGER},</if>
+    </set>
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="filter.id != null">
+        and id = #{filter.id,jdbcType=INTEGER}
+      </if>
+      <if test="filter.customerId != null">
+        and customer_id = #{filter.customerId,jdbcType=INTEGER}
+      </if>
+      <if test="filter.purchaseDate != null">
+        and purchase_date = #{filter.purchaseDate,jdbcType=DATE}
+      </if>
+      <if test="filter.paid != null">
+        and paid = #{filter.paid,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </update>
+
+  <!-- update by criteria -->
+
+  <select id="updateByCriteria">
+    ${sql}
+  </select>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from invoice
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="id != null">
+        and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="customerId != null">
+        and customer_id = #{customerId,jdbcType=INTEGER}
+      </if>
+      <if test="purchaseDate != null">
+        and purchase_date = #{purchaseDate,jdbcType=DATE}
+      </if>
+      <if test="paid != null">
+        and paid = #{paid,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </delete>
+
+  <!-- delete by criteria -->
+
+  <select id="deleteByCriteria">
+    ${sql}
+  </select>
+
+</mapper>

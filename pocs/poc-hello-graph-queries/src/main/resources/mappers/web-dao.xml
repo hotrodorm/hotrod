@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.webDAO">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    
+  </sql>
+
+  <sql id="columnsWithAlias">
+    
+  </sql>
+
+  <!-- select method: searchInvoices -->
+
+  <resultMap id="result_map_select_searchInvoices" type="app.daos.InvoiceWithLinesVO">
+    <id property="id" column="NS0_ID" />
+    <result property="customerId" column="NS0_CUSTOMER_ID" />
+    <result property="purchaseDate" column="NS0_PURCHASE_DATE" />
+    <result property="paid" column="NS0_PAID" />
+    <association property="customer" javaType="app.daos.CustomerVO">
+      <id property="id" column="NS5_ID" />
+      <result property="name" column="NS5_NAME" />
+    </association>
+    <collection property="lines" ofType="app.daos.LineExtVO">
+      <result property="invoiceId" column="NS1_INVOICE_ID" />
+      <result property="productId" column="NS1_PRODUCT_ID" />
+      <result property="qty" column="NS1_QTY" />
+      <result property="q2" column="NS2_EXPR_0" />
+      <association property="product" javaType="app.daos.ProductExtVO">
+        <id property="id" column="NS3_ID" />
+        <result property="name" column="NS3_NAME" />
+        <result property="categoryId" column="NS3_CATEGORY_ID" />
+        <association property="category" javaType="app.daos.CategoryVO">
+          <id property="id" column="NS4_ID" />
+          <result property="name" column="NS4_NAME" />
+        </association>
+      </association>
+    </collection>
+  </resultMap>
+
+  <select id="select_searchInvoices" resultMap="result_map_select_searchInvoices">
+    select
+        i.id as NS0_ID,
+        i.customer_id as NS0_CUSTOMER_ID,
+        i.purchase_date as NS0_PURCHASE_DATE,
+        i.paid as NS0_PAID,
+        c.id as NS5_ID,
+        c.name as NS5_NAME,
+        l.invoice_id as NS1_INVOICE_ID,
+        l.product_id as NS1_PRODUCT_ID,
+        l.qty as NS1_QTY,
+        l.qty * 2 as NS2_EXPR_0,
+        p.id as NS3_ID,
+        p.name as NS3_NAME,
+        p.category_id as NS3_CATEGORY_ID,
+        t.id as NS4_ID,
+        t.name as NS4_NAME
+    from invoice i
+    join customer c on c.id = i.customer_id
+    join invoice_line l on l.invoice_id = i.id
+    join product p on p.id = l.product_id
+    join category t on t.id = p.category_id
+  </select>
+
+</mapper>
