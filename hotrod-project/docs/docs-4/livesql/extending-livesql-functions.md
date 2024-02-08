@@ -1,6 +1,6 @@
 # Extending LiveSQL Functions
 
-LiveSQL includes the infrastructure to add custom database functions. These can represent built-in 
+LiveSQL includes the infrastructure to add custom database functions. These functions can represent built-in 
 database functions, or other user-defined functions available in the database.
 
 To add new functions, create a `@Component` that include methods for each function. For example:
