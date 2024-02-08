@@ -62,7 +62,7 @@ livesql.livesqldialectmajorVersion=10
 livesql.livesqldialectminorVersion=5
 ```
 
-The most important property is the fist one. The rest can be useful in cases where the SQL support has changed considerably over time; for example, Oracle 12c improved SQL support considerably and it's important for LiveSQL to know how the target version of the database to render the SQL statements appropriately.
+The most important property is the first one. The rest can be useful in cases where the SQL support has changed considerably over time; for example, Oracle 12c improved SQL support considerably and it's important for LiveSQL to know how the target version of the database to render the SQL statements appropriately.
 
 
 ## Designating the LiveSQL Dialect for Multiple DataSources
