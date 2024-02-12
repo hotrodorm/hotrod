@@ -296,15 +296,77 @@ this created confusion in HotRod's metadata.
 
 - Adding tar.gz packaging for Docker releases.
 - Fully dockerized example: web + hotrod + docker + java11 + maven + spring.
+- Docker! Tested HotRod in fully dockerized example working with: web content, hotrod, docker, Java 11, Maven, and Spring.
 
 ## 3.0.2
 
+- Setting JAXB dependencies to RI.
 - Added Spring, Maven, web POC.
 
 ## 3.0.1
 
 - Fixing Java 9 JAXB implementation.
+- Maven plug-in implemented.
+- Generator dynamic class loading of JDBC drivers.
 
 ## 3.0.0
 
 - HotRod released to Maven Central Repository.
+- Spring support.
+- New module: LiveSQL!
+- CRUD: selectByCriteria() implemented.
+- LiveSQL dialect can now be designated in the Spring config file.
+
+
+## 2.1.2
+
+- Fixing mappers relative URLs in Windows.
+- Support for PostgreSQL 10.x identity columns.
+
+## 2.1.1
+
+- Expressions can now shadow graph VO properties.
+
+## 2.1.0
+
+- Multiple Catalogs & Schemas.
+- Mixed-case identifiers supported.
+- Support for SQL Server for catalog/schema combinations.
+- Insert with internal and external sequences.
+
+## 2.0.0
+
+- DAO/VO separation.
+- Graph Queries.
+- Upgrading to Java 8.
+- Adding default catalog and schema.
+- New XML parser.
+- Complement tag implemented.
+- Nitro General Queries (`<query>` tag) implemented.
+- Nitro simplified parameter tags.
+- TypeConverter methods are now decode/encode instead of get/set.
+- Insert by Example implemented.
+- Full enum generation.
+- Adding support for Apache Derby database.
+- Multi identities retrieval tested (PostgreSQL).
+
+## 1.0.2
+
+- Converters implemented.
+- Fixing Boolean getters according to the JavaBean specification.
+- Fixing column tag validation.
+- Packages are implemented as a property of the fragment.
+
+## 1.0.1
+
+- Improved HTML docs.
+
+## 1.0.0
+
+- Initial HotRod.
+- Initial version of CRUD.
+- Nitro Flat Selects implemented.
+- Initial HTML web site documenation.
+- Added support for Oracle, DB2, PostgreSQL, SQL Server, Sybase ASE, MySQL, MariaDB, HyperSQL, and H2.
+- Apache Ant plug-in.
+
