@@ -12,6 +12,11 @@ The SELECT ... FOR UPDATE locking feature was implemented in the LiveSQL syntax.
 This convenience method was added to return single rows or VOs when it's known that the queries
 will return one row at the most.
 
+### 3. Graph Queries
+
+Composite graph objects now include convenient JSON rendering that include all subelements at once.
+
+
 
 ## What's New in HotRod 4.4
 

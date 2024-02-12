@@ -2,6 +2,12 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
+## 4.5.3:
+
+- Nitro:
+    - Improving JSON rendering of graphs queries.
+    - Fixing search of entities in current schema for graph queries.
+
 ## 4.5.2
 
 - LiveSQL:

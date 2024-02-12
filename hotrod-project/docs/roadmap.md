@@ -15,7 +15,9 @@ Version 4.7:
 
 Version 5.0:
 
+- LiveSQL Entities.
 - DAO, VO, Model configuration normalization.
+- Nitro unnamed subtypes.
 - CRUD enhancements: add index access, foreign keys access with/without optimization.
 
 Version 6.0:
