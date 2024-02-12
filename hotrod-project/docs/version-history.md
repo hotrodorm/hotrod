@@ -306,7 +306,6 @@ this created confusion in HotRod's metadata.
 ## 3.0.1
 
 - Fixing Java 9 JAXB implementation.
-- Maven plug-in implemented.
 - Generator dynamic class loading of JDBC drivers.
 
 ## 3.0.0
