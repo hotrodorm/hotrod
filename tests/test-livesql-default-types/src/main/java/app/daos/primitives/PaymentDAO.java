@@ -15,6 +15,8 @@ import org.hotrod.runtime.interfaces.OrderBy;
 
 import app.daos.primitives.AbstractPaymentVO;
 import app.daos.PaymentVO;
+import org.hotrod.runtime.livesql.metadata.Entity;
+
 
 import java.lang.Override;
 import java.util.Map;
@@ -186,12 +188,12 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
 
   public enum PaymentOrderBy implements OrderBy {
 
-    PAYMENT_DATE("public.payment", "payment_date", true), //
-    PAYMENT_DATE$DESC("public.payment", "payment_date", false), //
-    INVOICE_ID("public.payment", "invoice_id", true), //
-    INVOICE_ID$DESC("public.payment", "invoice_id", false), //
-    AMOUNT("public.payment", "amount", true), //
-    AMOUNT$DESC("public.payment", "amount", false);
+    PAYMENT_DATE("payment", "payment_date", true), //
+    PAYMENT_DATE$DESC("payment", "payment_date", false), //
+    INVOICE_ID("payment", "invoice_id", true), //
+    INVOICE_ID$DESC("payment", "invoice_id", false), //
+    AMOUNT("payment", "amount", true), //
+    AMOUNT$DESC("payment", "amount", false);
 
     private PaymentOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -245,12 +247,12 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     PaymentTable() {
-      super(null, "PUBLIC", "PAYMENT", "Table", null);
+      super(null, null, "PAYMENT", "Table", null);
       initialize();
     }
 
     PaymentTable(final String alias) {
-      super(null, "PUBLIC", "PAYMENT", "Table", alias);
+      super(null, null, "PAYMENT", "Table", alias);
       initialize();
     }
 
@@ -264,6 +266,62 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
       super.columns.add(this.invoiceId);
       this.amount = new NumberColumn(this, "AMOUNT", "amount", "INTEGER", 32, 0);
       super.columns.add(this.amount);
+    }
+
+  }
+
+  // LiveSQL Entity
+
+  public static PaymentEntity<app.daos.PaymentVO> newEntity() {
+    return new PaymentEntity<app.daos.PaymentVO>();
+  }
+
+  public static PaymentEntity<app.daos.PaymentVO> newEntity(final String alias) {
+    return new PaymentEntity<app.daos.PaymentVO>(alias);
+  }
+
+  public static class PaymentEntity<T> extends Entity<T> {
+
+    // Properties
+
+    public DateTimeColumn paymentDate;
+    public NumberColumn invoiceId;
+    public NumberColumn amount;
+
+    // Getters
+
+    public AllColumns star() {
+      return new AllColumns(this.paymentDate, this.invoiceId, this.amount);
+    }
+
+    // Constructors
+
+    PaymentEntity() {
+      super(null, null, "PAYMENT", "Table", null);
+      initialize();
+    }
+
+    PaymentEntity(final String alias) {
+      super(null, null, "PAYMENT", "Table", alias);
+      initialize();
+    }
+
+    // Initialization
+
+    private void initialize() {
+      super.columns = new ArrayList<>();
+      this.paymentDate = new DateTimeColumn(this, "PAYMENT_DATE", "paymentDate", "DATE", 10, 0);
+      super.columns.add(this.paymentDate);
+      this.invoiceId = new NumberColumn(this, "INVOICE_ID", "invoiceId", "INTEGER", 32, 0);
+      super.columns.add(this.invoiceId);
+      this.amount = new NumberColumn(this, "AMOUNT", "amount", "INTEGER", 32, 0);
+      super.columns.add(this.amount);
+    }
+
+    @Override
+    public T getModel() {
+      // TODO Auto-generated method stub
+      return null;
     }
 
   }

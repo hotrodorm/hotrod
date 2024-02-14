@@ -5,6 +5,7 @@ import java.util.Map;
 
 import app.daos.BranchVO;
 import app.daos.primitives.BranchDAO;
+import app.daos.primitives.BranchDAO.BranchEntity;
 import app.daos.primitives.BranchDAO.BranchTable;
 import app.test.assembly.SQL;
 import app.test.assembly.Tuple1;
@@ -35,9 +36,9 @@ public class Test1 {
     BusTable<BusVO> u = BusDAO.entity();
     CarTable<CarVO> v = CarDAO.entity();
 
-    BranchTable<?> b = BranchDAO.newTable();
+    BranchEntity<BranchVO> b = BranchDAO.newEntity();
 
-    BranchTable<BranchVO> b2 = BranchDAO.newTable();
+    sql.select().from(t);
 
     // Una entidad
 

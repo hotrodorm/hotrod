@@ -52,14 +52,20 @@ public class AbstractInvoiceLineVO implements Serializable {
     return sb.toString();
   }
 
-  // to JSON
+  // to JSON Object
 
-  public String toJSON() {
+  public JSONObject toJSONObject() {
     JSONObject obj = new JSONObject();
     obj.addProperty("invoiceId", this.invoiceId);
     obj.addProperty("productId", this.productId);
     obj.addProperty("lineTotal", this.lineTotal);
-    return obj.render();
+    return obj;
+  }
+
+  // to JSON String
+
+  public String toJSON() {
+    return toJSONObject().render();
   }
 
 }

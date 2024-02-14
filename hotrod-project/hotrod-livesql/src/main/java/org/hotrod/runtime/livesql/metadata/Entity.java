@@ -5,9 +5,9 @@ import java.util.stream.Collectors;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 
-public abstract class Table<T> extends TableOrView {
+public abstract class Entity<T> extends TableOrView {
 
-  public Table(final String catalog, final String schema, final String name, final String type, final String alias) {
+  public Entity(final String catalog, final String schema, final String name, final String type, final String alias) {
     super(catalog, schema, name, type, alias);
   }
 
@@ -15,5 +15,7 @@ public abstract class Table<T> extends TableOrView {
   public List<ResultSetColumn> getColumns() throws IllegalAccessException {
     return super.columns.stream().map(c -> (ResultSetColumn) c).collect(Collectors.toList());
   }
+  
+  public abstract T getModel();
 
 }

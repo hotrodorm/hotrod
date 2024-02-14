@@ -10,6 +10,7 @@ import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.ordering.CombinedOrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
@@ -34,7 +35,7 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
   private boolean forceParenthesis;
   private MultiSet<R> first;
   private List<SetOperatorTerm<R>> combined;
-  private SelectObject<R> lastSelect; // TODO: Remove?
+  private SelectObject<R> lastSelect;
 
   private List<CombinedOrderingTerm> orderingTerms = null;
   private Integer offset = null;
@@ -281,6 +282,19 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
   }
 
   // Combining
+
+  public AbstractSelectObject<R> getFirstSelect() {
+    MultiSet<R> f = this.first;
+    while (true) {
+      try {
+        AbstractSelectObject<R> a = (AbstractSelectObject<R>) f;
+        return a;
+      } catch (ClassCastException e) {
+        CombinedSelectObject<R> c = (CombinedSelectObject<R>) f;
+        f = c.first;
+      }
+    }
+  }
 
   public final SelectObject<R> getLastSelect() {
     return this.lastSelect;

@@ -15,6 +15,8 @@ import org.hotrod.runtime.interfaces.OrderBy;
 
 import app.daos.primitives.AbstractAccountVO;
 import app.daos.AccountVO;
+import org.hotrod.runtime.livesql.metadata.Entity;
+
 
 import java.lang.Override;
 import java.util.Map;
@@ -186,12 +188,12 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   public enum AccountOrderBy implements OrderBy {
 
-    ID("public.account", "id", true), //
-    ID$DESC("public.account", "id", false), //
-    PARENT_ID("public.account", "parent_id", true), //
-    PARENT_ID$DESC("public.account", "parent_id", false), //
-    BRANCH_ID("public.account", "branch_id", true), //
-    BRANCH_ID$DESC("public.account", "branch_id", false);
+    ID("account", "id", true), //
+    ID$DESC("account", "id", false), //
+    PARENT_ID("account", "parent_id", true), //
+    PARENT_ID$DESC("account", "parent_id", false), //
+    BRANCH_ID("account", "branch_id", true), //
+    BRANCH_ID$DESC("account", "branch_id", false);
 
     private AccountOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -245,12 +247,12 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     AccountTable() {
-      super(null, "PUBLIC", "ACCOUNT", "Table", null);
+      super(null, null, "ACCOUNT", "Table", null);
       initialize();
     }
 
     AccountTable(final String alias) {
-      super(null, "PUBLIC", "ACCOUNT", "Table", alias);
+      super(null, null, "ACCOUNT", "Table", alias);
       initialize();
     }
 
@@ -264,6 +266,62 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       super.columns.add(this.parentId);
       this.branchId = new NumberColumn(this, "BRANCH_ID", "branchId", "INTEGER", 32, 0);
       super.columns.add(this.branchId);
+    }
+
+  }
+
+  // LiveSQL Entity
+
+  public static AccountEntity<app.daos.AccountVO> newEntity() {
+    return new AccountEntity<app.daos.AccountVO>();
+  }
+
+  public static AccountEntity<app.daos.AccountVO> newEntity(final String alias) {
+    return new AccountEntity<app.daos.AccountVO>(alias);
+  }
+
+  public static class AccountEntity<T> extends Entity<T> {
+
+    // Properties
+
+    public NumberColumn id;
+    public NumberColumn parentId;
+    public NumberColumn branchId;
+
+    // Getters
+
+    public AllColumns star() {
+      return new AllColumns(this.id, this.parentId, this.branchId);
+    }
+
+    // Constructors
+
+    AccountEntity() {
+      super(null, null, "ACCOUNT", "Table", null);
+      initialize();
+    }
+
+    AccountEntity(final String alias) {
+      super(null, null, "ACCOUNT", "Table", alias);
+      initialize();
+    }
+
+    // Initialization
+
+    private void initialize() {
+      super.columns = new ArrayList<>();
+      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
+      super.columns.add(this.id);
+      this.parentId = new NumberColumn(this, "PARENT_ID", "parentId", "INTEGER", 32, 0);
+      super.columns.add(this.parentId);
+      this.branchId = new NumberColumn(this, "BRANCH_ID", "branchId", "INTEGER", 32, 0);
+      super.columns.add(this.branchId);
+    }
+
+    @Override
+    public T getModel() {
+      // TODO Auto-generated method stub
+      return null;
     }
 
   }

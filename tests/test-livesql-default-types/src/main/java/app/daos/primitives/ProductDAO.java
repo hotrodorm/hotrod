@@ -15,6 +15,8 @@ import org.hotrod.runtime.interfaces.OrderBy;
 
 import app.daos.primitives.AbstractProductVO;
 import app.daos.ProductVO;
+import org.hotrod.runtime.livesql.metadata.Entity;
+
 
 import java.lang.Override;
 import java.util.Map;
@@ -186,18 +188,18 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   public enum ProductOrderBy implements OrderBy {
 
-    ID("public.product", "id", true), //
-    ID$DESC("public.product", "id", false), //
-    TYPE("public.product", "type", true), //
-    TYPE$DESC("public.product", "type", false), //
-    TYPE$CASEINSENSITIVE("public.product", "lower(type)", true), //
-    TYPE$CASEINSENSITIVE_STABLE_FORWARD("public.product", "lower(type), type", true), //
-    TYPE$CASEINSENSITIVE_STABLE_REVERSE("public.product", "lower(type), type", false), //
-    TYPE$DESC_CASEINSENSITIVE("public.product", "lower(type)", false), //
-    TYPE$DESC_CASEINSENSITIVE_STABLE_FORWARD("public.product", "lower(type), type", false), //
-    TYPE$DESC_CASEINSENSITIVE_STABLE_REVERSE("public.product", "lower(type), type", true), //
-    SHIPPING("public.product", "shipping", true), //
-    SHIPPING$DESC("public.product", "shipping", false);
+    ID("product", "id", true), //
+    ID$DESC("product", "id", false), //
+    TYPE("product", "type", true), //
+    TYPE$DESC("product", "type", false), //
+    TYPE$CASEINSENSITIVE("product", "lower(type)", true), //
+    TYPE$CASEINSENSITIVE_STABLE_FORWARD("product", "lower(type), type", true), //
+    TYPE$CASEINSENSITIVE_STABLE_REVERSE("product", "lower(type), type", false), //
+    TYPE$DESC_CASEINSENSITIVE("product", "lower(type)", false), //
+    TYPE$DESC_CASEINSENSITIVE_STABLE_FORWARD("product", "lower(type), type", false), //
+    TYPE$DESC_CASEINSENSITIVE_STABLE_REVERSE("product", "lower(type), type", true), //
+    SHIPPING("product", "shipping", true), //
+    SHIPPING$DESC("product", "shipping", false);
 
     private ProductOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -251,12 +253,12 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     ProductTable() {
-      super(null, "PUBLIC", "PRODUCT", "Table", null);
+      super(null, null, "PRODUCT", "Table", null);
       initialize();
     }
 
     ProductTable(final String alias) {
-      super(null, "PUBLIC", "PRODUCT", "Table", alias);
+      super(null, null, "PRODUCT", "Table", alias);
       initialize();
     }
 
@@ -270,6 +272,62 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
       super.columns.add(this.type);
       this.shipping = new NumberColumn(this, "SHIPPING", "shipping", "INTEGER", 32, 0);
       super.columns.add(this.shipping);
+    }
+
+  }
+
+  // LiveSQL Entity
+
+  public static ProductEntity<app.daos.ProductVO> newEntity() {
+    return new ProductEntity<app.daos.ProductVO>();
+  }
+
+  public static ProductEntity<app.daos.ProductVO> newEntity(final String alias) {
+    return new ProductEntity<app.daos.ProductVO>(alias);
+  }
+
+  public static class ProductEntity<T> extends Entity<T> {
+
+    // Properties
+
+    public NumberColumn id;
+    public StringColumn type;
+    public NumberColumn shipping;
+
+    // Getters
+
+    public AllColumns star() {
+      return new AllColumns(this.id, this.type, this.shipping);
+    }
+
+    // Constructors
+
+    ProductEntity() {
+      super(null, null, "PRODUCT", "Table", null);
+      initialize();
+    }
+
+    ProductEntity(final String alias) {
+      super(null, null, "PRODUCT", "Table", alias);
+      initialize();
+    }
+
+    // Initialization
+
+    private void initialize() {
+      super.columns = new ArrayList<>();
+      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
+      super.columns.add(this.id);
+      this.type = new StringColumn(this, "TYPE", "type", "CHARACTER VARYING", 6, 0);
+      super.columns.add(this.type);
+      this.shipping = new NumberColumn(this, "SHIPPING", "shipping", "INTEGER", 32, 0);
+      super.columns.add(this.shipping);
+    }
+
+    @Override
+    public T getModel() {
+      // TODO Auto-generated method stub
+      return null;
     }
 
   }

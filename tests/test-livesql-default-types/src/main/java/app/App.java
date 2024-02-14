@@ -20,6 +20,8 @@ import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.runtime.livesql.queries.select.CriteriaForUpdatePhase;
 import org.hotrod.runtime.livesql.queries.select.EntitySelect;
 import org.hotrod.runtime.livesql.queries.select.Select;
+import org.hotrod.runtime.livesql.queries.select.SelectFromPhase;
+import org.hotrod.runtime.livesql.queries.select.entity.SelectFromEntityPhase;
 import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.mybatis.spring.annotation.MapperScan;
@@ -36,10 +38,10 @@ import org.springframework.context.annotation.PropertySource;
 import app.daos.AccountVO;
 import app.daos.BranchVO;
 import app.daos.InvoiceVO;
-import app.daos.TypesDateTimeVO;
 import app.daos.primitives.AccountDAO;
 import app.daos.primitives.AccountDAO.AccountTable;
 import app.daos.primitives.BranchDAO;
+import app.daos.primitives.BranchDAO.BranchEntity;
 import app.daos.primitives.BranchDAO.BranchTable;
 import app.daos.primitives.InvoiceDAO;
 import app.daos.primitives.InvoiceDAO.InvoiceTable;
@@ -49,12 +51,6 @@ import app.daos.primitives.PaymentDAO;
 import app.daos.primitives.PaymentDAO.PaymentTable;
 import app.daos.primitives.ProductDAO;
 import app.daos.primitives.ProductDAO.ProductTable;
-import app.daos.primitives.TypesBinaryDAO;
-import app.daos.primitives.TypesCharDAO;
-import app.daos.primitives.TypesDateTimeDAO;
-import app.daos.primitives.TypesDateTimeDAO.TypesDateTimeTable;
-import app.daos.primitives.TypesNumericDAO;
-import app.daos.primitives.TypesOtherDAO;
 
 @Configuration
 @SpringBootApplication
@@ -77,9 +73,9 @@ public class App {
 
   @Autowired
   private InvoiceDAO invoiceDAO;
-
-  @Autowired
-  private TypesDateTimeDAO typesDateTimeDAO;
+//
+//  @Autowired
+//  private TypesDateTimeDAO typesDateTimeDAO;
 
   @Autowired
   private LiveSQL sql;
@@ -146,21 +142,8 @@ public class App {
   }
 
   private void livesql() throws SQLException {
-//    for (Row r : this.sql.select(sql.val("abc").ascii().as("code")).execute()) {
-//      System.out.println("r=" + r);
-//    }
-//    for (Row r : this.sql.select(sql.val("abc").ascii().as("code")).execute()) {
-//      System.out.println("r=" + r);
-//    }
 
-//    NumbersTable n = NumbersDAO.newTable("n");
-//    List<Row> rows = sql.select(n.id) //
-//        .from(n) //
-//        .where(n.id.eq(1).and(sql.enclose(n.int1.lt(4).or(n.dec1.ne(2))).and(n.dec2.ge(3))))//
-//        .execute();
-//    for (Row r : rows) {
-//      System.out.println("r=" + r);
-//    }
+    liveSQLEntities();
 
     // Subqueries
 //    joinedTableExpressions();
@@ -170,7 +153,7 @@ public class App {
 //    lateralJoins();
 //    recursiveCTEs();
 
-    liveSQLExamples();
+//    liveSQLExamples();
 
 //    update();
 
@@ -262,36 +245,36 @@ public class App {
 //
 //  }
 
-  private void update() {
-
-    InvoiceTable i = InvoiceDAO.newTable("i");
-    BranchTable b = BranchDAO.newTable("b");
-    BranchTable c = BranchDAO.newTable("c");
-
-//    // update branch set region = 'x' where id >= 4 and not is_vip
+//  private void update() {
 //
-//    DMLQuery q = sql.update(b).set(b.region, "x").where(b.id.ge(sql.literal(4)).and(sql.not(b.isVip)));
+//    InvoiceTable i = InvoiceDAO.newTable("i");
+//    BranchTable b = BranchDAO.newTable("b");
+//    BranchTable c = BranchDAO.newTable("c");
+//
+////    // update branch set region = 'x' where id >= 4 and not is_vip
+////
+////    DMLQuery q = sql.update(b).set(b.region, "x").where(b.id.ge(sql.literal(4)).and(sql.not(b.isVip)));
+////    System.out.println("1. Update: " + q.getPreview());
+////    int rows = q.execute();
+////    System.out.println("updated rows=" + rows);
+//
+////    // delete from branch where id >= 4 and not is_vip
+////
+////    DMLQuery q = sql.delete(b).where(b.id.ge(sql.literal(4)).and(sql.not(b.isVip)));
+////    System.out.println("1. Update: " + q.getPreview());
+////    int rows = q.execute();
+////    System.out.println("updated rows=" + rows);
+//
+//    // insert into branch select id+ 10, region, is_vip from branch where id >= 4
+//    // and not is_vip
+//
+//    DMLQuery q = sql.insert(b).select(sql.select(c.id.plus(sql.literal(10)), c.region, c.isVip).from(c)
+//        .where(c.id.ge(sql.literal(4)).and(sql.not(c.isVip.eq("VIP")))));
 //    System.out.println("1. Update: " + q.getPreview());
 //    int rows = q.execute();
 //    System.out.println("updated rows=" + rows);
-
-//    // delete from branch where id >= 4 and not is_vip
 //
-//    DMLQuery q = sql.delete(b).where(b.id.ge(sql.literal(4)).and(sql.not(b.isVip)));
-//    System.out.println("1. Update: " + q.getPreview());
-//    int rows = q.execute();
-//    System.out.println("updated rows=" + rows);
-
-    // insert into branch select id+ 10, region, is_vip from branch where id >= 4
-    // and not is_vip
-
-    DMLQuery q = sql.insert(b).select(sql.select(c.id.plus(sql.literal(10)), c.region, c.isVip).from(c)
-        .where(c.id.ge(sql.literal(4)).and(sql.not(c.isVip.eq("VIP")))));
-    System.out.println("1. Update: " + q.getPreview());
-    int rows = q.execute();
-    System.out.println("updated rows=" + rows);
-
-  }
+//  }
 
   private void livesql2() {
     InvoiceTable i = InvoiceDAO.newTable("i");
@@ -328,6 +311,38 @@ public class App {
 
     int c = q.execute();
     System.out.println("count: " + c);
+  }
+
+  private void liveSQLEntities() {
+
+    BranchEntity<BranchVO> b = BranchDAO.newEntity("b");
+
+    SelectFromEntityPhase<BranchVO> q = this.sql.select().from(b);
+    List<BranchVO> branches = q.execute();
+    System.out.println("rows:");
+    branches.stream().forEach(r -> System.out.println("branch: " + r));
+
+//    List<AccountVO> accounts = this.accountDAO //
+//        .select(a, a.branchId.ge(102)) //
+//        .orderBy(a.branchId) //
+//        .offset(1) //
+//        .limit(2) //
+//        .execute();
+//    accounts.stream().forEach(r -> System.out.println("row: " + r));
+
+//    List<Row> rows = this.sql.select(a.branchId, a.branchId.nullIf(102).as("x")).from(a).execute();
+//
+//    System.out.println("rows:");
+//    rows.stream().forEach(r -> System.out.println("row: " + r));
+
+//    List<Employee> employees = this.employeeDAO
+//        .select(e, e.type.ne("MANAGER").and(sql.exists(
+//            sql.select().from(m).where(m.branchId.ne(e.branchId).and(m.name.eq(e.name)))
+//          ))
+//        )
+//        .orderBy(e.branchId, e.salary.plus(e.bonus).desc())
+//        .execute();    
+
   }
 
   private void livesql1() {
@@ -375,12 +390,12 @@ public class App {
 
   private void liveSQLExamples() throws SQLException {
 
-//    livesql1();
+    livesql1();
 //    livesql2();
 //    livesql3();
 //    livesql4();
 //    dates();
-    types();
+//    types();
 //    converter();
 //    forUpdate();
 
@@ -403,36 +418,36 @@ public class App {
 
   }
 
-  @Autowired
-  private TypesNumericDAO tn;
-
-  @Autowired
-  private TypesCharDAO tc;
-
-  @Autowired
-  private TypesDateTimeDAO td;
-
-  @Autowired
-  private TypesBinaryDAO tb;
-
-  @Autowired
-  private TypesOtherDAO to;
-
-  private void types() throws SQLException {
-//    System.out.println("\nTYPES_NUMERIC");
-//    print(this.sql.select().from(TypesNumericDAO.newTable()).execute());
+//  @Autowired
+//  private TypesNumericDAO tn;
 //
-//    System.out.println("\nTYPES_CHAR");
-//    print(this.sql.select().from(TypesCharDAO.newTable()).execute());
+//  @Autowired
+//  private TypesCharDAO tc;
+//
+//  @Autowired
+//  private TypesDateTimeDAO td;
+//
+//  @Autowired
+//  private TypesBinaryDAO tb;
+//
+//  @Autowired
+//  private TypesOtherDAO to;
 
-    System.out.println("\nTYPES_DATE_TIME");
-//    print(
-List<?> li=        this.sql.select().from(TypesDateTimeDAO.newTable()).execute();
-for (Object obj : li) {
-  System.out.println("obj: "+obj.getClass().getName()); 
-  TypesDateTimeVO vo = (TypesDateTimeVO) obj;
-  System.out.println("vo: "+vo);   
-}
+//  private void types() throws SQLException {
+////    System.out.println("\nTYPES_NUMERIC");
+////    print(this.sql.select().from(TypesNumericDAO.newTable()).execute());
+////
+////    System.out.println("\nTYPES_CHAR");
+////    print(this.sql.select().from(TypesCharDAO.newTable()).execute());
+//
+//    System.out.println("\nTYPES_DATE_TIME");
+////    print(
+//List<?> li=        this.sql.select().from(TypesDateTimeDAO.newTable()).execute();
+//for (Object obj : li) {
+//  System.out.println("obj: "+obj.getClass().getName()); 
+//  TypesDateTimeVO vo = (TypesDateTimeVO) obj;
+//  System.out.println("vo: "+vo);   
+//}
 
 //        );
 
@@ -441,7 +456,7 @@ for (Object obj : li) {
 //
 //    System.out.println("\nTYPES_OTHER");
 //    print(this.sql.select().from(TypesOtherDAO.newTable()).execute());
-}
+//}
 
   private void print(List<Row> rows) {
     for (Row r : rows) {
@@ -453,49 +468,49 @@ for (Object obj : li) {
     }
   }
 
-  private void dates() throws SQLException {
-    TypesDateTimeTable t = TypesDateTimeDAO.newTable("t");
-
-//    System.out.println("ENV PROPERTIES");
-//    Map<String, String> env = System.getenv();
-//    for (String name : env.keySet()) {
-//      String value = env.get(name);
-//      System.out.println(" - " + name + "=" + value);
-//    }
-
-//    System.out.println("ARGUMENTS");
-//    RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
-//    List<String> arguments = runtimeMxBean.getInputArguments();
-//    for (String a : arguments) {
-//      System.out.println(" - " + a);
-//    }
-//    System.out.println("------------------------------------");
-
-//    org.apache.ibatis.session.Configuration conf = this.sqlSession.getConfiguration();
-//    conf.getEnvironment()
-
-    List<TypesDateTimeVO> types = this.typesDateTimeDAO.select(new TypesDateTimeVO());
-
-    for (TypesDateTimeVO tp : types) {
-      System.out.println("t:" + tp);
-    }
-
-//    Map<String, Object> parameters = new HashMap<>();
-//    parameters.
-//    List<Object> list = this.typesDateTimeDAO.sqlSession.selectList("", parameters);
-
-//    List<Row> rows = this.sql.select().from(t).execute();
+//  private void dates() throws SQLException {
+//    TypesDateTimeTable t = TypesDateTimeDAO.newTable("t");
 //
-//    System.out.println("rows:");
+////    System.out.println("ENV PROPERTIES");
+////    Map<String, String> env = System.getenv();
+////    for (String name : env.keySet()) {
+////      String value = env.get(name);
+////      System.out.println(" - " + name + "=" + value);
+////    }
 //
-//    for (Row r : rows) {
-//      System.out.println("Row:");
-//      println("dat1 (DATE)", r.get("dat1"));
-//      println("dat2 (TIMESTAMP)", r.get("dat2"));
-//      println("dat3 (TIMESTAMP WITH TIME ZONE)", r.get("dat3"));
-//      println("dat4 (TIMESTAMP WITH LOCAL TIME ZONE)", r.get("dat3"));
+////    System.out.println("ARGUMENTS");
+////    RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
+////    List<String> arguments = runtimeMxBean.getInputArguments();
+////    for (String a : arguments) {
+////      System.out.println(" - " + a);
+////    }
+////    System.out.println("------------------------------------");
+//
+////    org.apache.ibatis.session.Configuration conf = this.sqlSession.getConfiguration();
+////    conf.getEnvironment()
+//
+//    List<TypesDateTimeVO> types = this.typesDateTimeDAO.select(new TypesDateTimeVO());
+//
+//    for (TypesDateTimeVO tp : types) {
+//      System.out.println("t:" + tp);
 //    }
-  }
+//
+////    Map<String, Object> parameters = new HashMap<>();
+////    parameters.
+////    List<Object> list = this.typesDateTimeDAO.sqlSession.selectList("", parameters);
+//
+////    List<Row> rows = this.sql.select().from(t).execute();
+////
+////    System.out.println("rows:");
+////
+////    for (Row r : rows) {
+////      System.out.println("Row:");
+////      println("dat1 (DATE)", r.get("dat1"));
+////      println("dat2 (TIMESTAMP)", r.get("dat2"));
+////      println("dat3 (TIMESTAMP WITH TIME ZONE)", r.get("dat3"));
+////      println("dat4 (TIMESTAMP WITH LOCAL TIME ZONE)", r.get("dat3"));
+////    }
+//  }
 
   private void forUpdate() {
     this.businessLogic.forUpdate();

@@ -15,6 +15,8 @@ import org.hotrod.runtime.interfaces.OrderBy;
 
 import app.daos.primitives.AbstractInvoiceLineVO;
 import app.daos.InvoiceLineVO;
+import org.hotrod.runtime.livesql.metadata.Entity;
+
 
 import java.lang.Override;
 import java.util.Map;
@@ -186,12 +188,12 @@ public class InvoiceLineDAO implements Serializable, ApplicationContextAware {
 
   public enum InvoiceLineOrderBy implements OrderBy {
 
-    INVOICE_ID("public.invoice_line", "invoice_id", true), //
-    INVOICE_ID$DESC("public.invoice_line", "invoice_id", false), //
-    PRODUCT_ID("public.invoice_line", "product_id", true), //
-    PRODUCT_ID$DESC("public.invoice_line", "product_id", false), //
-    LINE_TOTAL("public.invoice_line", "line_total", true), //
-    LINE_TOTAL$DESC("public.invoice_line", "line_total", false);
+    INVOICE_ID("invoice_line", "invoice_id", true), //
+    INVOICE_ID$DESC("invoice_line", "invoice_id", false), //
+    PRODUCT_ID("invoice_line", "product_id", true), //
+    PRODUCT_ID$DESC("invoice_line", "product_id", false), //
+    LINE_TOTAL("invoice_line", "line_total", true), //
+    LINE_TOTAL$DESC("invoice_line", "line_total", false);
 
     private InvoiceLineOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -245,12 +247,12 @@ public class InvoiceLineDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     InvoiceLineTable() {
-      super(null, "PUBLIC", "INVOICE_LINE", "Table", null);
+      super(null, null, "INVOICE_LINE", "Table", null);
       initialize();
     }
 
     InvoiceLineTable(final String alias) {
-      super(null, "PUBLIC", "INVOICE_LINE", "Table", alias);
+      super(null, null, "INVOICE_LINE", "Table", alias);
       initialize();
     }
 
@@ -264,6 +266,62 @@ public class InvoiceLineDAO implements Serializable, ApplicationContextAware {
       super.columns.add(this.productId);
       this.lineTotal = new NumberColumn(this, "LINE_TOTAL", "lineTotal", "INTEGER", 32, 0);
       super.columns.add(this.lineTotal);
+    }
+
+  }
+
+  // LiveSQL Entity
+
+  public static InvoiceLineEntity<app.daos.InvoiceLineVO> newEntity() {
+    return new InvoiceLineEntity<app.daos.InvoiceLineVO>();
+  }
+
+  public static InvoiceLineEntity<app.daos.InvoiceLineVO> newEntity(final String alias) {
+    return new InvoiceLineEntity<app.daos.InvoiceLineVO>(alias);
+  }
+
+  public static class InvoiceLineEntity<T> extends Entity<T> {
+
+    // Properties
+
+    public NumberColumn invoiceId;
+    public NumberColumn productId;
+    public NumberColumn lineTotal;
+
+    // Getters
+
+    public AllColumns star() {
+      return new AllColumns(this.invoiceId, this.productId, this.lineTotal);
+    }
+
+    // Constructors
+
+    InvoiceLineEntity() {
+      super(null, null, "INVOICE_LINE", "Table", null);
+      initialize();
+    }
+
+    InvoiceLineEntity(final String alias) {
+      super(null, null, "INVOICE_LINE", "Table", alias);
+      initialize();
+    }
+
+    // Initialization
+
+    private void initialize() {
+      super.columns = new ArrayList<>();
+      this.invoiceId = new NumberColumn(this, "INVOICE_ID", "invoiceId", "INTEGER", 32, 0);
+      super.columns.add(this.invoiceId);
+      this.productId = new NumberColumn(this, "PRODUCT_ID", "productId", "INTEGER", 32, 0);
+      super.columns.add(this.productId);
+      this.lineTotal = new NumberColumn(this, "LINE_TOTAL", "lineTotal", "INTEGER", 32, 0);
+      super.columns.add(this.lineTotal);
+    }
+
+    @Override
+    public T getModel() {
+      // TODO Auto-generated method stub
+      return null;
     }
 
   }

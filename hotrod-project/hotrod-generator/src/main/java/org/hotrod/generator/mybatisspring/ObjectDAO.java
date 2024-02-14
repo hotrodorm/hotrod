@@ -100,6 +100,7 @@ public class ObjectDAO extends GeneratableObject {
   private Mapper mapper = null;
 
   private String metadataClassName;
+  private String entityClassName;
 
   private Map<DataSetMetadata, LinkedHashSet<ForeignKeyMetadata>> fkSelectors;
   private Map<DataSetMetadata, LinkedHashSet<ForeignKeyMetadata>> efkSelectors;
@@ -136,6 +137,7 @@ public class ObjectDAO extends GeneratableObject {
 
     this.classPackage = this.layout.getDAOPrimitivePackage(this.fragmentPackage);
     this.metadataClassName = this.metadata.getId().getJavaClassName() + (this.isTable() ? "Table" : "View");
+    this.entityClassName = this.metadata.getId().getJavaClassName() + "Entity";
 
     this.fkSelectors = compileDistinctFKs(this.metadata.getImportedFKs());
     this.efkSelectors = compileDistinctFKs(this.metadata.getExportedFKs());
@@ -361,6 +363,9 @@ public class ObjectDAO extends GeneratableObject {
       }
 
     }
+
+    imports.add(org.hotrod.runtime.livesql.metadata.Entity.class);
+    imports.newLine();
 
     imports.newLine();
     // imports.comment("[ now, for the selects... ]");
@@ -676,17 +681,11 @@ public class ObjectDAO extends GeneratableObject {
 
       if (cm.getConverter() != null) {
         ConverterTag ct = cm.getConverter();
-        
-        println("    mo."
-            + cm.getId().getJavaSetter() 
-            + "(new "
-            + ct.getJavaClass()
-            + "().decode(("
-            + ct.getJavaRawType()
-            + ") m.get(p + \""
-            + JUtils.escapeJavaString(property)
-            + "\" + s), this.sqlSession.getConnection()));");
-                
+
+        println(
+            "    mo." + cm.getId().getJavaSetter() + "(new " + ct.getJavaClass() + "().decode((" + ct.getJavaRawType()
+                + ") m.get(p + \"" + JUtils.escapeJavaString(property) + "\" + s), this.sqlSession.getConnection()));");
+
       } else if ("java.lang.Byte".equals(javaType) || //
           "java.lang.Short".equals(javaType) || //
           "java.lang.Integer".equals(javaType) || //
@@ -1844,9 +1843,12 @@ public class ObjectDAO extends GeneratableObject {
   // TODO: Nothing to do. Just a marker
 
   private void writeMetadata() throws IOException {
+    writeTableView();
+    writeEntity();
+  }
 
+  private void writeTableView() throws IOException {
     String type = this.isTable() ? "Table" : "View";
-
     String catalog = this.metadata.getId().getCatalog() == null ? null
         : this.metadata.getId().getCatalog().getCanonicalSQLName();
     String schema = this.metadata.getId().getSchema() == null ? null
@@ -1863,10 +1865,50 @@ public class ObjectDAO extends GeneratableObject {
     println("    return new " + this.metadataClassName + "(alias);");
     println("  }");
     println();
-
     println("  public static class " + this.metadataClassName + " extends " + type + " {");
     println();
+    writeEntityBody(type, catalog, schema, name, this.metadataClassName);
+    println("  }");
+    println();
+  }
 
+  private void writeEntity() throws IOException {
+    String type = this.isTable() ? "Table" : "View";
+    String catalog = this.metadata.getId().getCatalog() == null ? null
+        : this.metadata.getId().getCatalog().getCanonicalSQLName();
+    String schema = this.metadata.getId().getSchema() == null ? null
+        : this.metadata.getId().getSchema().getCanonicalSQLName();
+    String name = this.metadata.getId().getCanonicalSQLName();
+
+    String voc = this.vo.getFullClassName();
+
+    println("  // LiveSQL Entity");
+    println();
+    println("  public static " + this.entityClassName + "<" + voc + "> newEntity() {");
+    println("    return new " + this.entityClassName + "<" + voc + ">();");
+    println("  }");
+    println();
+    println("  public static " + this.entityClassName + "<" + voc + "> newEntity(final String alias) {");
+    println("    return new " + this.entityClassName + "<" + voc + ">(alias);");
+    println("  }");
+    println();
+    println("  public static class " + this.entityClassName + "<T>" + " extends Entity<T> {");
+    println();
+    writeEntityBody(type, catalog, schema, name, this.entityClassName);
+
+    println("    @Override");
+    println("    public T getModel() {");
+    println("      // TODO Auto-generated method stub");
+    println("      return null;");
+    println("    }");
+    println();
+
+    println("  }");
+    println();
+  }
+
+  private void writeEntityBody(String type, String catalog, String schema, String name, String className)
+      throws IOException {
     println("    // Properties");
     println();
     for (ColumnMetadata cm : this.metadata.getColumns()) {
@@ -1888,14 +1930,14 @@ public class ObjectDAO extends GeneratableObject {
 
     println("    // Constructors");
     println();
-    println("    " + this.metadataClassName + "() {");
+    println("    " + className + "() {");
     println("      super(" + (catalog == null ? "null" : "\"" + JUtils.escapeJavaString(catalog) + "\"") + ", "
         + (schema == null ? "null" : "\"" + JUtils.escapeJavaString(schema) + "\"") + ", \""
         + JUtils.escapeJavaString(name) + "\", \"" + type + "\", null);");
     println("      initialize();");
     println("    }");
     println();
-    println("    " + this.metadataClassName + "(final String alias) {");
+    println("    " + className + "(final String alias) {");
     println("      super(" + (catalog == null ? "null" : "\"" + JUtils.escapeJavaString(catalog) + "\"") + ", "
         + (schema == null ? "null" : "\"" + JUtils.escapeJavaString(schema) + "\"") + ", \""
         + JUtils.escapeJavaString(name) + "\", \"" + type + "\", alias);");
@@ -1924,15 +1966,6 @@ public class ObjectDAO extends GeneratableObject {
     }
 
     println("    }");
-    println();
-
-//    println("    @Override");
-//    println("    public List<Column> getAllColumns() {");
-//    println("      return this.ALL$COLUMNS;");
-//    println("    }");
-//    println();
-
-    println("  }");
     println();
   }
 
