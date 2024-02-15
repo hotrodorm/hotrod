@@ -5,8 +5,6 @@ package app.daos.primitives;
 import java.io.Serializable;
 import org.hotrod.runtime.json.*;
 
-import app.test.base.Table;
-
 public class AbstractAccountVO implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -54,14 +52,20 @@ public class AbstractAccountVO implements Serializable {
     return sb.toString();
   }
 
-  // to JSON
+  // to JSON Object
 
-  public String toJSON() {
+  public JSONObject toJSONObject() {
     JSONObject obj = new JSONObject();
     obj.addProperty("id", this.id);
     obj.addProperty("parentId", this.parentId);
     obj.addProperty("branchId", this.branchId);
-    return obj.render();
+    return obj;
+  }
+
+  // to JSON String
+
+  public String toJSON() {
+    return toJSONObject().render();
   }
 
 }

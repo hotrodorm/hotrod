@@ -262,36 +262,36 @@ public class App {
 //
 //  }
 
-  private void update() {
-
-    InvoiceTable i = InvoiceDAO.newTable("i");
-    BranchTable b = BranchDAO.newTable("b");
-    BranchTable c = BranchDAO.newTable("c");
-
-//    // update branch set region = 'x' where id >= 4 and not is_vip
+//  private void update() {
 //
-//    DMLQuery q = sql.update(b).set(b.region, "x").where(b.id.ge(sql.literal(4)).and(sql.not(b.isVip)));
+//    InvoiceTable i = InvoiceDAO.newTable("i");
+//    BranchTable b = BranchDAO.newTable("b");
+//    BranchTable c = BranchDAO.newTable("c");
+//
+////    // update branch set region = 'x' where id >= 4 and not is_vip
+////
+////    DMLQuery q = sql.update(b).set(b.region, "x").where(b.id.ge(sql.literal(4)).and(sql.not(b.isVip)));
+////    System.out.println("1. Update: " + q.getPreview());
+////    int rows = q.execute();
+////    System.out.println("updated rows=" + rows);
+//
+////    // delete from branch where id >= 4 and not is_vip
+////
+////    DMLQuery q = sql.delete(b).where(b.id.ge(sql.literal(4)).and(sql.not(b.isVip)));
+////    System.out.println("1. Update: " + q.getPreview());
+////    int rows = q.execute();
+////    System.out.println("updated rows=" + rows);
+//
+//    // insert into branch select id+ 10, region, is_vip from branch where id >= 4
+//    // and not is_vip
+//
+//    DMLQuery q = sql.insert(b).select(sql.select(c.id.plus(sql.literal(10)), c.region, c.isVip).from(c)
+//        .where(c.id.ge(sql.literal(4)).and(sql.not(c.isVip.eq("VIP")))));
 //    System.out.println("1. Update: " + q.getPreview());
 //    int rows = q.execute();
 //    System.out.println("updated rows=" + rows);
-
-//    // delete from branch where id >= 4 and not is_vip
 //
-//    DMLQuery q = sql.delete(b).where(b.id.ge(sql.literal(4)).and(sql.not(b.isVip)));
-//    System.out.println("1. Update: " + q.getPreview());
-//    int rows = q.execute();
-//    System.out.println("updated rows=" + rows);
-
-    // insert into branch select id+ 10, region, is_vip from branch where id >= 4
-    // and not is_vip
-
-    DMLQuery q = sql.insert(b).select(sql.select(c.id.plus(sql.literal(10)), c.region, c.isVip).from(c)
-        .where(c.id.ge(sql.literal(4)).and(sql.not(c.isVip.eq("VIP")))));
-    System.out.println("1. Update: " + q.getPreview());
-    int rows = q.execute();
-    System.out.println("updated rows=" + rows);
-
-  }
+//  }
 
   private void livesql2() {
     InvoiceTable i = InvoiceDAO.newTable("i");
@@ -380,9 +380,10 @@ public class App {
 //    livesql3();
 //    livesql4();
 //    dates();
-    types();
+//    types();
 //    converter();
 //    forUpdate();
+    distinctOn();
 
     // Set Operators
 
@@ -427,21 +428,32 @@ public class App {
 
     System.out.println("\nTYPES_DATE_TIME");
 //    print(
-List<?> li=        this.sql.select().from(TypesDateTimeDAO.newTable()).execute();
-for (Object obj : li) {
-  System.out.println("obj: "+obj.getClass().getName()); 
-  TypesDateTimeVO vo = (TypesDateTimeVO) obj;
-  System.out.println("vo: "+vo);   
-}
+    List<?> li = this.sql.select().from(TypesDateTimeDAO.newTable()).execute();
+    for (Object obj : li) {
+      System.out.println("obj: " + obj.getClass().getName());
+      TypesDateTimeVO vo = (TypesDateTimeVO) obj;
+      System.out.println("vo: " + vo);
+    }
 
-//        );
+  }
 
-//    System.out.println("\nTYPES_BINARY");
-//    print(this.sql.select().from(TypesBinaryDAO.newTable()).execute());
-//
-//    System.out.println("\nTYPES_OTHER");
-//    print(this.sql.select().from(TypesOtherDAO.newTable()).execute());
-}
+  private void distinctOn() throws SQLException {
+
+    System.out.println("DISTINCT ON");
+    InvoiceTable i = InvoiceDAO.newTable("i");
+
+    Select<Row> q = this.sql.selectDistinctOn(i.branchId.plus(sql.literal(100))) //
+        .columns(i.branchId.as("myBranch"), i.star())
+        .from(i) //
+        .orderBy(i.branchId.plus(sql.literal(100)), i.unpaidBalance.desc());
+
+//    select distinct on (branch_id) *
+//    from invoice
+//    order by branch_id, unpaid_balance desc
+
+    q.execute().forEach(r -> System.out.println("row: " + r));
+
+  }
 
   private void print(List<Row> rows) {
     for (Row r : rows) {

@@ -285,64 +285,64 @@ public class DatesDAO implements Serializable, ApplicationContextAware {
 
   public enum DatesOrderBy implements OrderBy {
 
-    ID("public.dates", "id", true), //
-    ID$DESC("public.dates", "id", false), //
-    DAT1("public.dates", "dat1", true), //
-    DAT1$DESC("public.dates", "dat1", false), //
-    TS1("public.dates", "ts1", true), //
-    TS1$DESC("public.dates", "ts1", false), //
-    TS2("public.dates", "ts2", true), //
-    TS2$DESC("public.dates", "ts2", false), //
-    TS3("public.dates", "ts3", true), //
-    TS3$DESC("public.dates", "ts3", false), //
-    TS4("public.dates", "ts4", true), //
-    TS4$DESC("public.dates", "ts4", false), //
-    TS5("public.dates", "ts5", true), //
-    TS5$DESC("public.dates", "ts5", false), //
-    TIM1("public.dates", "tim1", true), //
-    TIM1$DESC("public.dates", "tim1", false), //
-    TIM2("public.dates", "tim2", true), //
-    TIM2$DESC("public.dates", "tim2", false), //
-    TIM3("public.dates", "tim3", true), //
-    TIM3$DESC("public.dates", "tim3", false), //
-    TIM4("public.dates", "tim4", true), //
-    TIM4$DESC("public.dates", "tim4", false), //
-    TIM5("public.dates", "tim5", true), //
-    TIM5$DESC("public.dates", "tim5", false), //
-    IVT1("public.dates", "ivt1", true), //
-    IVT1$DESC("public.dates", "ivt1", false), //
-    IVT2("public.dates", "ivt2", true), //
-    IVT2$DESC("public.dates", "ivt2", false), //
-    IVT3("public.dates", "ivt3", true), //
-    IVT3$DESC("public.dates", "ivt3", false), //
-    IVT4("public.dates", "ivt4", true), //
-    IVT4$DESC("public.dates", "ivt4", false), //
-    IVT5("public.dates", "ivt5", true), //
-    IVT5$DESC("public.dates", "ivt5", false), //
-    IVT6("public.dates", "ivt6", true), //
-    IVT6$DESC("public.dates", "ivt6", false), //
-    IVT7("public.dates", "ivt7", true), //
-    IVT7$DESC("public.dates", "ivt7", false), //
-    IVT8("public.dates", "ivt8", true), //
-    IVT8$DESC("public.dates", "ivt8", false), //
-    IVT9("public.dates", "ivt9", true), //
-    IVT9$DESC("public.dates", "ivt9", false), //
-    IVT10("public.dates", "ivt10", true), //
-    IVT10$DESC("public.dates", "ivt10", false), //
-    IVT11("public.dates", "ivt11", true), //
-    IVT11$DESC("public.dates", "ivt11", false), //
-    IVT12("public.dates", "ivt12", true), //
-    IVT12$DESC("public.dates", "ivt12", false), //
-    IVT13("public.dates", "ivt13", true), //
-    IVT13$DESC("public.dates", "ivt13", false), //
-    IVT14("public.dates", "ivt14", true), //
-    IVT14$DESC("public.dates", "ivt14", false), //
-    IVT15("public.dates", "ivt15", true), //
-    IVT15$DESC("public.dates", "ivt15", false), //
-    IVT16("public.dates", "ivt16", true), //
-    IVT16$DESC("public.dates", "ivt16", false), //
-    IVT17("public.dates", "ivt17", true), //
-    IVT17$DESC("public.dates", "ivt17", false);
+    ID("dates", "id", true), //
+    ID$DESC("dates", "id", false), //
+    DAT1("dates", "dat1", true), //
+    DAT1$DESC("dates", "dat1", false), //
+    TS1("dates", "ts1", true), //
+    TS1$DESC("dates", "ts1", false), //
+    TS2("dates", "ts2", true), //
+    TS2$DESC("dates", "ts2", false), //
+    TS3("dates", "ts3", true), //
+    TS3$DESC("dates", "ts3", false), //
+    TS4("dates", "ts4", true), //
+    TS4$DESC("dates", "ts4", false), //
+    TS5("dates", "ts5", true), //
+    TS5$DESC("dates", "ts5", false), //
+    TIM1("dates", "tim1", true), //
+    TIM1$DESC("dates", "tim1", false), //
+    TIM2("dates", "tim2", true), //
+    TIM2$DESC("dates", "tim2", false), //
+    TIM3("dates", "tim3", true), //
+    TIM3$DESC("dates", "tim3", false), //
+    TIM4("dates", "tim4", true), //
+    TIM4$DESC("dates", "tim4", false), //
+    TIM5("dates", "tim5", true), //
+    TIM5$DESC("dates", "tim5", false), //
+    IVT1("dates", "ivt1", true), //
+    IVT1$DESC("dates", "ivt1", false), //
+    IVT2("dates", "ivt2", true), //
+    IVT2$DESC("dates", "ivt2", false), //
+    IVT3("dates", "ivt3", true), //
+    IVT3$DESC("dates", "ivt3", false), //
+    IVT4("dates", "ivt4", true), //
+    IVT4$DESC("dates", "ivt4", false), //
+    IVT5("dates", "ivt5", true), //
+    IVT5$DESC("dates", "ivt5", false), //
+    IVT6("dates", "ivt6", true), //
+    IVT6$DESC("dates", "ivt6", false), //
+    IVT7("dates", "ivt7", true), //
+    IVT7$DESC("dates", "ivt7", false), //
+    IVT8("dates", "ivt8", true), //
+    IVT8$DESC("dates", "ivt8", false), //
+    IVT9("dates", "ivt9", true), //
+    IVT9$DESC("dates", "ivt9", false), //
+    IVT10("dates", "ivt10", true), //
+    IVT10$DESC("dates", "ivt10", false), //
+    IVT11("dates", "ivt11", true), //
+    IVT11$DESC("dates", "ivt11", false), //
+    IVT12("dates", "ivt12", true), //
+    IVT12$DESC("dates", "ivt12", false), //
+    IVT13("dates", "ivt13", true), //
+    IVT13$DESC("dates", "ivt13", false), //
+    IVT14("dates", "ivt14", true), //
+    IVT14$DESC("dates", "ivt14", false), //
+    IVT15("dates", "ivt15", true), //
+    IVT15$DESC("dates", "ivt15", false), //
+    IVT16("dates", "ivt16", true), //
+    IVT16$DESC("dates", "ivt16", false), //
+    IVT17("dates", "ivt17", true), //
+    IVT17$DESC("dates", "ivt17", false);
 
     private DatesOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -422,12 +422,12 @@ public class DatesDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     DatesTable() {
-      super(null, "public", "dates", "Table", null);
+      super(null, null, "dates", "Table", null);
       initialize();
     }
 
     DatesTable(final String alias) {
-      super(null, "public", "dates", "Table", alias);
+      super(null, null, "dates", "Table", alias);
       initialize();
     }
 

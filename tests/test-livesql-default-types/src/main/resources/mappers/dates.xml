@@ -107,7 +107,7 @@
   <select id="selectByPK" resultMap="allColumns">
     select
       <include refid="columns" />
-     from public.dates
+     from dates
      where
       id = #{id,jdbcType=INTEGER}
   </select>
@@ -119,7 +119,7 @@
   <select id="selectByExample" resultMap="allColumns">
     select
       <include refid="columns" />
-     from public.dates
+     from dates
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.id != null">
         and id = #{p.id,jdbcType=INTEGER}
@@ -223,7 +223,7 @@
   <!-- insert (no auto-generated columns) -->
 
   <insert id="insert">
-    insert into public.dates (
+    insert into dates (
       <trim prefixOverrides=", ">
         <if test="true">, id</if>
         <if test="true">, dat1</if>
@@ -293,7 +293,7 @@
   <!-- update by PK -->
 
   <update id="updateByPK">
-    update public.dates set
+    update dates set
       dat1 = #{dat1,jdbcType=DATE},
       ts1 = #{ts1,jdbcType=TIMESTAMP},
       ts2 = #{ts2,jdbcType=TIMESTAMP},
@@ -329,7 +329,7 @@
   <!-- delete by PK -->
 
   <delete id="deleteByPK">
-    delete from public.dates
+    delete from dates
      where
       id = #{id,jdbcType=INTEGER}
   </delete>
@@ -337,7 +337,7 @@
   <!-- update by example -->
 
   <update id="updateByExample">
-    update public.dates
+    update dates
     <set>
       <if test="values.id != null">id = #{values.id,jdbcType=INTEGER},</if>
       <if test="values.dat1 != null">dat1 = #{values.dat1,jdbcType=DATE},</if>
@@ -469,7 +469,7 @@
   <!-- delete by example -->
 
   <delete id="deleteByExample">
-    delete from public.dates
+    delete from dates
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="id != null">
         and id = #{id,jdbcType=INTEGER}

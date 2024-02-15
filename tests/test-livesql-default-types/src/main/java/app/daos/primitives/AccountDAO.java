@@ -186,12 +186,12 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   public enum AccountOrderBy implements OrderBy {
 
-    ID("public.account", "id", true), //
-    ID$DESC("public.account", "id", false), //
-    PARENT_ID("public.account", "parent_id", true), //
-    PARENT_ID$DESC("public.account", "parent_id", false), //
-    BRANCH_ID("public.account", "branch_id", true), //
-    BRANCH_ID$DESC("public.account", "branch_id", false);
+    ID("account", "id", true), //
+    ID$DESC("account", "id", false), //
+    PARENT_ID("account", "parent_id", true), //
+    PARENT_ID$DESC("account", "parent_id", false), //
+    BRANCH_ID("account", "branch_id", true), //
+    BRANCH_ID$DESC("account", "branch_id", false);
 
     private AccountOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -245,12 +245,12 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     AccountTable() {
-      super(null, "PUBLIC", "ACCOUNT", "Table", null);
+      super(null, null, "ACCOUNT", "Table", null);
       initialize();
     }
 
     AccountTable(final String alias) {
-      super(null, "PUBLIC", "ACCOUNT", "Table", alias);
+      super(null, null, "ACCOUNT", "Table", alias);
       initialize();
     }
 

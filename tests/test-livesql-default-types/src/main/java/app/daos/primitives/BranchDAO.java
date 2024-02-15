@@ -3,39 +3,53 @@
 package app.daos.primitives;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import javax.annotation.PostConstruct;
 
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.cursors.Cursor;
+import org.hotrod.runtime.livesql.queries.select.MyBatisCursor;
+
 import org.hotrod.runtime.interfaces.DaoWithOrder;
-import org.hotrod.runtime.interfaces.OrderBy;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
-import org.hotrod.runtime.livesql.LiveSQLMapper;
+import org.hotrod.runtime.interfaces.OrderBy;
+
+import app.daos.primitives.AbstractBranchVO;
+import app.daos.BranchVO;
+
+import java.lang.Override;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
-import org.hotrod.runtime.livesql.metadata.AllColumns;
+import org.hotrod.runtime.livesql.LiveSQLMapper;
+import org.hotrod.runtime.livesql.util.CastUtil;
+import javax.annotation.PostConstruct;
+import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.NumberColumn;
 import org.hotrod.runtime.livesql.metadata.StringColumn;
+import org.hotrod.runtime.livesql.metadata.DateTimeColumn;
+import org.hotrod.runtime.livesql.metadata.BooleanColumn;
+import org.hotrod.runtime.livesql.metadata.ByteArrayColumn;
+import org.hotrod.runtime.livesql.metadata.ObjectColumn;
 import org.hotrod.runtime.livesql.metadata.Table;
-import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
-import org.hotrod.runtime.livesql.queries.LiveSQLContext;
-import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
-import org.hotrod.runtime.livesql.queries.select.MyBatisCursor;
-import org.hotrod.runtime.livesql.util.CastUtil;
-import org.hotrod.runtime.spring.SpringBeanObjectFactory;
+import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
+import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
+import org.hotrod.runtime.livesql.metadata.View;
+
+import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import org.springframework.stereotype.Component;
 import org.springframework.beans.BeansException;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
-
-import app.daos.BranchVO;
 
 @Component
 public class BranchDAO implements Serializable, ApplicationContextAware {
@@ -86,7 +100,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
     mo.setName((java.lang.String) m.get(p + "name" + s));
     mo.setRegion((java.lang.String) m.get(p + "region" + s));
-    mo.setIsVip((java.lang.String) m.get(p + "isVip" + s));
+    mo.setIsVip((java.lang.Boolean) m.get(p + "isVip" + s));
     return mo;
   }
 
@@ -173,7 +187,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
   public UpdateSetCompletePhase update(final app.daos.primitives.AbstractBranchVO updateValues, final BranchDAO.BranchTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
     if (updateValues.getId() != null) values.put("id", updateValues.getId());
-    if (updateValues.getName() != null) values.put("name", updateValues.getName());
+    if (updateValues.getName() != null) values.put("\"NaMe\"", updateValues.getName());
     if (updateValues.getRegion() != null) values.put("region", updateValues.getRegion());
     if (updateValues.getIsVip() != null) values.put("is_vip", updateValues.getIsVip());
     return new UpdateSetCompletePhase(this.context, "mappers.branch.updateByCriteria", tableOrView,  predicate, values);
@@ -196,32 +210,26 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   public enum BranchOrderBy implements OrderBy {
 
-    ID("user1.branch", "id", true), //
-    ID$DESC("user1.branch", "id", false), //
-    NAME("user1.branch", "name", true), //
-    NAME$DESC("user1.branch", "name", false), //
-    NAME$CASEINSENSITIVE("user1.branch", "lower(name)", true), //
-    NAME$CASEINSENSITIVE_STABLE_FORWARD("user1.branch", "lower(name), name", true), //
-    NAME$CASEINSENSITIVE_STABLE_REVERSE("user1.branch", "lower(name), name", false), //
-    NAME$DESC_CASEINSENSITIVE("user1.branch", "lower(name)", false), //
-    NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("user1.branch", "lower(name), name", false), //
-    NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("user1.branch", "lower(name), name", true), //
-    REGION("user1.branch", "region", true), //
-    REGION$DESC("user1.branch", "region", false), //
-    REGION$CASEINSENSITIVE("user1.branch", "lower(region)", true), //
-    REGION$CASEINSENSITIVE_STABLE_FORWARD("user1.branch", "lower(region), region", true), //
-    REGION$CASEINSENSITIVE_STABLE_REVERSE("user1.branch", "lower(region), region", false), //
-    REGION$DESC_CASEINSENSITIVE("user1.branch", "lower(region)", false), //
-    REGION$DESC_CASEINSENSITIVE_STABLE_FORWARD("user1.branch", "lower(region), region", false), //
-    REGION$DESC_CASEINSENSITIVE_STABLE_REVERSE("user1.branch", "lower(region), region", true), //
-    IS_VIP("user1.branch", "is_vip", true), //
-    IS_VIP$DESC("user1.branch", "is_vip", false), //
-    IS_VIP$CASEINSENSITIVE("user1.branch", "lower(is_vip)", true), //
-    IS_VIP$CASEINSENSITIVE_STABLE_FORWARD("user1.branch", "lower(is_vip), is_vip", true), //
-    IS_VIP$CASEINSENSITIVE_STABLE_REVERSE("user1.branch", "lower(is_vip), is_vip", false), //
-    IS_VIP$DESC_CASEINSENSITIVE("user1.branch", "lower(is_vip)", false), //
-    IS_VIP$DESC_CASEINSENSITIVE_STABLE_FORWARD("user1.branch", "lower(is_vip), is_vip", false), //
-    IS_VIP$DESC_CASEINSENSITIVE_STABLE_REVERSE("user1.branch", "lower(is_vip), is_vip", true);
+    ID("branch", "id", true), //
+    ID$DESC("branch", "id", false), //
+    NAME("branch", "\"NaMe\"", true), //
+    NAME$DESC("branch", "\"NaMe\"", false), //
+    NAME$CASEINSENSITIVE("branch", "lower(\"NaMe\")", true), //
+    NAME$CASEINSENSITIVE_STABLE_FORWARD("branch", "lower(\"NaMe\"), \"NaMe\"", true), //
+    NAME$CASEINSENSITIVE_STABLE_REVERSE("branch", "lower(\"NaMe\"), \"NaMe\"", false), //
+    NAME$DESC_CASEINSENSITIVE("branch", "lower(\"NaMe\")", false), //
+    NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("branch", "lower(\"NaMe\"), \"NaMe\"", false), //
+    NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("branch", "lower(\"NaMe\"), \"NaMe\"", true), //
+    REGION("branch", "region", true), //
+    REGION$DESC("branch", "region", false), //
+    REGION$CASEINSENSITIVE("branch", "lower(region)", true), //
+    REGION$CASEINSENSITIVE_STABLE_FORWARD("branch", "lower(region), region", true), //
+    REGION$CASEINSENSITIVE_STABLE_REVERSE("branch", "lower(region), region", false), //
+    REGION$DESC_CASEINSENSITIVE("branch", "lower(region)", false), //
+    REGION$DESC_CASEINSENSITIVE_STABLE_FORWARD("branch", "lower(region), region", false), //
+    REGION$DESC_CASEINSENSITIVE_STABLE_REVERSE("branch", "lower(region), region", true), //
+    IS_VIP("branch", "is_vip", true), //
+    IS_VIP$DESC("branch", "is_vip", false);
 
     private BranchOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -250,22 +258,22 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   // Database Table metadata
 
-  public static BranchTable<BranchVO> newTable() {
-    return new BranchTable<BranchVO>();
+  public static BranchTable newTable() {
+    return new BranchTable();
   }
 
-  public static BranchTable<BranchVO> newTable(final String alias) {
-    return new BranchTable<BranchVO>(alias);
+  public static BranchTable newTable(final String alias) {
+    return new BranchTable(alias);
   }
 
-  public static class BranchTable<T> extends Table {
+  public static class BranchTable extends Table {
 
     // Properties
 
     public NumberColumn id;
     public StringColumn name;
     public StringColumn region;
-    public StringColumn isVip;
+    public BooleanColumn isVip;
 
     // Getters
 
@@ -276,12 +284,12 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     BranchTable() {
-      super(null, "USER1", "BRANCH", "Table", null);
+      super(null, null, "branch", "Table", null);
       initialize();
     }
 
     BranchTable(final String alias) {
-      super(null, "USER1", "BRANCH", "Table", alias);
+      super(null, null, "branch", "Table", alias);
       initialize();
     }
 
@@ -289,13 +297,13 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.id = new NumberColumn(this, "ID", "id", "NUMBER", 6, 0);
+      this.id = new NumberColumn(this, "id", "id", "int4", 10, 0);
       super.columns.add(this.id);
-      this.name = new StringColumn(this, "NAME", "name", "VARCHAR2", 20, null);
+      this.name = new StringColumn(this, "NaMe", "name", "varchar", 20, 0);
       super.columns.add(this.name);
-      this.region = new StringColumn(this, "REGION", "region", "VARCHAR2", 10, null);
+      this.region = new StringColumn(this, "region", "region", "varchar", 20, 0);
       super.columns.add(this.region);
-      this.isVip = new StringColumn(this, "IS_VIP", "isVip", "VARCHAR2", 1, null);
+      this.isVip = new BooleanColumn(this, "is_vip", "isVip", "bool", 1, 0);
       super.columns.add(this.isVip);
     }
 

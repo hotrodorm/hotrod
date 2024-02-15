@@ -52,14 +52,20 @@ public class AbstractCharsVO implements Serializable {
     return sb.toString();
   }
 
-  // to JSON
+  // to JSON Object
 
-  public String toJSON() {
+  public JSONObject toJSONObject() {
     JSONObject obj = new JSONObject();
     obj.addProperty("cha1", this.cha1);
     obj.addProperty("cha2", this.cha2);
     obj.addProperty("cha3", this.cha3);
-    return obj.render();
+    return obj;
+  }
+
+  // to JSON String
+
+  public String toJSON() {
+    return toJSONObject().render();
   }
 
 }

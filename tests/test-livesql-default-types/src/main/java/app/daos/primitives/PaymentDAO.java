@@ -186,12 +186,12 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
 
   public enum PaymentOrderBy implements OrderBy {
 
-    PAYMENT_DATE("public.payment", "payment_date", true), //
-    PAYMENT_DATE$DESC("public.payment", "payment_date", false), //
-    INVOICE_ID("public.payment", "invoice_id", true), //
-    INVOICE_ID$DESC("public.payment", "invoice_id", false), //
-    AMOUNT("public.payment", "amount", true), //
-    AMOUNT$DESC("public.payment", "amount", false);
+    PAYMENT_DATE("payment", "payment_date", true), //
+    PAYMENT_DATE$DESC("payment", "payment_date", false), //
+    INVOICE_ID("payment", "invoice_id", true), //
+    INVOICE_ID$DESC("payment", "invoice_id", false), //
+    AMOUNT("payment", "amount", true), //
+    AMOUNT$DESC("payment", "amount", false);
 
     private PaymentOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -245,12 +245,12 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     PaymentTable() {
-      super(null, "PUBLIC", "PAYMENT", "Table", null);
+      super(null, null, "PAYMENT", "Table", null);
       initialize();
     }
 
     PaymentTable(final String alias) {
-      super(null, "PUBLIC", "PAYMENT", "Table", alias);
+      super(null, null, "PAYMENT", "Table", alias);
       initialize();
     }
 

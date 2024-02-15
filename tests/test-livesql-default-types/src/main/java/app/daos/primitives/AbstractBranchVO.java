@@ -14,7 +14,7 @@ public class AbstractBranchVO implements Serializable {
   protected java.lang.Integer id = null;
   protected java.lang.String name = null;
   protected java.lang.String region = null;
-  protected java.lang.String isVip = null;
+  protected java.lang.Boolean isVip = null;
 
   // getters & setters
 
@@ -42,11 +42,11 @@ public class AbstractBranchVO implements Serializable {
     this.region = region;
   }
 
-  public java.lang.String getIsVip() {
+  public java.lang.Boolean getIsVip() {
     return this.isVip;
   }
 
-  public void setIsVip(final java.lang.String isVip) {
+  public void setIsVip(final java.lang.Boolean isVip) {
     this.isVip = isVip;
   }
 
@@ -62,15 +62,21 @@ public class AbstractBranchVO implements Serializable {
     return sb.toString();
   }
 
-  // to JSON
+  // to JSON Object
 
-  public String toJSON() {
+  public JSONObject toJSONObject() {
     JSONObject obj = new JSONObject();
     obj.addProperty("id", this.id);
     obj.addProperty("name", this.name);
     obj.addProperty("region", this.region);
     obj.addProperty("isVip", this.isVip);
-    return obj.render();
+    return obj;
+  }
+
+  // to JSON String
+
+  public String toJSON() {
+    return toJSONObject().render();
   }
 
 }

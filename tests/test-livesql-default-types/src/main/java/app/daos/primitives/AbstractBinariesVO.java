@@ -3,10 +3,7 @@
 package app.daos.primitives;
 
 import java.io.Serializable;
-
-import org.hotrod.runtime.json.JSONObject;
-
-import app.test.base.Table;
+import org.hotrod.runtime.json.*;
 
 public class AbstractBinariesVO implements Serializable {
 
@@ -45,13 +42,19 @@ public class AbstractBinariesVO implements Serializable {
     return sb.toString();
   }
 
-  // to JSON
+  // to JSON Object
 
-  public String toJSON() {
+  public JSONObject toJSONObject() {
     JSONObject obj = new JSONObject();
     obj.addProperty("bin1", this.bin1);
     obj.addProperty("bol1", this.bol1);
-    return obj.render();
+    return obj;
+  }
+
+  // to JSON String
+
+  public String toJSON() {
+    return toJSONObject().render();
   }
 
 }

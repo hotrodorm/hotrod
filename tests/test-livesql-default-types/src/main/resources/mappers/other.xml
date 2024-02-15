@@ -93,7 +93,7 @@
   <select id="selectByExample" resultMap="allColumns">
     select
       <include refid="columns" />
-     from public.other
+     from other
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.geo1 != null">
         and geo1 = #{p.geo1,jdbcType=OTHER}
@@ -179,7 +179,7 @@
   <!-- insert (no auto-generated columns) -->
 
   <insert id="insert">
-    insert into public.other (
+    insert into other (
       <trim prefixOverrides=", ">
         <if test="true">, geo1</if>
         <if test="true">, geo2</if>
@@ -241,7 +241,7 @@
   <!-- update by example -->
 
   <update id="updateByExample">
-    update public.other
+    update other
     <set>
       <if test="values.geo1 != null">geo1 = #{values.geo1,jdbcType=OTHER},</if>
       <if test="values.geo2 != null">geo2 = #{values.geo2,jdbcType=OTHER},</if>
@@ -349,7 +349,7 @@
   <!-- delete by example -->
 
   <delete id="deleteByExample">
-    delete from public.other
+    delete from other
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="geo1 != null">
         and geo1 = #{geo1,jdbcType=OTHER}

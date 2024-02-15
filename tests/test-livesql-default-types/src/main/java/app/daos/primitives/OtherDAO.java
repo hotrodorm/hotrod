@@ -246,52 +246,52 @@ public class OtherDAO implements Serializable, ApplicationContextAware {
 
   public enum OtherOrderBy implements OrderBy {
 
-    GEO1("public.other", "geo1", true), //
-    GEO1$DESC("public.other", "geo1", false), //
-    GEO2("public.other", "geo2", true), //
-    GEO2$DESC("public.other", "geo2", false), //
-    GEO3("public.other", "geo3", true), //
-    GEO3$DESC("public.other", "geo3", false), //
-    GEO4("public.other", "geo4", true), //
-    GEO4$DESC("public.other", "geo4", false), //
-    GEO5("public.other", "geo5", true), //
-    GEO5$DESC("public.other", "geo5", false), //
-    GEO6("public.other", "geo6", true), //
-    GEO6$DESC("public.other", "geo6", false), //
-    GEO7("public.other", "geo7", true), //
-    GEO7$DESC("public.other", "geo7", false), //
-    NET1("public.other", "net1", true), //
-    NET1$DESC("public.other", "net1", false), //
-    NET2("public.other", "net2", true), //
-    NET2$DESC("public.other", "net2", false), //
-    NET3("public.other", "net3", true), //
-    NET3$DESC("public.other", "net3", false), //
-    UUI1("public.other", "uui1", true), //
-    UUI1$DESC("public.other", "uui1", false), //
-    JSO1("public.other", "jso1", true), //
-    JSO1$DESC("public.other", "jso1", false), //
-    JSO2("public.other", "jso2", true), //
-    JSO2$DESC("public.other", "jso2", false), //
-    ARR1("public.other", "arr1", true), //
-    ARR1$DESC("public.other", "arr1", false), //
-    ARR2("public.other", "arr2", true), //
-    ARR2$DESC("public.other", "arr2", false), //
-    ARR3("public.other", "arr3", true), //
-    ARR3$DESC("public.other", "arr3", false), //
-    COM1("public.other", "com1", true), //
-    COM1$DESC("public.other", "com1", false), //
-    RAN1("public.other", "ran1", true), //
-    RAN1$DESC("public.other", "ran1", false), //
-    RAN2("public.other", "ran2", true), //
-    RAN2$DESC("public.other", "ran2", false), //
-    RAN3("public.other", "ran3", true), //
-    RAN3$DESC("public.other", "ran3", false), //
-    RAN4("public.other", "ran4", true), //
-    RAN4$DESC("public.other", "ran4", false), //
-    RAN5("public.other", "ran5", true), //
-    RAN5$DESC("public.other", "ran5", false), //
-    RAN6("public.other", "ran6", true), //
-    RAN6$DESC("public.other", "ran6", false);
+    GEO1("other", "geo1", true), //
+    GEO1$DESC("other", "geo1", false), //
+    GEO2("other", "geo2", true), //
+    GEO2$DESC("other", "geo2", false), //
+    GEO3("other", "geo3", true), //
+    GEO3$DESC("other", "geo3", false), //
+    GEO4("other", "geo4", true), //
+    GEO4$DESC("other", "geo4", false), //
+    GEO5("other", "geo5", true), //
+    GEO5$DESC("other", "geo5", false), //
+    GEO6("other", "geo6", true), //
+    GEO6$DESC("other", "geo6", false), //
+    GEO7("other", "geo7", true), //
+    GEO7$DESC("other", "geo7", false), //
+    NET1("other", "net1", true), //
+    NET1$DESC("other", "net1", false), //
+    NET2("other", "net2", true), //
+    NET2$DESC("other", "net2", false), //
+    NET3("other", "net3", true), //
+    NET3$DESC("other", "net3", false), //
+    UUI1("other", "uui1", true), //
+    UUI1$DESC("other", "uui1", false), //
+    JSO1("other", "jso1", true), //
+    JSO1$DESC("other", "jso1", false), //
+    JSO2("other", "jso2", true), //
+    JSO2$DESC("other", "jso2", false), //
+    ARR1("other", "arr1", true), //
+    ARR1$DESC("other", "arr1", false), //
+    ARR2("other", "arr2", true), //
+    ARR2$DESC("other", "arr2", false), //
+    ARR3("other", "arr3", true), //
+    ARR3$DESC("other", "arr3", false), //
+    COM1("other", "com1", true), //
+    COM1$DESC("other", "com1", false), //
+    RAN1("other", "ran1", true), //
+    RAN1$DESC("other", "ran1", false), //
+    RAN2("other", "ran2", true), //
+    RAN2$DESC("other", "ran2", false), //
+    RAN3("other", "ran3", true), //
+    RAN3$DESC("other", "ran3", false), //
+    RAN4("other", "ran4", true), //
+    RAN4$DESC("other", "ran4", false), //
+    RAN5("other", "ran5", true), //
+    RAN5$DESC("other", "ran5", false), //
+    RAN6("other", "ran6", true), //
+    RAN6$DESC("other", "ran6", false);
 
     private OtherOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -365,12 +365,12 @@ public class OtherDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     OtherTable() {
-      super(null, "public", "other", "Table", null);
+      super(null, null, "other", "Table", null);
       initialize();
     }
 
     OtherTable(final String alias) {
-      super(null, "public", "other", "Table", alias);
+      super(null, null, "other", "Table", alias);
       initialize();
     }
 

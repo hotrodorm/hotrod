@@ -33,7 +33,7 @@
   <select id="selectByExample" resultMap="allColumns">
     select
       <include refid="columns" />
-     from public.payment
+     from payment
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.paymentDate != null">
         and payment_date = #{p.paymentDate,jdbcType=DATE}
@@ -59,7 +59,7 @@
   <!-- insert (no auto-generated columns) -->
 
   <insert id="insert">
-    insert into public.payment (
+    insert into payment (
       <trim prefixOverrides=", ">
         <if test="true">, payment_date</if>
         <if test="true">, invoice_id</if>
@@ -81,7 +81,7 @@
   <!-- update by example -->
 
   <update id="updateByExample">
-    update public.payment
+    update payment
     <set>
       <if test="values.paymentDate != null">payment_date = #{values.paymentDate,jdbcType=DATE},</if>
       <if test="values.invoiceId != null">invoice_id = #{values.invoiceId,jdbcType=INTEGER},</if>
@@ -109,7 +109,7 @@
   <!-- delete by example -->
 
   <delete id="deleteByExample">
-    delete from public.payment
+    delete from payment
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="paymentDate != null">
         and payment_date = #{paymentDate,jdbcType=DATE}

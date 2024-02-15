@@ -97,36 +97,31 @@ public class NumbersDAO implements Serializable, ApplicationContextAware {
     app.daos.NumbersVO mo = this.applicationContext.getBean(app.daos.NumbersVO.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
-    mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
-    mo.setNum1(CastUtil.toByte((Number) m.get(p + "num1" + s)));
-    mo.setNum2(CastUtil.toShort((Number) m.get(p + "num2" + s)));
-    mo.setNum3(CastUtil.toInteger((Number) m.get(p + "num3" + s)));
-    mo.setNum4(CastUtil.toLong((Number) m.get(p + "num4" + s)));
-    mo.setNum5(CastUtil.toBigInteger((Number) m.get(p + "num5" + s)));
-    mo.setNum6(CastUtil.toBigDecimal((Number) m.get(p + "num6" + s)));
-    mo.setNum7(CastUtil.toBigDecimal((Number) m.get(p + "num7" + s)));
-    mo.setNum8(CastUtil.toFloat((Number) m.get(p + "num8" + s)));
-    mo.setNum9(CastUtil.toDouble((Number) m.get(p + "num9" + s)));
-    mo.setNum10(CastUtil.toBigDecimal((Number) m.get(p + "num10" + s)));
-    mo.setNum11(CastUtil.toBigDecimal((Number) m.get(p + "num11" + s)));
-    mo.setNum12(CastUtil.toBigDecimal((Number) m.get(p + "num12" + s)));
-    mo.setNum20(CastUtil.toBigInteger((Number) m.get(p + "num20" + s)));
-    mo.setNum21(CastUtil.toBigInteger((Number) m.get(p + "num21" + s)));
-    mo.setNum22(CastUtil.toBigInteger((Number) m.get(p + "num22" + s)));
+    mo.setInt1(CastUtil.toShort((Number) m.get(p + "int1" + s)));
+    mo.setInt2(CastUtil.toInteger((Number) m.get(p + "int2" + s)));
+    mo.setInt3(CastUtil.toLong((Number) m.get(p + "int3" + s)));
+    mo.setInt4(m.get(p + "int4" + s));
+    mo.setInt5(CastUtil.toInteger((Number) m.get(p + "int5" + s)));
+    mo.setInt6(CastUtil.toLong((Number) m.get(p + "int6" + s)));
+    mo.setIntTotalAmount(CastUtil.toInteger((Number) m.get(p + "intTotalAmount" + s)));
+    mo.setColumns(CastUtil.toInteger((Number) m.get(p + "columns" + s)));
+    mo.setDec1(CastUtil.toBigDecimal((Number) m.get(p + "dec1" + s)));
+    mo.setDec2(CastUtil.toBigDecimal((Number) m.get(p + "dec2" + s)));
+    mo.setDec3(CastUtil.toByte((Number) m.get(p + "dec3" + s)));
+    mo.setDec4(CastUtil.toShort((Number) m.get(p + "dec4" + s)));
+    mo.setDec5(CastUtil.toInteger((Number) m.get(p + "dec5" + s)));
+    mo.setDec6(CastUtil.toLong((Number) m.get(p + "dec6" + s)));
+    mo.setDec7(CastUtil.toBigInteger((Number) m.get(p + "dec7" + s)));
+    mo.setDecTotalAmount(CastUtil.toShort((Number) m.get(p + "decTotalAmount" + s)));
+    mo.setFlo1(CastUtil.toFloat((Number) m.get(p + "flo1" + s)));
+    mo.setFlo2(CastUtil.toDouble((Number) m.get(p + "flo2" + s)));
+    mo.setFloTotalAmount(CastUtil.toFloat((Number) m.get(p + "floTotalAmount" + s)));
     return mo;
   }
 
-  // select by primary key
+  // no select by PK generated, since the table does not have a PK.
 
-  public app.daos.NumbersVO select(final java.lang.Integer id) {
-    if (id == null)
-      return null;
-    app.daos.NumbersVO vo = new app.daos.NumbersVO();
-    vo.setId(id);
-    return this.sqlSession.selectOne("mappers.numbers.selectByPK", vo);
-  }
-
-  // select by unique indexes: no unique indexes found (besides the PK) -- skipped
+  // select by unique indexes: no unique indexes found -- skipped
 
   // select by example
 
@@ -159,44 +154,38 @@ public class NumbersDAO implements Serializable, ApplicationContextAware {
   // insert
 
   public app.daos.NumbersVO insert(final app.daos.primitives.AbstractNumbersVO vo) {
-    String id = "mappers.numbers.insert";
-    this.sqlSession.insert(id, vo);
+    return insert(vo, false);
+  }
+
+  public app.daos.NumbersVO insert(final app.daos.primitives.AbstractNumbersVO vo, final boolean retrieveDefaults) {
+    String id = retrieveDefaults ? "mappers.numbers.insertRetrievingDefaults" : "mappers.numbers.insert";
+    int rows = this.sqlSession.insert(id, vo);
     app.daos.NumbersVO mo = springBeanObjectFactory.create(app.daos.NumbersVO.class);
-    mo.setId(vo.getId());
-    mo.setNum1(vo.getNum1());
-    mo.setNum2(vo.getNum2());
-    mo.setNum3(vo.getNum3());
-    mo.setNum4(vo.getNum4());
-    mo.setNum5(vo.getNum5());
-    mo.setNum6(vo.getNum6());
-    mo.setNum7(vo.getNum7());
-    mo.setNum8(vo.getNum8());
-    mo.setNum9(vo.getNum9());
-    mo.setNum10(vo.getNum10());
-    mo.setNum11(vo.getNum11());
-    mo.setNum12(vo.getNum12());
-    mo.setNum20(vo.getNum20());
-    mo.setNum21(vo.getNum21());
-    mo.setNum22(vo.getNum22());
+    mo.setInt1(vo.getInt1());
+    mo.setInt2(vo.getInt2());
+    mo.setInt3(vo.getInt3());
+    mo.setInt4(vo.getInt4());
+    mo.setInt5(vo.getInt5());
+    mo.setInt6(vo.getInt6());
+    mo.setIntTotalAmount(vo.getIntTotalAmount());
+    mo.setColumns(vo.getColumns());
+    mo.setDec1(vo.getDec1());
+    mo.setDec2(vo.getDec2());
+    mo.setDec3(vo.getDec3());
+    mo.setDec4(vo.getDec4());
+    mo.setDec5(vo.getDec5());
+    mo.setDec6(vo.getDec6());
+    mo.setDec7(vo.getDec7());
+    mo.setDecTotalAmount(vo.getDecTotalAmount());
+    mo.setFlo1(vo.getFlo1());
+    mo.setFlo2(vo.getFlo2());
+    mo.setFloTotalAmount(vo.getFloTotalAmount());
     return mo;
   }
 
-  // update by PK
+  // no update by PK generated, since the table does not have a PK.
 
-  public int update(final app.daos.NumbersVO vo) {
-    if (vo.getId() == null) return 0;
-    return this.sqlSession.update("mappers.numbers.updateByPK", vo);
-  }
-
-  // delete by PK
-
-  public int delete(final java.lang.Integer id) {
-    if (id == null) return 0;
-    app.daos.NumbersVO vo = new app.daos.NumbersVO();
-    vo.setId(id);
-    if (vo.getId() == null) return 0;
-    return this.sqlSession.delete("mappers.numbers.deleteByPK", vo);
-  }
+  // no delete by PK generated, since the table does not have a PK.
 
   // update by example
 
@@ -210,22 +199,25 @@ public class NumbersDAO implements Serializable, ApplicationContextAware {
 
   public UpdateSetCompletePhase update(final app.daos.primitives.AbstractNumbersVO updateValues, final NumbersDAO.NumbersTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
-    if (updateValues.getId() != null) values.put("id", updateValues.getId());
-    if (updateValues.getNum1() != null) values.put("num1", updateValues.getNum1());
-    if (updateValues.getNum2() != null) values.put("num2", updateValues.getNum2());
-    if (updateValues.getNum3() != null) values.put("num3", updateValues.getNum3());
-    if (updateValues.getNum4() != null) values.put("num4", updateValues.getNum4());
-    if (updateValues.getNum5() != null) values.put("num5", updateValues.getNum5());
-    if (updateValues.getNum6() != null) values.put("num6", updateValues.getNum6());
-    if (updateValues.getNum7() != null) values.put("num7", updateValues.getNum7());
-    if (updateValues.getNum8() != null) values.put("num8", updateValues.getNum8());
-    if (updateValues.getNum9() != null) values.put("num9", updateValues.getNum9());
-    if (updateValues.getNum10() != null) values.put("num10", updateValues.getNum10());
-    if (updateValues.getNum11() != null) values.put("num11", updateValues.getNum11());
-    if (updateValues.getNum12() != null) values.put("num12", updateValues.getNum12());
-    if (updateValues.getNum20() != null) values.put("num20", updateValues.getNum20());
-    if (updateValues.getNum21() != null) values.put("num21", updateValues.getNum21());
-    if (updateValues.getNum22() != null) values.put("num22", updateValues.getNum22());
+    if (updateValues.getInt1() != null) values.put("int1", updateValues.getInt1());
+    if (updateValues.getInt2() != null) values.put("int2", updateValues.getInt2());
+    if (updateValues.getInt3() != null) values.put("int3", updateValues.getInt3());
+    if (updateValues.getInt4() != null) values.put("int4", updateValues.getInt4());
+    if (updateValues.getInt5() != null) values.put("int5", updateValues.getInt5());
+    if (updateValues.getInt6() != null) values.put("int6", updateValues.getInt6());
+    if (updateValues.getIntTotalAmount() != null) values.put("int_total_amount", updateValues.getIntTotalAmount());
+    if (updateValues.getColumns() != null) values.put("columns", updateValues.getColumns());
+    if (updateValues.getDec1() != null) values.put("dec1", updateValues.getDec1());
+    if (updateValues.getDec2() != null) values.put("dec2", updateValues.getDec2());
+    if (updateValues.getDec3() != null) values.put("dec3", updateValues.getDec3());
+    if (updateValues.getDec4() != null) values.put("dec4", updateValues.getDec4());
+    if (updateValues.getDec5() != null) values.put("dec5", updateValues.getDec5());
+    if (updateValues.getDec6() != null) values.put("dec6", updateValues.getDec6());
+    if (updateValues.getDec7() != null) values.put("dec7", updateValues.getDec7());
+    if (updateValues.getDecTotalAmount() != null) values.put("dec_total_amount", updateValues.getDecTotalAmount());
+    if (updateValues.getFlo1() != null) values.put("flo1", updateValues.getFlo1());
+    if (updateValues.getFlo2() != null) values.put("flo2", updateValues.getFlo2());
+    if (updateValues.getFloTotalAmount() != null) values.put("flo_total_amount", updateValues.getFloTotalAmount());
     return new UpdateSetCompletePhase(this.context, "mappers.numbers.updateByCriteria", tableOrView,  predicate, values);
   }
 
@@ -246,38 +238,44 @@ public class NumbersDAO implements Serializable, ApplicationContextAware {
 
   public enum NumbersOrderBy implements OrderBy {
 
-    ID("user1.numbers", "id", true), //
-    ID$DESC("user1.numbers", "id", false), //
-    NUM1("user1.numbers", "num1", true), //
-    NUM1$DESC("user1.numbers", "num1", false), //
-    NUM2("user1.numbers", "num2", true), //
-    NUM2$DESC("user1.numbers", "num2", false), //
-    NUM3("user1.numbers", "num3", true), //
-    NUM3$DESC("user1.numbers", "num3", false), //
-    NUM4("user1.numbers", "num4", true), //
-    NUM4$DESC("user1.numbers", "num4", false), //
-    NUM5("user1.numbers", "num5", true), //
-    NUM5$DESC("user1.numbers", "num5", false), //
-    NUM6("user1.numbers", "num6", true), //
-    NUM6$DESC("user1.numbers", "num6", false), //
-    NUM7("user1.numbers", "num7", true), //
-    NUM7$DESC("user1.numbers", "num7", false), //
-    NUM8("user1.numbers", "num8", true), //
-    NUM8$DESC("user1.numbers", "num8", false), //
-    NUM9("user1.numbers", "num9", true), //
-    NUM9$DESC("user1.numbers", "num9", false), //
-    NUM10("user1.numbers", "num10", true), //
-    NUM10$DESC("user1.numbers", "num10", false), //
-    NUM11("user1.numbers", "num11", true), //
-    NUM11$DESC("user1.numbers", "num11", false), //
-    NUM12("user1.numbers", "num12", true), //
-    NUM12$DESC("user1.numbers", "num12", false), //
-    NUM20("user1.numbers", "num20", true), //
-    NUM20$DESC("user1.numbers", "num20", false), //
-    NUM21("user1.numbers", "num21", true), //
-    NUM21$DESC("user1.numbers", "num21", false), //
-    NUM22("user1.numbers", "num22", true), //
-    NUM22$DESC("user1.numbers", "num22", false);
+    INT1("numbers", "int1", true), //
+    INT1$DESC("numbers", "int1", false), //
+    INT2("numbers", "int2", true), //
+    INT2$DESC("numbers", "int2", false), //
+    INT3("numbers", "int3", true), //
+    INT3$DESC("numbers", "int3", false), //
+    INT4("numbers", "int4", true), //
+    INT4$DESC("numbers", "int4", false), //
+    INT5("numbers", "int5", true), //
+    INT5$DESC("numbers", "int5", false), //
+    INT6("numbers", "int6", true), //
+    INT6$DESC("numbers", "int6", false), //
+    INT_TOTAL_AMOUNT("numbers", "int_total_amount", true), //
+    INT_TOTAL_AMOUNT$DESC("numbers", "int_total_amount", false), //
+    COLUMNS("numbers", "columns", true), //
+    COLUMNS$DESC("numbers", "columns", false), //
+    DEC1("numbers", "dec1", true), //
+    DEC1$DESC("numbers", "dec1", false), //
+    DEC2("numbers", "dec2", true), //
+    DEC2$DESC("numbers", "dec2", false), //
+    DEC3("numbers", "dec3", true), //
+    DEC3$DESC("numbers", "dec3", false), //
+    DEC4("numbers", "dec4", true), //
+    DEC4$DESC("numbers", "dec4", false), //
+    DEC5("numbers", "dec5", true), //
+    DEC5$DESC("numbers", "dec5", false), //
+    DEC6("numbers", "dec6", true), //
+    DEC6$DESC("numbers", "dec6", false), //
+    DEC7("numbers", "dec7", true), //
+    DEC7$DESC("numbers", "dec7", false), //
+    DEC_TOTAL_AMOUNT("numbers", "dec_total_amount", true), //
+    DEC_TOTAL_AMOUNT$DESC("numbers", "dec_total_amount", false), //
+    FLO1("numbers", "flo1", true), //
+    FLO1$DESC("numbers", "flo1", false), //
+    FLO2("numbers", "flo2", true), //
+    FLO2$DESC("numbers", "flo2", false), //
+    FLO_TOTAL_AMOUNT("numbers", "flo_total_amount", true), //
+    FLO_TOTAL_AMOUNT$DESC("numbers", "flo_total_amount", false);
 
     private NumbersOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -318,38 +316,41 @@ public class NumbersDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public NumberColumn id;
-    public NumberColumn num1;
-    public NumberColumn num2;
-    public NumberColumn num3;
-    public NumberColumn num4;
-    public NumberColumn num5;
-    public NumberColumn num6;
-    public NumberColumn num7;
-    public NumberColumn num8;
-    public NumberColumn num9;
-    public NumberColumn num10;
-    public NumberColumn num11;
-    public NumberColumn num12;
-    public NumberColumn num20;
-    public NumberColumn num21;
-    public NumberColumn num22;
+    public NumberColumn int1;
+    public NumberColumn int2;
+    public NumberColumn int3;
+    public ObjectColumn int4;
+    public NumberColumn int5;
+    public NumberColumn int6;
+    public NumberColumn intTotalAmount;
+    public NumberColumn columns;
+    public NumberColumn dec1;
+    public NumberColumn dec2;
+    public NumberColumn dec3;
+    public NumberColumn dec4;
+    public NumberColumn dec5;
+    public NumberColumn dec6;
+    public NumberColumn dec7;
+    public NumberColumn decTotalAmount;
+    public NumberColumn flo1;
+    public NumberColumn flo2;
+    public NumberColumn floTotalAmount;
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this.id, this.num1, this.num2, this.num3, this.num4, this.num5, this.num6, this.num7, this.num8, this.num9, this.num10, this.num11, this.num12, this.num20, this.num21, this.num22);
+      return new AllColumns(this.int1, this.int2, this.int3, this.int4, this.int5, this.int6, this.intTotalAmount, this.columns, this.dec1, this.dec2, this.dec3, this.dec4, this.dec5, this.dec6, this.dec7, this.decTotalAmount, this.flo1, this.flo2, this.floTotalAmount);
     }
 
     // Constructors
 
     NumbersTable() {
-      super(null, "USER1", "NUMBERS", "Table", null);
+      super(null, null, "numbers", "Table", null);
       initialize();
     }
 
     NumbersTable(final String alias) {
-      super(null, "USER1", "NUMBERS", "Table", alias);
+      super(null, null, "numbers", "Table", alias);
       initialize();
     }
 
@@ -357,38 +358,44 @@ public class NumbersDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.id = new NumberColumn(this, "ID", "id", "NUMBER", 9, 0);
-      super.columns.add(this.id);
-      this.num1 = new NumberColumn(this, "NUM1", "num1", "NUMBER", 2, 0);
-      super.columns.add(this.num1);
-      this.num2 = new NumberColumn(this, "NUM2", "num2", "NUMBER", 4, 0);
-      super.columns.add(this.num2);
-      this.num3 = new NumberColumn(this, "NUM3", "num3", "NUMBER", 9, 0);
-      super.columns.add(this.num3);
-      this.num4 = new NumberColumn(this, "NUM4", "num4", "NUMBER", 18, 0);
-      super.columns.add(this.num4);
-      this.num5 = new NumberColumn(this, "NUM5", "num5", "NUMBER", 38, 0);
-      super.columns.add(this.num5);
-      this.num6 = new NumberColumn(this, "NUM6", "num6", "NUMBER", 10, 2);
-      super.columns.add(this.num6);
-      this.num7 = new NumberColumn(this, "NUM7", "num7", "NUMBER", 0, -127);
-      super.columns.add(this.num7);
-      this.num8 = new NumberColumn(this, "NUM8", "num8", "BINARY_FLOAT", 4, null);
-      super.columns.add(this.num8);
-      this.num9 = new NumberColumn(this, "NUM9", "num9", "BINARY_DOUBLE", 8, null);
-      super.columns.add(this.num9);
-      this.num10 = new NumberColumn(this, "NUM10", "num10", "FLOAT", 126, null);
-      super.columns.add(this.num10);
-      this.num11 = new NumberColumn(this, "NUM11", "num11", "FLOAT", 63, null);
-      super.columns.add(this.num11);
-      this.num12 = new NumberColumn(this, "NUM12", "num12", "FLOAT", 126, null);
-      super.columns.add(this.num12);
-      this.num20 = new NumberColumn(this, "NUM20", "num20", "NUMBER", 38, 0);
-      super.columns.add(this.num20);
-      this.num21 = new NumberColumn(this, "NUM21", "num21", "NUMBER", 38, 0);
-      super.columns.add(this.num21);
-      this.num22 = new NumberColumn(this, "NUM22", "num22", "NUMBER", 38, 0);
-      super.columns.add(this.num22);
+      this.int1 = new NumberColumn(this, "int1", "int1", "int2", 5, 0);
+      super.columns.add(this.int1);
+      this.int2 = new NumberColumn(this, "int2", "int2", "int4", 10, 0);
+      super.columns.add(this.int2);
+      this.int3 = new NumberColumn(this, "int3", "int3", "int8", 19, 0);
+      super.columns.add(this.int3);
+      this.int4 = new ObjectColumn(this, "int4", "int4", "smallserial", 5, 0);
+      super.columns.add(this.int4);
+      this.int5 = new NumberColumn(this, "int5", "int5", "serial", 10, 0);
+      super.columns.add(this.int5);
+      this.int6 = new NumberColumn(this, "int6", "int6", "bigserial", 19, 0);
+      super.columns.add(this.int6);
+      this.intTotalAmount = new NumberColumn(this, "int_total_amount", "intTotalAmount", "int4", 10, 0);
+      super.columns.add(this.intTotalAmount);
+      this.columns = new NumberColumn(this, "columns", "columns", "int4", 10, 0);
+      super.columns.add(this.columns);
+      this.dec1 = new NumberColumn(this, "dec1", "dec1", "numeric", 12, 2);
+      super.columns.add(this.dec1);
+      this.dec2 = new NumberColumn(this, "dec2", "dec2", "numeric", 12, 2);
+      super.columns.add(this.dec2);
+      this.dec3 = new NumberColumn(this, "dec3", "dec3", "numeric", 2, 0);
+      super.columns.add(this.dec3);
+      this.dec4 = new NumberColumn(this, "dec4", "dec4", "numeric", 4, 0);
+      super.columns.add(this.dec4);
+      this.dec5 = new NumberColumn(this, "dec5", "dec5", "numeric", 8, 0);
+      super.columns.add(this.dec5);
+      this.dec6 = new NumberColumn(this, "dec6", "dec6", "numeric", 18, 0);
+      super.columns.add(this.dec6);
+      this.dec7 = new NumberColumn(this, "dec7", "dec7", "numeric", 100, 0);
+      super.columns.add(this.dec7);
+      this.decTotalAmount = new NumberColumn(this, "dec_total_amount", "decTotalAmount", "numeric", 4, 0);
+      super.columns.add(this.decTotalAmount);
+      this.flo1 = new NumberColumn(this, "flo1", "flo1", "float4", 8, 8);
+      super.columns.add(this.flo1);
+      this.flo2 = new NumberColumn(this, "flo2", "flo2", "float8", 17, 17);
+      super.columns.add(this.flo2);
+      this.floTotalAmount = new NumberColumn(this, "flo_total_amount", "floTotalAmount", "float4", 8, 8);
+      super.columns.add(this.floTotalAmount);
     }
 
   }

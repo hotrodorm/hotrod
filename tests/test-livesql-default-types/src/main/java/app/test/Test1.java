@@ -3,9 +3,6 @@ package app.test;
 import java.util.List;
 import java.util.Map;
 
-import app.daos.BranchVO;
-import app.daos.primitives.BranchDAO;
-import app.daos.primitives.BranchDAO.BranchTable;
 import app.test.assembly.SQL;
 import app.test.assembly.Tuple1;
 import app.test.assembly.Tuple2;
@@ -34,10 +31,6 @@ public class Test1 {
     AutoTable<AutoVO> t = AutoDAO.entity();
     BusTable<BusVO> u = BusDAO.entity();
     CarTable<CarVO> v = CarDAO.entity();
-
-    BranchTable<?> b = BranchDAO.newTable();
-
-    BranchTable<BranchVO> b2 = BranchDAO.newTable();
 
     // Una entidad
 

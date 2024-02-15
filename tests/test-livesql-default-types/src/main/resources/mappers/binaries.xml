@@ -30,7 +30,7 @@
   <select id="selectByExample" resultMap="allColumns">
     select
       <include refid="columns" />
-     from public.binaries
+     from binaries
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.bin1 != null">
         and bin1 = #{p.bin1,jdbcType=BINARY}
@@ -53,7 +53,7 @@
   <!-- insert (no auto-generated columns) -->
 
   <insert id="insert">
-    insert into public.binaries (
+    insert into binaries (
       <trim prefixOverrides=", ">
         <if test="true">, bin1</if>
         <if test="true">, bol1</if>
@@ -73,7 +73,7 @@
   <!-- update by example -->
 
   <update id="updateByExample">
-    update public.binaries
+    update binaries
     <set>
       <if test="values.bin1 != null">bin1 = #{values.bin1,jdbcType=BINARY},</if>
       <if test="values.bol1 != null">bol1 = #{values.bol1,jdbcType=BIT},</if>
@@ -97,7 +97,7 @@
   <!-- delete by example -->
 
   <delete id="deleteByExample">
-    delete from public.binaries
+    delete from binaries
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="bin1 != null">
         and bin1 = #{bin1,jdbcType=BINARY}

@@ -15,10 +15,10 @@ public class AbstractInvoiceVO implements Serializable {
   protected java.lang.Integer amount = null;
   protected java.lang.Integer branchId = null;
   protected java.lang.Integer accountId = null;
-  protected java.lang.String status = null;
-  protected java.lang.String type = null;
-  protected java.util.Date orderDate = null;
   protected java.lang.Integer unpaidBalance = null;
+  protected java.lang.String type = null;
+  protected java.lang.String status = null;
+  protected java.sql.Date orderDate = null;
 
   // getters & setters
 
@@ -54,12 +54,12 @@ public class AbstractInvoiceVO implements Serializable {
     this.accountId = accountId;
   }
 
-  public java.lang.String getStatus() {
-    return this.status;
+  public java.lang.Integer getUnpaidBalance() {
+    return this.unpaidBalance;
   }
 
-  public void setStatus(final java.lang.String status) {
-    this.status = status;
+  public void setUnpaidBalance(final java.lang.Integer unpaidBalance) {
+    this.unpaidBalance = unpaidBalance;
   }
 
   public java.lang.String getType() {
@@ -70,20 +70,20 @@ public class AbstractInvoiceVO implements Serializable {
     this.type = type;
   }
 
-  public java.util.Date getOrderDate() {
+  public java.lang.String getStatus() {
+    return this.status;
+  }
+
+  public void setStatus(final java.lang.String status) {
+    this.status = status;
+  }
+
+  public java.sql.Date getOrderDate() {
     return this.orderDate;
   }
 
-  public void setOrderDate(final java.util.Date orderDate) {
+  public void setOrderDate(final java.sql.Date orderDate) {
     this.orderDate = orderDate;
-  }
-
-  public java.lang.Integer getUnpaidBalance() {
-    return this.unpaidBalance;
-  }
-
-  public void setUnpaidBalance(final java.lang.Integer unpaidBalance) {
-    this.unpaidBalance = unpaidBalance;
   }
 
   // to string
@@ -95,26 +95,32 @@ public class AbstractInvoiceVO implements Serializable {
     sb.append("- amount=" + this.amount + "\n");
     sb.append("- branchId=" + this.branchId + "\n");
     sb.append("- accountId=" + this.accountId + "\n");
-    sb.append("- status=" + this.status + "\n");
+    sb.append("- unpaidBalance=" + this.unpaidBalance + "\n");
     sb.append("- type=" + this.type + "\n");
-    sb.append("- orderDate=" + this.orderDate + "\n");
-    sb.append("- unpaidBalance=" + this.unpaidBalance);
+    sb.append("- status=" + this.status + "\n");
+    sb.append("- orderDate=" + this.orderDate);
     return sb.toString();
   }
 
-  // to JSON
+  // to JSON Object
 
-  public String toJSON() {
+  public JSONObject toJSONObject() {
     JSONObject obj = new JSONObject();
     obj.addProperty("id", this.id);
     obj.addProperty("amount", this.amount);
     obj.addProperty("branchId", this.branchId);
     obj.addProperty("accountId", this.accountId);
-    obj.addProperty("status", this.status);
-    obj.addProperty("type", this.type);
-    obj.addProperty("orderDate", this.orderDate);
     obj.addProperty("unpaidBalance", this.unpaidBalance);
-    return obj.render();
+    obj.addProperty("type", this.type);
+    obj.addProperty("status", this.status);
+    obj.addProperty("orderDate", this.orderDate);
+    return obj;
+  }
+
+  // to JSON String
+
+  public String toJSON() {
+    return toJSONObject().render();
   }
 
 }

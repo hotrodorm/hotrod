@@ -252,9 +252,9 @@ public class AbstractOtherVO implements Serializable {
     return sb.toString();
   }
 
-  // to JSON
+  // to JSON Object
 
-  public String toJSON() {
+  public JSONObject toJSONObject() {
     JSONObject obj = new JSONObject();
     obj.addProperty("geo1", this.geo1);
     obj.addProperty("geo2", this.geo2);
@@ -279,7 +279,13 @@ public class AbstractOtherVO implements Serializable {
     obj.addProperty("ran4", this.ran4);
     obj.addProperty("ran5", this.ran5);
     obj.addProperty("ran6", this.ran6);
-    return obj.render();
+    return obj;
+  }
+
+  // to JSON String
+
+  public String toJSON() {
+    return toJSONObject().render();
   }
 
 }

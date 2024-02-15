@@ -186,12 +186,12 @@ public class InvoiceLineDAO implements Serializable, ApplicationContextAware {
 
   public enum InvoiceLineOrderBy implements OrderBy {
 
-    INVOICE_ID("public.invoice_line", "invoice_id", true), //
-    INVOICE_ID$DESC("public.invoice_line", "invoice_id", false), //
-    PRODUCT_ID("public.invoice_line", "product_id", true), //
-    PRODUCT_ID$DESC("public.invoice_line", "product_id", false), //
-    LINE_TOTAL("public.invoice_line", "line_total", true), //
-    LINE_TOTAL$DESC("public.invoice_line", "line_total", false);
+    INVOICE_ID("invoice_line", "invoice_id", true), //
+    INVOICE_ID$DESC("invoice_line", "invoice_id", false), //
+    PRODUCT_ID("invoice_line", "product_id", true), //
+    PRODUCT_ID$DESC("invoice_line", "product_id", false), //
+    LINE_TOTAL("invoice_line", "line_total", true), //
+    LINE_TOTAL$DESC("invoice_line", "line_total", false);
 
     private InvoiceLineOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -245,12 +245,12 @@ public class InvoiceLineDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     InvoiceLineTable() {
-      super(null, "PUBLIC", "INVOICE_LINE", "Table", null);
+      super(null, null, "INVOICE_LINE", "Table", null);
       initialize();
     }
 
     InvoiceLineTable(final String alias) {
-      super(null, "PUBLIC", "INVOICE_LINE", "Table", alias);
+      super(null, null, "INVOICE_LINE", "Table", alias);
       initialize();
     }
 

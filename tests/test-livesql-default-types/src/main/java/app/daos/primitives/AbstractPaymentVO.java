@@ -52,14 +52,20 @@ public class AbstractPaymentVO implements Serializable {
     return sb.toString();
   }
 
-  // to JSON
+  // to JSON Object
 
-  public String toJSON() {
+  public JSONObject toJSONObject() {
     JSONObject obj = new JSONObject();
     obj.addProperty("paymentDate", this.paymentDate);
     obj.addProperty("invoiceId", this.invoiceId);
     obj.addProperty("amount", this.amount);
-    return obj.render();
+    return obj;
+  }
+
+  // to JSON String
+
+  public String toJSON() {
+    return toJSONObject().render();
   }
 
 }

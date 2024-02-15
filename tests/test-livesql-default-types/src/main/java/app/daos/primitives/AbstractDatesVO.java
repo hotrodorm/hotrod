@@ -312,9 +312,9 @@ public class AbstractDatesVO implements Serializable {
     return sb.toString();
   }
 
-  // to JSON
+  // to JSON Object
 
-  public String toJSON() {
+  public JSONObject toJSONObject() {
     JSONObject obj = new JSONObject();
     obj.addProperty("id", this.id);
     obj.addProperty("dat1", this.dat1);
@@ -345,7 +345,13 @@ public class AbstractDatesVO implements Serializable {
     obj.addProperty("ivt15", this.ivt15);
     obj.addProperty("ivt16", this.ivt16);
     obj.addProperty("ivt17", this.ivt17);
-    return obj.render();
+    return obj;
+  }
+
+  // to JSON String
+
+  public String toJSON() {
+    return toJSONObject().render();
   }
 
 }

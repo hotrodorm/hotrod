@@ -33,7 +33,7 @@
   <select id="selectByExample" resultMap="allColumns">
     select
       <include refid="columns" />
-     from public.chars
+     from chars
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.cha1 != null">
         and cha1 = #{p.cha1,jdbcType=CHAR}
@@ -59,7 +59,7 @@
   <!-- insert (no auto-generated columns) -->
 
   <insert id="insert">
-    insert into public.chars (
+    insert into chars (
       <trim prefixOverrides=", ">
         <if test="true">, cha1</if>
         <if test="true">, cha2</if>
@@ -81,7 +81,7 @@
   <!-- update by example -->
 
   <update id="updateByExample">
-    update public.chars
+    update chars
     <set>
       <if test="values.cha1 != null">cha1 = #{values.cha1,jdbcType=CHAR},</if>
       <if test="values.cha2 != null">cha2 = #{values.cha2,jdbcType=VARCHAR},</if>
@@ -109,7 +109,7 @@
   <!-- delete by example -->
 
   <delete id="deleteByExample">
-    delete from public.chars
+    delete from chars
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="cha1 != null">
         and cha1 = #{cha1,jdbcType=CHAR}

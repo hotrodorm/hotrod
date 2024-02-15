@@ -8,23 +8,23 @@
 
   <sql id="columns">
     id,
-    name,
+    "NaMe",
     region,
     is_vip
   </sql>
 
   <sql id="columnsWithAlias">
     ${alias}.id,
-    ${alias}.name,
+    ${alias}."NaMe",
     ${alias}.region,
     ${alias}.is_vip
   </sql>
 
   <resultMap id="allColumns" type="app.daos.BranchVO">
-    <id property="id" column="ID" />
-    <result property="name" column="NAME" />
-    <result property="region" column="REGION" />
-    <result property="isVip" column="IS_VIP" />
+    <id property="id" column="id" />
+    <result property="name" column="NaMe" />
+    <result property="region" column="region" />
+    <result property="isVip" column="is_vip" />
   </resultMap>
 
   <!-- select by PK -->
@@ -32,9 +32,9 @@
   <select id="selectByPK" resultMap="allColumns">
     select
       <include refid="columns" />
-     from user1.branch
+     from branch
      where
-      id = #{id,jdbcType=NUMERIC}
+      id = #{id,jdbcType=INTEGER}
   </select>
 
   <!-- no select by unique indexes since there are no UI (besides the PK) -->
@@ -44,19 +44,19 @@
   <select id="selectByExample" resultMap="allColumns">
     select
       <include refid="columns" />
-     from user1.branch
+     from branch
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.id != null">
-        and id = #{p.id,jdbcType=NUMERIC}
+        and id = #{p.id,jdbcType=INTEGER}
       </if>
       <if test="p.name != null">
-        and name = #{p.name,jdbcType=VARCHAR}
+        and "NaMe" = #{p.name,jdbcType=VARCHAR}
       </if>
       <if test="p.region != null">
         and region = #{p.region,jdbcType=VARCHAR}
       </if>
       <if test="p.isVip != null">
-        and is_vip = #{p.isVip,jdbcType=VARCHAR}
+        and is_vip = #{p.isVip,jdbcType=BIT}
       </if>
     </trim>
     <if test="o != null">
@@ -73,19 +73,19 @@
   <!-- insert (no auto-generated columns) -->
 
   <insert id="insert">
-    insert into user1.branch (
+    insert into branch (
       <trim prefixOverrides=", ">
         <if test="true">, id</if>
-        <if test="true">, name</if>
+        <if test="true">, "NaMe"</if>
         <if test="true">, region</if>
         <if test="true">, is_vip</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
-        <if test="true">, #{id,jdbcType=NUMERIC}</if>
+        <if test="true">, #{id,jdbcType=INTEGER}</if>
         <if test="true">, #{name,jdbcType=VARCHAR}</if>
         <if test="true">, #{region,jdbcType=VARCHAR}</if>
-        <if test="true">, #{isVip,jdbcType=VARCHAR}</if>
+        <if test="true">, #{isVip,jdbcType=BIT}</if>
       </trim>
       )
   </insert>
@@ -93,44 +93,44 @@
   <!-- update by PK -->
 
   <update id="updateByPK">
-    update user1.branch set
-      name = #{name,jdbcType=VARCHAR},
+    update branch set
+      "NaMe" = #{name,jdbcType=VARCHAR},
       region = #{region,jdbcType=VARCHAR},
-      is_vip = #{isVip,jdbcType=VARCHAR}
+      is_vip = #{isVip,jdbcType=BIT}
      where
-      id = #{id,jdbcType=NUMERIC}
+      id = #{id,jdbcType=INTEGER}
   </update>
 
   <!-- delete by PK -->
 
   <delete id="deleteByPK">
-    delete from user1.branch
+    delete from branch
      where
-      id = #{id,jdbcType=NUMERIC}
+      id = #{id,jdbcType=INTEGER}
   </delete>
 
   <!-- update by example -->
 
   <update id="updateByExample">
-    update user1.branch
+    update branch
     <set>
-      <if test="values.id != null">id = #{values.id,jdbcType=NUMERIC},</if>
-      <if test="values.name != null">name = #{values.name,jdbcType=VARCHAR},</if>
+      <if test="values.id != null">id = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.name != null">"NaMe" = #{values.name,jdbcType=VARCHAR},</if>
       <if test="values.region != null">region = #{values.region,jdbcType=VARCHAR},</if>
-      <if test="values.isVip != null">is_vip = #{values.isVip,jdbcType=VARCHAR},</if>
+      <if test="values.isVip != null">is_vip = #{values.isVip,jdbcType=BIT},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.id != null">
-        and id = #{filter.id,jdbcType=NUMERIC}
+        and id = #{filter.id,jdbcType=INTEGER}
       </if>
       <if test="filter.name != null">
-        and name = #{filter.name,jdbcType=VARCHAR}
+        and "NaMe" = #{filter.name,jdbcType=VARCHAR}
       </if>
       <if test="filter.region != null">
         and region = #{filter.region,jdbcType=VARCHAR}
       </if>
       <if test="filter.isVip != null">
-        and is_vip = #{filter.isVip,jdbcType=VARCHAR}
+        and is_vip = #{filter.isVip,jdbcType=BIT}
       </if>
     </trim>
   </update>
@@ -144,19 +144,19 @@
   <!-- delete by example -->
 
   <delete id="deleteByExample">
-    delete from user1.branch
+    delete from branch
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="id != null">
-        and id = #{id,jdbcType=NUMERIC}
+        and id = #{id,jdbcType=INTEGER}
       </if>
       <if test="name != null">
-        and name = #{name,jdbcType=VARCHAR}
+        and "NaMe" = #{name,jdbcType=VARCHAR}
       </if>
       <if test="region != null">
         and region = #{region,jdbcType=VARCHAR}
       </if>
       <if test="isVip != null">
-        and is_vip = #{isVip,jdbcType=VARCHAR}
+        and is_vip = #{isVip,jdbcType=BIT}
       </if>
     </trim>
   </delete>

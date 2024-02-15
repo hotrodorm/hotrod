@@ -11,151 +11,178 @@ public class AbstractNumbersVO implements Serializable {
 
   // VO Properties (table columns)
 
-  protected java.lang.Integer id = null;
-  protected java.lang.Byte num1 = null;
-  protected java.lang.Short num2 = null;
-  protected java.lang.Integer num3 = null;
-  protected java.lang.Long num4 = null;
-  protected java.math.BigInteger num5 = null;
-  protected java.math.BigDecimal num6 = null;
-  protected java.math.BigDecimal num7 = null;
-  protected java.lang.Float num8 = null;
-  protected java.lang.Double num9 = null;
-  protected java.math.BigDecimal num10 = null;
-  protected java.math.BigDecimal num11 = null;
-  protected java.math.BigDecimal num12 = null;
-  protected java.math.BigInteger num20 = null;
-  protected java.math.BigInteger num21 = null;
-  protected java.math.BigInteger num22 = null;
+  protected java.lang.Short int1 = null;
+  protected java.lang.Integer int2 = null;
+  protected java.lang.Long int3 = null;
+  protected java.lang.Object int4 = null;
+  protected java.lang.Integer int5 = null;
+  protected java.lang.Long int6 = null;
+  protected java.lang.Integer intTotalAmount = null;
+  protected java.lang.Integer columns = null;
+  protected java.math.BigDecimal dec1 = null;
+  protected java.math.BigDecimal dec2 = null;
+  protected java.lang.Byte dec3 = null;
+  protected java.lang.Short dec4 = null;
+  protected java.lang.Integer dec5 = null;
+  protected java.lang.Long dec6 = null;
+  protected java.math.BigInteger dec7 = null;
+  protected java.lang.Short decTotalAmount = null;
+  protected java.lang.Float flo1 = null;
+  protected java.lang.Double flo2 = null;
+  protected java.lang.Float floTotalAmount = null;
 
   // getters & setters
 
-  public java.lang.Integer getId() {
-    return this.id;
+  public java.lang.Short getInt1() {
+    return this.int1;
   }
 
-  public void setId(final java.lang.Integer id) {
-    this.id = id;
+  public void setInt1(final java.lang.Short int1) {
+    this.int1 = int1;
   }
 
-  public java.lang.Byte getNum1() {
-    return this.num1;
+  public java.lang.Integer getInt2() {
+    return this.int2;
   }
 
-  public void setNum1(final java.lang.Byte num1) {
-    this.num1 = num1;
+  public void setInt2(final java.lang.Integer int2) {
+    this.int2 = int2;
   }
 
-  public java.lang.Short getNum2() {
-    return this.num2;
+  public java.lang.Long getInt3() {
+    return this.int3;
   }
 
-  public void setNum2(final java.lang.Short num2) {
-    this.num2 = num2;
+  public void setInt3(final java.lang.Long int3) {
+    this.int3 = int3;
   }
 
-  public java.lang.Integer getNum3() {
-    return this.num3;
+  public java.lang.Object getInt4() {
+    return this.int4;
   }
 
-  public void setNum3(final java.lang.Integer num3) {
-    this.num3 = num3;
+  public void setInt4(final java.lang.Object int4) {
+    this.int4 = int4;
   }
 
-  public java.lang.Long getNum4() {
-    return this.num4;
+  public java.lang.Integer getInt5() {
+    return this.int5;
   }
 
-  public void setNum4(final java.lang.Long num4) {
-    this.num4 = num4;
+  public void setInt5(final java.lang.Integer int5) {
+    this.int5 = int5;
   }
 
-  public java.math.BigInteger getNum5() {
-    return this.num5;
+  public java.lang.Long getInt6() {
+    return this.int6;
   }
 
-  public void setNum5(final java.math.BigInteger num5) {
-    this.num5 = num5;
+  public void setInt6(final java.lang.Long int6) {
+    this.int6 = int6;
   }
 
-  public java.math.BigDecimal getNum6() {
-    return this.num6;
+  public java.lang.Integer getIntTotalAmount() {
+    return this.intTotalAmount;
   }
 
-  public void setNum6(final java.math.BigDecimal num6) {
-    this.num6 = num6;
+  public void setIntTotalAmount(final java.lang.Integer intTotalAmount) {
+    this.intTotalAmount = intTotalAmount;
   }
 
-  public java.math.BigDecimal getNum7() {
-    return this.num7;
+  public java.lang.Integer getColumns() {
+    return this.columns;
   }
 
-  public void setNum7(final java.math.BigDecimal num7) {
-    this.num7 = num7;
+  public void setColumns(final java.lang.Integer columns) {
+    this.columns = columns;
   }
 
-  public java.lang.Float getNum8() {
-    return this.num8;
+  public java.math.BigDecimal getDec1() {
+    return this.dec1;
   }
 
-  public void setNum8(final java.lang.Float num8) {
-    this.num8 = num8;
+  public void setDec1(final java.math.BigDecimal dec1) {
+    this.dec1 = dec1;
   }
 
-  public java.lang.Double getNum9() {
-    return this.num9;
+  public java.math.BigDecimal getDec2() {
+    return this.dec2;
   }
 
-  public void setNum9(final java.lang.Double num9) {
-    this.num9 = num9;
+  public void setDec2(final java.math.BigDecimal dec2) {
+    this.dec2 = dec2;
   }
 
-  public java.math.BigDecimal getNum10() {
-    return this.num10;
+  public java.lang.Byte getDec3() {
+    return this.dec3;
   }
 
-  public void setNum10(final java.math.BigDecimal num10) {
-    this.num10 = num10;
+  public void setDec3(final java.lang.Byte dec3) {
+    this.dec3 = dec3;
   }
 
-  public java.math.BigDecimal getNum11() {
-    return this.num11;
+  public java.lang.Short getDec4() {
+    return this.dec4;
   }
 
-  public void setNum11(final java.math.BigDecimal num11) {
-    this.num11 = num11;
+  public void setDec4(final java.lang.Short dec4) {
+    this.dec4 = dec4;
   }
 
-  public java.math.BigDecimal getNum12() {
-    return this.num12;
+  public java.lang.Integer getDec5() {
+    return this.dec5;
   }
 
-  public void setNum12(final java.math.BigDecimal num12) {
-    this.num12 = num12;
+  public void setDec5(final java.lang.Integer dec5) {
+    this.dec5 = dec5;
   }
 
-  public java.math.BigInteger getNum20() {
-    return this.num20;
+  public java.lang.Long getDec6() {
+    return this.dec6;
   }
 
-  public void setNum20(final java.math.BigInteger num20) {
-    this.num20 = num20;
+  public void setDec6(final java.lang.Long dec6) {
+    this.dec6 = dec6;
   }
 
-  public java.math.BigInteger getNum21() {
-    return this.num21;
+  public java.math.BigInteger getDec7() {
+    return this.dec7;
   }
 
-  public void setNum21(final java.math.BigInteger num21) {
-    this.num21 = num21;
+  public void setDec7(final java.math.BigInteger dec7) {
+    this.dec7 = dec7;
   }
 
-  public java.math.BigInteger getNum22() {
-    return this.num22;
+  public java.lang.Short getDecTotalAmount() {
+    return this.decTotalAmount;
   }
 
-  public void setNum22(final java.math.BigInteger num22) {
-    this.num22 = num22;
+  public void setDecTotalAmount(final java.lang.Short decTotalAmount) {
+    this.decTotalAmount = decTotalAmount;
+  }
+
+  public java.lang.Float getFlo1() {
+    return this.flo1;
+  }
+
+  public void setFlo1(final java.lang.Float flo1) {
+    this.flo1 = flo1;
+  }
+
+  public java.lang.Double getFlo2() {
+    return this.flo2;
+  }
+
+  public void setFlo2(final java.lang.Double flo2) {
+    this.flo2 = flo2;
+  }
+
+  public java.lang.Float getFloTotalAmount() {
+    return this.floTotalAmount;
+  }
+
+  public void setFloTotalAmount(final java.lang.Float floTotalAmount) {
+    this.floTotalAmount = floTotalAmount;
   }
 
   // to string
@@ -163,46 +190,58 @@ public class AbstractNumbersVO implements Serializable {
   public String toString() {
     java.lang.StringBuilder sb = new java.lang.StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
-    sb.append("- id=" + this.id + "\n");
-    sb.append("- num1=" + this.num1 + "\n");
-    sb.append("- num2=" + this.num2 + "\n");
-    sb.append("- num3=" + this.num3 + "\n");
-    sb.append("- num4=" + this.num4 + "\n");
-    sb.append("- num5=" + this.num5 + "\n");
-    sb.append("- num6=" + this.num6 + "\n");
-    sb.append("- num7=" + this.num7 + "\n");
-    sb.append("- num8=" + this.num8 + "\n");
-    sb.append("- num9=" + this.num9 + "\n");
-    sb.append("- num10=" + this.num10 + "\n");
-    sb.append("- num11=" + this.num11 + "\n");
-    sb.append("- num12=" + this.num12 + "\n");
-    sb.append("- num20=" + this.num20 + "\n");
-    sb.append("- num21=" + this.num21 + "\n");
-    sb.append("- num22=" + this.num22);
+    sb.append("- int1=" + this.int1 + "\n");
+    sb.append("- int2=" + this.int2 + "\n");
+    sb.append("- int3=" + this.int3 + "\n");
+    sb.append("- int4=" + this.int4 + "\n");
+    sb.append("- int5=" + this.int5 + "\n");
+    sb.append("- int6=" + this.int6 + "\n");
+    sb.append("- intTotalAmount=" + this.intTotalAmount + "\n");
+    sb.append("- columns=" + this.columns + "\n");
+    sb.append("- dec1=" + this.dec1 + "\n");
+    sb.append("- dec2=" + this.dec2 + "\n");
+    sb.append("- dec3=" + this.dec3 + "\n");
+    sb.append("- dec4=" + this.dec4 + "\n");
+    sb.append("- dec5=" + this.dec5 + "\n");
+    sb.append("- dec6=" + this.dec6 + "\n");
+    sb.append("- dec7=" + this.dec7 + "\n");
+    sb.append("- decTotalAmount=" + this.decTotalAmount + "\n");
+    sb.append("- flo1=" + this.flo1 + "\n");
+    sb.append("- flo2=" + this.flo2 + "\n");
+    sb.append("- floTotalAmount=" + this.floTotalAmount);
     return sb.toString();
   }
 
-  // to JSON
+  // to JSON Object
+
+  public JSONObject toJSONObject() {
+    JSONObject obj = new JSONObject();
+    obj.addProperty("int1", this.int1);
+    obj.addProperty("int2", this.int2);
+    obj.addProperty("int3", this.int3);
+    obj.addProperty("int4", this.int4);
+    obj.addProperty("int5", this.int5);
+    obj.addProperty("int6", this.int6);
+    obj.addProperty("intTotalAmount", this.intTotalAmount);
+    obj.addProperty("columns", this.columns);
+    obj.addProperty("dec1", this.dec1);
+    obj.addProperty("dec2", this.dec2);
+    obj.addProperty("dec3", this.dec3);
+    obj.addProperty("dec4", this.dec4);
+    obj.addProperty("dec5", this.dec5);
+    obj.addProperty("dec6", this.dec6);
+    obj.addProperty("dec7", this.dec7);
+    obj.addProperty("decTotalAmount", this.decTotalAmount);
+    obj.addProperty("flo1", this.flo1);
+    obj.addProperty("flo2", this.flo2);
+    obj.addProperty("floTotalAmount", this.floTotalAmount);
+    return obj;
+  }
+
+  // to JSON String
 
   public String toJSON() {
-    JSONObject obj = new JSONObject();
-    obj.addProperty("id", this.id);
-    obj.addProperty("num1", this.num1);
-    obj.addProperty("num2", this.num2);
-    obj.addProperty("num3", this.num3);
-    obj.addProperty("num4", this.num4);
-    obj.addProperty("num5", this.num5);
-    obj.addProperty("num6", this.num6);
-    obj.addProperty("num7", this.num7);
-    obj.addProperty("num8", this.num8);
-    obj.addProperty("num9", this.num9);
-    obj.addProperty("num10", this.num10);
-    obj.addProperty("num11", this.num11);
-    obj.addProperty("num12", this.num12);
-    obj.addProperty("num20", this.num20);
-    obj.addProperty("num21", this.num21);
-    obj.addProperty("num22", this.num22);
-    return obj.render();
+    return toJSONObject().render();
   }
 
 }

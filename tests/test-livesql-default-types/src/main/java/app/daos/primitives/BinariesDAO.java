@@ -183,10 +183,10 @@ public class BinariesDAO implements Serializable, ApplicationContextAware {
 
   public enum BinariesOrderBy implements OrderBy {
 
-    BIN1("public.binaries", "bin1", true), //
-    BIN1$DESC("public.binaries", "bin1", false), //
-    BOL1("public.binaries", "bol1", true), //
-    BOL1$DESC("public.binaries", "bol1", false);
+    BIN1("binaries", "bin1", true), //
+    BIN1$DESC("binaries", "bin1", false), //
+    BOL1("binaries", "bol1", true), //
+    BOL1$DESC("binaries", "bol1", false);
 
     private BinariesOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -239,12 +239,12 @@ public class BinariesDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     BinariesTable() {
-      super(null, "public", "binaries", "Table", null);
+      super(null, null, "binaries", "Table", null);
       initialize();
     }
 
     BinariesTable(final String alias) {
-      super(null, "public", "binaries", "Table", alias);
+      super(null, null, "binaries", "Table", alias);
       initialize();
     }
 

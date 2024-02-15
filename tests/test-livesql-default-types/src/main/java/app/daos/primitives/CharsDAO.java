@@ -186,30 +186,30 @@ public class CharsDAO implements Serializable, ApplicationContextAware {
 
   public enum CharsOrderBy implements OrderBy {
 
-    CHA1("public.chars", "cha1", true), //
-    CHA1$DESC("public.chars", "cha1", false), //
-    CHA1$CASEINSENSITIVE("public.chars", "lower(cha1)", true), //
-    CHA1$CASEINSENSITIVE_STABLE_FORWARD("public.chars", "lower(cha1), cha1", true), //
-    CHA1$CASEINSENSITIVE_STABLE_REVERSE("public.chars", "lower(cha1), cha1", false), //
-    CHA1$DESC_CASEINSENSITIVE("public.chars", "lower(cha1)", false), //
-    CHA1$DESC_CASEINSENSITIVE_STABLE_FORWARD("public.chars", "lower(cha1), cha1", false), //
-    CHA1$DESC_CASEINSENSITIVE_STABLE_REVERSE("public.chars", "lower(cha1), cha1", true), //
-    CHA2("public.chars", "cha2", true), //
-    CHA2$DESC("public.chars", "cha2", false), //
-    CHA2$CASEINSENSITIVE("public.chars", "lower(cha2)", true), //
-    CHA2$CASEINSENSITIVE_STABLE_FORWARD("public.chars", "lower(cha2), cha2", true), //
-    CHA2$CASEINSENSITIVE_STABLE_REVERSE("public.chars", "lower(cha2), cha2", false), //
-    CHA2$DESC_CASEINSENSITIVE("public.chars", "lower(cha2)", false), //
-    CHA2$DESC_CASEINSENSITIVE_STABLE_FORWARD("public.chars", "lower(cha2), cha2", false), //
-    CHA2$DESC_CASEINSENSITIVE_STABLE_REVERSE("public.chars", "lower(cha2), cha2", true), //
-    CHA3("public.chars", "cha3", true), //
-    CHA3$DESC("public.chars", "cha3", false), //
-    CHA3$CASEINSENSITIVE("public.chars", "lower(cha3)", true), //
-    CHA3$CASEINSENSITIVE_STABLE_FORWARD("public.chars", "lower(cha3), cha3", true), //
-    CHA3$CASEINSENSITIVE_STABLE_REVERSE("public.chars", "lower(cha3), cha3", false), //
-    CHA3$DESC_CASEINSENSITIVE("public.chars", "lower(cha3)", false), //
-    CHA3$DESC_CASEINSENSITIVE_STABLE_FORWARD("public.chars", "lower(cha3), cha3", false), //
-    CHA3$DESC_CASEINSENSITIVE_STABLE_REVERSE("public.chars", "lower(cha3), cha3", true);
+    CHA1("chars", "cha1", true), //
+    CHA1$DESC("chars", "cha1", false), //
+    CHA1$CASEINSENSITIVE("chars", "lower(cha1)", true), //
+    CHA1$CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(cha1), cha1", true), //
+    CHA1$CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(cha1), cha1", false), //
+    CHA1$DESC_CASEINSENSITIVE("chars", "lower(cha1)", false), //
+    CHA1$DESC_CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(cha1), cha1", false), //
+    CHA1$DESC_CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(cha1), cha1", true), //
+    CHA2("chars", "cha2", true), //
+    CHA2$DESC("chars", "cha2", false), //
+    CHA2$CASEINSENSITIVE("chars", "lower(cha2)", true), //
+    CHA2$CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(cha2), cha2", true), //
+    CHA2$CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(cha2), cha2", false), //
+    CHA2$DESC_CASEINSENSITIVE("chars", "lower(cha2)", false), //
+    CHA2$DESC_CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(cha2), cha2", false), //
+    CHA2$DESC_CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(cha2), cha2", true), //
+    CHA3("chars", "cha3", true), //
+    CHA3$DESC("chars", "cha3", false), //
+    CHA3$CASEINSENSITIVE("chars", "lower(cha3)", true), //
+    CHA3$CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(cha3), cha3", true), //
+    CHA3$CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(cha3), cha3", false), //
+    CHA3$DESC_CASEINSENSITIVE("chars", "lower(cha3)", false), //
+    CHA3$DESC_CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(cha3), cha3", false), //
+    CHA3$DESC_CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(cha3), cha3", true);
 
     private CharsOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -263,12 +263,12 @@ public class CharsDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     CharsTable() {
-      super(null, "public", "chars", "Table", null);
+      super(null, null, "chars", "Table", null);
       initialize();
     }
 
     CharsTable(final String alias) {
-      super(null, "public", "chars", "Table", alias);
+      super(null, null, "chars", "Table", alias);
       initialize();
     }
 

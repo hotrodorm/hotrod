@@ -186,18 +186,18 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   public enum ProductOrderBy implements OrderBy {
 
-    ID("public.product", "id", true), //
-    ID$DESC("public.product", "id", false), //
-    TYPE("public.product", "type", true), //
-    TYPE$DESC("public.product", "type", false), //
-    TYPE$CASEINSENSITIVE("public.product", "lower(type)", true), //
-    TYPE$CASEINSENSITIVE_STABLE_FORWARD("public.product", "lower(type), type", true), //
-    TYPE$CASEINSENSITIVE_STABLE_REVERSE("public.product", "lower(type), type", false), //
-    TYPE$DESC_CASEINSENSITIVE("public.product", "lower(type)", false), //
-    TYPE$DESC_CASEINSENSITIVE_STABLE_FORWARD("public.product", "lower(type), type", false), //
-    TYPE$DESC_CASEINSENSITIVE_STABLE_REVERSE("public.product", "lower(type), type", true), //
-    SHIPPING("public.product", "shipping", true), //
-    SHIPPING$DESC("public.product", "shipping", false);
+    ID("product", "id", true), //
+    ID$DESC("product", "id", false), //
+    TYPE("product", "type", true), //
+    TYPE$DESC("product", "type", false), //
+    TYPE$CASEINSENSITIVE("product", "lower(type)", true), //
+    TYPE$CASEINSENSITIVE_STABLE_FORWARD("product", "lower(type), type", true), //
+    TYPE$CASEINSENSITIVE_STABLE_REVERSE("product", "lower(type), type", false), //
+    TYPE$DESC_CASEINSENSITIVE("product", "lower(type)", false), //
+    TYPE$DESC_CASEINSENSITIVE_STABLE_FORWARD("product", "lower(type), type", false), //
+    TYPE$DESC_CASEINSENSITIVE_STABLE_REVERSE("product", "lower(type), type", true), //
+    SHIPPING("product", "shipping", true), //
+    SHIPPING$DESC("product", "shipping", false);
 
     private ProductOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -251,12 +251,12 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     ProductTable() {
-      super(null, "PUBLIC", "PRODUCT", "Table", null);
+      super(null, null, "PRODUCT", "Table", null);
       initialize();
     }
 
     ProductTable(final String alias) {
-      super(null, "PUBLIC", "PRODUCT", "Table", alias);
+      super(null, null, "PRODUCT", "Table", alias);
       initialize();
     }
 
