@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
+import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.metadata.AllColumns.ColumnAliased;
@@ -29,6 +30,13 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
   public SelectObject(final List<CTE> ctes, final boolean distinct, final boolean doNotAliasColumns,
       final List<ResultSetColumn> resultSetColumns) {
     super(ctes, distinct);
+    this.doNotAliasColumns = doNotAliasColumns;
+    this.resultSetColumns = resultSetColumns;
+  }
+
+  public SelectObject(final List<CTE> ctes, final Expression[] distinctOn, final boolean doNotAliasColumns,
+      final List<ResultSetColumn> resultSetColumns) {
+    super(ctes, distinctOn);
     this.doNotAliasColumns = doNotAliasColumns;
     this.resultSetColumns = resultSetColumns;
   }

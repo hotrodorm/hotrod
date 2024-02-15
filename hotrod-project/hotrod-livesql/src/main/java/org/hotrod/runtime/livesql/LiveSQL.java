@@ -11,9 +11,9 @@ import java.util.Arrays;
 import java.util.Date;
 
 import org.apache.ibatis.session.SqlSession;
-import org.hotrod.runtime.livesql.dialects.Const;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
+import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.NullLiteral;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.aggregations.Avg;
@@ -113,7 +113,7 @@ import org.hotrod.runtime.livesql.queries.scalarsubqueries.ObjectSelectColumnsPh
 import org.hotrod.runtime.livesql.queries.scalarsubqueries.StringSelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.select.EnclosedSelectPhase;
 import org.hotrod.runtime.livesql.queries.select.NonLockableSelectColumnsPhase;
-import org.hotrod.runtime.livesql.queries.select.PGSelectColumnsPhase;
+import org.hotrod.runtime.livesql.queries.select.NonLockableSelectDistinctOnPhase;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.select.SelectCTEPhase;
 import org.hotrod.runtime.livesql.queries.select.SelectColumnsPhase;
@@ -154,14 +154,13 @@ public class LiveSQL {
   public SelectColumnsPhase<Row> select(final ResultSetColumn... resultSetColumns) {
     return new SelectColumnsPhase<Row>(this.context, null, false, resultSetColumns);
   }
-
+  
   public NonLockableSelectColumnsPhase<Row> selectDistinct(final ResultSetColumn... resultSetColumns) {
     return new NonLockableSelectColumnsPhase<Row>(this.context, null, true, resultSetColumns);
   }
 
-  @Available(engine = Const.POSTGRESQL, since = Const.PG15)
-  public PGSelectColumnsPhase<Row> selectDistinctOn(final ResultSetColumn... resultSetColumns) {
-    return new PGSelectColumnsPhase<Row>(this.context, null, true, resultSetColumns);
+  public NonLockableSelectDistinctOnPhase<Row> selectDistinctOn(final Expression... expressions) {
+    return new NonLockableSelectDistinctOnPhase<Row>(this.context, null, expressions);
   }
 
   // Subqueries

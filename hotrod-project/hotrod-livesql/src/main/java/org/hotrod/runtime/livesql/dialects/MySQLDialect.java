@@ -41,6 +41,13 @@ public class MySQLDialect extends LiveSQLDialect {
             + "but the current version is " + renderVersion());
   }
 
+  // DISTINCT ON rendering
+
+  @Override
+  public DistinctOnRenderer getDistinctOnRenderer() {
+    throw new UnsupportedLiveSQLFeatureException("The MySQL database does not support the DISTINCT ON clause.");
+  }
+
   // From rendering
 
   @Override

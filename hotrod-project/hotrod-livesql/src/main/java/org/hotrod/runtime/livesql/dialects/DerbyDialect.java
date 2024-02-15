@@ -42,6 +42,13 @@ public class DerbyDialect extends LiveSQLDialect {
         "LiveSQL does not support Common Table Expressions (CTEs) in Apache Derby.");
   }
 
+  // DISTINCT ON rendering
+
+  @Override
+  public DistinctOnRenderer getDistinctOnRenderer() {
+    throw new UnsupportedLiveSQLFeatureException("The Apache Derby database does not support the DISTINCT ON clause.");
+  }
+
   // From rendering
 
   @Override

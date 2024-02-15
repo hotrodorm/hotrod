@@ -38,6 +38,13 @@ public class MariaDBDialect extends LiveSQLDialect {
             + renderVersion());
   }
 
+  // DISTINCT ON rendering
+
+  @Override
+  public DistinctOnRenderer getDistinctOnRenderer() {
+    throw new UnsupportedLiveSQLFeatureException("The MariaDB database does not support the DISTINCT ON clause.");
+  }
+
   // From rendering
 
   @Override

@@ -2,6 +2,7 @@ package org.hotrod.runtime.livesql.queries.select.sets;
 
 import java.util.List;
 
+import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.select.Select;
@@ -11,6 +12,11 @@ public class IndividualSelectPhase<R> extends AbstractSelectPhase<R> {
   public IndividualSelectPhase(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct,
       final boolean doNotAliasColumns) {
     super(context, ctes, distinct, doNotAliasColumns);
+  }
+
+  public IndividualSelectPhase(final LiveSQLContext context, final List<CTE> ctes, final Expression[] distinctOn,
+      final boolean doNotAliasColumns) {
+    super(context, ctes, distinctOn, doNotAliasColumns);
   }
 
   public IndividualSelectPhase(final LiveSQLContext context, final CombinedSelectObject<R> cs) {

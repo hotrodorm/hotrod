@@ -39,6 +39,13 @@ public class DB2Dialect extends LiveSQLDialect {
     return (c) -> "WITH";
   }
 
+  // DISTINCT ON rendering
+
+  @Override
+  public DistinctOnRenderer getDistinctOnRenderer() {
+    throw new UnsupportedLiveSQLFeatureException("The DB2 database does not support the DISTINCT ON clause.");
+  }
+
   // From rendering
 
   @Override

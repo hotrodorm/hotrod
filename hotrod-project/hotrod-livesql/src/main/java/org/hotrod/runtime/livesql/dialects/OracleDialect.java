@@ -38,6 +38,13 @@ public class OracleDialect extends LiveSQLDialect {
     return (c) -> "WITH";
   }
 
+  // DISTINCT ON rendering
+
+  @Override
+  public DistinctOnRenderer getDistinctOnRenderer() {
+    throw new UnsupportedLiveSQLFeatureException("The Oracle database does not support the DISTINCT ON clause.");
+  }
+
   // From rendering
 
   @Override

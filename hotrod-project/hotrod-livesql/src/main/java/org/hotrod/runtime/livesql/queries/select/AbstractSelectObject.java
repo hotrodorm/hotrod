@@ -2,6 +2,7 @@ package org.hotrod.runtime.livesql.queries.select;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -17,6 +18,7 @@ import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
+import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
@@ -42,6 +44,7 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
 
   private List<CTE> ctes = new ArrayList<>();
   private boolean distinct;
+  private List<Expression> distinctOn = null;
   private TableExpression baseTableExpression = null;
   private List<Join> joins = null;
   private Predicate wherePredicate = null;
@@ -54,10 +57,31 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
 
   private boolean forUpdate = false;
 
-  AbstractSelectObject(final List<CTE> ctes, final boolean distinct) {
+  protected AbstractSelectObject(final List<CTE> ctes, final boolean distinct) {
     super();
     this.setCTEs(ctes);
     this.distinct = distinct;
+    this.distinctOn = null;
+  }
+
+  protected AbstractSelectObject(final List<CTE> ctes, final Expression[] distinctOn) {
+    super();
+    this.setCTEs(ctes);
+    this.distinct = false;
+
+    if (distinctOn == null || distinctOn.length == 0) {
+      throw new LiveSQLException("The list of DISTINCT ON expressions cannot be empty.");
+    }
+    for (Expression e : distinctOn) {
+      if (e == null) {
+        throw new LiveSQLException("A DISTINCT ON expression cannot be null.");
+      }
+    }
+    this.distinctOn = Arrays.asList(distinctOn);
+  }
+
+  public void setDistinctOn(final List<Expression> expressions) {
+    this.distinctOn = expressions;
   }
 
   protected abstract void writeColumns(final QueryWriter w, final TableExpression baseTableExpression,
@@ -264,6 +288,12 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
 
     if (this.distinct) {
       w.write(" DISTINCT");
+    }
+    
+    // distinct on
+    
+    if (this.distinctOn != null ) {
+      liveSQLDialect.getDistinctOnRenderer().render(w, this.distinctOn);
     }
 
     // top offset & limit

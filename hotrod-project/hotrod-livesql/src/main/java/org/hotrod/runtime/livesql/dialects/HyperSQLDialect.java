@@ -36,6 +36,13 @@ public class HyperSQLDialect extends LiveSQLDialect {
     return (c) -> "WITH" + (c ? " RECURSIVE" : "");
   }
 
+  // DISTINCT ON rendering
+
+  @Override
+  public DistinctOnRenderer getDistinctOnRenderer() {
+    throw new UnsupportedLiveSQLFeatureException("The HyperSQL database does not support the DISTINCT ON clause.");
+  }
+
   // From rendering
 
   @Override
@@ -137,7 +144,8 @@ public class HyperSQLDialect extends LiveSQLDialect {
 
   @Override
   public ForUpdateRenderer getForUpdateRenderer() {
-    throw new UnsupportedLiveSQLFeatureException("HyperSQL does not support locking rows with the FOR UPDATE clause in queries that do not use cursors.");
+    throw new UnsupportedLiveSQLFeatureException(
+        "HyperSQL does not support locking rows with the FOR UPDATE clause in queries that do not use cursors.");
   }
 
   // Set operation rendering

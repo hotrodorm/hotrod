@@ -89,6 +89,8 @@ public abstract class LiveSQLDialect {
 
   public abstract WithRenderer getWithRenderer();
 
+  public abstract DistinctOnRenderer getDistinctOnRenderer();
+
   public abstract FromRenderer getFromRenderer();
 
   public abstract TableExpressionRenderer getTableExpressionRenderer();
@@ -108,9 +110,8 @@ public abstract class LiveSQLDialect {
   public abstract BooleanLiteralRenderer getBooleanLiteralRenderer();
 
   public abstract boolean mandatoryColumnNamesInRecursiveCTEs();
-  
-  public abstract UpdateRenderer getUpdateRenderer();
 
+  public abstract UpdateRenderer getUpdateRenderer();
 
   // New SQL Identifier rendering
 

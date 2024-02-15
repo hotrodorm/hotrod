@@ -42,6 +42,13 @@ public class SQLServerDialect extends LiveSQLDialect {
     return (c) -> "WITH";
   }
 
+  // DISTINCT ON rendering
+
+  @Override
+  public DistinctOnRenderer getDistinctOnRenderer() {
+    throw new UnsupportedLiveSQLFeatureException("The SQL Server database does not support the DISTINCT ON clause.");
+  }
+
   // From rendering
 
   @Override

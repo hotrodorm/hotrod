@@ -42,6 +42,13 @@ public class SybaseASEDialect extends LiveSQLDialect {
         "LiveSQL does not support Common Table Expressions (CTEs) SAP ASE/Sybase.");
   }
 
+  // DISTINCT ON rendering
+
+  @Override
+  public DistinctOnRenderer getDistinctOnRenderer() {
+    throw new UnsupportedLiveSQLFeatureException("Sybase ASE does not support the DISTINCT ON clause.");
+  }
+
   // From rendering
 
   @Override

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
+import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
@@ -37,6 +38,30 @@ public class PostgreSQLDialect extends LiveSQLDialect {
   @Override
   public WithRenderer getWithRenderer() {
     return (c) -> "WITH" + (c ? " RECURSIVE" : "");
+  }
+
+  // DISTINCT ON rendering
+
+  @Override
+  public DistinctOnRenderer getDistinctOnRenderer() {
+    return new DistinctOnRenderer() {
+
+      @Override
+      public void render(final QueryWriter w, final List<Expression> distinctOn) {
+        w.write(" DISTINCT ON (");
+        boolean first = true;
+        for (Expression e : distinctOn) {
+          if (first) {
+            first = false;
+          } else {
+            w.write(", ");
+          }
+          e.renderTo(w);
+        }
+        w.write(")");
+      }
+
+    };
   }
 
   // From rendering

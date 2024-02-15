@@ -3,6 +3,7 @@ package org.hotrod.runtime.livesql.queries.select.sets;
 import java.util.List;
 
 import org.hotrod.runtime.cursors.Cursor;
+import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
@@ -20,6 +21,14 @@ public class AbstractSelectPhase<R> implements ExecutableSelect<R> {
       final boolean doNotAliasColumns) {
     this.context = context;
     SelectObject<R> s = new SelectObject<>(ctes, distinct, doNotAliasColumns);
+    this.combined = new CombinedSelectObject<>(s);
+    s.setParent(this.combined);
+  }
+
+  public AbstractSelectPhase(final LiveSQLContext context, final List<CTE> ctes, final Expression[] distinctOn,
+      final boolean doNotAliasColumns) {
+    this.context = context;
+    SelectObject<R> s = new SelectObject<R>(ctes, distinctOn, doNotAliasColumns, null);
     this.combined = new CombinedSelectObject<>(s);
     s.setParent(this.combined);
   }
