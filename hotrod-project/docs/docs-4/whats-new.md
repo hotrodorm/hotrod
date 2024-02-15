@@ -1,5 +1,12 @@
 # What's New in HotRod 4
 
+## What's New in HotRod 4.6
+
+### 1. The DISTINCT ON Clause
+
+LiveSQL implements PostgreSQL's DISTINCT ON clause. Even though this clause is only implemented
+by PostgreSQL it was chosen for implementation, since it can produce very simple and efficient queries.
+
 
 ## What's New in HotRod 4.5
 

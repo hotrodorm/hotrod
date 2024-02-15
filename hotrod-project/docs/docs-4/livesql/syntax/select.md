@@ -34,6 +34,7 @@ The syntax includes the SELECT clauses with search criteria, joins, etc.
 The SELECT statement has several clauses that are described separately:
 
 - [The SELECT List](./select-list.md)
+- [The DISTINCT ON Clause](./distinct-on.md)
 - [The FROM and JOIN Clauses](./from-and-joins.md)
 - [Selecting Without A FROM Clause](./selecting-without-a-from-clause.md)
 - [The WHERE Clause](./where.md)

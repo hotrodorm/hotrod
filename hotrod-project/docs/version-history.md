@@ -2,6 +2,12 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
+## 4.6.0:
+
+- LiveSQL:
+    - The DISTINCT ON clause is implemented. This clause is only used by PostgreSQL, and can produce very concise and efficient queries for specific use cases.
+
+
 ## 4.5.3:
 
 - Nitro:
