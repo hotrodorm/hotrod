@@ -52,20 +52,56 @@ set (tax_rule_name, tax_law, tax_pct) = (
 where branch_id = 10;
 ```
 
+### 4. Update with Table Expression
+
+See: https://dev.mysql.com/doc/refman/8.0/en/update.html
+
+```
+UPDATE items,
+       (SELECT id, retail / wholesale AS markup, quantity FROM items)
+       AS discounted
+    SET items.retail = items.retail * 0.9
+    WHERE discounted.markup >= 1.3
+    AND discounted.quantity < 100
+    AND items.id = discounted.id;
+```
+
 ## Summary
 
-| Database   | Form 1 | Form 2    | Form 3   |
-| --         | --     | --        | --       |
-| Oracle     | Yes    | --        | Yes (SM) |
-| DB2        | Yes    | Yes (SM)  | Yes (SM) |
-| PostgreSQL | Yes    | Yes       | Yes (SM) |
-| SQL Server | Yes    | Yes       | --       |
-| MySQL      | Yes    | Yes       | --       |
-| MariaDB    | Yes    | Yes       | --       |
+Form #1 is implemented by all supported databases.
 
-SM: Single Match Enforced. If more than a single value is found for an update row an error is thrown.
- 
- 
+Form #2 implementation details differ as shown below:
+
+| Database   | Allowed | Aliased Table | JOIN type | JOIN Pred | Multiple matches      | No Matches   |
+| ---        | ---     | ------------- | ---       | ---       | --------------------- | ------------ |
+| Oracle     | --      | --            | --        | --        | --                    | --           |
+| DB2        | Yes     | --            | FROM using ,         | WHERE     | Not Allowed           | Not modified |
+| PostgreSQL | Yes     | --            | FROM using ,         | WHERE     | Allowed, Unpredicable | Not modified |
+| SQL Server | Yes     | Yes           | FROM, then [LEFT] JOINs | JOIN | Allowed, Unpredicable | JOIN: Not modified, LEFT JOIN: Sets Null |
+| MySQL      | Yes     | --            | In UPDATE | WHERE     | Allowed, Unpredicable | Not modified |
+| MariaDB    | Yes     | --            | In UPDATE | WHERE     | Allowed, Unpredicable | Not modified |
+| Sybase ASE | --      | --            | --        | --        | --                    | --           |
+| H2         | --      | --            | --        | --        | --                    | --           |
+| HyperSQL   | --      | --            | --        | --        | --                    | --           |
+| Derby      | --      | --            | --        | --        | --                    | --           |
+
+Form #3 implementatiom matrix:
+
+| Database   | Allowed  | Multiple Matches | No Matches |
+| ---        | ---      | ---------------- | ---------- |
+| Oracle     | Yes      | Not Allowed      | Set Nulls  |
+| DB2        | Yes      | Not Allowed      | Set Nulls  |
+| PostgreSQL | Yes      | Not Allowed      | Set Nulls  |
+| SQL Server | --       | --               | --         |
+| MySQL      | --       | --               | --         |
+| MariaDB    | --       | --               | --         |
+| Sybase ASE | --       | --               | --         |
+| H2         | --       | --               | --         |
+| HyperSQL   | --       | --               | --         |
+| Derby      | --       | --               | --         |
+
+
+
 ## Oracle
 
 ```sql
@@ -87,7 +123,7 @@ insert into invoice (id, amount, branch_id, tax_rule_id, tax_rule_name, tax_law,
   (3, 102, 10, 202, -1, 'pending', -1);
 insert into invoice (id, amount, branch_id, tax_rule_id, tax_rule_name, tax_law, tax_pct) values
   (4, 103, 10, 203, -1, 'pending', -1);
-  
+
 create table tax_rule (
   id number(6) primary key not null,
   name varchar2(25),
@@ -108,7 +144,7 @@ Not Supported.
 
 ### Oracle Form #3 (fiddle: https://dbfiddle.uk/qfRzqY5k)
 
-```sql  
+```sql
 update invoice i
 set (tax_rule_name, tax_law, tax_pct) = (
   select name, law, pct
@@ -140,7 +176,7 @@ insert into invoice (id, amount, branch_id, tax_rule_id, tax_rule_name, tax_law,
   (2, 101, 20, 201, -1, 'pending', -1),
   (3, 102, 10, 202, -1, 'pending', -1),
   (4, 103, 10, 203, -1, 'pending', -1);
-  
+
 create table tax_rule (
   id int primary key not null,
   name varchar(25),
@@ -201,7 +237,7 @@ insert into invoice (id, amount, branch_id, tax_rule_id, tax_rule_name, tax_law,
   (2, 101, 20, 201, -1, 'pending', -1),
   (3, 102, 10, 202, -1, 'pending', -1),
   (4, 103, 10, 203, -1, 'pending', -1);
-  
+
 create table tax_rule (
   id int primary key not null,
   name varchar(25),
@@ -231,7 +267,7 @@ Notes:
 
 ### PostgreSQL Form #3 (fiddle: https://dbfiddle.uk/PLiRRt3d)
 
-```sql  
+```sql
 update invoice i
 set (tax_rule_name, tax_law, tax_pct) = (
   select name, law, pct
@@ -264,7 +300,7 @@ insert into invoice (id, amount, branch_id, tax_rule_id, tax_rule_name, tax_law,
   (2, 101, 20, 201, -1, 'pending', -1),
   (3, 102, 10, 202, -1, 'pending', -1),
   (4, 103, 10, 203, -1, 'pending', -1);
-  
+
 create table tax_rule (
   id int primary key not null,
   name varchar(25),
@@ -316,7 +352,7 @@ insert into invoice (id, amount, branch_id, tax_rule_id, tax_rule_name, tax_law,
   (2, 101, 20, 201, -1, 'pending', -1),
   (3, 102, 10, 202, -1, 'pending', -1),
   (4, 103, 10, 203, -1, 'pending', -1);
-  
+
 create table tax_rule (
   id int primary key not null,
   name varchar(25),
