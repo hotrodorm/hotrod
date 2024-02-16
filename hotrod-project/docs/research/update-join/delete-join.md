@@ -44,7 +44,18 @@ WHERE B.m_product_id = C.m_product_id AND
 
 ## MySQL
 
+- Special case: deleting with subquery on the same table (https://dbfiddle.uk/o5VHCZl8):
+
 ```sql
+delete cars
+from cars
+join ( -- left join also available
+  select model_name, brand, min(model_id) as mid
+  from cars
+  group by model_name, brand
+) x on cars.model_name = x.model_name
+   and cars.brand = x.brand
+   and cars.model_id <> x.mid;
 ```
 
 ## MariaDB

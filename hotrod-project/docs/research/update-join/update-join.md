@@ -38,7 +38,7 @@ WHERE u.id = t.id
 
 ### 3. Update with Subqueries
 
-This is the most advanced form and can use complex subqueries to retrieve the related values. 
+This is the most advanced form and can use complex subqueries to retrieve the related values.
 Unlike the second form, this form requires the subquery to have a max cardinalty of 1 for each
 row of the table being updated (quite nice!). For example:
 
@@ -52,19 +52,24 @@ set (tax_rule_name, tax_law, tax_pct) = (
 where branch_id = 10;
 ```
 
-### 4. Update with Table Expression
+### 4. Update with CTE
 
-See: https://dev.mysql.com/doc/refman/8.0/en/update.html
+Common Table Expression cab be combined into UPDATE statements in some databases. For example, in PostgreSQL:
 
+```sql
+with
+y as (
+  select x.id as iid, x.tax_rule_id, r.*
+  from invoice x
+  left join tax_rule r on r.id = x.tax_rule_id
+)
+update invoice i
+set tax_rule_name = y.name, tax_law = y.law, tax_pct = y.pct
+from y
+where y.iid = i.id and i.branch_id = 10;
 ```
-UPDATE items,
-       (SELECT id, retail / wholesale AS markup, quantity FROM items)
-       AS discounted
-    SET items.retail = items.retail * 0.9
-    WHERE discounted.markup >= 1.3
-    AND discounted.quantity < 100
-    AND items.id = discounted.id;
-```
+
+
 
 ## Summary
 
@@ -72,18 +77,20 @@ Form #1 is implemented by all supported databases.
 
 Form #2 implementation details differ as shown below:
 
-| Database   | Allowed | Aliased Table | JOIN type | JOIN Pred | Multiple matches      | No Matches   |
-| ---        | ---     | ------------- | ---       | ---       | --------------------- | ------------ |
-| Oracle     | --      | --            | --        | --        | --                    | --           |
-| DB2        | Yes     | --            | FROM using ,         | WHERE     | Not Allowed           | Not modified |
-| PostgreSQL | Yes     | --            | FROM using ,         | WHERE     | Allowed, Unpredicable | Not modified |
-| SQL Server | Yes     | Yes           | FROM, then [LEFT] JOINs | JOIN | Allowed, Unpredicable | JOIN: Not modified, LEFT JOIN: Sets Null |
-| MySQL      | Yes     | --            | In UPDATE | WHERE     | Allowed, Unpredicable | Not modified |
-| MariaDB    | Yes     | --            | In UPDATE | WHERE     | Allowed, Unpredicable | Not modified |
-| Sybase ASE | --      | --            | --        | --        | --                    | --           |
-| H2         | --      | --            | --        | --        | --                    | --           |
-| HyperSQL   | --      | --            | --        | --        | --                    | --           |
-| Derby      | --      | --            | --        | --        | --                    | --           |
+| Database   | Allowed | Table Expr Allowed | Aliased Table | JOIN type | JOIN Pred | Multiple matches      | No Matches   |
+| ---        | ---     | --                 | --            | ---       | ---       | --------------------- | ------------ |
+| Oracle     | Since 23c | Yes                | --            | FROM, then [LEFT] JOINs | WHERE     | Not Allowed           | Not modified* |
+| DB2        | Yes     | Yes                | --            | FROM using commas         | WHERE   | Not Allowed           | Not modified* |
+| PostgreSQL | Yes     | Yes                | --            | FROM using commas         | WHERE   | Allowed, Unpredicable | Not modified* |
+| SQL Server | Yes     | Yes                | Yes           | FROM, then [LEFT] JOINs | JOIN | Allowed, Unpredicable | JOIN: Not modified, LEFT JOIN: Sets Null |
+| MySQL      | Yes     | Yes                | --            | In UPDATE, [LEFT] JOINs | WHERE     | Allowed, Unpredicable | JOIN: Not modified, LEFT JOIN: Sets Null |
+| MariaDB    | Yes     | Yes                | --            | In UPDATE, [LEFT] JOINs | WHERE     | Allowed, Unpredicable | JOIN: Not modified, LEFT JOIN: Sets Null |
+| Sybase ASE | --      | --                 | --            | --        | --        | --                    | --           |
+| H2         | --      | --                 | --            | --        | --        | --                    | --           |
+| HyperSQL   | --      | --                 | --            | --        | --        | --                    | --           |
+| Derby      | --      | --                 | --            | --        | --        | --                    | --           |
+
+*Updates using a LEFT JOIN (that is, setting nulls) can be done performing the outer join inside a table expression. See examples in DB2 and PostgreSQL. I don't know if the optimizer pushes the filter down -- i.e. if this form is or not efficient. I consider this solution a rather clunky workaround, and it seems much simpler and optimal to use form #3 for DB2 and PostgreSQL.
 
 Form #3 implementatiom matrix:
 
@@ -99,6 +106,21 @@ Form #3 implementatiom matrix:
 | H2         | --       | --               | --         |
 | HyperSQL   | --       | --               | --         |
 | Derby      | --       | --               | --         |
+
+Form #4 implementatiom matrix:
+
+| Database   | Allowed  |
+| ---        | ---      |
+| Oracle     | --       |
+| DB2        | --       |
+| PostgreSQL | Yes      |
+| SQL Server | Yes      |
+| MySQL      | Yes      |
+| MariaDB    | --       |
+| Sybase ASE | --       |
+| H2         | --       |
+| HyperSQL   | --       |
+| Derby      | --       |
 
 
 
@@ -139,10 +161,20 @@ insert into tax_rule (id, name, law, pct) values
 
 ### Oracle Form #2
 
-Not Supported.
+```sql
+update invoice i
+set tax_rule_name = r.name, tax_law = r.law, tax_percent = r.percent
+from (select * from tax_rule) r
+where r.id = i.tax_rule_id
+  and branch_id = 10;
+```
 
+Notes:
 
-### Oracle Form #3 (fiddle: https://dbfiddle.uk/qfRzqY5k)
+- Multiple matches are **not allowed** per updated row.
+- Update rows with no matches are **not modified**.
+
+### Oracle Form #3 (https://dbfiddle.uk/qfRzqY5k)
 
 ```sql
 update invoice i
@@ -155,6 +187,7 @@ where branch_id = 10;
 ```
 
 Notes:
+
 - Multiple matches are **not allowed** per updated row.
 - Update rows with no matches are **set to null**.
 
@@ -189,7 +222,7 @@ insert into tax_rule (id, name, law, pct) values
   (202, 'Rule 202', 'Law #502', 8.15);
 ```
 
-### DB2 Form #2 (fiddle: https://dbfiddle.uk/Pr68_hBT)
+### DB2 Form #2 (https://dbfiddle.uk/Pr68_hBT)
 
 ```sql
 update invoice i
@@ -200,10 +233,24 @@ where r.id = i.tax_rule_id -- join predicates in the WHERE clause
 ```
 
 Notes:
+
 - Multiple matches are **not allowed** per updated row.
 - Update rows with no matches are **not modified**.
 
-### DB2 Form #3 (fiddle: https://dbfiddle.uk/_3y49QMu)
+Updates using a LEFT JOIN can be done performing the outer join inside a table expression:
+
+```sql
+update invoice i
+set tax_rule_name = y.name, tax_law = y.law, tax_pct = y.pct
+from (
+  select x.id as iid, x.tax_rule_id, r.*
+  from invoice x
+  left join tax_rule r on r.id = x.tax_rule_id
+) y
+where y.iid = i.id and i.branch_id = 10;
+```
+
+### DB2 Form #3 (https://dbfiddle.uk/_3y49QMu)
 
 ```sql
 update invoice i
@@ -216,6 +263,7 @@ where branch_id = 10;
 ```
 
 Notes:
+
 - Multiple matches are **not allowed** per updated row.
 - Update rows with no matches are **set to null**.
 
@@ -250,7 +298,7 @@ insert into tax_rule (id, name, law, pct) values
   (202, 'Rule 202', 'Law #502', 8.15);
 ```
 
-### PostgreSQL Form #2 (fiddle: https://dbfiddle.uk/YfAoVLYE)
+### PostgreSQL Form #2 (https://dbfiddle.uk/YfAoVLYE)
 
 ```sql
 update invoice i
@@ -261,11 +309,25 @@ where r.id = i.tax_rule_id -- join predicates in the WHERE clause
 ```
 
 Notes:
+
 - Multiple matches are **allowed** per updated row (with unpredictable results).
 - Update rows with no matches are **not modified**.
 
+Updates using a LEFT JOIN can be done performing the outer join inside a table expression:
 
-### PostgreSQL Form #3 (fiddle: https://dbfiddle.uk/PLiRRt3d)
+```sql
+update invoice i
+set tax_rule_name = y.name, tax_law = y.law, tax_pct = y.pct
+from (
+  select x.id as iid, x.tax_rule_id, r.*
+  from invoice x
+  left join tax_rule r on r.id = x.tax_rule_id
+) y
+where y.iid = i.id and i.branch_id = 10;
+```
+
+
+### PostgreSQL Form #3 (https://dbfiddle.uk/PLiRRt3d)
 
 ```sql
 update invoice i
@@ -278,6 +340,7 @@ where branch_id = 10;
 ```
 
 Notes:
+
 - Multiple matches are **not allowed** per updated row.
 - Updated rows with no matches are **set to null**.
 
@@ -313,7 +376,7 @@ insert into tax_rule (id, name, law, pct) values
   (202, 'Rule 202', 'Law #502', 8.15);
 ```
 
-### SQL Server Form #2 (fiddle: https://dbfiddle.uk/uJHyUEFr)
+### SQL Server Form #2 (https://dbfiddle.uk/uJHyUEFr)
 
 ```sql
 update i -- only alias here
@@ -324,8 +387,9 @@ where branch_id = 10;
 ```
 
 Notes:
+
 - Multiple matches are **allowed** per updated row (with unpredictable results).
-- Update rows with no matches are **not modified**. Use LEFT JOIN to set nulls.
+- Update rows with no matches are **not modified** when using JOIN. Use LEFT JOIN to set nulls.
 
 
 ### SQL Server Form #3
@@ -348,10 +412,10 @@ create table invoice (
 );
 
 insert into invoice (id, amount, branch_id, tax_rule_id, tax_rule_name, tax_law, tax_pct) values
-  (1, 100, 10, 201, -1, 'pending', -1),
-  (2, 101, 20, 201, -1, 'pending', -1),
-  (3, 102, 10, 202, -1, 'pending', -1),
-  (4, 103, 10, 203, -1, 'pending', -1);
+  (1, 100, 10, 201, -1, 'pending', 10),
+  (2, 101, 20, 201, -1, 'pending', 12),
+  (3, 102, 10, 202, -1, 'pending', 10),
+  (4, 103, 10, 203, -1, 'pending', 19);
 
 create table tax_rule (
   id int primary key not null,
@@ -365,19 +429,28 @@ insert into tax_rule (id, name, law, pct) values
   (202, 'Rule 202', 'Law #502', 8.15);
 ```
 
-### MySQL Form #2 (fiddle: https://dbfiddle.uk/hffmZdIh)
+### MySQL Form #2 (https://dbfiddle.uk/hffmZdIh)
 
 ```sql
-update invoice i, tax_rule r -- all table references
+update invoice i
+left join (select * from tax_rule) r on r.id = i.tax_rule_id
 set i.tax_rule_name = r.name, i.tax_law = r.law, i.tax_pct = r.pct
-where r.id = i.tax_rule_id -- join predicates
-  and branch_id = 10;
+where branch_id = 10;
 ```
 
 Notes:
-- Multiple matches are **allowed** per updated row (with unpredictable results).
-- Update rows with no matches are **not modified**.
 
+- Multiple matches are **allowed** per updated row (with unpredictable results).
+- Update rows with no matches are **not modified** when using JOIN. Use LEFT JOIN to set nulls.
+
+A non-correlated table expression can also be used. For example (https://dbfiddle.uk/QibCOGXu):
+
+```sql
+update invoice i,
+  (select branch_id, avg(tax_pct) as atp from invoice group by branch_id) x
+set tax_pct = x.atp
+where x.branch_id = i.branch_id
+```
 
 ### MySQL Form #3
 
