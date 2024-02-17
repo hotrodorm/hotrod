@@ -17,6 +17,10 @@ Version 4.9:
 
 - LiveSQL's MERGE (UPSERT) statement.
 
+Version 4.10:
+
+- LiveSQL Inline Subqueries.
+
 Version 5.0:
 
 - DAO, VO, Model configuration normalization.
