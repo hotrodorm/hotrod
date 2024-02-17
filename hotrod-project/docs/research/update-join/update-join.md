@@ -360,7 +360,7 @@ Notes:
 - Multiple matches are **not allowed** per updated row.
 - Updated rows with no matches are **set to null**.
 
-## PostgreSQL Form #4 (https://dbfiddle.uk/eiBBJHaF)
+### PostgreSQL Form #4 (https://dbfiddle.uk/eiBBJHaF)
 
 ```sql
 with
@@ -507,8 +507,7 @@ where branch_id = 10;
 ```
 
 
-
 ## MariaDB (10.6)
 
-Same behavior as MySQL 8.
+Similar behavior as MySQL, except that Form #4 is not supported.
 
