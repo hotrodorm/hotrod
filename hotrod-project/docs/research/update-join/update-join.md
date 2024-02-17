@@ -54,7 +54,7 @@ where branch_id = 10;
 
 ### 4. Update with CTE
 
-Common Table Expression cab be combined into UPDATE statements in some databases. For example, in PostgreSQL:
+Common Table Expression can be combined into UPDATE statements in some databases. For example, in PostgreSQL:
 
 ```sql
 with
@@ -73,15 +73,31 @@ where y.iid = i.id and i.branch_id = 10;
 
 ## Summary
 
-Form #1 is implemented by all supported databases.
+The following table indicates since which versions each database implements an update form:
+
+| Database   | Update Form #1<br/>SQL-92  | Update Form #2<br/>Join | Update Form #3<br/>Subqueries | Update Form #4<br/>CTE |
+| ---        | ---      | ---     | ---     | ---     |
+| Oracle     | Yes      | 23c     | 11g2*   | --      |
+| DB2        | Yes      | Yes     | Yes     | --      |
+| PostgreSQL | Yes      | 9.3*    | 9.5     | 9.3*    |
+| SQL Server | Yes      | 2014*   | --      | Yes     |
+| MySQL      | Yes      | 5.5*    | --      | Yes     |
+| MariaDB    | Yes      | 10.3*   | --      | --      |
+| Sybase ASE | Yes      | --      | --      | --      |
+| H2         | Yes      | --      | --      | --      |
+| HyperSQL   | Yes      | --      | --      | --      |
+| Derby      | Yes      | --      | --      | --      |
+
+*At least this version. Maybe earlier but it wasn't possible to test.
+
 
 Form #2 implementation details differ as shown below:
 
 | Database   | Allowed | Table Expr Allowed | Aliased Table | JOIN type | JOIN Pred | Multiple matches      | No Matches   |
 | ---        | ---     | --                 | --            | ---       | ---       | --------------------- | ------------ |
 | Oracle     | Since 23c | Yes                | --            | FROM, then [LEFT] JOINs | WHERE     | Not Allowed           | Not modified* |
-| DB2        | Yes     | Yes                | --            | FROM using commas         | WHERE   | Not Allowed           | Not modified* |
-| PostgreSQL | Yes     | Yes                | --            | FROM using commas         | WHERE   | Allowed, Unpredicable | Not modified* |
+| DB2        | Yes     | Yes                | --            | FROM (using commas)       | WHERE   | Not Allowed           | Not modified* |
+| PostgreSQL | Yes     | Yes                | --            | FROM (using commas)       | WHERE   | Allowed, Unpredicable | Not modified* |
 | SQL Server | Yes     | Yes                | Yes           | FROM, then [LEFT] JOINs | JOIN | Allowed, Unpredicable | JOIN: Not modified, LEFT JOIN: Sets Null |
 | MySQL      | Yes     | Yes                | --            | In UPDATE, [LEFT] JOINs | WHERE     | Allowed, Unpredicable | JOIN: Not modified, LEFT JOIN: Sets Null |
 | MariaDB    | Yes     | Yes                | --            | In UPDATE, [LEFT] JOINs | WHERE     | Allowed, Unpredicable | JOIN: Not modified, LEFT JOIN: Sets Null |
@@ -178,8 +194,8 @@ Notes:
 
 ```sql
 update invoice i
-set (tax_rule_name, tax_law, tax_pct) = (
-  select name, law, pct
+set (tax_rule_name, tax_law, tax_percent) = (
+  select name, law, percent
   from tax_rule r
   where r.id = i.tax_rule_id
 )
