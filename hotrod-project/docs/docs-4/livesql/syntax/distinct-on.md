@@ -2,6 +2,9 @@
 
 The DISTINCT ON clause affects the execution of a SELECT query by only returning the first row of each group. 
 
+DISTINCT ON is available since 4.6.
+
+
 ## Description
 
 The grouping is done according to a list of expressions specified between parenthesis. 
@@ -16,7 +19,8 @@ Notes:
 - Not only columns can be used in the DISTINCT ON clause, but virtually any comparable expression.
 - The DISTINCT ON clause can include multiple expressions. All of them are used to compare and discard rows.
 
-DISTINCT ON is only available in the PostgreSQL database.
+DISTINCT ON is only implemented by the PostgreSQL database.
+
 
 ## Examples
 
