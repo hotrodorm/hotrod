@@ -75,32 +75,32 @@ where y.iid = i.id and i.branch_id = 10;
 
 The following table indicates since which versions each database implements an update form:
 
-| Database   | Update Form #1<br/>SQL-92  | Update Form #2<br/>Join | Update Form #3<br/>Subqueries | Update Form #4<br/>CTE |
-| ---        | ---      | ---     | ---     | ---     |
+| Database   | Form #1<br/>SQL-92  | Form #2<br/>Joins | Form #3<br/>Subqueries | Form #4<br/>CTE |
+| ---        |:--------:|:-------:|:-------:|:-------:|
 | Oracle     | Yes      | 23c     | 11g2*   | --      |
-| DB2        | Yes      | Yes     | Yes     | --      |
+| DB2        | Yes      | 11.1    | 10.5*   | --      |
 | PostgreSQL | Yes      | 9.3*    | 9.5     | 9.3*    |
-| SQL Server | Yes      | 2014*   | --      | Yes     |
-| MySQL      | Yes      | 5.5*    | --      | Yes     |
-| MariaDB    | Yes      | 10.3*   | --      | --      |
+| SQL Server | Yes      | 2014*   | --      | 2014*   |
+| MySQL      | Yes      | 5.5*    | --      | 8.0     |
+| MariaDB    | Yes      | 10.0*   | --      | --      |
 | Sybase ASE | Yes      | --      | --      | --      |
 | H2         | Yes      | --      | --      | --      |
 | HyperSQL   | Yes      | --      | --      | --      |
 | Derby      | Yes      | --      | --      | --      |
 
-*At least this version. Maybe earlier but it wasn't possible to test.
+*Supported in this version or older.
 
 
 Form #2 implementation details differ as shown below:
 
 | Database   | Allowed | Table Expr Allowed | Aliased Table | JOIN type | JOIN Pred | Multiple matches      | No Matches   |
 | ---        | ---     | --                 | --            | ---       | ---       | --------------------- | ------------ |
-| Oracle     | Since 23c | Yes                | --            | FROM, then [LEFT] JOINs | WHERE     | Not Allowed           | Not modified* |
-| DB2        | Yes     | Yes                | --            | FROM (using commas)       | WHERE   | Not Allowed           | Not modified* |
-| PostgreSQL | Yes     | Yes                | --            | FROM (using commas)       | WHERE   | Allowed, Unpredicable | Not modified* |
-| SQL Server | Yes     | Yes                | Yes           | FROM, then [LEFT] JOINs | JOIN | Allowed, Unpredicable | JOIN: Not modified, LEFT JOIN: Sets Null |
-| MySQL      | Yes     | Yes                | --            | In UPDATE, [LEFT] JOINs | WHERE     | Allowed, Unpredicable | JOIN: Not modified, LEFT JOIN: Sets Null |
-| MariaDB    | Yes     | Yes                | --            | In UPDATE, [LEFT] JOINs | WHERE     | Allowed, Unpredicable | JOIN: Not modified, LEFT JOIN: Sets Null |
+| Oracle     | Since 23c | Yes              | --            | FROM, then [LEFT] JOINs | WHERE | Not Allowed           | Not modified* |
+| DB2        | Yes     | Yes                | --            | FROM (using commas)     | WHERE | Not Allowed           | Not modified* |
+| PostgreSQL | Yes     | Yes                | --            | FROM (using commas)     | WHERE | Allowed, Unpredicable | Not modified* |
+| SQL Server | Yes     | Yes                | Yes           | FROM, then [LEFT] JOINs | JOIN  | Allowed, Unpredicable | JOIN: Not modified, LEFT JOIN: Sets Null |
+| MySQL      | Yes     | Yes                | --            | In UPDATE, [LEFT] JOINs | JOIN  | Allowed, Unpredicable | JOIN: Not modified, LEFT JOIN: Sets Null |
+| MariaDB    | Yes     | Yes                | --            | In UPDATE, [LEFT] JOINs | JOIN  | Allowed, Unpredicable | JOIN: Not modified, LEFT JOIN: Sets Null |
 | Sybase ASE | --      | --                 | --            | --        | --        | --                    | --           |
 | H2         | --      | --                 | --            | --        | --        | --                    | --           |
 | HyperSQL   | --      | --                 | --            | --        | --        | --                    | --           |
@@ -360,6 +360,20 @@ Notes:
 - Multiple matches are **not allowed** per updated row.
 - Updated rows with no matches are **set to null**.
 
+## PostgreSQL Form #4 (https://dbfiddle.uk/eiBBJHaF)
+
+```sql
+with
+y as (
+  select x.id as iid, x.tax_rule_id, r.*
+  from invoice x
+  left join tax_rule r on r.id = x.tax_rule_id
+)
+update invoice i
+set tax_rule_name = y.name, tax_law = y.law, tax_percent = y.percent
+from y
+where y.iid = i.id and i.branch_id = 10;
+```
 
 ## SQL Server
 
@@ -412,6 +426,16 @@ Notes:
 
 Not supported.
 
+### SQL Server Form #4 (https://dbfiddle.uk/1HVF6UWo)
+
+```sql
+with r as (select * from tax_rule)
+update i
+set tax_rule_name = r.name, tax_law = r.law, tax_pct = r.pct
+from invoice i
+left join r on r.id = i.tax_rule_id
+where branch_id = 10;
+```
 
 ## MySQL
 
@@ -471,6 +495,17 @@ where x.branch_id = i.branch_id
 ### MySQL Form #3
 
 Not supported.
+
+### MySQL Form #4 (https://dbfiddle.uk/LfuZFgJK)
+
+```sql
+with r as (select * from tax_rule)
+update invoice i
+left join r on r.id = i.tax_rule_id
+set i.tax_rule_name = r.name, i.tax_law = r.law, i.tax_pct = r.pct
+where branch_id = 10;
+```
+
 
 
 ## MariaDB (10.6)
