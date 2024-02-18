@@ -8,7 +8,7 @@ Only deletes from T1:
 delete t1 a
 from   t2 b
 where  a.id = b.id
-and    b.id <= 5; 
+and    b.id <= 5;
 ```
 
 ...with more tables we can use `JOIN`:
