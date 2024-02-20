@@ -1,43 +1,83 @@
 # DELETE
 
-Form #1: SQL-92
-Form #2: Joins
-Form #3: Delete from Subquery
-Form #3: CTEs
+The DELETE statement can take four main different forms. Each database -- particularly high end ones includes several extra variations for very specific cases, that are not included here:
 
-| Database   | Form #1<br/>SQL-92 | Form #2<br/>Joins | Form #3<br/>Subquery | Form #4<br/>CTE |
-| -- |:--:|:--:|:--:|:--:|
-| Oracle     | Yes                |                   |                      |                 |
-| DB2        | Yes                | --                | Yes                  |                 |
-| PostgreSQL | Yes                | Yes               | --                   | Yes             |
-| SQL Server | Yes                |                   |                      |                 |
-| MySQL      | Yes                | Yes               | --                   | Yes             |
-| MariaDB    | Yes                |                   |                      |                 |
-| Sybase ASE | Yes                |                   |                      |                 |
-| H2         | Yes                |                   |                      |                 |
-| HyperSQL   | Yes                |                   |                      |                 |
-| Derby      | Yes                |                   |                      |                 |
+| Database   | Form #1<br/>SQL-92 | Form #2a<br/>FROM | Form #2b<br/>[LEFT] JOIN | Form #3<br/>Subquery | Form #4<br/>CTE |
+| -- |:--:|:--:|:--:|:--:|:--:|
+| Oracle     | Yes                | 23c               | --                 | 12c1                 | --              |
+| DB2 LUW    | Yes                | --                | --                 | 10.5                 | --              |
+| PostgreSQL | Yes                | 9.3*              | --                 | --                   | 9.3*            |
+| SQL Server | Yes                | --                | 2014*              | --                   | --              |
+| MySQL      | Yes                | --                | 5.5*               | --                   | 8.0             |
+| MariaDB    | Yes                | --                | 10.0*              | --                   | --              |
+| Sybase ASE | Yes                | Yes               | --                 | --                   | --              |
+| H2         | Yes                | --                | --                 | --                   | --              |
+| HyperSQL   | Yes                | --                | --                 | --                   | --              |
+| Derby      | Yes                | --                | --                 | --                   | --              |
+
+*This version or older.
+
+The LEFT JOIN form can be used to implement anti-join deletion (delete non-matching rows).
 
 
-## Oracle (from 23c)
-
-Only deletes from T1:
+## Oracle
 
 ```sql
-delete t1 a
-from   t2 b
-where  a.id = b.id
-and    b.id <= 5;
+create table dealership (
+  id number(6) primary key not null,
+  main_type varchar2(10),
+  name varchar2(10)
+);
+
+insert into dealership (id, main_type, name) values (1, 'VIP', 'Luxy');
+insert into dealership (id, main_type, name) values (2, 'ORG', 'Maans');
+
+create table vehicle (
+  id number(6) primary key not null,
+  value number(6),
+  type varchar2(10),
+  dealership_id number(6) references dealership (id)
+);
+
+insert into vehicle (id, value, type, dealership_id) values (10, 500, 'VIP', 1);
+insert into vehicle (id, value, type, dealership_id) values (11, 200, 'ORG', 1);
+insert into vehicle (id, value, type, dealership_id) values (12, 400, 'VIP', 1);
+insert into vehicle (id, value, type, dealership_id) values (13, 600, 'ORG', 2);
+insert into vehicle (id, value, type, dealership_id) values (14, 150, 'VIP', 2);
+insert into vehicle (id, value, type, dealership_id) values (15, 800, 'ORG', 2);
+insert into vehicle (id, value, type, dealership_id) values (16, 510, 'VIP', 1);
 ```
 
-...with more tables we can use `JOIN`:
+### Oracle Form #2a (https://dbfiddle.uk/rwIywNL2)
 
 ```sql
-delete t1 a
-from   t2 b
-join   t3 c on b.id = c.id
-where  a.id = b.id
-and    b.id <= 5;
+delete vehicle v
+from ( -- first FROM, then JOINs
+  select d.id, avg(o.value) as avg_value, max(d.main_type) as main_type
+  from dealership d
+  join vehicle o on o.dealership_id = d.id
+  group by d.id
+) x
+where v.dealership_id = x.id
+  and v.value < x.avg_value
+  and v.type <> x.main_type;
+```
+
+### Oracle Form #3 (https://dbfiddle.uk/gURwZg0q and https://dbfiddle.uk/EpRafw9D)
+
+```sql
+delete
+from (
+  select * from vehicle v
+  join (
+    select d.id as did, avg(o.value) as avg_value, max(d.main_type) as main_type
+    from dealership d
+    join vehicle o on o.dealership_id = d.id
+    group by d.id
+  ) x on v.dealership_id = x.did
+)
+where value < avg_value
+  and type <> main_type;
 ```
 
 ## DB2
@@ -151,6 +191,64 @@ where v.dealership_id = x.id
 
 ## SQL Server
 
+```sql
+create table dealership (
+  id int primary key not null,
+  main_type varchar(10),
+  name varchar(10)
+);
+
+insert into dealership (id, main_type, name) values
+  (1, 'VIP', 'Luxy'), (2, 'ORG', 'Maans');
+
+create table vehicle (
+  id int primary key not null,
+  value int,
+  type varchar(10),
+  dealership_id int references dealership (id)
+);
+
+insert into vehicle (id, value, type, dealership_id) values
+  (10, 500, 'VIP', 1),
+  (11, 200, 'ORG', 1),
+  (12, 400, 'VIP', 1),
+  (13, 600, 'ORG', 2),
+  (14, 150, 'VIP', 2),
+  (15, 800, 'ORG', 2),
+  (16, 510, 'VIP', 1);
+```
+
+### SQL Server Form #2b (https://dbfiddle.uk/hBMm_3fG)
+
+```sql
+delete v
+from vehicle v
+join (
+  select d.id, avg(o.value) as avg_value, max(d.main_type) as main_type
+  from dealership d
+  join vehicle o on o.dealership_id = d.id
+  group by d.id
+) x on v.dealership_id = x.id and v.value < x.avg_value
+where v.type <> x.main_type;
+```
+
+Delete with anti-join (delete the non-matching rows):
+
+```sql
+delete v
+from vehicle v
+left join (
+  select d.id, avg(o.value) as avg_value, max(d.main_type) as main_type
+  from dealership d
+  join vehicle o on o.dealership_id = d.id
+  group by d.id
+) x on v.dealership_id = x.id and v.value < x.avg_value and v.type <> x.main_type
+where x.id is null;
+```
+
+### SQL Server Form #3 -- Not Supported
+
+### SQL Server Form #4 -- Not Supported
 
 ## MySQL
 
@@ -186,7 +284,7 @@ insert into vehicle (id, value, type, dealership_id) values
 Form #1 is supported as long as the table being deleted cannot be referenced in a subquery. If it needs
 to be referenced, use Form #2.
 
-### MySQL Form #2 (https://dbfiddle.uk/wsl_wGGH)
+### MySQL Form #2b (https://dbfiddle.uk/wsl_wGGH)
 
 ```sql
 delete vehicle
@@ -201,8 +299,7 @@ where vehicle.dealership_id = x.id
   and vehicle.value < x.avg_value
   and vehicle.type <> x.main_type;
 ```
-
-LEFT JOIN form (11, 12, 14):
+Delete with anti-join (delete the non-matching rows):
 
 ```sql
 delete vehicle
@@ -240,9 +337,33 @@ where vehicle.dealership_id = x.id
 ## MariaDB
 
 ```sql
+create table dealership (
+  id int primary key not null,
+  main_type varchar(10),
+  name varchar(10)
+);
+
+insert into dealership (id, main_type, name) values
+  (1, 'VIP', 'Luxy'), (2, 'ORG', 'Maans');
+
+create table vehicle (
+  id int primary key not null,
+  value int,
+  type varchar(10),
+  dealership_id int references dealership (id)
+);
+
+insert into vehicle (id, value, type, dealership_id) values
+  (10, 500, 'VIP', 1),
+  (11, 200, 'ORG', 1),
+  (12, 400, 'VIP', 1),
+  (13, 600, 'ORG', 2),
+  (14, 150, 'VIP', 2),
+  (15, 800, 'ORG', 2),
+  (16, 510, 'VIP', 1);
 ```
 
-### MariaDB Form #2 (https://dbfiddle.uk/M0qvo8Sc)
+### MariaDB Form #2b (https://dbfiddle.uk/M0qvo8Sc)
 
 ```sql
 delete vehicle
@@ -258,7 +379,7 @@ where vehicle.dealership_id = x.id
   and vehicle.type <> x.main_type;
 ```
 
-LEFT JOIN form (11, 12, 14):
+Delete with anti-join (delete the non-matching rows):
 
 ```sql
 delete vehicle
@@ -277,4 +398,14 @@ where x.id is null
 
 ### MariaDB Form #4 -- Not Supported
 
+## Sybase ASE
 
+### Sybase ASE Form #2
+
+```sql
+DELETE
+FROM Contacts
+FROM Contacts, Customers
+WHERE Contacts.Surname = Customers.Surname
+AND Contacts.GivenName = Customers.GivenName
+```

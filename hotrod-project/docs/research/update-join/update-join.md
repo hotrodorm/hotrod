@@ -1,7 +1,6 @@
 # Update with Join
 
-The UPDATE statement can take three main different forms. Each database -- particularly high end ones includes several extra
-variations for very specific cases, that are not included here:
+The UPDATE statement can take four main different forms. Each database -- particularly high end ones includes several extra variations for very specific cases, that are not included here:
 
 ## Main Variations
 
@@ -78,7 +77,7 @@ The following table indicates since which versions each database implements an u
 | Database   | Form #1<br/>SQL-92  | Form #2<br/>Joins | Form #3<br/>Subqueries | Form #4<br/>CTE |
 | ---        |:--------:|:-------:|:-------:|:-------:|
 | Oracle     | Yes      | 23c     | 11g2*   | --      |
-| DB2        | Yes      | 11.1    | 10.5*   | --      |
+| DB2 LUW    | Yes      | 11.1    | 10.5*   | --      |
 | PostgreSQL | Yes      | 9.3*    | 9.5     | 9.3*    |
 | SQL Server | Yes      | 2014*   | --      | 2014*   |
 | MySQL      | Yes      | 5.5*    | --      | 8.0     |
