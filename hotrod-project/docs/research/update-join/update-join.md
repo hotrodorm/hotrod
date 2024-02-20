@@ -94,7 +94,7 @@ Form #2 implementation details differ as shown below:
 
 | Database   | Allowed | Table Expr Allowed | Aliased Table | JOIN type | JOIN Pred | Multiple matches      | No Matches   |
 | ---        | ---     | --                 | --            | ---       | ---       | --------------------- | ------------ |
-| Oracle     | Since 23c | Yes              | --            | FROM, then [LEFT] JOINs | WHERE | Not Allowed           | Not modified* |
+| Oracle     | Yes     | Yes              | --            | FROM, then [LEFT] JOINs | WHERE | Not Allowed           | Not modified* |
 | DB2        | Yes     | Yes                | --            | FROM (using commas)     | WHERE | Not Allowed           | Not modified* |
 | PostgreSQL | Yes     | Yes                | --            | FROM (using commas)     | WHERE | Allowed, Unpredicable | Not modified* |
 | SQL Server | Yes     | Yes                | Yes           | FROM, then [LEFT] JOINs | JOIN  | Allowed, Unpredicable | JOIN: Not modified, LEFT JOIN: Sets Null |
@@ -206,6 +206,8 @@ Notes:
 - Multiple matches are **not allowed** per updated row.
 - Update rows with no matches are **set to null**.
 
+### Oracle Form #4 -- Not Supported
+
 ## DB2
 
 ```sql
@@ -281,6 +283,8 @@ Notes:
 
 - Multiple matches are **not allowed** per updated row.
 - Update rows with no matches are **set to null**.
+
+### DB2 Form #4 -- Not Supported
 
 ## PostgreSQL
 
@@ -421,9 +425,8 @@ Notes:
 - Update rows with no matches are **not modified** when using JOIN. Use LEFT JOIN to set nulls.
 
 
-### SQL Server Form #3
+### SQL Server Form #3 -- Not Supported
 
-Not supported.
 
 ### SQL Server Form #4 (https://dbfiddle.uk/1HVF6UWo)
 
@@ -491,9 +494,8 @@ set tax_pct = x.atp
 where x.branch_id = i.branch_id
 ```
 
-### MySQL Form #3
+### MySQL Form #3 -- Not Supported
 
-Not supported.
 
 ### MySQL Form #4 (https://dbfiddle.uk/LfuZFgJK)
 

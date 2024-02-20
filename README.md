@@ -2,42 +2,32 @@
 
 HotRod 4 is an open source ORM for Spring and Spring Boot geared toward high performance persistence for relational databases.
 
-The persistence layer provides CRUD and LiveSQL functionalities to quickly start prototyping an application.
+The persistence layer provides ready-to-use CRUD and LiveSQL functionalities to quickly start prototyping an application.
 
 See [What's New](./hotrod-project/docs/docs-4/whats-new.md) in HotRod 4, [Version History](./hotrod-project/docs/version-history.md), and the [Roadmap](./hotrod-project/docs/roadmap.md). For documentation on the previous version see [HotRod 3 Documentation](./hotrod-project/docs/docs-3.4/README.md).
 
 
-## The Simplicity of CRUD
+## LiveSQL
 
-The out-of-the-box CRUD methods can access rows by primary keys, foreign keys, or by example. SELECT, UPDATE, INSERT, and DELETE methods are automatically included in the CRUD persistence layer.
+LiveSQL can run SELECT, UPDATE, DELETE, and INSERT queries from the most basic syntax to advanced queries. The syntax can include parentheses, complex predicates, subqueries, CTEs, arithmetic operators, functions, as well as standard SQL constructs such as ordering limiting, aggregation, window functions, union, for update (locking), etc.
 
-For example, to find an employee by primary key:
-
-```java
-  Employee emp = this.employeeDAO.select(134081);
-```
-
-To update the status of an invoice:
-
-```java
-  Invoice inv = this.invoiceDAO.select(5470);
-  inv.setStatus("PAID");
-  this.invoiceDAO.update(inv);
-```
-
-
-## The Flexibility of LiveSQL
-
-LiveSQL can express SELECT, UPDATE, DELETE, and INSERT queries. A basic select with a simple condition
-can look like:
+A basic select with a simple condition can look like:
 
 ```java
   List<Employee> employees = this.employeeDAO
-    .select(e, e.salary.plus(e.bonus).ge(40000).and(e.type.substring(2, 3).eq("ASC")))
+    .select(e, e.salary.plus(e.bonus).ge(40000).and(e.title.locate(" JR", 2).gt(0)))
     .execute();
 ```
 
-The criteria can include parentheses, complex predicates, subqueries, etc. The query can include ordering and limiting as well. A more complex search condition that includes EXISTS and a subquery, may take the following form:
+Runs the query (in PostgreSQL) as:
+
+```sql
+  SELECT * FROM employee WHERE salary + bonus >= 40000 AND strpos(title, ' JR', 2) > 0;
+```
+
+Behind the scenes LiveSQL automatically adapts the SQL syntax to the specific database.
+
+A more complex search condition that includes EXISTS and a subquery, may take the following form:
 
 ```java
   List<Employee> employees = this.employeeDAO
@@ -49,7 +39,7 @@ The criteria can include parentheses, complex predicates, subqueries, etc. The q
     .execute();
 ```
 
-LiveSQL extensive SQL syntax can express complex expressions (of numeric, string, date/time, boolean, and binary types), functions, joins, aggregations, window functions, ordering, limiting, multilevel subqueries, multilevel set operators, traditional and recursive CTEs, lateral queries, etc. 
+LiveSQL extensive SQL syntax can express complex expressions (of numeric, string, date/time, boolean, and binary types), functions, joins, aggregations, window functions, ordering, limiting, multilevel subqueries, multilevel set operators, traditional and recursive CTEs, lateral queries, etc.
 
 A simple join can look like:
 
@@ -86,6 +76,26 @@ List<Row> rows = sql
     .execute();
 ```
 
+
+## The Simplicity of CRUD
+
+Additionally, the out-of-the-box CRUD methods available in the DAOs can access rows by primary keys, foreign keys, or by example. SELECT, UPDATE, INSERT, and DELETE methods are automatically included in the CRUD persistence layer.
+
+For example, to find an employee by primary key:
+
+```java
+  Employee emp = this.employeeDAO.select(134081);
+```
+
+To update the status of an invoice:
+
+```java
+  Invoice inv = this.invoiceDAO.select(5470);
+  inv.setStatus("PAID");
+  this.invoiceDAO.update(inv);
+```
+
+
 ## The Power of Nitro
 
 Nitro queries enhance SQL capabilities with:
@@ -94,7 +104,7 @@ Nitro queries enhance SQL capabilities with:
 - Graph queries
 - Native SQL
 
-Nitro can be used to gain access to all the features of a database, as well as to squeeze performance from it by tweaking queries. Any or all of these features can be combined into any SELECT, UPDATE, INSERT, or DELETE, or in any other valid database query.
+Nitro can be used to gain access to all the features of a database, as well as to squeeze performance from it by tweaking queries. Any or all of these features can be combined into any SELECT, UPDATE, INSERT, or DELETE, or in any other valid database query (TRUNCATE, CREATE, ALTER, DROP, etc.).
 
 The following query uses Dynamic SQL to assemble the query dynamically and to *apply* parameter values to it. It also uses a piece of Native SQL (an optimizer hint):
 

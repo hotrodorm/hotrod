@@ -1,25 +1,35 @@
 # HotRod Roadmap
 
-The following list of versions includes a planned list of features that could be included in future versions of HotRod. Over time 
-they will be assessed and may be included or not in the versions mentioned below.
+The following list of versions includes a planned list of features that could be included in future
+versions of HotRod. Over time they will be assessed and may be included or not in the versions
+mentioned below.
 
 **Note**: These version numbers and features are non-binding and are subject to change without notice.
 
 Version 4.7:
 
-- Enhanced UPDATE statement in LiveSQL.
+- Enhanced UPDATE statement forms in LiveSQL.
 
 Version 4.8:
 
-- Enhanced DELETE statement in LiveSQL.
+- Enhanced DELETE statement forms in LiveSQL.
 
 Version 4.9:
 
-- LiveSQL's MERGE (UPSERT) statement.
+- LiveSQL Inline Subqueries.
 
 Version 4.10:
 
-- LiveSQL Inline Subqueries.
+- LiveSQL Limiting with ties.
+
+Version 4.11:
+
+- LiveSQL Regular Expressions.
+
+Version 4.12:
+
+- LiveSQL's MERGE (UPSERT) statement.
+
 
 Version 5.0:
 
