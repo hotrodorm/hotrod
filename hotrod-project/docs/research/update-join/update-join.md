@@ -424,6 +424,17 @@ Notes:
 - Multiple matches are **allowed** per updated row (with unpredictable results).
 - Update rows with no matches are **not modified** when using JOIN. Use LEFT JOIN to set nulls.
 
+Updating joining the same table (https://dbfiddle.uk/lxfzijlv):
+
+```sql
+update widget
+set ordering = x.rn * 10
+from widget w
+join (
+  select t.*, row_number() over(order by ordering) as rn
+  from widget t
+) x on x.id = w.id;
+```
 
 ### SQL Server Form #3 -- Not Supported
 
@@ -494,6 +505,18 @@ set tax_pct = x.atp
 where x.branch_id = i.branch_id
 ```
 
+Updating joining the same table (https://dbfiddle.uk/0RqFu1am):
+
+```sql
+update widget w
+join (
+  select t.*, row_number() over(order by ordering) as rn
+  from widget t
+) x on x.id = w.id
+set w.ordering = x.rn * 10
+```
+
+
 ### MySQL Form #3 -- Not Supported
 
 
@@ -506,7 +529,6 @@ left join r on r.id = i.tax_rule_id
 set i.tax_rule_name = r.name, i.tax_law = r.law, i.tax_pct = r.pct
 where branch_id = 10;
 ```
-
 
 ## MariaDB (10.6)
 
