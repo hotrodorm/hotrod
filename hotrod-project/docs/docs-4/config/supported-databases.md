@@ -1,27 +1,17 @@
 # Supported Databases
 
 HotRod supports the following Databases:
+
 - Oracle
 - Db2 LUW
 - PostgreSQL &amp; Aurora/PostgreSQL
 - SQL Server
-- MariaDB (through the MySQL dialect)
 - MySQL &amp; Aurora/MySQL
-- SAP ASE
+- MariaDB
+- Sybase/SAP ASE
 - H2
 - HyperSQL
 - Apache Derby
-
-
-## Example of JDBC Drivers
-
-For a list of example JDBC Drivers for each database see [JDBC Drivers Examples](./jdbc-drivers-examples.md).
-
-
-## Catalogs &amp; Schemas
-
-Each database organizes database objects using schemas and catalogs. See [JDBC Catalogs &amp; Schemas](./jdbc-catalogs-and-schemas.md)
-for details on which ones are supported by each database.
 
 
 ## Default Data Types
@@ -40,7 +30,7 @@ and writing to the database.
 The default data type for each column depends on the specific database. See sections below:
 
 - [Support for Oracle Database](./database-support/oracle.md).
-- [Support for DB2 LUW Database](./database-support/db2-luw.md).
+- [Support for Db2 LUW Database](./database-support/db2-luw.md).
 - [Support for PostgreSQL Database](./database-support/postgresql.md).
 - [Support for SQL Server Database](./database-support/sql-server.md).
 - [Support for MariaDB Database](./database-support/mariadb.md).
@@ -50,4 +40,14 @@ The default data type for each column depends on the specific database. See sect
 - [Support for HSQLDB Database](./database-support/hsqldb.md).
 - [Support for Apache Derby Database](./database-support/apache-derby.md).
 
+
+## Example of JDBC Drivers
+
+For a list of example JDBC Drivers for each database see [JDBC Drivers Examples](./jdbc-drivers-examples.md).
+
+
+## Catalogs &amp; Schemas
+
+Each database organizes database objects using schemas and catalogs. See [JDBC Catalogs &amp; Schemas](./jdbc-catalogs-and-schemas.md)
+for details on which ones are supported by each database.
 

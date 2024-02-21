@@ -2,7 +2,8 @@
 
 HotRod 4 is an open source ORM for Spring and Spring Boot geared toward high performance persistence for relational databases.
 
-The persistence layer provides ready-to-use CRUD and LiveSQL functionalities to quickly start prototyping an application.
+The persistence layer provides ready-to-use CRUD and LiveSQL functionalities to quickly start prototyping an application for
+any of the world-class [supported databases](./hotrod-project/docs/docs-4/config/supported-databases.md).
 
 See [What's New](./hotrod-project/docs/docs-4/whats-new.md) in HotRod 4, [Version History](./hotrod-project/docs/version-history.md), and the [Roadmap](./hotrod-project/docs/roadmap.md). For documentation on the previous version see [HotRod 3 Documentation](./hotrod-project/docs/docs-3.4/README.md).
 
