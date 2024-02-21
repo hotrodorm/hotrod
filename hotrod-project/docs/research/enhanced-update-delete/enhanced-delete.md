@@ -2,14 +2,14 @@
 
 The DELETE statement can take four main different forms. Each database -- particularly high end ones includes several extra variations for very specific cases, that are not included here:
 
-| Database   | Form #1<br/>SQL-92 | Form #2a<br/>FROM | Form #2b<br/>[LEFT] JOIN | Form #3<br/>Subquery | Form #4<br/>CTE |
+| Database   | Form #1<br/>SQL-92 | Form #2<br/>FROM | Form #3<br/>[LEFT] JOIN | Form #4<br/>Subquery | Form #5<br/>CTE |
 | -- |:--:|:--:|:--:|:--:|:--:|
 | Oracle     | Yes                | 23c               | --                 | 12c1                 | --              |
 | DB2 LUW    | Yes                | --                | --                 | 10.5                 | --              |
 | PostgreSQL | Yes                | 9.3*              | --                 | --                   | 9.3*            |
 | SQL Server | Yes                | --                | 2014*              | --                   | --              |
-| MySQL      | Yes                | --                | 5.5*               | --                   | 8.0             |
-| MariaDB    | Yes                | --                | 10.0*              | --                   | --              |
+| MySQL      | Yes**              | --                | 5.5*               | --                   | 8.0             |
+| MariaDB    | Yes**              | --                | 10.0*              | --                   | --              |
 | Sybase ASE | Yes                | Yes               | --                 | --                   | --              |
 | H2         | Yes                | --                | --                 | --                   | --              |
 | HyperSQL   | Yes                | --                | --                 | --                   | --              |
@@ -17,7 +17,10 @@ The DELETE statement can take four main different forms. Each database -- partic
 
 *This version or older.
 
-The LEFT JOIN form can be used to implement anti-join deletion (delete non-matching rows).
+**Supported as long as the table is not referenced in subqueries. If it needs
+to be referenced, use Form #3.
+
+***^In form #3 a LEFT JOIN can be used to implement anti-join deletion (delete non-matching rows).
 
 
 ## Oracle
@@ -48,7 +51,7 @@ insert into vehicle (id, value, type, dealership_id) values (15, 800, 'ORG', 2);
 insert into vehicle (id, value, type, dealership_id) values (16, 510, 'VIP', 1);
 ```
 
-### Oracle Form #2a (https://dbfiddle.uk/rwIywNL2)
+### Oracle Form #2 (https://dbfiddle.uk/rwIywNL2)
 
 ```sql
 delete vehicle v
@@ -63,7 +66,9 @@ where v.dealership_id = x.id
   and v.type <> x.main_type;
 ```
 
-### Oracle Form #3 (https://dbfiddle.uk/gURwZg0q and https://dbfiddle.uk/EpRafw9D)
+### Oracle Form #3 -- Not Supported
+
+### Oracle Form #4 (https://dbfiddle.uk/gURwZg0q and https://dbfiddle.uk/EpRafw9D)
 
 ```sql
 delete
@@ -111,7 +116,9 @@ insert into vehicle (id, value, type, dealership_id) values
 
 ### DB2 Form #2 -- Not Supported
 
-### DB2 Form #3 (https://dbfiddle.uk/iE3QgJoW)
+### DB2 Form #3 -- Not Supported
+
+### DB2 Form #4 (https://dbfiddle.uk/iE3QgJoW)
 
 Delete vehicles keeping only the cheapest one in each dealership:
 
@@ -123,7 +130,7 @@ delete from (
 where rn > 1
 ```
 
-### DB2 Form #4 -- Not Supported
+### DB2 Form #5 -- Not Supported
 
 
 ## PostgreSQL
@@ -172,7 +179,9 @@ where v.dealership_id = x.id
 
 ### PostgreSQL Form #3 -- Not Supported
 
-### PostgreSQL Form #4 (https://dbfiddle.uk/1k96wTrS)
+### PostgreSQL Form #4 -- Not Supported
+
+### PostgreSQL Form #5 (https://dbfiddle.uk/1k96wTrS)
 
 ```sql
 with
@@ -218,7 +227,9 @@ insert into vehicle (id, value, type, dealership_id) values
   (16, 510, 'VIP', 1);
 ```
 
-### SQL Server Form #2b (https://dbfiddle.uk/hBMm_3fG)
+### SQL Server Form #2 -- Not Supported
+
+### SQL Server Form #3 (https://dbfiddle.uk/hBMm_3fG)
 
 ```sql
 delete v
@@ -246,9 +257,9 @@ left join (
 where x.id is null;
 ```
 
-### SQL Server Form #3 -- Not Supported
-
 ### SQL Server Form #4 -- Not Supported
+
+### SQL Server Form #5 -- Not Supported
 
 ## MySQL
 
@@ -282,9 +293,11 @@ insert into vehicle (id, value, type, dealership_id) values
 ### MySQL Form #1
 
 Form #1 is supported as long as the table being deleted cannot be referenced in a subquery. If it needs
-to be referenced, use Form #2.
+to be referenced, use Form #3.
 
-### MySQL Form #2b (https://dbfiddle.uk/wsl_wGGH)
+### MySQL Form #2 -- Not Supported
+
+### MySQL Form #3 (https://dbfiddle.uk/wsl_wGGH)
 
 ```sql
 delete vehicle
@@ -314,9 +327,9 @@ left join (
 where x.id is null
 ```
 
-### MySQL Form #3 -- Not Supported
+### MySQL Form #4 -- Not Supported
 
-### MySQL Form #4 (https://dbfiddle.uk/IbeSNgQn)
+### MySQL Form #5 (https://dbfiddle.uk/IbeSNgQn)
 
 ```sql
 with
@@ -363,7 +376,14 @@ insert into vehicle (id, value, type, dealership_id) values
   (16, 510, 'VIP', 1);
 ```
 
-### MariaDB Form #2b (https://dbfiddle.uk/M0qvo8Sc)
+### MariaDB Form #1
+
+Form #1 is supported as long as the table being deleted cannot be referenced in a subquery. If it needs
+to be referenced, use Form #3.
+
+### MariaDB Form #2 -- Not Supported
+
+### MariaDB Form #3 (https://dbfiddle.uk/M0qvo8Sc)
 
 ```sql
 delete vehicle
@@ -394,9 +414,9 @@ left join (
 where x.id is null
 ```
 
-### MariaDB Form #3 -- Not Supported
-
 ### MariaDB Form #4 -- Not Supported
+
+### MariaDB Form #5 -- Not Supported
 
 ## Sybase ASE
 
@@ -409,3 +429,8 @@ FROM Contacts, Customers
 WHERE Contacts.Surname = Customers.Surname
 AND Contacts.GivenName = Customers.GivenName
 ```
+
+
+## H2, HyperSQL, Derby
+
+Only Form #1 is supported by these databases.

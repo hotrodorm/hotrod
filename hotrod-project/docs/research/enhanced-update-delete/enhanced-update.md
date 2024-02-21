@@ -82,7 +82,7 @@ The following table indicates since which versions each database implements an u
 | SQL Server | Yes      | 2014*   | --      | 2014*   |
 | MySQL      | Yes      | 5.5*    | --      | 8.0     |
 | MariaDB    | Yes      | 10.0*   | --      | --      |
-| Sybase ASE | Yes      | --      | --      | --      |
+| Sybase ASE | Yes      | 16*     | --      | --      |
 | H2         | Yes      | --      | --      | --      |
 | HyperSQL   | Yes      | --      | --      | --      |
 | Derby      | Yes      | --      | --      | --      |
@@ -100,7 +100,7 @@ Form #2 implementation details differ as shown below:
 | SQL Server | Yes     | Yes                | Yes           | FROM, then [LEFT] JOINs | JOIN  | Allowed, Unpredicable | JOIN: Not modified, LEFT JOIN: Sets Null |
 | MySQL      | Yes     | Yes                | --            | In UPDATE, [LEFT] JOINs | JOIN  | Allowed, Unpredicable | JOIN: Not modified, LEFT JOIN: Sets Null |
 | MariaDB    | Yes     | Yes                | --            | In UPDATE, [LEFT] JOINs | JOIN  | Allowed, Unpredicable | JOIN: Not modified, LEFT JOIN: Sets Null |
-| Sybase ASE | --      | --                 | --            | --        | --        | --                    | --           |
+| Sybase ASE | Yes     | Yes                | --            | FROM (using commas), -- no subqueries    | WHERE | Allowed, Unpredicable | Not modified |
 | H2         | --      | --                 | --            | --        | --        | --                    | --           |
 | HyperSQL   | --      | --                 | --            | --        | --        | --                    | --           |
 | Derby      | --      | --                 | --            | --        | --        | --                    | --           |
@@ -533,4 +533,70 @@ where branch_id = 10;
 ## MariaDB (10.6)
 
 Similar behavior as MySQL, except that Form #4 is not supported.
+
+## Sybase ASE
+
+
+```sql
+create table invoice (
+  id int,
+  amount int,
+  branch_id int,
+  tax_rule_id int,
+  tax_rule_name varchar(25),
+  tax_law varchar(15),
+  tax_pct decimal(6, 2)
+)
+
+insert into invoice (id, amount, branch_id, tax_rule_id, tax_rule_name, tax_law, tax_pct) values
+  (1, 100, 10, 201, 'a', 'pending', -1)
+
+insert into invoice (id, amount, branch_id, tax_rule_id, tax_rule_name, tax_law, tax_pct) values
+  (2, 101, 20, 201, 'a', 'pending', -1)
+
+insert into invoice (id, amount, branch_id, tax_rule_id, tax_rule_name, tax_law, tax_pct) values
+  (3, 102, 10, 202, 'a', 'pending', -1)
+
+insert into invoice (id, amount, branch_id, tax_rule_id, tax_rule_name, tax_law, tax_pct) values
+  (4, 103, 10, 203, 'a', 'pending', -1)
+
+create table tax_rule (
+  id int primary key not null,
+  name varchar(25),
+  law varchar(15),
+  pct decimal(6, 2)
+)
+
+insert into tax_rule (id, name, law, pct) values
+  (201, 'Rule 201', 'Law #501', 5.25)
+
+insert into tax_rule (id, name, law, pct) values
+  (202, 'Rule 202', 'Law #502', 8.15)
+```
+
+### Sybase ASE Form #2 (https://dbfiddle.uk/uJHyUEFr)
+
+```sql
+update invoice
+set tax_rule_name = r.name, tax_law = r.law, tax_pct = r.pct
+from invoice i, tax_rule r
+where r.id = i.tax_rule_id
+  and i.branch_id = 10
+```
+
+Notes:
+
+- Multiple matches are **allowed** per updated row (with unpredictable results).
+- Update rows with no matches are **not modified**.
+
+
+### Sybase ASE Form #3 -- Not Supported
+
+### Sybase ASE Form #4 -- Not Supported
+
+
+## H2, HyperSQL, and Derby
+
+Only Form #1 is supported in these databases.
+
 
