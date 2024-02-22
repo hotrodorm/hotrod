@@ -1,4 +1,7 @@
-# Update with Join
+# Enhanced UPDATE Syntax
+
+Beyond the SQL-92 standard syntax, many databases have implemented enhanced forms for the UPDATE
+statement to make use of the inner and outer join functionalities between tables.
 
 The UPDATE statement can take four main different forms. Each database -- particularly high end ones includes several extra variations for very specific cases, that are not included here:
 
@@ -82,7 +85,7 @@ The following table indicates since which versions each database implements an u
 | SQL Server | Yes      | 2014*   | --      | 2014*   |
 | MySQL      | Yes      | 5.5*    | --      | 8.0     |
 | MariaDB    | Yes      | 10.0*   | --      | --      |
-| Sybase ASE | Yes      | 16*     | --      | --      |
+| Sybase ASE | Yes      | 16*<br/>(no subqueries) | --      | --      |
 | H2         | Yes      | --      | --      | --      |
 | HyperSQL   | Yes      | --      | --      | --      |
 | Derby      | Yes      | --      | --      | --      |
