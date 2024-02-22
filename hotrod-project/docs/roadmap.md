@@ -8,11 +8,11 @@ mentioned below.
 
 Version 4.7:
 
-- Enhanced UPDATE statement forms in LiveSQL.
+- Enhanced UPDATE syntax forms in LiveSQL.
 
 Version 4.8:
 
-- Enhanced DELETE statement forms in LiveSQL.
+- Enhanced DELETE syntax forms in LiveSQL.
 
 Version 4.9:
 
