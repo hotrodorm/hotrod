@@ -239,7 +239,7 @@ while other ones use keywords; most have parentheses, some don't; there are also
   It includes variations for both parameters being boxed or unboxed to produce four similar methods:
 
   Again notice that, to avoid redundancy, the pattern is defined in the first variation only. The second, third, and fourth
-  methods box the parameters and then reuse the first method.
+  method's box the parameters and then reuse the first method.
 
     ```java
     public StringFunction left(StringExpression text, NumberExpression n) {
