@@ -12,7 +12,7 @@
   <parent>
     <groupId>org.hotrodorm.hotrod</groupId>
     <artifactId>hotrod-project</artifactId>
-    <version>4.6.1-SNAPSHOT</version>
+    <version>4.6.1</version>
   </parent>
 
   <dependencies>
@@ -22,7 +22,7 @@
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod</artifactId>
-      <version>4.6.1-SNAPSHOT</version>
+      <version>4.6.1</version>
     </dependency>
 
     <!-- HotRod Utils -->
@@ -30,7 +30,7 @@
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-utils</artifactId>
-      <version>4.6.1-SNAPSHOT</version>
+      <version>4.6.1</version>
     </dependency>
   
     <!-- Spring -->
