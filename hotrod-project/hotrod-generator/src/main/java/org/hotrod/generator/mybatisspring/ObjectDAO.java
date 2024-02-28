@@ -873,7 +873,7 @@ public class ObjectDAO extends GeneratableObject {
                   String params = renderParams(fkm);
                   String selectMethod = "";
                   if (fkm2.getRemote().equals(fkm2.getRemote().getTableMetadata().getPK())) {
-                    selectMethod = "selectByPK";
+                    selectMethod = "select";
                   } else {
                     selectMethod = "selectByUI" + fkm2.getRemote().toCamelCase(this.layout.getColumnSeam());
                   }
@@ -1152,7 +1152,7 @@ public class ObjectDAO extends GeneratableObject {
       }
     }
     String memberPrefix = dao.getClassName().equals(currentDAO.getClassName()) ? "" : (dao.getMemberName() + ".");
-    String selectMethod = useCursor ? "selectByExampleCursor" : "selectByExample";
+    String selectMethod = useCursor ? "selectCursor" : "select";
     println("      return " + memberPrefix + selectMethod + "(example, orderBies);");
     println("    }");
     println();

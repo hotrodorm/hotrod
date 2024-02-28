@@ -85,7 +85,7 @@ public class Metadata {
       this.tables = new LinkedHashSet<TableDataSetMetadata>();
       for (JdbcTable t : this.db.getTables()) {
         try {
-          log.debug("t.getName()=" + t.getName());
+//          log.info("t.getName()=" + t.getName() + " fks[" + t.getImportedFks().size() + "]");
 
           boolean isFromCurrentCatalog = t.getCatalog() == null
               || t.getCatalog().equals(this.dloc.getCatalogSchema().getCatalog());

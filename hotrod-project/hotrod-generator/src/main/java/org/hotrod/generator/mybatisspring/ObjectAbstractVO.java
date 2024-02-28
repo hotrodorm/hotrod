@@ -183,7 +183,7 @@ public class ObjectAbstractVO extends GeneratableObject {
 
   }
 
-  private void writeColumnProperties(List<ColumnMetadata> columns) throws IOException {
+  private void writeColumnProperties(final List<ColumnMetadata> columns) throws IOException {
     for (ColumnMetadata cm : columns) {
       String javaType = resolveType(cm);
       println("  protected " + javaType + " " + cm.getId().getJavaMemberName() + " = null;");
@@ -379,7 +379,7 @@ public class ObjectAbstractVO extends GeneratableObject {
     println("    return toJSONObject().render();");
     println("  }");
     println();
-}
+  }
 
   private void writeClassFooter() throws IOException {
     println("}");
