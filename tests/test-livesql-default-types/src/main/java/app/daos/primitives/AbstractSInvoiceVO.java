@@ -3,13 +3,13 @@
 package app.daos.primitives;
 
 import java.io.Serializable;
-import org.hotrod.runtime.json.*;
 
-public class AbstractInvoiceVO implements Serializable {
+import org.hotrod.runtime.json.*;;
+public class AbstractSInvoiceVO implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  // VO Properties (table columns)
+  // Expression properties
 
   protected java.lang.Integer id = null;
   protected java.lang.Integer amount = null;
@@ -19,79 +19,79 @@ public class AbstractInvoiceVO implements Serializable {
   protected java.lang.String type = null;
   protected java.lang.String status = null;
   protected java.sql.Date orderDate = null;
-  protected app.daos.primitives.Category category = null;
+  protected java.lang.Integer category = null;
 
   // getters & setters
 
-  public java.lang.Integer getId() {
+  public final java.lang.Integer getId() {
     return this.id;
   }
 
-  public void setId(final java.lang.Integer id) {
+  public final void setId(final java.lang.Integer id) {
     this.id = id;
   }
 
-  public java.lang.Integer getAmount() {
+  public final java.lang.Integer getAmount() {
     return this.amount;
   }
 
-  public void setAmount(final java.lang.Integer amount) {
+  public final void setAmount(final java.lang.Integer amount) {
     this.amount = amount;
   }
 
-  public java.lang.Integer getBranchId() {
+  public final java.lang.Integer getBranchId() {
     return this.branchId;
   }
 
-  public void setBranchId(final java.lang.Integer branchId) {
+  public final void setBranchId(final java.lang.Integer branchId) {
     this.branchId = branchId;
   }
 
-  public java.lang.Integer getAccountId() {
+  public final java.lang.Integer getAccountId() {
     return this.accountId;
   }
 
-  public void setAccountId(final java.lang.Integer accountId) {
+  public final void setAccountId(final java.lang.Integer accountId) {
     this.accountId = accountId;
   }
 
-  public java.lang.Integer getUnpaidBalance() {
+  public final java.lang.Integer getUnpaidBalance() {
     return this.unpaidBalance;
   }
 
-  public void setUnpaidBalance(final java.lang.Integer unpaidBalance) {
+  public final void setUnpaidBalance(final java.lang.Integer unpaidBalance) {
     this.unpaidBalance = unpaidBalance;
   }
 
-  public java.lang.String getType() {
+  public final java.lang.String getType() {
     return this.type;
   }
 
-  public void setType(final java.lang.String type) {
+  public final void setType(final java.lang.String type) {
     this.type = type;
   }
 
-  public java.lang.String getStatus() {
+  public final java.lang.String getStatus() {
     return this.status;
   }
 
-  public void setStatus(final java.lang.String status) {
+  public final void setStatus(final java.lang.String status) {
     this.status = status;
   }
 
-  public java.sql.Date getOrderDate() {
+  public final java.sql.Date getOrderDate() {
     return this.orderDate;
   }
 
-  public void setOrderDate(final java.sql.Date orderDate) {
+  public final void setOrderDate(final java.sql.Date orderDate) {
     this.orderDate = orderDate;
   }
 
-  public app.daos.primitives.Category getCategory() {
+  public final java.lang.Integer getCategory() {
     return this.category;
   }
 
-  public void setCategory(final app.daos.primitives.Category category) {
+  public final void setCategory(final java.lang.Integer category) {
     this.category = category;
   }
 
@@ -99,7 +99,7 @@ public class AbstractInvoiceVO implements Serializable {
 
   public String toString() {
     java.lang.StringBuilder sb = new java.lang.StringBuilder();
-    sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
+    sb.append(super.toString() + "\n");
     sb.append("- id=" + this.id + "\n");
     sb.append("- amount=" + this.amount + "\n");
     sb.append("- branchId=" + this.branchId + "\n");

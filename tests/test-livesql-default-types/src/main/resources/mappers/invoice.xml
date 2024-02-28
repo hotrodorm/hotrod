@@ -14,7 +14,8 @@
     unpaid_balance,
     type,
     status,
-    order_date
+    order_date,
+    category
   </sql>
 
   <sql id="columnsWithAlias">
@@ -25,7 +26,8 @@
     ${alias}.unpaid_balance,
     ${alias}.type,
     ${alias}.status,
-    ${alias}.order_date
+    ${alias}.order_date,
+    ${alias}.category
   </sql>
 
   <resultMap id="allColumns" type="app.daos.InvoiceVO">
@@ -37,6 +39,7 @@
     <result property="type" column="type" />
     <result property="status" column="status" />
     <result property="orderDate" column="order_date" />
+    <result property="category" column="category" typeHandler="app.daos.primitives.InvoiceDAO$CategoryTypeHandler" />
   </resultMap>
 
   <!-- select by PK -->
@@ -82,6 +85,9 @@
       <if test="p.orderDate != null">
         and order_date = #{p.orderDate,jdbcType=DATE}
       </if>
+      <if test="p.category != null">
+        and category = #{p.category,jdbcType=INTEGER,typeHandler=app.daos.primitives.InvoiceDAO$CategoryTypeHandler}
+      </if>
     </trim>
     <if test="o != null">
       order by ${o}
@@ -107,6 +113,7 @@
         <if test="true">, type</if>
         <if test="true">, status</if>
         <if test="true">, order_date</if>
+        <if test="true">, category</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
@@ -118,6 +125,7 @@
         <if test="true">, #{type,jdbcType=VARCHAR}</if>
         <if test="true">, #{status,jdbcType=VARCHAR}</if>
         <if test="true">, #{orderDate,jdbcType=DATE}</if>
+        <if test="true">, #{category,jdbcType=INTEGER,typeHandler=app.daos.primitives.InvoiceDAO$CategoryTypeHandler}</if>
       </trim>
       )
   </insert>
@@ -132,7 +140,8 @@
       unpaid_balance = #{unpaidBalance,jdbcType=INTEGER},
       type = #{type,jdbcType=VARCHAR},
       status = #{status,jdbcType=VARCHAR},
-      order_date = #{orderDate,jdbcType=DATE}
+      order_date = #{orderDate,jdbcType=DATE},
+      category = #{category,jdbcType=INTEGER,typeHandler=app.daos.primitives.InvoiceDAO$CategoryTypeHandler}
      where
       id = #{id,jdbcType=INTEGER}
   </update>
@@ -158,6 +167,7 @@
       <if test="values.type != null">type = #{values.type,jdbcType=VARCHAR},</if>
       <if test="values.status != null">status = #{values.status,jdbcType=VARCHAR},</if>
       <if test="values.orderDate != null">order_date = #{values.orderDate,jdbcType=DATE},</if>
+      <if test="values.category != null">category = #{values.category,jdbcType=INTEGER,typeHandler=app.daos.primitives.InvoiceDAO$CategoryTypeHandler},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.id != null">
@@ -183,6 +193,9 @@
       </if>
       <if test="filter.orderDate != null">
         and order_date = #{filter.orderDate,jdbcType=DATE}
+      </if>
+      <if test="filter.category != null">
+        and category = #{filter.category,jdbcType=INTEGER,typeHandler=app.daos.primitives.InvoiceDAO$CategoryTypeHandler}
       </if>
     </trim>
   </update>
@@ -221,6 +234,9 @@
       </if>
       <if test="orderDate != null">
         and order_date = #{orderDate,jdbcType=DATE}
+      </if>
+      <if test="category != null">
+        and category = #{category,jdbcType=INTEGER,typeHandler=app.daos.primitives.InvoiceDAO$CategoryTypeHandler}
       </if>
     </trim>
   </delete>

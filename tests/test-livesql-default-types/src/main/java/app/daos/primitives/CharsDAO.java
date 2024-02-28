@@ -97,15 +97,38 @@ public class CharsDAO implements Serializable, ApplicationContextAware {
     app.daos.CharsVO mo = this.applicationContext.getBean(app.daos.CharsVO.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
+    mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
+    mo.setVc1((java.lang.String) m.get(p + "vc1" + s));
+    mo.setVc2((java.lang.String) m.get(p + "vc2" + s));
+    mo.setVc3((java.lang.String) m.get(p + "vc3" + s));
+    mo.setVc4((java.lang.String) m.get(p + "vc4" + s));
+    mo.setVc5((java.lang.String) m.get(p + "vc5" + s));
+    mo.setVc6((java.lang.String) m.get(p + "vc6" + s));
+    mo.setVc7((java.lang.String) m.get(p + "vc7" + s));
     mo.setCha1((java.lang.String) m.get(p + "cha1" + s));
     mo.setCha2((java.lang.String) m.get(p + "cha2" + s));
     mo.setCha3((java.lang.String) m.get(p + "cha3" + s));
+    mo.setClo1((java.lang.String) m.get(p + "clo1" + s));
+    mo.setClo2((java.lang.String) m.get(p + "clo2" + s));
+    mo.setClo3((java.lang.String) m.get(p + "clo3" + s));
+    mo.setClo4((java.lang.String) m.get(p + "clo4" + s));
+    mo.setClo5((java.lang.String) m.get(p + "clo5" + s));
+    mo.setClo6((java.lang.String) m.get(p + "clo6" + s));
+    mo.setClo7((java.lang.String) m.get(p + "clo7" + s));
     return mo;
   }
 
-  // no select by PK generated, since the table does not have a PK.
+  // select by primary key
 
-  // select by unique indexes: no unique indexes found -- skipped
+  public app.daos.CharsVO select(final java.lang.Integer id) {
+    if (id == null)
+      return null;
+    app.daos.CharsVO vo = new app.daos.CharsVO();
+    vo.setId(id);
+    return this.sqlSession.selectOne("mappers.chars.selectByPK", vo);
+  }
+
+  // select by unique indexes: no unique indexes found (besides the PK) -- skipped
 
   // select by example
 
@@ -141,15 +164,43 @@ public class CharsDAO implements Serializable, ApplicationContextAware {
     String id = "mappers.chars.insert";
     this.sqlSession.insert(id, vo);
     app.daos.CharsVO mo = springBeanObjectFactory.create(app.daos.CharsVO.class);
+    mo.setId(vo.getId());
+    mo.setVc1(vo.getVc1());
+    mo.setVc2(vo.getVc2());
+    mo.setVc3(vo.getVc3());
+    mo.setVc4(vo.getVc4());
+    mo.setVc5(vo.getVc5());
+    mo.setVc6(vo.getVc6());
+    mo.setVc7(vo.getVc7());
     mo.setCha1(vo.getCha1());
     mo.setCha2(vo.getCha2());
     mo.setCha3(vo.getCha3());
+    mo.setClo1(vo.getClo1());
+    mo.setClo2(vo.getClo2());
+    mo.setClo3(vo.getClo3());
+    mo.setClo4(vo.getClo4());
+    mo.setClo5(vo.getClo5());
+    mo.setClo6(vo.getClo6());
+    mo.setClo7(vo.getClo7());
     return mo;
   }
 
-  // no update by PK generated, since the table does not have a PK.
+  // update by PK
 
-  // no delete by PK generated, since the table does not have a PK.
+  public int update(final app.daos.CharsVO vo) {
+    if (vo.getId() == null) return 0;
+    return this.sqlSession.update("mappers.chars.updateByPK", vo);
+  }
+
+  // delete by PK
+
+  public int delete(final java.lang.Integer id) {
+    if (id == null) return 0;
+    app.daos.CharsVO vo = new app.daos.CharsVO();
+    vo.setId(id);
+    if (vo.getId() == null) return 0;
+    return this.sqlSession.delete("mappers.chars.deleteByPK", vo);
+  }
 
   // update by example
 
@@ -163,9 +214,24 @@ public class CharsDAO implements Serializable, ApplicationContextAware {
 
   public UpdateSetCompletePhase update(final app.daos.primitives.AbstractCharsVO updateValues, final CharsDAO.CharsTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
+    if (updateValues.getId() != null) values.put("id", updateValues.getId());
+    if (updateValues.getVc1() != null) values.put("vc1", updateValues.getVc1());
+    if (updateValues.getVc2() != null) values.put("vc2", updateValues.getVc2());
+    if (updateValues.getVc3() != null) values.put("vc3", updateValues.getVc3());
+    if (updateValues.getVc4() != null) values.put("vc4", updateValues.getVc4());
+    if (updateValues.getVc5() != null) values.put("vc5", updateValues.getVc5());
+    if (updateValues.getVc6() != null) values.put("vc6", updateValues.getVc6());
+    if (updateValues.getVc7() != null) values.put("vc7", updateValues.getVc7());
     if (updateValues.getCha1() != null) values.put("cha1", updateValues.getCha1());
     if (updateValues.getCha2() != null) values.put("cha2", updateValues.getCha2());
     if (updateValues.getCha3() != null) values.put("cha3", updateValues.getCha3());
+    if (updateValues.getClo1() != null) values.put("clo1", updateValues.getClo1());
+    if (updateValues.getClo2() != null) values.put("clo2", updateValues.getClo2());
+    if (updateValues.getClo3() != null) values.put("clo3", updateValues.getClo3());
+    if (updateValues.getClo4() != null) values.put("clo4", updateValues.getClo4());
+    if (updateValues.getClo5() != null) values.put("clo5", updateValues.getClo5());
+    if (updateValues.getClo6() != null) values.put("clo6", updateValues.getClo6());
+    if (updateValues.getClo7() != null) values.put("clo7", updateValues.getClo7());
     return new UpdateSetCompletePhase(this.context, "mappers.chars.updateByCriteria", tableOrView,  predicate, values);
   }
 
@@ -186,6 +252,58 @@ public class CharsDAO implements Serializable, ApplicationContextAware {
 
   public enum CharsOrderBy implements OrderBy {
 
+    ID("chars", "id", true), //
+    ID$DESC("chars", "id", false), //
+    VC1("chars", "vc1", true), //
+    VC1$DESC("chars", "vc1", false), //
+    VC1$CASEINSENSITIVE("chars", "lower(vc1)", true), //
+    VC1$CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(vc1), vc1", true), //
+    VC1$CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(vc1), vc1", false), //
+    VC1$DESC_CASEINSENSITIVE("chars", "lower(vc1)", false), //
+    VC1$DESC_CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(vc1), vc1", false), //
+    VC1$DESC_CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(vc1), vc1", true), //
+    VC2("chars", "vc2", true), //
+    VC2$DESC("chars", "vc2", false), //
+    VC2$CASEINSENSITIVE("chars", "lower(vc2)", true), //
+    VC2$CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(vc2), vc2", true), //
+    VC2$CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(vc2), vc2", false), //
+    VC2$DESC_CASEINSENSITIVE("chars", "lower(vc2)", false), //
+    VC2$DESC_CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(vc2), vc2", false), //
+    VC2$DESC_CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(vc2), vc2", true), //
+    VC3("chars", "vc3", true), //
+    VC3$DESC("chars", "vc3", false), //
+    VC3$CASEINSENSITIVE("chars", "lower(vc3)", true), //
+    VC3$CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(vc3), vc3", true), //
+    VC3$CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(vc3), vc3", false), //
+    VC3$DESC_CASEINSENSITIVE("chars", "lower(vc3)", false), //
+    VC3$DESC_CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(vc3), vc3", false), //
+    VC3$DESC_CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(vc3), vc3", true), //
+    VC4("chars", "vc4", true), //
+    VC4$DESC("chars", "vc4", false), //
+    VC4$CASEINSENSITIVE("chars", "lower(vc4)", true), //
+    VC4$CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(vc4), vc4", true), //
+    VC4$CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(vc4), vc4", false), //
+    VC4$DESC_CASEINSENSITIVE("chars", "lower(vc4)", false), //
+    VC4$DESC_CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(vc4), vc4", false), //
+    VC4$DESC_CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(vc4), vc4", true), //
+    VC5("chars", "vc5", true), //
+    VC5$DESC("chars", "vc5", false), //
+    VC5$CASEINSENSITIVE("chars", "lower(vc5)", true), //
+    VC5$CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(vc5), vc5", true), //
+    VC5$CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(vc5), vc5", false), //
+    VC5$DESC_CASEINSENSITIVE("chars", "lower(vc5)", false), //
+    VC5$DESC_CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(vc5), vc5", false), //
+    VC5$DESC_CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(vc5), vc5", true), //
+    VC6("chars", "vc6", true), //
+    VC6$DESC("chars", "vc6", false), //
+    VC6$CASEINSENSITIVE("chars", "lower(vc6)", true), //
+    VC6$CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(vc6), vc6", true), //
+    VC6$CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(vc6), vc6", false), //
+    VC6$DESC_CASEINSENSITIVE("chars", "lower(vc6)", false), //
+    VC6$DESC_CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(vc6), vc6", false), //
+    VC6$DESC_CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(vc6), vc6", true), //
+    VC7("chars", "vc7", true), //
+    VC7$DESC("chars", "vc7", false), //
     CHA1("chars", "cha1", true), //
     CHA1$DESC("chars", "cha1", false), //
     CHA1$CASEINSENSITIVE("chars", "lower(cha1)", true), //
@@ -209,7 +327,63 @@ public class CharsDAO implements Serializable, ApplicationContextAware {
     CHA3$CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(cha3), cha3", false), //
     CHA3$DESC_CASEINSENSITIVE("chars", "lower(cha3)", false), //
     CHA3$DESC_CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(cha3), cha3", false), //
-    CHA3$DESC_CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(cha3), cha3", true);
+    CHA3$DESC_CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(cha3), cha3", true), //
+    CLO1("chars", "clo1", true), //
+    CLO1$DESC("chars", "clo1", false), //
+    CLO1$CASEINSENSITIVE("chars", "lower(clo1)", true), //
+    CLO1$CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(clo1), clo1", true), //
+    CLO1$CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(clo1), clo1", false), //
+    CLO1$DESC_CASEINSENSITIVE("chars", "lower(clo1)", false), //
+    CLO1$DESC_CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(clo1), clo1", false), //
+    CLO1$DESC_CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(clo1), clo1", true), //
+    CLO2("chars", "clo2", true), //
+    CLO2$DESC("chars", "clo2", false), //
+    CLO2$CASEINSENSITIVE("chars", "lower(clo2)", true), //
+    CLO2$CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(clo2), clo2", true), //
+    CLO2$CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(clo2), clo2", false), //
+    CLO2$DESC_CASEINSENSITIVE("chars", "lower(clo2)", false), //
+    CLO2$DESC_CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(clo2), clo2", false), //
+    CLO2$DESC_CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(clo2), clo2", true), //
+    CLO3("chars", "clo3", true), //
+    CLO3$DESC("chars", "clo3", false), //
+    CLO3$CASEINSENSITIVE("chars", "lower(clo3)", true), //
+    CLO3$CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(clo3), clo3", true), //
+    CLO3$CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(clo3), clo3", false), //
+    CLO3$DESC_CASEINSENSITIVE("chars", "lower(clo3)", false), //
+    CLO3$DESC_CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(clo3), clo3", false), //
+    CLO3$DESC_CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(clo3), clo3", true), //
+    CLO4("chars", "clo4", true), //
+    CLO4$DESC("chars", "clo4", false), //
+    CLO4$CASEINSENSITIVE("chars", "lower(clo4)", true), //
+    CLO4$CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(clo4), clo4", true), //
+    CLO4$CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(clo4), clo4", false), //
+    CLO4$DESC_CASEINSENSITIVE("chars", "lower(clo4)", false), //
+    CLO4$DESC_CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(clo4), clo4", false), //
+    CLO4$DESC_CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(clo4), clo4", true), //
+    CLO5("chars", "clo5", true), //
+    CLO5$DESC("chars", "clo5", false), //
+    CLO5$CASEINSENSITIVE("chars", "lower(clo5)", true), //
+    CLO5$CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(clo5), clo5", true), //
+    CLO5$CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(clo5), clo5", false), //
+    CLO5$DESC_CASEINSENSITIVE("chars", "lower(clo5)", false), //
+    CLO5$DESC_CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(clo5), clo5", false), //
+    CLO5$DESC_CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(clo5), clo5", true), //
+    CLO6("chars", "clo6", true), //
+    CLO6$DESC("chars", "clo6", false), //
+    CLO6$CASEINSENSITIVE("chars", "lower(clo6)", true), //
+    CLO6$CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(clo6), clo6", true), //
+    CLO6$CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(clo6), clo6", false), //
+    CLO6$DESC_CASEINSENSITIVE("chars", "lower(clo6)", false), //
+    CLO6$DESC_CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(clo6), clo6", false), //
+    CLO6$DESC_CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(clo6), clo6", true), //
+    CLO7("chars", "clo7", true), //
+    CLO7$DESC("chars", "clo7", false), //
+    CLO7$CASEINSENSITIVE("chars", "lower(clo7)", true), //
+    CLO7$CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(clo7), clo7", true), //
+    CLO7$CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(clo7), clo7", false), //
+    CLO7$DESC_CASEINSENSITIVE("chars", "lower(clo7)", false), //
+    CLO7$DESC_CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(clo7), clo7", false), //
+    CLO7$DESC_CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(clo7), clo7", true);
 
     private CharsOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -250,25 +424,40 @@ public class CharsDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
+    public NumberColumn id;
+    public StringColumn vc1;
+    public StringColumn vc2;
+    public StringColumn vc3;
+    public StringColumn vc4;
+    public StringColumn vc5;
+    public StringColumn vc6;
+    public StringColumn vc7;
     public StringColumn cha1;
     public StringColumn cha2;
     public StringColumn cha3;
+    public StringColumn clo1;
+    public StringColumn clo2;
+    public StringColumn clo3;
+    public StringColumn clo4;
+    public StringColumn clo5;
+    public StringColumn clo6;
+    public StringColumn clo7;
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this.cha1, this.cha2, this.cha3);
+      return new AllColumns(this.id, this.vc1, this.vc2, this.vc3, this.vc4, this.vc5, this.vc6, this.vc7, this.cha1, this.cha2, this.cha3, this.clo1, this.clo2, this.clo3, this.clo4, this.clo5, this.clo6, this.clo7);
     }
 
     // Constructors
 
     CharsTable() {
-      super(null, null, "chars", "Table", null);
+      super(null, null, "CHARS", "Table", null);
       initialize();
     }
 
     CharsTable(final String alias) {
-      super(null, null, "chars", "Table", alias);
+      super(null, null, "CHARS", "Table", alias);
       initialize();
     }
 
@@ -276,12 +465,42 @@ public class CharsDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.cha1 = new StringColumn(this, "cha1", "cha1", "bpchar", 10, 0);
+      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
+      super.columns.add(this.id);
+      this.vc1 = new StringColumn(this, "VC1", "vc1", "CHARACTER VARYING", 100, 0);
+      super.columns.add(this.vc1);
+      this.vc2 = new StringColumn(this, "VC2", "vc2", "CHARACTER VARYING", 100, 0);
+      super.columns.add(this.vc2);
+      this.vc3 = new StringColumn(this, "VC3", "vc3", "CHARACTER VARYING", 100, 0);
+      super.columns.add(this.vc3);
+      this.vc4 = new StringColumn(this, "VC4", "vc4", "CHARACTER VARYING", 100, 0);
+      super.columns.add(this.vc4);
+      this.vc5 = new StringColumn(this, "VC5", "vc5", "CHARACTER VARYING", 100, 0);
+      super.columns.add(this.vc5);
+      this.vc6 = new StringColumn(this, "VC6", "vc6", "CHARACTER VARYING", 100, 0);
+      super.columns.add(this.vc6);
+      this.vc7 = new StringColumn(this, "VC7", "vc7", "VARCHAR_IGNORECASE", 100, 0);
+      super.columns.add(this.vc7);
+      this.cha1 = new StringColumn(this, "CHA1", "cha1", "CHARACTER", 100, 0);
       super.columns.add(this.cha1);
-      this.cha2 = new StringColumn(this, "cha2", "cha2", "varchar", 10, 0);
+      this.cha2 = new StringColumn(this, "CHA2", "cha2", "CHARACTER", 100, 0);
       super.columns.add(this.cha2);
-      this.cha3 = new StringColumn(this, "cha3", "cha3", "text", 2147483647, 0);
+      this.cha3 = new StringColumn(this, "CHA3", "cha3", "CHARACTER", 100, 0);
       super.columns.add(this.cha3);
+      this.clo1 = new StringColumn(this, "CLO1", "clo1", "CHARACTER LARGE OBJECT", 1000000, 0);
+      super.columns.add(this.clo1);
+      this.clo2 = new StringColumn(this, "CLO2", "clo2", "CHARACTER VARYING", 1000000, 0);
+      super.columns.add(this.clo2);
+      this.clo3 = new StringColumn(this, "CLO3", "clo3", "CHARACTER VARYING", 1000000, 0);
+      super.columns.add(this.clo3);
+      this.clo4 = new StringColumn(this, "CLO4", "clo4", "CHARACTER VARYING", 1000000, 0);
+      super.columns.add(this.clo4);
+      this.clo5 = new StringColumn(this, "CLO5", "clo5", "CHARACTER VARYING", 1000000, 0);
+      super.columns.add(this.clo5);
+      this.clo6 = new StringColumn(this, "CLO6", "clo6", "CHARACTER VARYING", 1000000, 0);
+      super.columns.add(this.clo6);
+      this.clo7 = new StringColumn(this, "CLO7", "clo7", "CHARACTER LARGE OBJECT", 1000000, 0);
+      super.columns.add(this.clo7);
     }
 
   }

@@ -102,8 +102,6 @@ create table other (
   ran6 daterange
 );  
 
-
-
 create table branch (
   id int primary key not null,
   "NaMe" varchar(20),
@@ -113,6 +111,13 @@ create table branch (
 
 insert into branch (id, "NaMe") values (101, 'South'), (102, 'East');
 
+create table category (
+  id int primary key not null,
+  name varchar(20) not null
+);
+
+insert into category (id, name) values (10, 'Local'), (20, 'North'), (30, 'VIP'), (40, 'Metro');
+
 create table invoice (
   id int primary key not null,
   amount int,
@@ -121,10 +126,11 @@ create table invoice (
   unpaid_balance int,
   type varchar(10),
   status varchar(10),
-  order_date date
+  order_date date,
+  category int references category (id)
 );
 
-insert into invoice (id, amount, branch_id) values (10, 1500, 101), (11, 2500, 101), (12, 4000, 102);
+insert into invoice (id, amount, branch_id, category) values (10, 1500, 101, 10), (11, 2500, 101, 30), (12, 4000, 102, 40);
 
 
 

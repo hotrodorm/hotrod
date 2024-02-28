@@ -2,17 +2,27 @@
 
   <generators>
     <mybatis-spring>
-      <daos package="app.daos" dao-suffix="DAO" vo-suffix="VO" abstract-vo-prefix="Abstract" abstract-vo-suffix="VO" />
+      <daos package="app.daos" dao-suffix="DAO" vo-suffix="VO" abstract-vo-prefix="Abstract"
+        abstract-vo-suffix="VO" />
     </mybatis-spring>
   </generators>
-  
-  <table name="chars" />
-  <table name="numbers" />
-  <table name="dates" />
-  <table name="binaries" />
-  <table name="other" />
 
+  <table name="types_char" />
+  <table name="types_numeric" />
+  <table name="types_date_time" />
+  <table name="types_binary" />
+  <!-- 
+  <table name="types_other" />
+ -->
   <table name="invoice" />
   <table name="branch" />
+
+  <enum name="category" name-column="name" />
+
+  <dao name="SearchQueries">
+    <select method="searchInvoices" vo="SInvoice">
+      select * from invoice
+    </select>
+  </dao>
 
 </hotrod>

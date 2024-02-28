@@ -97,28 +97,15 @@ public class TypesCharDAO implements Serializable, ApplicationContextAware {
     app.daos.TypesCharVO mo = this.applicationContext.getBean(app.daos.TypesCharVO.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
-    mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
     mo.setCha1((java.lang.String) m.get(p + "cha1" + s));
     mo.setCha2((java.lang.String) m.get(p + "cha2" + s));
     mo.setCha3((java.lang.String) m.get(p + "cha3" + s));
-    mo.setCha4(m.get(p + "cha4" + s));
-    mo.setCha5(m.get(p + "cha5" + s));
-    mo.setCha6((java.lang.String) m.get(p + "cha6" + s));
-    mo.setCha7(m.get(p + "cha7" + s));
     return mo;
   }
 
-  // select by primary key
+  // no select by PK generated, since the table does not have a PK.
 
-  public app.daos.TypesCharVO select(final java.lang.Integer id) {
-    if (id == null)
-      return null;
-    app.daos.TypesCharVO vo = new app.daos.TypesCharVO();
-    vo.setId(id);
-    return this.sqlSession.selectOne("mappers.typesChar.selectByPK", vo);
-  }
-
-  // select by unique indexes: no unique indexes found (besides the PK) -- skipped
+  // select by unique indexes: no unique indexes found -- skipped
 
   // select by example
 
@@ -154,33 +141,15 @@ public class TypesCharDAO implements Serializable, ApplicationContextAware {
     String id = "mappers.typesChar.insert";
     this.sqlSession.insert(id, vo);
     app.daos.TypesCharVO mo = springBeanObjectFactory.create(app.daos.TypesCharVO.class);
-    mo.setId(vo.getId());
     mo.setCha1(vo.getCha1());
     mo.setCha2(vo.getCha2());
     mo.setCha3(vo.getCha3());
-    mo.setCha4(vo.getCha4());
-    mo.setCha5(vo.getCha5());
-    mo.setCha6(vo.getCha6());
-    mo.setCha7(vo.getCha7());
     return mo;
   }
 
-  // update by PK
+  // no update by PK generated, since the table does not have a PK.
 
-  public int update(final app.daos.TypesCharVO vo) {
-    if (vo.getId() == null) return 0;
-    return this.sqlSession.update("mappers.typesChar.updateByPK", vo);
-  }
-
-  // delete by PK
-
-  public int delete(final java.lang.Integer id) {
-    if (id == null) return 0;
-    app.daos.TypesCharVO vo = new app.daos.TypesCharVO();
-    vo.setId(id);
-    if (vo.getId() == null) return 0;
-    return this.sqlSession.delete("mappers.typesChar.deleteByPK", vo);
-  }
+  // no delete by PK generated, since the table does not have a PK.
 
   // update by example
 
@@ -194,14 +163,9 @@ public class TypesCharDAO implements Serializable, ApplicationContextAware {
 
   public UpdateSetCompletePhase update(final app.daos.primitives.AbstractTypesCharVO updateValues, final TypesCharDAO.TypesCharTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
-    if (updateValues.getId() != null) values.put("id", updateValues.getId());
     if (updateValues.getCha1() != null) values.put("cha1", updateValues.getCha1());
     if (updateValues.getCha2() != null) values.put("cha2", updateValues.getCha2());
     if (updateValues.getCha3() != null) values.put("cha3", updateValues.getCha3());
-    if (updateValues.getCha4() != null) values.put("cha4", updateValues.getCha4());
-    if (updateValues.getCha5() != null) values.put("cha5", updateValues.getCha5());
-    if (updateValues.getCha6() != null) values.put("cha6", updateValues.getCha6());
-    if (updateValues.getCha7() != null) values.put("cha7", updateValues.getCha7());
     return new UpdateSetCompletePhase(this.context, "mappers.typesChar.updateByCriteria", tableOrView,  predicate, values);
   }
 
@@ -222,52 +186,30 @@ public class TypesCharDAO implements Serializable, ApplicationContextAware {
 
   public enum TypesCharOrderBy implements OrderBy {
 
-    ID("user1.types_char", "id", true), //
-    ID$DESC("user1.types_char", "id", false), //
-    CHA1("user1.types_char", "cha1", true), //
-    CHA1$DESC("user1.types_char", "cha1", false), //
-    CHA1$CASEINSENSITIVE("user1.types_char", "lower(cha1)", true), //
-    CHA1$CASEINSENSITIVE_STABLE_FORWARD("user1.types_char", "lower(cha1), cha1", true), //
-    CHA1$CASEINSENSITIVE_STABLE_REVERSE("user1.types_char", "lower(cha1), cha1", false), //
-    CHA1$DESC_CASEINSENSITIVE("user1.types_char", "lower(cha1)", false), //
-    CHA1$DESC_CASEINSENSITIVE_STABLE_FORWARD("user1.types_char", "lower(cha1), cha1", false), //
-    CHA1$DESC_CASEINSENSITIVE_STABLE_REVERSE("user1.types_char", "lower(cha1), cha1", true), //
-    CHA2("user1.types_char", "cha2", true), //
-    CHA2$DESC("user1.types_char", "cha2", false), //
-    CHA2$CASEINSENSITIVE("user1.types_char", "lower(cha2)", true), //
-    CHA2$CASEINSENSITIVE_STABLE_FORWARD("user1.types_char", "lower(cha2), cha2", true), //
-    CHA2$CASEINSENSITIVE_STABLE_REVERSE("user1.types_char", "lower(cha2), cha2", false), //
-    CHA2$DESC_CASEINSENSITIVE("user1.types_char", "lower(cha2)", false), //
-    CHA2$DESC_CASEINSENSITIVE_STABLE_FORWARD("user1.types_char", "lower(cha2), cha2", false), //
-    CHA2$DESC_CASEINSENSITIVE_STABLE_REVERSE("user1.types_char", "lower(cha2), cha2", true), //
-    CHA3("user1.types_char", "cha3", true), //
-    CHA3$DESC("user1.types_char", "cha3", false), //
-    CHA3$CASEINSENSITIVE("user1.types_char", "lower(cha3)", true), //
-    CHA3$CASEINSENSITIVE_STABLE_FORWARD("user1.types_char", "lower(cha3), cha3", true), //
-    CHA3$CASEINSENSITIVE_STABLE_REVERSE("user1.types_char", "lower(cha3), cha3", false), //
-    CHA3$DESC_CASEINSENSITIVE("user1.types_char", "lower(cha3)", false), //
-    CHA3$DESC_CASEINSENSITIVE_STABLE_FORWARD("user1.types_char", "lower(cha3), cha3", false), //
-    CHA3$DESC_CASEINSENSITIVE_STABLE_REVERSE("user1.types_char", "lower(cha3), cha3", true), //
-    CHA4("user1.types_char", "cha4", true), //
-    CHA4$DESC("user1.types_char", "cha4", false), //
-    CHA4$CASEINSENSITIVE("user1.types_char", "lower(cha4)", true), //
-    CHA4$CASEINSENSITIVE_STABLE_FORWARD("user1.types_char", "lower(cha4), cha4", true), //
-    CHA4$CASEINSENSITIVE_STABLE_REVERSE("user1.types_char", "lower(cha4), cha4", false), //
-    CHA4$DESC_CASEINSENSITIVE("user1.types_char", "lower(cha4)", false), //
-    CHA4$DESC_CASEINSENSITIVE_STABLE_FORWARD("user1.types_char", "lower(cha4), cha4", false), //
-    CHA4$DESC_CASEINSENSITIVE_STABLE_REVERSE("user1.types_char", "lower(cha4), cha4", true), //
-    CHA5("user1.types_char", "cha5", true), //
-    CHA5$DESC("user1.types_char", "cha5", false), //
-    CHA5$CASEINSENSITIVE("user1.types_char", "lower(cha5)", true), //
-    CHA5$CASEINSENSITIVE_STABLE_FORWARD("user1.types_char", "lower(cha5), cha5", true), //
-    CHA5$CASEINSENSITIVE_STABLE_REVERSE("user1.types_char", "lower(cha5), cha5", false), //
-    CHA5$DESC_CASEINSENSITIVE("user1.types_char", "lower(cha5)", false), //
-    CHA5$DESC_CASEINSENSITIVE_STABLE_FORWARD("user1.types_char", "lower(cha5), cha5", false), //
-    CHA5$DESC_CASEINSENSITIVE_STABLE_REVERSE("user1.types_char", "lower(cha5), cha5", true), //
-    CHA6("user1.types_char", "cha6", true), //
-    CHA6$DESC("user1.types_char", "cha6", false), //
-    CHA7("user1.types_char", "cha7", true), //
-    CHA7$DESC("user1.types_char", "cha7", false);
+    CHA1("types_char", "cha1", true), //
+    CHA1$DESC("types_char", "cha1", false), //
+    CHA1$CASEINSENSITIVE("types_char", "lower(cha1)", true), //
+    CHA1$CASEINSENSITIVE_STABLE_FORWARD("types_char", "lower(cha1), cha1", true), //
+    CHA1$CASEINSENSITIVE_STABLE_REVERSE("types_char", "lower(cha1), cha1", false), //
+    CHA1$DESC_CASEINSENSITIVE("types_char", "lower(cha1)", false), //
+    CHA1$DESC_CASEINSENSITIVE_STABLE_FORWARD("types_char", "lower(cha1), cha1", false), //
+    CHA1$DESC_CASEINSENSITIVE_STABLE_REVERSE("types_char", "lower(cha1), cha1", true), //
+    CHA2("types_char", "cha2", true), //
+    CHA2$DESC("types_char", "cha2", false), //
+    CHA2$CASEINSENSITIVE("types_char", "lower(cha2)", true), //
+    CHA2$CASEINSENSITIVE_STABLE_FORWARD("types_char", "lower(cha2), cha2", true), //
+    CHA2$CASEINSENSITIVE_STABLE_REVERSE("types_char", "lower(cha2), cha2", false), //
+    CHA2$DESC_CASEINSENSITIVE("types_char", "lower(cha2)", false), //
+    CHA2$DESC_CASEINSENSITIVE_STABLE_FORWARD("types_char", "lower(cha2), cha2", false), //
+    CHA2$DESC_CASEINSENSITIVE_STABLE_REVERSE("types_char", "lower(cha2), cha2", true), //
+    CHA3("types_char", "cha3", true), //
+    CHA3$DESC("types_char", "cha3", false), //
+    CHA3$CASEINSENSITIVE("types_char", "lower(cha3)", true), //
+    CHA3$CASEINSENSITIVE_STABLE_FORWARD("types_char", "lower(cha3), cha3", true), //
+    CHA3$CASEINSENSITIVE_STABLE_REVERSE("types_char", "lower(cha3), cha3", false), //
+    CHA3$DESC_CASEINSENSITIVE("types_char", "lower(cha3)", false), //
+    CHA3$DESC_CASEINSENSITIVE_STABLE_FORWARD("types_char", "lower(cha3), cha3", false), //
+    CHA3$DESC_CASEINSENSITIVE_STABLE_REVERSE("types_char", "lower(cha3), cha3", true);
 
     private TypesCharOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -308,30 +250,25 @@ public class TypesCharDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public NumberColumn id;
     public StringColumn cha1;
     public StringColumn cha2;
     public StringColumn cha3;
-    public ObjectColumn cha4;
-    public ObjectColumn cha5;
-    public StringColumn cha6;
-    public ObjectColumn cha7;
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this.id, this.cha1, this.cha2, this.cha3, this.cha4, this.cha5, this.cha6, this.cha7);
+      return new AllColumns(this.cha1, this.cha2, this.cha3);
     }
 
     // Constructors
 
     TypesCharTable() {
-      super(null, "USER1", "TYPES_CHAR", "Table", null);
+      super(null, null, "types_char", "Table", null);
       initialize();
     }
 
     TypesCharTable(final String alias) {
-      super(null, "USER1", "TYPES_CHAR", "Table", alias);
+      super(null, null, "types_char", "Table", alias);
       initialize();
     }
 
@@ -339,22 +276,12 @@ public class TypesCharDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.id = new NumberColumn(this, "ID", "id", "NUMBER", 9, 0);
-      super.columns.add(this.id);
-      this.cha1 = new StringColumn(this, "CHA1", "cha1", "CHAR", 10, null);
+      this.cha1 = new StringColumn(this, "cha1", "cha1", "bpchar", 10, 0);
       super.columns.add(this.cha1);
-      this.cha2 = new StringColumn(this, "CHA2", "cha2", "VARCHAR2", 20, null);
+      this.cha2 = new StringColumn(this, "cha2", "cha2", "varchar", 10, 0);
       super.columns.add(this.cha2);
-      this.cha3 = new StringColumn(this, "CHA3", "cha3", "VARCHAR2", 20, null);
+      this.cha3 = new StringColumn(this, "cha3", "cha3", "text", 2147483647, 0);
       super.columns.add(this.cha3);
-      this.cha4 = new ObjectColumn(this, "CHA4", "cha4", "NCHAR", 30, null);
-      super.columns.add(this.cha4);
-      this.cha5 = new ObjectColumn(this, "CHA5", "cha5", "NVARCHAR2", 40, null);
-      super.columns.add(this.cha5);
-      this.cha6 = new StringColumn(this, "CHA6", "cha6", "CLOB", 4000, null);
-      super.columns.add(this.cha6);
-      this.cha7 = new ObjectColumn(this, "CHA7", "cha7", "NCLOB", 4000, null);
-      super.columns.add(this.cha7);
     }
 
   }

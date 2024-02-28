@@ -97,24 +97,14 @@ public class TypesBinaryDAO implements Serializable, ApplicationContextAware {
     app.daos.TypesBinaryVO mo = this.applicationContext.getBean(app.daos.TypesBinaryVO.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
-    mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
     mo.setBin1((byte[]) m.get(p + "bin1" + s));
-    mo.setBin2((byte[]) m.get(p + "bin2" + s));
-    mo.setBin3((byte[]) m.get(p + "bin3" + s));
+    mo.setBol1((java.lang.Boolean) m.get(p + "bol1" + s));
     return mo;
   }
 
-  // select by primary key
+  // no select by PK generated, since the table does not have a PK.
 
-  public app.daos.TypesBinaryVO select(final java.lang.Integer id) {
-    if (id == null)
-      return null;
-    app.daos.TypesBinaryVO vo = new app.daos.TypesBinaryVO();
-    vo.setId(id);
-    return this.sqlSession.selectOne("mappers.typesBinary.selectByPK", vo);
-  }
-
-  // select by unique indexes: no unique indexes found (besides the PK) -- skipped
+  // select by unique indexes: no unique indexes found -- skipped
 
   // select by example
 
@@ -150,29 +140,14 @@ public class TypesBinaryDAO implements Serializable, ApplicationContextAware {
     String id = "mappers.typesBinary.insert";
     this.sqlSession.insert(id, vo);
     app.daos.TypesBinaryVO mo = springBeanObjectFactory.create(app.daos.TypesBinaryVO.class);
-    mo.setId(vo.getId());
     mo.setBin1(vo.getBin1());
-    mo.setBin2(vo.getBin2());
-    mo.setBin3(vo.getBin3());
+    mo.setBol1(vo.getBol1());
     return mo;
   }
 
-  // update by PK
+  // no update by PK generated, since the table does not have a PK.
 
-  public int update(final app.daos.TypesBinaryVO vo) {
-    if (vo.getId() == null) return 0;
-    return this.sqlSession.update("mappers.typesBinary.updateByPK", vo);
-  }
-
-  // delete by PK
-
-  public int delete(final java.lang.Integer id) {
-    if (id == null) return 0;
-    app.daos.TypesBinaryVO vo = new app.daos.TypesBinaryVO();
-    vo.setId(id);
-    if (vo.getId() == null) return 0;
-    return this.sqlSession.delete("mappers.typesBinary.deleteByPK", vo);
-  }
+  // no delete by PK generated, since the table does not have a PK.
 
   // update by example
 
@@ -186,10 +161,8 @@ public class TypesBinaryDAO implements Serializable, ApplicationContextAware {
 
   public UpdateSetCompletePhase update(final app.daos.primitives.AbstractTypesBinaryVO updateValues, final TypesBinaryDAO.TypesBinaryTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
-    if (updateValues.getId() != null) values.put("id", updateValues.getId());
     if (updateValues.getBin1() != null) values.put("bin1", updateValues.getBin1());
-    if (updateValues.getBin2() != null) values.put("bin2", updateValues.getBin2());
-    if (updateValues.getBin3() != null) values.put("bin3", updateValues.getBin3());
+    if (updateValues.getBol1() != null) values.put("bol1", updateValues.getBol1());
     return new UpdateSetCompletePhase(this.context, "mappers.typesBinary.updateByCriteria", tableOrView,  predicate, values);
   }
 
@@ -210,14 +183,10 @@ public class TypesBinaryDAO implements Serializable, ApplicationContextAware {
 
   public enum TypesBinaryOrderBy implements OrderBy {
 
-    ID("user1.types_binary", "id", true), //
-    ID$DESC("user1.types_binary", "id", false), //
-    BIN1("user1.types_binary", "bin1", true), //
-    BIN1$DESC("user1.types_binary", "bin1", false), //
-    BIN2("user1.types_binary", "bin2", true), //
-    BIN2$DESC("user1.types_binary", "bin2", false), //
-    BIN3("user1.types_binary", "bin3", true), //
-    BIN3$DESC("user1.types_binary", "bin3", false);
+    BIN1("types_binary", "bin1", true), //
+    BIN1$DESC("types_binary", "bin1", false), //
+    BOL1("types_binary", "bol1", true), //
+    BOL1$DESC("types_binary", "bol1", false);
 
     private TypesBinaryOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -258,26 +227,24 @@ public class TypesBinaryDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public NumberColumn id;
     public ByteArrayColumn bin1;
-    public ByteArrayColumn bin2;
-    public ByteArrayColumn bin3;
+    public BooleanColumn bol1;
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this.id, this.bin1, this.bin2, this.bin3);
+      return new AllColumns(this.bin1, this.bol1);
     }
 
     // Constructors
 
     TypesBinaryTable() {
-      super(null, "USER1", "TYPES_BINARY", "Table", null);
+      super(null, null, "types_binary", "Table", null);
       initialize();
     }
 
     TypesBinaryTable(final String alias) {
-      super(null, "USER1", "TYPES_BINARY", "Table", alias);
+      super(null, null, "types_binary", "Table", alias);
       initialize();
     }
 
@@ -285,14 +252,10 @@ public class TypesBinaryDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.id = new NumberColumn(this, "ID", "id", "NUMBER", 9, 0);
-      super.columns.add(this.id);
-      this.bin1 = new ByteArrayColumn(this, "BIN1", "bin1", "RAW", 500, null);
+      this.bin1 = new ByteArrayColumn(this, "bin1", "bin1", "bytea", 2147483647, 0);
       super.columns.add(this.bin1);
-      this.bin2 = new ByteArrayColumn(this, "BIN2", "bin2", "LONG RAW", 0, null);
-      super.columns.add(this.bin2);
-      this.bin3 = new ByteArrayColumn(this, "BIN3", "bin3", "BLOB", 4000, null);
-      super.columns.add(this.bin3);
+      this.bol1 = new BooleanColumn(this, "bol1", "bol1", "bool", 1, 0);
+      super.columns.add(this.bol1);
     }
 
   }

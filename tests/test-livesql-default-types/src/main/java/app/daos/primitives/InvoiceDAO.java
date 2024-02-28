@@ -15,6 +15,17 @@ import org.hotrod.runtime.interfaces.OrderBy;
 
 import app.daos.primitives.AbstractInvoiceVO;
 import app.daos.InvoiceVO;
+import app.daos.BranchVO;
+import app.daos.primitives.BranchDAO;
+import app.daos.primitives.Category;
+
+import java.sql.SQLException;
+import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.type.TypeHandler;
+import org.hotrod.runtime.converter.TypeConverter;
 
 import java.lang.Override;
 import java.util.Map;
@@ -58,6 +69,10 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
   @Autowired
   private SqlSession sqlSession;
+
+  @Lazy
+  @Autowired
+  private BranchDAO branchDAO;
 
   @Autowired
   private LiveSQLDialect liveSQLDialect;
@@ -105,6 +120,7 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     mo.setType((java.lang.String) m.get(p + "type" + s));
     mo.setStatus((java.lang.String) m.get(p + "status" + s));
     mo.setOrderDate((java.sql.Date) m.get(p + "orderDate" + s));
+    mo.setCategory((app.daos.primitives.Category) m.get(p + "category" + s));
     return mo;
   }
 
@@ -144,7 +160,41 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
         from, predicate);
   }
 
-  // select parent(s) by FKs: no imported keys found -- skipped
+  // select parent(s) by FKs
+
+  public SelectParentBranchPhase selectParentBranchOf(final InvoiceVO vo) {
+    return new SelectParentBranchPhase(vo);
+  }
+
+  public class SelectParentBranchPhase {
+
+    private InvoiceVO vo;
+
+    SelectParentBranchPhase(final InvoiceVO vo) {
+      this.vo = vo;
+    }
+
+    public SelectParentBranchFromBranchIdPhase fromBranchId() {
+      return new SelectParentBranchFromBranchIdPhase(this.vo);
+    }
+
+  }
+
+  public class SelectParentBranchFromBranchIdPhase {
+
+    private InvoiceVO vo;
+
+    SelectParentBranchFromBranchIdPhase(final InvoiceVO vo) {
+      this.vo = vo;
+    }
+
+    public BranchVO toId() {
+      return branchDAO.select(this.vo.branchId);
+    }
+
+  }
+
+  // --- no select parent for FK column (category) since it points to the enum table category
 
   // select children by FKs: no exported FKs found -- skipped
 
@@ -162,6 +212,7 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     mo.setType(vo.getType());
     mo.setStatus(vo.getStatus());
     mo.setOrderDate(vo.getOrderDate());
+    mo.setCategory(vo.getCategory());
     return mo;
   }
 
@@ -202,6 +253,7 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     if (updateValues.getType() != null) values.put("type", updateValues.getType());
     if (updateValues.getStatus() != null) values.put("status", updateValues.getStatus());
     if (updateValues.getOrderDate() != null) values.put("order_date", updateValues.getOrderDate());
+    if (updateValues.getCategory() != null) values.put("category", updateValues.getCategory());
     return new UpdateSetCompletePhase(this.context, "mappers.invoice.updateByCriteria", tableOrView,  predicate, values);
   }
 
@@ -216,6 +268,51 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
   public DeleteWherePhase delete(final InvoiceDAO.InvoiceTable from, final Predicate predicate) {
     return new DeleteWherePhase(this.context, "mappers.invoice.deleteByCriteria", from, predicate);
+  }
+
+  // TypeHandler for enum-FK column category.
+
+  public static class CategoryTypeHandler implements TypeHandler<app.daos.primitives.Category> {
+
+    @Override
+    public app.daos.primitives.Category getResult(final ResultSet rs, final String columnName) throws SQLException {
+      java.lang.Integer value = rs.getInt(columnName);
+      if (rs.wasNull()) {
+        value = null;
+      }
+      return app.daos.primitives.Category.decode(value);
+    }
+
+    @Override
+    public app.daos.primitives.Category getResult(final ResultSet rs, final int columnIndex) throws SQLException {
+      java.lang.Integer value = rs.getInt(columnIndex);
+      if (rs.wasNull()) {
+        value = null;
+      }
+      return app.daos.primitives.Category.decode(value);
+    }
+
+    @Override
+    public app.daos.primitives.Category getResult(final CallableStatement cs, final int columnIndex) throws SQLException {
+      java.lang.Integer value = cs.getInt(columnIndex);
+      if (cs.wasNull()) {
+        value = null;
+      }
+      return app.daos.primitives.Category.decode(value);
+    }
+
+    @Override
+    public void setParameter(final PreparedStatement ps, final int columnIndex, final app.daos.primitives.Category v, final JdbcType jdbcType)
+        throws SQLException {
+      java.lang.Integer importedValue = app.daos.primitives.Category.encode(v);
+      java.lang.Integer localValue = importedValue;
+      if (localValue == null) {
+        ps.setNull(columnIndex, jdbcType.TYPE_CODE);
+      } else {
+        ps.setInt(columnIndex, localValue);
+      }
+    }
+
   }
 
   // DAO ordering
@@ -249,7 +346,9 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     STATUS$DESC_CASEINSENSITIVE_STABLE_FORWARD("invoice", "lower(status), status", false), //
     STATUS$DESC_CASEINSENSITIVE_STABLE_REVERSE("invoice", "lower(status), status", true), //
     ORDER_DATE("invoice", "order_date", true), //
-    ORDER_DATE$DESC("invoice", "order_date", false);
+    ORDER_DATE$DESC("invoice", "order_date", false), //
+    CATEGORY("invoice", "category", true), //
+    CATEGORY$DESC("invoice", "category", false);
 
     private InvoiceOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -298,11 +397,12 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     public StringColumn type;
     public StringColumn status;
     public DateTimeColumn orderDate;
+    public ObjectColumn category;
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this.id, this.amount, this.branchId, this.accountId, this.unpaidBalance, this.type, this.status, this.orderDate);
+      return new AllColumns(this.id, this.amount, this.branchId, this.accountId, this.unpaidBalance, this.type, this.status, this.orderDate, this.category);
     }
 
     // Constructors
@@ -337,6 +437,8 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
       super.columns.add(this.status);
       this.orderDate = new DateTimeColumn(this, "order_date", "orderDate", "date", 13, 0);
       super.columns.add(this.orderDate);
+      this.category = new ObjectColumn(this, "category", "category", "int4", 10, 0);
+      super.columns.add(this.category);
     }
 
   }

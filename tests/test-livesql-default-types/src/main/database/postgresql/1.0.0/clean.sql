@@ -14,3 +14,5 @@ drop type complex cascade;
 
 drop table invoice;
 drop table branch;
+
+drop table category;

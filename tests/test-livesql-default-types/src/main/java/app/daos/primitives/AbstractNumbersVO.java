@@ -11,33 +11,44 @@ public class AbstractNumbersVO implements Serializable {
 
   // VO Properties (table columns)
 
-  protected java.lang.Short int1 = null;
+  protected java.lang.Integer id = null;
+  protected java.lang.Integer int1 = null;
   protected java.lang.Integer int2 = null;
-  protected java.lang.Long int3 = null;
-  protected java.lang.Object int4 = null;
+  protected java.lang.Integer int3 = null;
+  protected java.lang.Integer int4 = null;
   protected java.lang.Integer int5 = null;
-  protected java.lang.Long int6 = null;
-  protected java.lang.Integer intTotalAmount = null;
-  protected java.lang.Integer columns = null;
+  protected java.lang.Byte int10 = null;
+  protected java.lang.Short int20 = null;
+  protected java.lang.Short int21 = null;
+  protected java.lang.Long int30 = null;
+  protected java.lang.Long int31 = null;
   protected java.math.BigDecimal dec1 = null;
   protected java.math.BigDecimal dec2 = null;
-  protected java.lang.Byte dec3 = null;
-  protected java.lang.Short dec4 = null;
-  protected java.lang.Integer dec5 = null;
-  protected java.lang.Long dec6 = null;
-  protected java.math.BigInteger dec7 = null;
-  protected java.lang.Short decTotalAmount = null;
-  protected java.lang.Float flo1 = null;
-  protected java.lang.Double flo2 = null;
-  protected java.lang.Float floTotalAmount = null;
+  protected java.lang.Object dec3 = null;
+  protected java.lang.Object dec4 = null;
+  protected java.math.BigDecimal dec5 = null;
+  protected java.lang.Double dou1 = null;
+  protected java.lang.Double dou2 = null;
+  protected java.lang.Object dou3 = null;
+  protected java.lang.Double dou4 = null;
+  protected java.lang.Float rea1 = null;
+  protected java.lang.Float rea2 = null;
 
   // getters & setters
 
-  public java.lang.Short getInt1() {
+  public java.lang.Integer getId() {
+    return this.id;
+  }
+
+  public void setId(final java.lang.Integer id) {
+    this.id = id;
+  }
+
+  public java.lang.Integer getInt1() {
     return this.int1;
   }
 
-  public void setInt1(final java.lang.Short int1) {
+  public void setInt1(final java.lang.Integer int1) {
     this.int1 = int1;
   }
 
@@ -49,19 +60,19 @@ public class AbstractNumbersVO implements Serializable {
     this.int2 = int2;
   }
 
-  public java.lang.Long getInt3() {
+  public java.lang.Integer getInt3() {
     return this.int3;
   }
 
-  public void setInt3(final java.lang.Long int3) {
+  public void setInt3(final java.lang.Integer int3) {
     this.int3 = int3;
   }
 
-  public java.lang.Object getInt4() {
+  public java.lang.Integer getInt4() {
     return this.int4;
   }
 
-  public void setInt4(final java.lang.Object int4) {
+  public void setInt4(final java.lang.Integer int4) {
     this.int4 = int4;
   }
 
@@ -73,28 +84,44 @@ public class AbstractNumbersVO implements Serializable {
     this.int5 = int5;
   }
 
-  public java.lang.Long getInt6() {
-    return this.int6;
+  public java.lang.Byte getInt10() {
+    return this.int10;
   }
 
-  public void setInt6(final java.lang.Long int6) {
-    this.int6 = int6;
+  public void setInt10(final java.lang.Byte int10) {
+    this.int10 = int10;
   }
 
-  public java.lang.Integer getIntTotalAmount() {
-    return this.intTotalAmount;
+  public java.lang.Short getInt20() {
+    return this.int20;
   }
 
-  public void setIntTotalAmount(final java.lang.Integer intTotalAmount) {
-    this.intTotalAmount = intTotalAmount;
+  public void setInt20(final java.lang.Short int20) {
+    this.int20 = int20;
   }
 
-  public java.lang.Integer getColumns() {
-    return this.columns;
+  public java.lang.Short getInt21() {
+    return this.int21;
   }
 
-  public void setColumns(final java.lang.Integer columns) {
-    this.columns = columns;
+  public void setInt21(final java.lang.Short int21) {
+    this.int21 = int21;
+  }
+
+  public java.lang.Long getInt30() {
+    return this.int30;
+  }
+
+  public void setInt30(final java.lang.Long int30) {
+    this.int30 = int30;
+  }
+
+  public java.lang.Long getInt31() {
+    return this.int31;
+  }
+
+  public void setInt31(final java.lang.Long int31) {
+    this.int31 = int31;
   }
 
   public java.math.BigDecimal getDec1() {
@@ -113,76 +140,76 @@ public class AbstractNumbersVO implements Serializable {
     this.dec2 = dec2;
   }
 
-  public java.lang.Byte getDec3() {
+  public java.lang.Object getDec3() {
     return this.dec3;
   }
 
-  public void setDec3(final java.lang.Byte dec3) {
+  public void setDec3(final java.lang.Object dec3) {
     this.dec3 = dec3;
   }
 
-  public java.lang.Short getDec4() {
+  public java.lang.Object getDec4() {
     return this.dec4;
   }
 
-  public void setDec4(final java.lang.Short dec4) {
+  public void setDec4(final java.lang.Object dec4) {
     this.dec4 = dec4;
   }
 
-  public java.lang.Integer getDec5() {
+  public java.math.BigDecimal getDec5() {
     return this.dec5;
   }
 
-  public void setDec5(final java.lang.Integer dec5) {
+  public void setDec5(final java.math.BigDecimal dec5) {
     this.dec5 = dec5;
   }
 
-  public java.lang.Long getDec6() {
-    return this.dec6;
+  public java.lang.Double getDou1() {
+    return this.dou1;
   }
 
-  public void setDec6(final java.lang.Long dec6) {
-    this.dec6 = dec6;
+  public void setDou1(final java.lang.Double dou1) {
+    this.dou1 = dou1;
   }
 
-  public java.math.BigInteger getDec7() {
-    return this.dec7;
+  public java.lang.Double getDou2() {
+    return this.dou2;
   }
 
-  public void setDec7(final java.math.BigInteger dec7) {
-    this.dec7 = dec7;
+  public void setDou2(final java.lang.Double dou2) {
+    this.dou2 = dou2;
   }
 
-  public java.lang.Short getDecTotalAmount() {
-    return this.decTotalAmount;
+  public java.lang.Object getDou3() {
+    return this.dou3;
   }
 
-  public void setDecTotalAmount(final java.lang.Short decTotalAmount) {
-    this.decTotalAmount = decTotalAmount;
+  public void setDou3(final java.lang.Object dou3) {
+    this.dou3 = dou3;
   }
 
-  public java.lang.Float getFlo1() {
-    return this.flo1;
+  public java.lang.Double getDou4() {
+    return this.dou4;
   }
 
-  public void setFlo1(final java.lang.Float flo1) {
-    this.flo1 = flo1;
+  public void setDou4(final java.lang.Double dou4) {
+    this.dou4 = dou4;
   }
 
-  public java.lang.Double getFlo2() {
-    return this.flo2;
+  public java.lang.Float getRea1() {
+    return this.rea1;
   }
 
-  public void setFlo2(final java.lang.Double flo2) {
-    this.flo2 = flo2;
+  public void setRea1(final java.lang.Float rea1) {
+    this.rea1 = rea1;
   }
 
-  public java.lang.Float getFloTotalAmount() {
-    return this.floTotalAmount;
+  public java.lang.Float getRea2() {
+    return this.rea2;
   }
 
-  public void setFloTotalAmount(final java.lang.Float floTotalAmount) {
-    this.floTotalAmount = floTotalAmount;
+  public void setRea2(final java.lang.Float rea2) {
+    this.rea2 = rea2;
   }
 
   // to string
@@ -190,25 +217,28 @@ public class AbstractNumbersVO implements Serializable {
   public String toString() {
     java.lang.StringBuilder sb = new java.lang.StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
+    sb.append("- id=" + this.id + "\n");
     sb.append("- int1=" + this.int1 + "\n");
     sb.append("- int2=" + this.int2 + "\n");
     sb.append("- int3=" + this.int3 + "\n");
     sb.append("- int4=" + this.int4 + "\n");
     sb.append("- int5=" + this.int5 + "\n");
-    sb.append("- int6=" + this.int6 + "\n");
-    sb.append("- intTotalAmount=" + this.intTotalAmount + "\n");
-    sb.append("- columns=" + this.columns + "\n");
+    sb.append("- int10=" + this.int10 + "\n");
+    sb.append("- int20=" + this.int20 + "\n");
+    sb.append("- int21=" + this.int21 + "\n");
+    sb.append("- int30=" + this.int30 + "\n");
+    sb.append("- int31=" + this.int31 + "\n");
     sb.append("- dec1=" + this.dec1 + "\n");
     sb.append("- dec2=" + this.dec2 + "\n");
     sb.append("- dec3=" + this.dec3 + "\n");
     sb.append("- dec4=" + this.dec4 + "\n");
     sb.append("- dec5=" + this.dec5 + "\n");
-    sb.append("- dec6=" + this.dec6 + "\n");
-    sb.append("- dec7=" + this.dec7 + "\n");
-    sb.append("- decTotalAmount=" + this.decTotalAmount + "\n");
-    sb.append("- flo1=" + this.flo1 + "\n");
-    sb.append("- flo2=" + this.flo2 + "\n");
-    sb.append("- floTotalAmount=" + this.floTotalAmount);
+    sb.append("- dou1=" + this.dou1 + "\n");
+    sb.append("- dou2=" + this.dou2 + "\n");
+    sb.append("- dou3=" + this.dou3 + "\n");
+    sb.append("- dou4=" + this.dou4 + "\n");
+    sb.append("- rea1=" + this.rea1 + "\n");
+    sb.append("- rea2=" + this.rea2);
     return sb.toString();
   }
 
@@ -216,25 +246,28 @@ public class AbstractNumbersVO implements Serializable {
 
   public JSONObject toJSONObject() {
     JSONObject obj = new JSONObject();
+    obj.addProperty("id", this.id);
     obj.addProperty("int1", this.int1);
     obj.addProperty("int2", this.int2);
     obj.addProperty("int3", this.int3);
     obj.addProperty("int4", this.int4);
     obj.addProperty("int5", this.int5);
-    obj.addProperty("int6", this.int6);
-    obj.addProperty("intTotalAmount", this.intTotalAmount);
-    obj.addProperty("columns", this.columns);
+    obj.addProperty("int10", this.int10);
+    obj.addProperty("int20", this.int20);
+    obj.addProperty("int21", this.int21);
+    obj.addProperty("int30", this.int30);
+    obj.addProperty("int31", this.int31);
     obj.addProperty("dec1", this.dec1);
     obj.addProperty("dec2", this.dec2);
     obj.addProperty("dec3", this.dec3);
     obj.addProperty("dec4", this.dec4);
     obj.addProperty("dec5", this.dec5);
-    obj.addProperty("dec6", this.dec6);
-    obj.addProperty("dec7", this.dec7);
-    obj.addProperty("decTotalAmount", this.decTotalAmount);
-    obj.addProperty("flo1", this.flo1);
-    obj.addProperty("flo2", this.flo2);
-    obj.addProperty("floTotalAmount", this.floTotalAmount);
+    obj.addProperty("dou1", this.dou1);
+    obj.addProperty("dou2", this.dou2);
+    obj.addProperty("dou3", this.dou3);
+    obj.addProperty("dou4", this.dou4);
+    obj.addProperty("rea1", this.rea1);
+    obj.addProperty("rea2", this.rea2);
     return obj;
   }
 

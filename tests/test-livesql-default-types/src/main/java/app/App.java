@@ -35,26 +35,26 @@ import org.springframework.context.annotation.PropertySource;
 
 import app.daos.AccountVO;
 import app.daos.BranchVO;
+import app.daos.DatesVO;
 import app.daos.InvoiceVO;
-import app.daos.TypesDateTimeVO;
 import app.daos.primitives.AccountDAO;
 import app.daos.primitives.AccountDAO.AccountTable;
+import app.daos.primitives.BinariesDAO;
 import app.daos.primitives.BranchDAO;
 import app.daos.primitives.BranchDAO.BranchTable;
+import app.daos.primitives.CharsDAO;
+import app.daos.primitives.DatesDAO;
+import app.daos.primitives.DatesDAO.DatesTable;
 import app.daos.primitives.InvoiceDAO;
 import app.daos.primitives.InvoiceDAO.InvoiceTable;
 import app.daos.primitives.InvoiceLineDAO;
 import app.daos.primitives.InvoiceLineDAO.InvoiceLineTable;
+import app.daos.primitives.NumbersDAO;
+import app.daos.primitives.OtherDAO;
 import app.daos.primitives.PaymentDAO;
 import app.daos.primitives.PaymentDAO.PaymentTable;
 import app.daos.primitives.ProductDAO;
 import app.daos.primitives.ProductDAO.ProductTable;
-import app.daos.primitives.TypesBinaryDAO;
-import app.daos.primitives.TypesCharDAO;
-import app.daos.primitives.TypesDateTimeDAO;
-import app.daos.primitives.TypesDateTimeDAO.TypesDateTimeTable;
-import app.daos.primitives.TypesNumericDAO;
-import app.daos.primitives.TypesOtherDAO;
 
 @Configuration
 @SpringBootApplication
@@ -79,7 +79,7 @@ public class App {
   private InvoiceDAO invoiceDAO;
 
   @Autowired
-  private TypesDateTimeDAO typesDateTimeDAO;
+  private DatesDAO datesDAO;
 
   @Autowired
   private LiveSQL sql;
@@ -405,19 +405,19 @@ public class App {
   }
 
   @Autowired
-  private TypesNumericDAO tn;
+  private NumbersDAO tn;
 
   @Autowired
-  private TypesCharDAO tc;
+  private CharsDAO tc;
 
   @Autowired
-  private TypesDateTimeDAO td;
+  private DatesDAO td;
 
   @Autowired
-  private TypesBinaryDAO tb;
+  private BinariesDAO tb;
 
   @Autowired
-  private TypesOtherDAO to;
+  private OtherDAO to;
 
   private void types() throws SQLException {
 //    System.out.println("\nTYPES_NUMERIC");
@@ -428,10 +428,10 @@ public class App {
 
     System.out.println("\nTYPES_DATE_TIME");
 //    print(
-    List<?> li = this.sql.select().from(TypesDateTimeDAO.newTable()).execute();
+    List<?> li = this.sql.select().from(DatesDAO.newTable()).execute();
     for (Object obj : li) {
       System.out.println("obj: " + obj.getClass().getName());
-      TypesDateTimeVO vo = (TypesDateTimeVO) obj;
+      DatesVO vo = (DatesVO) obj;
       System.out.println("vo: " + vo);
     }
 
@@ -443,8 +443,7 @@ public class App {
     InvoiceTable i = InvoiceDAO.newTable("i");
 
     Select<Row> q = this.sql.selectDistinctOn(i.branchId.plus(sql.literal(100))) //
-        .columns(i.branchId.as("myBranch"), i.star())
-        .from(i) //
+        .columns(i.branchId.as("myBranch"), i.star()).from(i) //
         .orderBy(i.branchId.plus(sql.literal(100)), i.unpaidBalance.desc());
 
 //    select distinct on (branch_id) *
@@ -466,7 +465,7 @@ public class App {
   }
 
   private void dates() throws SQLException {
-    TypesDateTimeTable t = TypesDateTimeDAO.newTable("t");
+    DatesTable t = DatesDAO.newTable("t");
 
 //    System.out.println("ENV PROPERTIES");
 //    Map<String, String> env = System.getenv();
@@ -486,9 +485,9 @@ public class App {
 //    org.apache.ibatis.session.Configuration conf = this.sqlSession.getConfiguration();
 //    conf.getEnvironment()
 
-    List<TypesDateTimeVO> types = this.typesDateTimeDAO.select(new TypesDateTimeVO());
+    List<DatesVO> types = this.datesDAO.select(new DatesVO());
 
-    for (TypesDateTimeVO tp : types) {
+    for (DatesVO tp : types) {
       System.out.println("t:" + tp);
     }
 

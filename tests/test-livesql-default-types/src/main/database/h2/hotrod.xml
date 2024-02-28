@@ -12,12 +12,12 @@
     class="app.IntegerBooleanConverter"
   />
 
-<!--  
   <table name="chars" />
   <table name="numbers" />
   <table name="dates" />
   <table name="binaries" />
   <table name="other" />
+<!--  
 -->
 
   <table name="branch">

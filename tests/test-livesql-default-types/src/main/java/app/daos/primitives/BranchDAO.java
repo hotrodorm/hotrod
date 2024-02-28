@@ -15,6 +15,9 @@ import org.hotrod.runtime.interfaces.OrderBy;
 
 import app.daos.primitives.AbstractBranchVO;
 import app.daos.BranchVO;
+import app.daos.InvoiceVO;
+import app.daos.primitives.InvoiceDAO.InvoiceOrderBy;
+import app.daos.primitives.InvoiceDAO;
 
 import java.lang.Override;
 import java.util.Map;
@@ -58,6 +61,10 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   @Autowired
   private SqlSession sqlSession;
+
+  @Lazy
+  @Autowired
+  private InvoiceDAO invoiceDAO;
 
   @Autowired
   private LiveSQLDialect liveSQLDialect;
@@ -142,7 +149,47 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   // select parent(s) by FKs: no imported keys found -- skipped
 
-  // select children by FKs: no exported FKs found -- skipped
+  // select children by FKs
+
+  public SelectChildrenInvoicePhase selectChildrenInvoiceOf(final BranchVO vo) {
+    return new SelectChildrenInvoicePhase(vo);
+  }
+
+  public class SelectChildrenInvoicePhase {
+
+    private BranchVO vo;
+
+    SelectChildrenInvoicePhase(final BranchVO vo) {
+      this.vo = vo;
+    }
+
+    public SelectChildrenInvoiceFromIdPhase fromId() {
+      return new SelectChildrenInvoiceFromIdPhase(this.vo);
+    }
+
+  }
+
+  public class SelectChildrenInvoiceFromIdPhase {
+
+    private BranchVO vo;
+
+    SelectChildrenInvoiceFromIdPhase(final BranchVO vo) {
+      this.vo = vo;
+    }
+
+    public List<InvoiceVO> toBranchId(final InvoiceOrderBy... orderBies) {
+      InvoiceVO example = new InvoiceVO();
+      example.setBranchId(this.vo.getId());
+      return invoiceDAO.select(example, orderBies);
+    }
+
+    public Cursor<InvoiceVO> cursorToBranchId(final InvoiceOrderBy... orderBies) {
+      InvoiceVO example = new InvoiceVO();
+      example.setBranchId(this.vo.getId());
+      return invoiceDAO.selectCursor(example, orderBies);
+    }
+
+  }
 
   // insert
 
