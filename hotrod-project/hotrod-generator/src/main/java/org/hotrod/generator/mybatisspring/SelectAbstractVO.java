@@ -307,7 +307,7 @@ public class SelectAbstractVO {
 
     // Entity Properties
 
-    println("    JSONObject obj = super.toJSONObject();");
+    println("    JSONObject obj = new JSONObject();");
 
     // Expressions
 
