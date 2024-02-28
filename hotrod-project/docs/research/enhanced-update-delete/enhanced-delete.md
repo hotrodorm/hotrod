@@ -1,4 +1,7 @@
-# DELETE
+# Enhanced DELETE Syntax
+
+Beyond the SQL-92 standard syntax, many databases have implemented enhanced forms for the DELETE
+statement to make use of the inner and outer join functionalities between tables.
 
 The DELETE statement can take four main different forms. Each database -- particularly high end ones includes several extra variations for very specific cases, that are not included here:
 
@@ -10,17 +13,17 @@ The DELETE statement can take four main different forms. Each database -- partic
 | SQL Server | Yes                | --                | 2014*              | --                   | --              |
 | MySQL      | Yes**              | --                | 5.5*               | --                   | 8.0             |
 | MariaDB    | Yes**              | --                | 10.0*              | --                   | --              |
-| Sybase ASE | Yes                | Yes               | --                 | --                   | --              |
+| Sybase ASE | Yes                | 16*<br/>(no subqueries) | --                 | --                   | --              |
 | H2         | Yes                | --                | --                 | --                   | --              |
 | HyperSQL   | Yes                | --                | --                 | --                   | --              |
 | Derby      | Yes                | --                | --                 | --                   | --              |
 
 *This version or older.
 
-**Supported as long as the table is not referenced in subqueries. If it needs
+*Supported as long as the table is not referenced in subqueries. If it needs
 to be referenced, use Form #3.
 
-***^In form #3 a LEFT JOIN can be used to implement anti-join deletion (delete non-matching rows).
+***In form #3 a LEFT JOIN can be used to implement anti-join deletion (delete non-matching rows).
 
 
 ## Oracle
@@ -84,6 +87,9 @@ from (
 where value < avg_value
   and type <> main_type;
 ```
+
+### Oracle Form #5 -- Not Supported
+
 
 ## DB2
 
@@ -420,15 +426,58 @@ where x.id is null
 
 ## Sybase ASE
 
+```sql
+create table dealership (
+  id int primary key not null,
+  main_type varchar(10),
+  name varchar(10)
+)
+
+insert into dealership (id, main_type, name) values (1, 'VIP', 'Luxy')
+
+insert into dealership (id, main_type, name) values (2, 'ORG', 'Maans')
+
+create table vehicle (
+  id int primary key not null,
+  value int,
+  type varchar(10),
+  dealership_id int references dealership (id)
+)
+
+insert into vehicle (id, value, type, dealership_id) values (10, 500, 'VIP', 1)
+
+insert into vehicle (id, value, type, dealership_id) values (11, 200, 'ORG', 1)
+
+insert into vehicle (id, value, type, dealership_id) values (12, 400, 'VIP', 1)
+
+insert into vehicle (id, value, type, dealership_id) values (13, 600, 'ORG', 2)
+
+insert into vehicle (id, value, type, dealership_id) values (14, 150, 'VIP', 2)
+
+insert into vehicle (id, value, type, dealership_id) values (15, 800, 'ORG', 2)
+
+insert into vehicle (id, value, type, dealership_id) values (16, 510, 'VIP', 1)
+```
+
 ### Sybase ASE Form #2
 
 ```sql
-DELETE
-FROM Contacts
-FROM Contacts, Customers
-WHERE Contacts.Surname = Customers.Surname
-AND Contacts.GivenName = Customers.GivenName
+delete from vehicle
+from vehicle v, dealership d
+where v.dealership_id = d.id
+  and d.main_type = 'VIP'
 ```
+
+Notes:
+
+- No subqueries are allowed.
+- Only inner joins can be achieved.
+
+### Sybase ASE Form #3 -- Not Supported
+
+### Sybase ASE Form #4 -- Not Supported
+
+### Sybase ASE Form #5 -- Not Supported
 
 
 ## H2, HyperSQL, Derby
