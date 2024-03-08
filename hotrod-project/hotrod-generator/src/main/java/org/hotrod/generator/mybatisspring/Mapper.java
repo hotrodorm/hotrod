@@ -682,8 +682,8 @@ public class Mapper extends GeneratableObject {
 
     List<ColumnMetadata> sequences = new ArrayList<ColumnMetadata>();
     ListWriter keyProperties = new ListWriter(",");
-    ListWriter columns = new ListWriter("        ", "\n", ",");
-    ListWriter values = new ListWriter("        ", "\n", ",");
+    ListWriter columns = new ListWriter("        ", "\n", "");
+    ListWriter values = new ListWriter("        ", "\n", "");
     ListWriter queryColumns = new ListWriter(", ");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       if (cm.getSequenceId() != null) {
@@ -718,8 +718,8 @@ public class Mapper extends GeneratableObject {
 
     List<ColumnMetadata> identities = new ArrayList<ColumnMetadata>();
     ListWriter keyProperties = new ListWriter(",");
-    ListWriter columns = new ListWriter("        ", "\n", ",");
-    ListWriter values = new ListWriter("        ", "\n", ",");
+    ListWriter columns = new ListWriter("        ", "\n", "");
+    ListWriter values = new ListWriter("        ", "\n", "");
     ListWriter queryColumns = new ListWriter(", ");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       if (cm.getAutogenerationType() != null && cm.getAutogenerationType().isIdentity()) {
