@@ -11,7 +11,7 @@
   <parent>
     <groupId>org.hotrodorm.hotrod</groupId>
     <artifactId>hotrod-project</artifactId>
-    <version>4.6.2</version>
+    <version>4.6.3-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -27,13 +27,13 @@
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod</artifactId>
-      <version>4.6.2</version>
+      <version>4.6.3-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
-      <version>4.6.2</version>
+      <version>4.6.3-SNAPSHOT</version>
     </dependency>    
 
     <!-- Tartarus -->
