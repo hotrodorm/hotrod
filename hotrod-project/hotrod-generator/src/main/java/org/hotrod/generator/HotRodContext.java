@@ -146,6 +146,9 @@ public class HotRodContext {
         } catch (RuntimeException e) {
           throw new ControlledException("Could not load configuration file " + configFile + " - " + e.getMessage()
               + ": " + XUtil.trim(e.getCause()));
+        } catch (Throwable e) { // Added to display JVM errors, such as JAXB not present (Java 11 an up for Ant generation)
+          log.error("Could not load the configuration", e);
+          throw new ControlledException("Could not load configuration file " + configFile + " - " + e.getMessage());
         }
         log.debug("Main Configuration loaded.");
       } else {
