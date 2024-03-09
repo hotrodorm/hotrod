@@ -132,6 +132,7 @@ public class HotRodContext {
       if (configFile != null) {
         try {
           this.config = ConfigurationLoader.loadPrimary(baseDir, configFile, adapter, facetNames, currentCS);
+          log.debug("Main Configuration loaded.");
         } catch (ControlledException e) {
           if (e.getLocation() != null) {
             throw new ControlledException("\n" + e.getMessage() + "\n  in " + e.getLocation().render());
@@ -146,13 +147,21 @@ public class HotRodContext {
         } catch (RuntimeException e) {
           throw new ControlledException("Could not load configuration file " + configFile + " - " + e.getMessage()
               + ": " + XUtil.trim(e.getCause()));
-        } catch (Throwable e) { // Added to display JVM errors, such as JAXB not present (Java 11 an up for Ant generation)
+        } catch (Throwable e) { // Added to display JVM errors, such as JAXB not present (Java 11 an up for Ant
+                                // generation)
           log.error("Could not load the configuration", e);
           throw new ControlledException("Could not load configuration file " + configFile + " - " + e.getMessage());
         }
-        log.debug("Main Configuration loaded.");
       } else {
-        this.config = ConfigurationLoader.prepareNoConfig(baseDir, configFile, adapter, facetNames, currentCS);
+        log.debug("Will load 3");
+        try {
+          this.config = ConfigurationLoader.prepareNoConfig(baseDir, configFile, adapter, facetNames, currentCS);
+          log.debug("Default configuration loaded.");
+        } catch (Throwable e) { // Added to display JVM errors, such as JAXB not present (Java 11 an up for Ant
+          // generation)
+          log.error("Could not load default configuration", e);
+          throw new ControlledException("Could not load configuration file " + configFile + " - " + e.getMessage());
+        }
       }
 
       // Apply current schema to declared tables with no schema and no catalog
