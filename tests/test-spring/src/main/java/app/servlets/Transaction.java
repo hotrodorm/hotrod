@@ -30,7 +30,8 @@ public class Transaction extends HttpServlet {
   private void tx() throws ServletException {
 
     try {
-    Beans.logic().updateBranches();
+//    Beans.logic().updateBranches();
+      Beans.branchLogic().updateBranches();
     } catch (RuntimeException e) {
       System.out.println("TX rolled back -- continue");
     }

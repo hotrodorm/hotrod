@@ -5,7 +5,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import app.daos.primitives.BranchDAO;
 import app.daos.primitives.EmployeeDAO;
-import app.logic.BusinessLogic;
+import app.logic.BranchLogic;
 
 public class Beans {
 
@@ -15,7 +15,7 @@ public class Beans {
   private static BranchDAO branchDAO;
   private static EmployeeDAO employeeDAO;
 
-  private static BusinessLogic logic;
+  private static BranchLogic branchLogic;
 
   public static void initialize() {
     context = new AnnotationConfigApplicationContext(ApplicationConfig.class, LiveSQL.class);
@@ -24,7 +24,7 @@ public class Beans {
     branchDAO = context.getBean(BranchDAO.class);
     employeeDAO = context.getBean(EmployeeDAO.class);
 
-    logic = context.getBean(BusinessLogic.class);
+    branchLogic = context.getBean(BranchLogic.class);
   }
 
   public static void close() {
@@ -45,8 +45,8 @@ public class Beans {
     return liveSQL;
   }
 
-  public static BusinessLogic logic() {
-    return logic;
+  public static BranchLogic branchLogic() {
+    return branchLogic;
   }
 
 }
