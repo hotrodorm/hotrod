@@ -56,9 +56,12 @@
     ${sql}
   </select>
 
-  <!-- insert (no auto-generated columns) -->
+  <!-- insert (using sequences prefetch) -->
 
   <insert id="insert">
+    <selectKey keyProperty="id" resultType="app.daos.AccountVO" order="BEFORE">
+      select next value for seq1 as id
+    </selectKey>
     insert into account (
       <trim prefixOverrides=", ">
         <if test="true">, id</if>

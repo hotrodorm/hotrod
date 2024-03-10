@@ -133,10 +133,10 @@ public class App {
 
 //      System.getProperties().setProperty("oracle.jdbc.J2EE13Compliant", "true");
 
-//      crud();
+      crud();
 //      join();
-//      join();
-      livesql();
+//      join();     
+//      livesql();
 //      selectByCriteria();
 //      torcs();
 //      star();
@@ -175,6 +175,24 @@ public class App {
 //    update();
 
   }
+
+  private void crud() {
+    System.out.println("Will INSERT");
+    
+    AccountVO a = new AccountVO();
+    a.setBranchId(100);
+    a.setParentId(120);
+    a = this.accountDAO.insert(a);
+    
+    System.out.println("INSERTED: a="+a);
+
+    a = this.accountDAO.insert(a);   
+    System.out.println("INSERTED: a="+a);
+
+    a = this.accountDAO.insert(a);   
+    System.out.println("INSERTED: a="+a);
+}
+
 //
 //  private void joinedTableExpressions() {
 //

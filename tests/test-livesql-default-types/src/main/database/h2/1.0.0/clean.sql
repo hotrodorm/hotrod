@@ -6,3 +6,5 @@ drop table other;
 
 drop table invoice;
 drop table branch;
+
+drop sequence seq1;

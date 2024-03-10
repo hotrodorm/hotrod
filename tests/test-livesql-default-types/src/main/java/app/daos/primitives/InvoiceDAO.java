@@ -15,17 +15,6 @@ import org.hotrod.runtime.interfaces.OrderBy;
 
 import app.daos.primitives.AbstractInvoiceVO;
 import app.daos.InvoiceVO;
-import app.daos.BranchVO;
-import app.daos.primitives.BranchDAO;
-import app.daos.primitives.Category;
-
-import java.sql.SQLException;
-import java.sql.CallableStatement;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.TypeHandler;
-import org.hotrod.runtime.converter.TypeConverter;
 
 import java.lang.Override;
 import java.util.Map;
@@ -70,10 +59,6 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   @Autowired
   private SqlSession sqlSession;
 
-  @Lazy
-  @Autowired
-  private BranchDAO branchDAO;
-
   @Autowired
   private LiveSQLDialect liveSQLDialect;
 
@@ -113,28 +98,19 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
     mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
+    mo.setAccountId(CastUtil.toInteger((Number) m.get(p + "accountId" + s)));
     mo.setAmount(CastUtil.toInteger((Number) m.get(p + "amount" + s)));
     mo.setBranchId(CastUtil.toInteger((Number) m.get(p + "branchId" + s)));
-    mo.setAccountId(CastUtil.toInteger((Number) m.get(p + "accountId" + s)));
-    mo.setUnpaidBalance(CastUtil.toInteger((Number) m.get(p + "unpaidBalance" + s)));
-    mo.setType((java.lang.String) m.get(p + "type" + s));
-    mo.setStatus((java.lang.String) m.get(p + "status" + s));
     mo.setOrderDate((java.sql.Date) m.get(p + "orderDate" + s));
-    mo.setCategory((app.daos.primitives.Category) m.get(p + "category" + s));
+    mo.setType((java.lang.String) m.get(p + "type" + s));
+    mo.setUnpaidBalance(CastUtil.toInteger((Number) m.get(p + "unpaidBalance" + s)));
+    mo.setStatus((java.lang.String) m.get(p + "status" + s));
     return mo;
   }
 
-  // select by primary key
+  // no select by PK generated, since the table does not have a PK.
 
-  public app.daos.InvoiceVO select(final java.lang.Integer id) {
-    if (id == null)
-      return null;
-    app.daos.InvoiceVO vo = new app.daos.InvoiceVO();
-    vo.setId(id);
-    return this.sqlSession.selectOne("mappers.invoice.selectByPK", vo);
-  }
-
-  // select by unique indexes: no unique indexes found (besides the PK) -- skipped
+  // select by unique indexes: no unique indexes found -- skipped
 
   // select by example
 
@@ -160,41 +136,7 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
         from, predicate);
   }
 
-  // select parent(s) by FKs
-
-  public SelectParentBranchPhase selectParentBranchOf(final InvoiceVO vo) {
-    return new SelectParentBranchPhase(vo);
-  }
-
-  public class SelectParentBranchPhase {
-
-    private InvoiceVO vo;
-
-    SelectParentBranchPhase(final InvoiceVO vo) {
-      this.vo = vo;
-    }
-
-    public SelectParentBranchFromBranchIdPhase fromBranchId() {
-      return new SelectParentBranchFromBranchIdPhase(this.vo);
-    }
-
-  }
-
-  public class SelectParentBranchFromBranchIdPhase {
-
-    private InvoiceVO vo;
-
-    SelectParentBranchFromBranchIdPhase(final InvoiceVO vo) {
-      this.vo = vo;
-    }
-
-    public BranchVO toId() {
-      return branchDAO.select(this.vo.branchId);
-    }
-
-  }
-
-  // --- no select parent for FK column (category) since it points to the enum table category
+  // select parent(s) by FKs: no imported keys found -- skipped
 
   // select children by FKs: no exported FKs found -- skipped
 
@@ -205,33 +147,19 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     this.sqlSession.insert(id, vo);
     app.daos.InvoiceVO mo = springBeanObjectFactory.create(app.daos.InvoiceVO.class);
     mo.setId(vo.getId());
+    mo.setAccountId(vo.getAccountId());
     mo.setAmount(vo.getAmount());
     mo.setBranchId(vo.getBranchId());
-    mo.setAccountId(vo.getAccountId());
-    mo.setUnpaidBalance(vo.getUnpaidBalance());
-    mo.setType(vo.getType());
-    mo.setStatus(vo.getStatus());
     mo.setOrderDate(vo.getOrderDate());
-    mo.setCategory(vo.getCategory());
+    mo.setType(vo.getType());
+    mo.setUnpaidBalance(vo.getUnpaidBalance());
+    mo.setStatus(vo.getStatus());
     return mo;
   }
 
-  // update by PK
+  // no update by PK generated, since the table does not have a PK.
 
-  public int update(final app.daos.InvoiceVO vo) {
-    if (vo.getId() == null) return 0;
-    return this.sqlSession.update("mappers.invoice.updateByPK", vo);
-  }
-
-  // delete by PK
-
-  public int delete(final java.lang.Integer id) {
-    if (id == null) return 0;
-    app.daos.InvoiceVO vo = new app.daos.InvoiceVO();
-    vo.setId(id);
-    if (vo.getId() == null) return 0;
-    return this.sqlSession.delete("mappers.invoice.deleteByPK", vo);
-  }
+  // no delete by PK generated, since the table does not have a PK.
 
   // update by example
 
@@ -246,14 +174,13 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   public UpdateSetCompletePhase update(final app.daos.primitives.AbstractInvoiceVO updateValues, final InvoiceDAO.InvoiceTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
     if (updateValues.getId() != null) values.put("id", updateValues.getId());
+    if (updateValues.getAccountId() != null) values.put("account_id", updateValues.getAccountId());
     if (updateValues.getAmount() != null) values.put("amount", updateValues.getAmount());
     if (updateValues.getBranchId() != null) values.put("branch_id", updateValues.getBranchId());
-    if (updateValues.getAccountId() != null) values.put("account_id", updateValues.getAccountId());
-    if (updateValues.getUnpaidBalance() != null) values.put("unpaid_balance", updateValues.getUnpaidBalance());
-    if (updateValues.getType() != null) values.put("type", updateValues.getType());
-    if (updateValues.getStatus() != null) values.put("status", updateValues.getStatus());
     if (updateValues.getOrderDate() != null) values.put("order_date", updateValues.getOrderDate());
-    if (updateValues.getCategory() != null) values.put("category", updateValues.getCategory());
+    if (updateValues.getType() != null) values.put("type", updateValues.getType());
+    if (updateValues.getUnpaidBalance() != null) values.put("unpaid_balance", updateValues.getUnpaidBalance());
+    if (updateValues.getStatus() != null) values.put("status", updateValues.getStatus());
     return new UpdateSetCompletePhase(this.context, "mappers.invoice.updateByCriteria", tableOrView,  predicate, values);
   }
 
@@ -270,65 +197,20 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     return new DeleteWherePhase(this.context, "mappers.invoice.deleteByCriteria", from, predicate);
   }
 
-  // TypeHandler for enum-FK column category.
-
-  public static class CategoryTypeHandler implements TypeHandler<app.daos.primitives.Category> {
-
-    @Override
-    public app.daos.primitives.Category getResult(final ResultSet rs, final String columnName) throws SQLException {
-      java.lang.Integer value = rs.getInt(columnName);
-      if (rs.wasNull()) {
-        value = null;
-      }
-      return app.daos.primitives.Category.decode(value);
-    }
-
-    @Override
-    public app.daos.primitives.Category getResult(final ResultSet rs, final int columnIndex) throws SQLException {
-      java.lang.Integer value = rs.getInt(columnIndex);
-      if (rs.wasNull()) {
-        value = null;
-      }
-      return app.daos.primitives.Category.decode(value);
-    }
-
-    @Override
-    public app.daos.primitives.Category getResult(final CallableStatement cs, final int columnIndex) throws SQLException {
-      java.lang.Integer value = cs.getInt(columnIndex);
-      if (cs.wasNull()) {
-        value = null;
-      }
-      return app.daos.primitives.Category.decode(value);
-    }
-
-    @Override
-    public void setParameter(final PreparedStatement ps, final int columnIndex, final app.daos.primitives.Category v, final JdbcType jdbcType)
-        throws SQLException {
-      java.lang.Integer importedValue = app.daos.primitives.Category.encode(v);
-      java.lang.Integer localValue = importedValue;
-      if (localValue == null) {
-        ps.setNull(columnIndex, jdbcType.TYPE_CODE);
-      } else {
-        ps.setInt(columnIndex, localValue);
-      }
-    }
-
-  }
-
   // DAO ordering
 
   public enum InvoiceOrderBy implements OrderBy {
 
     ID("invoice", "id", true), //
     ID$DESC("invoice", "id", false), //
+    ACCOUNT_ID("invoice", "account_id", true), //
+    ACCOUNT_ID$DESC("invoice", "account_id", false), //
     AMOUNT("invoice", "amount", true), //
     AMOUNT$DESC("invoice", "amount", false), //
     BRANCH_ID("invoice", "branch_id", true), //
     BRANCH_ID$DESC("invoice", "branch_id", false), //
-    ACCOUNT_ID("invoice", "account_id", true), //
-    ACCOUNT_ID$DESC("invoice", "account_id", false), //
-    UNPAID_BALANCE("invoice", "unpaid_balance", true), //
-    UNPAID_BALANCE$DESC("invoice", "unpaid_balance", false), //
+    ORDER_DATE("invoice", "order_date", true), //
+    ORDER_DATE$DESC("invoice", "order_date", false), //
     TYPE("invoice", "type", true), //
     TYPE$DESC("invoice", "type", false), //
     TYPE$CASEINSENSITIVE("invoice", "lower(type)", true), //
@@ -337,6 +219,8 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     TYPE$DESC_CASEINSENSITIVE("invoice", "lower(type)", false), //
     TYPE$DESC_CASEINSENSITIVE_STABLE_FORWARD("invoice", "lower(type), type", false), //
     TYPE$DESC_CASEINSENSITIVE_STABLE_REVERSE("invoice", "lower(type), type", true), //
+    UNPAID_BALANCE("invoice", "unpaid_balance", true), //
+    UNPAID_BALANCE$DESC("invoice", "unpaid_balance", false), //
     STATUS("invoice", "status", true), //
     STATUS$DESC("invoice", "status", false), //
     STATUS$CASEINSENSITIVE("invoice", "lower(status)", true), //
@@ -344,11 +228,7 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     STATUS$CASEINSENSITIVE_STABLE_REVERSE("invoice", "lower(status), status", false), //
     STATUS$DESC_CASEINSENSITIVE("invoice", "lower(status)", false), //
     STATUS$DESC_CASEINSENSITIVE_STABLE_FORWARD("invoice", "lower(status), status", false), //
-    STATUS$DESC_CASEINSENSITIVE_STABLE_REVERSE("invoice", "lower(status), status", true), //
-    ORDER_DATE("invoice", "order_date", true), //
-    ORDER_DATE$DESC("invoice", "order_date", false), //
-    CATEGORY("invoice", "category", true), //
-    CATEGORY$DESC("invoice", "category", false);
+    STATUS$DESC_CASEINSENSITIVE_STABLE_REVERSE("invoice", "lower(status), status", true);
 
     private InvoiceOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -390,30 +270,29 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     // Properties
 
     public NumberColumn id;
+    public NumberColumn accountId;
     public NumberColumn amount;
     public NumberColumn branchId;
-    public NumberColumn accountId;
-    public NumberColumn unpaidBalance;
-    public StringColumn type;
-    public StringColumn status;
     public DateTimeColumn orderDate;
-    public ObjectColumn category;
+    public StringColumn type;
+    public NumberColumn unpaidBalance;
+    public StringColumn status;
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this.id, this.amount, this.branchId, this.accountId, this.unpaidBalance, this.type, this.status, this.orderDate, this.category);
+      return new AllColumns(this.id, this.accountId, this.amount, this.branchId, this.orderDate, this.type, this.unpaidBalance, this.status);
     }
 
     // Constructors
 
     InvoiceTable() {
-      super(null, null, "invoice", "Table", null);
+      super(null, null, "INVOICE", "Table", null);
       initialize();
     }
 
     InvoiceTable(final String alias) {
-      super(null, null, "invoice", "Table", alias);
+      super(null, null, "INVOICE", "Table", alias);
       initialize();
     }
 
@@ -421,24 +300,22 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.id = new NumberColumn(this, "id", "id", "int4", 10, 0);
+      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
       super.columns.add(this.id);
-      this.amount = new NumberColumn(this, "amount", "amount", "int4", 10, 0);
-      super.columns.add(this.amount);
-      this.branchId = new NumberColumn(this, "branch_id", "branchId", "int4", 10, 0);
-      super.columns.add(this.branchId);
-      this.accountId = new NumberColumn(this, "account_id", "accountId", "int4", 10, 0);
+      this.accountId = new NumberColumn(this, "ACCOUNT_ID", "accountId", "INTEGER", 32, 0);
       super.columns.add(this.accountId);
-      this.unpaidBalance = new NumberColumn(this, "unpaid_balance", "unpaidBalance", "int4", 10, 0);
-      super.columns.add(this.unpaidBalance);
-      this.type = new StringColumn(this, "type", "type", "varchar", 10, 0);
-      super.columns.add(this.type);
-      this.status = new StringColumn(this, "status", "status", "varchar", 10, 0);
-      super.columns.add(this.status);
-      this.orderDate = new DateTimeColumn(this, "order_date", "orderDate", "date", 13, 0);
+      this.amount = new NumberColumn(this, "AMOUNT", "amount", "INTEGER", 32, 0);
+      super.columns.add(this.amount);
+      this.branchId = new NumberColumn(this, "BRANCH_ID", "branchId", "INTEGER", 32, 0);
+      super.columns.add(this.branchId);
+      this.orderDate = new DateTimeColumn(this, "ORDER_DATE", "orderDate", "DATE", 10, 0);
       super.columns.add(this.orderDate);
-      this.category = new ObjectColumn(this, "category", "category", "int4", 10, 0);
-      super.columns.add(this.category);
+      this.type = new StringColumn(this, "TYPE", "type", "CHARACTER VARYING", 10, 0);
+      super.columns.add(this.type);
+      this.unpaidBalance = new NumberColumn(this, "UNPAID_BALANCE", "unpaidBalance", "INTEGER", 32, 0);
+      super.columns.add(this.unpaidBalance);
+      this.status = new StringColumn(this, "STATUS", "status", "CHARACTER VARYING", 10, 0);
+      super.columns.add(this.status);
     }
 
   }

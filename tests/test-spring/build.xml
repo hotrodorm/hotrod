@@ -1,5 +1,8 @@
 <project name="spring" default="deploy">
 
+  <property name="hotrod.install.dir" value="${user.home}/.m2/repository/org/hotrodorm/hotrod" />
+  <property name="hotrod.version" value="4.6.3-SNAPSHOT" />
+
   <target name="clean">
     <mkdir dir="build/java" />
     <delete includeemptydirs="true">
@@ -21,9 +24,9 @@
       <classpath>
         <fileset dir="lib" />
         <fileset dir="libc" />
-        <fileset file="libhotrod/hotrod-4.4.0.jar" />
-        <fileset file="libhotrod/hotrod-utils-4.4.0.jar" />
-        <fileset file="libhotrod/hotrod-livesql-4.4.0.jar" />
+        <fileset file="${hotrod.install.dir}/hotrod/${hotrod.version}/hotrod-${hotrod.version}.jar" />
+        <fileset file="${hotrod.install.dir}/hotrod-utils/${hotrod.version}/hotrod-utils-${hotrod.version}.jar" />
+        <fileset file="${hotrod.install.dir}/hotrod-livesql/${hotrod.version}/hotrod-livesql-${hotrod.version}.jar" />
         <fileset file="libhotrod/mybatis-3.5.9.jar" />
         <fileset file="libhotrod/mybatis-spring-2.0.6.jar" />
       </classpath>
@@ -33,9 +36,9 @@
   <target name="war" depends="compile">
     <war destfile="build/app.war" webxml="webcontent/WEB-INF/web.xml">
       <lib file="lib/*.jar" />
-      <lib file="libhotrod/hotrod-4.4.0.jar" />
-      <lib file="libhotrod/hotrod-utils-4.4.0.jar" />
-      <lib file="libhotrod/hotrod-livesql-4.4.0.jar" />
+      <lib file="${hotrod.install.dir}/hotrod/${hotrod.version}/hotrod-${hotrod.version}.jar" />
+      <lib file="${hotrod.install.dir}/hotrod-utils/${hotrod.version}/hotrod-utils-${hotrod.version}.jar" />
+      <lib file="${hotrod.install.dir}/hotrod-livesql/${hotrod.version}/hotrod-livesql-${hotrod.version}.jar" />
       <lib file="libhotrod/mybatis-3.5.9.jar" />
       <lib file="libhotrod/mybatis-spring-2.0.6.jar" />
       <fileset dir="webcontent">
@@ -59,10 +62,28 @@
     <mkdir dir="src/main/java/app/daos" />
     <mkdir dir="src/main/resources/mappers" />
 
+    <echo message="${hotrod.install.dir}/hotrod-generator/${hotrod.version}/hotrod-generator-${hotrod.version}.jar" />
+
     <taskdef name="hotrod_gen" classname="org.hotrod.plugin.ant.GenAntTask">
       <classpath>
+        <fileset dir="${hotrod.install.dir}">
+          <include name="hotrod/${hotrod.version}/hotrod-${hotrod.version}.jar" />
+          <include name="hotrod-abstract-plugin/${hotrod.version}/hotrod-abstract-plugin-${hotrod.version}.jar" />
+          <include name="hotrod-ant-plugin/${hotrod.version}/hotrod-ant-plugin-${hotrod.version}.jar" />
+          <include name="hotrod-generator/${hotrod.version}/hotrod-generator-${hotrod.version}.jar" />
+          <include name="hotrod-livesql/${hotrod.version}/hotrod-livesql-${hotrod.version}.jar" />
+          <include name="hotrod-utils/${hotrod.version}/hotrod-utils-${hotrod.version}.jar" />
+        </fileset>
         <fileset dir="libhotrod">
-          <include name="**/*.jar" />
+          <include name="log4j-api-2.17.2.jar" />
+          <include name="log4j-core-2.17.2.jar" />
+          <include name="javassist-3.24.1-GA.jar" />
+          <include name="list-collector-1.0.5.jar" />
+          <include name="mybatis-3.5.9.jar" />
+          <include name="mybatis-spring-2.0.6.jar" />
+          <include name="ognl-3.2.14.jar" />
+          <include name="tartarus-3.2.2.jar" />
+          <include name="text-table-formatter-1.2.4.jar" />
         </fileset>
         <pathelement location="libc/h2-2.1.214.jar"/>        
       </classpath>
@@ -72,7 +93,8 @@
                 jdbcurl="jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1"
                 jdbcusername="sa"
                 jdbcpassword=""
-                jdbcschema="PUBLIC" />
+                jdbcschema="PUBLIC"
+    configfile="./hotrod.xml" />
 
   </target>
 

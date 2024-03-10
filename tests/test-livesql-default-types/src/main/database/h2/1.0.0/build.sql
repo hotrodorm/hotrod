@@ -116,6 +116,8 @@ create table account (
   branch_id int
 );
 
+create sequence seq1;
+
 create table invoice (
   id int,
   account_id int,
@@ -156,5 +158,5 @@ insert into branch (id, region, is_vip) values
   (107, 'SE', false);
   
   -- update branch set region = 'x' where id >= 4 and not is_vip
-  
+
 
