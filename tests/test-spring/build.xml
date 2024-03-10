@@ -51,10 +51,10 @@
 
   <target name="deploy" depends="war">
     <delete includeemptydirs="true">
-      <fileset dir="/home/valarcon/apps/apache-tomcat-7.0.67-xc/webapps" includes="**/*" />
+      <fileset dir="${user.home}/apps/apache-tomcat-7.0.67-xc/webapps" includes="**/*" />
     </delete>
-    <copy file="schema.sql" todir="/home/valarcon/apps/apache-tomcat-7.0.67-xc" />
-    <copy file="build/app.war" tofile="/home/valarcon/apps/apache-tomcat-7.0.67-xc/webapps/app.war" />
+    <copy file="schema.sql" todir="${user.home}/apps/apache-tomcat-7.0.67-xc" />
+    <copy file="build/app.war" tofile="${user.home}/apps/apache-tomcat-7.0.67-xc/webapps/app.war" />
   </target>
 
   <target name="gen">

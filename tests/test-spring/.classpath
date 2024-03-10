@@ -15,10 +15,11 @@
 	<classpathentry kind="lib" path="lib/spring-aop-5.3.31.jar"/>
 	<classpathentry kind="lib" path="lib/commons-pool2-2.12.0.jar"/>
 	<classpathentry kind="lib" path="libc/j2ee.jar"/>
-	<classpathentry kind="lib" path="libhotrod/hotrod-4.4.0.jar"/>
-	<classpathentry kind="lib" path="libhotrod/hotrod-utils-4.4.0.jar"/>
-	<classpathentry kind="lib" path="libhotrod/hotrod-livesql-4.4.0.jar"/>
 	<classpathentry kind="lib" path="libhotrod/mybatis-3.5.9.jar"/>
 	<classpathentry kind="lib" path="libhotrod/mybatis-spring-2.0.6.jar"/>
+	<classpathentry kind="lib" path="libhotrod/hotrod-4.6.3-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="libhotrod/hotrod-utils-4.6.3-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="libhotrod/hotrod-livesql-4.6.3-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/spring-tx-5.3.31.jar"/>
 	<classpathentry kind="output" path="idebuild"/>
 </classpath>

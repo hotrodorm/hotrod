@@ -15,11 +15,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jndi.JndiTemplate;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @ComponentScan(basePackageClasses = ApplicationConfig.class)
 @ComponentScan(basePackageClasses = SpringBeanObjectFactory.class)
 @MapperScan(basePackageClasses = LiveSQL.class)
+@EnableTransactionManagement
 public class ApplicationConfig {
 
   @Bean
