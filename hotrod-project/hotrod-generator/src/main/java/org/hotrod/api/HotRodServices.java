@@ -103,6 +103,7 @@ public class HotRodServices {
       throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code. Invalid configuration in "
           + e.getTag().getSourceLocation().render() + ":\n" + e.getMessage());
     } catch (Throwable e) {
+      log.error("Could not generate persistence layer.", e);
       throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code.", e);
     }
 
