@@ -3,13 +3,19 @@ package org.hotrod.identifiers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrodorm.hotrod.utils.SUtil;
 
 public class Id implements Comparable<Id> {
 
+  private static final Logger log = LogManager.getLogger(Id.class);
+
   // Properties
+
+  private boolean isQuoted;
 
   private String canonicalSQLName; // - MY_PROPERTY, Car$Price
   private String renderedSQLName; // -- my_property, "Car$Price"
@@ -31,7 +37,10 @@ public class Id implements Comparable<Id> {
 
   private Id(final DatabaseAdapter adapter, final List<NamePart> nameParts, final String canonicalSQLName,
       final boolean wasJavaNameSpecified, final String javaClassName, final String javaMemberName,
-      final String javaConstantName, final String dashedName) throws InvalidIdentifierException {
+      final String javaConstantName, final String dashedName, final boolean isQuoted)
+      throws InvalidIdentifierException {
+
+    this.isQuoted = isQuoted;
 
     if (canonicalSQLName != null && adapter == null) {
       throw new InvalidIdentifierException("'adapter' cannot be null when the canonicalSQLName is specified.");
@@ -60,7 +69,7 @@ public class Id implements Comparable<Id> {
 
     if (canonicalSQLName != null) { // has a SQL side
       this.canonicalSQLName = canonicalSQLName;
-      this.renderedSQLName = this.adapter.renderSQLName(this.canonicalSQLName);
+      this.renderedSQLName = this.adapter.renderSQLName(this.canonicalSQLName, this.isQuoted);
     } else { // does not have a SQL side
       this.canonicalSQLName = null;
       this.renderedSQLName = null;
@@ -88,6 +97,8 @@ public class Id implements Comparable<Id> {
       throw new InvalidIdentifierException("'typedName' cannot be null or empty.");
     }
 
+    log.debug("typedName=" + typedName);
+
     SQLName sqlName = new SQLName(typedName);
 
     String canonicalSQLName = adapter.canonizeName(sqlName.getName(), sqlName.isQuoted());
@@ -103,7 +114,7 @@ public class Id implements Comparable<Id> {
     String dashedName = assembleDashedName(nameParts);
 
     Id id = new Id(adapter, nameParts, canonicalSQLName, false, javaClassName, javaMemberName, javaConstantName,
-        dashedName);
+        dashedName, sqlName.isQuoted());
     return id;
   }
 
@@ -127,7 +138,7 @@ public class Id implements Comparable<Id> {
     String dashedName = assembleDashedName(nameParts);
 
     Id id = new Id(adapter, nameParts, canonicalSQLName, false, javaClassName, javaMemberName, javaConstantName,
-        dashedName);
+        dashedName, true);
     return id;
   }
 
@@ -150,7 +161,7 @@ public class Id implements Comparable<Id> {
     String dashedName = assembleDashedName(nameParts);
 
     Id id = new Id(adapter, nameParts, canonicalSQLName, true, javaClassName, javaMemberName, javaConstantName,
-        dashedName);
+        dashedName, true);
     return id;
   }
 
@@ -173,7 +184,7 @@ public class Id implements Comparable<Id> {
     String dashedName = assembleDashedName(nameParts);
 
     Id id = new Id(adapter, nameParts, canonicalSQLName, true, javaClassName, javaMemberName, javaConstantName,
-        dashedName);
+        dashedName, true);
     return id;
   }
 
@@ -207,7 +218,7 @@ public class Id implements Comparable<Id> {
     String dashedName = assembleDashedName(javaNameParts);
 
     Id id = new Id(adapter, nameParts, canonicalSQLName, true, javaClassName, javaMemberName, javaConstantName,
-        dashedName);
+        dashedName, sqlName.isQuoted());
     return id;
   }
 
@@ -237,7 +248,7 @@ public class Id implements Comparable<Id> {
     String dashedName = assembleDashedName(javaNameParts);
 
     Id id = new Id(adapter, nameParts, canonicalSQLName, true, javaClassName, javaMemberName, javaConstantName,
-        dashedName);
+        dashedName, true);
     return id;
   }
 
@@ -271,7 +282,7 @@ public class Id implements Comparable<Id> {
     String dashedName = assembleDashedName(javaNameParts);
 
     Id id = new Id(adapter, nameParts, canonicalSQLName, true, javaClassName, javaMemberName, javaConstantName,
-        dashedName);
+        dashedName, sqlName.isQuoted());
     return id;
   }
 
@@ -301,7 +312,7 @@ public class Id implements Comparable<Id> {
     String dashedName = assembleDashedName(javaNameParts);
 
     Id id = new Id(adapter, nameParts, canonicalSQLName, true, javaClassName, javaMemberName, javaConstantName,
-        dashedName);
+        dashedName, true);
     return id;
   }
 

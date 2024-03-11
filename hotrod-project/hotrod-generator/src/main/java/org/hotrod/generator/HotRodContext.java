@@ -29,6 +29,8 @@ import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnrecognizedDatabaseException;
+import org.hotrod.identifiers.Id;
+import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrodorm.hotrod.utils.SUtil;
@@ -147,7 +149,7 @@ public class HotRodContext {
         } catch (RuntimeException e) {
           throw new ControlledException("Could not load configuration file " + configFile + " - " + e.getMessage()
               + ": " + XUtil.trim(e.getCause()));
-        } catch (Throwable e) { // Added to display JVM errors, such as JAXB not present (Java 11 an up for Ant
+        } catch (Throwable e) { // Added to display JVM errors, such as JAXB not present (Java 11 and up for Ant
                                 // generation)
           log.error("Could not load the configuration", e);
           throw new ControlledException("Could not load configuration file " + configFile + " - " + e.getMessage());
@@ -157,7 +159,7 @@ public class HotRodContext {
         try {
           this.config = ConfigurationLoader.prepareNoConfig(baseDir, configFile, adapter, facetNames, currentCS);
           log.debug("Default configuration loaded.");
-        } catch (Throwable e) { // Added to display JVM errors, such as JAXB not present (Java 11 an up for Ant
+        } catch (Throwable e) { // Added to display JVM errors, such as JAXB not present (Java 11 and up for Ant
           // generation)
           log.error("Could not load default configuration", e);
           throw new ControlledException("Could not load configuration file " + configFile + " - " + e.getMessage());
@@ -167,6 +169,12 @@ public class HotRodContext {
       // Apply current schema to declared tables with no schema and no catalog
 
       this.config.applyCurrentSchema(this.loc.getCatalogSchema());
+
+      for (TableTag t : this.config.getAllTables()) {
+        ObjectId id = t.getId();
+        Id name = id.getObject();
+        log.info("Table: " + name.getCanonicalSQLName());
+      }
 
       // Discover schemas
 

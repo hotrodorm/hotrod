@@ -170,7 +170,7 @@ public class DB2Adapter extends DatabaseAdapter {
 
   @Override
   public String renderAliasedSelectColumn(final StructuredColumnMetadata cm) {
-    return cm.getId().getRenderedSQLName() + " as " + this.renderSQLName(cm.getColumnAlias());
+    return cm.getId().getRenderedSQLName() + " as " + this.renderSQLName(cm.getColumnAlias(), false);
   }
 
   @Override
@@ -181,9 +181,9 @@ public class DB2Adapter extends DatabaseAdapter {
   private static final String UNQUOTED_IDENTIFIER_PATTERN = "[A-Z][A-Z0-9_]*";
 
   @Override
-  public String renderSQLName(final String canonicalName) {
+  public String renderSQLName(final String canonicalName, final boolean isQuoted) {
     return canonicalName == null ? null
-        : (canonicalName.matches(UNQUOTED_IDENTIFIER_PATTERN) ? canonicalName.toLowerCase()
+        : (!isQuoted && canonicalName.matches(UNQUOTED_IDENTIFIER_PATTERN) ? canonicalName.toLowerCase()
             : super.quote(canonicalName));
   }
 
