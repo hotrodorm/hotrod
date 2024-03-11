@@ -1,5 +1,6 @@
 package org.hotrod.runtime.livesql.sysobjects;
 
+import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.metadata.StringColumn;
 import org.hotrod.runtime.livesql.metadata.Table;
 
@@ -12,7 +13,7 @@ public class SysDummy1Table extends Table {
   // Constructors
 
   public SysDummy1Table() {
-    super(null, "SYSIBM", "SYSDUMMY1", "Table", null);
+    super(null, Name.of("SYSIBM", false), Name.of("SYSDUMMY1", false), "Table", null);
     initialize();
   }
 

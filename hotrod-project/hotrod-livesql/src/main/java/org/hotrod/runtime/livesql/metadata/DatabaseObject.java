@@ -4,14 +4,14 @@ public class DatabaseObject {
 
   // Properties
 
-  private String catalog;
-  private String schema;
-  private String name;
+  private Name catalog;
+  private Name schema;
+  private Name name;
   private String type;
 
   // Constructor
 
-  public DatabaseObject(final String catalog, final String schema, final String name, final String type) {
+  public DatabaseObject(final Name catalog, final Name schema, final Name name, final String type) {
     this.catalog = catalog;
     this.schema = schema;
     this.name = name;
@@ -20,15 +20,15 @@ public class DatabaseObject {
 
   // Getters
 
-  public final String getCatalog() {
+  public final Name getCatalog() {
     return catalog;
   }
 
-  public final String getSchema() {
+  public final Name getSchema() {
     return schema;
   }
 
-  public final String getName() {
+  public final Name getName() {
     return name;
   }
 

@@ -23,7 +23,12 @@ public class SubqueryByteArrayColumn extends ByteArrayExpression {
 
   @Override
   public void renderTo(final QueryWriter w) {
-    w.write(w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(this.subquery.getName())));
+    if (this.subquery.getName().isQuoted()) {
+      w.write(w.getSQLDialect().quoteIdentifier(this.subquery.getName().getName()));
+    } else {
+      w.write(w.getSQLDialect()
+          .canonicalToNatural(w.getSQLDialect().naturalToCanonical(this.subquery.getName().getName())));
+    }
     w.write(".");
     w.write(w.getSQLDialect().canonicalToNatural(this.columnName));
   }

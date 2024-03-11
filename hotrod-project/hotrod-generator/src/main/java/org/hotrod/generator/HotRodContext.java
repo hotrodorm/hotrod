@@ -170,11 +170,11 @@ public class HotRodContext {
 
       this.config.applyCurrentSchema(this.loc.getCatalogSchema());
 
-      for (TableTag t : this.config.getAllTables()) {
-        ObjectId id = t.getId();
-        Id name = id.getObject();
-        log.info("Table: " + name.getCanonicalSQLName());
-      }
+//      for (TableTag t : this.config.getAllTables()) {
+//        ObjectId id = t.getId();
+//        Id name = id.getObject();
+//        log.debug("Table: " + name.getCanonicalSQLName());
+//      }
 
       // Discover schemas
 

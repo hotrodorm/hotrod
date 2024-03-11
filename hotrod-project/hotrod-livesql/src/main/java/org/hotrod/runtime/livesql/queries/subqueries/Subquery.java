@@ -12,6 +12,7 @@ import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.runtime.livesql.expressions.object.ObjectExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
+import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
@@ -23,25 +24,25 @@ import org.hotrodorm.hotrod.utils.SUtil;
 
 public class Subquery implements TableExpression {
 
-  private String name;
+  private Name name;
   protected String[] columns;
   private CombinedSelectObject<?> select;
 
-  protected Subquery(final String name, final String[] columns) {
-    if (SUtil.isEmpty(name)) {
+  protected Subquery(final String naturalName, final String[] columns) {
+    if (SUtil.isEmpty(naturalName)) {
       throw new LiveSQLException("Subquery name cannot be empty", null);
     }
 
-    this.name = name;
+    this.name = Name.parse(naturalName);
     this.columns = columns;
     this.select = null;
   }
 
-  public Subquery(final String name, final String[] columns, final Select<?> es) {
-    if (SUtil.isEmpty(name)) {
+  public Subquery(final String naturalName, final String[] columns, final Select<?> es) {
+    if (SUtil.isEmpty(naturalName)) {
       throw new LiveSQLException("Subquery name cannot be empty", null);
     }
-    this.name = name;
+    this.name = Name.parse(naturalName);
 
     this.columns = columns;
 
@@ -54,7 +55,7 @@ public class Subquery implements TableExpression {
 
   // Getters
 
-  public String getName() {
+  public Name getName() {
     return name;
   }
 
@@ -110,7 +111,13 @@ public class Subquery implements TableExpression {
     w.exitLevel();
     w.write("\n");
     w.write(") ");
-    w.write(w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(this.name)));
+
+    if (this.name.isQuoted()) {
+      w.write(w.getSQLDialect().quoteIdentifier(this.name.getName()));
+    } else {
+      w.write(w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(this.name.getName())));
+    }
+
     if (this.columns != null && this.columns.length > 0) {
       w.write(w.getSQLDialect().getTableExpressionRenderer().renderNamedColumns(this.columns));
     }

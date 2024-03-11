@@ -4,6 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.hotrod.runtime.livesql.metadata.DatabaseObject;
+import org.hotrod.runtime.livesql.metadata.Name;
 
 public abstract class LiveSQLDialect {
 
@@ -116,6 +117,16 @@ public abstract class LiveSQLDialect {
   // New SQL Identifier rendering
 
   public abstract String naturalToCanonical(final String natural);
+
+  public abstract String quoteIdentifier(final String verbatim);
+
+  public String canonicalToNatural(final Name name) {
+    if (name.isQuoted()) {
+      return this.quoteIdentifier(name.getName());
+    } else {
+      return this.canonicalToNatural(name.getName());
+    }
+  }
 
   public abstract String canonicalToNatural(final String canonical);
 

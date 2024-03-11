@@ -25,6 +25,7 @@ import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.metadata.AllColumns.ColumnSubset;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.DatabaseObject;
+import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
@@ -289,10 +290,10 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
     if (this.distinct) {
       w.write(" DISTINCT");
     }
-    
+
     // distinct on
-    
-    if (this.distinctOn != null ) {
+
+    if (this.distinctOn != null) {
       liveSQLDialect.getDistinctOnRenderer().render(w, this.distinctOn);
     }
 
@@ -562,12 +563,12 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
     private char letter = 'a';
     private int seq = 0;
 
-    public void register(final String alias, final DatabaseObject databaseObject) {
+    public void register(final Name alias, final DatabaseObject databaseObject) {
       if (alias == null) {
         return;
       }
 
-      if (alias.isEmpty()) {
+      if (alias.getName().isEmpty()) {
         throw new InvalidLiveSQLStatementException(
             "Empty alias found for " + databaseObject.getType().toLowerCase() + " "
                 + databaseObject.renderUnescapedName() + ". Any specified alias for a table or view must be non-empty. "
@@ -575,7 +576,7 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
                 + "Usually aliases are very short, commonly a single letter.");
       }
 
-      if (!this.used.add(alias)) {
+      if (!this.used.add(alias.getName())) {
         throw new InvalidLiveSQLStatementException(
             "Same alias '" + alias + "' for tables/views cannot be used multiple times in a Live SQL statement. "
                 + "If a query includes multiple tables or views "

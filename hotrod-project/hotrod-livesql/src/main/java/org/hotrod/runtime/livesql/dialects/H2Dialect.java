@@ -283,8 +283,13 @@ public class H2Dialect extends LiveSQLDialect {
     if (canonical.matches(UNQUOTED_CANONICAL)) {
       return canonical.toLowerCase();
     } else {
-      return "\"" + canonical.replace("\"", "\"\"") + "\"";
+      return this.quoteIdentifier(canonical);
     }
+  }
+
+  @Override
+  public String quoteIdentifier(final String verbatim) {
+    return "\"" + verbatim.replace("\"", "\"\"") + "\"";
   }
 
   @Override

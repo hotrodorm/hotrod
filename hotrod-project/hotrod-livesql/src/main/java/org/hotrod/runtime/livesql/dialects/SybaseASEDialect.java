@@ -346,8 +346,13 @@ public class SybaseASEDialect extends LiveSQLDialect {
     if (canonical.matches(UNQUOTED_CANONICAL)) {
       return canonical.toLowerCase();
     } else {
-      return "\"" + canonical.replace("\"", "\"\"").replace("'", "''").replace("]", "]]") + "\"";
+      return this.quoteIdentifier(canonical);
     }
+  }
+
+  @Override
+  public String quoteIdentifier(final String verbatim) {
+    return "\"" + verbatim.replace("\"", "\"\"").replace("'", "''").replace("]", "]]") + "\"";
   }
 
   @Override

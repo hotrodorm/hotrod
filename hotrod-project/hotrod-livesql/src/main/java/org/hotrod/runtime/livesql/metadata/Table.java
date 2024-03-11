@@ -7,7 +7,7 @@ import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 
 public abstract class Table extends TableOrView {
 
-  public Table(final String catalog, final String schema, final String name, final String type, final String alias) {
+  public Table(final Name catalog, final Name schema, final Name name, final String type, final String alias) {
     super(catalog, schema, name, type, alias);
   }
 

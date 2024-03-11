@@ -1,5 +1,6 @@
 package org.hotrod.runtime.livesql.sysobjects;
 
+import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.metadata.StringColumn;
 import org.hotrod.runtime.livesql.metadata.Table;
 
@@ -12,7 +13,7 @@ public class DualTable extends Table {
   // Constructors
 
   public DualTable() {
-    super(null, null, "DUAL", "Table", null);
+    super(null, null, Name.of("DUAL", false), "Table", null);
     initialize();
   }
 

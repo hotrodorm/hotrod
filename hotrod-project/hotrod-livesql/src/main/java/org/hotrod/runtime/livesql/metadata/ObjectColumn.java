@@ -60,17 +60,17 @@ public class ObjectColumn extends ObjectExpression implements Column {
   }
 
   @Override
-  public final String getCatalog() {
+  public final Name getCatalog() {
     return this.objectInstance.getCatalog();
   }
 
   @Override
-  public final String getSchema() {
+  public final Name getSchema() {
     return this.objectInstance.getSchema();
   }
 
   @Override
-  public final String getObjectName() {
+  public final Name getObjectName() {
     return this.objectInstance.getName();
   }
 

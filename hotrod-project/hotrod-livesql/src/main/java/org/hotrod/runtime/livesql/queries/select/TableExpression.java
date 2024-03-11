@@ -4,10 +4,11 @@ import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.Rendereable;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.livesql.metadata.Name;
 
 public interface TableExpression extends Rendereable {
 
-  String getName();
+  Name getName();
 
   List<ResultSetColumn> getColumns() throws IllegalAccessException;
 

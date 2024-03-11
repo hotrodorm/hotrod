@@ -64,7 +64,12 @@ public class RecursiveCTE extends CTE {
 
   @Override
   public void renderDefinitionTo(final QueryWriter w, final LiveSQLDialect dialect) {
-    w.write(w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(super.getName())));
+
+    if (super.getName().isQuoted()) {
+      w.write(w.getSQLDialect().quoteIdentifier(super.getName().getName()));
+    } else {
+      w.write(w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(super.getName().getName())));
+    }
 
     if (w.getSQLDialect().mandatoryColumnNamesInRecursiveCTEs()) {
       if (this.columns != null && this.columns.length > 0) { // explicit column names

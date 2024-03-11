@@ -7,11 +7,11 @@ public interface Column extends ReferenceableExpression {
 
   TableOrView getObjectInstance();
 
-  String getCatalog();
+  Name getCatalog();
 
-  String getSchema();
+  Name getSchema();
 
-  String getObjectName();
+  Name getObjectName();
 
   String getType();
 

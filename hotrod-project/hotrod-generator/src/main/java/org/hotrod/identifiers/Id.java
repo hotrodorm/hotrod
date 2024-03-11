@@ -322,6 +322,10 @@ public class Id implements Comparable<Id> {
     return this.canonicalSQLName;
   }
 
+  public boolean isQuoted() {
+    return isQuoted;
+  }
+
   public String getRenderedSQLName() {
     return this.renderedSQLName;
   }

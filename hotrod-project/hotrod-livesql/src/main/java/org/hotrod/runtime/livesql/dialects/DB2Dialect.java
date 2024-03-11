@@ -345,8 +345,13 @@ public class DB2Dialect extends LiveSQLDialect {
     if (canonical.matches(UNQUOTED_CANONICAL)) {
       return canonical.toLowerCase();
     } else {
-      return "\"" + canonical.replace("\"", "\"\"").replace("'", "''") + "\"";
+      return this.quoteIdentifier(canonical);
     }
+  }
+
+  @Override
+  public String quoteIdentifier(final String verbatim) {
+    return "\"" + verbatim.replace("\"", "\"\"").replace("'", "''") + "\"";
   }
 
   @Override

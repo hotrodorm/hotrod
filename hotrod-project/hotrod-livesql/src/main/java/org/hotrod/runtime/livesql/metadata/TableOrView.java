@@ -16,7 +16,7 @@ public abstract class TableOrView extends DatabaseObject implements TableExpress
   private String designatedAlias;
   protected List<Column> columns;
 
-  TableOrView(final String catalog, final String schema, final String name, final String type, final String alias) {
+  TableOrView(final Name catalog, final Name schema, final Name name, final String type, final String alias) {
     super(catalog, schema, name, type);
     this.alias = alias;
     this.designatedAlias = null;

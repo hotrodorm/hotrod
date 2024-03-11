@@ -35,11 +35,21 @@ public class CTE extends Subquery {
 
   @Override
   public void renderTo(final QueryWriter w) {
-    w.write(w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(super.getName())));
+    if (super.getName().isQuoted()) {
+      w.write(w.getSQLDialect().quoteIdentifier(super.getName().getName()));
+    } else {
+      w.write(w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(super.getName().getName())));
+    }
   }
 
   public void renderDefinitionTo(QueryWriter w, LiveSQLDialect dialect) {
-    w.write(w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(super.getName())));
+
+    if (super.getName().isQuoted()) {
+      w.write(w.getSQLDialect().quoteIdentifier(super.getName().getName()));
+    } else {
+      w.write(w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(super.getName().getName())));
+    }
+
     if (this.columns != null && this.columns.length > 0) {
       w.write(" (");
       w.write(Arrays.stream(this.columns).map(a -> w.getSQLDialect().canonicalToNatural(a))
@@ -64,7 +74,8 @@ public class CTE extends Subquery {
       List<ResultSetColumn> fcols = new ArrayList<>();
       for (int i = 0; i < this.columns.length; i++) {
         ResultSetColumn rsc = cols.get(i);
-        ComparableExpression col = SubqueryUtil.castSubqueryColumnAsExternalLevelSubqueryColumn(this, rsc, this.columns[i]);
+        ComparableExpression col = SubqueryUtil.castSubqueryColumnAsExternalLevelSubqueryColumn(this, rsc,
+            this.columns[i]);
         fcols.add(col);
       }
       return fcols;

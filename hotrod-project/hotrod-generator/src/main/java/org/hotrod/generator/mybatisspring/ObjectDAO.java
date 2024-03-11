@@ -39,6 +39,7 @@ import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.generator.GeneratableObject;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.identifiers.Id;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.EnumDataSetMetadata;
@@ -57,6 +58,7 @@ import org.hotrod.runtime.interfaces.Selectable;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.livesql.LiveSQLMapper;
 import org.hotrod.runtime.livesql.metadata.Column;
+import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.select.MyBatisCursor;
 import org.hotrod.runtime.livesql.util.CastUtil;
@@ -412,6 +414,7 @@ public class ObjectDAO extends GeneratableObject {
     imports.add("org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase");
     imports.add("org.hotrod.runtime.livesql.queries.DeleteWherePhase");
     imports.add("org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase");
+    imports.add(Name.class);
 
     imports.add("org.hotrod.runtime.livesql.metadata.View");
     imports.newLine();
@@ -676,17 +679,11 @@ public class ObjectDAO extends GeneratableObject {
 
       if (cm.getConverter() != null) {
         ConverterTag ct = cm.getConverter();
-        
-        println("    mo."
-            + cm.getId().getJavaSetter() 
-            + "(new "
-            + ct.getJavaClass()
-            + "().decode(("
-            + ct.getJavaRawType()
-            + ") m.get(p + \""
-            + JUtils.escapeJavaString(property)
-            + "\" + s), this.sqlSession.getConnection()));");
-                
+
+        println(
+            "    mo." + cm.getId().getJavaSetter() + "(new " + ct.getJavaClass() + "().decode((" + ct.getJavaRawType()
+                + ") m.get(p + \"" + JUtils.escapeJavaString(property) + "\" + s), this.sqlSession.getConnection()));");
+
       } else if ("java.lang.Byte".equals(javaType) || //
           "java.lang.Short".equals(javaType) || //
           "java.lang.Integer".equals(javaType) || //
@@ -1847,11 +1844,11 @@ public class ObjectDAO extends GeneratableObject {
 
     String type = this.isTable() ? "Table" : "View";
 
-    String catalog = this.metadata.getId().getCatalog() == null ? null
-        : this.metadata.getId().getCatalog().getCanonicalSQLName();
-    String schema = this.metadata.getId().getSchema() == null ? null
-        : this.metadata.getId().getSchema().getCanonicalSQLName();
-    String name = this.metadata.getId().getCanonicalSQLName();
+    Id catalog = this.metadata.getId().getCatalog();
+    Id schema = this.metadata.getId().getSchema();
+    Id name = this.metadata.getId().getObject();
+
+//    String name = this.metadata.getId().getCanonicalSQLName();
 
     println("  // Database " + type + " metadata");
     println();
@@ -1886,19 +1883,21 @@ public class ObjectDAO extends GeneratableObject {
     println("    }");
     println();
 
+    String c = catalog == null ? "null"
+        : "Name.of(\"" + JUtils.escapeJavaString(catalog.getCanonicalSQLName()) + "\", " + catalog.isQuoted() + ")";
+    String s = schema == null ? "null"
+        : "Name.of(\"" + JUtils.escapeJavaString(schema.getCanonicalSQLName()) + "\", " + schema.isQuoted() + ")";
+    String n = "Name.of(\"" + JUtils.escapeJavaString(name.getCanonicalSQLName()) + "\", " + name.isQuoted() + ")";
+
     println("    // Constructors");
     println();
     println("    " + this.metadataClassName + "() {");
-    println("      super(" + (catalog == null ? "null" : "\"" + JUtils.escapeJavaString(catalog) + "\"") + ", "
-        + (schema == null ? "null" : "\"" + JUtils.escapeJavaString(schema) + "\"") + ", \""
-        + JUtils.escapeJavaString(name) + "\", \"" + type + "\", null);");
+    println("      super(" + c + ", " + s + ", " + n + ", \"" + type + "\", null);");
     println("      initialize();");
     println("    }");
     println();
     println("    " + this.metadataClassName + "(final String alias) {");
-    println("      super(" + (catalog == null ? "null" : "\"" + JUtils.escapeJavaString(catalog) + "\"") + ", "
-        + (schema == null ? "null" : "\"" + JUtils.escapeJavaString(schema) + "\"") + ", \""
-        + JUtils.escapeJavaString(name) + "\", \"" + type + "\", alias);");
+    println("      super(" + c + ", " + s + ", " + n + ", \"" + type + "\", alias);");
     println("      initialize();");
     println("    }");
     println();

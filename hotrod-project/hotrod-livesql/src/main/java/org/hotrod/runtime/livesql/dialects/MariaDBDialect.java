@@ -283,7 +283,12 @@ public class MariaDBDialect extends LiveSQLDialect {
   public String canonicalToNatural(final String canonical) {
     if (canonical == null)
       return null;
-    return "`" + canonical.replace("`", "``") + "`";
+    return this.quoteIdentifier(canonical);
+  }
+
+  @Override
+  public String quoteIdentifier(final String verbatim) {
+    return "`" + verbatim.replace("`", "``") + "`";
   }
 
   @Override
