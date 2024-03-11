@@ -5,15 +5,14 @@ package app.daos.primitives;
 import java.io.Serializable;
 import org.hotrod.runtime.json.*;
 
-public class AbstractProductVO implements Serializable {
+public class AbstractCaseVO implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
   // VO Properties (table columns)
 
   protected java.lang.Integer id = null;
-  protected java.lang.String type = null;
-  protected java.lang.Integer shipping = null;
+  protected java.lang.String name = null;
 
   // getters & setters
 
@@ -25,20 +24,12 @@ public class AbstractProductVO implements Serializable {
     this.id = id;
   }
 
-  public java.lang.String getType() {
-    return this.type;
+  public java.lang.String getName() {
+    return this.name;
   }
 
-  public void setType(final java.lang.String type) {
-    this.type = type;
-  }
-
-  public java.lang.Integer getShipping() {
-    return this.shipping;
-  }
-
-  public void setShipping(final java.lang.Integer shipping) {
-    this.shipping = shipping;
+  public void setName(final java.lang.String name) {
+    this.name = name;
   }
 
   // to string
@@ -47,8 +38,7 @@ public class AbstractProductVO implements Serializable {
     java.lang.StringBuilder sb = new java.lang.StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- id=" + this.id + "\n");
-    sb.append("- type=" + this.type + "\n");
-    sb.append("- shipping=" + this.shipping);
+    sb.append("- name=" + this.name);
     return sb.toString();
   }
 
@@ -57,8 +47,7 @@ public class AbstractProductVO implements Serializable {
   public JSONObject toJSONObject() {
     JSONObject obj = new JSONObject();
     obj.addProperty("id", this.id);
-    obj.addProperty("type", this.type);
-    obj.addProperty("shipping", this.shipping);
+    obj.addProperty("name", this.name);
     return obj;
   }
 

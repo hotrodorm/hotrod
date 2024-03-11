@@ -40,6 +40,7 @@ import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
 import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
+import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.metadata.View;
 
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
@@ -97,9 +98,12 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     app.daos.AccountVO mo = this.applicationContext.getBean(app.daos.AccountVO.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
-    mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
-    mo.setParentId(CastUtil.toInteger((Number) m.get(p + "parentId" + s)));
-    mo.setBranchId(CastUtil.toInteger((Number) m.get(p + "branchId" + s)));
+    mo.setPaymentNumber(CastUtil.toDouble((Number) m.get(p + "paymentNumber" + s)));
+    mo.setDateGranted((java.sql.Date) m.get(p + "dateGranted" + s));
+    mo.setAmountGranted(CastUtil.toDouble((Number) m.get(p + "amountGranted" + s)));
+    mo.setInterestRate(CastUtil.toDouble((Number) m.get(p + "interestRate" + s)));
+    mo.setPaymentDate((java.sql.Date) m.get(p + "paymentDate" + s));
+    mo.setPaymentAmount(CastUtil.toDouble((Number) m.get(p + "paymentAmount" + s)));
     return mo;
   }
 
@@ -141,9 +145,12 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     String id = "mappers.account.insert";
     this.sqlSession.insert(id, vo);
     app.daos.AccountVO mo = springBeanObjectFactory.create(app.daos.AccountVO.class);
-    mo.setId(vo.getId());
-    mo.setParentId(vo.getParentId());
-    mo.setBranchId(vo.getBranchId());
+    mo.setPaymentNumber(vo.getPaymentNumber());
+    mo.setDateGranted(vo.getDateGranted());
+    mo.setAmountGranted(vo.getAmountGranted());
+    mo.setInterestRate(vo.getInterestRate());
+    mo.setPaymentDate(vo.getPaymentDate());
+    mo.setPaymentAmount(vo.getPaymentAmount());
     return mo;
   }
 
@@ -163,9 +170,12 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   public UpdateSetCompletePhase update(final app.daos.primitives.AbstractAccountVO updateValues, final AccountDAO.AccountTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
-    if (updateValues.getId() != null) values.put("id", updateValues.getId());
-    if (updateValues.getParentId() != null) values.put("parent_id", updateValues.getParentId());
-    if (updateValues.getBranchId() != null) values.put("branch_id", updateValues.getBranchId());
+    if (updateValues.getPaymentNumber() != null) values.put("\"payment_number\"", updateValues.getPaymentNumber());
+    if (updateValues.getDateGranted() != null) values.put("\"date_granted\"", updateValues.getDateGranted());
+    if (updateValues.getAmountGranted() != null) values.put("\"amount_granted\"", updateValues.getAmountGranted());
+    if (updateValues.getInterestRate() != null) values.put("\"interest_rate\"", updateValues.getInterestRate());
+    if (updateValues.getPaymentDate() != null) values.put("\"payment_date\"", updateValues.getPaymentDate());
+    if (updateValues.getPaymentAmount() != null) values.put("\"payment_amount\"", updateValues.getPaymentAmount());
     return new UpdateSetCompletePhase(this.context, "mappers.account.updateByCriteria", tableOrView,  predicate, values);
   }
 
@@ -186,12 +196,18 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   public enum AccountOrderBy implements OrderBy {
 
-    ID("account", "id", true), //
-    ID$DESC("account", "id", false), //
-    PARENT_ID("account", "parent_id", true), //
-    PARENT_ID$DESC("account", "parent_id", false), //
-    BRANCH_ID("account", "branch_id", true), //
-    BRANCH_ID$DESC("account", "branch_id", false);
+    PAYMENT_NUMBER("account", "\"payment_number\"", true), //
+    PAYMENT_NUMBER$DESC("account", "\"payment_number\"", false), //
+    DATE_GRANTED("account", "\"date_granted\"", true), //
+    DATE_GRANTED$DESC("account", "\"date_granted\"", false), //
+    AMOUNT_GRANTED("account", "\"amount_granted\"", true), //
+    AMOUNT_GRANTED$DESC("account", "\"amount_granted\"", false), //
+    INTEREST_RATE("account", "\"interest_rate\"", true), //
+    INTEREST_RATE$DESC("account", "\"interest_rate\"", false), //
+    PAYMENT_DATE("account", "\"payment_date\"", true), //
+    PAYMENT_DATE$DESC("account", "\"payment_date\"", false), //
+    PAYMENT_AMOUNT("account", "\"payment_amount\"", true), //
+    PAYMENT_AMOUNT$DESC("account", "\"payment_amount\"", false);
 
     private AccountOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -232,25 +248,28 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public NumberColumn id;
-    public NumberColumn parentId;
-    public NumberColumn branchId;
+    public NumberColumn paymentNumber;
+    public DateTimeColumn dateGranted;
+    public NumberColumn amountGranted;
+    public NumberColumn interestRate;
+    public DateTimeColumn paymentDate;
+    public NumberColumn paymentAmount;
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this.id, this.parentId, this.branchId);
+      return new AllColumns(this.paymentNumber, this.dateGranted, this.amountGranted, this.interestRate, this.paymentDate, this.paymentAmount);
     }
 
     // Constructors
 
     AccountTable() {
-      super(null, null, "ACCOUNT", "Table", null);
+      super(null, null, Name.of("account", false), "Table", null);
       initialize();
     }
 
     AccountTable(final String alias) {
-      super(null, null, "ACCOUNT", "Table", alias);
+      super(null, null, Name.of("account", false), "Table", alias);
       initialize();
     }
 
@@ -258,12 +277,18 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
-      super.columns.add(this.id);
-      this.parentId = new NumberColumn(this, "PARENT_ID", "parentId", "INTEGER", 32, 0);
-      super.columns.add(this.parentId);
-      this.branchId = new NumberColumn(this, "BRANCH_ID", "branchId", "INTEGER", 32, 0);
-      super.columns.add(this.branchId);
+      this.paymentNumber = new NumberColumn(this, "payment_number", "paymentNumber", "float", 53, null);
+      super.columns.add(this.paymentNumber);
+      this.dateGranted = new DateTimeColumn(this, "date_granted", "dateGranted", "date", 10, 0);
+      super.columns.add(this.dateGranted);
+      this.amountGranted = new NumberColumn(this, "amount_granted", "amountGranted", "float", 53, null);
+      super.columns.add(this.amountGranted);
+      this.interestRate = new NumberColumn(this, "interest_rate", "interestRate", "float", 53, null);
+      super.columns.add(this.interestRate);
+      this.paymentDate = new DateTimeColumn(this, "payment_date", "paymentDate", "date", 10, 0);
+      super.columns.add(this.paymentDate);
+      this.paymentAmount = new NumberColumn(this, "payment_amount", "paymentAmount", "float", 53, null);
+      super.columns.add(this.paymentAmount);
     }
 
   }

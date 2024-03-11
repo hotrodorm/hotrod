@@ -8,5 +8,8 @@
   
   <table name="invoice" />
   <table name="branch" />
+  <table name="'CASE'" />
+
+  <table name="account" />
 
 </hotrod>

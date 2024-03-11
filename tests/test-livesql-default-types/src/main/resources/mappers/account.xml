@@ -7,21 +7,30 @@
   <!-- columns -->
 
   <sql id="columns">
-    id,
-    parent_id,
-    branch_id
+    "payment_number",
+    "date_granted",
+    "amount_granted",
+    "interest_rate",
+    "payment_date",
+    "payment_amount"
   </sql>
 
   <sql id="columnsWithAlias">
-    ${alias}.id,
-    ${alias}.parent_id,
-    ${alias}.branch_id
+    ${alias}."payment_number",
+    ${alias}."date_granted",
+    ${alias}."amount_granted",
+    ${alias}."interest_rate",
+    ${alias}."payment_date",
+    ${alias}."payment_amount"
   </sql>
 
   <resultMap id="allColumns" type="app.daos.AccountVO">
-    <result property="id" column="ID" />
-    <result property="parentId" column="PARENT_ID" />
-    <result property="branchId" column="BRANCH_ID" />
+    <result property="paymentNumber" column="payment_number" />
+    <result property="dateGranted" column="date_granted" />
+    <result property="amountGranted" column="amount_granted" />
+    <result property="interestRate" column="interest_rate" />
+    <result property="paymentDate" column="payment_date" />
+    <result property="paymentAmount" column="payment_amount" />
   </resultMap>
 
   <!-- select by PK: no mapping generated, since the table does not have a PK -->
@@ -35,14 +44,23 @@
       <include refid="columns" />
      from account
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
-      <if test="p.id != null">
-        and id = #{p.id,jdbcType=INTEGER}
+      <if test="p.paymentNumber != null">
+        and "payment_number" = #{p.paymentNumber,jdbcType=DOUBLE}
       </if>
-      <if test="p.parentId != null">
-        and parent_id = #{p.parentId,jdbcType=INTEGER}
+      <if test="p.dateGranted != null">
+        and "date_granted" = #{p.dateGranted,jdbcType=DATE}
       </if>
-      <if test="p.branchId != null">
-        and branch_id = #{p.branchId,jdbcType=INTEGER}
+      <if test="p.amountGranted != null">
+        and "amount_granted" = #{p.amountGranted,jdbcType=DOUBLE}
+      </if>
+      <if test="p.interestRate != null">
+        and "interest_rate" = #{p.interestRate,jdbcType=DOUBLE}
+      </if>
+      <if test="p.paymentDate != null">
+        and "payment_date" = #{p.paymentDate,jdbcType=DATE}
+      </if>
+      <if test="p.paymentAmount != null">
+        and "payment_amount" = #{p.paymentAmount,jdbcType=DOUBLE}
       </if>
     </trim>
     <if test="o != null">
@@ -56,23 +74,26 @@
     ${sql}
   </select>
 
-  <!-- insert (using sequences prefetch) -->
+  <!-- insert (no auto-generated columns) -->
 
   <insert id="insert">
-    <selectKey keyProperty="id" resultType="app.daos.AccountVO" order="BEFORE">
-      select next value for seq1 as id
-    </selectKey>
     insert into account (
       <trim prefixOverrides=", ">
-        <if test="true">, id</if>
-        <if test="true">, parent_id</if>
-        <if test="true">, branch_id</if>
+        <if test="true">, "payment_number"</if>
+        <if test="true">, "date_granted"</if>
+        <if test="true">, "amount_granted"</if>
+        <if test="true">, "interest_rate"</if>
+        <if test="true">, "payment_date"</if>
+        <if test="true">, "payment_amount"</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
-        <if test="true">, #{id,jdbcType=INTEGER}</if>
-        <if test="true">, #{parentId,jdbcType=INTEGER}</if>
-        <if test="true">, #{branchId,jdbcType=INTEGER}</if>
+        <if test="true">, #{paymentNumber,jdbcType=DOUBLE}</if>
+        <if test="true">, #{dateGranted,jdbcType=DATE}</if>
+        <if test="true">, #{amountGranted,jdbcType=DOUBLE}</if>
+        <if test="true">, #{interestRate,jdbcType=DOUBLE}</if>
+        <if test="true">, #{paymentDate,jdbcType=DATE}</if>
+        <if test="true">, #{paymentAmount,jdbcType=DOUBLE}</if>
       </trim>
       )
   </insert>
@@ -86,19 +107,31 @@
   <update id="updateByExample">
     update account
     <set>
-      <if test="values.id != null">id = #{values.id,jdbcType=INTEGER},</if>
-      <if test="values.parentId != null">parent_id = #{values.parentId,jdbcType=INTEGER},</if>
-      <if test="values.branchId != null">branch_id = #{values.branchId,jdbcType=INTEGER},</if>
+      <if test="values.paymentNumber != null">"payment_number" = #{values.paymentNumber,jdbcType=DOUBLE},</if>
+      <if test="values.dateGranted != null">"date_granted" = #{values.dateGranted,jdbcType=DATE},</if>
+      <if test="values.amountGranted != null">"amount_granted" = #{values.amountGranted,jdbcType=DOUBLE},</if>
+      <if test="values.interestRate != null">"interest_rate" = #{values.interestRate,jdbcType=DOUBLE},</if>
+      <if test="values.paymentDate != null">"payment_date" = #{values.paymentDate,jdbcType=DATE},</if>
+      <if test="values.paymentAmount != null">"payment_amount" = #{values.paymentAmount,jdbcType=DOUBLE},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
-      <if test="filter.id != null">
-        and id = #{filter.id,jdbcType=INTEGER}
+      <if test="filter.paymentNumber != null">
+        and "payment_number" = #{filter.paymentNumber,jdbcType=DOUBLE}
       </if>
-      <if test="filter.parentId != null">
-        and parent_id = #{filter.parentId,jdbcType=INTEGER}
+      <if test="filter.dateGranted != null">
+        and "date_granted" = #{filter.dateGranted,jdbcType=DATE}
       </if>
-      <if test="filter.branchId != null">
-        and branch_id = #{filter.branchId,jdbcType=INTEGER}
+      <if test="filter.amountGranted != null">
+        and "amount_granted" = #{filter.amountGranted,jdbcType=DOUBLE}
+      </if>
+      <if test="filter.interestRate != null">
+        and "interest_rate" = #{filter.interestRate,jdbcType=DOUBLE}
+      </if>
+      <if test="filter.paymentDate != null">
+        and "payment_date" = #{filter.paymentDate,jdbcType=DATE}
+      </if>
+      <if test="filter.paymentAmount != null">
+        and "payment_amount" = #{filter.paymentAmount,jdbcType=DOUBLE}
       </if>
     </trim>
   </update>
@@ -114,14 +147,23 @@
   <delete id="deleteByExample">
     delete from account
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
-      <if test="id != null">
-        and id = #{id,jdbcType=INTEGER}
+      <if test="paymentNumber != null">
+        and "payment_number" = #{paymentNumber,jdbcType=DOUBLE}
       </if>
-      <if test="parentId != null">
-        and parent_id = #{parentId,jdbcType=INTEGER}
+      <if test="dateGranted != null">
+        and "date_granted" = #{dateGranted,jdbcType=DATE}
       </if>
-      <if test="branchId != null">
-        and branch_id = #{branchId,jdbcType=INTEGER}
+      <if test="amountGranted != null">
+        and "amount_granted" = #{amountGranted,jdbcType=DOUBLE}
+      </if>
+      <if test="interestRate != null">
+        and "interest_rate" = #{interestRate,jdbcType=DOUBLE}
+      </if>
+      <if test="paymentDate != null">
+        and "payment_date" = #{paymentDate,jdbcType=DATE}
+      </if>
+      <if test="paymentAmount != null">
+        and "payment_amount" = #{paymentAmount,jdbcType=DOUBLE}
       </if>
     </trim>
   </delete>

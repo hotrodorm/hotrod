@@ -18,9 +18,9 @@ import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.queries.DMLQuery;
 import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.runtime.livesql.queries.select.CriteriaForUpdatePhase;
+import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.queries.select.EntitySelect;
 import org.hotrod.runtime.livesql.queries.select.Select;
-import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,28 +33,16 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-import app.daos.AccountVO;
-import app.daos.BranchVO;
-import app.daos.DatesVO;
+import app.daos.CaseVO;
 import app.daos.InvoiceVO;
 import app.daos.primitives.AccountDAO;
 import app.daos.primitives.AccountDAO.AccountTable;
-import app.daos.primitives.BinariesDAO;
 import app.daos.primitives.BranchDAO;
 import app.daos.primitives.BranchDAO.BranchTable;
-import app.daos.primitives.CharsDAO;
-import app.daos.primitives.DatesDAO;
-import app.daos.primitives.DatesDAO.DatesTable;
+import app.daos.primitives.CaseDAO;
+import app.daos.primitives.CaseDAO.CaseTable;
 import app.daos.primitives.InvoiceDAO;
 import app.daos.primitives.InvoiceDAO.InvoiceTable;
-import app.daos.primitives.InvoiceLineDAO;
-import app.daos.primitives.InvoiceLineDAO.InvoiceLineTable;
-import app.daos.primitives.NumbersDAO;
-import app.daos.primitives.OtherDAO;
-import app.daos.primitives.PaymentDAO;
-import app.daos.primitives.PaymentDAO.PaymentTable;
-import app.daos.primitives.ProductDAO;
-import app.daos.primitives.ProductDAO.ProductTable;
 
 @Configuration
 @SpringBootApplication
@@ -78,8 +66,11 @@ public class App {
   @Autowired
   private InvoiceDAO invoiceDAO;
 
+//  @Autowired
+//  private DatesDAO datesDAO;
+
   @Autowired
-  private DatesDAO datesDAO;
+  private CaseDAO caseDAO;
 
   @Autowired
   private LiveSQL sql;
@@ -177,21 +168,41 @@ public class App {
   }
 
   private void crud() {
-    System.out.println("Will INSERT");
-    
-    AccountVO a = new AccountVO();
-    a.setBranchId(100);
-    a.setParentId(120);
-    a = this.accountDAO.insert(a);
-    
-    System.out.println("INSERTED: a="+a);
+//    crudInsert();
+//    crudSelect();
+    selectCases();
+  }
 
-    a = this.accountDAO.insert(a);   
-    System.out.println("INSERTED: a="+a);
+  private void crudSelect() {
+    List<CaseVO> cases = this.caseDAO.select(new CaseVO());
+    cases.forEach(x -> System.out.println("case:" + x));
+  }
 
-    a = this.accountDAO.insert(a);   
-    System.out.println("INSERTED: a="+a);
-}
+  private void selectCases() {
+    CaseTable c = CaseDAO.newTable("c");
+    CriteriaWherePhase<CaseVO> select = this.caseDAO.select(c, c.name.ne("bad"));
+    String p = select.getPreview();
+    System.out.println("preview=" + p);
+    List<CaseVO> cases = select.execute();
+    cases.forEach(x -> System.out.println("case:" + x));
+  }
+
+//  private void crudInsert() {
+//    System.out.println("Will INSERT");
+//
+//    AccountVO a = new AccountVO();
+//    a.setBranchId(100);
+//    a.setParentId(120);
+//    a = this.accountDAO.insert(a);
+//
+//    System.out.println("INSERTED: a=" + a);
+//
+//    a = this.accountDAO.insert(a);
+//    System.out.println("INSERTED: a=" + a);
+//
+//    a = this.accountDAO.insert(a);
+//    System.out.println("INSERTED: a=" + a);
+//  }
 
 //
 //  private void joinedTableExpressions() {
@@ -378,18 +389,18 @@ public class App {
     System.out.println("- " + prompt + ": " + v + " (" + (v == null ? "null" : v.getClass().getName()) + ")");
   }
 
-  private void converter() {
-    AccountTable a = AccountDAO.newTable("a");
-    BranchTable b = BranchDAO.newTable("b");
-
-    Row r = this.sql.select(a.star().as(c -> "a:" + c.getProperty()), b.star().as(c -> "b:" + c.getProperty())).from(b)
-        .join(a, a.branchId.eq(b.id)).where(b.region.like("N%")).orderBy(b.id.desc()).limit(1).executeOne();
-
-    AccountVO account = this.accountDAO.parseRow(r, "a:");
-    BranchVO branch = this.branchDAO.parseRow(r, "b:");
-
-    System.out.println("account=" + account + "\nbranch=" + branch);
-  }
+//  private void converter() {
+//    AccountTable a = AccountDAO.newTable("a");
+//    BranchTable b = BranchDAO.newTable("b");
+//
+//    Row r = this.sql.select(a.star().as(c -> "a:" + c.getProperty()), b.star().as(c -> "b:" + c.getProperty())).from(b)
+//        .join(a, a.branchId.eq(b.id)).where(b.region.like("N%")).orderBy(b.id.desc()).limit(1).executeOne();
+//
+//    AccountVO account = this.accountDAO.parseRow(r, "a:");
+//    BranchVO branch = this.branchDAO.parseRow(r, "b:");
+//
+//    System.out.println("account=" + account + "\nbranch=" + branch);
+//  }
 
   private void liveSQLExamples() throws SQLException {
 
@@ -422,38 +433,38 @@ public class App {
 
   }
 
-  @Autowired
-  private NumbersDAO tn;
-
-  @Autowired
-  private CharsDAO tc;
-
-  @Autowired
-  private DatesDAO td;
-
-  @Autowired
-  private BinariesDAO tb;
-
-  @Autowired
-  private OtherDAO to;
-
-  private void types() throws SQLException {
-//    System.out.println("\nTYPES_NUMERIC");
-//    print(this.sql.select().from(TypesNumericDAO.newTable()).execute());
+//  @Autowired
+//  private NumbersDAO tn;
 //
-//    System.out.println("\nTYPES_CHAR");
-//    print(this.sql.select().from(TypesCharDAO.newTable()).execute());
+//  @Autowired
+//  private CharsDAO tc;
+//
+//  @Autowired
+//  private DatesDAO td;
+//
+//  @Autowired
+//  private BinariesDAO tb;
+//
+//  @Autowired
+//  private OtherDAO to;
 
-    System.out.println("\nTYPES_DATE_TIME");
-//    print(
-    List<?> li = this.sql.select().from(DatesDAO.newTable()).execute();
-    for (Object obj : li) {
-      System.out.println("obj: " + obj.getClass().getName());
-      DatesVO vo = (DatesVO) obj;
-      System.out.println("vo: " + vo);
-    }
-
-  }
+//  private void types() throws SQLException {
+////    System.out.println("\nTYPES_NUMERIC");
+////    print(this.sql.select().from(TypesNumericDAO.newTable()).execute());
+////
+////    System.out.println("\nTYPES_CHAR");
+////    print(this.sql.select().from(TypesCharDAO.newTable()).execute());
+//
+//    System.out.println("\nTYPES_DATE_TIME");
+////    print(
+//    List<?> li = this.sql.select().from(DatesDAO.newTable()).execute();
+//    for (Object obj : li) {
+//      System.out.println("obj: " + obj.getClass().getName());
+//      DatesVO vo = (DatesVO) obj;
+//      System.out.println("vo: " + vo);
+//    }
+//
+//  }
 
   private void distinctOn() throws SQLException {
 
@@ -482,49 +493,49 @@ public class App {
     }
   }
 
-  private void dates() throws SQLException {
-    DatesTable t = DatesDAO.newTable("t");
-
-//    System.out.println("ENV PROPERTIES");
-//    Map<String, String> env = System.getenv();
-//    for (String name : env.keySet()) {
-//      String value = env.get(name);
-//      System.out.println(" - " + name + "=" + value);
-//    }
-
-//    System.out.println("ARGUMENTS");
-//    RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
-//    List<String> arguments = runtimeMxBean.getInputArguments();
-//    for (String a : arguments) {
-//      System.out.println(" - " + a);
-//    }
-//    System.out.println("------------------------------------");
-
-//    org.apache.ibatis.session.Configuration conf = this.sqlSession.getConfiguration();
-//    conf.getEnvironment()
-
-    List<DatesVO> types = this.datesDAO.select(new DatesVO());
-
-    for (DatesVO tp : types) {
-      System.out.println("t:" + tp);
-    }
-
-//    Map<String, Object> parameters = new HashMap<>();
-//    parameters.
-//    List<Object> list = this.typesDateTimeDAO.sqlSession.selectList("", parameters);
-
-//    List<Row> rows = this.sql.select().from(t).execute();
+//  private void dates() throws SQLException {
+//    DatesTable t = DatesDAO.newTable("t");
 //
-//    System.out.println("rows:");
+////    System.out.println("ENV PROPERTIES");
+////    Map<String, String> env = System.getenv();
+////    for (String name : env.keySet()) {
+////      String value = env.get(name);
+////      System.out.println(" - " + name + "=" + value);
+////    }
 //
-//    for (Row r : rows) {
-//      System.out.println("Row:");
-//      println("dat1 (DATE)", r.get("dat1"));
-//      println("dat2 (TIMESTAMP)", r.get("dat2"));
-//      println("dat3 (TIMESTAMP WITH TIME ZONE)", r.get("dat3"));
-//      println("dat4 (TIMESTAMP WITH LOCAL TIME ZONE)", r.get("dat3"));
+////    System.out.println("ARGUMENTS");
+////    RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
+////    List<String> arguments = runtimeMxBean.getInputArguments();
+////    for (String a : arguments) {
+////      System.out.println(" - " + a);
+////    }
+////    System.out.println("------------------------------------");
+//
+////    org.apache.ibatis.session.Configuration conf = this.sqlSession.getConfiguration();
+////    conf.getEnvironment()
+//
+//    List<DatesVO> types = this.datesDAO.select(new DatesVO());
+//
+//    for (DatesVO tp : types) {
+//      System.out.println("t:" + tp);
 //    }
-  }
+//
+////    Map<String, Object> parameters = new HashMap<>();
+////    parameters.
+////    List<Object> list = this.typesDateTimeDAO.sqlSession.selectList("", parameters);
+//
+////    List<Row> rows = this.sql.select().from(t).execute();
+////
+////    System.out.println("rows:");
+////
+////    for (Row r : rows) {
+////      System.out.println("Row:");
+////      println("dat1 (DATE)", r.get("dat1"));
+////      println("dat2 (TIMESTAMP)", r.get("dat2"));
+////      println("dat3 (TIMESTAMP WITH TIME ZONE)", r.get("dat3"));
+////      println("dat4 (TIMESTAMP WITH LOCAL TIME ZONE)", r.get("dat3"));
+////    }
+//  }
 
   private void forUpdate() {
     this.businessLogic.forUpdate();
@@ -928,122 +939,122 @@ public class App {
 
   }
 
-  private void example4ScalarSubqueries() {
-
-//    4. Scalar Subqueries
+//  private void example4ScalarSubqueries() {
 //
-//    select
-//      i.*,
-//      50 + (select max(amount) from payment where amount < 1000) / 2 as score, 
-//      (select sum(unpaid_balance) from invoice b where b.account_id = i.account_id and b.id <> i.id) as other_unpaid  
-//    from invoice i
-//    where i.status = 'UNPAID'
-
-    InvoiceTable i = InvoiceDAO.newTable("i");
-    InvoiceTable b = InvoiceDAO.newTable("b");
-    PaymentTable p = PaymentDAO.newTable("p");
-
-    Select<Row> q = sql.select( //
-        i.star(), //
-        sql.val(50).mult(sql.selectScalar(sql.max(p.amount)).from(p).where(p.amount.lt(1000)).div(2)).as("score"),
-        sql.selectScalar(sql.val("a")).from(b).where(b.accountId.eq(i.accountId).and(b.id.ne(i.id))).substr(1, 3)
-            .as("otherUnpaid"))
-        .from(i) //
-        .where(i.status.eq("UNPAID"));
-    System.out.println(q.getPreview());
-    q.execute().forEach(r -> System.out.println("row: " + r));
-
-  }
-
-  private void example5TableExpressions() {
-
-//    5. Table Expressions
+////    4. Scalar Subqueries
+////
+////    select
+////      i.*,
+////      50 + (select max(amount) from payment where amount < 1000) / 2 as score, 
+////      (select sum(unpaid_balance) from invoice b where b.account_id = i.account_id and b.id <> i.id) as other_unpaid  
+////    from invoice i
+////    where i.status = 'UNPAID'
 //
-//    select a.*
-//    from account a
-//    join (
-//      select i.account_id, p.id, sum(l.line_total) as total
-//      from invoice i
-//      join invoice_line l on l.invoice_id = i.id
-//      join product p on p.id = l.product_id
-//      where p.type = 'OTC'
-//      group by i.account_id, p.id
-//    ) x on x.account_id = a.id
-//    where x.total > 1000
-
-    AccountTable a = AccountDAO.newTable("a");
-    InvoiceTable i = InvoiceDAO.newTable("i");
-    InvoiceLineTable l = InvoiceLineDAO.newTable("l");
-    ProductTable p = ProductDAO.newTable("p");
-
-    Subquery x = sql.subquery("x", //
-        sql.select(i.accountId, p.id, sql.sum(l.lineTotal).as("total")) //
-            .from(i) //
-            .join(l, l.invoiceId.eq(i.id)) //
-            .join(p, p.id.eq(l.productId)) //
-            .where(p.type.eq("OTC")) //
-            .groupBy(i.accountId, p.id) //
-    );
-
-//    x.materialize("accounting.OTCInvoices");
-//    OTCInvoices x =  sql.materializedSubquery("x", "accounting.OTCInvoices", OTCInvoices.class, //
-
-    Select<Row> q = sql.select(a.star()) //
-        .from(a) //
-        .join(x, x.num("accountId").eq(a.id)) //
-        .where(x.num("total").gt(1000));
-
-    System.out.println(q.getPreview());
-    q.execute().forEach(r -> System.out.println("row: " + r));
-
-  }
-
-  private void example5NestedTableExpressions() {
-
-//    5. Nested Table Expressions
+//    InvoiceTable i = InvoiceDAO.newTable("i");
+//    InvoiceTable b = InvoiceDAO.newTable("b");
+//    PaymentTable p = PaymentDAO.newTable("p");
 //
-//    select grp, min(order_date) as start, sum(payment) as group_payment 
-//    from (
-//      select x.*, sum(inc) over(partition by id order by order_date) as grp
-//      from (
-//        select i.*, case when type <> lag(type) over(partition by id order by order_date) 
-//                         then 1 else 0 end as inc
-//        join invoice i 
-//        where account_id = 1015 
-//      ) x
-//    ) y
-//    group by grp
+//    Select<Row> q = sql.select( //
+//        i.star(), //
+//        sql.val(50).mult(sql.selectScalar(sql.max(p.amount)).from(p).where(p.amount.lt(1000)).div(2)).as("score"),
+//        sql.selectScalar(sql.val("a")).from(b).where(b.accountId.eq(i.accountId).and(b.id.ne(i.id))).substr(1, 3)
+//            .as("otherUnpaid"))
+//        .from(i) //
+//        .where(i.status.eq("UNPAID"));
+//    System.out.println(q.getPreview());
+//    q.execute().forEach(r -> System.out.println("row: " + r));
+//
+//  }
 
-    InvoiceTable i = InvoiceDAO.newTable("i");
-    InvoiceLineTable l = InvoiceLineDAO.newTable("l");
-    ProductTable p = ProductDAO.newTable("p");
+//  private void example5TableExpressions() {
+//
+////    5. Table Expressions
+////
+////    select a.*
+////    from account a
+////    join (
+////      select i.account_id, p.id, sum(l.line_total) as total
+////      from invoice i
+////      join invoice_line l on l.invoice_id = i.id
+////      join product p on p.id = l.product_id
+////      where p.type = 'OTC'
+////      group by i.account_id, p.id
+////    ) x on x.account_id = a.id
+////    where x.total > 1000
+//
+//    AccountTable a = AccountDAO.newTable("a");
+//    InvoiceTable i = InvoiceDAO.newTable("i");
+//    InvoiceLineTable l = InvoiceLineDAO.newTable("l");
+//    ProductTable p = ProductDAO.newTable("p");
+//
+//    Subquery x = sql.subquery("x", //
+//        sql.select(i.accountId, p.id, sql.sum(l.lineTotal).as("total")) //
+//            .from(i) //
+//            .join(l, l.invoiceId.eq(i.id)) //
+//            .join(p, p.id.eq(l.productId)) //
+//            .where(p.type.eq("OTC")) //
+//            .groupBy(i.accountId, p.id) //
+//    );
+//
+////    x.materialize("accounting.OTCInvoices");
+////    OTCInvoices x =  sql.materializedSubquery("x", "accounting.OTCInvoices", OTCInvoices.class, //
+//
+//    Select<Row> q = sql.select(a.star()) //
+//        .from(a) //
+//        .join(x, x.num("accountId").eq(a.id)) //
+//        .where(x.num("total").gt(1000));
+//
+//    System.out.println(q.getPreview());
+//    q.execute().forEach(r -> System.out.println("row: " + r));
+//
+//  }
 
-    Subquery x = sql.subquery("x", //
-        sql.select( //
-            i.star(), //
-            sql.caseWhen(
-                i.type.ne(sql.lag(i.type, 1, sql.val("a")).over().partitionBy(i.id).orderBy(i.orderDate.asc()).end()),
-                1).elseValue(0).end().as("inc")) //
-            .from(i) //
-            .where(i.accountId.eq(1015)) //
-    );
-    Subquery y = sql.subquery("y", //
-        sql.select( //
-            x.star(), //
-            sql.sum(x.num("inc")).over().partitionBy(x.num("id")).orderBy(x.dt("orderDate").asc()).end().as("grp")) //
-            .from(x) //
-    );
-    Select<Row> q = sql.select( //
-        y.num("grp"), //
-        sql.min(y.dt("orderDate")).as("start"), //
-        sql.sum(y.num("unpaidBalance")).as("groupBalance")) //
-        .from(y) //
-        .groupBy(y.num("grp"));
-
-    System.out.println(q.getPreview());
-    q.execute().forEach(r -> System.out.println("row: " + r));
-
-  }
+//  private void example5NestedTableExpressions() {
+//
+////    5. Nested Table Expressions
+////
+////    select grp, min(order_date) as start, sum(payment) as group_payment 
+////    from (
+////      select x.*, sum(inc) over(partition by id order by order_date) as grp
+////      from (
+////        select i.*, case when type <> lag(type) over(partition by id order by order_date) 
+////                         then 1 else 0 end as inc
+////        join invoice i 
+////        where account_id = 1015 
+////      ) x
+////    ) y
+////    group by grp
+//
+//    InvoiceTable i = InvoiceDAO.newTable("i");
+//    InvoiceLineTable l = InvoiceLineDAO.newTable("l");
+//    ProductTable p = ProductDAO.newTable("p");
+//
+//    Subquery x = sql.subquery("x", //
+//        sql.select( //
+//            i.star(), //
+//            sql.caseWhen(
+//                i.type.ne(sql.lag(i.type, 1, sql.val("a")).over().partitionBy(i.id).orderBy(i.orderDate.asc()).end()),
+//                1).elseValue(0).end().as("inc")) //
+//            .from(i) //
+//            .where(i.accountId.eq(1015)) //
+//    );
+//    Subquery y = sql.subquery("y", //
+//        sql.select( //
+//            x.star(), //
+//            sql.sum(x.num("inc")).over().partitionBy(x.num("id")).orderBy(x.dt("orderDate").asc()).end().as("grp")) //
+//            .from(x) //
+//    );
+//    Select<Row> q = sql.select( //
+//        y.num("grp"), //
+//        sql.min(y.dt("orderDate")).as("start"), //
+//        sql.sum(y.num("unpaidBalance")).as("groupBalance")) //
+//        .from(y) //
+//        .groupBy(y.num("grp"));
+//
+//    System.out.println(q.getPreview());
+//    q.execute().forEach(r -> System.out.println("row: " + r));
+//
+//  }
 
   private void example5JoinedTableExpressions() {
 

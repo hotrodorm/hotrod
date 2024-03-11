@@ -15,14 +15,9 @@ import org.hotrod.runtime.interfaces.OrderBy;
 
 import app.daos.primitives.AbstractBranchVO;
 import app.daos.BranchVO;
-
-import java.sql.SQLException;
-import java.sql.CallableStatement;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.TypeHandler;
-import org.hotrod.runtime.converter.TypeConverter;
+import app.daos.InvoiceVO;
+import app.daos.primitives.InvoiceDAO.InvoiceOrderBy;
+import app.daos.primitives.InvoiceDAO;
 
 import java.lang.Override;
 import java.util.Map;
@@ -48,6 +43,7 @@ import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
 import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
+import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.metadata.View;
 
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
@@ -66,6 +62,10 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   @Autowired
   private SqlSession sqlSession;
+
+  @Lazy
+  @Autowired
+  private InvoiceDAO invoiceDAO;
 
   @Autowired
   private LiveSQLDialect liveSQLDialect;
@@ -106,14 +106,23 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
     mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
+    mo.setName((java.lang.String) m.get(p + "name" + s));
     mo.setRegion((java.lang.String) m.get(p + "region" + s));
-    mo.setIsVip(new app.IntegerBooleanConverter().decode((java.lang.Integer) m.get(p + "isVip" + s), this.sqlSession.getConnection()));
+    mo.setIsVip(CastUtil.toInteger((Number) m.get(p + "isVip" + s)));
     return mo;
   }
 
-  // no select by PK generated, since the table does not have a PK.
+  // select by primary key
 
-  // select by unique indexes: no unique indexes found -- skipped
+  public app.daos.BranchVO select(final java.lang.Integer id) {
+    if (id == null)
+      return null;
+    app.daos.BranchVO vo = new app.daos.BranchVO();
+    vo.setId(id);
+    return this.sqlSession.selectOne("mappers.branch.selectByPK", vo);
+  }
+
+  // select by unique indexes: no unique indexes found (besides the PK) -- skipped
 
   // select by example
 
@@ -141,7 +150,47 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   // select parent(s) by FKs: no imported keys found -- skipped
 
-  // select children by FKs: no exported FKs found -- skipped
+  // select children by FKs
+
+  public SelectChildrenInvoicePhase selectChildrenInvoiceOf(final BranchVO vo) {
+    return new SelectChildrenInvoicePhase(vo);
+  }
+
+  public class SelectChildrenInvoicePhase {
+
+    private BranchVO vo;
+
+    SelectChildrenInvoicePhase(final BranchVO vo) {
+      this.vo = vo;
+    }
+
+    public SelectChildrenInvoiceFromIdPhase fromId() {
+      return new SelectChildrenInvoiceFromIdPhase(this.vo);
+    }
+
+  }
+
+  public class SelectChildrenInvoiceFromIdPhase {
+
+    private BranchVO vo;
+
+    SelectChildrenInvoiceFromIdPhase(final BranchVO vo) {
+      this.vo = vo;
+    }
+
+    public List<InvoiceVO> toBranchId(final InvoiceOrderBy... orderBies) {
+      InvoiceVO example = new InvoiceVO();
+      example.setBranchId(this.vo.getId());
+      return invoiceDAO.select(example, orderBies);
+    }
+
+    public Cursor<InvoiceVO> cursorToBranchId(final InvoiceOrderBy... orderBies) {
+      InvoiceVO example = new InvoiceVO();
+      example.setBranchId(this.vo.getId());
+      return invoiceDAO.selectCursor(example, orderBies);
+    }
+
+  }
 
   // insert
 
@@ -150,14 +199,28 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     this.sqlSession.insert(id, vo);
     app.daos.BranchVO mo = springBeanObjectFactory.create(app.daos.BranchVO.class);
     mo.setId(vo.getId());
+    mo.setName(vo.getName());
     mo.setRegion(vo.getRegion());
     mo.setIsVip(vo.getIsVip());
     return mo;
   }
 
-  // no update by PK generated, since the table does not have a PK.
+  // update by PK
 
-  // no delete by PK generated, since the table does not have a PK.
+  public int update(final app.daos.BranchVO vo) {
+    if (vo.getId() == null) return 0;
+    return this.sqlSession.update("mappers.branch.updateByPK", vo);
+  }
+
+  // delete by PK
+
+  public int delete(final java.lang.Integer id) {
+    if (id == null) return 0;
+    app.daos.BranchVO vo = new app.daos.BranchVO();
+    vo.setId(id);
+    if (vo.getId() == null) return 0;
+    return this.sqlSession.delete("mappers.branch.deleteByPK", vo);
+  }
 
   // update by example
 
@@ -171,9 +234,10 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   public UpdateSetCompletePhase update(final app.daos.primitives.AbstractBranchVO updateValues, final BranchDAO.BranchTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
-    if (updateValues.getId() != null) values.put("id", updateValues.getId());
-    if (updateValues.getRegion() != null) values.put("region", updateValues.getRegion());
-    if (updateValues.getIsVip() != null) values.put("is_vip", updateValues.getIsVip());
+    if (updateValues.getId() != null) values.put("\"id\"", updateValues.getId());
+    if (updateValues.getName() != null) values.put("\"NaMe\"", updateValues.getName());
+    if (updateValues.getRegion() != null) values.put("\"region\"", updateValues.getRegion());
+    if (updateValues.getIsVip() != null) values.put("\"is_vip\"", updateValues.getIsVip());
     return new UpdateSetCompletePhase(this.context, "mappers.branch.updateByCriteria", tableOrView,  predicate, values);
   }
 
@@ -194,18 +258,26 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   public enum BranchOrderBy implements OrderBy {
 
-    ID("branch", "id", true), //
-    ID$DESC("branch", "id", false), //
-    REGION("branch", "region", true), //
-    REGION$DESC("branch", "region", false), //
-    REGION$CASEINSENSITIVE("branch", "lower(region)", true), //
-    REGION$CASEINSENSITIVE_STABLE_FORWARD("branch", "lower(region), region", true), //
-    REGION$CASEINSENSITIVE_STABLE_REVERSE("branch", "lower(region), region", false), //
-    REGION$DESC_CASEINSENSITIVE("branch", "lower(region)", false), //
-    REGION$DESC_CASEINSENSITIVE_STABLE_FORWARD("branch", "lower(region), region", false), //
-    REGION$DESC_CASEINSENSITIVE_STABLE_REVERSE("branch", "lower(region), region", true), //
-    IS_VIP("branch", "is_vip", true), //
-    IS_VIP$DESC("branch", "is_vip", false);
+    ID("branch", "\"id\"", true), //
+    ID$DESC("branch", "\"id\"", false), //
+    NAME("branch", "\"NaMe\"", true), //
+    NAME$DESC("branch", "\"NaMe\"", false), //
+    NAME$CASEINSENSITIVE("branch", "lower(\"NaMe\")", true), //
+    NAME$CASEINSENSITIVE_STABLE_FORWARD("branch", "lower(\"NaMe\"), \"NaMe\"", true), //
+    NAME$CASEINSENSITIVE_STABLE_REVERSE("branch", "lower(\"NaMe\"), \"NaMe\"", false), //
+    NAME$DESC_CASEINSENSITIVE("branch", "lower(\"NaMe\")", false), //
+    NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("branch", "lower(\"NaMe\"), \"NaMe\"", false), //
+    NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("branch", "lower(\"NaMe\"), \"NaMe\"", true), //
+    REGION("branch", "\"region\"", true), //
+    REGION$DESC("branch", "\"region\"", false), //
+    REGION$CASEINSENSITIVE("branch", "lower(\"region\")", true), //
+    REGION$CASEINSENSITIVE_STABLE_FORWARD("branch", "lower(\"region\"), \"region\"", true), //
+    REGION$CASEINSENSITIVE_STABLE_REVERSE("branch", "lower(\"region\"), \"region\"", false), //
+    REGION$DESC_CASEINSENSITIVE("branch", "lower(\"region\")", false), //
+    REGION$DESC_CASEINSENSITIVE_STABLE_FORWARD("branch", "lower(\"region\"), \"region\"", false), //
+    REGION$DESC_CASEINSENSITIVE_STABLE_REVERSE("branch", "lower(\"region\"), \"region\"", true), //
+    IS_VIP("branch", "\"is_vip\"", true), //
+    IS_VIP$DESC("branch", "\"is_vip\"", false);
 
     private BranchOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -247,24 +319,25 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     // Properties
 
     public NumberColumn id;
+    public StringColumn name;
     public StringColumn region;
-    public BooleanColumn isVip;
+    public NumberColumn isVip;
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this.id, this.region, this.isVip);
+      return new AllColumns(this.id, this.name, this.region, this.isVip);
     }
 
     // Constructors
 
     BranchTable() {
-      super(null, null, "BRANCH", "Table", null);
+      super(null, null, Name.of("branch", false), "Table", null);
       initialize();
     }
 
     BranchTable(final String alias) {
-      super(null, null, "BRANCH", "Table", alias);
+      super(null, null, Name.of("branch", false), "Table", alias);
       initialize();
     }
 
@@ -272,58 +345,14 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
+      this.id = new NumberColumn(this, "id", "id", "int", 10, 0);
       super.columns.add(this.id);
-      this.region = new StringColumn(this, "REGION", "region", "CHARACTER VARYING", 10, 0);
+      this.name = new StringColumn(this, "NaMe", "name", "varchar", 20, null);
+      super.columns.add(this.name);
+      this.region = new StringColumn(this, "region", "region", "varchar", 10, null);
       super.columns.add(this.region);
-      this.isVip = new BooleanColumn(this, "IS_VIP", "isVip", "INTEGER", 32, 0);
+      this.isVip = new NumberColumn(this, "is_vip", "isVip", "int", 10, 0);
       super.columns.add(this.isVip);
-    }
-
-  }
-
-  // TypeHandler for column IS_VIP using Converter app.IntegerBooleanConverter.
-
-  public static class IsVipTypeHandler implements TypeHandler<java.lang.Boolean> {
-
-    private static final TypeConverter<java.lang.Integer, java.lang.Boolean> CONVERTER = new app.IntegerBooleanConverter();
-
-    @Override
-    public java.lang.Boolean getResult(final ResultSet rs, final String columnName) throws SQLException {
-      java.lang.Integer raw = rs.getInt(columnName);
-      if (rs.wasNull()) {
-        raw = null;
-      }
-      return CONVERTER.decode(raw, rs.getStatement().getConnection());
-    }
-
-    @Override
-    public java.lang.Boolean getResult(final ResultSet rs, final int columnIndex) throws SQLException {
-      java.lang.Integer raw = rs.getInt(columnIndex);
-      if (rs.wasNull()) {
-        raw = null;
-      }
-      return CONVERTER.decode(raw, rs.getStatement().getConnection());
-    }
-
-    @Override
-    public java.lang.Boolean getResult(final CallableStatement cs, final int columnIndex) throws SQLException {
-      java.lang.Integer raw = cs.getInt(columnIndex);
-      if (cs.wasNull()) {
-        raw = null;
-      }
-      return CONVERTER.decode(raw, cs.getConnection());
-    }
-
-    @Override
-    public void setParameter(final PreparedStatement ps, final int columnIndex, final java.lang.Boolean value, final JdbcType jdbcType)
-        throws SQLException {
-      java.lang.Integer raw = CONVERTER.encode(value, ps.getConnection());
-      if (raw == null) {
-        ps.setNull(columnIndex, jdbcType.TYPE_CODE);
-      } else {
-        ps.setInt(columnIndex, raw);
-      }
     }
 
   }

@@ -18,6 +18,11 @@ create table invoice (
   type varchar(10)
 );
 
+create table "CASE" (
+  id int primary key not null,
+  name varchar(50)
+);
+
 insert into invoice (id, amount, branch_id, status) values (10, 1500, 101, 'ABC'), (11, 2500, 101, 'DEF'), (12, 4000, 102, 'GHI');
 
 -- Test multi-result set

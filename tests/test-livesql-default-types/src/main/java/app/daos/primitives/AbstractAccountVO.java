@@ -11,34 +11,61 @@ public class AbstractAccountVO implements Serializable {
 
   // VO Properties (table columns)
 
-  protected java.lang.Integer id = null;
-  protected java.lang.Integer parentId = null;
-  protected java.lang.Integer branchId = null;
+  protected java.lang.Double paymentNumber = null;
+  protected java.sql.Date dateGranted = null;
+  protected java.lang.Double amountGranted = null;
+  protected java.lang.Double interestRate = null;
+  protected java.sql.Date paymentDate = null;
+  protected java.lang.Double paymentAmount = null;
 
   // getters & setters
 
-  public java.lang.Integer getId() {
-    return this.id;
+  public java.lang.Double getPaymentNumber() {
+    return this.paymentNumber;
   }
 
-  public void setId(final java.lang.Integer id) {
-    this.id = id;
+  public void setPaymentNumber(final java.lang.Double paymentNumber) {
+    this.paymentNumber = paymentNumber;
   }
 
-  public java.lang.Integer getParentId() {
-    return this.parentId;
+  public java.sql.Date getDateGranted() {
+    return this.dateGranted;
   }
 
-  public void setParentId(final java.lang.Integer parentId) {
-    this.parentId = parentId;
+  public void setDateGranted(final java.sql.Date dateGranted) {
+    this.dateGranted = dateGranted;
   }
 
-  public java.lang.Integer getBranchId() {
-    return this.branchId;
+  public java.lang.Double getAmountGranted() {
+    return this.amountGranted;
   }
 
-  public void setBranchId(final java.lang.Integer branchId) {
-    this.branchId = branchId;
+  public void setAmountGranted(final java.lang.Double amountGranted) {
+    this.amountGranted = amountGranted;
+  }
+
+  public java.lang.Double getInterestRate() {
+    return this.interestRate;
+  }
+
+  public void setInterestRate(final java.lang.Double interestRate) {
+    this.interestRate = interestRate;
+  }
+
+  public java.sql.Date getPaymentDate() {
+    return this.paymentDate;
+  }
+
+  public void setPaymentDate(final java.sql.Date paymentDate) {
+    this.paymentDate = paymentDate;
+  }
+
+  public java.lang.Double getPaymentAmount() {
+    return this.paymentAmount;
+  }
+
+  public void setPaymentAmount(final java.lang.Double paymentAmount) {
+    this.paymentAmount = paymentAmount;
   }
 
   // to string
@@ -46,9 +73,12 @@ public class AbstractAccountVO implements Serializable {
   public String toString() {
     java.lang.StringBuilder sb = new java.lang.StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
-    sb.append("- id=" + this.id + "\n");
-    sb.append("- parentId=" + this.parentId + "\n");
-    sb.append("- branchId=" + this.branchId);
+    sb.append("- paymentNumber=" + this.paymentNumber + "\n");
+    sb.append("- dateGranted=" + this.dateGranted + "\n");
+    sb.append("- amountGranted=" + this.amountGranted + "\n");
+    sb.append("- interestRate=" + this.interestRate + "\n");
+    sb.append("- paymentDate=" + this.paymentDate + "\n");
+    sb.append("- paymentAmount=" + this.paymentAmount);
     return sb.toString();
   }
 
@@ -56,9 +86,12 @@ public class AbstractAccountVO implements Serializable {
 
   public JSONObject toJSONObject() {
     JSONObject obj = new JSONObject();
-    obj.addProperty("id", this.id);
-    obj.addProperty("parentId", this.parentId);
-    obj.addProperty("branchId", this.branchId);
+    obj.addProperty("paymentNumber", this.paymentNumber);
+    obj.addProperty("dateGranted", this.dateGranted);
+    obj.addProperty("amountGranted", this.amountGranted);
+    obj.addProperty("interestRate", this.interestRate);
+    obj.addProperty("paymentDate", this.paymentDate);
+    obj.addProperty("paymentAmount", this.paymentAmount);
     return obj;
   }
 
