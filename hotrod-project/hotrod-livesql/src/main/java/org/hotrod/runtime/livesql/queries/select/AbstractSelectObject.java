@@ -272,8 +272,10 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
     }
 
     // retrieve pagination type
+    
+    boolean orderedSelect = this.orderingTerms != null && !this.orderingTerms.isEmpty();
 
-    PaginationType paginationType = liveSQLDialect.getPaginationRenderer().getPaginationType(this.offset, this.limit);
+    PaginationType paginationType = liveSQLDialect.getPaginationRenderer().getPaginationType(orderedSelect, this.offset, this.limit);
 
     // enclosing pagination - begin
 
@@ -389,7 +391,7 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
 
     // order by (combined selects can have ORDER BY without a FROM clause
 
-    if (this.orderingTerms != null && !this.orderingTerms.isEmpty()) {
+    if (orderedSelect) {
       w.write("\nORDER BY ");
       boolean first = true;
       for (OrderingTerm term : this.orderingTerms) {

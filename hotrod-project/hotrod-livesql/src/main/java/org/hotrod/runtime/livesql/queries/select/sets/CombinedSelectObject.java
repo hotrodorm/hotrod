@@ -122,10 +122,11 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
 
   public void renderTo(final QueryWriter w, final boolean inline) {
 
-//    System.out.println(" --- level: " + w.getLevel() + "  inline=" + inline + " -- parent=" + this.getParent());
+    boolean orderedSelect = this.orderingTerms != null && !this.orderingTerms.isEmpty();
 
     LiveSQLDialect liveSQLDialect = w.getSQLDialect();
-    PaginationType paginationType = liveSQLDialect.getPaginationRenderer().getPaginationType(this.offset, this.limit);
+    PaginationType paginationType = liveSQLDialect.getPaginationRenderer().getPaginationType(orderedSelect, this.offset,
+        this.limit);
 
     // Entering level
 
@@ -172,7 +173,7 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
 
     // ORDER BY
 
-    if (this.orderingTerms != null && !this.orderingTerms.isEmpty()) {
+    if (orderedSelect) {
       w.write("\nORDER BY ");
       boolean first = true;
       for (CombinedOrderingTerm term : this.orderingTerms) {

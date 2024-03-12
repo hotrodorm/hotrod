@@ -125,25 +125,26 @@ public class SQLServerDialect extends LiveSQLDialect {
   public PaginationRenderer getPaginationRenderer() {
     return new PaginationRenderer() {
 
+      // 12.0 for SQL Server 2014.
+
       @Override
-      public PaginationType getPaginationType(final Integer offset, final Integer limit) {
+      public PaginationType getPaginationType(final boolean orderedSelect, final Integer offset, final Integer limit) {
         if (offset != null) {
           if (!versionIsAtLeast(11)) { // SQL Server 2012
             throw new UnsupportedLiveSQLFeatureException(
-                "OFFSET not supported on this version of SQL Server. OFFSET is supported starting on SQL Server 2012 (internal version 11.0)");
+                "OFFSET is not supported on this version of SQL Server. OFFSET is supported starting on SQL Server 2012 (internal version 11.0)");
+          }
+          if (!orderedSelect) {
+            throw new UnsupportedLiveSQLFeatureException(
+                "OFFSET is only supported for queries that sort rows with ORDER BY.");
           }
         }
-        return versionIsAtLeast(11) ? PaginationType.BOTTOM : PaginationType.TOP;
+        return versionIsAtLeast(11) && orderedSelect ? PaginationType.BOTTOM : PaginationType.TOP;
       }
 
       @Override
       public void renderTopPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        if (offset == null && !versionIsAtLeast(11)) {
-          w.write(" top " + limit);
-        } else {
-          throw new UnsupportedLiveSQLFeatureException(
-              "In SQL Server before version 2012, LIMIT can only be used without OFFSET as the TOP clause");
-        }
+        w.write(" TOP " + limit);
       }
 
       @Override

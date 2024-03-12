@@ -150,7 +150,7 @@ public class DB2Dialect extends LiveSQLDialect {
     return new PaginationRenderer() {
 
       @Override
-      public PaginationType getPaginationType(final Integer offset, final Integer limit) {
+      public PaginationType getPaginationType(final boolean orderedSelect, final Integer offset, final Integer limit) {
         if (offset != null) {
           if (!versionIsAtLeast(11, 1)) {
             throw new UnsupportedLiveSQLFeatureException("This version of DB2 (" + renderVersion()

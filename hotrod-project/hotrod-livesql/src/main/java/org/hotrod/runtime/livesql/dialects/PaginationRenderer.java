@@ -8,7 +8,7 @@ public abstract class PaginationRenderer {
     TOP, BOTTOM, ENCLOSE
   };
 
-  public abstract PaginationType getPaginationType(Integer offset, Integer limit);
+  public abstract PaginationType getPaginationType(final boolean orderedSelect, Integer offset, Integer limit);
 
   public abstract void renderTopPagination(Integer offset, Integer limit, QueryWriter w);
 

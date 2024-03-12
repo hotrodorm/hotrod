@@ -105,7 +105,7 @@ public class HyperSQLDialect extends LiveSQLDialect {
     return new PaginationRenderer() {
 
       @Override
-      public PaginationType getPaginationType(final Integer offset, final Integer limit) {
+      public PaginationType getPaginationType(final boolean orderedSelect, final Integer offset, final Integer limit) {
         return offset != null || limit != null ? PaginationType.BOTTOM : null;
       }
 

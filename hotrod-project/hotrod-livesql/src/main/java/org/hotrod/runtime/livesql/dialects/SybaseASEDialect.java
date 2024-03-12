@@ -112,7 +112,7 @@ public class SybaseASEDialect extends LiveSQLDialect {
     return new PaginationRenderer() {
 
       @Override
-      public PaginationType getPaginationType(final Integer offset, final Integer limit) {
+      public PaginationType getPaginationType(final boolean orderedSelect, final Integer offset, final Integer limit) {
         if (offset != null) {
           throw new UnsupportedLiveSQLFeatureException("OFFSET is not supported Sybase ASE");
         }
