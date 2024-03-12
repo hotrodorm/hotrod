@@ -180,7 +180,7 @@ public class App {
 
   private void selectCases() {
     CaseTable c = CaseDAO.newTable("c");
-    CriteriaWherePhase<CaseVO> select = this.caseDAO.select(c, c.name.ne("bad"));
+    EntitySelect<CaseVO> select = this.caseDAO.select(c, c.name.ne("bad")).limit(1);
     String p = select.getPreview();
     System.out.println("preview=" + p);
     List<CaseVO> cases = select.execute();
