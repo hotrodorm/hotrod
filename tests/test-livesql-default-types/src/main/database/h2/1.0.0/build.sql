@@ -105,16 +105,32 @@ create table product (
 );
 
 create table branch (
-  id int,
+  id int primary key not null,
   region varchar(10),
   is_vip int
 );
 
+insert into branch (id, region, is_vip) values
+  (101, 'N', true),
+  (102, 'S', true),
+  (103, 'W', false),
+  (104, 'E', false),
+  (105, 'NE', false),
+  (106, 'NW', 1),
+  (107, 'SE', false);
+
 create table account (
-  id int,
-  parent_id int,
-  branch_id int
+  id int primary key not null,
+  parent_id int references account (id),
+  branch_id int references branch (id)
 );
+
+insert into account (id, parent_id, branch_id) values
+  (1, null, 101),
+  (2, 1, 102),
+  (3, 1, 103),
+  (4, 3, 104),
+  (5, 4, 105);
 
 create sequence seq1;
 
@@ -141,21 +157,7 @@ create table payment (
   amount int
 );
 
-insert into account (id, parent_id, branch_id) values
-  (1, null, 100),
-  (2, 1, 101),
-  (3, 1, 102),
-  (4, 3, 103),
-  (5, 4, 104);
   
-insert into branch (id, region, is_vip) values
-  (101, 'N', true),
-  (102, 'S', true),
-  (103, 'W', false),
-  (104, 'E', false),
-  (105, 'NE', false),
-  (106, 'NW', 1),
-  (107, 'SE', false);
   
   -- update branch set region = 'x' where id >= 4 and not is_vip
 

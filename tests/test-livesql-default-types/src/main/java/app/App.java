@@ -18,7 +18,6 @@ import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.queries.DMLQuery;
 import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.runtime.livesql.queries.select.CriteriaForUpdatePhase;
-import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.queries.select.EntitySelect;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.spring.SpringBeanObjectFactory;
@@ -33,6 +32,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
+import app.daos.BranchVO;
 import app.daos.CaseVO;
 import app.daos.InvoiceVO;
 import app.daos.primitives.AccountDAO;
@@ -170,7 +170,8 @@ public class App {
   private void crud() {
 //    crudInsert();
 //    crudSelect();
-    selectCases();
+//    selectCases();
+    selectFK();
   }
 
   private void crudSelect() {
@@ -185,6 +186,32 @@ public class App {
     System.out.println("preview=" + p);
     List<CaseVO> cases = select.execute();
     cases.forEach(x -> System.out.println("case:" + x));
+  }
+
+  private void selectFK() {
+//    AccountVO a = this.accountDAO.select(1);
+//    System.out.println("account=" + a);
+//
+//    BranchVO b = this.accountDAO.selectParentBranchOf(a).fromBranchId().toId();
+//    System.out.println("branch=" + b);
+//
+//    List<AccountVO> c = this.accountDAO.selectChildrenAccountOf(a).fromId().toParentId();
+//    c.forEach(x -> System.out.println("children:" + x));
+
+    BranchVO b = this.branchDAO.select(101);
+    System.out.println("branch=" + b);
+
+    List<InvoiceVO> is = this.branchDAO.selectChildrenInvoiceOf(b).fromId().toBranchId();
+    is.forEach(x -> System.out.println("children:" + x));
+
+    System.out.println("------------------------");
+
+    InvoiceVO i = this.invoiceDAO.select(12);
+    System.out.println("invoice=" + i);
+
+    BranchVO p = this.invoiceDAO.selectParentBranchOf(i).fromBranchId().toId();
+    System.out.println("parent=" + p);
+
   }
 
 //  private void crudInsert() {
