@@ -99,10 +99,6 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
   @XmlElement(name = "classic-fk-navigation")
   public void setClassicFKNavigation(final ClassicFKNavigationTag classicFKNavigation)
       throws InvalidConfigurationFileException {
-    if (this.classicFKNavigation != null) {
-      throw new InvalidConfigurationFileException(this,
-          "Duplicate <classic-fk-navigation> tag; the generator can only have a single <classic-fk-navigation> tag");
-    }
     this.classicFKNavigation = classicFKNavigation;
   }
 

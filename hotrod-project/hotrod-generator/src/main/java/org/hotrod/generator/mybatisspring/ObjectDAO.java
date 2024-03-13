@@ -191,6 +191,7 @@ public class ObjectDAO extends GeneratableObject {
 
         if (this.isTable()) {
           if (this.generator.isClassicFKNavigationEnabled() || this.isClassicFKNavigationEnabled()) {
+            log.debug("FK navigation");
             writeSelectParentByFK();
             writeSelectChildrenByFK();
           }

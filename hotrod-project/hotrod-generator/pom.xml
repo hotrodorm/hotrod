@@ -41,7 +41,7 @@
     <dependency>
       <groupId>org.nocrala.tools.database</groupId>
       <artifactId>tartarus</artifactId>
-      <version>3.2.4</version>
+      <version>3.2.6</version>
     </dependency>
 
     <!-- Log4j 2 -->
