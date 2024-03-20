@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import app.daos.InvoiceVO;
-import app.daos.primitives.InvoiceDAO;
-import app.daos.primitives.InvoiceDAO.InvoiceTable;
+import app.daos.reporting.InvoiceVO;
+import app.daos.reporting.primitives.InvoiceDAO;
+import app.daos.reporting.primitives.InvoiceDAO.InvoiceTable;
 
 @Component
 public class BusinessLogic {
@@ -56,10 +56,7 @@ public class BusinessLogic {
 
     EntitySelect<InvoiceVO> q = this.invoiceDAO //
         .select(i, i.status.eq("UNPAID")) //
-        .orderBy(i.amount)
-        .offset(3)
-        .limit(1)
-        .forUpdate();
+        .orderBy(i.amount).offset(3).limit(1).forUpdate();
 
     System.out.println(q.getPreview());
     System.out.println("rows:");

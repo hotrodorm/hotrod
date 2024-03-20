@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.reporting.payment">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    "PAYMENT_DATE",
+    "INVOICE_ID",
+    "AMOUNT"
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}."PAYMENT_DATE",
+    ${alias}."INVOICE_ID",
+    ${alias}."AMOUNT"
+  </sql>
+
+  <resultMap id="allColumns" type="app.daos.reporting.PaymentVO">
+    <result property="paymentDate" column="PAYMENT_DATE" />
+    <result property="invoiceId" column="INVOICE_ID" />
+    <result property="amount" column="AMOUNT" />
+  </resultMap>
+
+  <!-- select by PK: no mapping generated, since the table does not have a PK -->
+
+  <!-- select by unique indexes: no mappings generated, since the table does not have UIs -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from payment
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="p.paymentDate != null">
+        and "PAYMENT_DATE" = #{p.paymentDate,jdbcType=DATE}
+      </if>
+      <if test="p.invoiceId != null">
+        and "INVOICE_ID" = #{p.invoiceId,jdbcType=INTEGER}
+      </if>
+      <if test="p.amount != null">
+        and "AMOUNT" = #{p.amount,jdbcType=INTEGER}
+      </if>
+    </trim>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into payment (
+      <trim prefixOverrides=", ">
+        <if test="true">, "PAYMENT_DATE"</if>
+        <if test="true">, "INVOICE_ID"</if>
+        <if test="true">, "AMOUNT"</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{paymentDate,jdbcType=DATE}</if>
+        <if test="true">, #{invoiceId,jdbcType=INTEGER}</if>
+        <if test="true">, #{amount,jdbcType=INTEGER}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK: no update mapping generated, since the table does not have a PK -->
+
+  <!-- delete by PK: no delete mapping generated, since the table does not have a PK -->
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update payment
+    <set>
+      <if test="values.paymentDate != null">"PAYMENT_DATE" = #{values.paymentDate,jdbcType=DATE},</if>
+      <if test="values.invoiceId != null">"INVOICE_ID" = #{values.invoiceId,jdbcType=INTEGER},</if>
+      <if test="values.amount != null">"AMOUNT" = #{values.amount,jdbcType=INTEGER},</if>
+    </set>
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="filter.paymentDate != null">
+        and "PAYMENT_DATE" = #{filter.paymentDate,jdbcType=DATE}
+      </if>
+      <if test="filter.invoiceId != null">
+        and "INVOICE_ID" = #{filter.invoiceId,jdbcType=INTEGER}
+      </if>
+      <if test="filter.amount != null">
+        and "AMOUNT" = #{filter.amount,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </update>
+
+  <!-- update by criteria -->
+
+  <select id="updateByCriteria">
+    ${sql}
+  </select>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from payment
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="paymentDate != null">
+        and "PAYMENT_DATE" = #{paymentDate,jdbcType=DATE}
+      </if>
+      <if test="invoiceId != null">
+        and "INVOICE_ID" = #{invoiceId,jdbcType=INTEGER}
+      </if>
+      <if test="amount != null">
+        and "AMOUNT" = #{amount,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </delete>
+
+  <!-- delete by criteria -->
+
+  <select id="deleteByCriteria">
+    ${sql}
+  </select>
+
+</mapper>

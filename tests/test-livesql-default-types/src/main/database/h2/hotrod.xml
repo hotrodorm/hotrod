@@ -17,8 +17,6 @@
   <table name="dates" />
   <table name="binaries" />
   <table name="other" />
-<!--  
--->
 
   <table name="branch">
     <column name="is_vip" converter="boolean_stored_as_int" />
@@ -28,9 +26,7 @@
     <column name="id" sequence="seq1" />
   </table>
 
-  <table name="invoice" />
-  <table name="invoice_line" />
-  <table name="product" />
-  <table name="payment" />
+
+  <fragment file="./f1.xml" />
 
 </hotrod>

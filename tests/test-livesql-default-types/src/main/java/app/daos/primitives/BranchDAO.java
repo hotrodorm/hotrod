@@ -15,9 +15,17 @@ import org.hotrod.runtime.interfaces.OrderBy;
 
 import app.daos.primitives.AbstractBranchVO;
 import app.daos.BranchVO;
-import app.daos.InvoiceVO;
-import app.daos.primitives.InvoiceDAO.InvoiceOrderBy;
-import app.daos.primitives.InvoiceDAO;
+import app.daos.AccountVO;
+import app.daos.primitives.AccountDAO.AccountOrderBy;
+import app.daos.primitives.AccountDAO;
+
+import java.sql.SQLException;
+import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.type.TypeHandler;
+import org.hotrod.runtime.converter.TypeConverter;
 
 import java.lang.Override;
 import java.util.Map;
@@ -65,7 +73,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   @Lazy
   @Autowired
-  private InvoiceDAO invoiceDAO;
+  private AccountDAO accountDAO;
 
   @Autowired
   private LiveSQLDialect liveSQLDialect;
@@ -106,9 +114,8 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
     mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
-    mo.setName((java.lang.String) m.get(p + "name" + s));
     mo.setRegion((java.lang.String) m.get(p + "region" + s));
-    mo.setIsVip(CastUtil.toInteger((Number) m.get(p + "isVip" + s)));
+    mo.setIsVip(new app.IntegerBooleanConverter().decode((java.lang.Integer) m.get(p + "isVip" + s), this.sqlSession.getConnection()));
     return mo;
   }
 
@@ -152,42 +159,42 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   // select children by FKs
 
-  public SelectChildrenInvoicePhase selectChildrenInvoiceOf(final BranchVO vo) {
-    return new SelectChildrenInvoicePhase(vo);
+  public SelectChildrenAccountPhase selectChildrenAccountOf(final BranchVO vo) {
+    return new SelectChildrenAccountPhase(vo);
   }
 
-  public class SelectChildrenInvoicePhase {
+  public class SelectChildrenAccountPhase {
 
     private BranchVO vo;
 
-    SelectChildrenInvoicePhase(final BranchVO vo) {
+    SelectChildrenAccountPhase(final BranchVO vo) {
       this.vo = vo;
     }
 
-    public SelectChildrenInvoiceFromIdPhase fromId() {
-      return new SelectChildrenInvoiceFromIdPhase(this.vo);
+    public SelectChildrenAccountFromIdPhase fromId() {
+      return new SelectChildrenAccountFromIdPhase(this.vo);
     }
 
   }
 
-  public class SelectChildrenInvoiceFromIdPhase {
+  public class SelectChildrenAccountFromIdPhase {
 
     private BranchVO vo;
 
-    SelectChildrenInvoiceFromIdPhase(final BranchVO vo) {
+    SelectChildrenAccountFromIdPhase(final BranchVO vo) {
       this.vo = vo;
     }
 
-    public List<InvoiceVO> toBranchId(final InvoiceOrderBy... orderBies) {
-      InvoiceVO example = new InvoiceVO();
+    public List<AccountVO> toBranchId(final AccountOrderBy... orderBies) {
+      AccountVO example = new AccountVO();
       example.setBranchId(this.vo.getId());
-      return invoiceDAO.select(example, orderBies);
+      return accountDAO.select(example, orderBies);
     }
 
-    public Cursor<InvoiceVO> cursorToBranchId(final InvoiceOrderBy... orderBies) {
-      InvoiceVO example = new InvoiceVO();
+    public Cursor<AccountVO> cursorToBranchId(final AccountOrderBy... orderBies) {
+      AccountVO example = new AccountVO();
       example.setBranchId(this.vo.getId());
-      return invoiceDAO.selectCursor(example, orderBies);
+      return accountDAO.selectCursor(example, orderBies);
     }
 
   }
@@ -199,7 +206,6 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     this.sqlSession.insert(id, vo);
     app.daos.BranchVO mo = springBeanObjectFactory.create(app.daos.BranchVO.class);
     mo.setId(vo.getId());
-    mo.setName(vo.getName());
     mo.setRegion(vo.getRegion());
     mo.setIsVip(vo.getIsVip());
     return mo;
@@ -234,10 +240,9 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   public UpdateSetCompletePhase update(final app.daos.primitives.AbstractBranchVO updateValues, final BranchDAO.BranchTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
-    if (updateValues.getId() != null) values.put("\"id\"", updateValues.getId());
-    if (updateValues.getName() != null) values.put("\"NaMe\"", updateValues.getName());
-    if (updateValues.getRegion() != null) values.put("\"region\"", updateValues.getRegion());
-    if (updateValues.getIsVip() != null) values.put("\"is_vip\"", updateValues.getIsVip());
+    if (updateValues.getId() != null) values.put("\"ID\"", updateValues.getId());
+    if (updateValues.getRegion() != null) values.put("\"REGION\"", updateValues.getRegion());
+    if (updateValues.getIsVip() != null) values.put("\"IS_VIP\"", updateValues.getIsVip());
     return new UpdateSetCompletePhase(this.context, "mappers.branch.updateByCriteria", tableOrView,  predicate, values);
   }
 
@@ -258,26 +263,18 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   public enum BranchOrderBy implements OrderBy {
 
-    ID("branch", "\"id\"", true), //
-    ID$DESC("branch", "\"id\"", false), //
-    NAME("branch", "\"NaMe\"", true), //
-    NAME$DESC("branch", "\"NaMe\"", false), //
-    NAME$CASEINSENSITIVE("branch", "lower(\"NaMe\")", true), //
-    NAME$CASEINSENSITIVE_STABLE_FORWARD("branch", "lower(\"NaMe\"), \"NaMe\"", true), //
-    NAME$CASEINSENSITIVE_STABLE_REVERSE("branch", "lower(\"NaMe\"), \"NaMe\"", false), //
-    NAME$DESC_CASEINSENSITIVE("branch", "lower(\"NaMe\")", false), //
-    NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("branch", "lower(\"NaMe\"), \"NaMe\"", false), //
-    NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("branch", "lower(\"NaMe\"), \"NaMe\"", true), //
-    REGION("branch", "\"region\"", true), //
-    REGION$DESC("branch", "\"region\"", false), //
-    REGION$CASEINSENSITIVE("branch", "lower(\"region\")", true), //
-    REGION$CASEINSENSITIVE_STABLE_FORWARD("branch", "lower(\"region\"), \"region\"", true), //
-    REGION$CASEINSENSITIVE_STABLE_REVERSE("branch", "lower(\"region\"), \"region\"", false), //
-    REGION$DESC_CASEINSENSITIVE("branch", "lower(\"region\")", false), //
-    REGION$DESC_CASEINSENSITIVE_STABLE_FORWARD("branch", "lower(\"region\"), \"region\"", false), //
-    REGION$DESC_CASEINSENSITIVE_STABLE_REVERSE("branch", "lower(\"region\"), \"region\"", true), //
-    IS_VIP("branch", "\"is_vip\"", true), //
-    IS_VIP$DESC("branch", "\"is_vip\"", false);
+    ID("branch", "\"ID\"", true), //
+    ID$DESC("branch", "\"ID\"", false), //
+    REGION("branch", "\"REGION\"", true), //
+    REGION$DESC("branch", "\"REGION\"", false), //
+    REGION$CASEINSENSITIVE("branch", "lower(\"REGION\")", true), //
+    REGION$CASEINSENSITIVE_STABLE_FORWARD("branch", "lower(\"REGION\"), \"REGION\"", true), //
+    REGION$CASEINSENSITIVE_STABLE_REVERSE("branch", "lower(\"REGION\"), \"REGION\"", false), //
+    REGION$DESC_CASEINSENSITIVE("branch", "lower(\"REGION\")", false), //
+    REGION$DESC_CASEINSENSITIVE_STABLE_FORWARD("branch", "lower(\"REGION\"), \"REGION\"", false), //
+    REGION$DESC_CASEINSENSITIVE_STABLE_REVERSE("branch", "lower(\"REGION\"), \"REGION\"", true), //
+    IS_VIP("branch", "\"IS_VIP\"", true), //
+    IS_VIP$DESC("branch", "\"IS_VIP\"", false);
 
     private BranchOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -319,25 +316,24 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     // Properties
 
     public NumberColumn id;
-    public StringColumn name;
     public StringColumn region;
-    public NumberColumn isVip;
+    public BooleanColumn isVip;
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this.id, this.name, this.region, this.isVip);
+      return new AllColumns(this.id, this.region, this.isVip);
     }
 
     // Constructors
 
     BranchTable() {
-      super(null, null, Name.of("branch", false), "Table", null);
+      super(null, null, Name.of("BRANCH", false), "Table", null);
       initialize();
     }
 
     BranchTable(final String alias) {
-      super(null, null, Name.of("branch", false), "Table", alias);
+      super(null, null, Name.of("BRANCH", false), "Table", alias);
       initialize();
     }
 
@@ -345,14 +341,58 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      this.id = new NumberColumn(this, "id", "id", "int", 10, 0);
+      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
       super.columns.add(this.id);
-      this.name = new StringColumn(this, "NaMe", "name", "varchar", 20, null);
-      super.columns.add(this.name);
-      this.region = new StringColumn(this, "region", "region", "varchar", 10, null);
+      this.region = new StringColumn(this, "REGION", "region", "CHARACTER VARYING", 10, 0);
       super.columns.add(this.region);
-      this.isVip = new NumberColumn(this, "is_vip", "isVip", "int", 10, 0);
+      this.isVip = new BooleanColumn(this, "IS_VIP", "isVip", "INTEGER", 32, 0);
       super.columns.add(this.isVip);
+    }
+
+  }
+
+  // TypeHandler for column IS_VIP using Converter app.IntegerBooleanConverter.
+
+  public static class IsVipTypeHandler implements TypeHandler<java.lang.Boolean> {
+
+    private static final TypeConverter<java.lang.Integer, java.lang.Boolean> CONVERTER = new app.IntegerBooleanConverter();
+
+    @Override
+    public java.lang.Boolean getResult(final ResultSet rs, final String columnName) throws SQLException {
+      java.lang.Integer raw = rs.getInt(columnName);
+      if (rs.wasNull()) {
+        raw = null;
+      }
+      return CONVERTER.decode(raw, rs.getStatement().getConnection());
+    }
+
+    @Override
+    public java.lang.Boolean getResult(final ResultSet rs, final int columnIndex) throws SQLException {
+      java.lang.Integer raw = rs.getInt(columnIndex);
+      if (rs.wasNull()) {
+        raw = null;
+      }
+      return CONVERTER.decode(raw, rs.getStatement().getConnection());
+    }
+
+    @Override
+    public java.lang.Boolean getResult(final CallableStatement cs, final int columnIndex) throws SQLException {
+      java.lang.Integer raw = cs.getInt(columnIndex);
+      if (cs.wasNull()) {
+        raw = null;
+      }
+      return CONVERTER.decode(raw, cs.getConnection());
+    }
+
+    @Override
+    public void setParameter(final PreparedStatement ps, final int columnIndex, final java.lang.Boolean value, final JdbcType jdbcType)
+        throws SQLException {
+      java.lang.Integer raw = CONVERTER.encode(value, ps.getConnection());
+      if (raw == null) {
+        ps.setNull(columnIndex, jdbcType.TYPE_CODE);
+      } else {
+        ps.setInt(columnIndex, raw);
+      }
     }
 
   }

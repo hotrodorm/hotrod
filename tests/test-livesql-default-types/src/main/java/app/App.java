@@ -21,6 +21,8 @@ import org.hotrod.runtime.livesql.queries.select.CriteriaForUpdatePhase;
 import org.hotrod.runtime.livesql.queries.select.EntitySelect;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.spring.SpringBeanObjectFactory;
+import org.hotrod.torcs.Torcs;
+import org.hotrod.torcs.autoconfig.TorcsAutoConfiguration;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -32,17 +34,13 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-import app.daos.BranchVO;
-import app.daos.CaseVO;
-import app.daos.InvoiceVO;
 import app.daos.primitives.AccountDAO;
 import app.daos.primitives.AccountDAO.AccountTable;
 import app.daos.primitives.BranchDAO;
 import app.daos.primitives.BranchDAO.BranchTable;
-import app.daos.primitives.CaseDAO;
-import app.daos.primitives.CaseDAO.CaseTable;
-import app.daos.primitives.InvoiceDAO;
-import app.daos.primitives.InvoiceDAO.InvoiceTable;
+import app.daos.reporting.InvoiceVO;
+import app.daos.reporting.primitives.InvoiceDAO;
+import app.daos.reporting.primitives.InvoiceDAO.InvoiceTable;
 
 @Configuration
 @SpringBootApplication
@@ -50,6 +48,8 @@ import app.daos.primitives.InvoiceDAO.InvoiceTable;
 @MapperScan(basePackageClasses = LiveSQL.class)
 @MapperScan("mappers")
 @ComponentScan(basePackageClasses = SpringBeanObjectFactory.class)
+@ComponentScan(basePackageClasses = Torcs.class)
+@ComponentScan(basePackageClasses = TorcsAutoConfiguration.class)
 @PropertySource(value = { "file:application.properties",
     "classpath:application.properties" }, ignoreResourceNotFound = true)
 public class App {
@@ -69,8 +69,8 @@ public class App {
 //  @Autowired
 //  private DatesDAO datesDAO;
 
-  @Autowired
-  private CaseDAO caseDAO;
+//  @Autowired
+//  private CaseDAO caseDAO;
 
   @Autowired
   private LiveSQL sql;
@@ -78,8 +78,8 @@ public class App {
   @Autowired
   private BusinessLogic businessLogic;
 
-//  @Autowired
-//  private Torcs torcs;
+  @Autowired
+  private Torcs torcs;
 
 //  @Autowired
 //  private TorcsCTP torcsCTP;
@@ -124,12 +124,12 @@ public class App {
 
 //      System.getProperties().setProperty("oracle.jdbc.J2EE13Compliant", "true");
 
-      crud();
+//      crud();
 //      join();
 //      join();     
 //      livesql();
 //      selectByCriteria();
-//      torcs();
+      torcs();
 //      star();
 //      noFrom();
       System.out.println("[ Example complete ]");
@@ -174,19 +174,19 @@ public class App {
     selectFK();
   }
 
-  private void crudSelect() {
-    List<CaseVO> cases = this.caseDAO.select(new CaseVO());
-    cases.forEach(x -> System.out.println("case:" + x));
-  }
-
-  private void selectCases() {
-    CaseTable c = CaseDAO.newTable("c");
-    EntitySelect<CaseVO> select = this.caseDAO.select(c, c.name.ne("bad")).limit(1);
-    String p = select.getPreview();
-    System.out.println("preview=" + p);
-    List<CaseVO> cases = select.execute();
-    cases.forEach(x -> System.out.println("case:" + x));
-  }
+//  private void crudSelect() {
+//    List<CaseVO> cases = this.caseDAO.select(new CaseVO());
+//    cases.forEach(x -> System.out.println("case:" + x));
+//  }
+//
+//  private void selectCases() {
+//    CaseTable c = CaseDAO.newTable("c");
+//    EntitySelect<CaseVO> select = this.caseDAO.select(c, c.name.ne("bad")).limit(1);
+//    String p = select.getPreview();
+//    System.out.println("preview=" + p);
+//    List<CaseVO> cases = select.execute();
+//    cases.forEach(x -> System.out.println("case:" + x));
+//  }
 
   private void selectFK() {
 //    AccountVO a = this.accountDAO.select(1);
@@ -198,19 +198,19 @@ public class App {
 //    List<AccountVO> c = this.accountDAO.selectChildrenAccountOf(a).fromId().toParentId();
 //    c.forEach(x -> System.out.println("children:" + x));
 
-    BranchVO b = this.branchDAO.select(101);
-    System.out.println("branch=" + b);
-
-    List<InvoiceVO> is = this.branchDAO.selectChildrenInvoiceOf(b).fromId().toBranchId();
-    is.forEach(x -> System.out.println("children:" + x));
-
-    System.out.println("------------------------");
-
-    InvoiceVO i = this.invoiceDAO.select(12);
-    System.out.println("invoice=" + i);
-
-    BranchVO p = this.invoiceDAO.selectParentBranchOf(i).fromBranchId().toId();
-    System.out.println("parent=" + p);
+//    BranchVO b = this.branchDAO.select(101);
+//    System.out.println("branch=" + b);
+//
+//    List<InvoiceVO> is = this.branchDAO.selectChildrenInvoiceOf(b).fromId().toBranchId();
+//    is.forEach(x -> System.out.println("children:" + x));
+//
+//    System.out.println("------------------------");
+//
+//    InvoiceVO i = this.invoiceDAO.select(12);
+//    System.out.println("invoice=" + i);
+//
+//    BranchVO p = this.invoiceDAO.selectParentBranchOf(i).fromBranchId().toId();
+//    System.out.println("parent=" + p);
 
   }
 
@@ -710,7 +710,7 @@ public class App {
   // TODO: Nothing to do, just a marker.
 
   private void torcs() throws SQLException, IOException {
-//  disableTorcs();
+    disableTorcs();
 //  enableTorcs();
 //  deactivateDefaultObserverTorcs();
 //  changeDefaultObserverSize();
@@ -724,12 +724,12 @@ public class App {
 
 //    getSlowestCTPQueryExecutionPlan();
   }
-//
-//  private void disableTorcs() {
-//    // Torcs starts enabled by default
-//    this.torcs.deactivate();
-//  }
-//
+
+  private void disableTorcs() {
+    // Torcs starts enabled by default
+    this.torcs.deactivate();
+  }
+
 //  private void enableTorcs() {
 //    this.torcs.activate();
 //  }

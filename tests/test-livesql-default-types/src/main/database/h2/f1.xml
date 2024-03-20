@@ -1,0 +1,8 @@
+<hotrod-fragment package="reporting">
+
+  <table name="invoice" />
+  <table name="invoice_line" />
+  <table name="product" />
+  <table name="payment" />
+
+</hotrod-fragment>

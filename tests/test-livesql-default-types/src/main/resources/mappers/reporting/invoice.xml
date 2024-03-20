@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.reporting.invoice">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    "ID",
+    "ACCOUNT_ID",
+    "AMOUNT",
+    "BRANCH_ID",
+    "ORDER_DATE",
+    "TYPE",
+    "UNPAID_BALANCE",
+    "STATUS"
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}."ID",
+    ${alias}."ACCOUNT_ID",
+    ${alias}."AMOUNT",
+    ${alias}."BRANCH_ID",
+    ${alias}."ORDER_DATE",
+    ${alias}."TYPE",
+    ${alias}."UNPAID_BALANCE",
+    ${alias}."STATUS"
+  </sql>
+
+  <resultMap id="allColumns" type="app.daos.reporting.InvoiceVO">
+    <result property="id" column="ID" />
+    <result property="accountId" column="ACCOUNT_ID" />
+    <result property="amount" column="AMOUNT" />
+    <result property="branchId" column="BRANCH_ID" />
+    <result property="orderDate" column="ORDER_DATE" />
+    <result property="type" column="TYPE" />
+    <result property="unpaidBalance" column="UNPAID_BALANCE" />
+    <result property="status" column="STATUS" />
+  </resultMap>
+
+  <!-- select by PK: no mapping generated, since the table does not have a PK -->
+
+  <!-- select by unique indexes: no mappings generated, since the table does not have UIs -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from invoice
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="p.id != null">
+        and "ID" = #{p.id,jdbcType=INTEGER}
+      </if>
+      <if test="p.accountId != null">
+        and "ACCOUNT_ID" = #{p.accountId,jdbcType=INTEGER}
+      </if>
+      <if test="p.amount != null">
+        and "AMOUNT" = #{p.amount,jdbcType=INTEGER}
+      </if>
+      <if test="p.branchId != null">
+        and "BRANCH_ID" = #{p.branchId,jdbcType=INTEGER}
+      </if>
+      <if test="p.orderDate != null">
+        and "ORDER_DATE" = #{p.orderDate,jdbcType=DATE}
+      </if>
+      <if test="p.type != null">
+        and "TYPE" = #{p.type,jdbcType=VARCHAR}
+      </if>
+      <if test="p.unpaidBalance != null">
+        and "UNPAID_BALANCE" = #{p.unpaidBalance,jdbcType=INTEGER}
+      </if>
+      <if test="p.status != null">
+        and "STATUS" = #{p.status,jdbcType=VARCHAR}
+      </if>
+    </trim>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into invoice (
+      <trim prefixOverrides=", ">
+        <if test="true">, "ID"</if>
+        <if test="true">, "ACCOUNT_ID"</if>
+        <if test="true">, "AMOUNT"</if>
+        <if test="true">, "BRANCH_ID"</if>
+        <if test="true">, "ORDER_DATE"</if>
+        <if test="true">, "TYPE"</if>
+        <if test="true">, "UNPAID_BALANCE"</if>
+        <if test="true">, "STATUS"</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{id,jdbcType=INTEGER}</if>
+        <if test="true">, #{accountId,jdbcType=INTEGER}</if>
+        <if test="true">, #{amount,jdbcType=INTEGER}</if>
+        <if test="true">, #{branchId,jdbcType=INTEGER}</if>
+        <if test="true">, #{orderDate,jdbcType=DATE}</if>
+        <if test="true">, #{type,jdbcType=VARCHAR}</if>
+        <if test="true">, #{unpaidBalance,jdbcType=INTEGER}</if>
+        <if test="true">, #{status,jdbcType=VARCHAR}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK: no update mapping generated, since the table does not have a PK -->
+
+  <!-- delete by PK: no delete mapping generated, since the table does not have a PK -->
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update invoice
+    <set>
+      <if test="values.id != null">"ID" = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.accountId != null">"ACCOUNT_ID" = #{values.accountId,jdbcType=INTEGER},</if>
+      <if test="values.amount != null">"AMOUNT" = #{values.amount,jdbcType=INTEGER},</if>
+      <if test="values.branchId != null">"BRANCH_ID" = #{values.branchId,jdbcType=INTEGER},</if>
+      <if test="values.orderDate != null">"ORDER_DATE" = #{values.orderDate,jdbcType=DATE},</if>
+      <if test="values.type != null">"TYPE" = #{values.type,jdbcType=VARCHAR},</if>
+      <if test="values.unpaidBalance != null">"UNPAID_BALANCE" = #{values.unpaidBalance,jdbcType=INTEGER},</if>
+      <if test="values.status != null">"STATUS" = #{values.status,jdbcType=VARCHAR},</if>
+    </set>
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="filter.id != null">
+        and "ID" = #{filter.id,jdbcType=INTEGER}
+      </if>
+      <if test="filter.accountId != null">
+        and "ACCOUNT_ID" = #{filter.accountId,jdbcType=INTEGER}
+      </if>
+      <if test="filter.amount != null">
+        and "AMOUNT" = #{filter.amount,jdbcType=INTEGER}
+      </if>
+      <if test="filter.branchId != null">
+        and "BRANCH_ID" = #{filter.branchId,jdbcType=INTEGER}
+      </if>
+      <if test="filter.orderDate != null">
+        and "ORDER_DATE" = #{filter.orderDate,jdbcType=DATE}
+      </if>
+      <if test="filter.type != null">
+        and "TYPE" = #{filter.type,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.unpaidBalance != null">
+        and "UNPAID_BALANCE" = #{filter.unpaidBalance,jdbcType=INTEGER}
+      </if>
+      <if test="filter.status != null">
+        and "STATUS" = #{filter.status,jdbcType=VARCHAR}
+      </if>
+    </trim>
+  </update>
+
+  <!-- update by criteria -->
+
+  <select id="updateByCriteria">
+    ${sql}
+  </select>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from invoice
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="id != null">
+        and "ID" = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="accountId != null">
+        and "ACCOUNT_ID" = #{accountId,jdbcType=INTEGER}
+      </if>
+      <if test="amount != null">
+        and "AMOUNT" = #{amount,jdbcType=INTEGER}
+      </if>
+      <if test="branchId != null">
+        and "BRANCH_ID" = #{branchId,jdbcType=INTEGER}
+      </if>
+      <if test="orderDate != null">
+        and "ORDER_DATE" = #{orderDate,jdbcType=DATE}
+      </if>
+      <if test="type != null">
+        and "TYPE" = #{type,jdbcType=VARCHAR}
+      </if>
+      <if test="unpaidBalance != null">
+        and "UNPAID_BALANCE" = #{unpaidBalance,jdbcType=INTEGER}
+      </if>
+      <if test="status != null">
+        and "STATUS" = #{status,jdbcType=VARCHAR}
+      </if>
+    </trim>
+  </delete>
+
+  <!-- delete by criteria -->
+
+  <select id="deleteByCriteria">
+    ${sql}
+  </select>
+
+</mapper>

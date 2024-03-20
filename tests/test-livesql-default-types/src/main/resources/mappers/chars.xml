@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.chars">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    "ID",
+    "VC1",
+    "VC2",
+    "VC3",
+    "VC4",
+    "VC5",
+    "VC6",
+    "VC7",
+    "CHA1",
+    "CHA2",
+    "CHA3",
+    "CLO1",
+    "CLO2",
+    "CLO3",
+    "CLO4",
+    "CLO5",
+    "CLO6",
+    "CLO7"
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}."ID",
+    ${alias}."VC1",
+    ${alias}."VC2",
+    ${alias}."VC3",
+    ${alias}."VC4",
+    ${alias}."VC5",
+    ${alias}."VC6",
+    ${alias}."VC7",
+    ${alias}."CHA1",
+    ${alias}."CHA2",
+    ${alias}."CHA3",
+    ${alias}."CLO1",
+    ${alias}."CLO2",
+    ${alias}."CLO3",
+    ${alias}."CLO4",
+    ${alias}."CLO5",
+    ${alias}."CLO6",
+    ${alias}."CLO7"
+  </sql>
+
+  <resultMap id="allColumns" type="app.daos.CharsVO">
+    <id property="id" column="ID" />
+    <result property="vc1" column="VC1" />
+    <result property="vc2" column="VC2" />
+    <result property="vc3" column="VC3" />
+    <result property="vc4" column="VC4" />
+    <result property="vc5" column="VC5" />
+    <result property="vc6" column="VC6" />
+    <result property="vc7" column="VC7" />
+    <result property="cha1" column="CHA1" />
+    <result property="cha2" column="CHA2" />
+    <result property="cha3" column="CHA3" />
+    <result property="clo1" column="CLO1" />
+    <result property="clo2" column="CLO2" />
+    <result property="clo3" column="CLO3" />
+    <result property="clo4" column="CLO4" />
+    <result property="clo5" column="CLO5" />
+    <result property="clo6" column="CLO6" />
+    <result property="clo7" column="CLO7" />
+  </resultMap>
+
+  <!-- select by PK -->
+
+  <select id="selectByPK" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from chars
+     where
+      "ID" = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!-- no select by unique indexes since there are no UI (besides the PK) -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from chars
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="p.id != null">
+        and "ID" = #{p.id,jdbcType=INTEGER}
+      </if>
+      <if test="p.vc1 != null">
+        and "VC1" = #{p.vc1,jdbcType=VARCHAR}
+      </if>
+      <if test="p.vc2 != null">
+        and "VC2" = #{p.vc2,jdbcType=VARCHAR}
+      </if>
+      <if test="p.vc3 != null">
+        and "VC3" = #{p.vc3,jdbcType=VARCHAR}
+      </if>
+      <if test="p.vc4 != null">
+        and "VC4" = #{p.vc4,jdbcType=VARCHAR}
+      </if>
+      <if test="p.vc5 != null">
+        and "VC5" = #{p.vc5,jdbcType=VARCHAR}
+      </if>
+      <if test="p.vc6 != null">
+        and "VC6" = #{p.vc6,jdbcType=VARCHAR}
+      </if>
+      <if test="p.vc7 != null">
+        and "VC7" = #{p.vc7,jdbcType=VARCHAR}
+      </if>
+      <if test="p.cha1 != null">
+        and "CHA1" = #{p.cha1,jdbcType=CHAR}
+      </if>
+      <if test="p.cha2 != null">
+        and "CHA2" = #{p.cha2,jdbcType=CHAR}
+      </if>
+      <if test="p.cha3 != null">
+        and "CHA3" = #{p.cha3,jdbcType=CHAR}
+      </if>
+      <if test="p.clo1 != null">
+        and "CLO1" = #{p.clo1,jdbcType=CLOB}
+      </if>
+      <if test="p.clo2 != null">
+        and "CLO2" = #{p.clo2,jdbcType=VARCHAR}
+      </if>
+      <if test="p.clo3 != null">
+        and "CLO3" = #{p.clo3,jdbcType=VARCHAR}
+      </if>
+      <if test="p.clo4 != null">
+        and "CLO4" = #{p.clo4,jdbcType=VARCHAR}
+      </if>
+      <if test="p.clo5 != null">
+        and "CLO5" = #{p.clo5,jdbcType=VARCHAR}
+      </if>
+      <if test="p.clo6 != null">
+        and "CLO6" = #{p.clo6,jdbcType=VARCHAR}
+      </if>
+      <if test="p.clo7 != null">
+        and "CLO7" = #{p.clo7,jdbcType=CLOB}
+      </if>
+    </trim>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into chars (
+      <trim prefixOverrides=", ">
+        <if test="true">, "ID"</if>
+        <if test="true">, "VC1"</if>
+        <if test="true">, "VC2"</if>
+        <if test="true">, "VC3"</if>
+        <if test="true">, "VC4"</if>
+        <if test="true">, "VC5"</if>
+        <if test="true">, "VC6"</if>
+        <if test="true">, "VC7"</if>
+        <if test="true">, "CHA1"</if>
+        <if test="true">, "CHA2"</if>
+        <if test="true">, "CHA3"</if>
+        <if test="true">, "CLO1"</if>
+        <if test="true">, "CLO2"</if>
+        <if test="true">, "CLO3"</if>
+        <if test="true">, "CLO4"</if>
+        <if test="true">, "CLO5"</if>
+        <if test="true">, "CLO6"</if>
+        <if test="true">, "CLO7"</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{id,jdbcType=INTEGER}</if>
+        <if test="true">, #{vc1,jdbcType=VARCHAR}</if>
+        <if test="true">, #{vc2,jdbcType=VARCHAR}</if>
+        <if test="true">, #{vc3,jdbcType=VARCHAR}</if>
+        <if test="true">, #{vc4,jdbcType=VARCHAR}</if>
+        <if test="true">, #{vc5,jdbcType=VARCHAR}</if>
+        <if test="true">, #{vc6,jdbcType=VARCHAR}</if>
+        <if test="true">, #{vc7,jdbcType=VARCHAR}</if>
+        <if test="true">, #{cha1,jdbcType=CHAR}</if>
+        <if test="true">, #{cha2,jdbcType=CHAR}</if>
+        <if test="true">, #{cha3,jdbcType=CHAR}</if>
+        <if test="true">, #{clo1,jdbcType=CLOB}</if>
+        <if test="true">, #{clo2,jdbcType=VARCHAR}</if>
+        <if test="true">, #{clo3,jdbcType=VARCHAR}</if>
+        <if test="true">, #{clo4,jdbcType=VARCHAR}</if>
+        <if test="true">, #{clo5,jdbcType=VARCHAR}</if>
+        <if test="true">, #{clo6,jdbcType=VARCHAR}</if>
+        <if test="true">, #{clo7,jdbcType=CLOB}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK -->
+
+  <update id="updateByPK">
+    update chars set
+      "VC1" = #{vc1,jdbcType=VARCHAR},
+      "VC2" = #{vc2,jdbcType=VARCHAR},
+      "VC3" = #{vc3,jdbcType=VARCHAR},
+      "VC4" = #{vc4,jdbcType=VARCHAR},
+      "VC5" = #{vc5,jdbcType=VARCHAR},
+      "VC6" = #{vc6,jdbcType=VARCHAR},
+      "VC7" = #{vc7,jdbcType=VARCHAR},
+      "CHA1" = #{cha1,jdbcType=CHAR},
+      "CHA2" = #{cha2,jdbcType=CHAR},
+      "CHA3" = #{cha3,jdbcType=CHAR},
+      "CLO1" = #{clo1,jdbcType=CLOB},
+      "CLO2" = #{clo2,jdbcType=VARCHAR},
+      "CLO3" = #{clo3,jdbcType=VARCHAR},
+      "CLO4" = #{clo4,jdbcType=VARCHAR},
+      "CLO5" = #{clo5,jdbcType=VARCHAR},
+      "CLO6" = #{clo6,jdbcType=VARCHAR},
+      "CLO7" = #{clo7,jdbcType=CLOB}
+     where
+      "ID" = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- delete by PK -->
+
+  <delete id="deleteByPK">
+    delete from chars
+     where
+      "ID" = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update chars
+    <set>
+      <if test="values.id != null">"ID" = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.vc1 != null">"VC1" = #{values.vc1,jdbcType=VARCHAR},</if>
+      <if test="values.vc2 != null">"VC2" = #{values.vc2,jdbcType=VARCHAR},</if>
+      <if test="values.vc3 != null">"VC3" = #{values.vc3,jdbcType=VARCHAR},</if>
+      <if test="values.vc4 != null">"VC4" = #{values.vc4,jdbcType=VARCHAR},</if>
+      <if test="values.vc5 != null">"VC5" = #{values.vc5,jdbcType=VARCHAR},</if>
+      <if test="values.vc6 != null">"VC6" = #{values.vc6,jdbcType=VARCHAR},</if>
+      <if test="values.vc7 != null">"VC7" = #{values.vc7,jdbcType=VARCHAR},</if>
+      <if test="values.cha1 != null">"CHA1" = #{values.cha1,jdbcType=CHAR},</if>
+      <if test="values.cha2 != null">"CHA2" = #{values.cha2,jdbcType=CHAR},</if>
+      <if test="values.cha3 != null">"CHA3" = #{values.cha3,jdbcType=CHAR},</if>
+      <if test="values.clo1 != null">"CLO1" = #{values.clo1,jdbcType=CLOB},</if>
+      <if test="values.clo2 != null">"CLO2" = #{values.clo2,jdbcType=VARCHAR},</if>
+      <if test="values.clo3 != null">"CLO3" = #{values.clo3,jdbcType=VARCHAR},</if>
+      <if test="values.clo4 != null">"CLO4" = #{values.clo4,jdbcType=VARCHAR},</if>
+      <if test="values.clo5 != null">"CLO5" = #{values.clo5,jdbcType=VARCHAR},</if>
+      <if test="values.clo6 != null">"CLO6" = #{values.clo6,jdbcType=VARCHAR},</if>
+      <if test="values.clo7 != null">"CLO7" = #{values.clo7,jdbcType=CLOB},</if>
+    </set>
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="filter.id != null">
+        and "ID" = #{filter.id,jdbcType=INTEGER}
+      </if>
+      <if test="filter.vc1 != null">
+        and "VC1" = #{filter.vc1,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.vc2 != null">
+        and "VC2" = #{filter.vc2,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.vc3 != null">
+        and "VC3" = #{filter.vc3,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.vc4 != null">
+        and "VC4" = #{filter.vc4,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.vc5 != null">
+        and "VC5" = #{filter.vc5,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.vc6 != null">
+        and "VC6" = #{filter.vc6,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.vc7 != null">
+        and "VC7" = #{filter.vc7,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.cha1 != null">
+        and "CHA1" = #{filter.cha1,jdbcType=CHAR}
+      </if>
+      <if test="filter.cha2 != null">
+        and "CHA2" = #{filter.cha2,jdbcType=CHAR}
+      </if>
+      <if test="filter.cha3 != null">
+        and "CHA3" = #{filter.cha3,jdbcType=CHAR}
+      </if>
+      <if test="filter.clo1 != null">
+        and "CLO1" = #{filter.clo1,jdbcType=CLOB}
+      </if>
+      <if test="filter.clo2 != null">
+        and "CLO2" = #{filter.clo2,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.clo3 != null">
+        and "CLO3" = #{filter.clo3,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.clo4 != null">
+        and "CLO4" = #{filter.clo4,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.clo5 != null">
+        and "CLO5" = #{filter.clo5,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.clo6 != null">
+        and "CLO6" = #{filter.clo6,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.clo7 != null">
+        and "CLO7" = #{filter.clo7,jdbcType=CLOB}
+      </if>
+    </trim>
+  </update>
+
+  <!-- update by criteria -->
+
+  <select id="updateByCriteria">
+    ${sql}
+  </select>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from chars
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="id != null">
+        and "ID" = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="vc1 != null">
+        and "VC1" = #{vc1,jdbcType=VARCHAR}
+      </if>
+      <if test="vc2 != null">
+        and "VC2" = #{vc2,jdbcType=VARCHAR}
+      </if>
+      <if test="vc3 != null">
+        and "VC3" = #{vc3,jdbcType=VARCHAR}
+      </if>
+      <if test="vc4 != null">
+        and "VC4" = #{vc4,jdbcType=VARCHAR}
+      </if>
+      <if test="vc5 != null">
+        and "VC5" = #{vc5,jdbcType=VARCHAR}
+      </if>
+      <if test="vc6 != null">
+        and "VC6" = #{vc6,jdbcType=VARCHAR}
+      </if>
+      <if test="vc7 != null">
+        and "VC7" = #{vc7,jdbcType=VARCHAR}
+      </if>
+      <if test="cha1 != null">
+        and "CHA1" = #{cha1,jdbcType=CHAR}
+      </if>
+      <if test="cha2 != null">
+        and "CHA2" = #{cha2,jdbcType=CHAR}
+      </if>
+      <if test="cha3 != null">
+        and "CHA3" = #{cha3,jdbcType=CHAR}
+      </if>
+      <if test="clo1 != null">
+        and "CLO1" = #{clo1,jdbcType=CLOB}
+      </if>
+      <if test="clo2 != null">
+        and "CLO2" = #{clo2,jdbcType=VARCHAR}
+      </if>
+      <if test="clo3 != null">
+        and "CLO3" = #{clo3,jdbcType=VARCHAR}
+      </if>
+      <if test="clo4 != null">
+        and "CLO4" = #{clo4,jdbcType=VARCHAR}
+      </if>
+      <if test="clo5 != null">
+        and "CLO5" = #{clo5,jdbcType=VARCHAR}
+      </if>
+      <if test="clo6 != null">
+        and "CLO6" = #{clo6,jdbcType=VARCHAR}
+      </if>
+      <if test="clo7 != null">
+        and "CLO7" = #{clo7,jdbcType=CLOB}
+      </if>
+    </trim>
+  </delete>
+
+  <!-- delete by criteria -->
+
+  <select id="deleteByCriteria">
+    ${sql}
+  </select>
+
+</mapper>
