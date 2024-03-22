@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class TorcsAutoConfiguration {
 
+  // Autowiring disabled
+
 //  @Bean
 //  public Torcs getTorcs() {
 //    return new Torcs();

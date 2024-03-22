@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class TorcsDataSource implements DataSource {
 
+  private static Logger log = Logger.getLogger(TorcsDataSource.class.getName());
+
   private DataSource wrapped;
   private DataSourceReference dataSourceReference;
 
@@ -23,13 +25,13 @@ public class TorcsDataSource implements DataSource {
   // Constructor
 
   public TorcsDataSource(DataSource wrapped) {
-    System.out.println(
-        "TORCS-DATASOURCE this:" + System.identityHashCode(this) + " wrapped:" + System.identityHashCode(wrapped));
+    log.info("Torcs DataSource initializing...");
     if (wrapped == null) {
       throw new RuntimeException("Cannot use a null DataSource");
     }
     this.wrapped = wrapped;
     this.dataSourceReference = DataSourceReference.of(wrapped);
+    log.info("Torcs DataSource ready.");
   }
 
   // DataSource methods
@@ -71,13 +73,13 @@ public class TorcsDataSource implements DataSource {
 
   @Override
   public Connection getConnection() throws SQLException {
-    System.out.println("GET CONNECTION 1");
+    log.fine("Torcs Connection");
     return new TorcsConnection(this.wrapped.getConnection(), this.torcs, this.dataSourceReference);
   }
 
   @Override
   public Connection getConnection(String username, String password) throws SQLException {
-    System.out.println("GET CONNECTION 2");
+    log.fine("Torcs Connection");
     return new TorcsConnection(this.wrapped.getConnection(username, password), this.torcs, this.dataSourceReference);
   }
 

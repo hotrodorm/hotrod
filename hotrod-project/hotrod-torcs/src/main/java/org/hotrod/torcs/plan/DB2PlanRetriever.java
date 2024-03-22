@@ -1,5 +1,6 @@
 package org.hotrod.torcs.plan;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,7 +10,8 @@ import java.util.UUID;
 import javax.sql.DataSource;
 
 import org.hotrod.torcs.QueryExecution;
-import org.hotrod.torcs.setters.Setter;
+import org.hotrod.torcs.setters.index.IndexSetter;
+import org.hotrod.torcs.setters.name.NameSetter;
 
 public class DB2PlanRetriever implements PlanRetriever {
 
@@ -237,33 +239,64 @@ public class DB2PlanRetriever implements PlanRetriever {
       conn.setAutoCommit(false);
 
       String uuid = UUID.randomUUID().toString().replace("-", "").substring(0, 20);
+
       try (PreparedStatement psd = conn
           .prepareStatement("delete from explain_statement where querytag='" + uuid + "'");) {
         psd.execute(); // clean up previous plans, if any
 
         String planSave = "explain plan set querytag='" + uuid + "' for\n" + execution.getSQL();
-        try (PreparedStatement ps = conn.prepareStatement(planSave);) {
-          for (Setter s : execution.getSetters()) {
-            s.applyTo(ps);
-          }
-          ps.execute(); // save the plan
 
-          String extractPlan = DB2_CUSTOM_2B_PLAN_HEAD + uuid + DB2_CUSTOM_2B_PLAN_TAIL;
-          try (PreparedStatement pse = conn.prepareStatement(extractPlan);) {
-            try (ResultSet rs = pse.executeQuery();) {
-              StringBuilder sb = new StringBuilder();
-              boolean first = true;
-              while (rs.next()) {
-                sb.append((first ? "" : "\n") + rs.getString(1));
-                first = false;
-              }
-              return sb.toString();
+        if (execution.getNameSetters().isEmpty()) {
+          try (PreparedStatement ps = conn.prepareStatement(planSave);) {
+            for (IndexSetter s : execution.getIndexSetters()) {
+              s.applyTo(ps);
             }
+            ps.execute(); // save the plan
+
+            String extractPlan = DB2_CUSTOM_2B_PLAN_HEAD + uuid + DB2_CUSTOM_2B_PLAN_TAIL;
+            try (PreparedStatement pse = conn.prepareStatement(extractPlan);) {
+              try (ResultSet rs = pse.executeQuery();) {
+                StringBuilder sb = new StringBuilder();
+                boolean first = true;
+                while (rs.next()) {
+                  sb.append((first ? "" : "\n") + rs.getString(1));
+                  first = false;
+                }
+                return sb.toString();
+              }
+            }
+          } finally {
+            conn.rollback();
           }
-        } finally {
-          conn.rollback();
+        } else {
+          try (CallableStatement cs = conn.prepareCall(planSave);) {
+            for (IndexSetter s : execution.getIndexSetters()) {
+              s.applyTo(cs);
+            }
+            for (NameSetter s : execution.getNameSetters()) {
+              s.applyTo(cs);
+            }
+            cs.execute(); // save the plan
+
+            String extractPlan = DB2_CUSTOM_2B_PLAN_HEAD + uuid + DB2_CUSTOM_2B_PLAN_TAIL;
+            try (PreparedStatement pse = conn.prepareStatement(extractPlan);) {
+              try (ResultSet rs = pse.executeQuery();) {
+                StringBuilder sb = new StringBuilder();
+                boolean first = true;
+                while (rs.next()) {
+                  sb.append((first ? "" : "\n") + rs.getString(1));
+                  first = false;
+                }
+                return sb.toString();
+              }
+            }
+          } finally {
+            conn.rollback();
+          }
+
         }
       }
+
     }
   }
 

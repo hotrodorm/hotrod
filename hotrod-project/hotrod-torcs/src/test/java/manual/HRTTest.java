@@ -9,9 +9,9 @@ public class HRTTest {
 
   public static void main(final String[] args) {
 
-    QueryExecution q1 = new QueryExecution(null, "sql1", null, 30, null);
-    QueryExecution q2 = new QueryExecution(null, "sql2", null, 10, null);
-    QueryExecution q3 = new QueryExecution(null, "sql3", null, 20, null);
+    QueryExecution q1 = new QueryExecution(null, "sql1", null, null, 30, null);
+    QueryExecution q2 = new QueryExecution(null, "sql2", null, null, 10, null);
+    QueryExecution q3 = new QueryExecution(null, "sql3", null, null, 20, null);
 
     HighestResponseTimeRanking rk = new HighestResponseTimeRanking(RANKING_SIZE);
 
@@ -23,9 +23,9 @@ public class HRTTest {
     rk.getEntries().stream().forEach(q -> System.out.println(q));
     System.out.println("");
 
-    rk.apply(new QueryExecution(null, "sql1", null, 5, null));
-    rk.apply(new QueryExecution(null, "sql3", null, 20, null));
-    rk.apply(new QueryExecution(null, "sql2", null, 25, null));
+    rk.apply(new QueryExecution(null, "sql1", null, null, 5, null));
+    rk.apply(new QueryExecution(null, "sql3", null, null, 20, null));
+    rk.apply(new QueryExecution(null, "sql2", null, null, 25, null));
 
     System.out.println("--- Torcs Ranking TOP " + RANKING_SIZE + " ---");
     rk.getEntries().stream().forEach(q -> System.out.println(q));

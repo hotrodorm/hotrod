@@ -22,9 +22,36 @@ import java.util.logging.Logger;
 
 import org.hotrod.torcs.DataSourceReference;
 import org.hotrod.torcs.Torcs;
+import org.hotrod.torcs.setters.name.NameAsciiStreamSetter;
+import org.hotrod.torcs.setters.name.NameBigDecimalSetter;
+import org.hotrod.torcs.setters.name.NameBinaryStreamSetter;
+import org.hotrod.torcs.setters.name.NameBlobSetter;
+import org.hotrod.torcs.setters.name.NameBooleanSetter;
+import org.hotrod.torcs.setters.name.NameByteSetter;
+import org.hotrod.torcs.setters.name.NameBytesSetter;
+import org.hotrod.torcs.setters.name.NameCharacterStreamSetter;
+import org.hotrod.torcs.setters.name.NameClobSetter;
+import org.hotrod.torcs.setters.name.NameDateSetter;
+import org.hotrod.torcs.setters.name.NameDoubleSetter;
+import org.hotrod.torcs.setters.name.NameFloatSetter;
+import org.hotrod.torcs.setters.name.NameIntSetter;
+import org.hotrod.torcs.setters.name.NameLongSetter;
+import org.hotrod.torcs.setters.name.NameNCharacterStreamSetter;
+import org.hotrod.torcs.setters.name.NameNClobSetter;
+import org.hotrod.torcs.setters.name.NameNStringSetter;
+import org.hotrod.torcs.setters.name.NameNullSetter;
+import org.hotrod.torcs.setters.name.NameObjectSetter;
+import org.hotrod.torcs.setters.name.NameRowIdSetter;
+import org.hotrod.torcs.setters.name.NameSQLXMLSetter;
+import org.hotrod.torcs.setters.name.NameShortSetter;
+import org.hotrod.torcs.setters.name.NameStringSetter;
+import org.hotrod.torcs.setters.name.NameTimeSetter;
+import org.hotrod.torcs.setters.name.NameTimestampSetter;
+import org.hotrod.torcs.setters.name.NameURLSetter;
 
 public class TorcsCallableStatement extends TorcsPreparedStatement implements CallableStatement {
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(TorcsCallableStatement.class.getName());
 
   private CallableStatement wrapped;
@@ -32,9 +59,10 @@ public class TorcsCallableStatement extends TorcsPreparedStatement implements Ca
   public TorcsCallableStatement(CallableStatement wrapped, TorcsConnection conn, Torcs torcs,
       DataSourceReference dataSourceReference, String sql) {
     super(wrapped, conn, torcs, dataSourceReference, sql);
-    log.fine("init");
     this.wrapped = wrapped;
   }
+
+  // Implementation methods
 
   @Override
   public Array getArray(int parameterIndex) throws SQLException {
@@ -372,230 +400,276 @@ public class TorcsCallableStatement extends TorcsPreparedStatement implements Ca
     this.wrapped.registerOutParameter(parameterName, sqlType, typeName);
   }
 
+  // TODO: marker
+
   @Override
   public void setAsciiStream(String parameterName, InputStream x) throws SQLException {
     this.wrapped.setAsciiStream(parameterName, x);
-
+    this.registerSetter(new NameAsciiStreamSetter(parameterName, x));
   }
 
   @Override
   public void setAsciiStream(String parameterName, InputStream x, int length) throws SQLException {
     this.wrapped.setAsciiStream(parameterName, x, length);
+    this.registerSetter(new NameAsciiStreamSetter(parameterName, x, length));
   }
 
   @Override
   public void setAsciiStream(String parameterName, InputStream x, long length) throws SQLException {
     this.wrapped.setAsciiStream(parameterName, x, length);
+    this.registerSetter(new NameAsciiStreamSetter(parameterName, x, length));
   }
 
   @Override
   public void setBigDecimal(String parameterName, BigDecimal x) throws SQLException {
     this.wrapped.setBigDecimal(parameterName, x);
+    this.registerSetter(new NameBigDecimalSetter(parameterName, x));
   }
 
   @Override
   public void setBinaryStream(String parameterName, InputStream x) throws SQLException {
     this.wrapped.setBinaryStream(parameterName, x);
+    this.registerSetter(new NameBinaryStreamSetter(parameterName, x));
   }
 
   @Override
   public void setBinaryStream(String parameterName, InputStream x, int length) throws SQLException {
     this.wrapped.setBinaryStream(parameterName, x, length);
+    this.registerSetter(new NameAsciiStreamSetter(parameterName, x, length));
   }
 
   @Override
   public void setBinaryStream(String parameterName, InputStream x, long length) throws SQLException {
     this.wrapped.setBinaryStream(parameterName, x, length);
+    this.registerSetter(new NameAsciiStreamSetter(parameterName, x, length));
   }
 
   @Override
   public void setBlob(String parameterName, Blob x) throws SQLException {
     this.wrapped.setBlob(parameterName, x);
+    this.registerSetter(new NameBlobSetter(parameterName, x));
   }
 
   @Override
   public void setBlob(String parameterName, InputStream inputStream) throws SQLException {
     this.wrapped.setBlob(parameterName, inputStream);
+    this.registerSetter(new NameAsciiStreamSetter(parameterName, inputStream));
   }
 
   @Override
   public void setBlob(String parameterName, InputStream inputStream, long length) throws SQLException {
     this.wrapped.setBlob(parameterName, inputStream, length);
+    this.registerSetter(new NameAsciiStreamSetter(parameterName, inputStream, length));
   }
 
   @Override
   public void setBoolean(String parameterName, boolean x) throws SQLException {
     this.wrapped.setBoolean(parameterName, x);
+    this.registerSetter(new NameBooleanSetter(parameterName, x));
   }
 
   @Override
   public void setByte(String parameterName, byte x) throws SQLException {
     this.wrapped.setByte(parameterName, x);
+    this.registerSetter(new NameByteSetter(parameterName, x));
   }
 
   @Override
   public void setBytes(String parameterName, byte[] x) throws SQLException {
     this.wrapped.setBytes(parameterName, x);
+    this.registerSetter(new NameBytesSetter(parameterName, x));
   }
 
   @Override
   public void setCharacterStream(String parameterName, Reader reader) throws SQLException {
     this.wrapped.setCharacterStream(parameterName, reader);
+    this.registerSetter(new NameCharacterStreamSetter(parameterName, reader));
   }
 
   @Override
   public void setCharacterStream(String parameterName, Reader reader, int length) throws SQLException {
     this.wrapped.setCharacterStream(parameterName, reader, length);
+    this.registerSetter(new NameCharacterStreamSetter(parameterName, reader, length));
   }
 
   @Override
   public void setCharacterStream(String parameterName, Reader reader, long length) throws SQLException {
     this.wrapped.setCharacterStream(parameterName, reader, length);
+    this.registerSetter(new NameCharacterStreamSetter(parameterName, reader, length));
   }
 
   @Override
   public void setClob(String parameterName, Clob x) throws SQLException {
     this.wrapped.setClob(parameterName, x);
+    this.registerSetter(new NameClobSetter(parameterName, x));
   }
 
   @Override
   public void setClob(String parameterName, Reader reader) throws SQLException {
     this.wrapped.setClob(parameterName, reader);
+    this.registerSetter(new NameClobSetter(parameterName, reader));
   }
 
   @Override
   public void setClob(String parameterName, Reader reader, long length) throws SQLException {
     this.wrapped.setClob(parameterName, reader, length);
+    this.registerSetter(new NameClobSetter(parameterName, reader, length));
   }
 
   @Override
   public void setDate(String parameterName, Date x) throws SQLException {
     this.wrapped.setDate(parameterName, x);
+    this.registerSetter(new NameDateSetter(parameterName, x));
   }
 
   @Override
   public void setDate(String parameterName, Date x, Calendar cal) throws SQLException {
     this.wrapped.setDate(parameterName, x, cal);
+    this.registerSetter(new NameDateSetter(parameterName, x, cal));
   }
 
   @Override
   public void setDouble(String parameterName, double x) throws SQLException {
     this.wrapped.setDouble(parameterName, x);
+    this.registerSetter(new NameDoubleSetter(parameterName, x));
   }
 
   @Override
   public void setFloat(String parameterName, float x) throws SQLException {
     this.wrapped.setFloat(parameterName, x);
+    this.registerSetter(new NameFloatSetter(parameterName, x));
   }
 
   @Override
   public void setInt(String parameterName, int x) throws SQLException {
     this.wrapped.setInt(parameterName, x);
+    this.registerSetter(new NameIntSetter(parameterName, x));
   }
 
   @Override
   public void setLong(String parameterName, long x) throws SQLException {
     this.wrapped.setLong(parameterName, x);
+    this.registerSetter(new NameLongSetter(parameterName, x));
   }
 
   @Override
   public void setNCharacterStream(String parameterName, Reader value) throws SQLException {
     this.wrapped.setNCharacterStream(parameterName, value);
+    this.registerSetter(new NameNCharacterStreamSetter(parameterName, value));
   }
 
   @Override
   public void setNCharacterStream(String parameterName, Reader value, long length) throws SQLException {
     this.wrapped.setNCharacterStream(parameterName, value, length);
+    this.registerSetter(new NameNCharacterStreamSetter(parameterName, value, length));
   }
 
   @Override
   public void setNClob(String parameterName, NClob value) throws SQLException {
     this.wrapped.setNClob(parameterName, value);
+    this.registerSetter(new NameNClobSetter(parameterName, value));
   }
 
   @Override
   public void setNClob(String parameterName, Reader reader) throws SQLException {
     this.wrapped.setNClob(parameterName, reader);
+    this.registerSetter(new NameNClobSetter(parameterName, reader));
   }
 
   @Override
   public void setNClob(String parameterName, Reader reader, long length) throws SQLException {
     this.wrapped.setNClob(parameterName, reader, length);
+    this.registerSetter(new NameNClobSetter(parameterName, reader, length));
   }
 
   @Override
   public void setNString(String parameterName, String value) throws SQLException {
     this.wrapped.setNString(parameterName, value);
+    this.registerSetter(new NameNStringSetter(parameterName, value));
   }
 
   @Override
   public void setNull(String parameterName, int sqlType) throws SQLException {
     this.wrapped.setNull(parameterName, sqlType);
+    this.registerSetter(new NameNullSetter(parameterName, sqlType));
   }
 
   @Override
   public void setNull(String parameterName, int sqlType, String typeName) throws SQLException {
     this.wrapped.setNull(parameterName, sqlType, typeName);
+    this.registerSetter(new NameNullSetter(parameterName, sqlType, typeName));
   }
 
   @Override
   public void setObject(String parameterName, Object x) throws SQLException {
     this.wrapped.setObject(parameterName, x);
+    this.registerSetter(new NameObjectSetter(parameterName, x));
   }
 
   @Override
   public void setObject(String parameterName, Object x, int targetSqlType) throws SQLException {
     this.wrapped.setObject(parameterName, x, targetSqlType);
+    this.registerSetter(new NameObjectSetter(parameterName, x, targetSqlType));
   }
 
   @Override
   public void setObject(String parameterName, Object x, int targetSqlType, int scale) throws SQLException {
     this.wrapped.setObject(parameterName, x, targetSqlType, scale);
+    this.registerSetter(new NameObjectSetter(parameterName, x, targetSqlType, scale));
   }
 
   @Override
   public void setRowId(String parameterName, RowId x) throws SQLException {
     this.wrapped.setRowId(parameterName, x);
+    this.registerSetter(new NameRowIdSetter(parameterName, x));
   }
 
   @Override
   public void setSQLXML(String parameterName, SQLXML xmlObject) throws SQLException {
     this.wrapped.setSQLXML(parameterName, xmlObject);
+    this.registerSetter(new NameSQLXMLSetter(parameterName, xmlObject));
   }
 
   @Override
   public void setShort(String parameterName, short x) throws SQLException {
     this.wrapped.setShort(parameterName, x);
+    this.registerSetter(new NameShortSetter(parameterName, x));
   }
 
   @Override
   public void setString(String parameterName, String x) throws SQLException {
     this.wrapped.setString(parameterName, x);
+    this.registerSetter(new NameStringSetter(parameterName, x));
   }
 
   @Override
   public void setTime(String parameterName, Time x) throws SQLException {
     this.wrapped.setTime(parameterName, x);
+    this.registerSetter(new NameTimeSetter(parameterName, x));
   }
 
   @Override
   public void setTime(String parameterName, Time x, Calendar cal) throws SQLException {
     this.wrapped.setTime(parameterName, x, cal);
+    this.registerSetter(new NameTimeSetter(parameterName, x, cal));
   }
 
   @Override
   public void setTimestamp(String parameterName, Timestamp x) throws SQLException {
     this.wrapped.setTimestamp(parameterName, x);
+    this.registerSetter(new NameTimestampSetter(parameterName, x));
   }
 
   @Override
   public void setTimestamp(String parameterName, Timestamp x, Calendar cal) throws SQLException {
     this.wrapped.setTimestamp(parameterName, x, cal);
+    this.registerSetter(new NameTimestampSetter(parameterName, x, cal));
   }
 
   @Override
   public void setURL(String parameterName, URL val) throws SQLException {
     this.wrapped.setURL(parameterName, val);
+    this.registerSetter(new NameURLSetter(parameterName, val));
   }
 
   @Override

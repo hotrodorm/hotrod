@@ -6,21 +6,24 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.hotrod.torcs.setters.Setter;
+import org.hotrod.torcs.setters.index.IndexSetter;
+import org.hotrod.torcs.setters.name.NameSetter;
 
 public class QueryExecution {
 
   public DataSourceReference dsr;
   public String sql;
-  public Map<Integer, Setter> setters;
+  public Map<Integer, IndexSetter> indexSetters;
+  public Map<String, NameSetter> nameSetters;
   public int responseTime;
   public Throwable exception;
 
-  public QueryExecution(final DataSourceReference dsr, final String sql, final Map<Integer, Setter> setters,
-      final int responseTime, final Throwable exception) {
+  public QueryExecution(final DataSourceReference dsr, final String sql, final Map<Integer, IndexSetter> indexSetters,
+      final Map<String, NameSetter> nameSetters, final int responseTime, final Throwable exception) {
     this.dsr = dsr;
     this.sql = sql;
-    this.setters = setters;
+    this.indexSetters = indexSetters;
+    this.nameSetters = nameSetters;
     this.responseTime = responseTime;
     this.exception = exception;
   }
@@ -33,8 +36,12 @@ public class QueryExecution {
     return sql;
   }
 
-  public Collection<Setter> getSetters() {
-    return new ArrayList<>(setters.values());
+  public Collection<IndexSetter> getIndexSetters() {
+    return new ArrayList<>(indexSetters.values());
+  }
+
+  public Collection<NameSetter> getNameSetters() {
+    return new ArrayList<>(nameSetters.values());
   }
 
   public int getResponseTime() {

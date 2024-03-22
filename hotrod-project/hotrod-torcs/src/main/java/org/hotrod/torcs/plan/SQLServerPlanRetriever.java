@@ -12,9 +12,9 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.hotrod.torcs.QueryExecution;
-import org.hotrod.torcs.setters.CouldNotToGuessDataTypeException;
-import org.hotrod.torcs.setters.DataTypeNotImplementedException;
-import org.hotrod.torcs.setters.Setter;
+import org.hotrod.torcs.setters.index.CouldNotToGuessDataTypeException;
+import org.hotrod.torcs.setters.index.DataTypeNotImplementedException;
+import org.hotrod.torcs.setters.index.IndexSetter;
 
 public class SQLServerPlanRetriever implements PlanRetriever {
 
@@ -38,18 +38,30 @@ public class SQLServerPlanRetriever implements PlanRetriever {
       conn.setAutoCommit(false);
       try (Statement stIni = conn.createStatement();) {
         stIni.execute("set showplan_" + formatKeyword + " on");
-        try (Statement st = conn.createStatement();) {
-          SQLServerPlanSQL pp = new SQLServerPlanSQL(execution.getSQL(), execution.getSetters());
-          String sql = pp.render();
-          st.execute(sql);
-          if (formatKeyword.equals("XML")) {
-            return getResult(st);
-          } else {
-            getResult(st);
-            st.getMoreResults();
-            return getResult(st);
+
+        if (execution.getNameSetters().isEmpty()) {
+
+          try (Statement st = conn.createStatement();) {
+            SQLServerPlanSQL pp = new SQLServerPlanSQL(execution.getSQL(), execution.getIndexSetters());
+            String sql = pp.render();
+            st.execute(sql);
+            if (formatKeyword.equals("XML")) {
+              return getResult(st);
+            } else {
+              getResult(st);
+              st.getMoreResults();
+              return getResult(st);
+            }
           }
+
+        } else {
+
+          throw new UnsupportedOperationException("Cannot retrieve SQL Server plan that use CallableStatements, "
+              + "or that use parameter setting using names instead of indexes.");
+          // It may be possible to do but requires more testing
+
         }
+
       } finally {
         try (Statement stEnd = conn.createStatement();) {
           stEnd.execute("set showplan_" + formatKeyword + " off");
@@ -62,11 +74,11 @@ public class SQLServerPlanRetriever implements PlanRetriever {
 
   public class SQLServerPlanSQL {
 
-    private Collection<Setter> setters;
+    private Collection<IndexSetter> setters;
     private List<String> parameters = new ArrayList<>();
     private String psql;
 
-    private SQLServerPlanSQL(final String sql, final Collection<Setter> setters) {
+    private SQLServerPlanSQL(final String sql, final Collection<IndexSetter> setters) {
       if (sql == null) {
         throw new IllegalArgumentException("SQL statement cannot be null");
       }
@@ -130,9 +142,9 @@ public class SQLServerPlanRetriever implements PlanRetriever {
 
     private String render() {
       StringBuilder sb = new StringBuilder();
-      Iterator<Setter> it = this.setters.iterator();
+      Iterator<IndexSetter> it = this.setters.iterator();
       for (String p : this.parameters) {
-        Setter s = it.hasNext() ? it.next() : null;
+        IndexSetter s = it.hasNext() ? it.next() : null;
         String dbType = guessDBType(s);
         sb.append("declare " + p + " " + dbType + ";\n");
       }
@@ -140,7 +152,7 @@ public class SQLServerPlanRetriever implements PlanRetriever {
       return sb.toString();
     }
 
-    private String guessDBType(final Setter s) {
+    private String guessDBType(final IndexSetter s) {
       if (s == null) {
         return "varchar";
       }

@@ -1,5 +1,6 @@
 package org.hotrod.torcs.ctp.db2;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,7 +11,8 @@ import javax.sql.DataSource;
 
 import org.hotrod.torcs.QueryExecution;
 import org.hotrod.torcs.ctp.CTPPlanRetriever;
-import org.hotrod.torcs.setters.Setter;
+import org.hotrod.torcs.setters.index.IndexSetter;
+import org.hotrod.torcs.setters.name.NameSetter;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -196,26 +198,58 @@ public class DB2CTPPlanRetriever implements CTPPlanRetriever {
 
         String planSave = "explain plan set querytag='" + uuid + "' for\n" + execution.getSQL();
 //        System.out.println("--- planSave ---\n" + planSave + "\n------------------------");
-        try (PreparedStatement ps = conn.prepareStatement(planSave);) {
-          for (Setter s : execution.getSetters()) {
-            s.applyTo(ps);
-          }
-          ps.execute(); // save the plan
 
-          String extractPlan = DB2_CTP1_PLAN_HEAD + uuid + DB2_CTP1_PLAN_TAIL;
-          try (PreparedStatement pse = conn.prepareStatement(extractPlan);) {
-            try (ResultSet rs = pse.executeQuery();) {
-              StringBuilder sb = new StringBuilder();
-              boolean first = true;
-              while (rs.next()) {
-                sb.append((first ? "" : "\n") + rs.getString(1));
-                first = false;
-              }
-              return sb.toString();
+        if (execution.getNameSetters().isEmpty()) {
+
+          try (PreparedStatement ps = conn.prepareStatement(planSave);) {
+            for (IndexSetter s : execution.getIndexSetters()) {
+              s.applyTo(ps);
             }
+            ps.execute(); // save the plan
+
+            String extractPlan = DB2_CTP1_PLAN_HEAD + uuid + DB2_CTP1_PLAN_TAIL;
+            try (PreparedStatement pse = conn.prepareStatement(extractPlan);) {
+              try (ResultSet rs = pse.executeQuery();) {
+                StringBuilder sb = new StringBuilder();
+                boolean first = true;
+                while (rs.next()) {
+                  sb.append((first ? "" : "\n") + rs.getString(1));
+                  first = false;
+                }
+                return sb.toString();
+              }
+            }
+          } finally {
+            conn.rollback();
           }
-        } finally {
-          conn.rollback();
+
+        } else {
+
+          try (CallableStatement cs = conn.prepareCall(planSave);) {
+            for (IndexSetter s : execution.getIndexSetters()) {
+              s.applyTo(cs);
+            }
+            for (NameSetter s : execution.getNameSetters()) {
+              s.applyTo(cs);
+            }
+            cs.execute(); // save the plan
+
+            String extractPlan = DB2_CTP1_PLAN_HEAD + uuid + DB2_CTP1_PLAN_TAIL;
+            try (PreparedStatement pse = conn.prepareStatement(extractPlan);) {
+              try (ResultSet rs = pse.executeQuery();) {
+                StringBuilder sb = new StringBuilder();
+                boolean first = true;
+                while (rs.next()) {
+                  sb.append((first ? "" : "\n") + rs.getString(1));
+                  first = false;
+                }
+                return sb.toString();
+              }
+            }
+          } finally {
+            conn.rollback();
+          }
+
         }
       }
     }

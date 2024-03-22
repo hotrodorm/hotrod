@@ -11,7 +11,8 @@ import java.util.concurrent.TimeUnit;
 import org.hotrod.torcs.plan.PlanRetriever;
 import org.hotrod.torcs.plan.PlanRetrieverFactory.UnsupportedTorcsDatabaseException;
 import org.hotrod.torcs.rankings.HighestResponseTimeRanking;
-import org.hotrod.torcs.setters.Setter;
+import org.hotrod.torcs.setters.index.IndexSetter;
+import org.hotrod.torcs.setters.name.NameSetter;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -91,10 +92,10 @@ public class Torcs {
     return this.responseTimeRanking;
   }
 
-  public void record(final DataSourceReference dsr, final String sql, final Map<Integer, Setter> setters,
-      final int responseTime, final Throwable t) {
+  public void record(final DataSourceReference dsr, final String sql, final Map<Integer, IndexSetter> indexSetters,
+      final Map<String, NameSetter> nameSetters, final int responseTime, final Throwable t) {
     if (this.active) {
-      QueryExecution qe = new QueryExecution(dsr, sql, setters, responseTime, t);
+      QueryExecution qe = new QueryExecution(dsr, sql, indexSetters, nameSetters, responseTime, t);
       for (QueryExecutionObserver o : this.observers) {
         if (o.isActive()) {
           o.apply(qe);
