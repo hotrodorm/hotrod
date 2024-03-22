@@ -22,9 +22,10 @@ import org.hotrod.runtime.livesql.queries.select.EntitySelect;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.hotrod.torcs.Torcs;
-import org.hotrod.torcs.autoconfig.TorcsAutoConfiguration;
+import org.hotrod.torcs.rankings.RankingEntry;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -34,6 +35,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
+import app.daos.BranchVO;
 import app.daos.primitives.AccountDAO;
 import app.daos.primitives.AccountDAO.AccountTable;
 import app.daos.primitives.BranchDAO;
@@ -48,8 +50,10 @@ import app.daos.reporting.primitives.InvoiceDAO.InvoiceTable;
 @MapperScan(basePackageClasses = LiveSQL.class)
 @MapperScan("mappers")
 @ComponentScan(basePackageClasses = SpringBeanObjectFactory.class)
+
+//@ComponentScan(basePackageClasses = Torcs.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = TorcsDataSource.class))
 @ComponentScan(basePackageClasses = Torcs.class)
-@ComponentScan(basePackageClasses = TorcsAutoConfiguration.class)
+
 @PropertySource(value = { "file:application.properties",
     "classpath:application.properties" }, ignoreResourceNotFound = true)
 public class App {
@@ -73,6 +77,7 @@ public class App {
 //  private CaseDAO caseDAO;
 
   @Autowired
+  @Qualifier("liveSQL1")
   private LiveSQL sql;
 
   @Autowired
@@ -169,16 +174,16 @@ public class App {
 
   private void crud() {
 //    crudInsert();
-//    crudSelect();
+    crudSelect();
 //    selectCases();
-    selectFK();
+//    selectFK();
   }
 
-//  private void crudSelect() {
-//    List<CaseVO> cases = this.caseDAO.select(new CaseVO());
-//    cases.forEach(x -> System.out.println("case:" + x));
-//  }
-//
+  private void crudSelect() {
+    List<InvoiceVO> cases = this.invoiceDAO.select(new InvoiceVO());
+    cases.forEach(x -> System.out.println("inv:" + x));
+  }
+
 //  private void selectCases() {
 //    CaseTable c = CaseDAO.newTable("c");
 //    EntitySelect<CaseVO> select = this.caseDAO.select(c, c.name.ne("bad")).limit(1);
@@ -710,14 +715,14 @@ public class App {
   // TODO: Nothing to do, just a marker.
 
   private void torcs() throws SQLException, IOException {
-    disableTorcs();
+//    disableTorcs();
 //  enableTorcs();
 //  deactivateDefaultObserverTorcs();
 //  changeDefaultObserverSize();
 //  changeTorcsResetPeriodTo24Hours();
 //  addingAnInitialQueriesRankingToTorcs();
 //  addingALatestQueriesRankingToTorcs();
-//  getARankingByNonDefaultOrdering();
+    getRanking();
 //  saveARankingAsXLSX();
 //  addingAQueryLogger();
 //    getSlowestQueryExecutionPlan();
@@ -779,19 +784,23 @@ public class App {
 //    }
 //    System.out.println("--- End of Ranking ---");
 //  }
-//
-//  private void getARankingByNonDefaultOrdering() {
-//    InitialQueriesRanking iqr = new InitialQueriesRanking(50);
-//    this.torcs.register(iqr);
-//    // Get the ranking entries sorted by total impact/TET (total elapsed time)
-//    System.out.println("--- " + "Ranking: " + iqr.getTitle() + " TET ---");
-//    for (RankingEntry re : iqr.getRankingByTotalElapsedTime()) {
-//      System.out.println(re);
-//    }
-//    System.out.println("--- End of Ranking ---");
-//
-//  }
-//
+
+  private void getRanking() {
+    BranchTable b = BranchDAO.newTable();
+    for (int i = 0; i < 3; i++) {
+      List<BranchVO> branches = this.branchDAO.select(b, b.region.ge("NORTH")).execute();
+      System.out.println("r[" + branches.size() + "]");
+    }
+    List<BranchVO> b2 = this.branchDAO.select(b, b.isVip).execute();
+    System.out.println("b2=" + b2);
+    System.out.println("--- Ranking ---");
+    for (RankingEntry re : this.torcs.getDefaultRanking().getEntries()) {
+      System.out.println(re);
+    }
+    System.out.println("--- End of Ranking ---");
+
+  }
+
 //  private void saveARankingAsXLSX() {
 //    String xlsxName = "ranking-by-max-response-time.xlsx";
 //    try (OutputStream os = new FileOutputStream(new File(xlsxName))) {

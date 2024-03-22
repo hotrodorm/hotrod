@@ -145,6 +145,10 @@ create table invoice (
   status varchar(10)
 );
 
+insert into invoice (id, account_id, amount, branch_id, order_date, type, unpaid_balance, status) values
+  (10, 123, 100, 2, '2024-03-15', 'VIP', 0, 'CONF'),
+  (11, 125, 500, 2, '2024-03-16', 'NORTH', 50, 'PLACED');
+
 create table invoice_line (
   invoice_id int,
   product_id int,

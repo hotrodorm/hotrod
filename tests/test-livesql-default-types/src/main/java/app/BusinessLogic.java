@@ -6,6 +6,7 @@ import org.hotrod.runtime.livesql.queries.DMLQuery;
 import org.hotrod.runtime.livesql.queries.select.EntitySelect;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ import app.daos.reporting.primitives.InvoiceDAO.InvoiceTable;
 public class BusinessLogic {
 
   @Autowired
+  @Qualifier("liveSQL1")
   private LiveSQL sql;
 
   @Autowired
