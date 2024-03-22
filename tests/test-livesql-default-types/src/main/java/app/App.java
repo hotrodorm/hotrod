@@ -22,6 +22,7 @@ import org.hotrod.runtime.livesql.queries.select.EntitySelect;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.hotrod.torcs.Torcs;
+import org.hotrod.torcs.plan.PlanRetrieverFactory.UnsupportedTorcsDatabaseException;
 import org.hotrod.torcs.rankings.RankingEntry;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,10 +51,7 @@ import app.daos.reporting.primitives.InvoiceDAO.InvoiceTable;
 @MapperScan(basePackageClasses = LiveSQL.class)
 @MapperScan("mappers")
 @ComponentScan(basePackageClasses = SpringBeanObjectFactory.class)
-
-//@ComponentScan(basePackageClasses = Torcs.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = TorcsDataSource.class))
 @ComponentScan(basePackageClasses = Torcs.class)
-
 @PropertySource(value = { "file:application.properties",
     "classpath:application.properties" }, ignoreResourceNotFound = true)
 public class App {
@@ -796,6 +794,12 @@ public class App {
     System.out.println("--- Ranking ---");
     for (RankingEntry re : this.torcs.getDefaultRanking().getEntries()) {
       System.out.println(re);
+      try {
+        String plan = this.torcs.getEstimatedExecutionPlan(re.getSlowestExecution());
+        System.out.println(plan);
+      } catch (SQLException | UnsupportedTorcsDatabaseException e) {
+        e.printStackTrace();
+      }
     }
     System.out.println("--- End of Ranking ---");
 
