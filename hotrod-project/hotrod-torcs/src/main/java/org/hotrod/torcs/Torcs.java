@@ -91,7 +91,7 @@ public class Torcs {
     return this.responseTimeRanking;
   }
 
-  void record(final DataSourceReference dsr, final String sql, final Map<Integer, Setter> setters,
+  public void record(final DataSourceReference dsr, final String sql, final Map<Integer, Setter> setters,
       final int responseTime, final Throwable t) {
     if (this.active) {
       QueryExecution qe = new QueryExecution(dsr, sql, setters, responseTime, t);
