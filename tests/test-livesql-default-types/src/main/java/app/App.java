@@ -28,7 +28,6 @@ import org.hotrod.torcs.plan.PlanRetrieverFactory.UnsupportedTorcsDatabaseExcept
 import org.hotrod.torcs.rankings.RankingEntry;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.support.DefaultSingletonBeanRegistry;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -38,13 +37,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import app.daos.BranchVO;
-import app.daos.primitives.AccountDAO;
-import app.daos.primitives.AccountDAO.AccountTable;
+import app.daos.InvoiceVO;
 import app.daos.primitives.BranchDAO;
 import app.daos.primitives.BranchDAO.BranchTable;
-import app.daos.reporting.InvoiceVO;
-import app.daos.reporting.primitives.InvoiceDAO;
-import app.daos.reporting.primitives.InvoiceDAO.InvoiceTable;
+import app.daos.primitives.InvoiceDAO;
+import app.daos.primitives.InvoiceDAO.InvoiceTable;
 
 @Configuration
 @SpringBootApplication
@@ -63,8 +60,8 @@ public class App {
   @Autowired
   private BranchDAO branchDAO;
 
-  @Autowired
-  private AccountDAO accountDAO;
+//  @Autowired
+//  private AccountDAO accountDAO;
 
   @Autowired
   private InvoiceDAO invoiceDAO;
@@ -124,7 +121,7 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       System.out.println("[ Starting example ]");
-      
+
 //      DefaultSingletonBeanRegistry registry = (DefaultSingletonBeanRegistry) applicationContext.getAutowireCapableBeanFactory();
 //      registry.destroySingleton("ConfigManager");
 //      registry.registerSingleton("ConfigManager", new ConfigManager(filePath));
@@ -394,7 +391,7 @@ public class App {
   }
 
   private void livesql1() {
-    AccountTable a = AccountDAO.newTable("a");
+//    AccountTable a = AccountDAO.newTable("a");
 
 //    List<AccountVO> accounts = this.accountDAO //
 //        .select(a, a.branchId.ge(102)) //
@@ -577,7 +574,7 @@ public class App {
 
   private void union() {
 
-    AccountTable a = AccountDAO.newTable("a");
+//    AccountTable a = AccountDAO.newTable("a");
 
 //    // 1. UNION + UNION
 
@@ -956,8 +953,8 @@ public class App {
 //      select 1 from branch b where b.id = a.branch_id and b.region = 'SOUTH'
 //    )
 
-    AccountTable a = AccountDAO.newTable("a");
-    BranchTable b = BranchDAO.newTable("b");
+//    AccountTable a = AccountDAO.newTable("a");
+//    BranchTable b = BranchDAO.newTable("b");
 
 //    Select<Row> q = sql.select() //
 //        .from(a) //

@@ -6,13 +6,12 @@ import org.hotrod.runtime.livesql.queries.DMLQuery;
 import org.hotrod.runtime.livesql.queries.select.EntitySelect;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import app.daos.reporting.InvoiceVO;
-import app.daos.reporting.primitives.InvoiceDAO;
-import app.daos.reporting.primitives.InvoiceDAO.InvoiceTable;
+import app.daos.InvoiceVO;
+import app.daos.primitives.InvoiceDAO;
+import app.daos.primitives.InvoiceDAO.InvoiceTable;
 
 @Component
 public class BusinessLogic {
