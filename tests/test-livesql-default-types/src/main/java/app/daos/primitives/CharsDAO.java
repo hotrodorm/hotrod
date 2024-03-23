@@ -51,7 +51,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 @Component
 public class CharsDAO implements Serializable, ApplicationContextAware {
@@ -59,11 +58,9 @@ public class CharsDAO implements Serializable, ApplicationContextAware {
   private static final long serialVersionUID = 1L;
 
   @Autowired
-  @Qualifier("sqlSession1")
   private SqlSession sqlSession;
 
   @Autowired
-  @Qualifier("liveSQLDialect1")
   private LiveSQLDialect liveSQLDialect;
 
   @Autowired

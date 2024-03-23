@@ -18,7 +18,6 @@ import app.daos.reporting.primitives.InvoiceDAO.InvoiceTable;
 public class BusinessLogic {
 
   @Autowired
-  @Qualifier("liveSQL1")
   private LiveSQL sql;
 
   @Autowired

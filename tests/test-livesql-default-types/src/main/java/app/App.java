@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.sql.DataSource;
+
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.queries.DMLQuery;
@@ -26,7 +28,7 @@ import org.hotrod.torcs.plan.PlanRetrieverFactory.UnsupportedTorcsDatabaseExcept
 import org.hotrod.torcs.rankings.RankingEntry;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.support.DefaultSingletonBeanRegistry;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -34,7 +36,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 
 import app.daos.BranchVO;
 import app.daos.primitives.AccountDAO;
@@ -52,8 +53,8 @@ import app.daos.reporting.primitives.InvoiceDAO.InvoiceTable;
 @MapperScan("mappers")
 @ComponentScan(basePackageClasses = SpringBeanObjectFactory.class)
 @ComponentScan(basePackageClasses = Torcs.class)
-@PropertySource(value = { "file:application.properties",
-    "classpath:application.properties" }, ignoreResourceNotFound = true)
+//@PropertySource(value = { "file:application.properties",
+//    "classpath:application.properties" }, ignoreResourceNotFound = true)
 public class App {
 
 //  @Autowired
@@ -75,7 +76,6 @@ public class App {
 //  private CaseDAO caseDAO;
 
   @Autowired
-  @Qualifier("liveSQL1")
   private LiveSQL sql;
 
   @Autowired
@@ -124,6 +124,10 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       System.out.println("[ Starting example ]");
+      
+//      DefaultSingletonBeanRegistry registry = (DefaultSingletonBeanRegistry) applicationContext.getAutowireCapableBeanFactory();
+//      registry.destroySingleton("ConfigManager");
+//      registry.registerSingleton("ConfigManager", new ConfigManager(filePath));
 
 //      System.getProperties().setProperty("oracle.jdbc.J2EE13Compliant", "true");
 
@@ -783,7 +787,18 @@ public class App {
 //    System.out.println("--- End of Ranking ---");
 //  }
 
+  @Autowired
+  Map<String, DataSource> datasources;
+
   private void getRanking() {
+
+    System.out.println("--- DataSource beans 2:");
+    for (String n : this.datasources.keySet()) {
+      DataSource ds = this.datasources.get(n);
+      System.out.println("name=" + n + " (" + ds.getClass().getName() + ")");
+    }
+    System.out.println("--- End of DataSource beans 2");
+
     BranchTable b = BranchDAO.newTable();
     for (int i = 0; i < 3; i++) {
       List<BranchVO> branches = this.branchDAO.select(b, b.region.ge("NORTH")).execute();
