@@ -13,6 +13,11 @@ public class BytesSetter extends IndexSetter {
   }
 
   @Override
+  public boolean isLOBParameter() {
+    return true;
+  }
+
+  @Override
   public void applyTo(PreparedStatement ps) throws SQLException {
     ps.setBytes(this.index, this.value);
   }

@@ -8,6 +8,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.hotrod.torcs.plan.CouldNotRetrievePlanException;
+import org.hotrod.torcs.plan.LOBParameterNotAllowedException;
+import org.hotrod.torcs.plan.ParameterAlreadyConsumedException;
 import org.hotrod.torcs.plan.PlanRetriever;
 import org.hotrod.torcs.plan.PlanRetrieverFactory.UnsupportedTorcsDatabaseException;
 import org.hotrod.torcs.rankings.HighestResponseTimeRanking;
@@ -29,6 +32,8 @@ public class Torcs {
 
   private ScheduledExecutorService scheduleService;
   private int resetPeriodInMinutes;
+
+  private boolean lobsAllowedInPlans = false;
 
   public Torcs() {
 
@@ -81,6 +86,18 @@ public class Torcs {
     return this.active;
   }
 
+  public void allowLOBsInPlan(final boolean allow) {
+    this.lobsAllowedInPlans = allow;
+  }
+
+  public boolean isLobsAllowedInPlans() {
+    return lobsAllowedInPlans;
+  }
+
+  public void setLobsAllowedInPlans(boolean lobsAllowedInPlans) {
+    this.lobsAllowedInPlans = lobsAllowedInPlans;
+  }
+
   public void reset() {
     System.out.println("[TORCS Reset]");
     for (QueryExecutionObserver o : this.observers) {
@@ -107,15 +124,48 @@ public class Torcs {
   // Generic Execution Plan
 
   public String getEstimatedExecutionPlan(final QueryExecution execution)
-      throws SQLException, UnsupportedTorcsDatabaseException {
+      throws SQLException, UnsupportedTorcsDatabaseException, CouldNotRetrievePlanException {
+    if (execution.wasConsumableParameterDetected()) {
+      throw new ParameterAlreadyConsumedException(
+          "The plan could not be retrieved since this query uses a consumable parameter that was already consumed ("
+              + setterName(execution.getConsummableTypeSetter()) + ")");
+    }
+    if (!this.lobsAllowedInPlans && execution.wasLOBParameterDetected()) {
+      throw new LOBParameterNotAllowedException(
+          "The plan could not be retrieved since this query uses a LOB parameter ("
+              + setterName(execution.getLobTypeSetter())
+              + ") and LOBs are currently disabled in Torcs. You can enable LOBs in the Torcs bean; "
+              + "consider that enabling them can increase the memory consumption of Torcs.");
+    }
     PlanRetriever r = execution.getDataSourceReference().getPlanRetriever();
     return r.getEstimatedExecutionPlan(execution);
   }
 
   public String getEstimatedExecutionPlan(final QueryExecution execution, final int variation)
-      throws SQLException, UnsupportedTorcsDatabaseException {
+      throws SQLException, UnsupportedTorcsDatabaseException, CouldNotRetrievePlanException {
+    if (execution.wasConsumableParameterDetected()) {
+      throw new ParameterAlreadyConsumedException(
+          "The plan could not be retrieved since this query uses a consumable parameter that was already consumed ("
+              + setterName(execution.getConsummableTypeSetter()) + ")");
+    }
+    if (!this.lobsAllowedInPlans && execution.wasLOBParameterDetected()) {
+      throw new LOBParameterNotAllowedException(
+          "The plan could not be retrieved since this query uses a LOB parameter ("
+              + setterName(execution.getLobTypeSetter())
+              + ") and LOBs are currently disabled in Torcs. You can enable LOBs in the Torcs bean; "
+              + "consider that enabling them can increase the memory consumption of Torcs.");
+    }
     PlanRetriever r = execution.getDataSourceReference().getPlanRetriever();
     return r.getEstimatedExecutionPlan(execution, variation);
+  }
+
+  private String setterName(final String className) {
+    if (className == null) {
+      return null;
+    }
+    String n = className.startsWith("Name") ? className.substring("Name".length()) : className;
+    n = n.endsWith("Setter") ? n.substring(0, n.length() - "Setter".length()) : n;
+    return "set" + n;
   }
 
 }

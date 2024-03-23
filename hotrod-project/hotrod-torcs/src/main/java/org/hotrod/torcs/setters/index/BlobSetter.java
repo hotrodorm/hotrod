@@ -39,6 +39,11 @@ public class BlobSetter extends IndexSetter {
   }
 
   @Override
+  public boolean isLOBParameter() {
+    return true;
+  }
+
+  @Override
   public void applyTo(PreparedStatement ps) throws SQLException {
     if (this.type == 1) {
       ps.setBlob(this.index, this.blob);

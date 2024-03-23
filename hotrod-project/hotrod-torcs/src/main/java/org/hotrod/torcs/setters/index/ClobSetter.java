@@ -38,6 +38,11 @@ public class ClobSetter extends IndexSetter {
   }
 
   @Override
+  public boolean isLOBParameter() {
+    return true;
+  }
+
+  @Override
   public void applyTo(PreparedStatement ps) throws SQLException {
     if (this.type == 1) {
       ps.setClob(this.index, this.x);

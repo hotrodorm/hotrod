@@ -13,6 +13,11 @@ public class NameBytesSetter extends NameSetter {
   }
 
   @Override
+  public boolean isLOBParameter() {
+    return true;
+  }
+
+  @Override
   public void applyTo(CallableStatement cs) throws SQLException {
     cs.setBytes(this.name, this.value);
   }

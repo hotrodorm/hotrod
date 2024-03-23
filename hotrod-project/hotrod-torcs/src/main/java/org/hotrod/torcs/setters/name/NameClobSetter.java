@@ -34,6 +34,11 @@ public class NameClobSetter extends NameSetter {
   }
 
   @Override
+  public boolean isLOBParameter() {
+    return false;
+  }
+
+  @Override
   public void applyTo(CallableStatement cs) throws SQLException {
     if (this.type == 1) {
       cs.setClob(this.name, this.x);

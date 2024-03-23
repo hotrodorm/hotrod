@@ -11,10 +11,6 @@ public class AsciiStreamSetter extends IndexSetter {
   private int ilength;
   private long llength;
 
-//void  setAsciiStream(int parameterIndex, InputStream x)
-//void  setAsciiStream(int parameterIndex, InputStream x, int length)
-//void  setAsciiStream(int parameterIndex, InputStream x, long length)
-
   public AsciiStreamSetter(int index, InputStream value) {
     super(index);
     this.type = 1;
@@ -33,6 +29,11 @@ public class AsciiStreamSetter extends IndexSetter {
     this.type = 3;
     this.x = value;
     this.llength = length;
+  }
+
+  @Override
+  public boolean isConsummableParameter() {
+    return true;
   }
 
   @Override

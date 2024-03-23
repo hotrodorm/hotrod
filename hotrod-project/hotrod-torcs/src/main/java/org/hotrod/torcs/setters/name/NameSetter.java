@@ -18,6 +18,14 @@ public abstract class NameSetter {
     return name;
   }
 
+  public boolean isConsummableParameter() {
+    return false;
+  }
+
+  public boolean isLOBParameter() {
+    return false;
+  }
+
   public abstract void applyTo(CallableStatement cs) throws SQLException;
 
   public abstract Object value();

@@ -36,6 +36,11 @@ public class BinaryStreamSetter extends IndexSetter {
   }
 
   @Override
+  public boolean isConsummableParameter() {
+    return true;
+  }
+
+  @Override
   public void applyTo(PreparedStatement ps) throws SQLException {
     if (this.type == 1) {
       ps.setBinaryStream(this.index, this.value, this.ilength);

@@ -36,6 +36,11 @@ public class NClobSetter extends IndexSetter {
   }
 
   @Override
+  public boolean isLOBParameter() {
+    return true;
+  }
+
+  @Override
   public void applyTo(PreparedStatement ps) throws SQLException {
     if (this.type == 1) {
       ps.setNClob(this.index, this.value);

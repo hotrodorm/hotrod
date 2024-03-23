@@ -35,6 +35,11 @@ public class NameBlobSetter extends NameSetter {
   }
 
   @Override
+  public boolean isLOBParameter() {
+    return false;
+  }
+
+  @Override
   public void applyTo(CallableStatement cs) throws SQLException {
     if (this.type == 1) {
       cs.setBlob(this.name, this.blob);

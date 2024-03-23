@@ -74,6 +74,7 @@ public class TorcsPreparedStatement extends TorcsStatement implements PreparedSt
     this.wrapped = wrapped;
     this.sql = sql;
     this.indexSetters = new HashMap<>();
+    this.nameSetters = new HashMap<>();
   }
 
   protected void registerSetter(final IndexSetter setter) {

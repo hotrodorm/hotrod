@@ -27,6 +27,11 @@ public class NCharacterStreamSetter extends IndexSetter {
   }
 
   @Override
+  public boolean isConsummableParameter() {
+    return true;
+  }
+
+  @Override
   public void applyTo(PreparedStatement ps) throws SQLException {
     if (this.type == 1) {
       ps.setCharacterStream(this.index, this.reader);

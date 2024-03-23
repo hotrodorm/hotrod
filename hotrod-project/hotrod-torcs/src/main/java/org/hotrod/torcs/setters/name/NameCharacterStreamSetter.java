@@ -34,6 +34,11 @@ public class NameCharacterStreamSetter extends NameSetter {
   }
 
   @Override
+  public boolean isConsummableParameter() {
+    return false;
+  }
+
+  @Override
   public void applyTo(CallableStatement cs) throws SQLException {
     if (this.type == 1) {
       cs.setCharacterStream(this.name, this.reader);

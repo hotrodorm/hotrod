@@ -17,6 +17,11 @@ public class UnicodeStreamSetter extends IndexSetter {
     this.length = length;
   }
 
+  @Override
+  public boolean isConsummableParameter() {
+    return true;
+  }
+
   @SuppressWarnings("deprecation")
   @Override
   public void applyTo(PreparedStatement ps) throws SQLException {

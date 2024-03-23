@@ -35,6 +35,11 @@ public class NameNCharacterStreamSetter extends NameSetter {
   }
 
   @Override
+  public boolean isConsummableParameter() {
+    return false;
+  }
+
+  @Override
   public Object value() {
     return this.reader;
   }

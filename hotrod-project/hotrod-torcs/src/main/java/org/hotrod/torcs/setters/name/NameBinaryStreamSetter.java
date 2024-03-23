@@ -34,6 +34,11 @@ public class NameBinaryStreamSetter extends NameSetter {
   }
 
   @Override
+  public boolean isConsummableParameter() {
+    return false;
+  }
+
+  @Override
   public void applyTo(CallableStatement cs) throws SQLException {
     if (this.type == 1) {
       cs.setBinaryStream(this.name, this.value, this.ilength);
