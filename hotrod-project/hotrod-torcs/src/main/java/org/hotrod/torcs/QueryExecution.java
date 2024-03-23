@@ -3,6 +3,7 @@ package org.hotrod.torcs;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -22,8 +23,8 @@ public class QueryExecution {
       final Map<String, NameSetter> nameSetters, final int responseTime, final Throwable exception) {
     this.dsr = dsr;
     this.sql = sql;
-    this.indexSetters = indexSetters;
-    this.nameSetters = nameSetters;
+    this.indexSetters = indexSetters == null ? new HashMap<>() : indexSetters;
+    this.nameSetters = nameSetters == null ? new HashMap<>() : nameSetters;
     this.responseTime = responseTime;
     this.exception = exception;
   }
