@@ -13,8 +13,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.sql.DataSource;
-
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.queries.DMLQuery;
@@ -24,6 +22,7 @@ import org.hotrod.runtime.livesql.queries.select.EntitySelect;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.hotrod.torcs.Torcs;
+import org.hotrod.torcs.plan.CouldNotRetrievePlanException;
 import org.hotrod.torcs.plan.PlanRetrieverFactory.UnsupportedTorcsDatabaseException;
 import org.hotrod.torcs.rankings.RankingEntry;
 import org.mybatis.spring.annotation.MapperScan;
@@ -36,12 +35,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import app.daos.BranchVO;
 import app.daos.InvoiceVO;
+import app.daos.TypesBinaryVO;
 import app.daos.primitives.BranchDAO;
-import app.daos.primitives.BranchDAO.BranchTable;
 import app.daos.primitives.InvoiceDAO;
 import app.daos.primitives.InvoiceDAO.InvoiceTable;
+import app.daos.primitives.TypesBinaryDAO;
+import app.daos.primitives.TypesBinaryDAO.TypesBinaryTable;
 
 @Configuration
 @SpringBootApplication
@@ -80,6 +80,9 @@ public class App {
 
   @Autowired
   private Torcs torcs;
+
+  @Autowired
+  private TypesBinaryDAO typesBinaryDAO;
 
 //  @Autowired
 //  private TorcsCTP torcsCTP;
@@ -784,24 +787,19 @@ public class App {
 //    System.out.println("--- End of Ranking ---");
 //  }
 
-  @Autowired
-  Map<String, DataSource> datasources;
-
   private void getRanking() {
 
-    System.out.println("--- DataSource beans 2:");
-    for (String n : this.datasources.keySet()) {
-      DataSource ds = this.datasources.get(n);
-      System.out.println("name=" + n + " (" + ds.getClass().getName() + ")");
-    }
-    System.out.println("--- End of DataSource beans 2");
+//    this.torcs.allowLOBsInPlan(true);
+    
+    byte[] d2 = new byte[] { 12, 34, 56 };
 
-    BranchTable b = BranchDAO.newTable();
+    TypesBinaryTable b = TypesBinaryDAO.newTable();
     for (int i = 0; i < 3; i++) {
-      List<BranchVO> branches = this.branchDAO.select(b, b.region.ge("NORTH")).execute();
-      System.out.println("r[" + branches.size() + "]");
+      List<TypesBinaryVO> binaries = this.typesBinaryDAO.select(b, b.bin1.eq(d2)).execute();
+      System.out.println("r[" + binaries.size() + "]");
     }
-    List<BranchVO> b2 = this.branchDAO.select(b, b.isVip).execute();
+
+    List<TypesBinaryVO> b2 = this.typesBinaryDAO.select(b, b.bin1.isNotNull()).execute();
     System.out.println("b2=" + b2);
     System.out.println("--- Ranking ---");
     for (RankingEntry re : this.torcs.getDefaultRanking().getEntries()) {
@@ -809,7 +807,7 @@ public class App {
       try {
         String plan = this.torcs.getEstimatedExecutionPlan(re.getSlowestExecution());
         System.out.println(plan);
-      } catch (SQLException | UnsupportedTorcsDatabaseException e) {
+      } catch (SQLException | UnsupportedTorcsDatabaseException | CouldNotRetrievePlanException e) {
         e.printStackTrace();
       }
     }

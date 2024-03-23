@@ -8,9 +8,9 @@ create table numbers (
   int1 smallint, -- -32768 to +32767
   int2 integer,  -- -2147483648 to +2147483647
   int3 bigint,   -- -9223372036854775808 to +9223372036854775807
-  int4 smallserial,
-  int5 serial,
-  int6 bigserial,
+  -- int4 smallserial,
+  -- int5 serial,
+  -- int6 bigserial,
   int_total_amount integer,
   columns int,
   dec1 decimal(12,2), -- up to 131072 digits before the decimal point; up to 16383 digits after the decimal point

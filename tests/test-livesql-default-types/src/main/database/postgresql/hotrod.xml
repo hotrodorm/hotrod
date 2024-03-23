@@ -8,7 +8,7 @@
   </generators>
 
   <table name="types_char" />
-  <table name="types_numeric" />
+  <table name="numbers" />
   <table name="types_date_time" />
   <table name="types_binary" />
   <!-- 
