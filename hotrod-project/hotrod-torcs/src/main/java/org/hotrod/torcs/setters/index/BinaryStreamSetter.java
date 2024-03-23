@@ -36,7 +36,7 @@ public class BinaryStreamSetter extends IndexSetter {
   }
 
   @Override
-  public boolean isConsummableParameter() {
+  public boolean isConsumableParameter() {
     return true;
   }
 

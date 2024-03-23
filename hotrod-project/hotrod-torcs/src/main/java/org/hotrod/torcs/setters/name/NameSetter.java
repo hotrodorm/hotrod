@@ -18,7 +18,7 @@ public abstract class NameSetter {
     return name;
   }
 
-  public boolean isConsummableParameter() {
+  public boolean isConsumableParameter() {
     return false;
   }
 

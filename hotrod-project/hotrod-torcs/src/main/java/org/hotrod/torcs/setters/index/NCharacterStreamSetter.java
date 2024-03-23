@@ -27,7 +27,7 @@ public class NCharacterStreamSetter extends IndexSetter {
   }
 
   @Override
-  public boolean isConsummableParameter() {
+  public boolean isConsumableParameter() {
     return true;
   }
 

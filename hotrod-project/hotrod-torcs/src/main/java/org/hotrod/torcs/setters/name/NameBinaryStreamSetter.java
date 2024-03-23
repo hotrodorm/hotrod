@@ -34,7 +34,7 @@ public class NameBinaryStreamSetter extends NameSetter {
   }
 
   @Override
-  public boolean isConsummableParameter() {
+  public boolean isConsumableParameter() {
     return false;
   }
 

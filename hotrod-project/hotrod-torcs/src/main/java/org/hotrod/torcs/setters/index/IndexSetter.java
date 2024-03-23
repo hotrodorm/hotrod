@@ -15,7 +15,7 @@ public abstract class IndexSetter {
     return index;
   }
 
-  public boolean isConsummableParameter() {
+  public boolean isConsumableParameter() {
     return false;
   }
 
