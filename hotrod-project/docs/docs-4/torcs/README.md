@@ -144,12 +144,31 @@ Torcs comes with three built-in observers:
 
 The application can register more observers for any other need. An observer must implement the `org.hotrod.torcs.QueryExecutionObserver` interface. For an example on how to implement a custom observer see [Registering A Custom Observer](#registering-a-custom-observer).
 
-## Resetting Observers
+## Rankings And Observers Reset
 
-Torcs resets the observers periodically to record fresh data. By default it resets all observers every 60 minutes. This can be changed using the `setResetPeriodInMinutes(int)` method, as in:
+Torcs resets the observers -- including rankings -- periodically to record fresh data.
+
+By default it resets all observers at midnight. This schedule can be changed using the `setResetSchedule(initial, period)` method. For example, to schedule the observers reset starting in 10 minutes and then every hour the application can do:
 
 ```java
-  this.torcs.setResetPeriodInMinutes(60 * 24); // Reset observers once a day
+  this.torcs.setResetSchedule(10 * 60000, 60 * 60000);
+```
+
+The application can also register methods to be executed right before a reset is executed. For example, to display the top queries of the default ranking along with their execution plans right before the ranking is reset, the application can do:
+
+```java
+  this.torcs.getDefaultRanking().setResetObserver(() -> {
+    for (RankingEntry re : this.torcs.getDefaultRanking().getEntries()) {
+      log.info(re);
+      try {
+        String plan = this.torcs.getEstimatedExecutionPlan(re.getSlowestExecution());
+        log.info(plan);
+      } catch (SQLException | UnsupportedTorcsDatabaseException | CouldNotRetrievePlanException e) {
+        log.info(Level.SEVERE, "Could not get execution plan", e);
+      }
+    }
+  });
+
 ```
 
 ## Retrieving Statistical Query Data
