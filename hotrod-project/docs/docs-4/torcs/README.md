@@ -144,11 +144,9 @@ Torcs comes with three built-in observers:
 
 The application can register more observers for any other need. An observer must implement the `org.hotrod.torcs.QueryExecutionObserver` interface. For an example on how to implement a custom observer see [Registering A Custom Observer](#registering-a-custom-observer).
 
-## Rankings And Observers Reset
+## Periodic Rankings Reset
 
-Torcs resets the observers -- including rankings -- periodically to record fresh data.
-
-By default it resets all observers at midnight. This schedule can be changed using the `setResetSchedule(initial, period)` method. For example, to schedule the observers reset starting in 10 minutes and then every hour the application can do:
+Torcs resets the rankings &mdash; actually all observers &mdash; at midnight. This schedule can be changed using the `setResetSchedule(initial, period)` method. For example, to schedule the observers reset starting in 10 minutes and then every hour the application can do:
 
 ```java
   this.torcs.setResetSchedule(10 * 60000, 60 * 60000);
@@ -158,10 +156,10 @@ The application can also register methods to be executed right before a reset is
 
 ```java
   this.torcs.getDefaultRanking().setResetObserver(() -> {
-    for (RankingEntry re : this.torcs.getDefaultRanking().getEntries()) {
-      log.info(re);
+    for (RankingEntry entry : this.torcs.getDefaultRanking().getEntries()) {
+      log.info(entry);
       try {
-        String plan = this.torcs.getEstimatedExecutionPlan(re.getSlowestExecution());
+        String plan = this.torcs.getEstimatedExecutionPlan(entry.getSlowestExecution());
         log.info(plan);
       } catch (SQLException | UnsupportedTorcsDatabaseException | CouldNotRetrievePlanException e) {
         log.info(Level.SEVERE, "Could not get execution plan", e);
@@ -323,6 +321,15 @@ Sort  (cost=36.80..36.80 rows=1 width=221)
 ```
 
 The format of the execution plan depends on each database. High end databases tend to produce more useful information than simpler databases. See [Examples of Execution Plans](./generic-execution-plan-samples.md).
+
+### Transient Parameters And LOB Parameters
+
+To retrieve an execution plan, typically a database engines requires the specific parameter values used in the query. Torcs records these parameters for later use, to retrieve an execution plan if needed.
+
+However, some JDBC parameters are transient in nature and are consumed once used. This is the case, for example, of streams such as `AsciiStream`, `BinaryStream`, `CharacterStream`. `NCharacterStreamSetter`, and `UnicodeStreamSetter`. If any of this type is detected Torcs does not allow the retrieval of an execution plan.
+
+Other parameters may consume a large amount of memorey. This is the case of LOBs, such as `bytes` (byte arrays), `CLOB`, and `NCLOB`. By default Torcs does not allow the retrieval of execution plans if any of these parameter types is used in a query. This behavior can be changed by changing the configuration using the method `allowLOBsInPlans(boolean)`. Consider that when activating this feature Torcs will store LOBs' content in memory for an extended period of time (by default 24 hours) and that could cause higher memory consumption in the application.
+
 
 ### Execution Plan Formats
 

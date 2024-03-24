@@ -106,16 +106,12 @@ public class Torcs {
     return this.active;
   }
 
-  public void allowLOBsInPlan(final boolean allow) {
+  public void allowLOBsInPlans(final boolean allow) {
     this.lobsAllowedInPlans = allow;
   }
 
   public boolean isLobsAllowedInPlans() {
     return lobsAllowedInPlans;
-  }
-
-  public void setLobsAllowedInPlans(boolean lobsAllowedInPlans) {
-    this.lobsAllowedInPlans = lobsAllowedInPlans;
   }
 
   public void reset() {
