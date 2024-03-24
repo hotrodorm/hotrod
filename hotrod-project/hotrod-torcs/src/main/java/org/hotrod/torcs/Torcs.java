@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.hotrod.torcs.plan.CouldNotRetrievePlanException;
 import org.hotrod.torcs.plan.LOBParameterNotAllowedException;
@@ -20,6 +22,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Torcs {
+
+  private static final Logger log = Logger.getLogger(Torcs.class.getName());
 
   private static final int DEFAULT_RESET_PERIOD_IN_MINUTES = 60;
   private static final int MIN_RESET_PERIOD_IN_MINUTES = 1;
@@ -69,7 +73,11 @@ public class Torcs {
     this.scheduleService.scheduleAtFixedRate(new Runnable() {
       @Override
       public void run() {
-        reset();
+        try {
+          reset();
+        } catch (Throwable e) {
+          log.log(Level.SEVERE, "Could not reset Torcs observers", e);
+        }
       }
     }, this.resetPeriodInMinutes, this.resetPeriodInMinutes, TimeUnit.MINUTES);
   }
@@ -99,7 +107,7 @@ public class Torcs {
   }
 
   public void reset() {
-    System.out.println("[TORCS Reset]");
+    log.info("Resetting observers.");
     for (QueryExecutionObserver o : this.observers) {
       o.reset();
     }

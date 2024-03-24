@@ -30,7 +30,9 @@ It's aware of SQL queries run by your application and can rank them or just reco
 
 ## Enabling Torcs
 
-The module is enabled by adding the dependency to Maven's pom.xml, as in:
+Torcs is enabled by wrapping the application `DataSource`(s) into `TorcsDataSource`s. To do this:
+
+Add the Torcs module to the Maven's pom.xml, as in:
 
 ```xml
   <dependency>
@@ -40,15 +42,48 @@ The module is enabled by adding the dependency to Maven's pom.xml, as in:
   </dependency>
 ```
 
-This module comes with auto-start configuration and there's no need to do anything to start it up apart
-from the dependency declaration above. To use Torcs, any Spring bean can declare an autowired property such as:
+Then, disable Spring's auto-configured `dataSource` bean. Add the following property to the `application.properties` file:
+
+```properties
+spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,\
+org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration
+```
+
+Finally, define the a `TorcsDataSource` bean for each DataSource your application uses. For example, you can use a `@Configuration` class to do this, as shown below:
+
+```java
+import javax.sql.DataSource;
+import org.hotrod.torcs.decorators.TorcsDataSource;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class MyConfiguration {
+
+  @Bean
+  @ConfigurationProperties("spring.datasource")
+  public DataSourceProperties dataSourceProperties() {
+    return new DataSourceProperties();
+  }
+
+  @Bean
+  public DataSource dataSource(DataSourceProperties properties) {
+    return new TorcsDataSource(properties.initializeDataSourceBuilder().build());
+  }
+
+}
+```
+
+To access Torcs any Spring bean can declare an autowired property such as:
 
 ```java
   @Autowired
   private Torcs torcs;
 ```
 
-This is the starting point to manage the module, its observers, and to retrieve query statistical information and execution plans.
+This is the starting point to manage the module, its observers, and to retrieve query statistical information and execution plans. Torcs starts watching queries automatically once the application starts.
 
 ## Example
 
