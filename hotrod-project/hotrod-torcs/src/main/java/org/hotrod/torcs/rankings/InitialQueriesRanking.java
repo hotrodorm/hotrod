@@ -39,7 +39,7 @@ public class InitialQueriesRanking extends Ranking {
   }
 
   @Override
-  public synchronized void reset() {
+  public synchronized void executeReset() {
     this.cacheByDSSQL.clear();
   }
 

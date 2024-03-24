@@ -1,6 +1,9 @@
 package org.hotrod.torcs;
 
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,9 +28,10 @@ public class Torcs {
 
   private static final Logger log = Logger.getLogger(Torcs.class.getName());
 
-  private static final int DEFAULT_RESET_PERIOD_IN_MINUTES = 60;
-  private static final int MIN_RESET_PERIOD_IN_MINUTES = 1;
-  private static final int MAX_RESET_PERIOD_IN_MINUTES = 60 * 24 * 366;
+  private static final long MINUTES = 1000L * 60;
+  private static final long DEFAULT_RESET_PERIOD_IN_MINUTES = MINUTES * 60 * 24; // Once a day
+  private static final long MIN_RESET_PERIOD_IN_MINUTES = MINUTES * 1;
+  private static final long MAX_RESET_PERIOD_IN_MINUTES = MINUTES * 60 * 24 * 366; // One year
 
   private boolean active;
 
@@ -35,7 +39,8 @@ public class Torcs {
   private HighestResponseTimeRanking responseTimeRanking;
 
   private ScheduledExecutorService scheduleService;
-  private int resetPeriodInMinutes;
+  private long resetInitialDelay;
+  private long resetPeriodInMinutes;
 
   private boolean lobsAllowedInPlans = false;
 
@@ -47,6 +52,9 @@ public class Torcs {
     this.observers.add(this.responseTimeRanking);
     this.scheduleService = Executors.newScheduledThreadPool(1);
 
+    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime midnight = LocalDate.now().plusDays(1).atTime(0, 0);
+    this.resetInitialDelay = Duration.between(now, midnight).toMillis();
     this.resetPeriodInMinutes = DEFAULT_RESET_PERIOD_IN_MINUTES;
     scheduleReset();
 
@@ -56,16 +64,20 @@ public class Torcs {
     this.observers.add(observer);
   }
 
-  public void setResetPeriodInMinutes(final int minutes) {
-    if (minutes < MIN_RESET_PERIOD_IN_MINUTES) {
-      throw new RuntimeException("The reset period (in minutes) must be greater or equal to "
-          + MIN_RESET_PERIOD_IN_MINUTES + " but it's " + minutes + ".");
+  public void setResetSchedule(final long initial, final long period) {
+    if (initial < 0) {
+      throw new RuntimeException("The initial period must be greater or equal to zero but it's " + initial + ".");
     }
-    if (minutes > MAX_RESET_PERIOD_IN_MINUTES) {
-      throw new RuntimeException("The reset period (in minutes) must be less than or equal to "
-          + MAX_RESET_PERIOD_IN_MINUTES + " but it's " + minutes + ".");
+    if (period < MIN_RESET_PERIOD_IN_MINUTES) {
+      throw new RuntimeException(
+          "The reset period must be greater or equal to " + MIN_RESET_PERIOD_IN_MINUTES + " but it's " + period + ".");
     }
-    this.resetPeriodInMinutes = minutes;
+    if (period > MAX_RESET_PERIOD_IN_MINUTES) {
+      throw new RuntimeException("The reset period must be less than or equal to " + MAX_RESET_PERIOD_IN_MINUTES
+          + " but it's " + period + ".");
+    }
+    this.resetInitialDelay = initial;
+    this.resetPeriodInMinutes = period;
     scheduleReset();
   }
 
@@ -79,7 +91,7 @@ public class Torcs {
           log.log(Level.SEVERE, "Could not reset Torcs observers", e);
         }
       }
-    }, this.resetPeriodInMinutes, this.resetPeriodInMinutes, TimeUnit.MINUTES);
+    }, this.resetInitialDelay, this.resetPeriodInMinutes, TimeUnit.MILLISECONDS);
   }
 
   public void activate() {

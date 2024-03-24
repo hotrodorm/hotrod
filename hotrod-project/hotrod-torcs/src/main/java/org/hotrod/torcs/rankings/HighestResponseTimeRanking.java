@@ -41,7 +41,7 @@ public class HighestResponseTimeRanking extends Ranking {
   }
 
   @Override
-  public synchronized void reset() {
+  public synchronized void executeReset() {
     this.sorted.clear();
     this.cacheByDSSQL.clear();
   }
