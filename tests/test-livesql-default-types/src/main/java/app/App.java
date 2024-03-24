@@ -789,8 +789,13 @@ public class App {
 
   private void getRanking() {
 
-//    this.torcs.allowLOBsInPlan(true);
-    
+    this.torcs.allowLOBsInPlan(true);
+    this.torcs.setResetSchedule(1000, 60000);
+    this.torcs.getDefaultRanking().setResetObserver(() -> {
+      System.out.println("Pre-reset.");
+      printRanking1();
+    });
+
     byte[] d2 = new byte[] { 12, 34, 56 };
 
     TypesBinaryTable b = TypesBinaryDAO.newTable();
@@ -801,6 +806,11 @@ public class App {
 
     List<TypesBinaryVO> b2 = this.typesBinaryDAO.select(b, b.bin1.isNotNull()).execute();
     System.out.println("b2=" + b2);
+    printRanking1();
+
+  }
+
+  private void printRanking1() {
     System.out.println("--- Ranking ---");
     for (RankingEntry re : this.torcs.getDefaultRanking().getEntries()) {
       System.out.println(re);
@@ -812,7 +822,6 @@ public class App {
       }
     }
     System.out.println("--- End of Ranking ---");
-
   }
 
 //  private void saveARankingAsXLSX() {
