@@ -25,13 +25,11 @@ public class TorcsDataSource implements DataSource {
   // Constructor
 
   public TorcsDataSource(DataSource wrapped) {
-    log.info("Torcs DataSource initializing...");
     if (wrapped == null) {
       throw new RuntimeException("Cannot use a null DataSource");
     }
     this.wrapped = wrapped;
     this.dataSourceReference = DataSourceReference.of(wrapped);
-    log.info("Torcs DataSource ready.");
   }
 
   // DataSource methods
