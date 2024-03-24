@@ -789,7 +789,7 @@ public class App {
 
   private void getRanking() {
 
-    this.torcs.allowLOBsInPlan(true);
+    this.torcs.allowLOBsInPlans(true);
     this.torcs.setResetSchedule(1000, 60000);
     this.torcs.getDefaultRanking().setResetObserver(() -> {
       System.out.println("Pre-reset.");
