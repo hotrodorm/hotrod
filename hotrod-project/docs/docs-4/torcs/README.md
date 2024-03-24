@@ -324,11 +324,11 @@ The format of the execution plan depends on each database. High end databases te
 
 ### Transient Parameters And LOB Parameters
 
-To retrieve an execution plan, typically a database engines requires the specific parameter values used in the query. Torcs records these parameters for later use, to retrieve an execution plan if needed.
+To retrieve execution plans database engines require the parameter values used in the specific query. Therefore, Torcs records these parameters to have this ability.
 
-However, some JDBC parameters are transient in nature and are consumed once used. This is the case, for example, of streams such as `AsciiStream`, `BinaryStream`, `CharacterStream`. `NCharacterStreamSetter`, and `UnicodeStreamSetter`. If any of this type is detected Torcs does not allow the retrieval of an execution plan.
+Some JDBC parameters are transient in nature and are consumed once used. This is the case, for example, of streams such as `AsciiStream`, `BinaryStream`, `CharacterStream`. `NCharacterStreamSetter`, and `UnicodeStreamSetter`. If a parameter of any of these types is detected Torcs does not allow the retrieval of the execution plan.
 
-Other parameters may consume a large amount of memorey. This is the case of LOBs, such as `bytes` (byte arrays), `CLOB`, and `NCLOB`. By default Torcs does not allow the retrieval of execution plans if any of these parameter types is used in a query. This behavior can be changed by changing the configuration using the method `allowLOBsInPlans(boolean)`. Consider that when activating this feature Torcs will store LOBs' content in memory for an extended period of time (by default 24 hours) and that could cause higher memory consumption in the application.
+Other parameters are perfectly usable, but may consume a large amount of application memory. This is the case of LOBs, such as `bytes` (byte arrays), `BLOB`,  `CLOB`, and `NCLOB`. By default Torcs does not allow the retrieval of execution plans if any of these parameter types is used in a query. This behavior can be changed in the configuration using the method `torcs.allowLOBsInPlans(boolean)`. Consider that by activating this feature Torcs will start storing the actual LOBs' contents in memory for an extended period of time (24 hours) and that could cause higher memory consumption in the application.
 
 
 ### Execution Plan Formats
