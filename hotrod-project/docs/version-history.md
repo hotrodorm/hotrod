@@ -2,6 +2,48 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
+## 4.7.0:
+
+- Torcs:
+    - New implementation of Torcs with much higher performance.
+    - Improved scheduler.
+    - Adding Torcs configurable validation for LOBs and consumable parameters.
+    - Improving Torcs exception messaging.
+
+- Core:
+    - Fixing mapper's subpackages.
+
+## 4.6.5:
+
+- CRUD:
+    - Fixing foreign key navigation in SQL Server.
+
+## 4.6.4:
+
+- LiveSQL:
+    - Fixing OFFSET and LIMIT in the LiveSQL SQL Server dialect.
+
+## 4.6.3:
+
+- Core:
+    - JVM errors are displayed in the generator.
+    - Removed deprecated &lt;auto-generated-column> tag.
+
+- CRUD:
+    - Fixed quoted identifiers in CRUD and object names (for reserved words).
+
+
+## 4.6.2:
+
+- CRUD:
+    - Fixing INSERT with sequences.
+
+## 4.6.1:
+
+- Core:
+    - Fixing toJSON() in select VOs.
+    - Fixing enums properties in VOs.
+
 ## 4.6.0:
 
 - LiveSQL:
