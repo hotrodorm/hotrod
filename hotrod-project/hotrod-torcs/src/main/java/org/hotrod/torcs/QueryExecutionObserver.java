@@ -1,5 +1,6 @@
 package org.hotrod.torcs;
 
+import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -8,6 +9,7 @@ public abstract class QueryExecutionObserver {
   private static final Logger log = Logger.getLogger(QueryExecutionObserver.class.getName());
 
   private boolean active = true;
+  private LocalDateTime lastReset = LocalDateTime.now();
 
   public void activate() {
     this.active = true;
@@ -44,8 +46,13 @@ public abstract class QueryExecutionObserver {
       }
     }
     this.executeReset();
+    this.lastReset = LocalDateTime.now();
   }
 
   public abstract void executeReset();
+
+  public LocalDateTime getLastReset() {
+    return lastReset;
+  }
 
 }

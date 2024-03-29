@@ -117,7 +117,12 @@ public class Torcs {
   public void reset() {
     log.info("Resetting observers.");
     for (QueryExecutionObserver o : this.observers) {
-      o.reset();
+      try {
+        o.reset();
+      } catch (Throwable e) {
+        log.log(Level.SEVERE, "Could not reset observer '" + o.getTitle() + "'", e);
+        log.info("Continue with the reset operation...");
+      }
     }
   }
 
