@@ -71,14 +71,22 @@ public class TorcsDataSource implements DataSource {
 
   @Override
   public Connection getConnection() throws SQLException {
-    log.fine("Torcs Connection");
-    return new TorcsConnection(this.wrapped.getConnection(), this.torcs, this.dataSourceReference);
+    if (this.torcs.isActive()) {
+      log.fine("Torcs Connection");
+      return new TorcsConnection(this.wrapped.getConnection(), this.torcs, this.dataSourceReference);
+    } else {
+      return this.wrapped.getConnection();
+    }
   }
 
   @Override
   public Connection getConnection(String username, String password) throws SQLException {
-    log.fine("Torcs Connection");
-    return new TorcsConnection(this.wrapped.getConnection(username, password), this.torcs, this.dataSourceReference);
+    if (this.torcs.isActive()) {
+      log.fine("Torcs Connection");
+      return new TorcsConnection(this.wrapped.getConnection(username, password), this.torcs, this.dataSourceReference);
+    } else {
+      return this.wrapped.getConnection(username, password);
+    }
   }
 
 }
