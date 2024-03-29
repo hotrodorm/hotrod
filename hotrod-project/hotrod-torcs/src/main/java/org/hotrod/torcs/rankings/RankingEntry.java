@@ -116,14 +116,6 @@ public class RankingEntry {
     return maxTime;
   }
 
-  public long getSumElapsed() {
-    return sumElapsed;
-  }
-
-  public long getSumElapsedSQ() {
-    return sumElapsedSQ;
-  }
-
   public int getExecutions() {
     return executions;
   }
@@ -153,7 +145,7 @@ public class RankingEntry {
     return successfulExecutions > 0 ? (this.sumElapsed / successfulExecutions) : -1;
   }
 
-  public long getTotalElapsedTime() {
+  public long getImpact() {
     return this.sumElapsed;
   }
 
@@ -162,7 +154,7 @@ public class RankingEntry {
     String le = this.lastExecutionAt == 0 ? "N/A" : new Date(this.lastExecutionAt).toString();
     return this.executions + " executions" + ", " + this.errors + " errors" + ", avg " + getAverageTime()
         + " ms, \u03c3 " + Math.round(this.getTimeStandardDeviation()) + " [" + this.minTime + "-" + this.maxTime
-        + " ms], TET " + this.sumElapsed + " ms, executed: " + fe + " - " + le
+        + " ms], impact " + this.sumElapsed + " ms, executed: " + fe + " - " + le
         + (this.lastException == null ? ", last exception: N/A"
             : ", last exception at " + new Date(this.lastExceptionTimestamp) + ": "
                 + this.lastException.getClass().getName())

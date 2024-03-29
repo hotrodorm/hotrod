@@ -121,7 +121,7 @@ public class XLSXRankingWriter {
         col = addCell(r, col, headerRightStyle, "Tmax [ms]");
         col = addCell(r, col, headerRightStyle, "Tavg [ms]");
         col = addCell(r, col, headerRightStyle, "Tstddev [ms]");
-        col = addCell(r, col, headerRightStyle, "TET [ms]");
+        col = addCell(r, col, headerRightStyle, "Impact [ms]");
         col = addCell(r, col, headerRightStyle, "#total");
         col = addCell(r, col, headerRightStyle, "#fail");
         col = addCell(r, col, headerRightStyle, "#ok");
@@ -144,7 +144,7 @@ public class XLSXRankingWriter {
           col = addCell(r, col, dataRightStyle, df.format(re.getMaxTime()));
           col = addCell(r, col, dataRightStyle, df.format(re.getAverageTime()));
           col = addCell(r, col, dataRightStyle, df.format(re.getTimeStandardDeviation()));
-          col = addCell(r, col, dataRightStyle, df.format(re.getTotalElapsedTime()));
+          col = addCell(r, col, dataRightStyle, df.format(re.getImpact()));
           col = addCell(r, col, dataRightStyle, df.format(re.getExecutions()));
           col = addCell(r, col, dataRightStyle, df.format(re.getErrors()));
           col = addCell(r, col, dataRightStyle, df.format(re.getExecutions() - re.getErrors()));

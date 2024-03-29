@@ -97,9 +97,9 @@ public class LatestQueriesRanking extends Ranking {
         .sorted((a, b) -> -Long.compare(a.getExecutions(), b.getExecutions())).collect(Collectors.toList());
   }
 
-  public Collection<RankingEntry> getRankingByTotalElapsedTime() {
+  public Collection<RankingEntry> getRankingByImpact() {
     return this.cacheByDSSQL.values().stream().map(e -> e.clone())
-        .sorted((a, b) -> -Long.compare(a.getTotalElapsedTime(), b.getTotalElapsedTime())).collect(Collectors.toList());
+        .sorted((a, b) -> -Long.compare(a.getImpact(), b.getImpact())).collect(Collectors.toList());
   }
 
   public Collection<RankingEntry> getRankingByMostRecentlyExecuted() {
