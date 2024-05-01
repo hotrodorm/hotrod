@@ -20,7 +20,7 @@ public class SysDummy1Table extends Table {
   // Initialization
 
   private void initialize() {
-    this.ibmreqd = new StringColumn(this, "IBMREQD", "ibmreqd", "VARCHAR", 1, 0);
+    this.ibmreqd = new StringColumn(this, "IBMREQD", "ibmreqd", "VARCHAR", 1, 0, String.class, null, null);
     super.columns.add(this.ibmreqd);
   }
 

@@ -1871,7 +1871,24 @@ public class ObjectDAO extends GeneratableObject {
       String javaType = resolveType(cm);
       String liveSQLColumnType = toLiveSQLType(javaType);
       String javaMembername = cm.getId().getJavaMemberName();
-      println("    public " + liveSQLColumnType + " " + javaMembername + ";");
+      String colName = cm.getId().getCanonicalSQLName();
+      String property = cm.getId().getJavaMemberName();
+      String javaConverterClass = null;
+      String rawClass = null;
+      if (cm.getConverter() != null) {
+        javaConverterClass = cm.getConverter().getJavaClass();
+        rawClass = cm.getConverter().getJavaRawType();
+      }
+      println("    public final " + liveSQLColumnType + " " + javaMembername + " = new " + liveSQLColumnType + "(this" //
+          + ", \"" + JUtils.escapeJavaString(colName) + "\"" //
+          + ", \"" + JUtils.escapeJavaString(property) + "\"" //
+          + ", \"" + JUtils.escapeJavaString(cm.getTypeName()) + "\"" //
+          + ", " + cm.getColumnSize() + "" //
+          + ", " + cm.getDecimalDigits() + "" //
+          + ", " + javaType + ".class" //
+          + ", " + (rawClass == null ? "null" : (rawClass + ".class")) //
+          + ", " + (javaConverterClass == null ? "null" : ("new " + javaConverterClass + "()")) //
+          + ");");
     }
     println();
 
@@ -1908,19 +1925,7 @@ public class ObjectDAO extends GeneratableObject {
     println("    private void initialize() {");
     println("      super.columns = new ArrayList<>();");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
-      String javaType = resolveType(cm);
-      String liveSQLColumnType = toLiveSQLType(javaType);
-      String javaMembername = cm.getId().getJavaMemberName();
-      String colName = cm.getId().getCanonicalSQLName();
-      String property = cm.getId().getJavaMemberName();
-      println("      this." + javaMembername + " = new " + liveSQLColumnType + "(this" //
-          + ", \"" + JUtils.escapeJavaString(colName) + "\"" //
-          + ", \"" + JUtils.escapeJavaString(property) + "\"" //
-          + ", \"" + JUtils.escapeJavaString(cm.getTypeName()) + "\"" //
-          + ", " + cm.getColumnSize() + "" //
-          + ", " + cm.getDecimalDigits() + "" //
-          + ");");
-      println("      super.columns.add(this." + javaMembername + ");");
+      println("      super.columns.add(this." + cm.getId().getJavaMemberName() + ");");
     }
 
     println("    }");

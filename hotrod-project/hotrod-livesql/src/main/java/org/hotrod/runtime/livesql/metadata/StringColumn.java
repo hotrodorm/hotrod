@@ -1,5 +1,6 @@
 package org.hotrod.runtime.livesql.metadata;
 
+import org.hotrod.runtime.converter.TypeConverter;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
@@ -20,7 +21,8 @@ public class StringColumn extends StringExpression implements Column {
   // Constructor
 
   public StringColumn(final TableOrView objectInstance, final String name, final String property, final String type,
-      final Integer columnSize, final Integer decimalDigits) {
+      final Integer columnSize, final Integer decimalDigits, final Class<?> javaClass, final Class<?> rawClass,
+      final TypeConverter<?, ?> converter) {
     super(Expression.PRECEDENCE_COLUMN);
     this.objectInstance = objectInstance;
     this.name = name;
@@ -28,6 +30,9 @@ public class StringColumn extends StringExpression implements Column {
     this.type = type;
     this.columnSize = columnSize;
     this.decimalDigits = decimalDigits;
+    this.javaClass = javaClass;
+    this.rawClass = rawClass;
+    this.converter = converter;
   }
 
   // Rendering
