@@ -2,7 +2,7 @@ package org.hotrod.runtime.livesql.expressions.datetime.literals;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public abstract class DateTimeLiteral extends DateTimeExpression {
 

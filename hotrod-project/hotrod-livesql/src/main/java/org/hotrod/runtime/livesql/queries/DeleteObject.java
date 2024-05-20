@@ -4,8 +4,7 @@ import java.util.LinkedHashMap;
 
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLPreparedQuery;
+import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
 
 public class DeleteObject implements QueryObject {
 
@@ -49,7 +48,7 @@ public class DeleteObject implements QueryObject {
   }
 
   private LiveSQLPreparedQuery prepareQuery(final LiveSQLContext context) {
-    QueryWriter w = new QueryWriter(context.getLiveSQLDialect());
+    QueryWriter w = new QueryWriter(context, null);
     w.write("DELETE FROM ");
 
     String renderedAlias = this.from.getAlias() == null ? null

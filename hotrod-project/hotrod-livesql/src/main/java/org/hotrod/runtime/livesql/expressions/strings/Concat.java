@@ -3,7 +3,7 @@ package org.hotrod.runtime.livesql.expressions.strings;
 import java.util.Arrays;
 import java.util.List;
 
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public class Concat extends BuiltInStringFunction {
 

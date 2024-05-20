@@ -9,7 +9,7 @@ import org.hotrod.runtime.livesql.expressions.analytics.WindowExpression.FrameEx
 import org.hotrod.runtime.livesql.expressions.analytics.WindowExpression.FrameUnit;
 import org.hotrod.runtime.livesql.expressions.object.ObjectExpression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public class ObjectWindowExpression extends ObjectExpression {
 

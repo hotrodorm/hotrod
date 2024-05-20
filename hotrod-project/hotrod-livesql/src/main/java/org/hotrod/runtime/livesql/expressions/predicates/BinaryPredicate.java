@@ -1,7 +1,7 @@
 package org.hotrod.runtime.livesql.expressions.predicates;
 
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public abstract class BinaryPredicate extends Predicate {
 

@@ -4,8 +4,8 @@ import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class NumberSelectExpression extends NumberExpression {
 

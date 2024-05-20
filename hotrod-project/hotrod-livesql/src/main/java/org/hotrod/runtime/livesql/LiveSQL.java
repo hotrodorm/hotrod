@@ -9,6 +9,10 @@ import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.logging.Logger;
+
+import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
 
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
@@ -121,11 +125,14 @@ import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 import org.hotrod.runtime.livesql.queries.subqueries.SubqueryColumnsPhase;
 import org.hotrod.runtime.livesql.sysobjects.DualTable;
 import org.hotrod.runtime.livesql.sysobjects.SysDummy1Table;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
 public class LiveSQL {
+
+  private static final Logger log = Logger.getLogger(LiveSQL.class.getName());
 
   public final Table DUAL = new DualTable();
   public final Table SYSDUMMY1 = new SysDummy1Table();
@@ -134,11 +141,30 @@ public class LiveSQL {
 
   private LiveSQLContext context;
 
+  private SqlSession sqlSession;
+  private LiveSQLDialect liveSQLDialect;
+  private LiveSQLMapper liveSQLMapper;
+  private DataSource dataSource;
+
+  @Autowired
+  private LiveSQLConfiguration config;
+
   // Constructor
 
   public LiveSQL(final SqlSession sqlSession, final @Qualifier("liveSQLDialect") LiveSQLDialect liveSQLDialect,
-      final LiveSQLMapper liveSQLMapper) {
-    this.context = new LiveSQLContext(liveSQLDialect, sqlSession, liveSQLMapper);
+      final LiveSQLMapper liveSQLMapper, final DataSource dataSource) {
+    this.sqlSession = sqlSession;
+    this.liveSQLDialect = liveSQLDialect;
+    this.liveSQLMapper = liveSQLMapper;
+    this.context = null;
+    this.dataSource = dataSource;
+  }
+
+  @PostConstruct
+  private void initialize() {
+    log.info("initializing ds=" + this.dataSource);
+    this.context = new LiveSQLContext(liveSQLDialect, sqlSession, liveSQLMapper, this.config.usePlainJDBC(),
+        this.dataSource);
   }
 
   // Select
@@ -154,7 +180,7 @@ public class LiveSQL {
   public SelectColumnsPhase<Row> select(final ResultSetColumn... resultSetColumns) {
     return new SelectColumnsPhase<Row>(this.context, null, false, resultSetColumns);
   }
-  
+
   public NonLockableSelectColumnsPhase<Row> selectDistinct(final ResultSetColumn... resultSetColumns) {
     return new NonLockableSelectColumnsPhase<Row>(this.context, null, true, resultSetColumns);
   }

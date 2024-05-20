@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 
 class PGSelectObject<R> extends AbstractSelectObject<R> {
@@ -29,9 +30,14 @@ class PGSelectObject<R> extends AbstractSelectObject<R> {
     super.writeExpandedColumns(w, baseTableExpression, joins, this.resultSetColumns, this.doNotAliasColumns);
   }
 
+  private List<ResultSetColumn> columns = null;
+
   @Override
   public List<ResultSetColumn> listColumns() {
-    return this.resultSetColumns;
+    if (this.columns == null) {
+      this.columns = this.resultSetColumns;
+    }
+    return this.columns;
   }
 
   @Override

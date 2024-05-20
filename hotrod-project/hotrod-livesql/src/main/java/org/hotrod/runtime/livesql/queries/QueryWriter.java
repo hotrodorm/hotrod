@@ -1,36 +1,46 @@
-package org.hotrod.runtime.livesql.queries.select;
+package org.hotrod.runtime.livesql.queries;
 
 import java.util.LinkedHashMap;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.List;
 
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
+import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.livesql.queries.SQLParameterWriter.QueryParameter;
+import org.hotrod.runtime.livesql.queries.SQLParameterWriter.RenderedParameter;
 
 public class QueryWriter {
 
   private static final String INDENT = "  "; // two spaces to indent each level
 
-  private LiveSQLDialect sqlDialect;
+  private LiveSQLContext context;
+  private ColumnsCollector columnsCollector;
 
-  private AtomicLong n;
   private StringBuilder sb;
-  private LinkedHashMap<String, Object> params;
   private int level;
   private int col;
 
-  public QueryWriter(final LiveSQLDialect sqlDialect) {
-    this.sqlDialect = sqlDialect;
-    this.n = new AtomicLong();
+  private SQLParameterWriter paramWriter;
+
+  public QueryWriter(final LiveSQLContext context, final ColumnsCollector columnsCollector) {
+    this.columnsCollector = columnsCollector;
+    this.context = context;
     this.sb = new StringBuilder();
-    this.params = new LinkedHashMap<String, Object>();
     this.level = 0;
     this.col = 0;
+    if (context.usePlainJDBC()) {
+      this.paramWriter = new JDBCParameterWriter();
+    } else {
+      this.paramWriter = new MyBatisParameterWriter();
+    }
   }
 
-  public String registerParameter(final Object value) {
-    String name = "p" + this.n.incrementAndGet();
-    this.params.put(name, value);
-    return name;
+  public RenderedParameter registerParameter(final Object value) {
+    return this.paramWriter.registerParameter(value);
+  }
+  
+  public void registerQueryColumns(final List<ResultSetColumn> queryColumns) {
+    this.columnsCollector.register(queryColumns);
   }
 
   public void enterLevel() {
@@ -83,13 +93,13 @@ public class QueryWriter {
   }
 
   public LiveSQLDialect getSQLDialect() {
-    return sqlDialect;
+    return this.context.getLiveSQLDialect();
   }
 
   public LiveSQLPreparedQuery getPreparedQuery() {
     LinkedHashMap<String, Object> p = new LinkedHashMap<String, Object>();
-    for (String name : this.params.keySet()) {
-      p.put(name, this.params.get(name));
+    for (QueryParameter qp : this.paramWriter.getParameters()) {
+      p.put(qp.getName(), qp.getValue());
     }
     return new LiveSQLPreparedQuery(this.sb.toString(), p);
   }

@@ -1,7 +1,7 @@
 package org.hotrod.runtime.livesql.expressions.datetime;
 
 import org.hotrod.runtime.livesql.expressions.numbers.BuiltInNumberFunction;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public class Extract extends BuiltInNumberFunction {
 

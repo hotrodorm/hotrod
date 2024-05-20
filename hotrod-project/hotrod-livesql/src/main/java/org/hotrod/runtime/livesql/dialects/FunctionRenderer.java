@@ -8,7 +8,7 @@ import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrodorm.hotrod.utils.Separator;
 
 /**

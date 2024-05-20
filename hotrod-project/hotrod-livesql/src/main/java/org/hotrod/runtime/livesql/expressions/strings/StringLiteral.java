@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 import org.hotrod.runtime.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public class StringLiteral extends StringExpression {
 

@@ -1,7 +1,7 @@
 package org.hotrod.runtime.livesql.expressions.strings;
 
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public class Substring extends BuiltInStringFunction {
 

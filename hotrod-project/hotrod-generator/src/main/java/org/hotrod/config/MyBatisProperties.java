@@ -12,6 +12,7 @@ public class MyBatisProperties implements Serializable {
 
   private static final String PROPERTY_CHECKED_PERSISTENCE_EXCEPTION = "checked.persistence.exception";
   private static final String PROPERTY_MULTILINE_TOSTRING = "multiline.tostring";
+  private static final String PROPERTY_USE_PLAIN_JDBC= "use.plain.jdbc";
 
   private static final String TRUE = "true";
   private static final String FALSE = "false";
@@ -20,6 +21,7 @@ public class MyBatisProperties implements Serializable {
 
   private boolean checkedPersistenceException = true;
   private boolean multilineTostring = true;
+  private boolean usePlainJDBC = false;
 
   // Setters
 
@@ -43,6 +45,15 @@ public class MyBatisProperties implements Serializable {
         throw new InvalidConfigurationFileException(tag,
             "Invalid value '" + p.getValue() + "' for property '" + p.getName() + "'. Valid values are: true, false");
       }
+    } else if (PROPERTY_USE_PLAIN_JDBC.equals(p.getName())) {
+      if (TRUE.equals(p.getValue())) {
+        this.usePlainJDBC = true;
+      } else if (FALSE.equals(p.getValue())) {
+        this.usePlainJDBC = false;
+      } else {
+        throw new InvalidConfigurationFileException(tag,
+            "Invalid value '" + p.getValue() + "' for property '" + p.getName() + "'. Valid values are: true, false");
+      }
     } else {
       throw new InvalidConfigurationFileException(tag,
           "Invalid property name '" + p.getName() + "'. Valid property names are: " + getAllPropertyNames());
@@ -61,6 +72,10 @@ public class MyBatisProperties implements Serializable {
   }
 
   // Utilities
+
+  public boolean usePlainJDBC() {
+    return usePlainJDBC;
+  }
 
   private String getAllPropertyNames() {
     return PROPERTY_CHECKED_PERSISTENCE_EXCEPTION + ", " + PROPERTY_MULTILINE_TOSTRING;

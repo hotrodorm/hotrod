@@ -15,7 +15,7 @@ import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
 import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.select.TableExpression;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;

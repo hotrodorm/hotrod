@@ -1,6 +1,6 @@
 package org.hotrod.runtime.livesql.util;
 
-import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLPreparedQuery;
+import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrodorm.hotrod.utils.CUtil;
 import org.hotrodorm.hotrod.utils.HexaUtils;
 

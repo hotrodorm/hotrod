@@ -29,8 +29,6 @@ import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnrecognizedDatabaseException;
-import org.hotrod.identifiers.Id;
-import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrodorm.hotrod.utils.SUtil;

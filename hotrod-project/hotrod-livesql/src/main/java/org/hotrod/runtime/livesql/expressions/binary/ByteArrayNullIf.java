@@ -1,7 +1,7 @@
 package org.hotrod.runtime.livesql.expressions.binary;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public class ByteArrayNullIf extends ByteArrayExpression {
 

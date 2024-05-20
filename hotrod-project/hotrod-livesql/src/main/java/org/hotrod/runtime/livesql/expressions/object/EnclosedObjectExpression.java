@@ -2,7 +2,7 @@ package org.hotrod.runtime.livesql.expressions.object;
 
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public class EnclosedObjectExpression extends ObjectExpression {
 

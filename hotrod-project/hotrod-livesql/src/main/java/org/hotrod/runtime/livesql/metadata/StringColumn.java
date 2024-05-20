@@ -3,7 +3,7 @@ package org.hotrod.runtime.livesql.metadata;
 import org.hotrod.runtime.converter.TypeConverter;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public class StringColumn extends StringExpression implements Column {
 

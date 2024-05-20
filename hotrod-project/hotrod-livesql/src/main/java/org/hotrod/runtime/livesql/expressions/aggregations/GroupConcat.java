@@ -8,7 +8,7 @@ import org.hotrod.runtime.livesql.expressions.analytics.WindowableAggregationFun
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
 import org.hotrod.runtime.livesql.expressions.strings.StringFunction;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public class GroupConcat extends StringFunction implements WindowableAggregationFunction {
 

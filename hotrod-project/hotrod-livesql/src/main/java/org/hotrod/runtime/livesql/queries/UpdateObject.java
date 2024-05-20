@@ -11,8 +11,8 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLPreparedQuery;
+import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
+import org.hotrod.runtime.livesql.queries.SQLParameterWriter.RenderedParameter;
 
 public class UpdateObject implements QueryObject {
 
@@ -69,7 +69,7 @@ public class UpdateObject implements QueryObject {
   }
 
   private LiveSQLPreparedQuery prepareQuery(final LiveSQLContext context) {
-    QueryWriter w = new QueryWriter(context.getLiveSQLDialect());
+    QueryWriter w = new QueryWriter(context, null);
     w.write("UPDATE ");
 
     UpdateRenderer ur = context.getLiveSQLDialect().getUpdateRenderer();
@@ -106,8 +106,8 @@ public class UpdateObject implements QueryObject {
       } else {
         w.write(", ");
       }
-      String paramName = w.registerParameter(this.extraSets.get(colName));
-      w.write(colName + " = #{" + paramName + "}");
+      RenderedParameter p = w.registerParameter(this.extraSets.get(colName));
+      w.write(colName + " = " + p.getPlaceholder());
       w.write("\n");
     }
 

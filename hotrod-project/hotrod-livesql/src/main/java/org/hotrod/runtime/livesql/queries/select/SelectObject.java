@@ -12,6 +12,7 @@ import org.hotrod.runtime.livesql.metadata.AllColumns.ColumnAliased;
 import org.hotrod.runtime.livesql.metadata.AllColumns.ColumnList;
 import org.hotrod.runtime.livesql.metadata.AllColumns.ColumnSubset;
 import org.hotrod.runtime.livesql.metadata.Column;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.subqueries.AllSubqueryColumns;
 import org.hotrod.runtime.livesql.util.ReflectionUtil;
@@ -54,9 +55,14 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
     super.writeExpandedColumns(w, baseTableExpression, joins, this.resultSetColumns, this.doNotAliasColumns);
   }
 
+  private List<ResultSetColumn> columns = null;
+
   @Override
   public List<ResultSetColumn> listColumns() {
-    return expandColumns(this.resultSetColumns);
+    if (this.columns == null) {
+      this.columns = expandColumns(this.resultSetColumns);
+    }
+    return this.columns;
   }
 
   // Do not use inheritance to avoid exposing internal methods to the end user

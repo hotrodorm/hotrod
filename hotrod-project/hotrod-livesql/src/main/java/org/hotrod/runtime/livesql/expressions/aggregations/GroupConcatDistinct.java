@@ -5,7 +5,7 @@ import java.util.List;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
 import org.hotrod.runtime.livesql.expressions.strings.StringFunction;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public class GroupConcatDistinct extends StringFunction implements NonWindowableAggregationFunction {
 

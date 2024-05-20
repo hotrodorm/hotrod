@@ -6,7 +6,7 @@ import java.util.List;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.binary.ByteArrayExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 /**
  * <pre>

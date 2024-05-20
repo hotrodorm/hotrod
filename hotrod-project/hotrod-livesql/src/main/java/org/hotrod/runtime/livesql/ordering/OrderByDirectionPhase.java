@@ -2,7 +2,7 @@ package org.hotrod.runtime.livesql.ordering;
 
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.ordering.OrderByProperties.NullsOrdering;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public class OrderByDirectionPhase implements OrderingTerm {
 

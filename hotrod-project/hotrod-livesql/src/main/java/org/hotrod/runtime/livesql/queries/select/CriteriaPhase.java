@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public abstract class CriteriaPhase<T> implements EntitySelect<T> {
 

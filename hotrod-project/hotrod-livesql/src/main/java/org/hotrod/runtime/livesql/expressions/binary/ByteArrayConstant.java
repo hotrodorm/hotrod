@@ -1,7 +1,8 @@
 package org.hotrod.runtime.livesql.expressions.binary;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
+import org.hotrod.runtime.livesql.queries.SQLParameterWriter.RenderedParameter;
 
 public class ByteArrayConstant extends ByteArrayExpression {
 
@@ -23,9 +24,8 @@ public class ByteArrayConstant extends ByteArrayExpression {
   @Override
   public void renderTo(final QueryWriter w) {
     if (this.parameterize) {
-      String name = w.registerParameter(this.value);
-      w.write("#{" + name);
-      w.write("}");
+      RenderedParameter p = w.registerParameter(this.value);
+      w.write(p.getPlaceholder());
     } else {
       w.write("" + this.value);
     }

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.util.SubqueryUtil;
 
 public class AllSubqueryColumns implements ResultSetColumn {

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.CrossJoin;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.InnerJoin;
@@ -17,7 +18,6 @@ import org.hotrod.runtime.livesql.queries.select.NaturalFullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.NaturalInnerJoin;
 import org.hotrod.runtime.livesql.queries.select.NaturalLeftOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.NaturalRightOuterJoin;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.RightOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.UnionJoin;
 

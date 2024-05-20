@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.sql.DataSource;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractDAOTag;
@@ -402,6 +404,7 @@ public class ObjectDAO extends GeneratableObject {
     imports.add(LiveSQLMapper.class);
     imports.add(CastUtil.class);
     imports.add("javax.annotation.PostConstruct");
+    imports.add(DataSource.class);
     imports.add(Column.class);
     imports.add("org.hotrod.runtime.livesql.metadata.NumberColumn");
     imports.add("org.hotrod.runtime.livesql.metadata.StringColumn");
@@ -508,6 +511,10 @@ public class ObjectDAO extends GeneratableObject {
     println("  private SpringBeanObjectFactory springBeanObjectFactory;");
     println();
 
+    println("  @Autowired");
+    println("  private DataSource dataSource;");
+    println();
+
     println("  private ApplicationContext applicationContext;");
     println();
 
@@ -521,9 +528,14 @@ public class ObjectDAO extends GeneratableObject {
     println("  private LiveSQLContext context;");
     println();
 
+    println("  @Value(\"${use.plain.jdbc:false}\")");
+    println("  private boolean usePlainJDBC;");
+    println();
+
     println("  @PostConstruct");
     println("  public void initializeContext() {");
-    println("    this.context = new LiveSQLContext(this.liveSQLDialect, this.sqlSession, this.liveSQLMapper);");
+    println(
+        "    this.context = new LiveSQLContext(this.liveSQLDialect, this.sqlSession, this.liveSQLMapper, this.usePlainJDBC, this.dataSource);");
     println("  }");
     println();
 
@@ -1988,9 +2000,17 @@ public class ObjectDAO extends GeneratableObject {
       return "NumberColumn";
     } else if ("java.lang.String".equals(javaType)) {
       return "StringColumn";
-    } else if ("java.util.Date".equals(javaType) || "java.sql.Date".equals(javaType) //
+    } else if ("java.util.Date".equals(javaType) //
+        || "java.sql.Date".equals(javaType) //
         || "java.sql.Timestamp".equals(javaType) //
         || "java.sql.Time".equals(javaType) //
+        || "java.time.LocalDateTime".equals(javaType) //
+        || "java.sql.LocalDate".equals(javaType) //
+        || "java.sql.LocalTime".equals(javaType) //
+        || "java.time.ZonedDateTime".equals(javaType) //
+        || "java.time.OffsetDateTime".equals(javaType) //
+        || "java.time.OffsetTime".equals(javaType) //
+        || "java.time.Instant".equals(javaType) //
     ) {
       return "DateTimeColumn";
     } else if ("java.lang.Boolean".equals(javaType)) {

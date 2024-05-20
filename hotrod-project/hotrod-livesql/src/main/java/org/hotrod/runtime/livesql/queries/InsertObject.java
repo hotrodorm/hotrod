@@ -6,8 +6,7 @@ import java.util.List;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLPreparedQuery;
+import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
 
 public class InsertObject implements QueryObject {
@@ -50,7 +49,7 @@ public class InsertObject implements QueryObject {
   }
 
   private LiveSQLPreparedQuery prepareQuery(final LiveSQLContext context) {
-    QueryWriter w = new QueryWriter(context.getLiveSQLDialect());
+    QueryWriter w = new QueryWriter(context, null);
     w.write("INSERT INTO ");
     w.write(context.getLiveSQLDialect().canonicalToNatural(this.into));
 

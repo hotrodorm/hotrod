@@ -2,7 +2,7 @@ package org.hotrod.runtime.livesql.queries.subqueries;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.binary.ByteArrayExpression;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public class SubqueryByteArrayColumn extends ByteArrayExpression {
 

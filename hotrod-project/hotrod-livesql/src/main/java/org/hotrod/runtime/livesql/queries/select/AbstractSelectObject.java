@@ -30,9 +30,10 @@ import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.QueryObject;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
+import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.select.sets.MultiSet;
 import org.hotrod.runtime.livesql.queries.subqueries.AllSubqueryColumns;
 import org.hotrod.runtime.livesql.util.IdUtil;
@@ -100,17 +101,11 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
       try {
         expandedColumns = new ArrayList<>();
         List<ResultSetColumn> columns = baseTableExpression.getColumns();
-//        System.out.println("# baseTableExpression: " + baseTableExpression + "  --  columns[" + columns.size() + "]");
-//        for (ResultSetColumn e : columns) {
-//          System.out.println("### " + e);
-//        }
-//            getColumnsField(baseTableExpression, "columns");
         for (ResultSetColumn e : columns) {
           expandedColumns.add(e);
         }
         for (Join j : joins) {
           columns = j.getTableExpression().getColumns();
-//              getColumnsField(j.getTableExpression(), "columns");
           for (ResultSetColumn e : columns) {
             expandedColumns.add(e);
           }
@@ -168,6 +163,10 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
       }
 
     }
+    
+    // 4. Record Query Columns
+    
+    w.registerQueryColumns(expandedColumns);
 
   }
 

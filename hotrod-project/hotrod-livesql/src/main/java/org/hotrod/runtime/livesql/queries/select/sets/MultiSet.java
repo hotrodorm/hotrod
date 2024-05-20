@@ -1,18 +1,29 @@
 package org.hotrod.runtime.livesql.queries.select.sets;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.hotrod.runtime.cursors.Cursor;
+import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.livesql.queries.ColumnsCollector;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
+import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.util.PreviewRenderer;
 
 public abstract class MultiSet<R> {
+
+  private static final Logger log = Logger.getLogger(MultiSet.class.getName());
 
   private CombinedSelectObject<R> parent;
 
@@ -39,6 +50,7 @@ public abstract class MultiSet<R> {
   public abstract R executeOne(final LiveSQLContext context);
 
   public String getPreview(final LiveSQLContext context) {
+    log.fine("previewing");
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     return PreviewRenderer.render(q);
   }
@@ -57,7 +69,8 @@ public abstract class MultiSet<R> {
 
     // Render
 
-    QueryWriter w = new QueryWriter(context.getLiveSQLDialect());
+    ColumnsCollector columnsCollector = new ColumnsCollector();
+    QueryWriter w = new QueryWriter(context, columnsCollector);
     renderTo(w, false);
     return w.getPreparedQuery();
 
@@ -69,9 +82,43 @@ public abstract class MultiSet<R> {
 
   @SuppressWarnings("unchecked")
   protected List<R> executeLiveSQL(final LiveSQLContext context, final LiveSQLPreparedQuery q) {
-    LinkedHashMap<String, Object> parameters = q.getParameters();
-    parameters.put("sql", q.getSQL());
-    return (List<R>) context.getLiveSQLMapper().select(parameters);
+    if (context.usePlainJDBC()) {
+      List<Row> rows = new ArrayList<>();
+      try {
+        Connection conn = context.getDataSource().getConnection();
+        PreparedStatement ps = conn.prepareStatement(q.getSQL());
+
+        int n = 1;
+        for (Object obj : q.getParameters().values()) {
+          ps.setObject(n++, obj);
+        }
+
+        List<String> labels = new ArrayList<>();
+        ResultSetMetaData rm = ps.getMetaData();
+        for (int i = 1; i <= rm.getColumnCount(); i++) {
+          labels.add(rm.getColumnLabel(i));
+        }
+
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+          Row r = new Row();
+          int i = 1;
+          for (String label : labels) {
+            r.put(label, rs.getObject(i++));
+          }
+          rows.add(r);
+        }
+        return (List<R>) rows;
+
+      } catch (SQLException e) {
+        throw new RuntimeException(e);
+      }
+
+    } else {
+      LinkedHashMap<String, Object> parameters = q.getParameters();
+      parameters.put("sql", q.getSQL());
+      return (List<R>) context.getLiveSQLMapper().select(parameters);
+    }
   }
 
   @SuppressWarnings("unchecked")

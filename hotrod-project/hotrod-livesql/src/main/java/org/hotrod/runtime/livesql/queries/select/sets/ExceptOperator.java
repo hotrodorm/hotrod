@@ -1,6 +1,6 @@
 package org.hotrod.runtime.livesql.queries.select.sets;
 
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public class ExceptOperator extends SetOperator {
 

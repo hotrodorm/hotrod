@@ -10,10 +10,10 @@ import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.ordering.CombinedOrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
+import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
 import org.hotrod.runtime.livesql.util.IdUtil;
 
@@ -287,8 +287,13 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
     return this.lastSelect;
   }
 
+  private List<ResultSetColumn> columns = null;
+
   public List<ResultSetColumn> listColumns() {
-    return this.first.listColumns();
+    if (this.columns == null) {
+      this.columns = this.first.listColumns();
+    }
+    return this.columns;
   }
 
   // MultiSet execution

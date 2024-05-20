@@ -2,7 +2,7 @@ package org.hotrod.runtime.livesql.ordering;
 
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrodorm.hotrod.utils.SUtil;
 
 public class OrderByProperties {

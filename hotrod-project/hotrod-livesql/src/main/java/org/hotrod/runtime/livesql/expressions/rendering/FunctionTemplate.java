@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.hotrod.runtime.livesql.exceptions.InvalidFunctionException;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 // Parameters:
 // single: #{}

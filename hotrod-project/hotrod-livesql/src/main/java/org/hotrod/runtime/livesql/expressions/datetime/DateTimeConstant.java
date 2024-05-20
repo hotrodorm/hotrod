@@ -3,7 +3,8 @@ package org.hotrod.runtime.livesql.expressions.datetime;
 import java.util.Date;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
+import org.hotrod.runtime.livesql.queries.SQLParameterWriter.RenderedParameter;
 
 public class DateTimeConstant extends DateTimeExpression {
 
@@ -25,9 +26,8 @@ public class DateTimeConstant extends DateTimeExpression {
   @Override
   public void renderTo(final QueryWriter w) {
     if (this.parameterize) {
-      String name = w.registerParameter(this.value);
-      w.write("#{" + name);
-      w.write("}");
+      RenderedParameter p = w.registerParameter(this.value);
+      w.write(p.getPlaceholder());
     } else {
       w.write("" + this.value);
     }
