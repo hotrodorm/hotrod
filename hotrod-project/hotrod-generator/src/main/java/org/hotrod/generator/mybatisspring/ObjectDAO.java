@@ -1845,9 +1845,17 @@ public class ObjectDAO extends GeneratableObject {
       return "NumberColumn";
     } else if ("java.lang.String".equals(javaType)) {
       return "StringColumn";
-    } else if ("java.util.Date".equals(javaType) || "java.sql.Date".equals(javaType) //
+    } else if ("java.util.Date".equals(javaType) //
+        || "java.sql.Date".equals(javaType) //
         || "java.sql.Timestamp".equals(javaType) //
         || "java.sql.Time".equals(javaType) //
+        || "java.time.LocalDateTime".equals(javaType) //
+        || "java.sql.LocalDate".equals(javaType) //
+        || "java.sql.LocalTime".equals(javaType) //
+        || "java.time.ZonedDateTime".equals(javaType) //
+        || "java.time.OffsetDateTime".equals(javaType) //
+        || "java.time.OffsetTime".equals(javaType) //
+        || "java.time.Instant".equals(javaType) //
     ) {
       return "DateTimeColumn";
     } else if ("java.lang.Boolean".equals(javaType)) {
