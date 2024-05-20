@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import app.daos.InvoiceVO;
-import app.daos.primitives.InvoiceDAO;
-import app.daos.primitives.InvoiceDAO.InvoiceTable;
+import app.daos.reporting.InvoiceVO;
+import app.daos.reporting.primitives.InvoiceDAO;
+import app.daos.reporting.primitives.InvoiceDAO.InvoiceTable;
 
 @Component
 public class BusinessLogic {

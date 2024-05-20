@@ -15,6 +15,7 @@ import java.util.TreeSet;
 
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
+import org.hotrod.runtime.livesql.expressions.numbers.NumberConstant;
 import org.hotrod.runtime.livesql.queries.DMLQuery;
 import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.runtime.livesql.queries.select.CriteriaForUpdatePhase;
@@ -35,13 +36,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import app.daos.InvoiceVO;
-import app.daos.TypesBinaryVO;
+import app.daos.BinariesVO;
+import app.daos.primitives.BinariesDAO;
+import app.daos.primitives.BinariesDAO.BinariesTable;
 import app.daos.primitives.BranchDAO;
-import app.daos.primitives.InvoiceDAO;
-import app.daos.primitives.InvoiceDAO.InvoiceTable;
-import app.daos.primitives.TypesBinaryDAO;
-import app.daos.primitives.TypesBinaryDAO.TypesBinaryTable;
+import app.daos.reporting.InvoiceVO;
+import app.daos.reporting.primitives.InvoiceDAO;
+import app.daos.reporting.primitives.InvoiceDAO.InvoiceTable;
 
 @Configuration
 @SpringBootApplication
@@ -82,7 +83,7 @@ public class App {
   private Torcs torcs;
 
   @Autowired
-  private TypesBinaryDAO typesBinaryDAO;
+  private BinariesDAO typesBinaryDAO;
 
 //  @Autowired
 //  private TorcsCTP torcsCTP;
@@ -136,7 +137,8 @@ public class App {
 //      join();     
 //      livesql();
 //      selectByCriteria();
-      torcs();
+//      torcs();
+      plainJDBC();
 //      star();
 //      noFrom();
       System.out.println("[ Example complete ]");
@@ -732,6 +734,15 @@ public class App {
 //    getSlowestCTPQueryExecutionPlan();
   }
 
+  private void plainJDBC() {
+    Number x = null;
+    NumberConstant xn = sql.val(x);
+    Select<Row> q = this.sql.select(sql.val(3).mult(xn).as("total"));
+    System.out.println("query:" + q.getPreview());
+    List<Row> rows = q.execute();
+    rows.forEach(r -> System.out.println("total: " + r.get("total")));
+  }
+
   private void disableTorcs() {
     // Torcs starts enabled by default
     this.torcs.deactivate();
@@ -798,13 +809,13 @@ public class App {
 
     byte[] d2 = new byte[] { 12, 34, 56 };
 
-    TypesBinaryTable b = TypesBinaryDAO.newTable();
+    BinariesTable b = BinariesDAO.newTable();
     for (int i = 0; i < 3; i++) {
-      List<TypesBinaryVO> binaries = this.typesBinaryDAO.select(b, b.bin1.eq(d2)).execute();
+      List<BinariesVO> binaries = this.typesBinaryDAO.select(b, b.bin1.eq(d2)).execute();
       System.out.println("r[" + binaries.size() + "]");
     }
 
-    List<TypesBinaryVO> b2 = this.typesBinaryDAO.select(b, b.bin1.isNotNull()).execute();
+    List<BinariesVO> b2 = this.typesBinaryDAO.select(b, b.bin1.isNotNull()).execute();
     System.out.println("b2=" + b2);
     printRanking1();
 
