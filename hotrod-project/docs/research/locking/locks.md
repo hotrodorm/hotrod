@@ -10,16 +10,18 @@ Allowed in:
 - LIMIT
 
 Oracle:
-  DISTINCT, CURSOR, SET Operators, aggregations
+
+- DISTINCT, CURSOR, SET Operators, aggregations
 
 PG:
+
 - DISTINCT                    
 - GROUP BY
 - HAVING
 - WINDOW
 - UNION/INTERSECT/EXCEPT
 
-| Database   | FOR UPDATE | FOR SHARE | NO WAIT | WAIT <int> | SKIP LOCKED | OF <tables, ...> | OF <columns, ...> |
+| Database   | FOR UPDATE | FOR SHARE | NOWAIT | WAIT &lt;seconds> | SKIP LOCKED | OF &lt;tables> | OF &lt;columns> |
 | ---------- | ---------- | --------- | ------- | ---------- | ----------- | ---------------- | ----------------- |  
 | Oracle     | Yes        | --        | Yes     | Yes        | Yes         | --               | Yes               |
 | DB2        | Yes        | --        | --      | --         | --          | --               | Yes               |
