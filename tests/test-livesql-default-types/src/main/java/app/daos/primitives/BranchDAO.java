@@ -15,9 +15,9 @@ import org.hotrod.runtime.interfaces.OrderBy;
 
 import app.daos.primitives.AbstractBranchVO;
 import app.daos.BranchVO;
-import app.daos.InvoiceVO;
-import app.daos.primitives.InvoiceDAO.InvoiceOrderBy;
-import app.daos.primitives.InvoiceDAO;
+import app.daos.reporting.InvoiceVO;
+import app.daos.reporting.primitives.InvoiceDAO.InvoiceOrderBy;
+import app.daos.reporting.primitives.InvoiceDAO;
 
 import java.lang.Override;
 import java.util.Map;
@@ -196,7 +196,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   public app.daos.BranchVO insert(final app.daos.primitives.AbstractBranchVO vo) {
     String id = "mappers.branch.insert";
-    this.sqlSession.insert(id, vo);
+    int rows = this.sqlSession.insert(id, vo);
     app.daos.BranchVO mo = springBeanObjectFactory.create(app.daos.BranchVO.class);
     mo.setId(vo.getId());
     mo.setName(vo.getName());

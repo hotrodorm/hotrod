@@ -13,8 +13,8 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
-import app.daos.primitives.AbstractTypesCharVO;
-import app.daos.TypesCharVO;
+import app.daos.primitives.AbstractCharsVO;
+import app.daos.CharsVO;
 
 import java.lang.Override;
 import java.util.Map;
@@ -53,7 +53,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 @Component
-public class TypesCharDAO implements Serializable, ApplicationContextAware {
+public class CharsDAO implements Serializable, ApplicationContextAware {
 
   private static final long serialVersionUID = 1L;
 
@@ -86,16 +86,16 @@ public class TypesCharDAO implements Serializable, ApplicationContextAware {
 
   // Row Parser
 
-  public app.daos.TypesCharVO parseRow(Map<String, Object> m) {
+  public app.daos.CharsVO parseRow(Map<String, Object> m) {
     return parseRow(m, null, null);
   }
 
-  public app.daos.TypesCharVO parseRow(Map<String, Object> m, String prefix) {
+  public app.daos.CharsVO parseRow(Map<String, Object> m, String prefix) {
     return parseRow(m, prefix, null);
   }
 
-  public app.daos.TypesCharVO parseRow(Map<String, Object> m, String prefix, String suffix) {
-    app.daos.TypesCharVO mo = this.applicationContext.getBean(app.daos.TypesCharVO.class);
+  public app.daos.CharsVO parseRow(Map<String, Object> m, String prefix, String suffix) {
+    app.daos.CharsVO mo = this.applicationContext.getBean(app.daos.CharsVO.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
     mo.setCha1((java.lang.String) m.get(p + "cha1" + s));
@@ -110,25 +110,25 @@ public class TypesCharDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<app.daos.TypesCharVO> select(final app.daos.primitives.AbstractTypesCharVO example, final TypesCharOrderBy... orderBies)
+  public List<app.daos.CharsVO> select(final app.daos.primitives.AbstractCharsVO example, final CharsOrderBy... orderBies)
       {
-    DaoWithOrder<app.daos.primitives.AbstractTypesCharVO, TypesCharOrderBy> dwo = //
+    DaoWithOrder<app.daos.primitives.AbstractCharsVO, CharsOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
-    return this.sqlSession.selectList("mappers.typesChar.selectByExample", dwo);
+    return this.sqlSession.selectList("mappers.chars.selectByExample", dwo);
   }
 
-  public Cursor<app.daos.TypesCharVO> selectCursor(final app.daos.primitives.AbstractTypesCharVO example, final TypesCharOrderBy... orderBies)
+  public Cursor<app.daos.CharsVO> selectCursor(final app.daos.primitives.AbstractCharsVO example, final CharsOrderBy... orderBies)
       {
-    DaoWithOrder<app.daos.primitives.AbstractTypesCharVO, TypesCharOrderBy> dwo = //
+    DaoWithOrder<app.daos.primitives.AbstractCharsVO, CharsOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
-    return new MyBatisCursor<app.daos.TypesCharVO>(this.sqlSession.selectCursor("mappers.typesChar.selectByExample", dwo));
+    return new MyBatisCursor<app.daos.CharsVO>(this.sqlSession.selectCursor("mappers.chars.selectByExample", dwo));
   }
 
   // select by criteria
 
-  public CriteriaWherePhase<app.daos.TypesCharVO> select(final TypesCharDAO.TypesCharTable from,
+  public CriteriaWherePhase<app.daos.CharsVO> select(final CharsDAO.CharsTable from,
       final Predicate predicate) {
-    return new CriteriaWherePhase<app.daos.TypesCharVO>(this.context, "mappers.typesChar.selectByCriteria",
+    return new CriteriaWherePhase<app.daos.CharsVO>(this.context, "mappers.chars.selectByCriteria",
         from, predicate);
   }
 
@@ -138,10 +138,10 @@ public class TypesCharDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public app.daos.TypesCharVO insert(final app.daos.primitives.AbstractTypesCharVO vo) {
-    String id = "mappers.typesChar.insert";
+  public app.daos.CharsVO insert(final app.daos.primitives.AbstractCharsVO vo) {
+    String id = "mappers.chars.insert";
     this.sqlSession.insert(id, vo);
-    app.daos.TypesCharVO mo = springBeanObjectFactory.create(app.daos.TypesCharVO.class);
+    app.daos.CharsVO mo = springBeanObjectFactory.create(app.daos.CharsVO.class);
     mo.setCha1(vo.getCha1());
     mo.setCha2(vo.getCha2());
     mo.setCha3(vo.getCha3());
@@ -154,65 +154,65 @@ public class TypesCharDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int update(final app.daos.primitives.AbstractTypesCharVO example, final app.daos.primitives.AbstractTypesCharVO updateValues) {
-    UpdateByExampleDao<app.daos.primitives.AbstractTypesCharVO> fvd = //
-      new UpdateByExampleDao<app.daos.primitives.AbstractTypesCharVO>(example, updateValues);
-    return this.sqlSession.update("mappers.typesChar.updateByExample", fvd);
+  public int update(final app.daos.primitives.AbstractCharsVO example, final app.daos.primitives.AbstractCharsVO updateValues) {
+    UpdateByExampleDao<app.daos.primitives.AbstractCharsVO> fvd = //
+      new UpdateByExampleDao<app.daos.primitives.AbstractCharsVO>(example, updateValues);
+    return this.sqlSession.update("mappers.chars.updateByExample", fvd);
   }
 
   // update by criteria
 
-  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractTypesCharVO updateValues, final TypesCharDAO.TypesCharTable tableOrView, final Predicate predicate) {
+  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractCharsVO updateValues, final CharsDAO.CharsTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
     if (updateValues.getCha1() != null) values.put("\"cha1\"", updateValues.getCha1());
     if (updateValues.getCha2() != null) values.put("\"cha2\"", updateValues.getCha2());
     if (updateValues.getCha3() != null) values.put("\"cha3\"", updateValues.getCha3());
-    return new UpdateSetCompletePhase(this.context, "mappers.typesChar.updateByCriteria", tableOrView,  predicate, values);
+    return new UpdateSetCompletePhase(this.context, "mappers.chars.updateByCriteria", tableOrView,  predicate, values);
   }
 
 
   // delete by example
 
-  public int delete(final app.daos.primitives.AbstractTypesCharVO example) {
-    return this.sqlSession.delete("mappers.typesChar.deleteByExample", example);
+  public int delete(final app.daos.primitives.AbstractCharsVO example) {
+    return this.sqlSession.delete("mappers.chars.deleteByExample", example);
   }
 
   // delete by criteria
 
-  public DeleteWherePhase delete(final TypesCharDAO.TypesCharTable from, final Predicate predicate) {
-    return new DeleteWherePhase(this.context, "mappers.typesChar.deleteByCriteria", from, predicate);
+  public DeleteWherePhase delete(final CharsDAO.CharsTable from, final Predicate predicate) {
+    return new DeleteWherePhase(this.context, "mappers.chars.deleteByCriteria", from, predicate);
   }
 
   // DAO ordering
 
-  public enum TypesCharOrderBy implements OrderBy {
+  public enum CharsOrderBy implements OrderBy {
 
-    CHA1("types_char", "\"cha1\"", true), //
-    CHA1$DESC("types_char", "\"cha1\"", false), //
-    CHA1$CASEINSENSITIVE("types_char", "lower(\"cha1\")", true), //
-    CHA1$CASEINSENSITIVE_STABLE_FORWARD("types_char", "lower(\"cha1\"), \"cha1\"", true), //
-    CHA1$CASEINSENSITIVE_STABLE_REVERSE("types_char", "lower(\"cha1\"), \"cha1\"", false), //
-    CHA1$DESC_CASEINSENSITIVE("types_char", "lower(\"cha1\")", false), //
-    CHA1$DESC_CASEINSENSITIVE_STABLE_FORWARD("types_char", "lower(\"cha1\"), \"cha1\"", false), //
-    CHA1$DESC_CASEINSENSITIVE_STABLE_REVERSE("types_char", "lower(\"cha1\"), \"cha1\"", true), //
-    CHA2("types_char", "\"cha2\"", true), //
-    CHA2$DESC("types_char", "\"cha2\"", false), //
-    CHA2$CASEINSENSITIVE("types_char", "lower(\"cha2\")", true), //
-    CHA2$CASEINSENSITIVE_STABLE_FORWARD("types_char", "lower(\"cha2\"), \"cha2\"", true), //
-    CHA2$CASEINSENSITIVE_STABLE_REVERSE("types_char", "lower(\"cha2\"), \"cha2\"", false), //
-    CHA2$DESC_CASEINSENSITIVE("types_char", "lower(\"cha2\")", false), //
-    CHA2$DESC_CASEINSENSITIVE_STABLE_FORWARD("types_char", "lower(\"cha2\"), \"cha2\"", false), //
-    CHA2$DESC_CASEINSENSITIVE_STABLE_REVERSE("types_char", "lower(\"cha2\"), \"cha2\"", true), //
-    CHA3("types_char", "\"cha3\"", true), //
-    CHA3$DESC("types_char", "\"cha3\"", false), //
-    CHA3$CASEINSENSITIVE("types_char", "lower(\"cha3\")", true), //
-    CHA3$CASEINSENSITIVE_STABLE_FORWARD("types_char", "lower(\"cha3\"), \"cha3\"", true), //
-    CHA3$CASEINSENSITIVE_STABLE_REVERSE("types_char", "lower(\"cha3\"), \"cha3\"", false), //
-    CHA3$DESC_CASEINSENSITIVE("types_char", "lower(\"cha3\")", false), //
-    CHA3$DESC_CASEINSENSITIVE_STABLE_FORWARD("types_char", "lower(\"cha3\"), \"cha3\"", false), //
-    CHA3$DESC_CASEINSENSITIVE_STABLE_REVERSE("types_char", "lower(\"cha3\"), \"cha3\"", true);
+    CHA1("chars", "\"cha1\"", true), //
+    CHA1$DESC("chars", "\"cha1\"", false), //
+    CHA1$CASEINSENSITIVE("chars", "lower(\"cha1\")", true), //
+    CHA1$CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(\"cha1\"), \"cha1\"", true), //
+    CHA1$CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(\"cha1\"), \"cha1\"", false), //
+    CHA1$DESC_CASEINSENSITIVE("chars", "lower(\"cha1\")", false), //
+    CHA1$DESC_CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(\"cha1\"), \"cha1\"", false), //
+    CHA1$DESC_CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(\"cha1\"), \"cha1\"", true), //
+    CHA2("chars", "\"cha2\"", true), //
+    CHA2$DESC("chars", "\"cha2\"", false), //
+    CHA2$CASEINSENSITIVE("chars", "lower(\"cha2\")", true), //
+    CHA2$CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(\"cha2\"), \"cha2\"", true), //
+    CHA2$CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(\"cha2\"), \"cha2\"", false), //
+    CHA2$DESC_CASEINSENSITIVE("chars", "lower(\"cha2\")", false), //
+    CHA2$DESC_CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(\"cha2\"), \"cha2\"", false), //
+    CHA2$DESC_CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(\"cha2\"), \"cha2\"", true), //
+    CHA3("chars", "\"cha3\"", true), //
+    CHA3$DESC("chars", "\"cha3\"", false), //
+    CHA3$CASEINSENSITIVE("chars", "lower(\"cha3\")", true), //
+    CHA3$CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(\"cha3\"), \"cha3\"", true), //
+    CHA3$CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(\"cha3\"), \"cha3\"", false), //
+    CHA3$DESC_CASEINSENSITIVE("chars", "lower(\"cha3\")", false), //
+    CHA3$DESC_CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(\"cha3\"), \"cha3\"", false), //
+    CHA3$DESC_CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(\"cha3\"), \"cha3\"", true);
 
-    private TypesCharOrderBy(final String tableName, final String columnName,
+    private CharsOrderBy(final String tableName, final String columnName,
         boolean ascending) {
       this.tableName = tableName;
       this.columnName = columnName;
@@ -239,15 +239,15 @@ public class TypesCharDAO implements Serializable, ApplicationContextAware {
 
   // Database Table metadata
 
-  public static TypesCharTable newTable() {
-    return new TypesCharTable();
+  public static CharsTable newTable() {
+    return new CharsTable();
   }
 
-  public static TypesCharTable newTable(final String alias) {
-    return new TypesCharTable(alias);
+  public static CharsTable newTable(final String alias) {
+    return new CharsTable(alias);
   }
 
-  public static class TypesCharTable extends Table {
+  public static class CharsTable extends Table {
 
     // Properties
 
@@ -263,13 +263,13 @@ public class TypesCharDAO implements Serializable, ApplicationContextAware {
 
     // Constructors
 
-    TypesCharTable() {
-      super(null, null, Name.of("types_char", false), "Table", null);
+    CharsTable() {
+      super(null, null, Name.of("chars", false), "Table", null);
       initialize();
     }
 
-    TypesCharTable(final String alias) {
-      super(null, null, Name.of("types_char", false), "Table", alias);
+    CharsTable(final String alias) {
+      super(null, null, Name.of("chars", false), "Table", alias);
       initialize();
     }
 

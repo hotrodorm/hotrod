@@ -27,7 +27,6 @@
     <column name="id" sequence="seq1" />
   </table>
 
-
-  <fragment file="./f1.xml" />
+  <fragment file="./reporting.xml" />
 
 </hotrod>

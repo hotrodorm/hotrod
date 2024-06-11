@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="mappers.invoice">
+<mapper namespace="mappers.reporting.invoice">
 
   <!-- columns -->
 
@@ -30,7 +30,7 @@
     ${alias}."category"
   </sql>
 
-  <resultMap id="allColumns" type="app.daos.InvoiceVO">
+  <resultMap id="allColumns" type="app.daos.reporting.InvoiceVO">
     <id property="id" column="id" />
     <result property="amount" column="amount" />
     <result property="branchId" column="branch_id" />
@@ -39,7 +39,7 @@
     <result property="type" column="type" />
     <result property="status" column="status" />
     <result property="orderDate" column="order_date" />
-    <result property="category" column="category" typeHandler="app.daos.primitives.InvoiceDAO$CategoryTypeHandler" />
+    <result property="category" column="category" typeHandler="app.daos.reporting.primitives.InvoiceDAO$CategoryTypeHandler" />
   </resultMap>
 
   <!-- select by PK -->
@@ -86,7 +86,7 @@
         and "order_date" = #{p.orderDate,jdbcType=DATE}
       </if>
       <if test="p.category != null">
-        and "category" = #{p.category,jdbcType=INTEGER,typeHandler=app.daos.primitives.InvoiceDAO$CategoryTypeHandler}
+        and "category" = #{p.category,jdbcType=INTEGER,typeHandler=app.daos.reporting.primitives.InvoiceDAO$CategoryTypeHandler}
       </if>
     </trim>
     <if test="o != null">
@@ -125,7 +125,7 @@
         <if test="true">, #{type,jdbcType=VARCHAR}</if>
         <if test="true">, #{status,jdbcType=VARCHAR}</if>
         <if test="true">, #{orderDate,jdbcType=DATE}</if>
-        <if test="true">, #{category,jdbcType=INTEGER,typeHandler=app.daos.primitives.InvoiceDAO$CategoryTypeHandler}</if>
+        <if test="true">, #{category,jdbcType=INTEGER,typeHandler=app.daos.reporting.primitives.InvoiceDAO$CategoryTypeHandler}</if>
       </trim>
       )
   </insert>
@@ -141,7 +141,7 @@
       "type" = #{type,jdbcType=VARCHAR},
       "status" = #{status,jdbcType=VARCHAR},
       "order_date" = #{orderDate,jdbcType=DATE},
-      "category" = #{category,jdbcType=INTEGER,typeHandler=app.daos.primitives.InvoiceDAO$CategoryTypeHandler}
+      "category" = #{category,jdbcType=INTEGER,typeHandler=app.daos.reporting.primitives.InvoiceDAO$CategoryTypeHandler}
      where
       "id" = #{id,jdbcType=INTEGER}
   </update>
@@ -167,7 +167,7 @@
       <if test="values.type != null">"type" = #{values.type,jdbcType=VARCHAR},</if>
       <if test="values.status != null">"status" = #{values.status,jdbcType=VARCHAR},</if>
       <if test="values.orderDate != null">"order_date" = #{values.orderDate,jdbcType=DATE},</if>
-      <if test="values.category != null">"category" = #{values.category,jdbcType=INTEGER,typeHandler=app.daos.primitives.InvoiceDAO$CategoryTypeHandler},</if>
+      <if test="values.category != null">"category" = #{values.category,jdbcType=INTEGER,typeHandler=app.daos.reporting.primitives.InvoiceDAO$CategoryTypeHandler},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.id != null">
@@ -195,7 +195,7 @@
         and "order_date" = #{filter.orderDate,jdbcType=DATE}
       </if>
       <if test="filter.category != null">
-        and "category" = #{filter.category,jdbcType=INTEGER,typeHandler=app.daos.primitives.InvoiceDAO$CategoryTypeHandler}
+        and "category" = #{filter.category,jdbcType=INTEGER,typeHandler=app.daos.reporting.primitives.InvoiceDAO$CategoryTypeHandler}
       </if>
     </trim>
   </update>
@@ -236,7 +236,7 @@
         and "order_date" = #{orderDate,jdbcType=DATE}
       </if>
       <if test="category != null">
-        and "category" = #{category,jdbcType=INTEGER,typeHandler=app.daos.primitives.InvoiceDAO$CategoryTypeHandler}
+        and "category" = #{category,jdbcType=INTEGER,typeHandler=app.daos.reporting.primitives.InvoiceDAO$CategoryTypeHandler}
       </if>
     </trim>
   </delete>

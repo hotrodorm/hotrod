@@ -13,7 +13,7 @@
     <maven.compiler.target>8</maven.compiler.target>
 
     <debbie.version>1.3.3</debbie.version>
-    <hotrod.version>4.7.0-SNAPSHOT</hotrod.version>
+    <hotrod.version>4.7.1-SNAPSHOT</hotrod.version>
   </properties>
 
   <dependencies>
@@ -277,12 +277,13 @@
       <id>postgresql</id>
 
       <properties>
+        <subfolder>postgresql</subfolder>
         <jdbcdrivergroupid>org.postgresql</jdbcdrivergroupid>
         <jdbcdriverartifactid>postgresql</jdbcdriverartifactid>
         <jdbcdriverversion>42.3.3</jdbcdriverversion>
 
         <jdbcdriverclass>org.postgresql.Driver</jdbcdriverclass>
-        <jdbcurl>jdbc:postgresql://192.168.56.214:5432/hotrod</jdbcurl>
+        <jdbcurl>jdbc:postgresql://192.168.56.200:5416/hotrod</jdbcurl>
         <jdbcusername>user1</jdbcusername>
         <jdbcpassword>pass1</jdbcpassword>
         <jdbcschema>public</jdbcschema>
@@ -305,7 +306,7 @@
             <version>2.3.4.RELEASE</version>
             <configuration>
               <arguments>
-                <argument>--spring.config.location=src/main/database/postgresql/</argument>
+                <argument>--spring.config.location=src/main/database/${subfolder}/</argument>
               </arguments>
             </configuration>
             <executions>
@@ -322,7 +323,7 @@
             <artifactId>debbie-maven-plugin</artifactId>
             <version>${debbie.version}</version>
             <configuration>
-              <sourcedir>src/main/database/postgresql</sourcedir>
+              <sourcedir>src/main/database/${subfolder}</sourcedir>
               <targetversion>1.0.0</targetversion>
               <jdbcdriverclass>${jdbcdriverclass}</jdbcdriverclass>
               <jdbcurl>${jdbcurl}</jdbcurl>

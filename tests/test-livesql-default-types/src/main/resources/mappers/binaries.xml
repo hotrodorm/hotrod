@@ -2,26 +2,23 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="mappers.typesChar">
+<mapper namespace="mappers.binaries">
 
   <!-- columns -->
 
   <sql id="columns">
-    "cha1",
-    "cha2",
-    "cha3"
+    "bin1",
+    "bol1"
   </sql>
 
   <sql id="columnsWithAlias">
-    ${alias}."cha1",
-    ${alias}."cha2",
-    ${alias}."cha3"
+    ${alias}."bin1",
+    ${alias}."bol1"
   </sql>
 
-  <resultMap id="allColumns" type="app.daos.TypesCharVO">
-    <result property="cha1" column="cha1" />
-    <result property="cha2" column="cha2" />
-    <result property="cha3" column="cha3" />
+  <resultMap id="allColumns" type="app.daos.BinariesVO">
+    <result property="bin1" column="bin1" />
+    <result property="bol1" column="bol1" />
   </resultMap>
 
   <!-- select by PK: no mapping generated, since the table does not have a PK -->
@@ -33,16 +30,13 @@
   <select id="selectByExample" resultMap="allColumns">
     select
       <include refid="columns" />
-     from types_char
+     from binaries
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
-      <if test="p.cha1 != null">
-        and "cha1" = #{p.cha1,jdbcType=CHAR}
+      <if test="p.bin1 != null">
+        and "bin1" = #{p.bin1,jdbcType=BINARY}
       </if>
-      <if test="p.cha2 != null">
-        and "cha2" = #{p.cha2,jdbcType=VARCHAR}
-      </if>
-      <if test="p.cha3 != null">
-        and "cha3" = #{p.cha3,jdbcType=VARCHAR}
+      <if test="p.bol1 != null">
+        and "bol1" = #{p.bol1,jdbcType=BIT}
       </if>
     </trim>
     <if test="o != null">
@@ -59,17 +53,15 @@
   <!-- insert (no auto-generated columns) -->
 
   <insert id="insert">
-    insert into types_char (
+    insert into binaries (
       <trim prefixOverrides=", ">
-        <if test="true">, "cha1"</if>
-        <if test="true">, "cha2"</if>
-        <if test="true">, "cha3"</if>
+        <if test="true">, "bin1"</if>
+        <if test="true">, "bol1"</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
-        <if test="true">, #{cha1,jdbcType=CHAR}</if>
-        <if test="true">, #{cha2,jdbcType=VARCHAR}</if>
-        <if test="true">, #{cha3,jdbcType=VARCHAR}</if>
+        <if test="true">, #{bin1,jdbcType=BINARY}</if>
+        <if test="true">, #{bol1,jdbcType=BIT}</if>
       </trim>
       )
   </insert>
@@ -81,21 +73,17 @@
   <!-- update by example -->
 
   <update id="updateByExample">
-    update types_char
+    update binaries
     <set>
-      <if test="values.cha1 != null">"cha1" = #{values.cha1,jdbcType=CHAR},</if>
-      <if test="values.cha2 != null">"cha2" = #{values.cha2,jdbcType=VARCHAR},</if>
-      <if test="values.cha3 != null">"cha3" = #{values.cha3,jdbcType=VARCHAR},</if>
+      <if test="values.bin1 != null">"bin1" = #{values.bin1,jdbcType=BINARY},</if>
+      <if test="values.bol1 != null">"bol1" = #{values.bol1,jdbcType=BIT},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
-      <if test="filter.cha1 != null">
-        and "cha1" = #{filter.cha1,jdbcType=CHAR}
+      <if test="filter.bin1 != null">
+        and "bin1" = #{filter.bin1,jdbcType=BINARY}
       </if>
-      <if test="filter.cha2 != null">
-        and "cha2" = #{filter.cha2,jdbcType=VARCHAR}
-      </if>
-      <if test="filter.cha3 != null">
-        and "cha3" = #{filter.cha3,jdbcType=VARCHAR}
+      <if test="filter.bol1 != null">
+        and "bol1" = #{filter.bol1,jdbcType=BIT}
       </if>
     </trim>
   </update>
@@ -109,16 +97,13 @@
   <!-- delete by example -->
 
   <delete id="deleteByExample">
-    delete from types_char
+    delete from binaries
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
-      <if test="cha1 != null">
-        and "cha1" = #{cha1,jdbcType=CHAR}
+      <if test="bin1 != null">
+        and "bin1" = #{bin1,jdbcType=BINARY}
       </if>
-      <if test="cha2 != null">
-        and "cha2" = #{cha2,jdbcType=VARCHAR}
-      </if>
-      <if test="cha3 != null">
-        and "cha3" = #{cha3,jdbcType=VARCHAR}
+      <if test="bol1 != null">
+        and "bol1" = #{bol1,jdbcType=BIT}
       </if>
     </trim>
   </delete>

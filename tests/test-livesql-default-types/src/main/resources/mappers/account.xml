@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.account">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    "ID",
+    "PARENT_ID",
+    "BRANCH_ID"
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}."ID",
+    ${alias}."PARENT_ID",
+    ${alias}."BRANCH_ID"
+  </sql>
+
+  <resultMap id="allColumns" type="app.daos.AccountVO">
+    <id property="id" column="ID" />
+    <result property="parentId" column="PARENT_ID" />
+    <result property="branchId" column="BRANCH_ID" />
+  </resultMap>
+
+  <!-- select by PK -->
+
+  <select id="selectByPK" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from account
+     where
+      "ID" = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!-- no select by unique indexes since there are no UI (besides the PK) -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from account
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="p.id != null">
+        and "ID" = #{p.id,jdbcType=INTEGER}
+      </if>
+      <if test="p.parentId != null">
+        and "PARENT_ID" = #{p.parentId,jdbcType=INTEGER}
+      </if>
+      <if test="p.branchId != null">
+        and "BRANCH_ID" = #{p.branchId,jdbcType=INTEGER}
+      </if>
+    </trim>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (using sequences prefetch) -->
+
+  <insert id="insert">
+    <selectKey keyProperty="id" resultType="app.daos.AccountVO" order="BEFORE">
+      select next value for seq1 as id
+    </selectKey>
+    insert into account (
+      <trim prefixOverrides=", ">
+        <if test="true">, "ID"</if>
+        <if test="true">, "PARENT_ID"</if>
+        <if test="true">, "BRANCH_ID"</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{id,jdbcType=INTEGER}</if>
+        <if test="true">, #{parentId,jdbcType=INTEGER}</if>
+        <if test="true">, #{branchId,jdbcType=INTEGER}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK -->
+
+  <update id="updateByPK">
+    update account set
+      "PARENT_ID" = #{parentId,jdbcType=INTEGER},
+      "BRANCH_ID" = #{branchId,jdbcType=INTEGER}
+     where
+      "ID" = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- delete by PK -->
+
+  <delete id="deleteByPK">
+    delete from account
+     where
+      "ID" = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update account
+    <set>
+      <if test="values.id != null">"ID" = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.parentId != null">"PARENT_ID" = #{values.parentId,jdbcType=INTEGER},</if>
+      <if test="values.branchId != null">"BRANCH_ID" = #{values.branchId,jdbcType=INTEGER},</if>
+    </set>
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="filter.id != null">
+        and "ID" = #{filter.id,jdbcType=INTEGER}
+      </if>
+      <if test="filter.parentId != null">
+        and "PARENT_ID" = #{filter.parentId,jdbcType=INTEGER}
+      </if>
+      <if test="filter.branchId != null">
+        and "BRANCH_ID" = #{filter.branchId,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </update>
+
+  <!-- update by criteria -->
+
+  <select id="updateByCriteria">
+    ${sql}
+  </select>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from account
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="id != null">
+        and "ID" = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="parentId != null">
+        and "PARENT_ID" = #{parentId,jdbcType=INTEGER}
+      </if>
+      <if test="branchId != null">
+        and "BRANCH_ID" = #{branchId,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </delete>
+
+  <!-- delete by criteria -->
+
+  <select id="deleteByCriteria">
+    ${sql}
+  </select>
+
+</mapper>

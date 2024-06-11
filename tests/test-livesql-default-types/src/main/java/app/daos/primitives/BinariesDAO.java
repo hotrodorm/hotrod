@@ -13,8 +13,8 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
-import app.daos.primitives.AbstractTypesBinaryVO;
-import app.daos.TypesBinaryVO;
+import app.daos.primitives.AbstractBinariesVO;
+import app.daos.BinariesVO;
 
 import java.lang.Override;
 import java.util.Map;
@@ -53,7 +53,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 @Component
-public class TypesBinaryDAO implements Serializable, ApplicationContextAware {
+public class BinariesDAO implements Serializable, ApplicationContextAware {
 
   private static final long serialVersionUID = 1L;
 
@@ -86,16 +86,16 @@ public class TypesBinaryDAO implements Serializable, ApplicationContextAware {
 
   // Row Parser
 
-  public app.daos.TypesBinaryVO parseRow(Map<String, Object> m) {
+  public app.daos.BinariesVO parseRow(Map<String, Object> m) {
     return parseRow(m, null, null);
   }
 
-  public app.daos.TypesBinaryVO parseRow(Map<String, Object> m, String prefix) {
+  public app.daos.BinariesVO parseRow(Map<String, Object> m, String prefix) {
     return parseRow(m, prefix, null);
   }
 
-  public app.daos.TypesBinaryVO parseRow(Map<String, Object> m, String prefix, String suffix) {
-    app.daos.TypesBinaryVO mo = this.applicationContext.getBean(app.daos.TypesBinaryVO.class);
+  public app.daos.BinariesVO parseRow(Map<String, Object> m, String prefix, String suffix) {
+    app.daos.BinariesVO mo = this.applicationContext.getBean(app.daos.BinariesVO.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
     mo.setBin1((byte[]) m.get(p + "bin1" + s));
@@ -109,25 +109,25 @@ public class TypesBinaryDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<app.daos.TypesBinaryVO> select(final app.daos.primitives.AbstractTypesBinaryVO example, final TypesBinaryOrderBy... orderBies)
+  public List<app.daos.BinariesVO> select(final app.daos.primitives.AbstractBinariesVO example, final BinariesOrderBy... orderBies)
       {
-    DaoWithOrder<app.daos.primitives.AbstractTypesBinaryVO, TypesBinaryOrderBy> dwo = //
+    DaoWithOrder<app.daos.primitives.AbstractBinariesVO, BinariesOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
-    return this.sqlSession.selectList("mappers.typesBinary.selectByExample", dwo);
+    return this.sqlSession.selectList("mappers.binaries.selectByExample", dwo);
   }
 
-  public Cursor<app.daos.TypesBinaryVO> selectCursor(final app.daos.primitives.AbstractTypesBinaryVO example, final TypesBinaryOrderBy... orderBies)
+  public Cursor<app.daos.BinariesVO> selectCursor(final app.daos.primitives.AbstractBinariesVO example, final BinariesOrderBy... orderBies)
       {
-    DaoWithOrder<app.daos.primitives.AbstractTypesBinaryVO, TypesBinaryOrderBy> dwo = //
+    DaoWithOrder<app.daos.primitives.AbstractBinariesVO, BinariesOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
-    return new MyBatisCursor<app.daos.TypesBinaryVO>(this.sqlSession.selectCursor("mappers.typesBinary.selectByExample", dwo));
+    return new MyBatisCursor<app.daos.BinariesVO>(this.sqlSession.selectCursor("mappers.binaries.selectByExample", dwo));
   }
 
   // select by criteria
 
-  public CriteriaWherePhase<app.daos.TypesBinaryVO> select(final TypesBinaryDAO.TypesBinaryTable from,
+  public CriteriaWherePhase<app.daos.BinariesVO> select(final BinariesDAO.BinariesTable from,
       final Predicate predicate) {
-    return new CriteriaWherePhase<app.daos.TypesBinaryVO>(this.context, "mappers.typesBinary.selectByCriteria",
+    return new CriteriaWherePhase<app.daos.BinariesVO>(this.context, "mappers.binaries.selectByCriteria",
         from, predicate);
   }
 
@@ -137,10 +137,10 @@ public class TypesBinaryDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public app.daos.TypesBinaryVO insert(final app.daos.primitives.AbstractTypesBinaryVO vo) {
-    String id = "mappers.typesBinary.insert";
+  public app.daos.BinariesVO insert(final app.daos.primitives.AbstractBinariesVO vo) {
+    String id = "mappers.binaries.insert";
     this.sqlSession.insert(id, vo);
-    app.daos.TypesBinaryVO mo = springBeanObjectFactory.create(app.daos.TypesBinaryVO.class);
+    app.daos.BinariesVO mo = springBeanObjectFactory.create(app.daos.BinariesVO.class);
     mo.setBin1(vo.getBin1());
     mo.setBol1(vo.getBol1());
     return mo;
@@ -152,44 +152,44 @@ public class TypesBinaryDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int update(final app.daos.primitives.AbstractTypesBinaryVO example, final app.daos.primitives.AbstractTypesBinaryVO updateValues) {
-    UpdateByExampleDao<app.daos.primitives.AbstractTypesBinaryVO> fvd = //
-      new UpdateByExampleDao<app.daos.primitives.AbstractTypesBinaryVO>(example, updateValues);
-    return this.sqlSession.update("mappers.typesBinary.updateByExample", fvd);
+  public int update(final app.daos.primitives.AbstractBinariesVO example, final app.daos.primitives.AbstractBinariesVO updateValues) {
+    UpdateByExampleDao<app.daos.primitives.AbstractBinariesVO> fvd = //
+      new UpdateByExampleDao<app.daos.primitives.AbstractBinariesVO>(example, updateValues);
+    return this.sqlSession.update("mappers.binaries.updateByExample", fvd);
   }
 
   // update by criteria
 
-  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractTypesBinaryVO updateValues, final TypesBinaryDAO.TypesBinaryTable tableOrView, final Predicate predicate) {
+  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractBinariesVO updateValues, final BinariesDAO.BinariesTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
     if (updateValues.getBin1() != null) values.put("\"bin1\"", updateValues.getBin1());
     if (updateValues.getBol1() != null) values.put("\"bol1\"", updateValues.getBol1());
-    return new UpdateSetCompletePhase(this.context, "mappers.typesBinary.updateByCriteria", tableOrView,  predicate, values);
+    return new UpdateSetCompletePhase(this.context, "mappers.binaries.updateByCriteria", tableOrView,  predicate, values);
   }
 
 
   // delete by example
 
-  public int delete(final app.daos.primitives.AbstractTypesBinaryVO example) {
-    return this.sqlSession.delete("mappers.typesBinary.deleteByExample", example);
+  public int delete(final app.daos.primitives.AbstractBinariesVO example) {
+    return this.sqlSession.delete("mappers.binaries.deleteByExample", example);
   }
 
   // delete by criteria
 
-  public DeleteWherePhase delete(final TypesBinaryDAO.TypesBinaryTable from, final Predicate predicate) {
-    return new DeleteWherePhase(this.context, "mappers.typesBinary.deleteByCriteria", from, predicate);
+  public DeleteWherePhase delete(final BinariesDAO.BinariesTable from, final Predicate predicate) {
+    return new DeleteWherePhase(this.context, "mappers.binaries.deleteByCriteria", from, predicate);
   }
 
   // DAO ordering
 
-  public enum TypesBinaryOrderBy implements OrderBy {
+  public enum BinariesOrderBy implements OrderBy {
 
-    BIN1("types_binary", "\"bin1\"", true), //
-    BIN1$DESC("types_binary", "\"bin1\"", false), //
-    BOL1("types_binary", "\"bol1\"", true), //
-    BOL1$DESC("types_binary", "\"bol1\"", false);
+    BIN1("binaries", "\"bin1\"", true), //
+    BIN1$DESC("binaries", "\"bin1\"", false), //
+    BOL1("binaries", "\"bol1\"", true), //
+    BOL1$DESC("binaries", "\"bol1\"", false);
 
-    private TypesBinaryOrderBy(final String tableName, final String columnName,
+    private BinariesOrderBy(final String tableName, final String columnName,
         boolean ascending) {
       this.tableName = tableName;
       this.columnName = columnName;
@@ -216,15 +216,15 @@ public class TypesBinaryDAO implements Serializable, ApplicationContextAware {
 
   // Database Table metadata
 
-  public static TypesBinaryTable newTable() {
-    return new TypesBinaryTable();
+  public static BinariesTable newTable() {
+    return new BinariesTable();
   }
 
-  public static TypesBinaryTable newTable(final String alias) {
-    return new TypesBinaryTable(alias);
+  public static BinariesTable newTable(final String alias) {
+    return new BinariesTable(alias);
   }
 
-  public static class TypesBinaryTable extends Table {
+  public static class BinariesTable extends Table {
 
     // Properties
 
@@ -239,13 +239,13 @@ public class TypesBinaryDAO implements Serializable, ApplicationContextAware {
 
     // Constructors
 
-    TypesBinaryTable() {
-      super(null, null, Name.of("types_binary", false), "Table", null);
+    BinariesTable() {
+      super(null, null, Name.of("binaries", false), "Table", null);
       initialize();
     }
 
-    TypesBinaryTable(final String alias) {
-      super(null, null, Name.of("types_binary", false), "Table", alias);
+    BinariesTable(final String alias) {
+      super(null, null, Name.of("binaries", false), "Table", alias);
       initialize();
     }
 

@@ -13,8 +13,8 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
-import app.daos.primitives.AbstractTypesDateTimeVO;
-import app.daos.TypesDateTimeVO;
+import app.daos.primitives.AbstractDatesVO;
+import app.daos.DatesVO;
 
 import java.lang.Override;
 import java.util.Map;
@@ -53,7 +53,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 @Component
-public class TypesDateTimeDAO implements Serializable, ApplicationContextAware {
+public class DatesDAO implements Serializable, ApplicationContextAware {
 
   private static final long serialVersionUID = 1L;
 
@@ -86,16 +86,16 @@ public class TypesDateTimeDAO implements Serializable, ApplicationContextAware {
 
   // Row Parser
 
-  public app.daos.TypesDateTimeVO parseRow(Map<String, Object> m) {
+  public app.daos.DatesVO parseRow(Map<String, Object> m) {
     return parseRow(m, null, null);
   }
 
-  public app.daos.TypesDateTimeVO parseRow(Map<String, Object> m, String prefix) {
+  public app.daos.DatesVO parseRow(Map<String, Object> m, String prefix) {
     return parseRow(m, prefix, null);
   }
 
-  public app.daos.TypesDateTimeVO parseRow(Map<String, Object> m, String prefix, String suffix) {
-    app.daos.TypesDateTimeVO mo = this.applicationContext.getBean(app.daos.TypesDateTimeVO.class);
+  public app.daos.DatesVO parseRow(Map<String, Object> m, String prefix, String suffix) {
+    app.daos.DatesVO mo = this.applicationContext.getBean(app.daos.DatesVO.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
     mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
@@ -132,37 +132,37 @@ public class TypesDateTimeDAO implements Serializable, ApplicationContextAware {
 
   // select by primary key
 
-  public app.daos.TypesDateTimeVO select(final java.lang.Integer id) {
+  public app.daos.DatesVO select(final java.lang.Integer id) {
     if (id == null)
       return null;
-    app.daos.TypesDateTimeVO vo = new app.daos.TypesDateTimeVO();
+    app.daos.DatesVO vo = new app.daos.DatesVO();
     vo.setId(id);
-    return this.sqlSession.selectOne("mappers.typesDateTime.selectByPK", vo);
+    return this.sqlSession.selectOne("mappers.dates.selectByPK", vo);
   }
 
   // select by unique indexes: no unique indexes found (besides the PK) -- skipped
 
   // select by example
 
-  public List<app.daos.TypesDateTimeVO> select(final app.daos.primitives.AbstractTypesDateTimeVO example, final TypesDateTimeOrderBy... orderBies)
+  public List<app.daos.DatesVO> select(final app.daos.primitives.AbstractDatesVO example, final DatesOrderBy... orderBies)
       {
-    DaoWithOrder<app.daos.primitives.AbstractTypesDateTimeVO, TypesDateTimeOrderBy> dwo = //
+    DaoWithOrder<app.daos.primitives.AbstractDatesVO, DatesOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
-    return this.sqlSession.selectList("mappers.typesDateTime.selectByExample", dwo);
+    return this.sqlSession.selectList("mappers.dates.selectByExample", dwo);
   }
 
-  public Cursor<app.daos.TypesDateTimeVO> selectCursor(final app.daos.primitives.AbstractTypesDateTimeVO example, final TypesDateTimeOrderBy... orderBies)
+  public Cursor<app.daos.DatesVO> selectCursor(final app.daos.primitives.AbstractDatesVO example, final DatesOrderBy... orderBies)
       {
-    DaoWithOrder<app.daos.primitives.AbstractTypesDateTimeVO, TypesDateTimeOrderBy> dwo = //
+    DaoWithOrder<app.daos.primitives.AbstractDatesVO, DatesOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
-    return new MyBatisCursor<app.daos.TypesDateTimeVO>(this.sqlSession.selectCursor("mappers.typesDateTime.selectByExample", dwo));
+    return new MyBatisCursor<app.daos.DatesVO>(this.sqlSession.selectCursor("mappers.dates.selectByExample", dwo));
   }
 
   // select by criteria
 
-  public CriteriaWherePhase<app.daos.TypesDateTimeVO> select(final TypesDateTimeDAO.TypesDateTimeTable from,
+  public CriteriaWherePhase<app.daos.DatesVO> select(final DatesDAO.DatesTable from,
       final Predicate predicate) {
-    return new CriteriaWherePhase<app.daos.TypesDateTimeVO>(this.context, "mappers.typesDateTime.selectByCriteria",
+    return new CriteriaWherePhase<app.daos.DatesVO>(this.context, "mappers.dates.selectByCriteria",
         from, predicate);
   }
 
@@ -172,10 +172,10 @@ public class TypesDateTimeDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public app.daos.TypesDateTimeVO insert(final app.daos.primitives.AbstractTypesDateTimeVO vo) {
-    String id = "mappers.typesDateTime.insert";
+  public app.daos.DatesVO insert(final app.daos.primitives.AbstractDatesVO vo) {
+    String id = "mappers.dates.insert";
     this.sqlSession.insert(id, vo);
-    app.daos.TypesDateTimeVO mo = springBeanObjectFactory.create(app.daos.TypesDateTimeVO.class);
+    app.daos.DatesVO mo = springBeanObjectFactory.create(app.daos.DatesVO.class);
     mo.setId(vo.getId());
     mo.setDat1(vo.getDat1());
     mo.setTs1(vo.getTs1());
@@ -210,32 +210,32 @@ public class TypesDateTimeDAO implements Serializable, ApplicationContextAware {
 
   // update by PK
 
-  public int update(final app.daos.TypesDateTimeVO vo) {
+  public int update(final app.daos.DatesVO vo) {
     if (vo.getId() == null) return 0;
-    return this.sqlSession.update("mappers.typesDateTime.updateByPK", vo);
+    return this.sqlSession.update("mappers.dates.updateByPK", vo);
   }
 
   // delete by PK
 
   public int delete(final java.lang.Integer id) {
     if (id == null) return 0;
-    app.daos.TypesDateTimeVO vo = new app.daos.TypesDateTimeVO();
+    app.daos.DatesVO vo = new app.daos.DatesVO();
     vo.setId(id);
     if (vo.getId() == null) return 0;
-    return this.sqlSession.delete("mappers.typesDateTime.deleteByPK", vo);
+    return this.sqlSession.delete("mappers.dates.deleteByPK", vo);
   }
 
   // update by example
 
-  public int update(final app.daos.primitives.AbstractTypesDateTimeVO example, final app.daos.primitives.AbstractTypesDateTimeVO updateValues) {
-    UpdateByExampleDao<app.daos.primitives.AbstractTypesDateTimeVO> fvd = //
-      new UpdateByExampleDao<app.daos.primitives.AbstractTypesDateTimeVO>(example, updateValues);
-    return this.sqlSession.update("mappers.typesDateTime.updateByExample", fvd);
+  public int update(final app.daos.primitives.AbstractDatesVO example, final app.daos.primitives.AbstractDatesVO updateValues) {
+    UpdateByExampleDao<app.daos.primitives.AbstractDatesVO> fvd = //
+      new UpdateByExampleDao<app.daos.primitives.AbstractDatesVO>(example, updateValues);
+    return this.sqlSession.update("mappers.dates.updateByExample", fvd);
   }
 
   // update by criteria
 
-  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractTypesDateTimeVO updateValues, final TypesDateTimeDAO.TypesDateTimeTable tableOrView, final Predicate predicate) {
+  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractDatesVO updateValues, final DatesDAO.DatesTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
     if (updateValues.getId() != null) values.put("\"id\"", updateValues.getId());
     if (updateValues.getDat1() != null) values.put("\"dat1\"", updateValues.getDat1());
@@ -266,86 +266,86 @@ public class TypesDateTimeDAO implements Serializable, ApplicationContextAware {
     if (updateValues.getIvt15() != null) values.put("\"ivt15\"", updateValues.getIvt15());
     if (updateValues.getIvt16() != null) values.put("\"ivt16\"", updateValues.getIvt16());
     if (updateValues.getIvt17() != null) values.put("\"ivt17\"", updateValues.getIvt17());
-    return new UpdateSetCompletePhase(this.context, "mappers.typesDateTime.updateByCriteria", tableOrView,  predicate, values);
+    return new UpdateSetCompletePhase(this.context, "mappers.dates.updateByCriteria", tableOrView,  predicate, values);
   }
 
 
   // delete by example
 
-  public int delete(final app.daos.primitives.AbstractTypesDateTimeVO example) {
-    return this.sqlSession.delete("mappers.typesDateTime.deleteByExample", example);
+  public int delete(final app.daos.primitives.AbstractDatesVO example) {
+    return this.sqlSession.delete("mappers.dates.deleteByExample", example);
   }
 
   // delete by criteria
 
-  public DeleteWherePhase delete(final TypesDateTimeDAO.TypesDateTimeTable from, final Predicate predicate) {
-    return new DeleteWherePhase(this.context, "mappers.typesDateTime.deleteByCriteria", from, predicate);
+  public DeleteWherePhase delete(final DatesDAO.DatesTable from, final Predicate predicate) {
+    return new DeleteWherePhase(this.context, "mappers.dates.deleteByCriteria", from, predicate);
   }
 
   // DAO ordering
 
-  public enum TypesDateTimeOrderBy implements OrderBy {
+  public enum DatesOrderBy implements OrderBy {
 
-    ID("types_date_time", "\"id\"", true), //
-    ID$DESC("types_date_time", "\"id\"", false), //
-    DAT1("types_date_time", "\"dat1\"", true), //
-    DAT1$DESC("types_date_time", "\"dat1\"", false), //
-    TS1("types_date_time", "\"ts1\"", true), //
-    TS1$DESC("types_date_time", "\"ts1\"", false), //
-    TS2("types_date_time", "\"ts2\"", true), //
-    TS2$DESC("types_date_time", "\"ts2\"", false), //
-    TS3("types_date_time", "\"ts3\"", true), //
-    TS3$DESC("types_date_time", "\"ts3\"", false), //
-    TS4("types_date_time", "\"ts4\"", true), //
-    TS4$DESC("types_date_time", "\"ts4\"", false), //
-    TS5("types_date_time", "\"ts5\"", true), //
-    TS5$DESC("types_date_time", "\"ts5\"", false), //
-    TIM1("types_date_time", "\"tim1\"", true), //
-    TIM1$DESC("types_date_time", "\"tim1\"", false), //
-    TIM2("types_date_time", "\"tim2\"", true), //
-    TIM2$DESC("types_date_time", "\"tim2\"", false), //
-    TIM3("types_date_time", "\"tim3\"", true), //
-    TIM3$DESC("types_date_time", "\"tim3\"", false), //
-    TIM4("types_date_time", "\"tim4\"", true), //
-    TIM4$DESC("types_date_time", "\"tim4\"", false), //
-    TIM5("types_date_time", "\"tim5\"", true), //
-    TIM5$DESC("types_date_time", "\"tim5\"", false), //
-    IVT1("types_date_time", "\"ivt1\"", true), //
-    IVT1$DESC("types_date_time", "\"ivt1\"", false), //
-    IVT2("types_date_time", "\"ivt2\"", true), //
-    IVT2$DESC("types_date_time", "\"ivt2\"", false), //
-    IVT3("types_date_time", "\"ivt3\"", true), //
-    IVT3$DESC("types_date_time", "\"ivt3\"", false), //
-    IVT4("types_date_time", "\"ivt4\"", true), //
-    IVT4$DESC("types_date_time", "\"ivt4\"", false), //
-    IVT5("types_date_time", "\"ivt5\"", true), //
-    IVT5$DESC("types_date_time", "\"ivt5\"", false), //
-    IVT6("types_date_time", "\"ivt6\"", true), //
-    IVT6$DESC("types_date_time", "\"ivt6\"", false), //
-    IVT7("types_date_time", "\"ivt7\"", true), //
-    IVT7$DESC("types_date_time", "\"ivt7\"", false), //
-    IVT8("types_date_time", "\"ivt8\"", true), //
-    IVT8$DESC("types_date_time", "\"ivt8\"", false), //
-    IVT9("types_date_time", "\"ivt9\"", true), //
-    IVT9$DESC("types_date_time", "\"ivt9\"", false), //
-    IVT10("types_date_time", "\"ivt10\"", true), //
-    IVT10$DESC("types_date_time", "\"ivt10\"", false), //
-    IVT11("types_date_time", "\"ivt11\"", true), //
-    IVT11$DESC("types_date_time", "\"ivt11\"", false), //
-    IVT12("types_date_time", "\"ivt12\"", true), //
-    IVT12$DESC("types_date_time", "\"ivt12\"", false), //
-    IVT13("types_date_time", "\"ivt13\"", true), //
-    IVT13$DESC("types_date_time", "\"ivt13\"", false), //
-    IVT14("types_date_time", "\"ivt14\"", true), //
-    IVT14$DESC("types_date_time", "\"ivt14\"", false), //
-    IVT15("types_date_time", "\"ivt15\"", true), //
-    IVT15$DESC("types_date_time", "\"ivt15\"", false), //
-    IVT16("types_date_time", "\"ivt16\"", true), //
-    IVT16$DESC("types_date_time", "\"ivt16\"", false), //
-    IVT17("types_date_time", "\"ivt17\"", true), //
-    IVT17$DESC("types_date_time", "\"ivt17\"", false);
+    ID("dates", "\"id\"", true), //
+    ID$DESC("dates", "\"id\"", false), //
+    DAT1("dates", "\"dat1\"", true), //
+    DAT1$DESC("dates", "\"dat1\"", false), //
+    TS1("dates", "\"ts1\"", true), //
+    TS1$DESC("dates", "\"ts1\"", false), //
+    TS2("dates", "\"ts2\"", true), //
+    TS2$DESC("dates", "\"ts2\"", false), //
+    TS3("dates", "\"ts3\"", true), //
+    TS3$DESC("dates", "\"ts3\"", false), //
+    TS4("dates", "\"ts4\"", true), //
+    TS4$DESC("dates", "\"ts4\"", false), //
+    TS5("dates", "\"ts5\"", true), //
+    TS5$DESC("dates", "\"ts5\"", false), //
+    TIM1("dates", "\"tim1\"", true), //
+    TIM1$DESC("dates", "\"tim1\"", false), //
+    TIM2("dates", "\"tim2\"", true), //
+    TIM2$DESC("dates", "\"tim2\"", false), //
+    TIM3("dates", "\"tim3\"", true), //
+    TIM3$DESC("dates", "\"tim3\"", false), //
+    TIM4("dates", "\"tim4\"", true), //
+    TIM4$DESC("dates", "\"tim4\"", false), //
+    TIM5("dates", "\"tim5\"", true), //
+    TIM5$DESC("dates", "\"tim5\"", false), //
+    IVT1("dates", "\"ivt1\"", true), //
+    IVT1$DESC("dates", "\"ivt1\"", false), //
+    IVT2("dates", "\"ivt2\"", true), //
+    IVT2$DESC("dates", "\"ivt2\"", false), //
+    IVT3("dates", "\"ivt3\"", true), //
+    IVT3$DESC("dates", "\"ivt3\"", false), //
+    IVT4("dates", "\"ivt4\"", true), //
+    IVT4$DESC("dates", "\"ivt4\"", false), //
+    IVT5("dates", "\"ivt5\"", true), //
+    IVT5$DESC("dates", "\"ivt5\"", false), //
+    IVT6("dates", "\"ivt6\"", true), //
+    IVT6$DESC("dates", "\"ivt6\"", false), //
+    IVT7("dates", "\"ivt7\"", true), //
+    IVT7$DESC("dates", "\"ivt7\"", false), //
+    IVT8("dates", "\"ivt8\"", true), //
+    IVT8$DESC("dates", "\"ivt8\"", false), //
+    IVT9("dates", "\"ivt9\"", true), //
+    IVT9$DESC("dates", "\"ivt9\"", false), //
+    IVT10("dates", "\"ivt10\"", true), //
+    IVT10$DESC("dates", "\"ivt10\"", false), //
+    IVT11("dates", "\"ivt11\"", true), //
+    IVT11$DESC("dates", "\"ivt11\"", false), //
+    IVT12("dates", "\"ivt12\"", true), //
+    IVT12$DESC("dates", "\"ivt12\"", false), //
+    IVT13("dates", "\"ivt13\"", true), //
+    IVT13$DESC("dates", "\"ivt13\"", false), //
+    IVT14("dates", "\"ivt14\"", true), //
+    IVT14$DESC("dates", "\"ivt14\"", false), //
+    IVT15("dates", "\"ivt15\"", true), //
+    IVT15$DESC("dates", "\"ivt15\"", false), //
+    IVT16("dates", "\"ivt16\"", true), //
+    IVT16$DESC("dates", "\"ivt16\"", false), //
+    IVT17("dates", "\"ivt17\"", true), //
+    IVT17$DESC("dates", "\"ivt17\"", false);
 
-    private TypesDateTimeOrderBy(final String tableName, final String columnName,
+    private DatesOrderBy(final String tableName, final String columnName,
         boolean ascending) {
       this.tableName = tableName;
       this.columnName = columnName;
@@ -372,15 +372,15 @@ public class TypesDateTimeDAO implements Serializable, ApplicationContextAware {
 
   // Database Table metadata
 
-  public static TypesDateTimeTable newTable() {
-    return new TypesDateTimeTable();
+  public static DatesTable newTable() {
+    return new DatesTable();
   }
 
-  public static TypesDateTimeTable newTable(final String alias) {
-    return new TypesDateTimeTable(alias);
+  public static DatesTable newTable(final String alias) {
+    return new DatesTable(alias);
   }
 
-  public static class TypesDateTimeTable extends Table {
+  public static class DatesTable extends Table {
 
     // Properties
 
@@ -422,13 +422,13 @@ public class TypesDateTimeDAO implements Serializable, ApplicationContextAware {
 
     // Constructors
 
-    TypesDateTimeTable() {
-      super(null, null, Name.of("types_date_time", false), "Table", null);
+    DatesTable() {
+      super(null, null, Name.of("dates", false), "Table", null);
       initialize();
     }
 
-    TypesDateTimeTable(final String alias) {
-      super(null, null, Name.of("types_date_time", false), "Table", alias);
+    DatesTable(final String alias) {
+      super(null, null, Name.of("dates", false), "Table", alias);
       initialize();
     }
 

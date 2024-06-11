@@ -35,13 +35,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import app.daos.InvoiceVO;
-import app.daos.TypesBinaryVO;
+import app.daos.BranchVO;
 import app.daos.primitives.BranchDAO;
-import app.daos.primitives.InvoiceDAO;
-import app.daos.primitives.InvoiceDAO.InvoiceTable;
-import app.daos.primitives.TypesBinaryDAO;
-import app.daos.primitives.TypesBinaryDAO.TypesBinaryTable;
+import app.daos.reporting.InvoiceVO;
+import app.daos.reporting.primitives.InvoiceDAO;
+import app.daos.reporting.primitives.InvoiceDAO.InvoiceTable;
 
 @Configuration
 @SpringBootApplication
@@ -81,8 +79,8 @@ public class App {
   @Autowired
   private Torcs torcs;
 
-  @Autowired
-  private TypesBinaryDAO typesBinaryDAO;
+//  @Autowired
+//  private TypesBinaryDAO typesBinaryDAO;
 
 //  @Autowired
 //  private TorcsCTP torcsCTP;
@@ -131,12 +129,12 @@ public class App {
 
 //      System.getProperties().setProperty("oracle.jdbc.J2EE13Compliant", "true");
 
-//      crud();
+      crud();
 //      join();
 //      join();     
 //      livesql();
 //      selectByCriteria();
-      torcs();
+//      torcs();
 //      star();
 //      noFrom();
       System.out.println("[ Example complete ]");
@@ -184,6 +182,16 @@ public class App {
   private void crudSelect() {
     List<InvoiceVO> cases = this.invoiceDAO.select(new InvoiceVO());
     cases.forEach(x -> System.out.println("inv:" + x));
+
+    BranchVO nb = new BranchVO();
+    nb.setRegion("SSW");
+    nb.setIsVip(false);
+    this.branchDAO.insert(nb);
+    System.out.println("new branch=" + nb.getId());
+
+    List<BranchVO> bs = this.branchDAO.select(new BranchVO());
+    bs.forEach(x -> System.out.println("b:" + x));
+
   }
 
 //  private void selectCases() {
@@ -798,15 +806,15 @@ public class App {
 
     byte[] d2 = new byte[] { 12, 34, 56 };
 
-    TypesBinaryTable b = TypesBinaryDAO.newTable();
-    for (int i = 0; i < 3; i++) {
-      List<TypesBinaryVO> binaries = this.typesBinaryDAO.select(b, b.bin1.eq(d2)).execute();
-      System.out.println("r[" + binaries.size() + "]");
-    }
-
-    List<TypesBinaryVO> b2 = this.typesBinaryDAO.select(b, b.bin1.isNotNull()).execute();
-    System.out.println("b2=" + b2);
-    printRanking1();
+//    TypesBinaryTable b = TypesBinaryDAO.newTable();
+//    for (int i = 0; i < 3; i++) {
+//      List<TypesBinaryVO> binaries = this.typesBinaryDAO.select(b, b.bin1.eq(d2)).execute();
+//      System.out.println("r[" + binaries.size() + "]");
+//    }
+//
+//    List<TypesBinaryVO> b2 = this.typesBinaryDAO.select(b, b.bin1.isNotNull()).execute();
+//    System.out.println("b2=" + b2);
+//    printRanking1();
 
   }
 

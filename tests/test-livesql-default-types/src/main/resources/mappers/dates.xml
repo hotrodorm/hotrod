@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="mappers.typesDateTime">
+<mapper namespace="mappers.dates">
 
   <!-- columns -->
 
@@ -70,7 +70,7 @@
     ${alias}."ivt17"
   </sql>
 
-  <resultMap id="allColumns" type="app.daos.TypesDateTimeVO">
+  <resultMap id="allColumns" type="app.daos.DatesVO">
     <id property="id" column="id" />
     <result property="dat1" column="dat1" />
     <result property="ts1" column="ts1" />
@@ -107,7 +107,7 @@
   <select id="selectByPK" resultMap="allColumns">
     select
       <include refid="columns" />
-     from types_date_time
+     from dates
      where
       "id" = #{id,jdbcType=INTEGER}
   </select>
@@ -119,7 +119,7 @@
   <select id="selectByExample" resultMap="allColumns">
     select
       <include refid="columns" />
-     from types_date_time
+     from dates
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.id != null">
         and "id" = #{p.id,jdbcType=INTEGER}
@@ -223,7 +223,7 @@
   <!-- insert (no auto-generated columns) -->
 
   <insert id="insert">
-    insert into types_date_time (
+    insert into dates (
       <trim prefixOverrides=", ">
         <if test="true">, "id"</if>
         <if test="true">, "dat1"</if>
@@ -293,7 +293,7 @@
   <!-- update by PK -->
 
   <update id="updateByPK">
-    update types_date_time set
+    update dates set
       "dat1" = #{dat1,jdbcType=DATE},
       "ts1" = #{ts1,jdbcType=TIMESTAMP},
       "ts2" = #{ts2,jdbcType=TIMESTAMP},
@@ -329,7 +329,7 @@
   <!-- delete by PK -->
 
   <delete id="deleteByPK">
-    delete from types_date_time
+    delete from dates
      where
       "id" = #{id,jdbcType=INTEGER}
   </delete>
@@ -337,7 +337,7 @@
   <!-- update by example -->
 
   <update id="updateByExample">
-    update types_date_time
+    update dates
     <set>
       <if test="values.id != null">"id" = #{values.id,jdbcType=INTEGER},</if>
       <if test="values.dat1 != null">"dat1" = #{values.dat1,jdbcType=DATE},</if>
@@ -469,7 +469,7 @@
   <!-- delete by example -->
 
   <delete id="deleteByExample">
-    delete from types_date_time
+    delete from dates
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="id != null">
         and "id" = #{id,jdbcType=INTEGER}

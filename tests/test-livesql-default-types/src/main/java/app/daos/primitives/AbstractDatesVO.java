@@ -5,7 +5,7 @@ package app.daos.primitives;
 import java.io.Serializable;
 import org.hotrod.runtime.json.*;
 
-public class AbstractTypesDateTimeVO implements Serializable {
+public class AbstractDatesVO implements Serializable {
 
   private static final long serialVersionUID = 1L;
 

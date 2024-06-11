@@ -22,8 +22,8 @@ import org.springframework.context.annotation.PropertySource;
 
 import app.daos.primitives.BranchDAO;
 import app.daos.primitives.BranchDAO.BranchTable;
-import app.daos.primitives.InvoiceDAO;
-import app.daos.primitives.InvoiceDAO.InvoiceTable;
+import app.daos.reporting.primitives.InvoiceDAO;
+import app.daos.reporting.primitives.InvoiceDAO.InvoiceTable;
 
 //@Configuration
 //@SpringBootApplication
