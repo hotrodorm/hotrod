@@ -108,8 +108,9 @@ public class Mapper extends GeneratableObject {
     this.adapter = adapter;
     this.vo = vo;
 
-    this.namespace = this.layout.getMapperNamespace() + (this.fragmentPackage == null ? "" : "." + this.fragmentPackage.getPackage())
-        + "." + this.metadata.getId().getJavaMemberName();
+    this.namespace = this.layout.getMapperNamespace()
+        + (this.fragmentPackage == null ? "" : "." + this.fragmentPackage.getPackage()) + "."
+        + this.metadata.getId().getJavaMemberName();
   }
 
   public void setDao(ObjectDAO dao) {
@@ -625,9 +626,16 @@ public class Mapper extends GeneratableObject {
 
     for (ColumnMetadata cm : this.metadata.getColumns()) {
 
+      String mapperColName = cm.getId().getRenderedSQLName();
+      if (mapperColName != null && mapperColName.length() > 1 && mapperColName.startsWith("\"")
+          && mapperColName.endsWith("\"")) {
+        mapperColName = mapperColName.substring(1, mapperColName.length() - 1);
+      }
+      log.debug("mapperColName=" + mapperColName);
+
       if (retrieveSequences && cm.getSequenceId() != null) {
         keyProperties.add(cm.getId().getJavaMemberName());
-        keyColumns.add(cm.getId().getRenderedSQLName());
+        keyColumns.add(mapperColName);
         if (this.adapter.integratesUsingQuery()) {
           queryColumns.add(this.adapter.renderInsertQueryColumn(cm));
         }
@@ -635,7 +643,7 @@ public class Mapper extends GeneratableObject {
 
       } else if (retrieveIdentities && cm.getAutogenerationType() != null && cm.getAutogenerationType().isIdentity()) {
         keyProperties.add(cm.getId().getJavaMemberName());
-        keyColumns.add(cm.getId().getRenderedSQLName());
+        keyColumns.add(mapperColName);
         if (this.adapter.integratesUsingQuery()) {
           queryColumns.add(this.adapter.renderInsertQueryColumn(cm));
         }
@@ -648,7 +656,7 @@ public class Mapper extends GeneratableObject {
 
       } else if (retrieveDefaults && cm.getColumnDefault() != null) {
         keyProperties.add(cm.getId().getJavaMemberName());
-        keyColumns.add(cm.getId().getRenderedSQLName());
+        keyColumns.add(mapperColName);
         if (this.adapter.integratesUsingQuery()) {
           queryColumns.add(this.adapter.renderInsertQueryColumn(cm));
         }
@@ -659,6 +667,8 @@ public class Mapper extends GeneratableObject {
 
       }
     }
+
+    log.debug("keyColumns.toString()=" + keyColumns.toString());
 
     String id = retrieveDefaults ? this.getMapperIdInsertRetrievingDefaults() : this.getMapperIdInsert();
 
