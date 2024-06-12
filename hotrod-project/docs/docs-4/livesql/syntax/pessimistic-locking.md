@@ -92,11 +92,11 @@ be locked simultaneously.
 
 HotRod implements two locking modes: FOR UPDATE and FOR SHARE.
 
-- FOR SHARE (applied using `.forShare()`) obtains locks for UPDATE and DELETE operations on the data, while allowing other FOR SHARE selects to run concurrently.
-- FOR UPDATE (applied using `.forUpdate()`) obtains locks for SELECT, UPDATE and DELETE operations on the data. FOR UPDATE 
+- **FOR SHARE** (applied using `.forShare()`) obtains locks for UPDATE and DELETE operations on the data, while allowing other FOR SHARE selects to run concurrently.
+- **FOR UPDATE** (applied using `.forUpdate()`) obtains locks for SELECT, UPDATE and DELETE operations on the data. FOR UPDATE 
 are fully exclusive.
 
-The locking modes supported in each database are:
+The locking modes supported by each database are:
 
 | Database   | FOR UPDATE | FOR SHARE |
 | ---------- |:----------:|:---------:|  
@@ -111,8 +111,10 @@ The locking modes supported in each database are:
 | HyperSQL   | -- *3      | --        |
 | Derby      | -- *3      | --        |
 
-*1 The SQL syntax in Oracle prevent the query to combine FETCH NEXT n ROWS ONLY with FOR UPDATE/FOR SHARE. There's a workaround to combine them, later on in this document. 
+*1 The SQL syntax in Oracle prevent the query to combine FETCH NEXT n ROWS ONLY with FOR UPDATE/FOR SHARE. There's a workaround to combine them, later on in this document.
+
 *2 SQL Server locks "pages of rows" and not specific rows. A FOR UPDATE (`with (updlock)`) could become inefficient in high concurrency situations.
+
 *3 Locking is not available in plain SQL, but only when using cursors and/or in stored procedures.
 
 
@@ -121,16 +123,16 @@ The locking modes supported in each database are:
 Both locking modes can be further tailored by specifying how to handle concurrency situations, when the rows of interest are already 
 locked by other sessions. There are three main cases:
 
-- NOWAIT: When this clause is specified the SELECT query will generate an error if the rows of interest are already locked by other sessions.
-- WAIT <n>: When a wait time (in seconds) is specified the SELECT query will wait for the specified time to obtain the lock and return the rows. 
+- **NOWAIT**: When this clause is specified the SELECT query will generate an error if the rows of interest are already locked by other sessions.
+- **WAIT &lt;seconds>**: When a wait time (in seconds) is specified the SELECT query will wait for the specified time to obtain the lock and return the rows. 
 If it times out the query will generate an error.
-- SKIP LOCKED: The query will try to select the rows of interest but will skip any rows already locked by another sessions. This option can
+- **SKIP LOCKED**: The query will try to select the rows of interest but will skip any rows already locked by another sessions. This option can
 be particularly efficient to implement queuing using tables.
 
-The concurrency options supported in each database are:
+The concurrency options supported by each database are:
 
-| Database   | NOWAIT | WAIT &lt;seconds> | SKIP LOCKED |
-| ---------- | ------- | ---------- | ----------- |  
+| Database   | NOWAIT  | WAIT &lt;seconds> | SKIP LOCKED |
+| ---------- |:-------:|:----------:|:-----------:|  
 | Oracle     | Yes     | Yes        | Yes         |
 | DB2        | --      | --         | --          |
 | PostgreSQL | Yes     | --         | Yes         |

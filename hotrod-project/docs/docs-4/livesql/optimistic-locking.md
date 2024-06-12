@@ -3,7 +3,7 @@
 Optimistic Locking is a strategy to read database rows and then modify them, while
 checking that no other concurrent database session has changed them in the meantime.
 
-While the alternative strategy of [Pessimistic Locking](syntax/for-update.md) prevents
+While the alternative strategy of [Pessimistic Locking](syntax/pessimistic-locking.md) prevents
 data changes by actually acquiring locks on the database rows, the Optimistic Locking
 avoids these locks, by checking the data has not been modified during the update phase of the change.
 
