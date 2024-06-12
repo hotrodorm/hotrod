@@ -72,7 +72,7 @@ SELECT statement and the execution of the UPDATE statement.
 
 In a similar way, a LiveSQL query can lock rows as well. For example:
 
-```sql
+```java
   List<Row> rows = sql
     .select()
     .from(i)
@@ -92,9 +92,9 @@ be locked simultaneously.
 
 HotRod implements two locking modes: FOR UPDATE and FOR SHARE.
 
+- **FOR UPDATE** (applied using `.forUpdate()`) obtains locks for SELECT, UPDATE and DELETE operations on the data. FOR UPDATE queries 
+are fully exclusive between them.
 - **FOR SHARE** (applied using `.forShare()`) obtains locks for UPDATE and DELETE operations on the data, while allowing other FOR SHARE selects to run concurrently.
-- **FOR UPDATE** (applied using `.forUpdate()`) obtains locks for SELECT, UPDATE and DELETE operations on the data. FOR UPDATE 
-are fully exclusive.
 
 The locking modes supported by each database are:
 
@@ -208,6 +208,18 @@ where id in (
   FETCH NEXT 1 ROWS ONLY
 )
 FOR UPDATE SKIP LOCKED;
+```
+
+In LiveSQL/CRUD this query can be phrased as:
+
+```java
+  InvoiceTable i = InvoiceDAO.newTable();
+  InvoiceTable j = InvoiceDAO.newTable();
+    
+  List<Invoice> = invoiceDAO
+    .select(i, i.id.in(sql.select(j.id).from(j).where(j.amount.ge(500)).orderBy(j.orderDate.desc()).limit(1)))
+    .forUpdate().skipLocked()
+    .execute();
 ```
 
 **Note**: It's not clear if this solution could return zero rows during high database load due to race
