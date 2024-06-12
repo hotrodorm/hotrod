@@ -833,7 +833,7 @@
         <configbasedir>src/main/database/h2</configbasedir>
         <jdbcdrivergroupid>com.h2database</jdbcdrivergroupid>
         <jdbcdriverartifactid>h2</jdbcdriverartifactid>
-        <jdbcdriverversion>2.1.214</jdbcdriverversion>
+        <jdbcdriverversion>2.2.224</jdbcdriverversion>
 
         <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
         <jdbcurl>jdbc:h2:mem:EXAMPLEDB;INIT=runscript from 'src/main/database/h2/1.0.0/build.sql';DB_CLOSE_DELAY=-1</jdbcurl>

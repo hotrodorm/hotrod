@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.queries.DMLQuery;
@@ -129,7 +130,8 @@ public class App {
 
 //      System.getProperties().setProperty("oracle.jdbc.J2EE13Compliant", "true");
 
-      crud();
+//      crud();
+      locking();
 //      join();
 //      join();     
 //      livesql();
@@ -177,6 +179,38 @@ public class App {
     crudSelect();
 //    selectCases();
 //    selectFK();
+  }
+
+  private void locking() {
+
+    InvoiceTable i = this.invoiceDAO.newTable();
+    Select<Row> q = this.sql.select() //
+        .from(i) //
+        .where(i.amount.ge(500)) //
+        .orderBy(i.orderDate.desc()) //
+        .limit(1) //
+//        .forUpdate().skipLocked() //
+//    .forUpdate().noWait() //
+    .forUpdate().wait(0.5) //
+    ;
+    System.out.println("q:" + q.getPreview());
+    List<Row> rows = q.execute();
+//    Row r= q.executeOne();
+//    Cursor<Row> crows = q.executeCursor();
+//    crows.forEach(x -> System.out.println("inv:" + x));
+
+//    InvoiceTable i = this.invoiceDAO.newTable();
+//    EntitySelect<InvoiceVO> q = this.invoiceDAO.select(i, i.amount.ge(500)).orderBy(i.orderDate.desc())
+//        .limit(1)
+//        .forUpdate().skipLocked()
+////        .forUpdate().noWait()
+////        .forUpdate().wait(0.5)
+//        ;
+//    System.out.println("q:" + q.getPreview());
+//
+//    InvoiceVO cases = q.executeOne();
+////    cases.forEach(x -> System.out.println("inv:" + x));
+
   }
 
   private void crudSelect() {
