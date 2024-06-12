@@ -2,6 +2,16 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
+## 4.8.0:
+
+- LiveSQL:
+    - Advanced Locking: Apart from FOR UPDATE, now LiveSQL (and CRUD) support FOR SHARE, NOWAIT, WAIT &lt;n>, and SKIP LOCKED.
+
+## 4.7.1:
+
+- Core:
+    - BugFix: in identity primary keys.
+
 ## 4.7.0:
 
 - Torcs:

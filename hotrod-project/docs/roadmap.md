@@ -6,12 +6,9 @@ mentioned below.
 
 **Note**: These version numbers and features are non-binding and are subject to change without notice.
 
-Version 4.8:
-
-- Enhanced UPDATE syntax forms in LiveSQL.
-
 Version 4.9:
 
+- Enhanced UPDATE syntax forms in LiveSQL.
 - Enhanced DELETE syntax forms in LiveSQL.
 
 Version 4.10:
@@ -20,17 +17,13 @@ Version 4.10:
 
 Version 4.11:
 
-- Enhanced FOR UPDATE with WAIT, NO WAIT, SKIP LOCKED.
+- LiveSQL Limiting with ties.
 
 Version 4.12:
 
-- LiveSQL Limiting with ties.
-
-Version 4.13:
-
 - LiveSQL Regular Expressions.
 
-Version 4.14:
+Version 4.13:
 
 - LiveSQL's MERGE (UPSERT) statement.
 
