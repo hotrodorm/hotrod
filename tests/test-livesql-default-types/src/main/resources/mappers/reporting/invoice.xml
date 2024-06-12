@@ -7,41 +7,52 @@
   <!-- columns -->
 
   <sql id="columns">
-    "ID",
-    "ACCOUNT_ID",
-    "AMOUNT",
-    "BRANCH_ID",
-    "ORDER_DATE",
-    "TYPE",
-    "UNPAID_BALANCE",
-    "STATUS"
+    "id",
+    "amount",
+    "branch_id",
+    "account_id",
+    "unpaid_balance",
+    "type",
+    "status",
+    "order_date",
+    "category"
   </sql>
 
   <sql id="columnsWithAlias">
-    ${alias}."ID",
-    ${alias}."ACCOUNT_ID",
-    ${alias}."AMOUNT",
-    ${alias}."BRANCH_ID",
-    ${alias}."ORDER_DATE",
-    ${alias}."TYPE",
-    ${alias}."UNPAID_BALANCE",
-    ${alias}."STATUS"
+    ${alias}."id",
+    ${alias}."amount",
+    ${alias}."branch_id",
+    ${alias}."account_id",
+    ${alias}."unpaid_balance",
+    ${alias}."type",
+    ${alias}."status",
+    ${alias}."order_date",
+    ${alias}."category"
   </sql>
 
   <resultMap id="allColumns" type="app.daos.reporting.InvoiceVO">
-    <result property="id" column="ID" />
-    <result property="accountId" column="ACCOUNT_ID" />
-    <result property="amount" column="AMOUNT" />
-    <result property="branchId" column="BRANCH_ID" />
-    <result property="orderDate" column="ORDER_DATE" />
-    <result property="type" column="TYPE" />
-    <result property="unpaidBalance" column="UNPAID_BALANCE" />
-    <result property="status" column="STATUS" />
+    <id property="id" column="id" />
+    <result property="amount" column="amount" />
+    <result property="branchId" column="branch_id" />
+    <result property="accountId" column="account_id" />
+    <result property="unpaidBalance" column="unpaid_balance" />
+    <result property="type" column="type" />
+    <result property="status" column="status" />
+    <result property="orderDate" column="order_date" />
+    <result property="category" column="category" typeHandler="app.daos.reporting.primitives.InvoiceDAO$CategoryTypeHandler" />
   </resultMap>
 
-  <!-- select by PK: no mapping generated, since the table does not have a PK -->
+  <!-- select by PK -->
 
-  <!-- select by unique indexes: no mappings generated, since the table does not have UIs -->
+  <select id="selectByPK" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from invoice
+     where
+      "id" = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!-- no select by unique indexes since there are no UI (besides the PK) -->
 
   <!-- select by example -->
 
@@ -51,28 +62,31 @@
      from invoice
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.id != null">
-        and "ID" = #{p.id,jdbcType=INTEGER}
-      </if>
-      <if test="p.accountId != null">
-        and "ACCOUNT_ID" = #{p.accountId,jdbcType=INTEGER}
+        and "id" = #{p.id,jdbcType=INTEGER}
       </if>
       <if test="p.amount != null">
-        and "AMOUNT" = #{p.amount,jdbcType=INTEGER}
+        and "amount" = #{p.amount,jdbcType=INTEGER}
       </if>
       <if test="p.branchId != null">
-        and "BRANCH_ID" = #{p.branchId,jdbcType=INTEGER}
+        and "branch_id" = #{p.branchId,jdbcType=INTEGER}
       </if>
-      <if test="p.orderDate != null">
-        and "ORDER_DATE" = #{p.orderDate,jdbcType=DATE}
-      </if>
-      <if test="p.type != null">
-        and "TYPE" = #{p.type,jdbcType=VARCHAR}
+      <if test="p.accountId != null">
+        and "account_id" = #{p.accountId,jdbcType=INTEGER}
       </if>
       <if test="p.unpaidBalance != null">
-        and "UNPAID_BALANCE" = #{p.unpaidBalance,jdbcType=INTEGER}
+        and "unpaid_balance" = #{p.unpaidBalance,jdbcType=INTEGER}
+      </if>
+      <if test="p.type != null">
+        and "type" = #{p.type,jdbcType=VARCHAR}
       </if>
       <if test="p.status != null">
-        and "STATUS" = #{p.status,jdbcType=VARCHAR}
+        and "status" = #{p.status,jdbcType=VARCHAR}
+      </if>
+      <if test="p.orderDate != null">
+        and "order_date" = #{p.orderDate,jdbcType=DATE}
+      </if>
+      <if test="p.category != null">
+        and "category" = #{p.category,jdbcType=INTEGER,typeHandler=app.daos.reporting.primitives.InvoiceDAO$CategoryTypeHandler}
       </if>
     </trim>
     <if test="o != null">
@@ -91,71 +105,97 @@
   <insert id="insert">
     insert into invoice (
       <trim prefixOverrides=", ">
-        <if test="true">, "ID"</if>
-        <if test="true">, "ACCOUNT_ID"</if>
-        <if test="true">, "AMOUNT"</if>
-        <if test="true">, "BRANCH_ID"</if>
-        <if test="true">, "ORDER_DATE"</if>
-        <if test="true">, "TYPE"</if>
-        <if test="true">, "UNPAID_BALANCE"</if>
-        <if test="true">, "STATUS"</if>
+        <if test="true">, "id"</if>
+        <if test="true">, "amount"</if>
+        <if test="true">, "branch_id"</if>
+        <if test="true">, "account_id"</if>
+        <if test="true">, "unpaid_balance"</if>
+        <if test="true">, "type"</if>
+        <if test="true">, "status"</if>
+        <if test="true">, "order_date"</if>
+        <if test="true">, "category"</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
         <if test="true">, #{id,jdbcType=INTEGER}</if>
-        <if test="true">, #{accountId,jdbcType=INTEGER}</if>
         <if test="true">, #{amount,jdbcType=INTEGER}</if>
         <if test="true">, #{branchId,jdbcType=INTEGER}</if>
-        <if test="true">, #{orderDate,jdbcType=DATE}</if>
-        <if test="true">, #{type,jdbcType=VARCHAR}</if>
+        <if test="true">, #{accountId,jdbcType=INTEGER}</if>
         <if test="true">, #{unpaidBalance,jdbcType=INTEGER}</if>
+        <if test="true">, #{type,jdbcType=VARCHAR}</if>
         <if test="true">, #{status,jdbcType=VARCHAR}</if>
+        <if test="true">, #{orderDate,jdbcType=DATE}</if>
+        <if test="true">, #{category,jdbcType=INTEGER,typeHandler=app.daos.reporting.primitives.InvoiceDAO$CategoryTypeHandler}</if>
       </trim>
       )
   </insert>
 
-  <!-- update by PK: no update mapping generated, since the table does not have a PK -->
+  <!-- update by PK -->
 
-  <!-- delete by PK: no delete mapping generated, since the table does not have a PK -->
+  <update id="updateByPK">
+    update invoice set
+      "amount" = #{amount,jdbcType=INTEGER},
+      "branch_id" = #{branchId,jdbcType=INTEGER},
+      "account_id" = #{accountId,jdbcType=INTEGER},
+      "unpaid_balance" = #{unpaidBalance,jdbcType=INTEGER},
+      "type" = #{type,jdbcType=VARCHAR},
+      "status" = #{status,jdbcType=VARCHAR},
+      "order_date" = #{orderDate,jdbcType=DATE},
+      "category" = #{category,jdbcType=INTEGER,typeHandler=app.daos.reporting.primitives.InvoiceDAO$CategoryTypeHandler}
+     where
+      "id" = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- delete by PK -->
+
+  <delete id="deleteByPK">
+    delete from invoice
+     where
+      "id" = #{id,jdbcType=INTEGER}
+  </delete>
 
   <!-- update by example -->
 
   <update id="updateByExample">
     update invoice
     <set>
-      <if test="values.id != null">"ID" = #{values.id,jdbcType=INTEGER},</if>
-      <if test="values.accountId != null">"ACCOUNT_ID" = #{values.accountId,jdbcType=INTEGER},</if>
-      <if test="values.amount != null">"AMOUNT" = #{values.amount,jdbcType=INTEGER},</if>
-      <if test="values.branchId != null">"BRANCH_ID" = #{values.branchId,jdbcType=INTEGER},</if>
-      <if test="values.orderDate != null">"ORDER_DATE" = #{values.orderDate,jdbcType=DATE},</if>
-      <if test="values.type != null">"TYPE" = #{values.type,jdbcType=VARCHAR},</if>
-      <if test="values.unpaidBalance != null">"UNPAID_BALANCE" = #{values.unpaidBalance,jdbcType=INTEGER},</if>
-      <if test="values.status != null">"STATUS" = #{values.status,jdbcType=VARCHAR},</if>
+      <if test="values.id != null">"id" = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.amount != null">"amount" = #{values.amount,jdbcType=INTEGER},</if>
+      <if test="values.branchId != null">"branch_id" = #{values.branchId,jdbcType=INTEGER},</if>
+      <if test="values.accountId != null">"account_id" = #{values.accountId,jdbcType=INTEGER},</if>
+      <if test="values.unpaidBalance != null">"unpaid_balance" = #{values.unpaidBalance,jdbcType=INTEGER},</if>
+      <if test="values.type != null">"type" = #{values.type,jdbcType=VARCHAR},</if>
+      <if test="values.status != null">"status" = #{values.status,jdbcType=VARCHAR},</if>
+      <if test="values.orderDate != null">"order_date" = #{values.orderDate,jdbcType=DATE},</if>
+      <if test="values.category != null">"category" = #{values.category,jdbcType=INTEGER,typeHandler=app.daos.reporting.primitives.InvoiceDAO$CategoryTypeHandler},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.id != null">
-        and "ID" = #{filter.id,jdbcType=INTEGER}
-      </if>
-      <if test="filter.accountId != null">
-        and "ACCOUNT_ID" = #{filter.accountId,jdbcType=INTEGER}
+        and "id" = #{filter.id,jdbcType=INTEGER}
       </if>
       <if test="filter.amount != null">
-        and "AMOUNT" = #{filter.amount,jdbcType=INTEGER}
+        and "amount" = #{filter.amount,jdbcType=INTEGER}
       </if>
       <if test="filter.branchId != null">
-        and "BRANCH_ID" = #{filter.branchId,jdbcType=INTEGER}
+        and "branch_id" = #{filter.branchId,jdbcType=INTEGER}
       </if>
-      <if test="filter.orderDate != null">
-        and "ORDER_DATE" = #{filter.orderDate,jdbcType=DATE}
-      </if>
-      <if test="filter.type != null">
-        and "TYPE" = #{filter.type,jdbcType=VARCHAR}
+      <if test="filter.accountId != null">
+        and "account_id" = #{filter.accountId,jdbcType=INTEGER}
       </if>
       <if test="filter.unpaidBalance != null">
-        and "UNPAID_BALANCE" = #{filter.unpaidBalance,jdbcType=INTEGER}
+        and "unpaid_balance" = #{filter.unpaidBalance,jdbcType=INTEGER}
+      </if>
+      <if test="filter.type != null">
+        and "type" = #{filter.type,jdbcType=VARCHAR}
       </if>
       <if test="filter.status != null">
-        and "STATUS" = #{filter.status,jdbcType=VARCHAR}
+        and "status" = #{filter.status,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.orderDate != null">
+        and "order_date" = #{filter.orderDate,jdbcType=DATE}
+      </if>
+      <if test="filter.category != null">
+        and "category" = #{filter.category,jdbcType=INTEGER,typeHandler=app.daos.reporting.primitives.InvoiceDAO$CategoryTypeHandler}
       </if>
     </trim>
   </update>
@@ -172,28 +212,31 @@
     delete from invoice
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="id != null">
-        and "ID" = #{id,jdbcType=INTEGER}
-      </if>
-      <if test="accountId != null">
-        and "ACCOUNT_ID" = #{accountId,jdbcType=INTEGER}
+        and "id" = #{id,jdbcType=INTEGER}
       </if>
       <if test="amount != null">
-        and "AMOUNT" = #{amount,jdbcType=INTEGER}
+        and "amount" = #{amount,jdbcType=INTEGER}
       </if>
       <if test="branchId != null">
-        and "BRANCH_ID" = #{branchId,jdbcType=INTEGER}
+        and "branch_id" = #{branchId,jdbcType=INTEGER}
       </if>
-      <if test="orderDate != null">
-        and "ORDER_DATE" = #{orderDate,jdbcType=DATE}
-      </if>
-      <if test="type != null">
-        and "TYPE" = #{type,jdbcType=VARCHAR}
+      <if test="accountId != null">
+        and "account_id" = #{accountId,jdbcType=INTEGER}
       </if>
       <if test="unpaidBalance != null">
-        and "UNPAID_BALANCE" = #{unpaidBalance,jdbcType=INTEGER}
+        and "unpaid_balance" = #{unpaidBalance,jdbcType=INTEGER}
+      </if>
+      <if test="type != null">
+        and "type" = #{type,jdbcType=VARCHAR}
       </if>
       <if test="status != null">
-        and "STATUS" = #{status,jdbcType=VARCHAR}
+        and "status" = #{status,jdbcType=VARCHAR}
+      </if>
+      <if test="orderDate != null">
+        and "order_date" = #{orderDate,jdbcType=DATE}
+      </if>
+      <if test="category != null">
+        and "category" = #{category,jdbcType=INTEGER,typeHandler=app.daos.reporting.primitives.InvoiceDAO$CategoryTypeHandler}
       </if>
     </trim>
   </delete>

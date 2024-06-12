@@ -7,58 +7,23 @@
   <!-- columns -->
 
   <sql id="columns">
-    "ID",
-    "BIN1",
-    "BIN2",
-    "BIN3",
-    "BIN4",
-    "BIN5",
-    "BLO1",
-    "BLO2",
-    "BLO3",
-    "BLO4",
-    "BLO5"
+    "bin1",
+    "bol1"
   </sql>
 
   <sql id="columnsWithAlias">
-    ${alias}."ID",
-    ${alias}."BIN1",
-    ${alias}."BIN2",
-    ${alias}."BIN3",
-    ${alias}."BIN4",
-    ${alias}."BIN5",
-    ${alias}."BLO1",
-    ${alias}."BLO2",
-    ${alias}."BLO3",
-    ${alias}."BLO4",
-    ${alias}."BLO5"
+    ${alias}."bin1",
+    ${alias}."bol1"
   </sql>
 
   <resultMap id="allColumns" type="app.daos.BinariesVO">
-    <id property="id" column="ID" />
-    <result property="bin1" column="BIN1" />
-    <result property="bin2" column="BIN2" />
-    <result property="bin3" column="BIN3" />
-    <result property="bin4" column="BIN4" />
-    <result property="bin5" column="BIN5" />
-    <result property="blo1" column="BLO1" />
-    <result property="blo2" column="BLO2" />
-    <result property="blo3" column="BLO3" />
-    <result property="blo4" column="BLO4" />
-    <result property="blo5" column="BLO5" />
+    <result property="bin1" column="bin1" />
+    <result property="bol1" column="bol1" />
   </resultMap>
 
-  <!-- select by PK -->
+  <!-- select by PK: no mapping generated, since the table does not have a PK -->
 
-  <select id="selectByPK" resultMap="allColumns">
-    select
-      <include refid="columns" />
-     from binaries
-     where
-      "ID" = #{id,jdbcType=INTEGER}
-  </select>
-
-  <!-- no select by unique indexes since there are no UI (besides the PK) -->
+  <!-- select by unique indexes: no mappings generated, since the table does not have UIs -->
 
   <!-- select by example -->
 
@@ -67,38 +32,11 @@
       <include refid="columns" />
      from binaries
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
-      <if test="p.id != null">
-        and "ID" = #{p.id,jdbcType=INTEGER}
-      </if>
       <if test="p.bin1 != null">
-        and "BIN1" = #{p.bin1,jdbcType=BINARY}
+        and "bin1" = #{p.bin1,jdbcType=BINARY}
       </if>
-      <if test="p.bin2 != null">
-        and "BIN2" = #{p.bin2,jdbcType=VARBINARY}
-      </if>
-      <if test="p.bin3 != null">
-        and "BIN3" = #{p.bin3,jdbcType=VARBINARY}
-      </if>
-      <if test="p.bin4 != null">
-        and "BIN4" = #{p.bin4,jdbcType=VARBINARY}
-      </if>
-      <if test="p.bin5 != null">
-        and "BIN5" = #{p.bin5,jdbcType=VARBINARY}
-      </if>
-      <if test="p.blo1 != null">
-        and "BLO1" = #{p.blo1,jdbcType=BLOB}
-      </if>
-      <if test="p.blo2 != null">
-        and "BLO2" = #{p.blo2,jdbcType=BLOB}
-      </if>
-      <if test="p.blo3 != null">
-        and "BLO3" = #{p.blo3,jdbcType=BLOB}
-      </if>
-      <if test="p.blo4 != null">
-        and "BLO4" = #{p.blo4,jdbcType=BLOB}
-      </if>
-      <if test="p.blo5 != null">
-        and "BLO5" = #{p.blo5,jdbcType=BLOB}
+      <if test="p.bol1 != null">
+        and "bol1" = #{p.bol1,jdbcType=BIT}
       </if>
     </trim>
     <if test="o != null">
@@ -117,111 +55,35 @@
   <insert id="insert">
     insert into binaries (
       <trim prefixOverrides=", ">
-        <if test="true">, "ID"</if>
-        <if test="true">, "BIN1"</if>
-        <if test="true">, "BIN2"</if>
-        <if test="true">, "BIN3"</if>
-        <if test="true">, "BIN4"</if>
-        <if test="true">, "BIN5"</if>
-        <if test="true">, "BLO1"</if>
-        <if test="true">, "BLO2"</if>
-        <if test="true">, "BLO3"</if>
-        <if test="true">, "BLO4"</if>
-        <if test="true">, "BLO5"</if>
+        <if test="true">, "bin1"</if>
+        <if test="true">, "bol1"</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
-        <if test="true">, #{id,jdbcType=INTEGER}</if>
         <if test="true">, #{bin1,jdbcType=BINARY}</if>
-        <if test="true">, #{bin2,jdbcType=VARBINARY}</if>
-        <if test="true">, #{bin3,jdbcType=VARBINARY}</if>
-        <if test="true">, #{bin4,jdbcType=VARBINARY}</if>
-        <if test="true">, #{bin5,jdbcType=VARBINARY}</if>
-        <if test="true">, #{blo1,jdbcType=BLOB}</if>
-        <if test="true">, #{blo2,jdbcType=BLOB}</if>
-        <if test="true">, #{blo3,jdbcType=BLOB}</if>
-        <if test="true">, #{blo4,jdbcType=BLOB}</if>
-        <if test="true">, #{blo5,jdbcType=BLOB}</if>
+        <if test="true">, #{bol1,jdbcType=BIT}</if>
       </trim>
       )
   </insert>
 
-  <!-- update by PK -->
+  <!-- update by PK: no update mapping generated, since the table does not have a PK -->
 
-  <update id="updateByPK">
-    update binaries set
-      "BIN1" = #{bin1,jdbcType=BINARY},
-      "BIN2" = #{bin2,jdbcType=VARBINARY},
-      "BIN3" = #{bin3,jdbcType=VARBINARY},
-      "BIN4" = #{bin4,jdbcType=VARBINARY},
-      "BIN5" = #{bin5,jdbcType=VARBINARY},
-      "BLO1" = #{blo1,jdbcType=BLOB},
-      "BLO2" = #{blo2,jdbcType=BLOB},
-      "BLO3" = #{blo3,jdbcType=BLOB},
-      "BLO4" = #{blo4,jdbcType=BLOB},
-      "BLO5" = #{blo5,jdbcType=BLOB}
-     where
-      "ID" = #{id,jdbcType=INTEGER}
-  </update>
-
-  <!-- delete by PK -->
-
-  <delete id="deleteByPK">
-    delete from binaries
-     where
-      "ID" = #{id,jdbcType=INTEGER}
-  </delete>
+  <!-- delete by PK: no delete mapping generated, since the table does not have a PK -->
 
   <!-- update by example -->
 
   <update id="updateByExample">
     update binaries
     <set>
-      <if test="values.id != null">"ID" = #{values.id,jdbcType=INTEGER},</if>
-      <if test="values.bin1 != null">"BIN1" = #{values.bin1,jdbcType=BINARY},</if>
-      <if test="values.bin2 != null">"BIN2" = #{values.bin2,jdbcType=VARBINARY},</if>
-      <if test="values.bin3 != null">"BIN3" = #{values.bin3,jdbcType=VARBINARY},</if>
-      <if test="values.bin4 != null">"BIN4" = #{values.bin4,jdbcType=VARBINARY},</if>
-      <if test="values.bin5 != null">"BIN5" = #{values.bin5,jdbcType=VARBINARY},</if>
-      <if test="values.blo1 != null">"BLO1" = #{values.blo1,jdbcType=BLOB},</if>
-      <if test="values.blo2 != null">"BLO2" = #{values.blo2,jdbcType=BLOB},</if>
-      <if test="values.blo3 != null">"BLO3" = #{values.blo3,jdbcType=BLOB},</if>
-      <if test="values.blo4 != null">"BLO4" = #{values.blo4,jdbcType=BLOB},</if>
-      <if test="values.blo5 != null">"BLO5" = #{values.blo5,jdbcType=BLOB},</if>
+      <if test="values.bin1 != null">"bin1" = #{values.bin1,jdbcType=BINARY},</if>
+      <if test="values.bol1 != null">"bol1" = #{values.bol1,jdbcType=BIT},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
-      <if test="filter.id != null">
-        and "ID" = #{filter.id,jdbcType=INTEGER}
-      </if>
       <if test="filter.bin1 != null">
-        and "BIN1" = #{filter.bin1,jdbcType=BINARY}
+        and "bin1" = #{filter.bin1,jdbcType=BINARY}
       </if>
-      <if test="filter.bin2 != null">
-        and "BIN2" = #{filter.bin2,jdbcType=VARBINARY}
-      </if>
-      <if test="filter.bin3 != null">
-        and "BIN3" = #{filter.bin3,jdbcType=VARBINARY}
-      </if>
-      <if test="filter.bin4 != null">
-        and "BIN4" = #{filter.bin4,jdbcType=VARBINARY}
-      </if>
-      <if test="filter.bin5 != null">
-        and "BIN5" = #{filter.bin5,jdbcType=VARBINARY}
-      </if>
-      <if test="filter.blo1 != null">
-        and "BLO1" = #{filter.blo1,jdbcType=BLOB}
-      </if>
-      <if test="filter.blo2 != null">
-        and "BLO2" = #{filter.blo2,jdbcType=BLOB}
-      </if>
-      <if test="filter.blo3 != null">
-        and "BLO3" = #{filter.blo3,jdbcType=BLOB}
-      </if>
-      <if test="filter.blo4 != null">
-        and "BLO4" = #{filter.blo4,jdbcType=BLOB}
-      </if>
-      <if test="filter.blo5 != null">
-        and "BLO5" = #{filter.blo5,jdbcType=BLOB}
+      <if test="filter.bol1 != null">
+        and "bol1" = #{filter.bol1,jdbcType=BIT}
       </if>
     </trim>
   </update>
@@ -237,38 +99,11 @@
   <delete id="deleteByExample">
     delete from binaries
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
-      <if test="id != null">
-        and "ID" = #{id,jdbcType=INTEGER}
-      </if>
       <if test="bin1 != null">
-        and "BIN1" = #{bin1,jdbcType=BINARY}
+        and "bin1" = #{bin1,jdbcType=BINARY}
       </if>
-      <if test="bin2 != null">
-        and "BIN2" = #{bin2,jdbcType=VARBINARY}
-      </if>
-      <if test="bin3 != null">
-        and "BIN3" = #{bin3,jdbcType=VARBINARY}
-      </if>
-      <if test="bin4 != null">
-        and "BIN4" = #{bin4,jdbcType=VARBINARY}
-      </if>
-      <if test="bin5 != null">
-        and "BIN5" = #{bin5,jdbcType=VARBINARY}
-      </if>
-      <if test="blo1 != null">
-        and "BLO1" = #{blo1,jdbcType=BLOB}
-      </if>
-      <if test="blo2 != null">
-        and "BLO2" = #{blo2,jdbcType=BLOB}
-      </if>
-      <if test="blo3 != null">
-        and "BLO3" = #{blo3,jdbcType=BLOB}
-      </if>
-      <if test="blo4 != null">
-        and "BLO4" = #{blo4,jdbcType=BLOB}
-      </if>
-      <if test="blo5 != null">
-        and "BLO5" = #{blo5,jdbcType=BLOB}
+      <if test="bol1 != null">
+        and "bol1" = #{bol1,jdbcType=BIT}
       </if>
     </trim>
   </delete>
