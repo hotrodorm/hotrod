@@ -11,24 +11,11 @@ public class AbstractCharsVO implements Serializable {
 
   // VO Properties (table columns)
 
-  protected java.lang.Integer id = null;
   protected java.lang.String cha1 = null;
   protected java.lang.String cha2 = null;
   protected java.lang.String cha3 = null;
-  protected java.lang.Object cha4 = null;
-  protected java.lang.Object cha5 = null;
-  protected java.lang.String cha6 = null;
-  protected java.lang.Object cha7 = null;
 
   // getters & setters
-
-  public java.lang.Integer getId() {
-    return this.id;
-  }
-
-  public void setId(final java.lang.Integer id) {
-    this.id = id;
-  }
 
   public java.lang.String getCha1() {
     return this.cha1;
@@ -54,51 +41,14 @@ public class AbstractCharsVO implements Serializable {
     this.cha3 = cha3;
   }
 
-  public java.lang.Object getCha4() {
-    return this.cha4;
-  }
-
-  public void setCha4(final java.lang.Object cha4) {
-    this.cha4 = cha4;
-  }
-
-  public java.lang.Object getCha5() {
-    return this.cha5;
-  }
-
-  public void setCha5(final java.lang.Object cha5) {
-    this.cha5 = cha5;
-  }
-
-  public java.lang.String getCha6() {
-    return this.cha6;
-  }
-
-  public void setCha6(final java.lang.String cha6) {
-    this.cha6 = cha6;
-  }
-
-  public java.lang.Object getCha7() {
-    return this.cha7;
-  }
-
-  public void setCha7(final java.lang.Object cha7) {
-    this.cha7 = cha7;
-  }
-
   // to string
 
   public String toString() {
     java.lang.StringBuilder sb = new java.lang.StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
-    sb.append("- id=" + this.id + "\n");
     sb.append("- cha1=" + this.cha1 + "\n");
     sb.append("- cha2=" + this.cha2 + "\n");
-    sb.append("- cha3=" + this.cha3 + "\n");
-    sb.append("- cha4=" + this.cha4 + "\n");
-    sb.append("- cha5=" + this.cha5 + "\n");
-    sb.append("- cha6=" + this.cha6 + "\n");
-    sb.append("- cha7=" + this.cha7);
+    sb.append("- cha3=" + this.cha3);
     return sb.toString();
   }
 
@@ -106,14 +56,9 @@ public class AbstractCharsVO implements Serializable {
 
   public JSONObject toJSONObject() {
     JSONObject obj = new JSONObject();
-    obj.addProperty("id", this.id);
     obj.addProperty("cha1", this.cha1);
     obj.addProperty("cha2", this.cha2);
     obj.addProperty("cha3", this.cha3);
-    obj.addProperty("cha4", this.cha4);
-    obj.addProperty("cha5", this.cha5);
-    obj.addProperty("cha6", this.cha6);
-    obj.addProperty("cha7", this.cha7);
     return obj;
   }
 

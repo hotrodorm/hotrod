@@ -7,73 +7,65 @@
   <!-- columns -->
 
   <sql id="columns">
-    "ID",
-    "NUM1",
-    "NUM2",
-    "NUM3",
-    "NUM4",
-    "NUM5",
-    "NUM6",
-    "NUM7",
-    "NUM8",
-    "NUM9",
-    "NUM10",
-    "NUM11",
-    "NUM12",
-    "NUM20",
-    "NUM21",
-    "NUM22"
+    "int1",
+    "int2",
+    "int3",
+    "int_total_amount",
+    "columns",
+    "dec1",
+    "dec2",
+    "dec3",
+    "dec4",
+    "dec5",
+    "dec6",
+    "dec7",
+    "dec_total_amount",
+    "flo1",
+    "flo2",
+    "flo_total_amount"
   </sql>
 
   <sql id="columnsWithAlias">
-    ${alias}."ID",
-    ${alias}."NUM1",
-    ${alias}."NUM2",
-    ${alias}."NUM3",
-    ${alias}."NUM4",
-    ${alias}."NUM5",
-    ${alias}."NUM6",
-    ${alias}."NUM7",
-    ${alias}."NUM8",
-    ${alias}."NUM9",
-    ${alias}."NUM10",
-    ${alias}."NUM11",
-    ${alias}."NUM12",
-    ${alias}."NUM20",
-    ${alias}."NUM21",
-    ${alias}."NUM22"
+    ${alias}."int1",
+    ${alias}."int2",
+    ${alias}."int3",
+    ${alias}."int_total_amount",
+    ${alias}."columns",
+    ${alias}."dec1",
+    ${alias}."dec2",
+    ${alias}."dec3",
+    ${alias}."dec4",
+    ${alias}."dec5",
+    ${alias}."dec6",
+    ${alias}."dec7",
+    ${alias}."dec_total_amount",
+    ${alias}."flo1",
+    ${alias}."flo2",
+    ${alias}."flo_total_amount"
   </sql>
 
   <resultMap id="allColumns" type="app.daos.NumbersVO">
-    <id property="id" column="ID" />
-    <result property="num1" column="NUM1" />
-    <result property="num2" column="NUM2" />
-    <result property="num3" column="NUM3" />
-    <result property="num4" column="NUM4" />
-    <result property="num5" column="NUM5" />
-    <result property="num6" column="NUM6" />
-    <result property="num7" column="NUM7" />
-    <result property="num8" column="NUM8" />
-    <result property="num9" column="NUM9" />
-    <result property="num10" column="NUM10" />
-    <result property="num11" column="NUM11" />
-    <result property="num12" column="NUM12" />
-    <result property="num20" column="NUM20" />
-    <result property="num21" column="NUM21" />
-    <result property="num22" column="NUM22" />
+    <result property="int1" column="int1" />
+    <result property="int2" column="int2" />
+    <result property="int3" column="int3" />
+    <result property="intTotalAmount" column="int_total_amount" />
+    <result property="columns" column="columns" />
+    <result property="dec1" column="dec1" />
+    <result property="dec2" column="dec2" />
+    <result property="dec3" column="dec3" />
+    <result property="dec4" column="dec4" />
+    <result property="dec5" column="dec5" />
+    <result property="dec6" column="dec6" />
+    <result property="dec7" column="dec7" />
+    <result property="decTotalAmount" column="dec_total_amount" />
+    <result property="flo1" column="flo1" />
+    <result property="flo2" column="flo2" />
+    <result property="floTotalAmount" column="flo_total_amount" />
   </resultMap>
 
-  <!-- select by PK -->
+  <!-- select by PK: no mapping generated, since the table does not have a PK -->
 
-  <select id="selectByPK" resultMap="allColumns">
-    select
-      <include refid="columns" />
-     from numbers
-     where
-      "ID" = #{id,jdbcType=NUMERIC}
-  </select>
-
-  <!-- no select by unique indexes since there are no UI (besides the PK) -->
+  <!-- select by unique indexes: no mappings generated, since the table does not have UIs -->
 
   <!-- select by example -->
 
@@ -82,53 +74,53 @@
       <include refid="columns" />
      from numbers
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
-      <if test="p.id != null">
-        and "ID" = #{p.id,jdbcType=NUMERIC}
+      <if test="p.int1 != null">
+        and "int1" = #{p.int1,jdbcType=SMALLINT}
       </if>
-      <if test="p.num1 != null">
-        and "NUM1" = #{p.num1,jdbcType=NUMERIC}
+      <if test="p.int2 != null">
+        and "int2" = #{p.int2,jdbcType=INTEGER}
       </if>
-      <if test="p.num2 != null">
-        and "NUM2" = #{p.num2,jdbcType=NUMERIC}
+      <if test="p.int3 != null">
+        and "int3" = #{p.int3,jdbcType=BIGINT}
       </if>
-      <if test="p.num3 != null">
-        and "NUM3" = #{p.num3,jdbcType=NUMERIC}
+      <if test="p.intTotalAmount != null">
+        and "int_total_amount" = #{p.intTotalAmount,jdbcType=INTEGER}
       </if>
-      <if test="p.num4 != null">
-        and "NUM4" = #{p.num4,jdbcType=NUMERIC}
+      <if test="p.columns != null">
+        and "columns" = #{p.columns,jdbcType=INTEGER}
       </if>
-      <if test="p.num5 != null">
-        and "NUM5" = #{p.num5,jdbcType=NUMERIC}
+      <if test="p.dec1 != null">
+        and "dec1" = #{p.dec1,jdbcType=NUMERIC}
       </if>
-      <if test="p.num6 != null">
-        and "NUM6" = #{p.num6,jdbcType=NUMERIC}
+      <if test="p.dec2 != null">
+        and "dec2" = #{p.dec2,jdbcType=NUMERIC}
       </if>
-      <if test="p.num7 != null">
-        and "NUM7" = #{p.num7,jdbcType=NUMERIC}
+      <if test="p.dec3 != null">
+        and "dec3" = #{p.dec3,jdbcType=NUMERIC}
       </if>
-      <if test="p.num8 != null">
-        and "NUM8" = #{p.num8,jdbcType=NUMERIC}
+      <if test="p.dec4 != null">
+        and "dec4" = #{p.dec4,jdbcType=NUMERIC}
       </if>
-      <if test="p.num9 != null">
-        and "NUM9" = #{p.num9,jdbcType=NUMERIC}
+      <if test="p.dec5 != null">
+        and "dec5" = #{p.dec5,jdbcType=NUMERIC}
       </if>
-      <if test="p.num10 != null">
-        and "NUM10" = #{p.num10,jdbcType=FLOAT}
+      <if test="p.dec6 != null">
+        and "dec6" = #{p.dec6,jdbcType=NUMERIC}
       </if>
-      <if test="p.num11 != null">
-        and "NUM11" = #{p.num11,jdbcType=FLOAT}
+      <if test="p.dec7 != null">
+        and "dec7" = #{p.dec7,jdbcType=NUMERIC}
       </if>
-      <if test="p.num12 != null">
-        and "NUM12" = #{p.num12,jdbcType=FLOAT}
+      <if test="p.decTotalAmount != null">
+        and "dec_total_amount" = #{p.decTotalAmount,jdbcType=NUMERIC}
       </if>
-      <if test="p.num20 != null">
-        and "NUM20" = #{p.num20,jdbcType=NUMERIC}
+      <if test="p.flo1 != null">
+        and "flo1" = #{p.flo1,jdbcType=REAL}
       </if>
-      <if test="p.num21 != null">
-        and "NUM21" = #{p.num21,jdbcType=NUMERIC}
+      <if test="p.flo2 != null">
+        and "flo2" = #{p.flo2,jdbcType=DOUBLE}
       </if>
-      <if test="p.num22 != null">
-        and "NUM22" = #{p.num22,jdbcType=NUMERIC}
+      <if test="p.floTotalAmount != null">
+        and "flo_total_amount" = #{p.floTotalAmount,jdbcType=REAL}
       </if>
     </trim>
     <if test="o != null">
@@ -147,146 +139,119 @@
   <insert id="insert">
     insert into numbers (
       <trim prefixOverrides=", ">
-        <if test="true">, "ID"</if>
-        <if test="true">, "NUM1"</if>
-        <if test="true">, "NUM2"</if>
-        <if test="true">, "NUM3"</if>
-        <if test="true">, "NUM4"</if>
-        <if test="true">, "NUM5"</if>
-        <if test="true">, "NUM6"</if>
-        <if test="true">, "NUM7"</if>
-        <if test="true">, "NUM8"</if>
-        <if test="true">, "NUM9"</if>
-        <if test="true">, "NUM10"</if>
-        <if test="true">, "NUM11"</if>
-        <if test="true">, "NUM12"</if>
-        <if test="true">, "NUM20"</if>
-        <if test="true">, "NUM21"</if>
-        <if test="true">, "NUM22"</if>
+        <if test="true">, "int1"</if>
+        <if test="true">, "int2"</if>
+        <if test="true">, "int3"</if>
+        <if test="true">, "int_total_amount"</if>
+        <if test="true">, "columns"</if>
+        <if test="true">, "dec1"</if>
+        <if test="true">, "dec2"</if>
+        <if test="true">, "dec3"</if>
+        <if test="true">, "dec4"</if>
+        <if test="true">, "dec5"</if>
+        <if test="true">, "dec6"</if>
+        <if test="true">, "dec7"</if>
+        <if test="true">, "dec_total_amount"</if>
+        <if test="true">, "flo1"</if>
+        <if test="true">, "flo2"</if>
+        <if test="true">, "flo_total_amount"</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
-        <if test="true">, #{id,jdbcType=NUMERIC}</if>
-        <if test="true">, #{num1,jdbcType=NUMERIC}</if>
-        <if test="true">, #{num2,jdbcType=NUMERIC}</if>
-        <if test="true">, #{num3,jdbcType=NUMERIC}</if>
-        <if test="true">, #{num4,jdbcType=NUMERIC}</if>
-        <if test="true">, #{num5,jdbcType=NUMERIC}</if>
-        <if test="true">, #{num6,jdbcType=NUMERIC}</if>
-        <if test="true">, #{num7,jdbcType=NUMERIC}</if>
-        <if test="true">, #{num8,jdbcType=NUMERIC}</if>
-        <if test="true">, #{num9,jdbcType=NUMERIC}</if>
-        <if test="true">, #{num10,jdbcType=FLOAT}</if>
-        <if test="true">, #{num11,jdbcType=FLOAT}</if>
-        <if test="true">, #{num12,jdbcType=FLOAT}</if>
-        <if test="true">, #{num20,jdbcType=NUMERIC}</if>
-        <if test="true">, #{num21,jdbcType=NUMERIC}</if>
-        <if test="true">, #{num22,jdbcType=NUMERIC}</if>
+        <if test="true">, #{int1,jdbcType=SMALLINT}</if>
+        <if test="true">, #{int2,jdbcType=INTEGER}</if>
+        <if test="true">, #{int3,jdbcType=BIGINT}</if>
+        <if test="true">, #{intTotalAmount,jdbcType=INTEGER}</if>
+        <if test="true">, #{columns,jdbcType=INTEGER}</if>
+        <if test="true">, #{dec1,jdbcType=NUMERIC}</if>
+        <if test="true">, #{dec2,jdbcType=NUMERIC}</if>
+        <if test="true">, #{dec3,jdbcType=NUMERIC}</if>
+        <if test="true">, #{dec4,jdbcType=NUMERIC}</if>
+        <if test="true">, #{dec5,jdbcType=NUMERIC}</if>
+        <if test="true">, #{dec6,jdbcType=NUMERIC}</if>
+        <if test="true">, #{dec7,jdbcType=NUMERIC}</if>
+        <if test="true">, #{decTotalAmount,jdbcType=NUMERIC}</if>
+        <if test="true">, #{flo1,jdbcType=REAL}</if>
+        <if test="true">, #{flo2,jdbcType=DOUBLE}</if>
+        <if test="true">, #{floTotalAmount,jdbcType=REAL}</if>
       </trim>
       )
   </insert>
 
-  <!-- update by PK -->
+  <!-- update by PK: no update mapping generated, since the table does not have a PK -->
 
-  <update id="updateByPK">
-    update numbers set
-      "NUM1" = #{num1,jdbcType=NUMERIC},
-      "NUM2" = #{num2,jdbcType=NUMERIC},
-      "NUM3" = #{num3,jdbcType=NUMERIC},
-      "NUM4" = #{num4,jdbcType=NUMERIC},
-      "NUM5" = #{num5,jdbcType=NUMERIC},
-      "NUM6" = #{num6,jdbcType=NUMERIC},
-      "NUM7" = #{num7,jdbcType=NUMERIC},
-      "NUM8" = #{num8,jdbcType=NUMERIC},
-      "NUM9" = #{num9,jdbcType=NUMERIC},
-      "NUM10" = #{num10,jdbcType=FLOAT},
-      "NUM11" = #{num11,jdbcType=FLOAT},
-      "NUM12" = #{num12,jdbcType=FLOAT},
-      "NUM20" = #{num20,jdbcType=NUMERIC},
-      "NUM21" = #{num21,jdbcType=NUMERIC},
-      "NUM22" = #{num22,jdbcType=NUMERIC}
-     where
-      "ID" = #{id,jdbcType=NUMERIC}
-  </update>
-
-  <!-- delete by PK -->
-
-  <delete id="deleteByPK">
-    delete from numbers
-     where
-      "ID" = #{id,jdbcType=NUMERIC}
-  </delete>
+  <!-- delete by PK: no delete mapping generated, since the table does not have a PK -->
 
   <!-- update by example -->
 
   <update id="updateByExample">
     update numbers
     <set>
-      <if test="values.id != null">"ID" = #{values.id,jdbcType=NUMERIC},</if>
-      <if test="values.num1 != null">"NUM1" = #{values.num1,jdbcType=NUMERIC},</if>
-      <if test="values.num2 != null">"NUM2" = #{values.num2,jdbcType=NUMERIC},</if>
-      <if test="values.num3 != null">"NUM3" = #{values.num3,jdbcType=NUMERIC},</if>
-      <if test="values.num4 != null">"NUM4" = #{values.num4,jdbcType=NUMERIC},</if>
-      <if test="values.num5 != null">"NUM5" = #{values.num5,jdbcType=NUMERIC},</if>
-      <if test="values.num6 != null">"NUM6" = #{values.num6,jdbcType=NUMERIC},</if>
-      <if test="values.num7 != null">"NUM7" = #{values.num7,jdbcType=NUMERIC},</if>
-      <if test="values.num8 != null">"NUM8" = #{values.num8,jdbcType=NUMERIC},</if>
-      <if test="values.num9 != null">"NUM9" = #{values.num9,jdbcType=NUMERIC},</if>
-      <if test="values.num10 != null">"NUM10" = #{values.num10,jdbcType=FLOAT},</if>
-      <if test="values.num11 != null">"NUM11" = #{values.num11,jdbcType=FLOAT},</if>
-      <if test="values.num12 != null">"NUM12" = #{values.num12,jdbcType=FLOAT},</if>
-      <if test="values.num20 != null">"NUM20" = #{values.num20,jdbcType=NUMERIC},</if>
-      <if test="values.num21 != null">"NUM21" = #{values.num21,jdbcType=NUMERIC},</if>
-      <if test="values.num22 != null">"NUM22" = #{values.num22,jdbcType=NUMERIC},</if>
+      <if test="values.int1 != null">"int1" = #{values.int1,jdbcType=SMALLINT},</if>
+      <if test="values.int2 != null">"int2" = #{values.int2,jdbcType=INTEGER},</if>
+      <if test="values.int3 != null">"int3" = #{values.int3,jdbcType=BIGINT},</if>
+      <if test="values.intTotalAmount != null">"int_total_amount" = #{values.intTotalAmount,jdbcType=INTEGER},</if>
+      <if test="values.columns != null">"columns" = #{values.columns,jdbcType=INTEGER},</if>
+      <if test="values.dec1 != null">"dec1" = #{values.dec1,jdbcType=NUMERIC},</if>
+      <if test="values.dec2 != null">"dec2" = #{values.dec2,jdbcType=NUMERIC},</if>
+      <if test="values.dec3 != null">"dec3" = #{values.dec3,jdbcType=NUMERIC},</if>
+      <if test="values.dec4 != null">"dec4" = #{values.dec4,jdbcType=NUMERIC},</if>
+      <if test="values.dec5 != null">"dec5" = #{values.dec5,jdbcType=NUMERIC},</if>
+      <if test="values.dec6 != null">"dec6" = #{values.dec6,jdbcType=NUMERIC},</if>
+      <if test="values.dec7 != null">"dec7" = #{values.dec7,jdbcType=NUMERIC},</if>
+      <if test="values.decTotalAmount != null">"dec_total_amount" = #{values.decTotalAmount,jdbcType=NUMERIC},</if>
+      <if test="values.flo1 != null">"flo1" = #{values.flo1,jdbcType=REAL},</if>
+      <if test="values.flo2 != null">"flo2" = #{values.flo2,jdbcType=DOUBLE},</if>
+      <if test="values.floTotalAmount != null">"flo_total_amount" = #{values.floTotalAmount,jdbcType=REAL},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
-      <if test="filter.id != null">
-        and "ID" = #{filter.id,jdbcType=NUMERIC}
+      <if test="filter.int1 != null">
+        and "int1" = #{filter.int1,jdbcType=SMALLINT}
       </if>
-      <if test="filter.num1 != null">
-        and "NUM1" = #{filter.num1,jdbcType=NUMERIC}
+      <if test="filter.int2 != null">
+        and "int2" = #{filter.int2,jdbcType=INTEGER}
       </if>
-      <if test="filter.num2 != null">
-        and "NUM2" = #{filter.num2,jdbcType=NUMERIC}
+      <if test="filter.int3 != null">
+        and "int3" = #{filter.int3,jdbcType=BIGINT}
       </if>
-      <if test="filter.num3 != null">
-        and "NUM3" = #{filter.num3,jdbcType=NUMERIC}
+      <if test="filter.intTotalAmount != null">
+        and "int_total_amount" = #{filter.intTotalAmount,jdbcType=INTEGER}
       </if>
-      <if test="filter.num4 != null">
-        and "NUM4" = #{filter.num4,jdbcType=NUMERIC}
+      <if test="filter.columns != null">
+        and "columns" = #{filter.columns,jdbcType=INTEGER}
       </if>
-      <if test="filter.num5 != null">
-        and "NUM5" = #{filter.num5,jdbcType=NUMERIC}
+      <if test="filter.dec1 != null">
+        and "dec1" = #{filter.dec1,jdbcType=NUMERIC}
       </if>
-      <if test="filter.num6 != null">
-        and "NUM6" = #{filter.num6,jdbcType=NUMERIC}
+      <if test="filter.dec2 != null">
+        and "dec2" = #{filter.dec2,jdbcType=NUMERIC}
       </if>
-      <if test="filter.num7 != null">
-        and "NUM7" = #{filter.num7,jdbcType=NUMERIC}
+      <if test="filter.dec3 != null">
+        and "dec3" = #{filter.dec3,jdbcType=NUMERIC}
       </if>
-      <if test="filter.num8 != null">
-        and "NUM8" = #{filter.num8,jdbcType=NUMERIC}
+      <if test="filter.dec4 != null">
+        and "dec4" = #{filter.dec4,jdbcType=NUMERIC}
       </if>
-      <if test="filter.num9 != null">
-        and "NUM9" = #{filter.num9,jdbcType=NUMERIC}
+      <if test="filter.dec5 != null">
+        and "dec5" = #{filter.dec5,jdbcType=NUMERIC}
       </if>
-      <if test="filter.num10 != null">
-        and "NUM10" = #{filter.num10,jdbcType=FLOAT}
+      <if test="filter.dec6 != null">
+        and "dec6" = #{filter.dec6,jdbcType=NUMERIC}
       </if>
-      <if test="filter.num11 != null">
-        and "NUM11" = #{filter.num11,jdbcType=FLOAT}
+      <if test="filter.dec7 != null">
+        and "dec7" = #{filter.dec7,jdbcType=NUMERIC}
       </if>
-      <if test="filter.num12 != null">
-        and "NUM12" = #{filter.num12,jdbcType=FLOAT}
+      <if test="filter.decTotalAmount != null">
+        and "dec_total_amount" = #{filter.decTotalAmount,jdbcType=NUMERIC}
       </if>
-      <if test="filter.num20 != null">
-        and "NUM20" = #{filter.num20,jdbcType=NUMERIC}
+      <if test="filter.flo1 != null">
+        and "flo1" = #{filter.flo1,jdbcType=REAL}
       </if>
-      <if test="filter.num21 != null">
-        and "NUM21" = #{filter.num21,jdbcType=NUMERIC}
+      <if test="filter.flo2 != null">
+        and "flo2" = #{filter.flo2,jdbcType=DOUBLE}
       </if>
-      <if test="filter.num22 != null">
-        and "NUM22" = #{filter.num22,jdbcType=NUMERIC}
+      <if test="filter.floTotalAmount != null">
+        and "flo_total_amount" = #{filter.floTotalAmount,jdbcType=REAL}
       </if>
     </trim>
   </update>
@@ -302,53 +267,53 @@
   <delete id="deleteByExample">
     delete from numbers
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
-      <if test="id != null">
-        and "ID" = #{id,jdbcType=NUMERIC}
+      <if test="int1 != null">
+        and "int1" = #{int1,jdbcType=SMALLINT}
       </if>
-      <if test="num1 != null">
-        and "NUM1" = #{num1,jdbcType=NUMERIC}
+      <if test="int2 != null">
+        and "int2" = #{int2,jdbcType=INTEGER}
       </if>
-      <if test="num2 != null">
-        and "NUM2" = #{num2,jdbcType=NUMERIC}
+      <if test="int3 != null">
+        and "int3" = #{int3,jdbcType=BIGINT}
       </if>
-      <if test="num3 != null">
-        and "NUM3" = #{num3,jdbcType=NUMERIC}
+      <if test="intTotalAmount != null">
+        and "int_total_amount" = #{intTotalAmount,jdbcType=INTEGER}
       </if>
-      <if test="num4 != null">
-        and "NUM4" = #{num4,jdbcType=NUMERIC}
+      <if test="columns != null">
+        and "columns" = #{columns,jdbcType=INTEGER}
       </if>
-      <if test="num5 != null">
-        and "NUM5" = #{num5,jdbcType=NUMERIC}
+      <if test="dec1 != null">
+        and "dec1" = #{dec1,jdbcType=NUMERIC}
       </if>
-      <if test="num6 != null">
-        and "NUM6" = #{num6,jdbcType=NUMERIC}
+      <if test="dec2 != null">
+        and "dec2" = #{dec2,jdbcType=NUMERIC}
       </if>
-      <if test="num7 != null">
-        and "NUM7" = #{num7,jdbcType=NUMERIC}
+      <if test="dec3 != null">
+        and "dec3" = #{dec3,jdbcType=NUMERIC}
       </if>
-      <if test="num8 != null">
-        and "NUM8" = #{num8,jdbcType=NUMERIC}
+      <if test="dec4 != null">
+        and "dec4" = #{dec4,jdbcType=NUMERIC}
       </if>
-      <if test="num9 != null">
-        and "NUM9" = #{num9,jdbcType=NUMERIC}
+      <if test="dec5 != null">
+        and "dec5" = #{dec5,jdbcType=NUMERIC}
       </if>
-      <if test="num10 != null">
-        and "NUM10" = #{num10,jdbcType=FLOAT}
+      <if test="dec6 != null">
+        and "dec6" = #{dec6,jdbcType=NUMERIC}
       </if>
-      <if test="num11 != null">
-        and "NUM11" = #{num11,jdbcType=FLOAT}
+      <if test="dec7 != null">
+        and "dec7" = #{dec7,jdbcType=NUMERIC}
       </if>
-      <if test="num12 != null">
-        and "NUM12" = #{num12,jdbcType=FLOAT}
+      <if test="decTotalAmount != null">
+        and "dec_total_amount" = #{decTotalAmount,jdbcType=NUMERIC}
       </if>
-      <if test="num20 != null">
-        and "NUM20" = #{num20,jdbcType=NUMERIC}
+      <if test="flo1 != null">
+        and "flo1" = #{flo1,jdbcType=REAL}
       </if>
-      <if test="num21 != null">
-        and "NUM21" = #{num21,jdbcType=NUMERIC}
+      <if test="flo2 != null">
+        and "flo2" = #{flo2,jdbcType=DOUBLE}
       </if>
-      <if test="num22 != null">
-        and "NUM22" = #{num22,jdbcType=NUMERIC}
+      <if test="floTotalAmount != null">
+        and "flo_total_amount" = #{floTotalAmount,jdbcType=REAL}
       </if>
     </trim>
   </delete>

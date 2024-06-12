@@ -11,20 +11,10 @@ public class AbstractBinariesVO implements Serializable {
 
   // VO Properties (table columns)
 
-  protected java.lang.Integer id = null;
   protected byte[] bin1 = null;
-  protected byte[] bin2 = null;
-  protected byte[] bin3 = null;
+  protected java.lang.Boolean bol1 = null;
 
   // getters & setters
-
-  public java.lang.Integer getId() {
-    return this.id;
-  }
-
-  public void setId(final java.lang.Integer id) {
-    this.id = id;
-  }
 
   public byte[] getBin1() {
     return this.bin1;
@@ -34,20 +24,12 @@ public class AbstractBinariesVO implements Serializable {
     this.bin1 = bin1;
   }
 
-  public byte[] getBin2() {
-    return this.bin2;
+  public java.lang.Boolean getBol1() {
+    return this.bol1;
   }
 
-  public void setBin2(final byte[] bin2) {
-    this.bin2 = bin2;
-  }
-
-  public byte[] getBin3() {
-    return this.bin3;
-  }
-
-  public void setBin3(final byte[] bin3) {
-    this.bin3 = bin3;
+  public void setBol1(final java.lang.Boolean bol1) {
+    this.bol1 = bol1;
   }
 
   // to string
@@ -55,10 +37,8 @@ public class AbstractBinariesVO implements Serializable {
   public String toString() {
     java.lang.StringBuilder sb = new java.lang.StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
-    sb.append("- id=" + this.id + "\n");
     sb.append("- bin1=" + this.bin1 + "\n");
-    sb.append("- bin2=" + this.bin2 + "\n");
-    sb.append("- bin3=" + this.bin3);
+    sb.append("- bol1=" + this.bol1);
     return sb.toString();
   }
 
@@ -66,10 +46,8 @@ public class AbstractBinariesVO implements Serializable {
 
   public JSONObject toJSONObject() {
     JSONObject obj = new JSONObject();
-    obj.addProperty("id", this.id);
     obj.addProperty("bin1", this.bin1);
-    obj.addProperty("bin2", this.bin2);
-    obj.addProperty("bin3", this.bin3);
+    obj.addProperty("bol1", this.bol1);
     return obj;
   }
 

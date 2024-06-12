@@ -138,7 +138,10 @@ create table invoice (
   category int references category (id)
 );
 
-insert into invoice (id, amount, branch_id, category) values (10, 1500, 101, 10), (11, 2500, 101, 30), (12, 4000, 102, 40);
+insert into invoice (id, amount, branch_id, category, order_date) values
+  (10, 1500, 101, 10, '2024-01-07'),
+  (11, 2500, 101, 30, '2024-04-15'),
+  (12, 4000, 102, 40, '2024-02-22');
 
 create table invoice_line (
   invoice_id int,

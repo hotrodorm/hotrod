@@ -204,16 +204,28 @@ public class App {
 
     InvoiceTable i = this.invoiceDAO.newTable();
     InvoiceTable j = this.invoiceDAO.newTable();
-    EntitySelect<InvoiceVO> q = this.invoiceDAO
-        .select(i, i.id.in(sql.select(j.id).from(j).where(j.amount.ge(500)).orderBy(j.orderDate.desc()).limit(1))) //
+
+    // Oracle
+//    EntitySelect<InvoiceVO> q = this.invoiceDAO
+//        .select(i, i.id.in(sql.select(j.id).from(j).where(j.amount.ge(500)).orderBy(j.orderDate.desc()).limit(1))) //
 //        .forUpdate().skipLocked()
+////        .forUpdate().noWait()
+////        .forUpdate().wait(5)
+//    ;
+    
+    // PostgreSQL, H2
+    EntitySelect<InvoiceVO> q = this.invoiceDAO //
+        .select(i, i.amount.ge(2000)) //
+        .orderBy(i.orderDate.desc()) //
+        .limit(1) //
+        .forUpdate().skipLocked()
 //        .forUpdate().noWait()
-        .forUpdate().wait(5)
+//        .forUpdate().wait(5)
     ;
-//    System.out.println("q:" + q.getPreview());
+    
+    System.out.println("q:" + q.getPreview());
     List<InvoiceVO> cases = q.execute();
-//    System.out.println("inv:" + c);
-//    cases.forEach(x -> System.out.println("inv:" + x));
+    cases.forEach(x -> System.out.println("inv:" + x));
 
   }
 
