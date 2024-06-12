@@ -5,6 +5,8 @@ import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.runtime.livesql.metadata.DatabaseObject;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.LockingConcurrency;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.LockingMode;
 import org.hotrod.runtime.livesql.queries.select.CrossJoin;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.InnerJoin;
@@ -145,17 +147,38 @@ public class MariaDBDialect extends LiveSQLDialect {
   // For Update rendering
 
   @Override
-  public ForUpdateRenderer getForUpdateRenderer() {
-    return new ForUpdateRenderer() {
+  public LockingRenderer getLockingRenderer() {
+    return new LockingRenderer() {
 
       @Override
-      public String renderAfterFromClause() {
+      public String renderLockingAfterFromClause(LockingMode lockingMode, LockingConcurrency lockingConcurrency,
+          Number waitTime) {
         return null;
       }
 
       @Override
-      public String renderAfterLimitClause() {
-        return "FOR UPDATE";
+      public String renderLockingAfterLimitClause(LockingMode lockingMode, LockingConcurrency lockingConcurrency,
+          Number waitTime) {
+        StringBuilder sb = new StringBuilder();
+
+        if (lockingMode == LockingMode.FOR_UPDATE) {
+          sb.append("FOR UPDATE");
+        } else {
+          sb.append("LOCK IN SHARE MODE");
+        }
+
+        switch (lockingConcurrency) {
+        case NO_WAIT:
+          sb.append(" NOWAIT");
+          break;
+        case WAIT:
+          sb.append(" WAIT " + waitTime);
+        case SKIP_LOCKED:
+          sb.append(" SKIP LOCKED");
+          break;
+        }
+
+        return sb.toString();
       }
 
     };

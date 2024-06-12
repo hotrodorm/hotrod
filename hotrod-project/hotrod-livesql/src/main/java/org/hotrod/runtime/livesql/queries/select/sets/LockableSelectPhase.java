@@ -20,7 +20,11 @@ public class LockableSelectPhase<R> extends IndividualSelectPhase<R> {
   // Next Phases
 
   public SelectForUpdatePhase<R> forUpdate() {
-    return new SelectForUpdatePhase<R>(this.context, this.combined);
+    return new SelectForUpdatePhase<R>(this.context, this.combined, true);
+  }
+
+  public SelectForUpdatePhase<R> forShare() {
+    return new SelectForUpdatePhase<R>(this.context, this.combined, false);
   }
 
 }

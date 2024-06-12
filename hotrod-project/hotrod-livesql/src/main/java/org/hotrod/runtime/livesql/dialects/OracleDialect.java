@@ -9,6 +9,8 @@ import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.LockingConcurrency;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.LockingMode;
 import org.hotrod.runtime.livesql.queries.select.CrossJoin;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.InnerJoin;
@@ -227,17 +229,32 @@ public class OracleDialect extends LiveSQLDialect {
   // For Update rendering
 
   @Override
-  public ForUpdateRenderer getForUpdateRenderer() {
-    return new ForUpdateRenderer() {
+  public LockingRenderer getLockingRenderer() {
+    return new LockingRenderer() {
 
       @Override
-      public String renderAfterFromClause() {
+      public String renderLockingAfterFromClause(LockingMode lockingMode, LockingConcurrency lockingConcurrency,
+          Number waitTime) {
         return null;
       }
 
       @Override
-      public String renderAfterLimitClause() {
-        return "FOR UPDATE";
+      public String renderLockingAfterLimitClause(LockingMode lockingMode, LockingConcurrency lockingConcurrency,
+          Number waitTime) {
+        if (lockingMode == LockingMode.FOR_SHARE) {
+          throw new UnsupportedLiveSQLFeatureException(
+              "The Oracle database does not support locking FOR SHARE in SELECT statements");
+        }
+        switch (lockingConcurrency) {
+        case NO_WAIT:
+          return "FOR UPDATE NOWAIT";
+        case WAIT:
+          return "FOR UPDATE WAIT " + waitTime;
+        case SKIP_LOCKED:
+          return "FOR UPDATE SKIP LOCKED";
+        default:
+          return "FOR UPDATE";
+        }
       }
 
     };

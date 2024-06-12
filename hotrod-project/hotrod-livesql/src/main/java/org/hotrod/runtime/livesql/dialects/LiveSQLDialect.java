@@ -100,7 +100,7 @@ public abstract class LiveSQLDialect {
 
   public abstract PaginationRenderer getPaginationRenderer();
 
-  public abstract ForUpdateRenderer getForUpdateRenderer();
+  public abstract LockingRenderer getLockingRenderer();
 
   public abstract SetOperatorRenderer getSetOperationRenderer();
 

@@ -16,4 +16,10 @@ public class CriteriaLimitPhase<T> extends CriteriaPhase<T> {
     return new CriteriaForUpdatePhase<T>(this.context, this.select, this.mapperStatement);
   }
 
+
+  public CriteriaForUpdatePhase<T> forShare() {
+    this.select.setForShare();
+    return new CriteriaForUpdatePhase<T>(this.context, this.select, this.mapperStatement);
+  }
+
 }

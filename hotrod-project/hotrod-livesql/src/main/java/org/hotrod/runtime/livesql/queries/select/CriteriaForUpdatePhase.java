@@ -11,4 +11,20 @@ public class CriteriaForUpdatePhase<T> extends CriteriaPhase<T> {
 
   // next phases
 
+  public CriteriaForUpdateConcurrencyPhase<T> noWait() {
+    return new CriteriaForUpdateConcurrencyPhase<>(super.context, this.select, this.mapperStatement, null, false);
+  }
+
+  public CriteriaForUpdateConcurrencyPhase<T> wait(final int time) {
+    return new CriteriaForUpdateConcurrencyPhase<>(super.context, this.select, this.mapperStatement, time, false);
+  }
+
+  public CriteriaForUpdateConcurrencyPhase<T> wait(final double time) {
+    return new CriteriaForUpdateConcurrencyPhase<>(super.context, this.select, this.mapperStatement, time, false);
+  }
+
+  public CriteriaForUpdateConcurrencyPhase<T> skipLocked() {
+    return new CriteriaForUpdateConcurrencyPhase<>(super.context, this.select, this.mapperStatement, null, true);
+  }
+
 }

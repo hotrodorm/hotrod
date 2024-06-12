@@ -11,9 +11,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.hotrod.runtime.cursors.Cursor;
-import org.hotrod.runtime.livesql.dialects.ForUpdateRenderer;
 import org.hotrod.runtime.livesql.dialects.JoinRenderer;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.dialects.LockingRenderer;
 import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
@@ -57,7 +57,17 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
   private Integer offset = null;
   private Integer limit = null;
 
-  private boolean forUpdate = false;
+  public enum LockingMode {
+    FOR_UPDATE, FOR_SHARE
+  };
+
+  public enum LockingConcurrency {
+    WAIT, NO_WAIT, SKIP_LOCKED
+  };
+
+  private LockingMode lockingMode = null;
+  private LockingConcurrency lockingConcurrency = null;
+  private Number waitTime = null;
 
   protected AbstractSelectObject(final List<CTE> ctes, final boolean distinct) {
     super();
@@ -163,9 +173,9 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
       }
 
     }
-    
+
     // 4. Record Query Columns
-    
+
     w.registerQueryColumns(expandedColumns);
 
   }
@@ -226,7 +236,22 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
   }
 
   public void setForUpdate() {
-    this.forUpdate = true;
+    this.lockingMode = LockingMode.FOR_UPDATE;
+  }
+
+  public void setForShare() {
+    this.lockingMode = LockingMode.FOR_SHARE;
+  }
+
+  public void setLockingConcurrency(final Number waitTime, final boolean skipLocked) {
+    if (skipLocked) {
+      this.lockingConcurrency = LockingConcurrency.SKIP_LOCKED;
+    } else if (waitTime == null) {
+      this.lockingConcurrency = LockingConcurrency.NO_WAIT;
+    } else {
+      this.lockingConcurrency = LockingConcurrency.WAIT;
+      this.waitTime = waitTime;
+    }
   }
 
   // Getters
@@ -271,10 +296,11 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
     }
 
     // retrieve pagination type
-    
+
     boolean orderedSelect = this.orderingTerms != null && !this.orderingTerms.isEmpty();
 
-    PaginationType paginationType = liveSQLDialect.getPaginationRenderer().getPaginationType(orderedSelect, this.offset, this.limit);
+    PaginationType paginationType = liveSQLDialect.getPaginationRenderer().getPaginationType(orderedSelect, this.offset,
+        this.limit);
 
     // enclosing pagination - begin
 
@@ -321,9 +347,12 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
       w.write("\nFROM ");
       this.baseTableExpression.renderTo(w);
 
-      if (this.forUpdate) {
-        ForUpdateRenderer forUpdateRenderer = liveSQLDialect.getForUpdateRenderer();
-        String fc = forUpdateRenderer.renderAfterFromClause();
+      // Inline locking
+
+      if (this.lockingMode != null) {
+        LockingRenderer forUpdateRenderer = liveSQLDialect.getLockingRenderer();
+        String fc = forUpdateRenderer.renderLockingAfterFromClause(this.lockingMode, this.lockingConcurrency,
+            this.waitTime); // TODO
         if (fc != null) {
           w.write(" " + fc);
         }
@@ -409,11 +438,12 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
       liveSQLDialect.getPaginationRenderer().renderBottomPagination(this.offset, this.limit, w);
     }
 
-    // For Update clause
+    // Locking clause
 
-    if (this.forUpdate) {
-      ForUpdateRenderer forUpdateRenderer = liveSQLDialect.getForUpdateRenderer();
-      String lc = forUpdateRenderer.renderAfterLimitClause();
+    if (this.lockingMode != null) {
+      LockingRenderer lockingRenderer = liveSQLDialect.getLockingRenderer();
+      String lc = lockingRenderer.renderLockingAfterLimitClause(this.lockingMode, this.lockingConcurrency,
+          this.waitTime); // TODO
       if (lc != null) {
         w.write("\n" + lc);
       }

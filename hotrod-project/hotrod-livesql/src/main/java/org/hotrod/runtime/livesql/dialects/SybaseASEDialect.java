@@ -151,9 +151,9 @@ public class SybaseASEDialect extends LiveSQLDialect {
   // For Update rendering
 
   @Override
-  public ForUpdateRenderer getForUpdateRenderer() {
+  public LockingRenderer getLockingRenderer() {
     throw new UnsupportedLiveSQLFeatureException(
-        "Sybase ASE does not support locking rows with the FOR UPDATE clause for plain SELECTs outside cursors and procedures");
+        "Sybase ASE does not support locking rows for plain SELECTs outside cursors and procedures");
   }
 
   // Set operation rendering

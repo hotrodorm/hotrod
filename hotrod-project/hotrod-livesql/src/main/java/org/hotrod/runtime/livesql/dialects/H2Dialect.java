@@ -7,6 +7,8 @@ import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.LockingConcurrency;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.LockingMode;
 import org.hotrod.runtime.livesql.queries.select.CrossJoin;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.InnerJoin;
@@ -142,17 +144,44 @@ public class H2Dialect extends LiveSQLDialect {
   // For Update rendering
 
   @Override
-  public ForUpdateRenderer getForUpdateRenderer() {
-    return new ForUpdateRenderer() {
+  public LockingRenderer getLockingRenderer() {
+    return new LockingRenderer() {
 
       @Override
-      public String renderAfterFromClause() {
+      public String renderLockingAfterFromClause(LockingMode lockingMode, LockingConcurrency lockingConcurrency,
+          Number waitTime) {
         return null;
       }
 
       @Override
-      public String renderAfterLimitClause() {
-        return "FOR UPDATE";
+      public String renderLockingAfterLimitClause(LockingMode lockingMode, LockingConcurrency lockingConcurrency,
+          Number waitTime) {
+        if (lockingMode == LockingMode.FOR_SHARE) {
+          throw new UnsupportedLiveSQLFeatureException(
+              "The H2 database does not support locking FOR SHARE in SELECT statements");
+        }
+        switch (lockingConcurrency) {
+        case NO_WAIT:
+          if (!versionIsAtLeast(2, 2)) {
+            throw new UnsupportedLiveSQLFeatureException(
+                "The H2 database does not support locking with NOWAIT in the current version. This feature is supported in H2 starting in version 2.2.x");
+          }
+          return "FOR UPDATE NOWAIT";
+        case WAIT:
+          if (!versionIsAtLeast(2, 2)) {
+            throw new UnsupportedLiveSQLFeatureException(
+                "The H2 database does not support locking with WAIT <n> in the current version. This feature is supported in H2 starting in version 2.2.x");
+          }
+          return "FOR UPDATE WAIT " + waitTime;
+        case SKIP_LOCKED:
+          if (!versionIsAtLeast(2, 2)) {
+            throw new UnsupportedLiveSQLFeatureException(
+                "The H2 database does not support locking with SKIP LOCKED in the current version. This feature is supported in H2 starting in version 2.2.x");
+          }
+          return "FOR UPDATE SKIP LOCKED";
+        default:
+          return "FOR UPDATE";
+        }
       }
 
     };

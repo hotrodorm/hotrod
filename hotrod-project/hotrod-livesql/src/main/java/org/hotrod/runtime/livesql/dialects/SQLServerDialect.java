@@ -13,6 +13,8 @@ import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.LockingConcurrency;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.LockingMode;
 import org.hotrod.runtime.livesql.queries.select.CrossJoin;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.InnerJoin;
@@ -177,16 +179,34 @@ public class SQLServerDialect extends LiveSQLDialect {
   // For Update rendering
 
   @Override
-  public ForUpdateRenderer getForUpdateRenderer() {
-    return new ForUpdateRenderer() {
+  public LockingRenderer getLockingRenderer() {
+    return new LockingRenderer() {
 
       @Override
-      public String renderAfterFromClause() {
-        return "WITH (UPDLOCK)";
+      public String renderLockingAfterFromClause(LockingMode lockingMode, LockingConcurrency lockingConcurrency,
+          Number waitTime) {
+        if (lockingMode == LockingMode.FOR_SHARE) {
+          throw new UnsupportedLiveSQLFeatureException(
+              "The SQL Server database does not support locking FOR SHARE in SELECT statements");
+        }
+
+        switch (lockingConcurrency) {
+        case NO_WAIT:
+          throw new UnsupportedLiveSQLFeatureException(
+              "The SQL Server database does not support locking NOWAIT in SELECT statements");
+        case WAIT:
+          throw new UnsupportedLiveSQLFeatureException(
+              "The SQL Server database does not support locking WAIT <n> in SELECT statements");
+        case SKIP_LOCKED:
+          return "WITH (UPDLOCK, READPAST)";
+        default:
+          return "WITH (UPDLOCK)";
+        }
       }
 
       @Override
-      public String renderAfterLimitClause() {
+      public String renderLockingAfterLimitClause(LockingMode lockingMode, LockingConcurrency lockingConcurrency,
+          Number waitTime) {
         return null;
       }
 

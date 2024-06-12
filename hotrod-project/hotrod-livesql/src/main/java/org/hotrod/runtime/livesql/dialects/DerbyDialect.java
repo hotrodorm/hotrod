@@ -152,9 +152,9 @@ public class DerbyDialect extends LiveSQLDialect {
   // For Update rendering
 
   @Override
-  public ForUpdateRenderer getForUpdateRenderer() {
+  public LockingRenderer getLockingRenderer() {
     throw new UnsupportedLiveSQLFeatureException(
-        "Apache Derby does not support locking rows with the FOR UPDATE clause in queries that do not use cursors.");
+        "Apache Derby does not support locking rows in queries that do not use cursors.");
   }
 
   // Set operation rendering
