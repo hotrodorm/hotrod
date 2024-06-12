@@ -267,7 +267,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   public app.daos.AccountVO insert(final app.daos.primitives.AbstractAccountVO vo) {
     String id = "mappers.account.insert";
-    this.sqlSession.insert(id, vo);
+    int rows = this.sqlSession.insert(id, vo);
     app.daos.AccountVO mo = springBeanObjectFactory.create(app.daos.AccountVO.class);
     mo.setId(vo.getId());
     mo.setParentId(vo.getParentId());
@@ -373,9 +373,9 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public final NumberColumn id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0, java.lang.Integer.class, null, null);
-    public final NumberColumn parentId = new NumberColumn(this, "PARENT_ID", "parentId", "INTEGER", 32, 0, java.lang.Integer.class, null, null);
-    public final NumberColumn branchId = new NumberColumn(this, "BRANCH_ID", "branchId", "INTEGER", 32, 0, java.lang.Integer.class, null, null);
+    public final NumberColumn id = new NumberColumn(this, "ID", "id", "NUMBER", 6, 0, java.lang.Integer.class, null, null);
+    public final NumberColumn parentId = new NumberColumn(this, "PARENT_ID", "parentId", "NUMBER", 6, 0, java.lang.Integer.class, null, null);
+    public final NumberColumn branchId = new NumberColumn(this, "BRANCH_ID", "branchId", "NUMBER", 6, 0, java.lang.Integer.class, null, null);
 
     // Getters
 

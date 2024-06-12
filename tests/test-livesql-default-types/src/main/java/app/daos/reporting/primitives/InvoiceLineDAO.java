@@ -171,9 +171,9 @@ public class InvoiceLineDAO implements Serializable, ApplicationContextAware {
 
   public UpdateSetCompletePhase update(final app.daos.reporting.primitives.AbstractInvoiceLineVO updateValues, final InvoiceLineDAO.InvoiceLineTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
-    if (updateValues.getInvoiceId() != null) values.put("\"invoice_id\"", updateValues.getInvoiceId());
-    if (updateValues.getProductId() != null) values.put("\"product_id\"", updateValues.getProductId());
-    if (updateValues.getLineTotal() != null) values.put("\"line_total\"", updateValues.getLineTotal());
+    if (updateValues.getInvoiceId() != null) values.put("\"INVOICE_ID\"", updateValues.getInvoiceId());
+    if (updateValues.getProductId() != null) values.put("\"PRODUCT_ID\"", updateValues.getProductId());
+    if (updateValues.getLineTotal() != null) values.put("\"LINE_TOTAL\"", updateValues.getLineTotal());
     return new UpdateSetCompletePhase(this.context, "mappers.reporting.invoiceLine.updateByCriteria", tableOrView,  predicate, values);
   }
 
@@ -194,12 +194,12 @@ public class InvoiceLineDAO implements Serializable, ApplicationContextAware {
 
   public enum InvoiceLineOrderBy implements OrderBy {
 
-    INVOICE_ID("invoice_line", "\"invoice_id\"", true), //
-    INVOICE_ID$DESC("invoice_line", "\"invoice_id\"", false), //
-    PRODUCT_ID("invoice_line", "\"product_id\"", true), //
-    PRODUCT_ID$DESC("invoice_line", "\"product_id\"", false), //
-    LINE_TOTAL("invoice_line", "\"line_total\"", true), //
-    LINE_TOTAL$DESC("invoice_line", "\"line_total\"", false);
+    INVOICE_ID("invoice_line", "\"INVOICE_ID\"", true), //
+    INVOICE_ID$DESC("invoice_line", "\"INVOICE_ID\"", false), //
+    PRODUCT_ID("invoice_line", "\"PRODUCT_ID\"", true), //
+    PRODUCT_ID$DESC("invoice_line", "\"PRODUCT_ID\"", false), //
+    LINE_TOTAL("invoice_line", "\"LINE_TOTAL\"", true), //
+    LINE_TOTAL$DESC("invoice_line", "\"LINE_TOTAL\"", false);
 
     private InvoiceLineOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -240,9 +240,9 @@ public class InvoiceLineDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public final NumberColumn invoiceId = new NumberColumn(this, "invoice_id", "invoiceId", "int4", 10, 0, java.lang.Integer.class, null, null);
-    public final NumberColumn productId = new NumberColumn(this, "product_id", "productId", "int4", 10, 0, java.lang.Integer.class, null, null);
-    public final NumberColumn lineTotal = new NumberColumn(this, "line_total", "lineTotal", "int4", 10, 0, java.lang.Integer.class, null, null);
+    public final NumberColumn invoiceId = new NumberColumn(this, "INVOICE_ID", "invoiceId", "NUMBER", 6, 0, java.lang.Integer.class, null, null);
+    public final NumberColumn productId = new NumberColumn(this, "PRODUCT_ID", "productId", "NUMBER", 6, 0, java.lang.Integer.class, null, null);
+    public final NumberColumn lineTotal = new NumberColumn(this, "LINE_TOTAL", "lineTotal", "NUMBER", 6, 0, java.lang.Integer.class, null, null);
 
     // Getters
 
@@ -253,12 +253,12 @@ public class InvoiceLineDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     InvoiceLineTable() {
-      super(null, null, Name.of("invoice_line", false), "Table", null);
+      super(null, null, Name.of("INVOICE_LINE", false), "Table", null);
       initialize();
     }
 
     InvoiceLineTable(final String alias) {
-      super(null, null, Name.of("invoice_line", false), "Table", alias);
+      super(null, null, Name.of("INVOICE_LINE", false), "Table", alias);
       initialize();
     }
 

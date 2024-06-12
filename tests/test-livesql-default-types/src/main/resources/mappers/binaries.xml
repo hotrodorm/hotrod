@@ -7,23 +7,37 @@
   <!-- columns -->
 
   <sql id="columns">
-    "bin1",
-    "bol1"
+    "ID",
+    "BIN1",
+    "BIN2",
+    "BIN3"
   </sql>
 
   <sql id="columnsWithAlias">
-    ${alias}."bin1",
-    ${alias}."bol1"
+    ${alias}."ID",
+    ${alias}."BIN1",
+    ${alias}."BIN2",
+    ${alias}."BIN3"
   </sql>
 
   <resultMap id="allColumns" type="app.daos.BinariesVO">
-    <result property="bin1" column="bin1" />
-    <result property="bol1" column="bol1" />
+    <id property="id" column="ID" />
+    <result property="bin1" column="BIN1" />
+    <result property="bin2" column="BIN2" />
+    <result property="bin3" column="BIN3" />
   </resultMap>
 
-  <!-- select by PK: no mapping generated, since the table does not have a PK -->
+  <!-- select by PK -->
 
-  <!-- select by unique indexes: no mappings generated, since the table does not have UIs -->
+  <select id="selectByPK" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from binaries
+     where
+      "ID" = #{id,jdbcType=NUMERIC}
+  </select>
+
+  <!-- no select by unique indexes since there are no UI (besides the PK) -->
 
   <!-- select by example -->
 
@@ -32,11 +46,17 @@
       <include refid="columns" />
      from binaries
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
-      <if test="p.bin1 != null">
-        and "bin1" = #{p.bin1,jdbcType=BINARY}
+      <if test="p.id != null">
+        and "ID" = #{p.id,jdbcType=NUMERIC}
       </if>
-      <if test="p.bol1 != null">
-        and "bol1" = #{p.bol1,jdbcType=BIT}
+      <if test="p.bin1 != null">
+        and "BIN1" = #{p.bin1,jdbcType=VARBINARY}
+      </if>
+      <if test="p.bin2 != null">
+        and "BIN2" = #{p.bin2,jdbcType=LONGVARBINARY}
+      </if>
+      <if test="p.bin3 != null">
+        and "BIN3" = #{p.bin3,jdbcType=BLOB}
       </if>
     </trim>
     <if test="o != null">
@@ -55,35 +75,62 @@
   <insert id="insert">
     insert into binaries (
       <trim prefixOverrides=", ">
-        <if test="true">, "bin1"</if>
-        <if test="true">, "bol1"</if>
+        <if test="true">, "ID"</if>
+        <if test="true">, "BIN1"</if>
+        <if test="true">, "BIN2"</if>
+        <if test="true">, "BIN3"</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
-        <if test="true">, #{bin1,jdbcType=BINARY}</if>
-        <if test="true">, #{bol1,jdbcType=BIT}</if>
+        <if test="true">, #{id,jdbcType=NUMERIC}</if>
+        <if test="true">, #{bin1,jdbcType=VARBINARY}</if>
+        <if test="true">, #{bin2,jdbcType=LONGVARBINARY}</if>
+        <if test="true">, #{bin3,jdbcType=BLOB}</if>
       </trim>
       )
   </insert>
 
-  <!-- update by PK: no update mapping generated, since the table does not have a PK -->
+  <!-- update by PK -->
 
-  <!-- delete by PK: no delete mapping generated, since the table does not have a PK -->
+  <update id="updateByPK">
+    update binaries set
+      "BIN1" = #{bin1,jdbcType=VARBINARY},
+      "BIN2" = #{bin2,jdbcType=LONGVARBINARY},
+      "BIN3" = #{bin3,jdbcType=BLOB}
+     where
+      "ID" = #{id,jdbcType=NUMERIC}
+  </update>
+
+  <!-- delete by PK -->
+
+  <delete id="deleteByPK">
+    delete from binaries
+     where
+      "ID" = #{id,jdbcType=NUMERIC}
+  </delete>
 
   <!-- update by example -->
 
   <update id="updateByExample">
     update binaries
     <set>
-      <if test="values.bin1 != null">"bin1" = #{values.bin1,jdbcType=BINARY},</if>
-      <if test="values.bol1 != null">"bol1" = #{values.bol1,jdbcType=BIT},</if>
+      <if test="values.id != null">"ID" = #{values.id,jdbcType=NUMERIC},</if>
+      <if test="values.bin1 != null">"BIN1" = #{values.bin1,jdbcType=VARBINARY},</if>
+      <if test="values.bin2 != null">"BIN2" = #{values.bin2,jdbcType=LONGVARBINARY},</if>
+      <if test="values.bin3 != null">"BIN3" = #{values.bin3,jdbcType=BLOB},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
-      <if test="filter.bin1 != null">
-        and "bin1" = #{filter.bin1,jdbcType=BINARY}
+      <if test="filter.id != null">
+        and "ID" = #{filter.id,jdbcType=NUMERIC}
       </if>
-      <if test="filter.bol1 != null">
-        and "bol1" = #{filter.bol1,jdbcType=BIT}
+      <if test="filter.bin1 != null">
+        and "BIN1" = #{filter.bin1,jdbcType=VARBINARY}
+      </if>
+      <if test="filter.bin2 != null">
+        and "BIN2" = #{filter.bin2,jdbcType=LONGVARBINARY}
+      </if>
+      <if test="filter.bin3 != null">
+        and "BIN3" = #{filter.bin3,jdbcType=BLOB}
       </if>
     </trim>
   </update>
@@ -99,11 +146,17 @@
   <delete id="deleteByExample">
     delete from binaries
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
-      <if test="bin1 != null">
-        and "bin1" = #{bin1,jdbcType=BINARY}
+      <if test="id != null">
+        and "ID" = #{id,jdbcType=NUMERIC}
       </if>
-      <if test="bol1 != null">
-        and "bol1" = #{bol1,jdbcType=BIT}
+      <if test="bin1 != null">
+        and "BIN1" = #{bin1,jdbcType=VARBINARY}
+      </if>
+      <if test="bin2 != null">
+        and "BIN2" = #{bin2,jdbcType=LONGVARBINARY}
+      </if>
+      <if test="bin3 != null">
+        and "BIN3" = #{bin3,jdbcType=BLOB}
       </if>
     </trim>
   </delete>

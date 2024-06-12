@@ -6,24 +6,26 @@
     </mybatis-spring>
   </generators>
 
-  <converter name="odtconverter"
-    java-raw-type="java.lang.Object"
-    java-type="java.time.OffsetDateTime"
-    class="app.OffSetDateTimeConverter"
+  <converter name="boolean_stored_as_int"
+    java-type="java.lang.Boolean"
+    java-raw-type="java.lang.Integer"
+    class="app.IntegerBooleanConverter"
   />
 
-  <table name="invoice" />
-  <table name="branch" />
+  <table name="chars" />
+  <table name="numbers" />
+  <table name="dates" />
+  <table name="binaries" />
+  <table name="other" />
 
-  <table name="types_numeric" />
-  <table name="types_char" />
-  <table name="types_date_time">
-    <column name="DAT3" java-type="java.time.OffsetDateTime" jdbc-type="TIMESTAMP" />
-<!--
-    <column name="dat3" converter="odtconverter" />
--->
+  <table name="branch">
+    <column name="is_vip" converter="boolean_stored_as_int" />
   </table>
-  <table name="types_binary" />
-  <table name="types_other" /> 
+
+  <table name="account">
+    <column name="id" sequence="seq1" />
+  </table>
+
+  <fragment file="./reporting.xml" />
 
 </hotrod>

@@ -7,24 +7,24 @@
   <!-- columns -->
 
   <sql id="columns">
-    "id",
+    "ID",
     "NaMe",
-    "region",
-    "is_vip"
+    "REGION",
+    "IS_VIP"
   </sql>
 
   <sql id="columnsWithAlias">
-    ${alias}."id",
+    ${alias}."ID",
     ${alias}."NaMe",
-    ${alias}."region",
-    ${alias}."is_vip"
+    ${alias}."REGION",
+    ${alias}."IS_VIP"
   </sql>
 
   <resultMap id="allColumns" type="app.daos.BranchVO">
-    <id property="id" column="id" />
+    <id property="id" column="ID" />
     <result property="name" column="NaMe" />
-    <result property="region" column="region" />
-    <result property="isVip" column="is_vip" />
+    <result property="region" column="REGION" />
+    <result property="isVip" column="IS_VIP" typeHandler="app.daos.primitives.BranchDAO$IsVipTypeHandler" />
   </resultMap>
 
   <!-- select by PK -->
@@ -34,7 +34,7 @@
       <include refid="columns" />
      from branch
      where
-      "id" = #{id,jdbcType=INTEGER}
+      "ID" = #{id,jdbcType=NUMERIC}
   </select>
 
   <!-- no select by unique indexes since there are no UI (besides the PK) -->
@@ -47,16 +47,16 @@
      from branch
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.id != null">
-        and "id" = #{p.id,jdbcType=INTEGER}
+        and "ID" = #{p.id,jdbcType=NUMERIC}
       </if>
       <if test="p.name != null">
         and "NaMe" = #{p.name,jdbcType=VARCHAR}
       </if>
       <if test="p.region != null">
-        and "region" = #{p.region,jdbcType=VARCHAR}
+        and "REGION" = #{p.region,jdbcType=VARCHAR}
       </if>
       <if test="p.isVip != null">
-        and "is_vip" = #{p.isVip,jdbcType=BIT}
+        and "IS_VIP" = #{p.isVip,jdbcType=NUMERIC,typeHandler=app.daos.primitives.BranchDAO$IsVipTypeHandler}
       </if>
     </trim>
     <if test="o != null">
@@ -72,20 +72,20 @@
 
   <!-- insert (does not integrate sequences, and integrates identities) -->
 
-  <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="ID">
     insert into branch (
       <trim prefixOverrides=", ">
-        <if test="id != null">, "id"</if>
+        <if test="id != null">, "ID"</if>
         <if test="true">, "NaMe"</if>
-        <if test="true">, "region"</if>
-        <if test="true">, "is_vip"</if>
+        <if test="true">, "REGION"</if>
+        <if test="true">, "IS_VIP"</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
-        <if test="id != null">, #{id,jdbcType=INTEGER}</if>
+        <if test="id != null">, #{id,jdbcType=NUMERIC}</if>
         <if test="true">, #{name,jdbcType=VARCHAR}</if>
         <if test="true">, #{region,jdbcType=VARCHAR}</if>
-        <if test="true">, #{isVip,jdbcType=BIT}</if>
+        <if test="true">, #{isVip,jdbcType=NUMERIC,typeHandler=app.daos.primitives.BranchDAO$IsVipTypeHandler}</if>
       </trim>
       )
   </insert>
@@ -95,10 +95,10 @@
   <update id="updateByPK">
     update branch set
       "NaMe" = #{name,jdbcType=VARCHAR},
-      "region" = #{region,jdbcType=VARCHAR},
-      "is_vip" = #{isVip,jdbcType=BIT}
+      "REGION" = #{region,jdbcType=VARCHAR},
+      "IS_VIP" = #{isVip,jdbcType=NUMERIC,typeHandler=app.daos.primitives.BranchDAO$IsVipTypeHandler}
      where
-      "id" = #{id,jdbcType=INTEGER}
+      "ID" = #{id,jdbcType=NUMERIC}
   </update>
 
   <!-- delete by PK -->
@@ -106,7 +106,7 @@
   <delete id="deleteByPK">
     delete from branch
      where
-      "id" = #{id,jdbcType=INTEGER}
+      "ID" = #{id,jdbcType=NUMERIC}
   </delete>
 
   <!-- update by example -->
@@ -114,23 +114,23 @@
   <update id="updateByExample">
     update branch
     <set>
-      <if test="values.id != null">"id" = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.id != null">"ID" = #{values.id,jdbcType=NUMERIC},</if>
       <if test="values.name != null">"NaMe" = #{values.name,jdbcType=VARCHAR},</if>
-      <if test="values.region != null">"region" = #{values.region,jdbcType=VARCHAR},</if>
-      <if test="values.isVip != null">"is_vip" = #{values.isVip,jdbcType=BIT},</if>
+      <if test="values.region != null">"REGION" = #{values.region,jdbcType=VARCHAR},</if>
+      <if test="values.isVip != null">"IS_VIP" = #{values.isVip,jdbcType=NUMERIC,typeHandler=app.daos.primitives.BranchDAO$IsVipTypeHandler},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.id != null">
-        and "id" = #{filter.id,jdbcType=INTEGER}
+        and "ID" = #{filter.id,jdbcType=NUMERIC}
       </if>
       <if test="filter.name != null">
         and "NaMe" = #{filter.name,jdbcType=VARCHAR}
       </if>
       <if test="filter.region != null">
-        and "region" = #{filter.region,jdbcType=VARCHAR}
+        and "REGION" = #{filter.region,jdbcType=VARCHAR}
       </if>
       <if test="filter.isVip != null">
-        and "is_vip" = #{filter.isVip,jdbcType=BIT}
+        and "IS_VIP" = #{filter.isVip,jdbcType=NUMERIC,typeHandler=app.daos.primitives.BranchDAO$IsVipTypeHandler}
       </if>
     </trim>
   </update>
@@ -147,16 +147,16 @@
     delete from branch
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="id != null">
-        and "id" = #{id,jdbcType=INTEGER}
+        and "ID" = #{id,jdbcType=NUMERIC}
       </if>
       <if test="name != null">
         and "NaMe" = #{name,jdbcType=VARCHAR}
       </if>
       <if test="region != null">
-        and "region" = #{region,jdbcType=VARCHAR}
+        and "REGION" = #{region,jdbcType=VARCHAR}
       </if>
       <if test="isVip != null">
-        and "is_vip" = #{isVip,jdbcType=BIT}
+        and "IS_VIP" = #{isVip,jdbcType=NUMERIC,typeHandler=app.daos.primitives.BranchDAO$IsVipTypeHandler}
       </if>
     </trim>
   </delete>

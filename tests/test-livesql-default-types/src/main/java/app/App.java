@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.queries.DMLQuery;
@@ -21,6 +20,7 @@ import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.runtime.livesql.queries.select.CriteriaForUpdatePhase;
 import org.hotrod.runtime.livesql.queries.select.EntitySelect;
 import org.hotrod.runtime.livesql.queries.select.Select;
+import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.hotrod.torcs.Torcs;
 import org.hotrod.torcs.plan.CouldNotRetrievePlanException;
@@ -183,33 +183,37 @@ public class App {
 
   private void locking() {
 
-    InvoiceTable i = this.invoiceDAO.newTable();
-    Select<Row> q = this.sql.select() //
-        .from(i) //
-        .where(i.amount.ge(500)) //
-        .orderBy(i.orderDate.desc()) //
-        .limit(1) //
-//        .forUpdate().skipLocked() //
-//    .forUpdate().noWait() //
-    .forUpdate().wait(0.5) //
-    ;
-    System.out.println("q:" + q.getPreview());
-    List<Row> rows = q.execute();
-//    Row r= q.executeOne();
-//    Cursor<Row> crows = q.executeCursor();
-//    crows.forEach(x -> System.out.println("inv:" + x));
-
 //    InvoiceTable i = this.invoiceDAO.newTable();
-//    EntitySelect<InvoiceVO> q = this.invoiceDAO.select(i, i.amount.ge(500)).orderBy(i.orderDate.desc())
-//        .limit(1)
-//        .forUpdate().skipLocked()
-////        .forUpdate().noWait()
-////        .forUpdate().wait(0.5)
-//        ;
-//    System.out.println("q:" + q.getPreview());
+//    InvoiceTable j = this.invoiceDAO.newTable();
+////    Subquery x = sql.select(
+////        sql.select(j.id).from(j).where(j.amount.ge(500)).orderBy(j.orderDate.desc()).limit(1));
 //
-//    InvoiceVO cases = q.executeOne();
-////    cases.forEach(x -> System.out.println("inv:" + x));
+//    Select<Row> q = this.sql.select() //
+//        .from(i) //
+//        .where(i.id.in(sql.select(j.id).from(j).where(j.amount.ge(500)).orderBy(j.orderDate.desc()).limit(1))
+//        ) //
+////        .forUpdate().skipLocked() //
+////    .forUpdate().noWait() //
+//        .forUpdate().wait(2) //
+//    ;
+//    System.out.println("q:" + q.getPreview());
+//    List<Row> rows = q.execute();
+////    Row r= q.executeOne();
+////    Cursor<Row> crows = q.executeCursor();
+//    rows.forEach(x -> System.out.println("inv:" + x));
+
+    InvoiceTable i = this.invoiceDAO.newTable();
+    InvoiceTable j = this.invoiceDAO.newTable();
+    EntitySelect<InvoiceVO> q = this.invoiceDAO
+        .select(i, i.id.in(sql.select(j.id).from(j).where(j.amount.ge(500)).orderBy(j.orderDate.desc()).limit(1))) //
+//        .forUpdate().skipLocked()
+//        .forUpdate().noWait()
+        .forUpdate().wait(5)
+    ;
+//    System.out.println("q:" + q.getPreview());
+    List<InvoiceVO> cases = q.execute();
+//    System.out.println("inv:" + c);
+//    cases.forEach(x -> System.out.println("inv:" + x));
 
   }
 

@@ -171,9 +171,9 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   public UpdateSetCompletePhase update(final app.daos.reporting.primitives.AbstractProductVO updateValues, final ProductDAO.ProductTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
-    if (updateValues.getId() != null) values.put("\"id\"", updateValues.getId());
-    if (updateValues.getType() != null) values.put("\"type\"", updateValues.getType());
-    if (updateValues.getShipping() != null) values.put("\"shipping\"", updateValues.getShipping());
+    if (updateValues.getId() != null) values.put("\"ID\"", updateValues.getId());
+    if (updateValues.getType() != null) values.put("\"TYPE\"", updateValues.getType());
+    if (updateValues.getShipping() != null) values.put("\"SHIPPING\"", updateValues.getShipping());
     return new UpdateSetCompletePhase(this.context, "mappers.reporting.product.updateByCriteria", tableOrView,  predicate, values);
   }
 
@@ -194,18 +194,18 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   public enum ProductOrderBy implements OrderBy {
 
-    ID("product", "\"id\"", true), //
-    ID$DESC("product", "\"id\"", false), //
-    TYPE("product", "\"type\"", true), //
-    TYPE$DESC("product", "\"type\"", false), //
-    TYPE$CASEINSENSITIVE("product", "lower(\"type\")", true), //
-    TYPE$CASEINSENSITIVE_STABLE_FORWARD("product", "lower(\"type\"), \"type\"", true), //
-    TYPE$CASEINSENSITIVE_STABLE_REVERSE("product", "lower(\"type\"), \"type\"", false), //
-    TYPE$DESC_CASEINSENSITIVE("product", "lower(\"type\")", false), //
-    TYPE$DESC_CASEINSENSITIVE_STABLE_FORWARD("product", "lower(\"type\"), \"type\"", false), //
-    TYPE$DESC_CASEINSENSITIVE_STABLE_REVERSE("product", "lower(\"type\"), \"type\"", true), //
-    SHIPPING("product", "\"shipping\"", true), //
-    SHIPPING$DESC("product", "\"shipping\"", false);
+    ID("product", "\"ID\"", true), //
+    ID$DESC("product", "\"ID\"", false), //
+    TYPE("product", "\"TYPE\"", true), //
+    TYPE$DESC("product", "\"TYPE\"", false), //
+    TYPE$CASEINSENSITIVE("product", "lower(\"TYPE\")", true), //
+    TYPE$CASEINSENSITIVE_STABLE_FORWARD("product", "lower(\"TYPE\"), \"TYPE\"", true), //
+    TYPE$CASEINSENSITIVE_STABLE_REVERSE("product", "lower(\"TYPE\"), \"TYPE\"", false), //
+    TYPE$DESC_CASEINSENSITIVE("product", "lower(\"TYPE\")", false), //
+    TYPE$DESC_CASEINSENSITIVE_STABLE_FORWARD("product", "lower(\"TYPE\"), \"TYPE\"", false), //
+    TYPE$DESC_CASEINSENSITIVE_STABLE_REVERSE("product", "lower(\"TYPE\"), \"TYPE\"", true), //
+    SHIPPING("product", "\"SHIPPING\"", true), //
+    SHIPPING$DESC("product", "\"SHIPPING\"", false);
 
     private ProductOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -246,9 +246,9 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public final NumberColumn id = new NumberColumn(this, "id", "id", "int4", 10, 0, java.lang.Integer.class, null, null);
-    public final StringColumn type = new StringColumn(this, "type", "type", "varchar", 6, 0, java.lang.String.class, null, null);
-    public final NumberColumn shipping = new NumberColumn(this, "shipping", "shipping", "int4", 10, 0, java.lang.Integer.class, null, null);
+    public final NumberColumn id = new NumberColumn(this, "ID", "id", "NUMBER", 6, 0, java.lang.Integer.class, null, null);
+    public final StringColumn type = new StringColumn(this, "TYPE", "type", "VARCHAR2", 6, null, java.lang.String.class, null, null);
+    public final NumberColumn shipping = new NumberColumn(this, "SHIPPING", "shipping", "NUMBER", 6, 0, java.lang.Integer.class, null, null);
 
     // Getters
 
@@ -259,12 +259,12 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     ProductTable() {
-      super(null, null, Name.of("product", false), "Table", null);
+      super(null, null, Name.of("PRODUCT", false), "Table", null);
       initialize();
     }
 
     ProductTable(final String alias) {
-      super(null, null, Name.of("product", false), "Table", alias);
+      super(null, null, Name.of("PRODUCT", false), "Table", alias);
       initialize();
     }
 

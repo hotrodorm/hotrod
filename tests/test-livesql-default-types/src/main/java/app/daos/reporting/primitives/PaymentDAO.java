@@ -105,7 +105,7 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
     app.daos.reporting.PaymentVO mo = this.applicationContext.getBean(app.daos.reporting.PaymentVO.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
-    mo.setPaymentDate((java.sql.Date) m.get(p + "paymentDate" + s));
+    mo.setPaymentDate((java.util.Date) m.get(p + "paymentDate" + s));
     mo.setInvoiceId(CastUtil.toInteger((Number) m.get(p + "invoiceId" + s)));
     mo.setAmount(CastUtil.toInteger((Number) m.get(p + "amount" + s)));
     return mo;
@@ -171,9 +171,9 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
 
   public UpdateSetCompletePhase update(final app.daos.reporting.primitives.AbstractPaymentVO updateValues, final PaymentDAO.PaymentTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
-    if (updateValues.getPaymentDate() != null) values.put("\"payment_date\"", updateValues.getPaymentDate());
-    if (updateValues.getInvoiceId() != null) values.put("\"invoice_id\"", updateValues.getInvoiceId());
-    if (updateValues.getAmount() != null) values.put("\"amount\"", updateValues.getAmount());
+    if (updateValues.getPaymentDate() != null) values.put("\"PAYMENT_DATE\"", updateValues.getPaymentDate());
+    if (updateValues.getInvoiceId() != null) values.put("\"INVOICE_ID\"", updateValues.getInvoiceId());
+    if (updateValues.getAmount() != null) values.put("\"AMOUNT\"", updateValues.getAmount());
     return new UpdateSetCompletePhase(this.context, "mappers.reporting.payment.updateByCriteria", tableOrView,  predicate, values);
   }
 
@@ -194,12 +194,12 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
 
   public enum PaymentOrderBy implements OrderBy {
 
-    PAYMENT_DATE("payment", "\"payment_date\"", true), //
-    PAYMENT_DATE$DESC("payment", "\"payment_date\"", false), //
-    INVOICE_ID("payment", "\"invoice_id\"", true), //
-    INVOICE_ID$DESC("payment", "\"invoice_id\"", false), //
-    AMOUNT("payment", "\"amount\"", true), //
-    AMOUNT$DESC("payment", "\"amount\"", false);
+    PAYMENT_DATE("payment", "\"PAYMENT_DATE\"", true), //
+    PAYMENT_DATE$DESC("payment", "\"PAYMENT_DATE\"", false), //
+    INVOICE_ID("payment", "\"INVOICE_ID\"", true), //
+    INVOICE_ID$DESC("payment", "\"INVOICE_ID\"", false), //
+    AMOUNT("payment", "\"AMOUNT\"", true), //
+    AMOUNT$DESC("payment", "\"AMOUNT\"", false);
 
     private PaymentOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -240,9 +240,9 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public final DateTimeColumn paymentDate = new DateTimeColumn(this, "payment_date", "paymentDate", "date", 13, 0, java.sql.Date.class, null, null);
-    public final NumberColumn invoiceId = new NumberColumn(this, "invoice_id", "invoiceId", "int4", 10, 0, java.lang.Integer.class, null, null);
-    public final NumberColumn amount = new NumberColumn(this, "amount", "amount", "int4", 10, 0, java.lang.Integer.class, null, null);
+    public final DateTimeColumn paymentDate = new DateTimeColumn(this, "PAYMENT_DATE", "paymentDate", "DATE", 7, null, java.util.Date.class, null, null);
+    public final NumberColumn invoiceId = new NumberColumn(this, "INVOICE_ID", "invoiceId", "NUMBER", 6, 0, java.lang.Integer.class, null, null);
+    public final NumberColumn amount = new NumberColumn(this, "AMOUNT", "amount", "NUMBER", 6, 0, java.lang.Integer.class, null, null);
 
     // Getters
 
@@ -253,12 +253,12 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     PaymentTable() {
-      super(null, null, Name.of("payment", false), "Table", null);
+      super(null, null, Name.of("PAYMENT", false), "Table", null);
       initialize();
     }
 
     PaymentTable(final String alias) {
-      super(null, null, Name.of("payment", false), "Table", alias);
+      super(null, null, Name.of("PAYMENT", false), "Table", alias);
       initialize();
     }
 

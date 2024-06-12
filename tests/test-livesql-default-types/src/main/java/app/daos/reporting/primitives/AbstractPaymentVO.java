@@ -11,17 +11,17 @@ public class AbstractPaymentVO implements Serializable {
 
   // VO Properties (table columns)
 
-  protected java.sql.Date paymentDate = null;
+  protected java.util.Date paymentDate = null;
   protected java.lang.Integer invoiceId = null;
   protected java.lang.Integer amount = null;
 
   // getters & setters
 
-  public java.sql.Date getPaymentDate() {
+  public java.util.Date getPaymentDate() {
     return this.paymentDate;
   }
 
-  public void setPaymentDate(final java.sql.Date paymentDate) {
+  public void setPaymentDate(final java.util.Date paymentDate) {
     this.paymentDate = paymentDate;
   }
 

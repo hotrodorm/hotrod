@@ -11,214 +11,70 @@ public class AbstractOtherVO implements Serializable {
 
   // VO Properties (table columns)
 
-  protected java.lang.Object geo1 = null;
-  protected java.lang.Object geo2 = null;
-  protected java.lang.Object geo3 = null;
-  protected java.lang.Object geo4 = null;
-  protected java.lang.Object geo5 = null;
-  protected java.lang.Object geo6 = null;
-  protected java.lang.Object geo7 = null;
-  protected java.lang.Object net1 = null;
-  protected java.lang.Object net2 = null;
-  protected java.lang.Object net3 = null;
-  protected java.lang.Object uui1 = null;
-  protected java.lang.Object jso1 = null;
-  protected java.lang.Object jso2 = null;
-  protected java.lang.Object arr1 = null;
-  protected java.lang.Object arr2 = null;
-  protected java.lang.Object arr3 = null;
-  protected java.lang.Object com1 = null;
-  protected java.lang.Object ran1 = null;
-  protected java.lang.Object ran2 = null;
-  protected java.lang.Object ran3 = null;
-  protected java.lang.Object ran4 = null;
-  protected java.lang.Object ran5 = null;
-  protected java.lang.Object ran6 = null;
+  protected java.lang.Integer id = null;
+  protected java.lang.Object itv2 = null;
+  protected java.lang.Object itv4 = null;
+  protected java.lang.Object oth2 = null;
+  protected java.lang.Object names = null;
+  protected java.lang.Object stu1 = null;
+  protected java.lang.Object ref1 = null;
 
   // getters & setters
 
-  public java.lang.Object getGeo1() {
-    return this.geo1;
+  public java.lang.Integer getId() {
+    return this.id;
   }
 
-  public void setGeo1(final java.lang.Object geo1) {
-    this.geo1 = geo1;
+  public void setId(final java.lang.Integer id) {
+    this.id = id;
   }
 
-  public java.lang.Object getGeo2() {
-    return this.geo2;
+  public java.lang.Object getItv2() {
+    return this.itv2;
   }
 
-  public void setGeo2(final java.lang.Object geo2) {
-    this.geo2 = geo2;
+  public void setItv2(final java.lang.Object itv2) {
+    this.itv2 = itv2;
   }
 
-  public java.lang.Object getGeo3() {
-    return this.geo3;
+  public java.lang.Object getItv4() {
+    return this.itv4;
   }
 
-  public void setGeo3(final java.lang.Object geo3) {
-    this.geo3 = geo3;
+  public void setItv4(final java.lang.Object itv4) {
+    this.itv4 = itv4;
   }
 
-  public java.lang.Object getGeo4() {
-    return this.geo4;
+  public java.lang.Object getOth2() {
+    return this.oth2;
   }
 
-  public void setGeo4(final java.lang.Object geo4) {
-    this.geo4 = geo4;
+  public void setOth2(final java.lang.Object oth2) {
+    this.oth2 = oth2;
   }
 
-  public java.lang.Object getGeo5() {
-    return this.geo5;
+  public java.lang.Object getNames() {
+    return this.names;
   }
 
-  public void setGeo5(final java.lang.Object geo5) {
-    this.geo5 = geo5;
+  public void setNames(final java.lang.Object names) {
+    this.names = names;
   }
 
-  public java.lang.Object getGeo6() {
-    return this.geo6;
+  public java.lang.Object getStu1() {
+    return this.stu1;
   }
 
-  public void setGeo6(final java.lang.Object geo6) {
-    this.geo6 = geo6;
+  public void setStu1(final java.lang.Object stu1) {
+    this.stu1 = stu1;
   }
 
-  public java.lang.Object getGeo7() {
-    return this.geo7;
+  public java.lang.Object getRef1() {
+    return this.ref1;
   }
 
-  public void setGeo7(final java.lang.Object geo7) {
-    this.geo7 = geo7;
-  }
-
-  public java.lang.Object getNet1() {
-    return this.net1;
-  }
-
-  public void setNet1(final java.lang.Object net1) {
-    this.net1 = net1;
-  }
-
-  public java.lang.Object getNet2() {
-    return this.net2;
-  }
-
-  public void setNet2(final java.lang.Object net2) {
-    this.net2 = net2;
-  }
-
-  public java.lang.Object getNet3() {
-    return this.net3;
-  }
-
-  public void setNet3(final java.lang.Object net3) {
-    this.net3 = net3;
-  }
-
-  public java.lang.Object getUui1() {
-    return this.uui1;
-  }
-
-  public void setUui1(final java.lang.Object uui1) {
-    this.uui1 = uui1;
-  }
-
-  public java.lang.Object getJso1() {
-    return this.jso1;
-  }
-
-  public void setJso1(final java.lang.Object jso1) {
-    this.jso1 = jso1;
-  }
-
-  public java.lang.Object getJso2() {
-    return this.jso2;
-  }
-
-  public void setJso2(final java.lang.Object jso2) {
-    this.jso2 = jso2;
-  }
-
-  public java.lang.Object getArr1() {
-    return this.arr1;
-  }
-
-  public void setArr1(final java.lang.Object arr1) {
-    this.arr1 = arr1;
-  }
-
-  public java.lang.Object getArr2() {
-    return this.arr2;
-  }
-
-  public void setArr2(final java.lang.Object arr2) {
-    this.arr2 = arr2;
-  }
-
-  public java.lang.Object getArr3() {
-    return this.arr3;
-  }
-
-  public void setArr3(final java.lang.Object arr3) {
-    this.arr3 = arr3;
-  }
-
-  public java.lang.Object getCom1() {
-    return this.com1;
-  }
-
-  public void setCom1(final java.lang.Object com1) {
-    this.com1 = com1;
-  }
-
-  public java.lang.Object getRan1() {
-    return this.ran1;
-  }
-
-  public void setRan1(final java.lang.Object ran1) {
-    this.ran1 = ran1;
-  }
-
-  public java.lang.Object getRan2() {
-    return this.ran2;
-  }
-
-  public void setRan2(final java.lang.Object ran2) {
-    this.ran2 = ran2;
-  }
-
-  public java.lang.Object getRan3() {
-    return this.ran3;
-  }
-
-  public void setRan3(final java.lang.Object ran3) {
-    this.ran3 = ran3;
-  }
-
-  public java.lang.Object getRan4() {
-    return this.ran4;
-  }
-
-  public void setRan4(final java.lang.Object ran4) {
-    this.ran4 = ran4;
-  }
-
-  public java.lang.Object getRan5() {
-    return this.ran5;
-  }
-
-  public void setRan5(final java.lang.Object ran5) {
-    this.ran5 = ran5;
-  }
-
-  public java.lang.Object getRan6() {
-    return this.ran6;
-  }
-
-  public void setRan6(final java.lang.Object ran6) {
-    this.ran6 = ran6;
+  public void setRef1(final java.lang.Object ref1) {
+    this.ref1 = ref1;
   }
 
   // to string
@@ -226,29 +82,13 @@ public class AbstractOtherVO implements Serializable {
   public String toString() {
     java.lang.StringBuilder sb = new java.lang.StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
-    sb.append("- geo1=" + this.geo1 + "\n");
-    sb.append("- geo2=" + this.geo2 + "\n");
-    sb.append("- geo3=" + this.geo3 + "\n");
-    sb.append("- geo4=" + this.geo4 + "\n");
-    sb.append("- geo5=" + this.geo5 + "\n");
-    sb.append("- geo6=" + this.geo6 + "\n");
-    sb.append("- geo7=" + this.geo7 + "\n");
-    sb.append("- net1=" + this.net1 + "\n");
-    sb.append("- net2=" + this.net2 + "\n");
-    sb.append("- net3=" + this.net3 + "\n");
-    sb.append("- uui1=" + this.uui1 + "\n");
-    sb.append("- jso1=" + this.jso1 + "\n");
-    sb.append("- jso2=" + this.jso2 + "\n");
-    sb.append("- arr1=" + this.arr1 + "\n");
-    sb.append("- arr2=" + this.arr2 + "\n");
-    sb.append("- arr3=" + this.arr3 + "\n");
-    sb.append("- com1=" + this.com1 + "\n");
-    sb.append("- ran1=" + this.ran1 + "\n");
-    sb.append("- ran2=" + this.ran2 + "\n");
-    sb.append("- ran3=" + this.ran3 + "\n");
-    sb.append("- ran4=" + this.ran4 + "\n");
-    sb.append("- ran5=" + this.ran5 + "\n");
-    sb.append("- ran6=" + this.ran6);
+    sb.append("- id=" + this.id + "\n");
+    sb.append("- itv2=" + this.itv2 + "\n");
+    sb.append("- itv4=" + this.itv4 + "\n");
+    sb.append("- oth2=" + this.oth2 + "\n");
+    sb.append("- names=" + this.names + "\n");
+    sb.append("- stu1=" + this.stu1 + "\n");
+    sb.append("- ref1=" + this.ref1);
     return sb.toString();
   }
 
@@ -256,29 +96,13 @@ public class AbstractOtherVO implements Serializable {
 
   public JSONObject toJSONObject() {
     JSONObject obj = new JSONObject();
-    obj.addProperty("geo1", this.geo1);
-    obj.addProperty("geo2", this.geo2);
-    obj.addProperty("geo3", this.geo3);
-    obj.addProperty("geo4", this.geo4);
-    obj.addProperty("geo5", this.geo5);
-    obj.addProperty("geo6", this.geo6);
-    obj.addProperty("geo7", this.geo7);
-    obj.addProperty("net1", this.net1);
-    obj.addProperty("net2", this.net2);
-    obj.addProperty("net3", this.net3);
-    obj.addProperty("uui1", this.uui1);
-    obj.addProperty("jso1", this.jso1);
-    obj.addProperty("jso2", this.jso2);
-    obj.addProperty("arr1", this.arr1);
-    obj.addProperty("arr2", this.arr2);
-    obj.addProperty("arr3", this.arr3);
-    obj.addProperty("com1", this.com1);
-    obj.addProperty("ran1", this.ran1);
-    obj.addProperty("ran2", this.ran2);
-    obj.addProperty("ran3", this.ran3);
-    obj.addProperty("ran4", this.ran4);
-    obj.addProperty("ran5", this.ran5);
-    obj.addProperty("ran6", this.ran6);
+    obj.addProperty("id", this.id);
+    obj.addProperty("itv2", this.itv2);
+    obj.addProperty("itv4", this.itv4);
+    obj.addProperty("oth2", this.oth2);
+    obj.addProperty("names", this.names);
+    obj.addProperty("stu1", this.stu1);
+    obj.addProperty("ref1", this.ref1);
     return obj;
   }
 

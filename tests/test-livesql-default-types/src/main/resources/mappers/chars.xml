@@ -7,26 +7,49 @@
   <!-- columns -->
 
   <sql id="columns">
-    "cha1",
-    "cha2",
-    "cha3"
+    "ID",
+    "CHA1",
+    "CHA2",
+    "CHA3",
+    "CHA4",
+    "CHA5",
+    "CHA6",
+    "CHA7"
   </sql>
 
   <sql id="columnsWithAlias">
-    ${alias}."cha1",
-    ${alias}."cha2",
-    ${alias}."cha3"
+    ${alias}."ID",
+    ${alias}."CHA1",
+    ${alias}."CHA2",
+    ${alias}."CHA3",
+    ${alias}."CHA4",
+    ${alias}."CHA5",
+    ${alias}."CHA6",
+    ${alias}."CHA7"
   </sql>
 
   <resultMap id="allColumns" type="app.daos.CharsVO">
-    <result property="cha1" column="cha1" />
-    <result property="cha2" column="cha2" />
-    <result property="cha3" column="cha3" />
+    <id property="id" column="ID" />
+    <result property="cha1" column="CHA1" />
+    <result property="cha2" column="CHA2" />
+    <result property="cha3" column="CHA3" />
+    <result property="cha4" column="CHA4" />
+    <result property="cha5" column="CHA5" />
+    <result property="cha6" column="CHA6" />
+    <result property="cha7" column="CHA7" />
   </resultMap>
 
-  <!-- select by PK: no mapping generated, since the table does not have a PK -->
+  <!-- select by PK -->
 
-  <!-- select by unique indexes: no mappings generated, since the table does not have UIs -->
+  <select id="selectByPK" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from chars
+     where
+      "ID" = #{id,jdbcType=NUMERIC}
+  </select>
+
+  <!-- no select by unique indexes since there are no UI (besides the PK) -->
 
   <!-- select by example -->
 
@@ -35,14 +58,29 @@
       <include refid="columns" />
      from chars
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="p.id != null">
+        and "ID" = #{p.id,jdbcType=NUMERIC}
+      </if>
       <if test="p.cha1 != null">
-        and "cha1" = #{p.cha1,jdbcType=CHAR}
+        and "CHA1" = #{p.cha1,jdbcType=CHAR}
       </if>
       <if test="p.cha2 != null">
-        and "cha2" = #{p.cha2,jdbcType=VARCHAR}
+        and "CHA2" = #{p.cha2,jdbcType=VARCHAR}
       </if>
       <if test="p.cha3 != null">
-        and "cha3" = #{p.cha3,jdbcType=VARCHAR}
+        and "CHA3" = #{p.cha3,jdbcType=VARCHAR}
+      </if>
+      <if test="p.cha4 != null">
+        and "CHA4" = #{p.cha4,jdbcType=NCHAR}
+      </if>
+      <if test="p.cha5 != null">
+        and "CHA5" = #{p.cha5,jdbcType=NVARCHAR}
+      </if>
+      <if test="p.cha6 != null">
+        and "CHA6" = #{p.cha6,jdbcType=CLOB}
+      </if>
+      <if test="p.cha7 != null">
+        and "CHA7" = #{p.cha7,jdbcType=NCLOB}
       </if>
     </trim>
     <if test="o != null">
@@ -61,41 +99,90 @@
   <insert id="insert">
     insert into chars (
       <trim prefixOverrides=", ">
-        <if test="true">, "cha1"</if>
-        <if test="true">, "cha2"</if>
-        <if test="true">, "cha3"</if>
+        <if test="true">, "ID"</if>
+        <if test="true">, "CHA1"</if>
+        <if test="true">, "CHA2"</if>
+        <if test="true">, "CHA3"</if>
+        <if test="true">, "CHA4"</if>
+        <if test="true">, "CHA5"</if>
+        <if test="true">, "CHA6"</if>
+        <if test="true">, "CHA7"</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
+        <if test="true">, #{id,jdbcType=NUMERIC}</if>
         <if test="true">, #{cha1,jdbcType=CHAR}</if>
         <if test="true">, #{cha2,jdbcType=VARCHAR}</if>
         <if test="true">, #{cha3,jdbcType=VARCHAR}</if>
+        <if test="true">, #{cha4,jdbcType=NCHAR}</if>
+        <if test="true">, #{cha5,jdbcType=NVARCHAR}</if>
+        <if test="true">, #{cha6,jdbcType=CLOB}</if>
+        <if test="true">, #{cha7,jdbcType=NCLOB}</if>
       </trim>
       )
   </insert>
 
-  <!-- update by PK: no update mapping generated, since the table does not have a PK -->
+  <!-- update by PK -->
 
-  <!-- delete by PK: no delete mapping generated, since the table does not have a PK -->
+  <update id="updateByPK">
+    update chars set
+      "CHA1" = #{cha1,jdbcType=CHAR},
+      "CHA2" = #{cha2,jdbcType=VARCHAR},
+      "CHA3" = #{cha3,jdbcType=VARCHAR},
+      "CHA4" = #{cha4,jdbcType=NCHAR},
+      "CHA5" = #{cha5,jdbcType=NVARCHAR},
+      "CHA6" = #{cha6,jdbcType=CLOB},
+      "CHA7" = #{cha7,jdbcType=NCLOB}
+     where
+      "ID" = #{id,jdbcType=NUMERIC}
+  </update>
+
+  <!-- delete by PK -->
+
+  <delete id="deleteByPK">
+    delete from chars
+     where
+      "ID" = #{id,jdbcType=NUMERIC}
+  </delete>
 
   <!-- update by example -->
 
   <update id="updateByExample">
     update chars
     <set>
-      <if test="values.cha1 != null">"cha1" = #{values.cha1,jdbcType=CHAR},</if>
-      <if test="values.cha2 != null">"cha2" = #{values.cha2,jdbcType=VARCHAR},</if>
-      <if test="values.cha3 != null">"cha3" = #{values.cha3,jdbcType=VARCHAR},</if>
+      <if test="values.id != null">"ID" = #{values.id,jdbcType=NUMERIC},</if>
+      <if test="values.cha1 != null">"CHA1" = #{values.cha1,jdbcType=CHAR},</if>
+      <if test="values.cha2 != null">"CHA2" = #{values.cha2,jdbcType=VARCHAR},</if>
+      <if test="values.cha3 != null">"CHA3" = #{values.cha3,jdbcType=VARCHAR},</if>
+      <if test="values.cha4 != null">"CHA4" = #{values.cha4,jdbcType=NCHAR},</if>
+      <if test="values.cha5 != null">"CHA5" = #{values.cha5,jdbcType=NVARCHAR},</if>
+      <if test="values.cha6 != null">"CHA6" = #{values.cha6,jdbcType=CLOB},</if>
+      <if test="values.cha7 != null">"CHA7" = #{values.cha7,jdbcType=NCLOB},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="filter.id != null">
+        and "ID" = #{filter.id,jdbcType=NUMERIC}
+      </if>
       <if test="filter.cha1 != null">
-        and "cha1" = #{filter.cha1,jdbcType=CHAR}
+        and "CHA1" = #{filter.cha1,jdbcType=CHAR}
       </if>
       <if test="filter.cha2 != null">
-        and "cha2" = #{filter.cha2,jdbcType=VARCHAR}
+        and "CHA2" = #{filter.cha2,jdbcType=VARCHAR}
       </if>
       <if test="filter.cha3 != null">
-        and "cha3" = #{filter.cha3,jdbcType=VARCHAR}
+        and "CHA3" = #{filter.cha3,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.cha4 != null">
+        and "CHA4" = #{filter.cha4,jdbcType=NCHAR}
+      </if>
+      <if test="filter.cha5 != null">
+        and "CHA5" = #{filter.cha5,jdbcType=NVARCHAR}
+      </if>
+      <if test="filter.cha6 != null">
+        and "CHA6" = #{filter.cha6,jdbcType=CLOB}
+      </if>
+      <if test="filter.cha7 != null">
+        and "CHA7" = #{filter.cha7,jdbcType=NCLOB}
       </if>
     </trim>
   </update>
@@ -111,14 +198,29 @@
   <delete id="deleteByExample">
     delete from chars
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="id != null">
+        and "ID" = #{id,jdbcType=NUMERIC}
+      </if>
       <if test="cha1 != null">
-        and "cha1" = #{cha1,jdbcType=CHAR}
+        and "CHA1" = #{cha1,jdbcType=CHAR}
       </if>
       <if test="cha2 != null">
-        and "cha2" = #{cha2,jdbcType=VARCHAR}
+        and "CHA2" = #{cha2,jdbcType=VARCHAR}
       </if>
       <if test="cha3 != null">
-        and "cha3" = #{cha3,jdbcType=VARCHAR}
+        and "CHA3" = #{cha3,jdbcType=VARCHAR}
+      </if>
+      <if test="cha4 != null">
+        and "CHA4" = #{cha4,jdbcType=NCHAR}
+      </if>
+      <if test="cha5 != null">
+        and "CHA5" = #{cha5,jdbcType=NVARCHAR}
+      </if>
+      <if test="cha6 != null">
+        and "CHA6" = #{cha6,jdbcType=CLOB}
+      </if>
+      <if test="cha7 != null">
+        and "CHA7" = #{cha7,jdbcType=NCLOB}
       </if>
     </trim>
   </delete>

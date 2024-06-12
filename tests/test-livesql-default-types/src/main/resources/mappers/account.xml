@@ -31,7 +31,7 @@
       <include refid="columns" />
      from account
      where
-      "ID" = #{id,jdbcType=INTEGER}
+      "ID" = #{id,jdbcType=NUMERIC}
   </select>
 
   <!-- no select by unique indexes since there are no UI (besides the PK) -->
@@ -44,13 +44,13 @@
      from account
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.id != null">
-        and "ID" = #{p.id,jdbcType=INTEGER}
+        and "ID" = #{p.id,jdbcType=NUMERIC}
       </if>
       <if test="p.parentId != null">
-        and "PARENT_ID" = #{p.parentId,jdbcType=INTEGER}
+        and "PARENT_ID" = #{p.parentId,jdbcType=NUMERIC}
       </if>
       <if test="p.branchId != null">
-        and "BRANCH_ID" = #{p.branchId,jdbcType=INTEGER}
+        and "BRANCH_ID" = #{p.branchId,jdbcType=NUMERIC}
       </if>
     </trim>
     <if test="o != null">
@@ -64,12 +64,9 @@
     ${sql}
   </select>
 
-  <!-- insert (using sequences prefetch) -->
+  <!-- insert (integrates sequences, and does not integrate identities) -->
 
-  <insert id="insert">
-    <selectKey keyProperty="id" resultType="app.daos.AccountVO" order="BEFORE">
-      select next value for seq1 as id
-    </selectKey>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="ID">
     insert into account (
       <trim prefixOverrides=", ">
         <if test="true">, "ID"</if>
@@ -78,9 +75,9 @@
       </trim>
       ) values (
       <trim prefixOverrides=", ">
-        <if test="true">, #{id,jdbcType=INTEGER}</if>
-        <if test="true">, #{parentId,jdbcType=INTEGER}</if>
-        <if test="true">, #{branchId,jdbcType=INTEGER}</if>
+        <if test="true">, seq1.nextval</if>
+        <if test="true">, #{parentId,jdbcType=NUMERIC}</if>
+        <if test="true">, #{branchId,jdbcType=NUMERIC}</if>
       </trim>
       )
   </insert>
@@ -89,10 +86,10 @@
 
   <update id="updateByPK">
     update account set
-      "PARENT_ID" = #{parentId,jdbcType=INTEGER},
-      "BRANCH_ID" = #{branchId,jdbcType=INTEGER}
+      "PARENT_ID" = #{parentId,jdbcType=NUMERIC},
+      "BRANCH_ID" = #{branchId,jdbcType=NUMERIC}
      where
-      "ID" = #{id,jdbcType=INTEGER}
+      "ID" = #{id,jdbcType=NUMERIC}
   </update>
 
   <!-- delete by PK -->
@@ -100,7 +97,7 @@
   <delete id="deleteByPK">
     delete from account
      where
-      "ID" = #{id,jdbcType=INTEGER}
+      "ID" = #{id,jdbcType=NUMERIC}
   </delete>
 
   <!-- update by example -->
@@ -108,19 +105,19 @@
   <update id="updateByExample">
     update account
     <set>
-      <if test="values.id != null">"ID" = #{values.id,jdbcType=INTEGER},</if>
-      <if test="values.parentId != null">"PARENT_ID" = #{values.parentId,jdbcType=INTEGER},</if>
-      <if test="values.branchId != null">"BRANCH_ID" = #{values.branchId,jdbcType=INTEGER},</if>
+      <if test="values.id != null">"ID" = #{values.id,jdbcType=NUMERIC},</if>
+      <if test="values.parentId != null">"PARENT_ID" = #{values.parentId,jdbcType=NUMERIC},</if>
+      <if test="values.branchId != null">"BRANCH_ID" = #{values.branchId,jdbcType=NUMERIC},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.id != null">
-        and "ID" = #{filter.id,jdbcType=INTEGER}
+        and "ID" = #{filter.id,jdbcType=NUMERIC}
       </if>
       <if test="filter.parentId != null">
-        and "PARENT_ID" = #{filter.parentId,jdbcType=INTEGER}
+        and "PARENT_ID" = #{filter.parentId,jdbcType=NUMERIC}
       </if>
       <if test="filter.branchId != null">
-        and "BRANCH_ID" = #{filter.branchId,jdbcType=INTEGER}
+        and "BRANCH_ID" = #{filter.branchId,jdbcType=NUMERIC}
       </if>
     </trim>
   </update>
@@ -137,13 +134,13 @@
     delete from account
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="id != null">
-        and "ID" = #{id,jdbcType=INTEGER}
+        and "ID" = #{id,jdbcType=NUMERIC}
       </if>
       <if test="parentId != null">
-        and "PARENT_ID" = #{parentId,jdbcType=INTEGER}
+        and "PARENT_ID" = #{parentId,jdbcType=NUMERIC}
       </if>
       <if test="branchId != null">
-        and "BRANCH_ID" = #{branchId,jdbcType=INTEGER}
+        and "BRANCH_ID" = #{branchId,jdbcType=NUMERIC}
       </if>
     </trim>
   </delete>

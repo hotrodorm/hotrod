@@ -105,15 +105,28 @@ public class CharsDAO implements Serializable, ApplicationContextAware {
     app.daos.CharsVO mo = this.applicationContext.getBean(app.daos.CharsVO.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
+    mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
     mo.setCha1((java.lang.String) m.get(p + "cha1" + s));
     mo.setCha2((java.lang.String) m.get(p + "cha2" + s));
     mo.setCha3((java.lang.String) m.get(p + "cha3" + s));
+    mo.setCha4(m.get(p + "cha4" + s));
+    mo.setCha5(m.get(p + "cha5" + s));
+    mo.setCha6((java.lang.String) m.get(p + "cha6" + s));
+    mo.setCha7(m.get(p + "cha7" + s));
     return mo;
   }
 
-  // no select by PK generated, since the table does not have a PK.
+  // select by primary key
 
-  // select by unique indexes: no unique indexes found -- skipped
+  public app.daos.CharsVO select(final java.lang.Integer id) {
+    if (id == null)
+      return null;
+    app.daos.CharsVO vo = new app.daos.CharsVO();
+    vo.setId(id);
+    return this.sqlSession.selectOne("mappers.chars.selectByPK", vo);
+  }
+
+  // select by unique indexes: no unique indexes found (besides the PK) -- skipped
 
   // select by example
 
@@ -149,15 +162,33 @@ public class CharsDAO implements Serializable, ApplicationContextAware {
     String id = "mappers.chars.insert";
     this.sqlSession.insert(id, vo);
     app.daos.CharsVO mo = springBeanObjectFactory.create(app.daos.CharsVO.class);
+    mo.setId(vo.getId());
     mo.setCha1(vo.getCha1());
     mo.setCha2(vo.getCha2());
     mo.setCha3(vo.getCha3());
+    mo.setCha4(vo.getCha4());
+    mo.setCha5(vo.getCha5());
+    mo.setCha6(vo.getCha6());
+    mo.setCha7(vo.getCha7());
     return mo;
   }
 
-  // no update by PK generated, since the table does not have a PK.
+  // update by PK
 
-  // no delete by PK generated, since the table does not have a PK.
+  public int update(final app.daos.CharsVO vo) {
+    if (vo.getId() == null) return 0;
+    return this.sqlSession.update("mappers.chars.updateByPK", vo);
+  }
+
+  // delete by PK
+
+  public int delete(final java.lang.Integer id) {
+    if (id == null) return 0;
+    app.daos.CharsVO vo = new app.daos.CharsVO();
+    vo.setId(id);
+    if (vo.getId() == null) return 0;
+    return this.sqlSession.delete("mappers.chars.deleteByPK", vo);
+  }
 
   // update by example
 
@@ -171,9 +202,14 @@ public class CharsDAO implements Serializable, ApplicationContextAware {
 
   public UpdateSetCompletePhase update(final app.daos.primitives.AbstractCharsVO updateValues, final CharsDAO.CharsTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
-    if (updateValues.getCha1() != null) values.put("\"cha1\"", updateValues.getCha1());
-    if (updateValues.getCha2() != null) values.put("\"cha2\"", updateValues.getCha2());
-    if (updateValues.getCha3() != null) values.put("\"cha3\"", updateValues.getCha3());
+    if (updateValues.getId() != null) values.put("\"ID\"", updateValues.getId());
+    if (updateValues.getCha1() != null) values.put("\"CHA1\"", updateValues.getCha1());
+    if (updateValues.getCha2() != null) values.put("\"CHA2\"", updateValues.getCha2());
+    if (updateValues.getCha3() != null) values.put("\"CHA3\"", updateValues.getCha3());
+    if (updateValues.getCha4() != null) values.put("\"CHA4\"", updateValues.getCha4());
+    if (updateValues.getCha5() != null) values.put("\"CHA5\"", updateValues.getCha5());
+    if (updateValues.getCha6() != null) values.put("\"CHA6\"", updateValues.getCha6());
+    if (updateValues.getCha7() != null) values.put("\"CHA7\"", updateValues.getCha7());
     return new UpdateSetCompletePhase(this.context, "mappers.chars.updateByCriteria", tableOrView,  predicate, values);
   }
 
@@ -194,30 +230,52 @@ public class CharsDAO implements Serializable, ApplicationContextAware {
 
   public enum CharsOrderBy implements OrderBy {
 
-    CHA1("chars", "\"cha1\"", true), //
-    CHA1$DESC("chars", "\"cha1\"", false), //
-    CHA1$CASEINSENSITIVE("chars", "lower(\"cha1\")", true), //
-    CHA1$CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(\"cha1\"), \"cha1\"", true), //
-    CHA1$CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(\"cha1\"), \"cha1\"", false), //
-    CHA1$DESC_CASEINSENSITIVE("chars", "lower(\"cha1\")", false), //
-    CHA1$DESC_CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(\"cha1\"), \"cha1\"", false), //
-    CHA1$DESC_CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(\"cha1\"), \"cha1\"", true), //
-    CHA2("chars", "\"cha2\"", true), //
-    CHA2$DESC("chars", "\"cha2\"", false), //
-    CHA2$CASEINSENSITIVE("chars", "lower(\"cha2\")", true), //
-    CHA2$CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(\"cha2\"), \"cha2\"", true), //
-    CHA2$CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(\"cha2\"), \"cha2\"", false), //
-    CHA2$DESC_CASEINSENSITIVE("chars", "lower(\"cha2\")", false), //
-    CHA2$DESC_CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(\"cha2\"), \"cha2\"", false), //
-    CHA2$DESC_CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(\"cha2\"), \"cha2\"", true), //
-    CHA3("chars", "\"cha3\"", true), //
-    CHA3$DESC("chars", "\"cha3\"", false), //
-    CHA3$CASEINSENSITIVE("chars", "lower(\"cha3\")", true), //
-    CHA3$CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(\"cha3\"), \"cha3\"", true), //
-    CHA3$CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(\"cha3\"), \"cha3\"", false), //
-    CHA3$DESC_CASEINSENSITIVE("chars", "lower(\"cha3\")", false), //
-    CHA3$DESC_CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(\"cha3\"), \"cha3\"", false), //
-    CHA3$DESC_CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(\"cha3\"), \"cha3\"", true);
+    ID("chars", "\"ID\"", true), //
+    ID$DESC("chars", "\"ID\"", false), //
+    CHA1("chars", "\"CHA1\"", true), //
+    CHA1$DESC("chars", "\"CHA1\"", false), //
+    CHA1$CASEINSENSITIVE("chars", "lower(\"CHA1\")", true), //
+    CHA1$CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(\"CHA1\"), \"CHA1\"", true), //
+    CHA1$CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(\"CHA1\"), \"CHA1\"", false), //
+    CHA1$DESC_CASEINSENSITIVE("chars", "lower(\"CHA1\")", false), //
+    CHA1$DESC_CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(\"CHA1\"), \"CHA1\"", false), //
+    CHA1$DESC_CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(\"CHA1\"), \"CHA1\"", true), //
+    CHA2("chars", "\"CHA2\"", true), //
+    CHA2$DESC("chars", "\"CHA2\"", false), //
+    CHA2$CASEINSENSITIVE("chars", "lower(\"CHA2\")", true), //
+    CHA2$CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(\"CHA2\"), \"CHA2\"", true), //
+    CHA2$CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(\"CHA2\"), \"CHA2\"", false), //
+    CHA2$DESC_CASEINSENSITIVE("chars", "lower(\"CHA2\")", false), //
+    CHA2$DESC_CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(\"CHA2\"), \"CHA2\"", false), //
+    CHA2$DESC_CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(\"CHA2\"), \"CHA2\"", true), //
+    CHA3("chars", "\"CHA3\"", true), //
+    CHA3$DESC("chars", "\"CHA3\"", false), //
+    CHA3$CASEINSENSITIVE("chars", "lower(\"CHA3\")", true), //
+    CHA3$CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(\"CHA3\"), \"CHA3\"", true), //
+    CHA3$CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(\"CHA3\"), \"CHA3\"", false), //
+    CHA3$DESC_CASEINSENSITIVE("chars", "lower(\"CHA3\")", false), //
+    CHA3$DESC_CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(\"CHA3\"), \"CHA3\"", false), //
+    CHA3$DESC_CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(\"CHA3\"), \"CHA3\"", true), //
+    CHA4("chars", "\"CHA4\"", true), //
+    CHA4$DESC("chars", "\"CHA4\"", false), //
+    CHA4$CASEINSENSITIVE("chars", "lower(\"CHA4\")", true), //
+    CHA4$CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(\"CHA4\"), \"CHA4\"", true), //
+    CHA4$CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(\"CHA4\"), \"CHA4\"", false), //
+    CHA4$DESC_CASEINSENSITIVE("chars", "lower(\"CHA4\")", false), //
+    CHA4$DESC_CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(\"CHA4\"), \"CHA4\"", false), //
+    CHA4$DESC_CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(\"CHA4\"), \"CHA4\"", true), //
+    CHA5("chars", "\"CHA5\"", true), //
+    CHA5$DESC("chars", "\"CHA5\"", false), //
+    CHA5$CASEINSENSITIVE("chars", "lower(\"CHA5\")", true), //
+    CHA5$CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(\"CHA5\"), \"CHA5\"", true), //
+    CHA5$CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(\"CHA5\"), \"CHA5\"", false), //
+    CHA5$DESC_CASEINSENSITIVE("chars", "lower(\"CHA5\")", false), //
+    CHA5$DESC_CASEINSENSITIVE_STABLE_FORWARD("chars", "lower(\"CHA5\"), \"CHA5\"", false), //
+    CHA5$DESC_CASEINSENSITIVE_STABLE_REVERSE("chars", "lower(\"CHA5\"), \"CHA5\"", true), //
+    CHA6("chars", "\"CHA6\"", true), //
+    CHA6$DESC("chars", "\"CHA6\"", false), //
+    CHA7("chars", "\"CHA7\"", true), //
+    CHA7$DESC("chars", "\"CHA7\"", false);
 
     private CharsOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -258,25 +316,30 @@ public class CharsDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public final StringColumn cha1 = new StringColumn(this, "cha1", "cha1", "bpchar", 10, 0, java.lang.String.class, null, null);
-    public final StringColumn cha2 = new StringColumn(this, "cha2", "cha2", "varchar", 10, 0, java.lang.String.class, null, null);
-    public final StringColumn cha3 = new StringColumn(this, "cha3", "cha3", "text", 2147483647, 0, java.lang.String.class, null, null);
+    public final NumberColumn id = new NumberColumn(this, "ID", "id", "NUMBER", 9, 0, java.lang.Integer.class, null, null);
+    public final StringColumn cha1 = new StringColumn(this, "CHA1", "cha1", "CHAR", 10, null, java.lang.String.class, null, null);
+    public final StringColumn cha2 = new StringColumn(this, "CHA2", "cha2", "VARCHAR2", 20, null, java.lang.String.class, null, null);
+    public final StringColumn cha3 = new StringColumn(this, "CHA3", "cha3", "VARCHAR2", 20, null, java.lang.String.class, null, null);
+    public final ObjectColumn cha4 = new ObjectColumn(this, "CHA4", "cha4", "NCHAR", 30, null, java.lang.Object.class, null, null);
+    public final ObjectColumn cha5 = new ObjectColumn(this, "CHA5", "cha5", "NVARCHAR2", 40, null, java.lang.Object.class, null, null);
+    public final StringColumn cha6 = new StringColumn(this, "CHA6", "cha6", "CLOB", 4000, null, java.lang.String.class, null, null);
+    public final ObjectColumn cha7 = new ObjectColumn(this, "CHA7", "cha7", "NCLOB", 4000, null, java.lang.Object.class, null, null);
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this.cha1, this.cha2, this.cha3);
+      return new AllColumns(this.id, this.cha1, this.cha2, this.cha3, this.cha4, this.cha5, this.cha6, this.cha7);
     }
 
     // Constructors
 
     CharsTable() {
-      super(null, null, Name.of("chars", false), "Table", null);
+      super(null, null, Name.of("CHARS", false), "Table", null);
       initialize();
     }
 
     CharsTable(final String alias) {
-      super(null, null, Name.of("chars", false), "Table", alias);
+      super(null, null, Name.of("CHARS", false), "Table", alias);
       initialize();
     }
 
@@ -284,9 +347,14 @@ public class CharsDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
+      super.columns.add(this.id);
       super.columns.add(this.cha1);
       super.columns.add(this.cha2);
       super.columns.add(this.cha3);
+      super.columns.add(this.cha4);
+      super.columns.add(this.cha5);
+      super.columns.add(this.cha6);
+      super.columns.add(this.cha7);
     }
 
   }

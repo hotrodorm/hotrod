@@ -106,34 +106,10 @@ public class DatesDAO implements Serializable, ApplicationContextAware {
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
     mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
-    mo.setDat1((java.sql.Date) m.get(p + "dat1" + s));
-    mo.setTs1((java.sql.Timestamp) m.get(p + "ts1" + s));
-    mo.setTs2((java.sql.Timestamp) m.get(p + "ts2" + s));
-    mo.setTs3((java.sql.Timestamp) m.get(p + "ts3" + s));
-    mo.setTs4((java.sql.Timestamp) m.get(p + "ts4" + s));
-    mo.setTs5((java.sql.Timestamp) m.get(p + "ts5" + s));
-    mo.setTim1((java.sql.Timestamp) m.get(p + "tim1" + s));
-    mo.setTim2((java.sql.Timestamp) m.get(p + "tim2" + s));
-    mo.setTim3((java.sql.Timestamp) m.get(p + "tim3" + s));
-    mo.setTim4((java.sql.Timestamp) m.get(p + "tim4" + s));
-    mo.setTim5((java.sql.Timestamp) m.get(p + "tim5" + s));
-    mo.setIvt1(m.get(p + "ivt1" + s));
-    mo.setIvt2(m.get(p + "ivt2" + s));
-    mo.setIvt3(m.get(p + "ivt3" + s));
-    mo.setIvt4(m.get(p + "ivt4" + s));
-    mo.setIvt5(m.get(p + "ivt5" + s));
-    mo.setIvt6(m.get(p + "ivt6" + s));
-    mo.setIvt7(m.get(p + "ivt7" + s));
-    mo.setIvt8(m.get(p + "ivt8" + s));
-    mo.setIvt9(m.get(p + "ivt9" + s));
-    mo.setIvt10(m.get(p + "ivt10" + s));
-    mo.setIvt11(m.get(p + "ivt11" + s));
-    mo.setIvt12(m.get(p + "ivt12" + s));
-    mo.setIvt13(m.get(p + "ivt13" + s));
-    mo.setIvt14(m.get(p + "ivt14" + s));
-    mo.setIvt15(m.get(p + "ivt15" + s));
-    mo.setIvt16(m.get(p + "ivt16" + s));
-    mo.setIvt17(m.get(p + "ivt17" + s));
+    mo.setDat1((java.util.Date) m.get(p + "dat1" + s));
+    mo.setDat2((java.sql.Timestamp) m.get(p + "dat2" + s));
+    mo.setDat3((java.sql.Timestamp) m.get(p + "dat3" + s));
+    mo.setDat4((java.sql.Timestamp) m.get(p + "dat4" + s));
     return mo;
   }
 
@@ -185,33 +161,9 @@ public class DatesDAO implements Serializable, ApplicationContextAware {
     app.daos.DatesVO mo = springBeanObjectFactory.create(app.daos.DatesVO.class);
     mo.setId(vo.getId());
     mo.setDat1(vo.getDat1());
-    mo.setTs1(vo.getTs1());
-    mo.setTs2(vo.getTs2());
-    mo.setTs3(vo.getTs3());
-    mo.setTs4(vo.getTs4());
-    mo.setTs5(vo.getTs5());
-    mo.setTim1(vo.getTim1());
-    mo.setTim2(vo.getTim2());
-    mo.setTim3(vo.getTim3());
-    mo.setTim4(vo.getTim4());
-    mo.setTim5(vo.getTim5());
-    mo.setIvt1(vo.getIvt1());
-    mo.setIvt2(vo.getIvt2());
-    mo.setIvt3(vo.getIvt3());
-    mo.setIvt4(vo.getIvt4());
-    mo.setIvt5(vo.getIvt5());
-    mo.setIvt6(vo.getIvt6());
-    mo.setIvt7(vo.getIvt7());
-    mo.setIvt8(vo.getIvt8());
-    mo.setIvt9(vo.getIvt9());
-    mo.setIvt10(vo.getIvt10());
-    mo.setIvt11(vo.getIvt11());
-    mo.setIvt12(vo.getIvt12());
-    mo.setIvt13(vo.getIvt13());
-    mo.setIvt14(vo.getIvt14());
-    mo.setIvt15(vo.getIvt15());
-    mo.setIvt16(vo.getIvt16());
-    mo.setIvt17(vo.getIvt17());
+    mo.setDat2(vo.getDat2());
+    mo.setDat3(vo.getDat3());
+    mo.setDat4(vo.getDat4());
     return mo;
   }
 
@@ -244,35 +196,11 @@ public class DatesDAO implements Serializable, ApplicationContextAware {
 
   public UpdateSetCompletePhase update(final app.daos.primitives.AbstractDatesVO updateValues, final DatesDAO.DatesTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
-    if (updateValues.getId() != null) values.put("\"id\"", updateValues.getId());
-    if (updateValues.getDat1() != null) values.put("\"dat1\"", updateValues.getDat1());
-    if (updateValues.getTs1() != null) values.put("\"ts1\"", updateValues.getTs1());
-    if (updateValues.getTs2() != null) values.put("\"ts2\"", updateValues.getTs2());
-    if (updateValues.getTs3() != null) values.put("\"ts3\"", updateValues.getTs3());
-    if (updateValues.getTs4() != null) values.put("\"ts4\"", updateValues.getTs4());
-    if (updateValues.getTs5() != null) values.put("\"ts5\"", updateValues.getTs5());
-    if (updateValues.getTim1() != null) values.put("\"tim1\"", updateValues.getTim1());
-    if (updateValues.getTim2() != null) values.put("\"tim2\"", updateValues.getTim2());
-    if (updateValues.getTim3() != null) values.put("\"tim3\"", updateValues.getTim3());
-    if (updateValues.getTim4() != null) values.put("\"tim4\"", updateValues.getTim4());
-    if (updateValues.getTim5() != null) values.put("\"tim5\"", updateValues.getTim5());
-    if (updateValues.getIvt1() != null) values.put("\"ivt1\"", updateValues.getIvt1());
-    if (updateValues.getIvt2() != null) values.put("\"ivt2\"", updateValues.getIvt2());
-    if (updateValues.getIvt3() != null) values.put("\"ivt3\"", updateValues.getIvt3());
-    if (updateValues.getIvt4() != null) values.put("\"ivt4\"", updateValues.getIvt4());
-    if (updateValues.getIvt5() != null) values.put("\"ivt5\"", updateValues.getIvt5());
-    if (updateValues.getIvt6() != null) values.put("\"ivt6\"", updateValues.getIvt6());
-    if (updateValues.getIvt7() != null) values.put("\"ivt7\"", updateValues.getIvt7());
-    if (updateValues.getIvt8() != null) values.put("\"ivt8\"", updateValues.getIvt8());
-    if (updateValues.getIvt9() != null) values.put("\"ivt9\"", updateValues.getIvt9());
-    if (updateValues.getIvt10() != null) values.put("\"ivt10\"", updateValues.getIvt10());
-    if (updateValues.getIvt11() != null) values.put("\"ivt11\"", updateValues.getIvt11());
-    if (updateValues.getIvt12() != null) values.put("\"ivt12\"", updateValues.getIvt12());
-    if (updateValues.getIvt13() != null) values.put("\"ivt13\"", updateValues.getIvt13());
-    if (updateValues.getIvt14() != null) values.put("\"ivt14\"", updateValues.getIvt14());
-    if (updateValues.getIvt15() != null) values.put("\"ivt15\"", updateValues.getIvt15());
-    if (updateValues.getIvt16() != null) values.put("\"ivt16\"", updateValues.getIvt16());
-    if (updateValues.getIvt17() != null) values.put("\"ivt17\"", updateValues.getIvt17());
+    if (updateValues.getId() != null) values.put("\"ID\"", updateValues.getId());
+    if (updateValues.getDat1() != null) values.put("\"DAT1\"", updateValues.getDat1());
+    if (updateValues.getDat2() != null) values.put("\"DAT2\"", updateValues.getDat2());
+    if (updateValues.getDat3() != null) values.put("\"DAT3\"", updateValues.getDat3());
+    if (updateValues.getDat4() != null) values.put("\"DAT4\"", updateValues.getDat4());
     return new UpdateSetCompletePhase(this.context, "mappers.dates.updateByCriteria", tableOrView,  predicate, values);
   }
 
@@ -293,64 +221,16 @@ public class DatesDAO implements Serializable, ApplicationContextAware {
 
   public enum DatesOrderBy implements OrderBy {
 
-    ID("dates", "\"id\"", true), //
-    ID$DESC("dates", "\"id\"", false), //
-    DAT1("dates", "\"dat1\"", true), //
-    DAT1$DESC("dates", "\"dat1\"", false), //
-    TS1("dates", "\"ts1\"", true), //
-    TS1$DESC("dates", "\"ts1\"", false), //
-    TS2("dates", "\"ts2\"", true), //
-    TS2$DESC("dates", "\"ts2\"", false), //
-    TS3("dates", "\"ts3\"", true), //
-    TS3$DESC("dates", "\"ts3\"", false), //
-    TS4("dates", "\"ts4\"", true), //
-    TS4$DESC("dates", "\"ts4\"", false), //
-    TS5("dates", "\"ts5\"", true), //
-    TS5$DESC("dates", "\"ts5\"", false), //
-    TIM1("dates", "\"tim1\"", true), //
-    TIM1$DESC("dates", "\"tim1\"", false), //
-    TIM2("dates", "\"tim2\"", true), //
-    TIM2$DESC("dates", "\"tim2\"", false), //
-    TIM3("dates", "\"tim3\"", true), //
-    TIM3$DESC("dates", "\"tim3\"", false), //
-    TIM4("dates", "\"tim4\"", true), //
-    TIM4$DESC("dates", "\"tim4\"", false), //
-    TIM5("dates", "\"tim5\"", true), //
-    TIM5$DESC("dates", "\"tim5\"", false), //
-    IVT1("dates", "\"ivt1\"", true), //
-    IVT1$DESC("dates", "\"ivt1\"", false), //
-    IVT2("dates", "\"ivt2\"", true), //
-    IVT2$DESC("dates", "\"ivt2\"", false), //
-    IVT3("dates", "\"ivt3\"", true), //
-    IVT3$DESC("dates", "\"ivt3\"", false), //
-    IVT4("dates", "\"ivt4\"", true), //
-    IVT4$DESC("dates", "\"ivt4\"", false), //
-    IVT5("dates", "\"ivt5\"", true), //
-    IVT5$DESC("dates", "\"ivt5\"", false), //
-    IVT6("dates", "\"ivt6\"", true), //
-    IVT6$DESC("dates", "\"ivt6\"", false), //
-    IVT7("dates", "\"ivt7\"", true), //
-    IVT7$DESC("dates", "\"ivt7\"", false), //
-    IVT8("dates", "\"ivt8\"", true), //
-    IVT8$DESC("dates", "\"ivt8\"", false), //
-    IVT9("dates", "\"ivt9\"", true), //
-    IVT9$DESC("dates", "\"ivt9\"", false), //
-    IVT10("dates", "\"ivt10\"", true), //
-    IVT10$DESC("dates", "\"ivt10\"", false), //
-    IVT11("dates", "\"ivt11\"", true), //
-    IVT11$DESC("dates", "\"ivt11\"", false), //
-    IVT12("dates", "\"ivt12\"", true), //
-    IVT12$DESC("dates", "\"ivt12\"", false), //
-    IVT13("dates", "\"ivt13\"", true), //
-    IVT13$DESC("dates", "\"ivt13\"", false), //
-    IVT14("dates", "\"ivt14\"", true), //
-    IVT14$DESC("dates", "\"ivt14\"", false), //
-    IVT15("dates", "\"ivt15\"", true), //
-    IVT15$DESC("dates", "\"ivt15\"", false), //
-    IVT16("dates", "\"ivt16\"", true), //
-    IVT16$DESC("dates", "\"ivt16\"", false), //
-    IVT17("dates", "\"ivt17\"", true), //
-    IVT17$DESC("dates", "\"ivt17\"", false);
+    ID("dates", "\"ID\"", true), //
+    ID$DESC("dates", "\"ID\"", false), //
+    DAT1("dates", "\"DAT1\"", true), //
+    DAT1$DESC("dates", "\"DAT1\"", false), //
+    DAT2("dates", "\"DAT2\"", true), //
+    DAT2$DESC("dates", "\"DAT2\"", false), //
+    DAT3("dates", "\"DAT3\"", true), //
+    DAT3$DESC("dates", "\"DAT3\"", false), //
+    DAT4("dates", "\"DAT4\"", true), //
+    DAT4$DESC("dates", "\"DAT4\"", false);
 
     private DatesOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -391,51 +271,27 @@ public class DatesDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public final NumberColumn id = new NumberColumn(this, "id", "id", "int4", 10, 0, java.lang.Integer.class, null, null);
-    public final DateTimeColumn dat1 = new DateTimeColumn(this, "dat1", "dat1", "date", 13, 0, java.sql.Date.class, null, null);
-    public final DateTimeColumn ts1 = new DateTimeColumn(this, "ts1", "ts1", "timestamp", 29, 6, java.sql.Timestamp.class, null, null);
-    public final DateTimeColumn ts2 = new DateTimeColumn(this, "ts2", "ts2", "timestamp", 29, 6, java.sql.Timestamp.class, null, null);
-    public final DateTimeColumn ts3 = new DateTimeColumn(this, "ts3", "ts3", "timestamptz", 35, 6, java.sql.Timestamp.class, null, null);
-    public final DateTimeColumn ts4 = new DateTimeColumn(this, "ts4", "ts4", "timestamptz", 35, 6, java.sql.Timestamp.class, null, null);
-    public final DateTimeColumn ts5 = new DateTimeColumn(this, "ts5", "ts5", "timestamp", 29, 6, java.sql.Timestamp.class, null, null);
-    public final DateTimeColumn tim1 = new DateTimeColumn(this, "tim1", "tim1", "time", 15, 6, java.sql.Timestamp.class, null, null);
-    public final DateTimeColumn tim2 = new DateTimeColumn(this, "tim2", "tim2", "time", 15, 6, java.sql.Timestamp.class, null, null);
-    public final DateTimeColumn tim3 = new DateTimeColumn(this, "tim3", "tim3", "timetz", 21, 6, java.sql.Timestamp.class, null, null);
-    public final DateTimeColumn tim4 = new DateTimeColumn(this, "tim4", "tim4", "timetz", 21, 6, java.sql.Timestamp.class, null, null);
-    public final DateTimeColumn tim5 = new DateTimeColumn(this, "tim5", "tim5", "time", 15, 6, java.sql.Timestamp.class, null, null);
-    public final ObjectColumn ivt1 = new ObjectColumn(this, "ivt1", "ivt1", "interval", 49, 65535, java.lang.Object.class, null, null);
-    public final ObjectColumn ivt2 = new ObjectColumn(this, "ivt2", "ivt2", "interval", 49, 65535, java.lang.Object.class, null, null);
-    public final ObjectColumn ivt3 = new ObjectColumn(this, "ivt3", "ivt3", "interval", 49, 65535, java.lang.Object.class, null, null);
-    public final ObjectColumn ivt4 = new ObjectColumn(this, "ivt4", "ivt4", "interval", 49, 65535, java.lang.Object.class, null, null);
-    public final ObjectColumn ivt5 = new ObjectColumn(this, "ivt5", "ivt5", "interval", 49, 65535, java.lang.Object.class, null, null);
-    public final ObjectColumn ivt6 = new ObjectColumn(this, "ivt6", "ivt6", "interval", 49, 65535, java.lang.Object.class, null, null);
-    public final ObjectColumn ivt7 = new ObjectColumn(this, "ivt7", "ivt7", "interval", 49, 5, java.lang.Object.class, null, null);
-    public final ObjectColumn ivt8 = new ObjectColumn(this, "ivt8", "ivt8", "interval", 49, 65535, java.lang.Object.class, null, null);
-    public final ObjectColumn ivt9 = new ObjectColumn(this, "ivt9", "ivt9", "interval", 49, 65535, java.lang.Object.class, null, null);
-    public final ObjectColumn ivt10 = new ObjectColumn(this, "ivt10", "ivt10", "interval", 49, 65535, java.lang.Object.class, null, null);
-    public final ObjectColumn ivt11 = new ObjectColumn(this, "ivt11", "ivt11", "interval", 49, 65535, java.lang.Object.class, null, null);
-    public final ObjectColumn ivt12 = new ObjectColumn(this, "ivt12", "ivt12", "interval", 49, 5, java.lang.Object.class, null, null);
-    public final ObjectColumn ivt13 = new ObjectColumn(this, "ivt13", "ivt13", "interval", 49, 65535, java.lang.Object.class, null, null);
-    public final ObjectColumn ivt14 = new ObjectColumn(this, "ivt14", "ivt14", "interval", 49, 65535, java.lang.Object.class, null, null);
-    public final ObjectColumn ivt15 = new ObjectColumn(this, "ivt15", "ivt15", "interval", 49, 5, java.lang.Object.class, null, null);
-    public final ObjectColumn ivt16 = new ObjectColumn(this, "ivt16", "ivt16", "interval", 49, 65535, java.lang.Object.class, null, null);
-    public final ObjectColumn ivt17 = new ObjectColumn(this, "ivt17", "ivt17", "interval", 49, 5, java.lang.Object.class, null, null);
+    public final NumberColumn id = new NumberColumn(this, "ID", "id", "NUMBER", 9, 0, java.lang.Integer.class, null, null);
+    public final DateTimeColumn dat1 = new DateTimeColumn(this, "DAT1", "dat1", "DATE", 7, null, java.util.Date.class, null, null);
+    public final DateTimeColumn dat2 = new DateTimeColumn(this, "DAT2", "dat2", "TIMESTAMP(6)", 11, 6, java.sql.Timestamp.class, null, null);
+    public final DateTimeColumn dat3 = new DateTimeColumn(this, "DAT3", "dat3", "TIMESTAMP(6) WITH TIME ZONE", 13, 6, java.sql.Timestamp.class, null, null);
+    public final DateTimeColumn dat4 = new DateTimeColumn(this, "DAT4", "dat4", "TIMESTAMP(6) WITH LOCAL TIME ZONE", 11, 6, java.sql.Timestamp.class, null, null);
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this.id, this.dat1, this.ts1, this.ts2, this.ts3, this.ts4, this.ts5, this.tim1, this.tim2, this.tim3, this.tim4, this.tim5, this.ivt1, this.ivt2, this.ivt3, this.ivt4, this.ivt5, this.ivt6, this.ivt7, this.ivt8, this.ivt9, this.ivt10, this.ivt11, this.ivt12, this.ivt13, this.ivt14, this.ivt15, this.ivt16, this.ivt17);
+      return new AllColumns(this.id, this.dat1, this.dat2, this.dat3, this.dat4);
     }
 
     // Constructors
 
     DatesTable() {
-      super(null, null, Name.of("dates", false), "Table", null);
+      super(null, null, Name.of("DATES", false), "Table", null);
       initialize();
     }
 
     DatesTable(final String alias) {
-      super(null, null, Name.of("dates", false), "Table", alias);
+      super(null, null, Name.of("DATES", false), "Table", alias);
       initialize();
     }
 
@@ -445,33 +301,9 @@ public class DatesDAO implements Serializable, ApplicationContextAware {
       super.columns = new ArrayList<>();
       super.columns.add(this.id);
       super.columns.add(this.dat1);
-      super.columns.add(this.ts1);
-      super.columns.add(this.ts2);
-      super.columns.add(this.ts3);
-      super.columns.add(this.ts4);
-      super.columns.add(this.ts5);
-      super.columns.add(this.tim1);
-      super.columns.add(this.tim2);
-      super.columns.add(this.tim3);
-      super.columns.add(this.tim4);
-      super.columns.add(this.tim5);
-      super.columns.add(this.ivt1);
-      super.columns.add(this.ivt2);
-      super.columns.add(this.ivt3);
-      super.columns.add(this.ivt4);
-      super.columns.add(this.ivt5);
-      super.columns.add(this.ivt6);
-      super.columns.add(this.ivt7);
-      super.columns.add(this.ivt8);
-      super.columns.add(this.ivt9);
-      super.columns.add(this.ivt10);
-      super.columns.add(this.ivt11);
-      super.columns.add(this.ivt12);
-      super.columns.add(this.ivt13);
-      super.columns.add(this.ivt14);
-      super.columns.add(this.ivt15);
-      super.columns.add(this.ivt16);
-      super.columns.add(this.ivt17);
+      super.columns.add(this.dat2);
+      super.columns.add(this.dat3);
+      super.columns.add(this.dat4);
     }
 
   }

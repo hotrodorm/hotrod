@@ -105,35 +105,27 @@ public class OtherDAO implements Serializable, ApplicationContextAware {
     app.daos.OtherVO mo = this.applicationContext.getBean(app.daos.OtherVO.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
-    mo.setGeo1(m.get(p + "geo1" + s));
-    mo.setGeo2(m.get(p + "geo2" + s));
-    mo.setGeo3(m.get(p + "geo3" + s));
-    mo.setGeo4(m.get(p + "geo4" + s));
-    mo.setGeo5(m.get(p + "geo5" + s));
-    mo.setGeo6(m.get(p + "geo6" + s));
-    mo.setGeo7(m.get(p + "geo7" + s));
-    mo.setNet1(m.get(p + "net1" + s));
-    mo.setNet2(m.get(p + "net2" + s));
-    mo.setNet3(m.get(p + "net3" + s));
-    mo.setUui1(m.get(p + "uui1" + s));
-    mo.setJso1(m.get(p + "jso1" + s));
-    mo.setJso2(m.get(p + "jso2" + s));
-    mo.setArr1(m.get(p + "arr1" + s));
-    mo.setArr2(m.get(p + "arr2" + s));
-    mo.setArr3(m.get(p + "arr3" + s));
-    mo.setCom1(m.get(p + "com1" + s));
-    mo.setRan1(m.get(p + "ran1" + s));
-    mo.setRan2(m.get(p + "ran2" + s));
-    mo.setRan3(m.get(p + "ran3" + s));
-    mo.setRan4(m.get(p + "ran4" + s));
-    mo.setRan5(m.get(p + "ran5" + s));
-    mo.setRan6(m.get(p + "ran6" + s));
+    mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
+    mo.setItv2(m.get(p + "itv2" + s));
+    mo.setItv4(m.get(p + "itv4" + s));
+    mo.setOth2(m.get(p + "oth2" + s));
+    mo.setNames(m.get(p + "names" + s));
+    mo.setStu1(m.get(p + "stu1" + s));
+    mo.setRef1(m.get(p + "ref1" + s));
     return mo;
   }
 
-  // no select by PK generated, since the table does not have a PK.
+  // select by primary key
 
-  // select by unique indexes: no unique indexes found -- skipped
+  public app.daos.OtherVO select(final java.lang.Integer id) {
+    if (id == null)
+      return null;
+    app.daos.OtherVO vo = new app.daos.OtherVO();
+    vo.setId(id);
+    return this.sqlSession.selectOne("mappers.other.selectByPK", vo);
+  }
+
+  // select by unique indexes: no unique indexes found (besides the PK) -- skipped
 
   // select by example
 
@@ -169,35 +161,32 @@ public class OtherDAO implements Serializable, ApplicationContextAware {
     String id = "mappers.other.insert";
     this.sqlSession.insert(id, vo);
     app.daos.OtherVO mo = springBeanObjectFactory.create(app.daos.OtherVO.class);
-    mo.setGeo1(vo.getGeo1());
-    mo.setGeo2(vo.getGeo2());
-    mo.setGeo3(vo.getGeo3());
-    mo.setGeo4(vo.getGeo4());
-    mo.setGeo5(vo.getGeo5());
-    mo.setGeo6(vo.getGeo6());
-    mo.setGeo7(vo.getGeo7());
-    mo.setNet1(vo.getNet1());
-    mo.setNet2(vo.getNet2());
-    mo.setNet3(vo.getNet3());
-    mo.setUui1(vo.getUui1());
-    mo.setJso1(vo.getJso1());
-    mo.setJso2(vo.getJso2());
-    mo.setArr1(vo.getArr1());
-    mo.setArr2(vo.getArr2());
-    mo.setArr3(vo.getArr3());
-    mo.setCom1(vo.getCom1());
-    mo.setRan1(vo.getRan1());
-    mo.setRan2(vo.getRan2());
-    mo.setRan3(vo.getRan3());
-    mo.setRan4(vo.getRan4());
-    mo.setRan5(vo.getRan5());
-    mo.setRan6(vo.getRan6());
+    mo.setId(vo.getId());
+    mo.setItv2(vo.getItv2());
+    mo.setItv4(vo.getItv4());
+    mo.setOth2(vo.getOth2());
+    mo.setNames(vo.getNames());
+    mo.setStu1(vo.getStu1());
+    mo.setRef1(vo.getRef1());
     return mo;
   }
 
-  // no update by PK generated, since the table does not have a PK.
+  // update by PK
 
-  // no delete by PK generated, since the table does not have a PK.
+  public int update(final app.daos.OtherVO vo) {
+    if (vo.getId() == null) return 0;
+    return this.sqlSession.update("mappers.other.updateByPK", vo);
+  }
+
+  // delete by PK
+
+  public int delete(final java.lang.Integer id) {
+    if (id == null) return 0;
+    app.daos.OtherVO vo = new app.daos.OtherVO();
+    vo.setId(id);
+    if (vo.getId() == null) return 0;
+    return this.sqlSession.delete("mappers.other.deleteByPK", vo);
+  }
 
   // update by example
 
@@ -211,29 +200,13 @@ public class OtherDAO implements Serializable, ApplicationContextAware {
 
   public UpdateSetCompletePhase update(final app.daos.primitives.AbstractOtherVO updateValues, final OtherDAO.OtherTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
-    if (updateValues.getGeo1() != null) values.put("\"geo1\"", updateValues.getGeo1());
-    if (updateValues.getGeo2() != null) values.put("\"geo2\"", updateValues.getGeo2());
-    if (updateValues.getGeo3() != null) values.put("\"geo3\"", updateValues.getGeo3());
-    if (updateValues.getGeo4() != null) values.put("\"geo4\"", updateValues.getGeo4());
-    if (updateValues.getGeo5() != null) values.put("\"geo5\"", updateValues.getGeo5());
-    if (updateValues.getGeo6() != null) values.put("\"geo6\"", updateValues.getGeo6());
-    if (updateValues.getGeo7() != null) values.put("\"geo7\"", updateValues.getGeo7());
-    if (updateValues.getNet1() != null) values.put("\"net1\"", updateValues.getNet1());
-    if (updateValues.getNet2() != null) values.put("\"net2\"", updateValues.getNet2());
-    if (updateValues.getNet3() != null) values.put("\"net3\"", updateValues.getNet3());
-    if (updateValues.getUui1() != null) values.put("\"uui1\"", updateValues.getUui1());
-    if (updateValues.getJso1() != null) values.put("\"jso1\"", updateValues.getJso1());
-    if (updateValues.getJso2() != null) values.put("\"jso2\"", updateValues.getJso2());
-    if (updateValues.getArr1() != null) values.put("\"arr1\"", updateValues.getArr1());
-    if (updateValues.getArr2() != null) values.put("\"arr2\"", updateValues.getArr2());
-    if (updateValues.getArr3() != null) values.put("\"arr3\"", updateValues.getArr3());
-    if (updateValues.getCom1() != null) values.put("\"com1\"", updateValues.getCom1());
-    if (updateValues.getRan1() != null) values.put("\"ran1\"", updateValues.getRan1());
-    if (updateValues.getRan2() != null) values.put("\"ran2\"", updateValues.getRan2());
-    if (updateValues.getRan3() != null) values.put("\"ran3\"", updateValues.getRan3());
-    if (updateValues.getRan4() != null) values.put("\"ran4\"", updateValues.getRan4());
-    if (updateValues.getRan5() != null) values.put("\"ran5\"", updateValues.getRan5());
-    if (updateValues.getRan6() != null) values.put("\"ran6\"", updateValues.getRan6());
+    if (updateValues.getId() != null) values.put("\"ID\"", updateValues.getId());
+    if (updateValues.getItv2() != null) values.put("\"ITV2\"", updateValues.getItv2());
+    if (updateValues.getItv4() != null) values.put("\"ITV4\"", updateValues.getItv4());
+    if (updateValues.getOth2() != null) values.put("\"OTH2\"", updateValues.getOth2());
+    if (updateValues.getNames() != null) values.put("\"NAMES\"", updateValues.getNames());
+    if (updateValues.getStu1() != null) values.put("\"STU1\"", updateValues.getStu1());
+    if (updateValues.getRef1() != null) values.put("\"REF1\"", updateValues.getRef1());
     return new UpdateSetCompletePhase(this.context, "mappers.other.updateByCriteria", tableOrView,  predicate, values);
   }
 
@@ -254,52 +227,20 @@ public class OtherDAO implements Serializable, ApplicationContextAware {
 
   public enum OtherOrderBy implements OrderBy {
 
-    GEO1("other", "\"geo1\"", true), //
-    GEO1$DESC("other", "\"geo1\"", false), //
-    GEO2("other", "\"geo2\"", true), //
-    GEO2$DESC("other", "\"geo2\"", false), //
-    GEO3("other", "\"geo3\"", true), //
-    GEO3$DESC("other", "\"geo3\"", false), //
-    GEO4("other", "\"geo4\"", true), //
-    GEO4$DESC("other", "\"geo4\"", false), //
-    GEO5("other", "\"geo5\"", true), //
-    GEO5$DESC("other", "\"geo5\"", false), //
-    GEO6("other", "\"geo6\"", true), //
-    GEO6$DESC("other", "\"geo6\"", false), //
-    GEO7("other", "\"geo7\"", true), //
-    GEO7$DESC("other", "\"geo7\"", false), //
-    NET1("other", "\"net1\"", true), //
-    NET1$DESC("other", "\"net1\"", false), //
-    NET2("other", "\"net2\"", true), //
-    NET2$DESC("other", "\"net2\"", false), //
-    NET3("other", "\"net3\"", true), //
-    NET3$DESC("other", "\"net3\"", false), //
-    UUI1("other", "\"uui1\"", true), //
-    UUI1$DESC("other", "\"uui1\"", false), //
-    JSO1("other", "\"jso1\"", true), //
-    JSO1$DESC("other", "\"jso1\"", false), //
-    JSO2("other", "\"jso2\"", true), //
-    JSO2$DESC("other", "\"jso2\"", false), //
-    ARR1("other", "\"arr1\"", true), //
-    ARR1$DESC("other", "\"arr1\"", false), //
-    ARR2("other", "\"arr2\"", true), //
-    ARR2$DESC("other", "\"arr2\"", false), //
-    ARR3("other", "\"arr3\"", true), //
-    ARR3$DESC("other", "\"arr3\"", false), //
-    COM1("other", "\"com1\"", true), //
-    COM1$DESC("other", "\"com1\"", false), //
-    RAN1("other", "\"ran1\"", true), //
-    RAN1$DESC("other", "\"ran1\"", false), //
-    RAN2("other", "\"ran2\"", true), //
-    RAN2$DESC("other", "\"ran2\"", false), //
-    RAN3("other", "\"ran3\"", true), //
-    RAN3$DESC("other", "\"ran3\"", false), //
-    RAN4("other", "\"ran4\"", true), //
-    RAN4$DESC("other", "\"ran4\"", false), //
-    RAN5("other", "\"ran5\"", true), //
-    RAN5$DESC("other", "\"ran5\"", false), //
-    RAN6("other", "\"ran6\"", true), //
-    RAN6$DESC("other", "\"ran6\"", false);
+    ID("other", "\"ID\"", true), //
+    ID$DESC("other", "\"ID\"", false), //
+    ITV2("other", "\"ITV2\"", true), //
+    ITV2$DESC("other", "\"ITV2\"", false), //
+    ITV4("other", "\"ITV4\"", true), //
+    ITV4$DESC("other", "\"ITV4\"", false), //
+    OTH2("other", "\"OTH2\"", true), //
+    OTH2$DESC("other", "\"OTH2\"", false), //
+    NAMES("other", "\"NAMES\"", true), //
+    NAMES$DESC("other", "\"NAMES\"", false), //
+    STU1("other", "\"STU1\"", true), //
+    STU1$DESC("other", "\"STU1\"", false), //
+    REF1("other", "\"REF1\"", true), //
+    REF1$DESC("other", "\"REF1\"", false);
 
     private OtherOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -340,45 +281,29 @@ public class OtherDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public final ObjectColumn geo1 = new ObjectColumn(this, "geo1", "geo1", "point", 2147483647, 0, java.lang.Object.class, null, null);
-    public final ObjectColumn geo2 = new ObjectColumn(this, "geo2", "geo2", "line", 2147483647, 0, java.lang.Object.class, null, null);
-    public final ObjectColumn geo3 = new ObjectColumn(this, "geo3", "geo3", "lseg", 2147483647, 0, java.lang.Object.class, null, null);
-    public final ObjectColumn geo4 = new ObjectColumn(this, "geo4", "geo4", "box", 2147483647, 0, java.lang.Object.class, null, null);
-    public final ObjectColumn geo5 = new ObjectColumn(this, "geo5", "geo5", "path", 2147483647, 0, java.lang.Object.class, null, null);
-    public final ObjectColumn geo6 = new ObjectColumn(this, "geo6", "geo6", "polygon", 2147483647, 0, java.lang.Object.class, null, null);
-    public final ObjectColumn geo7 = new ObjectColumn(this, "geo7", "geo7", "circle", 2147483647, 0, java.lang.Object.class, null, null);
-    public final ObjectColumn net1 = new ObjectColumn(this, "net1", "net1", "cidr", 2147483647, 0, java.lang.Object.class, null, null);
-    public final ObjectColumn net2 = new ObjectColumn(this, "net2", "net2", "inet", 2147483647, 0, java.lang.Object.class, null, null);
-    public final ObjectColumn net3 = new ObjectColumn(this, "net3", "net3", "macaddr", 2147483647, 0, java.lang.Object.class, null, null);
-    public final ObjectColumn uui1 = new ObjectColumn(this, "uui1", "uui1", "uuid", 2147483647, 0, java.lang.Object.class, null, null);
-    public final ObjectColumn jso1 = new ObjectColumn(this, "jso1", "jso1", "json", 2147483647, 0, java.lang.Object.class, null, null);
-    public final ObjectColumn jso2 = new ObjectColumn(this, "jso2", "jso2", "jsonb", 2147483647, 0, java.lang.Object.class, null, null);
-    public final ObjectColumn arr1 = new ObjectColumn(this, "arr1", "arr1", "_int4", 10, 0, java.lang.Object.class, null, null);
-    public final ObjectColumn arr2 = new ObjectColumn(this, "arr2", "arr2", "_bpchar", 1, 0, java.lang.Object.class, null, null);
-    public final ObjectColumn arr3 = new ObjectColumn(this, "arr3", "arr3", "_int4", 10, 0, java.lang.Object.class, null, null);
-    public final ObjectColumn com1 = new ObjectColumn(this, "com1", "com1", "complex", 2147483647, 0, java.lang.Object.class, null, null);
-    public final ObjectColumn ran1 = new ObjectColumn(this, "ran1", "ran1", "int4range", 2147483647, 0, java.lang.Object.class, null, null);
-    public final ObjectColumn ran2 = new ObjectColumn(this, "ran2", "ran2", "int8range", 2147483647, 0, java.lang.Object.class, null, null);
-    public final ObjectColumn ran3 = new ObjectColumn(this, "ran3", "ran3", "numrange", 2147483647, 0, java.lang.Object.class, null, null);
-    public final ObjectColumn ran4 = new ObjectColumn(this, "ran4", "ran4", "tsrange", 2147483647, 0, java.lang.Object.class, null, null);
-    public final ObjectColumn ran5 = new ObjectColumn(this, "ran5", "ran5", "tstzrange", 2147483647, 0, java.lang.Object.class, null, null);
-    public final ObjectColumn ran6 = new ObjectColumn(this, "ran6", "ran6", "daterange", 2147483647, 0, java.lang.Object.class, null, null);
+    public final NumberColumn id = new NumberColumn(this, "ID", "id", "NUMBER", 9, 0, java.lang.Integer.class, null, null);
+    public final ObjectColumn itv2 = new ObjectColumn(this, "ITV2", "itv2", "INTERVAL YEAR(2) TO MONTH", 2, 0, java.lang.Object.class, null, null);
+    public final ObjectColumn itv4 = new ObjectColumn(this, "ITV4", "itv4", "INTERVAL DAY(2) TO SECOND(6)", 2, 6, java.lang.Object.class, null, null);
+    public final ObjectColumn oth2 = new ObjectColumn(this, "OTH2", "oth2", "URITYPE", 256, null, java.lang.Object.class, null, null);
+    public final ObjectColumn names = new ObjectColumn(this, "NAMES", "names", "NAMEARRAY2", 50, null, java.lang.Object.class, null, null);
+    public final ObjectColumn stu1 = new ObjectColumn(this, "STU1", "stu1", "PERSON_STRUCT2", 1, null, java.lang.Object.class, null, null);
+    public final ObjectColumn ref1 = new ObjectColumn(this, "REF1", "ref1", "PERSON_STRUCT2", 50, null, java.lang.Object.class, null, null);
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this.geo1, this.geo2, this.geo3, this.geo4, this.geo5, this.geo6, this.geo7, this.net1, this.net2, this.net3, this.uui1, this.jso1, this.jso2, this.arr1, this.arr2, this.arr3, this.com1, this.ran1, this.ran2, this.ran3, this.ran4, this.ran5, this.ran6);
+      return new AllColumns(this.id, this.itv2, this.itv4, this.oth2, this.names, this.stu1, this.ref1);
     }
 
     // Constructors
 
     OtherTable() {
-      super(null, null, Name.of("other", false), "Table", null);
+      super(null, null, Name.of("OTHER", false), "Table", null);
       initialize();
     }
 
     OtherTable(final String alias) {
-      super(null, null, Name.of("other", false), "Table", alias);
+      super(null, null, Name.of("OTHER", false), "Table", alias);
       initialize();
     }
 
@@ -386,29 +311,13 @@ public class OtherDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      super.columns.add(this.geo1);
-      super.columns.add(this.geo2);
-      super.columns.add(this.geo3);
-      super.columns.add(this.geo4);
-      super.columns.add(this.geo5);
-      super.columns.add(this.geo6);
-      super.columns.add(this.geo7);
-      super.columns.add(this.net1);
-      super.columns.add(this.net2);
-      super.columns.add(this.net3);
-      super.columns.add(this.uui1);
-      super.columns.add(this.jso1);
-      super.columns.add(this.jso2);
-      super.columns.add(this.arr1);
-      super.columns.add(this.arr2);
-      super.columns.add(this.arr3);
-      super.columns.add(this.com1);
-      super.columns.add(this.ran1);
-      super.columns.add(this.ran2);
-      super.columns.add(this.ran3);
-      super.columns.add(this.ran4);
-      super.columns.add(this.ran5);
-      super.columns.add(this.ran6);
+      super.columns.add(this.id);
+      super.columns.add(this.itv2);
+      super.columns.add(this.itv4);
+      super.columns.add(this.oth2);
+      super.columns.add(this.names);
+      super.columns.add(this.stu1);
+      super.columns.add(this.ref1);
     }
 
   }
