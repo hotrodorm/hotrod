@@ -249,7 +249,13 @@ public class OracleDialect extends LiveSQLDialect {
         case NO_WAIT:
           return "FOR UPDATE NOWAIT";
         case WAIT:
-          return "FOR UPDATE WAIT " + waitTime;
+          if (waitTime instanceof Integer) {
+            return "FOR UPDATE WAIT " + waitTime;
+          } else {
+            throw new UnsupportedLiveSQLFeatureException(
+                "The Oracle database supports locking with WAIT <n> in SELECT statements only for integer values of <n>, "
+                    + "but the supplied value (" + waitTime + ") is not an integer");
+          }
         case SKIP_LOCKED:
           return "FOR UPDATE SKIP LOCKED";
         default:

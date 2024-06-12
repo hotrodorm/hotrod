@@ -275,11 +275,11 @@ public class LiveSQL {
 
   // Subquery existence
 
-  public <R> Predicate exists(final Select<R> subquery) {
+  public <R> Predicate exists(final Select<?> subquery) {
     return new Exists(subquery);
   }
 
-  public <R> Predicate notExists(final Select<R> subquery) {
+  public <R> Predicate notExists(final Select<?> subquery) {
     return new NotExists(subquery);
   }
 

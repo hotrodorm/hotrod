@@ -42,6 +42,7 @@ PG:
 
 ## Oracle
 
+```sql
 create table x (a int, b int);
 insert into x (a, b) values (1, 10);
 insert into x (a, b) values (2, 30);
@@ -52,13 +53,47 @@ insert into x (a, b) values (5, 50);
 select * from x where a >= 3 for update;
 update x set b = b + 1 where a = 4;
 commit;
+```
+
+**Note**: Limiting rows and locking at the same time is not possible in a direct way as in other databases (PostgreSQL, H2, MySQL, etc.) since Oracle
+creates an internal view to implement `FETCH NEXT x ROWS ONLY`. There is a -- rather ugly -- workaround. The query:
+
+```sql
+SELECT a.*
+FROM invoice a
+WHERE a.amount >= 500
+ORDER BY a.order_date DESC
+FETCH NEXT 1 ROWS ONLY
+FOR UPDATE SKIP LOCKED;
+```
+
+Can be rephrased as:
+
+```sql
+select *
+from invoice
+where id in (
+  SELECT id
+  FROM invoice
+  WHERE amount >= 500
+    ORDER BY order_date DESC
+  FETCH NEXT 1 ROWS ONLY
+)
+FOR UPDATE SKIP LOCKED;
+```
+
+It's not clear if this solution could return zero rows during high database load due to race conditions. It's advised to recheck with a simple non-locking count
+of rows, if the workardoun returns zero rows... just to be on the safe side.
+
 
 ## DB2
 
+```sql
 -- No need for BEGIN TRANSACTION
 select * from x where a >= 3 for update of b with rs;
 update x set b = b + 1 where a = 4;
 commit;
+```
 
 Notes:
 - `WITH RS`: "Read Stability" is needed to ensure proper locking of the row while is being used by the session.
@@ -66,6 +101,7 @@ Notes:
 
 ## PostgreSQL
 
+```sql
 create table x (a int, b int);
 insert into x (a, b) values (1, 10), (2, 20), (3, 30), (4, 40), (5, 50);
 
@@ -73,15 +109,18 @@ begin transaction;
 select * from x where a >= 3 for update;
 update x set b = b + 1 where a = 4;
 commit;
+```
 
 ## SQL Server
 
+```sql
 create table x (a int, b int);
 insert into x (a, b) values (1, 10), (2, 20), (3, 30), (4, 40), (5, 50);
 
 select * from x with (updlock) where a >= 3;
 update x set b = b + 1 where a = 4;
 commit;
+```
 
 Notes:
 - SQL Server locks "pages of rows", not specific rows. A FOR UPDATE (`with (updlock)`) could become highly innefficient in
@@ -89,21 +128,25 @@ a multi-threaded environment.
 
 ## MySQL
 
+```sql
 create table x (a int, b int);
 insert into x (a, b) values (1, 10), (2, 20), (3, 30), (4, 40), (5, 50);
 
 select * from x where a >= 3 for update;
 update x set b = b + 1 where a = 4;
 commit;
+```
 
 ## MariaDB
 
+```sql
 create table x (a int, b int);
 insert into x (a, b) values (1, 10), (2, 20), (3, 30), (4, 40), (5, 50);
 
 select * from x where a >= 3 for update;
 update x set b = b + 1 where a = 4;
 commit;
+```
 
 ## Sybase ASE
 
@@ -114,12 +157,14 @@ Notes:
 
 ## H2
 
+```sql
 create table x (a int, b int);
 insert into x (a, b) values (1, 10), (2, 20), (3, 30), (4, 40), (5, 50);
 
 select * from x where a >= 3 for update;
 update x set b = b + 1 where a = 4;
 commit;
+```
 
 Notes:
 - The default timeout to wait for a lock is very low (1000 ms). This can be changed at instance startup with a parameter or with SQL (FOR UPDATE WAIT <seconds>) in each query execution.
@@ -131,18 +176,21 @@ N/A
 
 ## Derby
 
+```sql
 create table x (a int, b int);
 insert into x (a, b) values (1, 10), (2, 20), (3, 30), (4, 40), (5, 50);
 
 select * from x where a >= 3 for update;
 update x set b = b + 1 where a = 4;
 commit;
+```
 
 Notes:
 - In Derby a SELECT FOR UPDATE does not lock the SELECT, but subsequent changing queries like UPDATE, DELETE.
 
 ### Test
 
+```sql
 create table x (a int, b int);
 insert into x (a, b) values (1, 10), (2, 20), (3, 30), (4, 40), (5, 50);
 
@@ -155,3 +203,4 @@ begin transaction;
 select * from x where a >= 3 for update;
 update x set b = b + 1 where a = 4;
 commit;
+```
