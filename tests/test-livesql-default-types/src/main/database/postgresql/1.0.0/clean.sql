@@ -12,6 +12,9 @@ drop type mood;
 
 drop type complex cascade;
 
+drop table product;
+drop table payment;
+drop table invoice_line;
 drop table invoice;
 drop table branch;
 

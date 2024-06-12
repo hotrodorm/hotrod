@@ -28,6 +28,6 @@
   </table>
 
 
-  <fragment file="./f1.xml" />
+  <fragment file="./reporting.xml" />
 
 </hotrod>

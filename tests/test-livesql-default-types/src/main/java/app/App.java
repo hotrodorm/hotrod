@@ -15,7 +15,6 @@ import java.util.TreeSet;
 
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
-import org.hotrod.runtime.livesql.expressions.numbers.NumberConstant;
 import org.hotrod.runtime.livesql.queries.DMLQuery;
 import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.runtime.livesql.queries.select.CriteriaForUpdatePhase;
@@ -36,9 +35,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import app.daos.BinariesVO;
-import app.daos.primitives.BinariesDAO;
-import app.daos.primitives.BinariesDAO.BinariesTable;
+import app.daos.BranchVO;
 import app.daos.primitives.BranchDAO;
 import app.daos.reporting.InvoiceVO;
 import app.daos.reporting.primitives.InvoiceDAO;
@@ -82,8 +79,8 @@ public class App {
   @Autowired
   private Torcs torcs;
 
-  @Autowired
-  private BinariesDAO typesBinaryDAO;
+//  @Autowired
+//  private TypesBinaryDAO typesBinaryDAO;
 
 //  @Autowired
 //  private TorcsCTP torcsCTP;
@@ -132,13 +129,12 @@ public class App {
 
 //      System.getProperties().setProperty("oracle.jdbc.J2EE13Compliant", "true");
 
-//      crud();
+      crud();
 //      join();
 //      join();     
 //      livesql();
 //      selectByCriteria();
 //      torcs();
-      plainJDBC();
 //      star();
 //      noFrom();
       System.out.println("[ Example complete ]");
@@ -186,6 +182,16 @@ public class App {
   private void crudSelect() {
     List<InvoiceVO> cases = this.invoiceDAO.select(new InvoiceVO());
     cases.forEach(x -> System.out.println("inv:" + x));
+
+    BranchVO nb = new BranchVO();
+    nb.setRegion("SSW");
+    nb.setIsVip(false);
+    this.branchDAO.insert(nb);
+    System.out.println("new branch=" + nb.getId());
+
+    List<BranchVO> bs = this.branchDAO.select(new BranchVO());
+    bs.forEach(x -> System.out.println("b:" + x));
+
   }
 
 //  private void selectCases() {
@@ -734,15 +740,6 @@ public class App {
 //    getSlowestCTPQueryExecutionPlan();
   }
 
-  private void plainJDBC() {
-    Number x = null;
-    NumberConstant xn = sql.val(x);
-    Select<Row> q = this.sql.select(sql.val(3).mult(xn).as("total"));
-    System.out.println("query:" + q.getPreview());
-    List<Row> rows = q.execute();
-    rows.forEach(r -> System.out.println("total: " + r.get("total")));
-  }
-
   private void disableTorcs() {
     // Torcs starts enabled by default
     this.torcs.deactivate();
@@ -809,15 +806,15 @@ public class App {
 
     byte[] d2 = new byte[] { 12, 34, 56 };
 
-    BinariesTable b = BinariesDAO.newTable();
-    for (int i = 0; i < 3; i++) {
-      List<BinariesVO> binaries = this.typesBinaryDAO.select(b, b.bin1.eq(d2)).execute();
-      System.out.println("r[" + binaries.size() + "]");
-    }
-
-    List<BinariesVO> b2 = this.typesBinaryDAO.select(b, b.bin1.isNotNull()).execute();
-    System.out.println("b2=" + b2);
-    printRanking1();
+//    TypesBinaryTable b = TypesBinaryDAO.newTable();
+//    for (int i = 0; i < 3; i++) {
+//      List<TypesBinaryVO> binaries = this.typesBinaryDAO.select(b, b.bin1.eq(d2)).execute();
+//      System.out.println("r[" + binaries.size() + "]");
+//    }
+//
+//    List<TypesBinaryVO> b2 = this.typesBinaryDAO.select(b, b.bin1.isNotNull()).execute();
+//    System.out.println("b2=" + b2);
+//    printRanking1();
 
   }
 
