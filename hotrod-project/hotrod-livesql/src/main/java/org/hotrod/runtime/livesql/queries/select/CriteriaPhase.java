@@ -23,15 +23,15 @@ public abstract class CriteriaPhase<T> implements EntitySelect<T> {
 
   // execute
 
-  public List<T> execute() {
+  public final List<T> execute() {
     return this.select.execute(this.context, this.mapperStatement);
   }
 
-  public Cursor<T> executeCursor() {
+  public final Cursor<T> executeCursor() {
     return this.select.executeCursor(this.context, this.mapperStatement);
   }
 
-  public T executeOne() {
+  public final T executeOne() {
     return this.select.executeOne(this.context, this.mapperStatement);
   }
 

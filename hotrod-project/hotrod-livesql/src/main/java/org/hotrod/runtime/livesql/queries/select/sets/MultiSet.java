@@ -90,7 +90,9 @@ public abstract class MultiSet<R> {
 
         int n = 1;
         for (Object obj : q.getParameters().values()) {
-          ps.setObject(n++, obj);
+          int i = n++;
+          log.info("set parameter #" + i + ": " + obj);
+          ps.setObject(i, obj);
         }
 
         List<String> labels = new ArrayList<>();

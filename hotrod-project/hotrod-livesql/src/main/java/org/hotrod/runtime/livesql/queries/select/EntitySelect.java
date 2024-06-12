@@ -12,6 +12,8 @@ public interface EntitySelect<R> extends Query {
 
   List<R> execute();
 
+  R executeOne();
+
   Cursor<R> executeCursor();
 
 }
