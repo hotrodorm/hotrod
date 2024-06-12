@@ -1,4 +1,4 @@
-# The FOR UPDATE and FOR SHARE Clause &mdash; Pessimistic Locking in LiveSQL
+# Pessimistic Locking
 
 The SQL Standard defines clauses to obtain row locks when selecting data from tables. While there
 are many variations, the most used ones are FOR UPDATE and FOR SHARE.
@@ -25,7 +25,7 @@ isolation level. Higher isolation levels may also force the concurrent SELECTs t
 the rows to be released by the query that is holding them.
 
 
-## Example
+## CRUD Example
 
 This example implements Pessimistic Locking on the table ACCOUNT defined as:
 
@@ -66,6 +66,27 @@ public void debit() {
 The FOR UPDATE clause ensures the selected row is not modified before it's updated. Note that the
 method is annotated with `@Transactional`; this ensures the lock is kept between the execution of the
 SELECT statement and the execution of the UPDATE statement.
+
+
+## LiveSQL Example
+
+In a similar way, a LiveSQL query can lock rows as well. For example:
+
+```sql
+  List<Row> rows = sql
+    .select()
+    .from(i)
+    .where(i.amount.ge(500))
+    .orderBy(i.orderDate.desc())
+    .limit(5)
+    .forUpdate()
+    .skipLocked()
+    .execute();
+```
+
+If the query joins multiple tables, typically only rows of the first one are locked. This, however, is
+database-dependent; consult the specific database documentation to find out if one or more tables could
+be locked simultaneously.
 
 ## Locking Modes
 
