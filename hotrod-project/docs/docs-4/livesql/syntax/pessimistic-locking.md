@@ -99,7 +99,7 @@ are fully exclusive between them.
 The locking modes supported by each database are:
 
 | Database   | FOR UPDATE | FOR SHARE |
-| ---------- |:----------:|:---------:|  
+| ---------- |:----------:|:---------:|
 | Oracle     | Yes*1      | --        |
 | DB2        | Yes        | --        |
 | PostgreSQL | Yes        | Yes       |
@@ -132,7 +132,7 @@ be particularly efficient to implement queuing using tables.
 The concurrency options supported by each database are:
 
 | Database   | NOWAIT  | WAIT &lt;seconds> | SKIP LOCKED |
-| ---------- |:-------:|:----------:|:-----------:|  
+| ---------- |:-------:|:----------:|:-----------:|
 | Oracle     | Yes     | Yes        | Yes         |
 | DB2        | --      | --         | --          |
 | PostgreSQL | Yes     | --         | Yes         |
@@ -140,25 +140,29 @@ The concurrency options supported by each database are:
 | MySQL      | Yes     | --         | Yes         |
 | MariaDB    | Yes     | Yes        | Yes         |
 | Sybase ASE | --      | --         | --          |
-| H2         | Yes     | Yes        | Yes         |
+| H2         | Yes*1   | Yes*1      | Yes*1       |
 | HyperSQL   | --      | --         | --          |
 | Derby      | --      | --         | --          |
+
+*1 Available since version 2.2.x.
 
 
 ## Combining Locking with Other Clauses
 
-The FOR UPDATE clause always need a FROM clause that references a table, or in some cases updatable views.
-It can be combined with the WHERE, ORDER BY, OFFSET, and LIMIT clauses.
+The FOR UPDATE and FOR SHARE clauses always need a FROM clause that references a table,
+or in some cases updatable views. It can be combined with the WHERE, ORDER BY, OFFSET, 
+and LIMIT clauses.
 
-FOR UPDATE is not available to queries that use:
+FOR UPDATE and FOR SHARE is not available to queries that use:
 
 - DISTINCT
 - GROUP BY
 - HAVING
 - UNION [ALL], INTERSECT [ALL], EXCEPT [ALL]
 
-Generally speaking, any of these clauses above prevent the use of FOR UPDATE since they do not keep a 1:1
-relationship between the source rows from a table and resulting rows of the query.
+Generally speaking, any of these clauses above prevent the use of FOR UPDATE/FOR SHARE since
+they do not produce a 1:1 relationship between the source rows from a table and resulting
+rows of the query.
 
 The following query combines all the other clauses. Consider each expression or filtering condition can be
 as simple (as shown here) or as complex as needed:
@@ -184,7 +188,9 @@ as in other databases such as PostgreSQL, H2, MySQL, etc. This issue affects par
 combine limiting rows (e.g. `FETCH NEXT x ROWS ONLY`) with locking (`FOR UPDATE`).
 
 The issue seems to be caused by Oracle creating an internal view to implement `FETCH NEXT x ROWS ONLY`. 
-Nevertheless, there is a -- rather ugly -- workaround. For example, the *invalid* Oracle query:
+Nevertheless, there is a -- rather ugly -- workaround.
+
+For example, the *invalid* Oracle query:
 
 ```sql
 SELECT *
@@ -195,7 +201,7 @@ FETCH NEXT 1 ROWS ONLY
 FOR UPDATE SKIP LOCKED;
 ```
 
-Can be rephrased as a *valid* Oracle query as:
+Can be rephrased as a *valid* Oracle query as shown below:
 
 ```sql
 select *
@@ -215,10 +221,11 @@ In LiveSQL/CRUD this query can be phrased as:
 ```java
   InvoiceTable i = InvoiceDAO.newTable();
   InvoiceTable j = InvoiceDAO.newTable();
-    
+
   List<Invoice> = invoiceDAO
     .select(i, i.id.in(sql.select(j.id).from(j).where(j.amount.ge(500)).orderBy(j.orderDate.desc()).limit(1)))
-    .forUpdate().skipLocked()
+    .forUpdate()
+    .skipLocked()
     .execute();
 ```
 
