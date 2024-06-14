@@ -121,7 +121,7 @@ strategies that could suit different scenarios or existing database tables. See
 
 LiveSQL also includes Pessimistic Locking that is implemented by the use of row-level lockings. These locks are
 acquired by the use of the FOR UPDATE clause (and their variations in different databases). See
-[Pessimistic Locking](syntax/for-update.md) for details.
+[Pessimistic Locking](syntax/pessimistic-locking.md) for details.
 
 
 
