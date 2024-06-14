@@ -100,10 +100,10 @@ The locking modes supported by each database are:
 
 | Database   | FOR UPDATE | FOR SHARE |
 | ---------- |:----------:|:---------:|
-| Oracle     | Yes*1      | --        |
+| Oracle     | Yes *1     | --        |
 | DB2        | Yes        | --        |
 | PostgreSQL | Yes        | Yes       |
-| SQL Server | Yes*2      | --        |
+| SQL Server | Yes *2     | --        |
 | MySQL      | Yes        | Yes       |
 | MariaDB    | Yes        | Yes       |
 | Sybase ASE | -- *3      | --        |
@@ -111,14 +111,14 @@ The locking modes supported by each database are:
 | HyperSQL   | -- *3      | --        |
 | Derby      | -- *3      | --        |
 
-*1 The SQL syntax in Oracle prevent the query to combine FETCH NEXT n ROWS ONLY with FOR UPDATE/FOR SHARE. There's a workaround to combine them, later on in this document.
+*1 The Oracle SQL syntax does not allow a query to combine FETCH NEXT n ROWS ONLY with FOR UPDATE/FOR SHARE. There's a workaround to combine them, shown later on in this document.
 
 *2 SQL Server locks "pages of rows" and not specific rows. A FOR UPDATE (`with (updlock)`) could become inefficient in high concurrency situations.
 
-*3 Locking is not available in plain SQL, but only when using cursors and/or in stored procedures.
+*3 Locking is not available in plain SQL queries, but only when using cursors and/or in stored procedures.
 
 
-## Locking Concurrency Options
+## Locking Concurrency
 
 Both locking modes can be further tailored by specifying how to handle concurrency situations, when the rows of interest are already 
 locked by other sessions. There are three main cases:
@@ -140,7 +140,7 @@ The concurrency options supported by each database are:
 | MySQL      | Yes     | --         | Yes         |
 | MariaDB    | Yes     | Yes        | Yes         |
 | Sybase ASE | --      | --         | --          |
-| H2         | Yes*1   | Yes*1      | Yes*1       |
+| H2         | Yes *1  | Yes *1     | Yes *1      |
 | HyperSQL   | --      | --         | --          |
 | Derby      | --      | --         | --          |
 
@@ -184,11 +184,11 @@ as simple (as shown here) or as complex as needed:
 ### Oracle Syntax Issue
 
 Unfortunately the Oracle SQL Syntax doesn't allow all combinations of SQL clauses when using locking 
-as in other databases such as PostgreSQL, H2, MySQL, etc. This issue affects particularly queries that need to 
+as in other databases such as PostgreSQL, H2, MySQL, MariaDB, etc. This issue affects particularly queries that need to 
 combine limiting rows (e.g. `FETCH NEXT x ROWS ONLY`) with locking (`FOR UPDATE`).
 
 The issue seems to be caused by Oracle creating an internal view to implement `FETCH NEXT x ROWS ONLY`. 
-Nevertheless, there is a -- rather ugly -- workaround.
+Nevertheless, there is a *rather ugly* workaround.
 
 For example, the *invalid* Oracle query:
 
