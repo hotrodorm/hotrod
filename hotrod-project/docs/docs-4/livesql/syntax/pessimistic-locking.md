@@ -90,11 +90,22 @@ be locked simultaneously.
 
 ## Locking Modes
 
-HotRod implements two locking modes: FOR UPDATE and FOR SHARE.
+LiveSQL implements two locking modes: FOR UPDATE and FOR SHARE.
 
-- **FOR UPDATE** (applied using `.forUpdate()`) obtains locks for SELECT, UPDATE and DELETE operations on the data. FOR UPDATE queries 
-are fully exclusive between them.
-- **FOR SHARE** (applied using `.forShare()`) obtains locks for UPDATE and DELETE operations on the data, while allowing other FOR SHARE selects to run concurrently.
+- FOR UPDATE obtains exclusive locks in the selected data so doesn't change until the end of the transaction and ensures it can be updated
+- FOR SHARE obtains locks in the selected data so it doesn't change until the end of the transaction
+
+The following table compares the locking modes:
+
+| Use Case | FOR UPDATE | FOR SHARE |
+| ---------- | ---------- | --------- |
+| Locks last until | the end of the transaction | the end of the transaction |
+| Affects queries in other transactions | UPDATE, DELETE, and SELECT | UPDATE, DELETE |
+| Plain queries with no locking in other transactions | will run normally | will run normally |
+| FOR SHARE queries in other transactions | will wait until this transaction completes, and then will get locks | will succeed immediately and will also obtain locks |
+| FOR UPDATE queries in other transactions | will wait until this transaction completes, and then will get locks | will wait until this transaction completes, and then will get locks |
+| Use them when | you want the data to stay the same for the duration of this operation and you expect **to make changes** to it | you want the data to stay the same for the duration of this operation and you **won't make changes** to it |
+
 
 The locking modes supported by each database are:
 
@@ -144,7 +155,7 @@ The concurrency options supported by each database are:
 | HyperSQL   | --      | --         | --          |
 | Derby      | --      | --         | --          |
 
-*1 Available since version 2.2.x.
+*1 Available since version 2.2.220.
 
 
 ## Combining Locking with Other Clauses
