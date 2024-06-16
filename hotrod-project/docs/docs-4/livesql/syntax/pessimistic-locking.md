@@ -1,6 +1,6 @@
 # Pessimistic Locking
 
-The SQL Standard defines clauses to obtain row locks when selecting data from tables. While there
+The SQL Standard defines clauses to obtain row-level locks when selecting data from tables. While there
 are many variations, the most used ones are FOR UPDATE and FOR SHARE.
 
 The FOR UPDATE and FOR SHARE clauses are used to implement the Pessimistic Locking strategy in the database
