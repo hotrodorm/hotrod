@@ -29,9 +29,9 @@ Namely:
 implements a different subset of data types.
 
 
-## Operators
+## Scalars
 
-LiveSQL implements a significant subset of the most common SQL operators. The tables below are classified 
+LiveSQL implements a significant subset of the most common SQL operators. The tables below are classified
 by operator type.
 
 
@@ -50,6 +50,28 @@ hand, will be processed in the Java application and only the result will be sent
 | &lt;binary> | Literal binary value | `sql.val(byte[])` |
 | OBJECT | Literal object value | `sql.val(<object>)` |
 
+By default boxed scalars are included in the query as SQL parameters (using `?` placeholders).
+This is convenient for optimization purposes, since different parameter values will still produce
+the same query template; in these cases the engine is able to properly cache and optimize the
+query. In some specific cases, plain literals can be useful as well, as explained in the next
+section.
+
+
+### Literal Scalars
+
+Sometimes, however, it could be useful to provide literal values to the engine. In this case,
+for example, a value such as `'ACTIVE'` won't be parameterize with a placeholder but will show
+up *as is* in the query. This provides more information to the optimizer, while defeating engine
+cache at the same time.
+
+Literals are available for some numeric, strings, datetime and boolean values.
+See [Literals](./literals.md).
+
+
+## Operators
+
+In LiveSQL all operators are implemented as functions applied to scalars, columns, or expressions.
+Depending on the scalar, column, or expression the repertoire of available functions changes appropriately.
 
 ### Numeric Operators
 
@@ -109,6 +131,8 @@ hand, will be processed in the Java application and only the result will be sent
 | a AND b | Boolean AND | `<a>.and(<b>)` |
 | a OR b | Boolean OR | `<a>.or(<b>)` |
 | NOT a | Boolean NOT | `sql.not(<a>)` |
+| a AND NOT b | Boolean AND NOT | `<a>.andNot(<b>)` |
+| a OR NOT b | Boolean OR NOT | `<a>.orNot(<b>)` |
 
 ### SQL Operators and Functions
 
@@ -122,15 +146,19 @@ hand, will be processed in the Java application and only the result will be sent
 | a NOT BETWEEN b AND c | NOT BETWEEN | `<a>.notBetween(<b>, <c>)` |
 | COALESCE(a, b, c, ...) | COALESCE() | `sql.coalesce(<a>, <b>, <c>, ...)` |
 | (a, b, c, ...) | tuple | `sql.tuple(<a>, <b>, <c>, ...)` |
-| a [^1] IN (b, c, d, ...) | IN (list) | `<a>.in(<b>, <c>, <d>, ...)` |
-| a [^1] NOT IN (b, c, d, ...) | NOT IN (list) | `<a>.notIn(<b>, <c>, <d>, ...)` |
+| a IN (b, c, d, ...) | IN (list) | `<a>.in(<b>, <c>, <d>, ...)` |
+| a NOT IN (b, c, d, ...) | NOT IN (list) | `<a>.notIn(<b>, <c>, <d>, ...)` |
+| (a, b, ...) IN ((b, c), (d, e), ...) | IN (tuples list) | `sql.tuple(<a>, <b>).in(sql.tuple(<b>, <c>), sql.tuple(<d>, <e>), ...)` |
+| (a, b, ...) NOT IN ((b, c), (d, e), ...) | NOT IN (tuples list) | `sql.tuple(<a>, <b>).notIn(sql.tuple(<b>, <c>), sql.tuple(<d>, <e>), ...)` |
+| a IN (*subquery*) | IN (*subquery*) | `<a>.in(sql.select()...)` |
+| a NOT IN (*subquery*) | NOT IN (*subquery*) | `<a>.notIn(sql.select()...)` |
 | EXISTS (*subquery*) | EXISTS (subquery) | `sql.exists(sql.select()...)` |
 | NOT EXISTS (*subquery*) | NOT EXISTS (subquery) | `sql.notExists(sql.select()...)` |
 | CASE WHEN a THEN b END | CASE | `sql.caseWhen(<a>, <b>).end()` |
 | CASE WHEN a THEN b ELSE e END | CASE | `sql.caseWhen(<a>, <b>).elseValue(e).end()` |
 | CASE WHEN a THEN b WHEN c THEN d ELSE e END | CASE | `sql.caseWhen(<a>, <b>).when(<c>, <d>).elseValue(e).end()` |
 
-**Asymmetric Operators**
+### Asymmetric Operators
 
 | SQL Operator | Description | In LiveSQL |
 | -- | -- | -- |

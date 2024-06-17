@@ -16,14 +16,18 @@ A basic select with a simple condition can look like:
 
 ```java
   List<Employee> employees = this.employeeDAO
-    .select(e, e.salary.plus(e.bonus).ge(40000).and(e.title.locate(" JR", 2).gt(0)))
+    .select(e, e.salary.plus(e.bonus).ge(40000).and(e.title.substring(4, 2).eq("TE")))
+    .orderBy(e.hiringDate.desc())
     .execute();
 ```
 
 Runs the query (in PostgreSQL) as:
 
 ```sql
-  SELECT * FROM employee WHERE salary + bonus >= 40000 AND strpos(title, ' JR', 2) > 0;
+  SELECT *
+  FROM employee
+  WHERE salary + bonus >= 40000 AND subtring(title, 4, 2) = "TE"
+  ORDER BY hiring_date DESC;
 ```
 
 Behind the scenes LiveSQL automatically adapts the SQL syntax to the specific database.
