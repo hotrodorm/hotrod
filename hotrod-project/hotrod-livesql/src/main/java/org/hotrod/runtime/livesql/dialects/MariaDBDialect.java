@@ -3,7 +3,7 @@ package org.hotrod.runtime.livesql.dialects;
 import org.hotrod.runtime.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
-import org.hotrod.runtime.livesql.metadata.DatabaseObject;
+import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.LockingConcurrency;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.LockingMode;
@@ -376,16 +376,16 @@ public class MariaDBDialect extends LiveSQLDialect {
     return false;
   }
 
-  public String canonicalToNatural(final DatabaseObject databaseObject) {
-    if (databaseObject == null) {
+  public String canonicalToNatural(final TableOrView tov) {
+    if (tov == null) {
       return null;
     }
     StringBuilder sb = new StringBuilder();
-    if (databaseObject.getCatalog() != null) {
-      sb.append(this.canonicalToNatural(databaseObject.getCatalog()));
+    if (tov.getCatalog() != null) {
+      sb.append(this.canonicalToNatural(tov.getCatalog()));
       sb.append(".");
     }
-    sb.append(this.canonicalToNatural(databaseObject.getName()));
+    sb.append(this.canonicalToNatural(tov.getName()));
     return sb.toString();
   }
 

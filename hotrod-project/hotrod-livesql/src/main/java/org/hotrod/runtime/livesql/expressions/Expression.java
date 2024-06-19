@@ -3,7 +3,6 @@ package org.hotrod.runtime.livesql.expressions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hotrod.runtime.converter.TypeConverter;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.predicates.IsNotNull;
 import org.hotrod.runtime.livesql.expressions.predicates.IsNull;
@@ -67,27 +66,18 @@ public abstract class Expression implements ResultSetColumn, Rendereable, Orderi
    */
 
   private int precedence;
-  protected Class<?> javaClass;
-  protected Class<?> rawClass;
-  protected TypeConverter<?, ?> converter;
+  private TypeHandler typeHandler;
 
   protected void setPrecedence(final int precedence) {
     this.precedence = precedence;
-    this.javaClass = null;
-    this.converter = null;
   }
 
   // Constructors
 
   protected Expression(final int precedence) {
     this.precedence = precedence;
+    this.typeHandler = null;
   }
-//
-//  protected Expression(final int precedence, final Class<?> javaClass, final TypeConverter<?, ?> converter) {
-//    this.precedence = precedence;
-//    this.javaClass = javaClass;
-//    this.converter = converter;
-//  }
 
   // Getters
 
@@ -95,21 +85,10 @@ public abstract class Expression implements ResultSetColumn, Rendereable, Orderi
     return precedence;
   }
 
-//  protected Class<?> getJavaClass() {
-//    return javaClass;
-//  }
-//
-//  protected TypeConverter<?, ?> getConverter() {
-//    return converter;
-//  }
-
   // Setters
 
-  protected void setClassConverter(final Class<?> javaClass, final Class<?> rawClass,
-      final TypeConverter<?, ?> converter) {
-    this.javaClass = javaClass;
-    this.rawClass = rawClass;
-    this.converter = converter;
+  protected void setTypeHandler(TypeHandler typeHandler) {
+    this.typeHandler = typeHandler;
   }
 
   // Apply aliases
@@ -180,6 +159,12 @@ public abstract class Expression implements ResultSetColumn, Rendereable, Orderi
       throw new LiveSQLException("An alias specified with the .as() method cannot be null");
     }
     return new AliasedExpression(this, alias);
+  }
+
+  // Getters
+
+  public TypeHandler getTypeHandler() {
+    return typeHandler;
   }
 
 }

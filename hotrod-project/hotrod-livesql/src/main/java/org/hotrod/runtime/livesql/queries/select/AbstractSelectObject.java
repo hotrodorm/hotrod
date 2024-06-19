@@ -5,9 +5,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.hotrod.runtime.cursors.Cursor;
@@ -17,38 +18,39 @@ import org.hotrod.runtime.livesql.dialects.LockingRenderer;
 import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
+import org.hotrod.runtime.livesql.expressions.AliasedExpression;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.livesql.expressions.TypeHandler;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
-import org.hotrod.runtime.livesql.metadata.AllColumns;
-import org.hotrod.runtime.livesql.metadata.AllColumns.ColumnSubset;
 import org.hotrod.runtime.livesql.metadata.Column;
-import org.hotrod.runtime.livesql.metadata.DatabaseObject;
 import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import org.hotrod.runtime.livesql.queries.QueryColumn;
 import org.hotrod.runtime.livesql.queries.QueryObject;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.runtime.livesql.queries.select.sets.MultiSet;
-import org.hotrod.runtime.livesql.queries.subqueries.AllSubqueryColumns;
 import org.hotrod.runtime.livesql.util.IdUtil;
-import org.hotrod.runtime.livesql.util.SubqueryUtil;
 import org.hotrodorm.hotrod.utils.SUtil;
 import org.hotrodorm.hotrod.utils.Separator;
 import org.springframework.util.ReflectionUtils;
 
 public abstract class AbstractSelectObject<R> extends MultiSet<R> implements QueryObject {
 
+  private static final Logger log = Logger.getLogger(AbstractSelectObject.class.getName());
+
   private List<CTE> ctes = new ArrayList<>();
   private boolean distinct;
   private List<Expression> distinctOn = null;
-  private TableExpression baseTableExpression = null;
-  private List<Join> joins = null;
+  protected TableExpression baseTableExpression = null;
+  protected List<Join> joins = null;
   private Predicate wherePredicate = null;
   private List<ComparableExpression> groupBy = null;
   private Predicate havingPredicate = null;
@@ -68,6 +70,8 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
   private LockingMode lockingMode = null;
   private LockingConcurrency lockingConcurrency = null;
   private Number waitTime = null;
+
+  protected LinkedHashMap<String, QueryColumn> queryColumns;
 
   protected AbstractSelectObject(final List<CTE> ctes, final boolean distinct) {
     super();
@@ -99,69 +103,26 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
   protected abstract void writeColumns(final QueryWriter w, final TableExpression baseTableExpression,
       final List<Join> joins);
 
-  protected void writeExpandedColumns(final QueryWriter w, final TableExpression baseTableExpression,
-      final List<Join> joins, final List<ResultSetColumn> resultSetColumns, final boolean doNotAliasColumns) {
-
-    List<ResultSetColumn> expandedColumns = new ArrayList<>(resultSetColumns);
-
-    if (expandedColumns == null || expandedColumns.isEmpty()) {
-
-      // 1. Expand unlisted columns
-
-      try {
-        expandedColumns = new ArrayList<>();
-        List<ResultSetColumn> columns = baseTableExpression.getColumns();
-        for (ResultSetColumn e : columns) {
-          expandedColumns.add(e);
-        }
-        for (Join j : joins) {
-          columns = j.getTableExpression().getColumns();
-          for (ResultSetColumn e : columns) {
-            expandedColumns.add(e);
-          }
-        }
-      } catch (IllegalAccessException e) {
-        throw new LiveSQLException("Could not expand LiveSQL columns (all)", e);
-      } catch (RuntimeException e) {
-        throw new LiveSQLException("Could not expand LiveSQL columns (all)", e);
-      }
-
-    } else {
-
-      // 2. Expand columns subsets (star(), filtered star(), etc.)
-
-      ListIterator<ResultSetColumn> it = expandedColumns.listIterator();
-      while (it.hasNext()) {
-        try {
-          ResultSetColumn rsc = it.next();
-          List<ResultSetColumn> scols = getSubColumns(rsc);
-          if (scols != null) {
-            it.remove();
-            for (ResultSetColumn sc : scols) {
-              it.add(sc);
-            }
-          }
-        } catch (IllegalArgumentException e) {
-          throw new LiveSQLException("Could not expand subset of LiveSQL columns", e);
-        } catch (IllegalAccessException e) {
-          throw new LiveSQLException("Could not expand subset of LiveSQL columns", e);
-        } catch (ClassCastException e) {
-          throw new LiveSQLException("Could not expand subset of LiveSQL columns", e);
-        } catch (RuntimeException e) {
-          throw new LiveSQLException("Could not expand subset of LiveSQL columns", e);
-        }
-      }
-
-    }
-
-    // 3. Render columns
+  protected void writeExpandedColumns(final QueryWriter w, final List<ResultSetColumn> expandedColumns,
+      final boolean doNotAliasColumns) {
 
     Separator sep = new Separator();
+    this.queryColumns = new LinkedHashMap<>();
     for (ResultSetColumn c : expandedColumns) {
 
       w.write(sep.render());
       w.write("\n  ");
       c.renderTo(w);
+
+      log.info("Will resolve alias. c:" + c.getClass().getName());
+      String alias = resolveAlias(c);
+      log.info("alias=" + alias);
+
+//      log.info("Will resolve typehandler");
+      TypeHandler typeHandler = resolveTypeHandler(c);
+//      log.info("typeHandler=" + typeHandler);
+
+      this.queryColumns.put(alias, new QueryColumn(alias, typeHandler));
 
       if (!doNotAliasColumns) {
         try {
@@ -174,22 +135,36 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
 
     }
 
-    // 4. Record Query Columns
-
-    w.registerQueryColumns(expandedColumns);
-
   }
 
-  private List<ResultSetColumn> getSubColumns(final ResultSetColumn c)
-      throws IllegalArgumentException, IllegalAccessException {
-    if (c instanceof AllColumns) {
-      return getColumnsField(c, "columns");
-    } else if (c instanceof ColumnSubset) {
-      return getColumnsField(c, "columns");
-    } else if (c instanceof AllSubqueryColumns) {
-      return SubqueryUtil.listColumns((AllSubqueryColumns) c);
+  private String resolveAlias(final ResultSetColumn c) {
+    try {
+      Column col = (Column) c;
+      log.info("col=" + col);
+      return col.getProperty();
+    } catch (ClassCastException e) {
+      try {
+        AliasedExpression ae = (AliasedExpression) c;
+        log.info("ae=" + ae);
+        return ae.getName();
+      } catch (ClassCastException e2) {
+        return null;
+      }
     }
-    return null;
+  }
+
+  private TypeHandler resolveTypeHandler(final ResultSetColumn c) {
+    try {
+      Expression expr = (Expression) c;
+      return expr.getTypeHandler();
+    } catch (ClassCastException e) {
+      try {
+        AliasedExpression ae = (AliasedExpression) c;
+        return Helper.getExpression(ae).getTypeHandler();
+      } catch (ClassCastException e2) {
+        return null;
+      }
+    }
   }
 
   // Setters
@@ -594,17 +569,16 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
     private char letter = 'a';
     private int seq = 0;
 
-    public void register(final Name alias, final DatabaseObject databaseObject) {
+    public void register(final Name alias, final TableOrView tov) {
       if (alias == null) {
         return;
       }
 
       if (alias.getName().isEmpty()) {
-        throw new InvalidLiveSQLStatementException(
-            "Empty alias found for " + databaseObject.getType().toLowerCase() + " "
-                + databaseObject.renderUnescapedName() + ". Any specified alias for a table or view must be non-empty. "
-                + "Use any combination of alphanumeric characters as an alias. "
-                + "Usually aliases are very short, commonly a single letter.");
+        throw new InvalidLiveSQLStatementException("Empty alias found for " + tov.getType().toLowerCase() + " "
+            + tov.renderUnescapedName() + ". Any specified alias for a table or view must be non-empty. "
+            + "Use any combination of alphanumeric characters as an alias. "
+            + "Usually aliases are very short, commonly a single letter.");
       }
 
       if (!this.used.add(alias.getName())) {

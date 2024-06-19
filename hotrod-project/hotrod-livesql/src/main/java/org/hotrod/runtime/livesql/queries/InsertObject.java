@@ -49,7 +49,7 @@ public class InsertObject implements QueryObject {
   }
 
   private LiveSQLPreparedQuery prepareQuery(final LiveSQLContext context) {
-    QueryWriter w = new QueryWriter(context, null);
+    QueryWriter w = new QueryWriter(context);
     w.write("INSERT INTO ");
     w.write(context.getLiveSQLDialect().canonicalToNatural(this.into));
 
@@ -84,7 +84,7 @@ public class InsertObject implements QueryObject {
 
     }
 
-    LiveSQLPreparedQuery pq = w.getPreparedQuery();
+    LiveSQLPreparedQuery pq = w.getPreparedQuery(null);
     return pq;
   }
 

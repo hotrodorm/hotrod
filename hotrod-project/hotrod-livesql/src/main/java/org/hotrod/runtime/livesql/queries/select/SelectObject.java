@@ -1,7 +1,9 @@
 package org.hotrod.runtime.livesql.queries.select;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.stream.Collectors;
 
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
@@ -12,6 +14,7 @@ import org.hotrod.runtime.livesql.metadata.AllColumns.ColumnAliased;
 import org.hotrod.runtime.livesql.metadata.AllColumns.ColumnList;
 import org.hotrod.runtime.livesql.metadata.AllColumns.ColumnSubset;
 import org.hotrod.runtime.livesql.metadata.Column;
+import org.hotrod.runtime.livesql.queries.QueryColumn;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.subqueries.AllSubqueryColumns;
@@ -22,6 +25,7 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
 
   private boolean doNotAliasColumns;
   private List<ResultSetColumn> resultSetColumns = new ArrayList<>();
+  private List<ResultSetColumn> expandedColumns;
 
   public SelectObject(final List<CTE> ctes, final boolean distinct, final boolean doNotAliasColumns) {
     super(ctes, distinct);
@@ -50,19 +54,98 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
 
   // Rendering
 
-  @Override
-  protected void writeColumns(final QueryWriter w, final TableExpression baseTableExpression, final List<Join> joins) {
-    super.writeExpandedColumns(w, baseTableExpression, joins, this.resultSetColumns, this.doNotAliasColumns);
+  protected void computeQueryColumns() {
+    this.baseTableExpression.computeQueryColumns();
+    for (Join j : this.joins) {
+      j.computeQueryColumns();
+    }
+    this.expandColumns();
   }
 
-  private List<ResultSetColumn> columns = null;
+  private void expandColumns() {
+    this.expandedColumns = new ArrayList<>(resultSetColumns);
+
+    if (expandedColumns == null || expandedColumns.isEmpty()) {
+
+      // 1. Expand unlisted columns
+
+      try {
+        expandedColumns = new ArrayList<>();
+        List<ResultSetColumn> columns = this.baseTableExpression.getColumns();
+        for (ResultSetColumn e : columns) {
+          expandedColumns.add(e);
+        }
+        for (Join j : this.joins) {
+          columns = j.getTableExpression().getColumns();
+          for (ResultSetColumn e : columns) {
+            expandedColumns.add(e);
+          }
+        }
+      } catch (IllegalAccessException e) {
+        throw new LiveSQLException("Could not expand LiveSQL columns (all)", e);
+      } catch (RuntimeException e) {
+        throw new LiveSQLException("Could not expand LiveSQL columns (all)", e);
+      }
+
+    } else {
+
+      // 2. Expand columns subsets (star(), filtered star(), etc.)
+
+      ListIterator<ResultSetColumn> it = expandedColumns.listIterator();
+      while (it.hasNext()) {
+        try {
+          ResultSetColumn rsc = it.next();
+          List<ResultSetColumn> scols = getSubColumns(rsc);
+          if (scols != null) {
+            it.remove();
+            for (ResultSetColumn sc : scols) {
+              it.add(sc);
+            }
+          }
+        } catch (IllegalArgumentException e) {
+          throw new LiveSQLException("Could not expand subset of LiveSQL columns", e);
+        } catch (IllegalAccessException e) {
+          throw new LiveSQLException("Could not expand subset of LiveSQL columns", e);
+        } catch (ClassCastException e) {
+          throw new LiveSQLException("Could not expand subset of LiveSQL columns", e);
+        } catch (RuntimeException e) {
+          throw new LiveSQLException("Could not expand subset of LiveSQL columns", e);
+        }
+      }
+
+    }
+  }
+
+  private List<ResultSetColumn> getSubColumns(final ResultSetColumn c)
+      throws IllegalArgumentException, IllegalAccessException {
+    if (c instanceof AllColumns) {
+      return getColumnsField(c, "columns");
+    } else if (c instanceof ColumnSubset) {
+      return getColumnsField(c, "columns");
+    } else if (c instanceof AllSubqueryColumns) {
+      return SubqueryUtil.listColumns((AllSubqueryColumns) c);
+    }
+    return null;
+  }
+
+  @Override
+  protected LinkedHashMap<String, QueryColumn> getQueryColumns() {
+    return super.queryColumns;
+  }
+
+  @Override
+  protected void writeColumns(final QueryWriter w, final TableExpression baseTableExpression, final List<Join> joins) {
+    super.writeExpandedColumns(w, this.expandedColumns, this.doNotAliasColumns);
+  }
+
+  private List<ResultSetColumn> listedColumns = null;
 
   @Override
   public List<ResultSetColumn> listColumns() {
-    if (this.columns == null) {
-      this.columns = expandColumns(this.resultSetColumns);
+    if (this.listedColumns == null) {
+      this.listedColumns = expandColumns(this.resultSetColumns);
     }
-    return this.columns;
+    return this.listedColumns;
   }
 
   // Do not use inheritance to avoid exposing internal methods to the end user

@@ -59,6 +59,7 @@ import org.hotrod.runtime.interfaces.OrderBy;
 import org.hotrod.runtime.interfaces.Selectable;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.livesql.LiveSQLMapper;
+import org.hotrod.runtime.livesql.expressions.TypeHandler;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
@@ -1897,9 +1898,9 @@ public class ObjectDAO extends GeneratableObject {
           + ", \"" + JUtils.escapeJavaString(cm.getTypeName()) + "\"" //
           + ", " + cm.getColumnSize() + "" //
           + ", " + cm.getDecimalDigits() + "" //
-          + ", " + javaType + ".class" //
+          + ", new " + TypeHandler.class.getName() + "(" + javaType + ".class" //
           + ", " + (rawClass == null ? "null" : (rawClass + ".class")) //
-          + ", " + (javaConverterClass == null ? "null" : ("new " + javaConverterClass + "()")) //
+          + ", " + (javaConverterClass == null ? "null" : ("new " + javaConverterClass + "()")) + ")"//
           + ");");
     }
     println();

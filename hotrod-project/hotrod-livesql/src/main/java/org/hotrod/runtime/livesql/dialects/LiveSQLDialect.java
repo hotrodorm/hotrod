@@ -3,8 +3,8 @@ package org.hotrod.runtime.livesql.dialects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.hotrod.runtime.livesql.metadata.DatabaseObject;
 import org.hotrod.runtime.livesql.metadata.Name;
+import org.hotrod.runtime.livesql.metadata.TableOrView;
 
 public abstract class LiveSQLDialect {
 
@@ -130,22 +130,22 @@ public abstract class LiveSQLDialect {
 
   public abstract String canonicalToNatural(final String canonical);
 
-  public String canonicalToNatural(final DatabaseObject databaseObject) {
-    if (databaseObject == null) {
+  public String canonicalToNatural(final TableOrView tov) {
+    if (tov == null) {
       return null;
     }
     StringBuilder sb = new StringBuilder();
-    if (databaseObject.getCatalog() != null) {
-      sb.append(this.canonicalToNatural(databaseObject.getCatalog()));
+    if (tov.getCatalog() != null) {
+      sb.append(this.canonicalToNatural(tov.getCatalog()));
       sb.append(".");
     }
-    if (databaseObject.getSchema() != null) {
-      sb.append(this.canonicalToNatural(databaseObject.getSchema()));
+    if (tov.getSchema() != null) {
+      sb.append(this.canonicalToNatural(tov.getSchema()));
       sb.append(".");
-    } else if (databaseObject.getCatalog() != null) {
+    } else if (tov.getCatalog() != null) {
       sb.append(".");
     }
-    sb.append(this.canonicalToNatural(databaseObject.getName()));
+    sb.append(this.canonicalToNatural(tov.getName()));
     return sb.toString();
   }
 }

@@ -13,16 +13,17 @@ import org.hotrod.runtime.livesql.expressions.object.ObjectExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
 import org.hotrod.runtime.livesql.metadata.Name;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
-import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.select.TableExpression;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
+import org.hotrod.runtime.livesql.queries.select.sets.MHelper;
 import org.hotrod.runtime.livesql.util.SubqueryUtil;
 import org.hotrodorm.hotrod.utils.SUtil;
 
-public class Subquery implements TableExpression {
+public class Subquery extends TableExpression {
 
   private Name name;
   protected String[] columns;
@@ -99,6 +100,11 @@ public class Subquery implements TableExpression {
   public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
     ag.register(this.name, null);
     this.select.validateTableReferences(tableReferences, ag);
+  }
+
+  @Override
+  protected void computeQueryColumns() {
+    MHelper.computeQueryColumns(this.select);
   }
 
   // Rendering

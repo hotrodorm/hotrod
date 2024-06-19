@@ -1,8 +1,8 @@
 package org.hotrod.runtime.livesql.expressions;
 
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
-import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.ReferenceableExpression;
 
 public class AliasedExpression implements ReferenceableExpression {
@@ -30,6 +30,10 @@ public class AliasedExpression implements ReferenceableExpression {
   @Override
   public String getName() {
     return this.alias;
+  }
+
+  protected Expression getExpression() {
+    return expression;
   }
 
 }

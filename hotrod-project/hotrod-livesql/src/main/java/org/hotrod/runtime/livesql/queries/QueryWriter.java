@@ -1,20 +1,19 @@
 package org.hotrod.runtime.livesql.queries;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
-import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.queries.SQLParameterWriter.QueryParameter;
 import org.hotrod.runtime.livesql.queries.SQLParameterWriter.RenderedParameter;
+import org.hotrod.runtime.livesql.queries.select.sets.MHelper;
+import org.hotrod.runtime.livesql.queries.select.sets.MultiSet;
 
 public class QueryWriter {
 
   private static final String INDENT = "  "; // two spaces to indent each level
 
   private LiveSQLContext context;
-  private ColumnsCollector columnsCollector;
 
   private StringBuilder sb;
   private int level;
@@ -22,8 +21,7 @@ public class QueryWriter {
 
   private SQLParameterWriter paramWriter;
 
-  public QueryWriter(final LiveSQLContext context, final ColumnsCollector columnsCollector) {
-    this.columnsCollector = columnsCollector;
+  public QueryWriter(final LiveSQLContext context) {
     this.context = context;
     this.sb = new StringBuilder();
     this.level = 0;
@@ -37,10 +35,6 @@ public class QueryWriter {
 
   public RenderedParameter registerParameter(final Object value) {
     return this.paramWriter.registerParameter(value);
-  }
-  
-  public void registerQueryColumns(final List<ResultSetColumn> queryColumns) {
-    this.columnsCollector.register(queryColumns);
   }
 
   public void enterLevel() {
@@ -96,12 +90,17 @@ public class QueryWriter {
     return this.context.getLiveSQLDialect();
   }
 
-  public LiveSQLPreparedQuery getPreparedQuery() {
+  public LiveSQLPreparedQuery getPreparedQuery(final MultiSet<?> multiSet) {
     LinkedHashMap<String, Object> p = new LinkedHashMap<String, Object>();
     for (QueryParameter qp : this.paramWriter.getParameters()) {
       p.put(qp.getName(), qp.getValue());
     }
-    return new LiveSQLPreparedQuery(this.sb.toString(), p);
+    LinkedHashMap<String, QueryColumn> queryColumns = null;
+    if (multiSet == null) {
+    } else {
+      queryColumns = MHelper.getQueryColumns(multiSet);
+    }
+    return new LiveSQLPreparedQuery(this.sb.toString(), p, queryColumns);
   }
 
   // Prepared Query
@@ -110,10 +109,13 @@ public class QueryWriter {
 
     private String sql;
     private LinkedHashMap<String, Object> parameters;
+    private LinkedHashMap<String, QueryColumn> queryColumns;
 
-    public LiveSQLPreparedQuery(final String sql, final LinkedHashMap<String, Object> parameters) {
+    public LiveSQLPreparedQuery(final String sql, final LinkedHashMap<String, Object> parameters,
+        final LinkedHashMap<String, QueryColumn> queryColumns) {
       this.sql = sql;
       this.parameters = parameters;
+      this.queryColumns = queryColumns;
     }
 
     public String getSQL() {
@@ -122,6 +124,10 @@ public class QueryWriter {
 
     public LinkedHashMap<String, Object> getParameters() {
       return parameters;
+    }
+
+    public LinkedHashMap<String, QueryColumn> getQueryColumns() {
+      return queryColumns;
     }
 
     public LinkedHashMap<String, Object> getConsolidatedParameters() {

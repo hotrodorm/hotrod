@@ -16,4 +16,9 @@ public abstract class Table extends TableOrView {
     return super.columns.stream().map(c -> (ResultSetColumn) c).collect(Collectors.toList());
   }
 
+  @Override
+  protected void computeQueryColumns() {
+    // Nothing to do
+  }
+
 }

@@ -6,10 +6,11 @@ import org.hotrod.runtime.livesql.expressions.Rendereable;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.metadata.Name;
 
-public interface TableExpression extends Rendereable {
+public abstract class TableExpression implements Rendereable {
 
-  Name getName();
+  public abstract Name getName();
 
-  List<ResultSetColumn> getColumns() throws IllegalAccessException;
+  public abstract List<ResultSetColumn> getColumns() throws IllegalAccessException;
 
+  protected abstract void computeQueryColumns();
 }

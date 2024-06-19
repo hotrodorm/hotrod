@@ -69,7 +69,7 @@ public class UpdateObject implements QueryObject {
   }
 
   private LiveSQLPreparedQuery prepareQuery(final LiveSQLContext context) {
-    QueryWriter w = new QueryWriter(context, null);
+    QueryWriter w = new QueryWriter(context);
     w.write("UPDATE ");
 
     UpdateRenderer ur = context.getLiveSQLDialect().getUpdateRenderer();
@@ -115,7 +115,7 @@ public class UpdateObject implements QueryObject {
       w.write("WHERE ");
       this.wherePredicate.renderTo(w);
     }
-    LiveSQLPreparedQuery pq = w.getPreparedQuery();
+    LiveSQLPreparedQuery pq = w.getPreparedQuery(null);
     return pq;
   }
 

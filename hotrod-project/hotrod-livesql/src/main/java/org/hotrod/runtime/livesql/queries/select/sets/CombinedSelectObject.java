@@ -1,6 +1,7 @@
 package org.hotrod.runtime.livesql.queries.select.sets;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,6 +11,7 @@ import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.ordering.CombinedOrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import org.hotrod.runtime.livesql.queries.QueryColumn;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
@@ -294,6 +296,21 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
       this.columns = this.first.listColumns();
     }
     return this.columns;
+  }
+
+  // Rendering
+
+  @Override
+  protected void computeQueryColumns() {
+    this.first.computeQueryColumns();
+    for (SetOperatorTerm<?> t : this.combined) {
+      t.getMultiset().computeQueryColumns();
+    }
+  }
+
+  @Override
+  protected LinkedHashMap<String, QueryColumn> getQueryColumns() {
+    return this.first.getQueryColumns();
   }
 
   // MultiSet execution

@@ -48,7 +48,7 @@ public class DeleteObject implements QueryObject {
   }
 
   private LiveSQLPreparedQuery prepareQuery(final LiveSQLContext context) {
-    QueryWriter w = new QueryWriter(context, null);
+    QueryWriter w = new QueryWriter(context);
     w.write("DELETE FROM ");
 
     String renderedAlias = this.from.getAlias() == null ? null
@@ -60,7 +60,7 @@ public class DeleteObject implements QueryObject {
       w.write("\nWHERE ");
       this.wherePredicate.renderTo(w);
     }
-    LiveSQLPreparedQuery pq = w.getPreparedQuery();
+    LiveSQLPreparedQuery pq = w.getPreparedQuery(null);
     return pq;
   }
 
