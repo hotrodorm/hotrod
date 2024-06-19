@@ -4,11 +4,15 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
+import org.hotrod.runtime.livesql.expressions.AliasedExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.livesql.expressions.TypeHandler;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.metadata.AllColumns.ColumnAliased;
 import org.hotrod.runtime.livesql.metadata.AllColumns.ColumnList;
@@ -23,9 +27,13 @@ import org.hotrod.runtime.livesql.util.SubqueryUtil;
 
 public class SelectObject<R> extends AbstractSelectObject<R> {
 
+  private static final Logger log = Logger.getLogger(SelectObject.class.getName());
+
   private boolean doNotAliasColumns;
   private List<ResultSetColumn> resultSetColumns = new ArrayList<>();
+
   private List<ResultSetColumn> expandedColumns;
+  protected LinkedHashMap<String, QueryColumn> queryColumns;
 
   public SelectObject(final List<CTE> ctes, final boolean distinct, final boolean doNotAliasColumns) {
     super(ctes, distinct);
@@ -53,13 +61,63 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
   }
 
   // Rendering
+  // TODO: Just a marker
 
   protected void computeQueryColumns() {
+    log.info("SELECT[" + System.identityHashCode(this) + "].computeQueryColumns()");
+    
+    // 1. Compute columns from subqueries in the FROM/JOIN clauses
+    
     this.baseTableExpression.computeQueryColumns();
     for (Join j : this.joins) {
       j.computeQueryColumns();
     }
+    
+    // 2. Expand columns in the select list
+    
     this.expandColumns();
+    
+    // 3. Compute query columns
+    
+    this.queryColumns = new LinkedHashMap<>();
+    for (ResultSetColumn c : expandedColumns) {
+      log.info("Will resolve alias. c:" + c.getClass().getName());
+      String alias = resolveAlias(c);
+      log.info("alias=" + alias);
+      TypeHandler typeHandler = resolveTypeHandler(c);
+      this.queryColumns.put(alias, new QueryColumn(alias, typeHandler));
+
+    }
+  }
+
+  private String resolveAlias(final ResultSetColumn c) {
+    try {
+      Column col = (Column) c;
+      log.info("-- col=" + col);
+      return col.getProperty();
+    } catch (ClassCastException e) {
+      try {
+        AliasedExpression ae = (AliasedExpression) c;
+        log.info("-- ae=" + ae);
+        return ae.getName();
+      } catch (ClassCastException e2) {
+        return null;
+      }
+    }
+  }
+
+  private TypeHandler resolveTypeHandler(final ResultSetColumn c) {
+    try {
+      Expression expr = (Expression) c;
+      return expr.getTypeHandler();
+    } catch (ClassCastException e) {
+      try {
+        AliasedExpression ae = (AliasedExpression) c;
+        return Helper.getExpression(ae).getTypeHandler();
+      } catch (ClassCastException e2) {
+        return null;
+      }
+    }
   }
 
   private void expandColumns() {
@@ -130,7 +188,7 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
 
   @Override
   protected LinkedHashMap<String, QueryColumn> getQueryColumns() {
-    return super.queryColumns;
+    return this.queryColumns;
   }
 
   @Override

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -18,19 +17,15 @@ import org.hotrod.runtime.livesql.dialects.LockingRenderer;
 import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
-import org.hotrod.runtime.livesql.expressions.AliasedExpression;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.livesql.expressions.TypeHandler;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
-import org.hotrod.runtime.livesql.queries.QueryColumn;
 import org.hotrod.runtime.livesql.queries.QueryObject;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
@@ -40,6 +35,7 @@ import org.hotrod.runtime.livesql.queries.select.sets.MultiSet;
 import org.hotrod.runtime.livesql.util.IdUtil;
 import org.hotrodorm.hotrod.utils.SUtil;
 import org.hotrodorm.hotrod.utils.Separator;
+import org.hotrodorm.hotrod.utils.TUtil;
 import org.springframework.util.ReflectionUtils;
 
 public abstract class AbstractSelectObject<R> extends MultiSet<R> implements QueryObject {
@@ -70,8 +66,6 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
   private LockingMode lockingMode = null;
   private LockingConcurrency lockingConcurrency = null;
   private Number waitTime = null;
-
-  protected LinkedHashMap<String, QueryColumn> queryColumns;
 
   protected AbstractSelectObject(final List<CTE> ctes, final boolean distinct) {
     super();
@@ -106,23 +100,14 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
   protected void writeExpandedColumns(final QueryWriter w, final List<ResultSetColumn> expandedColumns,
       final boolean doNotAliasColumns) {
 
+    log.info(">>> " + TUtil.compactStackTrace());
+
     Separator sep = new Separator();
-    this.queryColumns = new LinkedHashMap<>();
     for (ResultSetColumn c : expandedColumns) {
 
       w.write(sep.render());
       w.write("\n  ");
       c.renderTo(w);
-
-      log.info("Will resolve alias. c:" + c.getClass().getName());
-      String alias = resolveAlias(c);
-      log.info("alias=" + alias);
-
-//      log.info("Will resolve typehandler");
-      TypeHandler typeHandler = resolveTypeHandler(c);
-//      log.info("typeHandler=" + typeHandler);
-
-      this.queryColumns.put(alias, new QueryColumn(alias, typeHandler));
 
       if (!doNotAliasColumns) {
         try {
@@ -135,36 +120,6 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
 
     }
 
-  }
-
-  private String resolveAlias(final ResultSetColumn c) {
-    try {
-      Column col = (Column) c;
-      log.info("col=" + col);
-      return col.getProperty();
-    } catch (ClassCastException e) {
-      try {
-        AliasedExpression ae = (AliasedExpression) c;
-        log.info("ae=" + ae);
-        return ae.getName();
-      } catch (ClassCastException e2) {
-        return null;
-      }
-    }
-  }
-
-  private TypeHandler resolveTypeHandler(final ResultSetColumn c) {
-    try {
-      Expression expr = (Expression) c;
-      return expr.getTypeHandler();
-    } catch (ClassCastException e) {
-      try {
-        AliasedExpression ae = (AliasedExpression) c;
-        return Helper.getExpression(ae).getTypeHandler();
-      } catch (ClassCastException e2) {
-        return null;
-      }
-    }
   }
 
   // Setters

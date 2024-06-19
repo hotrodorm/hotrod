@@ -27,7 +27,7 @@ public class SubqueryNumberColumn extends NumberExpression {
     this.columnName = columnName;
 
 //    log.info("subquery=" + subquery);
-//    log.info("subquery.getSelect()=" + subquery.getSelect());
+    log.info("subquery.getSelect()=" + subquery.getSelect());
 //    LinkedHashMap<String, QueryColumn> queryColumns = MHelper.getQueryColumns(subquery.getSelect());
 //    QueryColumn col = queryColumns.get(columnName);
 //    if (col == null) {
