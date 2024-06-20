@@ -12,7 +12,7 @@ public abstract class TableExpression {
 
   protected abstract void validateTableReferences(TableReferences tableReferences, AliasGenerator ag);
 
-  public abstract void renderTo(QueryWriter w);
+  protected abstract void renderTo(QueryWriter w);
 
   public abstract Name getName();
 

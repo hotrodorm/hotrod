@@ -34,7 +34,7 @@ public class CTE extends Subquery {
   // Rendering
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     if (super.getName().isQuoted()) {
       w.write(w.getSQLDialect().quoteIdentifier(super.getName().getName()));
     } else {

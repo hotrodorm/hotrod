@@ -64,7 +64,7 @@ public abstract class TableOrView extends TableExpression {
   // Rendering
 
   @Override
-  public void renderTo(QueryWriter w) {
+  protected void renderTo(QueryWriter w) {
     LiveSQLDialect dialect = w.getSQLDialect();
     String alias = this.getAlias() == null ? null
         : dialect.canonicalToNatural(dialect.naturalToCanonical(this.getAlias()));
