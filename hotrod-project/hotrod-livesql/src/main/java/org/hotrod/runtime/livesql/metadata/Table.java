@@ -12,7 +12,7 @@ public abstract class Table extends TableOrView {
   }
 
   @Override
-  public List<ResultSetColumn> getColumns() throws IllegalAccessException {
+  protected List<ResultSetColumn> getColumns() throws IllegalAccessException {
     return super.columns.stream().map(c -> (ResultSetColumn) c).collect(Collectors.toList());
   }
 

@@ -64,7 +64,8 @@ public class CTE extends Subquery {
     w.write(")");
   }
 
-  public List<ResultSetColumn> getColumns() throws IllegalAccessException {
+  @Override
+  protected List<ResultSetColumn> getColumns() throws IllegalAccessException {
     if (this.columns != null && this.columns.length > 0) {
       List<ResultSetColumn> cols = super.getSelect().listColumns();
       if (this.columns.length != cols.size()) {

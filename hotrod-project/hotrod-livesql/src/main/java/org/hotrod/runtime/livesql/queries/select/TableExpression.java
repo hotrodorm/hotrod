@@ -16,7 +16,7 @@ public abstract class TableExpression {
 
   protected abstract Name getName();
 
-  public abstract List<ResultSetColumn> getColumns() throws IllegalAccessException;
+  protected abstract List<ResultSetColumn> getColumns() throws IllegalAccessException;
 
   protected abstract void computeQueryColumns();
 }

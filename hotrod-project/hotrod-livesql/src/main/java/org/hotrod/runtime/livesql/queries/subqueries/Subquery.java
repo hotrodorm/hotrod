@@ -140,7 +140,7 @@ public class Subquery extends TableExpression {
   }
 
   @Override
-  public List<ResultSetColumn> getColumns() throws IllegalAccessException {
+  protected List<ResultSetColumn> getColumns() throws IllegalAccessException {
     return this.expandColumns(this.select.listColumns());
   }
 

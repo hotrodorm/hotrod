@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
-import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.Select;
 
 public class RecursiveCTE extends CTE {
@@ -110,7 +110,8 @@ public class RecursiveCTE extends CTE {
     w.write(")");
   }
 
-  public List<ResultSetColumn> getColumns() throws IllegalAccessException {
+  @Override
+  protected List<ResultSetColumn> getColumns() throws IllegalAccessException {
     return this.expandColumns(this.anchorTerm.getCombinedSelect().listColumns());
   }
 
