@@ -9,6 +9,7 @@ import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
+import org.hotrod.runtime.livesql.queries.select.SHelper;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
 import org.hotrodorm.hotrod.utils.SUtil;
@@ -127,7 +128,7 @@ public abstract class Expression implements ResultSetColumn, Rendereable, Orderi
       if (t == null) {
         throw new LiveSQLException("Table referenced in query cannot be null.", null);
       }
-      t.validateTableReferences(tableReferences, ag);
+      SHelper.validateTableReferences(t, tableReferences, ag);
     }
   }
 

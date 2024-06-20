@@ -53,7 +53,7 @@ public class RecursiveCTE extends CTE {
   // Table References
 
   @Override
-  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
+  protected void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
     if (!tableReferences.visited(this)) {
       this.anchorTerm.getCombinedSelect().validateTableReferences(tableReferences, ag);
       this.recursiveTerm.getCombinedSelect().validateTableReferences(tableReferences, ag);

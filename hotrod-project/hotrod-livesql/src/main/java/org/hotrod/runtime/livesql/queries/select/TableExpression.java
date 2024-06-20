@@ -10,7 +10,7 @@ import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableRefer
 
 public abstract class TableExpression {
 
-  public abstract void validateTableReferences(TableReferences tableReferences, AliasGenerator ag);
+  protected abstract void validateTableReferences(TableReferences tableReferences, AliasGenerator ag);
 
   public abstract void renderTo(QueryWriter w);
 

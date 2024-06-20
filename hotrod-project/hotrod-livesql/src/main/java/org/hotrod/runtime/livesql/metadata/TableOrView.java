@@ -54,7 +54,7 @@ public abstract class TableOrView extends TableExpression {
   // Validation
 
   @Override
-  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
+  protected void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
     if (this.alias == null) {
       this.designatedAlias = ag.next();
     }

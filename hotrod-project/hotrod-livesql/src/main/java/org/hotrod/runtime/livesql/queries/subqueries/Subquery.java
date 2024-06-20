@@ -100,7 +100,7 @@ public class Subquery extends TableExpression {
   // Table References
 
   @Override
-  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
+  protected void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
     ag.register(this.name, null);
     this.select.validateTableReferences(tableReferences, ag);
   }
