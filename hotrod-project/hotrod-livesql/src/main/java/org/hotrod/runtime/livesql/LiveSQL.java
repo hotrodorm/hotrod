@@ -118,6 +118,7 @@ import org.hotrod.runtime.livesql.queries.scalarsubqueries.StringSelectColumnsPh
 import org.hotrod.runtime.livesql.queries.select.EnclosedSelectPhase;
 import org.hotrod.runtime.livesql.queries.select.NonLockableSelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.select.NonLockableSelectDistinctOnPhase;
+import org.hotrod.runtime.livesql.queries.select.SHelper;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.select.SelectCTEPhase;
 import org.hotrod.runtime.livesql.queries.select.SelectColumnsPhase;
@@ -286,7 +287,7 @@ public class LiveSQL {
   // Enclosing queries
 
   public <R> EnclosedSelectPhase<R> enclose(final Select<R> select) {
-    return new EnclosedSelectPhase<>(this.context, select.getCombinedSelect());
+    return new EnclosedSelectPhase<>(this.context, SHelper.getCombinedSelect(select));
   }
 
   // Aggregation expressions, that are NOT window functions

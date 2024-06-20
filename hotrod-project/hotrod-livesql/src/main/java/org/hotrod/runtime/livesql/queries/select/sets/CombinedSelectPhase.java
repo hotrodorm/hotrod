@@ -5,6 +5,7 @@ import java.util.List;
 import org.hotrod.runtime.livesql.ordering.CombinedOrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
+import org.hotrod.runtime.livesql.queries.select.SHelper;
 import org.hotrod.runtime.livesql.queries.select.Select;
 
 public class CombinedSelectPhase<R> extends AbstractSelectPhase<R> {
@@ -72,7 +73,7 @@ public class CombinedSelectPhase<R> extends AbstractSelectPhase<R> {
 
   private CombinedSelectPhase<R> combine(final Select<R> select, final SetOperator op) {
     CombinedSelectObject<R> newCombined = this.combined.prepareCombinationWith(op);
-    newCombined.add(op, select.getCombinedSelect());
+    newCombined.add(op, SHelper.getCombinedSelect(select));
     return new CombinedSelectPhase<>(this.context, newCombined);
   }
 

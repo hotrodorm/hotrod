@@ -101,7 +101,7 @@ public abstract class Expression implements ResultSetColumn, Rendereable, Orderi
   }
 
   protected void register(final Select<?> subquery) {
-    this.subqueries.add(subquery.getCombinedSelect());
+    this.subqueries.add(SHelper.getCombinedSelect(subquery));
   }
 
   protected void register(final TableOrView tableOrView) {

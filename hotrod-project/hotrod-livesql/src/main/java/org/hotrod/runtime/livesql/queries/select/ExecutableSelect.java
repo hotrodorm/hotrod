@@ -10,6 +10,6 @@ package org.hotrod.runtime.livesql.queries.select;
  */
 
 @Deprecated
-public interface ExecutableSelect<R> extends Select<R> {
+public abstract class ExecutableSelect<R> extends Select<R> {
 
 }

@@ -10,6 +10,7 @@ import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
+import org.hotrod.runtime.livesql.queries.select.SHelper;
 import org.hotrod.runtime.livesql.queries.select.Select;
 
 public class RecursiveCTE extends CTE {
@@ -55,8 +56,8 @@ public class RecursiveCTE extends CTE {
   @Override
   protected void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
     if (!tableReferences.visited(this)) {
-      this.anchorTerm.getCombinedSelect().validateTableReferences(tableReferences, ag);
-      this.recursiveTerm.getCombinedSelect().validateTableReferences(tableReferences, ag);
+      SHelper.getCombinedSelect(this.anchorTerm).validateTableReferences(tableReferences, ag);
+      SHelper.getCombinedSelect(this.recursiveTerm).validateTableReferences(tableReferences, ag);
     }
   }
 
@@ -98,13 +99,13 @@ public class RecursiveCTE extends CTE {
 
     w.enterLevel();
     w.write(" as (\n");
-    this.anchorTerm.getCombinedSelect().renderTo(w);
+    SHelper.getCombinedSelect(this.anchorTerm).renderTo(w);
     w.exitLevel();
     w.write("\n");
     w.write(this.unionAll ? "UNION ALL" : "UNION");
     w.write("\n");
     w.enterLevel();
-    this.recursiveTerm.getCombinedSelect().renderTo(w);
+    SHelper.getCombinedSelect(this.recursiveTerm).renderTo(w);
     w.exitLevel();
     w.write("\n");
     w.write(")");
@@ -112,7 +113,7 @@ public class RecursiveCTE extends CTE {
 
   @Override
   protected List<ResultSetColumn> getColumns() throws IllegalAccessException {
-    return this.expandColumns(this.anchorTerm.getCombinedSelect().listColumns());
+    return this.expandColumns(SHelper.getCombinedSelect(this.anchorTerm).listColumns());
   }
 
 }

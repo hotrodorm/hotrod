@@ -6,14 +6,14 @@ import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.queries.Query;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
 
-public interface Select<R> extends Query {
+public abstract class Select<R> implements Query {
 
-  List<R> execute();
+  public abstract List<R> execute();
 
-  Cursor<R> executeCursor();
+  public abstract Cursor<R> executeCursor();
 
-  R executeOne();
+  public abstract R executeOne();
 
-  CombinedSelectObject<R> getCombinedSelect();
+  protected abstract CombinedSelectObject<R> getCombinedSelect();
 
 }

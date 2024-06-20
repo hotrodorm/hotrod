@@ -4,6 +4,7 @@ import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
+import org.hotrod.runtime.livesql.queries.select.SHelper;
 import org.hotrod.runtime.livesql.queries.select.Select;
 
 public abstract class AsymmetricOperator extends Predicate {
@@ -26,7 +27,7 @@ public abstract class AsymmetricOperator extends Predicate {
     super.renderInner(this.value, w);
     w.write(" " + this.operator + " (\n");
     w.enterLevel();
-    this.subquery.getCombinedSelect().renderTo(w);
+    SHelper.getCombinedSelect(this.subquery).renderTo(w);
     w.exitLevel();
     w.write("\n)");
   }

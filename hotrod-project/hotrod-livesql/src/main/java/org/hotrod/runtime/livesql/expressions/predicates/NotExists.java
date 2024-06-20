@@ -3,6 +3,7 @@ package org.hotrod.runtime.livesql.expressions.predicates;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
+import org.hotrod.runtime.livesql.queries.select.SHelper;
 import org.hotrod.runtime.livesql.queries.select.Select;
 
 public class NotExists extends Predicate {
@@ -22,7 +23,7 @@ public class NotExists extends Predicate {
   public void renderTo(final QueryWriter w) {
     w.write("not exists (\n");
     w.enterLevel();
-    this.subquery.getCombinedSelect().renderTo(w);
+    SHelper.getCombinedSelect(this.subquery).renderTo(w);
     w.exitLevel();
     w.write("\n)");
   }

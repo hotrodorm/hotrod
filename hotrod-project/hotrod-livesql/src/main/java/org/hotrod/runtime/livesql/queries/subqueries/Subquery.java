@@ -17,6 +17,7 @@ import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
+import org.hotrod.runtime.livesql.queries.select.SHelper;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.select.TableExpression;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
@@ -54,7 +55,7 @@ public class Subquery extends TableExpression {
       throw new LiveSQLException("Subquery select query cannot be null", null);
     }
 
-    this.select = es.getCombinedSelect();
+    this.select = SHelper.getCombinedSelect(es);
   }
 
   // Getters

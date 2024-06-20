@@ -3,6 +3,7 @@ package org.hotrod.runtime.livesql.queries;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
+import org.hotrod.runtime.livesql.queries.select.SHelper;
 import org.hotrod.runtime.livesql.queries.select.Select;
 
 public class InsertColumnsPhase {
@@ -27,7 +28,7 @@ public class InsertColumnsPhase {
   }
 
   public InsertSelectPhase select(final Select<?> select) {
-    this.insert.setSelect(select.getCombinedSelect().getLastSelect());
+    this.insert.setSelect(SHelper.getCombinedSelect(select).getLastSelect());
     return new InsertSelectPhase(this.context, this.insert);
   }
 

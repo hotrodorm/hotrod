@@ -10,7 +10,7 @@ import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
 
 @SuppressWarnings("deprecation")
-public class AbstractSelectPhase<R> implements ExecutableSelect<R> {
+public class AbstractSelectPhase<R> extends ExecutableSelect<R> {
 
   // Properties
 
@@ -41,7 +41,7 @@ public class AbstractSelectPhase<R> implements ExecutableSelect<R> {
   // Getters
 
   @Override
-  public CombinedSelectObject<R> getCombinedSelect() {
+  protected CombinedSelectObject<R> getCombinedSelect() {
     return this.combined;
   }
 
