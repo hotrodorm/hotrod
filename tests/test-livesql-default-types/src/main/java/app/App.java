@@ -38,6 +38,7 @@ import org.springframework.context.annotation.Configuration;
 
 import app.daos.BranchVO;
 import app.daos.primitives.BranchDAO;
+import app.daos.primitives.BranchDAO.BranchTable;
 import app.daos.reporting.InvoiceVO;
 import app.daos.reporting.primitives.InvoiceDAO;
 import app.daos.reporting.primitives.InvoiceDAO.InvoiceTable;
@@ -202,8 +203,7 @@ public class App {
 ////    Cursor<Row> crows = q.executeCursor();
 //    rows.forEach(x -> System.out.println("inv:" + x));
 
-    InvoiceTable i = this.invoiceDAO.newTable();
-    InvoiceTable j = this.invoiceDAO.newTable();
+    BranchTable b = this.branchDAO.newTable();
 
     // Oracle
 //    EntitySelect<InvoiceVO> q = this.invoiceDAO
@@ -212,20 +212,24 @@ public class App {
 ////        .forUpdate().noWait()
 ////        .forUpdate().wait(5)
 //    ;
-    
-    // PostgreSQL, H2
-    EntitySelect<InvoiceVO> q = this.invoiceDAO //
-        .select(i, i.amount.ge(2000)) //
-        .orderBy(i.orderDate.desc()) //
-        .limit(1) //
-        .forUpdate().skipLocked()
-//        .forUpdate().noWait()
-//        .forUpdate().wait(5)
-    ;
-    
+
+    Subquery y = sql.subquery("y", sql.select(b.id, b.region.as("rg"), b.isVip).from(b));
+
+    Subquery x = sql.subquery("x", sql.select(y.num("id"), y.str("rg").as("rgx"), y.bool("isVip").as("iv")).from(y));
+
+//    // PostgreSQL, H2
+//    Select<Row> q = this.sql //
+//        .select(x.num("id"), x.str("rg"), x.bool("iv") //
+////            , sql.literal("S-").concat(b.region).as("sector") //
+//        ) //
+//        .from(x) //
+//    ;
+
+    Select<Row> q = this.sql.select().from(x);
+
     System.out.println("q:" + q.getPreview());
-    List<InvoiceVO> cases = q.execute();
-    cases.forEach(x -> System.out.println("inv:" + x));
+    List<Row> rows = q.execute();
+    rows.forEach(r -> System.out.println("inv:" + r));
 
   }
 

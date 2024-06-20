@@ -7,21 +7,21 @@
   <!-- columns -->
 
   <sql id="columns">
-    "invoice_id",
-    "product_id",
-    "line_total"
+    "INVOICE_ID",
+    "PRODUCT_ID",
+    "LINE_TOTAL"
   </sql>
 
   <sql id="columnsWithAlias">
-    ${alias}."invoice_id",
-    ${alias}."product_id",
-    ${alias}."line_total"
+    ${alias}."INVOICE_ID",
+    ${alias}."PRODUCT_ID",
+    ${alias}."LINE_TOTAL"
   </sql>
 
   <resultMap id="allColumns" type="app.daos.reporting.InvoiceLineVO">
-    <result property="invoiceId" column="invoice_id" />
-    <result property="productId" column="product_id" />
-    <result property="lineTotal" column="line_total" />
+    <result property="invoiceId" column="INVOICE_ID" />
+    <result property="productId" column="PRODUCT_ID" />
+    <result property="lineTotal" column="LINE_TOTAL" />
   </resultMap>
 
   <!-- select by PK: no mapping generated, since the table does not have a PK -->
@@ -36,13 +36,13 @@
      from invoice_line
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.invoiceId != null">
-        and "invoice_id" = #{p.invoiceId,jdbcType=INTEGER}
+        and "INVOICE_ID" = #{p.invoiceId,jdbcType=INTEGER}
       </if>
       <if test="p.productId != null">
-        and "product_id" = #{p.productId,jdbcType=INTEGER}
+        and "PRODUCT_ID" = #{p.productId,jdbcType=INTEGER}
       </if>
       <if test="p.lineTotal != null">
-        and "line_total" = #{p.lineTotal,jdbcType=INTEGER}
+        and "LINE_TOTAL" = #{p.lineTotal,jdbcType=INTEGER}
       </if>
     </trim>
     <if test="o != null">
@@ -61,9 +61,9 @@
   <insert id="insert">
     insert into invoice_line (
       <trim prefixOverrides=", ">
-        <if test="true">, "invoice_id"</if>
-        <if test="true">, "product_id"</if>
-        <if test="true">, "line_total"</if>
+        <if test="true">, "INVOICE_ID"</if>
+        <if test="true">, "PRODUCT_ID"</if>
+        <if test="true">, "LINE_TOTAL"</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
@@ -83,19 +83,19 @@
   <update id="updateByExample">
     update invoice_line
     <set>
-      <if test="values.invoiceId != null">"invoice_id" = #{values.invoiceId,jdbcType=INTEGER},</if>
-      <if test="values.productId != null">"product_id" = #{values.productId,jdbcType=INTEGER},</if>
-      <if test="values.lineTotal != null">"line_total" = #{values.lineTotal,jdbcType=INTEGER},</if>
+      <if test="values.invoiceId != null">"INVOICE_ID" = #{values.invoiceId,jdbcType=INTEGER},</if>
+      <if test="values.productId != null">"PRODUCT_ID" = #{values.productId,jdbcType=INTEGER},</if>
+      <if test="values.lineTotal != null">"LINE_TOTAL" = #{values.lineTotal,jdbcType=INTEGER},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.invoiceId != null">
-        and "invoice_id" = #{filter.invoiceId,jdbcType=INTEGER}
+        and "INVOICE_ID" = #{filter.invoiceId,jdbcType=INTEGER}
       </if>
       <if test="filter.productId != null">
-        and "product_id" = #{filter.productId,jdbcType=INTEGER}
+        and "PRODUCT_ID" = #{filter.productId,jdbcType=INTEGER}
       </if>
       <if test="filter.lineTotal != null">
-        and "line_total" = #{filter.lineTotal,jdbcType=INTEGER}
+        and "LINE_TOTAL" = #{filter.lineTotal,jdbcType=INTEGER}
       </if>
     </trim>
   </update>
@@ -112,13 +112,13 @@
     delete from invoice_line
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="invoiceId != null">
-        and "invoice_id" = #{invoiceId,jdbcType=INTEGER}
+        and "INVOICE_ID" = #{invoiceId,jdbcType=INTEGER}
       </if>
       <if test="productId != null">
-        and "product_id" = #{productId,jdbcType=INTEGER}
+        and "PRODUCT_ID" = #{productId,jdbcType=INTEGER}
       </if>
       <if test="lineTotal != null">
-        and "line_total" = #{lineTotal,jdbcType=INTEGER}
+        and "LINE_TOTAL" = #{lineTotal,jdbcType=INTEGER}
       </if>
     </trim>
   </delete>

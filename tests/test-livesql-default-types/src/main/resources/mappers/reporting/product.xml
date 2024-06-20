@@ -7,21 +7,21 @@
   <!-- columns -->
 
   <sql id="columns">
-    "id",
-    "type",
-    "shipping"
+    "ID",
+    "TYPE",
+    "SHIPPING"
   </sql>
 
   <sql id="columnsWithAlias">
-    ${alias}."id",
-    ${alias}."type",
-    ${alias}."shipping"
+    ${alias}."ID",
+    ${alias}."TYPE",
+    ${alias}."SHIPPING"
   </sql>
 
   <resultMap id="allColumns" type="app.daos.reporting.ProductVO">
-    <result property="id" column="id" />
-    <result property="type" column="type" />
-    <result property="shipping" column="shipping" />
+    <result property="id" column="ID" />
+    <result property="type" column="TYPE" />
+    <result property="shipping" column="SHIPPING" />
   </resultMap>
 
   <!-- select by PK: no mapping generated, since the table does not have a PK -->
@@ -36,13 +36,13 @@
      from product
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.id != null">
-        and "id" = #{p.id,jdbcType=INTEGER}
+        and "ID" = #{p.id,jdbcType=INTEGER}
       </if>
       <if test="p.type != null">
-        and "type" = #{p.type,jdbcType=VARCHAR}
+        and "TYPE" = #{p.type,jdbcType=VARCHAR}
       </if>
       <if test="p.shipping != null">
-        and "shipping" = #{p.shipping,jdbcType=INTEGER}
+        and "SHIPPING" = #{p.shipping,jdbcType=INTEGER}
       </if>
     </trim>
     <if test="o != null">
@@ -61,9 +61,9 @@
   <insert id="insert">
     insert into product (
       <trim prefixOverrides=", ">
-        <if test="true">, "id"</if>
-        <if test="true">, "type"</if>
-        <if test="true">, "shipping"</if>
+        <if test="true">, "ID"</if>
+        <if test="true">, "TYPE"</if>
+        <if test="true">, "SHIPPING"</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
@@ -83,19 +83,19 @@
   <update id="updateByExample">
     update product
     <set>
-      <if test="values.id != null">"id" = #{values.id,jdbcType=INTEGER},</if>
-      <if test="values.type != null">"type" = #{values.type,jdbcType=VARCHAR},</if>
-      <if test="values.shipping != null">"shipping" = #{values.shipping,jdbcType=INTEGER},</if>
+      <if test="values.id != null">"ID" = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.type != null">"TYPE" = #{values.type,jdbcType=VARCHAR},</if>
+      <if test="values.shipping != null">"SHIPPING" = #{values.shipping,jdbcType=INTEGER},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.id != null">
-        and "id" = #{filter.id,jdbcType=INTEGER}
+        and "ID" = #{filter.id,jdbcType=INTEGER}
       </if>
       <if test="filter.type != null">
-        and "type" = #{filter.type,jdbcType=VARCHAR}
+        and "TYPE" = #{filter.type,jdbcType=VARCHAR}
       </if>
       <if test="filter.shipping != null">
-        and "shipping" = #{filter.shipping,jdbcType=INTEGER}
+        and "SHIPPING" = #{filter.shipping,jdbcType=INTEGER}
       </if>
     </trim>
   </update>
@@ -112,13 +112,13 @@
     delete from product
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="id != null">
-        and "id" = #{id,jdbcType=INTEGER}
+        and "ID" = #{id,jdbcType=INTEGER}
       </if>
       <if test="type != null">
-        and "type" = #{type,jdbcType=VARCHAR}
+        and "TYPE" = #{type,jdbcType=VARCHAR}
       </if>
       <if test="shipping != null">
-        and "shipping" = #{shipping,jdbcType=INTEGER}
+        and "SHIPPING" = #{shipping,jdbcType=INTEGER}
       </if>
     </trim>
   </delete>

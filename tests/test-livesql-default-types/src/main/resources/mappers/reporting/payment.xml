@@ -7,21 +7,21 @@
   <!-- columns -->
 
   <sql id="columns">
-    "payment_date",
-    "invoice_id",
-    "amount"
+    "PAYMENT_DATE",
+    "INVOICE_ID",
+    "AMOUNT"
   </sql>
 
   <sql id="columnsWithAlias">
-    ${alias}."payment_date",
-    ${alias}."invoice_id",
-    ${alias}."amount"
+    ${alias}."PAYMENT_DATE",
+    ${alias}."INVOICE_ID",
+    ${alias}."AMOUNT"
   </sql>
 
   <resultMap id="allColumns" type="app.daos.reporting.PaymentVO">
-    <result property="paymentDate" column="payment_date" />
-    <result property="invoiceId" column="invoice_id" />
-    <result property="amount" column="amount" />
+    <result property="paymentDate" column="PAYMENT_DATE" />
+    <result property="invoiceId" column="INVOICE_ID" />
+    <result property="amount" column="AMOUNT" />
   </resultMap>
 
   <!-- select by PK: no mapping generated, since the table does not have a PK -->
@@ -36,13 +36,13 @@
      from payment
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.paymentDate != null">
-        and "payment_date" = #{p.paymentDate,jdbcType=DATE}
+        and "PAYMENT_DATE" = #{p.paymentDate,jdbcType=DATE}
       </if>
       <if test="p.invoiceId != null">
-        and "invoice_id" = #{p.invoiceId,jdbcType=INTEGER}
+        and "INVOICE_ID" = #{p.invoiceId,jdbcType=INTEGER}
       </if>
       <if test="p.amount != null">
-        and "amount" = #{p.amount,jdbcType=INTEGER}
+        and "AMOUNT" = #{p.amount,jdbcType=INTEGER}
       </if>
     </trim>
     <if test="o != null">
@@ -61,9 +61,9 @@
   <insert id="insert">
     insert into payment (
       <trim prefixOverrides=", ">
-        <if test="true">, "payment_date"</if>
-        <if test="true">, "invoice_id"</if>
-        <if test="true">, "amount"</if>
+        <if test="true">, "PAYMENT_DATE"</if>
+        <if test="true">, "INVOICE_ID"</if>
+        <if test="true">, "AMOUNT"</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
@@ -83,19 +83,19 @@
   <update id="updateByExample">
     update payment
     <set>
-      <if test="values.paymentDate != null">"payment_date" = #{values.paymentDate,jdbcType=DATE},</if>
-      <if test="values.invoiceId != null">"invoice_id" = #{values.invoiceId,jdbcType=INTEGER},</if>
-      <if test="values.amount != null">"amount" = #{values.amount,jdbcType=INTEGER},</if>
+      <if test="values.paymentDate != null">"PAYMENT_DATE" = #{values.paymentDate,jdbcType=DATE},</if>
+      <if test="values.invoiceId != null">"INVOICE_ID" = #{values.invoiceId,jdbcType=INTEGER},</if>
+      <if test="values.amount != null">"AMOUNT" = #{values.amount,jdbcType=INTEGER},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.paymentDate != null">
-        and "payment_date" = #{filter.paymentDate,jdbcType=DATE}
+        and "PAYMENT_DATE" = #{filter.paymentDate,jdbcType=DATE}
       </if>
       <if test="filter.invoiceId != null">
-        and "invoice_id" = #{filter.invoiceId,jdbcType=INTEGER}
+        and "INVOICE_ID" = #{filter.invoiceId,jdbcType=INTEGER}
       </if>
       <if test="filter.amount != null">
-        and "amount" = #{filter.amount,jdbcType=INTEGER}
+        and "AMOUNT" = #{filter.amount,jdbcType=INTEGER}
       </if>
     </trim>
   </update>
@@ -112,13 +112,13 @@
     delete from payment
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="paymentDate != null">
-        and "payment_date" = #{paymentDate,jdbcType=DATE}
+        and "PAYMENT_DATE" = #{paymentDate,jdbcType=DATE}
       </if>
       <if test="invoiceId != null">
-        and "invoice_id" = #{invoiceId,jdbcType=INTEGER}
+        and "INVOICE_ID" = #{invoiceId,jdbcType=INTEGER}
       </if>
       <if test="amount != null">
-        and "amount" = #{amount,jdbcType=INTEGER}
+        and "AMOUNT" = #{amount,jdbcType=INTEGER}
       </if>
     </trim>
   </delete>

@@ -12,14 +12,13 @@ public class AbstractInvoiceVO implements Serializable {
   // VO Properties (table columns)
 
   protected java.lang.Integer id = null;
+  protected java.lang.Integer accountId = null;
   protected java.lang.Integer amount = null;
   protected java.lang.Integer branchId = null;
-  protected java.lang.Integer accountId = null;
-  protected java.lang.Integer unpaidBalance = null;
-  protected java.lang.String type = null;
-  protected java.lang.String status = null;
   protected java.sql.Date orderDate = null;
-  protected app.daos.primitives.Category category = null;
+  protected java.lang.String type = null;
+  protected java.lang.Integer unpaidBalance = null;
+  protected java.lang.String status = null;
 
   // getters & setters
 
@@ -29,6 +28,14 @@ public class AbstractInvoiceVO implements Serializable {
 
   public void setId(final java.lang.Integer id) {
     this.id = id;
+  }
+
+  public java.lang.Integer getAccountId() {
+    return this.accountId;
+  }
+
+  public void setAccountId(final java.lang.Integer accountId) {
+    this.accountId = accountId;
   }
 
   public java.lang.Integer getAmount() {
@@ -47,20 +54,12 @@ public class AbstractInvoiceVO implements Serializable {
     this.branchId = branchId;
   }
 
-  public java.lang.Integer getAccountId() {
-    return this.accountId;
+  public java.sql.Date getOrderDate() {
+    return this.orderDate;
   }
 
-  public void setAccountId(final java.lang.Integer accountId) {
-    this.accountId = accountId;
-  }
-
-  public java.lang.Integer getUnpaidBalance() {
-    return this.unpaidBalance;
-  }
-
-  public void setUnpaidBalance(final java.lang.Integer unpaidBalance) {
-    this.unpaidBalance = unpaidBalance;
+  public void setOrderDate(final java.sql.Date orderDate) {
+    this.orderDate = orderDate;
   }
 
   public java.lang.String getType() {
@@ -71,6 +70,14 @@ public class AbstractInvoiceVO implements Serializable {
     this.type = type;
   }
 
+  public java.lang.Integer getUnpaidBalance() {
+    return this.unpaidBalance;
+  }
+
+  public void setUnpaidBalance(final java.lang.Integer unpaidBalance) {
+    this.unpaidBalance = unpaidBalance;
+  }
+
   public java.lang.String getStatus() {
     return this.status;
   }
@@ -79,36 +86,19 @@ public class AbstractInvoiceVO implements Serializable {
     this.status = status;
   }
 
-  public java.sql.Date getOrderDate() {
-    return this.orderDate;
-  }
-
-  public void setOrderDate(final java.sql.Date orderDate) {
-    this.orderDate = orderDate;
-  }
-
-  public app.daos.primitives.Category getCategory() {
-    return this.category;
-  }
-
-  public void setCategory(final app.daos.primitives.Category category) {
-    this.category = category;
-  }
-
   // to string
 
   public String toString() {
     java.lang.StringBuilder sb = new java.lang.StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- id=" + this.id + "\n");
+    sb.append("- accountId=" + this.accountId + "\n");
     sb.append("- amount=" + this.amount + "\n");
     sb.append("- branchId=" + this.branchId + "\n");
-    sb.append("- accountId=" + this.accountId + "\n");
-    sb.append("- unpaidBalance=" + this.unpaidBalance + "\n");
-    sb.append("- type=" + this.type + "\n");
-    sb.append("- status=" + this.status + "\n");
     sb.append("- orderDate=" + this.orderDate + "\n");
-    sb.append("- category=" + this.category);
+    sb.append("- type=" + this.type + "\n");
+    sb.append("- unpaidBalance=" + this.unpaidBalance + "\n");
+    sb.append("- status=" + this.status);
     return sb.toString();
   }
 
@@ -117,14 +107,13 @@ public class AbstractInvoiceVO implements Serializable {
   public JSONObject toJSONObject() {
     JSONObject obj = new JSONObject();
     obj.addProperty("id", this.id);
+    obj.addProperty("accountId", this.accountId);
     obj.addProperty("amount", this.amount);
     obj.addProperty("branchId", this.branchId);
-    obj.addProperty("accountId", this.accountId);
-    obj.addProperty("unpaidBalance", this.unpaidBalance);
-    obj.addProperty("type", this.type);
-    obj.addProperty("status", this.status);
     obj.addProperty("orderDate", this.orderDate);
-    obj.addProperty("category", this.category);
+    obj.addProperty("type", this.type);
+    obj.addProperty("unpaidBalance", this.unpaidBalance);
+    obj.addProperty("status", this.status);
     return obj;
   }
 
