@@ -45,7 +45,7 @@ public class AbstractSelectPhase<R> extends ExecutableSelect<R> {
     return this.combined;
   }
 
-  public SelectObject<R> getLastSelect() {
+  protected SelectObject<R> getLastSelect() {
     return this.combined.getLastSelect();
   }
 
