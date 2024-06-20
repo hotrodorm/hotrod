@@ -22,6 +22,7 @@ import org.hotrod.runtime.livesql.queries.select.NaturalInnerJoin;
 import org.hotrod.runtime.livesql.queries.select.NaturalLeftOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.NaturalRightOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.RightOuterJoin;
+import org.hotrod.runtime.livesql.queries.select.SHelper;
 import org.hotrod.runtime.livesql.queries.select.UnionJoin;
 
 public class MySQLDialect extends LiveSQLDialect {
@@ -426,7 +427,7 @@ public class MySQLDialect extends LiveSQLDialect {
       sb.append(this.canonicalToNatural(tov.getCatalog()));
       sb.append(".");
     }
-    sb.append(this.canonicalToNatural(tov.getName()));
+    sb.append(this.canonicalToNatural(SHelper.getName(tov)));
     return sb.toString();
   }
 

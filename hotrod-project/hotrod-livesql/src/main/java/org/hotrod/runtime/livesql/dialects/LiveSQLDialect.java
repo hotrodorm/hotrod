@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
+import org.hotrod.runtime.livesql.queries.select.SHelper;
 
 public abstract class LiveSQLDialect {
 
@@ -145,7 +146,7 @@ public abstract class LiveSQLDialect {
     } else if (tov.getCatalog() != null) {
       sb.append(".");
     }
-    sb.append(this.canonicalToNatural(tov.getName()));
+    sb.append(this.canonicalToNatural(SHelper.getName(tov)));
     return sb.toString();
   }
 }

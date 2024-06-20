@@ -81,7 +81,8 @@ public abstract class TableOrView extends TableExpression {
     return schema;
   }
 
-  public final Name getName() {
+  @Override
+  protected final Name getName() {
     return name;
   }
 

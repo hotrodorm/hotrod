@@ -59,7 +59,8 @@ public class Subquery extends TableExpression {
 
   // Getters
 
-  public Name getName() {
+  @Override
+  protected Name getName() {
     return name;
   }
 

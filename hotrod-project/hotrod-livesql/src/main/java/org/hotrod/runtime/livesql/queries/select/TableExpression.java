@@ -14,7 +14,7 @@ public abstract class TableExpression {
 
   protected abstract void renderTo(QueryWriter w);
 
-  public abstract Name getName();
+  protected abstract Name getName();
 
   public abstract List<ResultSetColumn> getColumns() throws IllegalAccessException;
 
