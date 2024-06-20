@@ -19,6 +19,7 @@ import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.Column;
@@ -437,6 +438,7 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
 
   }
 
+  @Override
   public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
     if (this.baseTableExpression != null) {
       this.baseTableExpression.validateTableReferences(tableReferences, ag);
@@ -447,15 +449,18 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
       }
     }
     if (this.wherePredicate != null) {
-      this.wherePredicate.validateTableReferences(tableReferences, ag);
+      Helper.validateTableReferences(this.wherePredicate, tableReferences, ag);
+//      this.wherePredicate.validateTableReferences(tableReferences, ag);
     }
     if (this.groupBy != null) {
       for (ComparableExpression e : this.groupBy) {
-        e.validateTableReferences(tableReferences, ag);
+        Helper.validateTableReferences(e, tableReferences, ag);
+//        e.validateTableReferences(tableReferences, ag);
       }
     }
     if (this.havingPredicate != null) {
-      this.havingPredicate.validateTableReferences(tableReferences, ag);
+      Helper.validateTableReferences(this.havingPredicate, tableReferences, ag);
+//      this.havingPredicate.validateTableReferences(tableReferences, ag);
     }
     if (this.orderingTerms != null) {
       for (@SuppressWarnings("unused")

@@ -2,11 +2,17 @@ package org.hotrod.runtime.livesql.queries.select;
 
 import java.util.List;
 
-import org.hotrod.runtime.livesql.expressions.Rendereable;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.metadata.Name;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
 
-public abstract class TableExpression implements Rendereable {
+public abstract class TableExpression {
+
+  public abstract void validateTableReferences(TableReferences tableReferences, AliasGenerator ag);
+
+  public abstract void renderTo(QueryWriter w);
 
   public abstract Name getName();
 

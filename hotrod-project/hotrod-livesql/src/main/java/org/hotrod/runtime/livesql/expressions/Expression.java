@@ -113,7 +113,7 @@ public abstract class Expression implements ResultSetColumn, Rendereable, Orderi
     // SubqueryColumns, etc.
   }
 
-  public final void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
+  protected final void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
     for (Expression e : this.expressions) {
       e.validateTableReferences(tableReferences, ag);
     }

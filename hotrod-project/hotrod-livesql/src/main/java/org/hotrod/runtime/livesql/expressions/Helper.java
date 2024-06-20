@@ -1,5 +1,8 @@
 package org.hotrod.runtime.livesql.expressions;
 
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
+
 public class Helper {
 
   public static Expression getExpression(AliasedExpression ae) {
@@ -12,6 +15,11 @@ public class Helper {
 
   public static TypeHandler getTypeHandler(final Expression expr) {
     return expr.getTypeHandler();
+  }
+
+  public static void validateTableReferences(final Expression expression, final TableReferences tableReferences,
+      final AliasGenerator ag) {
+    expression.validateTableReferences(tableReferences, ag);
   }
 
 }

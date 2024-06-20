@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
 import org.hotrod.runtime.livesql.util.SubqueryUtil;
 
 public class AllSubqueryColumns implements ResultSetColumn {
@@ -31,11 +29,6 @@ public class AllSubqueryColumns implements ResultSetColumn {
   @Override
   public void renderTo(QueryWriter w) {
     throw new UnsupportedOperationException("The columns must be expanded and rendered separately");
-  }
-
-  @Override
-  public void validateTableReferences(TableReferences tableReferences, AliasGenerator ag) {
-    this.subquery.validateTableReferences(tableReferences, ag);
   }
 
 }
