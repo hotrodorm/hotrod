@@ -40,4 +40,8 @@ public class Name {
     return quoted;
   }
 
+  public String toString() {
+    return this.name;
+  }
+
 }

@@ -107,7 +107,7 @@ public abstract class MultiSet<R> {
           ps.setObject(i, obj);
         }
 
-        // Computing query column types
+        // Logging query column types
 
         LinkedHashMap<String, QueryColumn> queryColumns = q.getQueryColumns();
         n = 1;

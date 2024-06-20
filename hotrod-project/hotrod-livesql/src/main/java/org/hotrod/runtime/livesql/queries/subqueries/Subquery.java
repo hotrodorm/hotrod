@@ -2,9 +2,10 @@ package org.hotrod.runtime.livesql.queries.subqueries;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
-import org.hotrod.runtime.livesql.expressions.ComparableExpression;
+import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.binary.ByteArrayExpression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
@@ -24,6 +25,8 @@ import org.hotrod.runtime.livesql.util.SubqueryUtil;
 import org.hotrodorm.hotrod.utils.SUtil;
 
 public class Subquery extends TableExpression {
+
+  private static final Logger log = Logger.getLogger(Subquery.class.getName());
 
   private Name name;
   protected String[] columns;
@@ -104,7 +107,13 @@ public class Subquery extends TableExpression {
 
   @Override
   protected void computeQueryColumns() {
+    log.info(
+        "--------------------------------------------------------------------------------------------------------------------");
+    log.info(">>> computeQueryColumns for subquery '" + this.name + "'...");
     MHelper.computeQueryColumns(this.select);
+    log.info(">>> computeQueryColumns for subquery '" + this.name + "' complete");
+    log.info(
+        "--------------------------------------------------------------------------------------------------------------------");
   }
 
   // Rendering
@@ -137,14 +146,14 @@ public class Subquery extends TableExpression {
   protected List<ResultSetColumn> expandColumns(final List<ResultSetColumn> cols) throws IllegalAccessException {
     List<ResultSetColumn> subqueryColumns = new ArrayList<>();
     for (ResultSetColumn c : cols) {
-      ComparableExpression expr = castAsSubqueryColumn(c);
+      Expression expr = castAsSubqueryColumn(c);
       subqueryColumns.add(expr);
     }
     return subqueryColumns;
 
   }
 
-  private ComparableExpression castAsSubqueryColumn(final ResultSetColumn c)
+  private Expression castAsSubqueryColumn(final ResultSetColumn c)
       throws IllegalArgumentException, IllegalAccessException {
     return SubqueryUtil.castPersistenceColumnAsSubqueryColumn(this, c);
   }

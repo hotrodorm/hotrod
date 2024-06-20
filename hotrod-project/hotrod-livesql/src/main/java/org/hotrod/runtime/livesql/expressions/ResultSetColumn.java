@@ -9,10 +9,10 @@ package org.hotrod.runtime.livesql.expressions;
  *                          ^      ^             |                |
  *                          |      |             |                |
  *  {I} ReferenceableExpression  Expression  AllColumns   {I} ColumnList
- *           ^               ^    ^      ^                      ^    ^
- *           |               |    |      |                      |    |
- *      AliasedExpression    Column   [Many...]      ColumnAliased  ColumnSubset
- *
+ *                     ^    ^    ^   ^    ^                     ^    ^
+ *                     |    |    |   |    |                     |    |
+ *                     |    Column   |    [Many...]  ColumnAliased  ColumnSubset
+ *                    AliasedExpression
  * </pre>
  */
 

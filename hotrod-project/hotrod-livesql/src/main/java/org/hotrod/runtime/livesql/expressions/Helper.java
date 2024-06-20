@@ -6,4 +6,12 @@ public class Helper {
     return ae.getExpression();
   }
 
+  public static void computeQueryColumns(final Expression expr) {
+    expr.computeQueryColumns();
+  }
+
+  public static TypeHandler getTypeHandler(final Expression expr) {
+    return expr.getTypeHandler();
+  }
+
 }

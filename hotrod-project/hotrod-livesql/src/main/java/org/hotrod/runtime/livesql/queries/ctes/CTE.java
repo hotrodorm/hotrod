@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
-import org.hotrod.runtime.livesql.expressions.ComparableExpression;
+import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.Select;
@@ -74,8 +74,7 @@ public class CTE extends Subquery {
       List<ResultSetColumn> fcols = new ArrayList<>();
       for (int i = 0; i < this.columns.length; i++) {
         ResultSetColumn rsc = cols.get(i);
-        ComparableExpression col = SubqueryUtil.castSubqueryColumnAsExternalLevelSubqueryColumn(this, rsc,
-            this.columns[i]);
+        Expression col = SubqueryUtil.castSubqueryColumnAsExternalLevelSubqueryColumn(this, rsc, this.columns[i]);
         fcols.add(col);
       }
       return fcols;

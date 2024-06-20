@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
-import org.hotrod.runtime.livesql.expressions.predicates.IsNotNull;
-import org.hotrod.runtime.livesql.expressions.predicates.IsNull;
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
@@ -21,6 +18,7 @@ public abstract class Expression implements ResultSetColumn, Rendereable, Orderi
   protected static final int PRECEDENCE_LITERAL = 1;
   protected static final int PRECEDENCE_COLUMN = 1;
   protected static final int PRECEDENCE_PARENTHESIS = 1;
+  protected static final int PRECEDENCE_ALIAS = 1;
 
   protected static final int PRECEDENCE_CASE = 2;
   protected static final int PRECEDENCE_FUNCTION = 2;
@@ -109,6 +107,12 @@ public abstract class Expression implements ResultSetColumn, Rendereable, Orderi
     this.tablesOrViews.add(tableOrView);
   }
 
+  protected void computeQueryColumns() {
+    // Nothing to do by default.
+    // Only a few classes will override this method: AliasedExpression,
+    // SubqueryColumns, etc.
+  }
+
   public final void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
     for (Expression e : this.expressions) {
       e.validateTableReferences(tableReferences, ag);
@@ -125,16 +129,6 @@ public abstract class Expression implements ResultSetColumn, Rendereable, Orderi
       }
       t.validateTableReferences(tableReferences, ag);
     }
-  }
-
-  // Is Null and Is Not Null
-
-  public Predicate isNotNull() {
-    return new IsNotNull(this);
-  }
-
-  public Predicate isNull() {
-    return new IsNull(this);
   }
 
   // Rendering
@@ -163,7 +157,7 @@ public abstract class Expression implements ResultSetColumn, Rendereable, Orderi
 
   // Getters
 
-  public TypeHandler getTypeHandler() {
+  protected TypeHandler getTypeHandler() {
     return typeHandler;
   }
 

@@ -3,7 +3,6 @@ package org.hotrod.runtime.livesql.queries.select;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -22,6 +21,7 @@ import org.hotrod.runtime.livesql.queries.QueryColumn;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.subqueries.AllSubqueryColumns;
+import org.hotrod.runtime.livesql.queries.subqueries.SubqueryColumn;
 import org.hotrod.runtime.livesql.util.ReflectionUtil;
 import org.hotrod.runtime.livesql.util.SubqueryUtil;
 
@@ -32,7 +32,7 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
   private boolean doNotAliasColumns;
   private List<ResultSetColumn> resultSetColumns = new ArrayList<>();
 
-  private List<ResultSetColumn> expandedColumns;
+  private List<Expression> expandedColumns;
   protected LinkedHashMap<String, QueryColumn> queryColumns;
 
   public SelectObject(final List<CTE> ctes, final boolean distinct, final boolean doNotAliasColumns) {
@@ -61,36 +61,44 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
   }
 
   // Rendering
-  // TODO: Just a marker
+  // TODO: Nothing to do -- just a marker
 
   protected void computeQueryColumns() {
     log.info("SELECT[" + System.identityHashCode(this) + "].computeQueryColumns()");
-    
+
     // 1. Compute columns from subqueries in the FROM/JOIN clauses
-    
+
     this.baseTableExpression.computeQueryColumns();
     for (Join j : this.joins) {
       j.computeQueryColumns();
     }
-    
-    // 2. Expand columns in the select list
-    
-    this.expandColumns();
-    
-    // 3. Compute query columns
-    
-    this.queryColumns = new LinkedHashMap<>();
-    for (ResultSetColumn c : expandedColumns) {
-      log.info("Will resolve alias. c:" + c.getClass().getName());
-      String alias = resolveAlias(c);
-      log.info("alias=" + alias);
-      TypeHandler typeHandler = resolveTypeHandler(c);
-      this.queryColumns.put(alias, new QueryColumn(alias, typeHandler));
 
+    // 2. Expand columns in the select list
+
+    this.expandColumns();
+
+    // 3. Compute aliased columns and subquery columns
+
+    for (Expression expr : this.expandedColumns) {
+      log.info("............................ computing for " + expr.getClass().getName());
+      Helper.computeQueryColumns(expr);
     }
+
+    // 4. Compute query columns
+
+    this.queryColumns = new LinkedHashMap<>();
+    for (Expression expr : this.expandedColumns) {
+      log.info(" ");
+      log.info("Will resolve alias. expr:" + expr.getClass().getName());
+      String alias = resolveAlias(expr);
+      TypeHandler typeHandler = Helper.getTypeHandler(expr);
+      log.info("alias=" + alias + " typeHandler=" + typeHandler);
+      this.queryColumns.put(alias, new QueryColumn(alias, typeHandler));
+    }
+
   }
 
-  private String resolveAlias(final ResultSetColumn c) {
+  private String resolveAlias(final Expression c) {
     try {
       Column col = (Column) c;
       log.info("-- col=" + col);
@@ -101,44 +109,51 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
         log.info("-- ae=" + ae);
         return ae.getName();
       } catch (ClassCastException e2) {
-        return null;
+        try {
+          SubqueryColumn sc = (SubqueryColumn) c;
+          log.info("-- sc=" + sc);
+          String alias = sc.getReferencedColumnName();
+          return alias;
+        } catch (ClassCastException e3) {
+          return null;
+        }
       }
     }
   }
 
-  private TypeHandler resolveTypeHandler(final ResultSetColumn c) {
-    try {
-      Expression expr = (Expression) c;
-      return expr.getTypeHandler();
-    } catch (ClassCastException e) {
-      try {
-        AliasedExpression ae = (AliasedExpression) c;
-        return Helper.getExpression(ae).getTypeHandler();
-      } catch (ClassCastException e2) {
-        return null;
-      }
-    }
-  }
+//  private TypeHandler resolveTypeHandler(final Expression c) {
+//    try {
+//      Expression expr = (Expression) c;
+//      log.info("-- TH 1");
+//      return expr.getTypeHandler();
+//    } catch (ClassCastException e) {
+//      return null;
+//    }
+//  }
 
   private void expandColumns() {
-    this.expandedColumns = new ArrayList<>(resultSetColumns);
 
-    if (expandedColumns == null || expandedColumns.isEmpty()) {
+    this.expandedColumns = new ArrayList<>();
+
+    if (this.resultSetColumns == null || this.resultSetColumns.isEmpty()) {
 
       // 1. Expand unlisted columns
 
       try {
-        expandedColumns = new ArrayList<>();
         List<ResultSetColumn> columns = this.baseTableExpression.getColumns();
         for (ResultSetColumn e : columns) {
-          expandedColumns.add(e);
+          Expression expr = (Expression) e;
+          expandedColumns.add(expr);
         }
         for (Join j : this.joins) {
           columns = j.getTableExpression().getColumns();
           for (ResultSetColumn e : columns) {
-            expandedColumns.add(e);
+            Expression expr = (Expression) e;
+            expandedColumns.add(expr);
           }
         }
+      } catch (ClassCastException e) {
+        throw new LiveSQLException("Could not expand LiveSQL columns (all)", e);
       } catch (IllegalAccessException e) {
         throw new LiveSQLException("Could not expand LiveSQL columns (all)", e);
       } catch (RuntimeException e) {
@@ -149,22 +164,19 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
 
       // 2. Expand columns subsets (star(), filtered star(), etc.)
 
-      ListIterator<ResultSetColumn> it = expandedColumns.listIterator();
-      while (it.hasNext()) {
+      for (ResultSetColumn rsc : this.resultSetColumns) {
         try {
-          ResultSetColumn rsc = it.next();
           List<ResultSetColumn> scols = getSubColumns(rsc);
-          if (scols != null) {
-            it.remove();
+          if (scols == null) {
+            Expression expr = (Expression) rsc;
+            this.expandedColumns.add(expr);
+          } else {
             for (ResultSetColumn sc : scols) {
-              it.add(sc);
+              Expression expr = (Expression) sc;
+              this.expandedColumns.add(expr);
             }
           }
-        } catch (IllegalArgumentException e) {
-          throw new LiveSQLException("Could not expand subset of LiveSQL columns", e);
-        } catch (IllegalAccessException e) {
-          throw new LiveSQLException("Could not expand subset of LiveSQL columns", e);
-        } catch (ClassCastException e) {
+        } catch (IllegalArgumentException | IllegalAccessException | ClassCastException e) {
           throw new LiveSQLException("Could not expand subset of LiveSQL columns", e);
         } catch (RuntimeException e) {
           throw new LiveSQLException("Could not expand subset of LiveSQL columns", e);

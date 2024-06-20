@@ -97,7 +97,7 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
   protected abstract void writeColumns(final QueryWriter w, final TableExpression baseTableExpression,
       final List<Join> joins);
 
-  protected void writeExpandedColumns(final QueryWriter w, final List<ResultSetColumn> expandedColumns,
+  protected void writeExpandedColumns(final QueryWriter w, final List<Expression> expandedColumns,
       final boolean doNotAliasColumns) {
 
     log.info(">>> " + TUtil.compactStackTrace());

@@ -19,7 +19,7 @@ import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderByDirectionPhase;
 import org.hotrod.runtime.livesql.queries.select.Select;
 
-public abstract class ComparableExpression extends Expression {
+public abstract class ComparableExpression extends GenericExpression {
 
   // Constructor
 
