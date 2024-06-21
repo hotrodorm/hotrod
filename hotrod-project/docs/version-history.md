@@ -5,7 +5,11 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 ## 4.8.0:
 
 - LiveSQL:
-    - Advanced Locking: Apart from FOR UPDATE, now LiveSQL (and CRUD) support FOR SHARE, NOWAIT, WAIT &lt;n>, and SKIP LOCKED.
+    - Advanced Locking:
+        - Locking mode FOR SHARE added to the existing FOR UPDATE mode.
+        - New locking concurrency options: NOWAIT, WAIT &lt;n>, and SKIP LOCKED.
+- CRUD:  
+    - The new locking mode and locking concurrency options are also available CRUD selects.
 
 ## 4.7.1:
 
