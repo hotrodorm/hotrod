@@ -97,14 +97,14 @@ LiveSQL implements two locking modes: FOR UPDATE and FOR SHARE.
 
 The following table compares the locking modes:
 
-| Use Case | FOR UPDATE | FOR SHARE |
+| Feature    | FOR UPDATE | FOR SHARE |
 | ---------- | ---------- | --------- |
+| Use when | you want the data to stay the same for the duration of this operation and you expect **to make changes** to it | you want the data to stay the same for the duration of this operation and you **won't make changes** to it |
 | Locks last until | the end of the transaction | the end of the transaction |
-| Affects queries in other transactions | UPDATE, DELETE, and SELECT | UPDATE, DELETE |
-| Plain queries with no locking in other transactions | will run normally | will run normally |
-| FOR SHARE queries in other transactions | will wait until this transaction completes, and then will get locks | will succeed immediately and will also obtain locks |
-| FOR UPDATE queries in other transactions | will wait until this transaction completes, and then will get locks | will wait until this transaction completes, and then will get locks |
-| Use them when | you want the data to stay the same for the duration of this operation and you expect **to make changes** to it | you want the data to stay the same for the duration of this operation and you **won't make changes** to it |
+| Affects queries in other sessions | UPDATE, DELETE, and SELECT | UPDATE, DELETE |
+| Plain queries with no locking in other sessions | will run normally | will run normally |
+| FOR SHARE queries in other sessions | will wait until this transaction completes, and then will get locks | will succeed immediately and will also obtain locks |
+| FOR UPDATE queries in other sessions | will wait until this transaction completes, and then will get locks | will wait until this transaction completes, and then will get locks |
 
 
 The locking modes supported by each database are:
@@ -160,22 +160,22 @@ The concurrency options supported by each database are:
 
 ## Combining Locking with Other Clauses
 
-The FOR UPDATE and FOR SHARE clauses always need a FROM clause that references a table,
-or in some cases updatable views. It can be combined with the WHERE, ORDER BY, OFFSET, 
+The FOR UPDATE and FOR SHARE clauses always need a FROM clause that references a table
+or updatable views. It can be combined with the WHERE, ORDER BY, OFFSET, 
 and LIMIT clauses.
 
-FOR UPDATE and FOR SHARE is not available to queries that use:
+The FOR UPDATE and FOR SHARE clauses are not available for queries that use:
 
 - DISTINCT
 - GROUP BY
 - HAVING
 - UNION [ALL], INTERSECT [ALL], EXCEPT [ALL]
 
-Generally speaking, any of these clauses above prevent the use of FOR UPDATE/FOR SHARE since
+Generally speaking, any of these clauses above prevent the use of FOR UPDATE or FOR SHARE since
 they do not produce a 1:1 relationship between the source rows from a table and resulting
 rows of the query.
 
-The following query combines all the other clauses. Consider each expression or filtering condition can be
+The following query combines all the other clauses. Consider each expression can be
 as simple (as shown here) or as complex as needed:
 
 ```java
@@ -241,8 +241,8 @@ In LiveSQL/CRUD this query can be phrased as:
 ```
 
 **Note**: It's not clear if this solution could return zero rows during high database load due to race
-conditions. It's advised to recheck with a simple non-locking count of rows, if the workaround returns 
-zero rows... just to be on the safe side.
+conditions. It's advised to consider a recheck with a simple non-locking count of rows, if the 
+workaround returns zero rows.
 
 
 ## Performance Considerations
@@ -276,10 +276,14 @@ requires.
 
 ## Benefits
 
-Compared to Optimistic Locking, Pessimistic Locking is far easier to code. The example above is much shorter
-and simpler to write and to debug than the corresponding code using Optimistic Locking.
+Pessimistic Locking can have the following benefits:
 
-Once the rows are selected and the lock(s) are acquired Pessimistic Locking ensures the transaction can be
+- Compared to Optimistic Locking, Pessimistic Locking is far easier to code. The example above is much shorter
+and simpler to write and to debug than the corresponding code using Optimistic Locking. Compare the brevity 
+and simplicity of the [CRUD Example with Pessimistic Locking](#crud-example) against the verbosity of the
+[CRUD Example with Pessimistic Locking](../optimistic-locking#crud-example).  
+
+- Once the rows are selected and the lock(s) are acquired Pessimistic Locking ensures the transaction can be
 completed. Well, as long as there's not a catastrophic database failure. This is not true for Optimistic
 Locking.
 
@@ -300,7 +304,7 @@ locking much more data than intended, and that could lead to higher chances of S
 
 **Notes**:
 
-- Other extra features related to locking such as FOR KEY SHARE, FOR KEY UPDATE, and table/column narrowing are
+- Other locking modes such as FOR KEY SHARE, FOR KEY UPDATE, and table/column narrowing are
 not currently implemented.
 - Because of the internals of the SQL Server engine, some versions of this database may lock entire data pages
 rather than single rows. Use locks with caution in this database.
