@@ -4,10 +4,10 @@ import java.util.logging.Logger;
 
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.ReferenceableExpression;
-import org.hotrodorm.hotrod.utils.TUtil;
 
 public class AliasedExpression extends Expression implements ReferenceableExpression {
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(AliasedExpression.class.getName());
 
   private Expression referencedExpression;
@@ -22,9 +22,6 @@ public class AliasedExpression extends Expression implements ReferenceableExpres
 
   @Override
   protected void computeQueryColumns() {
-    log.info("@@@@@@@@@@@@@@@@@ '" + this.alias + "' -- this.referencedExpression: "
-        + this.referencedExpression.getClass().getName());
-    log.info("@@@ " + TUtil.compactStackTrace());
     this.referencedExpression.computeQueryColumns();
     this.setTypeHandler(this.referencedExpression.getTypeHandler());
   }

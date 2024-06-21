@@ -8,7 +8,6 @@ import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.TableExpression;
-import org.hotrodorm.hotrod.utils.SUtil;
 
 public abstract class TableOrView extends TableExpression {
 
@@ -36,19 +35,9 @@ public abstract class TableOrView extends TableExpression {
     return this.alias != null ? this.alias : this.designatedAlias;
   }
 
-  public void removeAlias() {
+  protected void removeAlias() {
     this.alias = null;
     this.designatedAlias = null;
-  }
-
-  public String renderTree() {
-    StringBuilder sb = new StringBuilder();
-    this.renderTree(sb, 0);
-    return sb.toString();
-  }
-
-  public void renderTree(final StringBuilder sb, final int level) {
-    sb.append(SUtil.getFiller(". ", level) + "+ [table-or-view] " + this.getClass().getName() + "\n");
   }
 
   // Validation
@@ -90,7 +79,7 @@ public abstract class TableOrView extends TableExpression {
     return type;
   }
 
-  public String renderUnescapedName() {
+  protected String renderUnescapedName() {
     StringBuilder sb = new StringBuilder();
     if (this.catalog != null) {
       sb.append(this.catalog);

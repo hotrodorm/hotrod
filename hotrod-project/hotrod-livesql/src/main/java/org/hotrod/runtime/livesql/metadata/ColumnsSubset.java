@@ -1,29 +1,23 @@
 package org.hotrod.runtime.livesql.metadata;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.hotrod.runtime.livesql.expressions.AliasedExpression;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
-import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.livesql.metadata.AllColumns.ColumnRenamer;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class AllColumns implements ResultSetColumn {
+public class ColumnsSubset implements ColumnList {
 
   private List<Column> columns;
 
-  public AllColumns(final Column... columns) {
-    this.columns = Arrays.asList(columns);
+  protected ColumnsSubset(final List<Column> columns) {
+    this.columns = columns;
   }
 
-  public ColumnsSubset filter(final Predicate<Column> predicate) {
-    return new ColumnsSubset(this.columns.stream().filter(predicate).collect(Collectors.toList()));
-  }
-
-  public static interface ColumnRenamer {
-    String newName(Column c);
+  public boolean isEmpty() {
+    return this.columns.isEmpty();
   }
 
   public ColumnsAliased as(final ColumnRenamer aliaser) {
@@ -36,7 +30,15 @@ public class AllColumns implements ResultSetColumn {
 
   @Override
   public void renderTo(QueryWriter w) {
-    throw new UnsupportedOperationException();
+    boolean first = true;
+    for (int i = 0; i < this.columns.size(); i++) {
+      if (first) {
+        first = false;
+      } else {
+        w.write(", ");
+      }
+      this.columns.get(i).renderTo(w);
+    }
   }
 
 }

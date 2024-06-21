@@ -13,10 +13,10 @@ import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.TypeHandler;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
-import org.hotrod.runtime.livesql.metadata.AllColumns.ColumnAliased;
-import org.hotrod.runtime.livesql.metadata.AllColumns.ColumnList;
-import org.hotrod.runtime.livesql.metadata.AllColumns.ColumnSubset;
 import org.hotrod.runtime.livesql.metadata.Column;
+import org.hotrod.runtime.livesql.metadata.ColumnList;
+import org.hotrod.runtime.livesql.metadata.ColumnsAliased;
+import org.hotrod.runtime.livesql.metadata.ColumnsSubset;
 import org.hotrod.runtime.livesql.queries.QueryColumn;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
@@ -80,7 +80,7 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
     // 3. Compute aliased columns and subquery columns
 
     for (Expression expr : this.expandedColumns) {
-      log.info("............................ computing for " + expr.getClass().getName());
+//      log.info("............................ computing for " + expr.getClass().getName());
       Helper.computeQueryColumns(expr);
     }
 
@@ -88,8 +88,8 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
 
     this.queryColumns = new LinkedHashMap<>();
     for (Expression expr : this.expandedColumns) {
-      log.info(" ");
-      log.info("Will resolve alias. expr:" + expr.getClass().getName());
+//      log.info(" ");
+//      log.info("Will resolve alias. expr:" + expr.getClass().getName());
       String alias = resolveAlias(expr);
       TypeHandler typeHandler = Helper.getTypeHandler(expr);
       log.info("alias=" + alias + " typeHandler=" + typeHandler);
@@ -101,17 +101,14 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
   private String resolveAlias(final Expression c) {
     try {
       Column col = (Column) c;
-      log.info("-- col=" + col);
       return col.getProperty();
     } catch (ClassCastException e) {
       try {
         AliasedExpression ae = (AliasedExpression) c;
-        log.info("-- ae=" + ae);
         return ae.getName();
       } catch (ClassCastException e2) {
         try {
           SubqueryColumn sc = (SubqueryColumn) c;
-          log.info("-- sc=" + sc);
           String alias = sc.getReferencedColumnName();
           return alias;
         } catch (ClassCastException e3) {
@@ -120,16 +117,6 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
       }
     }
   }
-
-//  private TypeHandler resolveTypeHandler(final Expression c) {
-//    try {
-//      Expression expr = (Expression) c;
-//      log.info("-- TH 1");
-//      return expr.getTypeHandler();
-//    } catch (ClassCastException e) {
-//      return null;
-//    }
-//  }
 
   private void expandColumns() {
 
@@ -190,7 +177,7 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
       throws IllegalArgumentException, IllegalAccessException {
     if (c instanceof AllColumns) {
       return getColumnsField(c, "columns");
-    } else if (c instanceof ColumnSubset) {
+    } else if (c instanceof ColumnsSubset) {
       return getColumnsField(c, "columns");
     } else if (c instanceof AllSubqueryColumns) {
       return SubqueryUtil.listColumns((AllSubqueryColumns) c);
@@ -212,6 +199,8 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
 
   @Override
   public List<ResultSetColumn> listColumns() {
+    log.info(
+        "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ listColumns()");
     if (this.listedColumns == null) {
       this.listedColumns = expandColumns(this.resultSetColumns);
     }
@@ -260,7 +249,7 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
   private List<ResultSetColumn> expandColumnList(final ColumnList cl) {
     List<ResultSetColumn> list = new ArrayList<>();
     try {
-      ColumnSubset cs = (ColumnSubset) cl;
+      ColumnsSubset cs = (ColumnsSubset) cl;
       List<Column> columns = ReflectionUtil.getColumnsField(cs, "columns");
       list.addAll(expandColumns(columns.stream().map(c -> (ResultSetColumn) c).collect(Collectors.toList())));
     } catch (IllegalAccessException e) {
@@ -268,7 +257,7 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
     } catch (ClassCastException e1) {
 
       try {
-        ColumnAliased ca = (ColumnAliased) cl;
+        ColumnsAliased ca = (ColumnsAliased) cl;
         List<ResultSetColumn> columns;
         try {
           columns = ReflectionUtil.getResultSetColumnsField(ca, "columns");

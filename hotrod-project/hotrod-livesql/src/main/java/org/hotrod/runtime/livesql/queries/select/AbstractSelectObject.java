@@ -23,6 +23,7 @@ import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.Column;
+import org.hotrod.runtime.livesql.metadata.MDHelper;
 import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
@@ -482,12 +483,13 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
 
     public void register(final String alias, final TableOrView tableOrView) {
       if (this.tableReferences.contains(tableOrView)) {
-        throw new InvalidLiveSQLStatementException("An instance of the " + tableOrView.getType() + " "
-            + tableOrView.renderUnescapedName() + (alias == null ? " (with no alias)" : " (with alias '" + alias + "')")
-            + " is used multiple times in the Live SQL statement (in the FROM clause, JOIN clause, or a subquery). "
-            + "If you need to include the same " + tableOrView.getType()
-            + " multiple times in the query you can get more instances of it using the DAO method new"
-            + SUtil.upperFirst(tableOrView.getType()) + "(\"alias\").");
+        throw new InvalidLiveSQLStatementException(
+            "An instance of the " + tableOrView.getType() + " " + MDHelper.renderUnescapedName(tableOrView)
+                + (alias == null ? " (with no alias)" : " (with alias '" + alias + "')")
+                + " is used multiple times in the Live SQL statement (in the FROM clause, JOIN clause, or a subquery). "
+                + "If you need to include the same " + tableOrView.getType()
+                + " multiple times in the query you can get more instances of it using the DAO method new"
+                + SUtil.upperFirst(tableOrView.getType()) + "(\"alias\").");
       }
       this.tableReferences.add(tableOrView);
     }
@@ -536,7 +538,7 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
 
       if (alias.getName().isEmpty()) {
         throw new InvalidLiveSQLStatementException("Empty alias found for " + tov.getType().toLowerCase() + " "
-            + tov.renderUnescapedName() + ". Any specified alias for a table or view must be non-empty. "
+            + MDHelper.renderUnescapedName(tov) + ". Any specified alias for a table or view must be non-empty. "
             + "Use any combination of alphanumeric characters as an alias. "
             + "Usually aliases are very short, commonly a single letter.");
       }

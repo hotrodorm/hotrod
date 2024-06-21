@@ -10,6 +10,7 @@ import org.hotrod.runtime.livesql.dialects.UpdateRenderer;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.Column;
+import org.hotrod.runtime.livesql.metadata.MDHelper;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.SQLParameterWriter.RenderedParameter;
@@ -74,7 +75,7 @@ public class UpdateObject implements QueryObject {
 
     UpdateRenderer ur = context.getLiveSQLDialect().getUpdateRenderer();
     if (ur.removeMainTableAlias()) {
-      this.tableOrView.removeAlias();
+      MDHelper.removeAlias(this.tableOrView);
     }
 
     String renderedAlias = this.tableOrView.getAlias() == null ? null

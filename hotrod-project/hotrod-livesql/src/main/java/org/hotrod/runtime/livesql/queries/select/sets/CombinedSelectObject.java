@@ -3,6 +3,7 @@ package org.hotrod.runtime.livesql.queries.select.sets;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.hotrod.runtime.cursors.Cursor;
@@ -18,8 +19,11 @@ import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGener
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
 import org.hotrod.runtime.livesql.util.IdUtil;
+import org.hotrodorm.hotrod.utils.TUtil;
 
 public class CombinedSelectObject<R> extends MultiSet<R> {
+
+  private static final Logger log = Logger.getLogger(CombinedSelectObject.class.getName());
 
   /**
    * <pre>
@@ -292,6 +296,9 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
   private List<ResultSetColumn> columns = null;
 
   public List<ResultSetColumn> listColumns() {
+    log.info(
+        "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ listColumns()");
+    log.info("$$$ " + TUtil.compactStackTrace());
     if (this.columns == null) {
       this.columns = this.first.listColumns();
     }
