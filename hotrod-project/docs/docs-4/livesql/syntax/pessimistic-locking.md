@@ -279,13 +279,14 @@ requires.
 Pessimistic Locking can have the following benefits:
 
 - Compared to Optimistic Locking, Pessimistic Locking is far easier to code. The example above is much shorter
-and simpler to write and to debug than the corresponding code using Optimistic Locking. Compare the brevity 
-and simplicity of the [CRUD Example with Pessimistic Locking](#crud-example) against the verbosity of the
-[CRUD Example with Optimistic Locking](../optimistic-locking.md#crud-example).  
+and simpler to write and to debug than the corresponding code using Optimistic Locking. Compare the
+simplicity of the [CRUD Example with Pessimistic Locking](#crud-example) against the verbosity of the
+[CRUD Example with Optimistic Locking](../optimistic-locking.md#crud-example); in the latter
+coding the `update()` method is far more error-prone.  
 
-- Once the rows are selected and the lock(s) are acquired Pessimistic Locking ensures the transaction can be
-completed. Well, as long as there's not a catastrophic database failure. This is not true for Optimistic
-Locking.
+- Once the rows are selected and the lock(s) are acquired Pessimistic Locking will have all the resources
+to complete the transaction. This is not true for Optimistic Locking; in this strategy the work
+may fail when updating data, something that happens typically at the end of the transaction.
 
 
 ## Weaknesses
