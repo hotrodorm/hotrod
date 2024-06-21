@@ -6,8 +6,8 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 
 - LiveSQL:
     - Advanced Locking:
-        - Locking mode FOR SHARE added to the existing FOR UPDATE mode.
-        - New locking concurrency options: NOWAIT, WAIT &lt;n>, and SKIP LOCKED.
+        - Locking mode FOR SHARE implemented, in addition to the existing FOR UPDATE mode, for databases that support them.
+        - New locking concurrency options: NOWAIT, WAIT &lt;n>, and SKIP LOCKED, for databases that support them.
 - CRUD:  
     - The new locking mode and locking concurrency options are also available CRUD selects.
 
