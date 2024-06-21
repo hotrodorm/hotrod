@@ -103,8 +103,8 @@ The following table compares the locking modes:
 | Locks last until | the end of the transaction | the end of the transaction |
 | Affects queries in other sessions | UPDATE, DELETE, and SELECT | UPDATE, DELETE |
 | Plain queries with no locking in other sessions | will run normally | will run normally |
-| FOR SHARE queries in other sessions | will wait until this transaction completes, and then will get locks | will succeed immediately and will also obtain locks |
-| FOR UPDATE queries in other sessions | will wait until this transaction completes, and then will get locks | will wait until this transaction completes, and then will get locks |
+| Queries in other sessions trying to use FOR SHARE | will wait until this transaction completes, and then will get the locks | will succeed immediately and will also obtain similar locks |
+| Queries in other sessions trying to use FOR UPDATE | will wait until this transaction completes, and then will get the locks | will wait until this transaction completes, and then will get the locks |
 
 
 The locking modes supported by each database are:
