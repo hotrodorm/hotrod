@@ -9,7 +9,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
         - Locking mode FOR SHARE implemented, in addition to the existing FOR UPDATE mode, for databases that support them.
         - New locking concurrency options: NOWAIT, WAIT &lt;n>, and SKIP LOCKED, for databases that support them.
 - CRUD:  
-    - The new locking mode and locking concurrency options are also available CRUD selects.
+    - The new locking mode and locking concurrency options are also available in CRUD selects.
 
 ## 4.7.1:
 
