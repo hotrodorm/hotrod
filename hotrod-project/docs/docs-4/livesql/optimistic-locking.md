@@ -68,7 +68,7 @@ be used for this purpose. This strategy can be a good solution for applications 
 low-to-medium expected concurrency.
 
 
-## Example
+## CRUD Example
 
 The following example will use strategy #1 of Optimistic Locking, by adding an extra column called `row_version` to the table ACCOUNT:
 
