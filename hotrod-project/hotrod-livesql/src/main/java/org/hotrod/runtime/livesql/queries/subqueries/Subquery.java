@@ -21,15 +21,17 @@ import org.hotrod.runtime.livesql.queries.select.TableExpression;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
 import org.hotrod.runtime.livesql.queries.select.sets.MHelper;
 import org.hotrodorm.hotrod.utils.SUtil;
+import org.hotrodorm.hotrod.utils.TUtil;
 
 public class Subquery extends TableExpression {
 
-  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(Subquery.class.getName());
 
   private Name name;
   protected String[] columns;
   private CombinedSelectObject<?> select;
+
+  private List<Expression> expandedColumns = null;
 
   protected Subquery(final String naturalName, final String[] columns) {
     if (SUtil.isEmpty(naturalName)) {
@@ -67,7 +69,7 @@ public class Subquery extends TableExpression {
     return select;
   }
 
-  // Subquery column extraction
+  // Subquery column reference
 
   public NumberExpression num(final String name) {
     return new SubqueryNumberColumn(this, name);
@@ -107,7 +109,14 @@ public class Subquery extends TableExpression {
 
   @Override
   protected List<Expression> assembleColumns() {
-    return MHelper.assembleColumns(this.select);
+    log.info(">>> Subquery '" + this.name + "': assembleColumns() -- ");
+    this.expandedColumns = MHelper.assembleColumns(this.select);
+    log.info(">>> Subquery '" + this.name + "': done");
+    return this.expandedColumns;
+  }
+
+  List<Expression> getExpandedColumns() {
+    return expandedColumns;
   }
 
 //  @Deprecated

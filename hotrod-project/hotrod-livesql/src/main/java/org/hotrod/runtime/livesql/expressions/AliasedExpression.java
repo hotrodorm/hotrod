@@ -17,13 +17,8 @@ public class AliasedExpression extends Expression implements ReferenceableExpres
     this.referencedExpression = referencedExpression;
     super.register(this.referencedExpression);
     super.setAlias(alias);
+    super.setTypeHandler(this.referencedExpression.getTypeHandler());
   }
-
-//  @Override
-//  protected void computeQueryColumns() {
-//    this.referencedExpression.computeQueryColumns();
-//    this.setTypeHandler(this.referencedExpression.getTypeHandler());
-//  }
 
   @Override
   public void renderTo(final QueryWriter w) {

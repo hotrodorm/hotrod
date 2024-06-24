@@ -6,7 +6,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.hotrod.runtime.livesql.expressions.AliasedExpression;
-import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;
 
 public class AllColumns extends WrappingColumn {
@@ -24,9 +23,8 @@ public class AllColumns extends WrappingColumn {
   public ColumnsAliased as(final ColumnRenamer aliaser) {
     return new ColumnsAliased(this.columns.stream() //
         .map(c -> {
-          return new AliasedExpression((ComparableExpression) c, aliaser.newName(c));
-        }) //
-        .collect(Collectors.toList()));
+          return new AliasedExpression(c, aliaser.newName(c));
+        }).collect(Collectors.toList()));
   }
 
   @Override

@@ -18,21 +18,22 @@ import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableRefer
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
 import org.hotrod.runtime.livesql.util.IdUtil;
 
+/**
+ * <pre>
+ * 
+       CombinedSelectObject (extends MultiSet)
+       /              \
+      /                \
+   select              List(SetOperatorTerm)
+   (extends MultiSet)    +SetOperator
+                         +MultiSet
+ * </pre>
+ */
+
 public class CombinedSelectObject<R> extends MultiSet<R> {
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(CombinedSelectObject.class.getName());
-
-  /**
-   * <pre>
-   * 
-         CombinedSelectObject (extends MultiSet)
-         /              \
-        /                \
-     select              List(SetOperatorTerm)
-     (extends MultiSet)    +SetOperator
-                           +MultiSet
-   * </pre>
-   */
 
   private boolean forceParenthesis;
   private MultiSet<R> first;

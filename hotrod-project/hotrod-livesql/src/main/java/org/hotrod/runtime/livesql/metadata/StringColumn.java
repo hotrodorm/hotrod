@@ -29,7 +29,8 @@ public class StringColumn extends StringExpression implements Column {
     this.type = type;
     this.columnSize = columnSize;
     this.decimalDigits = decimalDigits;
-    this.setTypeHandler(handler);
+    super.setAlias(this.property);
+    super.setTypeHandler(handler);
   }
 
   // Rendering

@@ -1,6 +1,9 @@
 package org.hotrod.runtime.livesql.queries.select;
 
+import java.util.List;
+
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLClauseException;
+import org.hotrod.runtime.livesql.expressions.Expression;
 
 public abstract class Join {
 
@@ -17,17 +20,8 @@ public abstract class Join {
     return this.tableExpression;
   }
 
-  protected void assembleColumns() {
-    this.tableExpression.assembleColumns();
+  protected List<Expression> assembleColumns() {
+    return this.tableExpression.assembleColumns();
   }
-
-//  @Deprecated
-//  protected void computeQueryColumns() {
-//    this.tableExpression.computeQueryColumns();
-//  }
-
-//  public String renderTree() {
-//    return this.te.renderTree();
-//  }
 
 }

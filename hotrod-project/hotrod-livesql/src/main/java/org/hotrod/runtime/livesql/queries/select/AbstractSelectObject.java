@@ -99,30 +99,7 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
   protected abstract void writeColumns(final QueryWriter w, final TableExpression baseTableExpression,
       final List<Join> joins);
 
-  protected void writeExpandedColumns(final QueryWriter w, final List<Expression> expandedColumns,
-      final boolean doNotAliasColumns) {
 
-    log.info(">>> " + TUtil.compactStackTrace());
-
-    Separator sep = new Separator();
-    for (Expression c : expandedColumns) {
-
-      w.write(sep.render());
-      w.write("\n  ");
-      c.renderTo(w);
-
-      if (!doNotAliasColumns) {
-        try {
-          Column col = (Column) c;
-          w.write(" as " + w.getSQLDialect().canonicalToNatural(col.getProperty()));
-        } catch (ClassCastException e) {
-          // Not a plain table/view column -- no need to alias it
-        }
-      }
-
-    }
-
-  }
 
   // Setters
 
