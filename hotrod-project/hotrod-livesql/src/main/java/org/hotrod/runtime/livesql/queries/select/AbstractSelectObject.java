@@ -105,7 +105,7 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
     log.info(">>> " + TUtil.compactStackTrace());
 
     Separator sep = new Separator();
-    for (ResultSetColumn c : expandedColumns) {
+    for (Expression c : expandedColumns) {
 
       w.write(sep.render());
       w.write("\n  ");

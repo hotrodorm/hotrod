@@ -1,7 +1,6 @@
 package org.hotrod.runtime.livesql.queries.select.sets;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -9,17 +8,15 @@ import java.util.stream.Collectors;
 import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
-import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.ordering.CombinedOrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
-import org.hotrod.runtime.livesql.queries.QueryColumn;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
 import org.hotrod.runtime.livesql.util.IdUtil;
-import org.hotrodorm.hotrod.utils.TUtil;
 
 public class CombinedSelectObject<R> extends MultiSet<R> {
 
@@ -293,32 +290,51 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
     return this.lastSelect;
   }
 
-  private List<ResultSetColumn> columns = null;
-
-  public List<ResultSetColumn> listColumns() {
-    log.info(
-        "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ listColumns()");
-    log.info("$$$ " + TUtil.compactStackTrace());
-    if (this.columns == null) {
-      this.columns = this.first.listColumns();
+  @Override
+  protected List<Expression> assembleColumns() {
+    List<Expression> cols = this.first.assembleColumns();
+    for (SetOperatorTerm<R> o : this.combined) {
+      o.getMultiset().assembleColumns();
     }
-    return this.columns;
+    return cols;
   }
+
+//  private List<ResultSetColumn> columns = null;
+
+//  public List<ResultSetColumn> listColumns() {
+//    log.info(
+//        "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ listColumns()");
+//    log.info("$$$ " + TUtil.compactStackTrace());
+//    if (this.columns == null) {
+//      this.columns = this.first.listColumns();
+//    }
+//    return this.columns;
+//  }
 
   // Rendering
 
-  @Override
-  protected void computeQueryColumns() {
-    this.first.computeQueryColumns();
-    for (SetOperatorTerm<?> t : this.combined) {
-      t.getMultiset().computeQueryColumns();
-    }
-  }
+//  @Override
+//  protected List<Expression> assembleColumns() {
+//    List<Expression> cols = this.first.assembleColumns();
+//    for (SetOperatorTerm<?> t : this.combined) {
+//      t.getMultiset().assembleColumns();
+//    }
+//    return cols;
+//  }
+//
+//  @Deprecated
+//  @Override
+//  protected void computeQueryColumns() {
+//    this.first.computeQueryColumns();
+//    for (SetOperatorTerm<?> t : this.combined) {
+//      t.getMultiset().computeQueryColumns();
+//    }
+//  }
 
-  @Override
-  protected LinkedHashMap<String, QueryColumn> getQueryColumns() {
-    return this.first.getQueryColumns();
-  }
+//  @Override
+//  protected LinkedHashMap<String, QueryColumn> getQueryColumns() {
+//    return this.first.getQueryColumns();
+//  }
 
   // MultiSet execution
 

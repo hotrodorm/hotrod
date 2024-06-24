@@ -14,9 +14,10 @@ import java.util.logging.Logger;
 import org.hotrod.runtime.converter.TypeConverter;
 import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.Row;
-import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.Helper;
+import org.hotrod.runtime.livesql.expressions.TypeHandler;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
-import org.hotrod.runtime.livesql.queries.QueryColumn;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
@@ -39,15 +40,18 @@ public abstract class MultiSet<R> {
 
   public abstract void validateTableReferences(TableReferences tableReferences, AliasGenerator ag);
 
-  public abstract List<ResultSetColumn> listColumns();
+//  public abstract List<ResultSetColumn> listColumns();
 
   public abstract void renderTo(QueryWriter w, boolean inline);
 
   // Rendering
 
-  protected abstract void computeQueryColumns();
+  protected abstract List<Expression> assembleColumns();
 
-  protected abstract LinkedHashMap<String, QueryColumn> getQueryColumns();
+//  @Deprecated
+//  protected abstract void computeQueryColumns();
+//
+//  protected abstract LinkedHashMap<String, QueryColumn> getQueryColumns();
 
   // Execution
 
@@ -78,10 +82,11 @@ public abstract class MultiSet<R> {
     // Render
 
     QueryWriter w = new QueryWriter(context);
-    this.computeQueryColumns();
+    List<Expression> columns = this.assembleColumns();
+//    this.computeQueryColumns();
     log.info("----------------------------------------------------------- computeQueryColumns() complete ---");
     renderTo(w, false);
-    return w.getPreparedQuery(this);
+    return w.getPreparedQuery(columns);
 
   }
 
@@ -110,11 +115,11 @@ public abstract class MultiSet<R> {
 
         // Logging query column types
 
-        LinkedHashMap<String, QueryColumn> queryColumns = q.getQueryColumns();
+        LinkedHashMap<String, Expression> queryColumns = q.getQueryColumns();
         n = 1;
-        for (QueryColumn qc : queryColumns.values()) {
+        for (Expression qc : queryColumns.values()) {
           int i = n++;
-          log.info("- column #" + i + " '" + qc.getName() + "': " + qc.getTypeHandler());
+          log.info("- column #" + i + " '" + Helper.getAlias(qc) + "': " + Helper.getTypeHandler(qc));
         }
 
         // Running the query
@@ -123,16 +128,18 @@ public abstract class MultiSet<R> {
         while (rs.next()) {
           Row r = new Row();
           int i = 1;
-          for (QueryColumn qc : queryColumns.values()) {
+          for (Expression qc : queryColumns.values()) {
             Object value;
-            if (qc.getTypeHandler().getConverter() == null) {
-              value = rs.getObject(i, qc.getTypeHandler().getJavaClass());
+            String alias = Helper.getAlias(qc);
+            TypeHandler th = Helper.getTypeHandler(qc);
+            if (th.getConverter() == null) {
+              value = rs.getObject(i, th.getJavaClass());
             } else {
-              Object raw = rs.getObject(i, qc.getTypeHandler().getRawClass());
-              TypeConverter<?, ?> converter = qc.getTypeHandler().getConverter();
+              Object raw = rs.getObject(i, th.getRawClass());
+              TypeConverter<?, ?> converter = th.getConverter();
               value = this.applyConverter(raw, converter, conn);
             }
-            r.put(qc.getName(), value);
+            r.put(alias, value);
             i++;
           }
           rows.add(r);

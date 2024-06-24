@@ -2,7 +2,7 @@ package org.hotrod.runtime.livesql.queries.select;
 
 import java.util.List;
 
-import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
@@ -16,7 +16,11 @@ public abstract class TableExpression {
 
   protected abstract Name getName();
 
-  protected abstract List<ResultSetColumn> getColumns() throws IllegalAccessException;
+//  protected abstract List<Expression> getExpandedColumns();
 
-  protected abstract void computeQueryColumns();
+//  @Deprecated
+//  protected abstract void computeQueryColumns();
+
+  protected abstract List<Expression> assembleColumns();
+
 }

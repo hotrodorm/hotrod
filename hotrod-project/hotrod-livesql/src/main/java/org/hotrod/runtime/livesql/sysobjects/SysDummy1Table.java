@@ -25,9 +25,5 @@ public class SysDummy1Table extends Table {
     super.columns.add(this.ibmreqd);
   }
 
-  @Override
-  protected void computeQueryColumns() {
-    // Nothing to do
-  }
 
 }

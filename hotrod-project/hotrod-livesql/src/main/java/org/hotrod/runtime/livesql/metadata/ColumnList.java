@@ -1,9 +1,7 @@
 package org.hotrod.runtime.livesql.metadata;
 
-import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+public abstract class ColumnList extends WrappingColumn {
 
-public interface ColumnList extends ResultSetColumn {
-
-  boolean isEmpty();
+  public abstract boolean isEmpty();
 
 }

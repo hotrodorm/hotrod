@@ -1,14 +1,10 @@
 package org.hotrod.runtime.livesql.queries.subqueries;
 
-import java.util.LinkedHashMap;
 import java.util.logging.Logger;
 
-import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
-import org.hotrod.runtime.livesql.queries.QueryColumn;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
-import org.hotrod.runtime.livesql.queries.select.sets.MHelper;
 
 public class SubqueryNumberColumn extends NumberExpression implements SubqueryColumn {
 
@@ -28,16 +24,16 @@ public class SubqueryNumberColumn extends NumberExpression implements SubqueryCo
     this.referencedColumnName = referencedColumnName;
   }
 
-  @Override
-  protected void computeQueryColumns() {
-    LinkedHashMap<String, QueryColumn> queryColumns = MHelper.getQueryColumns(subquery.getSelect());
-    QueryColumn col = queryColumns.get(this.referencedColumnName);
-    if (col == null) {
-      throw new LiveSQLException("Referenced column '" + this.referencedColumnName + "' not found in subquery '"
-          + this.subquery.getName() + "'");
-    }
-    super.setTypeHandler(col.getTypeHandler());
-  }
+//  @Override
+//  protected void computeQueryColumns() {
+//    LinkedHashMap<String, QueryColumn> queryColumns = MHelper.getQueryColumns(subquery.getSelect());
+//    QueryColumn col = queryColumns.get(this.referencedColumnName);
+//    if (col == null) {
+//      throw new LiveSQLException("Referenced column '" + this.referencedColumnName + "' not found in subquery '"
+//          + this.subquery.getName() + "'");
+//    }
+//    super.setTypeHandler(col.getTypeHandler());
+//  }
 
   @Override
   public String getReferencedColumnName() {

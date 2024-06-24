@@ -3,7 +3,7 @@ package org.hotrod.runtime.livesql.metadata;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.livesql.expressions.Expression;
 
 public abstract class View extends TableOrView {
 
@@ -11,14 +11,20 @@ public abstract class View extends TableOrView {
     super(catalog, schema, name, type, alias);
   }
 
-  @Override
-  protected List<ResultSetColumn> getColumns() throws IllegalAccessException {
-    return super.columns.stream().map(c -> (ResultSetColumn) c).collect(Collectors.toList());
-  }
-
-  @Override
-  protected void computeQueryColumns() {
-    // Nothing to do
-  }
+//  @Override
+//  protected List<Expression> getExpandedColumns() {
+//    return super.columns.stream().map(c -> (Expression) c).collect(Collectors.toList());
+//  }
+//
+//  @Override
+//  protected void assembleColumns() {
+//    // Nothing to do
+//  }
+//
+//  @Deprecated
+//  @Override
+//  protected void computeQueryColumns() {
+//    // Nothing to do
+//  }
 
 }

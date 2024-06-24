@@ -25,9 +25,4 @@ public class DualTable extends Table {
     super.columns.add(this.dummy);
   }
 
-  @Override
-  protected void computeQueryColumns() {
-    // Nothing to do
-  }
-
 }

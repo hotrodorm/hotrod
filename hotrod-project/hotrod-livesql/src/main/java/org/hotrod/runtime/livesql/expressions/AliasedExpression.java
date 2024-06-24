@@ -11,31 +11,30 @@ public class AliasedExpression extends Expression implements ReferenceableExpres
   private static final Logger log = Logger.getLogger(AliasedExpression.class.getName());
 
   private Expression referencedExpression;
-  private String alias;
 
   public AliasedExpression(final Expression referencedExpression, final String alias) {
     super(PRECEDENCE_ALIAS);
     this.referencedExpression = referencedExpression;
     super.register(this.referencedExpression);
-    this.alias = alias;
+    super.setAlias(alias);
   }
 
-  @Override
-  protected void computeQueryColumns() {
-    this.referencedExpression.computeQueryColumns();
-    this.setTypeHandler(this.referencedExpression.getTypeHandler());
-  }
+//  @Override
+//  protected void computeQueryColumns() {
+//    this.referencedExpression.computeQueryColumns();
+//    this.setTypeHandler(this.referencedExpression.getTypeHandler());
+//  }
 
   @Override
   public void renderTo(final QueryWriter w) {
     this.referencedExpression.renderTo(w);
     w.write(" as ");
-    w.write(w.getSQLDialect().canonicalToNatural(this.alias));
+    w.write(w.getSQLDialect().canonicalToNatural(super.getAlias()));
   }
 
   @Override
   public String getName() {
-    return this.alias;
+    return super.getAlias();
   }
 
   protected Expression getExpression() {

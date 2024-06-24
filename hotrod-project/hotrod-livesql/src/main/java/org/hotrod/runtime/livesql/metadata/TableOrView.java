@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
@@ -18,7 +19,7 @@ public abstract class TableOrView extends TableExpression {
 
   private String alias;
   private String designatedAlias;
-  protected List<Column> columns;
+  protected List<Expression> columns;
 
   TableOrView(final Name catalog, final Name schema, final Name name, final String type, final String alias) {
     this.catalog = catalog;
@@ -41,6 +42,11 @@ public abstract class TableOrView extends TableExpression {
   }
 
   // Validation
+
+  @Override
+  protected List<Expression> assembleColumns() {
+    return this.columns;
+  }
 
   @Override
   protected void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {

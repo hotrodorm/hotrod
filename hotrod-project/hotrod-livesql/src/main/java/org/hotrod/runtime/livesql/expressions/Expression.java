@@ -65,6 +65,7 @@ public abstract class Expression implements ResultSetColumn, Rendereable, Orderi
    */
 
   private int precedence;
+  private String alias;
   private TypeHandler typeHandler;
 
   protected void setPrecedence(final int precedence) {
@@ -75,19 +76,32 @@ public abstract class Expression implements ResultSetColumn, Rendereable, Orderi
 
   protected Expression(final int precedence) {
     this.precedence = precedence;
+    this.alias = null;
     this.typeHandler = null;
   }
 
-  // Getters
+  // Getters & Setters
+
+  protected String getAlias() {
+    return alias;
+  }
 
   protected int getPrecedence() {
     return precedence;
   }
 
-  // Setters
+  protected void setAlias(String alias) {
+    this.alias = alias;
+  }
 
   protected void setTypeHandler(TypeHandler typeHandler) {
     this.typeHandler = typeHandler;
+  }
+
+  // Getters
+
+  protected TypeHandler getTypeHandler() {
+    return typeHandler;
   }
 
   // Apply aliases
@@ -108,11 +122,11 @@ public abstract class Expression implements ResultSetColumn, Rendereable, Orderi
     this.tablesOrViews.add(tableOrView);
   }
 
-  protected void computeQueryColumns() {
-    // Nothing to do by default.
-    // Only a few classes will override this method: AliasedExpression,
-    // SubqueryColumns, etc.
-  }
+//  protected void computeQueryColumns() {
+//    // Nothing to do by default.
+//    // Only a few classes will override this method: AliasedExpression,
+//    // SubqueryColumns, etc.
+//  }
 
   protected final void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
     for (Expression e : this.expressions) {
@@ -154,12 +168,6 @@ public abstract class Expression implements ResultSetColumn, Rendereable, Orderi
       throw new LiveSQLException("An alias specified with the .as() method cannot be null");
     }
     return new AliasedExpression(this, alias);
-  }
-
-  // Getters
-
-  protected TypeHandler getTypeHandler() {
-    return typeHandler;
   }
 
 }

@@ -9,12 +9,16 @@ public class Helper {
     return ae.getExpression();
   }
 
-  public static void computeQueryColumns(final Expression expr) {
-    expr.computeQueryColumns();
-  }
+//  public static void computeQueryColumns(final Expression expr) {
+//    expr.computeQueryColumns();
+//  }
 
   public static TypeHandler getTypeHandler(final Expression expr) {
     return expr.getTypeHandler();
+  }
+
+  public static String getAlias(final Expression expr) {
+    return expr.getAlias();
   }
 
   public static void validateTableReferences(final Expression expression, final TableReferences tableReferences,

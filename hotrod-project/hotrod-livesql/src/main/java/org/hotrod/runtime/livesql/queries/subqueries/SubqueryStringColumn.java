@@ -1,14 +1,10 @@
 package org.hotrod.runtime.livesql.queries.subqueries;
 
-import java.util.LinkedHashMap;
 import java.util.logging.Logger;
 
-import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
-import org.hotrod.runtime.livesql.queries.QueryColumn;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
-import org.hotrod.runtime.livesql.queries.select.sets.MHelper;
 
 public class SubqueryStringColumn extends StringExpression implements SubqueryColumn {
 
@@ -26,20 +22,20 @@ public class SubqueryStringColumn extends StringExpression implements SubqueryCo
     this.subquery = subquery;
     this.referencedColumnName = referencedColumnName;
   }
-  
-  @Override
-  protected void computeQueryColumns() {
-    log.info("subquery=" + subquery);
-    log.info("subquery.getSelect()=" + subquery.getSelect());
-    LinkedHashMap<String, QueryColumn> queryColumns = MHelper.getQueryColumns(subquery.getSelect());
-    QueryColumn col = queryColumns.get(this.referencedColumnName);
-    if (col == null) {
-      throw new LiveSQLException("Referenced column '" + this.referencedColumnName + "' not found in subquery '"
-          + this.subquery.getName() + "'");
-    }
-    log.info("--> col.getTypeHandler()=" + col.getTypeHandler());
-    super.setTypeHandler(col.getTypeHandler());
-  }
+
+//  @Override
+//  protected void computeQueryColumns() {
+//    log.info("subquery=" + subquery);
+//    log.info("subquery.getSelect()=" + subquery.getSelect());
+//    LinkedHashMap<String, QueryColumn> queryColumns = MHelper.getQueryColumns(subquery.getSelect());
+//    QueryColumn col = queryColumns.get(this.referencedColumnName);
+//    if (col == null) {
+//      throw new LiveSQLException("Referenced column '" + this.referencedColumnName + "' not found in subquery '"
+//          + this.subquery.getName() + "'");
+//    }
+//    log.info("--> col.getTypeHandler()=" + col.getTypeHandler());
+//    super.setTypeHandler(col.getTypeHandler());
+//  }
 
   @Override
   public String getReferencedColumnName() {

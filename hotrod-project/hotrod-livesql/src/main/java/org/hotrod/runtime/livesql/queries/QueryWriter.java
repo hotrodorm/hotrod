@@ -1,13 +1,14 @@
 package org.hotrod.runtime.livesql.queries;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
+import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.queries.SQLParameterWriter.QueryParameter;
 import org.hotrod.runtime.livesql.queries.SQLParameterWriter.RenderedParameter;
-import org.hotrod.runtime.livesql.queries.select.sets.MHelper;
-import org.hotrod.runtime.livesql.queries.select.sets.MultiSet;
 
 public class QueryWriter {
 
@@ -90,15 +91,17 @@ public class QueryWriter {
     return this.context.getLiveSQLDialect();
   }
 
-  public LiveSQLPreparedQuery getPreparedQuery(final MultiSet<?> multiSet) {
+  public LiveSQLPreparedQuery getPreparedQuery(final List<Expression> columns) {
     LinkedHashMap<String, Object> p = new LinkedHashMap<String, Object>();
     for (QueryParameter qp : this.paramWriter.getParameters()) {
       p.put(qp.getName(), qp.getValue());
     }
-    LinkedHashMap<String, QueryColumn> queryColumns = null;
-    if (multiSet == null) {
-    } else {
-      queryColumns = MHelper.getQueryColumns(multiSet);
+    LinkedHashMap<String, Expression> queryColumns = null;
+    if (columns != null) {
+      queryColumns = new LinkedHashMap<>();
+      for (Expression c : columns) {
+        queryColumns.put(Helper.getAlias(c), c);
+      }
     }
     return new LiveSQLPreparedQuery(this.sb.toString(), p, queryColumns);
   }
@@ -109,10 +112,10 @@ public class QueryWriter {
 
     private String sql;
     private LinkedHashMap<String, Object> parameters;
-    private LinkedHashMap<String, QueryColumn> queryColumns;
+    private LinkedHashMap<String, Expression> queryColumns;
 
     public LiveSQLPreparedQuery(final String sql, final LinkedHashMap<String, Object> parameters,
-        final LinkedHashMap<String, QueryColumn> queryColumns) {
+        final LinkedHashMap<String, Expression> queryColumns) {
       this.sql = sql;
       this.parameters = parameters;
       this.queryColumns = queryColumns;
@@ -126,7 +129,7 @@ public class QueryWriter {
       return parameters;
     }
 
-    public LinkedHashMap<String, QueryColumn> getQueryColumns() {
+    public LinkedHashMap<String, Expression> getQueryColumns() {
       return queryColumns;
     }
 

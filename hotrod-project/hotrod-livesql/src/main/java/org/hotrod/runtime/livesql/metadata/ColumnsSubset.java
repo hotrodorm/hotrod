@@ -5,14 +5,13 @@ import java.util.stream.Collectors;
 
 import org.hotrod.runtime.livesql.expressions.AliasedExpression;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
-import org.hotrod.runtime.livesql.metadata.AllColumns.ColumnRenamer;
-import org.hotrod.runtime.livesql.queries.QueryWriter;
+import org.hotrod.runtime.livesql.expressions.Expression;
 
-public class ColumnsSubset implements ColumnList {
+public class ColumnsSubset extends ColumnList {
 
-  private List<Column> columns;
+  private List<Expression> columns;
 
-  protected ColumnsSubset(final List<Column> columns) {
+  protected ColumnsSubset(final List<Expression> columns) {
     this.columns = columns;
   }
 
@@ -29,16 +28,8 @@ public class ColumnsSubset implements ColumnList {
   }
 
   @Override
-  public void renderTo(QueryWriter w) {
-    boolean first = true;
-    for (int i = 0; i < this.columns.size(); i++) {
-      if (first) {
-        first = false;
-      } else {
-        w.write(", ");
-      }
-      this.columns.get(i).renderTo(w);
-    }
+  protected List<Expression> unwrap() {
+    return this.columns;
   }
 
 }

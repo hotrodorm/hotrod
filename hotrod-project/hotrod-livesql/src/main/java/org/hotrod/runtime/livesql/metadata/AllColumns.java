@@ -7,23 +7,18 @@ import java.util.stream.Collectors;
 
 import org.hotrod.runtime.livesql.expressions.AliasedExpression;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
-import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.livesql.queries.QueryWriter;
+import org.hotrod.runtime.livesql.expressions.Expression;
 
-public class AllColumns implements ResultSetColumn {
+public class AllColumns extends WrappingColumn {
 
-  private List<Column> columns;
+  private List<Expression> columns;
 
-  public AllColumns(final Column... columns) {
+  public AllColumns(final Expression... columns) {
     this.columns = Arrays.asList(columns);
   }
 
-  public ColumnsSubset filter(final Predicate<Column> predicate) {
+  public ColumnsSubset filter(final Predicate<Expression> predicate) {
     return new ColumnsSubset(this.columns.stream().filter(predicate).collect(Collectors.toList()));
-  }
-
-  public static interface ColumnRenamer {
-    String newName(Column c);
   }
 
   public ColumnsAliased as(final ColumnRenamer aliaser) {
@@ -35,8 +30,8 @@ public class AllColumns implements ResultSetColumn {
   }
 
   @Override
-  public void renderTo(QueryWriter w) {
-    throw new UnsupportedOperationException();
+  protected List<Expression> unwrap() {
+    return this.columns;
   }
 
 }

@@ -2,16 +2,16 @@ package org.hotrod.runtime.livesql.expressions;
 
 /**
  * <pre>
- *                      {I} Rendereable
- *                             ^
- *                             | 
- *                    {I} ResultSetColumn &lt;------+----------------+---------------+
- *                          ^      ^             |                |               |
- *                          |      |             |                |               |
- *  {I} ReferenceableExpression  Expression  AllColumns   {I} ColumnList   AllSubqueryColumns
- *             ^          ^      ^  ^  ^  ^                      ^    ^
- *             |          |      |  |  |  |                      |    |
- *             |    {I} Column   |  |  |  [Many...]  ColumnsAliased  ColumnsSubset
+ *                    {I} ResultSetColumn &lt;-------- WrappingColumn &lt;---+---------------+
+ *                          ^      ^                  ^                |               |
+ *                          |      |                  |                |               |
+ *                          |      | {I} Rendereable  |                |               |
+ *                          |      |      ^           |                |               |
+ *                          |      |      |           |                |               |
+ *  {I} ReferenceableExpression  Expression      AllColumns        ColumnList   AllSubqueryColumns
+ *             ^          ^      ^  ^  ^  ^                          ^    ^
+ *             |          |      |  |  |  |                          |    |
+ *             |    {I} Column   |  |  |  [Many...]      ColumnsAliased  ColumnsSubset
  *             |            ^    |  |  |
  *             |            |    |  |  |
  *             |         ...Column  |  |
@@ -25,6 +25,6 @@ package org.hotrod.runtime.livesql.expressions;
  * </pre>
  */
 
-public interface ResultSetColumn extends Rendereable {
-  
+public interface ResultSetColumn {
+
 }

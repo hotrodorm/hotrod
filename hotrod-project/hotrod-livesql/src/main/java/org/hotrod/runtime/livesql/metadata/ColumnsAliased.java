@@ -2,14 +2,13 @@ package org.hotrod.runtime.livesql.metadata;
 
 import java.util.List;
 
-import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.livesql.queries.QueryWriter;
+import org.hotrod.runtime.livesql.expressions.Expression;
 
-public class ColumnsAliased implements ColumnList {
+public class ColumnsAliased extends ColumnList {
 
-  private List<ResultSetColumn> columns;
+  private List<Expression> columns;
 
-  protected ColumnsAliased(final List<ResultSetColumn> columns) {
+  protected ColumnsAliased(final List<Expression> columns) {
     this.columns = columns;
   }
 
@@ -18,17 +17,8 @@ public class ColumnsAliased implements ColumnList {
   }
 
   @Override
-  public void renderTo(QueryWriter w) {
-    boolean first = true;
-    for (int i = 0; i < this.columns.size(); i++) {
-      if (first) {
-        first = false;
-      } else {
-        w.write(", ");
-      }
-      this.columns.get(i).renderTo(w);
-    }
-
+  protected List<Expression> unwrap() {
+    return this.columns;
   }
 
 }

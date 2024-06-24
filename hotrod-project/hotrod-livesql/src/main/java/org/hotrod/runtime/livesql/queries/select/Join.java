@@ -17,9 +17,14 @@ public abstract class Join {
     return this.tableExpression;
   }
 
-  protected void computeQueryColumns() {
-    this.tableExpression.computeQueryColumns();
+  protected void assembleColumns() {
+    this.tableExpression.assembleColumns();
   }
+
+//  @Deprecated
+//  protected void computeQueryColumns() {
+//    this.tableExpression.computeQueryColumns();
+//  }
 
 //  public String renderTree() {
 //    return this.te.renderTree();
