@@ -5,7 +5,7 @@ import org.hotrod.runtime.livesql.queries.QueryWriter;
 public class CurrentDate extends BuiltInDateTimeFunction {
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     w.getSQLDialect().getFunctionRenderer().currentDate(w);
   }
 

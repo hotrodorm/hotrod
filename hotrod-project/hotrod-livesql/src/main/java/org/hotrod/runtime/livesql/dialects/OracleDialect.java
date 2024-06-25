@@ -4,10 +4,11 @@ import java.util.List;
 
 import org.hotrod.runtime.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
+import org.hotrod.runtime.livesql.expressions.Helper;
+import org.hotrod.runtime.livesql.expressions.OrderingTerm;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
-import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.LockingConcurrency;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.LockingMode;
@@ -342,17 +343,17 @@ public class OracleDialect extends LiveSQLDialect {
           throw new UnsupportedLiveSQLFeatureException("In Oracle GROUP_CONCAT() requires ordering columns");
         }
         w.write("listagg(");
-        value.renderTo(w);
+        Helper.renderTo(value, w);
         if (separator != null) {
           w.write(", ");
-          separator.renderTo(w);
+          Helper.renderTo(separator, w);
         }
         w.write(")");
         w.write(" withing group (ORDER BY ");
         Separator sep = new Separator();
         for (OrderingTerm t : ordering) {
           w.write(sep.render());
-          t.renderTo(w);
+          Helper.renderTo(t, w);
         }
         w.write(")");
       }
@@ -362,9 +363,9 @@ public class OracleDialect extends LiveSQLDialect {
       @Override
       public void remainder(final QueryWriter w, final NumberExpression a, final NumberExpression b) {
         w.write("mod(");
-        a.renderTo(w);
+        Helper.renderTo(a, w);
         w.write(", ");
-        b.renderTo(w);
+        Helper.renderTo(b, w);
         w.write(")");
       }
 
@@ -376,7 +377,7 @@ public class OracleDialect extends LiveSQLDialect {
         Separator sep = new Separator(" || ");
         for (StringExpression s : strings) {
           w.write(sep.render());
-          s.renderTo(w);
+          Helper.renderTo(s, w);
         }
         w.write(")");
       }
@@ -411,23 +412,23 @@ public class OracleDialect extends LiveSQLDialect {
       @Override
       public void date(final QueryWriter w, final DateTimeExpression datetime) {
         w.write("trunc(");
-        datetime.renderTo(w);
+        Helper.renderTo(datetime, w);
         w.write(")");
       }
 
       @Override
       public void time(final QueryWriter w, final DateTimeExpression datetime) {
         w.write("to_char(");
-        datetime.renderTo(w);
+        Helper.renderTo(datetime, w);
         w.write(", 'HH24:MI:SS')");
       }
 
       @Override
       public void dateTime(final QueryWriter w, final DateTimeExpression date, final DateTimeExpression time) {
         w.write("to_date(to_char(");
-        date.renderTo(w);
+        Helper.renderTo(date, w);
         w.write(", 'yyyymmdd') || ' ' || ");
-        time.renderTo(w);
+        Helper.renderTo(time, w);
         w.write(", 'yyyymmdd hh24:mi:ss')");
       }
 

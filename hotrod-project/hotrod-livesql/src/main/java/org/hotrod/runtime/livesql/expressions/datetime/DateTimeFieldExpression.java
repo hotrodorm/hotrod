@@ -14,7 +14,7 @@ public class DateTimeFieldExpression extends ComparableExpression {
   }
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     w.write(this.field.name().toLowerCase());
   }
 

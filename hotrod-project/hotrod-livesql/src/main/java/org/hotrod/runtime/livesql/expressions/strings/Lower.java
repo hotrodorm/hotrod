@@ -13,7 +13,7 @@ public class Lower extends BuiltInStringFunction {
   }
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     w.getSQLDialect().getFunctionRenderer().lower(w, this.string);
   }
 

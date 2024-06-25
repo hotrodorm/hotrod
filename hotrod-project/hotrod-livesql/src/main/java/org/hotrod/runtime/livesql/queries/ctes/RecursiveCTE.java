@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
@@ -89,7 +90,7 @@ public class RecursiveCTE extends CTE {
           } else {
             w.write(", ");
           }
-          rc.renderTo(w);
+          Helper.renderTo(rc, w);
         }
         w.write(")");
       }

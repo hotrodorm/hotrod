@@ -131,7 +131,7 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
 
       w.write(sep.render());
       w.write("\n  ");
-      c.renderTo(w);
+      Helper.renderTo(c, w);
 
       if (!this.doNotAliasColumns) {
         try {

@@ -6,6 +6,7 @@ import java.util.List;
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLClauseException;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrodorm.hotrod.utils.Separator;
 
@@ -23,12 +24,12 @@ public class TupleExpression extends ComparableExpression {
   }
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     w.write("(");
     Separator s = new Separator();
     this.expressions.forEach(e -> {
       w.write(s.render());
-      e.renderTo(w);
+      Helper.renderTo(e, w);
     });
     w.write(")");
   }

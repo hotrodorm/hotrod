@@ -18,7 +18,7 @@ public abstract class BooleanFunction extends Predicate {
   }
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     this.template.renderTo(w);
   }
 

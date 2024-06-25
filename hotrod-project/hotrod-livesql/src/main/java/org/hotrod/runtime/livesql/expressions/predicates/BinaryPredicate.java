@@ -32,7 +32,7 @@ public abstract class BinaryPredicate extends Predicate {
   }
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     super.renderInner(this.left, w);
     w.write(" ");
     w.write(this.operator);

@@ -18,7 +18,7 @@ public abstract class NumberFunction extends NumberExpression {
   }
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     this.template.renderTo(w);
   }
 

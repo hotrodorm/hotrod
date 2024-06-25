@@ -2,9 +2,9 @@ package org.hotrod.runtime.livesql.expressions.aggregations;
 
 import java.util.List;
 
+import org.hotrod.runtime.livesql.expressions.OrderingTerm;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
 import org.hotrod.runtime.livesql.expressions.strings.StringFunction;
-import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public class GroupConcatDistinct extends StringFunction implements NonWindowableAggregationFunction {
@@ -22,7 +22,7 @@ public class GroupConcatDistinct extends StringFunction implements NonWindowable
   }
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     w.getSQLDialect().getFunctionRenderer().groupConcat(w, true, this.expression, this.ordering, this.separator);
   }
 

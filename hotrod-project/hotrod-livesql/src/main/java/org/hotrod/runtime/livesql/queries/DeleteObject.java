@@ -2,6 +2,7 @@ package org.hotrod.runtime.livesql.queries;
 
 import java.util.LinkedHashMap;
 
+import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
@@ -58,7 +59,7 @@ public class DeleteObject implements QueryObject {
         + (renderedAlias != null ? (" " + renderedAlias) : ""));
     if (this.wherePredicate != null) {
       w.write("\nWHERE ");
-      this.wherePredicate.renderTo(w);
+      Helper.renderTo(this.wherePredicate, w);
     }
     LiveSQLPreparedQuery pq = w.getPreparedQuery(null);
     return pq;

@@ -21,7 +21,7 @@ public class AliasedExpression extends Expression implements ReferenceableExpres
   }
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     this.referencedExpression.renderTo(w);
     w.write(" as ");
     w.write(w.getSQLDialect().canonicalToNatural(super.getAlias()));

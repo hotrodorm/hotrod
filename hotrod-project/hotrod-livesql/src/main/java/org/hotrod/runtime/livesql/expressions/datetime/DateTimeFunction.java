@@ -18,7 +18,7 @@ public abstract class DateTimeFunction extends DateTimeExpression {
   }
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     this.template.renderTo(w);
   }
 

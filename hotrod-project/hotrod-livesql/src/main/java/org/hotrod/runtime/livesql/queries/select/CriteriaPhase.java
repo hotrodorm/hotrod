@@ -37,8 +37,7 @@ public abstract class CriteriaPhase<T> implements EntitySelect<T> {
 
   // rendering
 
-  @Override
-  public void renderTo(QueryWriter w) {
+  protected void renderTo(QueryWriter w) {
     this.select.renderTo(w);
   }
 

@@ -6,11 +6,12 @@ import java.util.stream.Collectors;
 
 import org.hotrod.runtime.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
+import org.hotrod.runtime.livesql.expressions.Helper;
+import org.hotrod.runtime.livesql.expressions.OrderingTerm;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
-import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.CrossJoin;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
@@ -215,9 +216,9 @@ public class DerbyDialect extends LiveSQLDialect {
       @Override
       public void power(final QueryWriter w, final NumberExpression x, final NumberExpression exponent) {
         w.write("exp(");
-        exponent.renderTo(w);
+        Helper.renderTo(exponent, w);
         w.write(" * ln(");
-        x.renderTo(w);
+        Helper.renderTo(x, w);
         w.write("))");
       }
 
@@ -252,7 +253,7 @@ public class DerbyDialect extends LiveSQLDialect {
         Separator sep = new Separator(" || ");
         for (StringExpression s : strings) {
           w.write(sep.render());
-          s.renderTo(w);
+          Helper.renderTo(s, w);
         }
         w.write(")");
       }

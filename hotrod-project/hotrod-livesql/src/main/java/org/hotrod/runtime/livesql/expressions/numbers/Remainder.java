@@ -17,7 +17,7 @@ public class Remainder extends BinaryNumberExpression<NumberExpression> {
   }
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     w.getSQLDialect().getFunctionRenderer().remainder(w, this.a, this.b);
   }
 

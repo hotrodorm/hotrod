@@ -4,6 +4,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
+import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
@@ -57,7 +59,8 @@ public class InsertObject implements QueryObject {
       w.write(" (");
       for (int i = 0; i < this.columns.size(); i++) {
         Column c = this.columns.get(i);
-        c.renderTo(w);
+        Expression expr = (Expression) c;
+        Helper.renderTo(expr, w);
         if (i < this.columns.size() - 1) {
           w.write(", ");
         }
@@ -70,7 +73,7 @@ public class InsertObject implements QueryObject {
       w.write("\nVALUES (");
       for (int i = 0; i < this.values.size(); i++) {
         ComparableExpression e = this.values.get(i);
-        e.renderTo(w);
+        Helper.renderTo(e, w);
         if (i < this.values.size() - 1) {
           w.write(", ");
         }

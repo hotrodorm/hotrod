@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
-import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
@@ -14,12 +13,13 @@ import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
 import org.hotrodorm.hotrod.utils.SUtil;
 
-public abstract class Expression implements ResultSetColumn, Rendereable, OrderingTerm {
+public abstract class Expression implements ResultSetColumn {
 
   protected static final int PRECEDENCE_LITERAL = 1;
   protected static final int PRECEDENCE_COLUMN = 1;
   protected static final int PRECEDENCE_PARENTHESIS = 1;
   protected static final int PRECEDENCE_ALIAS = 1;
+  protected static final int PRECEDENCE_ORDERING = 1;
 
   protected static final int PRECEDENCE_CASE = 2;
   protected static final int PRECEDENCE_FUNCTION = 2;
@@ -159,7 +159,7 @@ public abstract class Expression implements ResultSetColumn, Rendereable, Orderi
     }
   }
 
-  public abstract void renderTo(final QueryWriter w);
+  protected abstract void renderTo(final QueryWriter w);
 
   // Aliasing
 

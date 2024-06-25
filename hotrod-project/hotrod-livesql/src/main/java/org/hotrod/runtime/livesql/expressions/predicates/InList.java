@@ -21,7 +21,7 @@ public class InList<T extends ComparableExpression> extends Predicate {
   }
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     super.renderInner(value, w);
     w.write(" in (");
     Separator sep = new Separator();

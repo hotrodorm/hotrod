@@ -1,22 +1,26 @@
 package org.hotrod.runtime.livesql.ordering;
 
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
+import org.hotrod.runtime.livesql.expressions.OrderingTerm;
 import org.hotrod.runtime.livesql.ordering.OrderByProperties.NullsOrdering;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class OrderByDirectionPhase implements OrderingTerm {
+public class OrderByDirectionPhase extends OrderingTerm {
 
   private OrderByProperties ordering;
 
   public OrderByDirectionPhase(final ComparableExpression expression, final boolean ascending) {
+    super(PRECEDENCE_ORDERING);
     this.ordering = new OrderByProperties(expression, ascending);
   }
 
   public OrderByDirectionPhase(final String alias, final boolean ascending) {
+    super(PRECEDENCE_ORDERING);
     this.ordering = new OrderByProperties(alias, ascending);
   }
 
   public OrderByDirectionPhase(final int ordinal, final boolean ascending) {
+    super(PRECEDENCE_ORDERING);
     this.ordering = new OrderByProperties(ordinal, ascending);
   }
 
@@ -31,7 +35,7 @@ public class OrderByDirectionPhase implements OrderingTerm {
   }
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     this.ordering.renderTo(w);
   }
 

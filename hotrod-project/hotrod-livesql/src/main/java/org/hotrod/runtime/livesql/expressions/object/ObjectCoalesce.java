@@ -17,7 +17,7 @@ public class ObjectCoalesce extends ObjectExpression {
   }
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     w.getSQLDialect().getFunctionRenderer().coalesce(w, this.expressions);
   }
 

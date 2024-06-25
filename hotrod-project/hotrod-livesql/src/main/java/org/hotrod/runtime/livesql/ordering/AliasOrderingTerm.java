@@ -2,11 +2,12 @@ package org.hotrod.runtime.livesql.ordering;
 
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class AliasOrderingTerm implements CombinedOrderingTerm {
+public class AliasOrderingTerm extends CombinedOrderingTerm {
 
   private String alias;
 
   public AliasOrderingTerm(final String alias) {
+    super();
     this.alias = alias;
   }
 
@@ -19,7 +20,7 @@ public class AliasOrderingTerm implements CombinedOrderingTerm {
   }
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     w.write(w.getSQLDialect().canonicalToNatural(this.alias));
   }
 

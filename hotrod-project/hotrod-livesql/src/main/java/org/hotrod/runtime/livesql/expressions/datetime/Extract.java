@@ -16,7 +16,7 @@ public class Extract extends BuiltInNumberFunction {
   }
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     w.getSQLDialect().getFunctionRenderer().extract(w, this.datetime, this.field);
   }
 

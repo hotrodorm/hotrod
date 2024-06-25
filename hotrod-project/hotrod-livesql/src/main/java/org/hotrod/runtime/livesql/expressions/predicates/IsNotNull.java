@@ -15,7 +15,7 @@ public class IsNotNull extends Predicate {
   }
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     super.renderInner(this.a, w);
     w.write(" is not null");
   }

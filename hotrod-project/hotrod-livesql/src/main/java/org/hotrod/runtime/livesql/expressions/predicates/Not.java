@@ -14,7 +14,7 @@ public class Not extends Predicate {
   }
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     w.write("not ");
     super.renderInner(this.a, w);
   }

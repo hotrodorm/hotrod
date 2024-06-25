@@ -45,7 +45,7 @@ public class SubqueryStringColumn extends StringExpression implements SubqueryCo
   // Rendering
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     if (this.subquery.getName().isQuoted()) {
       w.write(w.getSQLDialect().quoteIdentifier(this.subquery.getName().getName()));
     } else {

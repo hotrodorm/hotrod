@@ -20,7 +20,7 @@ public class Exists extends Predicate {
   }
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     w.write("exists (\n");
     w.enterLevel();
     SHelper.getCombinedSelect(this.subquery).renderTo(w);

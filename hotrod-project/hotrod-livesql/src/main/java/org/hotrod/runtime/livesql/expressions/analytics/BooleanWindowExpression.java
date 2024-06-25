@@ -4,11 +4,12 @@ import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.Helper;
+import org.hotrod.runtime.livesql.expressions.OrderingTerm;
 import org.hotrod.runtime.livesql.expressions.analytics.WindowExpression.FrameBound;
 import org.hotrod.runtime.livesql.expressions.analytics.WindowExpression.FrameExclusion;
 import org.hotrod.runtime.livesql.expressions.analytics.WindowExpression.FrameUnit;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
-import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public class BooleanWindowExpression extends Predicate {
@@ -55,8 +56,8 @@ public class BooleanWindowExpression extends Predicate {
   // Rendering
 
   @Override
-  public void renderTo(final QueryWriter w) {
-    this.windowableFunction.renderTo(w);
+  protected void renderTo(final QueryWriter w) {
+    Helper.renderTo(this.windowableFunction, w);
     this.windowExpression.renderTo(w);
   }
 

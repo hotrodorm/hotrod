@@ -1,5 +1,7 @@
 package org.hotrod.runtime.livesql.expressions;
 
+import org.hotrod.runtime.livesql.expressions.analytics.WindowableFunction;
+import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
 
@@ -21,9 +23,22 @@ public class Helper {
     return expr.getAlias();
   }
 
-  public static void validateTableReferences(final Expression expression, final TableReferences tableReferences,
+  public static void validateTableReferences(final Expression expr, final TableReferences tableReferences,
       final AliasGenerator ag) {
-    expression.validateTableReferences(tableReferences, ag);
+    expr.validateTableReferences(tableReferences, ag);
+  }
+
+  public static void renderTo(final Expression expr, final QueryWriter w) {
+    expr.renderTo(w);
+  }
+
+  public static void renderTo(final WindowableFunction function, final QueryWriter w) {
+    try {
+      Expression expr = (Expression) function;
+      expr.renderTo(w);
+    } catch (ClassCastException e) {
+      throw new RuntimeException("Could not render function " + function.getClass().getName());
+    }
   }
 
 }

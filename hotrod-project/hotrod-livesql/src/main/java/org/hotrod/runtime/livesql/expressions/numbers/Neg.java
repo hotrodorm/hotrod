@@ -14,7 +14,7 @@ public class Neg extends NumberExpression {
   }
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     w.getSQLDialect().getFunctionRenderer().neg(w, this.value);
   }
 

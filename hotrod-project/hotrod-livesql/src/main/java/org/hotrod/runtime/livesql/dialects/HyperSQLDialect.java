@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
+import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
@@ -252,14 +253,14 @@ public class HyperSQLDialect extends LiveSQLDialect {
       @Override
       public void date(final QueryWriter w, final DateTimeExpression datetime) {
         w.write("cast(");
-        datetime.renderTo(w);
+        Helper.renderTo(datetime, w);
         w.write(" as date)");
       }
 
       @Override
       public void time(final QueryWriter w, final DateTimeExpression datetime) {
         w.write("cast(");
-        datetime.renderTo(w);
+        Helper.renderTo(datetime, w);
         w.write(" as time)");
       }
 

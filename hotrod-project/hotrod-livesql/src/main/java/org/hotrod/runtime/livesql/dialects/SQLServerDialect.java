@@ -6,12 +6,13 @@ import java.util.stream.Collectors;
 
 import org.hotrod.runtime.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
+import org.hotrod.runtime.livesql.expressions.Helper;
+import org.hotrod.runtime.livesql.expressions.OrderingTerm;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberConstant;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
-import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.LockingConcurrency;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.LockingMode;
@@ -287,16 +288,16 @@ public class SQLServerDialect extends LiveSQLDialect {
               "SQL Server requires the separator to be specified on the GROUP_CONCAT() function (string_agg())");
         }
         w.write("string_agg(");
-        value.renderTo(w);
+        Helper.renderTo(value, w);
         w.write(", ");
-        separator.renderTo(w);
+        Helper.renderTo(separator, w);
         w.write(")");
         if (ordering != null && !ordering.isEmpty()) {
           w.write(" within group (ORDER BY ");
           Separator sep = new Separator();
           for (OrderingTerm t : ordering) {
             w.write(sep.render());
-            t.renderTo(w);
+            Helper.renderTo(t, w);
           }
         }
         w.write(")");
@@ -379,32 +380,32 @@ public class SQLServerDialect extends LiveSQLDialect {
       @Override
       public void date(final QueryWriter w, final DateTimeExpression datetime) {
         w.write("convert(date, ");
-        datetime.renderTo(w);
+        Helper.renderTo(datetime, w);
         w.write(")");
       }
 
       @Override
       public void time(final QueryWriter w, final DateTimeExpression datetime) {
         w.write("convert(time, ");
-        datetime.renderTo(w);
+        Helper.renderTo(datetime, w);
         w.write(")");
       }
 
       @Override
       public void dateTime(final QueryWriter w, final DateTimeExpression date, final DateTimeExpression time) {
         w.write("(");
-        date.renderTo(w);
+        Helper.renderTo(date, w);
         w.write(" + ");
-        time.renderTo(w);
+        Helper.renderTo(time, w);
         w.write(")");
       }
 
       @Override
       public void extract(final QueryWriter w, final DateTimeExpression datetime, final DateTimeFieldExpression field) {
         w.write("datepart(");
-        field.renderTo(w);
+        Helper.renderTo(field, w);
         w.write(", ");
-        datetime.renderTo(w);
+        Helper.renderTo(datetime, w);
         w.write(")");
       }
 

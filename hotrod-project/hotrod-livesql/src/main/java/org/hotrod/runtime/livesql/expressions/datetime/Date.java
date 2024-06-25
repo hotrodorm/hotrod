@@ -13,7 +13,7 @@ public class Date extends BuiltInDateTimeFunction {
   }
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     w.getSQLDialect().getFunctionRenderer().date(w, this.dateTime);
   }
 

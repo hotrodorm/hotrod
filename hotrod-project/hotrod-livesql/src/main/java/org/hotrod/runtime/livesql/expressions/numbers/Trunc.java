@@ -16,7 +16,7 @@ public class Trunc extends BuiltInNumberFunction {
   }
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     w.getSQLDialect().getFunctionRenderer().trunc(w, this.value, this.places);
   }
 

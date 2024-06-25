@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.hotrod.runtime.livesql.exceptions.InvalidFunctionException;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
+import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 // Parameters:
@@ -142,7 +143,7 @@ public class FunctionTemplate {
 
     @Override
     public void renderTo(final QueryWriter w) {
-      this.expression.renderTo(w);
+      Helper.renderTo(this.expression, w);
     }
 
   }

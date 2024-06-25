@@ -4,7 +4,7 @@ import org.hotrod.runtime.livesql.expressions.predicates.IsNotNull;
 import org.hotrod.runtime.livesql.expressions.predicates.IsNull;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
-public abstract class GenericExpression extends Expression {
+public abstract class GenericExpression extends OrderingTerm {
 
   protected GenericExpression(int precedence) {
     super(precedence);

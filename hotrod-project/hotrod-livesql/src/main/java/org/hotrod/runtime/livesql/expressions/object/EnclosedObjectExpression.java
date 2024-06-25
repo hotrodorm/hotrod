@@ -2,6 +2,7 @@ package org.hotrod.runtime.livesql.expressions.object;
 
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public class EnclosedObjectExpression extends ObjectExpression {
@@ -23,9 +24,9 @@ public class EnclosedObjectExpression extends ObjectExpression {
   // Rendering
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     w.write("(");
-    this.expr.renderTo(w);
+    Helper.renderTo(this.expr, w);
     w.write(")");
   }
 

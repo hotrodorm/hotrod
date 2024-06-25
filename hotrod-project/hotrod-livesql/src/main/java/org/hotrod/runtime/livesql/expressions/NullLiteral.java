@@ -9,7 +9,7 @@ public class NullLiteral extends GenericExpression {
   }
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     w.write("NULL");
   }
 

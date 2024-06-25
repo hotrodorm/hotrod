@@ -74,7 +74,7 @@ public class ByteArrayCaseClause extends ByteArrayExpression {
   }
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     w.write("case");
     for (CaseWhen when : this.whens) {
       w.write(" when ");

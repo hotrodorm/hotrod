@@ -31,7 +31,7 @@ public abstract class BinaryNumberExpression<T extends ComparableExpression> ext
   }
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     super.renderInner(this.left, w);
     w.write(" ");
     w.write(this.operator);

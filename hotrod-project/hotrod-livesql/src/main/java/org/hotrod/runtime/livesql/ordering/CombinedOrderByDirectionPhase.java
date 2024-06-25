@@ -4,19 +4,22 @@ import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.ordering.OrderByProperties.NullsOrdering;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class CombinedOrderByDirectionPhase implements CombinedOrderingTerm {
+public class CombinedOrderByDirectionPhase extends CombinedOrderingTerm {
 
   private OrderByProperties ordering;
 
   public CombinedOrderByDirectionPhase(final ComparableExpression expression, final boolean ascending) {
+    super();
     this.ordering = new OrderByProperties(expression, ascending);
   }
 
   public CombinedOrderByDirectionPhase(final String alias, final boolean ascending) {
+    super();
     this.ordering = new OrderByProperties(alias, ascending);
   }
 
   public CombinedOrderByDirectionPhase(final int ordinal, final boolean ascending) {
+    super();
     this.ordering = new OrderByProperties(ordinal, ascending);
   }
 
@@ -31,7 +34,7 @@ public class CombinedOrderByDirectionPhase implements CombinedOrderingTerm {
   }
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     this.ordering.renderTo(w);
   }
 

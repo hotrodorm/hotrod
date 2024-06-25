@@ -19,6 +19,7 @@ import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.NullLiteral;
+import org.hotrod.runtime.livesql.expressions.OrderingTerm;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.aggregations.Avg;
 import org.hotrod.runtime.livesql.expressions.aggregations.AvgDistinct;
@@ -91,8 +92,8 @@ import org.hotrod.runtime.livesql.expressions.predicates.EnclosedBooleanExpressi
 import org.hotrod.runtime.livesql.expressions.predicates.Exists;
 import org.hotrod.runtime.livesql.expressions.predicates.Not;
 import org.hotrod.runtime.livesql.expressions.predicates.NotExists;
+import org.hotrod.runtime.livesql.expressions.predicates.PJump;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
-import org.hotrod.runtime.livesql.expressions.predicates.PredicateLiteral;
 import org.hotrod.runtime.livesql.expressions.strings.EnclosedStringExpression;
 import org.hotrod.runtime.livesql.expressions.strings.StringConstant;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
@@ -100,7 +101,6 @@ import org.hotrod.runtime.livesql.expressions.strings.StringLiteral;
 import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.AliasOrderingTerm;
-import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.ordering.OrdinalOrderingTerm;
 import org.hotrod.runtime.livesql.queries.DeleteFromPhase;
 import org.hotrod.runtime.livesql.queries.InsertIntoPhase;
@@ -948,8 +948,8 @@ public class LiveSQL {
 
   // Literals (Boolean)
 
-  public final Predicate FALSE = PredicateLiteral.getFalse();
-  public final Predicate TRUE = PredicateLiteral.getTrue();
+  public final Predicate FALSE = PJump.getFalse();
+  public final Predicate TRUE = PJump.getTrue();
 
   // Parenthesis
 

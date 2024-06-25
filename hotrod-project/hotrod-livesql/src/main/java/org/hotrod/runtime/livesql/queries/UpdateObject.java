@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.hotrod.runtime.livesql.dialects.UpdateRenderer;
 import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.MDHelper;
@@ -97,7 +98,7 @@ public class UpdateObject implements QueryObject {
       Assignment s = this.sets.get(i);
       s.getColumn().renderUnqualifiedNameTo(w);
       w.write(" = ");
-      s.getExpression().renderTo(w);
+      Helper.renderTo(s.getExpression(), w);
       w.write("\n");
     }
     for (String colName : this.extraSets.keySet()) {
@@ -114,7 +115,7 @@ public class UpdateObject implements QueryObject {
 
     if (this.wherePredicate != null) {
       w.write("WHERE ");
-      this.wherePredicate.renderTo(w);
+      Helper.renderTo(this.wherePredicate, w);
     }
     LiveSQLPreparedQuery pq = w.getPreparedQuery(null);
     return pq;

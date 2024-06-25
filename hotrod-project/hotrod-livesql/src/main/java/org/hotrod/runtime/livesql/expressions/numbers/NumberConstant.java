@@ -22,7 +22,7 @@ public class NumberConstant extends NumberExpression {
   // Rendering
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     if (this.parameterize) {
       RenderedParameter p = w.registerParameter(this.value);
       w.write(p.getPlaceholder());

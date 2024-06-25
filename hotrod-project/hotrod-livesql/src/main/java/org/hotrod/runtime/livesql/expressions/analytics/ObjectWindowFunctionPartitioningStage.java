@@ -2,8 +2,8 @@ package org.hotrod.runtime.livesql.expressions.analytics;
 
 import java.util.Arrays;
 
+import org.hotrod.runtime.livesql.expressions.OrderingTerm;
 import org.hotrod.runtime.livesql.expressions.object.ObjectExpression;
-import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 
 public class ObjectWindowFunctionPartitioningStage {
 

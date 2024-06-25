@@ -23,7 +23,7 @@ public abstract class AsymmetricOperator extends Predicate {
   }
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     super.renderInner(this.value, w);
     w.write(" " + this.operator + " (\n");
     w.enterLevel();

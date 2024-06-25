@@ -3,11 +3,12 @@ package org.hotrod.runtime.livesql.dialects;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
+import org.hotrod.runtime.livesql.expressions.Helper;
+import org.hotrod.runtime.livesql.expressions.OrderingTerm;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
-import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrodorm.hotrod.utils.Separator;
 
@@ -32,18 +33,18 @@ public abstract class FunctionRenderer {
     if (distinct) {
       w.write("distinct ");
     }
-    value.renderTo(w);
+    Helper.renderTo(value, w);
     if (ordering != null) {
       w.write("ORDER BY ");
       Separator sep = new Separator();
       for (OrderingTerm t : ordering) {
         w.write(sep.render());
-        t.renderTo(w);
+        Helper.renderTo(t, w);
       }
     }
     if (separator != null) {
       w.write("separator ");
-      separator.renderTo(w);
+      Helper.renderTo(separator, w);
     }
     w.write(")");
   }
@@ -162,9 +163,9 @@ public abstract class FunctionRenderer {
 
   public void extract(final QueryWriter w, final DateTimeExpression datetime, final DateTimeFieldExpression field) {
     w.write("extract(");
-    field.renderTo(w);
+    Helper.renderTo(field, w);
     w.write(" from ");
-    datetime.renderTo(w);
+    Helper.renderTo(datetime, w);
     w.write(")");
   }
 
@@ -176,7 +177,7 @@ public abstract class FunctionRenderer {
     Separator sep = new Separator();
     for (ComparableExpression expr : expressions) {
       w.write(sep.render());
-      expr.renderTo(w);
+      Helper.renderTo(expr, w);
     }
     w.write(")");
   }
@@ -198,7 +199,7 @@ public abstract class FunctionRenderer {
     Separator sep = new Separator(separator);
     for (ComparableExpression expr : x) {
       w.write(sep.render());
-      expr.renderTo(w);
+      Helper.renderTo(expr, w);
     }
     w.write(")");
   }

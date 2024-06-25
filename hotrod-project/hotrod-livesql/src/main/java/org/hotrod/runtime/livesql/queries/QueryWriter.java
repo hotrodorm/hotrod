@@ -83,7 +83,7 @@ public class QueryWriter {
 
   public void write(final ComparableExpression expression) {
     if (expression != null) {
-      expression.renderTo(this);
+      Helper.renderTo(expression, this);
     }
   }
 

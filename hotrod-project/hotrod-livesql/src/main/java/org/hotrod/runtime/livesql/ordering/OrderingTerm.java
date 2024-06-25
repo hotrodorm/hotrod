@@ -1,9 +1,0 @@
-package org.hotrod.runtime.livesql.ordering;
-
-import org.hotrod.runtime.livesql.queries.QueryWriter;
-
-public interface OrderingTerm {
-
-  void renderTo(QueryWriter w);
-
-}

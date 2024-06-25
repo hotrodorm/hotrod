@@ -15,7 +15,7 @@ public abstract class NumericLiteral extends NumberExpression {
   // Rendering
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     w.write(this.formatted);
   }
 

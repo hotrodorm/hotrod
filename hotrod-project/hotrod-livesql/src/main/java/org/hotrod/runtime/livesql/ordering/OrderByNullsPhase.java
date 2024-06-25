@@ -1,17 +1,19 @@
 package org.hotrod.runtime.livesql.ordering;
 
+import org.hotrod.runtime.livesql.expressions.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class OrderByNullsPhase implements OrderingTerm {
+public class OrderByNullsPhase extends OrderingTerm {
 
   private OrderByProperties ordering;
 
   public OrderByNullsPhase(final OrderByProperties ordering) {
+    super(PRECEDENCE_ORDERING);
     this.ordering = ordering;
   }
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     this.ordering.renderTo(w);
   }
 

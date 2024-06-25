@@ -20,13 +20,13 @@ import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
+import org.hotrod.runtime.livesql.expressions.OrderingTerm;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.MDHelper;
 import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
-import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.QueryObject;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
@@ -37,7 +37,6 @@ import org.hotrod.runtime.livesql.queries.select.sets.MultiSet;
 import org.hotrod.runtime.livesql.util.IdUtil;
 import org.hotrodorm.hotrod.utils.SUtil;
 import org.hotrodorm.hotrod.utils.Separator;
-import org.hotrodorm.hotrod.utils.TUtil;
 import org.springframework.util.ReflectionUtils;
 
 public abstract class AbstractSelectObject<R> extends MultiSet<R> implements QueryObject {
@@ -98,8 +97,6 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
 
   protected abstract void writeColumns(final QueryWriter w, final TableExpression baseTableExpression,
       final List<Join> joins);
-
-
 
   // Setters
 
@@ -279,7 +276,7 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
           PredicatedJoin pj = (PredicatedJoin) j;
           if (pj.getJoinPredicate() != null) { // on
             w.write(" ON ");
-            pj.getJoinPredicate().renderTo(w);
+            Helper.renderTo(pj.getJoinPredicate(), w);
           } else { // using
             w.write(" USING (");
             Separator sep = new Separator();
@@ -299,7 +296,7 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
 
       if (this.wherePredicate != null) {
         w.write("\nWHERE ");
-        this.wherePredicate.renderTo(w);
+        Helper.renderTo(this.wherePredicate, w);
       }
 
       // group by
@@ -313,7 +310,7 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
           } else {
             w.write(", ");
           }
-          expr.renderTo(w);
+          Helper.renderTo(expr, w);
         }
       }
 
@@ -321,7 +318,7 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
 
       if (this.havingPredicate != null) {
         w.write("\nHAVING ");
-        this.havingPredicate.renderTo(w);
+        Helper.renderTo(this.havingPredicate, w);
       }
 
     }
@@ -337,7 +334,7 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
         } else {
           w.write(", ");
         }
-        term.renderTo(w);
+        Helper.renderTo(term, w);
       }
     }
 

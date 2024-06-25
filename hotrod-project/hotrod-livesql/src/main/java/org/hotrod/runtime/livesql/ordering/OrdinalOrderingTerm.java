@@ -2,7 +2,7 @@ package org.hotrod.runtime.livesql.ordering;
 
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class OrdinalOrderingTerm implements CombinedOrderingTerm {
+public class OrdinalOrderingTerm extends CombinedOrderingTerm {
 
   private int ordinal;
 
@@ -19,7 +19,7 @@ public class OrdinalOrderingTerm implements CombinedOrderingTerm {
   }
 
   @Override
-  public void renderTo(QueryWriter w) {
+  protected void renderTo(QueryWriter w) {
     w.write("" + this.ordinal);
   }
 

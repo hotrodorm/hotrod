@@ -3,7 +3,8 @@ package org.hotrod.runtime.livesql.expressions.analytics;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
-import org.hotrod.runtime.livesql.ordering.OrderingTerm;
+import org.hotrod.runtime.livesql.expressions.Helper;
+import org.hotrod.runtime.livesql.expressions.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrodorm.hotrod.utils.Separator;
 
@@ -153,7 +154,7 @@ public class WindowExpression {
 
   // Rendering
 
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
 
     w.write(" over(");
 
@@ -167,7 +168,7 @@ public class WindowExpression {
       Separator sep = new Separator();
       for (ComparableExpression expr : this.partitionBy) {
         w.write(sep.render());
-        expr.renderTo(w);
+        Helper.renderTo(expr, w);
       }
     }
 
@@ -181,7 +182,7 @@ public class WindowExpression {
       Separator sep = new Separator();
       for (OrderingTerm expr : this.orderBy) {
         w.write(sep.render());
-        expr.renderTo(w);
+        Helper.renderTo(expr, w);
       }
     }
 

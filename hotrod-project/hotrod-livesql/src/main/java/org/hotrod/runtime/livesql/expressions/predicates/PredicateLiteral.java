@@ -5,8 +5,8 @@ import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public class PredicateLiteral extends Predicate {
 
-  private static final PredicateLiteral FALSE = new PredicateLiteral(false);
-  private static final PredicateLiteral TRUE = new PredicateLiteral(true);
+  protected static final PredicateLiteral FALSE = new PredicateLiteral(false);
+  protected static final PredicateLiteral TRUE = new PredicateLiteral(true);
 
   private boolean value;
 
@@ -16,22 +16,12 @@ public class PredicateLiteral extends Predicate {
   }
 
   @Override
-  public void renderTo(final QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     if (this.value) {
       w.getSQLDialect().getBooleanLiteralRenderer().renderTrue(w);
     } else {
       w.getSQLDialect().getBooleanLiteralRenderer().renderFalse(w);
     }
-  }
-
-  // Getters
-
-  public static PredicateLiteral getFalse() {
-    return FALSE;
-  }
-
-  public static PredicateLiteral getTrue() {
-    return TRUE;
   }
 
 }

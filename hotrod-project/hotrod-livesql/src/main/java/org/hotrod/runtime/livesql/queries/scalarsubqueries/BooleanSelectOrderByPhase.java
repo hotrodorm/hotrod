@@ -3,7 +3,7 @@ package org.hotrod.runtime.livesql.queries.scalarsubqueries;
 import java.util.Arrays;
 
 import org.hotrod.runtime.livesql.Row;
-import org.hotrod.runtime.livesql.ordering.OrderingTerm;
+import org.hotrod.runtime.livesql.expressions.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject;
 
 public class BooleanSelectOrderByPhase extends BooleanSelectExpression {

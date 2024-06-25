@@ -5,9 +5,9 @@ package org.hotrod.runtime.livesql.expressions;
  *                    {I} ResultSetColumn &lt;-------- WrappingColumn &lt;---+---------------+
  *                          ^      ^                  ^                |               |
  *                          |      |                  |                |               |
- *                          |      | {I} Rendereable  |                |               |
- *                          |      |      ^           |                |               |
- *                          |      |      |           |                |               |
+ *                          |      |                  |                |               |
+ *                          |      |                  |                |               |
+ *                          |      |                  |                |               |
  *  {I} ReferenceableExpression  Expression      AllColumns        ColumnList   AllSubqueryColumns
  *             ^          ^      ^  ^  ^  ^                          ^    ^
  *             |          |      |  |  |  |                          |    |
