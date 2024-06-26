@@ -4,7 +4,8 @@ import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.Helper;
-import org.hotrod.runtime.livesql.expressions.OrderingTerm;
+import org.hotrod.runtime.livesql.ordering.OHelper;
+import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrodorm.hotrod.utils.Separator;
 
@@ -180,9 +181,9 @@ public class WindowExpression {
       }
       w.write("order by ");
       Separator sep = new Separator();
-      for (OrderingTerm expr : this.orderBy) {
+      for (OrderingTerm term : this.orderBy) {
         w.write(sep.render());
-        Helper.renderTo(expr, w);
+        OHelper.renderTo(term, w);
       }
     }
 

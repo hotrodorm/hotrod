@@ -27,6 +27,13 @@ public class ColumnsSubset extends ColumnList {
         .collect(Collectors.toList()));
   }
 
+  // ResultSetColumn
+
+  @Override
+  protected Expression getExpression() {
+    return null;
+  }
+
   @Override
   protected List<Expression> unwrap() {
     return this.columns;

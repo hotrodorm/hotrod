@@ -1,8 +1,8 @@
 package org.hotrod.runtime.livesql.queries.select;
 
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
-import org.hotrod.runtime.livesql.expressions.OrderingTerm;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
 import org.hotrod.runtime.livesql.queries.select.sets.IndividualSelectPhase;

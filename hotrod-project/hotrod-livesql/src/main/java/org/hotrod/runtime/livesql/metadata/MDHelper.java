@@ -14,8 +14,4 @@ public class MDHelper {
     return tov.renderUnescapedName();
   }
 
-  public static List<Expression> unwrap(final WrappingColumn wc) {
-    return wc.unwrap();
-  }
-
 }

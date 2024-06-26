@@ -9,8 +9,8 @@ import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.ordering.CombinedOrderingTerm;
+import org.hotrod.runtime.livesql.ordering.OHelper;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
@@ -187,7 +187,7 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
         } else {
           w.write(", ");
         }
-        Helper.renderTo(term, w);
+        OHelper.renderTo(term, w);
       }
     }
 

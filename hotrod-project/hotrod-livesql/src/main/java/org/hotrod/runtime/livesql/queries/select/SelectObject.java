@@ -4,14 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.TypeHandler;
 import org.hotrod.runtime.livesql.metadata.Column;
-import org.hotrod.runtime.livesql.metadata.MDHelper;
-import org.hotrod.runtime.livesql.metadata.WrappingColumn;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrodorm.hotrod.utils.Separator;
@@ -81,19 +78,11 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
     if (listedColumns) {
 
       for (ResultSetColumn rsc : this.resultSetColumns) {
-        try {
-          List<Expression> scols = unwrapColumn(rsc);
-          if (scols == null) {
-            Expression expr = (Expression) rsc;
-            log.info("--- " + expr + " -- " + Helper.getAlias(expr) + " -- " + Helper.getTypeHandler(expr));
-            this.expandedColumns.add(expr);
-          } else {
-            this.expandedColumns.addAll(scols);
-          }
-        } catch (ClassCastException e) {
-          throw new LiveSQLException("Could not expand subset of LiveSQL columns", e);
-        } catch (RuntimeException e) {
-          throw new LiveSQLException("Could not expand subset of LiveSQL columns", e);
+        Expression expr = Helper.getExpression(rsc);
+        if (expr != null) {
+          this.expandedColumns.add(expr);
+        } else {
+          this.expandedColumns.addAll(Helper.unwrap(rsc));
         }
       }
 
@@ -113,15 +102,6 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
 
     return this.expandedColumns;
 
-  }
-
-  private List<Expression> unwrapColumn(final ResultSetColumn c) {
-    try {
-      WrappingColumn wc = (WrappingColumn) c;
-      return MDHelper.unwrap(wc);
-    } catch (ClassCastException e) {
-      return null;
-    }
   }
 
   @Override

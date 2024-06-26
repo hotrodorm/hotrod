@@ -2,12 +2,12 @@ package org.hotrod.runtime.livesql.expressions.aggregations;
 
 import java.util.List;
 
-import org.hotrod.runtime.livesql.expressions.OrderingTerm;
 import org.hotrod.runtime.livesql.expressions.analytics.StringWindowExpression;
 import org.hotrod.runtime.livesql.expressions.analytics.StringWindowFunctionOverStage;
 import org.hotrod.runtime.livesql.expressions.analytics.WindowableAggregationFunction;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
 import org.hotrod.runtime.livesql.expressions.strings.StringFunction;
+import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public class GroupConcat extends StringFunction implements WindowableAggregationFunction {

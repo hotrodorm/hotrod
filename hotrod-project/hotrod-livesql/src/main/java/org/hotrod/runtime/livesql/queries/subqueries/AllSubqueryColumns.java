@@ -13,6 +13,13 @@ public class AllSubqueryColumns extends WrappingColumn {
     this.subquery = subquery;
   }
 
+  // ResultSetColumn
+
+  @Override
+  protected Expression getExpression() {
+    return null;
+  }
+
   @Override
   protected List<Expression> unwrap() {
     return this.subquery.getExpandedColumns();

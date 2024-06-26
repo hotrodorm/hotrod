@@ -1,5 +1,7 @@
 package org.hotrod.runtime.livesql.expressions;
 
+import java.util.List;
+
 import org.hotrod.runtime.livesql.expressions.analytics.WindowableFunction;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
@@ -7,12 +9,8 @@ import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableRefer
 
 public class Helper {
 
-  public static Expression getExpression(AliasedExpression ae) {
-    return ae.getExpression();
-  }
-
-//  public static void computeQueryColumns(final Expression expr) {
-//    expr.computeQueryColumns();
+//  public static Expression getExpression(AliasedExpression ae) {
+//    return ae.getExpression();
 //  }
 
   public static TypeHandler getTypeHandler(final Expression expr) {
@@ -39,6 +37,14 @@ public class Helper {
     } catch (ClassCastException e) {
       throw new RuntimeException("Could not render function " + function.getClass().getName());
     }
+  }
+
+  public static Expression getExpression(final ResultSetColumn wc) {
+    return wc.getExpression();
+  }
+
+  public static List<Expression> unwrap(final ResultSetColumn wc) {
+    return wc.unwrap();
   }
 
 }

@@ -3,9 +3,8 @@ package org.hotrod.runtime.livesql.expressions;
 import java.util.logging.Logger;
 
 import org.hotrod.runtime.livesql.queries.QueryWriter;
-import org.hotrod.runtime.livesql.queries.select.ReferenceableExpression;
 
-public class AliasedExpression extends Expression implements ReferenceableExpression {
+public class AliasedExpression extends Expression {
 
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(AliasedExpression.class.getName());
@@ -25,11 +24,6 @@ public class AliasedExpression extends Expression implements ReferenceableExpres
     this.referencedExpression.renderTo(w);
     w.write(" as ");
     w.write(w.getSQLDialect().canonicalToNatural(super.getAlias()));
-  }
-
-  @Override
-  public String getName() {
-    return super.getAlias();
   }
 
   protected Expression getExpression() {

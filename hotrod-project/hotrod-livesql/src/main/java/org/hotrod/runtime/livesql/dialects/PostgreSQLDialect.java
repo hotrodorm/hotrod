@@ -7,10 +7,11 @@ import java.util.stream.Collectors;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
-import org.hotrod.runtime.livesql.expressions.OrderingTerm;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
+import org.hotrod.runtime.livesql.ordering.OHelper;
+import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.LockingConcurrency;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.LockingMode;
@@ -317,7 +318,7 @@ public class PostgreSQLDialect extends LiveSQLDialect {
           Separator sep = new Separator();
           for (OrderingTerm t : ordering) {
             w.write(sep.render());
-            Helper.renderTo(t, w);
+            OHelper.renderTo(t, w);
           }
         }
         w.write(")");

@@ -20,13 +20,14 @@ import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
-import org.hotrod.runtime.livesql.expressions.OrderingTerm;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.MDHelper;
 import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
+import org.hotrod.runtime.livesql.ordering.OHelper;
+import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.QueryObject;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
@@ -334,7 +335,7 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
         } else {
           w.write(", ");
         }
-        Helper.renderTo(term, w);
+        OHelper.renderTo(term, w);
       }
     }
 

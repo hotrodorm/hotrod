@@ -13,13 +13,12 @@ import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
 import org.hotrodorm.hotrod.utils.SUtil;
 
-public abstract class Expression implements ResultSetColumn {
+public abstract class Expression extends ResultSetColumn {
 
   protected static final int PRECEDENCE_LITERAL = 1;
   protected static final int PRECEDENCE_COLUMN = 1;
   protected static final int PRECEDENCE_PARENTHESIS = 1;
   protected static final int PRECEDENCE_ALIAS = 1;
-  protected static final int PRECEDENCE_ORDERING = 1;
 
   protected static final int PRECEDENCE_CASE = 2;
   protected static final int PRECEDENCE_FUNCTION = 2;
@@ -80,6 +79,16 @@ public abstract class Expression implements ResultSetColumn {
     this.typeHandler = null;
   }
 
+  // ResultSetColumn
+
+  protected Expression getExpression() {
+    return this;
+  }
+
+  protected final List<Expression> unwrap() {
+    return null;
+  }
+
   // Getters & Setters
 
   protected String getAlias() {
@@ -122,12 +131,6 @@ public abstract class Expression implements ResultSetColumn {
     this.tablesOrViews.add(tableOrView);
   }
 
-//  protected void computeQueryColumns() {
-//    // Nothing to do by default.
-//    // Only a few classes will override this method: AliasedExpression,
-//    // SubqueryColumns, etc.
-//  }
-
   protected final void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
     for (Expression e : this.expressions) {
       e.validateTableReferences(tableReferences, ag);
@@ -160,14 +163,5 @@ public abstract class Expression implements ResultSetColumn {
   }
 
   protected abstract void renderTo(final QueryWriter w);
-
-  // Aliasing
-
-  public AliasedExpression as(final String alias) {
-    if (SUtil.isEmpty(alias)) {
-      throw new LiveSQLException("An alias specified with the .as() method cannot be null");
-    }
-    return new AliasedExpression(this, alias);
-  }
 
 }

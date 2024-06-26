@@ -16,6 +16,13 @@ public class ColumnsAliased extends ColumnList {
     return this.columns.isEmpty();
   }
 
+  // ResultSetColumn
+
+  @Override
+  protected Expression getExpression() {
+    return null;
+  }
+
   @Override
   protected List<Expression> unwrap() {
     return this.columns;
