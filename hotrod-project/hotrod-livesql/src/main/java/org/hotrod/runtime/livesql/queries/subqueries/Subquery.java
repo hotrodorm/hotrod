@@ -21,7 +21,6 @@ import org.hotrod.runtime.livesql.queries.select.TableExpression;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
 import org.hotrod.runtime.livesql.queries.select.sets.MHelper;
 import org.hotrodorm.hotrod.utils.SUtil;
-import org.hotrodorm.hotrod.utils.TUtil;
 
 public class Subquery extends TableExpression {
 
@@ -65,7 +64,7 @@ public class Subquery extends TableExpression {
     return name;
   }
 
-  public CombinedSelectObject<?> getSelect() {
+  protected CombinedSelectObject<?> getSelect() {
     return select;
   }
 
@@ -119,18 +118,6 @@ public class Subquery extends TableExpression {
     return expandedColumns;
   }
 
-//  @Deprecated
-//  @Override
-//  protected void computeQueryColumns() {
-//    log.info(
-//        "--------------------------------------------------------------------------------------------------------------------");
-//    log.info(">>> computeQueryColumns for subquery '" + this.name + "'...");
-//    MHelper.computeQueryColumns(this.select);
-//    log.info(">>> computeQueryColumns for subquery '" + this.name + "' complete");
-//    log.info(
-//        "--------------------------------------------------------------------------------------------------------------------");
-//  }
-
   // Rendering
 
   @Override
@@ -152,25 +139,5 @@ public class Subquery extends TableExpression {
       w.write(w.getSQLDialect().getTableExpressionRenderer().renderNamedColumns(this.columns));
     }
   }
-
-//  @Override
-//  protected List<Expression> getExpandedColumns() {
-//    return this.expandColumns(this.select.listColumns());
-//  }
-
-//  protected List<Expression> expandColumns(final List<ResultSetColumn> cols) {
-//    List<Expression> subqueryColumns = new ArrayList<>();
-//    for (ResultSetColumn c : cols) {
-//      Expression expr = castAsSubqueryColumn(c);
-//      subqueryColumns.add(expr);
-//    }
-//    return subqueryColumns;
-//
-//  }
-
-//  private Expression castAsSubqueryColumn(final ResultSetColumn c)
-//      throws IllegalArgumentException, IllegalAccessException {
-//    return SubqueryUtil.castPersistenceColumnAsSubqueryColumn(this, c);
-//  }
 
 }

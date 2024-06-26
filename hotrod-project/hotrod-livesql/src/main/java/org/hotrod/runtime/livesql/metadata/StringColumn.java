@@ -42,11 +42,6 @@ public class StringColumn extends StringExpression implements Column {
           w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(this.objectInstance.getAlias())));
       w.write(".");
     }
-    renderUnqualifiedNameTo(w);
-  }
-
-  @Override
-  public void renderUnqualifiedNameTo(final QueryWriter w) {
     w.write(w.getSQLDialect().canonicalToNatural(this.name));
   }
 

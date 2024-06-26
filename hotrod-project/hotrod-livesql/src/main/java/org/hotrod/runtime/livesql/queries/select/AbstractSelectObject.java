@@ -283,7 +283,7 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
             Separator sep = new Separator();
             for (Column c : pj.getUsingColumns()) {
               w.write(sep.render());
-              c.renderUnqualifiedNameTo(w);
+              w.write(w.getSQLDialect().canonicalToNatural(c.getName()));
             }
             w.write(")");
           }

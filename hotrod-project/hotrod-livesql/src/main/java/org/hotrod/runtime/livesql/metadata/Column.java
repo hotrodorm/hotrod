@@ -1,7 +1,5 @@
 package org.hotrod.runtime.livesql.metadata;
 
-import org.hotrod.runtime.livesql.queries.QueryWriter;
-
 public interface Column {
 
   TableOrView getObjectInstance();
@@ -21,7 +19,5 @@ public interface Column {
   Integer getDecimalDigits();
 
   String getProperty();
-
-  void renderUnqualifiedNameTo(QueryWriter w);
 
 }

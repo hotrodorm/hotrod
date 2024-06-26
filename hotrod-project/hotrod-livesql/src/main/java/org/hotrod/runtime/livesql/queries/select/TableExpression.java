@@ -12,15 +12,10 @@ public abstract class TableExpression {
 
   protected abstract void validateTableReferences(TableReferences tableReferences, AliasGenerator ag);
 
-  protected abstract void renderTo(QueryWriter w);
-
   protected abstract Name getName();
 
-//  protected abstract List<Expression> getExpandedColumns();
-
-//  @Deprecated
-//  protected abstract void computeQueryColumns();
-
   protected abstract List<Expression> assembleColumns();
+
+  protected abstract void renderTo(QueryWriter w);
 
 }
