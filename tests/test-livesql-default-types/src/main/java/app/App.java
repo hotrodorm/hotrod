@@ -213,7 +213,9 @@ public class App {
 ////        .forUpdate().wait(5)
 //    ;
 
-    Subquery y = sql.subquery("y", sql.select(b.id, b.region.as("rg"), b.isVip).from(b));
+//    Subquery y = sql.subquery("y", sql.select(b.id, b.region.as("rg"), b.isVip).from(b));
+
+    Subquery y = sql.subquery("y", sql.select(b.star(), b.id).from(b));
 
     Subquery x = sql.subquery("x", sql.select(y.num("id"), y.str("rg").as("rgx"), y.bool("isVip").as("iv")).from(y));
 
@@ -225,11 +227,15 @@ public class App {
 //        .from(x) //
 //    ;
 
-    Select<Row> q = this.sql.select().from(x);
+    Select<Row> q = this.sql.select().from(y);
+//    Select<Row> q = this.sql.select(y.num("id"), y.str("badName")).from(y);
+//    Select<Row> q = this.sql.select(b.id, b.region.as("reg"), b.isVip.as("vip")).from(b);
+//    Select<Row> q = this.sql.select().from(b);
 
     System.out.println("q:" + q.getPreview());
-    List<Row> rows = q.execute();
-    rows.forEach(r -> System.out.println("inv:" + r));
+
+//    List<Row> rows = q.execute();
+//    rows.forEach(r -> System.out.println("inv:" + r));
 
   }
 
@@ -567,7 +573,7 @@ public class App {
     System.out.println("DISTINCT ON");
     InvoiceTable i = InvoiceDAO.newTable("i");
 
-    Select<Row> q = this.sql.selectDistinctOn(i.branchId.plus(sql.literal(100))) //
+    Select<Row> q = this.sql.selectDistinctOn(i.branchId.as("aa"), i.branchId.plus(sql.literal(100))) //
         .columns(i.branchId.as("myBranch"), i.star()).from(i) //
         .orderBy(i.branchId.plus(sql.literal(100)), i.unpaidBalance.desc());
 
