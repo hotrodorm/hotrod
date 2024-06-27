@@ -299,25 +299,24 @@ public class OtherDAO implements Serializable, ApplicationContextAware {
 
     OtherTable() {
       super(null, null, Name.of("OTHER", false), "Table", null);
-      initialize();
+      initializeColumns();
     }
 
     OtherTable(final String alias) {
       super(null, null, Name.of("OTHER", false), "Table", alias);
-      initialize();
+      initializeColumns();
     }
 
     // Initialization
 
-    private void initialize() {
-      super.columns = new ArrayList<>();
-      super.columns.add(this.id);
-      super.columns.add(this.boo1);
-      super.columns.add(this.boo2);
-      super.columns.add(this.boo3);
-      super.columns.add(this.oth1);
-      super.columns.add(this.idn1);
-      super.columns.add(this.geo1);
+    private void initializeColumns() {
+      super.add(this.id);
+      super.add(this.boo1);
+      super.add(this.boo2);
+      super.add(this.boo3);
+      super.add(this.oth1);
+      super.add(this.idn1);
+      super.add(this.geo1);
     }
 
   }

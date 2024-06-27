@@ -296,26 +296,25 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
     InvoiceTable() {
       super(null, null, Name.of("INVOICE", false), "Table", null);
-      initialize();
+      initializeColumns();
     }
 
     InvoiceTable(final String alias) {
       super(null, null, Name.of("INVOICE", false), "Table", alias);
-      initialize();
+      initializeColumns();
     }
 
     // Initialization
 
-    private void initialize() {
-      super.columns = new ArrayList<>();
-      super.columns.add(this.id);
-      super.columns.add(this.accountId);
-      super.columns.add(this.amount);
-      super.columns.add(this.branchId);
-      super.columns.add(this.orderDate);
-      super.columns.add(this.type);
-      super.columns.add(this.unpaidBalance);
-      super.columns.add(this.status);
+    private void initializeColumns() {
+      super.add(this.id);
+      super.add(this.accountId);
+      super.add(this.amount);
+      super.add(this.branchId);
+      super.add(this.orderDate);
+      super.add(this.type);
+      super.add(this.unpaidBalance);
+      super.add(this.status);
     }
 
   }

@@ -389,40 +389,39 @@ public class NumbersDAO implements Serializable, ApplicationContextAware {
 
     NumbersTable() {
       super(null, null, Name.of("NUMBERS", false), "Table", null);
-      initialize();
+      initializeColumns();
     }
 
     NumbersTable(final String alias) {
       super(null, null, Name.of("NUMBERS", false), "Table", alias);
-      initialize();
+      initializeColumns();
     }
 
     // Initialization
 
-    private void initialize() {
-      super.columns = new ArrayList<>();
-      super.columns.add(this.id);
-      super.columns.add(this.int1);
-      super.columns.add(this.int2);
-      super.columns.add(this.int3);
-      super.columns.add(this.int4);
-      super.columns.add(this.int5);
-      super.columns.add(this.int10);
-      super.columns.add(this.int20);
-      super.columns.add(this.int21);
-      super.columns.add(this.int30);
-      super.columns.add(this.int31);
-      super.columns.add(this.dec1);
-      super.columns.add(this.dec2);
-      super.columns.add(this.dec3);
-      super.columns.add(this.dec4);
-      super.columns.add(this.dec5);
-      super.columns.add(this.dou1);
-      super.columns.add(this.dou2);
-      super.columns.add(this.dou3);
-      super.columns.add(this.dou4);
-      super.columns.add(this.rea1);
-      super.columns.add(this.rea2);
+    private void initializeColumns() {
+      super.add(this.id);
+      super.add(this.int1);
+      super.add(this.int2);
+      super.add(this.int3);
+      super.add(this.int4);
+      super.add(this.int5);
+      super.add(this.int10);
+      super.add(this.int20);
+      super.add(this.int21);
+      super.add(this.int30);
+      super.add(this.int31);
+      super.add(this.dec1);
+      super.add(this.dec2);
+      super.add(this.dec3);
+      super.add(this.dec4);
+      super.add(this.dec5);
+      super.add(this.dou1);
+      super.add(this.dou2);
+      super.add(this.dou3);
+      super.add(this.dou4);
+      super.add(this.rea1);
+      super.add(this.rea2);
     }
 
   }

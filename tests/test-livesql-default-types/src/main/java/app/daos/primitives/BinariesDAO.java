@@ -323,29 +323,28 @@ public class BinariesDAO implements Serializable, ApplicationContextAware {
 
     BinariesTable() {
       super(null, null, Name.of("BINARIES", false), "Table", null);
-      initialize();
+      initializeColumns();
     }
 
     BinariesTable(final String alias) {
       super(null, null, Name.of("BINARIES", false), "Table", alias);
-      initialize();
+      initializeColumns();
     }
 
     // Initialization
 
-    private void initialize() {
-      super.columns = new ArrayList<>();
-      super.columns.add(this.id);
-      super.columns.add(this.bin1);
-      super.columns.add(this.bin2);
-      super.columns.add(this.bin3);
-      super.columns.add(this.bin4);
-      super.columns.add(this.bin5);
-      super.columns.add(this.blo1);
-      super.columns.add(this.blo2);
-      super.columns.add(this.blo3);
-      super.columns.add(this.blo4);
-      super.columns.add(this.blo5);
+    private void initializeColumns() {
+      super.add(this.id);
+      super.add(this.bin1);
+      super.add(this.bin2);
+      super.add(this.bin3);
+      super.add(this.bin4);
+      super.add(this.bin5);
+      super.add(this.blo1);
+      super.add(this.blo2);
+      super.add(this.blo3);
+      super.add(this.blo4);
+      super.add(this.blo5);
     }
 
   }

@@ -254,21 +254,20 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
 
     PaymentTable() {
       super(null, null, Name.of("PAYMENT", false), "Table", null);
-      initialize();
+      initializeColumns();
     }
 
     PaymentTable(final String alias) {
       super(null, null, Name.of("PAYMENT", false), "Table", alias);
-      initialize();
+      initializeColumns();
     }
 
     // Initialization
 
-    private void initialize() {
-      super.columns = new ArrayList<>();
-      super.columns.add(this.paymentDate);
-      super.columns.add(this.invoiceId);
-      super.columns.add(this.amount);
+    private void initializeColumns() {
+      super.add(this.paymentDate);
+      super.add(this.invoiceId);
+      super.add(this.amount);
     }
 
   }

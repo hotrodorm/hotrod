@@ -461,36 +461,35 @@ public class CharsDAO implements Serializable, ApplicationContextAware {
 
     CharsTable() {
       super(null, null, Name.of("CHARS", false), "Table", null);
-      initialize();
+      initializeColumns();
     }
 
     CharsTable(final String alias) {
       super(null, null, Name.of("CHARS", false), "Table", alias);
-      initialize();
+      initializeColumns();
     }
 
     // Initialization
 
-    private void initialize() {
-      super.columns = new ArrayList<>();
-      super.columns.add(this.id);
-      super.columns.add(this.vc1);
-      super.columns.add(this.vc2);
-      super.columns.add(this.vc3);
-      super.columns.add(this.vc4);
-      super.columns.add(this.vc5);
-      super.columns.add(this.vc6);
-      super.columns.add(this.vc7);
-      super.columns.add(this.cha1);
-      super.columns.add(this.cha2);
-      super.columns.add(this.cha3);
-      super.columns.add(this.clo1);
-      super.columns.add(this.clo2);
-      super.columns.add(this.clo3);
-      super.columns.add(this.clo4);
-      super.columns.add(this.clo5);
-      super.columns.add(this.clo6);
-      super.columns.add(this.clo7);
+    private void initializeColumns() {
+      super.add(this.id);
+      super.add(this.vc1);
+      super.add(this.vc2);
+      super.add(this.vc3);
+      super.add(this.vc4);
+      super.add(this.vc5);
+      super.add(this.vc6);
+      super.add(this.vc7);
+      super.add(this.cha1);
+      super.add(this.cha2);
+      super.add(this.cha3);
+      super.add(this.clo1);
+      super.add(this.clo2);
+      super.add(this.clo3);
+      super.add(this.clo4);
+      super.add(this.clo5);
+      super.add(this.clo6);
+      super.add(this.clo7);
     }
 
   }

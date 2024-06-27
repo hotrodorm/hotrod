@@ -215,7 +215,7 @@ public class App {
 
 //    Subquery y = sql.subquery("y", sql.select(b.id, b.region.as("rg"), b.isVip).from(b));
 
-    Subquery y = sql.subquery("y", sql.select(b.star(), b.id).from(b));
+    Subquery y = sql.subquery("y", sql.select().from(b));
 
     Subquery x = sql.subquery("x", sql.select(y.num("id"), y.str("rg").as("rgx"), y.bool("isVip").as("iv")).from(y));
 
@@ -228,7 +228,9 @@ public class App {
 //    ;
 
     Select<Row> q = this.sql.select().from(y);
-//    Select<Row> q = this.sql.select(y.num("id"), y.str("badName")).from(y);
+//    Select<Row> q = this.sql.select(y.num("id")).from(y);
+
+    //    Select<Row> q = this.sql.select(y.num("id"), y.str("badName")).from(y);
 //    Select<Row> q = this.sql.select(b.id, b.region.as("reg"), b.isVip.as("vip")).from(b);
 //    Select<Row> q = this.sql.select().from(b);
 

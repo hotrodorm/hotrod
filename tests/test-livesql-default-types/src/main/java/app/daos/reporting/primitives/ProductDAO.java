@@ -260,21 +260,20 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
     ProductTable() {
       super(null, null, Name.of("PRODUCT", false), "Table", null);
-      initialize();
+      initializeColumns();
     }
 
     ProductTable(final String alias) {
       super(null, null, Name.of("PRODUCT", false), "Table", alias);
-      initialize();
+      initializeColumns();
     }
 
     // Initialization
 
-    private void initialize() {
-      super.columns = new ArrayList<>();
-      super.columns.add(this.id);
-      super.columns.add(this.type);
-      super.columns.add(this.shipping);
+    private void initializeColumns() {
+      super.add(this.id);
+      super.add(this.type);
+      super.add(this.shipping);
     }
 
   }

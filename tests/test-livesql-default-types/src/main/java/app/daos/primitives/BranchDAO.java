@@ -336,21 +336,20 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
     BranchTable() {
       super(null, null, Name.of("BRANCH", false), "Table", null);
-      initialize();
+      initializeColumns();
     }
 
     BranchTable(final String alias) {
       super(null, null, Name.of("BRANCH", false), "Table", alias);
-      initialize();
+      initializeColumns();
     }
 
     // Initialization
 
-    private void initialize() {
-      super.columns = new ArrayList<>();
-      super.columns.add(this.id);
-      super.columns.add(this.region);
-      super.columns.add(this.isVip);
+    private void initializeColumns() {
+      super.add(this.id);
+      super.add(this.region);
+      super.add(this.isVip);
     }
 
   }

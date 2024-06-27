@@ -387,21 +387,20 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
     AccountTable() {
       super(null, null, Name.of("ACCOUNT", false), "Table", null);
-      initialize();
+      initializeColumns();
     }
 
     AccountTable(final String alias) {
       super(null, null, Name.of("ACCOUNT", false), "Table", alias);
-      initialize();
+      initializeColumns();
     }
 
     // Initialization
 
-    private void initialize() {
-      super.columns = new ArrayList<>();
-      super.columns.add(this.id);
-      super.columns.add(this.parentId);
-      super.columns.add(this.branchId);
+    private void initializeColumns() {
+      super.add(this.id);
+      super.add(this.parentId);
+      super.add(this.branchId);
     }
 
   }

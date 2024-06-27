@@ -293,24 +293,23 @@ public class DatesDAO implements Serializable, ApplicationContextAware {
 
     DatesTable() {
       super(null, null, Name.of("DATES", false), "Table", null);
-      initialize();
+      initializeColumns();
     }
 
     DatesTable(final String alias) {
       super(null, null, Name.of("DATES", false), "Table", alias);
-      initialize();
+      initializeColumns();
     }
 
     // Initialization
 
-    private void initialize() {
-      super.columns = new ArrayList<>();
-      super.columns.add(this.id);
-      super.columns.add(this.tim1);
-      super.columns.add(this.dat1);
-      super.columns.add(this.ts1);
-      super.columns.add(this.ts2);
-      super.columns.add(this.ts3);
+    private void initializeColumns() {
+      super.add(this.id);
+      super.add(this.tim1);
+      super.add(this.dat1);
+      super.add(this.ts1);
+      super.add(this.ts2);
+      super.add(this.ts3);
     }
 
   }
