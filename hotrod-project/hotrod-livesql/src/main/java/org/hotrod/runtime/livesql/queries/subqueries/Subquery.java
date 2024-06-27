@@ -2,6 +2,7 @@ package org.hotrod.runtime.livesql.queries.subqueries;
 
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
@@ -107,11 +108,13 @@ public class Subquery extends TableExpression {
   }
 
   @Override
-  protected List<Expression> assembleColumns() {
+  protected List<EmergingColumn> assembleColumns() {
     log.info(">>> Subquery '" + this.name + "': assembleColumns() -- ");
-    this.expandedColumns = MHelper.assembleColumns(this.select);
+    List<EmergingColumn> innerColumns = MHelper.assembleColumns(this.select);
+    List<EmergingColumn> ecs = innerColumns.stream().map(ic -> ic.asEmergingColumnOf(this))
+        .collect(Collectors.toList());
     log.info(">>> Subquery '" + this.name + "': done");
-    return this.expandedColumns;
+    return ecs;
   }
 
   List<Expression> getExpandedColumns() {
@@ -128,13 +131,7 @@ public class Subquery extends TableExpression {
     w.exitLevel();
     w.write("\n");
     w.write(") ");
-
-    if (this.name.isQuoted()) {
-      w.write(w.getSQLDialect().quoteIdentifier(this.name.getName()));
-    } else {
-      w.write(w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(this.name.getName())));
-    }
-
+    this.name.renderTo(w);
     if (this.columns != null && this.columns.length > 0) {
       w.write(w.getSQLDialect().getTableExpressionRenderer().renderNamedColumns(this.columns));
     }

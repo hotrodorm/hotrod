@@ -22,7 +22,7 @@ public class DualTable extends Table {
 
   private void initialize() {
     this.dummy = new StringColumn(this, "DUMMY", "dummy", "VARCHAR2", 1, 0, TypeHandler.STRING_TYPE_HANDLER);
-    super.columns.add(this.dummy);
+    super.add(this.dummy);
   }
 
 }

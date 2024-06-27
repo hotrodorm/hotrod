@@ -37,6 +37,7 @@ public class NumberColumn extends NumberExpression implements Column {
 
   @Override
   protected void renderTo(final QueryWriter w) {
+    w.write("/* col: " + this.getObjectName() + "." + this.name + " -- alias: " + super.getAlias() + " */ ");
     if (this.objectInstance.getAlias() != null) {
       w.write(
           w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(this.objectInstance.getAlias())));

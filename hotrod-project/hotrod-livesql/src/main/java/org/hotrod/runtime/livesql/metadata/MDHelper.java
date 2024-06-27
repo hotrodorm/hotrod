@@ -1,9 +1,5 @@
 package org.hotrod.runtime.livesql.metadata;
 
-import java.util.List;
-
-import org.hotrod.runtime.livesql.expressions.Expression;
-
 public class MDHelper {
 
   public static void removeAlias(final TableOrView tov) {
@@ -12,6 +8,10 @@ public class MDHelper {
 
   public static String renderUnescapedName(final TableOrView tov) {
     return tov.renderUnescapedName();
+  }
+
+  public static Name getAliasName(final TableOrView tov) {
+    return tov.getAliasName();
   }
 
 }

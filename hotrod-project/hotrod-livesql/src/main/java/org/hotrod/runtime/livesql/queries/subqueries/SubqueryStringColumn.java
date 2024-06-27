@@ -8,6 +8,7 @@ import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public class SubqueryStringColumn extends StringExpression implements SubqueryColumn {
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(SubqueryStringColumn.class.getName());
 
   // Properties
@@ -23,20 +24,6 @@ public class SubqueryStringColumn extends StringExpression implements SubqueryCo
     this.referencedColumnName = referencedColumnName;
   }
 
-//  @Override
-//  protected void computeQueryColumns() {
-//    log.info("subquery=" + subquery);
-//    log.info("subquery.getSelect()=" + subquery.getSelect());
-//    LinkedHashMap<String, QueryColumn> queryColumns = MHelper.getQueryColumns(subquery.getSelect());
-//    QueryColumn col = queryColumns.get(this.referencedColumnName);
-//    if (col == null) {
-//      throw new LiveSQLException("Referenced column '" + this.referencedColumnName + "' not found in subquery '"
-//          + this.subquery.getName() + "'");
-//    }
-//    log.info("--> col.getTypeHandler()=" + col.getTypeHandler());
-//    super.setTypeHandler(col.getTypeHandler());
-//  }
-
   @Override
   public String getReferencedColumnName() {
     return this.referencedColumnName;
@@ -46,12 +33,7 @@ public class SubqueryStringColumn extends StringExpression implements SubqueryCo
 
   @Override
   protected void renderTo(final QueryWriter w) {
-    if (this.subquery.getName().isQuoted()) {
-      w.write(w.getSQLDialect().quoteIdentifier(this.subquery.getName().getName()));
-    } else {
-      w.write(w.getSQLDialect()
-          .canonicalToNatural(w.getSQLDialect().naturalToCanonical(this.subquery.getName().getName())));
-    }
+    this.subquery.getName().renderTo(w);
     w.write(".");
     w.write(w.getSQLDialect().canonicalToNatural(this.referencedColumnName));
   }

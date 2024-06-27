@@ -32,6 +32,16 @@ import org.springframework.util.ReflectionUtils;
 
 public class SubqueryUtil {
 
+  public static NumberExpression newSubqueryColumn(final Subquery subquery, final NumberExpression expr) {
+    return new SubqueryNumberColumn(subquery, Helper.getAlias(expr));
+  }
+
+  public static StringExpression newSubqueryColumn(final Subquery subquery, final StringExpression expr) {
+    return new SubqueryStringColumn(subquery, Helper.getAlias(expr));
+  }
+
+  // TODO: remove if not used
+  
   public static List<ResultSetColumn> listColumns(final AllSubqueryColumns asc) {
     Method m = ReflectionUtils.findMethod(AllSubqueryColumns.class, "listColumns");
     m.setAccessible(true);

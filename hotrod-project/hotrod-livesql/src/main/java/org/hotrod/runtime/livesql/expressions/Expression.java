@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
+import org.hotrod.runtime.livesql.metadata.MDHelper;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
@@ -11,7 +12,9 @@ import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableRefer
 import org.hotrod.runtime.livesql.queries.select.SHelper;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
-import org.hotrodorm.hotrod.utils.SUtil;
+import org.hotrod.runtime.livesql.queries.subqueries.EmergingColumn;
+import org.hotrod.runtime.livesql.queries.subqueries.QHelper;
+import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 
 public abstract class Expression extends ResultSetColumn {
 
@@ -163,5 +166,13 @@ public abstract class Expression extends ResultSetColumn {
   }
 
   protected abstract void renderTo(final QueryWriter w);
+
+  public EmergingColumn asEmergingColumnOf(final Subquery s) {
+    return new EmergingColumn(QHelper.getName(s), this.alias, this.typeHandler);
+  }
+
+  public EmergingColumn asEmergingColumnOf(final TableOrView tov) {
+    return new EmergingColumn(MDHelper.getAliasName(tov), this.alias, this.typeHandler);
+  }
 
 }

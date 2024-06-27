@@ -19,17 +19,6 @@ public class SubqueryDateTimeColumn extends DateTimeExpression implements Subque
     this.referencedColumnName = referencedColumnName;
   }
 
-//  @Override
-//  protected void computeQueryColumns() {
-//    LinkedHashMap<String, QueryColumn> queryColumns = MHelper.getQueryColumns(subquery.getSelect());
-//    QueryColumn col = queryColumns.get(this.referencedColumnName);
-//    if (col == null) {
-//      throw new LiveSQLException("Referenced column '" + this.referencedColumnName + "' not found in subquery '"
-//          + this.subquery.getName() + "'");
-//    }
-//    super.setTypeHandler(col.getTypeHandler());
-//  }
-
   @Override
   public String getReferencedColumnName() {
     return this.referencedColumnName;
@@ -39,12 +28,7 @@ public class SubqueryDateTimeColumn extends DateTimeExpression implements Subque
 
   @Override
   protected void renderTo(final QueryWriter w) {
-    if (this.subquery.getName().isQuoted()) {
-      w.write(w.getSQLDialect().quoteIdentifier(this.subquery.getName().getName()));
-    } else {
-      w.write(w.getSQLDialect()
-          .canonicalToNatural(w.getSQLDialect().naturalToCanonical(this.subquery.getName().getName())));
-    }
+    this.subquery.getName().renderTo(w);
     w.write(".");
     w.write(w.getSQLDialect().canonicalToNatural(this.referencedColumnName));
   }

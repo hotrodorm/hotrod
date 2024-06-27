@@ -3,7 +3,7 @@ package org.hotrod.runtime.livesql.queries.select;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLClauseException;
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.queries.subqueries.EmergingColumn;
 
 public abstract class Join {
 
@@ -20,7 +20,7 @@ public abstract class Join {
     return this.tableExpression;
   }
 
-  protected List<Expression> assembleColumns() {
+  protected List<EmergingColumn> assembleColumns() {
     return this.tableExpression.assembleColumns();
   }
 

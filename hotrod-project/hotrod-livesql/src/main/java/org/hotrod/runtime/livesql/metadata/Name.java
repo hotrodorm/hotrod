@@ -1,5 +1,7 @@
 package org.hotrod.runtime.livesql.metadata;
 
+import org.hotrod.runtime.livesql.queries.QueryWriter;
+
 public class Name {
 
   private String name;
@@ -30,14 +32,22 @@ public class Name {
     }
   }
 
+  public void renderTo(final QueryWriter w) {
+    if (this.quoted) {
+      w.write(w.getSQLDialect().quoteIdentifier(this.name));
+    } else {
+      w.write(w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(this.name)));
+    }
+  }
+
   // Getters
 
   public String getName() {
-    return name;
+    return this.name;
   }
 
   public boolean isQuoted() {
-    return quoted;
+    return this.quoted;
   }
 
   public String toString() {

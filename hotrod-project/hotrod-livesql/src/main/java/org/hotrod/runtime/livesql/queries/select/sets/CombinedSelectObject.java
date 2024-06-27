@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
-import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.ordering.CombinedOrderingTerm;
 import org.hotrod.runtime.livesql.ordering.OHelper;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
@@ -17,6 +16,7 @@ import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
+import org.hotrod.runtime.livesql.queries.subqueries.EmergingColumn;
 import org.hotrod.runtime.livesql.util.IdUtil;
 
 /**
@@ -293,50 +293,13 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
   }
 
   @Override
-  protected List<Expression> assembleColumns() {
-    List<Expression> cols = this.first.assembleColumns();
+  protected List<EmergingColumn> assembleColumns() {
+    List<EmergingColumn> cols = this.first.assembleColumns();
     for (SetOperatorTerm<R> o : this.combined) {
       o.getMultiset().assembleColumns();
     }
     return cols;
   }
-
-//  private List<ResultSetColumn> columns = null;
-
-//  public List<ResultSetColumn> listColumns() {
-//    log.info(
-//        "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ listColumns()");
-//    log.info("$$$ " + TUtil.compactStackTrace());
-//    if (this.columns == null) {
-//      this.columns = this.first.listColumns();
-//    }
-//    return this.columns;
-//  }
-
-  // Rendering
-
-//  @Override
-//  protected List<Expression> assembleColumns() {
-//    List<Expression> cols = this.first.assembleColumns();
-//    for (SetOperatorTerm<?> t : this.combined) {
-//      t.getMultiset().assembleColumns();
-//    }
-//    return cols;
-//  }
-//
-//  @Deprecated
-//  @Override
-//  protected void computeQueryColumns() {
-//    this.first.computeQueryColumns();
-//    for (SetOperatorTerm<?> t : this.combined) {
-//      t.getMultiset().computeQueryColumns();
-//    }
-//  }
-
-//  @Override
-//  protected LinkedHashMap<String, QueryColumn> getQueryColumns() {
-//    return this.first.getQueryColumns();
-//  }
 
   // MultiSet execution
 

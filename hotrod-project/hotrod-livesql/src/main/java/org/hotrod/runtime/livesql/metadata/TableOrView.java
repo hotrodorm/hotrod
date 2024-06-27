@@ -9,6 +9,7 @@ import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.TableExpression;
+import org.hotrod.runtime.livesql.queries.subqueries.EmergingColumn;
 
 public abstract class TableOrView extends TableExpression {
 
@@ -19,7 +20,7 @@ public abstract class TableOrView extends TableExpression {
 
   private String alias;
   private String designatedAlias;
-  protected List<Expression> columns;
+  protected List<EmergingColumn> columns;
 
   TableOrView(final Name catalog, final Name schema, final Name name, final String type, final String alias) {
     this.catalog = catalog;
@@ -30,6 +31,14 @@ public abstract class TableOrView extends TableExpression {
     this.alias = alias;
     this.designatedAlias = null;
     this.columns = new ArrayList<>();
+  }
+
+  protected Name getAliasName() {
+    return Name.of(this.getAlias(), false);
+  }
+
+  protected void add(final Expression e) {
+    this.columns.add(e.asEmergingColumnOf(this));
   }
 
   public final String getAlias() {
@@ -44,7 +53,7 @@ public abstract class TableOrView extends TableExpression {
   // Validation
 
   @Override
-  protected List<Expression> assembleColumns() {
+  protected List<EmergingColumn> assembleColumns() {
     return this.columns;
   }
 
@@ -59,7 +68,7 @@ public abstract class TableOrView extends TableExpression {
   // Rendering
 
   @Override
-  protected void renderTo(QueryWriter w) {
+  protected void renderTo(final QueryWriter w) {
     LiveSQLDialect dialect = w.getSQLDialect();
     String alias = this.getAlias() == null ? null
         : dialect.canonicalToNatural(dialect.naturalToCanonical(this.getAlias()));

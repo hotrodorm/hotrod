@@ -1925,21 +1925,20 @@ public class ObjectDAO extends GeneratableObject {
     println();
     println("    " + this.metadataClassName + "() {");
     println("      super(" + c + ", " + s + ", " + n + ", \"" + type + "\", null);");
-    println("      initialize();");
+    println("      initializeColumns();");
     println("    }");
     println();
     println("    " + this.metadataClassName + "(final String alias) {");
     println("      super(" + c + ", " + s + ", " + n + ", \"" + type + "\", alias);");
-    println("      initialize();");
+    println("      initializeColumns();");
     println("    }");
     println();
 
     println("    // Initialization");
     println();
-    println("    private void initialize() {");
-    println("      super.columns = new ArrayList<>();");
+    println("    private void initializeColumns() {");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
-      println("      super.columns.add(this." + cm.getId().getJavaMemberName() + ");");
+      println("      super.add(this." + cm.getId().getJavaMemberName() + ");");
     }
 
     println("    }");
