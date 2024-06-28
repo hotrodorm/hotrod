@@ -10,7 +10,7 @@ public class EmergingColumn {
   private String alias;
   private TypeHandler typeHandler;
 
-  public EmergingColumn(Name tableExpressionAlias, String alias, TypeHandler typeHandler) {
+  public EmergingColumn(final Name tableExpressionAlias, final String alias, final TypeHandler typeHandler) {
     this.tableExpressionAlias = tableExpressionAlias;
     this.alias = alias;
     this.typeHandler = typeHandler;
@@ -18,6 +18,10 @@ public class EmergingColumn {
 
   public Name getTableExpressionAlias() {
     return this.tableExpressionAlias;
+  }
+
+  public void setTableExpressionAlias(Name tableExpressionAlias) {
+    this.tableExpressionAlias = tableExpressionAlias;
   }
 
   public String getAlias() {
@@ -29,7 +33,7 @@ public class EmergingColumn {
   }
 
   public EmergingColumn asEmergingColumnOf(final Subquery subquery) {
-    return null;
+    return new EmergingColumn(subquery.getName(), this.alias, this.typeHandler);
   }
 
   // Rendering

@@ -5,13 +5,11 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.subqueries.EmergingColumn;
-import org.hotrod.runtime.livesql.util.SubqueryUtil;
 import org.hotrodorm.hotrod.utils.Separator;
 
 public class SelectObject<R> extends AbstractSelectObject<R> {
@@ -61,6 +59,7 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
 
     log.info("vvv assembling columns for: " + this.baseTableExpression.getName());
     List<EmergingColumn> fc = this.baseTableExpression.assembleColumns();
+    logEmergingColumns(this.baseTableExpression, fc);
     if (!listedColumns) {
       this.expandedColumns.addAll(fc);
     }
@@ -69,6 +68,7 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
     for (Join j : this.joins) {
       log.info("vvv assembling columns for: " + j.getTableExpression().getName());
       List<EmergingColumn> jc = j.assembleColumns();
+      logEmergingColumns(j.getTableExpression(), fc);
       if (!listedColumns) {
         this.expandedColumns.addAll(jc);
       }
@@ -91,16 +91,18 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
 
     // Log
 
-    log.info(" ");
-    log.info(" Expanded Columns");
-    for (EmergingColumn ec : this.expandedColumns) {
-      log.info(" * " + ec);
-    }
-
     // 4. Return columns
 
     return this.expandedColumns;
 
+  }
+
+  private void logEmergingColumns(final TableExpression te, List<EmergingColumn> ec) {
+    log.info(" ");
+    log.info("Emerging Columns of '" + te.getName().getName() + "':");
+    for (EmergingColumn c : ec) {
+      log.info(" * " + c);
+    }
   }
 
   @Override

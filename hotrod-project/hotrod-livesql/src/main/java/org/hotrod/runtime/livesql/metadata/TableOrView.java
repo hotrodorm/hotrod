@@ -54,6 +54,7 @@ public abstract class TableOrView extends TableExpression {
 
   @Override
   protected List<EmergingColumn> assembleColumns() {
+    this.columns.forEach(c -> c.setTableExpressionAlias(getAliasName()));
     return this.columns;
   }
 
