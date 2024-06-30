@@ -2,16 +2,20 @@ package org.hotrod.runtime.livesql.metadata;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
+import org.hotrod.runtime.livesql.queries.select.SelectObject;
 import org.hotrod.runtime.livesql.queries.select.TableExpression;
 import org.hotrod.runtime.livesql.queries.subqueries.EmergingColumn;
 
 public abstract class TableOrView extends TableExpression {
+
+  private static final Logger log = Logger.getLogger(TableOrView.class.getName());
 
   private Name catalog;
   private Name schema;
@@ -54,7 +58,8 @@ public abstract class TableOrView extends TableExpression {
 
   @Override
   protected List<EmergingColumn> assembleColumns() {
-    this.columns.forEach(c -> c.setTableExpressionAlias(getAliasName()));
+    this.columns.forEach(c -> c.setNamespace(getAliasName()));
+    this.columns.forEach(c -> log.info("// " + c));
     return this.columns;
   }
 

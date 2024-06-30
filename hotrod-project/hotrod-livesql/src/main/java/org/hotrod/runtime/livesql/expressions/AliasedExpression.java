@@ -1,5 +1,6 @@
 package org.hotrod.runtime.livesql.expressions;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.runtime.livesql.queries.QueryWriter;
@@ -27,7 +28,11 @@ public class AliasedExpression extends Expression {
   }
 
   protected Expression getExpression() {
-    return referencedExpression;
+    return referencedExpression.getExpression();
+  }
+
+  protected List<Expression> unwrap() {
+    return referencedExpression.unwrap();
   }
 
 }

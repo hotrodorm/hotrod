@@ -82,7 +82,7 @@ public class RecursiveCTE extends CTE {
       } else { // implicit column names from the anchor term
         w.write(" (");
         boolean first = true;
-        List<EmergingColumn> cols = MHelper.assembleColumns(SHelper.getCombinedSelect(this.anchorTerm));
+        List<EmergingColumn> cols = MHelper.assembleColumnsOf(SHelper.getCombinedSelect(this.anchorTerm), null);
         for (EmergingColumn rc : cols) {
           if (first) {
             first = false;

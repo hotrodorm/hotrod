@@ -29,6 +29,10 @@ public class SubqueryNumberColumn extends NumberExpression implements SubqueryCo
     return this.referencedColumnName;
   }
 
+//  public EmergingColumn asEmergingColumn() {    
+//    return new EmergingColumn(subquery.getName(), this.alias, this.alias, this.typeHandler);
+//  }
+
   // Rendering
 
   @Override
@@ -36,6 +40,10 @@ public class SubqueryNumberColumn extends NumberExpression implements SubqueryCo
     this.subquery.getName().renderTo(w);
     w.write(".");
     w.write(w.getSQLDialect().canonicalToNatural(this.referencedColumnName));
+  }
+
+  public String toString() {
+    return this.subquery.getName().toString() + ":" + this.referencedColumnName;
   }
 
 }

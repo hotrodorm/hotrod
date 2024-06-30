@@ -3,13 +3,16 @@ package org.hotrod.runtime.livesql.queries.select;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.subqueries.EmergingColumn;
+import org.hotrod.runtime.livesql.queries.subqueries.SubqueryColumn;
 import org.hotrodorm.hotrod.utils.Separator;
 
 public class SelectObject<R> extends AbstractSelectObject<R> {
@@ -49,44 +52,45 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
   // Rendering
 
   @Override
-  protected List<EmergingColumn> assembleColumns() {
+  protected List<EmergingColumn> assembleColumnsOf(final TableExpression te) {
 
-    this.expandedColumns = new ArrayList<>();
+    List<EmergingColumn> allColumns = new ArrayList<>();
 
     boolean listedColumns = this.resultSetColumns != null && !this.resultSetColumns.isEmpty();
 
-    // 1. Compute columns of subqueries in the FROM and JOIN clauses
+    // 1. Compute columns of tables and subqueries in the FROM and JOIN clauses
 
     log.info("vvv assembling columns for: " + this.baseTableExpression.getName());
     List<EmergingColumn> fc = this.baseTableExpression.assembleColumns();
     logEmergingColumns(this.baseTableExpression, fc);
-    if (!listedColumns) {
-      this.expandedColumns.addAll(fc);
-    }
+    allColumns.addAll(fc);
     log.info("^^^ assembled columns for: " + this.baseTableExpression.getName());
 
     for (Join j : this.joins) {
       log.info("vvv assembling columns for: " + j.getTableExpression().getName());
       List<EmergingColumn> jc = j.assembleColumns();
       logEmergingColumns(j.getTableExpression(), fc);
-      if (!listedColumns) {
-        this.expandedColumns.addAll(jc);
-      }
+      allColumns.addAll(jc);
       log.info("^^^ assembled columns for: " + j.getTableExpression().getName());
     }
 
     if (listedColumns) {
 
-//      for (ResultSetColumn rsc : this.resultSetColumns) {
-//        Expression expr = Helper.getExpression(rsc);
+      this.expandedColumns = new ArrayList<>();
+
+      for (ResultSetColumn rsc : this.resultSetColumns) {
+        log.info("---------- rsc=" + rsc);
+        Expression expr = Helper.getExpression(rsc);
 //        if (expr != null) {
-//          this.expandedColumns.add(expr);
-//          
+//        expr.asEmergingColumnFrom(allColumns);
+//        this.expandedColumns.add(expr);
 //        } else {
 //          this.expandedColumns.addAll(Helper.unwrap(rsc));
 //        }
-//      }
+      }
 
+    } else {
+      this.expandedColumns = allColumns.stream().map(c -> c.asEmergingColumnOf(te)).collect(Collectors.toList());
     }
 
     // Log
@@ -95,6 +99,11 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
 
     return this.expandedColumns;
 
+  }
+
+  private void x(Expression expr) {
+    SubqueryColumn x = (SubqueryColumn) expr;
+//    x
   }
 
   private void logEmergingColumns(final TableExpression te, List<EmergingColumn> ec) {

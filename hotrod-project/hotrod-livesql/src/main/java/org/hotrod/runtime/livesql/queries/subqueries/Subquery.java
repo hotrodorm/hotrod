@@ -110,12 +110,12 @@ public class Subquery extends TableExpression {
   @Override
   protected List<EmergingColumn> assembleColumns() {
     log.info(">>> Subquery '" + this.name + "': assembleColumns() -- ");
-    List<EmergingColumn> innerColumns = MHelper.assembleColumns(this.select);
-    log.info("innerColumns: " + innerColumns.size());
+    List<EmergingColumn> innerColumns = MHelper.assembleColumnsOf(this.select, this);
+    log.info("$$$$$$ innerColumns: " + innerColumns.size());
     logEmergingColumns(innerColumns);
     List<EmergingColumn> ecs = innerColumns.stream().map(ic -> ic.asEmergingColumnOf(this))
         .collect(Collectors.toList());
-    log.info("ecs: " + ecs.size());
+    log.info("$$$$$$ ecs: " + ecs.size());
     logEmergingColumns(ecs);
     log.info(">>> Subquery '" + this.name + "': done");
     return ecs;
@@ -123,9 +123,9 @@ public class Subquery extends TableExpression {
 
   private void logEmergingColumns(List<EmergingColumn> ec) {
     log.info(" ");
-    log.info("Emerging Columns:");
+    log.info("$$$$$$ Emerging Columns:");
     for (EmergingColumn c : ec) {
-      log.info(" * " + c);
+      log.info("$$$$$$ * " + c);
     }
   }
 

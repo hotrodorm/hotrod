@@ -16,6 +16,7 @@ import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
+import org.hotrod.runtime.livesql.queries.select.TableExpression;
 import org.hotrod.runtime.livesql.queries.subqueries.EmergingColumn;
 import org.hotrod.runtime.livesql.util.IdUtil;
 
@@ -293,10 +294,10 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
   }
 
   @Override
-  protected List<EmergingColumn> assembleColumns() {
-    List<EmergingColumn> cols = this.first.assembleColumns();
+  protected List<EmergingColumn> assembleColumnsOf(final TableExpression te) {
+    List<EmergingColumn> cols = this.first.assembleColumnsOf(te);
     for (SetOperatorTerm<R> o : this.combined) {
-      o.getMultiset().assembleColumns();
+      o.getMultiset().assembleColumnsOf(te);
     }
     return cols;
   }

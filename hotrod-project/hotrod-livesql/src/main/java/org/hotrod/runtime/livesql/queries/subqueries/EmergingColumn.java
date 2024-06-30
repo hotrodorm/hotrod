@@ -3,25 +3,29 @@ package org.hotrod.runtime.livesql.queries.subqueries;
 import org.hotrod.runtime.livesql.expressions.TypeHandler;
 import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
+import org.hotrod.runtime.livesql.queries.select.SHelper;
+import org.hotrod.runtime.livesql.queries.select.TableExpression;
 
 public class EmergingColumn {
 
-  private Name tableExpressionAlias;
+  private Name namespace;
+  private String name;
   private String alias;
   private TypeHandler typeHandler;
 
-  public EmergingColumn(final Name tableExpressionAlias, final String alias, final TypeHandler typeHandler) {
-    this.tableExpressionAlias = tableExpressionAlias;
+  public EmergingColumn(final Name namespace, final String name, final String alias, final TypeHandler typeHandler) {
+    this.namespace = namespace;
+    this.name = name;
     this.alias = alias;
     this.typeHandler = typeHandler;
   }
 
-  public Name getTableExpressionAlias() {
-    return this.tableExpressionAlias;
+  public Name getNamespace() {
+    return this.namespace;
   }
 
-  public void setTableExpressionAlias(Name tableExpressionAlias) {
-    this.tableExpressionAlias = tableExpressionAlias;
+  public void setNamespace(Name namespace) {
+    this.namespace = namespace;
   }
 
   public String getAlias() {
@@ -32,24 +36,32 @@ public class EmergingColumn {
     return typeHandler;
   }
 
-  public EmergingColumn asEmergingColumnOf(final Subquery subquery) {
-    return new EmergingColumn(subquery.getName(), this.alias, this.typeHandler);
+  public EmergingColumn asEmergingColumnOf(final TableExpression te) {
+    if (te == null) {
+      return this;
+    }
+    return new EmergingColumn(SHelper.getName(te), this.alias, this.alias, this.typeHandler);
   }
 
   // Rendering
 
-  public void renderTo(QueryWriter w) {
-    if (this.tableExpressionAlias != null) {
-      this.tableExpressionAlias.renderTo(w);
+  public void renderTo(final QueryWriter w) {
+    if (this.namespace != null) {
+      this.namespace.renderTo(w);
       w.write(".");
     }
-    w.write(w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(this.alias)));
+    w.write(w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(this.name)));
+    if (this.alias != null) {
+      w.write(" as ");
+      w.write(w.getSQLDialect().canonicalToNatural(this.alias));
+
+    }
   }
 
   // toString
 
   public String toString() {
-    return (this.tableExpressionAlias != null ? this.tableExpressionAlias.toString() + "." : "") + this.alias + " ("
+    return (this.namespace != null ? this.namespace.toString() + "." : "") + this.name + " as '" + this.alias + "' ("
         + this.typeHandler + ")";
   }
 

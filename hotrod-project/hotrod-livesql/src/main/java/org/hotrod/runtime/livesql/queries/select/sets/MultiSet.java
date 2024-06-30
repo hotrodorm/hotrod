@@ -20,6 +20,7 @@ import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
+import org.hotrod.runtime.livesql.queries.select.TableExpression;
 import org.hotrod.runtime.livesql.queries.subqueries.EmergingColumn;
 import org.hotrod.runtime.livesql.util.PreviewRenderer;
 
@@ -45,7 +46,7 @@ public abstract class MultiSet<R> {
 
   // Rendering
 
-  protected abstract List<EmergingColumn> assembleColumns();
+  protected abstract List<EmergingColumn> assembleColumnsOf(TableExpression te);
 
 //  @Deprecated
 //  protected abstract void computeQueryColumns();
@@ -81,7 +82,7 @@ public abstract class MultiSet<R> {
     // Render
 
     QueryWriter w = new QueryWriter(context);
-    List<EmergingColumn> columns = this.assembleColumns();
+    List<EmergingColumn> columns = this.assembleColumnsOf(null);
 //    this.computeQueryColumns();
     log.info("----------------------------------------------------------- computeQueryColumns() complete ---");
     renderTo(w, false);

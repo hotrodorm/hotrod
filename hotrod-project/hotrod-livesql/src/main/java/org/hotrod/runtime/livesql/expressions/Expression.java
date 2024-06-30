@@ -88,7 +88,7 @@ public abstract class Expression extends ResultSetColumn {
     return this;
   }
 
-  protected final List<Expression> unwrap() {
+  protected List<Expression> unwrap() {
     return null;
   }
 
@@ -168,11 +168,11 @@ public abstract class Expression extends ResultSetColumn {
   protected abstract void renderTo(final QueryWriter w);
 
   public EmergingColumn asEmergingColumnOf(final Subquery s) {
-    return new EmergingColumn(QHelper.getName(s), this.alias, this.typeHandler);
+    return new EmergingColumn(QHelper.getName(s), this.alias, null, this.typeHandler);
   }
 
   public EmergingColumn asEmergingColumnOf(final TableOrView tov) {
-    return new EmergingColumn(MDHelper.getAliasName(tov), this.alias, this.typeHandler);
+    return new EmergingColumn(MDHelper.getAliasName(tov), this.alias, this.alias, this.typeHandler);
   }
 
 }
