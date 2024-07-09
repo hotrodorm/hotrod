@@ -2,7 +2,6 @@ package org.hotrod.runtime.livesql.queries.subqueries;
 
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
@@ -108,23 +107,17 @@ public class Subquery extends TableExpression {
   }
 
   @Override
-  protected List<EmergingColumn> assembleColumns() {
+  protected List<Expression> assembleColumns() {
     log.info(">>> Subquery '" + this.name + "': assembleColumns() -- ");
-    List<EmergingColumn> innerColumns = MHelper.assembleColumnsOf(this.select, this);
-    log.info("$$$$$$ innerColumns: " + innerColumns.size());
-    logEmergingColumns(innerColumns);
-    List<EmergingColumn> ecs = innerColumns.stream().map(ic -> ic.asEmergingColumnOf(this))
-        .collect(Collectors.toList());
-    log.info("$$$$$$ ecs: " + ecs.size());
-    logEmergingColumns(ecs);
+    List<Expression> cols = MHelper.assembleColumnsOf(this.select, this);
+    logEmergingColumns(cols);
     log.info(">>> Subquery '" + this.name + "': done");
-    return ecs;
+    return cols;
   }
 
-  private void logEmergingColumns(List<EmergingColumn> ec) {
-    log.info(" ");
-    log.info("$$$$$$ Emerging Columns:");
-    for (EmergingColumn c : ec) {
+  private void logEmergingColumns(List<Expression> ec) {
+    log.info("$$$$$$ Columns (" + ec.size() + "):");
+    for (Expression c : ec) {
       log.info("$$$$$$ * " + c);
     }
   }

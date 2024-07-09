@@ -9,10 +9,6 @@ import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableRefer
 
 public class Helper {
 
-//  public static Expression getExpression(AliasedExpression ae) {
-//    return ae.getExpression();
-//  }
-
   public static TypeHandler getTypeHandler(final Expression expr) {
     return expr.getTypeHandler();
   }

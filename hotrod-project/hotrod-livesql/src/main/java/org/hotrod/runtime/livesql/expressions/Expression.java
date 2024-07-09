@@ -2,9 +2,9 @@ package org.hotrod.runtime.livesql.expressions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
-import org.hotrod.runtime.livesql.metadata.MDHelper;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
@@ -12,11 +12,10 @@ import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableRefer
 import org.hotrod.runtime.livesql.queries.select.SHelper;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
-import org.hotrod.runtime.livesql.queries.subqueries.EmergingColumn;
-import org.hotrod.runtime.livesql.queries.subqueries.QHelper;
-import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 
 public abstract class Expression extends ResultSetColumn {
+
+  private static final Logger log = Logger.getLogger(Expression.class.getName());
 
   protected static final int PRECEDENCE_LITERAL = 1;
   protected static final int PRECEDENCE_COLUMN = 1;
@@ -167,12 +166,13 @@ public abstract class Expression extends ResultSetColumn {
 
   protected abstract void renderTo(final QueryWriter w);
 
-  public EmergingColumn asEmergingColumnOf(final Subquery s) {
-    return new EmergingColumn(QHelper.getName(s), this.alias, null, this.typeHandler);
+  public void captureTypeHandler() {
+    // Nothing to do by default
+    // SubqueryTTTColumn and AliasedExpression overrides this method
   }
 
-  public EmergingColumn asEmergingColumnOf(final TableOrView tov) {
-    return new EmergingColumn(MDHelper.getAliasName(tov), this.alias, this.alias, this.typeHandler);
+  public String toString() {
+    return this.getClass().getSimpleName() + ": '" + this.alias + "' typeHandler=" + this.typeHandler;
   }
 
 }

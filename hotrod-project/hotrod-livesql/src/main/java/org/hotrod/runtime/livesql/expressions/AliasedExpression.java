@@ -17,6 +17,10 @@ public class AliasedExpression extends Expression {
     this.referencedExpression = referencedExpression;
     super.register(this.referencedExpression);
     super.setAlias(alias);
+  }
+
+  @Override
+  public void captureTypeHandler() {
     super.setTypeHandler(this.referencedExpression.getTypeHandler());
   }
 
@@ -25,10 +29,6 @@ public class AliasedExpression extends Expression {
     this.referencedExpression.renderTo(w);
     w.write(" as ");
     w.write(w.getSQLDialect().canonicalToNatural(super.getAlias()));
-  }
-
-  protected Expression getExpression() {
-    return referencedExpression.getExpression();
   }
 
   protected List<Expression> unwrap() {

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
+import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.ordering.CombinedOrderingTerm;
 import org.hotrod.runtime.livesql.ordering.OHelper;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
@@ -17,7 +18,6 @@ import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGener
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
 import org.hotrod.runtime.livesql.queries.select.TableExpression;
-import org.hotrod.runtime.livesql.queries.subqueries.EmergingColumn;
 import org.hotrod.runtime.livesql.util.IdUtil;
 
 /**
@@ -294,8 +294,8 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
   }
 
   @Override
-  protected List<EmergingColumn> assembleColumnsOf(final TableExpression te) {
-    List<EmergingColumn> cols = this.first.assembleColumnsOf(te);
+  public List<Expression> assembleColumnsOf(final TableExpression te) {
+    List<Expression> cols = this.first.assembleColumnsOf(te);
     for (SetOperatorTerm<R> o : this.combined) {
       o.getMultiset().assembleColumnsOf(te);
     }
@@ -331,6 +331,11 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
     sb.append(this.combined.stream().map(c -> c.toString()).collect(Collectors.joining(", ")));
     sb.append("]");
     return sb.toString();
+  }
+
+  @Override
+  public Expression findColumnWithName(String name) {
+    return this.first.findColumnWithName(name);
   }
 
 }

@@ -9,9 +9,7 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
-import org.hotrod.runtime.livesql.queries.select.SelectObject;
 import org.hotrod.runtime.livesql.queries.select.TableExpression;
-import org.hotrod.runtime.livesql.queries.subqueries.EmergingColumn;
 
 public abstract class TableOrView extends TableExpression {
 
@@ -24,7 +22,7 @@ public abstract class TableOrView extends TableExpression {
 
   private String alias;
   private String designatedAlias;
-  protected List<EmergingColumn> columns;
+  protected List<Expression> columns;
 
   TableOrView(final Name catalog, final Name schema, final Name name, final String type, final String alias) {
     this.catalog = catalog;
@@ -41,8 +39,8 @@ public abstract class TableOrView extends TableExpression {
     return Name.of(this.getAlias(), false);
   }
 
-  protected void add(final Expression e) {
-    this.columns.add(e.asEmergingColumnOf(this));
+  protected void add(final Expression expr) {
+    this.columns.add(expr);
   }
 
   public final String getAlias() {
@@ -57,9 +55,8 @@ public abstract class TableOrView extends TableExpression {
   // Validation
 
   @Override
-  protected List<EmergingColumn> assembleColumns() {
-    this.columns.forEach(c -> c.setNamespace(getAliasName()));
-    this.columns.forEach(c -> log.info("// " + c));
+  protected List<Expression> assembleColumns() {
+//    this.columns.forEach(c -> c.setNamespace(getAliasName()));
     return this.columns;
   }
 

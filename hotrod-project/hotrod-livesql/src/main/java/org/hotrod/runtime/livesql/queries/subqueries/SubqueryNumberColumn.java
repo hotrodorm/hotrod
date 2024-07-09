@@ -3,6 +3,7 @@ package org.hotrod.runtime.livesql.queries.subqueries;
 import java.util.logging.Logger;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
@@ -29,9 +30,15 @@ public class SubqueryNumberColumn extends NumberExpression implements SubqueryCo
     return this.referencedColumnName;
   }
 
-//  public EmergingColumn asEmergingColumn() {    
-//    return new EmergingColumn(subquery.getName(), this.alias, this.alias, this.typeHandler);
-//  }
+  @Override
+  public void captureTypeHandler() {
+    Expression innerColumn = this.subquery.getSelect().findColumnWithName(this.referencedColumnName);
+    if (innerColumn == null) {
+      throw new RuntimeException(
+          "Could not find column '" + this.referencedColumnName + "' in subquery '" + this.subquery.getName() + "'.");
+    }
+    super.setTypeHandler(Helper.getTypeHandler(innerColumn));
+  }
 
   // Rendering
 

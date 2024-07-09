@@ -10,8 +10,4 @@ public class MDHelper {
     return tov.renderUnescapedName();
   }
 
-  public static Name getAliasName(final TableOrView tov) {
-    return tov.getAliasName();
-  }
-
 }
