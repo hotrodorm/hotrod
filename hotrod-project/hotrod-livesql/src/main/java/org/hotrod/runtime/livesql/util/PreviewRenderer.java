@@ -46,15 +46,19 @@ public class PreviewRenderer {
           + ": " + preview + "\n");
 
     }
-    sb.append("--- Query Columns ---\n");
+
     LinkedHashMap<String, Expression> queryColumns = q.getQueryColumns();
-    for (String name : queryColumns.keySet()) {
-      Expression expr = queryColumns.get(name);
-      TypeHandler th = Helper.getTypeHandler(expr);
-//  log.info("render: " + name + " th=" + th);
-      sb.append(" * " + name + ": "
-          + (th != null ? th.toString() : "(type to be determined by query metadata and/or <type-solver> rules)") + "\n");
+    if (queryColumns != null) {
+      sb.append("--- Query Columns ---\n");
+      for (String name : queryColumns.keySet()) {
+        Expression expr = queryColumns.get(name);
+        TypeHandler th = Helper.getTypeHandler(expr);
+        sb.append(" * " + name + ": "
+            + (th != null ? th.toString() : "(type to be determined by query metadata and/or <type-solver> rules)")
+            + "\n");
+      }
     }
+
     sb.append("------------------\n");
     return sb.toString();
   }

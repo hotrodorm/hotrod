@@ -122,7 +122,7 @@ public class QueryWriter {
         ordinal++;
       }
     }
-    log.info("queryColumns[" + queryColumns.size() + "]");
+    log.info("queryColumns[" + (queryColumns == null?"null":queryColumns.size()) + "]");
     return new LiveSQLPreparedQuery(this.sb.toString(), params, queryColumns);
   }
 
