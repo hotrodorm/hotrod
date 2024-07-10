@@ -204,6 +204,7 @@ public class App {
 //    rows.forEach(x -> System.out.println("inv:" + x));
 
     BranchTable b = this.branchDAO.newTable();
+    BranchTable c = this.branchDAO.newTable();
 
     // Oracle
 //    EntitySelect<InvoiceVO> q = this.invoiceDAO
@@ -213,11 +214,17 @@ public class App {
 ////        .forUpdate().wait(5)
 //    ;
 
+//    DMLQuery dq = sql.update(b).set(b.region, "abc").where(b.id.gt(100));
+//    DMLQuery dq = sql.insert(b).values(sql.val(1), sql.val("abc"), sql.val(true));
+//    DMLQuery dq = sql.delete(b).where(b.id.gt(100));
+//    System.out.println("q:" + dq.getPreview());
+
 //    Subquery y = sql.subquery("y", sql.select(b.id, b.region.as("rg"), b.isVip).from(b));
 
-    Subquery y = sql.subquery("y", sql.select().from(b));
+//    Subquery y = sql.subquery("y", sql.select().from(b));
+    Subquery y = sql.subquery("y", sql.select(b.id.as("bid"), b.region, b.isVip).from(b));
 
-    Subquery x = sql.subquery("x", sql.select(y.num("id"), y.str("rg").as("rgx"), y.bool("isVip").as("iv")).from(y));
+//    Subquery x = sql.subquery("x", sql.select(y.num("id"), y.str("rg").as("rgx"), y.bool("isVip").as("iv")).from(y));
 
 //    // PostgreSQL, H2
 //    Select<Row> q = this.sql //
@@ -227,10 +234,13 @@ public class App {
 //        .from(x) //
 //    ;
 
-    Select<Row> q = this.sql.select().from(y);
-//    Select<Row> q = this.sql.select(y.num("id")).from(y);
+//    Select<Row> q = this.sql.select(b.id).from(b);
+    Select<Row> q = this.sql
+        .select(y.num("bid").as("yid"), y.str("region"), y.num("yid").plus(1).as("region2"), y.bool("isVip").as("vIp"))
+        .from(y);
+//    Select<Row> q = this.sql.select(y.num("bid").as("externalbid")).from(y);
 
-    //    Select<Row> q = this.sql.select(y.num("id"), y.str("badName")).from(y);
+    // Select<Row> q = this.sql.select(y.num("id"), y.str("badName")).from(y);
 //    Select<Row> q = this.sql.select(b.id, b.region.as("reg"), b.isVip.as("vip")).from(b);
 //    Select<Row> q = this.sql.select().from(b);
 
