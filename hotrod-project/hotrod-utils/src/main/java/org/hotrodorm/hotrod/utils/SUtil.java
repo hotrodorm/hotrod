@@ -20,6 +20,14 @@ public class SUtil {
     return txt == null || txt.trim().isEmpty();
   }
 
+  public static String coalesce(final String... strings) {
+    for (String s : strings) {
+      if (s != null)
+        return s;
+    }
+    return null;
+  }
+
   public static boolean equals(final String a, final String b) {
     return a == null ? b == null : a.equals(b);
   }
@@ -264,10 +272,6 @@ public class SUtil {
       slices.add(txt.substring(i, Math.min(len, i + width)));
     }
     return slices;
-  }
-
-  public static String coalesce(final String s, final String def) {
-    return s == null ? def : s;
   }
 
 }
