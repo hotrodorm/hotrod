@@ -13,9 +13,9 @@ public class Helper {
     return expr.getTypeHandler();
   }
 
-  public static String getAlias(final Expression expr) {
-    return expr.getAlias();
-  }
+//  public static String getAlias(final Expression expr) {
+//    return expr.getAlias();
+//  }
 
   public static void validateTableReferences(final Expression expr, final TableReferences tableReferences,
       final AliasGenerator ag) {

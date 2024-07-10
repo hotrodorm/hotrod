@@ -100,7 +100,7 @@ public class QueryWriter {
     if (columns != null) {
       queryColumns = new LinkedHashMap<>();
       for (Expression c : columns) {
-        queryColumns.put(Helper.getAlias(c), c);
+        queryColumns.put("[alias]", c);
       }
     }
     return new LiveSQLPreparedQuery(this.sb.toString(), p, queryColumns);

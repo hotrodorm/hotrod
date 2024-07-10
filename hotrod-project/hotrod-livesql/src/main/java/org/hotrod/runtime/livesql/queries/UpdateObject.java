@@ -96,7 +96,7 @@ public class UpdateObject implements QueryObject {
         w.write(", ");
       }
       Assignment s = this.sets.get(i);
-      w.write(w.getSQLDialect().canonicalToNatural(s.getColumn().getName()));
+      w.write(w.getSQLDialect().canonicalToNatural(s.getColumn().getReferenceName()));
 
       w.write(" = ");
       Helper.renderTo(s.getExpression(), w);

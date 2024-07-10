@@ -29,7 +29,7 @@ public class DateTimeColumn extends DateTimeExpression implements Column {
     this.type = type;
     this.columnSize = columnSize;
     this.decimalDigits = decimalDigits;
-    super.setAlias(this.property);
+//    super.setAlias(this.property);
     this.setTypeHandler(handler);
   }
 
@@ -48,7 +48,11 @@ public class DateTimeColumn extends DateTimeExpression implements Column {
   // Getters
 
   @Override
-  public final String getName() {
+  public final String getReferenceName() {
+    return this.property;
+  }
+
+  public String getName() {
     return this.name;
   }
 

@@ -10,7 +10,7 @@ public interface Column {
 
   Name getObjectName();
 
-  String getName();
+  String getReferenceName();
 
   String getType();
 

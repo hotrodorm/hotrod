@@ -77,7 +77,7 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
         Expression expr = Helper.getExpression(rsc);
         if (expr != null) {
           expr.captureTypeHandler();
-          log.info("---------- expr=" + expr);
+          log.info("---------- expr@" + System.identityHashCode(expr) + ": " + expr);
           this.queryColumns.add(expr);
         } else {
           for (Expression exp : Helper.unwrap(rsc)) {
@@ -121,7 +121,7 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
   @Override
   public Expression findColumnWithName(final String name) {
     for (Expression c : this.queryColumns) {
-      if (name.equals(Helper.getAlias(c))) {
+      if (name.equals(c.getReferenceName())) {
         return c;
       }
     }

@@ -29,7 +29,7 @@ public class NumberColumn extends NumberExpression implements Column {
     this.type = type;
     this.columnSize = columnSize;
     this.decimalDigits = decimalDigits;
-    super.setAlias(this.property);
+//    super.setAlias(this.property);
     super.setTypeHandler(handler);
   }
 
@@ -37,19 +37,24 @@ public class NumberColumn extends NumberExpression implements Column {
 
   @Override
   protected void renderTo(final QueryWriter w) {
-    w.write("/* col: " + this.getObjectName() + "." + this.name + " -- alias: " + super.getAlias() + " */ ");
+    w.write("/* col: " + this.getObjectName() + "." + this.name + " */ ");
     if (this.objectInstance.getAlias() != null) {
       w.write(
           w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(this.objectInstance.getAlias())));
       w.write(".");
     }
     w.write(w.getSQLDialect().canonicalToNatural(this.name));
+    w.write(" /* post-name */");
   }
 
   // Getters
 
   @Override
-  public final String getName() {
+  public String getReferenceName() {
+    return this.property;
+  }
+
+  public String getName() {
     return this.name;
   }
 

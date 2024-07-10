@@ -118,7 +118,9 @@ public class Subquery extends TableExpression {
   private void logEmergingColumns(List<Expression> ec) {
     log.info("$$$$$$ Columns (" + ec.size() + "):");
     for (Expression c : ec) {
-      log.info("$$$$$$ * " + c);
+      log.info("$$$$$$ @"
+          + System.identityHashCode(c)
+          + " * " + c);
     }
   }
 

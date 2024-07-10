@@ -66,7 +66,6 @@ public abstract class Expression extends ResultSetColumn {
    */
 
   private int precedence;
-  private String alias;
   private TypeHandler typeHandler;
 
   protected void setPrecedence(final int precedence) {
@@ -77,8 +76,12 @@ public abstract class Expression extends ResultSetColumn {
 
   protected Expression(final int precedence) {
     this.precedence = precedence;
-    this.alias = null;
     this.typeHandler = null;
+  }
+
+  @Deprecated // Not deprecated. Should be shielded.
+  public String getReferenceName() {
+    return null; // Only Entity columns and AliasedExpressions return names.
   }
 
   // ResultSetColumn
@@ -93,16 +96,8 @@ public abstract class Expression extends ResultSetColumn {
 
   // Getters & Setters
 
-  protected String getAlias() {
-    return alias;
-  }
-
   protected int getPrecedence() {
     return precedence;
-  }
-
-  protected void setAlias(String alias) {
-    this.alias = alias;
   }
 
   protected void setTypeHandler(TypeHandler typeHandler) {
@@ -166,13 +161,16 @@ public abstract class Expression extends ResultSetColumn {
 
   protected abstract void renderTo(final QueryWriter w);
 
+  @Deprecated // Not deprecated. Should be shielded.
   public void captureTypeHandler() {
     // Nothing to do by default
     // SubqueryTTTColumn and AliasedExpression overrides this method
   }
 
+  @Deprecated // Not deprecated. Should be removed.
   public String toString() {
-    return this.getClass().getSimpleName() + ": '" + this.alias + "' typeHandler=" + this.typeHandler;
+    return this.getClass().getSimpleName() + "@" + System.identityHashCode(this) + ": ' typeHandler="
+        + this.typeHandler;
   }
 
 }

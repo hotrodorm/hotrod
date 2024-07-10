@@ -2,6 +2,7 @@ package org.hotrod.runtime.livesql.queries.subqueries;
 
 import java.util.logging.Logger;
 
+import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
@@ -34,7 +35,7 @@ public class SubqueryNumberColumn extends NumberExpression implements SubqueryCo
   public void captureTypeHandler() {
     Expression innerColumn = this.subquery.getSelect().findColumnWithName(this.referencedColumnName);
     if (innerColumn == null) {
-      throw new RuntimeException(
+      throw new LiveSQLException(
           "Could not find column '" + this.referencedColumnName + "' in subquery '" + this.subquery.getName() + "'.");
     }
     super.setTypeHandler(Helper.getTypeHandler(innerColumn));
@@ -50,7 +51,8 @@ public class SubqueryNumberColumn extends NumberExpression implements SubqueryCo
   }
 
   public String toString() {
-    return this.subquery.getName().toString() + ":" + this.referencedColumnName;
+    return this.subquery.getName().toString() + ":" + this.referencedColumnName + " typeHandler="
+        + super.getTypeHandler();
   }
 
 }

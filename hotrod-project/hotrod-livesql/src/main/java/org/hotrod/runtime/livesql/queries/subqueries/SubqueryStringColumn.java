@@ -2,7 +2,9 @@ package org.hotrod.runtime.livesql.queries.subqueries;
 
 import java.util.logging.Logger;
 
+import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
@@ -29,6 +31,16 @@ public class SubqueryStringColumn extends StringExpression implements SubqueryCo
     return this.referencedColumnName;
   }
 
+  @Override
+  public void captureTypeHandler() {
+    Expression innerColumn = this.subquery.getSelect().findColumnWithName(this.referencedColumnName);
+    if (innerColumn == null) {
+      throw new LiveSQLException(
+          "Could not find column '" + this.referencedColumnName + "' in subquery '" + this.subquery.getName() + "'.");
+    }
+    super.setTypeHandler(Helper.getTypeHandler(innerColumn));
+  }
+
   // Rendering
 
   @Override
@@ -36,6 +48,11 @@ public class SubqueryStringColumn extends StringExpression implements SubqueryCo
     this.subquery.getName().renderTo(w);
     w.write(".");
     w.write(w.getSQLDialect().canonicalToNatural(this.referencedColumnName));
+  }
+
+  public String toString() {
+    return this.subquery.getName().toString() + ":" + this.referencedColumnName + " typeHandler="
+        + super.getTypeHandler();
   }
 
 }
