@@ -29,7 +29,6 @@ public class StringColumn extends StringExpression implements Column {
     this.type = type;
     this.columnSize = columnSize;
     this.decimalDigits = decimalDigits;
-//    super.setAlias(this.property);
     super.setTypeHandler(handler);
   }
 
@@ -43,7 +42,6 @@ public class StringColumn extends StringExpression implements Column {
       w.write(".");
     }
     w.write(w.getSQLDialect().canonicalToNatural(this.name));
-    w.write(" /* post-name */");
   }
 
   // Getters

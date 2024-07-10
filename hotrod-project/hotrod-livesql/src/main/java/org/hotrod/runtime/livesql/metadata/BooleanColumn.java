@@ -29,7 +29,6 @@ public class BooleanColumn extends Predicate implements Column {
     this.type = type;
     this.columnSize = columnSize;
     this.decimalDigits = decimalDigits;
-//    super.setAlias(this.property);
     super.setTypeHandler(handler);
   }
 

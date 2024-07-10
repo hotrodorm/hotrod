@@ -6,6 +6,7 @@ import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
+import org.hotrod.runtime.livesql.util.PreviewRenderer;
 
 public class DeleteObject implements QueryObject {
 
@@ -34,7 +35,7 @@ public class DeleteObject implements QueryObject {
 
   public String getPreview(final LiveSQLContext context) {
     LiveSQLPreparedQuery pq = this.prepareQuery(context);
-    return pq.render();
+    return PreviewRenderer.render(pq);
   }
 
   public int execute(final LiveSQLContext context) {

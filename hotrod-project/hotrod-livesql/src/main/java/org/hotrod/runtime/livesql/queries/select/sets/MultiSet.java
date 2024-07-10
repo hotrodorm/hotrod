@@ -79,8 +79,6 @@ public abstract class MultiSet<R> {
 
     QueryWriter w = new QueryWriter(context);
     List<Expression> columns = this.assembleColumnsOf(null);
-//    this.computeQueryColumns();
-    log.info("----------------------------------------------------------- computeQueryColumns() complete ---");
     renderTo(w, false);
     return w.getPreparedQuery(columns);
 

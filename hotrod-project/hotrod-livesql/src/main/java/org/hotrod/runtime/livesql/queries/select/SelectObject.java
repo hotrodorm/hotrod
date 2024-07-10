@@ -161,14 +161,6 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
           w.write(" as " + w.getSQLDialect().canonicalToNatural(property));
         }
       }
-//      if (!this.doNotAliasColumns) { // other than scalar selects or criteria selects
-//        try {
-//          Column col = (Column) expr;
-//          w.write(" as " + w.getSQLDialect().canonicalToNatural(col.getProperty()));
-//        } catch (ClassCastException e) {
-//          // Not a plain table/view column -- no need to alias it
-//        }
-//      }
 
     }
   }

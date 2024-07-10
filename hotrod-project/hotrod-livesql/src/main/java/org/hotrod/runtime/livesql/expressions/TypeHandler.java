@@ -28,6 +28,7 @@ public class TypeHandler {
     return converter;
   }
 
+  @Deprecated
   public String toString() {
     return this.converter == null ? this.javaClass.getName()
         : "[" + this.rawClass.getName() + " -> " + this.converter.getClass().getName() + " -> "

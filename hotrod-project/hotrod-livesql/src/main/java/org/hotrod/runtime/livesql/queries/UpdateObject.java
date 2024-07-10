@@ -15,6 +15,7 @@ import org.hotrod.runtime.livesql.metadata.MDHelper;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.SQLParameterWriter.RenderedParameter;
+import org.hotrod.runtime.livesql.util.PreviewRenderer;
 
 public class UpdateObject implements QueryObject {
 
@@ -54,7 +55,7 @@ public class UpdateObject implements QueryObject {
 
   public String getPreview(final LiveSQLContext context) {
     LiveSQLPreparedQuery pq = this.prepareQuery(context);
-    return pq.render();
+    return PreviewRenderer.render(pq);
   }
 
   public int execute(final LiveSQLContext context) {

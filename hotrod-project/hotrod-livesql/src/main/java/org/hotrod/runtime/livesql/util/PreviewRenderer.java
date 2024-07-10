@@ -1,5 +1,10 @@
 package org.hotrod.runtime.livesql.util;
 
+import java.util.LinkedHashMap;
+
+import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.Helper;
+import org.hotrod.runtime.livesql.expressions.TypeHandler;
 import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrodorm.hotrod.utils.CUtil;
 import org.hotrodorm.hotrod.utils.HexaUtils;
@@ -41,7 +46,16 @@ public class PreviewRenderer {
           + ": " + preview + "\n");
 
     }
-    sb.append("------------------");
+    sb.append("--- Query Columns ---\n");
+    LinkedHashMap<String, Expression> queryColumns = q.getQueryColumns();
+    for (String name : queryColumns.keySet()) {
+      Expression expr = queryColumns.get(name);
+      TypeHandler th = Helper.getTypeHandler(expr);
+//  log.info("render: " + name + " th=" + th);
+      sb.append(" * " + name + ": "
+          + (th != null ? th.toString() : "(type to be determined by query metadata and/or <type-solver> rules)") + "\n");
+    }
+    sb.append("------------------\n");
     return sb.toString();
   }
 
