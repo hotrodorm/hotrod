@@ -27,8 +27,8 @@ public class AliasedExpression extends Expression {
   @Override
   public void captureTypeHandler() {
     this.referencedExpression.captureTypeHandler();
-    log.info("captureTypeHandler: this.referencedExpression@" + +System.identityHashCode(this.referencedExpression)
-        + ": " + this.referencedExpression);
+//    log.info("captureTypeHandler: this.referencedExpression@" + +System.identityHashCode(this.referencedExpression)
+//        + ": " + this.referencedExpression);
     super.setTypeHandler(this.referencedExpression.getTypeHandler());
   }
 
@@ -43,6 +43,7 @@ public class AliasedExpression extends Expression {
     return referencedExpression.unwrap();
   }
 
+  @Deprecated
   public String toString() {
     return "'" + this.alias + "' for " + this.referencedExpression.toString();
   }

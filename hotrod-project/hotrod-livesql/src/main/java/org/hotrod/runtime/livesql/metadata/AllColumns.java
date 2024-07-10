@@ -10,20 +10,20 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 
 public class AllColumns extends WrappingColumn {
 
-  private List<Expression> columns;
+  private List<Column> columns;
 
-  public AllColumns(final Expression... columns) {
+  public AllColumns(final Column... columns) {
     this.columns = Arrays.asList(columns);
   }
 
-  public ColumnsSubset filter(final Predicate<Expression> predicate) {
+  public ColumnsSubset filter(final Predicate<Column> predicate) {
     return new ColumnsSubset(this.columns.stream().filter(predicate).collect(Collectors.toList()));
   }
 
   public ColumnsAliased as(final ColumnRenamer aliaser) {
     return new ColumnsAliased(this.columns.stream() //
         .map(c -> {
-          return new AliasedExpression(c, aliaser.newName(c));
+          return new AliasedExpression((Expression) c, aliaser.newName(c));
         }).collect(Collectors.toList()));
   }
 
@@ -36,7 +36,7 @@ public class AllColumns extends WrappingColumn {
 
   @Override
   protected List<Expression> unwrap() {
-    return this.columns;
+    return this.columns.stream().map(c -> (Expression) c).collect(Collectors.toList());
   }
 
 }

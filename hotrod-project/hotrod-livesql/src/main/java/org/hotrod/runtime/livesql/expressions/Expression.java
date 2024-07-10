@@ -173,10 +173,10 @@ public abstract class Expression extends ResultSetColumn {
   }
 
   // TODO: Clean up
-//  @Deprecated // Not deprecated. Should be removed.
-//  public String toString() {
-//    return this.getClass().getSimpleName() + "@" + System.identityHashCode(this) + ": ' typeHandler="
-//        + this.typeHandler;
-//  }
+  @Deprecated // Not deprecated. Should be removed.
+  public String toString() {
+    return this.getClass().getSimpleName() + "@" + System.identityHashCode(this) + ": typeHandler="
+        + this.typeHandler;
+  }
 
 }

@@ -9,9 +9,9 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 
 public class ColumnsSubset extends ColumnList {
 
-  private List<Expression> columns;
+  private List<Column> columns;
 
-  protected ColumnsSubset(final List<Expression> columns) {
+  protected ColumnsSubset(final List<Column> columns) {
     this.columns = columns;
   }
 
@@ -36,7 +36,7 @@ public class ColumnsSubset extends ColumnList {
 
   @Override
   protected List<Expression> unwrap() {
-    return this.columns;
+    return this.columns.stream().map(c -> (Expression) c).collect(Collectors.toList());
   }
 
 }

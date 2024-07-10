@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrodorm.hotrod.utils.Separator;
@@ -82,7 +81,7 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
         } else {
           for (Expression exp : Helper.unwrap(rsc)) {
             exp.captureTypeHandler();
-            log.info("---------- expr=" + exp);
+            log.info("---------- expr@" + System.identityHashCode(exp) + ": " + exp);
             this.queryColumns.add(exp);
           }
         }
