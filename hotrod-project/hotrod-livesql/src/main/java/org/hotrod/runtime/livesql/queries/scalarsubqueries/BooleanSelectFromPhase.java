@@ -177,6 +177,7 @@ public class BooleanSelectFromPhase extends BooleanSelectExpression {
   // return new SelectHavingPhase(this.select, null);
   // }
 
+  // TODO: Clean up
 //  // Execute
 //
 //  public List execute() {

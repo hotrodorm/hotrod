@@ -1170,6 +1170,7 @@ public class ObjectDAO extends GeneratableObject {
     println();
   }
 
+  // TODO: Clean up
 //  private String getChildrenSelectorClass(final ObjectVO dao) {
 //    return dao.getJavaClassIdentifier() + "ChildrenSelector";
 //  }
@@ -1943,12 +1944,6 @@ public class ObjectDAO extends GeneratableObject {
 
     println("    }");
     println();
-
-//    println("    @Override");
-//    println("    public List<Column> getAllColumns() {");
-//    println("      return this.ALL$COLUMNS;");
-//    println("    }");
-//    println();
 
     println("  }");
     println();

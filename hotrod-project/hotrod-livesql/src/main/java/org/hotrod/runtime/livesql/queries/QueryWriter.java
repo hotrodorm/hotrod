@@ -160,6 +160,7 @@ public class QueryWriter {
       return c;
     }
 
+    // TODO: Clean up
 //    @Deprecated // UsSe PreviewRenderer instead
 //    public String render() {
 //      log.info("render #1");

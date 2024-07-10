@@ -110,6 +110,7 @@ public class RecursiveCTE extends CTE {
     w.write(")");
   }
 
+  // TODO: Clean up
 //  @Override
 //  protected List<ResultSetColumn> getColumns() throws IllegalAccessException {
 //    return this.expandColumns(SHelper.getCombinedSelect(this.anchorTerm).listColumns());

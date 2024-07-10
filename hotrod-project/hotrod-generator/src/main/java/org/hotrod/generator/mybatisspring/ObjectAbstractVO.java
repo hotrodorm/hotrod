@@ -287,9 +287,6 @@ public class ObjectAbstractVO extends GeneratableObject {
     String setter = cm.getId().getJavaSetter();
     println("  public void " + setter + "(final " + javaType + " " + m + ") {");
     println("    this." + m + " = " + m + ";");
-//    propertiesChangeLog is now obsolete    
-//    String name = cm.getId().getJavaMemberName() + "WasSet";
-//    println("    this.getPropertiesChangeLog()." + name + " = true;");
     println("  }");
     println();
   }

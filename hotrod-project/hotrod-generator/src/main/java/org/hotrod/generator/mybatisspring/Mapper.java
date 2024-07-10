@@ -77,6 +77,7 @@ public class Mapper extends GeneratableObject {
     initialize(metadata, layout, generator, type, adapter, vo);
   }
 
+  // TODO: Clean up
 //  public Mapper(final SelectClassTag selectTag, final DataSetMetadata metadata, final DataSetLayout layout,
 //      final MyBatisSpringGenerator generator, final DAOType type, final DatabaseAdapter adapter, final ObjectVO vo) {
 //    super();
@@ -939,7 +940,6 @@ public class Mapper extends GeneratableObject {
 
   private String getWhereByExample(final String prefix) throws IOException {
     StringBuilder sb = new StringBuilder();
-    // sb.append(" <where>\n");
     sb.append("    <trim prefix=\"where&#xA;\" prefixOverrides=\"and |or \">\n");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String prompt = prefix != null ? (prefix + ".") : "";
@@ -949,15 +949,7 @@ public class Mapper extends GeneratableObject {
       sb.append("        and " + SUtil.escapeXmlBody(cm.getId().getRenderedSQLName()) + " = "
           + renderParameterColumn(cm, prefix) + "\n");
       sb.append("      </if>\n");
-
-// propertiesChangeLog is now obsolete      
-//      String propWasSet = prompt + "propertiesChangeLog." + cm.getId().getJavaMemberName() + "WasSet";
-//      sb.append("      <if test=\"" + prop + " == null and " + propWasSet + "\">\n");
-//      sb.append("        and " + SUtil.escapeXmlBody(cm.getId().getRenderedSQLName()) + " is null\n");
-//      sb.append("      </if>\n");
-
     }
-    // sb.append(" </where>\n");
     sb.append("    </trim>\n");
     return sb.toString();
   }

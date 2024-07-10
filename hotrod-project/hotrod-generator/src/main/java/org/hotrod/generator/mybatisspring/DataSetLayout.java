@@ -88,6 +88,7 @@ public class DataSetLayout implements Serializable {
     return this.daos.getLiveSQLDialectBeanQualifier();
   }
 
+  // TODO: Clean up
 //  public String getSessionFactoryGetter() {
 //    return sessionFactoryGetter;
 //  }

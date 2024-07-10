@@ -59,6 +59,7 @@ public class CTE extends Subquery {
     w.write(")");
   }
 
+  // TODO: Clean up
 //  @Override
 //  protected List<ResultSetColumn> getColumns() throws IllegalAccessException {
 //    if (this.columns != null && this.columns.length > 0) {

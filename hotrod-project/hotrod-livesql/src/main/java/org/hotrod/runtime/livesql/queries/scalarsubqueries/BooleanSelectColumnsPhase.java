@@ -59,6 +59,7 @@ public class BooleanSelectColumnsPhase extends BooleanSelectExpression {
 
   // Validation
 
+  // TODO: Clean up
 //  @Override
 //  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
 //    this.select.validateTableReferences(tableReferences, ag);
@@ -69,6 +70,7 @@ public class BooleanSelectColumnsPhase extends BooleanSelectExpression {
 //    this.select.assignNonDeclaredAliases(ag);
 //  }
 
+  // TODO: Clean up
 //  // CombinableSelect
 //
 //  @Override

@@ -172,6 +172,7 @@ public abstract class Expression extends ResultSetColumn {
     // SubqueryTTTColumn and AliasedExpression overrides this method
   }
 
+  // TODO: Clean up
 //  @Deprecated // Not deprecated. Should be removed.
 //  public String toString() {
 //    return this.getClass().getSimpleName() + "@" + System.identityHashCode(this) + ": ' typeHandler="
