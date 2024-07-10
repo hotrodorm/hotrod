@@ -22,11 +22,6 @@ public class SubqueryBooleanColumn extends Predicate implements SubqueryColumn {
   }
 
   @Override
-  public String getReferencedColumnName() {
-    return this.referencedColumnName;
-  }
-
-  @Override
   public void captureTypeHandler() {
     Expression innerColumn = this.subquery.getSelect().findColumnWithName(this.referencedColumnName);
     if (innerColumn == null) {
@@ -34,6 +29,11 @@ public class SubqueryBooleanColumn extends Predicate implements SubqueryColumn {
           "Could not find column '" + this.referencedColumnName + "' in subquery '" + this.subquery.getName() + "'.");
     }
     super.setTypeHandler(Helper.getTypeHandler(innerColumn));
+  }
+
+  @Override
+  public final String getProperty() {
+    return this.referencedColumnName;
   }
 
   // Rendering
@@ -45,6 +45,7 @@ public class SubqueryBooleanColumn extends Predicate implements SubqueryColumn {
     w.write(w.getSQLDialect().canonicalToNatural(this.referencedColumnName));
   }
 
+  @Deprecated
   public String toString() {
     return this.subquery.getName().toString() + ":" + this.referencedColumnName + " typeHandler="
         + super.getTypeHandler();

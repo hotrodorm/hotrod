@@ -22,11 +22,6 @@ public class SubqueryByteArrayColumn extends ByteArrayExpression implements Subq
   }
 
   @Override
-  public String getReferencedColumnName() {
-    return this.referencedColumnName;
-  }
-
-  @Override
   public void captureTypeHandler() {
     Expression innerColumn = this.subquery.getSelect().findColumnWithName(this.referencedColumnName);
     if (innerColumn == null) {
@@ -34,6 +29,11 @@ public class SubqueryByteArrayColumn extends ByteArrayExpression implements Subq
           "Could not find column '" + this.referencedColumnName + "' in subquery '" + this.subquery.getName() + "'.");
     }
     super.setTypeHandler(Helper.getTypeHandler(innerColumn));
+  }
+
+  @Override
+  public final String getProperty() {
+    return this.referencedColumnName;
   }
 
   // Rendering

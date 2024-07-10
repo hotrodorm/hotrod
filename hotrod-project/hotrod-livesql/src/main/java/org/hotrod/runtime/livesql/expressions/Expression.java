@@ -79,9 +79,14 @@ public abstract class Expression extends ResultSetColumn {
     this.typeHandler = null;
   }
 
-  @Deprecated // Not deprecated. Should be shielded.
+  @Deprecated // Not deprecated. However, it should be shielded.
   public String getReferenceName() {
-    return null; // Only Entity columns and AliasedExpressions return names.
+    return null; // Only Entity columns, AliasedExpressions and SubqueryTTTColumns return names.
+  }
+
+  @Deprecated // Not deprecated. However, it should be shielded.
+  public String getProperty() {
+    return null; // Only Entity columns and SubqueryTTTColumns return names.
   }
 
   // ResultSetColumn
@@ -167,10 +172,10 @@ public abstract class Expression extends ResultSetColumn {
     // SubqueryTTTColumn and AliasedExpression overrides this method
   }
 
-  @Deprecated // Not deprecated. Should be removed.
-  public String toString() {
-    return this.getClass().getSimpleName() + "@" + System.identityHashCode(this) + ": ' typeHandler="
-        + this.typeHandler;
-  }
+//  @Deprecated // Not deprecated. Should be removed.
+//  public String toString() {
+//    return this.getClass().getSimpleName() + "@" + System.identityHashCode(this) + ": ' typeHandler="
+//        + this.typeHandler;
+//  }
 
 }

@@ -121,7 +121,9 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
   @Override
   public Expression findColumnWithName(final String name) {
     for (Expression c : this.queryColumns) {
-      if (name.equals(c.getReferenceName())) {
+      if (name.equals(c.getReferenceName())) { // Only Entity columns, AliasedExpressions and SubqueryTTTColumns return
+                                               // names.
+
         return c;
       }
     }
@@ -139,20 +141,34 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
   @Override
   protected void writeColumns(final QueryWriter w, final TableExpression baseTableExpression, final List<Join> joins) {
     Separator sep = new Separator();
-    for (Expression c : this.queryColumns) {
+    for (Expression expr : this.queryColumns) {
 
       w.write(sep.render());
       w.write("\n  ");
-      Helper.renderTo(c, w);
+      Helper.renderTo(expr, w);
 
-      if (!this.doNotAliasColumns) {
-        try {
-          Column col = (Column) c;
-          w.write(" as " + w.getSQLDialect().canonicalToNatural(col.getProperty()));
-        } catch (ClassCastException e) {
-          // Not a plain table/view column -- no need to alias it
+//      Add alias?
+//
+//          Select Type           EntityCol  AliasedExpr  SubqueryCol  Other
+//          --------------------  ---------  -----------  -----------  -----
+//          Scalar SELECT         No         Yes          --           No
+//          Criteria SELECT       No         Yes          --           No
+//          Other/Main SELECT     Yes        Yes          Yes          No
+
+      if (!this.doNotAliasColumns) { // other than scalar selects or criteria selects
+        String property = expr.getProperty();
+        if (property != null) {
+          w.write(" as " + w.getSQLDialect().canonicalToNatural(property));
         }
       }
+//      if (!this.doNotAliasColumns) { // other than scalar selects or criteria selects
+//        try {
+//          Column col = (Column) expr;
+//          w.write(" as " + w.getSQLDialect().canonicalToNatural(col.getProperty()));
+//        } catch (ClassCastException e) {
+//          // Not a plain table/view column -- no need to alias it
+//        }
+//      }
 
     }
   }
