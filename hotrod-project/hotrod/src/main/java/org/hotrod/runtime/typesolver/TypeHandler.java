@@ -41,15 +41,12 @@ public class TypeHandler {
   }
 
   private static TypeHandler discoverHandler(final Class<TypeConverter<?, ?>> converter) {
-//    log.info("discover: converter=" + converter);
     TypeHandler th = KNOWN_HANDLERS.get(converter);
-//    log.info("th=" + th);
     if (th == null) {
       Class<?> raw = null;
       Class<?> domain = null;
       Method[] methods = converter.getDeclaredMethods();
       for (Method m : methods) {
-//        log.info("* m=" + m);
         if ("decode".equals(m.getName()) && (domain == null || domain.equals(Object.class))) {
           domain = m.getReturnType();
         }
@@ -57,7 +54,6 @@ public class TypeHandler {
           raw = m.getReturnType();
         }
       }
-//      log.info("** domain=" + domain + " raw=" + raw);
       try {
         th = new TypeHandler(domain, raw, converter.newInstance());
       } catch (InstantiationException | IllegalAccessException e) {

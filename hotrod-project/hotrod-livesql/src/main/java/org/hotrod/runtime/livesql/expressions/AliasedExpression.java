@@ -3,7 +3,6 @@ package org.hotrod.runtime.livesql.expressions;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.hotrod.runtime.converter.TypeConverter;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.typesolver.TypeHandler;
 
@@ -26,11 +25,6 @@ public class AliasedExpression extends Expression {
 
   public TypedExpression type(final Class<?> type) {
     super.setTypeHandler(TypeHandler.of(type));
-    return new TypedExpression(this);
-  }
-
-  public TypedExpression type(final Class<?> type, final Class<?> raw, final TypeConverter<?, ?> converter) {
-    super.setTypeHandler(TypeHandler.of(type, raw, converter));
     return new TypedExpression(this);
   }
 
