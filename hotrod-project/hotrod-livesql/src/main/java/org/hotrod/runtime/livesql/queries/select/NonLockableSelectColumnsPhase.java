@@ -9,7 +9,6 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
-import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
 import org.hotrod.runtime.livesql.queries.select.sets.IndividualSelectPhase;
 import org.hotrod.runtime.livesql.queries.select.sets.MultiSet;
 
@@ -30,8 +29,8 @@ public class NonLockableSelectColumnsPhase<R> extends IndividualSelectPhase<R> {
     s.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
   }
 
-  public NonLockableSelectColumnsPhase(final LiveSQLContext context, final List<CTE> ctes, final Expression[] distinctOn,
-      final ResultSetColumn... resultSetColumns) {
+  public NonLockableSelectColumnsPhase(final LiveSQLContext context, final List<CTE> ctes,
+      final Expression[] distinctOn, final ResultSetColumn... resultSetColumns) {
     super(context, ctes, distinctOn, false);
     for (ResultSetColumn c : resultSetColumns) {
       if (c == null) {
@@ -42,7 +41,6 @@ public class NonLockableSelectColumnsPhase<R> extends IndividualSelectPhase<R> {
     SelectObject<R> s = (SelectObject<R>) m;
     s.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
   }
-
 
   // Next phases
 

@@ -28,6 +28,12 @@ public class TypeHandler {
     return converter;
   }
 
+  protected String render() {
+    return this.converter == null ? this.javaClass.getName()
+        : "[" + this.rawClass.getName() + " -> " + this.converter.getClass().getName() + " -> "
+            + this.javaClass.getName() + "]";
+  }
+
   @Deprecated
   public String toString() {
     return this.converter == null ? this.javaClass.getName()

@@ -54,7 +54,7 @@ public class PreviewRenderer {
         Expression expr = queryColumns.get(name);
         TypeHandler th = Helper.getTypeHandler(expr);
         sb.append(" * " + name + ": "
-            + (th != null ? th.toString() : "(type to be determined by query metadata and/or <type-solver> rules)")
+            + (th != null ? Helper.render(th) : "(type to be determined by query metadata or by <type-solver> rules)")
             + "\n");
       }
     }

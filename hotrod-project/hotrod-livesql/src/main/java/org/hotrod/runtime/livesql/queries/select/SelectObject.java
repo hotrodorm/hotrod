@@ -13,6 +13,7 @@ import org.hotrodorm.hotrod.utils.Separator;
 
 public class SelectObject<R> extends AbstractSelectObject<R> {
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(SelectObject.class.getName());
 
   private boolean doNotAliasColumns;
@@ -58,6 +59,9 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
 
     boolean isListingColumns = this.resultSetColumns != null && !this.resultSetColumns.isEmpty();
 
+    this.baseTableExpression.assembleColumns();
+    this.joins.forEach(j -> j.getTableExpression().assembleColumns());
+
     if (isListingColumns) {
 
       // sql.val(3).mult(7) -- Expression N/A
@@ -68,73 +72,52 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
       // a.id.as("bid") -- Column te.bid
       // x.num("amount").as("total") -- SubqueryXXXColumn te.total
 
-      this.baseTableExpression.assembleColumns();
-      this.joins.forEach(j -> j.getTableExpression().assembleColumns());
-
-      this.queryColumns = new ArrayList<>();
-      for (ResultSetColumn rsc : this.resultSetColumns) {
-        Expression expr = Helper.getExpression(rsc);
-        if (expr != null) {
-          expr.captureTypeHandler();
-          log.info("---------- expr@" + System.identityHashCode(expr) + ": " + expr);
-          this.queryColumns.add(expr);
-        } else {
-          for (Expression exp : Helper.unwrap(rsc)) {
-            exp.captureTypeHandler();
-            log.info("---------- expr@" + System.identityHashCode(exp) + ": " + exp);
-            this.queryColumns.add(exp);
-          }
-        }
-      }
-
-      this.columnsAssembled = true;
-      return this.queryColumns;
+      populateQueryColumns(this.resultSetColumns);
 
     } else { // columns not listed
 
-      this.queryColumns = new ArrayList<>();
-
-      // 1. Compute columns of tables and subqueries in the FROM and JOIN clauses
-
-      log.info("vvv assembling columns for: " + this.baseTableExpression.getName());
-      List<Expression> fc = this.baseTableExpression.assembleColumns();
-      logEmergingColumns(this.baseTableExpression, fc);
-      this.queryColumns.addAll(fc);
-      log.info("^^^ assembled columns for: " + this.baseTableExpression.getName());
-
+      List<ResultSetColumn> filledIn = new ArrayList<>();
+      filledIn.add(this.baseTableExpression.star());
       for (Join j : this.joins) {
-        log.info("vvv assembling columns for: " + j.getTableExpression().getName());
-        List<Expression> jc = j.assembleColumns();
-        logEmergingColumns(j.getTableExpression(), fc);
-        this.queryColumns.addAll(jc);
-        log.info("^^^ assembled columns for: " + j.getTableExpression().getName());
+        filledIn.add(j.getTableExpression().star());
       }
 
-      this.columnsAssembled = true;
-      return this.queryColumns;
+      populateQueryColumns(filledIn);
 
     }
 
+    this.columnsAssembled = true;
+    return this.queryColumns;
+
+  }
+
+  private void populateQueryColumns(final List<ResultSetColumn> rsColumns) {
+    this.queryColumns = new ArrayList<>();
+    for (ResultSetColumn rsc : rsColumns) {
+      Expression expr = Helper.getExpression(rsc);
+      if (expr != null) {
+        Helper.captureTypeHandler(expr);
+//        log.info("---------- expr@" + System.identityHashCode(expr) + ": " + expr);
+        this.queryColumns.add(expr);
+      } else {
+        for (Expression exp : Helper.unwrap(rsc)) {
+          Helper.captureTypeHandler(exp);
+//          log.info("---------- expr@" + System.identityHashCode(exp) + ": " + exp);
+          this.queryColumns.add(exp);
+        }
+      }
+    }
   }
 
   @Override
   public Expression findColumnWithName(final String name) {
     for (Expression c : this.queryColumns) {
-      if (name.equals(c.getReferenceName())) { // Only Entity columns, AliasedExpressions and SubqueryTTTColumns return
-                                               // names.
-
+      if (name.equals(Helper.getReferenceName(c))) {
+        // Only Entity columns, AliasedExpressions and SubqueryTTTColumns return names.
         return c;
       }
     }
     return null;
-  }
-
-  private void logEmergingColumns(final TableExpression te, List<Expression> ec) {
-    log.info(" ");
-    log.info("- col '" + te.getName().getName() + "':");
-    for (Expression c : ec) {
-      log.info(" * " + c);
-    }
   }
 
   @Override
@@ -155,7 +138,7 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
 //          Other/Main SELECT     Yes        Yes          Yes          No
 
       if (!this.doNotAliasColumns) { // other than scalar selects or criteria selects
-        String property = expr.getProperty();
+        String property = Helper.getProperty(expr);
         if (property != null) {
           w.write(" as " + w.getSQLDialect().canonicalToNatural(property));
         }

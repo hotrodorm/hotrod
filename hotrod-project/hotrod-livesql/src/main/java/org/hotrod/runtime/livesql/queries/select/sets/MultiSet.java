@@ -113,7 +113,7 @@ public abstract class MultiSet<R> {
         n = 1;
         for (Expression qc : queryColumns.values()) {
           int i = n++;
-          String alias = qc.getReferenceName();
+          String alias = Helper.getReferenceName(qc);
           TypeHandler th = Helper.getTypeHandler(qc);
           log.info("- column #" + i + " '" + alias + "': " + th);
         }
@@ -126,7 +126,7 @@ public abstract class MultiSet<R> {
           int i = 1;
           for (Expression qc : queryColumns.values()) {
             Object value;
-            String alias = qc.getReferenceName();
+            String alias = Helper.getReferenceName(qc);
             TypeHandler th = Helper.getTypeHandler(qc);
             if (th.getConverter() == null) {
               value = rs.getObject(i, th.getJavaClass());

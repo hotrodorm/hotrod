@@ -15,6 +15,7 @@ import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
 
 public abstract class Expression extends ResultSetColumn {
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(Expression.class.getName());
 
   protected static final int PRECEDENCE_LITERAL = 1;
@@ -79,13 +80,11 @@ public abstract class Expression extends ResultSetColumn {
     this.typeHandler = null;
   }
 
-  @Deprecated // Not deprecated. However, it should be shielded.
-  public String getReferenceName() {
+  protected String getReferenceName() {
     return null; // Only Entity columns, AliasedExpressions and SubqueryTTTColumns return names.
   }
 
-  @Deprecated // Not deprecated. However, it should be shielded.
-  public String getProperty() {
+  protected String getProperty() {
     return null; // Only Entity columns and SubqueryTTTColumns return names.
   }
 
@@ -166,17 +165,13 @@ public abstract class Expression extends ResultSetColumn {
 
   protected abstract void renderTo(final QueryWriter w);
 
-  @Deprecated // Not deprecated. Should be shielded.
-  public void captureTypeHandler() {
+  protected void captureTypeHandler() {
     // Nothing to do by default
     // SubqueryTTTColumn and AliasedExpression overrides this method
   }
 
-  // TODO: Clean up
-  @Deprecated // Not deprecated. Should be removed.
-  public String toString() {
-    return this.getClass().getSimpleName() + "@" + System.identityHashCode(this) + ": typeHandler="
-        + this.typeHandler;
+  protected String render() {
+    return this.getClass().getSimpleName() + "@" + System.identityHashCode(this) + ": typeHandler=" + this.typeHandler;
   }
 
 }

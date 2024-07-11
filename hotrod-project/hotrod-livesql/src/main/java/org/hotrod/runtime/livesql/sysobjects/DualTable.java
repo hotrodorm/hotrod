@@ -1,9 +1,11 @@
 package org.hotrod.runtime.livesql.sysobjects;
 
 import org.hotrod.runtime.livesql.expressions.TypeHandler;
+import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.metadata.StringColumn;
 import org.hotrod.runtime.livesql.metadata.Table;
+import org.hotrod.runtime.livesql.metadata.WrappingColumn;
 
 public class DualTable extends Table {
 
@@ -23,6 +25,11 @@ public class DualTable extends Table {
   private void initialize() {
     this.dummy = new StringColumn(this, "DUMMY", "dummy", "VARCHAR2", 1, 0, TypeHandler.STRING_TYPE_HANDLER);
     super.add(this.dummy);
+  }
+
+  @Override
+  protected WrappingColumn star() {
+    return new AllColumns(this.dummy);
   }
 
 }

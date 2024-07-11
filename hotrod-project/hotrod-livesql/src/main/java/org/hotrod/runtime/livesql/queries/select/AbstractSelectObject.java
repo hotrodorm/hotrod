@@ -42,6 +42,7 @@ import org.springframework.util.ReflectionUtils;
 
 public abstract class AbstractSelectObject<R> extends MultiSet<R> implements QueryObject {
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(AbstractSelectObject.class.getName());
 
   private List<CTE> ctes = new ArrayList<>();
@@ -542,37 +543,6 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
     }
 
   }
-
-//  public void assignNonDeclaredAliases(final AliasGenerator ag) {
-//    System.out.println("assignNonDeclaredAliases() 1");
-//    if (this.baseTableExpression != null) {
-//      System.out.println("assignNonDeclaredAliases() 2");
-//      this.baseTableExpression.designateAliases(ag);
-//    }
-//    if (this.joins != null) {
-//      for (Join j : this.joins) {
-//        j.getTableExpression().designateAliases(ag);
-//      }
-//    }
-//    if (this.wherePredicate != null) {
-//      this.wherePredicate.designateAliases(ag);
-//    }
-//    if (this.groupBy != null) {
-//      for (Expression e : this.groupBy) {
-//        e.designateAliases(ag);
-//      }
-//    }
-//    if (this.havingPredicate != null) {
-//      this.havingPredicate.designateAliases(ag);
-//    }
-//    if (this.orderingTerms != null) {
-//      for (@SuppressWarnings("unused")
-//      OrderingTerm e : this.orderingTerms) {
-//        //
-//      }
-//    }
-//    System.out.println("assignNonDeclaredAliases() 10");
-//  }
 
   protected List<ResultSetColumn> getColumnsField(final Object cs, final String colName)
       throws IllegalArgumentException, IllegalAccessException {

@@ -108,13 +108,14 @@ public class Subquery extends TableExpression {
 
   @Override
   protected List<Expression> assembleColumns() {
-    log.info(">>> Subquery '" + this.name + "': assembleColumns() -- ");
+//    log.info(">>> Subquery '" + this.name + "': assembleColumns() -- ");
     List<Expression> cols = MHelper.assembleColumnsOf(this.select, this);
-    logEmergingColumns(cols);
-    log.info(">>> Subquery '" + this.name + "': done");
+//    logEmergingColumns(cols);
+//    log.info(">>> Subquery '" + this.name + "': done");
     return cols;
   }
 
+  @SuppressWarnings("unused")
   private void logEmergingColumns(List<Expression> ec) {
     log.info("$$$$$$ Columns (" + ec.size() + "):");
     for (Expression c : ec) {

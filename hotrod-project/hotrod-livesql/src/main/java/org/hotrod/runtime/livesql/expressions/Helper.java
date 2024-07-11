@@ -39,4 +39,20 @@ public class Helper {
     return wc.unwrap();
   }
 
+  public static String render(final TypeHandler typeHandler) {
+    return typeHandler == null ? "null" : typeHandler.render();
+  }
+
+  public static String getReferenceName(final Expression expr) {
+    return expr.getReferenceName();
+  }
+
+  public static String getProperty(final Expression expr) {
+    return expr.getProperty();
+  }
+
+  public static void captureTypeHandler(final Expression expr) {
+    expr.captureTypeHandler();
+  }
+
 }

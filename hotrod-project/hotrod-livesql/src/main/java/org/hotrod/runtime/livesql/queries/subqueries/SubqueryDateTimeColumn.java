@@ -45,7 +45,7 @@ public class SubqueryDateTimeColumn extends DateTimeExpression implements Subque
     w.write(w.getSQLDialect().canonicalToNatural(this.referencedColumnName));
   }
 
-  public String toString() {
+  protected String render() {
     return this.subquery.getName().toString() + ":" + this.referencedColumnName + " typeHandler="
         + super.getTypeHandler();
   }

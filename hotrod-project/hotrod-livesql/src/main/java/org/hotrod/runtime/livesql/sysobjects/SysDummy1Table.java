@@ -1,9 +1,11 @@
 package org.hotrod.runtime.livesql.sysobjects;
 
 import org.hotrod.runtime.livesql.expressions.TypeHandler;
+import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.metadata.StringColumn;
 import org.hotrod.runtime.livesql.metadata.Table;
+import org.hotrod.runtime.livesql.metadata.WrappingColumn;
 
 public class SysDummy1Table extends Table {
 
@@ -25,5 +27,9 @@ public class SysDummy1Table extends Table {
     super.add(this.ibmreqd);
   }
 
+  @Override
+  protected WrappingColumn star() {
+    return new AllColumns(this.ibmreqd);
+  }
 
 }

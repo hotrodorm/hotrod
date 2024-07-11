@@ -9,7 +9,6 @@ import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
-import org.hotrod.runtime.livesql.expressions.TypeHandler;
 import org.hotrod.runtime.livesql.queries.SQLParameterWriter.QueryParameter;
 import org.hotrod.runtime.livesql.queries.SQLParameterWriter.RenderedParameter;
 import org.hotrodorm.hotrod.utils.SUtil;
@@ -98,7 +97,6 @@ public class QueryWriter {
   }
 
   public LiveSQLPreparedQuery getPreparedQuery(final List<Expression> columns) {
-//    log.info("columns=" + columns + (columns != null ? " [" + columns.size() + "]" : ""));
     LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
     for (QueryParameter p : this.paramWriter.getParameters()) {
       params.put(p.getName(), p.getValue());
@@ -108,21 +106,21 @@ public class QueryWriter {
       queryColumns = new LinkedHashMap<>();
       int ordinal = 1;
       for (Expression c : columns) {
-        String name = SUtil.coalesce(c.getReferenceName(), c.getProperty());
-//        log.info("## name: " + name);
+        String name = SUtil.coalesce(Helper.getReferenceName(c), Helper.getProperty(c));
         if (name == null) {
           throw new LiveSQLException("Column #" + ordinal + " of the SELECT query does not have a name. "
               + "Please apply the .as() method to this expression to assign a name to it.");
         }
         if (queryColumns.containsKey(name)) {
-          throw new LiveSQLException("Multiple query columns for this SELECT have the same name '" + name
-              + "'. Please change the name of them to ensure all column names are distinct.");
+          throw new LiveSQLException("There are multiple query columns with the same name '" + name
+              + "' in the main SELECT list of this query. "
+              + "Please change this list or use aliases to ensure all resulting column names are different.");
         }
         queryColumns.put(name, c);
         ordinal++;
       }
     }
-    log.info("queryColumns[" + (queryColumns == null?"null":queryColumns.size()) + "]");
+    log.info("queryColumns[" + (queryColumns == null ? "null" : queryColumns.size()) + "]");
     return new LiveSQLPreparedQuery(this.sb.toString(), params, queryColumns);
   }
 
@@ -159,29 +157,6 @@ public class QueryWriter {
       c.put("sql", this.sql);
       return c;
     }
-
-    // TODO: Clean up
-//    @Deprecated // UsSe PreviewRenderer instead
-//    public String render() {
-//      log.info("render #1");
-//      StringBuilder sb = new StringBuilder();
-//      sb.append("--- SQL ---\n");
-//      sb.append(this.sql);
-//      sb.append("\n--- Parameters... ---\n");
-//      for (String name : this.parameters.keySet()) {
-//        Object value = this.getParameters().get(name);
-//        sb.append(" * " + name + (value == null ? "" : " (" + value.getClass().getName() + ")") + ": " + value + "\n");
-//      }
-//      sb.append("\n--- Query columns ---\n");
-//      for (String name : this.queryColumns.keySet()) {
-//        Expression expr = this.queryColumns.get(name);
-//        TypeHandler th = Helper.getTypeHandler(expr);
-//        log.info("render: " + name + " th=" + th);
-//        sb.append(" * " + name + ": " + th);
-//      }
-//      sb.append("------------------\n");
-//      return sb.toString();
-//    }
 
   }
 

@@ -45,8 +45,7 @@ public class SubqueryBooleanColumn extends Predicate implements SubqueryColumn {
     w.write(w.getSQLDialect().canonicalToNatural(this.referencedColumnName));
   }
 
-  @Deprecated
-  public String toString() {
+  protected String render() {
     return this.subquery.getName().toString() + ":" + this.referencedColumnName + " typeHandler="
         + super.getTypeHandler();
   }

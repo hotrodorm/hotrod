@@ -35,7 +35,7 @@ public class SubqueryNumberColumn extends NumberExpression implements SubqueryCo
     }
     super.setTypeHandler(Helper.getTypeHandler(innerColumn));
   }
-  
+
   @Override
   public final String getProperty() {
     return this.referencedColumnName;
@@ -50,7 +50,7 @@ public class SubqueryNumberColumn extends NumberExpression implements SubqueryCo
     w.write(w.getSQLDialect().canonicalToNatural(this.referencedColumnName));
   }
 
-  public String toString() {
+  protected String render() {
     return this.subquery.getName().toString() + ":" + this.referencedColumnName + " typeHandler="
         + super.getTypeHandler();
   }

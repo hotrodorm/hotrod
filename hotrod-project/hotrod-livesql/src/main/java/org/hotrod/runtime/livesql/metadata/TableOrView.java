@@ -13,6 +13,7 @@ import org.hotrod.runtime.livesql.queries.select.TableExpression;
 
 public abstract class TableOrView extends TableExpression {
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(TableOrView.class.getName());
 
   private Name catalog;
