@@ -15,6 +15,7 @@ import org.hotrodorm.hotrod.utils.SUtil;
 
 public class QueryWriter {
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(QueryWriter.class.getName());
 
   private static final String INDENT = "  "; // two spaces to indent each level
@@ -120,7 +121,7 @@ public class QueryWriter {
         ordinal++;
       }
     }
-    log.info("queryColumns[" + (queryColumns == null ? "null" : queryColumns.size()) + "]");
+//    log.info("queryColumns[" + (queryColumns == null ? "null" : queryColumns.size()) + "]");
     return new LiveSQLPreparedQuery(this.sb.toString(), params, queryColumns);
   }
 
