@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.hotrod.runtime.converter.TypeConverter;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
@@ -12,6 +13,7 @@ import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableRefer
 import org.hotrod.runtime.livesql.queries.select.SHelper;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
+import org.hotrod.runtime.typesolver.TypeHandler;
 
 public abstract class Expression extends ResultSetColumn {
 
@@ -79,6 +81,8 @@ public abstract class Expression extends ResultSetColumn {
     this.precedence = precedence;
     this.typeHandler = null;
   }
+
+  // Shielded getters
 
   protected String getReferenceName() {
     return null; // Only Entity columns, AliasedExpressions and SubqueryTTTColumns return names.

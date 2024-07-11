@@ -4,8 +4,9 @@ import java.util.LinkedHashMap;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
-import org.hotrod.runtime.livesql.expressions.TypeHandler;
 import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
+import org.hotrod.runtime.typesolver.THelper;
+import org.hotrod.runtime.typesolver.TypeHandler;
 import org.hotrodorm.hotrod.utils.CUtil;
 import org.hotrodorm.hotrod.utils.HexaUtils;
 
@@ -54,7 +55,7 @@ public class PreviewRenderer {
         Expression expr = queryColumns.get(name);
         TypeHandler th = Helper.getTypeHandler(expr);
         sb.append(" * " + name + ": "
-            + (th != null ? Helper.render(th) : "(type to be determined by query metadata or by <type-solver> rules)")
+            + (th != null ? THelper.render(th) : "(type to be determined by query metadata or by <type-solver> rules)")
             + "\n");
       }
     }

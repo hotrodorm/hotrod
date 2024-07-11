@@ -3,7 +3,9 @@ package org.hotrod.runtime.livesql.expressions;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.hotrod.runtime.converter.TypeConverter;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
+import org.hotrod.runtime.typesolver.TypeHandler;
 
 public class AliasedExpression extends Expression {
 
@@ -20,15 +22,27 @@ public class AliasedExpression extends Expression {
     super.register(this.referencedExpression);
   }
 
-  public String getReferenceName() {
+  // TypeHandler setter
+
+  public TypedExpression type(final Class<?> type) {
+    super.setTypeHandler(TypeHandler.of(type));
+    return new TypedExpression(this);
+  }
+
+  public TypedExpression type(final Class<?> type, final Class<?> raw, final TypeConverter<?, ?> converter) {
+    super.setTypeHandler(TypeHandler.of(type, raw, converter));
+    return new TypedExpression(this);
+  }
+
+  // Rendering
+
+  protected String getReferenceName() {
     return this.alias;
   }
 
   @Override
-  public void captureTypeHandler() {
+  protected void captureTypeHandler() {
     this.referencedExpression.captureTypeHandler();
-//    log.info("captureTypeHandler: this.referencedExpression@" + +System.identityHashCode(this.referencedExpression)
-//        + ": " + this.referencedExpression);
     super.setTypeHandler(this.referencedExpression.getTypeHandler());
   }
 
@@ -43,8 +57,7 @@ public class AliasedExpression extends Expression {
     return referencedExpression.unwrap();
   }
 
-  @Deprecated
-  public String toString() {
+  protected String render() {
     return "'" + this.alias + "' for " + this.referencedExpression.toString();
   }
 

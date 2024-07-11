@@ -59,7 +59,6 @@ import org.hotrod.runtime.interfaces.OrderBy;
 import org.hotrod.runtime.interfaces.Selectable;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.livesql.LiveSQLMapper;
-import org.hotrod.runtime.livesql.expressions.TypeHandler;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.Name;
@@ -67,6 +66,7 @@ import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.select.MyBatisCursor;
 import org.hotrod.runtime.livesql.util.CastUtil;
 import org.hotrod.runtime.spring.LazyParentClassLoading;
+import org.hotrod.runtime.typesolver.TypeHandler;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.GenUtils;
 import org.hotrod.utils.ImportsRenderer;
@@ -1894,16 +1894,17 @@ public class ObjectDAO extends GeneratableObject {
         javaConverterClass = cm.getConverter().getJavaClass();
         rawClass = cm.getConverter().getJavaRawType();
       }
+
+      String th = TypeHandler.class.getName() + ".of(" + javaType + ".class"
+          + (javaConverterClass != null ? ", " + rawClass + ".class" + ", new " + javaConverterClass + "()" : "") + ")";
+
       println("    public final " + liveSQLColumnType + " " + javaMembername + " = new " + liveSQLColumnType + "(this" //
           + ", \"" + JUtils.escapeJavaString(colName) + "\"" //
           + ", \"" + JUtils.escapeJavaString(property) + "\"" //
           + ", \"" + JUtils.escapeJavaString(cm.getTypeName()) + "\"" //
           + ", " + cm.getColumnSize() + "" //
           + ", " + cm.getDecimalDigits() + "" //
-          + ", new " + TypeHandler.class.getName() + "(" + javaType + ".class" //
-          + ", " + (rawClass == null ? "null" : (rawClass + ".class")) //
-          + ", " + (javaConverterClass == null ? "null" : ("new " + javaConverterClass + "()")) + ")"//
-          + ");");
+          + ", " + th + ");");
     }
     println();
 

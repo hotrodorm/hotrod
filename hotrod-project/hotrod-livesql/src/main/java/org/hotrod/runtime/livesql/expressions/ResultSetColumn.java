@@ -4,23 +4,23 @@ import java.util.List;
 
 /**
  * <pre>
- *               ResultSetColumn (unwrap)
- *               /             \
- *              /               \
- *  WrappingColumn              Expression (rt)   {I} OrderingTerm
- *  |  |  |                      /       \             /      \
- *  |  |  AllColumns   AliasedExpression  \           /     OrderingExpression (rt)
- *  |  |                                   \         /
- *  |  ColumnList                      GenericExpression (isNull,isNotNull,as)
- *  |    |  |                                 |
- *  |    |  ColumnsSubset                     |
- *  |    ColumnsAliased                       |
- *  |                                         |
- *  AllSubqueryColumns              ComparableExpression (asc/desc,=,<>,<,>,<=,>=,...)
- *                                         /      \
- *                         {I} Column     /        \    {I} SubqueryColumn
- *                                 \     /          \        /
- *                                TTTColumn        SubqueryTTTColumn
+ *                ResultSetColumn (unwrap)
+ *               /               \
+ *              /                 \
+ *  WrappingColumn                Expression (rt)   {I} OrderingTerm
+ *  |  |  |                      /       |  \             /      \
+ *  |  |  AllColumns   AliasedExpression |   \           /     OrderingExpression (rt)
+ *  |  |                                 |    \         /
+ *  |  ColumnList           TypedExpression    \       /          
+ *  |    |  |                                   \     /
+ *  |    |  ColumnsSubset                 GenericExpression (isNull,isNotNull,as,type)
+ *  |    ColumnsAliased                            |
+ *  |                                              |
+ *  AllSubqueryColumns                   ComparableExpression (asc/desc,=,<>,<,>,<=,>=,...)
+ *                                              /      \
+ *                              {I} Column     /        \    {I} SubqueryColumn
+ *                                      \     /          \        /
+ *                                     TTTColumn        SubqueryTTTColumn
  * 
  * </pre>
  */

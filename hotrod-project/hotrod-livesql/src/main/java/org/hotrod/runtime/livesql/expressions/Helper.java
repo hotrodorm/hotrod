@@ -6,6 +6,7 @@ import org.hotrod.runtime.livesql.expressions.analytics.WindowableFunction;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
+import org.hotrod.runtime.typesolver.TypeHandler;
 
 public class Helper {
 
@@ -37,10 +38,6 @@ public class Helper {
 
   public static List<Expression> unwrap(final ResultSetColumn wc) {
     return wc.unwrap();
-  }
-
-  public static String render(final TypeHandler typeHandler) {
-    return typeHandler == null ? "null" : typeHandler.render();
   }
 
   public static String getReferenceName(final Expression expr) {
