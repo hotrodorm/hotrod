@@ -8,18 +8,18 @@ import java.sql.SQLException;
  * @author Vladimir Alarcon
  * 
  *         <p>
- *         Converts back and forth between transitional values and application
+ *         Converts back and forth between raw database values and application
  *         values.
  *         </p>
  * 
  *         <p>
- *         The <b>intermediate</b> value is the intermediate Java value read
- *         from the database (or written to it) using JDBC.
+ *         The <b>raw</b> value is the Java value read from the database (or
+ *         written to it) using JDBC.
  *         </p>
  * 
  *         <p>
  *         The <b>application</b> value is the value the application uses after
- *         all transformation from the database.
+ *         the converter is applied to the raw value.
  *         </p>
  *
  *         <p>

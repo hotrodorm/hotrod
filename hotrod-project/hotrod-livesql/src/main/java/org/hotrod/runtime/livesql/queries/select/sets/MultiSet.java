@@ -122,6 +122,9 @@ public abstract class MultiSet<R> {
                 } else {
                   Object raw = rs.getObject(i, th.getRawClass());
                   TypeConverter<?, ?> converter = th.getConverter();
+
+//                  retrieveClasses(converter);
+
                   value = this.applyConverter(raw, converter, conn);
                 }
                 r.put(alias, value);
@@ -144,6 +147,19 @@ public abstract class MultiSet<R> {
       return (List<R>) context.getLiveSQLMapper().select(parameters);
     }
   }
+
+//  private void retrieveClasses(TypeConverter<?, ?> converter) {
+////    try {
+//    log.info("* --- methods ---");
+//    Method[] d = converter.getClass().getDeclaredMethods();
+//    for (Method m : d) {
+//      log.info("* m=" + m);
+//    }
+//
+////    } catch (NoSuchMethodException | SecurityException e) {
+////      e.printStackTrace();
+////    }
+//  }
 
   private void logQueryColumns(LinkedHashMap<String, Expression> queryColumns) {
     int n;

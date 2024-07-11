@@ -22,8 +22,8 @@ public abstract class GenericExpression extends Expression implements OrderingTe
     return new TypedExpression(this);
   }
 
-  public TypedExpression type(final Class<?> type, final Class<?> raw, final TypeConverter<?, ?> converter) {
-    super.setTypeHandler(TypeHandler.of(type, raw, converter));
+  public TypedExpression type(final TypeConverter<?, ?> converter) {
+    super.setTypeHandler(TypeHandler.of(converter));
     return new TypedExpression(this);
   }
 
