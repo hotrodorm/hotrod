@@ -1896,7 +1896,7 @@ public class ObjectDAO extends GeneratableObject {
       }
 
       String th = TypeHandler.class.getName() + ".of(" + javaType + ".class"
-          + (javaConverterClass != null ? ", " + rawClass + ".class" + ", new " + javaConverterClass + "()" : "") + ")";
+          + (javaConverterClass != null ? ", " + rawClass + ".class" + ", " + javaConverterClass + ".class" : "") + ")";
 
       println("    public final " + liveSQLColumnType + " " + javaMembername + " = new " + liveSQLColumnType + "(this" //
           + ", \"" + JUtils.escapeJavaString(colName) + "\"" //

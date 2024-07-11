@@ -1,6 +1,5 @@
 package org.hotrod.runtime.livesql.expressions;
 
-import org.hotrod.runtime.converter.TypeConverter;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.predicates.IsNotNull;
 import org.hotrod.runtime.livesql.expressions.predicates.IsNull;
@@ -19,11 +18,6 @@ public abstract class GenericExpression extends Expression implements OrderingTe
 
   public TypedExpression type(final Class<?> type) {
     super.setTypeHandler(TypeHandler.of(type));
-    return new TypedExpression(this);
-  }
-
-  public TypedExpression type(final TypeConverter<?, ?> converter) {
-    super.setTypeHandler(TypeHandler.of(converter));
     return new TypedExpression(this);
   }
 
