@@ -5,8 +5,8 @@ import org.hotrod.config.SelectMethodTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidSQLException;
 import org.hotrod.exceptions.UncontrolledException;
-import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.ColumnsRetriever;
+import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 
 public interface ColumnsProvider {

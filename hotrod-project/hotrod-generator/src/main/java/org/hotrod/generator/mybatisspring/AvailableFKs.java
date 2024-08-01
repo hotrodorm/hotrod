@@ -37,9 +37,9 @@ public class AvailableFKs {
             .map(fk -> String.format(
                 "  <foreign-key parent=\"%s (%s)\" children=\"%s (%s)\" get-parent-method=\"\" get-children-method=\"\" />\n", //
                 esc(fk.getRemote().getTableMetadata().getId().toString()), //
-                esc(fk.getRemote().getColumns().stream().map(c -> c.getColumnName()).collect(Collectors.joining(", "))), //
+                esc(fk.getRemote().getColumns().stream().map(c -> c.getName()).collect(Collectors.joining(", "))), //
                 esc(fk.getLocal().getTableMetadata().getId().toString()), //
-                esc(fk.getLocal().getColumns().stream().map(c -> c.getColumnName()).collect(Collectors.joining(", "))) //
+                esc(fk.getLocal().getColumns().stream().map(c -> c.getName()).collect(Collectors.joining(", "))) //
             )).collect(Collectors.joining());
         w.write(q);
         w.write("</foreign-keys>\n");
@@ -58,11 +58,11 @@ public class AvailableFKs {
       this.fkm = fkm;
       this.key = fkm.getRemote().getTableMetadata().getId().toString() //
           + ":" //
-          + fkm.getRemote().getColumns().stream().map(c -> c.getColumnName()).collect(Collectors.joining(".")) //
+          + fkm.getRemote().getColumns().stream().map(c -> c.getName()).collect(Collectors.joining(".")) //
           + "-" //
           + fkm.getLocal().getTableMetadata().getId().toString() //
           + ":" //
-          + fkm.getLocal().getColumns().stream().map(c -> c.getColumnName()).collect(Collectors.joining(".")) //
+          + fkm.getLocal().getColumns().stream().map(c -> c.getName()).collect(Collectors.joining(".")) //
       ;
     }
 

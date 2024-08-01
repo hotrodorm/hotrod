@@ -5,6 +5,7 @@ import javax.sql.DataSource;
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.livesql.LiveSQLMapper;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
 
 public class LiveSQLContext {
 
@@ -13,14 +14,16 @@ public class LiveSQLContext {
   private LiveSQLMapper liveSQLMapper;
   private boolean usePlainJDBC;
   private DataSource dataSource;
+  private TypeSolver typeSolver;
 
   public LiveSQLContext(final LiveSQLDialect liveSQLDialect, final SqlSession sqlSession,
-      final LiveSQLMapper liveSQLMapper, final boolean usePlainJDBC, final DataSource dataSource) {
+      final LiveSQLMapper liveSQLMapper, final boolean usePlainJDBC, final DataSource dataSource, final TypeSolver typeSolver) {
     this.liveSQLDialect = liveSQLDialect;
     this.sqlSession = sqlSession;
     this.liveSQLMapper = liveSQLMapper;
     this.usePlainJDBC = usePlainJDBC;
     this.dataSource = dataSource;
+    this.typeSolver = typeSolver;
   }
 
   public LiveSQLDialect getLiveSQLDialect() {
@@ -41,6 +44,10 @@ public class LiveSQLContext {
 
   public DataSource getDataSource() {
     return dataSource;
+  }
+
+  public TypeSolver getTypeSolver() {
+    return typeSolver;
   }
 
 }

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.runtime.livesql.queries.QueryWriter;
-import org.hotrod.runtime.typesolver.TypeHandler;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
 
 public class AliasedExpression extends Expression {
 

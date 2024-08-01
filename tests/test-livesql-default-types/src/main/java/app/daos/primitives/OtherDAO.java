@@ -29,6 +29,7 @@ import org.hotrod.runtime.livesql.util.CastUtil;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import org.hotrod.runtime.livesql.metadata.Column;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.runtime.livesql.metadata.NumberColumn;
 import org.hotrod.runtime.livesql.metadata.StringColumn;
 import org.hotrod.runtime.livesql.metadata.DateTimeColumn;
@@ -86,9 +87,12 @@ public class OtherDAO implements Serializable, ApplicationContextAware {
   @Value("${use.plain.jdbc:false}")
   private boolean usePlainJDBC;
 
+  @Autowired
+  private TypeSolver typeSolver;
+
   @PostConstruct
   public void initializeContext() {
-    this.context = new LiveSQLContext(this.liveSQLDialect, this.sqlSession, this.liveSQLMapper, this.usePlainJDBC, this.dataSource);
+    this.context = new LiveSQLContext(this.liveSQLDialect, this.sqlSession, this.liveSQLMapper, this.usePlainJDBC, this.dataSource, this.typeSolver);
   }
 
   // Row Parser
@@ -281,13 +285,13 @@ public class OtherDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public final NumberColumn id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.lang.Integer.class, null, null));
-    public final BooleanColumn boo1 = new BooleanColumn(this, "BOO1", "boo1", "BOOLEAN", 1, 0, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.lang.Boolean.class, null, null));
-    public final BooleanColumn boo2 = new BooleanColumn(this, "BOO2", "boo2", "BOOLEAN", 1, 0, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.lang.Boolean.class, null, null));
-    public final BooleanColumn boo3 = new BooleanColumn(this, "BOO3", "boo3", "BOOLEAN", 1, 0, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.lang.Boolean.class, null, null));
-    public final ObjectColumn oth1 = new ObjectColumn(this, "OTH1", "oth1", "JAVA_OBJECT", 1000000000, 0, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.lang.Object.class, null, null));
-    public final ByteArrayColumn idn1 = new ByteArrayColumn(this, "IDN1", "idn1", "UUID", 16, 0, new org.hotrod.runtime.livesql.expressions.TypeHandler(byte[].class, null, null));
-    public final ByteArrayColumn geo1 = new ByteArrayColumn(this, "GEO1", "geo1", "GEOMETRY", 1000000000, 0, new org.hotrod.runtime.livesql.expressions.TypeHandler(byte[].class, null, null));
+    public final NumberColumn id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class));
+    public final BooleanColumn boo1 = new BooleanColumn(this, "BOO1", "boo1", "BOOLEAN", 1, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Boolean.class));
+    public final BooleanColumn boo2 = new BooleanColumn(this, "BOO2", "boo2", "BOOLEAN", 1, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Boolean.class));
+    public final BooleanColumn boo3 = new BooleanColumn(this, "BOO3", "boo3", "BOOLEAN", 1, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Boolean.class));
+    public final ObjectColumn oth1 = new ObjectColumn(this, "OTH1", "oth1", "JAVA_OBJECT", 1000000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Object.class));
+    public final ByteArrayColumn idn1 = new ByteArrayColumn(this, "IDN1", "idn1", "UUID", 16, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(byte[].class));
+    public final ByteArrayColumn geo1 = new ByteArrayColumn(this, "GEO1", "geo1", "GEOMETRY", 1000000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(byte[].class));
 
     // Getters
 

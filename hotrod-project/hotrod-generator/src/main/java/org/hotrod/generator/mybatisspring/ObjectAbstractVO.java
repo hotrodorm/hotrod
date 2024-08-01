@@ -11,7 +11,6 @@ import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.MyBatisSpringTag;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.UncontrolledException;
-import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.DAOType;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
@@ -19,6 +18,7 @@ import org.hotrod.generator.GeneratableObject;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.runtime.spring.LazyParentClassLoading;
+import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.ClassPackage;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 

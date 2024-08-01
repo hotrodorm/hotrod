@@ -5,7 +5,7 @@ import org.hotrod.runtime.livesql.expressions.predicates.IsNotNull;
 import org.hotrod.runtime.livesql.expressions.predicates.IsNull;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
-import org.hotrod.runtime.typesolver.TypeHandler;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
 import org.hotrodorm.hotrod.utils.SUtil;
 
 public abstract class GenericExpression extends Expression implements OrderingTerm {

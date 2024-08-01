@@ -1,4 +1,4 @@
-package org.hotrod.runtime.typesolver;
+package org.hotrod.runtime.livesql.queries.typesolver;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -34,10 +34,6 @@ public class TypeHandler {
     } else {
       return new TypeHandler(javaClass, null, null);
     }
-  }
-
-  public static TypeHandler of(final Class<?> javaClass, final Class<?> rawClass, final TypeConverter<?, ?> converter) {
-    return new TypeHandler(javaClass, rawClass, converter);
   }
 
   private static TypeHandler discoverHandler(final Class<TypeConverter<?, ?>> converter) {

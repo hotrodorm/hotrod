@@ -30,7 +30,6 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.InvalidSQLException;
 import org.hotrod.exceptions.UncontrolledException;
-import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.mybatisspring.DataSetLayout;
 import org.hotrod.identifiers.Id;
@@ -42,6 +41,7 @@ import org.hotrod.metadata.StructuredColumnMetadata.IdColumnNotFoundException;
 import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VORegistry;
+import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.ColumnsMetadataRetriever;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.hotrod.utils.JdbcTypes;
@@ -614,7 +614,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
     Map<String, ColumnMetadata> baseColumnsByName = new HashMap<String, ColumnMetadata>();
     for (ColumnMetadata cm : dm.getColumns()) {
-      baseColumnsByName.put(cm.getColumnName(), cm);
+      baseColumnsByName.put(cm.getName(), cm);
     }
 
     if (requiresIds) {
@@ -648,10 +648,10 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     List<StructuredColumnMetadata> metadata = new ArrayList<StructuredColumnMetadata>();
     List<StructuredColumnMetadata> retrievedColumns = this.cmr.retrieve();
     for (StructuredColumnMetadata r : retrievedColumns) {
-      ColumnMetadata baseColumn = baseColumnsByName.get(r.getColumnName());
+      ColumnMetadata baseColumn = baseColumnsByName.get(r.getName());
       if (baseColumn == null) {
-        String msg = "Invalid column '" + r.getColumnName() + "' in the body of the <" + this.getTagName() + "> tag at "
-            + super.getSourceLocation().render() + ".\n" + "There's no column '" + r.getColumnName() + "' in the "
+        String msg = "Invalid column '" + r.getName() + "' in the body of the <" + this.getTagName() + "> tag at "
+            + super.getSourceLocation().render() + ".\n" + "There's no column '" + r.getName() + "' in the "
             + (this.tableMetadata != null ? "table" : "view") + " '"
             + (this.tableMetadata != null ? this.tableMetadata.getId().getRenderedSQLName()
                 : this.viewMetadata.getId().getRenderedSQLName())
@@ -678,7 +678,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
       }
       throw new InvalidConfigurationFileException(this,
           "Unsupported JDBC type " + jdbcType + " (" + JdbcTypes.codeToName(jdbcType) + ") on column '"
-              + baseColumn.getColumnName() + "' of "
+              + baseColumn.getName() + "' of "
               + (this.tableMetadata != null ? "table '" + this.tableMetadata.getId().getCanonicalSQLName() + "'"
                   : "view '" + this.viewMetadata.getId().getCanonicalSQLName() + "'")
               + ". " + "A column of this type cannot be used as an id column.\n" + "Supported JDBC types are:\n"

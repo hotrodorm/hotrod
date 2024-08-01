@@ -18,7 +18,6 @@ import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.exceptions.UncontrolledException;
-import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.DAOType;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
@@ -30,6 +29,7 @@ import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.metadata.KeyMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.SelectMethodMetadata.SelectMethodReturnType;
+import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.StructuredColumnsMetadata;
 import org.hotrod.metadata.VOMetadata;
@@ -355,7 +355,7 @@ public class Mapper extends GeneratableObject {
 
     String indent = SUtil.getFiller(' ', 4);
     println(indent + "<" + tagName + " property=\"" + cm.getId().getJavaMemberName() + "\" column=\""
-        + SUtil.escapeXmlAttribute(cm.getColumnName()) + "\" " + typeHandler + "/>");
+        + SUtil.escapeXmlAttribute(cm.getName()) + "\" " + typeHandler + "/>");
 
   }
 
@@ -375,7 +375,7 @@ public class Mapper extends GeneratableObject {
 
     String indent = SUtil.getFiller(' ', 4);
     println(indent + "<" + tagName + " property=\"" + cm.getId().getJavaMemberName() + "\" column=\""
-        + SUtil.escapeXmlAttribute(cm.getColumnName()) + "\" " + typeHandler + "/>");
+        + SUtil.escapeXmlAttribute(cm.getName()) + "\" " + typeHandler + "/>");
 
   }
 
@@ -1250,7 +1250,7 @@ public class Mapper extends GeneratableObject {
 
     String typeHandler = "";
     if (cm.getConverter() != null) {
-      log.debug("converter=" + cm.getConverter().getName() + " cm=" + cm.getColumnName());
+      log.debug("converter=" + cm.getConverter().getName() + " cm=" + cm.getName());
       typeHandler = "typeHandler=\"" + dao.getTypeHandlerFullClassName(sm, cm) + "\" ";
     } else {
       EnumDataSetMetadata ds = cm.getEnumMetadata();

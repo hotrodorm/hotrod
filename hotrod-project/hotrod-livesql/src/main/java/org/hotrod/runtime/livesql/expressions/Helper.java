@@ -6,12 +6,16 @@ import org.hotrod.runtime.livesql.expressions.analytics.WindowableFunction;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
-import org.hotrod.runtime.typesolver.TypeHandler;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
 
 public class Helper {
 
   public static TypeHandler getTypeHandler(final Expression expr) {
     return expr.getTypeHandler();
+  }
+
+  public static void setTypeHandler(final Expression expr, final TypeHandler typeHandler) {
+    expr.setTypeHandler(typeHandler);
   }
 
   public static void validateTableReferences(final Expression expr, final TableReferences tableReferences,

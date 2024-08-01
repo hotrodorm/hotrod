@@ -92,7 +92,7 @@ public class KeyMetadata implements Serializable {
     sb.append("(");
     ListWriter w = new ListWriter(",");
     for (ColumnMetadata cm : this.columns) {
-      w.add(cm.getColumnName());
+      w.add(cm.getName());
     }
     sb.append(w.toString());
     sb.append(")");

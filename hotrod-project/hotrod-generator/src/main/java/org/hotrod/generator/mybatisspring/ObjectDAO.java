@@ -35,7 +35,6 @@ import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.exceptions.UncontrolledException;
-import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.DAOType;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
@@ -64,9 +63,11 @@ import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.select.MyBatisCursor;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.runtime.livesql.util.CastUtil;
 import org.hotrod.runtime.spring.LazyParentClassLoading;
-import org.hotrod.runtime.typesolver.TypeHandler;
+import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.GenUtils;
 import org.hotrod.utils.ImportsRenderer;
@@ -408,6 +409,7 @@ public class ObjectDAO extends GeneratableObject {
     imports.add("javax.annotation.PostConstruct");
     imports.add(DataSource.class);
     imports.add(Column.class);
+    imports.add(TypeSolver.class);
     imports.add("org.hotrod.runtime.livesql.metadata.NumberColumn");
     imports.add("org.hotrod.runtime.livesql.metadata.StringColumn");
     imports.add("org.hotrod.runtime.livesql.metadata.DateTimeColumn");
@@ -534,10 +536,14 @@ public class ObjectDAO extends GeneratableObject {
     println("  private boolean usePlainJDBC;");
     println();
 
+    println("  @Autowired");
+    println("  private TypeSolver typeSolver;");
+    println();
+
     println("  @PostConstruct");
     println("  public void initializeContext() {");
     println(
-        "    this.context = new LiveSQLContext(this.liveSQLDialect, this.sqlSession, this.liveSQLMapper, this.usePlainJDBC, this.dataSource);");
+        "    this.context = new LiveSQLContext(this.liveSQLDialect, this.sqlSession, this.liveSQLMapper, this.usePlainJDBC, this.dataSource, this.typeSolver);");
     println("  }");
     println();
 
@@ -911,7 +917,7 @@ public class ObjectDAO extends GeneratableObject {
             for (ForeignKeyMetadata fkm : fkSelectors.get(ds)) {
               ListWriter lw = new ListWriter(", ");
               for (ColumnMetadata cm : fkm.getLocal().getColumns()) {
-                lw.add(cm.getColumnName());
+                lw.add(cm.getName());
               }
               println("  // --- no select parent for FK column" + (fkm.getLocal().getColumns().size() > 1 ? "s" : "")
                   + " (" + lw.toString() + ") since it points to the enum table "
@@ -951,9 +957,9 @@ public class ObjectDAO extends GeneratableObject {
       return GenUtils.convertPropertyType(fromColumn.getType().getJavaClassName(),
           toColumn.getType().getJavaClassName(), expression);
     } catch (ControlledException e) {
-      throw new CannotConvertTypeException("Cannot navigate foreign key relationship from column "
-          + fromColumn.getTableName() + "." + fromColumn.getColumnName() + " to column " + toColumn.getTableName() + "."
-          + toColumn.getColumnName() + ": " + e.getMessage());
+      throw new CannotConvertTypeException(
+          "Cannot navigate foreign key relationship from column " + fromColumn.getTable() + "." + fromColumn.getName()
+              + " to column " + toColumn.getTable() + "." + toColumn.getName() + ": " + e.getMessage());
     }
   }
 
@@ -1641,12 +1647,12 @@ public class ObjectDAO extends GeneratableObject {
           ValueTypeManager<?> tm = ValueTypeFactory.getValueManager(interType);
           if (tm == null) {
             throw new ControlledException("Could not generate DAO primitives for table '"
-                + this.metadata.getId().getCanonicalSQLName() + "'. Foreign key column '" + cm.getColumnName()
+                + this.metadata.getId().getCanonicalSQLName() + "'. Foreign key column '" + cm.getName()
                 + "' point to an enum type and must be of one of the following simple types:\n"
                 + ListWriter.render(ValueTypeFactory.getSupportedTypes(), " - ", "", "\n"));
           }
 
-          println("  // TypeHandler for enum-FK column " + cm.getColumnName() + ".");
+          println("  // TypeHandler for enum-FK column " + cm.getName() + ".");
           println();
           println("  public static class " + typeHandlerClassName + " implements TypeHandler<" + type + "> {");
           println();
@@ -1739,7 +1745,7 @@ public class ObjectDAO extends GeneratableObject {
     String getter = cm.getConverter().getJdbcGetterMethod();
     String converter = cm.getConverter().getJavaClass();
 
-    println("  // TypeHandler for " + (property != null ? "property " + property : "column " + cm.getColumnName())
+    println("  // TypeHandler for " + (property != null ? "property " + property : "column " + cm.getName())
         + " using Converter " + converter + ".");
     println();
     println("  public static class " + typeHandlerClassName + " implements TypeHandler<" + type + "> {");
@@ -1805,8 +1811,7 @@ public class ObjectDAO extends GeneratableObject {
       String ci = JUtils.escapeJavaString(cm.getId().getRenderedSQLName());
       lw.add("    " + constantBase + "(\"" + ti + "\", \"" + ci + "\", true)");
       lw.add("    " + constantBase + "$DESC(\"" + ti + "\", \"" + ci + "\", false)");
-      log.debug(
-          "*** " + cm.getColumnName() + " -> cm.isCaseSensitiveStringSortable()=" + cm.isCaseSensitiveStringSortable());
+      log.debug("*** " + cm.getName() + " -> cm.isCaseSensitiveStringSortable()=" + cm.isCaseSensitiveStringSortable());
       if (cm.isCaseSensitiveStringSortable()) {
         String cici = JUtils.escapeJavaString(cm.renderForCaseInsensitiveOrderBy());
 
@@ -1889,21 +1894,21 @@ public class ObjectDAO extends GeneratableObject {
       String colName = cm.getId().getCanonicalSQLName();
       String property = cm.getId().getJavaMemberName();
       String javaConverterClass = null;
-      String rawClass = null;
+
+      String th;
       if (cm.getConverter() != null) {
         javaConverterClass = cm.getConverter().getJavaClass();
-        rawClass = cm.getConverter().getJavaRawType();
+        th = TypeHandler.class.getName() + ".of(" + javaConverterClass + ".class)";
+      } else {
+        th = TypeHandler.class.getName() + ".of(" + javaType + ".class)";
       }
-
-      String th = TypeHandler.class.getName() + ".of(" + javaType + ".class"
-          + (javaConverterClass != null ? ", " + rawClass + ".class" + ", " + javaConverterClass + ".class" : "") + ")";
 
       println("    public final " + liveSQLColumnType + " " + javaMembername + " = new " + liveSQLColumnType + "(this" //
           + ", \"" + JUtils.escapeJavaString(colName) + "\"" //
           + ", \"" + JUtils.escapeJavaString(property) + "\"" //
           + ", \"" + JUtils.escapeJavaString(cm.getTypeName()) + "\"" //
-          + ", " + cm.getColumnSize() + "" //
-          + ", " + cm.getDecimalDigits() + "" //
+          + ", " + cm.getPrecision() + "" //
+          + ", " + cm.getScale() + "" //
           + ", " + th + ");");
     }
     println();
@@ -2293,7 +2298,7 @@ public class ObjectDAO extends GeneratableObject {
   private Set<String> selectTypeHandlerNames = new HashSet<String>();
 
   private String getTypeHandlerClassName(final SelectMethodMetadata sm, final ColumnMetadata cm) {
-    log.debug("sm=" + sm.getMethod() + " # " + cm.getColumnName());
+    log.debug("sm=" + sm.getMethod() + " # " + cm.getName());
     String thName = null;
     Map<ColumnMetadata, String> typeHandlers = this.selectTypeHandlers.get(sm);
     if (typeHandlers != null) {
@@ -2311,8 +2316,8 @@ public class ObjectDAO extends GeneratableObject {
       this.selectTypeHandlerNames.add(thName);
       added = true;
     }
-    log.debug(this.getClassName() + " / " + cm.getColumnName() + " - TypeHandler=" + thName + " added=" + added
-        + " total=" + this.selectTypeHandlerNames.size());
+//    log.debug(this.getClassName() + " / " + cm.getName() + " - TypeHandler=" + thName + " added=" + added
+//        + " total=" + this.selectTypeHandlerNames.size());
     return thName;
   }
 
@@ -2340,7 +2345,7 @@ public class ObjectDAO extends GeneratableObject {
     ListWriter lw = new ListWriter(", ");
     for (ColumnMetadata cm : km.getColumns()) {
       EnumDataSetMetadata em = cm.getEnumMetadata();
-      log.debug(cm.getColumnName() + " cm.getEnumMetadata()=" + em);
+//      log.debug(cm.getName() + " cm.getEnumMetadata()=" + em);
       String javaClassName;
       if (em != null) {
         EnumClass ec = mg.getEnum(em);

@@ -5,7 +5,7 @@ import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.metadata.StringColumn;
 import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.metadata.WrappingColumn;
-import org.hotrod.runtime.typesolver.TypeHandler;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
 
 public class SysDummy1Table extends Table {
 

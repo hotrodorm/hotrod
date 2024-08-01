@@ -15,10 +15,10 @@ import org.hotrod.database.PropertyType;
 import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
-import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
+import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.JdbcTypes.JDBCType;
 import org.hotrod.utils.JdbcUtils;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
@@ -65,20 +65,20 @@ public class OracleAdapter extends DatabaseAdapter {
 
     case Types.DECIMAL:
     case Types.NUMERIC:
-      if (m.getDecimalDigits() == null || m.getDecimalDigits().intValue() != 0) {
+      if (m.getScale() == null || m.getScale().intValue() != 0) {
         return new PropertyType(BigDecimal.class, m, false);
       } else {
-        if (m.getColumnSize() == null) {
+        if (m.getPrecision() == null) {
           return new PropertyType(BigDecimal.class, m, false);
         } else {
-          if (m.getColumnSize().intValue() <= 2) {
-            return new PropertyType(Byte.class, m, false, ValueRange.getSignedRange(m.getColumnSize()));
-          } else if (m.getColumnSize().intValue() <= 4) {
-            return new PropertyType(Short.class, m, false, ValueRange.getSignedRange(m.getColumnSize()));
-          } else if (m.getColumnSize().intValue() <= 9) {
-            return new PropertyType(Integer.class, m, false, ValueRange.getSignedRange(m.getColumnSize()));
-          } else if (m.getColumnSize().intValue() <= 18) {
-            return new PropertyType(Long.class, m, false, ValueRange.getSignedRange(m.getColumnSize()));
+          if (m.getPrecision().intValue() <= 2) {
+            return new PropertyType(Byte.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
+          } else if (m.getPrecision().intValue() <= 4) {
+            return new PropertyType(Short.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
+          } else if (m.getPrecision().intValue() <= 9) {
+            return new PropertyType(Integer.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
+          } else if (m.getPrecision().intValue() <= 18) {
+            return new PropertyType(Long.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
           } else {
             return new PropertyType(BigInteger.class, m, false);
           }
@@ -99,9 +99,9 @@ public class OracleAdapter extends DatabaseAdapter {
       } else if ("double precision".equalsIgnoreCase(m.getTypeName())) {
         return new PropertyType(Double.class, m, false);
       } else if ("float".equalsIgnoreCase(m.getTypeName())) {
-        if (m.getColumnSize() <= 23) {
+        if (m.getPrecision() <= 23) {
           return new PropertyType(Float.class, m, false);
-        } else if (m.getColumnSize() <= 52) {
+        } else if (m.getPrecision() <= 52) {
           return new PropertyType(Double.class, m, false);
         } else {
           return new PropertyType(BigDecimal.class, m, false);

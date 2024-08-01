@@ -29,6 +29,7 @@ import org.hotrod.runtime.livesql.util.CastUtil;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import org.hotrod.runtime.livesql.metadata.Column;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.runtime.livesql.metadata.NumberColumn;
 import org.hotrod.runtime.livesql.metadata.StringColumn;
 import org.hotrod.runtime.livesql.metadata.DateTimeColumn;
@@ -86,9 +87,12 @@ public class NumbersDAO implements Serializable, ApplicationContextAware {
   @Value("${use.plain.jdbc:false}")
   private boolean usePlainJDBC;
 
+  @Autowired
+  private TypeSolver typeSolver;
+
   @PostConstruct
   public void initializeContext() {
-    this.context = new LiveSQLContext(this.liveSQLDialect, this.sqlSession, this.liveSQLMapper, this.usePlainJDBC, this.dataSource);
+    this.context = new LiveSQLContext(this.liveSQLDialect, this.sqlSession, this.liveSQLMapper, this.usePlainJDBC, this.dataSource, this.typeSolver);
   }
 
   // Row Parser
@@ -356,28 +360,28 @@ public class NumbersDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public final NumberColumn id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.lang.Integer.class, null, null));
-    public final NumberColumn int1 = new NumberColumn(this, "INT1", "int1", "INTEGER", 32, 0, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.lang.Integer.class, null, null));
-    public final NumberColumn int2 = new NumberColumn(this, "INT2", "int2", "INTEGER", 32, 0, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.lang.Integer.class, null, null));
-    public final NumberColumn int3 = new NumberColumn(this, "INT3", "int3", "INTEGER", 32, 0, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.lang.Integer.class, null, null));
-    public final NumberColumn int4 = new NumberColumn(this, "INT4", "int4", "INTEGER", 32, 0, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.lang.Integer.class, null, null));
-    public final NumberColumn int5 = new NumberColumn(this, "INT5", "int5", "INTEGER", 32, 0, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.lang.Integer.class, null, null));
-    public final NumberColumn int10 = new NumberColumn(this, "INT10", "int10", "TINYINT", 8, 0, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.lang.Byte.class, null, null));
-    public final NumberColumn int20 = new NumberColumn(this, "INT20", "int20", "SMALLINT", 16, 0, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.lang.Short.class, null, null));
-    public final NumberColumn int21 = new NumberColumn(this, "INT21", "int21", "SMALLINT", 16, 0, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.lang.Short.class, null, null));
-    public final NumberColumn int30 = new NumberColumn(this, "INT30", "int30", "BIGINT", 64, 0, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.lang.Long.class, null, null));
-    public final NumberColumn int31 = new NumberColumn(this, "INT31", "int31", "BIGINT", 64, 0, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.lang.Long.class, null, null));
-    public final NumberColumn dec1 = new NumberColumn(this, "DEC1", "dec1", "DECIMAL", 10, 2, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.math.BigDecimal.class, null, null));
-    public final NumberColumn dec2 = new NumberColumn(this, "DEC2", "dec2", "DECIMAL", 19, 4, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.math.BigDecimal.class, null, null));
-    public final ObjectColumn dec3 = new ObjectColumn(this, "DEC3", "dec3", "NUMERIC", 10, 2, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.lang.Object.class, null, null));
-    public final ObjectColumn dec4 = new ObjectColumn(this, "DEC4", "dec4", "NUMERIC", 10, 2, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.lang.Object.class, null, null));
-    public final NumberColumn dec5 = new NumberColumn(this, "DEC5", "dec5", "DECIMAL", 10, 2, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.math.BigDecimal.class, null, null));
-    public final NumberColumn dou1 = new NumberColumn(this, "DOU1", "dou1", "DOUBLE PRECISION", 53, 0, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.lang.Double.class, null, null));
-    public final NumberColumn dou2 = new NumberColumn(this, "DOU2", "dou2", "DOUBLE PRECISION", 53, 0, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.lang.Double.class, null, null));
-    public final ObjectColumn dou3 = new ObjectColumn(this, "DOU3", "dou3", "DOUBLE PRECISION", 53, 0, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.lang.Object.class, null, null));
-    public final NumberColumn dou4 = new NumberColumn(this, "DOU4", "dou4", "DOUBLE PRECISION", 53, 0, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.lang.Double.class, null, null));
-    public final NumberColumn rea1 = new NumberColumn(this, "REA1", "rea1", "REAL", 24, 0, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.lang.Float.class, null, null));
-    public final NumberColumn rea2 = new NumberColumn(this, "REA2", "rea2", "REAL", 24, 0, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.lang.Float.class, null, null));
+    public final NumberColumn id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class));
+    public final NumberColumn int1 = new NumberColumn(this, "INT1", "int1", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class));
+    public final NumberColumn int2 = new NumberColumn(this, "INT2", "int2", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class));
+    public final NumberColumn int3 = new NumberColumn(this, "INT3", "int3", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class));
+    public final NumberColumn int4 = new NumberColumn(this, "INT4", "int4", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class));
+    public final NumberColumn int5 = new NumberColumn(this, "INT5", "int5", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class));
+    public final NumberColumn int10 = new NumberColumn(this, "INT10", "int10", "TINYINT", 8, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Byte.class));
+    public final NumberColumn int20 = new NumberColumn(this, "INT20", "int20", "SMALLINT", 16, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Short.class));
+    public final NumberColumn int21 = new NumberColumn(this, "INT21", "int21", "SMALLINT", 16, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Short.class));
+    public final NumberColumn int30 = new NumberColumn(this, "INT30", "int30", "BIGINT", 64, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Long.class));
+    public final NumberColumn int31 = new NumberColumn(this, "INT31", "int31", "BIGINT", 64, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Long.class));
+    public final NumberColumn dec1 = new NumberColumn(this, "DEC1", "dec1", "DECIMAL", 10, 2, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.math.BigDecimal.class));
+    public final NumberColumn dec2 = new NumberColumn(this, "DEC2", "dec2", "DECIMAL", 19, 4, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.math.BigDecimal.class));
+    public final ObjectColumn dec3 = new ObjectColumn(this, "DEC3", "dec3", "NUMERIC", 10, 2, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Object.class));
+    public final ObjectColumn dec4 = new ObjectColumn(this, "DEC4", "dec4", "NUMERIC", 10, 2, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Object.class));
+    public final NumberColumn dec5 = new NumberColumn(this, "DEC5", "dec5", "DECIMAL", 10, 2, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.math.BigDecimal.class));
+    public final NumberColumn dou1 = new NumberColumn(this, "DOU1", "dou1", "DOUBLE PRECISION", 53, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Double.class));
+    public final NumberColumn dou2 = new NumberColumn(this, "DOU2", "dou2", "DOUBLE PRECISION", 53, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Double.class));
+    public final ObjectColumn dou3 = new ObjectColumn(this, "DOU3", "dou3", "DOUBLE PRECISION", 53, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Object.class));
+    public final NumberColumn dou4 = new NumberColumn(this, "DOU4", "dou4", "DOUBLE PRECISION", 53, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Double.class));
+    public final NumberColumn rea1 = new NumberColumn(this, "REA1", "rea1", "REAL", 24, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Float.class));
+    public final NumberColumn rea2 = new NumberColumn(this, "REA2", "rea2", "REAL", 24, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Float.class));
 
     // Getters
 

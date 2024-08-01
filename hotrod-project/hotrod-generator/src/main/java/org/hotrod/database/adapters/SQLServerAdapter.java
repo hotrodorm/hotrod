@@ -17,10 +17,10 @@ import org.hotrod.database.PropertyType;
 import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
-import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
+import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.JdbcTypes.JDBCType;
 import org.hotrod.utils.JdbcUtils;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
@@ -67,16 +67,16 @@ public class SQLServerAdapter extends DatabaseAdapter {
     // Numeric types
 
     case Types.DECIMAL: // DECIMAL, MONEY, SMALLMONEY
-      if ((m.getDecimalDigits() != null) && (m.getDecimalDigits().intValue() != 0)) {
+      if ((m.getScale() != null) && (m.getScale().intValue() != 0)) {
         return new PropertyType(BigDecimal.class, m, false);
-      } else if (m.getColumnSize() <= 2) {
-        return new PropertyType(Byte.class, m, false, ValueRange.getSignedRange(m.getColumnSize()));
-      } else if (m.getColumnSize() <= 4) {
-        return new PropertyType(Short.class, m, false, ValueRange.getSignedRange(m.getColumnSize()));
-      } else if (m.getColumnSize() <= 9) {
-        return new PropertyType(Integer.class, m, false, ValueRange.getSignedRange(m.getColumnSize()));
-      } else if (m.getColumnSize() <= 18) {
-        return new PropertyType(Long.class, m, false, ValueRange.getSignedRange(m.getColumnSize()));
+      } else if (m.getPrecision() <= 2) {
+        return new PropertyType(Byte.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
+      } else if (m.getPrecision() <= 4) {
+        return new PropertyType(Short.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
+      } else if (m.getPrecision() <= 9) {
+        return new PropertyType(Integer.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
+      } else if (m.getPrecision() <= 18) {
+        return new PropertyType(Long.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
       } else {
         return new PropertyType(BigInteger.class, m, false);
       }
@@ -106,15 +106,15 @@ public class SQLServerAdapter extends DatabaseAdapter {
     case Types.NCHAR:
       return new PropertyType(String.class, m, false);
     case Types.NVARCHAR:
-      isLOB = m.getColumnSize() >= MAX_VARCHAR_LENGTH;
+      isLOB = m.getPrecision() >= MAX_VARCHAR_LENGTH;
       return new PropertyType(String.class, m, isLOB);
     case Types.LONGVARCHAR: // TEXT
-      isLOB = m.getColumnSize() >= MAX_VARCHAR_LENGTH;
+      isLOB = m.getPrecision() >= MAX_VARCHAR_LENGTH;
       return new PropertyType(String.class, m, isLOB);
     case Types.LONGNVARCHAR: // NTEXT, XML
       // return new PropertyType(String.class, m); // LONGNVARCHAR is not
       // supported by MyBatis.
-      isLOB = m.getColumnSize() >= MAX_VARCHAR_LENGTH;
+      isLOB = m.getPrecision() >= MAX_VARCHAR_LENGTH;
       return new PropertyType(String.class, JDBCType.VARCHAR, isLOB);
 
     // Date/Time types
@@ -122,7 +122,7 @@ public class SQLServerAdapter extends DatabaseAdapter {
     case Types.DATE:
       return new PropertyType(java.sql.Date.class, m, false);
     case Types.TIME:
-      if (m.getDecimalDigits() <= 3) {
+      if (m.getScale() <= 3) {
         return new PropertyType(java.sql.Time.class, m, false);
       } else {
         return new PropertyType(java.sql.Timestamp.class, m, false);
@@ -149,7 +149,7 @@ public class SQLServerAdapter extends DatabaseAdapter {
       } else if ("geography".equalsIgnoreCase(m.getTypeName())) {
         return new PropertyType("byte[]", m, false);
       } else {
-        isLOB = m.getColumnSize() >= MAX_VARCHAR_LENGTH;
+        isLOB = m.getPrecision() >= MAX_VARCHAR_LENGTH;
         return new PropertyType("byte[]", m, isLOB);
       }
     case Types.LONGVARBINARY:

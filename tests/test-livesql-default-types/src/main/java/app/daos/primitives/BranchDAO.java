@@ -40,6 +40,7 @@ import org.hotrod.runtime.livesql.util.CastUtil;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import org.hotrod.runtime.livesql.metadata.Column;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.runtime.livesql.metadata.NumberColumn;
 import org.hotrod.runtime.livesql.metadata.StringColumn;
 import org.hotrod.runtime.livesql.metadata.DateTimeColumn;
@@ -101,9 +102,12 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
   @Value("${use.plain.jdbc:false}")
   private boolean usePlainJDBC;
 
+  @Autowired
+  private TypeSolver typeSolver;
+
   @PostConstruct
   public void initializeContext() {
-    this.context = new LiveSQLContext(this.liveSQLDialect, this.sqlSession, this.liveSQLMapper, this.usePlainJDBC, this.dataSource);
+    this.context = new LiveSQLContext(this.liveSQLDialect, this.sqlSession, this.liveSQLMapper, this.usePlainJDBC, this.dataSource, this.typeSolver);
   }
 
   // Row Parser
@@ -322,9 +326,9 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public final NumberColumn id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.lang.Integer.class, null, null));
-    public final StringColumn region = new StringColumn(this, "REGION", "region", "CHARACTER VARYING", 10, 0, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.lang.String.class, null, null));
-    public final BooleanColumn isVip = new BooleanColumn(this, "IS_VIP", "isVip", "INTEGER", 32, 0, new org.hotrod.runtime.livesql.expressions.TypeHandler(java.lang.Boolean.class, java.lang.Integer.class, new app.IntegerBooleanConverter()));
+    public final NumberColumn id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class));
+    public final StringColumn region = new StringColumn(this, "REGION", "region", "CHARACTER VARYING", 10, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class));
+    public final BooleanColumn isVip = new BooleanColumn(this, "IS_VIP", "isVip", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(app.IntegerBooleanConverter.class));
 
     // Getters
 

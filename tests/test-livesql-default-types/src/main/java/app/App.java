@@ -12,7 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Logger;
 
+import org.hotrod.runtime.converter.TypeConverter;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.queries.DMLQuery;
@@ -53,6 +55,8 @@ import app.daos.reporting.primitives.InvoiceDAO.InvoiceTable;
 //@PropertySource(value = { "file:application.properties",
 //    "classpath:application.properties" }, ignoreResourceNotFound = true)
 public class App {
+
+  private static final Logger log = Logger.getLogger(App.class.getName());
 
 //  @Autowired
 //  private NumbersDAO numbersDAO;
@@ -219,10 +223,15 @@ public class App {
 //    DMLQuery dq = sql.delete(b).where(b.id.gt(100));
 //    System.out.println("q:" + dq.getPreview());
 
-//    Subquery y = sql.subquery("y", sql.select(b.id, b.region.as("rg"), b.isVip).from(b));
+    log.info("** start **");
 
+//    TypeConverter<Integer, Boolean> tc = new IntegerBooleanConverter();
+//    TypeConverter<String, Integer> tc2 = new StringIntegerConverter();
+
+//    Subquery y = sql.subquery("y", sql.select(b.id.as("bid").type(Short.class),
+//        b.region.type(StringIntegerConverter.class), b.isVip.type(IntegerBooleanConverter.class)).from(b));
+//    Subquery y = sql.subquery("y", sql.select(b.star().filter(x -> x.getProperty().startsWith("i"))).from(b));
 //    Subquery y = sql.subquery("y", sql.select().from(b));
-    Subquery y = sql.subquery("y", sql.select(b.id.as("bid"), b.region, b.isVip).from(b));
 
 //    Subquery x = sql.subquery("x", sql.select(y.num("id"), y.str("rg").as("rgx"), y.bool("isVip").as("iv")).from(y));
 
@@ -234,20 +243,27 @@ public class App {
 //        .from(x) //
 //    ;
 
-//    Select<Row> q = this.sql.select(b.id).from(b);
-    Select<Row> q = this.sql
-        .select(y.num("bid").as("yid"), y.str("region"), y.num("yid").plus(1).as("region2"), y.bool("isVip").as("vIp"))
-        .from(y);
+    log.info("** S1 **");
+
+//    Select<Row> q = this.sql.select(b.star(), c.star().as(x->x.getProperty()+"_")).from(b).crossJoin(c);
+//    Select<Row> q = this.sql
+//        .select(y.num("bid").as("yid"), y.num("id").plus(1).as("region2"), y.bool("isVip").as("vIp")).from(y);
+
 //    Select<Row> q = this.sql.select(y.num("bid").as("externalbid")).from(y);
 
     // Select<Row> q = this.sql.select(y.num("id"), y.str("badName")).from(y);
-//    Select<Row> q = this.sql.select(b.id, b.region.as("reg"), b.isVip.as("vip")).from(b);
+//    Select<Row> q = this.sql.select(b.id.type(Short.class), b.region.as("reg").type(String.class), b.isVip.as("vip"))
+//        .from(b);
 //    Select<Row> q = this.sql.select().from(b);
 
-    System.out.println("q:" + q.getPreview());
+    Select<Row> q = this.sql.select(sql.val(3).mult(7).as("bad")).from(b);
 
-//    List<Row> rows = q.execute();
-//    rows.forEach(r -> System.out.println("inv:" + r));
+    log.info("** S2 **");
+
+    log.info("q:" + q.getPreview());
+
+    List<Row> rows = q.execute();
+    rows.forEach(r -> System.out.println("b:" + r + " id/" + r.get("id").getClass().getName()));
 
   }
 

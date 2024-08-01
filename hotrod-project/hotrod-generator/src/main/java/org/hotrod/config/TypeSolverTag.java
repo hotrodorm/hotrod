@@ -11,11 +11,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.database.PropertyType;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeRule;
+import org.hotrod.runtime.typesolver.OGNLPublicMemberAccess;
+import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.JdbcTypes;
 import org.hotrod.utils.JdbcTypes.JDBCType;
-import org.hotrod.utils.OGNLPublicMemberAccess;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 
 import ognl.OgnlContext;
@@ -87,13 +88,13 @@ public class TypeSolverTag extends AbstractConfigurationTag {
         }
         Boolean test = (Boolean) result;
         if (test) {
-          if ("price".equals(cm.getColumnName()) && "product".equals(cm.getTableName())) {
-            log.debug("w.getJDBCTypeOnWrite()=" + w.getJDBCTypeOnWrite());
-            log.debug("resultSetType=" + resultSetType);
-            log.debug("this.context=" + this.context);
-            log.debug("cm=" + cm);
-            log.debug("c=" + c);
-          }
+//          if ("price".equals(cm.getName()) && "product".equals(cm.getName())) {
+//            log.debug("w.getJDBCTypeOnWrite()=" + w.getJDBCTypeOnWrite());
+//            log.debug("resultSetType=" + resultSetType);
+//            log.debug("this.context=" + this.context);
+//            log.debug("cm=" + cm);
+//            log.debug("c=" + c);
+//          }
           JDBCType jdbcTypeOnWrite = w.getJDBCTypeOnWrite();
           if (jdbcTypeOnWrite == null) {
             jdbcTypeOnWrite = (c != null ? JdbcTypes.codeToType(c.getDataType()) : resultSetType);
@@ -129,6 +130,15 @@ public class TypeSolverTag extends AbstractConfigurationTag {
 
   public TreeSet<RetrievedColumn> getRetrievedColumns() {
     return retrievedColumns;
+  }
+
+  public List<TypeRule> getRules() {
+    List<TypeRule> rules = new ArrayList<>();
+    for (TypeSolverWhenTag w : this.whens) {
+//      if (w.getJavaType() != null)
+      TypeRule.of(w.getTest(), w.getJavaType());
+    }
+    return rules;
   }
 
 }

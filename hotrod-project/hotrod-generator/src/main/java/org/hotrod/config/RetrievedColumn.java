@@ -30,12 +30,12 @@ public class RetrievedColumn implements Comparable<RetrievedColumn> {
   // Constructor
 
   public RetrievedColumn(final ColumnMetadata cm, final JdbcColumn c) {
-    this.objectName = cm.getTableName();
-    this.name = cm.getColumnName();
+    this.objectName = cm.getTable();
+    this.name = cm.getName();
     this.typeName = cm.getTypeName();
     this.dataType = cm.getDataType();
-    this.size = cm.getColumnSize();
-    this.scale = cm.getDecimalDigits();
+    this.size = cm.getPrecision();
+    this.scale = cm.getScale();
     this.columnDefault = cm.getColumnDefault();
     this.autogenerationType = cm.getAutogenerationType();
     this.belongsToPK = cm.belongsToPK();

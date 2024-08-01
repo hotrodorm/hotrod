@@ -20,12 +20,12 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.InvalidSQLException;
 import org.hotrod.exceptions.UncontrolledException;
-import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.TableDataSetMetadata;
+import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.ColumnsMetadataRetriever;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
@@ -122,7 +122,7 @@ public class Expressions implements ColumnsProvider, Serializable {
     if (this.columnsRetriever != null) {
       List<StructuredColumnMetadata> cms = this.columnsRetriever.retrieve();
       for (StructuredColumnMetadata cm : cms) {
-        String alias = cm.getColumnName();
+        String alias = cm.getName();
         ExpressionTag tag = this.expressionsByAlias.get(alias);
 
         ColumnTag ct = new ColumnTag();
@@ -137,7 +137,7 @@ public class Expressions implements ColumnsProvider, Serializable {
         try {
           cm = StructuredColumnMetadata.applyColumnTag(cm, ct, tag, this.metadata.getAdapter());
         } catch (InvalidIdentifierException e) {
-          String msg = "Invalid name for column '" + cm.getColumnName() + tag.getClassName() + "': " + e.getMessage();
+          String msg = "Invalid name for column '" + cm.getName() + tag.getClassName() + "': " + e.getMessage();
           throw new InvalidConfigurationFileException(tag, msg);
         }
 

@@ -22,10 +22,10 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.InvalidSQLException;
 import org.hotrod.exceptions.UncontrolledException;
-import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
+import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.JdbcTypes.JDBCType;
 import org.hotrod.utils.SQLUtil;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
@@ -171,7 +171,7 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
           cm = new ColumnMetadata(ctx.getSm(), rm, i, ctx.getTag().getMethod(), this.adapter, columnTag, false, false,
               this.config.getTypeSolverTag());
 
-          String alias = aliasPrefix + cm.getColumnName();
+          String alias = aliasPrefix + cm.getName();
           StructuredColumnMetadata scm = new StructuredColumnMetadata(cm, entityPrefix, alias, false, null,
               columnsProvider);
           structuredColumnMetadata.add(scm);

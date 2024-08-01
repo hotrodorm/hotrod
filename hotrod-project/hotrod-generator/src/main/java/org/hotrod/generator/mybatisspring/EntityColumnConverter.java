@@ -36,7 +36,7 @@ public class EntityColumnConverter {
 
     String property = this.cm.getId().getJavaMemberName();
 
-    println("  // TypeHandler for " + (property != null ? "property " + property : "column " + cm.getColumnName())
+    println("  // TypeHandler for " + (property != null ? "property " + property : "column " + cm.getName())
         + " using Converter " + converter + ".");
     println();
     println("  public static class " + typeHandlerClassName + " implements TypeHandler<" + type + "> {");

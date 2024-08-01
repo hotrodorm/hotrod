@@ -10,7 +10,7 @@ import org.hotrod.config.ColumnTag;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidIdentifierException;
-import org.hotrod.exceptions.UnresolvableDataTypeException;
+import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
 
 public class StructuredColumnMetadata extends ColumnMetadata implements Serializable {
 
@@ -113,7 +113,7 @@ public class StructuredColumnMetadata extends ColumnMetadata implements Serializ
     }
     List<StructuredColumnMetadata> columns = new ArrayList<StructuredColumnMetadata>();
     for (ColumnMetadata cm : cols) {
-      StructuredColumnMetadata m = new StructuredColumnMetadata(cm, entityPrefix, aliasPrefix + cm.getColumnName(),
+      StructuredColumnMetadata m = new StructuredColumnMetadata(cm, entityPrefix, aliasPrefix + cm.getName(),
           cm.belongsToPK(), null);
       columns.add(m);
     }
@@ -135,8 +135,7 @@ public class StructuredColumnMetadata extends ColumnMetadata implements Serializ
     List<StructuredColumnMetadata> columns = new ArrayList<StructuredColumnMetadata>();
     for (ColumnMetadata cm : cols) {
       boolean id = columnIsId(cm, idNames);
-      StructuredColumnMetadata m = new StructuredColumnMetadata(cm, entityPrefix, aliasPrefix + cm.getColumnName(), id,
-          null);
+      StructuredColumnMetadata m = new StructuredColumnMetadata(cm, entityPrefix, aliasPrefix + cm.getName(), id, null);
       columns.add(m);
     }
     return columns;

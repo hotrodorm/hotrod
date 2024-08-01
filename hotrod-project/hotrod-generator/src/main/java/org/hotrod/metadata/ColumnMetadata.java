@@ -16,15 +16,16 @@ import org.hotrod.database.PropertyType;
 import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.CouldNotResolveNameException;
 import org.hotrod.exceptions.InvalidIdentifierException;
-import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.identifiers.Id;
 import org.hotrod.identifiers.ObjectId;
+import org.hotrod.runtime.typesolver.DriverColumnMetaData;
+import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.JdbcTypes;
 import org.hotrod.utils.JdbcTypes.JDBCType;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn.AutogenerationType;
 
-public class ColumnMetadata implements Serializable {
+public class ColumnMetadata implements DriverColumnMetaData, Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -33,6 +34,9 @@ public class ColumnMetadata implements Serializable {
   private DataSetMetadata dataSet;
 
   private JdbcColumn c;
+
+  private String catalog;
+  private String schema;
   private String columnName;
   private String tableName;
 
@@ -77,6 +81,8 @@ public class ColumnMetadata implements Serializable {
     log.debug("init c=" + c);
     this.dataSet = dataSet;
     this.c = c;
+    this.catalog = c.getTable().getCatalog();
+    this.schema = c.getTable().getSchema();
     this.columnName = c.getName();
     log.debug("this.columnName=" + this.columnName);
     this.tableName = c.getTable().getName();
@@ -214,6 +220,8 @@ public class ColumnMetadata implements Serializable {
       throws UnresolvableDataTypeException, InvalidIdentifierException {
     this.dataSet = dataSet;
     this.c = c;
+    this.catalog = null;
+    this.schema = null;
     this.columnName = c.getName();
     this.tableName = selectName;
 
@@ -249,6 +257,8 @@ public class ColumnMetadata implements Serializable {
       throws UnresolvableDataTypeException, InvalidIdentifierException, SQLException {
     this.dataSet = dataSet;
     this.c = null;
+    this.catalog = null;
+    this.schema = null;
 
     this.columnName = rm.getColumnLabel(colIndex);
     this.tableName = selectName;
@@ -290,7 +300,7 @@ public class ColumnMetadata implements Serializable {
     m2.tag = tag;
     m2.type = resolveJavaType(m2, tag, tag.getJdbcColumn(), cm.resultSetType, cm.typeSolverTag, m2.adapter);
     if (tag.getJavaName() != null) {
-      m2.id = Id.fromCanonicalSQLAndJavaMember(cm.getColumnName(), adapter, tag.getJavaName());
+      m2.id = Id.fromCanonicalSQLAndJavaMember(cm.getName(), adapter, tag.getJavaName());
     }
     return m2;
   }
@@ -351,29 +361,25 @@ public class ColumnMetadata implements Serializable {
     return dataSet;
   }
 
-  public String getColumnName() {
-    return columnName;
-  }
-
-  public String getTableName() {
-    return tableName;
-  }
-
-  public int getDataType() {
-    return dataType;
-  }
-
-  public String getTypeName() {
-    return typeName;
-  }
-
-  public Integer getColumnSize() {
-    return columnSize;
-  }
-
-  public Integer getDecimalDigits() {
-    return decimalDigits;
-  }
+//  @Deprecated // Use getName()
+//  public String getColumnName() {
+//    return columnName;
+//  }
+//
+//  @Deprecated // Use getTable()
+//  public String getTableName() {
+//    return tableName;
+//  }
+//
+//  @Deprecated // use getPrecision()
+//  public Integer getColumnSize() {
+//    return columnSize;
+//  }
+//
+//  @Deprecated // getScale()
+//  public Integer getDecimalDigits() {
+//    return decimalDigits;
+//  }
 
   public String getColumnDefault() {
     return columnDefault;
@@ -429,6 +435,59 @@ public class ColumnMetadata implements Serializable {
 
   public String renderForCaseInsensitiveOrderBy() {
     return this.adapter.renderForCaseInsensitiveOrderBy(this);
+  }
+
+  @Override
+  public String getCatalog() {
+    return this.catalog;
+  }
+
+  @Override
+  public String getSchema() {
+    return this.schema;
+  }
+
+  @Override
+  public String getTable() {
+    return this.tableName;
+  }
+
+  @Override
+  public String getName() {
+    return this.columnName;
+  }
+
+  @Override
+  public String getLabel() {
+    return null;
+  }
+
+  public String getTypeName() {
+    return typeName;
+  }
+
+  public Integer getDataType() {
+    return dataType;
+  }
+
+  @Override
+  public String getDriverDefaultClassName() {
+    return null;
+  }
+
+  @Override
+  public Integer getDisplaySize() {
+    return this.columnSize;
+  }
+
+  @Override
+  public Integer getPrecision() {
+    return this.columnSize;
+  }
+
+  @Override
+  public Integer getScale() {
+    return this.decimalDigits;
   }
 
 }

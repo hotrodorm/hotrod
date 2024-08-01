@@ -1,17 +1,12 @@
-package org.hotrod.utils;
+package org.hotrod.runtime.typesolver;
 
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import ognl.MemberAccess;
 
 public class OGNLPublicMemberAccess implements MemberAccess {
-
-  private static final Logger log = LogManager.getLogger(OGNLPublicMemberAccess.class);
 
   /**
    * Returns true if the given member is accessible or can be made accessible by
@@ -25,8 +20,8 @@ public class OGNLPublicMemberAccess implements MemberAccess {
    */
   public boolean isAccessible(final @SuppressWarnings("rawtypes") Map context, final Object target, final Member member,
       final String propertyName) {
-    log.debug(
-        "[isAccessible] context=" + context + " target=" + target + " member=" + member + " property=" + propertyName);
+//    log.debug(
+//        "[isAccessible] context=" + context + " target=" + target + " member=" + member + " property=" + propertyName);
     return Modifier.isPublic(member.getModifiers());
   }
 
@@ -43,7 +38,7 @@ public class OGNLPublicMemberAccess implements MemberAccess {
   @Override
   public Object setup(final @SuppressWarnings("rawtypes") Map context, final Object target, final Member member,
       final String propertyName) {
-    log.debug("[setup] context=" + context + " target=" + target + " member=" + member + " property=" + propertyName);
+//    log.debug("[setup] context=" + context + " target=" + target + " member=" + member + " property=" + propertyName);
     return null;
   }
 
@@ -61,7 +56,7 @@ public class OGNLPublicMemberAccess implements MemberAccess {
   @Override
   public void restore(final @SuppressWarnings("rawtypes") Map context, final Object target, final Member member,
       String propertyName, Object state) {
-    log.debug("[restore] context=" + context + " target=" + target + " member=" + member + " property=" + propertyName);
+//    log.debug("[restore] context=" + context + " target=" + target + " member=" + member + " property=" + propertyName);
   }
 
 }

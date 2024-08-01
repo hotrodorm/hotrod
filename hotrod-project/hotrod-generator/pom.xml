@@ -80,14 +80,6 @@
       <scope>provided</scope>
     </dependency>    
 
-    <!-- OGNL -->
-
-    <dependency>
-      <groupId>ognl</groupId>
-      <artifactId>ognl</artifactId>
-      <version>3.2.14</version>
-    </dependency>
-
   </dependencies>
 
 </project>

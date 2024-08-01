@@ -15,10 +15,10 @@ import org.hotrod.database.PropertyType;
 import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
-import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
+import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.JdbcTypes.JDBCType;
 import org.hotrod.utils.JdbcUtils;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
@@ -64,17 +64,17 @@ public class HyperSQLAdapter extends DatabaseAdapter {
 
     case java.sql.Types.DECIMAL:
     case java.sql.Types.NUMERIC:
-      if (m.getDecimalDigits() != null && m.getDecimalDigits() != 0) {
+      if (m.getScale() != null && m.getScale() != 0) {
         return new PropertyType(BigDecimal.class, m, false);
       } else {
-        if (m.getColumnSize() <= 2) {
-          return new PropertyType(Byte.class, m, false, ValueRange.getSignedRange(m.getColumnSize()));
-        } else if (m.getColumnSize() <= 4) {
-          return new PropertyType(Short.class, m, false, ValueRange.getSignedRange(m.getColumnSize()));
-        } else if (m.getColumnSize() <= 9) {
-          return new PropertyType(Integer.class, m, false, ValueRange.getSignedRange(m.getColumnSize()));
-        } else if (m.getColumnSize() <= 18) {
-          return new PropertyType(Long.class, m, false, ValueRange.getSignedRange(m.getColumnSize()));
+        if (m.getPrecision() <= 2) {
+          return new PropertyType(Byte.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
+        } else if (m.getPrecision() <= 4) {
+          return new PropertyType(Short.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
+        } else if (m.getPrecision() <= 9) {
+          return new PropertyType(Integer.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
+        } else if (m.getPrecision() <= 18) {
+          return new PropertyType(Long.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
         } else {
           return new PropertyType(BigInteger.class, m, false);
         }
@@ -105,7 +105,7 @@ public class HyperSQLAdapter extends DatabaseAdapter {
       if (m.getTypeName() != null && m.getTypeName().toUpperCase().startsWith("INTERVAL")) {
         return new PropertyType(Object.class, m, false);
       } else {
-        boolean isLOB = m.getColumnSize() >= MAX_VARCHAR_LENGTH;
+        boolean isLOB = m.getPrecision() >= MAX_VARCHAR_LENGTH;
         return new PropertyType(String.class, m, isLOB);
       }
 

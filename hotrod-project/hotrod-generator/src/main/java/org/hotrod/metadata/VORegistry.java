@@ -193,7 +193,7 @@ public class VORegistry {
       this.name = name;
       this.columnsByName = new LinkedHashMap<String, ColumnMetadata>();
       for (ColumnMetadata c : columns) {
-        this.columnsByName.put(c.getColumnName(), c);
+        this.columnsByName.put(c.getName(), c);
       }
     }
 
@@ -330,7 +330,7 @@ public class VORegistry {
         reg.add(p);
         StructuredColumnMetadata cm = p.getMetadata();
         if (cm != null) {
-          this.columnsByName.put(cm.getColumnName(), cm);
+          this.columnsByName.put(cm.getName(), cm);
         }
       }
 
@@ -505,7 +505,7 @@ public class VORegistry {
     }
 
     public String toString() {
-      return "{name=" + this.name + ", SQL-name=" + (this.cm == null ? "null" : cm.getColumnName()) + ", tag-type="
+      return "{name=" + this.name + ", SQL-name=" + (this.cm == null ? "null" : cm.getName()) + ", tag-type="
           + this.sourceTagType + "}";
     }
 
@@ -514,7 +514,7 @@ public class VORegistry {
   // Utilities
 
   public static boolean equivalentColumns(final ColumnMetadata c1, final ColumnMetadata c2) {
-    if (!c1.getColumnName().equals(c2.getColumnName())) {
+    if (!c1.getName().equals(c2.getName())) {
       return false;
     }
     if (c1.getDataType() != c2.getDataType()) {

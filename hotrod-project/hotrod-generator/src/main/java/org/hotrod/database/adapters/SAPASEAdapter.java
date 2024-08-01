@@ -15,10 +15,10 @@ import org.hotrod.database.PropertyType;
 import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
-import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
+import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.JdbcTypes.JDBCType;
 import org.hotrod.utils.JdbcUtils;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
@@ -53,7 +53,7 @@ public class SAPASEAdapter extends DatabaseAdapter {
   @Override
   public PropertyType getAdapterDefaultType(final ColumnMetadata m) throws UnresolvableDataTypeException {
 
-    log.debug("c.getDataType()=" + m.getDataType() + " (" + m.getColumnSize() + ", " + m.getDecimalDigits() + ")");
+    log.debug("c.getDataType()=" + m.getDataType() + " (" + m.getPrecision() + ", " + m.getScale() + ")");
 
     switch (m.getDataType()) {
 
@@ -63,19 +63,19 @@ public class SAPASEAdapter extends DatabaseAdapter {
 
       if (m.getTypeName().equalsIgnoreCase("money") || m.getTypeName().equalsIgnoreCase("smallmoney")) {
         return new PropertyType(BigDecimal.class, m, false);
-      } else if ((m.getDecimalDigits() != null) && (m.getDecimalDigits().intValue() != 0)) {
+      } else if ((m.getScale() != null) && (m.getScale().intValue() != 0)) {
         return new PropertyType(BigDecimal.class, m, false);
       } else {
-        if (m.getColumnSize() == null) {
+        if (m.getPrecision() == null) {
           return new PropertyType(BigDecimal.class, m, false);
-        } else if (m.getColumnSize() <= 2) {
-          return new PropertyType(Byte.class, m, false, ValueRange.getSignedRange(m.getColumnSize()));
-        } else if (m.getColumnSize() <= 4) {
-          return new PropertyType(Short.class, m, false, ValueRange.getSignedRange(m.getColumnSize()));
-        } else if (m.getColumnSize() <= 9) {
-          return new PropertyType(Integer.class, m, false, ValueRange.getSignedRange(m.getColumnSize()));
-        } else if (m.getColumnSize() <= 18) {
-          return new PropertyType(Long.class, m, false, ValueRange.getSignedRange(m.getColumnSize()));
+        } else if (m.getPrecision() <= 2) {
+          return new PropertyType(Byte.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
+        } else if (m.getPrecision() <= 4) {
+          return new PropertyType(Short.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
+        } else if (m.getPrecision() <= 9) {
+          return new PropertyType(Integer.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
+        } else if (m.getPrecision() <= 18) {
+          return new PropertyType(Long.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
         } else {
           return new PropertyType(BigInteger.class, m, false);
         }
@@ -214,7 +214,8 @@ public class SAPASEAdapter extends DatabaseAdapter {
   @Override
   public String renderSQLName(final String canonicalName, final boolean isQuoted) {
     return canonicalName == null ? null
-        : (!isQuoted && canonicalName.matches(UNQUOTED_IDENTIFIER_PATTERN) ? canonicalName : super.quote(canonicalName));
+        : (!isQuoted && canonicalName.matches(UNQUOTED_IDENTIFIER_PATTERN) ? canonicalName
+            : super.quote(canonicalName));
   }
 
   @Override

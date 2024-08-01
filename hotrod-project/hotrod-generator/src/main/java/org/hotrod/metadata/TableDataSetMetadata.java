@@ -26,12 +26,12 @@ import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.UncontrolledException;
-import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.SelectMetadataCache;
 import org.hotrod.generator.mybatisspring.DataSetLayout;
 import org.hotrod.identifiers.ObjectId;
+import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.nocrala.tools.database.tartarus.core.DatabaseObjectId;
@@ -180,7 +180,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
             + "'.";
         throw new InvalidConfigurationFileException(vct, msg);
       }
-      log.debug("### VERSION CONTROL COLUMN SETTING: c=" + vcm.getColumnName() + " c=" + System.identityHashCode(vcm));
+      log.debug("### VERSION CONTROL COLUMN SETTING: c=" + vcm.getName() + " c=" + System.identityHashCode(vcm));
       vcm.setVersionControlColumn(true);
       this.vcm = new VersionControlMetadata(this, vct, vcm, this.adapter);
     }
@@ -346,7 +346,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
           // Mark dataset column
 
           for (ColumnMetadata cm : this.cols) {
-            if (cm.getColumnName().equals(icm.getColumnName())) {
+            if (cm.getName().equals(icm.getName())) {
               log.debug("   + marking column.");
               cm.setEnumMetadata(em);
             }
@@ -359,7 +359,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
           // log.info(" * this.pk=" + this.pk);
           if (this.pk != null) {
             for (ColumnMetadata cm : this.pk.getColumns()) {
-              if (cm.getColumnName().equals(icm.getColumnName())) {
+              if (cm.getName().equals(icm.getName())) {
                 cm.setEnumMetadata(em);
               }
             }
@@ -369,7 +369,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
           if (this.nonPKCols != null) {
             for (ColumnMetadata cm : this.nonPKCols) {
-              if (cm.getColumnName().equals(icm.getColumnName())) {
+              if (cm.getName().equals(icm.getName())) {
                 cm.setEnumMetadata(em);
               }
             }
@@ -379,7 +379,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
           for (KeyMetadata km : this.uniqueIndexes) {
             for (ColumnMetadata cm : km.getColumns()) {
-              if (cm.getColumnName().equals(icm.getColumnName())) {
+              if (cm.getName().equals(icm.getName())) {
                 cm.setEnumMetadata(em);
               }
             }
@@ -588,7 +588,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
   private ColumnMetadata findColumnMetadata(final VersionControlColumnTag vct) {
     for (ColumnMetadata m : this.cols) {
-      if (this.adapter.isColumnIdentifier(m.getColumnName(), vct.getName())) {
+      if (this.adapter.isColumnIdentifier(m.getName(), vct.getName())) {
         return m;
       }
     }

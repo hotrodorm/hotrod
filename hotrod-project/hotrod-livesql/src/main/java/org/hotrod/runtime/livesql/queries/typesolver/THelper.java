@@ -1,4 +1,4 @@
-package org.hotrod.runtime.typesolver;
+package org.hotrod.runtime.livesql.queries.typesolver;
 
 public class THelper {
 

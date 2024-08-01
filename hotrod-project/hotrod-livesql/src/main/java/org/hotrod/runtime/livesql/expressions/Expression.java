@@ -13,7 +13,7 @@ import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableRefer
 import org.hotrod.runtime.livesql.queries.select.SHelper;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
-import org.hotrod.runtime.typesolver.TypeHandler;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
 
 public abstract class Expression extends ResultSetColumn {
 

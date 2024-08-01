@@ -124,6 +124,7 @@ import org.hotrod.runtime.livesql.queries.select.SelectCTEPhase;
 import org.hotrod.runtime.livesql.queries.select.SelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 import org.hotrod.runtime.livesql.queries.subqueries.SubqueryColumnsPhase;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.runtime.livesql.sysobjects.DualTable;
 import org.hotrod.runtime.livesql.sysobjects.SysDummy1Table;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -146,6 +147,7 @@ public class LiveSQL {
   private LiveSQLDialect liveSQLDialect;
   private LiveSQLMapper liveSQLMapper;
   private DataSource dataSource;
+  private TypeSolver typeSolver;
 
   @Autowired
   private LiveSQLConfiguration config;
@@ -153,19 +155,20 @@ public class LiveSQL {
   // Constructor
 
   public LiveSQL(final SqlSession sqlSession, final @Qualifier("liveSQLDialect") LiveSQLDialect liveSQLDialect,
-      final LiveSQLMapper liveSQLMapper, final DataSource dataSource) {
+      final LiveSQLMapper liveSQLMapper, final DataSource dataSource, final TypeSolver typeSolver) {
     this.sqlSession = sqlSession;
     this.liveSQLDialect = liveSQLDialect;
     this.liveSQLMapper = liveSQLMapper;
     this.context = null;
     this.dataSource = dataSource;
+    this.typeSolver = typeSolver;
   }
 
   @PostConstruct
   private void initialize() {
     log.info("initializing ds=" + this.dataSource);
     this.context = new LiveSQLContext(liveSQLDialect, sqlSession, liveSQLMapper, this.config.usePlainJDBC(),
-        this.dataSource);
+        this.dataSource, this.typeSolver);
   }
 
   // Select

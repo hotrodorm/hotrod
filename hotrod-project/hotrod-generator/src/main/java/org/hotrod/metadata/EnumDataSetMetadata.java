@@ -11,9 +11,9 @@ import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.SelectMetadataCache;
 import org.hotrod.generator.mybatisspring.DataSetLayout;
+import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
 public class EnumDataSetMetadata extends TableDataSetMetadata {

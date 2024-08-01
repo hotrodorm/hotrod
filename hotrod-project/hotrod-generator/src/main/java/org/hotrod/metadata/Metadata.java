@@ -25,7 +25,6 @@ import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.UncontrolledException;
-import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.DAONamespace;
 import org.hotrod.generator.DAONamespace.DuplicateDAOClassException;
@@ -36,6 +35,8 @@ import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.VORegistry.EntityVOClass;
 import org.hotrod.metadata.VORegistry.StructuredVOAlreadyExistsException;
 import org.hotrod.metadata.VORegistry.VOAlreadyExistsException;
+import org.hotrod.runtime.typesolver.DriverColumnMetaData;
+import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.JdbcTypes;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
@@ -107,15 +108,14 @@ public class Metadata {
           this.voRegistry.addVO(vo);
 
         } catch (UnresolvableDataTypeException e) {
-          ColumnMetadata m = e.getColumnMetadata();
+          DriverColumnMetaData m = e.getColumnMetadata();
 
           String typeName = JdbcTypes.codeToName(m.getDataType());
 
-          throw new ControlledException(
-              "Unrecognized column data type (reported as '" + m.getTypeName() + "', JDBC type " + m.getDataType() + " "
-                  + (typeName == null ? "(non-standard JDBC type)" : "'" + typeName + "'") + ") on column '"
-                  + m.getColumnName() + "' of table/view/select '" + m.getTableName()
-                  + (e.getMessage() == null ? "" : ": " + e.getMessage()));
+          throw new ControlledException("Unrecognized column data type (reported as '" + m.getTypeName()
+              + "', JDBC type " + m.getDataType() + " "
+              + (typeName == null ? "(non-standard JDBC type)" : "'" + typeName + "'") + ") on column '" + m.getName()
+              + "' of table/view/select '" + m.getTable() + (e.getMessage() == null ? "" : ": " + e.getMessage()));
 
         } catch (VOAlreadyExistsException e) {
           throw new ControlledException("Duplicate table with name '" + t.getName() + "'.");

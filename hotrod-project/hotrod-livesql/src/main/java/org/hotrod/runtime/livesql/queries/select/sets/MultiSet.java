@@ -5,15 +5,18 @@ import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import org.hotrod.runtime.converter.TypeConverter;
 import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.Row;
+import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
@@ -22,8 +25,10 @@ import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.TableExpression;
+import org.hotrod.runtime.livesql.queries.typesolver.ResultSetColumnMetadata;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.runtime.livesql.util.PreviewRenderer;
-import org.hotrod.runtime.typesolver.TypeHandler;
+import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
 
 public abstract class MultiSet<R> {
 
@@ -97,19 +102,37 @@ public abstract class MultiSet<R> {
       try (Connection conn = context.getDataSource().getConnection()) {
 
         try (PreparedStatement ps = conn.prepareStatement(q.getSQL())) {
-          LinkedHashMap<String, Expression> queryColumns = q.getQueryColumns();
 
-          // Apply parameters
+          // 1. Apply parameters
+
           int n = 1;
           for (Object obj : q.getParameters().values()) {
             int i = n++;
             ps.setObject(i, obj);
           }
 
-          logQueryColumns(queryColumns);
+          // 2. Run the query
 
-          // Run the query
           try (ResultSet rs = ps.executeQuery()) {
+            LinkedHashMap<String, Expression> queryColumns = q.getQueryColumns();
+            ResultSetMetaData rm = rs.getMetaData();
+            int ordinal = 1;
+            for (Entry<String, Expression> et : queryColumns.entrySet()) {
+              Expression expr = et.getValue();
+              if (Helper.getTypeHandler(expr) == null) {
+                ResultSetColumnMetadata cm = ResultSetColumnMetadata.of(rm, ordinal);
+                try {
+                  TypeHandler th = context.getTypeSolver().resolve(cm);
+                  Helper.setTypeHandler(expr, th);
+                } catch (UnresolvableDataTypeException e) {
+                  throw new LiveSQLException("Could not determine type for column '" + et.getKey() + "' in query", e);
+                }
+              }
+              ordinal++;
+            }
+
+            logQueryColumns(queryColumns);
+
             while (rs.next()) {
               Row r = new Row();
               int i = 1;
@@ -117,14 +140,13 @@ public abstract class MultiSet<R> {
                 Object value;
                 String alias = Helper.getReferenceName(qc);
                 TypeHandler th = Helper.getTypeHandler(qc);
-                if (th.getConverter() == null) {
+                if (th == null) { // No typeHandler: use the JDBC default value
+                  value = rs.getObject(i);
+                } else if (th.getConverter() == null) { // TypeHandler with no converter: use the defined class
                   value = rs.getObject(i, th.getJavaClass());
-                } else {
+                } else { // TypeHandler with converter: read as defined class and apply converter
                   Object raw = rs.getObject(i, th.getRawClass());
                   TypeConverter<?, ?> converter = th.getConverter();
-
-//                  retrieveClasses(converter);
-
                   value = this.applyConverter(raw, converter, conn);
                 }
                 r.put(alias, value);
