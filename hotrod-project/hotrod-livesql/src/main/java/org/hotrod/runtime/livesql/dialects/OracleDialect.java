@@ -241,26 +241,33 @@ public class OracleDialect extends LiveSQLDialect {
       @Override
       public String renderLockingAfterLimitClause(LockingMode lockingMode, LockingConcurrency lockingConcurrency,
           Number waitTime) {
+
         if (lockingMode == LockingMode.FOR_SHARE) {
           throw new UnsupportedLiveSQLFeatureException(
               "The Oracle database does not support locking FOR SHARE in SELECT statements");
         }
-        switch (lockingConcurrency) {
-        case NO_WAIT:
-          return "FOR UPDATE NOWAIT";
-        case WAIT:
-          if (waitTime instanceof Integer) {
-            return "FOR UPDATE WAIT " + waitTime;
-          } else {
-            throw new UnsupportedLiveSQLFeatureException(
-                "The Oracle database supports locking with WAIT <n> in SELECT statements only for integer values of <n>, "
-                    + "but the supplied value (" + waitTime + ") is not an integer");
+
+        if (lockingConcurrency != null) {
+          switch (lockingConcurrency) {
+          case NO_WAIT:
+            return "FOR UPDATE NOWAIT";
+          case WAIT:
+            if (waitTime instanceof Integer) {
+              return "FOR UPDATE WAIT " + waitTime;
+            } else {
+              throw new UnsupportedLiveSQLFeatureException(
+                  "The Oracle database supports locking with WAIT <n> in SELECT statements only for integer values of <n>, "
+                      + "but the supplied value (" + waitTime + ") is not an integer");
+            }
+          case SKIP_LOCKED:
+            return "FOR UPDATE SKIP LOCKED";
+          default:
+            return "FOR UPDATE";
           }
-        case SKIP_LOCKED:
-          return "FOR UPDATE SKIP LOCKED";
-        default:
+        } else {
           return "FOR UPDATE";
         }
+
       }
 
     };

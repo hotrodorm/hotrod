@@ -190,16 +190,20 @@ public class SQLServerDialect extends LiveSQLDialect {
               "The SQL Server database does not support locking FOR SHARE in SELECT statements");
         }
 
-        switch (lockingConcurrency) {
-        case NO_WAIT:
-          throw new UnsupportedLiveSQLFeatureException(
-              "The SQL Server database does not support locking NOWAIT in SELECT statements");
-        case WAIT:
-          throw new UnsupportedLiveSQLFeatureException(
-              "The SQL Server database does not support locking WAIT <n> in SELECT statements");
-        case SKIP_LOCKED:
-          return "WITH (UPDLOCK, READPAST)";
-        default:
+        if (lockingConcurrency != null) {
+          switch (lockingConcurrency) {
+          case NO_WAIT:
+            throw new UnsupportedLiveSQLFeatureException(
+                "The SQL Server database does not support locking NOWAIT in SELECT statements");
+          case WAIT:
+            throw new UnsupportedLiveSQLFeatureException(
+                "The SQL Server database does not support locking WAIT <n> in SELECT statements");
+          case SKIP_LOCKED:
+            return "WITH (UPDLOCK, READPAST)";
+          default:
+            return "WITH (UPDLOCK)";
+          }
+        } else {
           return "WITH (UPDLOCK)";
         }
       }

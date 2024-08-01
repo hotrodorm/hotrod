@@ -167,15 +167,17 @@ public class MariaDBDialect extends LiveSQLDialect {
           sb.append("LOCK IN SHARE MODE");
         }
 
-        switch (lockingConcurrency) {
-        case NO_WAIT:
-          sb.append(" NOWAIT");
-          break;
-        case WAIT:
-          sb.append(" WAIT " + waitTime);
-        case SKIP_LOCKED:
-          sb.append(" SKIP LOCKED");
-          break;
+        if (lockingConcurrency != null) {
+          switch (lockingConcurrency) {
+          case NO_WAIT:
+            sb.append(" NOWAIT");
+            break;
+          case WAIT:
+            sb.append(" WAIT " + waitTime);
+          case SKIP_LOCKED:
+            sb.append(" SKIP LOCKED");
+            break;
+          }
         }
 
         return sb.toString();

@@ -215,17 +215,21 @@ public class DB2Dialect extends LiveSQLDialect {
           throw new UnsupportedLiveSQLFeatureException(
               "The DB2/LUW database does not support locking FOR SHARE in SELECT statements");
         }
-        switch (lockingConcurrency) {
-        case NO_WAIT:
-          throw new UnsupportedLiveSQLFeatureException(
-              "The DB2/LUW database does not support locking with NOWAIT in SELECT statements");
-        case WAIT:
-          throw new UnsupportedLiveSQLFeatureException(
-              "The DB2/LUW database does not support locking with WAIT <n> in SELECT statements");
-        case SKIP_LOCKED:
-          throw new UnsupportedLiveSQLFeatureException(
-              "The DB2/LUW database does not support locking with SKIP LOCKED in SELECT statements");
-        default:
+        if (lockingConcurrency != null) {
+          switch (lockingConcurrency) {
+          case NO_WAIT:
+            throw new UnsupportedLiveSQLFeatureException(
+                "The DB2/LUW database does not support locking with NOWAIT in SELECT statements");
+          case WAIT:
+            throw new UnsupportedLiveSQLFeatureException(
+                "The DB2/LUW database does not support locking with WAIT <n> in SELECT statements");
+          case SKIP_LOCKED:
+            throw new UnsupportedLiveSQLFeatureException(
+                "The DB2/LUW database does not support locking with SKIP LOCKED in SELECT statements");
+          default:
+            return "FOR UPDATE WITH RS";
+          }
+        } else {
           return "FOR UPDATE WITH RS";
         }
       }

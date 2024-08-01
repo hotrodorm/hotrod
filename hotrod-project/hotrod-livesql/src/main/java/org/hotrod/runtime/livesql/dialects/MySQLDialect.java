@@ -212,16 +212,18 @@ public class MySQLDialect extends LiveSQLDialect {
           sb.append("FOR SHARE");
         }
 
-        switch (lockingConcurrency) {
-        case NO_WAIT:
-          sb.append(" NOWAIT");
-          break;
-        case WAIT:
-          throw new UnsupportedLiveSQLFeatureException(
-              "The MySQL database does not support locking with WAIT <n> in SELECT statements");
-        case SKIP_LOCKED:
-          sb.append(" SKIP LOCKED");
-          break;
+        if (lockingConcurrency != null) {
+          switch (lockingConcurrency) {
+          case NO_WAIT:
+            sb.append(" NOWAIT");
+            break;
+          case WAIT:
+            throw new UnsupportedLiveSQLFeatureException(
+                "The MySQL database does not support locking with WAIT <n> in SELECT statements");
+          case SKIP_LOCKED:
+            sb.append(" SKIP LOCKED");
+            break;
+          }
         }
 
         return sb.toString();
