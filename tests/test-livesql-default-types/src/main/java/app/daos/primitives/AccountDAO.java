@@ -95,12 +95,9 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   @Value("${use.plain.jdbc:false}")
   private boolean usePlainJDBC;
 
-  @Autowired
-  private TypeSolver typeSolver;
-
   @PostConstruct
   public void initializeContext() {
-    this.context = new LiveSQLContext(this.liveSQLDialect, this.sqlSession, this.liveSQLMapper, this.usePlainJDBC, this.dataSource, this.typeSolver);
+    this.context = new LiveSQLContext(this.liveSQLDialect, this.sqlSession, this.liveSQLMapper, this.usePlainJDBC, this.dataSource, new TypeSolver(null, this.liveSQLDialect));
   }
 
   // Row Parser

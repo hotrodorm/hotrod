@@ -256,14 +256,21 @@ public class App {
 //        .from(b);
 //    Select<Row> q = this.sql.select().from(b);
 
-    Select<Row> q = this.sql.select(sql.val(3).mult(7).as("bad")).from(b);
+    Select<Row> q = this.sql.select(b.star(), sql.val(3).mult(7).as("bad")).from(b);
 
     log.info("** S2 **");
 
     log.info("q:" + q.getPreview());
 
     List<Row> rows = q.execute();
-    rows.forEach(r -> System.out.println("b:" + r + " id/" + r.get("id").getClass().getName()));
+    for (Row r : rows) {
+      System.out.println("---------------");
+      for (String name : r.keySet()) {
+        Object v = r.get(name);
+        System.out.println(" * c: " + v + (v == null ? "" : " (" + v.getClass().getName() + ")"));
+      }
+    }
+//    rows.forEach(r -> System.out.println("b:" + r + " id/" + r.get("id").getClass().getName()));
 
   }
 
