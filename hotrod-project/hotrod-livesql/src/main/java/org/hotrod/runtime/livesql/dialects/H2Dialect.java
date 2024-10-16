@@ -1,5 +1,7 @@
 package org.hotrod.runtime.livesql.dialects;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -23,12 +25,115 @@ import org.hotrod.runtime.livesql.queries.select.NaturalLeftOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.NaturalRightOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.RightOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.UnionJoin;
+import org.hotrod.runtime.livesql.queries.typesolver.ResultSetColumnMetadata;
 
 public class H2Dialect extends LiveSQLDialect {
 
   public H2Dialect(final boolean discovered, final String productName, final String productVersion,
       final int majorVersion, final int minorVersion) {
     super(discovered, productName, productVersion, majorVersion, minorVersion);
+  }
+
+  @Override
+  public Class<?> resolveColumnType(final ResultSetColumnMetadata m) {
+
+    switch (m.getDataType()) {
+
+    // Numeric types
+
+    case java.sql.Types.DECIMAL:
+    case java.sql.Types.NUMERIC:
+      if (m.getScale() != null && m.getScale() != 0) {
+        return BigDecimal.class;
+      } else {
+        if (m.getPrecision() <= 2) {
+          return Byte.class;
+        } else if (m.getPrecision() <= 4) {
+          return Short.class;
+        } else if (m.getPrecision() <= 9) {
+          return Integer.class;
+        } else if (m.getPrecision() <= 18) {
+          return Long.class;
+        } else {
+          return BigInteger.class;
+        }
+      }
+
+    case java.sql.Types.TINYINT:
+      return Byte.class;
+
+    case java.sql.Types.SMALLINT:
+      return Short.class;
+
+    case java.sql.Types.INTEGER:
+      return Integer.class;
+
+    case java.sql.Types.BIGINT:
+      return Long.class;
+
+    case java.sql.Types.DOUBLE:
+      return Double.class;
+
+    case java.sql.Types.REAL:
+      return Float.class;
+
+    // Character types
+
+    case java.sql.Types.CHAR:
+      return String.class;
+
+    case java.sql.Types.VARCHAR:
+      return String.class;
+
+    case java.sql.Types.CLOB:
+      return String.class;
+
+    // Date/Time types
+
+    case java.sql.Types.DATE:
+      return java.sql.Date.class;
+    case java.sql.Types.TIME:
+      return java.sql.Time.class;
+    case java.sql.Types.TIMESTAMP:
+      return java.sql.Timestamp.class;
+
+    // Binary
+
+    case java.sql.Types.VARBINARY:
+      return byte[].class;
+    case java.sql.Types.BLOB:
+      return byte[].class;
+
+    // Boolean
+
+    case java.sql.Types.BOOLEAN:
+      return Boolean.class;
+
+    // Other
+
+    case java.sql.Types.BINARY: // UUID
+      return byte[].class;
+
+    case java.sql.Types.ARRAY: // ARRAY
+      return Object[].class;
+
+    case java.sql.Types.OTHER:
+      if ("timestamp with timezone".equalsIgnoreCase(m.getTypeName())) {
+        return java.sql.Timestamp.class;
+
+        // If the JDBC driver was 1.4.x (unstable as of Dec 2016) we could use:
+        // return new PropertyType("org.h2.api.TimestampWithTimeZone", m,
+        // false);
+
+      } else {
+        return byte[].class;
+      }
+
+    default: // Unrecognized type
+      return Object.class;
+
+    }
+
   }
 
   // WITH rendering

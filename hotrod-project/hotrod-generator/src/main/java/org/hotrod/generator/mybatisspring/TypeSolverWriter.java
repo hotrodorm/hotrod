@@ -10,6 +10,7 @@ import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeRule;
 
 public class TypeSolverWriter {
 
@@ -79,7 +80,7 @@ public class TypeSolverWriter {
   }
   
   private void writeRules() {
-    for (: this.typeSolver) {
+    for (TypeRule r : this.typeSolver.getRules()) {
       
     }
   }

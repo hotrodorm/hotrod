@@ -106,4 +106,11 @@ public class ResultSetColumnMetadata implements DriverColumnMetaData {
     return this.scale;
   }
 
+  @Override
+  public String toString() {
+    return "ResultSetColumnMetadata [catalog=" + catalog + ", schema=" + schema + ", name=" + name + ", label=" + label
+        + ", typeName=" + typeName + ", dataType=" + dataType + ", driverDefaultClassName=" + driverDefaultClassName
+        + ", displaySize=" + displaySize + ", precision=" + precision + ", scale=" + scale + "]";
+  }
+
 }

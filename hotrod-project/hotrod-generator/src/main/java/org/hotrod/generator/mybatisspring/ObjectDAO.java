@@ -536,14 +536,10 @@ public class ObjectDAO extends GeneratableObject {
     println("  private boolean usePlainJDBC;");
     println();
 
-    println("  @Autowired");
-    println("  private TypeSolver typeSolver;");
-    println();
-
     println("  @PostConstruct");
     println("  public void initializeContext() {");
     println(
-        "    this.context = new LiveSQLContext(this.liveSQLDialect, this.sqlSession, this.liveSQLMapper, this.usePlainJDBC, this.dataSource, this.typeSolver);");
+        "    this.context = new LiveSQLContext(this.liveSQLDialect, this.sqlSession, this.liveSQLMapper, this.usePlainJDBC, this.dataSource, new TypeSolver(null, this.liveSQLDialect));");
     println("  }");
     println();
 

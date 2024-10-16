@@ -12,7 +12,33 @@ public class TypeHandler {
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(TypeHandler.class.getName());
 
-  public static final TypeHandler STRING_TYPE_HANDLER = new TypeHandler(String.class, null, null);
+  public static final TypeHandler STRING = new TypeHandler(String.class, null, null);
+//
+//  public static final TypeHandler BYTE = new TypeHandler(Byte.class, null, null);
+//  public static final TypeHandler SHORT = new TypeHandler(Short.class, null, null);
+//  public static final TypeHandler INTEGER = new TypeHandler(Integer.class, null, null);
+//  public static final TypeHandler LONG = new TypeHandler(Long.class, null, null);
+//  public static final TypeHandler FLOAT = new TypeHandler(Float.class, null, null);
+//  public static final TypeHandler DOUBLE = new TypeHandler(Double.class, null, null);
+//  public static final TypeHandler BIGINTEGER = new TypeHandler(BigInteger.class, null, null);
+//  public static final TypeHandler BIGDECIMAL = new TypeHandler(BigDecimal.class, null, null);
+//
+//  public static final TypeHandler UTILDATE = new TypeHandler(java.util.Date.class, null, null);
+//  public static final TypeHandler SQLDATE = new TypeHandler(java.sql.Date.class, null, null);
+//  public static final TypeHandler LOCALDATE = new TypeHandler(LocalDate.class, null, null);
+//
+//  public static final TypeHandler TIME = new TypeHandler(java.sql.Time.class, null, null);
+//  public static final TypeHandler LOCALTIME = new TypeHandler(LocalTime.class, null, null);
+//  public static final TypeHandler OFFSETTIME = new TypeHandler(OffsetTime.class, null, null);
+//
+//  public static final TypeHandler TIMESTAMP = new TypeHandler(java.sql.Timestamp.class, null, null);
+//  public static final TypeHandler LOCALDATETIME = new TypeHandler(LocalDateTime.class, null, null);
+//  public static final TypeHandler OFFSETDATETIME = new TypeHandler(OffsetDateTime.class, null, null);
+//  public static final TypeHandler ZONEDDATETIME = new TypeHandler(ZonedDateTime.class, null, null);
+//
+//  public static final TypeHandler BYTEARRAY = new TypeHandler(byte[].class, null, null);
+//
+//  public static final TypeHandler BOOLEAN = new TypeHandler(Boolean.class, null, null);
 
   private static Map<Class<?>, TypeHandler> KNOWN_HANDLERS = new HashMap<>();
 

@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.select.SHelper;
+import org.hotrod.runtime.livesql.queries.typesolver.ResultSetColumnMetadata;
 
 public abstract class LiveSQLDialect {
 
@@ -87,6 +88,10 @@ public abstract class LiveSQLDialect {
     return this.getClass().getSimpleName() + " [" + (databaseName != null ? "databaseName=" + databaseName + ", " : "")
         + (databaseVersion != null ? "databaseVersion=" + databaseVersion + ", " : "") + "databaseMajorVersion="
         + databaseMajorVersion + ", databaseMinorVersion=" + databaseMinorVersion + "]";
+  }
+
+  public Class<?> resolveColumnType(final ResultSetColumnMetadata m) {
+    return null;
   }
 
   public abstract WithRenderer getWithRenderer();

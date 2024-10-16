@@ -127,6 +127,7 @@ import org.hotrod.runtime.livesql.queries.subqueries.SubqueryColumnsPhase;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.runtime.livesql.sysobjects.DualTable;
 import org.hotrod.runtime.livesql.sysobjects.SysDummy1Table;
+import org.hotrodorm.hotrod.utils.TUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -155,13 +156,15 @@ public class LiveSQL {
   // Constructor
 
   public LiveSQL(final SqlSession sqlSession, final @Qualifier("liveSQLDialect") LiveSQLDialect liveSQLDialect,
-      final LiveSQLMapper liveSQLMapper, final DataSource dataSource, final TypeSolver typeSolver) {
+      final LiveSQLMapper liveSQLMapper, final DataSource dataSource) {
     this.sqlSession = sqlSession;
     this.liveSQLDialect = liveSQLDialect;
     this.liveSQLMapper = liveSQLMapper;
     this.context = null;
     this.dataSource = dataSource;
-    this.typeSolver = typeSolver;
+    this.typeSolver = new TypeSolver(null, this.liveSQLDialect);
+    log.info("typeSolver=" + typeSolver + "\nStack: " + TUtil.compactStackTrace());
+
   }
 
   @PostConstruct
