@@ -52,8 +52,8 @@ public class Helper {
     return expr.getProperty();
   }
 
-  public static void captureTypeHandler(final Expression expr) {
-    expr.captureTypeHandler();
-  }
+//  public static void captureTypeHandler(final Expression expr) {
+//    expr.captureTypeHandler();
+//  }
 
 }

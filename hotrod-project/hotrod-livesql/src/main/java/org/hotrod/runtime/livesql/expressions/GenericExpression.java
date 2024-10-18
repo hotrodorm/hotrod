@@ -5,7 +5,6 @@ import org.hotrod.runtime.livesql.expressions.predicates.IsNotNull;
 import org.hotrod.runtime.livesql.expressions.predicates.IsNull;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
-import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
 import org.hotrodorm.hotrod.utils.SUtil;
 
 public abstract class GenericExpression extends Expression implements OrderingTerm {
@@ -17,8 +16,7 @@ public abstract class GenericExpression extends Expression implements OrderingTe
   // TypeHandler setter
 
   public TypedExpression type(final Class<?> type) {
-    super.setTypeHandler(TypeHandler.of(type));
-    return new TypedExpression(this);
+    return new TypedExpression(this, type);
   }
 
   // Is Null and Is Not Null

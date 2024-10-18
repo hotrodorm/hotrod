@@ -15,7 +15,7 @@ public class AliasedExpression extends Expression {
   private String alias;
 
   public AliasedExpression(final Expression referencedExpression, final String alias) {
-    super(PRECEDENCE_ALIAS);
+    super(referencedExpression);
     this.referencedExpression = referencedExpression;
     this.alias = alias;
     super.register(this.referencedExpression);
@@ -24,8 +24,7 @@ public class AliasedExpression extends Expression {
   // TypeHandler setter
 
   public TypedExpression type(final Class<?> type) {
-    super.setTypeHandler(TypeHandler.of(type));
-    return new TypedExpression(this);
+    return new TypedExpression(this, type);
   }
 
   // Rendering

@@ -2,6 +2,10 @@ package org.hotrod.runtime.livesql.dialects;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetTime;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -92,10 +96,14 @@ public class H2Dialect extends LiveSQLDialect {
 
     case java.sql.Types.DATE:
       return java.sql.Date.class;
-    case java.sql.Types.TIME:
-      return java.sql.Time.class;
-    case java.sql.Types.TIMESTAMP:
-      return java.sql.Timestamp.class;
+    case java.sql.Types.TIME: // differs from original: java.sql.Time
+      return LocalTime.class;
+    case java.sql.Types.TIME_WITH_TIMEZONE: // new
+      return OffsetTime.class;
+    case java.sql.Types.TIMESTAMP: // differs from original: java.sql.Timestamp
+      return LocalDateTime.class;
+    case java.sql.Types.TIMESTAMP_WITH_TIMEZONE: // new
+      return ZonedDateTime.class;
 
     // Binary
 

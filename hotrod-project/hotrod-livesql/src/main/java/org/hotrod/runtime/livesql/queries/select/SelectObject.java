@@ -96,12 +96,12 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
     for (ResultSetColumn rsc : rsColumns) {
       Expression expr = Helper.getExpression(rsc);
       if (expr != null) {
-        Helper.captureTypeHandler(expr);
+//        Helper.captureTypeHandler(expr);
 //        log.info("---------- expr@" + System.identityHashCode(expr) + ": " + expr);
         this.queryColumns.add(expr);
       } else {
         for (Expression exp : Helper.unwrap(rsc)) {
-          Helper.captureTypeHandler(exp);
+//          Helper.captureTypeHandler(exp);
 //          log.info("---------- expr@" + System.identityHashCode(exp) + ": " + exp);
           this.queryColumns.add(exp);
         }

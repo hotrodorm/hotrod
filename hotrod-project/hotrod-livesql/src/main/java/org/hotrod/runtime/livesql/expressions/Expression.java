@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.hotrod.runtime.converter.TypeConverter;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
@@ -14,6 +13,7 @@ import org.hotrod.runtime.livesql.queries.select.SHelper;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
+import org.hotrodorm.hotrod.utils.TUtil;
 
 public abstract class Expression extends ResultSetColumn {
 
@@ -82,6 +82,14 @@ public abstract class Expression extends ResultSetColumn {
     this.typeHandler = null;
   }
 
+  protected Expression(final Expression expr) {
+    this.expressions = expr.expressions;
+    this.precedence = expr.precedence;
+    this.subqueries = expr.subqueries;
+    this.tablesOrViews = expr.tablesOrViews;
+    this.typeHandler = expr.typeHandler;
+  }
+
   // Shielded getters
 
   protected String getReferenceName() {
@@ -110,11 +118,16 @@ public abstract class Expression extends ResultSetColumn {
 
   protected void setTypeHandler(TypeHandler typeHandler) {
     this.typeHandler = typeHandler;
+//    log.info("set type(" + typeHandler + "): " + this + " -- th=" + this.typeHandler);
+//    if (typeHandler == null) {
+//      log.info("Stack: " + TUtil.compactStackTrace());
+//    }
   }
 
   // Getters
 
   protected TypeHandler getTypeHandler() {
+//    log.info("get type(): " + System.identityHashCode(this));
     return typeHandler;
   }
 
@@ -169,6 +182,7 @@ public abstract class Expression extends ResultSetColumn {
 
   protected abstract void renderTo(final QueryWriter w);
 
+  @Deprecated
   protected void captureTypeHandler() {
     // Nothing to do by default
     // SubqueryTTTColumn and AliasedExpression overrides this method

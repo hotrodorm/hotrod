@@ -27,11 +27,11 @@ public class TypeHandler {
 //  public static final TypeHandler SQLDATE = new TypeHandler(java.sql.Date.class, null, null);
 //  public static final TypeHandler LOCALDATE = new TypeHandler(LocalDate.class, null, null);
 //
-//  public static final TypeHandler TIME = new TypeHandler(java.sql.Time.class, null, null);
+//  public static final TypeHandler SQLTIME = new TypeHandler(java.sql.Time.class, null, null);
 //  public static final TypeHandler LOCALTIME = new TypeHandler(LocalTime.class, null, null);
 //  public static final TypeHandler OFFSETTIME = new TypeHandler(OffsetTime.class, null, null);
 //
-//  public static final TypeHandler TIMESTAMP = new TypeHandler(java.sql.Timestamp.class, null, null);
+//  public static final TypeHandler SQLTIMESTAMP = new TypeHandler(java.sql.Timestamp.class, null, null);
 //  public static final TypeHandler LOCALDATETIME = new TypeHandler(LocalDateTime.class, null, null);
 //  public static final TypeHandler OFFSETDATETIME = new TypeHandler(OffsetDateTime.class, null, null);
 //  public static final TypeHandler ZONEDDATETIME = new TypeHandler(ZonedDateTime.class, null, null);
@@ -102,6 +102,10 @@ public class TypeHandler {
   protected String render() {
     return this.converter == null ? "" + this.javaClass
         : "[" + this.rawClass + " -> " + this.converter.getClass() + " -> " + this.javaClass + "]";
+  }
+
+  public String toString() {
+    return this.render();
   }
 
 }

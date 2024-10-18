@@ -95,9 +95,9 @@ public abstract class MultiSet<R> {
 
   @SuppressWarnings("unchecked")
   protected List<R> executeLiveSQL(final LiveSQLContext context, final LiveSQLPreparedQuery q) {
-    log.info("### executeLiveSQL()");
+//    log.info("### executeLiveSQL()");
     if (context.usePlainJDBC()) {
-      log.info("### Using Plain JDBC");
+//      log.info("### Using Plain JDBC");
       List<Row> rows = new ArrayList<>();
       try (Connection conn = context.getDataSource().getConnection()) {
 
@@ -119,6 +119,7 @@ public abstract class MultiSet<R> {
             int ordinal = 1;
             for (Entry<String, Expression> et : queryColumns.entrySet()) {
               Expression expr = et.getValue();
+//              log.info(" - expr '" + et.getKey() + "'=" + expr + " -- th=" + Helper.getTypeHandler(expr));
               if (Helper.getTypeHandler(expr) == null) {
                 ResultSetColumnMetadata cm = ResultSetColumnMetadata.of(rm, ordinal);
                 try {

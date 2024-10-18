@@ -163,8 +163,7 @@ public class LiveSQL {
     this.context = null;
     this.dataSource = dataSource;
     this.typeSolver = new TypeSolver(null, this.liveSQLDialect);
-    log.info("typeSolver=" + typeSolver + "\nStack: " + TUtil.compactStackTrace());
-
+//    log.info("typeSolver=" + typeSolver + "\nStack: " + TUtil.compactStackTrace());
   }
 
   @PostConstruct

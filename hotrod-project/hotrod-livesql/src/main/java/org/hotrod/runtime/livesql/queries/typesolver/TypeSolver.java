@@ -20,7 +20,7 @@ public class TypeSolver {
 
   public TypeHandler resolve(final ResultSetColumnMetadata cm) throws UnresolvableDataTypeException {
 
-    log.info("cm: " + cm);
+//    log.info("cm: " + cm);
 
     // 1. Try the user rules from the type-solver tag.
 
@@ -36,7 +36,7 @@ public class TypeSolver {
     // 2. Try the dialect rules (provided by default per the dialect)
 
     Class<?> c = this.dialect.resolveColumnType(cm);
-    log.info("col: " + cm.getName() + " - c=" + c);
+//    log.info("col: " + cm.getName() + " - c=" + c);
 
     if (c != null) {
       return TypeHandler.of(c);
