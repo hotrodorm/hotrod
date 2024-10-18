@@ -2,16 +2,17 @@
 
   <generators>
     <mybatis-spring>
-      <daos package="app.daos" dao-suffix="DAO" vo-suffix="VO" abstract-vo-prefix="Abstract" abstract-vo-suffix="VO"
-      />
+      <daos package="app.daos" dao-suffix="DAO" vo-suffix="VO" abstract-vo-prefix="Abstract"
+        abstract-vo-suffix="VO" />
     </mybatis-spring>
   </generators>
-  
-  <converter name="boolean_stored_as_int"
-    java-type="java.lang.Boolean"
-    java-raw-type="java.lang.Integer"
-    class="app.IntegerBooleanConverter"
-  />
+
+  <type-solver>
+    <when test-resultset="scale > 0" java-type="BigDecimal" />
+  </type-solver>
+
+  <converter name="boolean_stored_as_int" java-type="java.lang.Boolean" java-raw-type="java.lang.Integer"
+    class="app.IntegerBooleanConverter" />
 
   <table name="chars" />
   <table name="numbers" />

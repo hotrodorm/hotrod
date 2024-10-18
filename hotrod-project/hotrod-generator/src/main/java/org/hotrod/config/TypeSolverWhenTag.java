@@ -28,11 +28,13 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
   // Properties
 
   private String test = null;
+  private String testResultSet = null;
   private String javaType = null;
   private String converter = null;
   private String forceJDBCTypeOnWrite = null;
 
   private OgnlExpression testExpression = null;
+  private OgnlExpression testResultSetExpression = null;
   private ConverterTag converterTag = null;
   private JDBCType jdbcType = null;
 
@@ -48,6 +50,11 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
   @XmlAttribute(name = "test")
   public void setTest(final String test) {
     this.test = test;
+  }
+
+  @XmlAttribute(name = "test-resultset")
+  public void setTestResultSet(final String testResultSet) {
+    this.testResultSet = testResultSet;
   }
 
   @XmlAttribute(name = "java-type")
@@ -69,18 +76,30 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
 
   public void validate(final HotRodConfigTag config) throws InvalidConfigurationFileException {
 
-    // test
+    // test & test-resultset
 
-    if (SUtil.isEmpty(this.test)) {
+    if (SUtil.isEmpty(this.test) && SUtil.isEmpty(this.testResultSet)) {
       throw new InvalidConfigurationFileException(this,
-          "Attribute 'test' cannot be empty: must be a boolean expression");
+          "The attributes 'test' and 'test-resultset' cannot be empty at the same time");
     }
-    try {
-      this.testExpression = new OgnlExpression(this.test);
-    } catch (OgnlException e) {
-      throw new InvalidConfigurationFileException(this, "Invalid OGNL expression: " + this.test);
+
+    if (!SUtil.isEmpty(this.test)) {
+      try {
+        this.testExpression = new OgnlExpression(this.test);
+      } catch (OgnlException e) {
+        throw new InvalidConfigurationFileException(this, "Invalid OGNL expression: " + this.test);
+      }
+      log.debug("this.testExpression=" + this.testExpression);
     }
-    log.debug("this.testExpression=" + this.testExpression);
+
+    if (!SUtil.isEmpty(this.testResultSet)) {
+      try {
+        this.testResultSetExpression = new OgnlExpression(this.testResultSet);
+      } catch (OgnlException e) {
+        throw new InvalidConfigurationFileException(this, "Invalid OGNL expression: " + this.testResultSet);
+      }
+      log.debug("this.testResultSetExpression=" + this.testResultSetExpression);
+    }
 
     // java-type
 
@@ -143,6 +162,10 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
     return this.test;
   }
 
+  public String getTestResultSet() {
+    return testResultSet;
+  }
+
   public String getJavaType() {
     return this.javaType;
   }
@@ -163,11 +186,15 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
     return this.testExpression;
   }
 
+  public OgnlExpression getTestResultSetExpression() {
+    return testResultSetExpression;
+  }
+
   // Simple Caption
 
   @Override
   public String getInternalCaption() {
-    return this.getTagName() + ":" + this.test;
+    return this.getTagName() + ": test=" + this.test + " test-resultset=" + this.testResultSet;
   }
 
 }

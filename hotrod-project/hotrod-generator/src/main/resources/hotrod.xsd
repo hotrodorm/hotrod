@@ -46,7 +46,8 @@
   </xsd:complexType>
 
   <xsd:complexType name="type-solver-when-type">
-    <xsd:attribute name="test" type="xsd:string" use="required" />
+    <xsd:attribute name="test" type="xsd:string" />
+    <xsd:attribute name="test-resultset" type="xsd:string" />
     <xsd:attribute name="java-type" type="xsd:string" />
     <xsd:attribute name="force-jdbc-type-on-write" type="xsd:string" />
     <xsd:attribute name="converter" type="xsd:string" />

@@ -78,6 +78,8 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
 
   private EntityDAORegistry entityDAORegistry = new EntityDAORegistry();
 
+  private LayerConfigWriter layerConfigWriter;
+
   public MyBatisSpringGenerator(final HotRodContext hc, final EnabledFKs enabledFKs, final DisplayMode displayMode,
       final boolean incrementalMode, final Feedback feedback)
       throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
@@ -170,6 +172,8 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
         addSelectVOs(sm, entityVOs);
       }
     }
+
+    this.layerConfigWriter = new LayerConfigWriter(layout, this.config.getTypeSolverTag());
 
   }
 
@@ -466,6 +470,8 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
     // MyBatis cursor implementation
 
     // this.mybatisCursor.generate();
+    
+    this.layerConfigWriter.generate(fileGenerator, this);
 
   }
 

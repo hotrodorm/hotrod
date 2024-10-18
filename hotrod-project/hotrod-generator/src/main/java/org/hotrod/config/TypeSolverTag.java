@@ -12,7 +12,6 @@ import org.apache.logging.log4j.Logger;
 import org.hotrod.database.PropertyType;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.metadata.ColumnMetadata;
-import org.hotrod.runtime.livesql.queries.typesolver.TypeRule;
 import org.hotrod.runtime.typesolver.OGNLPublicMemberAccess;
 import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.JdbcTypes;
@@ -79,15 +78,16 @@ public class TypeSolverTag extends AbstractConfigurationTag {
     // Find the first matching rule
 
     for (TypeSolverWhenTag w : this.whens) {
-      Object result = null;
-      try {
-        result = w.getTestExpression().getValue(this.context, rc);
-        if (result == null) {
-          throw new UnresolvableDataTypeException(cm, "Could not evaluate <when> tag's test expression '" + w.getTest()
-              + "': must return a boolean value but returned null");
-        }
-        Boolean test = (Boolean) result;
-        if (test) {
+      if (w.getTest() != null) {
+        Object result = null;
+        try {
+          result = w.getTestExpression().getValue(this.context, rc);
+          if (result == null) {
+            throw new UnresolvableDataTypeException(cm, "Could not evaluate <when> tag's test expression '"
+                + w.getTest() + "': must return a boolean value but returned null");
+          }
+          Boolean test = (Boolean) result;
+          if (test) {
 //          if ("price".equals(cm.getName()) && "product".equals(cm.getName())) {
 //            log.debug("w.getJDBCTypeOnWrite()=" + w.getJDBCTypeOnWrite());
 //            log.debug("resultSetType=" + resultSetType);
@@ -95,22 +95,23 @@ public class TypeSolverTag extends AbstractConfigurationTag {
 //            log.debug("cm=" + cm);
 //            log.debug("c=" + c);
 //          }
-          JDBCType jdbcTypeOnWrite = w.getJDBCTypeOnWrite();
-          if (jdbcTypeOnWrite == null) {
-            jdbcTypeOnWrite = (c != null ? JdbcTypes.codeToType(c.getDataType()) : resultSetType);
+            JDBCType jdbcTypeOnWrite = w.getJDBCTypeOnWrite();
+            if (jdbcTypeOnWrite == null) {
+              jdbcTypeOnWrite = (c != null ? JdbcTypes.codeToType(c.getDataType()) : resultSetType);
+            }
+            log.debug("## 5 RULE MATCHES: w.getJavaType()=" + w.getJavaType() + " jdbcTypeOnWrite=" + jdbcTypeOnWrite);
+            return new PropertyType(w.getJavaType(), jdbcTypeOnWrite, false);
           }
-          log.debug("## 5 RULE MATCHES: w.getJavaType()=" + w.getJavaType() + " jdbcTypeOnWrite=" + jdbcTypeOnWrite);
-          return new PropertyType(w.getJavaType(), jdbcTypeOnWrite, false);
+        } catch (ClassCastException e) {
+          throw new UnresolvableDataTypeException(cm, "Could not evaluate <when> tag's test expression '" + w.getTest()
+              + "': must return a boolean value but returned a " + result.getClass().getName());
+        } catch (OgnlException e) {
+          throw new UnresolvableDataTypeException(cm,
+              "Could not evaluate <when> tag's test expression '" + w.getTest() + "': " + e.getMessage());
+        } catch (RuntimeException e) {
+          e.printStackTrace();
+          throw e;
         }
-      } catch (ClassCastException e) {
-        throw new UnresolvableDataTypeException(cm, "Could not evaluate <when> tag's test expression '" + w.getTest()
-            + "': must return a boolean value but returned a " + result.getClass().getName());
-      } catch (OgnlException e) {
-        throw new UnresolvableDataTypeException(cm,
-            "Could not evaluate <when> tag's test expression '" + w.getTest() + "': " + e.getMessage());
-      } catch (RuntimeException e) {
-        e.printStackTrace();
-        throw e;
       }
     }
 
@@ -132,13 +133,8 @@ public class TypeSolverTag extends AbstractConfigurationTag {
     return retrievedColumns;
   }
 
-  public List<TypeRule> getRules() {
-    List<TypeRule> rules = new ArrayList<>();
-    for (TypeSolverWhenTag w : this.whens) {
-//      if (w.getJavaType() != null)
-      TypeRule.of(w.getTest(), w.getJavaType());
-    }
-    return rules;
+  public List<TypeSolverWhenTag> getWhens() {
+    return whens;
   }
 
 }
