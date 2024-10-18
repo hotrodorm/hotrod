@@ -41,13 +41,13 @@ public class H2Dialect extends LiveSQLDialect {
   @Override
   public Class<?> resolveColumnType(final ResultSetColumnMetadata m) {
 
-    switch (m.getDataType()) {
+    switch (m.getColumnType()) {
 
     // Numeric types
 
     case java.sql.Types.DECIMAL:
     case java.sql.Types.NUMERIC:
-      if (m.getScale() != null && m.getScale() != 0) {
+      if (m.getScale() != 0) {
         return BigDecimal.class;
       } else {
         if (m.getPrecision() <= 2) {
@@ -126,7 +126,7 @@ public class H2Dialect extends LiveSQLDialect {
       return Object[].class;
 
     case java.sql.Types.OTHER:
-      if ("timestamp with timezone".equalsIgnoreCase(m.getTypeName())) {
+      if ("timestamp with timezone".equalsIgnoreCase(m.getColumnTypeName())) {
         return java.sql.Timestamp.class;
 
         // If the JDBC driver was 1.4.x (unstable as of Dec 2016) we could use:

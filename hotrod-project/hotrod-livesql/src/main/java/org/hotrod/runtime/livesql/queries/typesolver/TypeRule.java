@@ -2,7 +2,6 @@ package org.hotrod.runtime.livesql.queries.typesolver;
 
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.typesolver.OGNLPublicMemberAccess;
-import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
 import org.hotrodorm.hotrod.utils.SUtil;
 
 import ognl.Ognl;
@@ -44,18 +43,19 @@ public class TypeRule {
     return new TypeRule(test, null, errorMessage);
   }
 
-  public TypeHandler resolve(final ResultSetColumnMetadata cm) throws UnresolvableDataTypeException {
+  public TypeHandler resolve(final ResultSetColumnMetadata cm) throws CouldNotResolveResultSetDataTypeException {
     Object v = null;
     try {
       v = Ognl.getValue(this.testExpression, context, cm);
       if (v == null) {
-        throw new UnresolvableDataTypeException(cm, "Could not evaluate Type Solver's <when> tag's test expression '"
-            + this.test + "': must return a boolean value but returned null");
+        throw new CouldNotResolveResultSetDataTypeException(cm,
+            "Could not evaluate Type Solver's <when> tag's test expression '" + this.test
+                + "': must return a boolean value but returned null");
       }
       Boolean ruleApplies = (Boolean) v;
       if (ruleApplies) {
         if (this.errorMessage != null) {
-          throw new UnresolvableDataTypeException(cm, "Type Solver's with test expression '" + this.test
+          throw new CouldNotResolveResultSetDataTypeException(cm, "Type Solver's with test expression '" + this.test
               + "' returned the error message:\n" + this.errorMessage);
         }
         return this.typeHandler;
@@ -63,12 +63,30 @@ public class TypeRule {
       return null;
 
     } catch (ClassCastException e) {
-      throw new UnresolvableDataTypeException(cm, "Could not evaluate Type Solver's  <when> tag's test expression '"
-          + this.test + "': must return a boolean value but returned a value of type " + v.getClass().getName());
+      throw new CouldNotResolveResultSetDataTypeException(cm,
+          "Could not evaluate Type Solver's  <when> tag's test expression '" + this.test
+              + "': must return a boolean value but returned a value of type " + v.getClass().getName());
     } catch (OgnlException e) {
-      throw new UnresolvableDataTypeException(cm,
+      throw new CouldNotResolveResultSetDataTypeException(cm,
           "Could not evaluate Type Solver's <when> tag's test expression '" + this.test + "': " + e.getMessage());
     }
+  }
+
+  public static class CouldNotResolveResultSetDataTypeException extends Exception {
+
+    private static final long serialVersionUID = 1L;
+
+    private ResultSetColumnMetadata cm;
+
+    public CouldNotResolveResultSetDataTypeException(ResultSetColumnMetadata cm, String message) {
+      super(message);
+      this.cm = cm;
+    }
+
+    public ResultSetColumnMetadata getColumnMetaData() {
+      return cm;
+    }
+
   }
 
 }

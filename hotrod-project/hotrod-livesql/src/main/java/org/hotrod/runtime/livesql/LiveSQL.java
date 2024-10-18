@@ -9,6 +9,7 @@ import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -124,10 +125,10 @@ import org.hotrod.runtime.livesql.queries.select.SelectCTEPhase;
 import org.hotrod.runtime.livesql.queries.select.SelectColumnsPhase;
 import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 import org.hotrod.runtime.livesql.queries.subqueries.SubqueryColumnsPhase;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeRule;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.runtime.livesql.sysobjects.DualTable;
 import org.hotrod.runtime.livesql.sysobjects.SysDummy1Table;
-import org.hotrodorm.hotrod.utils.TUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -153,6 +154,9 @@ public class LiveSQL {
   @Autowired
   private LiveSQLConfiguration config;
 
+  @Autowired
+  private PersistenceLayerConfigFactory persistenceLayerConfigFactory;
+
   // Constructor
 
   public LiveSQL(final SqlSession sqlSession, final @Qualifier("liveSQLDialect") LiveSQLDialect liveSQLDialect,
@@ -162,13 +166,13 @@ public class LiveSQL {
     this.liveSQLMapper = liveSQLMapper;
     this.context = null;
     this.dataSource = dataSource;
-    this.typeSolver = new TypeSolver(null, this.liveSQLDialect);
-//    log.info("typeSolver=" + typeSolver + "\nStack: " + TUtil.compactStackTrace());
   }
 
   @PostConstruct
   private void initialize() {
-    log.info("initializing ds=" + this.dataSource);
+    log.info(">>>>>>>>>>> initializing");
+    List<TypeRule> customRules = persistenceLayerConfigFactory.getCustomRules(null);
+    this.typeSolver = new TypeSolver(customRules, this.liveSQLDialect);
     this.context = new LiveSQLContext(liveSQLDialect, sqlSession, liveSQLMapper, this.config.usePlainJDBC(),
         this.dataSource, this.typeSolver);
   }

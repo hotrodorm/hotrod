@@ -27,8 +27,8 @@ import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableRefer
 import org.hotrod.runtime.livesql.queries.select.TableExpression;
 import org.hotrod.runtime.livesql.queries.typesolver.ResultSetColumnMetadata;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeRule.CouldNotResolveResultSetDataTypeException;
 import org.hotrod.runtime.livesql.util.PreviewRenderer;
-import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
 
 public abstract class MultiSet<R> {
 
@@ -125,8 +125,9 @@ public abstract class MultiSet<R> {
                 try {
                   TypeHandler th = context.getTypeSolver().resolve(cm);
                   Helper.setTypeHandler(expr, th);
-                } catch (UnresolvableDataTypeException e) {
-                  throw new LiveSQLException("Could not determine type for column '" + et.getKey() + "' in query", e);
+                } catch (CouldNotResolveResultSetDataTypeException e) {
+                  throw new LiveSQLException(
+                      "Could not determine the application type for the column '" + et.getKey() + "' in the query", e);
                 }
               }
               ordinal++;

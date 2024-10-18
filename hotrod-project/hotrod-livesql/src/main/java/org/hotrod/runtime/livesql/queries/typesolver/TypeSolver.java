@@ -4,28 +4,29 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
-import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeRule.CouldNotResolveResultSetDataTypeException;
 
 public class TypeSolver {
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(TypeSolver.class.getName());
 
-  private List<TypeRule> userRules;
+  private List<TypeRule> layerRules;
   private LiveSQLDialect dialect;
 
-  public TypeSolver(final List<TypeRule> userRules, final LiveSQLDialect dialect) {
-    this.userRules = userRules;
+  public TypeSolver(final List<TypeRule> layerRules, final LiveSQLDialect dialect) {
+    this.layerRules = layerRules;
     this.dialect = dialect;
   }
 
-  public TypeHandler resolve(final ResultSetColumnMetadata cm) throws UnresolvableDataTypeException {
+  public TypeHandler resolve(final ResultSetColumnMetadata cm) throws CouldNotResolveResultSetDataTypeException {
 
-//    log.info("cm: " + cm);
+    log.info("--- cm: " + cm);
 
-    // 1. Try the user rules from the type-solver tag.
+    // 1. Try the layer rules from the type-solver tag.
 
-    if (this.userRules != null) {
-      for (TypeRule r : this.userRules) {
+    if (this.layerRules != null) {
+      for (TypeRule r : this.layerRules) {
         TypeHandler th = r.resolve(cm);
         if (th != null) {
           return th;
