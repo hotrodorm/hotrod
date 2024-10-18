@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import org.hotrod.runtime.converter.TypeConverter;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
+import org.hotrod.runtime.livesql.expressions.TypedExpression;
 import org.hotrod.runtime.livesql.queries.DMLQuery;
 import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.runtime.livesql.queries.select.CriteriaForUpdatePhase;
@@ -223,7 +224,7 @@ public class App {
 //    DMLQuery dq = sql.delete(b).where(b.id.gt(100));
 //    System.out.println("q:" + dq.getPreview());
 
-    log.info("** start **");
+//    log.info("** start **");
 
 //    TypeConverter<Integer, Boolean> tc = new IntegerBooleanConverter();
 //    TypeConverter<String, Integer> tc2 = new StringIntegerConverter();
@@ -243,7 +244,7 @@ public class App {
 //        .from(x) //
 //    ;
 
-    log.info("** S1 **");
+//    log.info("** S1 **");
 
 //    Select<Row> q = this.sql.select(b.star(), c.star().as(x->x.getProperty()+"_")).from(b).crossJoin(c);
 //    Select<Row> q = this.sql
@@ -256,19 +257,23 @@ public class App {
 //        .from(b);
 //    Select<Row> q = this.sql.select().from(b);
 
-    Select<Row> q = this.sql.select(b.star(), sql.val(3).mult(7).as("bad")).from(b);
+    Select<Row> q = this.sql.select(
+        b.star(), 
+        sql.val(3).mult(7).as("n"), 
+        sql.currentDateTime().as("dt").type(LocalDateTime.class)).from(b);
 
-    log.info("** S2 **");
+//    log.info("** S2 **");
 
     log.info("q:" + q.getPreview());
 
     List<Row> rows = q.execute();
     for (Row r : rows) {
-      System.out.println("---------------");
-      for (String name : r.keySet()) {
-        Object v = r.get(name);
-        System.out.println(" * c: " + v + (v == null ? "" : " (" + v.getClass().getName() + ")"));
-      }
+      System.out.println("r="+r);
+//      System.out.println("---------------");
+//      for (String name : r.keySet()) {
+//        Object v = r.get(name);
+//        System.out.println(" * c: " + v + (v == null ? "" : " (" + v.getClass().getName() + ")"));
+//      }
     }
 //    rows.forEach(r -> System.out.println("b:" + r + " id/" + r.get("id").getClass().getName()));
 

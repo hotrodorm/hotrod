@@ -9,19 +9,22 @@
   <sql id="columns">
     "ID",
     "REGION",
-    "IS_VIP"
+    "IS_VIP",
+    "CREATED_AT"
   </sql>
 
   <sql id="columnsWithAlias">
     ${alias}."ID",
     ${alias}."REGION",
-    ${alias}."IS_VIP"
+    ${alias}."IS_VIP",
+    ${alias}."CREATED_AT"
   </sql>
 
   <resultMap id="allColumns" type="app.daos.BranchVO">
     <id property="id" column="ID" />
     <result property="region" column="REGION" />
     <result property="isVip" column="IS_VIP" typeHandler="app.daos.primitives.BranchDAO$IsVipTypeHandler" />
+    <result property="createdAt" column="CREATED_AT" />
   </resultMap>
 
   <!-- select by PK -->
@@ -52,6 +55,9 @@
       <if test="p.isVip != null">
         and "IS_VIP" = #{p.isVip,jdbcType=INTEGER,typeHandler=app.daos.primitives.BranchDAO$IsVipTypeHandler}
       </if>
+      <if test="p.createdAt != null">
+        and "CREATED_AT" = #{p.createdAt,jdbcType=TIMESTAMP}
+      </if>
     </trim>
     <if test="o != null">
       order by ${o}
@@ -72,12 +78,14 @@
         <if test="id != null">, "ID"</if>
         <if test="true">, "REGION"</if>
         <if test="true">, "IS_VIP"</if>
+        <if test="true">, "CREATED_AT"</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
         <if test="id != null">, #{id,jdbcType=INTEGER}</if>
         <if test="true">, #{region,jdbcType=VARCHAR}</if>
         <if test="true">, #{isVip,jdbcType=INTEGER,typeHandler=app.daos.primitives.BranchDAO$IsVipTypeHandler}</if>
+        <if test="true">, #{createdAt,jdbcType=TIMESTAMP}</if>
       </trim>
       )
   </insert>
@@ -87,7 +95,8 @@
   <update id="updateByPK">
     update branch set
       "REGION" = #{region,jdbcType=VARCHAR},
-      "IS_VIP" = #{isVip,jdbcType=INTEGER,typeHandler=app.daos.primitives.BranchDAO$IsVipTypeHandler}
+      "IS_VIP" = #{isVip,jdbcType=INTEGER,typeHandler=app.daos.primitives.BranchDAO$IsVipTypeHandler},
+      "CREATED_AT" = #{createdAt,jdbcType=TIMESTAMP}
      where
       "ID" = #{id,jdbcType=INTEGER}
   </update>
@@ -108,6 +117,7 @@
       <if test="values.id != null">"ID" = #{values.id,jdbcType=INTEGER},</if>
       <if test="values.region != null">"REGION" = #{values.region,jdbcType=VARCHAR},</if>
       <if test="values.isVip != null">"IS_VIP" = #{values.isVip,jdbcType=INTEGER,typeHandler=app.daos.primitives.BranchDAO$IsVipTypeHandler},</if>
+      <if test="values.createdAt != null">"CREATED_AT" = #{values.createdAt,jdbcType=TIMESTAMP},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.id != null">
@@ -118,6 +128,9 @@
       </if>
       <if test="filter.isVip != null">
         and "IS_VIP" = #{filter.isVip,jdbcType=INTEGER,typeHandler=app.daos.primitives.BranchDAO$IsVipTypeHandler}
+      </if>
+      <if test="filter.createdAt != null">
+        and "CREATED_AT" = #{filter.createdAt,jdbcType=TIMESTAMP}
       </if>
     </trim>
   </update>
@@ -141,6 +154,9 @@
       </if>
       <if test="isVip != null">
         and "IS_VIP" = #{isVip,jdbcType=INTEGER,typeHandler=app.daos.primitives.BranchDAO$IsVipTypeHandler}
+      </if>
+      <if test="createdAt != null">
+        and "CREATED_AT" = #{createdAt,jdbcType=TIMESTAMP}
       </if>
     </trim>
   </delete>

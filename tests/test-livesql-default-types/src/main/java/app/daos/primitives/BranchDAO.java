@@ -124,6 +124,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
     mo.setRegion((java.lang.String) m.get(p + "region" + s));
     mo.setIsVip(new app.IntegerBooleanConverter().decode((java.lang.Integer) m.get(p + "isVip" + s), this.sqlSession.getConnection()));
+    mo.setCreatedAt((java.sql.Timestamp) m.get(p + "createdAt" + s));
     return mo;
   }
 
@@ -216,6 +217,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     mo.setId(vo.getId());
     mo.setRegion(vo.getRegion());
     mo.setIsVip(vo.getIsVip());
+    mo.setCreatedAt(vo.getCreatedAt());
     return mo;
   }
 
@@ -251,6 +253,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     if (updateValues.getId() != null) values.put("\"ID\"", updateValues.getId());
     if (updateValues.getRegion() != null) values.put("\"REGION\"", updateValues.getRegion());
     if (updateValues.getIsVip() != null) values.put("\"IS_VIP\"", updateValues.getIsVip());
+    if (updateValues.getCreatedAt() != null) values.put("\"CREATED_AT\"", updateValues.getCreatedAt());
     return new UpdateSetCompletePhase(this.context, "mappers.branch.updateByCriteria", tableOrView,  predicate, values);
   }
 
@@ -282,7 +285,9 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     REGION$DESC_CASEINSENSITIVE_STABLE_FORWARD("branch", "lower(\"REGION\"), \"REGION\"", false), //
     REGION$DESC_CASEINSENSITIVE_STABLE_REVERSE("branch", "lower(\"REGION\"), \"REGION\"", true), //
     IS_VIP("branch", "\"IS_VIP\"", true), //
-    IS_VIP$DESC("branch", "\"IS_VIP\"", false);
+    IS_VIP$DESC("branch", "\"IS_VIP\"", false), //
+    CREATED_AT("branch", "\"CREATED_AT\"", true), //
+    CREATED_AT$DESC("branch", "\"CREATED_AT\"", false);
 
     private BranchOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -326,11 +331,12 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     public final NumberColumn id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class));
     public final StringColumn region = new StringColumn(this, "REGION", "region", "CHARACTER VARYING", 10, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class));
     public final BooleanColumn isVip = new BooleanColumn(this, "IS_VIP", "isVip", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(app.IntegerBooleanConverter.class));
+    public final DateTimeColumn createdAt = new DateTimeColumn(this, "CREATED_AT", "createdAt", "TIMESTAMP", 26, 6, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.sql.Timestamp.class));
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this.id, this.region, this.isVip);
+      return new AllColumns(this.id, this.region, this.isVip, this.createdAt);
     }
 
     // Constructors
@@ -351,6 +357,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
       super.add(this.id);
       super.add(this.region);
       super.add(this.isVip);
+      super.add(this.createdAt);
     }
 
   }

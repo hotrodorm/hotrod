@@ -14,6 +14,7 @@ public class AbstractBranchVO implements Serializable {
   protected java.lang.Integer id = null;
   protected java.lang.String region = null;
   protected java.lang.Boolean isVip = null;
+  protected java.sql.Timestamp createdAt = null;
 
   // getters & setters
 
@@ -41,6 +42,14 @@ public class AbstractBranchVO implements Serializable {
     this.isVip = isVip;
   }
 
+  public java.sql.Timestamp getCreatedAt() {
+    return this.createdAt;
+  }
+
+  public void setCreatedAt(final java.sql.Timestamp createdAt) {
+    this.createdAt = createdAt;
+  }
+
   // to string
 
   public String toString() {
@@ -48,7 +57,8 @@ public class AbstractBranchVO implements Serializable {
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- id=" + this.id + "\n");
     sb.append("- region=" + this.region + "\n");
-    sb.append("- isVip=" + this.isVip);
+    sb.append("- isVip=" + this.isVip + "\n");
+    sb.append("- createdAt=" + this.createdAt);
     return sb.toString();
   }
 
@@ -59,6 +69,7 @@ public class AbstractBranchVO implements Serializable {
     obj.addProperty("id", this.id);
     obj.addProperty("region", this.region);
     obj.addProperty("isVip", this.isVip);
+    obj.addProperty("createdAt", this.createdAt);
     return obj;
   }
 
