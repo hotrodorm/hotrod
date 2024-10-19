@@ -24,6 +24,7 @@ import java.util.HashMap;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
 import org.hotrod.runtime.livesql.LiveSQLMapper;
 import org.hotrod.runtime.livesql.util.CastUtil;
 import javax.annotation.PostConstruct;
@@ -433,24 +434,24 @@ public class CharsDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public final NumberColumn id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class));
-    public final StringColumn vc1 = new StringColumn(this, "VC1", "vc1", "CHARACTER VARYING", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class));
-    public final StringColumn vc2 = new StringColumn(this, "VC2", "vc2", "CHARACTER VARYING", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class));
-    public final StringColumn vc3 = new StringColumn(this, "VC3", "vc3", "CHARACTER VARYING", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class));
-    public final StringColumn vc4 = new StringColumn(this, "VC4", "vc4", "CHARACTER VARYING", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class));
-    public final StringColumn vc5 = new StringColumn(this, "VC5", "vc5", "CHARACTER VARYING", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class));
-    public final StringColumn vc6 = new StringColumn(this, "VC6", "vc6", "CHARACTER VARYING", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class));
-    public final StringColumn vc7 = new StringColumn(this, "VC7", "vc7", "VARCHAR_IGNORECASE", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class));
-    public final StringColumn cha1 = new StringColumn(this, "CHA1", "cha1", "CHARACTER", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class));
-    public final StringColumn cha2 = new StringColumn(this, "CHA2", "cha2", "CHARACTER", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class));
-    public final StringColumn cha3 = new StringColumn(this, "CHA3", "cha3", "CHARACTER", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class));
-    public final StringColumn clo1 = new StringColumn(this, "CLO1", "clo1", "CHARACTER LARGE OBJECT", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class));
-    public final StringColumn clo2 = new StringColumn(this, "CLO2", "clo2", "CHARACTER VARYING", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class));
-    public final StringColumn clo3 = new StringColumn(this, "CLO3", "clo3", "CHARACTER VARYING", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class));
-    public final StringColumn clo4 = new StringColumn(this, "CLO4", "clo4", "CHARACTER VARYING", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class));
-    public final StringColumn clo5 = new StringColumn(this, "CLO5", "clo5", "CHARACTER VARYING", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class));
-    public final StringColumn clo6 = new StringColumn(this, "CLO6", "clo6", "CHARACTER VARYING", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class));
-    public final StringColumn clo7 = new StringColumn(this, "CLO7", "clo7", "CHARACTER LARGE OBJECT", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class));
+    public final NumberColumn id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
+    public final StringColumn vc1 = new StringColumn(this, "VC1", "vc1", "CHARACTER VARYING", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
+    public final StringColumn vc2 = new StringColumn(this, "VC2", "vc2", "CHARACTER VARYING", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
+    public final StringColumn vc3 = new StringColumn(this, "VC3", "vc3", "CHARACTER VARYING", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
+    public final StringColumn vc4 = new StringColumn(this, "VC4", "vc4", "CHARACTER VARYING", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
+    public final StringColumn vc5 = new StringColumn(this, "VC5", "vc5", "CHARACTER VARYING", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
+    public final StringColumn vc6 = new StringColumn(this, "VC6", "vc6", "CHARACTER VARYING", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
+    public final StringColumn vc7 = new StringColumn(this, "VC7", "vc7", "VARCHAR_IGNORECASE", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
+    public final StringColumn cha1 = new StringColumn(this, "CHA1", "cha1", "CHARACTER", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
+    public final StringColumn cha2 = new StringColumn(this, "CHA2", "cha2", "CHARACTER", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
+    public final StringColumn cha3 = new StringColumn(this, "CHA3", "cha3", "CHARACTER", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
+    public final StringColumn clo1 = new StringColumn(this, "CLO1", "clo1", "CHARACTER LARGE OBJECT", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
+    public final StringColumn clo2 = new StringColumn(this, "CLO2", "clo2", "CHARACTER VARYING", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
+    public final StringColumn clo3 = new StringColumn(this, "CLO3", "clo3", "CHARACTER VARYING", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
+    public final StringColumn clo4 = new StringColumn(this, "CLO4", "clo4", "CHARACTER VARYING", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
+    public final StringColumn clo5 = new StringColumn(this, "CLO5", "clo5", "CHARACTER VARYING", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
+    public final StringColumn clo6 = new StringColumn(this, "CLO6", "clo6", "CHARACTER VARYING", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
+    public final StringColumn clo7 = new StringColumn(this, "CLO7", "clo7", "CHARACTER LARGE OBJECT", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
 
     // Getters
 

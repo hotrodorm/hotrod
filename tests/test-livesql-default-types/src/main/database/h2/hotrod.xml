@@ -8,7 +8,11 @@
   </generators>
 
   <type-solver>
-    <when test-resultset="scale > 0" java-type="BigDecimal" />
+  <!-- 
+    <when test-resultset="scale > 0" java-type="java.math.BigDecimal" />
+  -->
+    <when test-resultset="precision &lt; 2" java-type="Byte" />
+    <when test-resultset="scale > 0" java-type="Short" />
   </type-solver>
 
   <converter name="boolean_stored_as_int" java-type="java.lang.Boolean" java-raw-type="java.lang.Integer"

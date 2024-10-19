@@ -404,6 +404,7 @@ public class ObjectDAO extends GeneratableObject {
     imports.add("org.hotrod.runtime.spring.SpringBeanObjectFactory");
 
     imports.add("org.hotrod.runtime.livesql.dialects.LiveSQLDialect");
+    imports.add("org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource");
     imports.add(LiveSQLMapper.class);
     imports.add(CastUtil.class);
     imports.add("javax.annotation.PostConstruct");
@@ -1894,9 +1895,9 @@ public class ObjectDAO extends GeneratableObject {
       String th;
       if (cm.getConverter() != null) {
         javaConverterClass = cm.getConverter().getJavaClass();
-        th = TypeHandler.class.getName() + ".of(" + javaConverterClass + ".class)";
+        th = TypeHandler.class.getName() + ".of(" + javaConverterClass + ".class, TypeSource.ENTITY_COLUMN)";
       } else {
-        th = TypeHandler.class.getName() + ".of(" + javaType + ".class)";
+        th = TypeHandler.class.getName() + ".of(" + javaType + ".class, TypeSource.ENTITY_COLUMN)";
       }
 
       println("    public final " + liveSQLColumnType + " " + javaMembername + " = new " + liveSQLColumnType + "(this" //

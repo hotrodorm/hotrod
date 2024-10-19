@@ -35,6 +35,7 @@ import java.util.HashMap;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
 import org.hotrod.runtime.livesql.LiveSQLMapper;
 import org.hotrod.runtime.livesql.util.CastUtil;
 import javax.annotation.PostConstruct;
@@ -328,10 +329,10 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public final NumberColumn id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class));
-    public final StringColumn region = new StringColumn(this, "REGION", "region", "CHARACTER VARYING", 10, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class));
-    public final BooleanColumn isVip = new BooleanColumn(this, "IS_VIP", "isVip", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(app.IntegerBooleanConverter.class));
-    public final DateTimeColumn createdAt = new DateTimeColumn(this, "CREATED_AT", "createdAt", "TIMESTAMP", 26, 6, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.sql.Timestamp.class));
+    public final NumberColumn id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
+    public final StringColumn region = new StringColumn(this, "REGION", "region", "CHARACTER VARYING", 10, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
+    public final BooleanColumn isVip = new BooleanColumn(this, "IS_VIP", "isVip", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(app.IntegerBooleanConverter.class, TypeSource.ENTITY_COLUMN));
+    public final DateTimeColumn createdAt = new DateTimeColumn(this, "CREATED_AT", "createdAt", "TIMESTAMP", 26, 6, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.sql.Timestamp.class, TypeSource.ENTITY_COLUMN));
 
     // Getters
 

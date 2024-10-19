@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeRule.CouldNotResolveResultSetDataTypeException;
 
 public class TypeSolver {
@@ -21,7 +22,7 @@ public class TypeSolver {
 
   public TypeHandler resolve(final ResultSetColumnMetadata cm) throws CouldNotResolveResultSetDataTypeException {
 
-    log.info("--- cm: " + cm);
+    log.info("--- Resolving column: " + cm);
 
     // 1. Try the layer rules from the type-solver tag.
 
@@ -40,7 +41,7 @@ public class TypeSolver {
 //    log.info("col: " + cm.getName() + " - c=" + c);
 
     if (c != null) {
-      return TypeHandler.of(c);
+      return TypeHandler.of(c, TypeSource.DIALECT_RULES);
     }
 
     // 3. There's no rule for this type. Needs to be set directly by user

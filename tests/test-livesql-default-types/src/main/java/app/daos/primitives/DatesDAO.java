@@ -24,6 +24,7 @@ import java.util.HashMap;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
 import org.hotrod.runtime.livesql.LiveSQLMapper;
 import org.hotrod.runtime.livesql.util.CastUtil;
 import javax.annotation.PostConstruct;
@@ -277,12 +278,12 @@ public class DatesDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public final NumberColumn id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class));
-    public final DateTimeColumn tim1 = new DateTimeColumn(this, "TIM1", "tim1", "TIME", 8, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.sql.Time.class));
-    public final DateTimeColumn dat1 = new DateTimeColumn(this, "DAT1", "dat1", "DATE", 10, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.sql.Date.class));
-    public final DateTimeColumn ts1 = new DateTimeColumn(this, "TS1", "ts1", "TIMESTAMP", 26, 6, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.sql.Timestamp.class));
-    public final DateTimeColumn ts2 = new DateTimeColumn(this, "TS2", "ts2", "TIMESTAMP", 26, 6, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.sql.Timestamp.class));
-    public final DateTimeColumn ts3 = new DateTimeColumn(this, "TS3", "ts3", "TIMESTAMP", 19, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.sql.Timestamp.class));
+    public final NumberColumn id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
+    public final DateTimeColumn tim1 = new DateTimeColumn(this, "TIM1", "tim1", "TIME", 8, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.sql.Time.class, TypeSource.ENTITY_COLUMN));
+    public final DateTimeColumn dat1 = new DateTimeColumn(this, "DAT1", "dat1", "DATE", 10, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.sql.Date.class, TypeSource.ENTITY_COLUMN));
+    public final DateTimeColumn ts1 = new DateTimeColumn(this, "TS1", "ts1", "TIMESTAMP", 26, 6, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.sql.Timestamp.class, TypeSource.ENTITY_COLUMN));
+    public final DateTimeColumn ts2 = new DateTimeColumn(this, "TS2", "ts2", "TIMESTAMP", 26, 6, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.sql.Timestamp.class, TypeSource.ENTITY_COLUMN));
+    public final DateTimeColumn ts3 = new DateTimeColumn(this, "TS3", "ts3", "TIMESTAMP", 19, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.sql.Timestamp.class, TypeSource.ENTITY_COLUMN));
 
     // Getters
 

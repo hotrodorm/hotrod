@@ -34,13 +34,13 @@ public class LayerConfigWriter {
 
     File dir = this.layout.getDaoPrimitivePackageDir(null);
     File f = new File(dir, CLASS_NAME + ".java");
-    log.debug("f=" + f);
+//    log.info("f=" + f);
 
     try {
       this.w = fileGenerator.createWriter(f);
 
       this.writeHeader();
-
+      this.writeRules();
       this.writeFooter();
 
     } catch (IOException e) {
@@ -66,6 +66,7 @@ public class LayerConfigWriter {
     println("import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;");
     println("import org.hotrod.runtime.livesql.queries.typesolver.TypeRule;");
     println("import org.springframework.stereotype.Component;");
+    println("import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;");
     println();
     println("@Component");
     println("public class " + CLASS_NAME + " implements LayerConfig {");
@@ -78,12 +79,15 @@ public class LayerConfigWriter {
   }
 
   private void writeRules() throws IOException {
-//    println("    rules.add(TypeRule.of(\"scale > 0\", TypeHandler.of(BigDecimal.class)));");
+//    log.info("%%% this.typeSolver.getWhens().size()=" + this.typeSolver.getWhens().size());
+    int n = 1;
     for (TypeSolverWhenTag w : this.typeSolver.getWhens()) {
-      if (SUtil.isEmpty(w.getTestResultSet())) {
+//      log.info("%%%  - w.getTestResultSet()=" + w.getTestResultSet());
+      if (!SUtil.isEmpty(w.getTestResultSet())) {
         println("    rules.add(TypeRule.of(\"" + SUtil.escapeJavaString(w.getTestResultSet()) + "\", TypeHandler.of("
-            + w.getJavaType() + ")));");
+            + w.getJavaType() + ".class, TypeSource.LIVESQL_RULES), " + n + "));");
       }
+      n++;
     }
   }
 

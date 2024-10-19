@@ -10,6 +10,8 @@ import ognl.OgnlException;
 
 public class TypeRule {
 
+  private int ruleNumber;
+
   private String test;
 
   private TypeHandler typeHandler; // If test succeeds and there's no error message, this is the outcome
@@ -19,7 +21,8 @@ public class TypeRule {
   private OgnlContext context = new OgnlContext(null, null, new OGNLPublicMemberAccess());
   private Object testExpression = null;
 
-  private TypeRule(final String test, final TypeHandler typeHandler, final String errorMessage) {
+  private TypeRule(final int ruleNumber, final String test, final TypeHandler typeHandler, final String errorMessage) {
+    this.ruleNumber = ruleNumber;
     this.test = test;
     this.typeHandler = typeHandler;
     this.errorMessage = errorMessage;
@@ -35,12 +38,12 @@ public class TypeRule {
     }
   }
 
-  public static TypeRule of(final String test, final TypeHandler typeHandler) {
-    return new TypeRule(test, typeHandler, null);
+  public static TypeRule of(final String test, final TypeHandler typeHandler, final int ruleNumber) {
+    return new TypeRule(ruleNumber, test, typeHandler, null);
   }
 
-  public static TypeRule of(final String test, final String errorMessage) {
-    return new TypeRule(test, null, errorMessage);
+  public static TypeRule of(final String test, final String errorMessage, final int ruleNumber) {
+    return new TypeRule(ruleNumber, test, null, errorMessage);
   }
 
   public TypeHandler resolve(final ResultSetColumnMetadata cm) throws CouldNotResolveResultSetDataTypeException {
@@ -70,6 +73,14 @@ public class TypeRule {
       throw new CouldNotResolveResultSetDataTypeException(cm,
           "Could not evaluate Type Solver's <when> tag's test expression '" + this.test + "': " + e.getMessage());
     }
+  }
+
+  public TypeHandler getTypeHandler() {
+    return typeHandler;
+  }
+
+  public int getRuleNumber() {
+    return ruleNumber;
   }
 
   public static class CouldNotResolveResultSetDataTypeException extends Exception {
