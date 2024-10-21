@@ -2,11 +2,11 @@
 
 ## Currently (4.8)
 
-| Priority | A. Table Column<br/>in CRUD/Nitro | B. Expression Column<br/>in Nitro | C. Table Column<br/>in LiveSQL | D. Expression<br/>in LiveSQL |
-|:--------:| ------------------------------ | -------------------------- | ------------------------------ | -- |
-| 1 | `<column java-type>` | JDBC Driver Default        | `<column java-type>` | JDBC Driver Default |
-| 2 | `<type-solver>`                | --                         | `type-solver>`                 | -- |
-| 3 | Dialect Default                | --                         | Dialect Default                | -- |
+| A. Table Column<br/>in CRUD/Nitro | B. Expression Column<br/>in Nitro | C. Table Column<br/>in LiveSQL | D. Expression<br/>in LiveSQL |
+| ------------------------------ | -------------------------- | ------------------------------ | -- |
+| 1. `<column java-type>` | 1. JDBC Driver Default        | 1. `<column java-type>` | 1. JDBC Driver Default |
+| 2. `<type-solver>`                | --                         | 2. `type-solver>`                 | -- |
+| 3. Dialect Default                | --                         | 3. Dialect Default | -- |
 
 ## Examples
 
@@ -31,7 +31,7 @@ In this example, the column `salary` can end up having a different type dependin
       <table name="employee" />
     ```
 
-2. A type solver can override the dialect default. In this case the column type is `Double`:
+2. A type solver overrides the dialect default. In this case the column type is `Double`:
 
     ```xml
       <type-solver>
@@ -40,20 +40,20 @@ In this example, the column `salary` can end up having a different type dependin
       <table name="employee" />
     ```
 
-3. The type set in an explicit `<column>` overrides other settings. In this case the column type is `Float`:
+3. If the type is set in an explicit `<column>` tag it overrides the dialect default and type solver. In this case the column type is `Float`:
 
-```xml
-  <type-solver>
-    <when test="type = 'DECIMAL'" java-class="Double" />
-  </type-solver>
-  <table name="employee">
-    <column name="salary" java-type="Float" />
-  </table>
-```
+    ```xml
+      <type-solver>
+        <when test="type = 'DECIMAL'" java-class="Double" />
+      </type-solver>
+      <table name="employee">
+        <column name="salary" java-type="Float" />
+      </table>
+    ```
 
 ### B. Expression in Nitro
 
-The column `total` is an expression in Nitro:
+The column `total` is an expression in Nitro. Its type will be the JDBC driver default type:
 
 ```xml
   <select ...>
@@ -70,16 +70,17 @@ The column `total` is an expression in Nitro:
 
 ### C. Table Column in LiveSQL
 
-The columns `salary` and `bonus` are retrieved into the Employee class the same way as in case A:
+When using a Select By Criteria the columns are retrieved into the Employee class the same way as in case A:
 
 ```java
   EmployeeTable e = EmployeeDAO.newTable();
-  List<Employee> employees = sql.select(e, e.salary.gt(50000)).execute();
+  List<Employee> employees = sql.select(e, e.salary.gt(50000))
+    .execute();
 ```
 
 ### D. Expression in LiveSQL
 
-All columns `salary`, `bonus`, and total are returned into a Map using the JDBC Driver default classes:
+When using a general LiveSQL Select all columns (`salary`, `bonus`, and `total`) are get the JDBC Driver default type:
 
 ```java
   EmployeeTable e = EmployeeDAO.newTable();
