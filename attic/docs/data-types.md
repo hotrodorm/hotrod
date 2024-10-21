@@ -129,11 +129,12 @@ The numbering indicates the ordering in which the rules are checked. The first o
 
 The main changes are:
 
-1. Case D will behave like Case C in all cases. This will provide a known and expected way of reading data.
-1. The JDBC driver default type would become a default of last resort.
-1. The new method `.type(class/converter)` in LiveSQL can override the data type.
-1. There's a Runtime Type Solver that may work slightly different compared to the Code Generation Type Solver. Unfortunately, the JDBC standard provides different metadata for static tables and for runtime SELECT queries.
+1. Case D will always behave like case C. This will provide a known and expected way of reading data from tables and views.
+1. The JDBC driver default type will be added to become a default type of last resort.
+1. The new method `.type(class/converter)` in LiveSQL can override the data type of a table column or expression.
+1. The *Runtime Query Type Solver* may work slightly different compared to the *Static Table Type Solver*. Unfortunately, the JDBC standard provides different meta data for static tables and for runtime SELECT queries.
 1. Converters are included in all cases.
+1. The term "Table Column" refers to columns of entities and, as such, applies to columns of database views.
 
 
 
