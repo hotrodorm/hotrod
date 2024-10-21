@@ -114,7 +114,7 @@ The numbering indicates the ordering in which the rules are checked. The first o
 | A. Table Column in CRUD &amp; Nitro | B. Expression in Nitro | C. Table Column in LiveSQL Select By Criteria | D. Table Column in LiveSQL Select | E. Expression in LiveSQL |
 | :----------------------------- | :-------- | :----------------------- | :-- | :-- |
 | 1. `<column java-type>` | 1. `class` or `converter` | 1. `<column java-type>` | 1. JDBC Driver Default | 1. JDBC Driver Default |
-| 2. Code Generation `<type-solver>`                | 2. JDBC Driver Default | 2. Code Generation `<type-solver>`                 | -- | -- |
+| 2. Static Table `<type-solver>` | 2. JDBC Driver Default or Static Table `<type-solver>` | 2. Static Table `<type-solver>` | -- | -- |
 | 3. HotRod Dialect Default                | --                         | 3. HotRod Dialect Default | -- | -- |
 
 
@@ -123,7 +123,7 @@ The numbering indicates the ordering in which the rules are checked. The first o
 | A. Table Column in CRUD &amp; Nitro | B. Expression in Nitro | C. Table Column in LiveSQL Select By Criteria | D. Table Column in LiveSQL Select | E. Expression in LiveSQL |
 | :----------------------------- | :-------- | :----------------------- | :-- | :-- |
 | 1. `<column java-type>` | 1. `class` or `converter` | 1. `<column java-type>` | 1. `<column java-type>` | 1. `.type(class)` |
-| 2. Code Generation `<type-solver>` | 2. JDBC Driver Default | 2. Code Generation `<type-solver>` | 2. Code Generation `<type-solver>` | 2. Runtime `<type-solver>` |
+| 2. Static Table `<type-solver>` | 2. JDBC Driver Default or Static Table `<type-solver>` | 2. Static Table `<type-solver>` | 2. Static Table `<type-solver>` | 2. Runtime Query `<type-solver>` |
 | 3. HotRod Dialect Default                | --                         | 3. HotRod Dialect Default | 3. HotRod Dialect Default | 3. HotRod Dialect Default |
 | 4. JDBC Driver Default | -- | 4. JDBC Driver Default | 4. JDBC Driver Default | 4. JDBC Driver Default |
 
