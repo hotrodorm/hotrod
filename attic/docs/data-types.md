@@ -1,14 +1,6 @@
 # Logic to Determine the Data Type of a Column
 
-## Currently (4.8)
-
-The table shown below explains the logic to determine the data type of a columns in HotRod 4.8:
-
-| A. Table Column in CRUD &amp; Nitro | B. Expression Column in Nitro | C. Table Column in LiveSQL | D. Expression in LiveSQL |
-| :----------------------------- | :-------- | :----------------------- | :-- |
-| 1. `<column java-type>` | 1. `class` or `converter` | 1. `<column java-type>` | 1. JDBC Driver Default |
-| 2. `<type-solver>`                | 2. JDBC Driver Default | 2. `type-solver>`                 | -- |
-| 3. Dialect Default                | --                         | 3. Dialect Default | -- |
+The HotRod CRUD, Nitro, and LiveSQL modules follow slightly different set of rules to determine the resulting type of a column being read by a SELECT query. The following examples show the different cases.
 
 ## Examples
 
@@ -55,7 +47,7 @@ In this example, the column `salary` can end up having a different type dependin
 
 ### B. Expression in Nitro
 
-The column `total` is an expression in Nitro. Its type will be the JDBC driver default type:
+The column `total` is an expression in Nitro. Unless there's a `class` or `converter` attribute, its type will be the JDBC driver default type:
 
 ```xml
   <select ...>
@@ -70,9 +62,9 @@ The column `total` is an expression in Nitro. Its type will be the JDBC driver d
   </select>
 ```
 
-### C. Table Column in LiveSQL
+### C. Table Column in LiveSQL Select by Criteria
 
-When using a *Select By Criteria* the columns are retrieved into the Employee class the same way as in case A:
+When using a *Select By Criteria* the columns `salary` and `bonus` are retrieved into the Employee class the same way as in case A:
 
 ```java
   EmployeeTable e = EmployeeDAO.newTable();
@@ -80,32 +72,23 @@ When using a *Select By Criteria* the columns are retrieved into the Employee cl
     .execute();
 ```
 
-### D. Expression in LiveSQL
+### D. Table Column in LiveSQL Select
 
-When using a *General LiveSQL Select* the columns `salary` and `bonus` are retrieved using the main type rules:
+When using a *LiveSQL Select* the columns `salary` and `bonus` are read using JDBC Driver Default Types:
 
 ```java
   EmployeeTable e = EmployeeDAO.newTable();
   List<Row> rows = sql.select(
       e.salary,
-      e.bonus,
-      e.salary.plus(e.bonus).as("total")
+      e.bonus
     )
     .from(e)
     .execute();
 ```
 
-## Proposed New Logic (4.9)
-
-| A. Table Column in CRUD &amp; Nitro | B. Expression Column in Nitro | C/D. Table Column in LiveSQL | E. Expression in LiveSQL |
-| :----------------------------- | :-------- | :----------------------- | :-- |
-| 1. `<column java-type>` | 1. `class` or `converter` | 1. `<column java-type>` | 1. `.type(class)` |
-| 2. Code Generation `<type-solver>` | 2. JDBC Driver Default | 2. Code Generation `<type-solver>`                 | 2. Runtime `<type-solver>` |
-| 3. Dialect Default                | --                         | 3. Dialect Default | 3. Dialect Default |
-
 ### E. Expressions in LiveSQL
 
-When using a *General LiveSQL Select*:
+When using a *LiveSQL Select*:
 
 ```java
   EmployeeTable e = EmployeeDAO.newTable();
@@ -123,4 +106,39 @@ In this case:
 
 - The columns `salary` and `bonus` are retrieved using the main type rules (A).
 - The column `total` is untyped and is read using the Runtime Type Solver (E2) as `Double` or the JDBC Driver default type as `BigDecimal` (E3).
-- The column `gross` is typed and is read as an `Integer` (E1).
+- **New!** The column `gross` is typed and is read as an `Integer` (E1).
+
+## Currently (4.8)
+
+The table shown below explains the logic to determine the data type of a columns in HotRod 4.8:
+
+| A. Table Column in CRUD &amp; Nitro | B. Expression in Nitro | C. Table Column in LiveSQL Select By Criteria | D. Table Column in LiveSQL Select | E. Expression in LiveSQL |
+| :----------------------------- | :-------- | :----------------------- | :-- | :-- |
+| 1. `<column java-type>` | 1. `class` or `converter` | 1. `<column java-type>` | 1. JDBC Driver Default | 1. JDBC Driver Default |
+| 2. Code Generation `<type-solver>`                | 2. JDBC Driver Default | 2. Code Generation `<type-solver>`                 | -- | -- |
+| 3. HotRod Dialect Default                | --                         | 3. HotRod Dialect Default | -- | -- |
+
+
+## Proposed New Logic (4.9)
+
+| A. Table Column in CRUD &amp; Nitro | B. Expression in Nitro | C. Table Column in LiveSQL Select By Criteria | D. Table Column in LiveSQL Select | E. Expression in LiveSQL |
+| :----------------------------- | :-------- | :----------------------- | :-- | :-- |
+| 1. `<column java-type>` | 1. `class` or `converter` | 1. `<column java-type>` | 1. `<column java-type>` | 1. `.type(class)` |
+| 2. Code Generation `<type-solver>` | 2. JDBC Driver Default | 2. Code Generation `<type-solver>` | 2. Code Generation `<type-solver>` | 2. Runtime `<type-solver>` |
+| 3. HotRod Dialect Default                | --                         | 3. HotRod Dialect Default | 3. HotRod Dialect Default | 3. HotRod Dialect Default |
+| 4. JDBC Driver Default | -- | 4. JDBC Driver Default | 4. JDBC Driver Default | 4. JDBC Driver Default 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
