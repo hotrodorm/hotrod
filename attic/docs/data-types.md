@@ -93,8 +93,6 @@ When using a *LiveSQL Select*:
 ```java
   EmployeeTable e = EmployeeDAO.newTable();
   List<Row> rows = sql.select(
-      e.salary,
-      e.bonus,
       e.salary.plus(e.bonus).as("total"),
       e.salary.mult(1.25).as("gross").type(Integer.class)
     )
@@ -104,7 +102,6 @@ When using a *LiveSQL Select*:
 
 In this case:
 
-- The columns `salary` and `bonus` are retrieved using the main type rules (A).
 - The column `total` is untyped and is read using the Runtime Type Solver (E2) as `Double` or the JDBC Driver default type as `BigDecimal` (E3).
 - **New!** The column `gross` is typed and is read as an `Integer` (E1).
 
