@@ -6,8 +6,8 @@ The table shown below explains the logic to determine the data type of a columns
 
 | A. Table Column in CRUD &amp; Nitro | B. Expression Column in Nitro | C. Table Column in LiveSQL | D. Expression in LiveSQL |
 | :----------------------------- | :-------- | :----------------------- | :-- |
-| 1. `<column java-type>` | 1. JDBC Driver Default        | 1. `<column java-type>` | 1. JDBC Driver Default |
-| 2. `<type-solver>`                | --                         | 2. `type-solver>`                 | -- |
+| 1. `<column java-type>` | 1. `class` or `converter` | 1. `<column java-type>` | 1. JDBC Driver Default |
+| 2. `<type-solver>`                | 2. JDBC Driver Default | 2. `type-solver>`                 | -- |
 | 3. Dialect Default                | --                         | 3. Dialect Default | -- |
 
 ## Examples
@@ -33,7 +33,7 @@ In this example, the column `salary` can end up having a different type dependin
       <table name="employee" />
     ```
 
-2. A type solver overrides the dialect default. In this case the column type is `Double`:
+2. If a type solver is defined, it overrides the dialect default. In this case the column type is `Double`:
 
     ```xml
       <type-solver>
@@ -42,7 +42,7 @@ In this example, the column `salary` can end up having a different type dependin
       <table name="employee" />
     ```
 
-3. If the type is set in an explicit `<column>` tag it overrides the dialect default and type solver. In this case the column type is `Float`:
+3. If the type is set in an explicit `<column>` tag it overrides the dialect default and the type solver. In this case the column type is `Float`:
 
     ```xml
       <type-solver>
@@ -66,7 +66,7 @@ The column `total` is an expression in Nitro. Its type will be the JDBC driver d
         salary + bonus
       </expression>
     </columns>
-    from employee
+    from employee e
   </select>
 ```
 
@@ -82,12 +82,45 @@ When using a *Select By Criteria* the columns are retrieved into the Employee cl
 
 ### D. Expression in LiveSQL
 
-When using a *General LiveSQL Select* all columns (`salary`, `bonus`, and `total`) are retrieved using the JDBC Driver default type:
+When using a *General LiveSQL Select* the columns `salary` and `bonus` are retrieved using the main type rules:
 
 ```java
   EmployeeTable e = EmployeeDAO.newTable();
-  List<Row> rows = sql.select(e.star(), e.salary.plus(e.bonus).as("total"))
+  List<Row> rows = sql.select(
+      e.salary,
+      e.bonus,
+      e.salary.plus(e.bonus).as("total")
+    )
     .from(e)
     .execute();
 ```
 
+## Proposed New Logic (4.9)
+
+| A. Table Column in CRUD &amp; Nitro | B. Expression Column in Nitro | C/D. Table Column in LiveSQL | E. Expression in LiveSQL |
+| :----------------------------- | :-------- | :----------------------- | :-- |
+| 1. `<column java-type>` | 1. `class` or `converter` | 1. `<column java-type>` | 1. `.type(class)` |
+| 2. Code Generation `<type-solver>` | 2. JDBC Driver Default | 2. Code Generation `<type-solver>`                 | 2. Runtime `<type-solver>` |
+| 3. Dialect Default                | --                         | 3. Dialect Default | 3. Dialect Default |
+
+### E. Expressions in LiveSQL
+
+When using a *General LiveSQL Select*:
+
+```java
+  EmployeeTable e = EmployeeDAO.newTable();
+  List<Row> rows = sql.select(
+      e.salary,
+      e.bonus,
+      e.salary.plus(e.bonus).as("total"),
+      e.salary.mult(1.25).as("gross").type(Integer.class)
+    )
+    .from(e)
+    .execute();
+```
+
+In this case:
+
+- The columns `salary` and `bonus` are retrieved using the main type rules (A).
+- The column `total` is untyped and is read using the Runtime Type Solver (E2) as `Double` or the JDBC Driver default type as `BigDecimal` (E3).
+- The column `gross` is typed and is read as an `Integer` (E1).
