@@ -107,7 +107,9 @@ In this case:
 
 ## Currently (4.8)
 
-The table shown below explains the logic to determine the data type of a columns in HotRod 4.8:
+The table shown below explains the logic to determine the data type of a columns in HotRod 4.8.
+
+The numbering indicates the ordering in which the rules are checked. The first one that applies determine the data type, and the rest is ignored.
 
 | A. Table Column in CRUD &amp; Nitro | B. Expression in Nitro | C. Table Column in LiveSQL Select By Criteria | D. Table Column in LiveSQL Select | E. Expression in LiveSQL |
 | :----------------------------- | :-------- | :----------------------- | :-- | :-- |
@@ -123,8 +125,15 @@ The table shown below explains the logic to determine the data type of a columns
 | 1. `<column java-type>` | 1. `class` or `converter` | 1. `<column java-type>` | 1. `<column java-type>` | 1. `.type(class)` |
 | 2. Code Generation `<type-solver>` | 2. JDBC Driver Default | 2. Code Generation `<type-solver>` | 2. Code Generation `<type-solver>` | 2. Runtime `<type-solver>` |
 | 3. HotRod Dialect Default                | --                         | 3. HotRod Dialect Default | 3. HotRod Dialect Default | 3. HotRod Dialect Default |
-| 4. JDBC Driver Default | -- | 4. JDBC Driver Default | 4. JDBC Driver Default | 4. JDBC Driver Default 
+| 4. JDBC Driver Default | -- | 4. JDBC Driver Default | 4. JDBC Driver Default | 4. JDBC Driver Default |
 
+The main changes are:
+
+1. Case D will behave like Case C in all cases. This will provide a known and expected way of reading data.
+- The JDBC driver default type would become a default of last resort.
+- The new method `.type(class/converter)` in LiveSQL can override the data type.
+- There's a Runtime Type Solver that may work slightly different compared to the Code Generation Type Solver. Unfortunately, the JDBC standard provides different metadata for static tables and for runtime SELECT queries.
+- Converters are included in all cases.
 
 
 
