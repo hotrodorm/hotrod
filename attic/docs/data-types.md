@@ -114,7 +114,7 @@ The numbering indicates the ordering in which the rules are checked. The first o
 | A. Table Column in CRUD &amp; Nitro | B. Expression in Nitro | C. Table Column in LiveSQL Select By Criteria | D. Table Column in LiveSQL Select | E. Expression in LiveSQL |
 | :----------------------------- | :-------- | :----------------------- | :-- | :-- |
 | 1. `<column java-type>` | 1. `class` or `converter` | 1. `<column java-type>` | 1. JDBC Driver Default | 1. JDBC Driver Default |
-| 2. Static Table `<type-solver>` | 2. JDBC Driver Default or Static Table `<type-solver>` | 2. Static Table `<type-solver>` | -- | -- |
+| 2. Static Table `<type-solver>` | 2. JDBC Driver Default (used to use the Static Table `<type-solver>`) | 2. Static Table `<type-solver>` | -- | -- |
 | 3. HotRod Dialect Default                | --                         | 3. HotRod Dialect Default | -- | -- |
 
 
@@ -123,7 +123,7 @@ The numbering indicates the ordering in which the rules are checked. The first o
 | A. Table Column in CRUD &amp; Nitro | B. Expression in Nitro | C. Table Column in LiveSQL Select By Criteria | D. Table Column in LiveSQL Select | E. Expression in LiveSQL |
 | :----------------------------- | :-------- | :----------------------- | :-- | :-- |
 | 1. `<column java-type>` | 1. `class` or `converter` | 1. `<column java-type>` | 1. `<column java-type>` | 1. `.type(class)` |
-| 2. Static Table `<type-solver>` | 2. JDBC Driver Default or Static Table `<type-solver>` | 2. Static Table `<type-solver>` | 2. Static Table `<type-solver>` | 2. Runtime Query `<type-solver>` |
+| 2. Static Table `<type-solver>` | 2. JDBC Driver Default (used to use the Static Table `<type-solver>`) | 2. Static Table `<type-solver>` | 2. Static Table `<type-solver>` | 2. Runtime Query `<type-solver>` |
 | 3. HotRod Dialect Default                | --                         | 3. HotRod Dialect Default | 3. HotRod Dialect Default | 3. HotRod Dialect Default |
 | 4. JDBC Driver Default | -- | 4. JDBC Driver Default | 4. JDBC Driver Default | 4. JDBC Driver Default |
 
@@ -134,7 +134,7 @@ The main changes are:
 1. The new method `.type(class/converter)` in LiveSQL can override the data type of a table column or expression.
 1. The *Runtime Query Type Solver* may work slightly different compared to the *Static Table Type Solver*. Unfortunately, the JDBC standard provides different meta data for static tables and for runtime SELECT queries.
 1. Converters are included in all cases.
-1. The term "Table Column" refers to columns of entities and, as such, applies to columns of database views.
+1. The term "Table Column" refers to columns of entities and, as such, applies to columns of database tables and views.
 
 
 
