@@ -2,8 +2,10 @@
 
 ## Currently (4.8)
 
-| A. Table Column<br/>in CRUD/Nitro | B. Expression Column<br/>in Nitro | C. Table Column<br/>in LiveSQL | D. Expression<br/>in LiveSQL |
-| ------------------------------ | -------------------------- | ------------------------------ | -- |
+The table shown below explains the logic to determine the data type of a columns in HotRod 4.8:
+
+| A. Table Column in CRUD &amp; Nitro | B. Expression Column in Nitro | C. Table Column in LiveSQL | D. Expression in LiveSQL |
+| :----------------------------- | :-------- | :----------------------- | :-- |
 | 1. `<column java-type>` | 1. JDBC Driver Default        | 1. `<column java-type>` | 1. JDBC Driver Default |
 | 2. `<type-solver>`                | --                         | 2. `type-solver>`                 | -- |
 | 3. Dialect Default                | --                         | 3. Dialect Default | -- |
@@ -19,11 +21,11 @@ For the following examples consider the following table:
   );
 ```
 
-### A. Table Column in CRUD/Nitro
+### A. Table Column in CRUD &amp; Nitro
 
 The columns `salary` and `bonus` are table columns in CRUD/Nitro.
 
-In this example, the column `salary` can end up having a different type dependin on how it's configured:
+In this example, the column `salary` can end up having a different type depending on how it's configured:
 
 1. The simplest configuration will use the HotRod dialect default type. In this case the column type will be `BigDecimal`:
 
@@ -70,7 +72,7 @@ The column `total` is an expression in Nitro. Its type will be the JDBC driver d
 
 ### C. Table Column in LiveSQL
 
-When using a Select By Criteria the columns are retrieved into the Employee class the same way as in case A:
+When using a *Select By Criteria* the columns are retrieved into the Employee class the same way as in case A:
 
 ```java
   EmployeeTable e = EmployeeDAO.newTable();
@@ -80,7 +82,7 @@ When using a Select By Criteria the columns are retrieved into the Employee clas
 
 ### D. Expression in LiveSQL
 
-When using a general LiveSQL Select all columns (`salary`, `bonus`, and `total`) are get the JDBC Driver default type:
+When using a *General LiveSQL Select* all columns (`salary`, `bonus`, and `total`) are retrieved using the JDBC Driver default type:
 
 ```java
   EmployeeTable e = EmployeeDAO.newTable();
