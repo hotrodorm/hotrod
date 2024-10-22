@@ -4,7 +4,7 @@ The HotRod CRUD, Nitro, and LiveSQL modules follow slightly different set of rul
 
 ## Examples
 
-For the following examples consider the following table:
+For the following examples consider the table:
 
 ```sql
   create table employee (
@@ -54,8 +54,11 @@ The column `total` is an expression in Nitro. Unless there's a `class` or `conve
     select
     <columns vo="AppraisedEmployee">
       <vo table="employee" property="appemp" alias="e" />
-      <expression property="total">
+      <expression property="total"> <!-- BigDecimal -->
         salary + bonus
+      </expression>
+      <expression property="total" class="Double"> <!-- Double -->
+        salary * 1.25
       </expression>
     </columns>
     from employee e
@@ -114,7 +117,7 @@ The numbering indicates the ordering in which the rules are checked. The first o
 | A. Table Column in CRUD &amp; Nitro | B. Expression in Nitro | C. Table Column in LiveSQL Select By Criteria | D. Table Column in LiveSQL Select | E. Expression in LiveSQL |
 | :----------------------------- | :-------- | :----------------------- | :-- | :-- |
 | 1. `<column java-type>` | 1. `class` or `converter` | 1. `<column java-type>` | 1. JDBC Driver Default | 1. JDBC Driver Default |
-| 2. Static Table `<type-solver>` | 2. JDBC Driver Default (used to use the Static Table `<type-solver>`) | 2. Static Table `<type-solver>` | -- | -- |
+| 2. Static `<type-solver>` | 2. JDBC Driver Default (used to use the Static `<type-solver>`) | 2. Static `<type-solver>` | -- | -- |
 | 3. HotRod Dialect Default                | --                         | 3. HotRod Dialect Default | -- | -- |
 
 
@@ -123,7 +126,7 @@ The numbering indicates the ordering in which the rules are checked. The first o
 | A. Table Column in CRUD &amp; Nitro | B. Expression in Nitro | C. Table Column in LiveSQL Select By Criteria | D. Table Column in LiveSQL Select | E. Expression in LiveSQL |
 | :----------------------------- | :-------- | :----------------------- | :-- | :-- |
 | 1. `<column java-type>` | 1. `class` or `converter` | 1. `<column java-type>` | 1. `<column java-type>` | 1. `.type(class/converter)` |
-| 2. Static Table `<type-solver>` | 2. JDBC Driver Default (used to use the Static Table `<type-solver>`) | 2. Static Table `<type-solver>` | 2. Static Table `<type-solver>` | 2. Runtime Query `<type-solver>` |
+| 2. Static `<type-solver>` | 2. JDBC Driver Default (used to use the Static `<type-solver>`) | 2. Static `<type-solver>` | 2. Static `<type-solver>` | 2. Runtime `<type-solver>` |
 | 3. HotRod Dialect Default                | --                         | 3. HotRod Dialect Default | 3. HotRod Dialect Default | 3. HotRod Dialect Default |
 | 4. JDBC Driver Default | -- | 4. JDBC Driver Default | 4. JDBC Driver Default | 4. JDBC Driver Default |
 
