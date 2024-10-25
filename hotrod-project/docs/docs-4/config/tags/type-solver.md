@@ -39,12 +39,12 @@ See [Default Types](../supported-databases.md) for each database.
 
 The `test` attribute includes a boolean expression that is evaluated. If found true that rule is selected and no further rules are processed.
 
-The expression in the `test` attribute use OGNL syntax. For details on the OGNL syntax in the section *Appendix: OGNL Language Reference* 
+The expression in the `test` attribute use OGNL syntax. For details on the OGNL syntax in the section *Appendix: OGNL Language Reference*
 of [Apache Commons OGNL](https://commons.apache.org/proper/commons-ognl/language-guide.html).
 
-Most of the time the `test` attribute includes a simple predicate; however, the full power of OGNL syntax can be used to implement complex rules, as needed.  
+Most of the time the `test` attribute includes a simple predicate; however, the full power of OGNL syntax can be used to implement complex rules, as needed.
 
-The available properties for the column metadata are described in [TXT Column Metadata](../../maven/command-export-columns-txt.md). *Standard properties* 
+The available properties for the column metadata are described in [TXT Column Metadata](../../maven/goal-export-columns-txt.md). *Standard properties*
 are available across all databases, while *native properties* enhance the column metadata, but depend on each specific database.
 
 ## Resulting Type
