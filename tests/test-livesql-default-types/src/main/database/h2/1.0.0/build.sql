@@ -162,8 +162,19 @@ create table payment (
   amount int
 );
 
-  
-  
-  -- update branch set region = 'x' where id >= 4 and not is_vip
+-- update branch set region = 'x' where id >= 4 and not is_vip
 
+create table a (
+  id int,
+  name varchar(2)
+);
 
+create table b (
+  aid int,
+  val int
+);
+
+create table c (
+  aid int,
+  fecha date
+);

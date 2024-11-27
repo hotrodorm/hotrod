@@ -35,4 +35,6 @@
 
   <fragment file="./reporting.xml" />
 
+  <fragment file="./test2.xml" />
+
 </hotrod>

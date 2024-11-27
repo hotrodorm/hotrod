@@ -14,16 +14,13 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 
-import org.hotrod.runtime.converter.TypeConverter;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
-import org.hotrod.runtime.livesql.expressions.TypedExpression;
 import org.hotrod.runtime.livesql.queries.DMLQuery;
 import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.runtime.livesql.queries.select.CriteriaForUpdatePhase;
 import org.hotrod.runtime.livesql.queries.select.EntitySelect;
 import org.hotrod.runtime.livesql.queries.select.Select;
-import org.hotrod.runtime.livesql.queries.subqueries.Subquery;
 import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.hotrod.torcs.Torcs;
 import org.hotrod.torcs.plan.CouldNotRetrievePlanException;
@@ -45,6 +42,8 @@ import app.daos.primitives.BranchDAO.BranchTable;
 import app.daos.reporting.InvoiceVO;
 import app.daos.reporting.primitives.InvoiceDAO;
 import app.daos.reporting.primitives.InvoiceDAO.InvoiceTable;
+import app.daos.test2.FindTareasPorFiltroVO;
+import app.daos.test2.primitives.BuscadorDAO;
 
 @Configuration
 @SpringBootApplication
@@ -82,6 +81,9 @@ public class App {
 
   @Autowired
   private BusinessLogic businessLogic;
+
+  @Autowired
+  private BuscadorDAO buscador;
 
   @Autowired
   private Torcs torcs;
@@ -136,8 +138,9 @@ public class App {
 
 //      System.getProperties().setProperty("oracle.jdbc.J2EE13Compliant", "true");
 
+      test2();
 //      crud();
-      locking();
+//      locking();
 //      join();
 //      join();     
 //      livesql();
@@ -185,6 +188,14 @@ public class App {
     crudSelect();
 //    selectCases();
 //    selectFK();
+  }
+
+  private void test2() {
+    System.out.println("Will call find...");
+    Long idArea = 10L;
+    Long idSector = 20L;
+    List<FindTareasPorFiltroVO> tareas = this.buscador.findTareasPorFiltro(idArea, idSector);
+
   }
 
   private void locking() {
@@ -257,10 +268,8 @@ public class App {
 //        .from(b);
 //    Select<Row> q = this.sql.select().from(b);
 
-    Select<Row> q = this.sql.select(
-        b.star(), 
-        sql.val(3).mult(7).as("n"), 
-        sql.currentDateTime().as("dt").type(LocalDateTime.class)).from(b);
+    Select<Row> q = this.sql
+        .select(b.star(), sql.val(3).mult(7).as("n"), sql.currentDateTime().as("dt").type(LocalDateTime.class)).from(b);
 
 //    log.info("** S2 **");
 
@@ -268,7 +277,7 @@ public class App {
 
     List<Row> rows = q.execute();
     for (Row r : rows) {
-      System.out.println("r="+r);
+      System.out.println("r=" + r);
 //      System.out.println("---------------");
 //      for (String name : r.keySet()) {
 //        Object v = r.get(name);
@@ -616,6 +625,8 @@ public class App {
     Select<Row> q = this.sql.selectDistinctOn(i.branchId.as("aa"), i.branchId.plus(sql.literal(100))) //
         .columns(i.branchId.as("myBranch"), i.star()).from(i) //
         .orderBy(i.branchId.plus(sql.literal(100)), i.unpaidBalance.desc());
+
+    Row rx = this.sql.select(sql.count().as("total")).from(i).executeOne();
 
 //    select distinct on (branch_id) *
 //    from invoice

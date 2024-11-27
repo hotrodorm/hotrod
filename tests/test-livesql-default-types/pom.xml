@@ -142,6 +142,7 @@
               <jdbcurl>${jdbcurl}</jdbcurl>
               <jdbcusername>${jdbcusername}</jdbcusername>
               <jdbcpassword>${jdbcpassword}</jdbcpassword>
+              <exportfilename>./oracle-columns.txt</exportfilename>
             </configuration>
             <dependencies>
               <dependency>
