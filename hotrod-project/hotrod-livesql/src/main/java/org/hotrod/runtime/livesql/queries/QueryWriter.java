@@ -33,11 +33,7 @@ public class QueryWriter {
     this.sb = new StringBuilder();
     this.level = 0;
     this.col = 0;
-    if (context.usePlainJDBC()) {
-      this.paramWriter = new JDBCParameterWriter();
-    } else {
-      this.paramWriter = new MyBatisParameterWriter();
-    }
+    this.paramWriter = new JDBCParameterWriter();
   }
 
   public RenderedParameter registerParameter(final Object value) {

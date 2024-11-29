@@ -549,14 +549,10 @@ public class ObjectDAO extends GeneratableObject {
     println("  private LiveSQLContext context;");
     println();
 
-    println("  @Value(\"${use.plain.jdbc:false}\")");
-    println("  private boolean usePlainJDBC;");
-    println();
-
     println("  @PostConstruct");
     println("  public void initializeContext() {");
     println(
-        "    this.context = new LiveSQLContext(this.liveSQLDialect, this.sqlSession, this.liveSQLMapper, this.usePlainJDBC, this.dataSource, new TypeSolver(null, this.liveSQLDialect));");
+        "    this.context = new LiveSQLContext(this.liveSQLDialect, this.sqlSession, this.liveSQLMapper, this.dataSource, new TypeSolver(null, this.liveSQLDialect));");
     println("  }");
     println();
 

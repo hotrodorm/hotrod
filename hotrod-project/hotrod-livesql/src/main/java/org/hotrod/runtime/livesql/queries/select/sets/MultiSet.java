@@ -95,81 +95,73 @@ public abstract class MultiSet<R> {
 
   @SuppressWarnings("unchecked")
   protected List<R> executeLiveSQL(final LiveSQLContext context, final LiveSQLPreparedQuery q) {
-//    log.info("### executeLiveSQL()");
-    if (context.usePlainJDBC()) {
-//      log.info("### Using Plain JDBC");
-      List<Row> rows = new ArrayList<>();
-      try (Connection conn = context.getDataSource().getConnection()) {
+    List<Row> rows = new ArrayList<>();
+    try (Connection conn = context.getDataSource().getConnection()) {
 
-        try (PreparedStatement ps = conn.prepareStatement(q.getSQL())) {
+      try (PreparedStatement ps = conn.prepareStatement(q.getSQL())) {
 
-          // 1. Apply parameters
+        // 1. Apply parameters
 
-          int n = 1;
-          for (Object obj : q.getParameters().values()) {
-            int i = n++;
-            ps.setObject(i, obj);
-          }
-
-          // 2. Run the query
-
-          try (ResultSet rs = ps.executeQuery()) {
-            LinkedHashMap<String, Expression> queryColumns = q.getQueryColumns();
-            ResultSetMetaData rm = rs.getMetaData();
-            int ordinal = 1;
-            for (Entry<String, Expression> et : queryColumns.entrySet()) {
-              Expression expr = et.getValue();
-//              log.info(" - expr '" + et.getKey() + "'=" + expr + " -- th=" + Helper.getTypeHandler(expr));
-              if (Helper.getTypeHandler(expr) == null) {
-                ResultSetColumnMetadata cm = ResultSetColumnMetadata.of(rm, ordinal);
-                try {
-                  TypeHandler th = context.getTypeSolver().resolve(cm);
-                  Helper.setTypeHandler(expr, th);
-                } catch (CouldNotResolveResultSetDataTypeException e) {
-                  throw new LiveSQLException(
-                      "Could not determine the application type for the column '" + et.getKey() + "' in the query", e);
-                }
-              }
-              ordinal++;
-            }
-
-            logQueryColumns(queryColumns);
-
-            while (rs.next()) {
-              Row r = new Row();
-              int i = 1;
-              for (Expression qc : queryColumns.values()) {
-                Object value;
-                String alias = Helper.getReferenceName(qc);
-                TypeHandler th = Helper.getTypeHandler(qc);
-                if (th == null) { // No typeHandler: use the JDBC default value
-                  value = rs.getObject(i);
-                } else if (th.getConverter() == null) { // TypeHandler with no converter: use the defined class
-                  value = rs.getObject(i, th.getJavaClass());
-                } else { // TypeHandler with converter: read as defined class and apply converter
-                  Object raw = rs.getObject(i, th.getRawClass());
-                  TypeConverter<?, ?> converter = th.getConverter();
-                  value = this.applyConverter(raw, converter, conn);
-                }
-                r.put(alias, value);
-                i++;
-              }
-              rows.add(r);
-            }
-            return (List<R>) rows;
-          }
-
+        int n = 1;
+        for (Object obj : q.getParameters().values()) {
+          int i = n++;
+          ps.setObject(i, obj);
         }
 
-      } catch (SQLException e) {
-        throw new RuntimeException(e);
+        // 2. Run the query
+
+        try (ResultSet rs = ps.executeQuery()) {
+          LinkedHashMap<String, Expression> queryColumns = q.getQueryColumns();
+          ResultSetMetaData rm = rs.getMetaData();
+          int ordinal = 1;
+          for (Entry<String, Expression> et : queryColumns.entrySet()) {
+            Expression expr = et.getValue();
+//              log.info(" - expr '" + et.getKey() + "'=" + expr + " -- th=" + Helper.getTypeHandler(expr));
+            if (Helper.getTypeHandler(expr) == null) {
+              ResultSetColumnMetadata cm = ResultSetColumnMetadata.of(rm, ordinal);
+              try {
+                TypeHandler th = context.getTypeSolver().resolve(cm);
+                Helper.setTypeHandler(expr, th);
+              } catch (CouldNotResolveResultSetDataTypeException e) {
+                throw new LiveSQLException(
+                    "Could not determine the application type for the column '" + et.getKey() + "' in the query", e);
+              }
+            }
+            ordinal++;
+          }
+
+          logQueryColumns(queryColumns);
+
+          while (rs.next()) {
+            Row r = new Row();
+            int i = 1;
+            for (Expression qc : queryColumns.values()) {
+              Object value;
+              String alias = Helper.getReferenceName(qc);
+              TypeHandler th = Helper.getTypeHandler(qc);
+              if (th == null) { // No typeHandler: use the JDBC default value
+                value = rs.getObject(i);
+              } else if (th.getConverter() == null) { // TypeHandler with no converter: use the defined class
+                value = rs.getObject(i, th.getJavaClass());
+              } else { // TypeHandler with converter: read as defined class and apply converter
+                Object raw = rs.getObject(i, th.getRawClass());
+                TypeConverter<?, ?> converter = th.getConverter();
+                value = this.applyConverter(raw, converter, conn);
+              }
+              r.put(alias, value);
+              i++;
+            }
+            rows.add(r);
+          }
+          return (List<R>) rows;
+        }
+
       }
 
-    } else {
-      LinkedHashMap<String, Object> parameters = q.getParameters();
-      parameters.put("sql", q.getSQL());
-      return (List<R>) context.getLiveSQLMapper().select(parameters);
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
     }
+
   }
 
 //  private void retrieveClasses(TypeConverter<?, ?> converter) {

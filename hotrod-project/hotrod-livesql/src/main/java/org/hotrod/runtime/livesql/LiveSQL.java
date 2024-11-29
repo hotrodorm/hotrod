@@ -157,6 +157,7 @@ public class LiveSQL {
   private DataSource dataSource;
   private TypeSolver typeSolver;
 
+  @SuppressWarnings("unused")
   @Autowired
   private LiveSQLConfiguration config;
 
@@ -179,8 +180,7 @@ public class LiveSQL {
     log.info(">>>>>>>>>>> initializing");
     List<TypeRule> customRules = persistenceLayerConfigFactory.getCustomRules(null);
     this.typeSolver = new TypeSolver(customRules, this.liveSQLDialect);
-    this.context = new LiveSQLContext(liveSQLDialect, sqlSession, liveSQLMapper, this.config.usePlainJDBC(),
-        this.dataSource, this.typeSolver);
+    this.context = new LiveSQLContext(liveSQLDialect, sqlSession, liveSQLMapper, this.dataSource, this.typeSolver);
   }
 
   // Select
