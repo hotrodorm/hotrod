@@ -113,7 +113,7 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
               this.config.getTypeSolverTag());
         } catch (UnresolvableDataTypeException e) {
           String msg = "Could not retrieve metadata for <" + new SelectMethodTag().getTagName()
-              + ">: could not find suitable Java type for column '" + e.getColumnName() + "' ";
+              + ">: could not find suitable Java type for column '" + e.getColumnMetadata().getName() + "' ";
           throw new InvalidConfigurationFileException(ctx.getTag(), msg);
         } catch (InvalidIdentifierException e) {
           String msg = "Invalid retrieved column name: " + e.getMessage();
@@ -178,7 +178,7 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
 
         } catch (UnresolvableDataTypeException e) {
           String msg = "Could not retrieve metadata for <" + new SelectMethodTag().getTagName()
-              + ">: could not find suitable Java type for column '" + e.getColumnName() + "' ";
+              + ">: could not find suitable Java type for column '" + e.getColumnMetadata().getName() + "' ";
           throw new InvalidConfigurationFileException(ctx.getTag(), msg);
         } catch (InvalidIdentifierException e) {
           String msg = "Invalid retrieved column name: " + e.getMessage();

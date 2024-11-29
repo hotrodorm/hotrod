@@ -3,10 +3,10 @@ package org.hotrod.runtime.livesql.queries.subqueries;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
-import org.hotrod.runtime.livesql.expressions.binary.ByteArrayExpression;
+import org.hotrod.runtime.livesql.expressions.binary.ByteArrayFreeExpression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class SubqueryByteArrayColumn extends ByteArrayExpression implements SubqueryColumn {
+public class SubqueryByteArrayColumn extends ByteArrayFreeExpression implements SubqueryColumn {
 
   // Properties
 

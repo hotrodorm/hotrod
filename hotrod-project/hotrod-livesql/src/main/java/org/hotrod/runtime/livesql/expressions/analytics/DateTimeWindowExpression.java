@@ -8,11 +8,11 @@ import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.expressions.analytics.WindowExpression.FrameBound;
 import org.hotrod.runtime.livesql.expressions.analytics.WindowExpression.FrameExclusion;
 import org.hotrod.runtime.livesql.expressions.analytics.WindowExpression.FrameUnit;
-import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
+import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFreeExpression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class DateTimeWindowExpression extends DateTimeExpression {
+public class DateTimeWindowExpression extends DateTimeFreeExpression {
 
   // Properties
 

@@ -6,7 +6,7 @@ import java.util.List;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class BooleanCoalesce extends Predicate {
+public class BooleanCoalesce extends BooleanFreeExpression {
 
   private List<Predicate> expressions;
 

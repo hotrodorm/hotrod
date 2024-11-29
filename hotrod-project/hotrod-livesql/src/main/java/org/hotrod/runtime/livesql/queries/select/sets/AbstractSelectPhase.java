@@ -6,11 +6,10 @@ import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
-import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
+import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
 
-@SuppressWarnings("deprecation")
-public class AbstractSelectPhase<R> extends ExecutableSelect<R> {
+public class AbstractSelectPhase<R> extends Select<R> {
 
   // Properties
 

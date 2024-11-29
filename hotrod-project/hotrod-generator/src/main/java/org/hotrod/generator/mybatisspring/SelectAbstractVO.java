@@ -112,8 +112,9 @@ public class SelectAbstractVO {
       throw new UncontrolledException(
           "Could not generate DAO primitives class: could not write to file '" + f.getName() + "'.", e);
     } catch (UnresolvableDataTypeException e) {
-      throw new ControlledException("Could not generate DAO primitives for table '" + e.getTableName()
-          + "'. Could not handle columns '" + e.getColumnName() + "' type: " + e.getTypeName());
+      throw new ControlledException("Could not generate DAO primitives for table '" + e.getColumnMetadata().getTable()
+          + "'. Could not handle columns '" + e.getColumnMetadata().getName() + "' type: "
+          + e.getColumnMetadata().getTypeName());
     } finally {
       if (this.w != null) {
         try {

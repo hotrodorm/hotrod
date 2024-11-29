@@ -6,6 +6,7 @@ import java.util.List;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
+import org.hotrod.runtime.livesql.expressions.strings.StringFreeExpression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 /**
@@ -24,7 +25,7 @@ import org.hotrod.runtime.livesql.queries.QueryWriter;
  * @author valarcon
  *
  */
-public class StringCaseClause extends StringExpression {
+public class StringCaseClause extends StringFreeExpression {
 
   private List<CaseWhen> whens;
   private StringExpression elseValue;

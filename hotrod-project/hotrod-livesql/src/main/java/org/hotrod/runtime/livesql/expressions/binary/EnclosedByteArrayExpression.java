@@ -5,7 +5,7 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class EnclosedByteArrayExpression extends ByteArrayExpression {
+public class EnclosedByteArrayExpression extends ByteArrayFreeExpression {
 
   // Properties
 

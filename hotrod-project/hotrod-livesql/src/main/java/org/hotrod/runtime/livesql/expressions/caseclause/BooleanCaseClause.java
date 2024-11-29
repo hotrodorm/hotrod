@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.predicates.BooleanFreeExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
@@ -23,7 +24,7 @@ import org.hotrod.runtime.livesql.queries.QueryWriter;
  * @author valarcon
  *
  */
-public class BooleanCaseClause extends Predicate {
+public class BooleanCaseClause extends BooleanFreeExpression {
 
   private List<CaseWhen> whens;
   private Predicate elseValue;

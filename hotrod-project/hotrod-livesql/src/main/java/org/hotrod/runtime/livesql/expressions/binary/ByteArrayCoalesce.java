@@ -6,7 +6,7 @@ import java.util.List;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class ByteArrayCoalesce extends ByteArrayExpression {
+public class ByteArrayCoalesce extends ByteArrayFreeExpression {
 
   private List<ByteArrayExpression> expressions;
 

@@ -7,7 +7,7 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.rendering.FunctionTemplate;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public abstract class BooleanFunction extends Predicate {
+public abstract class BooleanFunction extends BooleanFreeExpression {
 
   private FunctionTemplate template;
 

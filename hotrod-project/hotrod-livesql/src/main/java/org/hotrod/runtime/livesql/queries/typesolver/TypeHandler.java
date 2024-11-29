@@ -13,7 +13,7 @@ public class TypeHandler {
   private static final Logger log = Logger.getLogger(TypeHandler.class.getName());
 
   public static final TypeHandler STRING_ENTITY_COLUMN = new TypeHandler(String.class, null, null,
-      TypeSource.ENTITY_COLUMN);
+      TypeSource.ENTITY_COLUMN, null);
 
 //  public static final TypeHandler BYTE = new TypeHandler(Byte.class, null, null);
 //  public static final TypeHandler SHORT = new TypeHandler(Short.class, null, null);
@@ -55,7 +55,7 @@ public class TypeHandler {
 //ENTITY_DESIGNATED
 //ENTITY_LAYER_RULE:5
 //ENTITY_DIALECT_DEFAULT
-  
+
   private Class<?> javaClass;
   private Class<?> rawClass;
   private TypeConverter<?, ?> converter;
@@ -64,7 +64,7 @@ public class TypeHandler {
   private Integer ruleNumber;
 
   private TypeHandler(final Class<?> javaClass, final Class<?> rawClass, final TypeConverter<?, ?> converter,
-      final TypeSource typeSource) {
+      final TypeSource typeSource, final Integer ruleNumber) {
     this.javaClass = javaClass;
     this.rawClass = rawClass;
     this.converter = converter;
@@ -78,7 +78,7 @@ public class TypeHandler {
       Class<TypeConverter<?, ?>> c = (Class<TypeConverter<?, ?>>) javaClass;
       return discoverHandler(c, typeSource);
     } else {
-      return new TypeHandler(javaClass, null, null, typeSource);
+      return new TypeHandler(javaClass, null, null, typeSource, null);
     }
   }
 
@@ -97,7 +97,7 @@ public class TypeHandler {
         }
       }
       try {
-        th = new TypeHandler(domain, raw, converter.newInstance(), typeSource);
+        th = new TypeHandler(domain, raw, converter.newInstance(), typeSource, null);
       } catch (InstantiationException | IllegalAccessException e) {
         throw new RuntimeException(
             "Could not instantiate converter of class '" + converter + "' with default constructor", e);

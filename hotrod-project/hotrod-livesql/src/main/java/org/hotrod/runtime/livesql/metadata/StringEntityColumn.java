@@ -1,11 +1,14 @@
 package org.hotrod.runtime.livesql.metadata;
 
+import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
+import org.hotrod.runtime.livesql.expressions.AliasedEntityColumn;
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
+import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
+import org.hotrodorm.hotrod.utils.SUtil;
 
-public class NumberColumn extends NumberExpression implements Column {
+public class StringEntityColumn extends StringExpression implements Column {
 
   // Properties
 
@@ -20,8 +23,8 @@ public class NumberColumn extends NumberExpression implements Column {
 
   // Constructor
 
-  public NumberColumn(final TableOrView objectInstance, final String name, final String property, final String type,
-      final Integer columnSize, final Integer decimalDigits, final TypeHandler handler) {
+  public StringEntityColumn(final TableOrView objectInstance, final String name, final String property,
+      final String type, final Integer columnSize, final Integer decimalDigits, final TypeHandler handler) {
     super(Expression.PRECEDENCE_COLUMN);
     this.objectInstance = objectInstance;
     this.name = name;
@@ -44,10 +47,19 @@ public class NumberColumn extends NumberExpression implements Column {
     w.write(w.getSQLDialect().canonicalToNatural(this.name));
   }
 
+  // Aliasing
+
+  public AliasedEntityColumn as(final String alias) {
+    if (SUtil.isEmpty(alias)) {
+      throw new LiveSQLException("An alias specified with the .as() method cannot be null");
+    }
+    return new AliasedEntityColumn(this, alias);
+  }
+
   // Getters
 
   @Override
-  public String getReferenceName() {
+  public final String getReferenceName() {
     return this.property;
   }
 

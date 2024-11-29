@@ -9,7 +9,9 @@ import org.hotrod.runtime.livesql.dialects.Const;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberConstant;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.NumberFreeExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Between;
+import org.hotrod.runtime.livesql.expressions.predicates.BooleanFreeExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Equal;
 import org.hotrod.runtime.livesql.expressions.predicates.GreaterThan;
 import org.hotrod.runtime.livesql.expressions.predicates.GreaterThanOrEqualTo;
@@ -33,157 +35,157 @@ public abstract class StringExpression extends ComparableExpression {
 
   // Coalesce
 
-  public StringExpression coalesce(final StringExpression a) {
+  public StringFreeExpression coalesce(final StringExpression a) {
     return new StringCoalesce(this, a);
   }
 
-  public StringExpression coalesce(final String a) {
+  public StringFreeExpression coalesce(final String a) {
     return new StringCoalesce(this, new StringConstant(a));
   }
 
   // NullIf
 
-  public StringExpression nullIf(final StringExpression a) {
+  public StringFreeExpression nullIf(final StringExpression a) {
     return new StringNullIf(this, a);
   }
 
-  public StringExpression nullIf(final String a) {
+  public StringFreeExpression nullIf(final String a) {
     return new StringNullIf(this, new StringConstant(a));
   }
 
   // Locate
 
-  public NumberExpression locate(final StringExpression substring, final NumberExpression from) {
+  public NumberFreeExpression locate(final StringExpression substring, final NumberExpression from) {
     return new Locate(substring, this, from);
   }
 
-  public NumberExpression locate(final StringExpression substring, final Number from) {
+  public NumberFreeExpression locate(final StringExpression substring, final Number from) {
     return new Locate(substring, this, new NumberConstant(from));
   }
 
-  public NumberExpression locate(final String substring, final NumberExpression from) {
+  public NumberFreeExpression locate(final String substring, final NumberExpression from) {
     return new Locate(new StringConstant(substring), this, from);
   }
 
-  public NumberExpression locate(final String substring, final Number from) {
+  public NumberFreeExpression locate(final String substring, final Number from) {
     return new Locate(new StringConstant(substring), this, new NumberConstant(from));
   }
 
-  public NumberExpression locate(final StringExpression substring) {
+  public NumberFreeExpression locate(final StringExpression substring) {
     return new Locate(substring, this, new NumberConstant(0));
   }
 
-  public NumberExpression locate(final String substring) {
+  public NumberFreeExpression locate(final String substring) {
     return new Locate(new StringConstant(substring), this, new NumberConstant(0));
   }
 
   // Substr
 
-  public StringExpression substr(final NumberExpression from, final NumberExpression length) {
+  public StringFreeExpression substr(final NumberExpression from, final NumberExpression length) {
     return new Substring(this, from, length);
   }
 
-  public StringExpression substr(final NumberExpression from, final Number length) {
+  public StringFreeExpression substr(final NumberExpression from, final Number length) {
     return new Substring(this, from, new NumberConstant(length));
   }
 
-  public StringExpression substr(Number from, final NumberExpression length) {
+  public StringFreeExpression substr(Number from, final NumberExpression length) {
     return new Substring(this, new NumberConstant(from), length);
   }
 
-  public StringExpression substr(Number from, final Number length) {
+  public StringFreeExpression substr(Number from, final Number length) {
     return new Substring(this, new NumberConstant(from), new NumberConstant(length));
   }
 
-  public StringExpression substr(final NumberExpression from) {
+  public StringFreeExpression substr(final NumberExpression from) {
     return new Substring(this, from);
   }
 
-  public StringExpression substr(final Number from) {
+  public StringFreeExpression substr(final Number from) {
     return new Substring(this, new NumberConstant(from));
   }
 
   // General functions
 
-  public StringExpression concat(final StringExpression e) {
+  public StringFreeExpression concat(final StringExpression e) {
     Concat concat = new Concat(this, e);
     return concat;
   }
 
-  public StringExpression concat(final String e) {
+  public StringFreeExpression concat(final String e) {
     Concat concat = new Concat(this, new StringConstant(e));
     return concat;
   }
 
-  public NumberExpression length() {
+  public NumberFreeExpression length() {
     return new Length(this);
   }
 
-  public StringExpression lower() {
+  public StringFreeExpression lower() {
     return new Lower(this);
   }
 
-  public StringExpression upper() {
+  public StringFreeExpression upper() {
     return new Upper(this);
   }
 
-  public StringExpression trim() {
+  public StringFreeExpression trim() {
     return new Trim(this);
   }
 
   // Like
 
-  public Predicate like(final StringExpression e) {
+  public BooleanFreeExpression like(final StringExpression e) {
     return new Like(this, e);
   }
 
-  public Predicate like(final String value) {
+  public BooleanFreeExpression like(final String value) {
     return new Like(this, new StringConstant(value));
   }
 
   // Like escape
 
-  public Predicate like(final StringExpression e, final StringExpression escape) {
+  public BooleanFreeExpression like(final StringExpression e, final StringExpression escape) {
     return new Like(this, e, escape);
   }
 
-  public Predicate like(final StringExpression e, final String escape) {
+  public BooleanFreeExpression like(final StringExpression e, final String escape) {
     return new Like(this, e, new StringConstant(escape));
   }
 
-  public Predicate like(final String e, final StringExpression escape) {
+  public BooleanFreeExpression like(final String e, final StringExpression escape) {
     return new Like(this, new StringConstant(e), escape);
   }
 
-  public Predicate like(final String e, final String escape) {
+  public BooleanFreeExpression like(final String e, final String escape) {
     return new Like(this, new StringConstant(e), new StringConstant(escape));
   }
 
   // Not Like
 
-  public Predicate notLike(final StringExpression e) {
+  public BooleanFreeExpression notLike(final StringExpression e) {
     return new NotLike(this, e);
   }
 
-  public Predicate notLike(final String e) {
+  public BooleanFreeExpression notLike(final String e) {
     return new NotLike(this, new StringConstant(e));
   }
 
   // Not like escape
 
-  public Predicate notLike(final StringExpression e, final StringExpression escape) {
+  public BooleanFreeExpression notLike(final StringExpression e, final StringExpression escape) {
     return new NotLike(this, e, escape);
   }
 
-  public Predicate notLike(final StringExpression e, final String escape) {
+  public BooleanFreeExpression notLike(final StringExpression e, final String escape) {
     return new NotLike(this, e, new StringConstant(escape));
   }
 
-  public Predicate notLike(final String e, final StringExpression escape) {
+  public BooleanFreeExpression notLike(final String e, final StringExpression escape) {
     return new NotLike(this, new StringConstant(e), escape);
   }
 
-  public Predicate notLike(final String e, final String escape) {
+  public BooleanFreeExpression notLike(final String e, final String escape) {
     return new NotLike(this, new StringConstant(e), new StringConstant(escape));
   }
 
@@ -193,115 +195,115 @@ public abstract class StringExpression extends ComparableExpression {
 
   // Equal
 
-  public Predicate eq(final StringExpression e) {
+  public BooleanFreeExpression eq(final StringExpression e) {
     return new Equal(this, e);
   }
 
-  public Predicate eq(final String value) {
+  public BooleanFreeExpression eq(final String value) {
     return new Equal(this, BoxUtil.box(value));
   }
 
   // Not Equal
 
-  public Predicate ne(final StringExpression e) {
+  public BooleanFreeExpression ne(final StringExpression e) {
     return new NotEqual(this, e);
   }
 
-  public Predicate ne(final String value) {
+  public BooleanFreeExpression ne(final String value) {
     return new NotEqual(this, BoxUtil.box(value));
   }
 
   // Greater Than
 
-  public Predicate gt(final StringExpression e) {
+  public BooleanFreeExpression gt(final StringExpression e) {
     return new GreaterThan(this, e);
   }
 
-  public Predicate gt(final String value) {
+  public BooleanFreeExpression gt(final String value) {
     return new GreaterThan(this, BoxUtil.box(value));
   }
 
   // Greater Than or Equal To
 
-  public Predicate ge(final StringExpression e) {
+  public BooleanFreeExpression ge(final StringExpression e) {
     return new GreaterThanOrEqualTo(this, e);
   }
 
-  public Predicate ge(final String value) {
+  public BooleanFreeExpression ge(final String value) {
     return new GreaterThanOrEqualTo(this, BoxUtil.box(value));
   }
 
   // Less Than
 
-  public Predicate lt(final StringExpression e) {
+  public BooleanFreeExpression lt(final StringExpression e) {
     return new LessThan(this, e);
   }
 
-  public Predicate lt(final String value) {
+  public BooleanFreeExpression lt(final String value) {
     return new LessThan(this, BoxUtil.box(value));
   }
 
   // Less Than or Equal To
 
-  public Predicate le(final StringExpression e) {
+  public BooleanFreeExpression le(final StringExpression e) {
     return new LessThanOrEqualTo(this, e);
   }
 
-  public Predicate le(final String value) {
+  public BooleanFreeExpression le(final String value) {
     return new LessThanOrEqualTo(this, BoxUtil.box(value));
   }
 
   // Between
 
-  public Predicate between(final StringExpression from, final StringExpression to) {
+  public BooleanFreeExpression between(final StringExpression from, final StringExpression to) {
     return new Between(this, from, to);
   }
 
-  public Predicate between(final StringExpression from, final String to) {
+  public BooleanFreeExpression between(final StringExpression from, final String to) {
     return new Between(this, from, BoxUtil.box(to));
   }
 
-  public Predicate between(final String from, final StringExpression to) {
+  public BooleanFreeExpression between(final String from, final StringExpression to) {
     return new Between(this, BoxUtil.box(from), to);
   }
 
-  public Predicate between(final String from, final String to) {
+  public BooleanFreeExpression between(final String from, final String to) {
     return new Between(this, BoxUtil.box(from), BoxUtil.box(to));
   }
 
   // Not Between
 
-  public Predicate notBetween(final StringExpression from, final StringExpression to) {
+  public BooleanFreeExpression notBetween(final StringExpression from, final StringExpression to) {
     return new NotBetween<StringExpression>(this, from, to);
   }
 
-  public Predicate notBetween(final StringExpression from, final String to) {
+  public BooleanFreeExpression notBetween(final StringExpression from, final String to) {
     return new NotBetween<StringExpression>(this, from, BoxUtil.box(to));
   }
 
-  public Predicate notBetween(final String from, final StringExpression to) {
+  public BooleanFreeExpression notBetween(final String from, final StringExpression to) {
     return new NotBetween<StringExpression>(this, BoxUtil.box(from), to);
   }
 
-  public Predicate notBetween(final String from, String to) {
+  public BooleanFreeExpression notBetween(final String from, String to) {
     return new NotBetween<StringExpression>(this, BoxUtil.box(from), BoxUtil.box(to));
   }
 
   // In list
 
-  public final Predicate in(final StringExpression... values) {
+  public final BooleanFreeExpression in(final StringExpression... values) {
     return new InList<StringExpression>(this, Arrays.asList(values));
   }
 
-  public final Predicate in(final String... values) {
+  public final BooleanFreeExpression in(final String... values) {
     return new InList<StringExpression>(this, Stream.of(values).map(v -> BoxUtil.box(v)).collect(Collectors.toList()));
   }
 
-  public final Predicate notIn(final StringExpression... values) {
+  public final BooleanFreeExpression notIn(final StringExpression... values) {
     return new NotInList<StringExpression>(this, Arrays.asList(values));
   }
 
-  public final Predicate notIn(final String... values) {
+  public final BooleanFreeExpression notIn(final String... values) {
     return new NotInList<StringExpression>(this,
         Stream.of(values).map(v -> BoxUtil.box(v)).collect(Collectors.toList()));
   }
@@ -311,7 +313,7 @@ public abstract class StringExpression extends ComparableExpression {
   // Specialized Functions
 
   @Available(engine = Const.POSTGRESQL, since = Const.PG15)
-  public final NumberExpression ascii() {
+  public final NumberFreeExpression ascii() {
     return new Ascii(this);
   }
 

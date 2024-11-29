@@ -2,9 +2,10 @@ package org.hotrod.runtime.livesql.expressions.strings;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.NumberFreeExpression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class Locate extends NumberExpression {
+public class Locate extends NumberFreeExpression {
 
   private StringExpression substring;
   private StringExpression string;

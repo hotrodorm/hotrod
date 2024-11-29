@@ -5,7 +5,7 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class EnclosedDateTimeExpression extends DateTimeExpression {
+public class EnclosedDateTimeExpression extends DateTimeFreeExpression {
 
   // Properties
 

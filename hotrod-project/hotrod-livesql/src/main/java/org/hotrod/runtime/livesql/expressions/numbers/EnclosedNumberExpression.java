@@ -5,7 +5,7 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class EnclosedNumberExpression extends NumberExpression {
+public class EnclosedNumberExpression extends NumberFreeExpression {
 
   // Properties
 

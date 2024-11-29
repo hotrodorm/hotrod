@@ -1,11 +1,14 @@
 package org.hotrod.runtime.livesql.metadata;
 
+import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
+import org.hotrod.runtime.livesql.expressions.AliasedEntityColumn;
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
+import org.hotrodorm.hotrod.utils.SUtil;
 
-public class DateTimeColumn extends DateTimeExpression implements Column {
+public class NumberEntityColumn extends NumberExpression implements Column {
 
   // Properties
 
@@ -20,8 +23,8 @@ public class DateTimeColumn extends DateTimeExpression implements Column {
 
   // Constructor
 
-  public DateTimeColumn(final TableOrView objectInstance, final String name, final String property, final String type,
-      final Integer columnSize, final Integer decimalDigits, final TypeHandler handler) {
+  public NumberEntityColumn(final TableOrView objectInstance, final String name, final String property,
+      final String type, final Integer columnSize, final Integer decimalDigits, final TypeHandler handler) {
     super(Expression.PRECEDENCE_COLUMN);
     this.objectInstance = objectInstance;
     this.name = name;
@@ -29,7 +32,7 @@ public class DateTimeColumn extends DateTimeExpression implements Column {
     this.type = type;
     this.columnSize = columnSize;
     this.decimalDigits = decimalDigits;
-    this.setTypeHandler(handler);
+    super.setTypeHandler(handler);
   }
 
   // Rendering
@@ -44,10 +47,19 @@ public class DateTimeColumn extends DateTimeExpression implements Column {
     w.write(w.getSQLDialect().canonicalToNatural(this.name));
   }
 
+  // Aliasing
+
+  public AliasedEntityColumn as(final String alias) {
+    if (SUtil.isEmpty(alias)) {
+      throw new LiveSQLException("An alias specified with the .as() method cannot be null");
+    }
+    return new AliasedEntityColumn(this, alias);
+  }
+
   // Getters
 
   @Override
-  public final String getReferenceName() {
+  public String getReferenceName() {
     return this.property;
   }
 

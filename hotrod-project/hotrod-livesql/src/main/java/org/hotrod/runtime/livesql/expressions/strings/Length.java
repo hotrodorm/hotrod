@@ -1,10 +1,10 @@
 package org.hotrod.runtime.livesql.expressions.strings;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.NumberFreeExpression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class Length extends NumberExpression {
+public class Length extends NumberFreeExpression {
 
   private StringExpression string;
 

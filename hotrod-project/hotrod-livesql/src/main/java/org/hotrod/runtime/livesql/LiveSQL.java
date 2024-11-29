@@ -59,6 +59,7 @@ import org.hotrod.runtime.livesql.expressions.analytics.StringLag;
 import org.hotrod.runtime.livesql.expressions.analytics.StringLead;
 import org.hotrod.runtime.livesql.expressions.binary.ByteArrayConstant;
 import org.hotrod.runtime.livesql.expressions.binary.ByteArrayExpression;
+import org.hotrod.runtime.livesql.expressions.binary.ByteArrayFreeExpression;
 import org.hotrod.runtime.livesql.expressions.binary.EnclosedByteArrayExpression;
 import org.hotrod.runtime.livesql.expressions.caseclause.BooleanCaseWhenStage;
 import org.hotrod.runtime.livesql.expressions.caseclause.ByteArrayCaseWhenStage;
@@ -72,6 +73,7 @@ import org.hotrod.runtime.livesql.expressions.datetime.CurrentTime;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTime;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeConstant;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
+import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFreeExpression;
 import org.hotrod.runtime.livesql.expressions.datetime.EnclosedDateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.datetime.literals.LocalDateLiteral;
 import org.hotrod.runtime.livesql.expressions.datetime.literals.LocalTimeLiteral;
@@ -84,10 +86,13 @@ import org.hotrod.runtime.livesql.expressions.numbers.EnclosedNumberExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.IntegerLiteral;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberConstant;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.NumberFreeExpression;
 import org.hotrod.runtime.livesql.expressions.object.EnclosedObjectExpression;
 import org.hotrod.runtime.livesql.expressions.object.ObjectConstant;
 import org.hotrod.runtime.livesql.expressions.object.ObjectExpression;
+import org.hotrod.runtime.livesql.expressions.object.ObjectFreeExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.BooleanConstant;
+import org.hotrod.runtime.livesql.expressions.predicates.BooleanFreeExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.EnclosedBooleanExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Exists;
 import org.hotrod.runtime.livesql.expressions.predicates.Not;
@@ -97,6 +102,7 @@ import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.expressions.strings.EnclosedStringExpression;
 import org.hotrod.runtime.livesql.expressions.strings.StringConstant;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
+import org.hotrod.runtime.livesql.expressions.strings.StringFreeExpression;
 import org.hotrod.runtime.livesql.expressions.strings.StringLiteral;
 import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
@@ -279,17 +285,17 @@ public class LiveSQL {
 
   // Predicates
 
-  public Predicate not(final Predicate a) {
+  public BooleanFreeExpression not(final Predicate a) {
     return new Not(a);
   }
 
   // Subquery existence
 
-  public <R> Predicate exists(final Select<?> subquery) {
+  public <R> BooleanFreeExpression exists(final Select<?> subquery) {
     return new Exists(subquery);
   }
 
-  public <R> Predicate notExists(final Select<?> subquery) {
+  public <R> BooleanFreeExpression notExists(final Select<?> subquery) {
     return new NotExists(subquery);
   }
 
@@ -854,19 +860,19 @@ public class LiveSQL {
 
   // Date/Time
 
-  public DateTimeExpression currentDate() {
+  public DateTimeFreeExpression currentDate() {
     return new CurrentDate();
   }
 
-  public DateTimeExpression currentTime() {
+  public DateTimeFreeExpression currentTime() {
     return new CurrentTime();
   }
 
-  public DateTimeExpression currentDateTime() {
+  public DateTimeFreeExpression currentDateTime() {
     return new CurrentDateTime();
   }
 
-  public DateTimeExpression datetime(final DateTimeExpression date, final DateTimeExpression time) {
+  public DateTimeFreeExpression datetime(final DateTimeExpression date, final DateTimeExpression time) {
     return new DateTime(date, time);
   }
 
@@ -957,32 +963,32 @@ public class LiveSQL {
 
   // Literals (Boolean)
 
-  public final Predicate FALSE = PJump.getFalse();
-  public final Predicate TRUE = PJump.getTrue();
+  public final BooleanFreeExpression FALSE = PJump.getFalse();
+  public final BooleanFreeExpression TRUE = PJump.getTrue();
 
   // Parenthesis
 
-  public StringExpression enclose(final StringExpression value) {
+  public StringFreeExpression enclose(final StringExpression value) {
     return new EnclosedStringExpression(value);
   }
 
-  public NumberExpression enclose(final NumberExpression value) {
+  public NumberFreeExpression enclose(final NumberExpression value) {
     return new EnclosedNumberExpression(value);
   }
 
-  public DateTimeExpression enclose(final DateTimeExpression value) {
+  public DateTimeFreeExpression enclose(final DateTimeExpression value) {
     return new EnclosedDateTimeExpression(value);
   }
 
-  public Predicate enclose(final Predicate value) {
+  public BooleanFreeExpression enclose(final Predicate value) {
     return new EnclosedBooleanExpression(value);
   }
 
-  public ByteArrayExpression enclose(final ByteArrayExpression value) {
+  public ByteArrayFreeExpression enclose(final ByteArrayExpression value) {
     return new EnclosedByteArrayExpression(value);
   }
 
-  public ObjectExpression enclose(final ObjectExpression value) {
+  public ObjectFreeExpression enclose(final ObjectExpression value) {
     return new EnclosedObjectExpression(value);
   }
 

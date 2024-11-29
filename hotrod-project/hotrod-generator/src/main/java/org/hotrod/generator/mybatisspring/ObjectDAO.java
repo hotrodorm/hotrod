@@ -59,8 +59,15 @@ import org.hotrod.runtime.interfaces.Selectable;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.livesql.LiveSQLMapper;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
+import org.hotrod.runtime.livesql.metadata.BooleanEntityColumn;
+import org.hotrod.runtime.livesql.metadata.ByteArrayEntityColumn;
 import org.hotrod.runtime.livesql.metadata.Column;
+import org.hotrod.runtime.livesql.metadata.DateTimeEntityColumn;
 import org.hotrod.runtime.livesql.metadata.Name;
+import org.hotrod.runtime.livesql.metadata.NumberEntityColumn;
+import org.hotrod.runtime.livesql.metadata.ObjectEntityColumn;
+import org.hotrod.runtime.livesql.metadata.StringEntityColumn;
+import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.select.MyBatisCursor;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
@@ -264,9 +271,10 @@ public class ObjectDAO extends GeneratableObject {
               + this.tag.getSourceLocation().render() + ":\n" + "could not write to file '" + f.getName() + "'.",
           e);
     } catch (UnresolvableDataTypeException e) {
-      throw new ControlledException("Could not generate DAO primitives class for DAO defined in the <"
-          + this.tag.getTagName() + "> tag in " + this.tag.getSourceLocation().render() + ":\n"
-          + "'could not handle columns '" + e.getColumnName() + "' type: " + e.getTypeName());
+      throw new ControlledException(
+          "Could not generate DAO primitives class for DAO defined in the <" + this.tag.getTagName() + "> tag in "
+              + this.tag.getSourceLocation().render() + ":\n" + "'could not handle columns '"
+              + e.getColumnMetadata().getName() + "' type: " + e.getColumnMetadata().getTypeName());
     } catch (SequencesNotSupportedException e) {
       throw new ControlledException("Could not generate DAO primitives class for DAO defined in the <"
           + this.tag.getTagName() + "> tag in " + this.tag.getSourceLocation().render() + ":\n" + e.getMessage());
@@ -411,13 +419,20 @@ public class ObjectDAO extends GeneratableObject {
     imports.add(DataSource.class);
     imports.add(Column.class);
     imports.add(TypeSolver.class);
-    imports.add("org.hotrod.runtime.livesql.metadata.NumberColumn");
-    imports.add("org.hotrod.runtime.livesql.metadata.StringColumn");
-    imports.add("org.hotrod.runtime.livesql.metadata.DateTimeColumn");
-    imports.add("org.hotrod.runtime.livesql.metadata.BooleanColumn");
-    imports.add("org.hotrod.runtime.livesql.metadata.ByteArrayColumn");
-    imports.add("org.hotrod.runtime.livesql.metadata.ObjectColumn");
-    imports.add("org.hotrod.runtime.livesql.metadata.Table");
+
+    imports.newLine();
+    
+    imports.add(NumberEntityColumn.class);
+    imports.add(StringEntityColumn.class);
+    imports.add(DateTimeEntityColumn.class);
+    imports.add(BooleanEntityColumn.class);
+    imports.add(ByteArrayEntityColumn.class);
+    imports.add(ObjectEntityColumn.class);
+
+    imports.newLine();
+
+    imports.add(Table.class);
+
     imports.add("org.hotrod.runtime.livesql.expressions.predicates.Predicate");
     imports.add(AllColumns.class);
     imports.add("org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase");
@@ -1996,9 +2011,9 @@ public class ObjectDAO extends GeneratableObject {
         || "java.math.BigInteger".equals(javaType) //
         || "java.math.BigDecimal".equals(javaType) //
     ) {
-      return "NumberColumn";
+      return NumberEntityColumn.class.getSimpleName();
     } else if ("java.lang.String".equals(javaType)) {
-      return "StringColumn";
+      return StringEntityColumn.class.getSimpleName();
     } else if ("java.util.Date".equals(javaType) //
         || "java.sql.Date".equals(javaType) //
         || "java.sql.Timestamp".equals(javaType) //
@@ -2011,17 +2026,17 @@ public class ObjectDAO extends GeneratableObject {
         || "java.time.OffsetTime".equals(javaType) //
         || "java.time.Instant".equals(javaType) //
     ) {
-      return "DateTimeColumn";
+      return DateTimeEntityColumn.class.getSimpleName();
     } else if ("java.lang.Boolean".equals(javaType)) {
-      return "BooleanColumn";
+      return BooleanEntityColumn.class.getSimpleName();
     } else if ("byte[]".equals(javaType)) {
-      return "ByteArrayColumn";
+      return ByteArrayEntityColumn.class.getSimpleName();
     }
 
     // byte[]
     // java.lang.Object
     // <Custom Converter>
-    return "ObjectColumn";
+    return ObjectEntityColumn.class.getSimpleName();
   }
 
   private void writeSelectSequence(final SequenceMethodTag tag) throws IOException, SequencesNotSupportedException {

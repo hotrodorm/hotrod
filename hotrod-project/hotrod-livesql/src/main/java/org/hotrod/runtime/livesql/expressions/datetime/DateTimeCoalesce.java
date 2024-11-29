@@ -6,7 +6,7 @@ import java.util.List;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class DateTimeCoalesce extends DateTimeExpression {
+public class DateTimeCoalesce extends DateTimeFreeExpression {
 
   private List<DateTimeExpression> expressions;
 

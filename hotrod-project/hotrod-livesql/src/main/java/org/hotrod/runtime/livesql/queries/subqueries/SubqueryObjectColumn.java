@@ -3,10 +3,10 @@ package org.hotrod.runtime.livesql.queries.subqueries;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
-import org.hotrod.runtime.livesql.expressions.object.ObjectExpression;
+import org.hotrod.runtime.livesql.expressions.object.ObjectFreeExpression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class SubqueryObjectColumn extends ObjectExpression implements SubqueryColumn {
+public class SubqueryObjectColumn extends ObjectFreeExpression implements SubqueryColumn {
 
   // Properties
 

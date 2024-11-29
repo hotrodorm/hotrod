@@ -3,7 +3,7 @@ package org.hotrod.runtime.livesql.expressions.numbers;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public abstract class BinaryNumberExpression<T extends ComparableExpression> extends NumberExpression {
+public abstract class BinaryNumberExpression<T extends ComparableExpression> extends NumberFreeExpression {
 
   private T left;
   private String operator;

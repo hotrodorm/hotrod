@@ -361,26 +361,6 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
     return dataSet;
   }
 
-//  @Deprecated // Use getName()
-//  public String getColumnName() {
-//    return columnName;
-//  }
-//
-//  @Deprecated // Use getTable()
-//  public String getTableName() {
-//    return tableName;
-//  }
-//
-//  @Deprecated // use getPrecision()
-//  public Integer getColumnSize() {
-//    return columnSize;
-//  }
-//
-//  @Deprecated // getScale()
-//  public Integer getDecimalDigits() {
-//    return decimalDigits;
-//  }
-
   public String getColumnDefault() {
     return columnDefault;
   }

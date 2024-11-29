@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
+import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFreeExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
@@ -24,7 +25,7 @@ import org.hotrod.runtime.livesql.queries.QueryWriter;
  * @author valarcon
  *
  */
-public class DateTimeCaseClause extends DateTimeExpression {
+public class DateTimeCaseClause extends DateTimeFreeExpression {
 
   private List<CaseWhen> whens;
   private DateTimeExpression elseValue;

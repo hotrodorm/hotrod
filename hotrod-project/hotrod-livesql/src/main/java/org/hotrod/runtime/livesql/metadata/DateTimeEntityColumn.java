@@ -1,11 +1,14 @@
 package org.hotrod.runtime.livesql.metadata;
 
+import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
+import org.hotrod.runtime.livesql.expressions.AliasedEntityColumn;
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
+import org.hotrodorm.hotrod.utils.SUtil;
 
-public class BooleanColumn extends Predicate implements Column {
+public class DateTimeEntityColumn extends DateTimeExpression implements Column {
 
   // Properties
 
@@ -20,8 +23,8 @@ public class BooleanColumn extends Predicate implements Column {
 
   // Constructor
 
-  public BooleanColumn(final TableOrView objectInstance, final String name, final String property, final String type,
-      final Integer columnSize, final Integer decimalDigits, final TypeHandler handler) {
+  public DateTimeEntityColumn(final TableOrView objectInstance, final String name, final String property,
+      final String type, final Integer columnSize, final Integer decimalDigits, final TypeHandler handler) {
     super(Expression.PRECEDENCE_COLUMN);
     this.objectInstance = objectInstance;
     this.name = name;
@@ -29,7 +32,7 @@ public class BooleanColumn extends Predicate implements Column {
     this.type = type;
     this.columnSize = columnSize;
     this.decimalDigits = decimalDigits;
-    super.setTypeHandler(handler);
+    this.setTypeHandler(handler);
   }
 
   // Rendering
@@ -42,6 +45,15 @@ public class BooleanColumn extends Predicate implements Column {
       w.write(".");
     }
     w.write(w.getSQLDialect().canonicalToNatural(this.name));
+  }
+
+  // Aliasing
+
+  public AliasedEntityColumn as(final String alias) {
+    if (SUtil.isEmpty(alias)) {
+      throw new LiveSQLException("An alias specified with the .as() method cannot be null");
+    }
+    return new AliasedEntityColumn(this, alias);
   }
 
   // Getters

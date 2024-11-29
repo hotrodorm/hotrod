@@ -3,7 +3,7 @@ package org.hotrod.runtime.livesql.expressions.strings;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class StringNullIf extends StringExpression {
+public class StringNullIf extends StringFreeExpression {
 
   private StringExpression a;
   private StringExpression b;

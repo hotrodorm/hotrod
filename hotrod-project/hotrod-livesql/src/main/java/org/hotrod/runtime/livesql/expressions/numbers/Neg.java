@@ -3,7 +3,7 @@ package org.hotrod.runtime.livesql.expressions.numbers;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class Neg extends NumberExpression {
+public class Neg extends NumberFreeExpression {
 
   private NumberExpression value;
 

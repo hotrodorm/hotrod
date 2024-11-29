@@ -5,10 +5,10 @@ import java.util.logging.Logger;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
-import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.NumberFreeExpression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class SubqueryNumberColumn extends NumberExpression implements SubqueryColumn {
+public class SubqueryNumberColumn extends NumberFreeExpression implements SubqueryColumn {
 
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(SubqueryNumberColumn.class.getName());

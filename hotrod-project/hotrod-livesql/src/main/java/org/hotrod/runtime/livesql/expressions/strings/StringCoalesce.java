@@ -6,7 +6,7 @@ import java.util.List;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class StringCoalesce extends StringExpression {
+public class StringCoalesce extends StringFreeExpression {
 
   private List<StringExpression> expressions;
 

@@ -9,7 +9,6 @@ import org.hotrod.runtime.livesql.queries.typesolver.TypeRule.CouldNotResolveRes
 
 public class TypeSolver {
 
-  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(TypeSolver.class.getName());
 
   private List<TypeRule> layerRules;

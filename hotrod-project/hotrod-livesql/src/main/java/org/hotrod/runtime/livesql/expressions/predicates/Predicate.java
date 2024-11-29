@@ -15,39 +15,39 @@ public abstract class Predicate extends ComparableExpression {
 
   // Coalesce
 
-  public Predicate coalesce(final Predicate a) {
+  public BooleanFreeExpression coalesce(final Predicate a) {
     return new BooleanCoalesce(this, a);
   }
 
-  public Predicate coalesce(final Boolean a) {
+  public BooleanFreeExpression coalesce(final Boolean a) {
     return new BooleanCoalesce(this, BoxUtil.box(a));
   }
 
   // NullIf
 
-  public Predicate nullIf(final Predicate a) {
+  public BooleanFreeExpression nullIf(final Predicate a) {
     return new BooleanNullIf(this, a);
   }
 
-  public Predicate nullIf(final Boolean a) {
+  public BooleanFreeExpression nullIf(final Boolean a) {
     return new BooleanNullIf(this, BoxUtil.box(a));
   }
 
   // Predicate operators
 
-  public Predicate and(final Predicate p) {
+  public BooleanFreeExpression and(final Predicate p) {
     return new And(this, p);
   }
 
-  public Predicate andNot(final Predicate p) {
+  public BooleanFreeExpression andNot(final Predicate p) {
     return new And(this, new Not(p));
   }
 
-  public Predicate or(final Predicate p) {
+  public BooleanFreeExpression or(final Predicate p) {
     return new Or(this, p);
   }
 
-  public Predicate orNot(final Predicate p) {
+  public BooleanFreeExpression orNot(final Predicate p) {
     return new Or(this, new Not(p));
   }
 
@@ -55,115 +55,115 @@ public abstract class Predicate extends ComparableExpression {
 
   // Equal
 
-  public Predicate eq(final Predicate e) {
+  public BooleanFreeExpression eq(final Predicate e) {
     return new Equal(this, e);
   }
 
-  public Predicate eq(final Boolean value) {
+  public BooleanFreeExpression eq(final Boolean value) {
     return new Equal(this, BoxUtil.box(value));
   }
 
   // Not Equal
 
-  public Predicate ne(final Predicate e) {
+  public BooleanFreeExpression ne(final Predicate e) {
     return new NotEqual(this, e);
   }
 
-  public Predicate ne(final Boolean value) {
+  public BooleanFreeExpression ne(final Boolean value) {
     return new NotEqual(this, BoxUtil.box(value));
   }
 
   // Greater Than
 
-  public Predicate gt(final Predicate e) {
+  public BooleanFreeExpression gt(final Predicate e) {
     return new GreaterThan(this, e);
   }
 
-  public Predicate gt(final Boolean value) {
+  public BooleanFreeExpression gt(final Boolean value) {
     return new GreaterThan(this, BoxUtil.box(value));
   }
 
   // Greater Than or Equal To
 
-  public Predicate ge(final Predicate e) {
+  public BooleanFreeExpression ge(final Predicate e) {
     return new GreaterThanOrEqualTo(this, e);
   }
 
-  public Predicate ge(final Boolean value) {
+  public BooleanFreeExpression ge(final Boolean value) {
     return new GreaterThanOrEqualTo(this, BoxUtil.box(value));
   }
 
   // Less Than
 
-  public Predicate lt(final Predicate e) {
+  public BooleanFreeExpression lt(final Predicate e) {
     return new LessThan(this, e);
   }
 
-  public Predicate lt(final Boolean value) {
+  public BooleanFreeExpression lt(final Boolean value) {
     return new LessThan(this, BoxUtil.box(value));
   }
 
   // Less Than or Equal To
 
-  public Predicate le(final Predicate e) {
+  public BooleanFreeExpression le(final Predicate e) {
     return new LessThanOrEqualTo(this, e);
   }
 
-  public Predicate le(final Boolean value) {
+  public BooleanFreeExpression le(final Boolean value) {
     return new LessThanOrEqualTo(this, BoxUtil.box(value));
   }
 
   // Between
 
-  public Predicate between(final Predicate from, final Predicate to) {
+  public BooleanFreeExpression between(final Predicate from, final Predicate to) {
     return new Between(this, from, to);
   }
 
-  public Predicate between(final Predicate from, final Boolean to) {
+  public BooleanFreeExpression between(final Predicate from, final Boolean to) {
     return new Between(this, from, BoxUtil.box(to));
   }
 
-  public Predicate between(final Boolean from, final Predicate to) {
+  public BooleanFreeExpression between(final Boolean from, final Predicate to) {
     return new Between(this, BoxUtil.box(from), to);
   }
 
-  public Predicate between(final Boolean from, final Boolean to) {
+  public BooleanFreeExpression between(final Boolean from, final Boolean to) {
     return new Between(this, BoxUtil.box(from), BoxUtil.box(to));
   }
 
   // Not Between
 
-  public Predicate notBetween(final Predicate from, final Predicate to) {
+  public BooleanFreeExpression notBetween(final Predicate from, final Predicate to) {
     return new NotBetween<Predicate>(this, from, to);
   }
 
-  public Predicate notBetween(final Predicate from, final Boolean to) {
+  public BooleanFreeExpression notBetween(final Predicate from, final Boolean to) {
     return new NotBetween<Predicate>(this, from, BoxUtil.box(to));
   }
 
-  public Predicate notBetween(final Boolean from, final Predicate to) {
+  public BooleanFreeExpression notBetween(final Boolean from, final Predicate to) {
     return new NotBetween<Predicate>(this, BoxUtil.box(from), to);
   }
 
-  public Predicate notBetween(final Boolean from, Boolean to) {
+  public BooleanFreeExpression notBetween(final Boolean from, Boolean to) {
     return new NotBetween<Predicate>(this, BoxUtil.box(from), BoxUtil.box(to));
   }
 
   // In list
 
-  public final Predicate in(final Predicate... values) {
+  public final BooleanFreeExpression in(final Predicate... values) {
     return new InList<Predicate>(this, Arrays.asList(values));
   }
 
-  public final Predicate in(final Boolean... values) {
+  public final BooleanFreeExpression in(final Boolean... values) {
     return new InList<Predicate>(this, Stream.of(values).map(v -> BoxUtil.box(v)).collect(Collectors.toList()));
   }
 
-  public final Predicate notIn(final Predicate... values) {
+  public final BooleanFreeExpression notIn(final Predicate... values) {
     return new NotInList<Predicate>(this, Arrays.asList(values));
   }
 
-  public final Predicate notIn(final Boolean... values) {
+  public final BooleanFreeExpression notIn(final Boolean... values) {
     return new NotInList<Predicate>(this, Stream.of(values).map(v -> BoxUtil.box(v)).collect(Collectors.toList()));
   }
 

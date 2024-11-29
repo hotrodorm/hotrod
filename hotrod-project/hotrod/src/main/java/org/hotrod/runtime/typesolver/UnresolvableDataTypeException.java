@@ -19,19 +19,4 @@ public class UnresolvableDataTypeException extends Exception {
     return this.cm;
   }
 
-  @Deprecated // use medadata instead
-  public String getTypeName() {
-    return this.cm.getTypeName();
-  }
-
-  @Deprecated // use medadata instead
-  public String getColumnName() {
-    return this.cm.getName();
-  }
-
-  @Deprecated // use medadata instead
-  public String getTableName() {
-    return this.cm.getTable();
-  }
-
 }

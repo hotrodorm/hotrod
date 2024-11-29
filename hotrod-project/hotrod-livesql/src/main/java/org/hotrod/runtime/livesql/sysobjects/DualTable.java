@@ -2,7 +2,7 @@ package org.hotrod.runtime.livesql.sysobjects;
 
 import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.metadata.Name;
-import org.hotrod.runtime.livesql.metadata.StringColumn;
+import org.hotrod.runtime.livesql.metadata.StringEntityColumn;
 import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.metadata.WrappingColumn;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
@@ -11,7 +11,7 @@ public class DualTable extends Table {
 
   // Properties
 
-  public StringColumn dummy;
+  public StringEntityColumn dummy;
 
   // Constructors
 
@@ -23,7 +23,7 @@ public class DualTable extends Table {
   // Initialization
 
   private void initialize() {
-    this.dummy = new StringColumn(this, "DUMMY", "dummy", "VARCHAR2", 1, 0, TypeHandler.STRING_ENTITY_COLUMN);
+    this.dummy = new StringEntityColumn(this, "DUMMY", "dummy", "VARCHAR2", 1, 0, TypeHandler.STRING_ENTITY_COLUMN);
     super.add(this.dummy);
   }
 

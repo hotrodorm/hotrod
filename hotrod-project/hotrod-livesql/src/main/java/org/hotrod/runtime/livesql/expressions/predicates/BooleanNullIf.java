@@ -3,7 +3,7 @@ package org.hotrod.runtime.livesql.expressions.predicates;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class BooleanNullIf extends Predicate {
+public class BooleanNullIf extends BooleanFreeExpression {
 
   private Predicate a;
   private Predicate b;

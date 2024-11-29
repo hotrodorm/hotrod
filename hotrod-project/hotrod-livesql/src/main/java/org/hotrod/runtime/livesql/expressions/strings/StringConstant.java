@@ -4,7 +4,7 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.SQLParameterWriter.RenderedParameter;
 
-public class StringConstant extends StringExpression {
+public class StringConstant extends StringFreeExpression {
 
   // Properties
 

@@ -22,7 +22,6 @@ public class TypedExpression extends Expression {
 
   @Override
   protected void captureTypeHandler() {
-    this.expr.captureTypeHandler();
     super.setTypeHandler(this.expr.getTypeHandler());
   }
 

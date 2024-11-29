@@ -3,14 +3,14 @@ package org.hotrod.runtime.livesql.expressions.predicates;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public abstract class BinaryPredicate extends Predicate {
+public abstract class BinaryPredicate extends BooleanFreeExpression {
 
   private ComparableExpression left;
   private String operator;
   private ComparableExpression right;
 
-  protected <T> BinaryPredicate(final ComparableExpression left, final String operator, final ComparableExpression right,
-      final int operatorPrecedence) {
+  protected <T> BinaryPredicate(final ComparableExpression left, final String operator,
+      final ComparableExpression right, final int operatorPrecedence) {
     super(operatorPrecedence);
     if (operator == null || operator.trim().isEmpty()) {
       throw new IllegalArgumentException("Operator must be specified");

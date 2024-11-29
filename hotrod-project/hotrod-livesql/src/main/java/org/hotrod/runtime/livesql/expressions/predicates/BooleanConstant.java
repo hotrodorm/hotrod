@@ -3,7 +3,7 @@ package org.hotrod.runtime.livesql.expressions.predicates;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class BooleanConstant extends Predicate {
+public class BooleanConstant extends BooleanFreeExpression {
 
   // Properties
 

@@ -3,7 +3,7 @@ package org.hotrod.runtime.livesql.expressions.datetime;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class DateTimeNullIf extends DateTimeExpression {
+public class DateTimeNullIf extends DateTimeFreeExpression {
 
   private DateTimeExpression a;
   private DateTimeExpression b;

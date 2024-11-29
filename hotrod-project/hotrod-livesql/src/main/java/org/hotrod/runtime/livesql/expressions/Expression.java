@@ -13,7 +13,6 @@ import org.hotrod.runtime.livesql.queries.select.SHelper;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
-import org.hotrodorm.hotrod.utils.TUtil;
 
 public abstract class Expression extends ResultSetColumn {
 
@@ -185,7 +184,7 @@ public abstract class Expression extends ResultSetColumn {
   @Deprecated
   protected void captureTypeHandler() {
     // Nothing to do by default
-    // SubqueryTTTColumn and AliasedExpression overrides this method
+    // SubqueryTTTColumn, AliasedExpression, and TypedExpression override this method
   }
 
   protected String render() {

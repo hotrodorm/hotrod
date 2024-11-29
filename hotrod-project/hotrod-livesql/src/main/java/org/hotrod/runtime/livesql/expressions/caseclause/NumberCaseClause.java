@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.NumberFreeExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
@@ -24,7 +25,7 @@ import org.hotrod.runtime.livesql.queries.QueryWriter;
  * @author valarcon
  *
  */
-public class NumberCaseClause extends NumberExpression {
+public class NumberCaseClause extends NumberFreeExpression {
 
   private List<CaseWhen> whens;
   private NumberExpression elseValue;
