@@ -35,12 +35,14 @@ import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
-import org.hotrod.runtime.livesql.metadata.NumberColumn;
-import org.hotrod.runtime.livesql.metadata.StringColumn;
-import org.hotrod.runtime.livesql.metadata.DateTimeColumn;
-import org.hotrod.runtime.livesql.metadata.BooleanColumn;
-import org.hotrod.runtime.livesql.metadata.ByteArrayColumn;
-import org.hotrod.runtime.livesql.metadata.ObjectColumn;
+
+import org.hotrod.runtime.livesql.metadata.NumberEntityColumn;
+import org.hotrod.runtime.livesql.metadata.StringEntityColumn;
+import org.hotrod.runtime.livesql.metadata.DateTimeEntityColumn;
+import org.hotrod.runtime.livesql.metadata.BooleanEntityColumn;
+import org.hotrod.runtime.livesql.metadata.ByteArrayEntityColumn;
+import org.hotrod.runtime.livesql.metadata.ObjectEntityColumn;
+
 import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
@@ -375,9 +377,9 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public final NumberColumn id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
-    public final NumberColumn parentId = new NumberColumn(this, "PARENT_ID", "parentId", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
-    public final NumberColumn branchId = new NumberColumn(this, "BRANCH_ID", "branchId", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn id = new NumberEntityColumn(this, "ID", "id", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn parentId = new NumberEntityColumn(this, "PARENT_ID", "parentId", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn branchId = new NumberEntityColumn(this, "BRANCH_ID", "branchId", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
 
     // Getters
 

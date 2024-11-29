@@ -138,9 +138,9 @@ public class App {
 
 //      System.getProperties().setProperty("oracle.jdbc.J2EE13Compliant", "true");
 
-      test2();
+//      test2();
 //      crud();
-//      locking();
+      locking();
 //      join();
 //      join();     
 //      livesql();
@@ -269,7 +269,13 @@ public class App {
 //    Select<Row> q = this.sql.select().from(b);
 
     Select<Row> q = this.sql
-        .select(b.star(), sql.val(3).mult(7).as("n"), sql.currentDateTime().as("dt").type(LocalDateTime.class)).from(b);
+        .select( //
+            b.star(), // 
+            sql.val(3).mult(7).as("n"), //
+            sql.currentDateTime().as("dt").type(LocalDateTime.class),
+            sql.val("abc").as("a").type(String.class),
+            b.region.as("aa")
+            ).from(b);
 
 //    log.info("** S2 **");
 

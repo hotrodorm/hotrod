@@ -31,12 +31,14 @@ import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
-import org.hotrod.runtime.livesql.metadata.NumberColumn;
-import org.hotrod.runtime.livesql.metadata.StringColumn;
-import org.hotrod.runtime.livesql.metadata.DateTimeColumn;
-import org.hotrod.runtime.livesql.metadata.BooleanColumn;
-import org.hotrod.runtime.livesql.metadata.ByteArrayColumn;
-import org.hotrod.runtime.livesql.metadata.ObjectColumn;
+
+import org.hotrod.runtime.livesql.metadata.NumberEntityColumn;
+import org.hotrod.runtime.livesql.metadata.StringEntityColumn;
+import org.hotrod.runtime.livesql.metadata.DateTimeEntityColumn;
+import org.hotrod.runtime.livesql.metadata.BooleanEntityColumn;
+import org.hotrod.runtime.livesql.metadata.ByteArrayEntityColumn;
+import org.hotrod.runtime.livesql.metadata.ObjectEntityColumn;
+
 import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
@@ -303,17 +305,17 @@ public class BinariesDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public final NumberColumn id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
-    public final ByteArrayColumn bin1 = new ByteArrayColumn(this, "BIN1", "bin1", "BINARY", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(byte[].class, TypeSource.ENTITY_COLUMN));
-    public final ByteArrayColumn bin2 = new ByteArrayColumn(this, "BIN2", "bin2", "BINARY VARYING", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(byte[].class, TypeSource.ENTITY_COLUMN));
-    public final ByteArrayColumn bin3 = new ByteArrayColumn(this, "BIN3", "bin3", "BINARY VARYING", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(byte[].class, TypeSource.ENTITY_COLUMN));
-    public final ByteArrayColumn bin4 = new ByteArrayColumn(this, "BIN4", "bin4", "BINARY VARYING", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(byte[].class, TypeSource.ENTITY_COLUMN));
-    public final ByteArrayColumn bin5 = new ByteArrayColumn(this, "BIN5", "bin5", "BINARY VARYING", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(byte[].class, TypeSource.ENTITY_COLUMN));
-    public final ByteArrayColumn blo1 = new ByteArrayColumn(this, "BLO1", "blo1", "BINARY LARGE OBJECT", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(byte[].class, TypeSource.ENTITY_COLUMN));
-    public final ByteArrayColumn blo2 = new ByteArrayColumn(this, "BLO2", "blo2", "BINARY LARGE OBJECT", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(byte[].class, TypeSource.ENTITY_COLUMN));
-    public final ByteArrayColumn blo3 = new ByteArrayColumn(this, "BLO3", "blo3", "BINARY LARGE OBJECT", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(byte[].class, TypeSource.ENTITY_COLUMN));
-    public final ByteArrayColumn blo4 = new ByteArrayColumn(this, "BLO4", "blo4", "BINARY LARGE OBJECT", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(byte[].class, TypeSource.ENTITY_COLUMN));
-    public final ByteArrayColumn blo5 = new ByteArrayColumn(this, "BLO5", "blo5", "BINARY LARGE OBJECT", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(byte[].class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn id = new NumberEntityColumn(this, "ID", "id", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
+    public final ByteArrayEntityColumn bin1 = new ByteArrayEntityColumn(this, "BIN1", "bin1", "BINARY", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(byte[].class, TypeSource.ENTITY_COLUMN));
+    public final ByteArrayEntityColumn bin2 = new ByteArrayEntityColumn(this, "BIN2", "bin2", "BINARY VARYING", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(byte[].class, TypeSource.ENTITY_COLUMN));
+    public final ByteArrayEntityColumn bin3 = new ByteArrayEntityColumn(this, "BIN3", "bin3", "BINARY VARYING", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(byte[].class, TypeSource.ENTITY_COLUMN));
+    public final ByteArrayEntityColumn bin4 = new ByteArrayEntityColumn(this, "BIN4", "bin4", "BINARY VARYING", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(byte[].class, TypeSource.ENTITY_COLUMN));
+    public final ByteArrayEntityColumn bin5 = new ByteArrayEntityColumn(this, "BIN5", "bin5", "BINARY VARYING", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(byte[].class, TypeSource.ENTITY_COLUMN));
+    public final ByteArrayEntityColumn blo1 = new ByteArrayEntityColumn(this, "BLO1", "blo1", "BINARY LARGE OBJECT", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(byte[].class, TypeSource.ENTITY_COLUMN));
+    public final ByteArrayEntityColumn blo2 = new ByteArrayEntityColumn(this, "BLO2", "blo2", "BINARY LARGE OBJECT", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(byte[].class, TypeSource.ENTITY_COLUMN));
+    public final ByteArrayEntityColumn blo3 = new ByteArrayEntityColumn(this, "BLO3", "blo3", "BINARY LARGE OBJECT", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(byte[].class, TypeSource.ENTITY_COLUMN));
+    public final ByteArrayEntityColumn blo4 = new ByteArrayEntityColumn(this, "BLO4", "blo4", "BINARY LARGE OBJECT", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(byte[].class, TypeSource.ENTITY_COLUMN));
+    public final ByteArrayEntityColumn blo5 = new ByteArrayEntityColumn(this, "BLO5", "blo5", "BINARY LARGE OBJECT", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(byte[].class, TypeSource.ENTITY_COLUMN));
 
     // Getters
 

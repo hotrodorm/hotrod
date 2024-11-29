@@ -31,12 +31,14 @@ import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
-import org.hotrod.runtime.livesql.metadata.NumberColumn;
-import org.hotrod.runtime.livesql.metadata.StringColumn;
-import org.hotrod.runtime.livesql.metadata.DateTimeColumn;
-import org.hotrod.runtime.livesql.metadata.BooleanColumn;
-import org.hotrod.runtime.livesql.metadata.ByteArrayColumn;
-import org.hotrod.runtime.livesql.metadata.ObjectColumn;
+
+import org.hotrod.runtime.livesql.metadata.NumberEntityColumn;
+import org.hotrod.runtime.livesql.metadata.StringEntityColumn;
+import org.hotrod.runtime.livesql.metadata.DateTimeEntityColumn;
+import org.hotrod.runtime.livesql.metadata.BooleanEntityColumn;
+import org.hotrod.runtime.livesql.metadata.ByteArrayEntityColumn;
+import org.hotrod.runtime.livesql.metadata.ObjectEntityColumn;
+
 import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
@@ -279,14 +281,14 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public final NumberColumn id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
-    public final NumberColumn accountId = new NumberColumn(this, "ACCOUNT_ID", "accountId", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
-    public final NumberColumn amount = new NumberColumn(this, "AMOUNT", "amount", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
-    public final NumberColumn branchId = new NumberColumn(this, "BRANCH_ID", "branchId", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
-    public final DateTimeColumn orderDate = new DateTimeColumn(this, "ORDER_DATE", "orderDate", "DATE", 10, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.sql.Date.class, TypeSource.ENTITY_COLUMN));
-    public final StringColumn type = new StringColumn(this, "TYPE", "type", "CHARACTER VARYING", 10, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
-    public final NumberColumn unpaidBalance = new NumberColumn(this, "UNPAID_BALANCE", "unpaidBalance", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
-    public final StringColumn status = new StringColumn(this, "STATUS", "status", "CHARACTER VARYING", 10, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn id = new NumberEntityColumn(this, "ID", "id", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn accountId = new NumberEntityColumn(this, "ACCOUNT_ID", "accountId", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn amount = new NumberEntityColumn(this, "AMOUNT", "amount", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn branchId = new NumberEntityColumn(this, "BRANCH_ID", "branchId", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
+    public final DateTimeEntityColumn orderDate = new DateTimeEntityColumn(this, "ORDER_DATE", "orderDate", "DATE", 10, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.sql.Date.class, TypeSource.ENTITY_COLUMN));
+    public final StringEntityColumn type = new StringEntityColumn(this, "TYPE", "type", "CHARACTER VARYING", 10, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn unpaidBalance = new NumberEntityColumn(this, "UNPAID_BALANCE", "unpaidBalance", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
+    public final StringEntityColumn status = new StringEntityColumn(this, "STATUS", "status", "CHARACTER VARYING", 10, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
 
     // Getters
 
