@@ -87,12 +87,9 @@ public class BuscadorDAO implements Serializable, ApplicationContextAware {
 
   private LiveSQLContext context;
 
-  @Value("${use.plain.jdbc:false}")
-  private boolean usePlainJDBC;
-
   @PostConstruct
   public void initializeContext() {
-    this.context = new LiveSQLContext(this.liveSQLDialect, this.sqlSession, this.liveSQLMapper, this.usePlainJDBC, this.dataSource, new TypeSolver(null, this.liveSQLDialect));
+    this.context = new LiveSQLContext(this.liveSQLDialect, this.sqlSession, this.liveSQLMapper, this.dataSource, new TypeSolver(null, this.liveSQLDialect));
   }
 
   // select method: findTareasPorFiltro
