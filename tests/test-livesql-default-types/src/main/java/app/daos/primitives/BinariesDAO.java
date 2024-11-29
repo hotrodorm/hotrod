@@ -40,7 +40,7 @@ import org.hotrod.runtime.livesql.metadata.ByteArrayEntityColumn;
 import org.hotrod.runtime.livesql.metadata.ObjectEntityColumn;
 
 import org.hotrod.runtime.livesql.metadata.Table;
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
@@ -154,7 +154,7 @@ public class BinariesDAO implements Serializable, ApplicationContextAware {
   // select by criteria
 
   public CriteriaWherePhase<app.daos.BinariesVO> select(final BinariesDAO.BinariesTable from,
-      final Predicate predicate) {
+      final GeneralBooleanExpression predicate) {
     return new CriteriaWherePhase<app.daos.BinariesVO>(this.context, "mappers.binaries.selectByCriteria",
         from, predicate);
   }
@@ -210,7 +210,7 @@ public class BinariesDAO implements Serializable, ApplicationContextAware {
 
   // update by criteria
 
-  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractBinariesVO updateValues, final BinariesDAO.BinariesTable tableOrView, final Predicate predicate) {
+  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractBinariesVO updateValues, final BinariesDAO.BinariesTable tableOrView, final GeneralBooleanExpression predicate) {
     Map<String, Object> values = new HashMap<>();
     if (updateValues.getId() != null) values.put("\"ID\"", updateValues.getId());
     if (updateValues.getBin1() != null) values.put("\"BIN1\"", updateValues.getBin1());
@@ -235,7 +235,7 @@ public class BinariesDAO implements Serializable, ApplicationContextAware {
 
   // delete by criteria
 
-  public DeleteWherePhase delete(final BinariesDAO.BinariesTable from, final Predicate predicate) {
+  public DeleteWherePhase delete(final BinariesDAO.BinariesTable from, final GeneralBooleanExpression predicate) {
     return new DeleteWherePhase(this.context, "mappers.binaries.deleteByCriteria", from, predicate);
   }
 

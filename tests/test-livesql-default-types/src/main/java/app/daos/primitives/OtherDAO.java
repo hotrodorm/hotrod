@@ -40,7 +40,7 @@ import org.hotrod.runtime.livesql.metadata.ByteArrayEntityColumn;
 import org.hotrod.runtime.livesql.metadata.ObjectEntityColumn;
 
 import org.hotrod.runtime.livesql.metadata.Table;
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
@@ -150,7 +150,7 @@ public class OtherDAO implements Serializable, ApplicationContextAware {
   // select by criteria
 
   public CriteriaWherePhase<app.daos.OtherVO> select(final OtherDAO.OtherTable from,
-      final Predicate predicate) {
+      final GeneralBooleanExpression predicate) {
     return new CriteriaWherePhase<app.daos.OtherVO>(this.context, "mappers.other.selectByCriteria",
         from, predicate);
   }
@@ -202,7 +202,7 @@ public class OtherDAO implements Serializable, ApplicationContextAware {
 
   // update by criteria
 
-  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractOtherVO updateValues, final OtherDAO.OtherTable tableOrView, final Predicate predicate) {
+  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractOtherVO updateValues, final OtherDAO.OtherTable tableOrView, final GeneralBooleanExpression predicate) {
     Map<String, Object> values = new HashMap<>();
     if (updateValues.getId() != null) values.put("\"ID\"", updateValues.getId());
     if (updateValues.getBoo1() != null) values.put("\"BOO1\"", updateValues.getBoo1());
@@ -223,7 +223,7 @@ public class OtherDAO implements Serializable, ApplicationContextAware {
 
   // delete by criteria
 
-  public DeleteWherePhase delete(final OtherDAO.OtherTable from, final Predicate predicate) {
+  public DeleteWherePhase delete(final OtherDAO.OtherTable from, final GeneralBooleanExpression predicate) {
     return new DeleteWherePhase(this.context, "mappers.other.deleteByCriteria", from, predicate);
   }
 

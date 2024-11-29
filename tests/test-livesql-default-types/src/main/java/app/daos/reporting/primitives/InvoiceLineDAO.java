@@ -40,7 +40,7 @@ import org.hotrod.runtime.livesql.metadata.ByteArrayEntityColumn;
 import org.hotrod.runtime.livesql.metadata.ObjectEntityColumn;
 
 import org.hotrod.runtime.livesql.metadata.Table;
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
@@ -138,7 +138,7 @@ public class InvoiceLineDAO implements Serializable, ApplicationContextAware {
   // select by criteria
 
   public CriteriaWherePhase<app.daos.reporting.InvoiceLineVO> select(final InvoiceLineDAO.InvoiceLineTable from,
-      final Predicate predicate) {
+      final GeneralBooleanExpression predicate) {
     return new CriteriaWherePhase<app.daos.reporting.InvoiceLineVO>(this.context, "mappers.reporting.invoiceLine.selectByCriteria",
         from, predicate);
   }
@@ -173,7 +173,7 @@ public class InvoiceLineDAO implements Serializable, ApplicationContextAware {
 
   // update by criteria
 
-  public UpdateSetCompletePhase update(final app.daos.reporting.primitives.AbstractInvoiceLineVO updateValues, final InvoiceLineDAO.InvoiceLineTable tableOrView, final Predicate predicate) {
+  public UpdateSetCompletePhase update(final app.daos.reporting.primitives.AbstractInvoiceLineVO updateValues, final InvoiceLineDAO.InvoiceLineTable tableOrView, final GeneralBooleanExpression predicate) {
     Map<String, Object> values = new HashMap<>();
     if (updateValues.getInvoiceId() != null) values.put("\"INVOICE_ID\"", updateValues.getInvoiceId());
     if (updateValues.getProductId() != null) values.put("\"PRODUCT_ID\"", updateValues.getProductId());
@@ -190,7 +190,7 @@ public class InvoiceLineDAO implements Serializable, ApplicationContextAware {
 
   // delete by criteria
 
-  public DeleteWherePhase delete(final InvoiceLineDAO.InvoiceLineTable from, final Predicate predicate) {
+  public DeleteWherePhase delete(final InvoiceLineDAO.InvoiceLineTable from, final GeneralBooleanExpression predicate) {
     return new DeleteWherePhase(this.context, "mappers.reporting.invoiceLine.deleteByCriteria", from, predicate);
   }
 

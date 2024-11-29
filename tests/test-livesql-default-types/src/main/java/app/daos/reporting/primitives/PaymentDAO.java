@@ -40,7 +40,7 @@ import org.hotrod.runtime.livesql.metadata.ByteArrayEntityColumn;
 import org.hotrod.runtime.livesql.metadata.ObjectEntityColumn;
 
 import org.hotrod.runtime.livesql.metadata.Table;
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
@@ -138,7 +138,7 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
   // select by criteria
 
   public CriteriaWherePhase<app.daos.reporting.PaymentVO> select(final PaymentDAO.PaymentTable from,
-      final Predicate predicate) {
+      final GeneralBooleanExpression predicate) {
     return new CriteriaWherePhase<app.daos.reporting.PaymentVO>(this.context, "mappers.reporting.payment.selectByCriteria",
         from, predicate);
   }
@@ -173,7 +173,7 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
 
   // update by criteria
 
-  public UpdateSetCompletePhase update(final app.daos.reporting.primitives.AbstractPaymentVO updateValues, final PaymentDAO.PaymentTable tableOrView, final Predicate predicate) {
+  public UpdateSetCompletePhase update(final app.daos.reporting.primitives.AbstractPaymentVO updateValues, final PaymentDAO.PaymentTable tableOrView, final GeneralBooleanExpression predicate) {
     Map<String, Object> values = new HashMap<>();
     if (updateValues.getPaymentDate() != null) values.put("\"PAYMENT_DATE\"", updateValues.getPaymentDate());
     if (updateValues.getInvoiceId() != null) values.put("\"INVOICE_ID\"", updateValues.getInvoiceId());
@@ -190,7 +190,7 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
 
   // delete by criteria
 
-  public DeleteWherePhase delete(final PaymentDAO.PaymentTable from, final Predicate predicate) {
+  public DeleteWherePhase delete(final PaymentDAO.PaymentTable from, final GeneralBooleanExpression predicate) {
     return new DeleteWherePhase(this.context, "mappers.reporting.payment.deleteByCriteria", from, predicate);
   }
 

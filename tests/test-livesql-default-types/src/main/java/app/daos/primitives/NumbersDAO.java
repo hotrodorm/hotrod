@@ -40,7 +40,7 @@ import org.hotrod.runtime.livesql.metadata.ByteArrayEntityColumn;
 import org.hotrod.runtime.livesql.metadata.ObjectEntityColumn;
 
 import org.hotrod.runtime.livesql.metadata.Table;
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
@@ -165,7 +165,7 @@ public class NumbersDAO implements Serializable, ApplicationContextAware {
   // select by criteria
 
   public CriteriaWherePhase<app.daos.NumbersVO> select(final NumbersDAO.NumbersTable from,
-      final Predicate predicate) {
+      final GeneralBooleanExpression predicate) {
     return new CriteriaWherePhase<app.daos.NumbersVO>(this.context, "mappers.numbers.selectByCriteria",
         from, predicate);
   }
@@ -232,7 +232,7 @@ public class NumbersDAO implements Serializable, ApplicationContextAware {
 
   // update by criteria
 
-  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractNumbersVO updateValues, final NumbersDAO.NumbersTable tableOrView, final Predicate predicate) {
+  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractNumbersVO updateValues, final NumbersDAO.NumbersTable tableOrView, final GeneralBooleanExpression predicate) {
     Map<String, Object> values = new HashMap<>();
     if (updateValues.getId() != null) values.put("\"ID\"", updateValues.getId());
     if (updateValues.getInt1() != null) values.put("\"INT1\"", updateValues.getInt1());
@@ -268,7 +268,7 @@ public class NumbersDAO implements Serializable, ApplicationContextAware {
 
   // delete by criteria
 
-  public DeleteWherePhase delete(final NumbersDAO.NumbersTable from, final Predicate predicate) {
+  public DeleteWherePhase delete(final NumbersDAO.NumbersTable from, final GeneralBooleanExpression predicate) {
     return new DeleteWherePhase(this.context, "mappers.numbers.deleteByCriteria", from, predicate);
   }
 
