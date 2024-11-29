@@ -295,7 +295,8 @@ public abstract class GeneralStringExpression extends ComparableExpression {
   }
 
   public final Predicate in(final String... values) {
-    return new InList<GeneralStringExpression>(this, Stream.of(values).map(v -> BoxUtil.box(v)).collect(Collectors.toList()));
+    return new InList<GeneralStringExpression>(this,
+        Stream.of(values).map(v -> BoxUtil.box(v)).collect(Collectors.toList()));
   }
 
   public final Predicate notIn(final GeneralStringExpression... values) {
@@ -312,7 +313,7 @@ public abstract class GeneralStringExpression extends ComparableExpression {
   // Specialized Functions
 
   @Available(engine = Const.POSTGRESQL, since = Const.PG15)
-  public final NumberExpression ascii() {
+  public final GeneralNumberExpression ascii() {
     return new Ascii(this);
   }
 
