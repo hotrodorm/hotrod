@@ -3,7 +3,7 @@ package org.hotrod.runtime.livesql.expressions.analytics;
 import java.util.Arrays;
 
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
-import org.hotrod.runtime.livesql.expressions.strings.GeneralStringExpression;
+import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 
 public class StringWindowFunctionOverStage {
@@ -26,7 +26,7 @@ public class StringWindowFunctionOverStage {
     return new StringWindowFunctionOrderingStage(this.function);
   }
 
-  public GeneralStringExpression end() {
+  public StringExpression end() {
     return this.function;
   }
 

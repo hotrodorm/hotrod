@@ -1,7 +1,7 @@
 package org.hotrod.runtime.livesql.expressions.analytics;
 
 import org.hotrod.runtime.livesql.expressions.analytics.WindowExpression.FrameExclusion;
-import org.hotrod.runtime.livesql.expressions.binary.GeneralByteArrayExpression;
+import org.hotrod.runtime.livesql.expressions.binary.ByteArrayExpression;
 
 public class ByteArrayWindowFunctionFrameBoundStage {
 
@@ -33,7 +33,7 @@ public class ByteArrayWindowFunctionFrameBoundStage {
     return new ByteArrayWindowFunctionFrameExcludeStage(this.function);
   }
 
-  public GeneralByteArrayExpression end() {
+  public ByteArrayExpression end() {
     return this.function;
   }
 

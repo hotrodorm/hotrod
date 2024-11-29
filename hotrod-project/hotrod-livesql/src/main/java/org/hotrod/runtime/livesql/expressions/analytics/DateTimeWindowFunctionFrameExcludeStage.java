@@ -1,6 +1,6 @@
 package org.hotrod.runtime.livesql.expressions.analytics;
 
-import org.hotrod.runtime.livesql.expressions.datetime.GeneralDateTimeExpression;
+import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 
 public class DateTimeWindowFunctionFrameExcludeStage {
 
@@ -12,7 +12,7 @@ public class DateTimeWindowFunctionFrameExcludeStage {
 
   // Next stages
 
-  public GeneralDateTimeExpression end() {
+  public DateTimeExpression end() {
     return this.function;
   }
 

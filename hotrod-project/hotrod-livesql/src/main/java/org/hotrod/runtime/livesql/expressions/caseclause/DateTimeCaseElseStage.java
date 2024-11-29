@@ -1,6 +1,6 @@
 package org.hotrod.runtime.livesql.expressions.caseclause;
 
-import org.hotrod.runtime.livesql.expressions.datetime.GeneralDateTimeExpression;
+import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 
 public class DateTimeCaseElseStage {
 
@@ -10,7 +10,7 @@ public class DateTimeCaseElseStage {
     this.clause = clause;
   }
 
-  public GeneralDateTimeExpression end() {
+  public DateTimeExpression end() {
     return this.clause;
   }
 

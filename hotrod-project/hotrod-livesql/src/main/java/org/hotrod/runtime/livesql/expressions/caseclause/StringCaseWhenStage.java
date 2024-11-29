@@ -2,6 +2,7 @@ package org.hotrod.runtime.livesql.expressions.caseclause;
 
 import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.expressions.strings.GeneralStringExpression;
+import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
 import org.hotrod.runtime.livesql.util.BoxUtil;
 
 public class StringCaseWhenStage {
@@ -38,7 +39,7 @@ public class StringCaseWhenStage {
 
   // Finishes the clause
 
-  public GeneralStringExpression end() {
+  public StringExpression end() {
     return this.clause;
   }
 

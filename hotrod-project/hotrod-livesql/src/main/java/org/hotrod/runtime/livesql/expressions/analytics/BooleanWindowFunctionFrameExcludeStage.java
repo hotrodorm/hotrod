@@ -1,6 +1,6 @@
 package org.hotrod.runtime.livesql.expressions.analytics;
 
-import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
+import org.hotrod.runtime.livesql.expressions.predicates.BooleanExpression;
 
 public class BooleanWindowFunctionFrameExcludeStage {
 
@@ -12,7 +12,7 @@ public class BooleanWindowFunctionFrameExcludeStage {
 
   // Next stages
 
-  public GeneralBooleanExpression end() {
+  public BooleanExpression end() {
     return this.function;
   }
 

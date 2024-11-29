@@ -53,7 +53,7 @@ public abstract class GeneralDateTimeExpression extends ComparableExpression {
     return new org.hotrod.runtime.livesql.expressions.datetime.Date(this);
   }
 
-  public GeneralDateTimeExpression time() {
+  public DateTimeExpression time() {
     return new org.hotrod.runtime.livesql.expressions.datetime.Time(this);
   }
 

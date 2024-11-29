@@ -3,7 +3,7 @@ package org.hotrod.runtime.livesql.expressions.analytics;
 import java.util.Arrays;
 
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
-import org.hotrod.runtime.livesql.expressions.binary.GeneralByteArrayExpression;
+import org.hotrod.runtime.livesql.expressions.binary.ByteArrayExpression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 
 public class ByteArrayWindowFunctionOverStage {
@@ -26,7 +26,7 @@ public class ByteArrayWindowFunctionOverStage {
     return new ByteArrayWindowFunctionOrderingStage(this.function);
   }
 
-  public GeneralByteArrayExpression end() {
+  public ByteArrayExpression end() {
     return this.function;
   }
 

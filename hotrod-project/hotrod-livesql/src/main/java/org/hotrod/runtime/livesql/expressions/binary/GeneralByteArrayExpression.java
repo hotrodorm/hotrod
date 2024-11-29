@@ -121,7 +121,7 @@ public abstract class GeneralByteArrayExpression extends ComparableExpression {
     return new Between(this, BoxUtil.box(from), to);
   }
 
-  public GeneralBooleanExpression between(final byte[] from, final byte[] to) {
+  public Predicate between(final byte[] from, final byte[] to) {
     return new Between(this, BoxUtil.box(from), BoxUtil.box(to));
   }
 

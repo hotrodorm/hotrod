@@ -2,6 +2,7 @@ package org.hotrod.runtime.livesql.expressions.caseclause;
 
 import java.util.Date;
 
+import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.datetime.GeneralDateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.util.BoxUtil;
@@ -40,7 +41,7 @@ public class DateTimeCaseWhenStage {
 
   // Finishes the clause
 
-  public GeneralDateTimeExpression end() {
+  public DateTimeExpression end() {
     return this.clause;
   }
 

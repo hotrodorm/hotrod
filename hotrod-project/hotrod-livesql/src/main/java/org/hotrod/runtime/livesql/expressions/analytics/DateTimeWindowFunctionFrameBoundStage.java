@@ -1,7 +1,7 @@
 package org.hotrod.runtime.livesql.expressions.analytics;
 
 import org.hotrod.runtime.livesql.expressions.analytics.WindowExpression.FrameExclusion;
-import org.hotrod.runtime.livesql.expressions.datetime.GeneralDateTimeExpression;
+import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 
 public class DateTimeWindowFunctionFrameBoundStage {
 
@@ -33,7 +33,7 @@ public class DateTimeWindowFunctionFrameBoundStage {
     return new DateTimeWindowFunctionFrameExcludeStage(this.function);
   }
 
-  public GeneralDateTimeExpression end() {
+  public DateTimeExpression end() {
     return this.function;
   }
 

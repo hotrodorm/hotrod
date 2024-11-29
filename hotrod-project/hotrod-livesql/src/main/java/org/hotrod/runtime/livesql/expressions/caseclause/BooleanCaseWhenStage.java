@@ -1,5 +1,6 @@
 package org.hotrod.runtime.livesql.expressions.caseclause;
 
+import org.hotrod.runtime.livesql.expressions.predicates.BooleanExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.util.BoxUtil;
 
@@ -37,7 +38,7 @@ public class BooleanCaseWhenStage {
 
   // Finishes the clause
 
-  public GeneralBooleanExpression end() {
+  public BooleanExpression end() {
     return this.clause;
   }
 

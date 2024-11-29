@@ -1,5 +1,6 @@
 package org.hotrod.runtime.livesql.expressions.caseclause;
 
+import org.hotrod.runtime.livesql.expressions.binary.ByteArrayExpression;
 import org.hotrod.runtime.livesql.expressions.binary.GeneralByteArrayExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.util.BoxUtil;
@@ -38,7 +39,7 @@ public class ByteArrayCaseWhenStage {
 
   // Finishes the clause
 
-  public GeneralByteArrayExpression end() {
+  public ByteArrayExpression end() {
     return this.clause;
   }
 

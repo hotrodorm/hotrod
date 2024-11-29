@@ -1,6 +1,6 @@
 package org.hotrod.runtime.livesql.expressions.caseclause;
 
-import org.hotrod.runtime.livesql.expressions.binary.GeneralByteArrayExpression;
+import org.hotrod.runtime.livesql.expressions.binary.ByteArrayExpression;
 
 public class ByteArrayCaseElseStage {
 
@@ -10,7 +10,7 @@ public class ByteArrayCaseElseStage {
     this.clause = clause;
   }
 
-  public GeneralByteArrayExpression end() {
+  public ByteArrayExpression end() {
     return this.clause;
   }
 

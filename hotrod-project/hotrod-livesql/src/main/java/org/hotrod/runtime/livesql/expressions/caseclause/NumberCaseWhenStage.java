@@ -1,6 +1,7 @@
 package org.hotrod.runtime.livesql.expressions.caseclause;
 
 import org.hotrod.runtime.livesql.expressions.numbers.GeneralNumberExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.util.BoxUtil;
 
@@ -38,7 +39,7 @@ public class NumberCaseWhenStage {
 
   // Finishes the clause
 
-  public GeneralNumberExpression end() {
+  public NumberExpression end() {
     return this.clause;
   }
 
