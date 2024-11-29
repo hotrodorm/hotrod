@@ -1,13 +1,12 @@
 package org.hotrod.config;
 
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.JdbcTypes;
 import org.hotrod.utils.JdbcTypes.JDBCType;
@@ -23,7 +22,7 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(TypeSolverWhenTag.class);
+  private static final Logger log = Logger.getLogger(TypeSolverWhenTag.class.getName());
 
   // Properties
 
@@ -42,7 +41,7 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
 
   public TypeSolverWhenTag() {
     super("when");
-    log.debug("init");
+    log.fine("init");
   }
 
   // JAXB Setters
@@ -89,7 +88,7 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
       } catch (OgnlException e) {
         throw new InvalidConfigurationFileException(this, "Invalid OGNL expression: " + this.test);
       }
-      log.debug("this.testExpression=" + this.testExpression);
+      log.fine("this.testExpression=" + this.testExpression);
     }
 
     if (!SUtil.isEmpty(this.testResultSet)) {
@@ -98,7 +97,7 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
       } catch (OgnlException e) {
         throw new InvalidConfigurationFileException(this, "Invalid OGNL expression: " + this.testResultSet);
       }
-      log.debug("this.testResultSetExpression=" + this.testResultSetExpression);
+      log.fine("this.testResultSetExpression=" + this.testResultSetExpression);
     }
 
     // java-type
@@ -152,7 +151,7 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
                 + Stream.of(JDBCType.values()).map(t -> t.getShortTypeName()).collect(Collectors.joining(", ")));
       }
     }
-    log.debug("##### this.jdbcType=" + this.jdbcType);
+    log.fine("##### this.jdbcType=" + this.jdbcType);
 
   }
 

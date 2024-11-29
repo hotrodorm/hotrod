@@ -3,9 +3,8 @@ package org.hotrod.metadata;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
@@ -31,7 +30,7 @@ public class VOMetadata implements Serializable {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(VOMetadata.class);
+  private static final Logger log = Logger.getLogger(VOMetadata.class.getName());
 
   // Properties
 
@@ -61,7 +60,7 @@ public class VOMetadata implements Serializable {
 
   public VOMetadata(final VOTag tag, final DataSetLayout layout, final HotRodFragmentConfigTag fragmentConfig,
       final DaosTag daosTag) throws InvalidConfigurationFileException {
-    log.debug("init");
+    log.fine("init");
 
     this.tag = tag;
 
@@ -69,7 +68,7 @@ public class VOMetadata implements Serializable {
     this.viewMetadata = tag.getViewMetadata();
     this.inheritedColumns = tag.getInheritedColumns();
     this.declaredColumns = tag.getDeclaredColumns();
-    log.debug("DEC COLUMNS=" + this.declaredColumns.size());
+    log.fine("DEC COLUMNS=" + this.declaredColumns.size());
     this.alias = tag.getAlias();
     this.property = tag.getProperty();
 

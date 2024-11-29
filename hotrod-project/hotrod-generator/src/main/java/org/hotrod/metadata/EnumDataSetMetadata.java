@@ -1,9 +1,8 @@
 package org.hotrod.metadata;
 
 import java.util.List;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.EnumTag;
 import org.hotrod.config.EnumTag.EnumConstant;
 import org.hotrod.config.EnumTag.EnumProperty;
@@ -20,7 +19,7 @@ public class EnumDataSetMetadata extends TableDataSetMetadata {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = LogManager.getLogger(EnumDataSetMetadata.class);
+  private static final Logger log = Logger.getLogger(EnumDataSetMetadata.class.getName());
 
   private EnumTag tag;
 
@@ -31,7 +30,7 @@ public class EnumDataSetMetadata extends TableDataSetMetadata {
       final boolean isFromCurrentCatalog, final boolean isFromCurrentSchema)
       throws UnresolvableDataTypeException, InvalidConfigurationFileException {
     super(tag, t, adapter, config, layout, selectMetadataCache, isFromCurrentCatalog, isFromCurrentSchema);
-    log.debug("init");
+    log.fine("init");
     this.tag = tag;
   }
 

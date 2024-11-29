@@ -2,9 +2,8 @@ package org.hotrod.generator.mybatisspring;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
@@ -15,7 +14,7 @@ import org.hotrod.utils.ClassPackage;
 
 public class SelectVO {
 
-  private static final Logger log = LogManager.getLogger(SelectVO.class);
+  private static final Logger log = Logger.getLogger(SelectVO.class.getName());
 
   private DataSetLayout layout;
 
@@ -26,7 +25,7 @@ public class SelectVO {
   private SelectAbstractVO abstractVO;
 
   public SelectVO(final SelectVOClass soloVO, final SelectAbstractVO abstractVO, final DataSetLayout layout) {
-    log.debug("init");
+    log.fine("init");
     this.layout = layout;
     this.soloVO = soloVO;
     this.className = soloVO.getName();
@@ -43,13 +42,13 @@ public class SelectVO {
   }
 
   public void generate(final FileGenerator fileGenerator) throws UncontrolledException {
-    log.debug("GENERATE VO...");
+    log.fine("GENERATE VO...");
     String sourceClassName = this.className + ".java";
 
     File dir = this.layout.getVOPackageDir(this.classPackage);
 
     File vo = new File(dir, sourceClassName);
-    log.debug("vo=" + vo);
+    log.fine("vo=" + vo);
     if (!vo.exists()) {
       TextWriter w = null;
 
@@ -103,9 +102,9 @@ public class SelectVO {
 
   // public String getClassName() {
   // DataSetIdentifier id = this.metadata.getIdentifier();
-  // log.debug("id.wasJavaNameSpecified()=" + id.wasJavaNameSpecified());
+  // log.fine("id.wasJavaNameSpecified()=" + id.wasJavaNameSpecified());
   // String name = this.myBatisTag.getDaos().generateVOName(id);
-  // log.debug("name=" + name);
+  // log.fine("name=" + name);
   // return name;
   // }
 

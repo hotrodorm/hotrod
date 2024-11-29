@@ -1,10 +1,10 @@
 package org.hotrod.config;
 
+import java.util.logging.Logger;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.metadata.Metadata;
 import org.hotrodorm.hotrod.utils.SUtil;
@@ -19,7 +19,7 @@ public class VersionControlColumnTag extends AbstractConfigurationTag {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(VersionControlColumnTag.class);
+  private static final Logger log = Logger.getLogger(VersionControlColumnTag.class.getName());
 
   // Properties
 
@@ -45,7 +45,7 @@ public class VersionControlColumnTag extends AbstractConfigurationTag {
 
   public void validate() throws InvalidConfigurationFileException {
 
-    log.debug("validate");
+    log.fine("validate");
 
     // name
 

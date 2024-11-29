@@ -2,14 +2,13 @@ package org.hotrod.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.dynamicsql.BindTag;
 import org.hotrod.config.dynamicsql.ChooseTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart;
@@ -37,7 +36,7 @@ public class ComplementTag extends EnhancedSQLPart {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(ComplementTag.class);
+  private static final Logger log = Logger.getLogger(ComplementTag.class.getName());
 
   // Properties - Primitive content parsing by JAXB
 
@@ -66,7 +65,7 @@ public class ComplementTag extends EnhancedSQLPart {
 
   public ComplementTag() {
     super("complement");
-    log.debug("init");
+    log.fine("init");
   }
 
   @Override

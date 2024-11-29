@@ -2,16 +2,15 @@ package org.hotrod.identifiers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrodorm.hotrod.utils.SUtil;
 
 public class Id implements Comparable<Id> {
 
-  private static final Logger log = LogManager.getLogger(Id.class);
+  private static final Logger log = Logger.getLogger(Id.class.getName());
 
   // Properties
 
@@ -97,7 +96,7 @@ public class Id implements Comparable<Id> {
       throw new InvalidIdentifierException("'typedName' cannot be null or empty.");
     }
 
-    log.debug("typedName=" + typedName);
+    log.fine("typedName=" + typedName);
 
     SQLName sqlName = new SQLName(typedName);
 

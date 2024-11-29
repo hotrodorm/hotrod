@@ -4,9 +4,8 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
@@ -27,13 +26,13 @@ public class MariaDBAdapter extends DatabaseAdapter {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = LogManager.getLogger(MariaDBAdapter.class);
+  private static final Logger log = Logger.getLogger(MariaDBAdapter.class.getName());
 
   private MySQLAdapter mysqlAdaper;
 
   public MariaDBAdapter(final DatabaseMetaData dm) throws SQLException {
     super(dm);
-    log.debug("init");
+    log.fine("init");
     this.mysqlAdaper = new MySQLAdapter(dm);
   }
 

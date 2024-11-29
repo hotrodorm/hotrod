@@ -7,9 +7,8 @@ import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashSet;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.Constants;
 import org.hotrod.generator.Generator;
 import org.hotrod.runtime.BuildInformation;
@@ -22,7 +21,7 @@ import org.nocrala.tools.texttablefmt.Table;
 
 public class ExportColumnsToTXTOperation extends AbstractExportColumnsOperation {
 
-  private static final Logger log = LogManager.getLogger(ExportColumnsToTXTOperation.class);
+  private static final Logger log = Logger.getLogger(ExportColumnsToTXTOperation.class.getName());
 
   private static final int PAGE_SIZE = 40;
 
@@ -32,7 +31,7 @@ public class ExportColumnsToTXTOperation extends AbstractExportColumnsOperation 
       final String exportfilename) {
     super(baseDir, configfilename, localproperties, jdbcdriverclass, jdbcurl, jdbcusername, jdbcpassword, jdbccatalog,
         jdbcschema, facets, display, exportfilename);
-    log.debug("init");
+    log.fine("init");
   }
 
   @Override

@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.NameSolverNameTag.Scope;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.CouldNotResolveNameException;
@@ -33,7 +32,7 @@ public class ViewTag extends AbstractEntityDAOTag {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(ViewTag.class);
+  private static final Logger log = Logger.getLogger(ViewTag.class.getName());
 
   // Properties
 
@@ -89,7 +88,7 @@ public class ViewTag extends AbstractEntityDAOTag {
     String replacedName = null;
     try {
       replacedName = config.getNameSolverTag().resolveName(this.name, Scope.TABLE);
-      log.debug("### this.name=" + this.name + " -> replacedName=" + replacedName);
+      log.fine("### this.name=" + this.name + " -> replacedName=" + replacedName);
       return replacedName == null ? null : Id.fromCanonicalSQL(replacedName, adapter).getJavaClassName();
     } catch (CouldNotResolveNameException e) {
       throw new InvalidConfigurationFileException(this,
@@ -134,7 +133,7 @@ public class ViewTag extends AbstractEntityDAOTag {
       final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter, final CatalogSchema currentCS)
       throws InvalidConfigurationFileException {
 
-    log.debug("validate");
+    log.fine("validate");
 
     this.daosTag = daosTag;
     this.fragmentConfig = fragmentConfig;

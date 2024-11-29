@@ -1,10 +1,10 @@
 package org.hotrod.config;
 
+import java.util.logging.Logger;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.metadata.Metadata;
@@ -18,7 +18,7 @@ public class ExecutorTag extends AbstractDAOTag {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(ExecutorTag.class);
+  private static final Logger log = Logger.getLogger(ExecutorTag.class.getName());
 
   // Properties
 
@@ -49,7 +49,7 @@ public class ExecutorTag extends AbstractDAOTag {
       final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 
-    log.debug("validate Table tag: " + daosTag.getInternalCaption());
+    log.fine("validate Table tag: " + daosTag.getInternalCaption());
 
     this.daosTag = daosTag;
     this.fragmentConfig = fragmentConfig;

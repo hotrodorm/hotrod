@@ -1,7 +1,7 @@
 package org.hotrod.plugin.maven;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Logger;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -13,7 +13,7 @@ import org.hotrod.plugin.PurgeOperation;
 @Mojo(name = "purge", defaultPhase = LifecyclePhase.COMPILE)
 public class PurgeMojo extends AbstractMojo {
 
-  private static transient final Logger log = LogManager.getLogger(PurgeMojo.class);
+  private static transient final Logger log = Logger.getLogger(PurgeMojo.class.getName());
 
   // Note: 1) Each property must be annotated by @Parameter. 2) The property
   // attribute -- if declared -- must be the exact same name as the Java member
@@ -52,7 +52,7 @@ public class PurgeMojo extends AbstractMojo {
   // Mojo logic
 
   public void execute() throws MojoExecutionException {
-    log.debug("init");
+    log.fine("init");
 
     PurgeOperation op = new PurgeOperation(this.project.getBasedir(), this.configfile, this.localproperties,
         this.jdbcdriverclass, this.jdbcurl, this.jdbcusername, this.jdbcpassword, this.jdbccatalog, this.jdbcschema);

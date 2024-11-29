@@ -11,12 +11,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.Constants;
 import org.hotrod.config.ConverterTag;
@@ -92,7 +91,7 @@ public class ObjectDAO extends GeneratableObject {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(ObjectDAO.class);
+  private static final Logger log = Logger.getLogger(ObjectDAO.class.getName());
 
   // Properties
 
@@ -127,7 +126,7 @@ public class ObjectDAO extends GeneratableObject {
       final MyBatisSpringGenerator generator, final DAOType type, final MyBatisSpringTag myBatisTag,
       final DatabaseAdapter adapter, final ObjectAbstractVO avo, final ObjectVO vo, final Mapper mapper) {
     super();
-    log.debug("init");
+    log.fine("init");
     this.tag = tag;
     this.metadata = metadata;
     this.layout = layout;
@@ -181,7 +180,7 @@ public class ObjectDAO extends GeneratableObject {
 
     File dir = this.layout.getDaoPrimitivePackageDir(this.fragmentPackage);
     File f = new File(dir, className);
-    log.debug("f=" + f);
+    log.fine("f=" + f);
 
     this.w = null;
 
@@ -204,7 +203,7 @@ public class ObjectDAO extends GeneratableObject {
 
         if (this.isTable()) {
           if (this.generator.isClassicFKNavigationEnabled() || this.isClassicFKNavigationEnabled()) {
-            log.debug("FK navigation");
+            log.fine("FK navigation");
             writeSelectParentByFK();
             writeSelectChildrenByFK();
           }
@@ -244,14 +243,14 @@ public class ObjectDAO extends GeneratableObject {
 
       if (this.tag != null) {
 
-        log.debug("SQL NAME=" + this.metadata.getId().getCanonicalSQLName() + " this.tag=" + this.tag);
+        log.fine("SQL NAME=" + this.metadata.getId().getCanonicalSQLName() + " this.tag=" + this.tag);
         for (SequenceMethodTag s : this.tag.getSequences()) {
-          log.debug("s.getName()=" + s.getSequenceId().getRenderedSQLName());
+          log.fine("s.getName()=" + s.getSequenceId().getRenderedSQLName());
           writeSelectSequence(s);
         }
 
         for (QueryMethodTag q : this.tag.getQueries()) {
-          log.debug("q.getJavaMethodName()=" + q.getMethod());
+          log.fine("q.getJavaMethodName()=" + q.getMethod());
           writeQuery(q);
         }
 
@@ -829,7 +828,7 @@ public class ObjectDAO extends GeneratableObject {
       // keys can be registered in the database. This behavior has been
       // observed in PostgreSQL.
 
-      log.debug("DAO: " + this.getClassName() + " -- this.metadata.getImportedFKs().size()="
+      log.fine("DAO: " + this.getClassName() + " -- this.metadata.getImportedFKs().size()="
           + this.metadata.getImportedFKs().size() + " --  fkSelectors.size()=" + fkSelectors.size());
 
       for (DataSetMetadata ds : fkSelectors.keySet()) {
@@ -1739,7 +1738,7 @@ public class ObjectDAO extends GeneratableObject {
     for (Map<ColumnMetadata, String> selectTypeHandlers : this.selectTypeHandlers.values()) {
       for (ColumnMetadata cm : selectTypeHandlers.keySet()) {
         String thName = selectTypeHandlers.get(cm);
-        log.debug("WRITING TYPEHANDLER '" + thName + "'");
+        log.fine("WRITING TYPEHANDLER '" + thName + "'");
         writeTypeHandler("", cm, thName);
       }
     }
@@ -1820,7 +1819,7 @@ public class ObjectDAO extends GeneratableObject {
       String ci = JUtils.escapeJavaString(cm.getId().getRenderedSQLName());
       lw.add("    " + constantBase + "(\"" + ti + "\", \"" + ci + "\", true)");
       lw.add("    " + constantBase + "$DESC(\"" + ti + "\", \"" + ci + "\", false)");
-      log.debug("*** " + cm.getName() + " -> cm.isCaseSensitiveStringSortable()=" + cm.isCaseSensitiveStringSortable());
+      log.fine("*** " + cm.getName() + " -> cm.isCaseSensitiveStringSortable()=" + cm.isCaseSensitiveStringSortable());
       if (cm.isCaseSensitiveStringSortable()) {
         String cici = JUtils.escapeJavaString(cm.renderForCaseInsensitiveOrderBy());
 
@@ -2225,7 +2224,7 @@ public class ObjectDAO extends GeneratableObject {
       myBatisSelectMethod = "selectOne";
     }
 
-    log.debug("--> mode=" + sm.getResultSetMode() + ", method=" + myBatisSelectMethod);
+    log.fine("--> mode=" + sm.getResultSetMode() + ", method=" + myBatisSelectMethod);
 
     print("    return ");
 
@@ -2307,7 +2306,7 @@ public class ObjectDAO extends GeneratableObject {
   private Set<String> selectTypeHandlerNames = new HashSet<String>();
 
   private String getTypeHandlerClassName(final SelectMethodMetadata sm, final ColumnMetadata cm) {
-    log.debug("sm=" + sm.getMethod() + " # " + cm.getName());
+    log.fine("sm=" + sm.getMethod() + " # " + cm.getName());
     String thName = null;
     Map<ColumnMetadata, String> typeHandlers = this.selectTypeHandlers.get(sm);
     if (typeHandlers != null) {
@@ -2325,7 +2324,7 @@ public class ObjectDAO extends GeneratableObject {
       this.selectTypeHandlerNames.add(thName);
       added = true;
     }
-//    log.debug(this.getClassName() + " / " + cm.getName() + " - TypeHandler=" + thName + " added=" + added
+//    log.fine(this.getClassName() + " / " + cm.getName() + " - TypeHandler=" + thName + " added=" + added
 //        + " total=" + this.selectTypeHandlerNames.size());
     return thName;
   }
@@ -2354,15 +2353,15 @@ public class ObjectDAO extends GeneratableObject {
     ListWriter lw = new ListWriter(", ");
     for (ColumnMetadata cm : km.getColumns()) {
       EnumDataSetMetadata em = cm.getEnumMetadata();
-//      log.debug(cm.getName() + " cm.getEnumMetadata()=" + em);
+//      log.fine(cm.getName() + " cm.getEnumMetadata()=" + em);
       String javaClassName;
       if (em != null) {
         EnumClass ec = mg.getEnum(em);
         javaClassName = ec.getFullClassName();
-        log.debug(" >> enumclass=" + javaClassName);
+        log.fine(" >> enumclass=" + javaClassName);
       } else {
         javaClassName = cm.getType().getJavaClassName();
-        log.debug(" >> simpleclass=" + javaClassName);
+        log.fine(" >> simpleclass=" + javaClassName);
       }
       lw.add("final " + javaClassName + " " + cm.getId().getJavaMemberName());
     }

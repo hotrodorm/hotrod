@@ -2,9 +2,8 @@ package org.hotrod.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
 import org.hotrod.config.dynamicsql.SQLSegment;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
@@ -22,7 +21,7 @@ public class TextContent extends EnhancedSQLPart {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(TextContent.class);
+  private static final Logger log = Logger.getLogger(TextContent.class.getName());
 
   private static final String VALID_NAME_PATTERN = "[a-zA-Z][a-zA-Z0-9_]*";
 
@@ -35,7 +34,7 @@ public class TextContent extends EnhancedSQLPart {
 
   public TextContent(final String txt) {
     super("not-a-tag-but-parameterisable-content");
-    log.debug("init");
+    log.fine("init");
     this.txt = txt;
     this.segments = new ArrayList<SQLSegment>();
   }

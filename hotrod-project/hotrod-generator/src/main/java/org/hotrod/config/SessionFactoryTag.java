@@ -1,12 +1,11 @@
 package org.hotrod.config;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrodorm.hotrod.utils.SUtil;
 
@@ -17,7 +16,7 @@ public class SessionFactoryTag extends AbstractConfigurationTag {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(SequenceMethodTag.class);
+  private static final Logger log = Logger.getLogger(SequenceMethodTag.class.getName());
 
   private static final String ATT_NAME = "singleton-full-class-name";
 
@@ -29,7 +28,7 @@ public class SessionFactoryTag extends AbstractConfigurationTag {
 
   protected SessionFactoryTag() {
     super("session-factory");
-    log.debug("init");
+    log.fine("init");
   }
 
   // JAXB Setters

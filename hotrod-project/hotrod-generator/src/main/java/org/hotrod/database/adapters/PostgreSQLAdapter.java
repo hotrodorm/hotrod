@@ -8,9 +8,8 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
 import org.hotrod.database.PropertyType.ValueRange;
@@ -31,7 +30,7 @@ public class PostgreSQLAdapter extends DatabaseAdapter {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = LogManager.getLogger(PostgreSQLAdapter.class);
+  private static final Logger log = Logger.getLogger(PostgreSQLAdapter.class.getName());
 
   public PostgreSQLAdapter(final DatabaseMetaData dm) throws SQLException {
     super(dm);
@@ -55,7 +54,7 @@ public class PostgreSQLAdapter extends DatabaseAdapter {
   @Override
   public PropertyType getAdapterDefaultType(final ColumnMetadata m) throws UnresolvableDataTypeException {
 
-    log.debug("c.getDataType()=" + m.getDataType());
+    log.fine("c.getDataType()=" + m.getDataType());
 
     switch (m.getDataType()) {
 

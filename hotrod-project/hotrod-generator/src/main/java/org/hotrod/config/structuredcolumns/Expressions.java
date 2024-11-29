@@ -6,9 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.ColumnTag;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodConfigTag;
@@ -36,7 +35,7 @@ public class Expressions implements ColumnsProvider, Serializable {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(Expressions.class);
+  private static final Logger log = Logger.getLogger(Expressions.class.getName());
 
   // Properties
 
@@ -82,7 +81,7 @@ public class Expressions implements ColumnsProvider, Serializable {
   public void gatherMetadataPhase1(final SelectMethodTag selectTag, final SelectGenerationTag selectGenerationTag,
       final ColumnsPrefixGenerator columnsPrefixGenerator, final ColumnsRetriever cr)
       throws InvalidSQLException, InvalidConfigurationFileException {
-    log.debug("this=" + this + " - this.expressions.isEmpty()=" + this.expressions.isEmpty());
+    log.fine("this=" + this + " - this.expressions.isEmpty()=" + this.expressions.isEmpty());
     if (this.expressions.isEmpty()) {
       this.columnsRetriever = null;
     } else {
@@ -103,7 +102,7 @@ public class Expressions implements ColumnsProvider, Serializable {
     ListWriter w = new ListWriter("      ", "", ",\n");
     int n = 0;
     for (ExpressionTag tag : this.expressions) {
-      log.debug("this=" + this + " - expression 'property'=" + tag.getProperty());
+      log.fine("this=" + this + " - expression 'property'=" + tag.getProperty());
       String alias = aliasPrefix + n;
       tag.setTempAlias(alias);
       this.expressionsByAlias.put(alias, tag);
@@ -111,14 +110,14 @@ public class Expressions implements ColumnsProvider, Serializable {
       n++;
     }
     String cols = w.toString();
-    log.debug("this=" + this + " - cols=" + cols);
+    log.fine("this=" + this + " - cols=" + cols);
     return cols;
   }
 
   @Override
   public void gatherMetadataPhase2() throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException,
       InvalidConfigurationFileException {
-    log.debug("this.columnsRetriever=" + this.columnsRetriever);
+    log.fine("this.columnsRetriever=" + this.columnsRetriever);
     if (this.columnsRetriever != null) {
       List<StructuredColumnMetadata> cms = this.columnsRetriever.retrieve();
       for (StructuredColumnMetadata cm : cms) {
@@ -133,7 +132,7 @@ public class Expressions implements ColumnsProvider, Serializable {
         if (tag.getConverterTag() != null) {
           ct.setConverterTag(tag.getConverterTag());
         }
-        log.debug("******** java-name=" + ct.getJavaName() + " java-type=" + ct.getJavaType());
+        log.fine("******** java-name=" + ct.getJavaName() + " java-type=" + ct.getJavaType());
         try {
           cm = StructuredColumnMetadata.applyColumnTag(cm, ct, tag, this.metadata.getAdapter());
         } catch (InvalidIdentifierException e) {

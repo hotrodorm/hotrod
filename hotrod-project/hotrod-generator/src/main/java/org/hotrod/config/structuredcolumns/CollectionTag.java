@@ -1,9 +1,8 @@
 package org.hotrod.config.structuredcolumns;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "collection")
 public class CollectionTag extends VOTag {
@@ -12,7 +11,7 @@ public class CollectionTag extends VOTag {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(CollectionTag.class);
+  private static final Logger log = Logger.getLogger(CollectionTag.class.getName());
 
   // Properties
 
@@ -20,7 +19,7 @@ public class CollectionTag extends VOTag {
 
   public CollectionTag() {
     super("collection");
-    log.debug("init");
+    log.fine("init");
   }
 
   // JAXB Setters

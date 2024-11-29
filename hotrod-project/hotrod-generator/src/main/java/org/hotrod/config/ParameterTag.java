@@ -1,13 +1,12 @@
 package org.hotrod.config;
 
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.identifiers.Id;
@@ -22,7 +21,7 @@ public class ParameterTag extends AbstractConfigurationTag {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(ParameterTag.class);
+  private static final Logger log = Logger.getLogger(ParameterTag.class.getName());
 
   static final String TAG_NAME = "parameter";
 
@@ -42,7 +41,7 @@ public class ParameterTag extends AbstractConfigurationTag {
 
   public ParameterTag() {
     super("parameter");
-    log.debug("init");
+    log.fine("init");
   }
 
   // JAXB Setters
@@ -119,7 +118,7 @@ public class ParameterTag extends AbstractConfigurationTag {
 
       if (this.jdbcTypeName == null) {
         this.jdbcType = getDefaultJDBCType(this.javaType);
-        log.debug("this.jdbcType=" + this.jdbcType);
+        log.fine("this.jdbcType=" + this.jdbcType);
         if (this.jdbcType == null) {
           throw new InvalidConfigurationFileException(this,
               "Could not guess the JDBC type for the parameter based on its java type '" + this.javaType

@@ -1,12 +1,11 @@
 package org.hotrod.config;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidPackageException;
 import org.hotrod.identifiers.ObjectId;
@@ -20,7 +19,7 @@ public class DaosTag extends AbstractConfigurationTag {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(DaosTag.class);
+  private static final Logger log = Logger.getLogger(DaosTag.class.getName());
 
   private static final String DEFAULT_PRIMITIVES_RELATIVE_PACKAGE = "primitives";
 
@@ -186,7 +185,7 @@ public class DaosTag extends AbstractConfigurationTag {
           + "> cannot be empty. " + "Must specify the base dir to generate the DAO classes.");
     }
     this.baseDir = new File(basedir, this.sBaseDir);
-    log.debug("this.baseDir=" + this.baseDir + " , " + this.baseDir.getAbsolutePath());
+    log.fine("this.baseDir=" + this.baseDir + " , " + this.baseDir.getAbsolutePath());
     if (!this.baseDir.exists()) {
       throw new InvalidConfigurationFileException(this, "Attribute 'base-dir' of tag <" + super.getTagName()
           + "> with value '" + this.sBaseDir + "' must point to an existing dir.");
@@ -198,7 +197,7 @@ public class DaosTag extends AbstractConfigurationTag {
 
     // dao-package
 
-    log.debug("this.sPackage=" + this.sPackage);
+    log.fine("this.sPackage=" + this.sPackage);
     if (this.sPackage == null) {
       try {
         this.daoPackage = new ClassPackage(DEFAULT_DAO_PACKAGE);
@@ -403,7 +402,7 @@ public class DaosTag extends AbstractConfigurationTag {
 
   public String generateVOName(final String name) {
     String voc = this.voPrefix + name + this.voSuffix;
-    log.debug("name=" + name + " voc=" + voc);
+    log.fine("name=" + name + " voc=" + voc);
     return voc;
   }
 
@@ -493,14 +492,14 @@ public class DaosTag extends AbstractConfigurationTag {
   public File getDaosPackageDir(final ClassPackage fragmentPackage) {
     ClassPackage p = getDaoPackage(fragmentPackage);
     File dir = p.getPackageDir(this.baseDir);
-    log.debug("dir=" + dir + " exists=" + dir.exists());
+    log.fine("dir=" + dir + " exists=" + dir.exists());
     dir.mkdirs();
     return dir;
   }
 
   public File getVOPackageDir(final ClassPackage p) {
     File dir = p.getPackageDir(this.baseDir);
-    log.debug("dir=" + dir + " exists=" + dir.exists());
+    log.fine("dir=" + dir + " exists=" + dir.exists());
     dir.mkdirs();
     return dir;
   }
@@ -508,7 +507,7 @@ public class DaosTag extends AbstractConfigurationTag {
   public File getPrimitivesVOPackageDir(final ClassPackage p) {
     ClassPackage full = getPrimitivesVOPackage(p);
     File dir = full.getPackageDir(this.baseDir);
-    log.debug("dir=" + dir + " exists=" + dir.exists());
+    log.fine("dir=" + dir + " exists=" + dir.exists());
     dir.mkdirs();
     return dir;
   }
@@ -528,7 +527,7 @@ public class DaosTag extends AbstractConfigurationTag {
   public File getPrimitivesPackageDir(final ClassPackage fragmentPackage) {
     ClassPackage p = getPrimitivesPackage(fragmentPackage);
     File dir = p.getPackageDir(this.baseDir);
-    log.debug("dir=" + dir + " exists=" + dir.exists());
+    log.fine("dir=" + dir + " exists=" + dir.exists());
     dir.mkdirs();
     return dir;
   }

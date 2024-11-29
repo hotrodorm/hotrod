@@ -1,12 +1,11 @@
 package org.hotrod.config;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidPackageException;
 import org.hotrod.utils.ClassPackage;
@@ -18,7 +17,7 @@ public class HotRodFragmentConfigTag extends AbstractHotRodConfigTag {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(HotRodFragmentConfigTag.class);
+  private static final Logger log = Logger.getLogger(HotRodFragmentConfigTag.class.getName());
 
   // Properties
 
@@ -32,7 +31,7 @@ public class HotRodFragmentConfigTag extends AbstractHotRodConfigTag {
 
   public HotRodFragmentConfigTag() {
     super("hotrod-fragment");
-    log.debug("init");
+    log.fine("init");
   }
 
   // JAXB Setters

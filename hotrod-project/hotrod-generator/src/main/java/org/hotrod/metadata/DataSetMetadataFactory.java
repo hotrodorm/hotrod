@@ -1,9 +1,8 @@
 package org.hotrod.metadata;
 
 import java.util.List;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.EnumTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.TableTag;
@@ -19,7 +18,7 @@ import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
 public abstract class DataSetMetadataFactory {
 
-  private static final Logger log = LogManager.getLogger(DataSetMetadataFactory.class);
+  private static final Logger log = Logger.getLogger(DataSetMetadataFactory.class.getName());
 
   public static TableDataSetMetadata getMetadata(final JdbcTable t, final boolean isTable, final boolean autoDiscovery,
       final DatabaseAdapter adapter, final HotRodConfigTag config, final DataSetLayout layout,
@@ -48,11 +47,11 @@ public abstract class DataSetMetadataFactory {
     TableTag tableTag = config.getTableTag(t);
     if (tableTag != null) {
       if (cachedDB == null) {
-        log.debug("##### Table '" + t.getName() + "' equivalent= NOT IN CACHE");
+        log.fine("##### Table '" + t.getName() + "' equivalent= NOT IN CACHE");
         tableTag.markGenerate();
       } else {
         JdbcTable o = findJdbcTable(cachedDB.getTables(), t.getName(), adapter);
-        log.debug("##### Table '" + t.getName() + "' equivalent=" + t.isEquivalentTo(o));
+        log.fine("##### Table '" + t.getName() + "' equivalent=" + t.isEquivalentTo(o));
         if (!t.isEquivalentTo(o)) {
           tableTag.markGenerate();
         }
@@ -60,9 +59,9 @@ public abstract class DataSetMetadataFactory {
       TableDataSetMetadata tm = new TableDataSetMetadata(tableTag, t, tableTag.getExtendsTag(),
           tableTag.getExtendsJdbcTable(), adapter, config, layout, selectMetadataCache, isFromCurrentCatalog,
           isFromCurrentSchema);
-      log.debug("cachedConfig=" + cachedConfig);
+      log.fine("cachedConfig=" + cachedConfig);
       if (cachedConfig != null) {
-        log.debug("cachedConfig.findEnum(tm, adapter)=" + cachedConfig.findFacetEnum(tm, adapter));
+        log.fine("cachedConfig.findEnum(tm, adapter)=" + cachedConfig.findFacetEnum(tm, adapter));
         if (cachedConfig.findFacetEnum(tm, adapter) != null) {
           // changed from enum to table - generate related tables
           markGenerateRelatedEntities(tm);
@@ -139,13 +138,13 @@ public abstract class DataSetMetadataFactory {
 
   private static void markGenerateRelatedEntities(final DataSetMetadata tm) {
     for (ForeignKeyMetadata efk : tm.getExportedFKs()) {
-      log.debug(
+      log.fine(
           "...marking (using exported FK) remote=" + efk.getRemote().getTableMetadata().getId().getRenderedSQLName()
               + " local=" + efk.getLocal().getTableMetadata().getId().getRenderedSQLName());
       efk.getRemote().getTableMetadata().getDaoTag().markGenerate();
     }
     for (ForeignKeyMetadata ifk : tm.getImportedFKs()) {
-      log.debug(
+      log.fine(
           "...marking (using imported FK) remote=" + ifk.getRemote().getTableMetadata().getId().getRenderedSQLName()
               + " local=" + ifk.getLocal().getTableMetadata().getId().getRenderedSQLName());
       ifk.getRemote().getTableMetadata().getDaoTag().markGenerate();

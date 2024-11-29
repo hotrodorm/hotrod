@@ -8,9 +8,8 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.identifiers.ObjectId;
@@ -30,7 +29,7 @@ public abstract class DatabaseAdapter implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = LogManager.getLogger(DatabaseAdapter.class);
+  private static final Logger log = Logger.getLogger(DatabaseAdapter.class.getName());
 
   protected transient DatabaseMetaData databaseMedaData;
   protected String identifierQuoteString;
@@ -171,7 +170,7 @@ public abstract class DatabaseAdapter implements Serializable {
   /* Default implementation */
   public boolean isCaseSensitiveSortableString(final ColumnMetadata cm) {
     DataType dataType = this.dataTypes.get(cm.getTypeName());
-    log.debug("dataType=" + dataType);
+    log.fine("dataType=" + dataType);
     return dataType != null && dataType.caseSensitive && dataType.searchable;
   }
 
@@ -214,7 +213,7 @@ public abstract class DatabaseAdapter implements Serializable {
           }
           Integer searchableValue = JdbcUtil.getIntObj(rs, 9);
           t.searchable = searchableValue != null && searchableValue.equals(DatabaseMetaData.typeSearchable);
-          log.debug("DB TYPE: " + t);
+          log.fine("DB TYPE: " + t);
           dataTypes.put(t.typeName, t);
         }
         return dataTypes;

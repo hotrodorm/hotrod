@@ -3,12 +3,11 @@ package org.hotrod.config;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.database.PropertyType;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.metadata.ColumnMetadata;
@@ -28,7 +27,7 @@ public class TypeSolverTag extends AbstractConfigurationTag {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(TypeSolverTag.class);
+  private static final Logger log = Logger.getLogger(TypeSolverTag.class.getName());
 
   // Properties
 
@@ -99,7 +98,7 @@ public class TypeSolverTag extends AbstractConfigurationTag {
             if (jdbcTypeOnWrite == null) {
               jdbcTypeOnWrite = (c != null ? JdbcTypes.codeToType(c.getDataType()) : resultSetType);
             }
-            log.debug("## 5 RULE MATCHES: w.getJavaType()=" + w.getJavaType() + " jdbcTypeOnWrite=" + jdbcTypeOnWrite);
+            log.fine("## 5 RULE MATCHES: w.getJavaType()=" + w.getJavaType() + " jdbcTypeOnWrite=" + jdbcTypeOnWrite);
             return new PropertyType(w.getJavaType(), jdbcTypeOnWrite, false);
           }
         } catch (ClassCastException e) {

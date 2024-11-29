@@ -2,22 +2,21 @@ package org.hotrod.metadata;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class KeyMetadata implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = LogManager.getLogger(KeyMetadata.class);
+  private static final Logger log = Logger.getLogger(KeyMetadata.class.getName());
 
   private TableDataSetMetadata tm;
   private List<ColumnMetadata> columns;
 
   public KeyMetadata(final TableDataSetMetadata tm, final List<ColumnMetadata> columns) {
-    log.debug("init");
+    log.fine("init");
     this.tm = tm;
     this.columns = columns;
   }

@@ -2,9 +2,8 @@ package org.hotrod.config.dynamicsql;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.config.SQLParameter;
@@ -21,7 +20,7 @@ public class ParameterisableTextPart extends DynamicSQLPart {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(ParameterisableTextPart.class);
+  private static final Logger log = Logger.getLogger(ParameterisableTextPart.class.getName());
 
   private static final String VALID_NAME_PATTERN = "[a-zA-Z][a-zA-Z0-9_]*";
 
@@ -36,7 +35,7 @@ public class ParameterisableTextPart extends DynamicSQLPart {
   public ParameterisableTextPart(final String txt, final AbstractConfigurationTag tag,
       final ParameterDefinitions parameterDefinitions) throws InvalidConfigurationFileException {
     super("not-a-tag-but-sql-content");
-    log.debug("init");
+    log.fine("init");
     this.txt = txt;
     this.validate(tag, parameterDefinitions);
   }

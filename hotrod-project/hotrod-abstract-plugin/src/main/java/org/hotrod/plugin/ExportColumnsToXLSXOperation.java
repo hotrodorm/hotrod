@@ -7,9 +7,8 @@ import java.io.OutputStream;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashSet;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
@@ -23,7 +22,7 @@ import org.hotrod.runtime.BuildInformation;
 
 public class ExportColumnsToXLSXOperation extends AbstractExportColumnsOperation {
 
-  private static final Logger log = LogManager.getLogger(ExportColumnsToXLSXOperation.class);
+  private static final Logger log = Logger.getLogger(ExportColumnsToXLSXOperation.class.getName());
 
   private int line;
   private int col;
@@ -34,7 +33,7 @@ public class ExportColumnsToXLSXOperation extends AbstractExportColumnsOperation
       final String exportfilename) {
     super(baseDir, configfilename, localproperties, jdbcdriverclass, jdbcurl, jdbcusername, jdbcpassword, jdbccatalog,
         jdbcschema, facets, display, exportfilename);
-    log.debug("init");
+    log.fine("init");
   }
 
   @Override

@@ -1,10 +1,10 @@
 package org.hotrod.config;
 
+import java.util.logging.Logger;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
@@ -24,7 +24,7 @@ public class ColumnTag extends AbstractConfigurationTag {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(ColumnTag.class);
+  private static final Logger log = Logger.getLogger(ColumnTag.class.getName());
 
   // Properties
 
@@ -127,7 +127,7 @@ public class ColumnTag extends AbstractConfigurationTag {
   public void validate(final HotRodConfigTag config, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 
-    log.debug("COLUMN DEF: " + this.toString());
+    log.fine("COLUMN DEF: " + this.toString());
 
     // name
 

@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.logging.Logger;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -21,8 +22,6 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractHotRodConfigTag.LocationListener;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
@@ -41,7 +40,7 @@ public class EnabledFKs {
   private static final String DEBUG_PATH = "/";
   private static final String PLUGIN_PATH = "/xml/";
 
-  private static final Logger log = LogManager.getLogger(EnabledFKs.class);
+  private static final Logger log = Logger.getLogger(EnabledFKs.class.getName());
 
   private ForeignKeysTag fks;
 
@@ -109,19 +108,19 @@ public class EnabledFKs {
 
     try {
 
-      log.debug("[ Will parse ]");
+      log.fine("[ Will parse ]");
       ForeignKeysTag fks = (ForeignKeysTag) unmarshaller.unmarshal(xsr);
-      log.debug("[ Parsed ]");
+      log.fine("[ Parsed ]");
 
       // Validation (specific)
 
-      log.debug("Will validate semantics.");
+      log.fine("Will validate semantics.");
       fks.validate();
-      log.debug("Semantics validation #1 successful.");
+      log.fine("Semantics validation #1 successful.");
 
       // Complete
 
-      log.debug("File loaded.");
+      log.fine("File loaded.");
 
       return new EnabledFKs(fks);
 
@@ -130,7 +129,7 @@ public class EnabledFKs {
 
     } catch (InvalidConfigurationFileException e) {
       SourceLocation loc = e.getTag().getSourceLocation();
-      log.debug("loc=" + loc);
+      log.fine("loc=" + loc);
       if (loc == null) {
         throw new ControlledException("Invalid configuration file '" + f.getPath() + "': " + e.getMessage());
       } else {
@@ -190,7 +189,7 @@ public class EnabledFKs {
     @Override
     public LSInput resolveResource(final String type, final String namespaceURI, final String publicId,
         final String systemId, final String baseURI) {
-      log.debug("[RESOLVE]\n  type=" + type + "\n  namespaceURI=" + namespaceURI + "\n  publicId=" + publicId
+      log.fine("[RESOLVE]\n  type=" + type + "\n  namespaceURI=" + namespaceURI + "\n  publicId=" + publicId
           + "\n  systemId=" + systemId + "\n  baseURI=" + baseURI);
       return new XSDInput(type, namespaceURI, publicId, systemId, baseURI);
     }
@@ -218,45 +217,45 @@ public class EnabledFKs {
 
     @Override
     public Reader getCharacterStream() {
-      log.debug("{get reader} this.systemId=" + this.systemId);
+      log.fine("{get reader} this.systemId=" + this.systemId);
       InputStream is = this.getByteStream();
       return is == null ? null : new InputStreamReader(is);
     }
 
     @Override
     public void setCharacterStream(final Reader characterStream) {
-      log.debug("{set reader} characterStream=" + characterStream);
+      log.fine("{set reader} characterStream=" + characterStream);
       // Ignore
     }
 
     @Override
     public InputStream getByteStream() {
-      log.debug("{getByteStream} this.systemId=" + this.systemId);
+      log.fine("{getByteStream} this.systemId=" + this.systemId);
       InputStream is = ConfigurationLoader.class.getResourceAsStream(DEBUG_PATH + this.systemId);
-      log.debug(DEBUG_PATH + this.systemId + " -> is=" + is);
+      log.fine(DEBUG_PATH + this.systemId + " -> is=" + is);
       if (is == null) {
         is = ConfigurationLoader.class.getResourceAsStream(PLUGIN_PATH + this.systemId);
-        log.debug(PLUGIN_PATH + this.systemId + " -> is=" + is);
+        log.fine(PLUGIN_PATH + this.systemId + " -> is=" + is);
       }
       return is;
     }
 
     @Override
     public void setByteStream(InputStream byteStream) {
-      log.debug("{set bytestream} byteStream=" + byteStream);
+      log.fine("{set bytestream} byteStream=" + byteStream);
       // Ignore
     }
 
     @Override
     public String getStringData() {
-      log.debug("{ignore}");
+      log.fine("{ignore}");
       // Ignore
       return null;
     }
 
     @Override
     public void setStringData(String stringData) {
-      log.debug("{set stringData} stringData=" + stringData);
+      log.fine("{set stringData} stringData=" + stringData);
       // Ignore
     }
 
@@ -267,7 +266,7 @@ public class EnabledFKs {
 
     @Override
     public void setSystemId(String systemId) {
-      log.debug("{ignore} systemId=" + systemId);
+      log.fine("{ignore} systemId=" + systemId);
       // Ignore
     }
 
@@ -278,7 +277,7 @@ public class EnabledFKs {
 
     @Override
     public void setPublicId(String publicId) {
-      log.debug("{ignore} publicId=" + publicId);
+      log.fine("{ignore} publicId=" + publicId);
       // Ignore
     }
 
@@ -289,31 +288,31 @@ public class EnabledFKs {
 
     @Override
     public void setBaseURI(String baseURI) {
-      log.debug("{ignore} baseURI=" + baseURI);
+      log.fine("{ignore} baseURI=" + baseURI);
       // Ignore
     }
 
     @Override
     public String getEncoding() {
-      log.debug("{ignore}");
+      log.fine("{ignore}");
       return null;
     }
 
     @Override
     public void setEncoding(String encoding) {
-      log.debug("{ignore} encoding=" + encoding);
+      log.fine("{ignore} encoding=" + encoding);
       // Ignore
     }
 
     @Override
     public boolean getCertifiedText() {
-      log.debug("{ignore}");
+      log.fine("{ignore}");
       return false;
     }
 
     @Override
     public void setCertifiedText(boolean certifiedText) {
-      log.debug("{ignore} certifiedText=" + certifiedText);
+      log.fine("{ignore} certifiedText=" + certifiedText);
       // Ignore
     }
 

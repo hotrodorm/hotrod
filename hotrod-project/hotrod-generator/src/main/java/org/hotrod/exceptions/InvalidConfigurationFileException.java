@@ -1,20 +1,20 @@
 package org.hotrod.exceptions;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Logger;
+
 import org.hotrod.config.AbstractConfigurationTag;
 
 public class InvalidConfigurationFileException extends Exception {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = LogManager.getLogger(InvalidConfigurationFileException.class);
+  private static final Logger log = Logger.getLogger(InvalidConfigurationFileException.class.getName());
 
   private AbstractConfigurationTag tag;
 
   public InvalidConfigurationFileException(final AbstractConfigurationTag tag, final String message) {
     super(message);
-    log.debug("init");
+    log.fine("init");
     intialize(tag);
   }
 

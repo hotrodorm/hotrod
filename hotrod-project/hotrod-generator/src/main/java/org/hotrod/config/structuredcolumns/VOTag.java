@@ -7,6 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElementRef;
@@ -14,8 +15,6 @@ import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodConfigTag;
@@ -55,7 +54,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(VOTag.class);
+  private static final Logger log = Logger.getLogger(VOTag.class.getName());
 
   // Properties
 
@@ -164,7 +163,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
       final HotRodFragmentConfigTag fragmentConfig, final boolean singleVOResult, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 
-    log.debug("validate");
+    log.fine("validate");
 
     // Sort: content, collections, and associations
 
@@ -381,15 +380,15 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
       c.validate(daosTag, config, fragmentConfig, false, adapter);
     }
 
-    log.debug("Validation complete.");
+    log.fine("Validation complete.");
   }
 
   public void validateAgainstDatabase(final Metadata metadata) throws InvalidConfigurationFileException {
     this.metadata = metadata;
-    log.debug("*** this.table=" + this.table + " this.view=" + this.view);
+    log.fine("*** this.table=" + this.table + " this.view=" + this.view);
     if (this.table != null) {
       this.tableMetadata = metadata.findTableMetadata(this.objectId);
-      log.debug("this.tableMetadata=" + this.tableMetadata);
+      log.fine("this.tableMetadata=" + this.tableMetadata);
       if (this.tableMetadata == null) {
         throw new InvalidConfigurationFileException(this,
             "Could not find <" + new TableTag().getTagName() + "> tag in the configuration file for the table '"
@@ -434,14 +433,14 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     // body
 
     this.useAllColumns = this.body.isEmpty() || this.compiledBody.equals("*");
-    log.debug("this.compiledBody=" + this.compiledBody + " this.useAllColumns=" + this.useAllColumns);
+    log.fine("this.compiledBody=" + this.compiledBody + " this.useAllColumns=" + this.useAllColumns);
 
     if (this.alias != null) { // includes entity columns (all or partial)
       if (this.useAllColumns) { // all columns
         this.cmr = null;
         this.aliasPrefix = columnsPrefixGenerator.next();
       } else { // specific columns
-        log.debug("this.generator=" + this.metadata);
+        log.fine("this.generator=" + this.metadata);
         this.cmr = new ColumnsMetadataRetriever(selectTag, this.metadata.getAdapter(), this.metadata.getJdbcDatabase(),
             this.metadata.getLoc(), selectGenerationTag, this, this.alias, columnsPrefixGenerator, cr);
         this.cmr.prepareRetrieval();
@@ -555,8 +554,8 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
         } else { // 1.b Based on a view
 
-          log.debug("this.tableMetadata=" + this.tableMetadata);
-          log.debug("this.viewMetadata=" + this.viewMetadata);
+          log.fine("this.tableMetadata=" + this.tableMetadata);
+          log.fine("this.viewMetadata=" + this.viewMetadata);
 
           if (requiresIds && this.idNames.isEmpty()) {
             throw new InvalidConfigurationFileException(this, "Missing 'id' attribute on tag <" + this.getTagName()
@@ -596,7 +595,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
     this.expressions.gatherMetadataPhase2();
     this.declaredColumns = this.expressions.getMetadata();
-    log.debug("DECLARED COLUMNS=" + this.declaredColumns.size());
+    log.fine("DECLARED COLUMNS=" + this.declaredColumns.size());
 
     for (CollectionTag c : this.collections) {
       c.gatherMetadataPhase2();
@@ -727,14 +726,14 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
   private String compileBody() {
     if (this.body == null) {
-      log.debug("[body is null] ");
+      log.fine("[body is null] ");
       return null;
     }
     StringBuilder sb = new StringBuilder();
     boolean endedWithComma = false;
     boolean first = true;
     for (String s : this.body) {
-      log.debug("[body part] " + s);
+      log.fine("[body part] " + s);
       String t = s.trim();
       if (!t.isEmpty()) {
         if (first) {

@@ -6,9 +6,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.QueryMethodTag;
@@ -29,11 +28,11 @@ import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.metadata.KeyMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.SelectMethodMetadata.SelectMethodReturnType;
-import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.StructuredColumnsMetadata;
 import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VersionControlMetadata;
+import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.ClassPackage;
 import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn.AutogenerationType;
@@ -42,7 +41,7 @@ import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class Mapper extends GeneratableObject {
 
-  private static final Logger log = LogManager.getLogger(Mapper.class);
+  private static final Logger log = Logger.getLogger(Mapper.class.getName());
 
   private DataSetMetadata metadata;
   private DataSetLayout layout;
@@ -71,7 +70,7 @@ public class Mapper extends GeneratableObject {
       final MyBatisSpringGenerator generator, final DAOType type, final DatabaseAdapter adapter, final ObjectVO vo,
       final EntityDAORegistry daoRegistry) {
     super();
-    log.debug("init");
+    log.fine("init");
     this.compositeTag = compositeTag;
     this.entityDAORegistry = daoRegistry;
     initialize(metadata, layout, generator, type, adapter, vo);
@@ -81,7 +80,7 @@ public class Mapper extends GeneratableObject {
 //  public Mapper(final SelectClassTag selectTag, final DataSetMetadata metadata, final DataSetLayout layout,
 //      final MyBatisSpringGenerator generator, final DAOType type, final DatabaseAdapter adapter, final ObjectVO vo) {
 //    super();
-//    log.debug("init");
+//    log.fine("init");
 //    this.compositeTag = null;
 //    this.selectTag = selectTag;
 //    this.entityDAORegistry = null;
@@ -197,7 +196,7 @@ public class Mapper extends GeneratableObject {
         }
 
         for (SelectMethodMetadata sm : this.metadata.getSelectsMetadata()) {
-          log.debug("Generating method: " + sm.getMethod());
+          log.fine("Generating method: " + sm.getMethod());
           writeSelectMethod(sm);
         }
 
@@ -632,7 +631,7 @@ public class Mapper extends GeneratableObject {
           && mapperColName.endsWith("\"")) {
         mapperColName = mapperColName.substring(1, mapperColName.length() - 1);
       }
-      log.debug("mapperColName=" + mapperColName);
+      log.fine("mapperColName=" + mapperColName);
 
       if (retrieveSequences && cm.getSequenceId() != null) {
         keyProperties.add(cm.getId().getJavaMemberName());
@@ -669,7 +668,7 @@ public class Mapper extends GeneratableObject {
       }
     }
 
-    log.debug("keyColumns.toString()=" + keyColumns.toString());
+    log.fine("keyColumns.toString()=" + keyColumns.toString());
 
     String id = retrieveDefaults ? this.getMapperIdInsertRetrievingDefaults() : this.getMapperIdInsert();
 
@@ -1167,7 +1166,7 @@ public class Mapper extends GeneratableObject {
       String statementId = this.getSelectMethodStatementId(sm);
 
       println("  <select id=\"" + statementId + "\" resultMap=\"" + resultMapName + "\">");
-      log.debug("sm.getMethod()=" + sm.getMethod());
+      log.fine("sm.getMethod()=" + sm.getMethod());
       println(sm.renderXML(new MyBatisParameterRenderer()));
       println("  </select>");
       println();
@@ -1177,7 +1176,7 @@ public class Mapper extends GeneratableObject {
       String statementId = this.getSelectMethodStatementId(sm);
 
       println("  <select id=\"" + statementId + "\" resultMap=\"" + RESULT_MAP_NAME + "\">");
-      log.debug("sm.getMethod()=" + sm.getMethod());
+      log.fine("sm.getMethod()=" + sm.getMethod());
       println(sm.renderXML(new MyBatisParameterRenderer()));
       println("  </select>");
       println();
@@ -1250,7 +1249,7 @@ public class Mapper extends GeneratableObject {
 
     String typeHandler = "";
     if (cm.getConverter() != null) {
-      log.debug("converter=" + cm.getConverter().getName() + " cm=" + cm.getName());
+      log.fine("converter=" + cm.getConverter().getName() + " cm=" + cm.getName());
       typeHandler = "typeHandler=\"" + dao.getTypeHandlerFullClassName(sm, cm) + "\" ";
     } else {
       EnumDataSetMetadata ds = cm.getEnumMetadata();

@@ -7,12 +7,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.GeneratorNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
@@ -25,7 +24,7 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(HotRodConfigTag.class);
+  private static final Logger log = Logger.getLogger(HotRodConfigTag.class.getName());
 
   // Properties
 
@@ -42,7 +41,7 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
   public HotRodConfigTag() {
     super("hotrod");
-    log.debug("init");
+    log.fine("init");
   }
 
   // JAXB Setters

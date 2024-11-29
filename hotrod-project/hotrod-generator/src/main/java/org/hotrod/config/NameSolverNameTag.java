@@ -3,6 +3,7 @@ package org.hotrod.config;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -12,8 +13,6 @@ import java.util.stream.Stream;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.CouldNotResolveNameException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrodorm.hotrod.utils.SUtil;
@@ -25,7 +24,7 @@ public class NameSolverNameTag extends AbstractConfigurationTag {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(NameSolverNameTag.class);
+  private static final Logger log = Logger.getLogger(NameSolverNameTag.class.getName());
 
   public enum Scope {
     TABLE, VIEW, COLUMN
@@ -47,7 +46,7 @@ public class NameSolverNameTag extends AbstractConfigurationTag {
 
   public NameSolverNameTag() {
     super("name");
-    log.debug("init");
+    log.fine("init");
   }
 
   // JAXB Setters
@@ -85,7 +84,7 @@ public class NameSolverNameTag extends AbstractConfigurationTag {
 
     // replace
 
-    log.debug("this.replace=" + this.replace);
+    log.fine("this.replace=" + this.replace);
     if (SUtil.isEmpty(this.replace)) {
       throw new InvalidConfigurationFileException(this,
           "Attribute 'replace' cannot be empty: must specify a redering pattern for the name, using $1, $2, etc. for each capture");
@@ -95,10 +94,10 @@ public class NameSolverNameTag extends AbstractConfigurationTag {
     for (int i = 1; i < 10; i++) {
       if (this.replace.indexOf("$" + i) != -1) {
         this.captures.add(i);
-        log.debug(" * capture " + i);
+        log.fine(" * capture " + i);
       }
     }
-    log.debug(" * total captures=" + this.captures.size());
+    log.fine(" * total captures=" + this.captures.size());
 
     // scope
 
@@ -132,7 +131,7 @@ public class NameSolverNameTag extends AbstractConfigurationTag {
         s.add(p);
       }
     }
-    log.debug("this.matchesColumns=" + this.matchesColumns + " this.matchesTables=" + this.matchesTables
+    log.fine("this.matchesColumns=" + this.matchesColumns + " this.matchesTables=" + this.matchesTables
         + " this.matchesViews=" + this.matchesViews);
 
   }
@@ -140,17 +139,17 @@ public class NameSolverNameTag extends AbstractConfigurationTag {
   public String tryToReplace(final String name, final Scope scope) throws CouldNotResolveNameException {
     if (scope == Scope.TABLE && this.matchesTables || scope == Scope.VIEW && this.matchesViews
         || scope == Scope.COLUMN && this.matchesColumns) {
-      log.debug("scope=" + scope + " -- this.valuePattern=" + this.valuePattern + " -- name=" + name);
+      log.fine("scope=" + scope + " -- this.valuePattern=" + this.valuePattern + " -- name=" + name);
       Matcher m = this.valuePattern.matcher(name);
       boolean matches = m.matches();
-      log.debug("%%% " + name + ".matches(" + this.value + ")=" + matches);
+      log.fine("%%% " + name + ".matches(" + this.value + ")=" + matches);
       if (matches) {
         String newName = this.replace;
         for (Integer c : this.captures) {
           String capture;
           try {
             capture = m.group(c);
-            log.debug("capture=" + capture);
+            log.fine("capture=" + capture);
             newName = newName.replaceAll("\\$" + c, capture);
           } catch (IllegalStateException e) {
             throw new CouldNotResolveNameException(
@@ -158,7 +157,7 @@ public class NameSolverNameTag extends AbstractConfigurationTag {
                     + "': could not find capture $" + c + " for replace pattern '" + this.replace + "'");
           }
         }
-        log.debug(">>> newName=" + newName);
+        log.fine(">>> newName=" + newName);
         return newName;
       }
     }

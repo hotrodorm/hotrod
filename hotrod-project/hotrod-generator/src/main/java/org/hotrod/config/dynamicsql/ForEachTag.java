@@ -1,10 +1,10 @@
 package org.hotrod.config.dynamicsql;
 
+import java.util.logging.Logger;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
@@ -18,7 +18,7 @@ public class ForEachTag extends DynamicSQLPart {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(ForEachTag.class);
+  private static final Logger log = Logger.getLogger(ForEachTag.class.getName());
 
   // Constructor
 
@@ -78,7 +78,7 @@ public class ForEachTag extends DynamicSQLPart {
   protected void validateAttributes(final ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
 
-    log.debug("init");
+    log.fine("init");
 
     if (this.item != null) {
       if (parameterDefinitions.find(this.item) != null) {

@@ -9,9 +9,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.EnumTag;
 import org.hotrod.config.EnumTag.EnumConstant;
@@ -46,7 +46,7 @@ import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
 public class Metadata {
 
-  private static final Logger log = LogManager.getLogger(Metadata.class);
+  private static final Logger log = Logger.getLogger(Metadata.class.getName());
 
   private JdbcDatabase db;
   private DatabaseAdapter adapter;
@@ -95,7 +95,7 @@ public class Metadata {
 
           TableDataSetMetadata tm = DataSetMetadataFactory.getMetadata(t, true, autoDiscovery, this.adapter, config,
               layout, isFromCurrentCatalog, isFromCurrentSchema);
-          log.debug("*** tm=" + tm);
+          log.fine("*** tm=" + tm);
 
           this.tables.add(tm);
 
@@ -151,7 +151,7 @@ public class Metadata {
 
       // Separate enums metadata from tables'
 
-      log.debug("Prepare enums metadata.");
+      log.fine("Prepare enums metadata.");
 
       this.enums = new LinkedHashSet<EnumDataSetMetadata>();
 
@@ -177,12 +177,12 @@ public class Metadata {
 
       Set<String> tablesAndEnumsCanonicalNames = new HashSet<String>();
 
-      log.debug("player tables="
+      log.fine("player tables="
           + config.getFacetTables().stream().filter(t -> t.getDatabaseObject().getName().equals("player")).count());
 
       for (TableTag tt : config.getFacetTables()) {
         String canonicalName = tt.getId().getCanonicalSQLName();
-        log.debug("t: " + tt.getId());
+        log.fine("t: " + tt.getId());
         if (tablesAndEnumsCanonicalNames.contains(canonicalName)) {
           throw new ControlledException(tt.getSourceLocation(), "Duplicate database <table> name '" + canonicalName
               + "'. This table is already defined in the configuration file(s).");
@@ -212,7 +212,7 @@ public class Metadata {
 
       // Prepare views meta data
 
-      log.debug("Prepare views metadata.");
+      log.fine("Prepare views metadata.");
 
       this.views = new LinkedHashSet<TableDataSetMetadata>();
       TableDataSetMetadata vmd = null;
@@ -266,7 +266,7 @@ public class Metadata {
       // Validate against the database
 
       cr = ColumnsRetriever.getInstance(config, dloc, adapter, db, conn);
-      log.debug("ColumnsRetriever: " + cr);
+      log.fine("ColumnsRetriever: " + cr);
 
       // TODO: make sure the cache includes enum values from table rows.
       // if (retrieveFreshDatabaseObjects) {
@@ -319,9 +319,9 @@ public class Metadata {
     } finally {
       if (conn != null) {
         try {
-          log.debug("Closing connection...");
+          log.fine("Closing connection...");
           conn.close();
-          log.debug("Connection closed.");
+          log.fine("Connection closed.");
         } catch (SQLException e) {
           throw new UncontrolledException("Could not retrieve database metadata.", e);
         }
@@ -333,7 +333,7 @@ public class Metadata {
     SelectMetadataCache selectMetadataCache = new SelectMetadataCache();
     Map<String, List<EnumConstant>> tableEnumConstants = new HashMap<String, List<EnumConstant>>();
 
-    log.debug("Prepare selects metadata - phase 2.");
+    log.fine("Prepare selects metadata - phase 2.");
 
     try {
 
@@ -361,13 +361,13 @@ public class Metadata {
     } catch (InvalidConfigurationFileException e) {
       throw new ControlledException(e.getTag().getSourceLocation(), e.getMessage());
     } finally {
-      log.debug("Closing connection (selects)...");
+      log.fine("Closing connection (selects)...");
       try {
         cr.close();
       } catch (Exception e) {
-        log.debug("Could not close database connection", e);
+        log.log(Level.FINE, "Could not close database connection", e);
       }
-      log.debug("Connection closed (selects).");
+      log.fine("Connection closed (selects).");
     }
 
     // Validate DAO names and methods
@@ -389,7 +389,7 @@ public class Metadata {
 
     // Display the retrieved meta data
 
-    log.debug("Metadata initialized.");
+    log.fine("Metadata initialized.");
 
   }
 

@@ -1,9 +1,9 @@
 package org.hotrod.config;
 
+import java.util.logging.Logger;
+
 import javax.xml.bind.annotation.XmlAttribute;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrodorm.hotrod.utils.SUtil;
 
@@ -13,7 +13,7 @@ public class PropertyTag extends AbstractConfigurationTag {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(PropertyTag.class);
+  private static final Logger log = Logger.getLogger(PropertyTag.class.getName());
 
   private static final String VIEW_NAME_PATTERN = "[a-zA-Z][a-zA-Z0-9_\\.]*";
 
@@ -30,7 +30,7 @@ public class PropertyTag extends AbstractConfigurationTag {
 
   public PropertyTag() {
     super("property");
-    log.debug("init");
+    log.fine("init");
   }
 
   // JAXB Setters

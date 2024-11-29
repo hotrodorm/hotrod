@@ -8,9 +8,9 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.ConfigurationLoader;
 import org.hotrod.config.Constants;
 import org.hotrod.config.DaosTag;
@@ -50,7 +50,7 @@ import org.nocrala.tools.database.tartarus.exception.SchemaNotSupportedException
 
 public class HotRodContext {
 
-  private static final Logger log = LogManager.getLogger(HotRodContext.class);
+  private static final Logger log = Logger.getLogger(HotRodContext.class.getName());
 
   private DatabaseLocation loc;
   private DatabaseAdapter adapter;
@@ -78,7 +78,7 @@ public class HotRodContext {
 
       try {
         conn = this.loc.getConnection();
-        log.debug("Connection open.");
+        log.fine("Connection open.");
       } catch (SQLException e) {
         throw new ControlledException("Could not connect to the database: " + XUtil.trim(e));
       }
@@ -87,9 +87,9 @@ public class HotRodContext {
 
       DatabaseConnectionVersion cv;
       try {
-        log.debug("Getting initial metadata.");
+        log.fine("Getting initial metadata.");
         cv = new DatabaseConnectionVersion(conn.getMetaData());
-        log.debug("Metadata retrieval complete.");
+        log.fine("Metadata retrieval complete.");
 
       } catch (SQLException e) {
         throw new ControlledException("Could not retrieve database metadata: " + XUtil.trim(e));
@@ -113,7 +113,7 @@ public class HotRodContext {
       } catch (SQLException e) {
         throw new ControlledException("Could not identify database at URL " + loc.getUrl() + " - " + XUtil.trim(e));
       }
-      log.debug("Adapter loaded.");
+      log.fine("Adapter loaded.");
 
       // Current Catalog & Schema
 
@@ -132,7 +132,7 @@ public class HotRodContext {
       if (configFile != null) {
         try {
           this.config = ConfigurationLoader.loadPrimary(baseDir, configFile, adapter, facetNames, currentCS);
-          log.debug("Main Configuration loaded.");
+          log.fine("Main Configuration loaded.");
         } catch (ControlledException e) {
           if (e.getLocation() != null) {
             throw new ControlledException("\n" + e.getMessage() + "\n  in " + e.getLocation().render());
@@ -149,17 +149,17 @@ public class HotRodContext {
               + ": " + XUtil.trim(e.getCause()));
         } catch (Throwable e) { // Added to display JVM errors, such as JAXB not present (Java 11 and up for Ant
                                 // generation)
-          log.error("Could not load the configuration", e);
+          log.log(Level.SEVERE, "Could not load the configuration", e);
           throw new ControlledException("Could not load configuration file " + configFile + " - " + e.getMessage());
         }
       } else {
-        log.debug("Will load 3");
+        log.fine("Will load 3");
         try {
           this.config = ConfigurationLoader.prepareNoConfig(baseDir, configFile, adapter, facetNames, currentCS);
-          log.debug("Default configuration loaded.");
+          log.fine("Default configuration loaded.");
         } catch (Throwable e) { // Added to display JVM errors, such as JAXB not present (Java 11 and up for Ant
           // generation)
-          log.error("Could not load default configuration", e);
+          log.log(Level.SEVERE, "Could not load default configuration", e);
           throw new ControlledException("Could not load configuration file " + configFile + " - " + e.getMessage());
         }
       }
@@ -192,7 +192,7 @@ public class HotRodContext {
 
       try {
 
-        log.debug("gen 1");
+        log.fine("gen 1");
         if (mst.getSelectGeneration().getStrategy() == SelectStrategy.RESULT_SET) {
           if (discover) { // 1. Discover
 
@@ -204,24 +204,24 @@ public class HotRodContext {
               for (ExcludeTag ex : s.getExcludeList()) {
                 DatabaseObject id = new DatabaseObject(s.getCanonicalCatalog(), s.getCanonicalSchema(),
                     ex.getCanonicalName());
-                log.debug("-----> exclude: " + id);
+                log.fine("-----> exclude: " + id);
                 excludeIds.add(id);
               }
             }
 
-            log.debug("gen 2");
+            log.fine("gen 2");
             this.db = new JdbcDatabase(conn, currentCS, tables, views, discoverCSs, excludeIds);
             removeCurrentCatalogSchema(currentCS);
-            log.debug("gen 3");
+            log.fine("gen 3");
             this.config.getFacetTables();// FIXME
 
             DaosTag daosTag = mst.getDaos();
             try {
-              log.debug("gen 3.1");
+              log.fine("gen 3.1");
               for (JdbcTable t : this.db.getTables()) {
                 config.includeInAllFacets(t, false, daosTag, config, adapter);
               }
-              log.debug("gen 3.2");
+              log.fine("gen 3.2");
               this.config.getFacetTables();// FIXME
               for (JdbcTable v : this.db.getViews()) {
                 config.includeInAllFacets(v, true, daosTag, config, adapter);
@@ -235,25 +235,25 @@ public class HotRodContext {
 
           } else { // 2. No Discover
 
-            log.debug("gen 4");
+            log.fine("gen 4");
             this.db = new JdbcDatabase(conn, currentCS, tables, views);
             removeCurrentCatalogSchema(currentCS);
-            log.debug("gen 5");
+            log.fine("gen 5");
 
           }
         } else { // 3. Create View Strategy
 
-          log.debug("gen 6");
+          log.fine("gen 6");
           this.db = new JdbcDatabase(loc, tables, views);
           removeCurrentCatalogSchema(currentCS);
-          log.debug("gen 7");
+          log.fine("gen 7");
 
         }
 
-        log.debug("gen 8");
+        log.fine("gen 8");
         this.config.getFacetTables(); // FIXME
         adapter.setCurrentCatalogSchema(conn, loc.getCurrentCatalog(), loc.getCurrentSchema());
-        log.debug("gen 9");
+        log.fine("gen 9");
 
       } catch (ReaderException e) {
         throw new ControlledException(e.getMessage());
@@ -309,17 +309,17 @@ public class HotRodContext {
             "Could not retrieve database metadata" + (e.getCause() != null ? XUtil.trim(e.getCause()) : XUtil.trim(e)));
       }
 
-      log.debug("gen 10");
+      log.fine("gen 10");
       this.metadata = new Metadata(db, adapter, loc);
 
-      log.debug("gen 10.5");
+      log.fine("gen 10.5");
       this.config.getFacetTables();// FIXME
-      log.debug("gen 11");
+      log.fine("gen 11");
       try {
         metadata.load(config, loc, conn);
-        log.debug("gen 12");
+        log.fine("gen 12");
       } catch (InvalidConfigurationFileException e) {
-        log.debug("gen 13");
+        log.fine("gen 13");
         SourceLocation sl = e.getTag() == null ? null : e.getTag().getSourceLocation();
         if (sl != null) {
           throw new ControlledException("\n" + e.getMessage() + "\n  in " + sl.render());
@@ -327,16 +327,16 @@ public class HotRodContext {
           throw new ControlledException("\n" + e.getMessage());
         }
       } catch (UncontrolledException e) {
-        log.debug("gen 14");
+        log.fine("gen 14");
         throw new ControlledException(
             "Could not retrieve database metadata  - " + e.getMessage() + ": " + XUtil.trim(e.getCause()));
       } catch (Throwable e) {
-        log.debug("gen 15");
+        log.fine("gen 15");
         e.printStackTrace();
         throw new ControlledException(
             "Could not retrieve database metadata  - " + e.getMessage() + ": " + XUtil.trim(e.getCause()));
       }
-      log.debug("gen 16");
+      log.fine("gen 16");
 
     } finally {
       if (conn != null) {

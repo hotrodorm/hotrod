@@ -7,9 +7,8 @@ import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
 import org.hotrod.database.PropertyType.ValueRange;
@@ -30,7 +29,7 @@ public class OracleAdapter extends DatabaseAdapter {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = LogManager.getLogger(OracleAdapter.class);
+  private static final Logger log = Logger.getLogger(OracleAdapter.class.getName());
 
   private boolean isOracle12cOrNewer;
 
@@ -57,7 +56,7 @@ public class OracleAdapter extends DatabaseAdapter {
   @Override
   public PropertyType getAdapterDefaultType(final ColumnMetadata m) throws UnresolvableDataTypeException {
 
-    log.debug("cm.getDataType()=" + m.getDataType() + " (" + m.getTypeName() + ")");
+    log.fine("cm.getDataType()=" + m.getDataType() + " (" + m.getTypeName() + ")");
 
     switch (m.getDataType()) {
 

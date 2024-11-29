@@ -2,9 +2,8 @@ package org.hotrod.generator.mybatisspring;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.MyBatisSpringTag;
 import org.hotrod.exceptions.UncontrolledException;
@@ -19,7 +18,7 @@ import org.hotrod.utils.ImportsRenderer;
 
 public class ObjectVO extends GeneratableObject {
 
-  private static final Logger log = LogManager.getLogger(ObjectVO.class);
+  private static final Logger log = Logger.getLogger(ObjectVO.class.getName());
 
   private DataSetMetadata metadata;
   private DataSetLayout layout;
@@ -37,7 +36,7 @@ public class ObjectVO extends GeneratableObject {
   public ObjectVO(final DataSetMetadata metadata, final DataSetLayout layout, final MyBatisSpringGenerator generator,
       final ObjectAbstractVO abstractVO, final MyBatisSpringTag myBatisTag) {
     super();
-    log.debug("init");
+    log.fine("init");
 
     this.metadata = metadata;
     this.layout = layout;
@@ -67,7 +66,7 @@ public class ObjectVO extends GeneratableObject {
 
     File dir = this.layout.getDAOPackageDir(fragmentPackage);
     File vo = new File(dir, sourceClassName);
-    log.debug("vo file:" + vo.getAbsolutePath());
+    log.fine("vo file:" + vo.getAbsolutePath());
     if (vo.exists()) {
       super.markGenerated();
     } else {
@@ -141,9 +140,9 @@ public class ObjectVO extends GeneratableObject {
 
   public String getClassName() {
     ObjectId id = this.metadata.getId();
-    // log.debug("id.wasJavaNameSpecified()=" + id.wasJavaNameSpecified());
+    // log.fine("id.wasJavaNameSpecified()=" + id.wasJavaNameSpecified());
     String name = this.myBatisTag.getDaos().generateVOName(id);
-    log.debug("name=" + name);
+    log.fine("name=" + name);
     return name;
   }
 

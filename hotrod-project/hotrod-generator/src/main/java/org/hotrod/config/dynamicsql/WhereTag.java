@@ -1,11 +1,10 @@
 package org.hotrod.config.dynamicsql;
 
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
@@ -19,7 +18,7 @@ public class WhereTag extends DynamicSQLPart {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(WhereTag.class);
+  private static final Logger log = Logger.getLogger(WhereTag.class.getName());
 
   // Constructor
 
@@ -45,7 +44,7 @@ public class WhereTag extends DynamicSQLPart {
   protected void specificBodyValidation(final ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
 
-    log.debug("extra validation");
+    log.fine("extra validation");
 
     for (Iterator<DynamicSQLPart> it = super.parts.iterator(); it.hasNext();) {
       DynamicSQLPart p = it.next();

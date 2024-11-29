@@ -3,9 +3,8 @@ package org.hotrod.metadata;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.structuredcolumns.ColumnsTag;
 import org.hotrod.config.structuredcolumns.Expressions;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
@@ -25,7 +24,7 @@ public class StructuredColumnsMetadata implements Serializable {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(StructuredColumnsMetadata.class);
+  private static final Logger log = Logger.getLogger(StructuredColumnsMetadata.class.getName());
 
   // Properties
 
@@ -41,7 +40,7 @@ public class StructuredColumnsMetadata implements Serializable {
 
   public StructuredColumnsMetadata(final ColumnsTag tag, final ClassPackage classPackage, final boolean isSoloVO,
       final String soloVOClassName, final Expressions expressions, final List<VOMetadata> vos) {
-    log.debug("init");
+    log.fine("init");
     this.tag = tag;
     this.isSoloVO = isSoloVO;
     this.vo = soloVOClassName;
@@ -53,7 +52,7 @@ public class StructuredColumnsMetadata implements Serializable {
       StructuredVOAlreadyExistsException, DuplicatePropertyNameException, InvalidConfigurationFileException {
 
     List<VOProperty> properties = new ArrayList<VOProperty>();
-    log.debug("this.vos.size()=" + this.vos.size());
+    log.fine("this.vos.size()=" + this.vos.size());
 
     // Expressions properties
 

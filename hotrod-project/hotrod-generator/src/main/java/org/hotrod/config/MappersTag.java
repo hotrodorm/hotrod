@@ -1,12 +1,11 @@
 package org.hotrod.config;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.ClassPackage;
 import org.hotrodorm.hotrod.utils.SUtil;
@@ -18,7 +17,7 @@ public class MappersTag extends AbstractConfigurationTag {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(MappersTag.class);
+  private static final Logger log = Logger.getLogger(MappersTag.class.getName());
 
   private static final String DEFAULT_BASE_DIR = "src/main/resources";
   private static final String DEFAULT_DIR = "mappers";
@@ -45,7 +44,7 @@ public class MappersTag extends AbstractConfigurationTag {
 
   public MappersTag() {
     super("mappers");
-    log.debug("init");
+    log.fine("init");
   }
 
   // JAXB Setters
@@ -151,7 +150,6 @@ public class MappersTag extends AbstractConfigurationTag {
       return dir;
     }
   }
-
 
 //  public String getRelativePrimitivesDir() {
 //    return sDir ;

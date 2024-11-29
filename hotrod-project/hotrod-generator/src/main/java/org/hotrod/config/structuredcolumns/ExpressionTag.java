@@ -3,13 +3,12 @@ package org.hotrod.config.structuredcolumns;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.ConverterTag;
 import org.hotrod.config.DaosTag;
@@ -27,7 +26,7 @@ public class ExpressionTag extends AbstractConfigurationTag {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(ExpressionTag.class);
+  private static final Logger log = Logger.getLogger(ExpressionTag.class.getName());
 
   // Properties
 
@@ -81,7 +80,7 @@ public class ExpressionTag extends AbstractConfigurationTag {
       final HotRodFragmentConfigTag fragmentConfig, final boolean singleVOResult, final Set<String> ids)
       throws InvalidConfigurationFileException {
 
-    log.debug("validate");
+    log.fine("validate");
 
     // Sort: body
 

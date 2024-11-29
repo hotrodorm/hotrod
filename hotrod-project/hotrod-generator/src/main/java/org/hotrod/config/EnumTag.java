@@ -10,13 +10,12 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.NameSolverNameTag.Scope;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
@@ -46,7 +45,7 @@ public class EnumTag extends AbstractEntityDAOTag {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(EnumTag.class);
+  private static final Logger log = Logger.getLogger(EnumTag.class.getName());
 
   private static final String CLASS_NAME_PATTERN = "[A-Z][a-zA-Z0-9_]*";
 
@@ -80,7 +79,7 @@ public class EnumTag extends AbstractEntityDAOTag {
 
   public EnumTag() {
     super("enum", false);
-    log.debug("init");
+    log.fine("init");
   }
 
   // JAXB Setters

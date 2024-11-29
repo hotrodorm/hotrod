@@ -1,16 +1,15 @@
 package org.hotrod.plugin.ant;
 
 import java.io.File;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.hotrod.plugin.PurgeOperation;
 
 public class PurgeAntTask extends Task {
 
-  private static transient final Logger log = LogManager.getLogger(PurgeAntTask.class);
+  private static transient final Logger log = Logger.getLogger(PurgeAntTask.class.getName());
 
   private String configfile = null;
   private String localproperties = null;
@@ -24,7 +23,7 @@ public class PurgeAntTask extends Task {
 
   @Override
   public void execute() {
-    log.debug("init");
+    log.fine("init");
 
     PurgeOperation op = new PurgeOperation(new File("."), this.configfile, this.localproperties, this.jdbcdriverclass,
         this.jdbcurl, this.jdbcusername, this.jdbcpassword, this.jdbccatalog, this.jdbcschema);

@@ -1,7 +1,7 @@
 package org.hotrod.config;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Logger;
+
 import org.hotrod.config.dynamicsql.SQLSegment;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
@@ -17,7 +17,7 @@ public class SQLParameter implements SQLSegment {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(SQLParameter.class);
+  private static final Logger log = Logger.getLogger(SQLParameter.class.getName());
 
   private static final String VALID_NAME_PATTERN = "[a-zA-Z][a-zA-Z0-9_]*";
 
@@ -42,7 +42,7 @@ public class SQLParameter implements SQLSegment {
   // Java Parameter
   public SQLParameter(final String name, final AbstractConfigurationTag tag, final boolean isVariable)
       throws InvalidConfigurationFileException {
-    log.debug("init");
+    log.fine("init");
     initialize(name, tag, false);
   }
 
@@ -110,7 +110,7 @@ public class SQLParameter implements SQLSegment {
   public String getJdbcType() {
     return this.definition.getJDBCType().getShortTypeName();
   }
-  
+
   public boolean isInternal() {
     return this.getDefinition().isInternal();
   }

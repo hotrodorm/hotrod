@@ -1,14 +1,13 @@
 package org.hotrod.config;
 
 import java.io.File;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrodorm.hotrod.utils.SUtil;
 
@@ -19,7 +18,7 @@ public class SelectGenerationTag extends AbstractConfigurationTag {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(SelectGenerationTag.class);
+  private static final Logger log = Logger.getLogger(SelectGenerationTag.class.getName());
 
   public static final SelectStrategy DEFAULT_STRATEGY = SelectStrategy.RESULT_SET;
   public static final String DEFAULT_TEMP_VIEW_NAME = "hotrodtempview";
@@ -65,20 +64,20 @@ public class SelectGenerationTag extends AbstractConfigurationTag {
 
   public SelectGenerationTag() {
     super("select-generation");
-    log.debug("init");
+    log.fine("init");
   }
 
   // JAXB Setters
 
   @XmlAttribute(name = "strategy")
   public void setSStrategy(final String strategy) {
-    log.debug("strategy=" + strategy);
+    log.fine("strategy=" + strategy);
     this.sStrategy = strategy;
   }
 
   @XmlAttribute(name = "temp-view-base-name")
   public void setTempViewBaseName(final String tempViewBaseName) {
-    log.debug("tempViewBaseName=" + tempViewBaseName);
+    log.fine("tempViewBaseName=" + tempViewBaseName);
     this.tempViewBaseName = tempViewBaseName;
   }
 
@@ -88,7 +87,7 @@ public class SelectGenerationTag extends AbstractConfigurationTag {
 
     // strategy
 
-    log.debug("this.sStrategy=" + this.sStrategy);
+    log.fine("this.sStrategy=" + this.sStrategy);
     if (this.sStrategy == null) {
       this.strategy = DEFAULT_STRATEGY;
     } else {
@@ -100,7 +99,7 @@ public class SelectGenerationTag extends AbstractConfigurationTag {
                 + Stream.of(SelectStrategy.values()).map(s -> s.getCaption()).collect(Collectors.joining(", ")));
       }
     }
-    log.debug("this.strategy=" + this.strategy);
+    log.fine("this.strategy=" + this.strategy);
 
     // temp-view-base-name
 

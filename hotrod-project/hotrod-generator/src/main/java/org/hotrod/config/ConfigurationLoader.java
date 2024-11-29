@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.LinkedHashSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -23,8 +25,6 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractHotRodConfigTag.LocationListener;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
@@ -49,7 +49,7 @@ public class ConfigurationLoader {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(ConfigurationLoader.class);
+  private static final Logger log = Logger.getLogger(ConfigurationLoader.class.getName());
 
   private static final String DEBUG_PRIMARY_XSD_PATH = DEBUG_PATH + "hotrod.xsd";
   private static final String DEBUG_FRAGMENT_XSD_PATH = DEBUG_PATH + "hotrod-fragment.xsd";
@@ -68,7 +68,7 @@ public class ConfigurationLoader {
       final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
       throws ControlledException, UncontrolledException, FacetNotFoundException {
 
-    log.debug("loading file: " + f);
+    log.fine("loading file: " + f);
 
     // Basic validation on the file
 
@@ -85,7 +85,7 @@ public class ConfigurationLoader {
 
     // Prepare the parser
 
-    log.debug("loading file 2");
+    log.fine("loading file 2");
 
     Unmarshaller unmarshaller = null;
     XMLStreamReader xsr = null;
@@ -108,7 +108,7 @@ public class ConfigurationLoader {
       xsr = xif.createXMLStreamReader(xml);
       LocationListener locationListener = new LocationListener(f, xsr);
       unmarshaller.setListener(locationListener);
-      log.debug("XML loaded.");
+      log.fine("XML loaded.");
 
     } catch (SAXException e) {
       e.printStackTrace();
@@ -132,19 +132,19 @@ public class ConfigurationLoader {
 
     try {
 
-      log.debug("[ Will parse ]");
+      log.fine("[ Will parse ]");
       HotRodConfigTag config = (HotRodConfigTag) unmarshaller.unmarshal(xsr);
-      log.debug("[ Parsed ]");
+      log.fine("[ Parsed ]");
 
       // Validation (specific)
 
-      log.debug("projectBaseDir=" + projectBaseDir + " :: " + projectBaseDir.getAbsolutePath());
+      log.fine("projectBaseDir=" + projectBaseDir + " :: " + projectBaseDir.getAbsolutePath());
       File parentDir = f.getParentFile();
-      log.debug("parentFile=" + parentDir + " :: " + parentDir.getAbsolutePath());
+      log.fine("parentFile=" + parentDir + " :: " + parentDir.getAbsolutePath());
 
-      log.debug("Will validate semantics.");
+      log.fine("Will validate semantics.");
       config.validate(projectBaseDir, parentDir, f, adapter, currentCS);
-      log.debug("Semantics validation #1 successful.");
+      log.fine("Semantics validation #1 successful.");
 
       // Validation (common)
 
@@ -152,7 +152,7 @@ public class ConfigurationLoader {
       FileRegistry fileRegistry = new FileRegistry(f);
 
       config.validateCommon(config, f, fileRegistry, f, daosTag, null, adapter, facetNames, currentCS);
-      log.debug("Semantics validation #2 successful.");
+      log.fine("Semantics validation #2 successful.");
 
       config.addConverterTags();
 
@@ -169,18 +169,18 @@ public class ConfigurationLoader {
 
       // Complete
 
-      log.debug("File loaded.");
+      log.fine("File loaded.");
 
       return config;
 
     } catch (JAXBException e) {
-      log.debug("JAXBException", e);
+      log.log(Level.FINE, "JAXBException", e);
       throw assembleControlledException(f, validationHandler, e);
 
     } catch (InvalidConfigurationFileException e) {
-      log.debug("InvalidConfigurationFileException", e);
+      log.log(Level.FINE, "InvalidConfigurationFileException", e);
       SourceLocation loc = e.getTag().getSourceLocation();
-      log.debug("loc=" + loc);
+      log.fine("loc=" + loc);
       if (loc == null) {
         throw new ControlledException("Invalid configuration file '" + f.getPath() + "': " + e.getMessage());
       } else {
@@ -188,11 +188,11 @@ public class ConfigurationLoader {
       }
 
     } catch (GeneratorNotFoundException e) {
-      log.debug("GeneratorNotFoundException.", e);
+      log.log(Level.FINE, "GeneratorNotFoundException.", e);
       throw new ControlledException(e.getMessage());
 
     } catch (Throwable e) {
-      log.debug("Throwable detected.", e);
+      log.log(Level.FINE, "Throwable detected.", e);
       throw new ControlledException(e.getMessage());
 
     }
@@ -236,7 +236,7 @@ public class ConfigurationLoader {
     if (f == null) {
       throw new ControlledException(fragmentTag.getSourceLocation(), "Configuration file name is empty.");
     }
-    log.debug("-- loading fragment: " + f.getName());
+    log.fine("-- loading fragment: " + f.getName());
     if (!f.exists()) {
       throw new ControlledException(fragmentTag.getSourceLocation(),
           Constants.TOOL_NAME + " configuration file not found: " + f.getPath());
@@ -289,9 +289,9 @@ public class ConfigurationLoader {
 
     try {
 
-      log.debug("[ *** Will parse file=" + f.getPath() + " ]");
+      log.fine("[ *** Will parse file=" + f.getPath() + " ]");
       HotRodFragmentConfigTag fragmentConfig = (HotRodFragmentConfigTag) unmarshaller.unmarshal(xsr);
-      log.debug("[ *** Parsed ]");
+      log.fine("[ *** Parsed ]");
 
       // Validation (specific)
 
@@ -299,10 +299,10 @@ public class ConfigurationLoader {
 
       // Validation (common)
 
-      log.debug("--       Registering f=" + f);
-      log.debug("  --     tag: " + fragmentTag.getSourceLocation());
+      log.fine("--       Registering f=" + f);
+      log.fine("  --     tag: " + fragmentTag.getSourceLocation());
       fileRegistry.add(fragmentTag, f);
-      log.debug("----2> fileRegistry=" + fileRegistry);
+      log.fine("----2> fileRegistry=" + fileRegistry);
       fragmentConfig.validateCommon(primaryConfig, f, fileRegistry, f, daosTag, fragmentConfig, adapter, facetNames,
           currentCS);
 
@@ -322,7 +322,7 @@ public class ConfigurationLoader {
       }
 
     } catch (FileAlreadyRegisteredException e) {
-      log.debug("********** exception in tag: " + e.getContainerTag().getSourceLocation());
+      log.fine("********** exception in tag: " + e.getContainerTag().getSourceLocation());
       throw new ControlledException(e.getContainerTag().getSourceLocation(),
           "Invalid configuration file '" + f.getPath() + "': this fragment file has already been loaded once.");
     }
@@ -378,29 +378,29 @@ public class ConfigurationLoader {
       try {
 
         is = ConfigurationLoader.class.getResourceAsStream(DEBUG_PRIMARY_XSD_PATH);
-        log.debug("[Load #1] is=" + is);
+        log.fine("[Load #1] is=" + is);
 
         if (is == null) { // try the plugin location
-          log.debug("[Load #2]");
+          log.fine("[Load #2]");
           is = ConfigurationLoader.class.getResourceAsStream(PLUGIN_PRIMARY_XSD_PATH);
-          log.debug("[Load #3] is=" + is);
+          log.fine("[Load #3] is=" + is);
         }
-        log.debug("[Load #4]");
+        log.fine("[Load #4]");
         primarySchema = factory.newSchema(new StreamSource(is));
-        log.debug("[Load #5] primarySchema =" + primarySchema);
+        log.fine("[Load #5] primarySchema =" + primarySchema);
 
       } catch (SAXException e) {
 //        e.printStackTrace();
-        log.error("Failed to load", e);
+        log.log(Level.SEVERE, "Failed to load", e);
         throw e;
       } catch (RuntimeException e) {
-        log.error("(RuntimeException) Failed to load", e);
+        log.log(Level.SEVERE, "(RuntimeException) Failed to load", e);
       } finally {
         if (is != null) {
           try {
             is.close();
           } catch (IOException e) {
-            log.error("Could not close primary schema file.");
+            log.log(Level.SEVERE, "Could not close primary schema file.");
           }
         }
       }
@@ -427,7 +427,7 @@ public class ConfigurationLoader {
           try {
             is.close();
           } catch (IOException e) {
-            log.error("Could not close fragment schema file.");
+            log.log(Level.SEVERE, "Could not close fragment schema file.");
           }
         }
       }
@@ -442,7 +442,7 @@ public class ConfigurationLoader {
     @Override
     public LSInput resolveResource(final String type, final String namespaceURI, final String publicId,
         final String systemId, final String baseURI) {
-      log.debug("[RESOLVE]\n  type=" + type + "\n  namespaceURI=" + namespaceURI + "\n  publicId=" + publicId
+      log.fine("[RESOLVE]\n  type=" + type + "\n  namespaceURI=" + namespaceURI + "\n  publicId=" + publicId
           + "\n  systemId=" + systemId + "\n  baseURI=" + baseURI);
       return new XSDInput(type, namespaceURI, publicId, systemId, baseURI);
     }
@@ -470,45 +470,45 @@ public class ConfigurationLoader {
 
     @Override
     public Reader getCharacterStream() {
-      log.debug("{get reader} this.systemId=" + this.systemId);
+      log.fine("{get reader} this.systemId=" + this.systemId);
       InputStream is = this.getByteStream();
       return is == null ? null : new InputStreamReader(is);
     }
 
     @Override
     public void setCharacterStream(final Reader characterStream) {
-      log.debug("{set reader} characterStream=" + characterStream);
+      log.fine("{set reader} characterStream=" + characterStream);
       // Ignore
     }
 
     @Override
     public InputStream getByteStream() {
-      log.debug("{getByteStream} this.systemId=" + this.systemId);
+      log.fine("{getByteStream} this.systemId=" + this.systemId);
       InputStream is = ConfigurationLoader.class.getResourceAsStream(DEBUG_PATH + this.systemId);
-      log.debug(DEBUG_PATH + this.systemId + " -> is=" + is);
+      log.fine(DEBUG_PATH + this.systemId + " -> is=" + is);
       if (is == null) {
         is = ConfigurationLoader.class.getResourceAsStream(PLUGIN_PATH + this.systemId);
-        log.debug(PLUGIN_PATH + this.systemId + " -> is=" + is);
+        log.fine(PLUGIN_PATH + this.systemId + " -> is=" + is);
       }
       return is;
     }
 
     @Override
     public void setByteStream(InputStream byteStream) {
-      log.debug("{set bytestream} byteStream=" + byteStream);
+      log.fine("{set bytestream} byteStream=" + byteStream);
       // Ignore
     }
 
     @Override
     public String getStringData() {
-      log.debug("{ignore}");
+      log.fine("{ignore}");
       // Ignore
       return null;
     }
 
     @Override
     public void setStringData(String stringData) {
-      log.debug("{set stringData} stringData=" + stringData);
+      log.fine("{set stringData} stringData=" + stringData);
       // Ignore
     }
 
@@ -519,7 +519,7 @@ public class ConfigurationLoader {
 
     @Override
     public void setSystemId(String systemId) {
-      log.debug("{ignore} systemId=" + systemId);
+      log.fine("{ignore} systemId=" + systemId);
       // Ignore
     }
 
@@ -530,7 +530,7 @@ public class ConfigurationLoader {
 
     @Override
     public void setPublicId(String publicId) {
-      log.debug("{ignore} publicId=" + publicId);
+      log.fine("{ignore} publicId=" + publicId);
       // Ignore
     }
 
@@ -541,31 +541,31 @@ public class ConfigurationLoader {
 
     @Override
     public void setBaseURI(String baseURI) {
-      log.debug("{ignore} baseURI=" + baseURI);
+      log.fine("{ignore} baseURI=" + baseURI);
       // Ignore
     }
 
     @Override
     public String getEncoding() {
-      log.debug("{ignore}");
+      log.fine("{ignore}");
       return null;
     }
 
     @Override
     public void setEncoding(String encoding) {
-      log.debug("{ignore} encoding=" + encoding);
+      log.fine("{ignore} encoding=" + encoding);
       // Ignore
     }
 
     @Override
     public boolean getCertifiedText() {
-      log.debug("{ignore}");
+      log.fine("{ignore}");
       return false;
     }
 
     @Override
     public void setCertifiedText(boolean certifiedText) {
-      log.debug("{ignore} certifiedText=" + certifiedText);
+      log.fine("{ignore} certifiedText=" + certifiedText);
       // Ignore
     }
 

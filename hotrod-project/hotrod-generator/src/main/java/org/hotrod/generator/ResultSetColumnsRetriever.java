@@ -8,9 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.ColumnTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.SQLParameter;
@@ -33,7 +32,7 @@ import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 
 public class ResultSetColumnsRetriever implements ColumnsRetriever {
 
-  private static final Logger log = LogManager.getLogger(ResultSetColumnsRetriever.class);
+  private static final Logger log = Logger.getLogger(ResultSetColumnsRetriever.class.getName());
 
   private HotRodConfigTag config;
   @SuppressWarnings("unused")
@@ -64,7 +63,7 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
 
     @Override
     public String render(final SQLParameter parameter) {
-      log.debug("prepare view 0.1 -- parameter=" + parameter.getDefinition());
+      log.fine("prepare view 0.1 -- parameter=" + parameter.getDefinition());
       JDBCType jdbcType = parameter.getDefinition().getJDBCType();
       parameterJDBCTypes.add(jdbcType);
       String parameterSampleValue = parameter.getDefinition().getSampleSQLValue();
@@ -82,12 +81,12 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
   public void phase1Flat(final String key, final SelectMethodTag tag, final SelectMethodMetadata sm)
       throws InvalidSQLException, InvalidConfigurationFileException {
 
-    log.debug("prepare view 0");
+    log.fine("prepare view 0");
 
     RetrievalContext ctx = new RetrievalContext(tag, sm);
     this.contexts.put(key, ctx);
 
-    log.debug("flat 1 -- this.conn=" + this.conn);
+    log.fine("flat 1 -- this.conn=" + this.conn);
 
     ResultSetParameterRenderer pr = new ResultSetParameterRenderer();
     String foundation = SQLUtil.cleanUpSQL(ctx.getTag().renderSQLSentence(pr));
@@ -95,18 +94,18 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
     List<ColumnMetadata> flatColumns = new ArrayList<ColumnMetadata>();
     ctx.setFlatColumnsMetadata(flatColumns);
 
-    log.debug("flat 2 -- method=" + sm.getMethod() + " sql=" + foundation);
+    log.fine("flat 2 -- method=" + sm.getMethod() + " sql=" + foundation);
 
     try (PreparedStatement ps = this.conn.prepareStatement(foundation)) {
 
-      log.debug("flat 2.1");
+      log.fine("flat 2.1");
 
       ResultSetMetaData rm = ps.getMetaData();
       int columns = rm.getColumnCount();
       for (int i = 1; i <= columns; i++) {
         String label = rm.getColumnLabel(i);
         ColumnTag columnTag = ctx.getTag().findColumnTag(label, this.adapter);
-        log.debug("prepare view 3 -- column=" + label);
+        log.fine("prepare view 3 -- column=" + label);
         ColumnMetadata cm;
         try {
           cm = new ColumnMetadata(ctx.getSm(), rm, i, ctx.getTag().getMethod(), this.adapter, columnTag, false, false,
@@ -132,7 +131,7 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
 
   @Override
   public List<ColumnMetadata> phase2Flat(final String key) {
-    log.debug("flat 4 -- columns retrieved.");
+    log.fine("flat 4 -- columns retrieved.");
     RetrievalContext ctx = this.contexts.get(key);
     return ctx.getColumnsMetadata();
   }
@@ -144,12 +143,12 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
       final String entityPrefix, final ColumnsProvider columnsProvider, final SelectMethodMetadata sm)
       throws InvalidSQLException, InvalidConfigurationFileException {
 
-    log.debug("prepare view 0");
+    log.fine("prepare view 0");
 
     RetrievalContext ctx = new RetrievalContext(selectTag, sm);
     this.contexts.put(key, ctx);
 
-    log.debug("prepare view 1");
+    log.fine("prepare view 1");
     ResultSetParameterRenderer pr = new ResultSetParameterRenderer();
     String foundation = SQLUtil.cleanUpSQL(selectTag.renderSQLAngle(pr, columnsProvider, this.adapter));
 
@@ -158,14 +157,14 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
 
     try (PreparedStatement ps = this.conn.prepareStatement(foundation)) {
 
-      log.debug("flat 2.1");
+      log.fine("flat 2.1");
 
       ResultSetMetaData rm = ps.getMetaData();
       int columns = rm.getColumnCount();
       for (int i = 1; i <= columns; i++) {
         String label = rm.getColumnLabel(i);
         ColumnTag columnTag = ctx.getTag().findColumnTag(label, this.adapter);
-        log.debug("prepare view 3 -- column=" + label);
+        log.fine("prepare view 3 -- column=" + label);
         ColumnMetadata cm;
         try {
           cm = new ColumnMetadata(ctx.getSm(), rm, i, ctx.getTag().getMethod(), this.adapter, columnTag, false, false,
@@ -195,7 +194,7 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
   public List<StructuredColumnMetadata> phase2Structured(final String key, final SelectMethodTag selectTag,
       final String aliasPrefix, final String entityPrefix, final ColumnsProvider columnsProvider)
       throws UnresolvableDataTypeException, InvalidConfigurationFileException, UncontrolledException {
-    log.debug("flat 4 -- columns retrieved.");
+    log.fine("flat 4 -- columns retrieved.");
     RetrievalContext ctx = this.contexts.get(key);
     return ctx.getStructuredColumnMetadata();
   }

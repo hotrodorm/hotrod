@@ -1,10 +1,10 @@
 package org.hotrod.config;
 
+import java.util.logging.Logger;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrodorm.hotrod.utils.SUtil;
 
@@ -15,7 +15,7 @@ public class NonPersistentTag extends AbstractConfigurationTag {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(NonPersistentTag.class);
+  private static final Logger log = Logger.getLogger(NonPersistentTag.class.getName());
 
   public static final String VALID_JAVA_CONSTANT_IDENTIFIER = "[A-Z][A-Z0-9_]*";
 
@@ -28,7 +28,7 @@ public class NonPersistentTag extends AbstractConfigurationTag {
 
   public NonPersistentTag() {
     super("non-persistent");
-    log.debug("init");
+    log.fine("init");
   }
 
   // JAXB Setters

@@ -7,9 +7,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Properties;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.api.HotRodServices;
 import org.hotrod.config.Constants;
 import org.hotrod.config.DisplayMode;
@@ -18,7 +17,7 @@ import org.hotrodorm.hotrod.utils.SUtil;
 
 public class GenOperation {
 
-  private static final Logger log = LogManager.getLogger(GenOperation.class);
+  private static final Logger log = Logger.getLogger(GenOperation.class.getName());
 
   private File baseDir;
   private String configfilename = null;
@@ -58,7 +57,7 @@ public class GenOperation {
   }
 
   public void execute(final Feedback feedback) throws Exception {
-    log.debug("init");
+    log.fine("init");
 
     HotRodServices hs = new HotRodServices(this.baseDir, this.jdbcdriverclass, this.jdbcurl, this.jdbcusername,
         this.jdbcpassword, this.jdbccatalog, this.jdbcschema, this.configFile, this.displayMode, this.facetNames);

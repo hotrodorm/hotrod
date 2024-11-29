@@ -11,9 +11,9 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.ConfigurationLoader;
 import org.hotrod.config.Constants;
 import org.hotrod.config.HotRodConfigTag;
@@ -37,7 +37,7 @@ import org.nocrala.tools.database.tartarus.exception.ReaderException;
 
 public class PurgeOperation {
 
-  private static final Logger log = LogManager.getLogger(PurgeOperation.class);
+  private static final Logger log = Logger.getLogger(PurgeOperation.class.getName());
 
   private File baseDir;
   private String configfilename = null;
@@ -69,7 +69,7 @@ public class PurgeOperation {
   }
 
   public void execute(final Feedback feedback) throws OperationException {
-    log.debug("init");
+    log.fine("init");
 
     feedback.info(Constants.TOOL_NAME + " version " + BuildInformation.VERSION + " (build " + BuildInformation.BUILD_ID
         + ") - Purge");
@@ -96,7 +96,7 @@ public class PurgeOperation {
       throw new OperationException("Could not connect to database: " + XUtil.trim(e));
     }
 
-    log.debug("Adapter loaded.");
+    log.fine("Adapter loaded.");
 
     HotRodConfigTag config = null;
     try {
@@ -113,11 +113,11 @@ public class PurgeOperation {
       throw new OperationException(Constants.TOOL_NAME + " could not generate the persistence code.");
     } catch (Throwable e) {
       feedback.error("Technical error found: " + XUtil.trim(e));
-      log.error("Technical error found", e);
+      log.log(Level.SEVERE, "Technical error found", e);
       throw new OperationException(Constants.TOOL_NAME + " could not generate the persistence code.");
     }
 
-    log.debug("Configuration loaded.");
+    log.fine("Configuration loaded.");
 
     try (Connection conn = loc.getConnection()) {
 

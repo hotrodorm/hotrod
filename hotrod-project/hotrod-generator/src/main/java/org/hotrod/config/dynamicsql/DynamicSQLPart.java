@@ -4,13 +4,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlMixed;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodConfigTag;
@@ -29,7 +28,7 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(DynamicSQLPart.class);
+  private static final Logger log = Logger.getLogger(DynamicSQLPart.class.getName());
 
   // Properties
 
@@ -56,7 +55,7 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
 
   protected DynamicSQLPart(final String tagName) {
     super(tagName);
-    log.debug("init");
+    log.fine("init");
   }
 
   // Constructor just for JAXB's sake - never used

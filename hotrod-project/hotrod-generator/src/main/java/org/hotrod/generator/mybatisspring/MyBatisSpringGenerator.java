@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.DisplayMode;
 import org.hotrod.config.EnabledFKs;
@@ -50,8 +49,8 @@ import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class MyBatisSpringGenerator implements Generator, LiveGenerator {
 
-  private static final Logger log = LogManager.getLogger(MyBatisSpringGenerator.class);
-  private static final Logger logm = LogManager.getLogger("hotrod-metadata-retrieval");
+  private static final Logger log = Logger.getLogger(MyBatisSpringGenerator.class.getName());
+  private static final Logger logm = Logger.getLogger("hotrod-metadata-retrieval");
 
   private HotRodContext hc;
 
@@ -109,7 +108,7 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
 
   @Override
   public void prepareGeneration() throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
-    log.debug("prepare");
+    log.fine("prepare");
 
     // Load and validate the configuration file
 
@@ -123,7 +122,7 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
     // Add tables
 
     for (TableDataSetMetadata tm : this.md.getTables()) {
-      log.debug("tm=" + tm.getId().getCanonicalSQLName());
+      log.fine("tm=" + tm.getId().getCanonicalSQLName());
       EntityVOs entityVOs = addDaosAndMapper(tm, DAOType.TABLE);
       for (SelectMethodMetadata sm : tm.getSelectsMetadata()) {
         addSelectVOs(sm, entityVOs);
@@ -365,14 +364,14 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
         this.abstractSelectVOs.add(abstractVO);
         SelectVO vo = new SelectVO(soloVO, abstractVO, this.layout);
         this.selectVOs.add(vo);
-        log.debug("### soloVO.getName()=" + soloVO.getName() + " abstractVO.getName()=" + abstractVO.getName());
+        log.fine("### soloVO.getName()=" + soloVO.getName() + " abstractVO.getName()=" + abstractVO.getName());
       }
 
       // connected VOs (all)
 
       if (sm.getStructuredColumns() != null) {
         for (VOMetadata vo : sm.getStructuredColumns().getVOs()) {
-          log.trace("### Metadata: vo.getName()=" + vo.getName());
+          log.finer("### Metadata: vo.getName()=" + vo.getName());
           registerVOs(vo);
         }
       }
@@ -387,7 +386,7 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
 
       VOClasses voc = produceVOClasses(vo);
 
-      log.trace("@@@ x=" + voc.vo.getClassName() + " abstractVO.getName()=" + voc.abstractVO.getName());
+      log.finer("@@@ x=" + voc.vo.getClassName() + " abstractVO.getName()=" + voc.abstractVO.getName());
 
       this.abstractSelectVOs.add(voc.abstractVO);
       this.selectVOs.add(voc.vo);
@@ -430,9 +429,9 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
 
     // Abstract VOs, VOs, DAOs, and Mappers for <table> & <view> tags
 
-    log.debug("this.abstractVos=" + this.abstractVos.size());
-    log.debug("this.vos=" + this.vos.size());
-    log.debug("this.daos=" + this.daos.size());
+    log.fine("this.abstractVos=" + this.abstractVos.size());
+    log.fine("this.vos=" + this.vos.size());
+    log.fine("this.daos=" + this.daos.size());
 
     for (ObjectAbstractVO abstractVO : this.abstractVos.values()) {
       abstractVO.generate(fileGenerator);
@@ -470,7 +469,7 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
     // MyBatis cursor implementation
 
     // this.mybatisCursor.generate();
-    
+
     this.layerConfigWriter.generate(fileGenerator, this);
 
   }
@@ -506,9 +505,9 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
   private void logm(final String msg) {
     long now = System.currentTimeMillis();
     if (this.lastLog == null) {
-      logm.debug("[===== Initial =====] - " + msg);
+      logm.fine("[===== Initial =====] - " + msg);
     } else {
-      logm.debug("[===== " + (now - this.lastLog) + " ms =====] - " + msg);
+      logm.fine("[===== " + (now - this.lastLog) + " ms =====] - " + msg);
     }
     this.lastLog = now;
   }
@@ -622,7 +621,7 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
         for (SelectMethodMetadata s : d.getSelectsMetadata()) {
           selectMethods++;
           if (this.displayMode == DisplayMode.LIST) {
-            log.debug("s=" + s);
+            log.fine("s=" + s);
             display(" - Select " + s.getMethod() + " included.");
           }
         }

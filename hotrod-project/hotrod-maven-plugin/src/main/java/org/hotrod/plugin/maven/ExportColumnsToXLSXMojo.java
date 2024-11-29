@@ -1,7 +1,7 @@
 package org.hotrod.plugin.maven;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Logger;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -13,7 +13,7 @@ import org.hotrod.plugin.ExportColumnsToXLSXOperation;
 @Mojo(name = "export-columns-xlsx", defaultPhase = LifecyclePhase.COMPILE)
 public class ExportColumnsToXLSXMojo extends AbstractMojo {
 
-  private static transient final Logger log = LogManager.getLogger(ExportColumnsToXLSXMojo.class);
+  private static transient final Logger log = Logger.getLogger(ExportColumnsToXLSXMojo.class.getName());
 
   // Note: 1) Each property must be annotated by @Parameter. 2) The property
   // attribute -- if declared -- must be the exact same name as the Java member
@@ -61,9 +61,9 @@ public class ExportColumnsToXLSXMojo extends AbstractMojo {
   // Mojo logic
 
   public void execute() throws MojoExecutionException {
-    log.debug("init");
+    log.fine("init");
 
-    log.debug("this.localproperties=" + this.localproperties);
+    log.fine("this.localproperties=" + this.localproperties);
 
     ExportColumnsToXLSXOperation op = new ExportColumnsToXLSXOperation(this.project.getBasedir(), this.configfile,
         this.localproperties, this.jdbcdriverclass, this.jdbcurl, this.jdbcusername, this.jdbcpassword,

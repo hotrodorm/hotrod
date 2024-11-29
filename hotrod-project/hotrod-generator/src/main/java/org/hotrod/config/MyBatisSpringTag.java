@@ -5,12 +5,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
@@ -30,7 +29,7 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(MyBatisSpringTag.class);
+  private static final Logger log = Logger.getLogger(MyBatisSpringTag.class.getName());
 
   public static final String GENERATOR_NAME = "MyBatis-Spring";
 
@@ -50,7 +49,7 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
 
   public MyBatisSpringTag() {
     super("mybatis-spring");
-    log.debug("init");
+    log.fine("init");
   }
 
   public void enableDiscover() {

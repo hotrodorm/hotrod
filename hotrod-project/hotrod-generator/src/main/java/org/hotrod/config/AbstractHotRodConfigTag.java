@@ -11,6 +11,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.xml.bind.Unmarshaller.Listener;
@@ -18,8 +20,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.FacetNotFoundException;
@@ -38,7 +38,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(AbstractHotRodConfigTag.class);
+  private static final Logger log = Logger.getLogger(AbstractHotRodConfigTag.class.getName());
 
   // Properties
 
@@ -114,7 +114,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
       final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
       throws InvalidConfigurationFileException, ControlledException, UncontrolledException, FacetNotFoundException {
 
-    log.debug("validateCommon");
+    log.fine("validateCommon");
 
     File parentDir = file != null ? file.getParentFile() : null;
 
@@ -213,7 +213,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
 
     // display
 
-    if (log.isDebugEnabled()) {
+    if (log.isLoggable(Level.FINE)) {
       logFacet(file, "[after] All", this.allFacets);
       for (FacetTag f : this.facets) {
         logFacet(file, f.getName(), f);
@@ -223,22 +223,22 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
   }
 
   private void logFacet(final File file, final String name, final FacetTag f) {
-    log.debug("* LISTING " + name + " (" + file.getName() + ") ...");
+    log.fine("* LISTING " + name + " (" + file.getName() + ") ...");
 
     for (TableTag t : f.getTables()) {
-      log.debug(" - tables: " + t.getId().getCanonicalSQLName());
+      log.fine(" - tables: " + t.getId().getCanonicalSQLName());
     }
 
     for (ViewTag v : f.getViews()) {
-      log.debug(" - views: " + v.getId().getCanonicalSQLName());
+      log.fine(" - views: " + v.getId().getCanonicalSQLName());
     }
 
     for (EnumTag e : f.getEnums()) {
-      log.debug(" - enum: " + e.getId().getCanonicalSQLName());
+      log.fine(" - enum: " + e.getId().getCanonicalSQLName());
     }
 
     for (ExecutorTag dao : f.getExecutors()) {
-      log.debug(" - daos: " + dao.getJavaClassName());
+      log.fine(" - daos: " + dao.getJavaClassName());
     }
 
   }
@@ -273,9 +273,9 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
   }
 
   public TableTag getTableTag(final JdbcTable t) {
-    log.debug("facet tables: " + this.getFacetTables().size());
+    log.fine("facet tables: " + this.getFacetTables().size());
     for (TableTag tag : this.getFacetTables()) {
-      log.debug("Comparing table '" + t.getName() + "' -- tag=" + tag.getId().getCanonicalSQLName() + " --> equal="
+      log.fine("Comparing table '" + t.getName() + "' -- tag=" + tag.getId().getCanonicalSQLName() + " --> equal="
           + tag.getId().getCanonicalSQLName().equals(t.getName()));
       // TODO: this comparison fails to include the catalog/schema. Fix!
       if (tag.getId().getCanonicalSQLName().equals(t.getName())) {
@@ -291,7 +291,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
 
   public EnumTag getEnumTag(final JdbcTable t) {
     for (EnumTag tag : this.getFacetEnums()) {
-      log.debug("enum tag=" + tag.getId().getCanonicalSQLName());
+      log.fine("enum tag=" + tag.getId().getCanonicalSQLName());
       // TODO: this comparison fails to include the catalog/schema. Fix!
       if (tag.getId().getCanonicalSQLName().equals(t.getName())) {
         return tag;
@@ -336,7 +336,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
   }
 
   public List<TableTag> getFacetTables() {
-    log.debug("this.chosenFacets=" + this.chosenFacets.stream().map(f -> f.getName()).collect(Collectors.joining(",")));
+    log.fine("this.chosenFacets=" + this.chosenFacets.stream().map(f -> f.getName()).collect(Collectors.joining(",")));
     if (this.chosenFacets.isEmpty()) {
       return this.allFacets.getTables();
     } else {

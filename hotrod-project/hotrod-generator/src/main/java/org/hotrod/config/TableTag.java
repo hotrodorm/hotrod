@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.NameSolverNameTag.Scope;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.CouldNotResolveNameException;
@@ -36,7 +35,7 @@ public class TableTag extends AbstractEntityDAOTag {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(TableTag.class);
+  private static final Logger log = Logger.getLogger(TableTag.class.getName());
 
   // Properties
 
@@ -108,7 +107,7 @@ public class TableTag extends AbstractEntityDAOTag {
     String replacedName = null;
     try {
       replacedName = config.getNameSolverTag().resolveName(this.name, Scope.TABLE);
-      log.debug("### this.name=" + this.name + " -> replacedName=" + replacedName);
+      log.fine("### this.name=" + this.name + " -> replacedName=" + replacedName);
       return replacedName == null ? null : Id.fromCanonicalSQL(replacedName, adapter).getJavaClassName();
     } catch (CouldNotResolveNameException e) {
       throw new InvalidConfigurationFileException(this,
@@ -300,10 +299,10 @@ public class TableTag extends AbstractEntityDAOTag {
       String replacedName = null;
       try {
         replacedName = config.getNameSolverTag().resolveName(this.name, Scope.TABLE);
-        log.debug("### this.name=" + this.name + " -> replacedName=" + replacedName);
+        log.fine("### this.name=" + this.name + " -> replacedName=" + replacedName);
         if (replacedName != null) {
           this.javaClassName = Id.fromCanonicalSQL(replacedName, adapter).getJavaClassName();
-          log.debug(" done.");
+          log.fine(" done.");
         }
       } catch (CouldNotResolveNameException e) {
         throw new InvalidConfigurationFileException(this,
@@ -320,7 +319,7 @@ public class TableTag extends AbstractEntityDAOTag {
     try {
       nameId = this.javaClassName == null ? Id.fromTypedSQL(this.name, adapter)
           : Id.fromTypedSQLAndJavaClass(this.name, adapter, this.javaClassName);
-      log.debug(">>> nameId=" + nameId.getCanonicalSQLName() + " / " + nameId.getJavaClassName());
+      log.fine(">>> nameId=" + nameId.getCanonicalSQLName() + " / " + nameId.getJavaClassName());
     } catch (InvalidIdentifierException e) {
       String msg = "Invalid table name '" + this.name + "': " + e.getMessage();
       throw new InvalidConfigurationFileException(this, msg);
@@ -372,7 +371,7 @@ public class TableTag extends AbstractEntityDAOTag {
 
   public void validateExtendsAgainstAllTables(final List<TableTag> allTables, final List<EnumTag> allEnums)
       throws InvalidConfigurationFileException {
-    log.debug("v1");
+    log.fine("v1");
     try {
       validateAndLinkExtends(allTables, allEnums);
     } catch (ExtendedTableNotFoundException e) {
@@ -388,10 +387,10 @@ public class TableTag extends AbstractEntityDAOTag {
 
   public void validateExtendsInSelectedFacets(final List<TableTag> facetTables, final List<EnumTag> facetEnums,
       final Set<String> facetNames) throws InvalidConfigurationFileException {
-    log.debug("v2");
+    log.fine("v2");
 
     for (TableTag ft : facetTables) {
-      log.debug("v2 - " + ft.getId());
+      log.fine("v2 - " + ft.getId());
     }
 
     try {
@@ -411,7 +410,7 @@ public class TableTag extends AbstractEntityDAOTag {
   private void validateAndLinkExtends(final List<TableTag> tables, final List<EnumTag> enums)
       throws InvalidConfigurationFileException, ExtendedTableNotFoundException, ExtendedTableFoundAsEnumException {
     if (this.getExtendsId() != null) {
-      log.debug("*** " + this.id + " -> " + this.getExtendsId() + " ***");
+      log.fine("*** " + this.id + " -> " + this.getExtendsId() + " ***");
 
       if (this.getExtendsId().equals(this.getId())) {
         throw new InvalidConfigurationFileException(this, //
@@ -419,7 +418,7 @@ public class TableTag extends AbstractEntityDAOTag {
       }
 
       for (TableTag ot : tables) {
-        log.debug(
+        log.fine(
             " -> ot: " + ot.id + " -- t.getExtendsId().equals(ot.getId())=" + this.getExtendsId().equals(ot.getId()));
         if (this.getExtendsId().equals(ot.getId())) {
           this.extendsTag = ot;
@@ -514,11 +513,11 @@ public class TableTag extends AbstractEntityDAOTag {
       }
 
       this.extendsFK = null;
-      log.debug("* cpk: " + renderKey(pk));
+      log.fine("* cpk: " + renderKey(pk));
       for (JdbcForeignKey fk : jt.getImportedFks()) {
-        log.debug("* FK: " + renderKey(fk.getLocalKey()) + " -> " + renderKey(fk.getRemoteKey()));
+        log.fine("* FK: " + renderKey(fk.getLocalKey()) + " -> " + renderKey(fk.getRemoteKey()));
         boolean fkFromPK = equivalentKeys(fk.getLocalKey(), pk);
-        log.debug(" - cfk.getLocalKey().isEquivalentTo(cpk) = " + fkFromPK);
+        log.fine(" - cfk.getLocalKey().isEquivalentTo(cpk) = " + fkFromPK);
         if (fkFromPK) {
           if (this.extendsFK != null) {
             throw new InvalidConfigurationFileException(this, //

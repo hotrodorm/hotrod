@@ -2,9 +2,9 @@ package org.hotrod.api;
 
 import java.io.File;
 import java.util.LinkedHashSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.Constants;
 import org.hotrod.config.DisplayMode;
 import org.hotrod.exceptions.ControlledException;
@@ -21,7 +21,7 @@ import org.nocrala.tools.database.tartarus.utils.XUtil;
 
 public class HotRodServices {
 
-  private static final Logger log = LogManager.getLogger(HotRodServices.class);
+  private static final Logger log = Logger.getLogger(HotRodServices.class.getName());
 
   private File baseDir;
   private String jdbcdriverclass;
@@ -34,8 +34,8 @@ public class HotRodServices {
   private DisplayMode displayMode;
   private LinkedHashSet<String> facetNames;
 
-  public HotRodServices(File baseDir, String jdbcdriverclass, String jdbcurl, String jdbcusername,
-      String jdbcpassword, String jdbccatalog, String jdbcschema, File configFile, DisplayMode displayMode,
+  public HotRodServices(File baseDir, String jdbcdriverclass, String jdbcurl, String jdbcusername, String jdbcpassword,
+      String jdbccatalog, String jdbcschema, File configFile, DisplayMode displayMode,
       LinkedHashSet<String> facetNames) {
     super();
     this.baseDir = baseDir;
@@ -51,7 +51,7 @@ public class HotRodServices {
   }
 
   public void generate(final Feedback feedback) throws Exception {
-    log.debug("init");
+    log.fine("init");
 
     feedback.info(Constants.TOOL_NAME + " version " + BuildInformation.VERSION + " (build " + BuildInformation.BUILD_ID
         + ") - Generate");
@@ -65,14 +65,14 @@ public class HotRodServices {
 
       Generator g = hc.getConfig().getGenerators().getSelectedGeneratorTag().instantiateGenerator(hc, null,
           this.displayMode, false, feedback);
-      log.debug("Generator instantiated.");
+      log.fine("Generator instantiated.");
 
       try {
 
         LiveGenerator liveGenerator = (LiveGenerator) g;
 
         // a live generator
-        log.debug("live generator");
+        log.fine("live generator");
 
         g.prepareGeneration();
         FileGenerator fg = new LocalFileGenerator();
@@ -81,13 +81,13 @@ public class HotRodServices {
       } catch (ClassCastException e) {
 
         // a batch generator
-        log.debug("batch generator");
+        log.fine("batch generator");
 
         g.prepareGeneration();
         g.generate();
       }
 
-      log.debug("Generation complete.");
+      log.fine("Generation complete.");
 
     } catch (ControlledException e) {
       if (e.getLocation() == null) {
@@ -103,7 +103,7 @@ public class HotRodServices {
       throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code. Invalid configuration in "
           + e.getTag().getSourceLocation().render() + ":\n" + e.getMessage());
     } catch (Throwable e) {
-      log.error("Could not generate persistence layer.", e);
+      log.log(Level.SEVERE, "Could not generate persistence layer.", e);
       throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code.", e);
     }
 

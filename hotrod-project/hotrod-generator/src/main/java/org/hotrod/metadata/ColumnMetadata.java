@@ -3,9 +3,8 @@ package org.hotrod.metadata;
 import java.io.Serializable;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.ColumnTag;
 import org.hotrod.config.ConverterTag;
 import org.hotrod.config.NameSolverNameTag.Scope;
@@ -29,7 +28,7 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = LogManager.getLogger(ColumnMetadata.class);
+  private static final Logger log = Logger.getLogger(ColumnMetadata.class.getName());
 
   private DataSetMetadata dataSet;
 
@@ -78,13 +77,13 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
       final ColumnTag columnTag, final boolean isVersionControlColumn, final boolean belongsToPK,
       final TypeSolverTag typeSolverTag, final NameSolverTag nameSolverTag)
       throws UnresolvableDataTypeException, InvalidIdentifierException {
-    log.debug("init c=" + c);
+    log.fine("init c=" + c);
     this.dataSet = dataSet;
     this.c = c;
     this.catalog = c.getTable().getCatalog();
     this.schema = c.getTable().getSchema();
     this.columnName = c.getName();
-    log.debug("this.columnName=" + this.columnName);
+    log.fine("this.columnName=" + this.columnName);
     this.tableName = c.getTable().getName();
 
     this.tag = columnTag;
@@ -95,7 +94,7 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
       String replacedName = null;
       try {
         replacedName = nameSolverTag.resolveName(c.getName(), Scope.COLUMN);
-        log.debug("%%% " + this.tableName + "." + c.getName() + " -- replacedName=" + replacedName);
+        log.fine("%%% " + this.tableName + "." + c.getName() + " -- replacedName=" + replacedName);
       } catch (CouldNotResolveNameException e) {
         throw new InvalidIdentifierException(
             "Could not resolve property name for column " + this.tableName + "." + c.getName() + ": " + e.getMessage());
@@ -107,7 +106,7 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
         this.id = Id.fromCanonicalSQL(c.getName(), adapter);
       }
     }
-    log.debug(
+    log.fine(
         "  > CanonicalSQLName=" + this.id.getCanonicalSQLName() + " RenderedSQLName=" + this.id.getRenderedSQLName());
 
     this.belongsToPK = belongsToPK;
@@ -129,9 +128,9 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
   public static PropertyType resolveJavaType(final ColumnMetadata cm, final ColumnTag columnTag, final JdbcColumn c,
       final JDBCType resultSetType, final TypeSolverTag typeSolverTag, final DatabaseAdapter adapter)
       throws UnresolvableDataTypeException {
-    log.debug("columnTag=" + columnTag);
+    log.fine("columnTag=" + columnTag);
     if (columnTag != null) {
-      log.debug("columnTag.getJdbcColumn()=" + columnTag.getJdbcColumn());
+      log.fine("columnTag.getJdbcColumn()=" + columnTag.getJdbcColumn());
     }
 
     PropertyType typeSolverType = typeSolverTag.resolveType(cm, c, resultSetType);
@@ -140,7 +139,7 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
 
       // Use the type specified in the <column> tag
 
-      log.debug("User-specified column type. Use it.");
+      log.fine("User-specified column type. Use it.");
       JDBCType jdbcType;
       if (columnTag.getJdbcType() != null) {
         // User specified the JDBC type. Use the user's.
@@ -182,7 +181,7 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
   }
 
   public void setEnumMetadata(final EnumDataSetMetadata enumMetadata) {
-    log.debug("[mark enum column] name=" + this.columnName + " enum=" + enumMetadata.getJdbcName());
+    log.fine("[mark enum column] name=" + this.columnName + " enum=" + enumMetadata.getJdbcName());
     this.enumMetadata = enumMetadata;
   }
 
@@ -281,7 +280,7 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
 
     this.resultSetType = JdbcTypes.codeToType(this.dataType);
 
-    log.debug(">>>>>>>> RS: '" + this.columnName + "' -- this.dataType=" + this.dataType + " -- this.resultSetType="
+    log.fine(">>>>>>>> RS: '" + this.columnName + "' -- this.dataType=" + this.dataType + " -- this.resultSetType="
         + resultSetType);
 
     this.adapter = adapter;

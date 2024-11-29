@@ -2,12 +2,11 @@ package org.hotrod.config;
 
 import java.io.File;
 import java.util.LinkedHashSet;
+import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.FacetNotFoundException;
@@ -24,7 +23,7 @@ public class FragmentTag extends AbstractConfigurationTag {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(FragmentTag.class);
+  private static final Logger log = Logger.getLogger(FragmentTag.class.getName());
 
   // Properties
 
@@ -53,7 +52,7 @@ public class FragmentTag extends AbstractConfigurationTag {
       final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
       throws InvalidConfigurationFileException, ControlledException, UncontrolledException, FacetNotFoundException {
 
-    log.debug("Will load fragment: this.filename=" + this.filename);
+    log.fine("Will load fragment: this.filename=" + this.filename);
 
     // file
 
@@ -75,18 +74,18 @@ public class FragmentTag extends AbstractConfigurationTag {
 
     load(primaryConfig, fileRegistry, daosTag, adapter, facetNames, currentCS);
 
-    log.debug("Fragment loaded.");
+    log.fine("Fragment loaded.");
 
   }
 
   public void load(final HotRodConfigTag primaryConfig, final FileRegistry fileRegistry, final DaosTag daosTag,
       final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
       throws UncontrolledException, ControlledException, FacetNotFoundException {
-    log.debug("@@@ Will load fragment '" + this.f.getName() + "' -- at " + this.getSourceLocation());
+    log.fine("@@@ Will load fragment '" + this.f.getName() + "' -- at " + this.getSourceLocation());
     super.clearChildren();
     this.fragmentConfig = ConfigurationLoader.loadFragment(primaryConfig, this.f, fileRegistry, daosTag, this, adapter,
         facetNames, currentCS);
-    log.debug("Fragment loaded.");
+    log.fine("Fragment loaded.");
     super.addChildren(this.fragmentConfig.getSubTags());
   }
 

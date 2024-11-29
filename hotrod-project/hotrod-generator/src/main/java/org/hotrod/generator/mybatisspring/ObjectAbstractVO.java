@@ -3,9 +3,8 @@ package org.hotrod.generator.mybatisspring;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.Constants;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.MyBatisSpringTag;
@@ -24,7 +23,7 @@ import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class ObjectAbstractVO extends GeneratableObject {
 
-  private static final Logger log = LogManager.getLogger(ObjectAbstractVO.class);
+  private static final Logger log = Logger.getLogger(ObjectAbstractVO.class.getName());
 
   private DataSetMetadata metadata;
   private DataSetLayout layout;
@@ -46,7 +45,7 @@ public class ObjectAbstractVO extends GeneratableObject {
   public ObjectAbstractVO(final DataSetMetadata metadata, final DataSetLayout layout,
       final MyBatisSpringGenerator generator, final DAOType daoType, final MyBatisSpringTag myBatisTag) {
     super();
-    log.debug("init");
+    log.fine("init");
 
     this.metadata = metadata;
     this.layout = layout;
@@ -164,7 +163,7 @@ public class ObjectAbstractVO extends GeneratableObject {
 
     // add parent DAO & VO if it extends another table
 
-    log.debug("" + this.metadata.getId() + ": this.metadata.getParentMetadata()=" + this.metadata.getParentMetadata());
+    log.fine("" + this.metadata.getId() + ": this.metadata.getParentMetadata()=" + this.metadata.getParentMetadata());
 
     if (this.getBundle().getParent() != null) {
       println("  // Parent DAO and VO (since this table extends another one)");

@@ -7,9 +7,8 @@ import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
 import org.hotrod.database.PropertyType.ValueRange;
@@ -29,7 +28,7 @@ public class SAPASEAdapter extends DatabaseAdapter {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = LogManager.getLogger(SAPASEAdapter.class);
+  private static final Logger log = Logger.getLogger(SAPASEAdapter.class.getName());
 
   public SAPASEAdapter(final DatabaseMetaData dm) throws SQLException {
     super(dm);
@@ -53,7 +52,7 @@ public class SAPASEAdapter extends DatabaseAdapter {
   @Override
   public PropertyType getAdapterDefaultType(final ColumnMetadata m) throws UnresolvableDataTypeException {
 
-    log.debug("c.getDataType()=" + m.getDataType() + " (" + m.getPrecision() + ", " + m.getScale() + ")");
+    log.fine("c.getDataType()=" + m.getDataType() + " (" + m.getPrecision() + ", " + m.getScale() + ")");
 
     switch (m.getDataType()) {
 

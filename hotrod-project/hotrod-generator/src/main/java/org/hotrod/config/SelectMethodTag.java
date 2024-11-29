@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElementRef;
@@ -12,8 +13,6 @@ import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.EnhancedSQLPart.SQLFormatter;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
@@ -35,7 +34,7 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(SelectMethodTag.class);
+  private static final Logger log = Logger.getLogger(SelectMethodTag.class.getName());
 
   public enum ResultSetMode {
 
@@ -258,7 +257,7 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
       }
     }
 
-    log.debug("sMode=" + this.sMode + " this.graphColumns=" + this.structuredColumns + " mode=" + this.mode);
+    log.fine("sMode=" + this.sMode + " this.graphColumns=" + this.structuredColumns + " mode=" + this.mode);
 
     if (this.structuredColumns != null) { // graph <select> can only use mode LIST
       if (this.mode != ResultSetMode.LIST) {
@@ -291,7 +290,7 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
     // all validations cleared
 
-    log.debug("columns=" + this.columns.size());
+    log.fine("columns=" + this.columns.size());
   }
 
   public void validateAgainstDatabase(final Metadata metadata) throws InvalidConfigurationFileException {

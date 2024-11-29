@@ -4,9 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.generator.GeneratableObject;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.utils.ErrorMessage;
@@ -16,7 +15,7 @@ public abstract class AbstractConfigurationTag implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = LogManager.getLogger(HotRodConfigTag.class);
+  private static final Logger log = Logger.getLogger(HotRodConfigTag.class.getName());
 
   public enum TagStatus {
     UP_TO_DATE("."), MODIFIED("*"), ADDED("+"), DELETED("-");
@@ -56,7 +55,7 @@ public abstract class AbstractConfigurationTag implements Serializable {
   // Constructor
 
   protected AbstractConfigurationTag(final String tagName) {
-    log.trace("init.");
+    log.finer("init.");
     this.tagName = tagName;
     this.status = TagStatus.UP_TO_DATE;
     this.parent = null;
@@ -162,7 +161,7 @@ public abstract class AbstractConfigurationTag implements Serializable {
   }
 
   public boolean treeIncludesIsToBeGenerated(final int level) {
-    log.debug("@@ " + SUtil.getFiller(". ", level) + "[" + (this.isToBeGenerated() ? "g" : "_") + "] "
+    log.fine("@@ " + SUtil.getFiller(". ", level) + "[" + (this.isToBeGenerated() ? "g" : "_") + "] "
         + (this.status.getIcon()) + " " + this.getInternalCaption());
     if (this.isToBeGenerated()) {
       return true;
@@ -212,7 +211,7 @@ public abstract class AbstractConfigurationTag implements Serializable {
   }
 
   public ErrorMessage getBranchError() {
-    log.debug(
+    log.fine(
         " ::: " + this.getInternalCaption() + "[" + this.subTags.size() + "] this.errorMessage=" + this.errorMessage);
     if (this.errorMessage != null) {
       return this.errorMessage;
@@ -220,7 +219,7 @@ public abstract class AbstractConfigurationTag implements Serializable {
     for (AbstractConfigurationTag subTag : this.subTags) {
       ErrorMessage branchError = subTag.getBranchError();
       if (branchError != null) {
-        log.debug(" --> BRANCH ERROR FOUND!");
+        log.fine(" --> BRANCH ERROR FOUND!");
         return branchError;
       }
     }

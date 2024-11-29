@@ -4,9 +4,8 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.EnhancedSQLPart.SQLFormatter;
@@ -46,7 +45,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(SelectMethodMetadata.class);
+  private static final Logger log = Logger.getLogger(SelectMethodMetadata.class.getName());
 
   // Properties
 
@@ -143,7 +142,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
       // Graph columns
 
       try {
-        log.debug("Phase 1 - method=" + this.getMethod());
+        log.fine("Phase 1 - method=" + this.getMethod());
         this.tag.getStructuredColumns().gatherMetadataPhase1(this.tag, this.selectGenerationTag,
             this.columnsPrefixGenerator, this.cr);
       } catch (InvalidSQLException e) {
@@ -203,7 +202,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
         try {
           vo = new SelectVOClass(this.classPackage, this.tag.getVOClassName(), null, null, properties, associations,
               collections, this.tag);
-          log.debug("--> Adding VO: " + vo);
+          log.fine("--> Adding VO: " + vo);
           voRegistry.addVO(vo);
         } catch (VOAlreadyExistsException e) {
           throw new InvalidConfigurationFileException(this.tag,
@@ -226,7 +225,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
       // Graph columns
 
       try {
-        log.debug("Graph columns - Phase 2");
+        log.fine("Graph columns - Phase 2");
         this.tag.getStructuredColumns().gatherMetadataPhase2();
         this.structuredColumns = this.tag.getStructuredColumns().getMetadata();
         this.structuredColumns.registerVOs(this.classPackage, voRegistry);
@@ -443,7 +442,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
         StructuredColumnsMetadata structCols = sm.getStructuredColumns();
         this.mode = sm.getResultSetMode();
         if (structCols.getSoloVOClass() == null) { // it's a connected VO
-          log.trace(">>> it's a connected VO (1)");
+          log.finer(">>> it's a connected VO (1)");
           this.soloVO = null;
           this.abstractSoloVO = null;
 
@@ -467,7 +466,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
         }
 
       } else { // solo VO from non-graph columns
-        log.trace(">>> solo VO (3)");
+        log.finer(">>> solo VO (3)");
 
         List<VOProperty> properties = new ArrayList<VOProperty>();
         for (ColumnMetadata cm : sm.getNonStructuredColumns()) {
@@ -498,9 +497,9 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
           }
           this.connectedVO = null;
 
-          log.trace(">>> sm.getVOClassName()=" + sm.getVOClassName() + " sm.getAbstractVOClassName()="
+          log.finer(">>> sm.getVOClassName()=" + sm.getVOClassName() + " sm.getAbstractVOClassName()="
               + sm.getAbstractVOClassName());
-          log.trace("this.soloVO.getName()=" + (this.soloVO == null ? "null" : this.soloVO.getName())
+          log.finer("this.soloVO.getName()=" + (this.soloVO == null ? "null" : this.soloVO.getName())
               + " this.connectedVO.getName()=" + (this.connectedVO == null ? "null" : this.connectedVO.getName()));
 
         }

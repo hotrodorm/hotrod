@@ -4,23 +4,18 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrodorm.hotrod.utils.SUtil;
-import org.hotrodorm.hotrod.utils.TUtil;
 import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 import org.nocrala.tools.database.tartarus.core.DatabaseObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
-import org.nocrala.tools.database.tartarus.utils.XUtil;
 
 @XmlRootElement(name = "facet")
 public class FacetTag extends AbstractConfigurationTag {
@@ -29,7 +24,7 @@ public class FacetTag extends AbstractConfigurationTag {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(FacetTag.class);
+  private static final Logger log = Logger.getLogger(FacetTag.class.getName());
 
   // Properties
 
@@ -47,7 +42,7 @@ public class FacetTag extends AbstractConfigurationTag {
 
   public FacetTag() {
     super("facet");
-    log.debug("init");
+    log.fine("init");
   }
 
   // JAXB Setters

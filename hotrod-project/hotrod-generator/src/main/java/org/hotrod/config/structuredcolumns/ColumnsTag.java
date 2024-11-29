@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.EnhancedSQLPart;
 import org.hotrod.config.HotRodConfigTag;
@@ -46,7 +45,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(ColumnsTag.class);
+  private static final Logger log = Logger.getLogger(ColumnsTag.class.getName());
 
   // Properties
 
@@ -73,7 +72,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
   public ColumnsTag() {
     super("columns");
-    log.debug("init");
+    log.fine("init");
   }
 
   // JAXB Setters
@@ -123,7 +122,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   @Override
   public void validateAgainstDatabase(final Metadata metadata) throws InvalidConfigurationFileException {
 
-    log.debug("### metadata=" + metadata);
+    log.fine("### metadata=" + metadata);
 
     this.metadatarep = metadata;
 
@@ -252,7 +251,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
     for (VOTag vo : this.vos) {
       vo.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, cr);
     }
-    log.debug("EXPRESSIONS from ColumnsTag... this=" + this);
+    log.fine("EXPRESSIONS from ColumnsTag... this=" + this);
     this.expressions.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, cr);
 
   }

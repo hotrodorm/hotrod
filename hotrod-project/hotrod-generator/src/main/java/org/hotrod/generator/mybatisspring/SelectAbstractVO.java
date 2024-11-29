@@ -4,9 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.Constants;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.UncontrolledException;
@@ -17,7 +16,6 @@ import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VOMetadata.VOMember;
 import org.hotrod.metadata.VORegistry.SelectVOClass;
-import org.hotrod.runtime.json.JSONArray;
 import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ImportsRenderer;
@@ -27,7 +25,7 @@ public class SelectAbstractVO {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(SelectAbstractVO.class);
+  private static final Logger log = Logger.getLogger(SelectAbstractVO.class.getName());
 
   // Properties
 
@@ -50,14 +48,14 @@ public class SelectAbstractVO {
   // From a solo VO
   public SelectAbstractVO(final SelectVOClass abstractSoloVO, final DataSetLayout layout,
       final NamePackageResolver npResolver) {
-    log.debug("init");
+    log.fine("init");
     this.layout = layout;
 
     this.name = abstractSoloVO.getName();
     this.classPackage = npResolver.getPrimitivesVOPackage(abstractSoloVO.getClassPackage());
 
     this.columns = new ArrayList<ColumnMetadata>(abstractSoloVO.getColumnsByName().values());
-    log.debug("Name: " + this.name + " this.columns.size()=" + this.columns.size());
+    log.fine("Name: " + this.name + " this.columns.size()=" + this.columns.size());
 
     this.associationMembers = abstractSoloVO.getAssociations();
     this.collectionMembers = new ArrayList<VOMember>();
@@ -72,7 +70,7 @@ public class SelectAbstractVO {
     this.name = vo.getAbstractName();
     this.classPackage = npResolver.getPrimitivesVOPackage(vo.getClassPackage());
     this.columns = new ArrayList<ColumnMetadata>();
-    log.debug("vo.getDeclaredColumns().size()=" + vo.getDeclaredColumns().size());
+    log.fine("vo.getDeclaredColumns().size()=" + vo.getDeclaredColumns().size());
     for (ColumnMetadata cm : vo.getDeclaredColumns()) {
       this.columns.add(cm);
     }
@@ -182,7 +180,7 @@ public class SelectAbstractVO {
 
   private void writeProperties() throws IOException {
 
-    log.debug("class=" + this.getName() + " this.columns.size()=" + this.columns.size());
+    log.fine("class=" + this.getName() + " this.columns.size()=" + this.columns.size());
 
     if (!this.columns.isEmpty()) {
       println("  // Expression properties");

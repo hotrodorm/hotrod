@@ -4,10 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.ClassicFKNavigationTag;
 import org.hotrod.config.ColumnTag;
@@ -45,7 +44,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = LogManager.getLogger(TableDataSetMetadata.class);
+  private static final Logger log = Logger.getLogger(TableDataSetMetadata.class.getName());
 
   protected transient JdbcTable t;
   protected transient HotRodConfigTag config;
@@ -92,7 +91,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
       final JdbcTable parentJdbcTable, final DatabaseAdapter adapter, final HotRodConfigTag config,
       final DataSetLayout layout, final SelectMetadataCache selectMetadataCache, final boolean isFromCurrentCatalog,
       final boolean isFromCurrentSchema) throws UnresolvableDataTypeException, InvalidConfigurationFileException {
-    log.debug("init t=" + t.getName());
+    log.fine("init t=" + t.getName());
     this.t = t;
     this.config = config;
     this.adapter = adapter;
@@ -126,7 +125,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
     this.importedFKs = new ArrayList<ForeignKeyMetadata>();
     for (JdbcForeignKey fk : this.t.getImportedFks()) {
-      log.debug("imported FK: " + renderFK(t, fk));
+      log.fine("imported FK: " + renderFK(t, fk));
       KeyMetadata ikm;
       TableTag remoteTableTag = this.config.getTableTag(fk.getRemoteTable());
       if (remoteTableTag != null) {
@@ -146,10 +145,10 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
     this.exportedFKs = new ArrayList<ForeignKeyMetadata>();
     for (JdbcForeignKey fk : this.t.getExportedFks()) {
-      log.debug("exported FK: " + renderExportedFK(t, fk));
+      log.fine("exported FK: " + renderExportedFK(t, fk));
       KeyMetadata ekm;
       TableTag remoteTableTag = this.config.getTableTag(fk.getRemoteTable());
-      log.debug("remoteTableTag=" + remoteTableTag);
+      log.fine("remoteTableTag=" + remoteTableTag);
       if (remoteTableTag != null) {
         ekm = getKeyMetadata(fk.getRemoteKey(), remoteTableTag);
       } else {
@@ -168,7 +167,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
     this.nonPKCols = getColumnsMetadata(this.t.getNonPkColumns(), tableTag);
 
     this.id = tableTag.getId();
-    log.debug("this.t.getName()=" + this.t.getName());
+    log.fine("this.t.getName()=" + this.t.getName());
 
     VersionControlColumnTag vct = tableTag.getVersionControlColumn();
     if (vct == null) {
@@ -180,7 +179,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
             + "'.";
         throw new InvalidConfigurationFileException(vct, msg);
       }
-      log.debug("### VERSION CONTROL COLUMN SETTING: c=" + vcm.getName() + " c=" + System.identityHashCode(vcm));
+      log.fine("### VERSION CONTROL COLUMN SETTING: c=" + vcm.getName() + " c=" + System.identityHashCode(vcm));
       vcm.setVersionControlColumn(true);
       this.vcm = new VersionControlMetadata(this, vct, vcm, this.adapter);
     }
@@ -312,7 +311,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
     // parent tables
 
-    log.debug("" + this.id + ": this.parentTag=" + this.parentTag);
+    log.fine("" + this.id + ": this.parentTag=" + this.parentTag);
 
     this.parent = null;
     if (this.parentTag != null) {
@@ -321,7 +320,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
           this.parent = o;
         }
       }
-      log.debug("" + this.id + ": parent=" + this.parent);
+      log.fine("" + this.id + ": parent=" + this.parent);
       if (this.parent == null) {
         throw new InvalidConfigurationFileException(this.daoTag,
             "Could not find parent table '" + this.parentTag.getId() + "' that is extended by '" + this.id + "'.");
@@ -333,10 +332,10 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
   public void linkEnumMetadata(final Set<EnumDataSetMetadata> enums) {
     for (ForeignKeyMetadata ifk : this.importedFKs) {
-      log.debug("FK: " + ifk.toString());
+      log.fine("FK: " + ifk.toString());
       try {
         EnumDataSetMetadata em = (EnumDataSetMetadata) ifk.getRemote().getTableMetadata();
-        log.debug(" - em=" + em);
+        log.fine(" - em=" + em);
         for (ColumnMetadata icm : ifk.getLocal().getColumns()) {
 
           // Mark FK column
@@ -347,7 +346,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
           for (ColumnMetadata cm : this.cols) {
             if (cm.getName().equals(icm.getName())) {
-              log.debug("   + marking column.");
+              log.fine("   + marking column.");
               cm.setEnumMetadata(em);
             }
           }
@@ -404,9 +403,9 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
       // this.selectMetadataCache.get(this.javaName, selectTag.getMethod());
       SelectMethodMetadata cachedSm = null;
       // TODO: Clean up
-//      log.debug("[" + this.getId().getCanonicalSQLName() + "] " + selectTag.getMethod() + "() cache["
+//      log.fine("[" + this.getId().getCanonicalSQLName() + "] " + selectTag.getMethod() + "() cache["
 //          + this.id.getCanonicalSQLName() + "]=" + cachedSm + " cache[" + this.selectMetadataCache.size() + "]");
-//      log.debug(" cache entries: " + this.selectMetadataCache.listNames());
+//      log.fine(" cache entries: " + this.selectMetadataCache.listNames());
 
       if (referencesAMarkedEntity(selectTag.getReferencedEntities())) {
         selectTag.markGenerate();
@@ -435,7 +434,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
         }
         this.selectsMetadata.add(sm);
         sm.gatherMetadataPhase1();
-        log.debug(">>>   [Fresh] sm.metadataComplete()=" + sm.metadataComplete());
+        log.fine(">>>   [Fresh] sm.metadataComplete()=" + sm.metadataComplete());
 
       }
     }
@@ -453,11 +452,11 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
   public void gatherSelectsMetadataPhase2(final VORegistry voRegistry)
       throws ControlledException, UncontrolledException, InvalidConfigurationFileException {
-    log.debug("*** DataSet " + this.id.getRenderedSQLName() + ":");
+    log.fine("*** DataSet " + this.id.getRenderedSQLName() + ":");
     for (SelectMethodMetadata sm : this.selectsMetadata) {
-      log.debug("*** - table-like method " + sm.getMethod() + "() sm.metadataComplete()=" + sm.metadataComplete());
+      log.fine("*** - table-like method " + sm.getMethod() + "() sm.metadataComplete()=" + sm.metadataComplete());
       if (!sm.metadataComplete()) {
-        log.debug("... method: " + sm.getMethod());
+        log.fine("... method: " + sm.getMethod());
         sm.gatherMetadataPhase2(voRegistry);
       }
     }

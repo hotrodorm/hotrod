@@ -12,13 +12,12 @@ import java.sql.Types;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public final class JdbcUtils {
 
-  private static Logger logger = LogManager.getLogger(JdbcUtils.class);
+  private static Logger log = Logger.getLogger(JdbcUtils.class.getName());
 
   private JdbcUtils() {
   }
@@ -26,13 +25,13 @@ public final class JdbcUtils {
   public static Connection buildStandAloneConnection(final String dbDriverClassName, final String dbUrl,
       final String username, final String password) throws SQLException, ClassNotFoundException {
 
-    logger.debug("dbDriverClassName=" + dbDriverClassName);
+    log.fine("dbDriverClassName=" + dbDriverClassName);
     Class.forName(dbDriverClassName);
-    logger.debug("getConnection 4. dbUrl=" + dbUrl);
-    logger.debug("getConnection 5. username=" + username);
-    logger.debug("getConnection 6. password=" + password);
+    log.fine("getConnection 4. dbUrl=" + dbUrl);
+    log.fine("getConnection 5. username=" + username);
+    log.fine("getConnection 6. password=" + password);
     Connection conn = DriverManager.getConnection(dbUrl, username, password);
-    logger.debug("Succesfull database connection.");
+    log.fine("Succesfull database connection.");
     return conn;
   }
 
@@ -41,7 +40,7 @@ public final class JdbcUtils {
       try {
         conn.close();
       } catch (SQLException e) {
-        logger.error("Cannot close connection.", e);
+        log.log(Level.SEVERE, "Cannot close connection.", e);
       }
     }
   }
@@ -51,7 +50,7 @@ public final class JdbcUtils {
       try {
         s.close();
       } catch (SQLException e) {
-        logger.error("Cannot close Statement.", e);
+        log.log(Level.SEVERE, "Cannot close Statement.", e);
       }
     }
   }
@@ -62,7 +61,7 @@ public final class JdbcUtils {
       try {
         s.close();
       } catch (SQLException e) {
-        logger.error("Cannot close Statement.", e);
+        log.log(Level.SEVERE, "Cannot close Statement.", e);
       }
     }
     closeDbResources(conn);
@@ -73,7 +72,7 @@ public final class JdbcUtils {
       try {
         rs.close();
       } catch (SQLException e) {
-        logger.error("Cannot close ResultSet.", e);
+        log.log(Level.SEVERE, "Cannot close ResultSet.", e);
       }
     }
     closeDbResources(conn, s);
@@ -84,7 +83,7 @@ public final class JdbcUtils {
       try {
         rs.close();
       } catch (SQLException e) {
-        logger.error("Cannot close ResultSet.", e);
+        log.log(Level.SEVERE, "Cannot close ResultSet.", e);
       }
     }
     closeDbResources(s);
@@ -95,7 +94,7 @@ public final class JdbcUtils {
       try {
         rs.close();
       } catch (SQLException e) {
-        logger.error("Cannot close ResultSet.", e);
+        log.log(Level.SEVERE, "Cannot close ResultSet.", e);
       }
     }
   }

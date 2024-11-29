@@ -2,12 +2,11 @@ package org.hotrod.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 
 @XmlRootElement(name = "foreign-keys")
@@ -17,7 +16,7 @@ public class ForeignKeysTag extends AbstractConfigurationTag {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(ForeignKeysTag.class);
+  private static final Logger log = Logger.getLogger(ForeignKeysTag.class.getName());
 
   static final String TAG_NAME = "foreign-keys";
 
@@ -29,7 +28,7 @@ public class ForeignKeysTag extends AbstractConfigurationTag {
 
   public ForeignKeysTag() {
     super("foreign-keys");
-    log.debug("init");
+    log.fine("init");
   }
 
   // JAXB Setters

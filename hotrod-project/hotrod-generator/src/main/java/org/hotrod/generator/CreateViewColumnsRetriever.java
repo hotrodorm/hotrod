@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.ColumnTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.SQLParameter;
@@ -36,7 +36,7 @@ import org.nocrala.tools.database.tartarus.utils.JdbcUtil;
 
 public class CreateViewColumnsRetriever implements ColumnsRetriever {
 
-  private static final Logger log = LogManager.getLogger(CreateViewColumnsRetriever.class);
+  private static final Logger log = Logger.getLogger(CreateViewColumnsRetriever.class.getName());
 
   private HotRodConfigTag config;
   private DatabaseLocation dloc;
@@ -68,7 +68,7 @@ public class CreateViewColumnsRetriever implements ColumnsRetriever {
 
     @Override
     public String render(final SQLParameter parameter) {
-      log.debug("prepare view 0.1 -- parameter=" + parameter.getDefinition());
+      log.fine("prepare view 0.1 -- parameter=" + parameter.getDefinition());
       parameterJDBCTypes.add(parameter.getDefinition().getJDBCType());
       return "#{" + parameter.getName() + "}";
     }
@@ -81,12 +81,12 @@ public class CreateViewColumnsRetriever implements ColumnsRetriever {
   public void phase1Flat(final String key, final SelectMethodTag tag, final SelectMethodMetadata sm)
       throws InvalidSQLException {
 
-    log.debug("prepare view 0");
+    log.fine("prepare view 0");
 
     RetrievalContext ctx = new RetrievalContext(tag, sm);
     this.contexts.put(key, ctx);
 
-    log.debug("prepare view 1");
+    log.fine("prepare view 1");
 
     CreateViewParameterRenderer pr = new CreateViewParameterRenderer();
     String foundation = tag.renderSQLSentence(pr);
@@ -97,18 +97,18 @@ public class CreateViewColumnsRetriever implements ColumnsRetriever {
 
     // 1. Drop (if exists) the view.
 
-    log.debug("prepare view - will drop view: " + dropView);
+    log.fine("prepare view - will drop view: " + dropView);
 
     {
       PreparedStatement ps = null;
       try {
         ps = this.conn.prepareStatement(dropView);
-        log.debug("prepare view - will execute drop view");
+        log.fine("prepare view - will execute drop view");
         ps.execute();
-        log.debug("prepare view - view dropped");
+        log.fine("prepare view - view dropped");
 
       } catch (Exception e) {
-        log.debug("prepare view - exception while dropping view", e);
+        log.log(Level.FINE, "prepare view - exception while dropping view", e);
         // Ignore this exception
       } finally {
         JdbcUtil.closeDbResources(ps);
@@ -117,20 +117,20 @@ public class CreateViewColumnsRetriever implements ColumnsRetriever {
 
     // 2. Create or replace the view.
 
-    log.debug("prepare view - will create view: " + createView);
+    log.fine("prepare view - will create view: " + createView);
 
     {
       PreparedStatement ps = null;
       try {
         ps = this.conn.prepareStatement(createView);
-        log.debug("prepare view - will execute create view");
+        log.fine("prepare view - will execute create view");
         ps.execute();
-        log.debug("prepare view - view created");
+        log.fine("prepare view - view created");
 
       } catch (SQLException e) {
         throw new InvalidSQLException(createView, e);
       } finally {
-        log.debug("prepare view - will close resources");
+        log.fine("prepare view - will close resources");
         JdbcUtil.closeDbResources(ps);
       }
     }
@@ -160,10 +160,10 @@ public class CreateViewColumnsRetriever implements ColumnsRetriever {
       while (rs.next()) {
         JdbcColumn c = this.db.retrieveSelectColumn(rs);
         ColumnTag columnTag = ctx.getTag().findColumnTag(c.getName(), this.adapter);
-        log.debug("c=" + c.getName() + " / col: " + columnTag);
+        log.fine("c=" + c.getName() + " / col: " + columnTag);
         ColumnMetadata cm = new ColumnMetadata(ctx.getSm(), c, ctx.getTag().getMethod(), this.adapter, columnTag, false,
             false, this.config.getTypeSolverTag());
-        log.debug(" --> type=" + cm.getType());
+        log.fine(" --> type=" + cm.getType());
         nonStructuredColumns.add(cm);
       }
 
@@ -194,12 +194,12 @@ public class CreateViewColumnsRetriever implements ColumnsRetriever {
       final String entityPrefix, final ColumnsProvider columnsProvider, final SelectMethodMetadata sm)
       throws InvalidSQLException {
 
-    log.debug("prepare view 0");
+    log.fine("prepare view 0");
 
     RetrievalContext ctx = new RetrievalContext(selectTag, sm);
     this.contexts.put(key, ctx);
 
-    log.debug("prepare view 1");
+    log.fine("prepare view 1");
     CreateViewParameterRenderer pr = new CreateViewParameterRenderer();
     String foundation = selectTag.renderSQLAngle(pr, columnsProvider, this.adapter);
     ctx.setCleanedUpFoundation(SQLUtil.cleanUpSQL(foundation));
@@ -209,18 +209,18 @@ public class CreateViewColumnsRetriever implements ColumnsRetriever {
 
     // 1. Drop (if exists) the view.
 
-    log.debug("prepare view - will drop view: " + dropView);
+    log.fine("prepare view - will drop view: " + dropView);
 
     {
       PreparedStatement ps = null;
       try {
         ps = this.conn.prepareStatement(dropView);
-        log.debug("prepare view - will execute drop view");
+        log.fine("prepare view - will execute drop view");
         ps.execute();
-        log.debug("prepare view - view dropped");
+        log.fine("prepare view - view dropped");
 
       } catch (Exception e) {
-        log.debug("prepare view - exception while dropping view", e);
+        log.log(Level.FINE, "prepare view - exception while dropping view", e);
         // Ignore this exception
       } finally {
         JdbcUtil.closeDbResources(ps);
@@ -229,21 +229,21 @@ public class CreateViewColumnsRetriever implements ColumnsRetriever {
 
     // 2. Create or replace the view.
 
-    log.debug("prepare view - will create view: " + createView);
+    log.fine("prepare view - will create view: " + createView);
 
     {
       PreparedStatement ps = null;
       try {
         ps = this.conn.prepareStatement(createView);
-        log.debug("prepare view - will execute create view");
+        log.fine("prepare view - will execute create view");
         ps.execute();
-        log.debug("prepare view - view created");
+        log.fine("prepare view - view created");
 
       } catch (SQLException e) {
-        log.debug("prepare view - exception while creating view", e);
+        log.log(Level.FINE, "prepare view - exception while creating view", e);
         throw new InvalidSQLException(createView, e);
       } finally {
-        log.debug("prepare view - will close resources");
+        log.fine("prepare view - will close resources");
         JdbcUtil.closeDbResources(ps);
       }
     }

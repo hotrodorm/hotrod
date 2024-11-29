@@ -2,9 +2,8 @@ package org.hotrod.generator.mybatisspring;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.Constants;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.EnumTag.EnumConstant;
@@ -23,7 +22,7 @@ public class EnumClass extends GeneratableObject {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(EnumClass.class);
+  private static final Logger log = Logger.getLogger(EnumClass.class.getName());
 
   // Properties
 
@@ -46,7 +45,7 @@ public class EnumClass extends GeneratableObject {
 
   public EnumClass(final EnumDataSetMetadata metadata, final DataSetLayout layout, final DaosTag daos,
       final MyBatisSpringGenerator generator) {
-    log.debug("init");
+    log.fine("init");
     this.metadata = metadata;
     this.layout = layout;
     this.daos = daos;

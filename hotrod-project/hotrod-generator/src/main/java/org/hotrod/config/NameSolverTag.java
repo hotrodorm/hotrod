@@ -2,12 +2,11 @@ package org.hotrod.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.NameSolverNameTag.Scope;
 import org.hotrod.exceptions.CouldNotResolveNameException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
@@ -19,7 +18,7 @@ public class NameSolverTag extends AbstractConfigurationTag {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(NameSolverTag.class);
+  private static final Logger log = Logger.getLogger(NameSolverTag.class.getName());
 
   // Properties
 
@@ -29,7 +28,7 @@ public class NameSolverTag extends AbstractConfigurationTag {
 
   public NameSolverTag() {
     super("name-solver");
-    log.debug("init");
+    log.fine("init");
   }
 
   // JAXB Setters

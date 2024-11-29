@@ -7,9 +7,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Properties;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.Constants;
 import org.hotrod.config.DisplayMode;
 import org.hotrod.exceptions.ControlledException;
@@ -24,7 +23,7 @@ import org.nocrala.tools.database.tartarus.utils.XUtil;
 
 public abstract class AbstractExportColumnsOperation {
 
-  private static final Logger log = LogManager.getLogger(AbstractExportColumnsOperation.class);
+  private static final Logger log = Logger.getLogger(AbstractExportColumnsOperation.class.getName());
 
   protected File baseDir;
   protected String configfilename = null;
@@ -52,7 +51,7 @@ public abstract class AbstractExportColumnsOperation {
       final String localproperties, final String jdbcdriverclass, final String jdbcurl, final String jdbcusername,
       final String jdbcpassword, final String jdbccatalog, final String jdbcschema, final String facets,
       final String display, final String exportfilename) {
-    log.debug("exportfilename=" + exportfilename);
+    log.fine("exportfilename=" + exportfilename);
     this.baseDir = baseDir;
     this.configfilename = configfilename;
     this.localproperties = localproperties;
@@ -68,7 +67,7 @@ public abstract class AbstractExportColumnsOperation {
   }
 
   public final void execute(final Feedback feedback) throws Exception {
-    log.debug("init");
+    log.fine("init");
 
     feedback.info(Constants.TOOL_NAME + " version " + BuildInformation.VERSION + " (build " + BuildInformation.BUILD_ID
         + ") - Export Columns TXT");
@@ -82,7 +81,7 @@ public abstract class AbstractExportColumnsOperation {
 
       Generator g = hc.getConfig().getGenerators().getSelectedGeneratorTag().instantiateGenerator(hc, null,
           this.displayMode, false, feedback);
-      log.debug("Generator instantiated.");
+      log.fine("Generator instantiated.");
 
       g.prepareGeneration();
       exportColumns(g);

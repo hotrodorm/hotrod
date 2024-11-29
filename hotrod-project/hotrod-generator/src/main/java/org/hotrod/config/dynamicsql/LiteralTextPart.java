@@ -1,7 +1,7 @@
 package org.hotrod.config.dynamicsql;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Logger;
+
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
@@ -16,7 +16,7 @@ public class LiteralTextPart extends DynamicSQLPart implements SQLSegment {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(LiteralTextPart.class);
+  private static final Logger log = Logger.getLogger(LiteralTextPart.class.getName());
 
   // Properties
 
@@ -27,7 +27,7 @@ public class LiteralTextPart extends DynamicSQLPart implements SQLSegment {
 
   public LiteralTextPart(final SourceLocation location, final String text) {
     super("not-a-tag-but-literal-text");
-    log.debug("init");
+    log.fine("init");
     this.location = location;
     this.text = text;
   }

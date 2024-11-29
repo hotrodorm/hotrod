@@ -1,9 +1,8 @@
 package org.hotrod.utils;
 
 import java.util.List;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
@@ -21,7 +20,7 @@ public class ColumnsMetadataRetriever {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(ColumnsMetadataRetriever.class);
+  private static final Logger log = Logger.getLogger(ColumnsMetadataRetriever.class.getName());
 
   // Properties
 
@@ -44,7 +43,7 @@ public class ColumnsMetadataRetriever {
   public ColumnsMetadataRetriever(final SelectMethodTag selectTag, final DatabaseAdapter adapter, final JdbcDatabase db,
       final DatabaseLocation loc, final SelectGenerationTag selectGenerationTag, final ColumnsProvider columnsProvider,
       final String entityPrefix, final ColumnsPrefixGenerator columnsPrefixGenerator, final ColumnsRetriever cr) {
-    log.debug("init");
+    log.fine("init");
     this.selectTag = selectTag;
     this.adapter = adapter;
     this.db = db;

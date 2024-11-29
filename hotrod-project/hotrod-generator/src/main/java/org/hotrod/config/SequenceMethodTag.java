@@ -1,10 +1,10 @@
 package org.hotrod.config;
 
+import java.util.logging.Logger;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
@@ -19,7 +19,7 @@ public class SequenceMethodTag extends AbstractMethodTag<SequenceMethodTag> {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(SequenceMethodTag.class);
+  private static final Logger log = Logger.getLogger(SequenceMethodTag.class.getName());
 
   static final String TAG_NAME = "sequence";
 
@@ -35,7 +35,7 @@ public class SequenceMethodTag extends AbstractMethodTag<SequenceMethodTag> {
 
   public SequenceMethodTag() {
     super("sequence");
-    log.debug("init");
+    log.fine("init");
   }
 
   // JAXB Setters
@@ -66,7 +66,7 @@ public class SequenceMethodTag extends AbstractMethodTag<SequenceMethodTag> {
       final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 
-    log.debug(">>> VALIDATING SEQUENCE.");
+    log.fine(">>> VALIDATING SEQUENCE.");
 
     super.validate(daosTag, config, fragmentConfig);
 

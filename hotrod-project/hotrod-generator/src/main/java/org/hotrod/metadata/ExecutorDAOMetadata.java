@@ -4,9 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.ExecutorTag;
 import org.hotrod.config.HotRodConfigTag;
@@ -33,7 +32,7 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(ExecutorDAOMetadata.class);
+  private static final Logger log = Logger.getLogger(ExecutorDAOMetadata.class.getName());
 
   // Properties
 
@@ -68,7 +67,7 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
   private void initialize(final ExecutorTag tag, final DatabaseAdapter adapter, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, final SelectMetadataCache selectMetadataCache)
       throws InvalidIdentifierException {
-    log.debug("init");
+    log.fine("init");
     this.tag = tag;
     this.config = config;
     this.adapter = adapter;
@@ -97,7 +96,7 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
       // this.selectMetadataCache.get(this.getJavaClassName(),
       // selectTag.getMethod());
       SelectMethodMetadata cachedSm = null; // Do not use cache, for now.
-      log.debug("[" + this.getId().getCanonicalSQLName() + "] " + selectTag.getMethod() + "() cache["
+      log.fine("[" + this.getId().getCanonicalSQLName() + "] " + selectTag.getMethod() + "() cache["
           + this.getJavaClassName() + "]=" + cachedSm + " cache[" + this.selectMetadataCache.size() + "]");
 
       if (referencesAMarkedEntity(selectTag.getReferencedEntities())) {
@@ -127,7 +126,7 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
         }
         this.selectsMetadata.add(sm);
         sm.gatherMetadataPhase1();
-        log.debug(">>>   [Fresh] sm.metadataComplete()=" + sm.metadataComplete());
+        log.fine(">>>   [Fresh] sm.metadataComplete()=" + sm.metadataComplete());
 
       }
     }
@@ -146,7 +145,7 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
   public void gatherSelectsMetadataPhase2(final VORegistry voRegistry)
       throws UncontrolledException, InvalidConfigurationFileException {
     for (SelectMethodMetadata sm : this.selectsMetadata) {
-      log.debug("*** - executor method " + sm.getMethod() + "() sm.metadataComplete()=" + sm.metadataComplete());
+      log.fine("*** - executor method " + sm.getMethod() + "() sm.metadataComplete()=" + sm.metadataComplete());
       if (!sm.metadataComplete()) {
         sm.gatherMetadataPhase2(voRegistry);
       }

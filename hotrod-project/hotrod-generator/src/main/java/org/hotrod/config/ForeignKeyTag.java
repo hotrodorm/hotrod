@@ -1,10 +1,10 @@
 package org.hotrod.config;
 
+import java.util.logging.Logger;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrodorm.hotrod.utils.SUtil;
 
@@ -15,7 +15,7 @@ public class ForeignKeyTag extends AbstractConfigurationTag {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(ForeignKeyTag.class);
+  private static final Logger log = Logger.getLogger(ForeignKeyTag.class.getName());
 
   static final String TAG_NAME = "foreign-key";
 
@@ -30,7 +30,7 @@ public class ForeignKeyTag extends AbstractConfigurationTag {
 
   public ForeignKeyTag() {
     super("foreign-key");
-    log.debug("init");
+    log.fine("init");
   }
 
   // JAXB Setters

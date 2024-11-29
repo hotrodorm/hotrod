@@ -8,12 +8,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.identifiers.ObjectId;
@@ -42,7 +41,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(AbstractDAOTag.class);
+  private static final Logger log = Logger.getLogger(AbstractDAOTag.class.getName());
 
   // Properties
 
@@ -108,7 +107,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag {
       }
       seqNames.add(s.getSequenceId());
       this.declaredMethodNames.add(method);
-      log.debug("* added '" + method + "'");
+      log.fine("* added '" + method + "'");
     }
 
     // queries
@@ -124,7 +123,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag {
                 + "even if they have different parameters (different signature).");
       }
       this.declaredMethodNames.add(q.getMethod());
-      log.debug("* added '" + q.getMethod() + "'");
+      log.fine("* added '" + q.getMethod() + "'");
     }
 
     // selects
@@ -176,7 +175,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag {
   }
 
   public final Set<String> getDeclaredMethodNames() {
-    log.debug("get methods.");
+    log.fine("get methods.");
     return this.declaredMethodNames;
   }
 

@@ -3,12 +3,11 @@ package org.hotrod.config;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.GeneratorNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
@@ -21,7 +20,7 @@ public class GeneratorsTag extends AbstractConfigurationTag {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(GeneratorsTag.class);
+  private static final Logger log = Logger.getLogger(GeneratorsTag.class.getName());
 
   // Properties
 
@@ -33,7 +32,7 @@ public class GeneratorsTag extends AbstractConfigurationTag {
 
   public GeneratorsTag() {
     super("generators");
-    log.debug("init");
+    log.fine("init");
   }
 
   public void enableDiscover() {
@@ -66,7 +65,7 @@ public class GeneratorsTag extends AbstractConfigurationTag {
   // Getters
 
   public AbstractGeneratorTag getSelectedGeneratorTag() {
-    log.debug("this.selectedGeneratorTag=" + this.selectedGeneratorTag);
+    log.fine("this.selectedGeneratorTag=" + this.selectedGeneratorTag);
     return this.selectedGeneratorTag;
   }
 

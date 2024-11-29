@@ -1,9 +1,8 @@
 package org.hotrod.database;
 
 import java.io.Serializable;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.ColumnUtils;
@@ -14,7 +13,7 @@ public class PropertyType implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = LogManager.getLogger(PropertyType.class);
+  private static final Logger log = Logger.getLogger(PropertyType.class.getName());
 
   private String javaClassName;
   private JDBCType jdbcType;
@@ -39,7 +38,7 @@ public class PropertyType implements Serializable {
 
     public ValueRange(long initialValue, long minValue, long maxValue) {
       super();
-      log.debug("init");
+      log.fine("init");
       this.initialValue = initialValue;
       this.minValue = minValue;
       this.maxValue = maxValue;

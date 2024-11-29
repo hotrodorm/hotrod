@@ -2,9 +2,8 @@ package org.hotrod.generator.mybatisspring;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.TypeSolverTag;
 import org.hotrod.config.TypeSolverWhenTag;
 import org.hotrod.exceptions.ControlledException;
@@ -15,7 +14,7 @@ import org.hotrodorm.hotrod.utils.SUtil;
 
 public class LayerConfigWriter {
 
-  private static final Logger log = LogManager.getLogger(LayerConfigWriter.class);
+  private static final Logger log = Logger.getLogger(LayerConfigWriter.class.getName());
 
   private static final String CLASS_NAME = "ThisLayerConfig";
 

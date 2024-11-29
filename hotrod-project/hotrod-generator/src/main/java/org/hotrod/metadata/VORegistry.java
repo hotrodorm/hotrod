@@ -4,9 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.metadata.VOMetadata.DuplicatePropertyNameException;
 import org.hotrod.metadata.VOMetadata.VOMember;
@@ -28,7 +27,7 @@ public class VORegistry {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(VORegistry.class);
+  private static final Logger log = Logger.getLogger(VORegistry.class.getName());
 
   // Properties
 
@@ -38,7 +37,7 @@ public class VORegistry {
 
   // From <table> and <view>
   public void addVO(final EntityVOClass voClass) throws VOAlreadyExistsException, StructuredVOAlreadyExistsException {
-    log.debug("add");
+    log.fine("add");
     ClassPackage classPackage = voClass.getClassPackage();
     FragmentRegistry f = this.fragmentsByPackage.get(classPackage);
     if (f == null) {
@@ -126,7 +125,7 @@ public class VORegistry {
     }
 
     public void addVO(final SelectVOClass voClass) throws VOAlreadyExistsException, StructuredVOAlreadyExistsException {
-      log.debug(
+      log.fine(
           "[graph] fragment=" + this.classPackage.getPackage() + " voClass=" + voClass.getClassPackage().getPackage()
               + " / " + voClass.getName() + " " + this.vosByName.containsKey(voClass.getName()) + "/"
               + this.structuredVOsByName.containsKey(voClass.getName()));
@@ -454,11 +453,11 @@ public class VORegistry {
 
     public VOPropertiesRegistry(final String name) {
       this.name = name;
-      log.debug("--- Properties '" + this.name + "' ---");
+      log.fine("--- Properties '" + this.name + "' ---");
     }
 
     public void add(final VOProperty property) throws DuplicatePropertyNameException {
-      log.debug(" " + this.name + " [" + this.properties.size() + "] + " + property);
+      log.fine(" " + this.name + " [" + this.properties.size() + "] + " + property);
       for (VOProperty existing : this.properties) {
         if (existing.getName().equals(property.getName())) {
           throw new DuplicatePropertyNameException(property, existing);

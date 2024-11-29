@@ -3,16 +3,15 @@ package org.hotrod.utils;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidPackageException;
 
 public class ClassPackage implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = LogManager.getLogger(ClassPackage.class);
+  private static final Logger log = Logger.getLogger(ClassPackage.class.getName());
 
   private static final String CHUNK_PATTERN = "[a-zA-Z][a-zA-Z$_0-9]*+";
   private static final String PACKAGE_PATTERN = CHUNK_PATTERN + "(\\." + CHUNK_PATTERN + ")*";
@@ -27,7 +26,7 @@ public class ClassPackage implements Serializable {
 
   public ClassPackage(final String pkg) throws InvalidPackageException {
 
-    log.debug("init");
+    log.fine("init");
 
     if (pkg == null) {
       throw new InvalidPackageException("Package cannot be empty.");

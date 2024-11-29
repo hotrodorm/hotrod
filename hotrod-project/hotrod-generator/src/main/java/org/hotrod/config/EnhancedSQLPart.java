@@ -2,9 +2,8 @@ package org.hotrod.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
@@ -20,7 +19,7 @@ public abstract class EnhancedSQLPart extends AbstractConfigurationTag {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = LogManager.getLogger(EnhancedSQLPart.class);
+  private static final Logger log = Logger.getLogger(EnhancedSQLPart.class.getName());
 
   // Properties
 

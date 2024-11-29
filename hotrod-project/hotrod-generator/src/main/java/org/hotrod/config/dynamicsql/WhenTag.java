@@ -1,10 +1,10 @@
 package org.hotrod.config.dynamicsql;
 
+import java.util.logging.Logger;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
@@ -18,7 +18,7 @@ public class WhenTag extends DynamicSQLPart {
 
   // Constants
 
-  private static final Logger log = LogManager.getLogger(WhenTag.class);
+  private static final Logger log = Logger.getLogger(WhenTag.class.getName());
 
   // Constructor
 
@@ -34,7 +34,7 @@ public class WhenTag extends DynamicSQLPart {
 
   @XmlAttribute
   public void setTest(final String test) {
-    log.debug("init");
+    log.fine("init");
     this.test = test;
   }
 

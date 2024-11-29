@@ -1,16 +1,15 @@
 package org.hotrod.plugin.ant;
 
 import java.io.File;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.hotrod.plugin.ExportColumnsToXLSXOperation;
 
 public class ExportColumnsToXLSXAntTask extends Task {
 
-  private static transient final Logger log = LogManager.getLogger(ExportColumnsToXLSXAntTask.class);
+  private static transient final Logger log = Logger.getLogger(ExportColumnsToXLSXAntTask.class.getName());
 
   private String configfile = null;
   private String localproperties = null;
@@ -28,7 +27,7 @@ public class ExportColumnsToXLSXAntTask extends Task {
 
   @Override
   public void execute() {
-    log.debug("init");
+    log.fine("init");
 
     ExportColumnsToXLSXOperation op = new ExportColumnsToXLSXOperation(new File("."), this.configfile,
         this.localproperties, this.jdbcdriverclass, this.jdbcurl, this.jdbcusername, this.jdbcpassword,

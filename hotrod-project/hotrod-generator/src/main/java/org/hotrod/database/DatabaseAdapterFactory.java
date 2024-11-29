@@ -3,9 +3,9 @@ package org.hotrod.database;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.config.Constants;
 import org.hotrod.database.adapters.ApacheDerbyAdapter;
 import org.hotrod.database.adapters.DB2Adapter;
@@ -23,11 +23,11 @@ import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
 public final class DatabaseAdapterFactory {
 
-  private static final Logger log = LogManager.getLogger(DatabaseAdapterFactory.class);
+  private static final Logger log = Logger.getLogger(DatabaseAdapterFactory.class.getName());
 
   public static DatabaseAdapter getAdapter(final DatabaseLocation loc)
       throws UnrecognizedDatabaseException, UncontrolledException {
-    log.debug("init.");
+    log.fine("init.");
 
     Connection conn = null;
 
@@ -48,7 +48,7 @@ public final class DatabaseAdapterFactory {
         try {
           conn.close();
         } catch (SQLException e) {
-          log.warn("Could not close connection to database at URL: " + loc.getUrl(), e);
+          log.log(Level.WARNING, "Could not close connection to database at URL: " + loc.getUrl(), e);
         }
       }
     }

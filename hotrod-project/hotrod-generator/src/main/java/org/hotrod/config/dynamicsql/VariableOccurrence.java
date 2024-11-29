@@ -1,7 +1,7 @@
 package org.hotrod.config.dynamicsql;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Logger;
+
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.dynamicsql.expressions.VariableExpression;
@@ -12,7 +12,7 @@ public class VariableOccurrence implements SQLSegment {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = LogManager.getLogger(VariableOccurrence.class);
+  private static final Logger log = Logger.getLogger(VariableOccurrence.class.getName());
 
   // Properties
 
@@ -21,7 +21,7 @@ public class VariableOccurrence implements SQLSegment {
   // Constructor
 
   public VariableOccurrence(final String name) {
-    log.debug("init");
+    log.fine("init");
     this.name = name;
   }
 
