@@ -1,5 +1,6 @@
 package org.hotrod.plugin.maven;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -14,6 +15,10 @@ import org.hotrod.plugin.GenOperation;
 public class GenMojo extends AbstractMojo {
 
   private static transient final Logger log = Logger.getLogger(GenMojo.class.getName());
+
+  static {
+    JULCustomFormatter.initialize(Level.INFO);
+  }
 
   // Note: 1) Each property must be annotated by @Parameter. 2) The property
   // attribute -- if declared -- must be the exact same name as the Java member

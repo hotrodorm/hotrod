@@ -1,6 +1,7 @@
 package org.hotrod.plugin.ant;
 
 import java.io.File;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.tools.ant.BuildException;
@@ -10,6 +11,10 @@ import org.hotrod.plugin.GenOperation;
 public class GenAntTask extends Task {
 
   private static transient final Logger log = Logger.getLogger(GenAntTask.class.getName());
+
+  static {
+    JULCustomFormatter.initialize(Level.INFO);
+  }
 
   private String configfile = null;
   private String localproperties = null;
