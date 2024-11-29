@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
-import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
-import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
-import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
+import org.hotrod.runtime.livesql.expressions.datetime.GeneralDateTimeExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.GeneralNumberExpression;
+import org.hotrod.runtime.livesql.expressions.strings.GeneralStringExpression;
 import org.hotrod.runtime.livesql.ordering.OHelper;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
@@ -297,8 +297,8 @@ public class PostgreSQLDialect extends LiveSQLDialect {
       // General purpose functions
 
       @Override
-      public void groupConcat(final QueryWriter w, final boolean distinct, final StringExpression value,
-          final List<OrderingTerm> ordering, final StringExpression separator) {
+      public void groupConcat(final QueryWriter w, final boolean distinct, final GeneralStringExpression value,
+          final List<OrderingTerm> ordering, final GeneralStringExpression separator) {
         if (!versionIsAtLeast(9)) {
           throw new UnsupportedLiveSQLFeatureException("This PostgreSQL version (" + renderVersion()
               + ") does not support the GROUP_CONCAT() function (string_agg()). Only available on PostgreSQL 9.0 or newer");
@@ -329,7 +329,7 @@ public class PostgreSQLDialect extends LiveSQLDialect {
       // Arithmetic functions
 
       @Override
-      public void logarithm(final QueryWriter w, final NumberExpression x, final NumberExpression base) {
+      public void logarithm(final QueryWriter w, final GeneralNumberExpression x, final GeneralNumberExpression base) {
         if (base == null) {
           this.write(w, "ln", x);
         } else {
@@ -340,8 +340,8 @@ public class PostgreSQLDialect extends LiveSQLDialect {
       // String functions
 
       @Override
-      public void locate(final QueryWriter w, final StringExpression substring, final StringExpression string,
-          final NumberExpression from) {
+      public void locate(final QueryWriter w, final GeneralStringExpression substring, final GeneralStringExpression string,
+          final GeneralNumberExpression from) {
         if (from == null) {
           this.write(w, "strpos", string, substring);
         } else {
@@ -368,19 +368,19 @@ public class PostgreSQLDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void date(final QueryWriter w, final DateTimeExpression datetime) {
+      public void date(final QueryWriter w, final GeneralDateTimeExpression datetime) {
         Helper.renderTo(datetime, w);
         w.write("::date");
       }
 
       @Override
-      public void time(final QueryWriter w, final DateTimeExpression datetime) {
+      public void time(final QueryWriter w, final GeneralDateTimeExpression datetime) {
         Helper.renderTo(datetime, w);
         w.write("::time");
       }
 
       @Override
-      public void dateTime(final QueryWriter w, final DateTimeExpression date, final DateTimeExpression time) {
+      public void dateTime(final QueryWriter w, final GeneralDateTimeExpression date, final GeneralDateTimeExpression time) {
         w.write("(");
         Helper.renderTo(date, w);
         w.write(" + ");

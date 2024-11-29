@@ -3,16 +3,24 @@ package org.hotrod.runtime.livesql.expressions.predicates;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class PredicateLiteral extends BooleanFreeExpression {
+public class BooleanLiteral extends Predicate {
 
-  protected static final PredicateLiteral FALSE = new PredicateLiteral(false);
-  protected static final PredicateLiteral TRUE = new PredicateLiteral(true);
+  protected static final BooleanLiteral FALSE = new BooleanLiteral(false);
+  protected static final BooleanLiteral TRUE = new BooleanLiteral(true);
 
   private boolean value;
 
-  public PredicateLiteral(final boolean value) {
+  public BooleanLiteral(final boolean value) {
     super(Expression.PRECEDENCE_LITERAL);
     this.value = value;
+  }
+
+  public static BooleanLiteral getFalse() {
+    return FALSE;
+  }
+
+  public static BooleanLiteral getTrue() {
+    return TRUE;
   }
 
   @Override

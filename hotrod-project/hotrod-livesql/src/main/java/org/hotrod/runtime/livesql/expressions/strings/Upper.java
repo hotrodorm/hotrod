@@ -4,9 +4,9 @@ import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public class Upper extends BuiltInStringFunction {
 
-  private StringExpression string;
+  private GeneralStringExpression string;
 
-  public Upper(final StringExpression string) {
+  public Upper(final GeneralStringExpression string) {
     super();
     this.string = string;
     super.register(this.string);

@@ -3,7 +3,7 @@ package org.hotrod.runtime.livesql.queries.select;
 import org.hotrod.runtime.livesql.Available;
 import org.hotrod.runtime.livesql.dialects.Const;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
@@ -23,7 +23,7 @@ public class NonLockableSelectFromPhase<R> extends IndividualSelectPhase<R> {
 
   // This phase
 
-  public NonLockableSelectFromPhase<R> join(final TableExpression tableViewOrSubquery, final Predicate on) {
+  public NonLockableSelectFromPhase<R> join(final TableExpression tableViewOrSubquery, final GeneralBooleanExpression on) {
     this.getLastSelect().addJoin(new InnerJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -33,7 +33,7 @@ public class NonLockableSelectFromPhase<R> extends IndividualSelectPhase<R> {
     return this;
   }
 
-  public NonLockableSelectFromPhase<R> leftJoin(final TableExpression tableViewOrSubquery, final Predicate on) {
+  public NonLockableSelectFromPhase<R> leftJoin(final TableExpression tableViewOrSubquery, final GeneralBooleanExpression on) {
     this.getLastSelect().addJoin(new LeftOuterJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -43,7 +43,7 @@ public class NonLockableSelectFromPhase<R> extends IndividualSelectPhase<R> {
     return this;
   }
 
-  public NonLockableSelectFromPhase<R> rightJoin(final TableExpression tableViewOrSubquery, final Predicate on) {
+  public NonLockableSelectFromPhase<R> rightJoin(final TableExpression tableViewOrSubquery, final GeneralBooleanExpression on) {
     this.getLastSelect().addJoin(new RightOuterJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -53,7 +53,7 @@ public class NonLockableSelectFromPhase<R> extends IndividualSelectPhase<R> {
     return this;
   }
 
-  public NonLockableSelectFromPhase<R> fullJoin(final TableExpression tableViewOrSubquery, final Predicate on) {
+  public NonLockableSelectFromPhase<R> fullJoin(final TableExpression tableViewOrSubquery, final GeneralBooleanExpression on) {
     this.getLastSelect().addJoin(new FullOuterJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -113,7 +113,7 @@ public class NonLockableSelectFromPhase<R> extends IndividualSelectPhase<R> {
 
   // Next phases
 
-  public NonLockableSelectWherePhase<R> where(final Predicate predicate) {
+  public NonLockableSelectWherePhase<R> where(final GeneralBooleanExpression predicate) {
     return new NonLockableSelectWherePhase<R>(this.context, this.combined, predicate);
   }
 

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.hotrod.runtime.livesql.Row;
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
 import org.hotrod.runtime.livesql.queries.select.TableExpression;
@@ -14,7 +14,7 @@ public class BooleanSelectColumnsPhase extends BooleanSelectExpression {
 
   // Constructor
 
-  public BooleanSelectColumnsPhase(final List<CTE> ctes, final boolean distinct, final Predicate expression) {
+  public BooleanSelectColumnsPhase(final List<CTE> ctes, final boolean distinct, final GeneralBooleanExpression expression) {
     super(new SelectObject<Row>(ctes, distinct, true, Arrays.asList(expression).stream().collect(Collectors.toList())));
   }
 

@@ -3,10 +3,10 @@ package org.hotrod.runtime.livesql.queries.subqueries;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
-import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFreeExpression;
+import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class SubqueryDateTimeColumn extends DateTimeFreeExpression implements SubqueryColumn {
+public class SubqueryDateTimeColumn extends DateTimeExpression implements SubqueryColumn {
 
   // Properties
 

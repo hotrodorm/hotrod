@@ -4,7 +4,7 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.SQLParameterWriter.RenderedParameter;
 
-public class ObjectConstant extends ObjectFreeExpression {
+public class ObjectConstant extends ObjectExpression {
 
   private Object value;
   private boolean parameterize;

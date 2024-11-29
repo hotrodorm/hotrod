@@ -3,12 +3,12 @@ package org.hotrod.runtime.livesql.metadata;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.AliasedEntityColumn;
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
+import org.hotrod.runtime.livesql.expressions.strings.GeneralStringExpression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
 import org.hotrodorm.hotrod.utils.SUtil;
 
-public class StringEntityColumn extends StringExpression implements Column {
+public class StringEntityColumn extends GeneralStringExpression implements Column {
 
   // Properties
 

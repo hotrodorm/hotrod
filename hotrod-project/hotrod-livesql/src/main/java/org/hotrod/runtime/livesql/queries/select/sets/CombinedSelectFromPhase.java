@@ -3,7 +3,7 @@ package org.hotrod.runtime.livesql.queries.select.sets;
 import org.hotrod.runtime.livesql.Available;
 import org.hotrod.runtime.livesql.dialects.Const;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.select.CrossJoin;
@@ -33,7 +33,7 @@ public class CombinedSelectFromPhase<R> extends CombinedSelectPhase<R> {
 
   // This phase
 
-  public CombinedSelectFromPhase<R> join(final TableExpression tableViewOrSubquery, final Predicate on) {
+  public CombinedSelectFromPhase<R> join(final TableExpression tableViewOrSubquery, final GeneralBooleanExpression on) {
     this.getLastSelect().addJoin(new InnerJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -43,7 +43,7 @@ public class CombinedSelectFromPhase<R> extends CombinedSelectPhase<R> {
     return this;
   }
 
-  public CombinedSelectFromPhase<R> leftJoin(final TableExpression tableViewOrSubquery, final Predicate on) {
+  public CombinedSelectFromPhase<R> leftJoin(final TableExpression tableViewOrSubquery, final GeneralBooleanExpression on) {
     this.getLastSelect().addJoin(new LeftOuterJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -53,7 +53,7 @@ public class CombinedSelectFromPhase<R> extends CombinedSelectPhase<R> {
     return this;
   }
 
-  public CombinedSelectFromPhase<R> rightJoin(final TableExpression tableViewOrSubquery, final Predicate on) {
+  public CombinedSelectFromPhase<R> rightJoin(final TableExpression tableViewOrSubquery, final GeneralBooleanExpression on) {
     this.getLastSelect().addJoin(new RightOuterJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -63,7 +63,7 @@ public class CombinedSelectFromPhase<R> extends CombinedSelectPhase<R> {
     return this;
   }
 
-  public CombinedSelectFromPhase<R> fullJoin(final TableExpression tableViewOrSubquery, final Predicate on) {
+  public CombinedSelectFromPhase<R> fullJoin(final TableExpression tableViewOrSubquery, final GeneralBooleanExpression on) {
     this.getLastSelect().addJoin(new FullOuterJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -123,7 +123,7 @@ public class CombinedSelectFromPhase<R> extends CombinedSelectPhase<R> {
 
   // Next phases
 
-  public CombinedSelectWherePhase<R> where(final Predicate predicate) {
+  public CombinedSelectWherePhase<R> where(final GeneralBooleanExpression predicate) {
     return new CombinedSelectWherePhase<R>(this.context, this.combined, predicate);
   }
 

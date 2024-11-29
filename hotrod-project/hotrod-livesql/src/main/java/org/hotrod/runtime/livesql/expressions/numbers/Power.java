@@ -4,10 +4,10 @@ import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public class Power extends BuiltInNumberFunction {
 
-  private NumberExpression value;
-  private NumberExpression exponent;
+  private GeneralNumberExpression value;
+  private GeneralNumberExpression exponent;
 
-  public Power(final NumberExpression value, final NumberExpression exponent) {
+  public Power(final GeneralNumberExpression value, final GeneralNumberExpression exponent) {
     super();
     this.value = value;
     this.exponent = exponent;

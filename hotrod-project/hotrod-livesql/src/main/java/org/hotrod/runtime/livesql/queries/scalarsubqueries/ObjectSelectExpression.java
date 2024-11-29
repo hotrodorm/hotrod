@@ -3,11 +3,11 @@ package org.hotrod.runtime.livesql.queries.scalarsubqueries;
 import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.expressions.object.ObjectFreeExpression;
+import org.hotrod.runtime.livesql.expressions.object.ObjectExpression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject;
 
-public class ObjectSelectExpression extends ObjectFreeExpression {
+public class ObjectSelectExpression extends ObjectExpression {
 
   // Properties
 

@@ -2,7 +2,7 @@ package org.hotrod.runtime.livesql.queries;
 
 import java.util.Map;
 
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 
 public class UpdateSetCompletePhase implements DMLQuery {
@@ -20,7 +20,7 @@ public class UpdateSetCompletePhase implements DMLQuery {
   }
 
   public UpdateSetCompletePhase(final LiveSQLContext context, final String mapperStatement,
-      final TableOrView tableOrView, final Predicate predicate, final Map<String, Object> extraSets) {
+      final TableOrView tableOrView, final GeneralBooleanExpression predicate, final Map<String, Object> extraSets) {
     this.context = context;
     this.update = new UpdateObject(mapperStatement);
     this.update.setTableOrView(tableOrView);
@@ -32,7 +32,7 @@ public class UpdateSetCompletePhase implements DMLQuery {
 
   // Next phases
 
-  public UpdateWherePhase where(final Predicate predicate) {
+  public UpdateWherePhase where(final GeneralBooleanExpression predicate) {
     return new UpdateWherePhase(this.context, this.update, predicate);
   }
 

@@ -2,19 +2,19 @@ package org.hotrod.runtime.livesql.expressions.predicates;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
-import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
+import org.hotrod.runtime.livesql.expressions.strings.GeneralStringExpression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public class Like extends BinaryPredicate {
 
-  private StringExpression escape;
+  private GeneralStringExpression escape;
 
-  public Like(final StringExpression a, final StringExpression b) {
+  public Like(final GeneralStringExpression a, final GeneralStringExpression b) {
     super(a, "like", b, Expression.PRECEDENCE_LIKE);
     this.escape = null;
   }
 
-  public Like(final StringExpression a, final StringExpression b, final StringExpression escape) {
+  public Like(final GeneralStringExpression a, final GeneralStringExpression b, final GeneralStringExpression escape) {
     super(a, "like", b, Expression.PRECEDENCE_LIKE);
     this.escape = escape;
   }

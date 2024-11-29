@@ -2,19 +2,19 @@ package org.hotrod.runtime.livesql.expressions.predicates;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
-import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
+import org.hotrod.runtime.livesql.expressions.strings.GeneralStringExpression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public class NotLike extends BinaryPredicate {
 
-  private StringExpression escape;
+  private GeneralStringExpression escape;
 
-  public NotLike(final StringExpression a, final StringExpression b) {
+  public NotLike(final GeneralStringExpression a, final GeneralStringExpression b) {
     super(a, "not like", b, Expression.PRECEDENCE_LIKE);
     this.escape = null;
   }
 
-  public NotLike(final StringExpression a, final StringExpression b, final StringExpression escape) {
+  public NotLike(final GeneralStringExpression a, final GeneralStringExpression b, final GeneralStringExpression escape) {
     super(a, "not like", b, Expression.PRECEDENCE_LIKE);
     this.escape = escape;
   }

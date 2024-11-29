@@ -4,7 +4,7 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.SQLParameterWriter.RenderedParameter;
 
-public class ByteArrayConstant extends ByteArrayFreeExpression {
+public class ByteArrayConstant extends ByteArrayExpression {
 
   // Properties
 

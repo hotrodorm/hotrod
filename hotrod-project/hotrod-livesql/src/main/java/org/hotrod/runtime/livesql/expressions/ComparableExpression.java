@@ -15,7 +15,7 @@ import org.hotrod.runtime.livesql.expressions.asymmetric.LtAny;
 import org.hotrod.runtime.livesql.expressions.asymmetric.NeAll;
 import org.hotrod.runtime.livesql.expressions.asymmetric.NeAny;
 import org.hotrod.runtime.livesql.expressions.asymmetric.NotInSubquery;
-import org.hotrod.runtime.livesql.expressions.predicates.BooleanFreeExpression;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderByDirectionPhase;
 import org.hotrod.runtime.livesql.queries.select.Select;
 
@@ -39,14 +39,14 @@ public abstract class ComparableExpression extends GenericExpression {
 
   // In subquery
 
-  public BooleanFreeExpression in(final Select<?> subquery) {
+  public Predicate in(final Select<?> subquery) {
     if (subquery == null) {
       throw new LiveSQLException("Subquery cannot be null");
     }
     return new InSubquery(this, subquery);
   }
 
-  public BooleanFreeExpression notIn(final Select<?> subquery) {
+  public Predicate notIn(final Select<?> subquery) {
     if (subquery == null) {
       throw new LiveSQLException("Subquery cannot be null");
     }
@@ -55,42 +55,42 @@ public abstract class ComparableExpression extends GenericExpression {
 
   // Any
 
-  public BooleanFreeExpression eqAny(final Select<?> subquery) {
+  public Predicate eqAny(final Select<?> subquery) {
     if (subquery == null) {
       throw new LiveSQLException("Subquery cannot be null");
     }
     return new EqAny(this, subquery);
   }
 
-  public BooleanFreeExpression neAny(final Select<?> subquery) {
+  public Predicate neAny(final Select<?> subquery) {
     if (subquery == null) {
       throw new LiveSQLException("Subquery cannot be null");
     }
     return new NeAny(this, subquery);
   }
 
-  public BooleanFreeExpression ltAny(final Select<?> subquery) {
+  public Predicate ltAny(final Select<?> subquery) {
     if (subquery == null) {
       throw new LiveSQLException("Subquery cannot be null");
     }
     return new LtAny(this, subquery);
   }
 
-  public BooleanFreeExpression leAny(final Select<?> subquery) {
+  public Predicate leAny(final Select<?> subquery) {
     if (subquery == null) {
       throw new LiveSQLException("Subquery cannot be null");
     }
     return new LeAny(this, subquery);
   }
 
-  public BooleanFreeExpression gtAny(final Select<?> subquery) {
+  public Predicate gtAny(final Select<?> subquery) {
     if (subquery == null) {
       throw new LiveSQLException("Subquery cannot be null");
     }
     return new GtAny(this, subquery);
   }
 
-  public BooleanFreeExpression geAny(final Select<?> subquery) {
+  public Predicate geAny(final Select<?> subquery) {
     if (subquery == null) {
       throw new LiveSQLException("Subquery cannot be null");
     }
@@ -99,42 +99,42 @@ public abstract class ComparableExpression extends GenericExpression {
 
   // All
 
-  public BooleanFreeExpression eqAll(final Select<?> subquery) {
+  public Predicate eqAll(final Select<?> subquery) {
     if (subquery == null) {
       throw new LiveSQLException("Subquery cannot be null");
     }
     return new EqAll(this, subquery);
   }
 
-  public BooleanFreeExpression neAll(final Select<?> subquery) {
+  public Predicate neAll(final Select<?> subquery) {
     if (subquery == null) {
       throw new LiveSQLException("Subquery cannot be null");
     }
     return new NeAll(this, subquery);
   }
 
-  public BooleanFreeExpression ltAll(final Select<?> subquery) {
+  public Predicate ltAll(final Select<?> subquery) {
     if (subquery == null) {
       throw new LiveSQLException("Subquery cannot be null");
     }
     return new LtAll(this, subquery);
   }
 
-  public BooleanFreeExpression leAll(final Select<?> subquery) {
+  public Predicate leAll(final Select<?> subquery) {
     if (subquery == null) {
       throw new LiveSQLException("Subquery cannot be null");
     }
     return new LeAll(this, subquery);
   }
 
-  public BooleanFreeExpression gtAll(final Select<?> subquery) {
+  public Predicate gtAll(final Select<?> subquery) {
     if (subquery == null) {
       throw new LiveSQLException("Subquery cannot be null");
     }
     return new GtAll(this, subquery);
   }
 
-  public BooleanFreeExpression geAll(final Select<?> subquery) {
+  public Predicate geAll(final Select<?> subquery) {
     if (subquery == null) {
       throw new LiveSQLException("Subquery cannot be null");
     }

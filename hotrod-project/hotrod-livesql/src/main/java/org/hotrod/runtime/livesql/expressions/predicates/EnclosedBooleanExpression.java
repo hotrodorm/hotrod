@@ -5,15 +5,15 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class EnclosedBooleanExpression extends BooleanFreeExpression {
+public class EnclosedBooleanExpression extends Predicate {
 
   // Properties
 
-  private Predicate expr;
+  private GeneralBooleanExpression expr;
 
   // Constructor
 
-  public EnclosedBooleanExpression(final Predicate expr) {
+  public EnclosedBooleanExpression(final GeneralBooleanExpression expr) {
     super(Expression.PRECEDENCE_PARENTHESIS);
     if (expr == null) {
       throw new LiveSQLException("Enclosed expression cannot be null");

@@ -6,7 +6,7 @@ import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.SHelper;
 import org.hotrod.runtime.livesql.queries.select.Select;
 
-public class Exists extends BooleanFreeExpression {
+public class Exists extends Predicate {
 
   private Select<?> subquery;
 

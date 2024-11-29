@@ -58,6 +58,7 @@ import org.hotrod.runtime.interfaces.OrderBy;
 import org.hotrod.runtime.interfaces.Selectable;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.livesql.LiveSQLMapper;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.metadata.BooleanEntityColumn;
 import org.hotrod.runtime.livesql.metadata.ByteArrayEntityColumn;
@@ -421,7 +422,7 @@ public class ObjectDAO extends GeneratableObject {
     imports.add(TypeSolver.class);
 
     imports.newLine();
-    
+
     imports.add(NumberEntityColumn.class);
     imports.add(StringEntityColumn.class);
     imports.add(DateTimeEntityColumn.class);
@@ -433,7 +434,7 @@ public class ObjectDAO extends GeneratableObject {
 
     imports.add(Table.class);
 
-    imports.add("org.hotrod.runtime.livesql.expressions.predicates.Predicate");
+    imports.add(GeneralBooleanExpression.class);
     imports.add(AllColumns.class);
     imports.add("org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase");
     imports.add("org.hotrod.runtime.livesql.queries.DeleteWherePhase");
@@ -784,7 +785,7 @@ public class ObjectDAO extends GeneratableObject {
 
     println("  public CriteriaWherePhase<" + voFullClassName + "> select(final " + daoClassName + "."
         + this.metadataClassName + " from,");
-    println("      final Predicate predicate) {");
+    println("      final " + GeneralBooleanExpression.class.getSimpleName() + " predicate) {");
     println("    return new CriteriaWherePhase<" + voFullClassName + ">(this.context, \"" + mapperName + "\",");
     println("        from, predicate);");
     println("  }");
@@ -1494,7 +1495,7 @@ public class ObjectDAO extends GeneratableObject {
     if (useEntity) {
       print("final " + this.getClassName() + "." + this.metadataClassName + " tableOrView, ");
     }
-    println("final Predicate predicate) {");
+    println("final " + GeneralBooleanExpression.class.getSimpleName() + " predicate) {");
 
     println("    Map<String, Object> values = new HashMap<>();");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
@@ -1603,7 +1604,7 @@ public class ObjectDAO extends GeneratableObject {
     if (useFrom) {
       print("final " + daoClassName + "." + this.metadataClassName + " from, ");
     }
-    println("final Predicate predicate) {");
+    println("final " + GeneralBooleanExpression.class.getSimpleName() + " predicate) {");
 
     print("    return new DeleteWherePhase(");
     print("this.context, ");

@@ -59,8 +59,8 @@ import org.hotrod.runtime.livesql.expressions.analytics.StringLag;
 import org.hotrod.runtime.livesql.expressions.analytics.StringLead;
 import org.hotrod.runtime.livesql.expressions.binary.ByteArrayConstant;
 import org.hotrod.runtime.livesql.expressions.binary.ByteArrayExpression;
-import org.hotrod.runtime.livesql.expressions.binary.ByteArrayFreeExpression;
 import org.hotrod.runtime.livesql.expressions.binary.EnclosedByteArrayExpression;
+import org.hotrod.runtime.livesql.expressions.binary.GeneralByteArrayExpression;
 import org.hotrod.runtime.livesql.expressions.caseclause.BooleanCaseWhenStage;
 import org.hotrod.runtime.livesql.expressions.caseclause.ByteArrayCaseWhenStage;
 import org.hotrod.runtime.livesql.expressions.caseclause.DateTimeCaseWhenStage;
@@ -73,8 +73,8 @@ import org.hotrod.runtime.livesql.expressions.datetime.CurrentTime;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTime;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeConstant;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
-import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFreeExpression;
 import org.hotrod.runtime.livesql.expressions.datetime.EnclosedDateTimeExpression;
+import org.hotrod.runtime.livesql.expressions.datetime.GeneralDateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.datetime.literals.LocalDateLiteral;
 import org.hotrod.runtime.livesql.expressions.datetime.literals.LocalTimeLiteral;
 import org.hotrod.runtime.livesql.expressions.datetime.literals.LocalTimestampLiteral;
@@ -83,26 +83,26 @@ import org.hotrod.runtime.livesql.expressions.datetime.literals.OffsetTimestampL
 import org.hotrod.runtime.livesql.expressions.general.TupleExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.DecimalLiteral;
 import org.hotrod.runtime.livesql.expressions.numbers.EnclosedNumberExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.GeneralNumberExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.IntegerLiteral;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberConstant;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
-import org.hotrod.runtime.livesql.expressions.numbers.NumberFreeExpression;
 import org.hotrod.runtime.livesql.expressions.object.EnclosedObjectExpression;
+import org.hotrod.runtime.livesql.expressions.object.GeneralObjectExpression;
 import org.hotrod.runtime.livesql.expressions.object.ObjectConstant;
 import org.hotrod.runtime.livesql.expressions.object.ObjectExpression;
-import org.hotrod.runtime.livesql.expressions.object.ObjectFreeExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.BooleanConstant;
-import org.hotrod.runtime.livesql.expressions.predicates.BooleanFreeExpression;
+import org.hotrod.runtime.livesql.expressions.predicates.BooleanLiteral;
 import org.hotrod.runtime.livesql.expressions.predicates.EnclosedBooleanExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Exists;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Not;
 import org.hotrod.runtime.livesql.expressions.predicates.NotExists;
-import org.hotrod.runtime.livesql.expressions.predicates.PJump;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.expressions.strings.EnclosedStringExpression;
+import org.hotrod.runtime.livesql.expressions.strings.GeneralStringExpression;
 import org.hotrod.runtime.livesql.expressions.strings.StringConstant;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
-import org.hotrod.runtime.livesql.expressions.strings.StringFreeExpression;
 import org.hotrod.runtime.livesql.expressions.strings.StringLiteral;
 import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
@@ -217,27 +217,27 @@ public class LiveSQL {
 
   // Scalar subqueries
 
-  public NumberSelectColumnsPhase selectScalar(final NumberExpression expression) {
+  public NumberSelectColumnsPhase selectScalar(final GeneralNumberExpression expression) {
     return new NumberSelectColumnsPhase(null, false, expression);
   }
 
-  public StringSelectColumnsPhase selectScalar(final StringExpression expression) {
+  public StringSelectColumnsPhase selectScalar(final GeneralStringExpression expression) {
     return new StringSelectColumnsPhase(null, false, expression);
   }
 
-  public BooleanSelectColumnsPhase selectScalar(final Predicate expression) {
+  public BooleanSelectColumnsPhase selectScalar(final GeneralBooleanExpression expression) {
     return new BooleanSelectColumnsPhase(null, false, expression);
   }
 
-  public DateTimeSelectColumnsPhase selectScalar(final DateTimeExpression expression) {
+  public DateTimeSelectColumnsPhase selectScalar(final GeneralDateTimeExpression expression) {
     return new DateTimeSelectColumnsPhase(null, false, expression);
   }
 
-  public ByteArraySelectColumnsPhase selectScalar(final ByteArrayExpression expression) {
+  public ByteArraySelectColumnsPhase selectScalar(final GeneralByteArrayExpression expression) {
     return new ByteArraySelectColumnsPhase(null, false, expression);
   }
 
-  public ObjectSelectColumnsPhase selectScalar(final ObjectExpression expression) {
+  public ObjectSelectColumnsPhase selectScalar(final GeneralObjectExpression expression) {
     return new ObjectSelectColumnsPhase(null, false, expression);
   }
 
@@ -285,17 +285,17 @@ public class LiveSQL {
 
   // Predicates
 
-  public BooleanFreeExpression not(final Predicate a) {
+  public Predicate not(final GeneralBooleanExpression a) {
     return new Not(a);
   }
 
   // Subquery existence
 
-  public <R> BooleanFreeExpression exists(final Select<?> subquery) {
+  public <R> Predicate exists(final Select<?> subquery) {
     return new Exists(subquery);
   }
 
-  public <R> BooleanFreeExpression notExists(final Select<?> subquery) {
+  public <R> Predicate notExists(final Select<?> subquery) {
     return new NotExists(subquery);
   }
 
@@ -315,99 +315,99 @@ public class LiveSQL {
     return new CountDistinct(expression);
   }
 
-  public SumDistinct sumDistinct(final NumberExpression expression) {
+  public SumDistinct sumDistinct(final GeneralNumberExpression expression) {
     return new SumDistinct(expression);
   }
 
-  public AvgDistinct avgDistinct(final NumberExpression expression) {
+  public AvgDistinct avgDistinct(final GeneralNumberExpression expression) {
     return new AvgDistinct(expression);
   }
 
-  public GroupConcatDistinct groupConcatDistinct(final StringExpression expression) {
+  public GroupConcatDistinct groupConcatDistinct(final GeneralStringExpression expression) {
     return new GroupConcatDistinct(expression, null, null);
   }
 
-  public GroupConcatDistinct groupConcatDistinct(final StringExpression expression, final String separator) {
+  public GroupConcatDistinct groupConcatDistinct(final GeneralStringExpression expression, final String separator) {
     return new GroupConcatDistinct(expression, null, val(separator));
   }
 
-  public GroupConcatDistinct groupConcatDistinct(final StringExpression expression, final String separator,
+  public GroupConcatDistinct groupConcatDistinct(final GeneralStringExpression expression, final String separator,
       final OrderingTerm... order) {
     return new GroupConcatDistinct(expression, Arrays.asList(order), val(separator));
   }
 
   // Aggregation expressions, that ALSO are window functions
 
-  public Sum sum(final NumberExpression expression) {
+  public Sum sum(final GeneralNumberExpression expression) {
     return new Sum(expression);
   }
 
-  public Avg avg(final NumberExpression expression) {
+  public Avg avg(final GeneralNumberExpression expression) {
     return new Avg(expression);
   }
 
-  public GroupConcat groupConcat(final StringExpression expression) {
+  public GroupConcat groupConcat(final GeneralStringExpression expression) {
     return new GroupConcat(expression, null, null);
   }
 
-  public GroupConcat groupConcat(final StringExpression expression, final String separator) {
+  public GroupConcat groupConcat(final GeneralStringExpression expression, final String separator) {
     return new GroupConcat(expression, null, val(separator));
   }
 
-  public GroupConcat groupConcat(final StringExpression expression, final String separator,
+  public GroupConcat groupConcat(final GeneralStringExpression expression, final String separator,
       final OrderingTerm... order) {
     return new GroupConcat(expression, Arrays.asList(order), val(separator));
   }
 
   // Max -- Aggregation expressions, that ALSO are window functions
 
-  public NumberMax max(final NumberExpression expression) {
+  public NumberMax max(final GeneralNumberExpression expression) {
     return new NumberMax(expression);
   }
 
-  public StringMax max(final StringExpression expression) {
+  public StringMax max(final GeneralStringExpression expression) {
     return new StringMax(expression);
   }
 
-  public DateTimeMax max(final DateTimeExpression expression) {
+  public DateTimeMax max(final GeneralDateTimeExpression expression) {
     return new DateTimeMax(expression);
   }
 
-  public BooleanMax max(final Predicate expression) {
+  public BooleanMax max(final GeneralBooleanExpression expression) {
     return new BooleanMax(expression);
   }
 
-  public ByteArrayMax max(final ByteArrayExpression expression) {
+  public ByteArrayMax max(final GeneralByteArrayExpression expression) {
     return new ByteArrayMax(expression);
   }
 
-  public ObjectMax max(final ObjectExpression expression) {
+  public ObjectMax max(final GeneralObjectExpression expression) {
     return new ObjectMax(expression);
   }
 
   // Min -- Aggregation expressions, that ALSO are window functions
 
-  public NumberMin min(final NumberExpression expression) {
+  public NumberMin min(final GeneralNumberExpression expression) {
     return new NumberMin(expression);
   }
 
-  public StringMin min(final StringExpression expression) {
+  public StringMin min(final GeneralStringExpression expression) {
     return new StringMin(expression);
   }
 
-  public DateTimeMin min(final DateTimeExpression expression) {
+  public DateTimeMin min(final GeneralDateTimeExpression expression) {
     return new DateTimeMin(expression);
   }
 
-  public BooleanMin min(final Predicate expression) {
+  public BooleanMin min(final GeneralBooleanExpression expression) {
     return new BooleanMin(expression);
   }
 
-  public ByteArrayMin min(final ByteArrayExpression expression) {
+  public ByteArrayMin min(final GeneralByteArrayExpression expression) {
     return new ByteArrayMin(expression);
   }
 
-  public ObjectMin min(final ObjectExpression expression) {
+  public ObjectMin min(final GeneralObjectExpression expression) {
     return new ObjectMin(expression);
   }
 
@@ -433,446 +433,468 @@ public class LiveSQL {
 
   // === Lead Number ===
 
-  public NumberLead lead(final NumberExpression expression) {
+  public NumberLead lead(final GeneralNumberExpression expression) {
     return new NumberLead(expression);
   }
 
-  public NumberLead lead(final NumberExpression expression, final Number offset) {
+  public NumberLead lead(final GeneralNumberExpression expression, final Number offset) {
     return new NumberLead(expression, val(offset));
   }
 
-  public NumberLead lead(final NumberExpression expression, final NumberExpression offset) {
+  public NumberLead lead(final GeneralNumberExpression expression, final GeneralNumberExpression offset) {
     return new NumberLead(expression, offset);
   }
 
-  public NumberLead lead(final NumberExpression expression, final Number offset, final Number defaultValue) {
+  public NumberLead lead(final GeneralNumberExpression expression, final Number offset, final Number defaultValue) {
     return new NumberLead(expression, val(offset), val(defaultValue));
   }
 
-  public NumberLead lead(final NumberExpression expression, final NumberExpression offset, final Number defaultValue) {
+  public NumberLead lead(final GeneralNumberExpression expression, final GeneralNumberExpression offset,
+      final Number defaultValue) {
     return new NumberLead(expression, offset, val(defaultValue));
   }
 
-  public NumberLead lead(final NumberExpression expression, final Number offset, final NumberExpression defaultValue) {
+  public NumberLead lead(final GeneralNumberExpression expression, final Number offset,
+      final GeneralNumberExpression defaultValue) {
     return new NumberLead(expression, val(offset), defaultValue);
   }
 
-  public NumberLead lead(final NumberExpression expression, final NumberExpression offset,
-      final NumberExpression defaultValue) {
+  public NumberLead lead(final GeneralNumberExpression expression, final GeneralNumberExpression offset,
+      final GeneralNumberExpression defaultValue) {
     return new NumberLead(expression, offset, defaultValue);
   }
 
   // === Lead String ===
 
-  public StringLead lead(final StringExpression expression) {
+  public StringLead lead(final GeneralStringExpression expression) {
     return new StringLead(expression);
   }
 
-  public StringLead lead(final StringExpression expression, final Number offset) {
+  public StringLead lead(final GeneralStringExpression expression, final Number offset) {
     return new StringLead(expression, val(offset));
   }
 
-  public StringLead lead(final StringExpression expression, final NumberExpression offset) {
+  public StringLead lead(final GeneralStringExpression expression, final GeneralNumberExpression offset) {
     return new StringLead(expression, offset);
   }
 
-  public StringLead lead(final StringExpression expression, final Number offset, final String defaultValue) {
+  public StringLead lead(final GeneralStringExpression expression, final Number offset, final String defaultValue) {
     return new StringLead(expression, val(offset), val(defaultValue));
   }
 
-  public StringLead lead(final StringExpression expression, final NumberExpression offset, final String defaultValue) {
+  public StringLead lead(final GeneralStringExpression expression, final GeneralNumberExpression offset,
+      final String defaultValue) {
     return new StringLead(expression, offset, val(defaultValue));
   }
 
-  public StringLead lead(final StringExpression expression, final Number offset, final StringExpression defaultValue) {
+  public StringLead lead(final GeneralStringExpression expression, final Number offset,
+      final GeneralStringExpression defaultValue) {
     return new StringLead(expression, val(offset), defaultValue);
   }
 
-  public StringLead lead(final StringExpression expression, final NumberExpression offset,
-      final StringExpression defaultValue) {
+  public StringLead lead(final GeneralStringExpression expression, final GeneralNumberExpression offset,
+      final GeneralStringExpression defaultValue) {
     return new StringLead(expression, offset, defaultValue);
   }
 
   // === Lead DateTime ===
 
-  public DateTimeLead lead(final DateTimeExpression expression) {
+  public DateTimeLead lead(final GeneralDateTimeExpression expression) {
     return new DateTimeLead(expression);
   }
 
-  public DateTimeLead lead(final DateTimeExpression expression, final Number offset) {
+  public DateTimeLead lead(final GeneralDateTimeExpression expression, final Number offset) {
     return new DateTimeLead(expression, val(offset));
   }
 
-  public DateTimeLead lead(final DateTimeExpression expression, final NumberExpression offset) {
+  public DateTimeLead lead(final GeneralDateTimeExpression expression, final GeneralNumberExpression offset) {
     return new DateTimeLead(expression, offset);
   }
 
-  public DateTimeLead lead(final DateTimeExpression expression, final Number offset, final Date defaultValue) {
+  public DateTimeLead lead(final GeneralDateTimeExpression expression, final Number offset, final Date defaultValue) {
     return new DateTimeLead(expression, val(offset), val(defaultValue));
   }
 
-  public DateTimeLead lead(final DateTimeExpression expression, final NumberExpression offset,
+  public DateTimeLead lead(final GeneralDateTimeExpression expression, final GeneralNumberExpression offset,
       final Date defaultValue) {
     return new DateTimeLead(expression, offset, val(defaultValue));
   }
 
-  public DateTimeLead lead(final DateTimeExpression expression, final Number offset,
-      final DateTimeExpression defaultValue) {
+  public DateTimeLead lead(final GeneralDateTimeExpression expression, final Number offset,
+      final GeneralDateTimeExpression defaultValue) {
     return new DateTimeLead(expression, val(offset), defaultValue);
   }
 
-  public DateTimeLead lead(final DateTimeExpression expression, final NumberExpression offset,
-      final DateTimeExpression defaultValue) {
+  public DateTimeLead lead(final GeneralDateTimeExpression expression, final GeneralNumberExpression offset,
+      final GeneralDateTimeExpression defaultValue) {
     return new DateTimeLead(expression, offset, defaultValue);
   }
 
   // === Lead Boolean ===
 
-  public BooleanLead lead(final Predicate expression) {
+  public BooleanLead lead(final GeneralBooleanExpression expression) {
     return new BooleanLead(expression);
   }
 
-  public BooleanLead lead(final Predicate expression, final Number offset) {
+  public BooleanLead lead(final GeneralBooleanExpression expression, final Number offset) {
     return new BooleanLead(expression, val(offset));
   }
 
-  public BooleanLead lead(final Predicate expression, final NumberExpression offset) {
+  public BooleanLead lead(final GeneralBooleanExpression expression, final GeneralNumberExpression offset) {
     return new BooleanLead(expression, offset);
   }
 
-  public BooleanLead lead(final Predicate expression, final Number offset, final Boolean defaultValue) {
+  public BooleanLead lead(final GeneralBooleanExpression expression, final Number offset, final Boolean defaultValue) {
     return new BooleanLead(expression, val(offset), val(defaultValue));
   }
 
-  public BooleanLead lead(final Predicate expression, final NumberExpression offset, final Boolean defaultValue) {
+  public BooleanLead lead(final GeneralBooleanExpression expression, final GeneralNumberExpression offset,
+      final Boolean defaultValue) {
     return new BooleanLead(expression, offset, val(defaultValue));
   }
 
-  public BooleanLead lead(final Predicate expression, final Number offset, final Predicate defaultValue) {
+  public BooleanLead lead(final GeneralBooleanExpression expression, final Number offset,
+      final GeneralBooleanExpression defaultValue) {
     return new BooleanLead(expression, val(offset), defaultValue);
   }
 
-  public BooleanLead lead(final Predicate expression, final NumberExpression offset, final Predicate defaultValue) {
+  public BooleanLead lead(final GeneralBooleanExpression expression, final GeneralNumberExpression offset,
+      final GeneralBooleanExpression defaultValue) {
     return new BooleanLead(expression, offset, defaultValue);
   }
 
   // === Lead ByteArray ===
 
-  public ByteArrayLead lead(final ByteArrayExpression expression) {
+  public ByteArrayLead lead(final GeneralByteArrayExpression expression) {
     return new ByteArrayLead(expression);
   }
 
-  public ByteArrayLead lead(final ByteArrayExpression expression, final Number offset) {
+  public ByteArrayLead lead(final GeneralByteArrayExpression expression, final Number offset) {
     return new ByteArrayLead(expression, val(offset));
   }
 
-  public ByteArrayLead lead(final ByteArrayExpression expression, final NumberExpression offset) {
+  public ByteArrayLead lead(final GeneralByteArrayExpression expression, final GeneralNumberExpression offset) {
     return new ByteArrayLead(expression, offset);
   }
 
-  public ByteArrayLead lead(final ByteArrayExpression expression, final Number offset, final byte[] defaultValue) {
+  public ByteArrayLead lead(final GeneralByteArrayExpression expression, final Number offset,
+      final byte[] defaultValue) {
     return new ByteArrayLead(expression, val(offset), val(defaultValue));
   }
 
-  public ByteArrayLead lead(final ByteArrayExpression expression, final NumberExpression offset,
+  public ByteArrayLead lead(final GeneralByteArrayExpression expression, final GeneralNumberExpression offset,
       final byte[] defaultValue) {
     return new ByteArrayLead(expression, offset, val(defaultValue));
   }
 
-  public ByteArrayLead lead(final ByteArrayExpression expression, final Number offset,
-      final ByteArrayExpression defaultValue) {
+  public ByteArrayLead lead(final GeneralByteArrayExpression expression, final Number offset,
+      final GeneralByteArrayExpression defaultValue) {
     return new ByteArrayLead(expression, val(offset), defaultValue);
   }
 
-  public ByteArrayLead lead(final ByteArrayExpression expression, final NumberExpression offset,
-      final ByteArrayExpression defaultValue) {
+  public ByteArrayLead lead(final GeneralByteArrayExpression expression, final GeneralNumberExpression offset,
+      final GeneralByteArrayExpression defaultValue) {
     return new ByteArrayLead(expression, offset, defaultValue);
   }
 
   // === Lead Object ===
 
-  public ObjectLead lead(final ObjectExpression expression) {
+  public ObjectLead lead(final GeneralObjectExpression expression) {
     return new ObjectLead(expression);
   }
 
-  public ObjectLead lead(final ObjectExpression expression, final Number offset) {
+  public ObjectLead lead(final GeneralObjectExpression expression, final Number offset) {
     return new ObjectLead(expression, val(offset));
   }
 
-  public ObjectLead lead(final ObjectExpression expression, final NumberExpression offset) {
+  public ObjectLead lead(final GeneralObjectExpression expression, final GeneralNumberExpression offset) {
     return new ObjectLead(expression, offset);
   }
 
-  public ObjectLead lead(final ObjectExpression expression, final Number offset, final Object defaultValue) {
+  public ObjectLead lead(final GeneralObjectExpression expression, final Number offset, final Object defaultValue) {
     return new ObjectLead(expression, val(offset), val(defaultValue));
   }
 
-  public ObjectLead lead(final ObjectExpression expression, final NumberExpression offset, final Object defaultValue) {
+  public ObjectLead lead(final GeneralObjectExpression expression, final GeneralNumberExpression offset,
+      final Object defaultValue) {
     return new ObjectLead(expression, offset, val(defaultValue));
   }
 
-  public ObjectLead lead(final ObjectExpression expression, final Number offset, final ObjectExpression defaultValue) {
+  public ObjectLead lead(final GeneralObjectExpression expression, final Number offset,
+      final GeneralObjectExpression defaultValue) {
     return new ObjectLead(expression, val(offset), defaultValue);
   }
 
-  public ObjectLead lead(final ObjectExpression expression, final NumberExpression offset,
-      final ObjectExpression defaultValue) {
+  public ObjectLead lead(final GeneralObjectExpression expression, final GeneralNumberExpression offset,
+      final GeneralObjectExpression defaultValue) {
     return new ObjectLead(expression, offset, defaultValue);
   }
 
   // === Lag Number ===
 
-  public NumberLag lag(final NumberExpression expression) {
+  public NumberLag lag(final GeneralNumberExpression expression) {
     return new NumberLag(expression);
   }
 
-  public NumberLag lag(final NumberExpression expression, final Number offset) {
+  public NumberLag lag(final GeneralNumberExpression expression, final Number offset) {
     return new NumberLag(expression, val(offset));
   }
 
-  public NumberLag lag(final NumberExpression expression, final NumberExpression offset) {
+  public NumberLag lag(final GeneralNumberExpression expression, final GeneralNumberExpression offset) {
     return new NumberLag(expression, offset);
   }
 
-  public NumberLag lag(final NumberExpression expression, final Number offset, final Number defaultValue) {
+  public NumberLag lag(final GeneralNumberExpression expression, final Number offset, final Number defaultValue) {
     return new NumberLag(expression, val(offset), val(defaultValue));
   }
 
-  public NumberLag lag(final NumberExpression expression, final NumberExpression offset, final Number defaultValue) {
+  public NumberLag lag(final GeneralNumberExpression expression, final GeneralNumberExpression offset,
+      final Number defaultValue) {
     return new NumberLag(expression, offset, val(defaultValue));
   }
 
-  public NumberLag lag(final NumberExpression expression, final Number offset, final NumberExpression defaultValue) {
+  public NumberLag lag(final GeneralNumberExpression expression, final Number offset,
+      final GeneralNumberExpression defaultValue) {
     return new NumberLag(expression, val(offset), defaultValue);
   }
 
-  public NumberLag lag(final NumberExpression expression, final NumberExpression offset,
-      final NumberExpression defaultValue) {
+  public NumberLag lag(final GeneralNumberExpression expression, final GeneralNumberExpression offset,
+      final GeneralNumberExpression defaultValue) {
     return new NumberLag(expression, offset, defaultValue);
   }
 
   // === Lag String ===
 
-  public StringLag lag(final StringExpression expression) {
+  public StringLag lag(final GeneralStringExpression expression) {
     return new StringLag(expression);
   }
 
-  public StringLag lag(final StringExpression expression, final Number offset) {
+  public StringLag lag(final GeneralStringExpression expression, final Number offset) {
     return new StringLag(expression, val(offset));
   }
 
-  public StringLag lag(final StringExpression expression, final NumberExpression offset) {
+  public StringLag lag(final GeneralStringExpression expression, final GeneralNumberExpression offset) {
     return new StringLag(expression, offset);
   }
 
-  public StringLag lag(final StringExpression expression, final Number offset, final String defaultValue) {
+  public StringLag lag(final GeneralStringExpression expression, final Number offset, final String defaultValue) {
     return new StringLag(expression, val(offset), val(defaultValue));
   }
 
-  public StringLag lag(final StringExpression expression, final NumberExpression offset, final String defaultValue) {
+  public StringLag lag(final GeneralStringExpression expression, final GeneralNumberExpression offset,
+      final String defaultValue) {
     return new StringLag(expression, offset, val(defaultValue));
   }
 
-  public StringLag lag(final StringExpression expression, final Number offset, final StringExpression defaultValue) {
+  public StringLag lag(final GeneralStringExpression expression, final Number offset,
+      final GeneralStringExpression defaultValue) {
     return new StringLag(expression, val(offset), defaultValue);
   }
 
-  public StringLag lag(final StringExpression expression, final NumberExpression offset,
-      final StringExpression defaultValue) {
+  public StringLag lag(final GeneralStringExpression expression, final GeneralNumberExpression offset,
+      final GeneralStringExpression defaultValue) {
     return new StringLag(expression, offset, defaultValue);
   }
 
   // === Lag DateTime ===
 
-  public DateTimeLag lag(final DateTimeExpression expression) {
+  public DateTimeLag lag(final GeneralDateTimeExpression expression) {
     return new DateTimeLag(expression);
   }
 
-  public DateTimeLag lag(final DateTimeExpression expression, final Number offset) {
+  public DateTimeLag lag(final GeneralDateTimeExpression expression, final Number offset) {
     return new DateTimeLag(expression, val(offset));
   }
 
-  public DateTimeLag lag(final DateTimeExpression expression, final NumberExpression offset) {
+  public DateTimeLag lag(final GeneralDateTimeExpression expression, final GeneralNumberExpression offset) {
     return new DateTimeLag(expression, offset);
   }
 
-  public DateTimeLag lag(final DateTimeExpression expression, final Number offset, final Date defaultValue) {
+  public DateTimeLag lag(final GeneralDateTimeExpression expression, final Number offset, final Date defaultValue) {
     return new DateTimeLag(expression, val(offset), val(defaultValue));
   }
 
-  public DateTimeLag lag(final DateTimeExpression expression, final NumberExpression offset, final Date defaultValue) {
+  public DateTimeLag lag(final GeneralDateTimeExpression expression, final GeneralNumberExpression offset,
+      final Date defaultValue) {
     return new DateTimeLag(expression, offset, val(defaultValue));
   }
 
-  public DateTimeLag lag(final DateTimeExpression expression, final Number offset,
-      final DateTimeExpression defaultValue) {
+  public DateTimeLag lag(final GeneralDateTimeExpression expression, final Number offset,
+      final GeneralDateTimeExpression defaultValue) {
     return new DateTimeLag(expression, val(offset), defaultValue);
   }
 
-  public DateTimeLag lag(final DateTimeExpression expression, final NumberExpression offset,
-      final DateTimeExpression defaultValue) {
+  public DateTimeLag lag(final GeneralDateTimeExpression expression, final GeneralNumberExpression offset,
+      final GeneralDateTimeExpression defaultValue) {
     return new DateTimeLag(expression, offset, defaultValue);
   }
 
   // === Lag Boolean ===
 
-  public BooleanLag lag(final Predicate expression) {
+  public BooleanLag lag(final GeneralBooleanExpression expression) {
     return new BooleanLag(expression);
   }
 
-  public BooleanLag lag(final Predicate expression, final Number offset) {
+  public BooleanLag lag(final GeneralBooleanExpression expression, final Number offset) {
     return new BooleanLag(expression, val(offset));
   }
 
-  public BooleanLag lag(final Predicate expression, final NumberExpression offset) {
+  public BooleanLag lag(final GeneralBooleanExpression expression, final GeneralNumberExpression offset) {
     return new BooleanLag(expression, offset, null);
   }
 
-  public BooleanLag lag(final Predicate expression, final Number offset, final Boolean defaultValue) {
+  public BooleanLag lag(final GeneralBooleanExpression expression, final Number offset, final Boolean defaultValue) {
     return new BooleanLag(expression, val(offset), val(defaultValue));
   }
 
-  public BooleanLag lag(final Predicate expression, final NumberExpression offset, final Boolean defaultValue) {
+  public BooleanLag lag(final GeneralBooleanExpression expression, final GeneralNumberExpression offset,
+      final Boolean defaultValue) {
     return new BooleanLag(expression, offset, val(defaultValue));
   }
 
-  public BooleanLag lag(final Predicate expression, final Number offset, final Predicate defaultValue) {
+  public BooleanLag lag(final GeneralBooleanExpression expression, final Number offset,
+      final GeneralBooleanExpression defaultValue) {
     return new BooleanLag(expression, val(offset), defaultValue);
   }
 
-  public BooleanLag lag(final Predicate expression, final NumberExpression offset, final Predicate defaultValue) {
+  public BooleanLag lag(final GeneralBooleanExpression expression, final GeneralNumberExpression offset,
+      final GeneralBooleanExpression defaultValue) {
     return new BooleanLag(expression, offset, defaultValue);
   }
 
   // === Lag ByteArray ===
 
-  public ByteArrayLag lag(final ByteArrayExpression expression) {
+  public ByteArrayLag lag(final GeneralByteArrayExpression expression) {
     return new ByteArrayLag(expression);
   }
 
-  public ByteArrayLag lag(final ByteArrayExpression expression, final Number offset) {
+  public ByteArrayLag lag(final GeneralByteArrayExpression expression, final Number offset) {
     return new ByteArrayLag(expression, val(offset));
   }
 
-  public ByteArrayLag lag(final ByteArrayExpression expression, final NumberExpression offset) {
+  public ByteArrayLag lag(final GeneralByteArrayExpression expression, final GeneralNumberExpression offset) {
     return new ByteArrayLag(expression, offset);
   }
 
-  public ByteArrayLag lag(final ByteArrayExpression expression, final Number offset, final byte[] defaultValue) {
+  public ByteArrayLag lag(final GeneralByteArrayExpression expression, final Number offset, final byte[] defaultValue) {
     return new ByteArrayLag(expression, val(offset), val(defaultValue));
   }
 
-  public ByteArrayLag lag(final ByteArrayExpression expression, final NumberExpression offset,
+  public ByteArrayLag lag(final GeneralByteArrayExpression expression, final GeneralNumberExpression offset,
       final byte[] defaultValue) {
     return new ByteArrayLag(expression, offset, val(defaultValue));
   }
 
-  public ByteArrayLag lag(final ByteArrayExpression expression, final Number offset,
-      final ByteArrayExpression defaultValue) {
+  public ByteArrayLag lag(final GeneralByteArrayExpression expression, final Number offset,
+      final GeneralByteArrayExpression defaultValue) {
     return new ByteArrayLag(expression, val(offset), defaultValue);
   }
 
-  public ByteArrayLag lag(final ByteArrayExpression expression, final NumberExpression offset,
-      final ByteArrayExpression defaultValue) {
+  public ByteArrayLag lag(final GeneralByteArrayExpression expression, final GeneralNumberExpression offset,
+      final GeneralByteArrayExpression defaultValue) {
     return new ByteArrayLag(expression, offset, defaultValue);
   }
 
   // === Lag Object ===
 
-  public ObjectLag lag(final ObjectExpression expression) {
+  public ObjectLag lag(final GeneralObjectExpression expression) {
     return new ObjectLag(expression);
   }
 
-  public ObjectLag lag(final ObjectExpression expression, final Number offset) {
+  public ObjectLag lag(final GeneralObjectExpression expression, final Number offset) {
     return new ObjectLag(expression, val(offset));
   }
 
-  public ObjectLag lag(final ObjectExpression expression, final NumberExpression offset) {
+  public ObjectLag lag(final GeneralObjectExpression expression, final GeneralNumberExpression offset) {
     return new ObjectLag(expression, offset);
   }
 
-  public ObjectLag lag(final ObjectExpression expression, final Number offset, final Object defaultValue) {
+  public ObjectLag lag(final GeneralObjectExpression expression, final Number offset, final Object defaultValue) {
     return new ObjectLag(expression, val(offset), val(defaultValue));
   }
 
-  public ObjectLag lag(final ObjectExpression expression, final NumberExpression offset, final Object defaultValue) {
+  public ObjectLag lag(final GeneralObjectExpression expression, final GeneralNumberExpression offset,
+      final Object defaultValue) {
     return new ObjectLag(expression, offset, val(defaultValue));
   }
 
-  public ObjectLag lag(final ObjectExpression expression, final Number offset, final ObjectExpression defaultValue) {
+  public ObjectLag lag(final GeneralObjectExpression expression, final Number offset,
+      final GeneralObjectExpression defaultValue) {
     return new ObjectLag(expression, val(offset), defaultValue);
   }
 
-  public ObjectLag lag(final ObjectExpression expression, final NumberExpression offset,
-      final ObjectExpression defaultValue) {
+  public ObjectLag lag(final GeneralObjectExpression expression, final GeneralNumberExpression offset,
+      final GeneralObjectExpression defaultValue) {
     return new ObjectLag(expression, offset, defaultValue);
   }
 
   // Case
 
-  public NumberCaseWhenStage caseWhen(final Predicate predicate, final Number value) {
+  public NumberCaseWhenStage caseWhen(final GeneralBooleanExpression predicate, final Number value) {
     return new NumberCaseWhenStage(predicate, val(value));
   }
 
-  public NumberCaseWhenStage caseWhen(final Predicate predicate, final NumberExpression value) {
+  public NumberCaseWhenStage caseWhen(final GeneralBooleanExpression predicate, final GeneralNumberExpression value) {
     return new NumberCaseWhenStage(predicate, value);
   }
 
-  public StringCaseWhenStage caseWhen(final Predicate predicate, final String value) {
+  public StringCaseWhenStage caseWhen(final GeneralBooleanExpression predicate, final String value) {
     return new StringCaseWhenStage(predicate, val(value));
   }
 
-  public StringCaseWhenStage caseWhen(final Predicate predicate, final StringExpression value) {
+  public StringCaseWhenStage caseWhen(final GeneralBooleanExpression predicate, final GeneralStringExpression value) {
     return new StringCaseWhenStage(predicate, value);
   }
 
-  public DateTimeCaseWhenStage caseWhen(final Predicate predicate, final Date value) {
+  public DateTimeCaseWhenStage caseWhen(final GeneralBooleanExpression predicate, final Date value) {
     return new DateTimeCaseWhenStage(predicate, val(value));
   }
 
-  public DateTimeCaseWhenStage caseWhen(final Predicate predicate, final DateTimeExpression value) {
+  public DateTimeCaseWhenStage caseWhen(final GeneralBooleanExpression predicate,
+      final GeneralDateTimeExpression value) {
     return new DateTimeCaseWhenStage(predicate, value);
   }
 
-  public BooleanCaseWhenStage caseWhen(final Predicate predicate, final Boolean value) {
+  public BooleanCaseWhenStage caseWhen(final GeneralBooleanExpression predicate, final Boolean value) {
     return new BooleanCaseWhenStage(predicate, val(value));
   }
 
-  public BooleanCaseWhenStage caseWhen(final Predicate predicate, final Predicate value) {
+  public BooleanCaseWhenStage caseWhen(final GeneralBooleanExpression predicate, final GeneralBooleanExpression value) {
     return new BooleanCaseWhenStage(predicate, value);
   }
 
-  public ByteArrayCaseWhenStage caseWhen(final Predicate predicate, final byte[] value) {
+  public ByteArrayCaseWhenStage caseWhen(final GeneralBooleanExpression predicate, final byte[] value) {
     return new ByteArrayCaseWhenStage(predicate, val(value));
   }
 
-  public ByteArrayCaseWhenStage caseWhen(final Predicate predicate, final ByteArrayExpression value) {
+  public ByteArrayCaseWhenStage caseWhen(final GeneralBooleanExpression predicate,
+      final GeneralByteArrayExpression value) {
     return new ByteArrayCaseWhenStage(predicate, value);
   }
 
-  public ObjectCaseWhenStage caseWhen(final Predicate predicate, final Object value) {
+  public ObjectCaseWhenStage caseWhen(final GeneralBooleanExpression predicate, final Object value) {
     return new ObjectCaseWhenStage(predicate, val(value));
   }
 
-  public ObjectCaseWhenStage caseWhen(final Predicate predicate, final ObjectExpression value) {
+  public ObjectCaseWhenStage caseWhen(final GeneralBooleanExpression predicate, final GeneralObjectExpression value) {
     return new ObjectCaseWhenStage(predicate, value);
   }
 
   // Date/Time
 
-  public DateTimeFreeExpression currentDate() {
+  public DateTimeExpression currentDate() {
     return new CurrentDate();
   }
 
-  public DateTimeFreeExpression currentTime() {
+  public DateTimeExpression currentTime() {
     return new CurrentTime();
   }
 
-  public DateTimeFreeExpression currentDateTime() {
+  public DateTimeExpression currentDateTime() {
     return new CurrentDateTime();
   }
 
-  public DateTimeFreeExpression datetime(final DateTimeExpression date, final DateTimeExpression time) {
+  public DateTimeExpression datetime(final GeneralDateTimeExpression date, final GeneralDateTimeExpression time) {
     return new DateTime(date, time);
   }
 
@@ -963,32 +985,32 @@ public class LiveSQL {
 
   // Literals (Boolean)
 
-  public final BooleanFreeExpression FALSE = PJump.getFalse();
-  public final BooleanFreeExpression TRUE = PJump.getTrue();
+  public final BooleanLiteral FALSE = BooleanLiteral.getFalse();
+  public final BooleanLiteral TRUE = BooleanLiteral.getTrue();
 
   // Parenthesis
 
-  public StringFreeExpression enclose(final StringExpression value) {
+  public StringExpression enclose(final GeneralStringExpression value) {
     return new EnclosedStringExpression(value);
   }
 
-  public NumberFreeExpression enclose(final NumberExpression value) {
+  public NumberExpression enclose(final GeneralNumberExpression value) {
     return new EnclosedNumberExpression(value);
   }
 
-  public DateTimeFreeExpression enclose(final DateTimeExpression value) {
+  public DateTimeExpression enclose(final GeneralDateTimeExpression value) {
     return new EnclosedDateTimeExpression(value);
   }
 
-  public BooleanFreeExpression enclose(final Predicate value) {
+  public Predicate enclose(final GeneralBooleanExpression value) {
     return new EnclosedBooleanExpression(value);
   }
 
-  public ByteArrayFreeExpression enclose(final ByteArrayExpression value) {
+  public ByteArrayExpression enclose(final GeneralByteArrayExpression value) {
     return new EnclosedByteArrayExpression(value);
   }
 
-  public ObjectFreeExpression enclose(final ObjectExpression value) {
+  public ObjectExpression enclose(final GeneralObjectExpression value) {
     return new EnclosedObjectExpression(value);
   }
 

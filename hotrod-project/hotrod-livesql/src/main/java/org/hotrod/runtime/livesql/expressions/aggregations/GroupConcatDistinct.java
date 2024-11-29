@@ -2,19 +2,19 @@ package org.hotrod.runtime.livesql.expressions.aggregations;
 
 import java.util.List;
 
-import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
+import org.hotrod.runtime.livesql.expressions.strings.GeneralStringExpression;
 import org.hotrod.runtime.livesql.expressions.strings.StringFunction;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public class GroupConcatDistinct extends StringFunction implements NonWindowableAggregationFunction {
 
-  private StringExpression expression;
+  private GeneralStringExpression expression;
   private List<OrderingTerm> ordering;
-  private StringExpression separator;
+  private GeneralStringExpression separator;
 
-  public GroupConcatDistinct(final StringExpression expression, final List<OrderingTerm> ordering,
-      final StringExpression separator) {
+  public GroupConcatDistinct(final GeneralStringExpression expression, final List<OrderingTerm> ordering,
+      final GeneralStringExpression separator) {
     super("<custom-rendering>");
     this.ordering = ordering;
     this.expression = expression;

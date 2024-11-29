@@ -3,7 +3,7 @@ package org.hotrod.runtime.livesql.queries;
 import java.util.LinkedHashMap;
 
 import org.hotrod.runtime.livesql.expressions.Helper;
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.util.PreviewRenderer;
@@ -13,7 +13,7 @@ public class DeleteObject implements QueryObject {
   private String mapperStatement; // DAO.delete(t, predicate)
 
   private TableOrView from;
-  private Predicate wherePredicate;
+  private GeneralBooleanExpression wherePredicate;
 
   DeleteObject() {
     super();
@@ -29,7 +29,7 @@ public class DeleteObject implements QueryObject {
     this.from = from;
   }
 
-  void setWherePredicate(final Predicate predicate) {
+  void setWherePredicate(final GeneralBooleanExpression predicate) {
     this.wherePredicate = predicate;
   }
 

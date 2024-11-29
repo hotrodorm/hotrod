@@ -4,9 +4,9 @@ import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public class Date extends BuiltInDateTimeFunction {
 
-  private DateTimeExpression dateTime;
+  private GeneralDateTimeExpression dateTime;
 
-  public Date(final DateTimeExpression dateTime) {
+  public Date(final GeneralDateTimeExpression dateTime) {
     super();
     this.dateTime = dateTime;
     super.register(this.dateTime);

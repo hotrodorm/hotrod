@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.hotrod.runtime.livesql.Row;
-import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.GeneralNumberExpression;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
 import org.hotrod.runtime.livesql.queries.select.TableExpression;
@@ -14,7 +14,7 @@ public class NumberSelectColumnsPhase extends NumberSelectExpression {
 
   // Constructor
 
-  public NumberSelectColumnsPhase(final List<CTE> ctes, final boolean distinct, final NumberExpression expression) {
+  public NumberSelectColumnsPhase(final List<CTE> ctes, final boolean distinct, final GeneralNumberExpression expression) {
     super(new SelectObject<Row>(ctes, distinct, true, Arrays.asList(expression).stream().collect(Collectors.toList())));
   }
 

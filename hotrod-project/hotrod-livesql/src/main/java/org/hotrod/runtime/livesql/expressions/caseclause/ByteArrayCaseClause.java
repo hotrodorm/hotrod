@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.binary.ByteArrayExpression;
-import org.hotrod.runtime.livesql.expressions.binary.ByteArrayFreeExpression;
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.expressions.binary.GeneralByteArrayExpression;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 /**
@@ -25,12 +25,12 @@ import org.hotrod.runtime.livesql.queries.QueryWriter;
  * @author valarcon
  *
  */
-public class ByteArrayCaseClause extends ByteArrayFreeExpression {
+public class ByteArrayCaseClause extends ByteArrayExpression {
 
   private List<CaseWhen> whens;
-  private ByteArrayExpression elseValue;
+  private GeneralByteArrayExpression elseValue;
 
-  public ByteArrayCaseClause(final Predicate predicate, final ByteArrayExpression value) {
+  public ByteArrayCaseClause(final GeneralBooleanExpression predicate, final GeneralByteArrayExpression value) {
     super(Expression.PRECEDENCE_CASE);
     this.whens = new ArrayList<CaseWhen>();
     this.whens.add(new CaseWhen(predicate, value));
@@ -39,13 +39,13 @@ public class ByteArrayCaseClause extends ByteArrayFreeExpression {
     super.register(value);
   }
 
-  void addWhen(final Predicate predicate, final ByteArrayExpression value) {
+  void addWhen(final GeneralBooleanExpression predicate, final GeneralByteArrayExpression value) {
     this.whens.add(new CaseWhen(predicate, value));
     super.register(predicate);
     super.register(value);
   }
 
-  void setElse(final ByteArrayExpression value) {
+  void setElse(final GeneralByteArrayExpression value) {
     this.elseValue = value;
     super.register(value);
   }
@@ -54,21 +54,21 @@ public class ByteArrayCaseClause extends ByteArrayFreeExpression {
 
   private static class CaseWhen {
 
-    private Predicate predicate;
-    private ByteArrayExpression value;
+    private GeneralBooleanExpression predicate;
+    private GeneralByteArrayExpression value;
 
-    public CaseWhen(final Predicate predicate, final ByteArrayExpression value) {
+    public CaseWhen(final GeneralBooleanExpression predicate, final GeneralByteArrayExpression value) {
       this.predicate = predicate;
       this.value = value;
     }
 
     // Getters
 
-    Predicate getPredicate() {
+    GeneralBooleanExpression getPredicate() {
       return predicate;
     }
 
-    ByteArrayExpression getValue() {
+    GeneralByteArrayExpression getValue() {
       return value;
     }
 

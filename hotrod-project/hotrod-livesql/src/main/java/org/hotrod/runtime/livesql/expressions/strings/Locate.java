@@ -1,17 +1,17 @@
 package org.hotrod.runtime.livesql.expressions.strings;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.numbers.GeneralNumberExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
-import org.hotrod.runtime.livesql.expressions.numbers.NumberFreeExpression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class Locate extends NumberFreeExpression {
+public class Locate extends NumberExpression {
 
-  private StringExpression substring;
-  private StringExpression string;
-  private NumberExpression from;
+  private GeneralStringExpression substring;
+  private GeneralStringExpression string;
+  private GeneralNumberExpression from;
 
-  public Locate(final StringExpression substring, final StringExpression string, final NumberExpression from) {
+  public Locate(final GeneralStringExpression substring, final GeneralStringExpression string, final GeneralNumberExpression from) {
     super(Expression.PRECEDENCE_FUNCTION);
     this.substring = substring;
     this.string = string;

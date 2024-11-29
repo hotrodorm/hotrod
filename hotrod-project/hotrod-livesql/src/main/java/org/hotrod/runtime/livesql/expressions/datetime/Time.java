@@ -4,9 +4,9 @@ import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public class Time extends BuiltInDateTimeFunction {
 
-  private DateTimeExpression timestamp;
+  private GeneralDateTimeExpression timestamp;
 
-  public Time(final DateTimeExpression timestamp) {
+  public Time(final GeneralDateTimeExpression timestamp) {
     super();
     this.timestamp = timestamp;
     super.register(this.timestamp);

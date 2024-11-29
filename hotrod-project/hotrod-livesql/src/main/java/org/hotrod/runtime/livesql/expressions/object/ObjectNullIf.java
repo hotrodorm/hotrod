@@ -3,12 +3,12 @@ package org.hotrod.runtime.livesql.expressions.object;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class ObjectNullIf extends ObjectFreeExpression {
+public class ObjectNullIf extends ObjectExpression {
 
-  private ObjectExpression a;
-  private ObjectExpression b;
+  private GeneralObjectExpression a;
+  private GeneralObjectExpression b;
 
-  public ObjectNullIf(final ObjectExpression a, final ObjectExpression b) {
+  public ObjectNullIf(final GeneralObjectExpression a, final GeneralObjectExpression b) {
     super(Expression.PRECEDENCE_FUNCTION);
     this.a = a;
     this.b = b;

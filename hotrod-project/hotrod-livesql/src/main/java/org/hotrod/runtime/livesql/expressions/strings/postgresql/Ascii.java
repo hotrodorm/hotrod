@@ -2,15 +2,15 @@ package org.hotrod.runtime.livesql.expressions.strings.postgresql;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
-import org.hotrod.runtime.livesql.expressions.numbers.NumberFreeExpression;
-import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
+import org.hotrod.runtime.livesql.expressions.strings.GeneralStringExpression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class Ascii extends NumberFreeExpression {
+public class Ascii extends NumberExpression {
 
-  private StringExpression string;
+  private GeneralStringExpression string;
 
-  public Ascii(final StringExpression string) {
+  public Ascii(final GeneralStringExpression string) {
     super(Expression.PRECEDENCE_FUNCTION);
     this.string = string;
     super.register(this.string);

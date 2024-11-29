@@ -3,12 +3,12 @@ package org.hotrod.runtime.livesql.expressions.datetime;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class DateTimeNullIf extends DateTimeFreeExpression {
+public class DateTimeNullIf extends DateTimeExpression {
 
-  private DateTimeExpression a;
-  private DateTimeExpression b;
+  private GeneralDateTimeExpression a;
+  private GeneralDateTimeExpression b;
 
-  public DateTimeNullIf(final DateTimeExpression a, final DateTimeExpression b) {
+  public DateTimeNullIf(final GeneralDateTimeExpression a, final GeneralDateTimeExpression b) {
     super(Expression.PRECEDENCE_FUNCTION);
     this.a = a;
     this.b = b;

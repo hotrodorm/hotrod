@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject;
 
@@ -19,7 +19,7 @@ public class DateTimeSelectGroupByPhase extends DateTimeSelectExpression {
 
   // Next stages
 
-  public DateTimeSelectHavingPhase having(final Predicate predicate) {
+  public DateTimeSelectHavingPhase having(final GeneralBooleanExpression predicate) {
     return new DateTimeSelectHavingPhase(this.select, predicate);
   }
 

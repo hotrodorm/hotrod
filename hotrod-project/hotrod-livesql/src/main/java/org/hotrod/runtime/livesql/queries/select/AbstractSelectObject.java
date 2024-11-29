@@ -21,7 +21,7 @@ import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.MDHelper;
 import org.hotrod.runtime.livesql.metadata.Name;
@@ -50,9 +50,9 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
   private List<Expression> distinctOn = null;
   protected TableExpression baseTableExpression = null;
   protected List<Join> joins = null;
-  private Predicate wherePredicate = null;
+  private GeneralBooleanExpression wherePredicate = null;
   private List<ComparableExpression> groupBy = null;
-  private Predicate havingPredicate = null;
+  private GeneralBooleanExpression havingPredicate = null;
 
   private List<OrderingTerm> orderingTerms = null;
   private Integer offset = null;
@@ -119,7 +119,7 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
     this.joins.add(join);
   }
 
-  public void setWhereCondition(final Predicate whereCondition) {
+  public void setWhereCondition(final GeneralBooleanExpression whereCondition) {
     this.wherePredicate = whereCondition;
   }
 
@@ -127,7 +127,7 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
     this.groupBy = groupBy;
   }
 
-  public void setHavingCondition(final Predicate havingCondition) {
+  public void setHavingCondition(final GeneralBooleanExpression havingCondition) {
     this.havingPredicate = havingCondition;
   }
 
@@ -164,11 +164,11 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
 
   // Getters
 
-  Predicate getWhereCondition() {
+  GeneralBooleanExpression getWhereCondition() {
     return wherePredicate;
   }
 
-  Predicate getHavingCondition() {
+  GeneralBooleanExpression getHavingCondition() {
     return havingPredicate;
   }
 

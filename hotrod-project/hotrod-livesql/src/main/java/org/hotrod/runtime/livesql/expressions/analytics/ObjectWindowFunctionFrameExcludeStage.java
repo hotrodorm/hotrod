@@ -1,6 +1,6 @@
 package org.hotrod.runtime.livesql.expressions.analytics;
 
-import org.hotrod.runtime.livesql.expressions.object.ObjectExpression;
+import org.hotrod.runtime.livesql.expressions.object.GeneralObjectExpression;
 
 public class ObjectWindowFunctionFrameExcludeStage {
 
@@ -12,7 +12,7 @@ public class ObjectWindowFunctionFrameExcludeStage {
 
   // Next stages
 
-  public ObjectExpression end() {
+  public GeneralObjectExpression end() {
     return this.function;
   }
 

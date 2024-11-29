@@ -1,21 +1,21 @@
 package org.hotrod.runtime.livesql.expressions.analytics;
 
-import org.hotrod.runtime.livesql.expressions.binary.ByteArrayExpression;
 import org.hotrod.runtime.livesql.expressions.binary.ByteArrayFunction;
-import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
+import org.hotrod.runtime.livesql.expressions.binary.GeneralByteArrayExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.GeneralNumberExpression;
 
 public class ByteArrayLead extends ByteArrayFunction implements PositionalAnalyticFunction {
 
-  public ByteArrayLead(final ByteArrayExpression expression) {
+  public ByteArrayLead(final GeneralByteArrayExpression expression) {
     super("lead(#{})", expression);
   }
 
-  public ByteArrayLead(final ByteArrayExpression expression, final NumberExpression offset) {
+  public ByteArrayLead(final GeneralByteArrayExpression expression, final GeneralNumberExpression offset) {
     super("lead(#{}, #{})", expression, offset);
   }
 
-  public ByteArrayLead(final ByteArrayExpression expression, final NumberExpression offset,
-      final ByteArrayExpression defaultValue) {
+  public ByteArrayLead(final GeneralByteArrayExpression expression, final GeneralNumberExpression offset,
+      final GeneralByteArrayExpression defaultValue) {
     super("lead(#{}, #{}, #{})", expression, offset, defaultValue);
   }
 

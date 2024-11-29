@@ -3,7 +3,7 @@ package org.hotrod.runtime.livesql.expressions.analytics;
 import java.util.Arrays;
 
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 
 public class BooleanWindowFunctionOverStage {
@@ -26,7 +26,7 @@ public class BooleanWindowFunctionOverStage {
     return new BooleanWindowFunctionOrderingStage(this.function);
   }
 
-  public Predicate end() {
+  public GeneralBooleanExpression end() {
     return this.function;
   }
 

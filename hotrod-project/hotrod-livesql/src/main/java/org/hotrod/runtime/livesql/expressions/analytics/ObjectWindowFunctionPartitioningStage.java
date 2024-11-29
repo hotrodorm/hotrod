@@ -2,7 +2,7 @@ package org.hotrod.runtime.livesql.expressions.analytics;
 
 import java.util.Arrays;
 
-import org.hotrod.runtime.livesql.expressions.object.ObjectExpression;
+import org.hotrod.runtime.livesql.expressions.object.GeneralObjectExpression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 
 public class ObjectWindowFunctionPartitioningStage {
@@ -20,7 +20,7 @@ public class ObjectWindowFunctionPartitioningStage {
     return new ObjectWindowFunctionOrderingStage(this.function);
   }
 
-  public ObjectExpression end() {
+  public GeneralObjectExpression end() {
     return this.function;
   }
 

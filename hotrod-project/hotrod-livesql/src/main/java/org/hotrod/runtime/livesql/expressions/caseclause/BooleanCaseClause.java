@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.expressions.predicates.BooleanFreeExpression;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
@@ -24,12 +24,12 @@ import org.hotrod.runtime.livesql.queries.QueryWriter;
  * @author valarcon
  *
  */
-public class BooleanCaseClause extends BooleanFreeExpression {
+public class BooleanCaseClause extends Predicate {
 
   private List<CaseWhen> whens;
-  private Predicate elseValue;
+  private GeneralBooleanExpression elseValue;
 
-  public BooleanCaseClause(final Predicate predicate, final Predicate value) {
+  public BooleanCaseClause(final GeneralBooleanExpression predicate, final GeneralBooleanExpression value) {
     super(Expression.PRECEDENCE_CASE);
     this.whens = new ArrayList<CaseWhen>();
     this.whens.add(new CaseWhen(predicate, value));
@@ -38,13 +38,13 @@ public class BooleanCaseClause extends BooleanFreeExpression {
     super.register(value);
   }
 
-  void addWhen(final Predicate predicate, final Predicate value) {
+  void addWhen(final GeneralBooleanExpression predicate, final GeneralBooleanExpression value) {
     this.whens.add(new CaseWhen(predicate, value));
     super.register(predicate);
     super.register(value);
   }
 
-  void setElse(final Predicate value) {
+  void setElse(final GeneralBooleanExpression value) {
     this.elseValue = value;
     super.register(value);
   }
@@ -53,21 +53,21 @@ public class BooleanCaseClause extends BooleanFreeExpression {
 
   private static class CaseWhen {
 
-    private Predicate predicate;
-    private Predicate value;
+    private GeneralBooleanExpression predicate;
+    private GeneralBooleanExpression value;
 
-    public CaseWhen(final Predicate predicate, final Predicate value) {
+    public CaseWhen(final GeneralBooleanExpression predicate, final GeneralBooleanExpression value) {
       this.predicate = predicate;
       this.value = value;
     }
 
     // Getters
 
-    Predicate getPredicate() {
+    GeneralBooleanExpression getPredicate() {
       return predicate;
     }
 
-    Predicate getValue() {
+    GeneralBooleanExpression getValue() {
       return value;
     }
 

@@ -7,7 +7,7 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.rendering.FunctionTemplate;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public abstract class DateTimeFunction extends DateTimeFreeExpression {
+public abstract class DateTimeFunction extends DateTimeExpression {
 
   private FunctionTemplate template;
 

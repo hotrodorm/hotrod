@@ -5,15 +5,15 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class EnclosedDateTimeExpression extends DateTimeFreeExpression {
+public class EnclosedDateTimeExpression extends DateTimeExpression {
 
   // Properties
 
-  private DateTimeExpression expr;
+  private GeneralDateTimeExpression expr;
 
   // Constructor
 
-  public EnclosedDateTimeExpression(final DateTimeExpression expr) {
+  public EnclosedDateTimeExpression(final GeneralDateTimeExpression expr) {
     super(Expression.PRECEDENCE_PARENTHESIS);
     if (expr == null) {
       throw new LiveSQLException("Enclosed expression cannot be null");

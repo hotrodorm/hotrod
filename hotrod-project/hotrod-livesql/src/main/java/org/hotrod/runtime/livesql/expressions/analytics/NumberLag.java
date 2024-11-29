@@ -1,20 +1,20 @@
 package org.hotrod.runtime.livesql.expressions.analytics;
 
-import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.GeneralNumberExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberFunction;
 
 public class NumberLag extends NumberFunction implements PositionalAnalyticFunction {
 
-  public NumberLag(final NumberExpression expression) {
+  public NumberLag(final GeneralNumberExpression expression) {
     super("lag(#{})", expression);
   }
 
-  public NumberLag(final NumberExpression expression, final NumberExpression offset) {
+  public NumberLag(final GeneralNumberExpression expression, final GeneralNumberExpression offset) {
     super("lag(#{}, #{})", expression, offset);
   }
 
-  public NumberLag(final NumberExpression expression, final NumberExpression offset,
-      final NumberExpression defaultValue) {
+  public NumberLag(final GeneralNumberExpression expression, final GeneralNumberExpression offset,
+      final GeneralNumberExpression defaultValue) {
     super("lag(#{}, #{}, #{})", expression, offset, defaultValue);
   }
 

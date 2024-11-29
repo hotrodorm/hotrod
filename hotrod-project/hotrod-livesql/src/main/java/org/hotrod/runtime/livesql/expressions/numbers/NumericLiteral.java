@@ -2,7 +2,7 @@ package org.hotrod.runtime.livesql.expressions.numbers;
 
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public abstract class NumericLiteral extends NumberFreeExpression {
+public abstract class NumericLiteral extends NumberExpression {
 
   // Properties
 

@@ -5,15 +5,15 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class EnclosedByteArrayExpression extends ByteArrayFreeExpression {
+public class EnclosedByteArrayExpression extends ByteArrayExpression {
 
   // Properties
 
-  private ByteArrayExpression expr;
+  private GeneralByteArrayExpression expr;
 
   // Constructor
 
-  public EnclosedByteArrayExpression(final ByteArrayExpression expr) {
+  public EnclosedByteArrayExpression(final GeneralByteArrayExpression expr) {
     super(Expression.PRECEDENCE_PARENTHESIS);
     if (expr == null) {
       throw new LiveSQLException("Enclosed expression cannot be null");

@@ -1,6 +1,6 @@
 package org.hotrod.runtime.livesql.queries;
 
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 
 public class UpdateWherePhase implements DMLQuery {
 
@@ -11,7 +11,7 @@ public class UpdateWherePhase implements DMLQuery {
 
   // Constructor
 
-  public UpdateWherePhase(final LiveSQLContext context, final UpdateObject update, final Predicate predicate) {
+  public UpdateWherePhase(final LiveSQLContext context, final UpdateObject update, final GeneralBooleanExpression predicate) {
     this.context = context;
     this.update = update;
     this.update.setWherePredicate(predicate);

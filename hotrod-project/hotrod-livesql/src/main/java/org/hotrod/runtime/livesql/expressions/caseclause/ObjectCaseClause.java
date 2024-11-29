@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.object.GeneralObjectExpression;
 import org.hotrod.runtime.livesql.expressions.object.ObjectExpression;
-import org.hotrod.runtime.livesql.expressions.object.ObjectFreeExpression;
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 /**
@@ -25,12 +25,12 @@ import org.hotrod.runtime.livesql.queries.QueryWriter;
  * @author valarcon
  *
  */
-public class ObjectCaseClause extends ObjectFreeExpression {
+public class ObjectCaseClause extends ObjectExpression {
 
   private List<CaseWhen> whens;
-  private ObjectExpression elseValue;
+  private GeneralObjectExpression elseValue;
 
-  public ObjectCaseClause(final Predicate predicate, final ObjectExpression value) {
+  public ObjectCaseClause(final GeneralBooleanExpression predicate, final GeneralObjectExpression value) {
     super(Expression.PRECEDENCE_CASE);
     this.whens = new ArrayList<CaseWhen>();
     this.whens.add(new CaseWhen(predicate, value));
@@ -39,13 +39,13 @@ public class ObjectCaseClause extends ObjectFreeExpression {
     super.register(value);
   }
 
-  void addWhen(final Predicate predicate, final ObjectExpression value) {
+  void addWhen(final GeneralBooleanExpression predicate, final GeneralObjectExpression value) {
     this.whens.add(new CaseWhen(predicate, value));
     super.register(predicate);
     super.register(value);
   }
 
-  void setElse(final ObjectExpression value) {
+  void setElse(final GeneralObjectExpression value) {
     this.elseValue = value;
     super.register(value);
   }
@@ -54,21 +54,21 @@ public class ObjectCaseClause extends ObjectFreeExpression {
 
   private static class CaseWhen {
 
-    private Predicate predicate;
-    private ObjectExpression value;
+    private GeneralBooleanExpression predicate;
+    private GeneralObjectExpression value;
 
-    public CaseWhen(final Predicate predicate, final ObjectExpression value) {
+    public CaseWhen(final GeneralBooleanExpression predicate, final GeneralObjectExpression value) {
       this.predicate = predicate;
       this.value = value;
     }
 
     // Getters
 
-    Predicate getPredicate() {
+    GeneralBooleanExpression getPredicate() {
       return predicate;
     }
 
-    ObjectExpression getValue() {
+    GeneralObjectExpression getValue() {
       return value;
     }
 

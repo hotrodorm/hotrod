@@ -5,9 +5,9 @@ import java.util.List;
 import org.hotrod.runtime.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.Helper;
-import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
-import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
-import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
+import org.hotrod.runtime.livesql.expressions.datetime.GeneralDateTimeExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.GeneralNumberExpression;
+import org.hotrod.runtime.livesql.expressions.strings.GeneralStringExpression;
 import org.hotrod.runtime.livesql.ordering.OHelper;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
@@ -341,8 +341,8 @@ public class OracleDialect extends LiveSQLDialect {
       // General purpose functions
 
       @Override
-      public void groupConcat(final QueryWriter w, final boolean distinct, final StringExpression value,
-          final List<OrderingTerm> ordering, final StringExpression separator) {
+      public void groupConcat(final QueryWriter w, final boolean distinct, final GeneralStringExpression value,
+          final List<OrderingTerm> ordering, final GeneralStringExpression separator) {
         if (distinct) {
           throw new UnsupportedLiveSQLFeatureException(
               "Oracle does not support DISTINCT on the GROUP_CONCAT() function (listagg())");
@@ -369,7 +369,7 @@ public class OracleDialect extends LiveSQLDialect {
       // Arithmetic functions
 
       @Override
-      public void remainder(final QueryWriter w, final NumberExpression a, final NumberExpression b) {
+      public void remainder(final QueryWriter w, final GeneralNumberExpression a, final GeneralNumberExpression b) {
         w.write("mod(");
         Helper.renderTo(a, w);
         w.write(", ");
@@ -380,10 +380,10 @@ public class OracleDialect extends LiveSQLDialect {
       // String functions
 
       @Override
-      public void concat(final QueryWriter w, final List<StringExpression> strings) {
+      public void concat(final QueryWriter w, final List<GeneralStringExpression> strings) {
         w.write("(");
         Separator sep = new Separator(" || ");
-        for (StringExpression s : strings) {
+        for (GeneralStringExpression s : strings) {
           w.write(sep.render());
           Helper.renderTo(s, w);
         }
@@ -391,8 +391,8 @@ public class OracleDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void locate(final QueryWriter w, final StringExpression substring, final StringExpression string,
-          final NumberExpression from) {
+      public void locate(final QueryWriter w, final GeneralStringExpression substring, final GeneralStringExpression string,
+          final GeneralNumberExpression from) {
         if (from == null) {
           this.write(w, "instr", string, substring);
         } else {
@@ -418,21 +418,21 @@ public class OracleDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void date(final QueryWriter w, final DateTimeExpression datetime) {
+      public void date(final QueryWriter w, final GeneralDateTimeExpression datetime) {
         w.write("trunc(");
         Helper.renderTo(datetime, w);
         w.write(")");
       }
 
       @Override
-      public void time(final QueryWriter w, final DateTimeExpression datetime) {
+      public void time(final QueryWriter w, final GeneralDateTimeExpression datetime) {
         w.write("to_char(");
         Helper.renderTo(datetime, w);
         w.write(", 'HH24:MI:SS')");
       }
 
       @Override
-      public void dateTime(final QueryWriter w, final DateTimeExpression date, final DateTimeExpression time) {
+      public void dateTime(final QueryWriter w, final GeneralDateTimeExpression date, final GeneralDateTimeExpression time) {
         w.write("to_date(to_char(");
         Helper.renderTo(date, w);
         w.write(", 'yyyymmdd') || ' ' || ");

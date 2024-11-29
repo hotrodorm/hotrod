@@ -4,10 +4,10 @@ import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public class Trunc extends BuiltInNumberFunction {
 
-  private NumberExpression value;
-  private NumberExpression places;
+  private GeneralNumberExpression value;
+  private GeneralNumberExpression places;
 
-  public Trunc(final NumberExpression value, final NumberExpression places) {
+  public Trunc(final GeneralNumberExpression value, final GeneralNumberExpression places) {
     super();
     this.value = value;
     this.places = places;

@@ -3,12 +3,12 @@ package org.hotrod.runtime.livesql.metadata;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.AliasedEntityColumn;
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.GeneralNumberExpression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
 import org.hotrodorm.hotrod.utils.SUtil;
 
-public class NumberEntityColumn extends NumberExpression implements Column {
+public class NumberEntityColumn extends GeneralNumberExpression implements Column {
 
   // Properties
 

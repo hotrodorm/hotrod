@@ -1,20 +1,20 @@
 package org.hotrod.runtime.livesql.expressions.analytics;
 
-import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.GeneralNumberExpression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberFunction;
 
 public class NumberLead extends NumberFunction implements PositionalAnalyticFunction {
 
-  public NumberLead(final NumberExpression expression) {
+  public NumberLead(final GeneralNumberExpression expression) {
     super("lead(#{})", expression);
   }
 
-  public NumberLead(final NumberExpression expression, final NumberExpression offset) {
+  public NumberLead(final GeneralNumberExpression expression, final GeneralNumberExpression offset) {
     super("lead(#{}, #{})", expression, offset);
   }
 
-  public NumberLead(final NumberExpression expression, final NumberExpression offset,
-      final NumberExpression defaultValue) {
+  public NumberLead(final GeneralNumberExpression expression, final GeneralNumberExpression offset,
+      final GeneralNumberExpression defaultValue) {
     super("lead(#{}, #{}, #{})", expression, offset, defaultValue);
   }
 

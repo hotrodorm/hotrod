@@ -1,6 +1,6 @@
 package org.hotrod.runtime.livesql.expressions.analytics;
 
-import org.hotrod.runtime.livesql.expressions.binary.ByteArrayExpression;
+import org.hotrod.runtime.livesql.expressions.binary.GeneralByteArrayExpression;
 
 public class ByteArrayWindowFunctionFrameExcludeStage {
 
@@ -12,7 +12,7 @@ public class ByteArrayWindowFunctionFrameExcludeStage {
 
   // Next stages
 
-  public ByteArrayExpression end() {
+  public GeneralByteArrayExpression end() {
     return this.function;
   }
 

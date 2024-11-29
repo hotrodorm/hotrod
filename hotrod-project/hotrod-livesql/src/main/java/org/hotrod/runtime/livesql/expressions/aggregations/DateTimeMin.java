@@ -3,12 +3,12 @@ package org.hotrod.runtime.livesql.expressions.aggregations;
 import org.hotrod.runtime.livesql.expressions.analytics.DateTimeWindowExpression;
 import org.hotrod.runtime.livesql.expressions.analytics.DateTimeWindowFunctionOverStage;
 import org.hotrod.runtime.livesql.expressions.analytics.WindowableAggregationFunction;
-import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFunction;
+import org.hotrod.runtime.livesql.expressions.datetime.GeneralDateTimeExpression;
 
 public class DateTimeMin extends DateTimeFunction implements WindowableAggregationFunction {
 
-  public DateTimeMin(final DateTimeExpression expression) {
+  public DateTimeMin(final GeneralDateTimeExpression expression) {
     super("min(#{})", expression);
   }
 

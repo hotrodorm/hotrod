@@ -3,12 +3,12 @@ package org.hotrod.runtime.livesql.metadata;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.AliasedEntityColumn;
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
 import org.hotrodorm.hotrod.utils.SUtil;
 
-public class BooleanEntityColumn extends Predicate implements Column {
+public class BooleanEntityColumn extends GeneralBooleanExpression implements Column {
 
   // Properties
 

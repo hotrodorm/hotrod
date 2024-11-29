@@ -1,8 +1,8 @@
 package org.hotrod.runtime.livesql.expressions;
 
-import org.hotrod.runtime.livesql.expressions.predicates.BooleanFreeExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.IsNotNull;
 import org.hotrod.runtime.livesql.expressions.predicates.IsNull;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 
 public abstract class GenericExpression extends Expression implements OrderingTerm {
@@ -13,11 +13,11 @@ public abstract class GenericExpression extends Expression implements OrderingTe
 
   // Is Null and Is Not Null
 
-  public BooleanFreeExpression isNotNull() {
+  public Predicate isNotNull() {
     return new IsNotNull(this);
   }
 
-  public BooleanFreeExpression isNull() {
+  public Predicate isNull() {
     return new IsNull(this);
   }
 

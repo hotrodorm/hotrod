@@ -3,10 +3,10 @@ package org.hotrod.runtime.livesql.queries.subqueries;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
-import org.hotrod.runtime.livesql.expressions.predicates.BooleanFreeExpression;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class SubqueryBooleanColumn extends BooleanFreeExpression implements SubqueryColumn {
+public class SubqueryBooleanColumn extends Predicate implements SubqueryColumn {
 
   // Properties
 

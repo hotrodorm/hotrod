@@ -2,12 +2,12 @@ package org.hotrod.runtime.livesql.expressions.asymmetric;
 
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.expressions.predicates.BooleanFreeExpression;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.SHelper;
 import org.hotrod.runtime.livesql.queries.select.Select;
 
-public abstract class AsymmetricOperator extends BooleanFreeExpression {
+public abstract class AsymmetricOperator extends Predicate {
 
   private ComparableExpression value;
   private String operator;

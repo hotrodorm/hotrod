@@ -5,12 +5,12 @@ import java.util.logging.Logger;
 
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.expressions.binary.ByteArrayExpression;
-import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
-import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
-import org.hotrod.runtime.livesql.expressions.object.ObjectExpression;
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
-import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
+import org.hotrod.runtime.livesql.expressions.binary.GeneralByteArrayExpression;
+import org.hotrod.runtime.livesql.expressions.datetime.GeneralDateTimeExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.GeneralNumberExpression;
+import org.hotrod.runtime.livesql.expressions.object.GeneralObjectExpression;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
+import org.hotrod.runtime.livesql.expressions.strings.GeneralStringExpression;
 import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
@@ -70,27 +70,27 @@ public class Subquery extends TableExpression {
 
   // Subquery column reference
 
-  public NumberExpression num(final String name) {
+  public GeneralNumberExpression num(final String name) {
     return new SubqueryNumberColumn(this, name);
   }
 
-  public StringExpression str(final String name) {
+  public GeneralStringExpression str(final String name) {
     return new SubqueryStringColumn(this, name);
   }
 
-  public DateTimeExpression dt(final String name) {
+  public GeneralDateTimeExpression dt(final String name) {
     return new SubqueryDateTimeColumn(this, name);
   }
 
-  public Predicate bool(final String name) {
+  public GeneralBooleanExpression bool(final String name) {
     return new SubqueryBooleanColumn(this, name);
   }
 
-  public ByteArrayExpression bin(final String name) {
+  public GeneralByteArrayExpression bin(final String name) {
     return new SubqueryByteArrayColumn(this, name);
   }
 
-  public ObjectExpression obj(final String name) {
+  public GeneralObjectExpression obj(final String name) {
     return new SubqueryObjectColumn(this, name);
   }
 

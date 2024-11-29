@@ -7,10 +7,10 @@ import java.util.stream.Collectors;
 import org.hotrod.runtime.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.Helper;
-import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression;
-import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
-import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
+import org.hotrod.runtime.livesql.expressions.datetime.GeneralDateTimeExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.GeneralNumberExpression;
+import org.hotrod.runtime.livesql.expressions.strings.GeneralStringExpression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.CrossJoin;
@@ -206,15 +206,15 @@ public class DerbyDialect extends LiveSQLDialect {
       // General purpose functions
 
       @Override
-      public void groupConcat(final QueryWriter w, final boolean distinct, final StringExpression value,
-          final List<OrderingTerm> ordering, final StringExpression separator) {
+      public void groupConcat(final QueryWriter w, final boolean distinct, final GeneralStringExpression value,
+          final List<OrderingTerm> ordering, final GeneralStringExpression separator) {
         throw new UnsupportedLiveSQLFeatureException("GROUP_CONCAT() is not supported in Derby database");
       }
 
       // Arithmetic functions
 
       @Override
-      public void power(final QueryWriter w, final NumberExpression x, final NumberExpression exponent) {
+      public void power(final QueryWriter w, final GeneralNumberExpression x, final GeneralNumberExpression exponent) {
         w.write("exp(");
         Helper.renderTo(exponent, w);
         w.write(" * ln(");
@@ -223,7 +223,7 @@ public class DerbyDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void logarithm(final QueryWriter w, final NumberExpression x, final NumberExpression base) {
+      public void logarithm(final QueryWriter w, final GeneralNumberExpression x, final GeneralNumberExpression base) {
         if (base == null) {
           this.write(w, "ln", x);
         } else {
@@ -236,22 +236,22 @@ public class DerbyDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void round(final QueryWriter w, final NumberExpression x, final NumberExpression places) {
+      public void round(final QueryWriter w, final GeneralNumberExpression x, final GeneralNumberExpression places) {
         throw new UnsupportedLiveSQLFeatureException("ROUND() is not supported in Derby database");
       }
 
       @Override
-      public void trunc(final QueryWriter w, final NumberExpression x, final NumberExpression places) {
+      public void trunc(final QueryWriter w, final GeneralNumberExpression x, final GeneralNumberExpression places) {
         throw new UnsupportedLiveSQLFeatureException("TRUNC() is not supported in Derby database");
       }
 
       // String functions
 
       @Override
-      public void concat(final QueryWriter w, final List<StringExpression> strings) {
+      public void concat(final QueryWriter w, final List<GeneralStringExpression> strings) {
         w.write("(");
         Separator sep = new Separator(" || ");
-        for (StringExpression s : strings) {
+        for (GeneralStringExpression s : strings) {
           w.write(sep.render());
           Helper.renderTo(s, w);
         }
@@ -276,12 +276,12 @@ public class DerbyDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void dateTime(final QueryWriter w, final DateTimeExpression date, final DateTimeExpression time) {
+      public void dateTime(final QueryWriter w, final GeneralDateTimeExpression date, final GeneralDateTimeExpression time) {
         throw new UnsupportedLiveSQLFeatureException("DATETIME() is not supported in Derby database");
       }
 
       @Override
-      public void extract(final QueryWriter w, final DateTimeExpression datetime, final DateTimeFieldExpression field) {
+      public void extract(final QueryWriter w, final GeneralDateTimeExpression datetime, final DateTimeFieldExpression field) {
         throw new UnsupportedLiveSQLFeatureException("EXTRACT() is not supported in Derby database");
       }
 

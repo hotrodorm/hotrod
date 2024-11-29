@@ -1,6 +1,6 @@
 package org.hotrod.runtime.livesql.expressions.caseclause;
 
-import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
+import org.hotrod.runtime.livesql.expressions.strings.GeneralStringExpression;
 
 public class StringCaseElseStage {
 
@@ -10,7 +10,7 @@ public class StringCaseElseStage {
     this.clause = clause;
   }
 
-  public StringExpression end() {
+  public GeneralStringExpression end() {
     return this.clause;
   }
 

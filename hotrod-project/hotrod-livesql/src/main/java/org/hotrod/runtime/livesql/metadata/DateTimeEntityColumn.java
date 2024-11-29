@@ -3,12 +3,12 @@ package org.hotrod.runtime.livesql.metadata;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.AliasedEntityColumn;
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
+import org.hotrod.runtime.livesql.expressions.datetime.GeneralDateTimeExpression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
 import org.hotrodorm.hotrod.utils.SUtil;
 
-public class DateTimeEntityColumn extends DateTimeExpression implements Column {
+public class DateTimeEntityColumn extends GeneralDateTimeExpression implements Column {
 
   // Properties
 

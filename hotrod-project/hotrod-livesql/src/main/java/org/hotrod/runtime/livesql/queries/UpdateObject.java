@@ -9,7 +9,7 @@ import java.util.Map;
 import org.hotrod.runtime.livesql.dialects.UpdateRenderer;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.MDHelper;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
@@ -23,7 +23,7 @@ public class UpdateObject implements QueryObject {
 
   private TableOrView tableOrView;
   private List<Assignment> sets = new ArrayList<>();
-  private Predicate wherePredicate;
+  private GeneralBooleanExpression wherePredicate;
 
   private Map<String, Object> extraSets = new HashMap<>();
 
@@ -49,7 +49,7 @@ public class UpdateObject implements QueryObject {
     this.extraSets = extraSets;
   }
 
-  void setWherePredicate(final Predicate predicate) {
+  void setWherePredicate(final GeneralBooleanExpression predicate) {
     this.wherePredicate = predicate;
   }
 

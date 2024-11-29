@@ -1,32 +1,32 @@
 package org.hotrod.runtime.livesql.expressions.caseclause;
 
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
-import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
+import org.hotrod.runtime.livesql.expressions.strings.GeneralStringExpression;
 import org.hotrod.runtime.livesql.util.BoxUtil;
 
 public class StringCaseWhenStage {
 
   private StringCaseClause clause;
 
-  public StringCaseWhenStage(final Predicate predicate, final StringExpression value) {
+  public StringCaseWhenStage(final GeneralBooleanExpression predicate, final GeneralStringExpression value) {
     this.clause = new StringCaseClause(predicate, value);
   }
 
   // Same stage
 
-  public StringCaseWhenStage when(final Predicate predicate, final StringExpression value) {
+  public StringCaseWhenStage when(final GeneralBooleanExpression predicate, final GeneralStringExpression value) {
     this.clause.addWhen(predicate, value);
     return this;
   }
 
-  public StringCaseWhenStage when(final Predicate predicate, final String value) {
+  public StringCaseWhenStage when(final GeneralBooleanExpression predicate, final String value) {
     this.clause.addWhen(predicate, BoxUtil.box(value));
     return this;
   }
 
   // Next stages
 
-  public StringCaseElseStage elseValue(final StringExpression value) {
+  public StringCaseElseStage elseValue(final GeneralStringExpression value) {
     this.clause.setElse(value);
     return new StringCaseElseStage(this.clause);
   }
@@ -38,7 +38,7 @@ public class StringCaseWhenStage {
 
   // Finishes the clause
 
-  public StringExpression end() {
+  public GeneralStringExpression end() {
     return this.clause;
   }
 

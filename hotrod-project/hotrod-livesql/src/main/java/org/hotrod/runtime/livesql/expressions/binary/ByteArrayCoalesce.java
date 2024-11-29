@@ -6,11 +6,11 @@ import java.util.List;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class ByteArrayCoalesce extends ByteArrayFreeExpression {
+public class ByteArrayCoalesce extends ByteArrayExpression {
 
-  private List<ByteArrayExpression> expressions;
+  private List<GeneralByteArrayExpression> expressions;
 
-  public ByteArrayCoalesce(final ByteArrayExpression... values) {
+  public ByteArrayCoalesce(final GeneralByteArrayExpression... values) {
     super(Expression.PRECEDENCE_FUNCTION);
     this.expressions = Arrays.asList(values);
     this.expressions.forEach(e -> super.register(e));

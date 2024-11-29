@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.hotrod.runtime.livesql.Row;
-import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
+import org.hotrod.runtime.livesql.expressions.strings.GeneralStringExpression;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
 import org.hotrod.runtime.livesql.queries.select.TableExpression;
@@ -14,7 +14,7 @@ public class StringSelectColumnsPhase extends StringSelectExpression {
 
   // Constructor
 
-  public StringSelectColumnsPhase(final List<CTE> ctes, final boolean distinct, final StringExpression expression) {
+  public StringSelectColumnsPhase(final List<CTE> ctes, final boolean distinct, final GeneralStringExpression expression) {
     super(new SelectObject<Row>(ctes, distinct, true, Arrays.asList(expression).stream().collect(Collectors.toList())));
   }
 

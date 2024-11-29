@@ -1,21 +1,21 @@
 package org.hotrod.runtime.livesql.expressions.analytics;
 
-import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
-import org.hotrod.runtime.livesql.expressions.object.ObjectExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.GeneralNumberExpression;
+import org.hotrod.runtime.livesql.expressions.object.GeneralObjectExpression;
 import org.hotrod.runtime.livesql.expressions.object.ObjectFunction;
 
 public class ObjectLead extends ObjectFunction implements PositionalAnalyticFunction {
 
-  public ObjectLead(final ObjectExpression expression) {
+  public ObjectLead(final GeneralObjectExpression expression) {
     super("lead(#{})", expression);
   }
 
-  public ObjectLead(final ObjectExpression expression, final NumberExpression offset) {
+  public ObjectLead(final GeneralObjectExpression expression, final GeneralNumberExpression offset) {
     super("lead(#{}, #{})", expression, offset);
   }
 
-  public ObjectLead(final ObjectExpression expression, final NumberExpression offset,
-      final ObjectExpression defaultValue) {
+  public ObjectLead(final GeneralObjectExpression expression, final GeneralNumberExpression offset,
+      final GeneralObjectExpression defaultValue) {
     super("lead(#{}, #{}, #{})", expression, offset, defaultValue);
   }
 

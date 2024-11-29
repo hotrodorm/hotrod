@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import org.hotrod.runtime.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
-import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.GeneralNumberExpression;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.LockingConcurrency;
@@ -311,7 +311,7 @@ public class MySQLDialect extends LiveSQLDialect {
       // Arithmetic functions
 
       @Override
-      public void trunc(final QueryWriter w, final NumberExpression x, final NumberExpression places) {
+      public void trunc(final QueryWriter w, final GeneralNumberExpression x, final GeneralNumberExpression places) {
         if (places == null) {
           this.write(w, "truncate", x);
         } else {

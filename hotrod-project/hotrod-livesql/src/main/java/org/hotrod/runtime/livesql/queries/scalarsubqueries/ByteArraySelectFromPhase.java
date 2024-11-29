@@ -4,7 +4,7 @@ import org.hotrod.runtime.livesql.Available;
 import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.dialects.Const;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject;
@@ -34,7 +34,7 @@ public class ByteArraySelectFromPhase extends ByteArraySelectExpression {
 
   // This stage
 
-  public ByteArraySelectFromPhase join(final TableExpression tableViewOrSubquery, final Predicate on) {
+  public ByteArraySelectFromPhase join(final TableExpression tableViewOrSubquery, final GeneralBooleanExpression on) {
     this.select.addJoin(new InnerJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -44,7 +44,7 @@ public class ByteArraySelectFromPhase extends ByteArraySelectExpression {
     return this;
   }
 
-  public ByteArraySelectFromPhase leftJoin(final TableExpression tableViewOrSubquery, final Predicate on) {
+  public ByteArraySelectFromPhase leftJoin(final TableExpression tableViewOrSubquery, final GeneralBooleanExpression on) {
     this.select.addJoin(new LeftOuterJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -54,7 +54,7 @@ public class ByteArraySelectFromPhase extends ByteArraySelectExpression {
     return this;
   }
 
-  public ByteArraySelectFromPhase rightJoin(final TableExpression tableViewOrSubquery, final Predicate on) {
+  public ByteArraySelectFromPhase rightJoin(final TableExpression tableViewOrSubquery, final GeneralBooleanExpression on) {
     this.select.addJoin(new RightOuterJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -64,7 +64,7 @@ public class ByteArraySelectFromPhase extends ByteArraySelectExpression {
     return this;
   }
 
-  public ByteArraySelectFromPhase fullJoin(final TableExpression tableViewOrSubquery, final Predicate on) {
+  public ByteArraySelectFromPhase fullJoin(final TableExpression tableViewOrSubquery, final GeneralBooleanExpression on) {
     this.select.addJoin(new FullOuterJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -124,7 +124,7 @@ public class ByteArraySelectFromPhase extends ByteArraySelectExpression {
 
   // Next stages
 
-  public ByteArraySelectWherePhase where(final Predicate predicate) {
+  public ByteArraySelectWherePhase where(final GeneralBooleanExpression predicate) {
     return new ByteArraySelectWherePhase(this.select, predicate);
   }
 

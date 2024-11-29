@@ -2,7 +2,7 @@ package org.hotrod.runtime.livesql.queries.select;
 
 import java.util.Arrays;
 
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
@@ -10,7 +10,7 @@ import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 public class CriteriaWherePhase<T> extends CriteriaPhase<T> {
 
   public CriteriaWherePhase(final LiveSQLContext context, final String mapperStatement, final TableOrView baseTable,
-      final Predicate whereCondition) {
+      final GeneralBooleanExpression whereCondition) {
     super(context, new SelectObject<T>(null, false, true), mapperStatement);
     super.select.setBaseTableExpression(baseTable);
     super.select.setWhereCondition(whereCondition);

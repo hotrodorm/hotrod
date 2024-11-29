@@ -3,12 +3,12 @@ package org.hotrod.runtime.livesql.expressions.predicates;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
-public class BooleanNullIf extends BooleanFreeExpression {
+public class BooleanNullIf extends Predicate {
 
-  private Predicate a;
-  private Predicate b;
+  private GeneralBooleanExpression a;
+  private GeneralBooleanExpression b;
 
-  public BooleanNullIf(final Predicate a, final Predicate b) {
+  public BooleanNullIf(final GeneralBooleanExpression a, final GeneralBooleanExpression b) {
     super(Expression.PRECEDENCE_FUNCTION);
     this.a = a;
     this.b = b;
