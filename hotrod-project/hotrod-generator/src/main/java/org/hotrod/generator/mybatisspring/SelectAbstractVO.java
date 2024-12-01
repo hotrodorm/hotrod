@@ -160,7 +160,7 @@ public class SelectAbstractVO {
     if (!this.associationMembers.isEmpty() || !this.collectionMembers.isEmpty()) {
       imports.newLine();
     }
-    imports.add("org.hotrod.runtime.json.*;");
+    imports.add("org.hotrod.json.*;");
 
     this.w.write(imports.render());
 

@@ -12,9 +12,8 @@ import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.generator.GeneratableObject;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.DataSetMetadata;
-import org.hotrod.metadata.ForeignKeyMetadata;
 import org.hotrod.utils.ClassPackage;
-import org.hotrod.utils.ImportsRenderer;
+import org.hotrod.utils.ClassWriter;
 
 public class ObjectVO extends GeneratableObject {
 
@@ -22,6 +21,7 @@ public class ObjectVO extends GeneratableObject {
 
   private DataSetMetadata metadata;
   private DataSetLayout layout;
+  @SuppressWarnings("unused")
   private MyBatisSpringGenerator generator;
   private ObjectAbstractVO abstractVO;
   private MyBatisSpringTag myBatisTag;
@@ -64,83 +64,68 @@ public class ObjectVO extends GeneratableObject {
         ? this.fragmentConfig.getFragmentPackage()
         : null;
 
+    ClassPackage cp = this.layout.getDAOPackage(fragmentPackage);
+    log.info(">>> cp=" + cp);
+
     File dir = this.layout.getDAOPackageDir(fragmentPackage);
     File vo = new File(dir, sourceClassName);
-    log.fine("vo file:" + vo.getAbsolutePath());
+
     if (vo.exists()) {
       super.markGenerated();
     } else {
-      TextWriter w = null;
 
-      try {
-        w = fileGenerator.createWriter(vo);
+      try (TextWriter tw = fileGenerator.createWriter(vo)) {
 
-        w.write("package " + this.classPackage.getPackage() + ";\n\n");
-
-        w.write("import " + this.abstractVO.getFullClassName() + ";\n");
-
-        ImportsRenderer imports = new ImportsRenderer();
-        for (ForeignKeyMetadata ik : this.metadata.getImportedFKs()) {
-          EnumClass ec = this.generator.getEnum(ik.getRemote().getTableMetadata());
-          if (ec != null) {
-            imports.add(ec.getFullClassName());
-          }
-        }
-        if (!this.metadata.getImportedFKs().isEmpty()) {
-          imports.newLine();
-        }
-
-        imports.add("org.springframework.stereotype.Component");
-        imports.add("org.springframework.beans.factory.config.ConfigurableBeanFactory");
-        imports.add("org.springframework.context.annotation.Scope");
-        imports.add(this.dao.getFullClassName());
-        imports.add("org.springframework.beans.factory.annotation.Autowired");
-        imports.newLine();
-
-        w.write(imports.render());
-
-        w.write("@Component\n");
-        w.write("@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)\n");
-        w.write("public class " + this.getClassName() + " extends " + this.abstractVO.getClassName());
-
-        if (this.metadata.getDaoTag().getImplementsClasses() != null) {
-          w.write(" implements " + this.metadata.getDaoTag().getImplementsClasses());
-        }
-
-        w.write(" {\n\n");
-
-        w.write("  private static final long serialVersionUID = 1L;\n\n");
-
-        w.write("  @Autowired\n");
-        w.write("  private " + this.dao.getClassName() + " " + this.dao.getMemberName() + ";\n\n");
-
-        w.write("  // Add custom code below.\n\n");
-
-        w.write("}\n");
-
+        ClassWriter w = new ClassWriter(cp);
+        writeBody(w);
+        w.write(tw);
         super.markGenerated();
 
       } catch (IOException e) {
         throw new UncontrolledException("Could not generate VO class: could not write to file '" + vo.getName() + "'.",
             e);
-      } finally {
-        if (w != null) {
-          try {
-            w.close();
-          } catch (IOException e) {
-            throw new UncontrolledException("Could not generate VO class: could not close file '" + vo.getName() + "'.",
-                e);
-          }
-        }
       }
     }
+  }
+
+  private void writeBody(ClassWriter w) throws IOException {
+    w.registerClass(this.abstractVO.getFullClassName());
+
+    w.registerClass("org.springframework.stereotype.Component");
+    w.registerClass("org.springframework.beans.factory.config.ConfigurableBeanFactory");
+    w.registerClass("org.springframework.context.annotation.Scope");
+    w.registerClass(this.dao.getFullClassName());
+    w.registerClass("org.springframework.beans.factory.annotation.Autowired");
+
+    w.println("@Component");
+    w.println("@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)");
+    w.print("public class " + this.getClassName() + " extends " + this.abstractVO.getClassName());
+
+    if (this.metadata.getDaoTag().getImplementsClasses() != null) {
+      w.print(" implements " + this.metadata.getDaoTag().getImplementsClasses());
+    }
+
+    w.println(" {");
+    w.println();
+
+    w.println("  private static final long serialVersionUID = 1L;");
+    w.println();
+
+    w.println("  @SuppressWarnings(\"unused\")");
+    w.println("  @Autowired");
+    w.println("  private " + this.dao.getClassName() + " " + this.dao.getMemberName() + ";");
+    w.println();
+
+    w.println("  // Add custom code below.");
+    w.println();
+
+    w.println("}");
   }
 
   // Info
 
   public String getClassName() {
     ObjectId id = this.metadata.getId();
-    // log.fine("id.wasJavaNameSpecified()=" + id.wasJavaNameSpecified());
     String name = this.myBatisTag.getDaos().generateVOName(id);
     log.fine("name=" + name);
     return name;
