@@ -197,6 +197,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag {
       this.methods.add(m);
     }
 
+    @SuppressWarnings("unused")
     public void remove(final M m) {
       for (Iterator<M> it = this.methods.iterator(); it.hasNext();) {
         M current = it.next();
@@ -207,6 +208,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag {
       }
     }
 
+    @SuppressWarnings("unused")
     public void replace(final M m) {
       for (ListIterator<M> it = this.methods.listIterator(); it.hasNext();) {
         M current = it.next();

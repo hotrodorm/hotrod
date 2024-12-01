@@ -265,6 +265,7 @@ public class SelectAbstractVO {
   private void writeSetter(final String property, final String javaType, final String setter) throws IOException {
     println("  public final void " + setter + "(final " + javaType + " " + property + ") {");
     println("    this." + property + " = " + property + ";");
+    @SuppressWarnings("unused")
     String name = property + "WasSet";
     println("  }");
     println();

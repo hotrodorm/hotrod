@@ -19,6 +19,7 @@ public abstract class EnhancedSQLPart extends AbstractConfigurationTag {
 
   private static final long serialVersionUID = 1L;
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(EnhancedSQLPart.class.getName());
 
   // Properties

@@ -14,6 +14,7 @@ import org.hotrod.utils.SUtil;
 
 public class LayerConfigWriter {
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(LayerConfigWriter.class.getName());
 
   private static final String CLASS_NAME = "ThisLayerConfig";

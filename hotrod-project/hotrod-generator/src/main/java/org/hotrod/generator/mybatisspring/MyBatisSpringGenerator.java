@@ -299,6 +299,7 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
 
   }
 
+  @SuppressWarnings("unused")
   private List<String> getAllMappersSourceFileNames() {
 
     List<String> allMappersSourceFileNames = new ArrayList<String>();
@@ -548,6 +549,7 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
       // tables
 
       for (TableDataSetMetadata t : this.md.getTables()) {
+        @SuppressWarnings("unused")
         String ns = getNS(t);
         display("Table " + getNS(t) + t.getId().getCanonicalSQLName() + " included.");
         for (SequenceMethodTag s : t.getSequences()) {

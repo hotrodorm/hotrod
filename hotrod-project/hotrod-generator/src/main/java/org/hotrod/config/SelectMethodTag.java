@@ -69,6 +69,7 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
   private String vo = null;
   private String sMode = null;
 
+  @SuppressWarnings("unused")
   private SelectMethodMetadata metadata = null;
 
   // Properties - Primitive content parsing by JAXB

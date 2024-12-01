@@ -581,6 +581,7 @@ public class ObjectDAO extends GeneratableObject {
   private void selectByUniqueKey(final MyBatisSpringGenerator mg, final KeyMetadata key, final String method,
       final String mapperQuery) throws UnresolvableDataTypeException, IOException {
     String paramsSignature = toParametersSignature(key, mg);
+    @SuppressWarnings("unused")
     String avoc = this.avo.getFullClassName();
     String voc = this.vo.getFullClassName();
 
@@ -1537,6 +1538,7 @@ public class ObjectDAO extends GeneratableObject {
       println("  // delete by PK");
       println();
 
+      @SuppressWarnings("unused")
       String voClassName = this.vo.getFullClassName();
 
       String paramsSignature = toParametersSignature(pk, mg);
@@ -2319,6 +2321,7 @@ public class ObjectDAO extends GeneratableObject {
     if (typeHandlers != null) {
       thName = typeHandlers.get(cm);
     }
+    @SuppressWarnings("unused")
     boolean added = false;
     if (thName == null) {
       String base = sm.getMethod() + "_" + cm.getId().getJavaClassName() + "TypeHandler";

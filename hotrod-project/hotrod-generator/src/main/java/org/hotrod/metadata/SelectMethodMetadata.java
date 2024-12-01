@@ -61,6 +61,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   @SuppressWarnings("unused")
   private transient JdbcDatabase db;
+  @SuppressWarnings("unused")
   private HotRodConfigTag config;
   private transient DatabaseAdapter adapter;
   @SuppressWarnings("unused")
