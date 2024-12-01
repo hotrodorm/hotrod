@@ -65,7 +65,6 @@ public class ObjectVO extends GeneratableObject {
         : null;
 
     ClassPackage cp = this.layout.getDAOPackage(fragmentPackage);
-    log.info(">>> cp=" + cp);
 
     File dir = this.layout.getDAOPackageDir(fragmentPackage);
     File vo = new File(dir, sourceClassName);
@@ -78,7 +77,7 @@ public class ObjectVO extends GeneratableObject {
 
         ClassWriter w = new ClassWriter(cp);
         writeBody(w);
-        w.write(tw);
+        w.writeTo(tw);
         super.markGenerated();
 
       } catch (IOException e) {
