@@ -13,6 +13,7 @@ public class OtherVO extends AbstractOtherVO {
 
   private static final long serialVersionUID = 1L;
 
+  @SuppressWarnings("unused")
   @Autowired
   private OtherDAO otherDAO;
 

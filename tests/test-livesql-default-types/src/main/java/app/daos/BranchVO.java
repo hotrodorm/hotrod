@@ -13,6 +13,7 @@ public class BranchVO extends AbstractBranchVO {
 
   private static final long serialVersionUID = 1L;
 
+  @SuppressWarnings("unused")
   @Autowired
   private BranchDAO branchDAO;
 

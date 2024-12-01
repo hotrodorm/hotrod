@@ -13,6 +13,7 @@ public class CharsVO extends AbstractCharsVO {
 
   private static final long serialVersionUID = 1L;
 
+  @SuppressWarnings("unused")
   @Autowired
   private CharsDAO charsDAO;
 

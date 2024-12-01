@@ -13,6 +13,7 @@ public class DatesVO extends AbstractDatesVO {
 
   private static final long serialVersionUID = 1L;
 
+  @SuppressWarnings("unused")
   @Autowired
   private DatesDAO datesDAO;
 

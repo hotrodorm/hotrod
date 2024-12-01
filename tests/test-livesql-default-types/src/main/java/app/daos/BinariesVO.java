@@ -13,6 +13,7 @@ public class BinariesVO extends AbstractBinariesVO {
 
   private static final long serialVersionUID = 1L;
 
+  @SuppressWarnings("unused")
   @Autowired
   private BinariesDAO binariesDAO;
 

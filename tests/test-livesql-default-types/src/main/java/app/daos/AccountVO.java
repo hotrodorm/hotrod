@@ -1,7 +1,6 @@
 package app.daos;
 
 import app.daos.primitives.AbstractAccountVO;
-
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -14,6 +13,7 @@ public class AccountVO extends AbstractAccountVO {
 
   private static final long serialVersionUID = 1L;
 
+  @SuppressWarnings("unused")
   @Autowired
   private AccountDAO accountDAO;
 
