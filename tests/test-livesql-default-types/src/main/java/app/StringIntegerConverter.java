@@ -3,7 +3,7 @@ package app;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import org.hotrod.runtime.converter.TypeConverter;
+import org.hotrod.converter.TypeConverter;
 
 public class StringIntegerConverter implements TypeConverter<String, Integer> {
 

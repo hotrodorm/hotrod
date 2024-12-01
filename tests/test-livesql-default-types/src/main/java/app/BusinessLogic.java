@@ -1,8 +1,8 @@
 package app;
 
-import org.hotrod.runtime.cursors.Cursor;
+import org.hotrod.cursors.Cursor;
+import org.hotrod.livesql.Row;
 import org.hotrod.runtime.livesql.LiveSQL;
-import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.queries.DMLQuery;
 import org.hotrod.runtime.livesql.queries.select.EntitySelect;
 import org.hotrod.runtime.livesql.queries.select.Select;

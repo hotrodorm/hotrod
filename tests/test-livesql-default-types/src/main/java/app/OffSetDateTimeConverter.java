@@ -5,7 +5,7 @@ import java.time.OffsetDateTime;
 
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;
-import org.hotrod.runtime.converter.TypeConverter;
+import org.hotrod.converter.TypeConverter;
 
 @MappedJdbcTypes({JdbcType.TIMESTAMP})
 public class OffSetDateTimeConverter implements TypeConverter<Object, OffsetDateTime> {

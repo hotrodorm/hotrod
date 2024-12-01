@@ -4,7 +4,7 @@ package app.daos.test2.primitives;
 
 import java.io.Serializable;
 
-import org.hotrod.runtime.json.*;;
+import org.hotrod.json.*;;
 public class AbstractFindTareasPorFiltroVO implements Serializable {
 
   private static final long serialVersionUID = 1L;

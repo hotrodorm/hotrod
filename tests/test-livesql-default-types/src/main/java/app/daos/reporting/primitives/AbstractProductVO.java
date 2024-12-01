@@ -3,7 +3,7 @@
 package app.daos.reporting.primitives;
 
 import java.io.Serializable;
-import org.hotrod.runtime.json.*;
+import org.hotrod.json.*;
 
 public class AbstractProductVO implements Serializable {
 

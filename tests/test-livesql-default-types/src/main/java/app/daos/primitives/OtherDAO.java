@@ -6,12 +6,12 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
-import org.hotrod.runtime.cursors.Cursor;
+import org.hotrod.cursors.Cursor;
 import org.hotrod.runtime.livesql.queries.select.MyBatisCursor;
 
-import org.hotrod.runtime.interfaces.DaoWithOrder;
-import org.hotrod.runtime.interfaces.UpdateByExampleDao;
-import org.hotrod.runtime.interfaces.OrderBy;
+import org.hotrod.interfaces.DaoWithOrder;
+import org.hotrod.interfaces.UpdateByExampleDao;
+import org.hotrod.interfaces.OrderBy;
 
 import app.daos.primitives.AbstractOtherVO;
 import app.daos.OtherVO;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.spring.SpringBeanObjectFactory;
+import org.hotrod.spring.SpringBeanObjectFactory;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
 import org.hotrod.runtime.livesql.LiveSQLMapper;

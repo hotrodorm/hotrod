@@ -14,14 +14,14 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 
+import org.hotrod.livesql.Row;
 import org.hotrod.runtime.livesql.LiveSQL;
-import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.queries.DMLQuery;
 import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.runtime.livesql.queries.select.CriteriaForUpdatePhase;
 import org.hotrod.runtime.livesql.queries.select.EntitySelect;
 import org.hotrod.runtime.livesql.queries.select.Select;
-import org.hotrod.runtime.spring.SpringBeanObjectFactory;
+import org.hotrod.spring.SpringBeanObjectFactory;
 import org.hotrod.torcs.Torcs;
 import org.hotrod.torcs.plan.CouldNotRetrievePlanException;
 import org.hotrod.torcs.plan.PlanRetrieverFactory.UnsupportedTorcsDatabaseException;

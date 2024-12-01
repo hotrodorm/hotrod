@@ -2,7 +2,7 @@ package app;
 
 import java.sql.Connection;
 
-import org.hotrod.runtime.converter.TypeConverter;
+import org.hotrod.converter.TypeConverter;
 
 public class IntegerBooleanConverter implements TypeConverter<Integer, Boolean> {
 

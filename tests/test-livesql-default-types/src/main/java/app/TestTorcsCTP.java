@@ -1,7 +1,7 @@
 package app;
 
 import org.hotrod.runtime.livesql.LiveSQL;
-import org.hotrod.runtime.spring.SpringBeanObjectFactory;
+import org.hotrod.spring.SpringBeanObjectFactory;
 import org.hotrod.torcs.Torcs;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;

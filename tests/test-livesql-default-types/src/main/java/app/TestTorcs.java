@@ -8,7 +8,7 @@ import java.sql.Statement;
 import javax.sql.DataSource;
 
 import org.hotrod.runtime.livesql.LiveSQL;
-import org.hotrod.runtime.spring.SpringBeanObjectFactory;
+import org.hotrod.spring.SpringBeanObjectFactory;
 import org.hotrod.torcs.Torcs;
 import org.hotrod.torcs.rankings.RankingEntry;
 import org.mybatis.spring.annotation.MapperScan;
