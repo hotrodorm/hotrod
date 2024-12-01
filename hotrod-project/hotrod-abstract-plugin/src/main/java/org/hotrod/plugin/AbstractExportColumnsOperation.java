@@ -18,7 +18,7 @@ import org.hotrod.generator.Feedback;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.HotRodContext;
 import org.hotrod.runtime.BuildInformation;
-import org.hotrodorm.hotrod.utils.SUtil;
+import org.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.utils.XUtil;
 
 public abstract class AbstractExportColumnsOperation {

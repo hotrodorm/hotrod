@@ -13,7 +13,7 @@ import org.hotrod.api.HotRodServices;
 import org.hotrod.config.Constants;
 import org.hotrod.config.DisplayMode;
 import org.hotrod.generator.Feedback;
-import org.hotrodorm.hotrod.utils.SUtil;
+import org.hotrod.utils.SUtil;
 
 public class GenOperation {
 

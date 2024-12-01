@@ -30,7 +30,7 @@ import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.SelectMetadataCache;
 import org.hotrod.generator.mybatisspring.DataSetLayout;
 import org.hotrod.identifiers.ObjectId;
-import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
+import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.nocrala.tools.database.tartarus.core.DatabaseObjectId;

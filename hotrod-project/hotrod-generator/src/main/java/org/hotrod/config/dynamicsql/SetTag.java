@@ -4,11 +4,11 @@ import java.util.Iterator;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.hotrod.dynamicsql.expressions.DynamicExpression;
+import org.hotrod.dynamicsql.expressions.SetExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
-import org.hotrod.runtime.dynamicsql.expressions.SetExpression;
-import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 
 @XmlRootElement(name = "set")
 public class SetTag extends DynamicSQLPart {

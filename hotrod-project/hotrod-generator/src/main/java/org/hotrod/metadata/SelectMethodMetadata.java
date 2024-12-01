@@ -33,7 +33,7 @@ import org.hotrod.metadata.VORegistry.StructuredVOAlreadyExistsException;
 import org.hotrod.metadata.VORegistry.VOAlreadyExistsException;
 import org.hotrod.metadata.VORegistry.VOProperty;
 import org.hotrod.metadata.VORegistry.VOProperty.EnclosingTagType;
-import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
+import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;

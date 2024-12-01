@@ -19,12 +19,12 @@ import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.config.structuredcolumns.ColumnsTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.TableDataSetMetadata;
-import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
-import org.hotrodorm.hotrod.utils.SUtil;
+import org.hotrod.utils.SUtil;
 import org.nocrala.tools.lang.collector.listcollector.ListCollector;
 
 @XmlRootElement(name = "select")

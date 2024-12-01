@@ -6,10 +6,10 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.config.ParameterTag;
+import org.hotrod.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
-import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 
 @XmlRootElement(name = "foreach")
 public class ForEachTag extends DynamicSQLPart {

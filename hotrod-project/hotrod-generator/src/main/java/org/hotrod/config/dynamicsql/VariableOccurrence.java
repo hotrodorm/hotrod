@@ -2,9 +2,9 @@ package org.hotrod.config.dynamicsql;
 
 import java.util.logging.Logger;
 
+import org.hotrod.dynamicsql.expressions.DynamicExpression;
+import org.hotrod.dynamicsql.expressions.VariableExpression;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
-import org.hotrod.runtime.dynamicsql.expressions.VariableExpression;
 
 public class VariableOccurrence implements SQLSegment {
 

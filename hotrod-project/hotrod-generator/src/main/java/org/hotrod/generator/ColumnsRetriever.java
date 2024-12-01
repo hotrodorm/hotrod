@@ -17,7 +17,7 @@ import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
-import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
+import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 

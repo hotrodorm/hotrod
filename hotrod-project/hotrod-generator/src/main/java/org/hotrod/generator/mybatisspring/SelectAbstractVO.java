@@ -16,7 +16,7 @@ import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VOMetadata.VOMember;
 import org.hotrod.metadata.VORegistry.SelectVOClass;
-import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
+import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ImportsRenderer;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;

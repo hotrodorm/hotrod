@@ -9,7 +9,7 @@ import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
-import org.hotrodorm.hotrod.utils.Separator;
+import org.hotrod.utils.Separator;
 
 public class SelectObject<R> extends AbstractSelectObject<R> {
 

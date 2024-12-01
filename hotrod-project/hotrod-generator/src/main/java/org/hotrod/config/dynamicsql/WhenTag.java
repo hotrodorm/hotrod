@@ -5,11 +5,11 @@ import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.hotrod.dynamicsql.expressions.DynamicExpression;
+import org.hotrod.dynamicsql.expressions.WhenExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
-import org.hotrod.runtime.dynamicsql.expressions.WhenExpression;
-import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 
 @XmlRootElement(name = "when")
 public class WhenTag extends DynamicSQLPart {

@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlAttribute;
 
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrodorm.hotrod.utils.SUtil;
+import org.hotrod.utils.SUtil;
 
 public class PropertyTag extends AbstractConfigurationTag {
 

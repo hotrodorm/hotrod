@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.hotrod.runtime.spring.HotRodAutoConfiguration
+org.hotrod.spring.HotRodAutoConfiguration

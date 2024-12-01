@@ -1,6 +1,6 @@
 package org.hotrod.runtime.livesql.queries.scalarsubqueries;
 
-import org.hotrod.runtime.livesql.Row;
+import org.hotrod.livesql.Row;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject;
 
 public class ByteArraySelectLimitPhase extends ByteArraySelectExpression {

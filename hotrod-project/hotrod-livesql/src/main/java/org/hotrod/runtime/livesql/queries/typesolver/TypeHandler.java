@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.hotrod.runtime.converter.TypeConverter;
+import org.hotrod.converter.TypeConverter;
 
 public class TypeHandler {
 

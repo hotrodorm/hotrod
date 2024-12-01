@@ -7,8 +7,8 @@ import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.typesolver.THelper;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
-import org.hotrodorm.hotrod.utils.CUtil;
-import org.hotrodorm.hotrod.utils.HexaUtils;
+import org.hotrod.utils.CUtil;
+import org.hotrod.utils.HexaUtils;
 
 public class PreviewRenderer {
 

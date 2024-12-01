@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.metadata.Metadata;
-import org.hotrodorm.hotrod.utils.SUtil;
+import org.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcKeyColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;

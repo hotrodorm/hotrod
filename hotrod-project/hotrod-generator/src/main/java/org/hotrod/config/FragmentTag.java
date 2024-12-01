@@ -13,7 +13,7 @@ import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.utils.FileRegistry;
-import org.hotrodorm.hotrod.utils.SUtil;
+import org.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 
 @XmlRootElement(name = "fragment")

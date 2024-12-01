@@ -3,13 +3,13 @@ package org.hotrod.config;
 import java.util.logging.Logger;
 
 import org.hotrod.config.dynamicsql.SQLSegment;
+import org.hotrod.dynamicsql.expressions.DynamicExpression;
+import org.hotrod.dynamicsql.expressions.LiteralExpression;
+import org.hotrod.dynamicsql.expressions.VariableExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.identifiers.Id;
-import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
-import org.hotrod.runtime.dynamicsql.expressions.LiteralExpression;
-import org.hotrod.runtime.dynamicsql.expressions.VariableExpression;
 
 public class SQLParameter implements SQLSegment {
 

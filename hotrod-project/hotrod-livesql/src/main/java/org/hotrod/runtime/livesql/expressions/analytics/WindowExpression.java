@@ -7,7 +7,7 @@ import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.ordering.OHelper;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
-import org.hotrodorm.hotrod.utils.Separator;
+import org.hotrod.utils.Separator;
 
 /**
  * <pre>

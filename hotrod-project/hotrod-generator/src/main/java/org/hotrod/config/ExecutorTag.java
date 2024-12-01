@@ -9,7 +9,7 @@ import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.utils.ClassPackage;
-import org.hotrodorm.hotrod.utils.SUtil;
+import org.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "dao")
 public class ExecutorTag extends AbstractDAOTag {

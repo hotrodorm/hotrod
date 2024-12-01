@@ -24,7 +24,7 @@ import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.TableDataSetMetadata;
-import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
+import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.ColumnsMetadataRetriever;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;

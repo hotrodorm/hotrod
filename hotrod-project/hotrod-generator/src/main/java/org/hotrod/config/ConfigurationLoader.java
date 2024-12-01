@@ -27,12 +27,12 @@ import javax.xml.validation.SchemaFactory;
 
 import org.hotrod.config.AbstractHotRodConfigTag.LocationListener;
 import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.dynamicsql.SourceLocation;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.GeneratorNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
-import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.utils.FileRegistry;
 import org.hotrod.utils.FileRegistry.FileAlreadyRegisteredException;
 import org.nocrala.tools.database.tartarus.core.CatalogSchema;

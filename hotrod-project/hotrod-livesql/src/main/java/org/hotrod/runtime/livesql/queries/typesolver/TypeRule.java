@@ -1,8 +1,8 @@
 package org.hotrod.runtime.livesql.queries.typesolver;
 
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
-import org.hotrod.runtime.typesolver.OGNLPublicMemberAccess;
-import org.hotrodorm.hotrod.utils.SUtil;
+import org.hotrod.typesolver.OGNLPublicMemberAccess;
+import org.hotrod.utils.SUtil;
 
 import ognl.Ognl;
 import ognl.OgnlContext;

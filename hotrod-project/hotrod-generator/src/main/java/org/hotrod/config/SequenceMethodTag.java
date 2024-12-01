@@ -10,7 +10,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.identifiers.Id;
 import org.hotrod.identifiers.ObjectId;
-import org.hotrodorm.hotrod.utils.SUtil;
+import org.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "sequence")
 public class SequenceMethodTag extends AbstractMethodTag<SequenceMethodTag> {

@@ -1,6 +1,6 @@
 package org.hotrod.exceptions;
 
-import org.hotrod.runtime.dynamicsql.SourceLocation;
+import org.hotrod.dynamicsql.SourceLocation;
 
 public class ControlledException extends Exception {
 

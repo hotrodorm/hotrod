@@ -15,12 +15,12 @@ import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.ParameterTag;
+import org.hotrod.dynamicsql.expressions.DynamicExpression;
+import org.hotrod.dynamicsql.expressions.LiteralExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
-import org.hotrod.runtime.dynamicsql.expressions.LiteralExpression;
-import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 
 public abstract class DynamicSQLPart extends AbstractConfigurationTag {
 

@@ -5,7 +5,7 @@ import java.text.DecimalFormat;
 
 import org.hotrod.runtime.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrodorm.hotrod.utils.SUtil;
+import org.hotrod.utils.SUtil;
 
 public class DecimalLiteral extends NumericLiteral {
 

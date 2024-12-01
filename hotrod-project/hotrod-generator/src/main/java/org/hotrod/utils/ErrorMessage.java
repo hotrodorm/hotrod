@@ -2,7 +2,7 @@ package org.hotrod.utils;
 
 import java.io.Serializable;
 
-import org.hotrod.runtime.dynamicsql.SourceLocation;
+import org.hotrod.dynamicsql.SourceLocation;
 
 public class ErrorMessage implements Serializable {
 

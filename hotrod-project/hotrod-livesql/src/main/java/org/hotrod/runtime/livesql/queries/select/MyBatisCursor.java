@@ -3,7 +3,7 @@ package org.hotrod.runtime.livesql.queries.select;
 import java.io.IOException;
 import java.util.Iterator;
 
-import org.hotrod.runtime.cursors.Cursor;
+import org.hotrod.cursors.Cursor;
 
 public class MyBatisCursor<T> implements Cursor<T> {
 

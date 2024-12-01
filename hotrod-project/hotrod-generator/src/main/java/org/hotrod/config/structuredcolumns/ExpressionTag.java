@@ -17,7 +17,7 @@ import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.Patterns;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.metadata.StructuredColumnMetadata;
-import org.hotrodorm.hotrod.utils.SUtil;
+import org.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "expression")
 public class ExpressionTag extends AbstractConfigurationTag {

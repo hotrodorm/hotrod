@@ -19,11 +19,11 @@ import org.hotrod.config.dynamicsql.TagAttribute;
 import org.hotrod.config.dynamicsql.TrimTag;
 import org.hotrod.config.dynamicsql.WhenTag;
 import org.hotrod.config.dynamicsql.WhereTag;
+import org.hotrod.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
-import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 
 @XmlRootElement(name = "complement")
 public class ComplementDAOTag extends DynamicSQLPart {

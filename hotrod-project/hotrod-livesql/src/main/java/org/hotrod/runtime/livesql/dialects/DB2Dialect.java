@@ -14,6 +14,7 @@ import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.LockingConcurrency;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.LockingMode;
+import org.hotrod.utils.Separator;
 import org.hotrod.runtime.livesql.queries.select.CrossJoin;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.InnerJoin;
@@ -27,7 +28,6 @@ import org.hotrod.runtime.livesql.queries.select.NaturalLeftOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.NaturalRightOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.RightOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.UnionJoin;
-import org.hotrodorm.hotrod.utils.Separator;
 
 public class DB2Dialect extends LiveSQLDialect {
 

@@ -7,12 +7,12 @@ import java.util.logging.Logger;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.config.SQLParameter;
+import org.hotrod.dynamicsql.expressions.CollectionExpression;
+import org.hotrod.dynamicsql.expressions.DynamicExpression;
+import org.hotrod.dynamicsql.expressions.LiteralExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.runtime.dynamicsql.expressions.CollectionExpression;
-import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
-import org.hotrod.runtime.dynamicsql.expressions.LiteralExpression;
-import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 
 public class ParameterisableTextPart extends DynamicSQLPart {
 

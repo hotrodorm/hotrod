@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import org.hotrod.runtime.cursors.Cursor;
+import org.hotrod.cursors.Cursor;
 import org.hotrod.runtime.livesql.dialects.JoinRenderer;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.dialects.LockingRenderer;
@@ -36,8 +36,8 @@ import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.runtime.livesql.queries.select.sets.MultiSet;
 import org.hotrod.runtime.livesql.util.IdUtil;
-import org.hotrodorm.hotrod.utils.SUtil;
-import org.hotrodorm.hotrod.utils.Separator;
+import org.hotrod.utils.SUtil;
+import org.hotrod.utils.Separator;
 import org.springframework.util.ReflectionUtils;
 
 public abstract class AbstractSelectObject<R> extends MultiSet<R> implements QueryObject {

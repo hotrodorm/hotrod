@@ -1,6 +1,6 @@
 package org.hotrod.runtime.livesql.queries.scalarsubqueries;
 
-import org.hotrod.runtime.livesql.Row;
+import org.hotrod.livesql.Row;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;

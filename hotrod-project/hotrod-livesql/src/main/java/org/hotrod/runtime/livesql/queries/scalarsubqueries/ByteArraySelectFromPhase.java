@@ -1,7 +1,7 @@
 package org.hotrod.runtime.livesql.queries.scalarsubqueries;
 
+import org.hotrod.livesql.Row;
 import org.hotrod.runtime.livesql.Available;
-import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.dialects.Const;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;

@@ -11,7 +11,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.JdbcTypes;
 import org.hotrod.utils.JdbcTypes.JDBCType;
 import org.hotrod.utils.OgnlExpression;
-import org.hotrodorm.hotrod.utils.SUtil;
+import org.hotrod.utils.SUtil;
 
 import ognl.OgnlException;
 

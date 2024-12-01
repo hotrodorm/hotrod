@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.logging.Logger;
 
 import org.hotrod.metadata.ColumnMetadata;
-import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
+import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.ColumnUtils;
 import org.hotrod.utils.JdbcTypes;
 import org.hotrod.utils.JdbcTypes.JDBCType;

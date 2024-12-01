@@ -42,7 +42,7 @@ import org.hotrod.metadata.VORegistry;
 import org.hotrod.metadata.VORegistry.SelectVOClass;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.LocalFileGenerator;
-import org.hotrodorm.hotrod.utils.SUtil;
+import org.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;

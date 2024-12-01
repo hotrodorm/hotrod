@@ -26,7 +26,7 @@ import org.hotrod.runtime.livesql.queries.select.NaturalLeftOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.NaturalRightOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.RightOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.UnionJoin;
-import org.hotrodorm.hotrod.utils.Separator;
+import org.hotrod.utils.Separator;
 
 public class SybaseASEDialect extends LiveSQLDialect {
 

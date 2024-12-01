@@ -2,7 +2,7 @@ package org.hotrod.runtime.livesql.queries.select.sets;
 
 import java.util.List;
 
-import org.hotrod.runtime.cursors.Cursor;
+import org.hotrod.cursors.Cursor;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;

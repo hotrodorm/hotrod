@@ -11,8 +11,8 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.identifiers.Id;
 import org.hotrod.utils.JdbcTypes;
+import org.hotrod.utils.SUtil;
 import org.hotrod.utils.JdbcTypes.JDBCType;
-import org.hotrodorm.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "parameter")
 public class ParameterTag extends AbstractConfigurationTag {

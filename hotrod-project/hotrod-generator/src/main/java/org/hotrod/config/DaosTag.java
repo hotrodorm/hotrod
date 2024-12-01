@@ -10,7 +10,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidPackageException;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.utils.ClassPackage;
-import org.hotrodorm.hotrod.utils.SUtil;
+import org.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "daos")
 public class DaosTag extends AbstractConfigurationTag {

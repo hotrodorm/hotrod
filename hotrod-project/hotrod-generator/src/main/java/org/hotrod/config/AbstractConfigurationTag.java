@@ -6,10 +6,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.hotrod.dynamicsql.SourceLocation;
 import org.hotrod.generator.GeneratableObject;
-import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.utils.ErrorMessage;
-import org.hotrodorm.hotrod.utils.SUtil;
+import org.hotrod.utils.SUtil;
 
 public abstract class AbstractConfigurationTag implements Serializable {
 

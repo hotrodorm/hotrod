@@ -1,6 +1,6 @@
 package t1;
 
-import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
+import org.hotrod.typesolver.UnresolvableDataTypeException;
 
 public class T1 {
 

@@ -19,7 +19,7 @@ import org.hotrod.identifiers.Id;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.utils.ClassPackage;
-import org.hotrodorm.hotrod.utils.SUtil;
+import org.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 import org.nocrala.tools.database.tartarus.core.DatabaseObject;
 import org.nocrala.tools.database.tartarus.core.JdbcForeignKey;

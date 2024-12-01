@@ -10,7 +10,7 @@ import org.hotrod.config.ColumnTag;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidIdentifierException;
-import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
+import org.hotrod.typesolver.UnresolvableDataTypeException;
 
 public class StructuredColumnMetadata extends ColumnMetadata implements Serializable {
 

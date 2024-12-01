@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 
-import org.hotrod.runtime.converter.TypeConverter;
-import org.hotrod.runtime.cursors.Cursor;
-import org.hotrod.runtime.livesql.Row;
+import org.hotrod.converter.TypeConverter;
+import org.hotrod.cursors.Cursor;
+import org.hotrod.livesql.Row;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;

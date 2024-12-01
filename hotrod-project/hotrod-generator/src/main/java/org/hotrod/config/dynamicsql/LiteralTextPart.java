@@ -2,13 +2,13 @@ package org.hotrod.config.dynamicsql;
 
 import java.util.logging.Logger;
 
+import org.hotrod.dynamicsql.SourceLocation;
+import org.hotrod.dynamicsql.expressions.DynamicExpression;
+import org.hotrod.dynamicsql.expressions.LiteralExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.runtime.dynamicsql.SourceLocation;
-import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
-import org.hotrod.runtime.dynamicsql.expressions.LiteralExpression;
-import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
-import org.hotrodorm.hotrod.utils.SUtil;
+import org.hotrod.utils.SUtil;
 
 public class LiteralTextPart extends DynamicSQLPart implements SQLSegment {
 

@@ -11,7 +11,7 @@ import org.hotrod.runtime.livesql.expressions.strings.GeneralStringExpression;
 import org.hotrod.runtime.livesql.ordering.OHelper;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
-import org.hotrodorm.hotrod.utils.Separator;
+import org.hotrod.utils.Separator;
 
 /**
  * Generic rendering class. Methods can be overwritten by specific dialects.

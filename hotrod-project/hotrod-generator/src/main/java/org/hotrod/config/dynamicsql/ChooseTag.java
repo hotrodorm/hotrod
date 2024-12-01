@@ -5,13 +5,13 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.hotrod.dynamicsql.expressions.ChooseExpression;
+import org.hotrod.dynamicsql.expressions.DynamicExpression;
+import org.hotrod.dynamicsql.expressions.OtherwiseExpression;
+import org.hotrod.dynamicsql.expressions.WhenExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.runtime.dynamicsql.expressions.ChooseExpression;
-import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
-import org.hotrod.runtime.dynamicsql.expressions.OtherwiseExpression;
-import org.hotrod.runtime.dynamicsql.expressions.WhenExpression;
-import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 
 @XmlRootElement(name = "choose")
 public class ChooseTag extends DynamicSQLPart {

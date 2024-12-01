@@ -37,14 +37,14 @@ import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata.IdColumnNotFoundException;
+import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VORegistry;
-import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.ColumnsMetadataRetriever;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.hotrod.utils.JdbcTypes;
-import org.hotrodorm.hotrod.utils.SUtil;
+import org.hotrod.utils.SUtil;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 @XmlRootElement(name = "vo")

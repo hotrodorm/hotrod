@@ -3,7 +3,7 @@ package org.hotrod.runtime.livesql.expressions.object;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.AliasedExpression;
 import org.hotrod.runtime.livesql.expressions.TypedExpression;
-import org.hotrodorm.hotrod.utils.SUtil;
+import org.hotrod.utils.SUtil;
 
 public abstract class ObjectExpression extends GeneralObjectExpression {
 

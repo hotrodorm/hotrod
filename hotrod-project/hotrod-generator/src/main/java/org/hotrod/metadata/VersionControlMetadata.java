@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import org.hotrod.config.VersionControlColumnTag;
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.runtime.typesolver.UnresolvableDataTypeException;
+import org.hotrod.typesolver.UnresolvableDataTypeException;
 
 public class VersionControlMetadata implements Serializable {
 

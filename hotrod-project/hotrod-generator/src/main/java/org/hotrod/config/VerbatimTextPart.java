@@ -1,11 +1,11 @@
 package org.hotrod.config;
 
 import org.hotrod.config.dynamicsql.SQLSegment;
+import org.hotrod.dynamicsql.SourceLocation;
+import org.hotrod.dynamicsql.expressions.DynamicExpression;
+import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.runtime.dynamicsql.SourceLocation;
-import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
-import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
-import org.hotrodorm.hotrod.utils.SUtil;
+import org.hotrod.utils.SUtil;
 
 public class VerbatimTextPart implements SQLSegment {
 

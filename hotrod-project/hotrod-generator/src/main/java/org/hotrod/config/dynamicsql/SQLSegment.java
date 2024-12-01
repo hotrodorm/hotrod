@@ -2,9 +2,9 @@ package org.hotrod.config.dynamicsql;
 
 import java.io.Serializable;
 
+import org.hotrod.dynamicsql.expressions.DynamicExpression;
+import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
-import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 
 public interface SQLSegment extends Serializable {
 
