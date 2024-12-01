@@ -3,7 +3,7 @@
 package app.daos.reporting.primitives;
 
 import java.io.Serializable;
-import org.hotrod.json.*;
+import org.hotrod.json.JSONObject;
 
 public class AbstractProductVO implements Serializable {
 
@@ -11,40 +11,40 @@ public class AbstractProductVO implements Serializable {
 
   // VO Properties (table columns)
 
-  protected java.lang.Integer id = null;
-  protected java.lang.String type = null;
-  protected java.lang.Integer shipping = null;
+  protected Integer id = null;
+  protected String type = null;
+  protected Integer shipping = null;
 
   // getters & setters
 
-  public java.lang.Integer getId() {
+  public Integer getId() {
     return this.id;
   }
 
-  public void setId(final java.lang.Integer id) {
+  public void setId(final Integer id) {
     this.id = id;
   }
 
-  public java.lang.String getType() {
+  public String getType() {
     return this.type;
   }
 
-  public void setType(final java.lang.String type) {
+  public void setType(final String type) {
     this.type = type;
   }
 
-  public java.lang.Integer getShipping() {
+  public Integer getShipping() {
     return this.shipping;
   }
 
-  public void setShipping(final java.lang.Integer shipping) {
+  public void setShipping(final Integer shipping) {
     this.shipping = shipping;
   }
 
   // to string
 
   public String toString() {
-    java.lang.StringBuilder sb = new java.lang.StringBuilder();
+    StringBuilder sb = new StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- id=" + this.id + "\n");
     sb.append("- type=" + this.type + "\n");

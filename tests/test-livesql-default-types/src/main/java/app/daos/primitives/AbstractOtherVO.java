@@ -3,7 +3,7 @@
 package app.daos.primitives;
 
 import java.io.Serializable;
-import org.hotrod.json.*;
+import org.hotrod.json.JSONObject;
 
 public class AbstractOtherVO implements Serializable {
 
@@ -11,53 +11,53 @@ public class AbstractOtherVO implements Serializable {
 
   // VO Properties (table columns)
 
-  protected java.lang.Integer id = null;
-  protected java.lang.Boolean boo1 = null;
-  protected java.lang.Boolean boo2 = null;
-  protected java.lang.Boolean boo3 = null;
-  protected java.lang.Object oth1 = null;
+  protected Integer id = null;
+  protected Boolean boo1 = null;
+  protected Boolean boo2 = null;
+  protected Boolean boo3 = null;
+  protected Object oth1 = null;
   protected byte[] idn1 = null;
   protected byte[] geo1 = null;
 
   // getters & setters
 
-  public java.lang.Integer getId() {
+  public Integer getId() {
     return this.id;
   }
 
-  public void setId(final java.lang.Integer id) {
+  public void setId(final Integer id) {
     this.id = id;
   }
 
-  public java.lang.Boolean getBoo1() {
+  public Boolean getBoo1() {
     return this.boo1;
   }
 
-  public void setBoo1(final java.lang.Boolean boo1) {
+  public void setBoo1(final Boolean boo1) {
     this.boo1 = boo1;
   }
 
-  public java.lang.Boolean getBoo2() {
+  public Boolean getBoo2() {
     return this.boo2;
   }
 
-  public void setBoo2(final java.lang.Boolean boo2) {
+  public void setBoo2(final Boolean boo2) {
     this.boo2 = boo2;
   }
 
-  public java.lang.Boolean getBoo3() {
+  public Boolean getBoo3() {
     return this.boo3;
   }
 
-  public void setBoo3(final java.lang.Boolean boo3) {
+  public void setBoo3(final Boolean boo3) {
     this.boo3 = boo3;
   }
 
-  public java.lang.Object getOth1() {
+  public Object getOth1() {
     return this.oth1;
   }
 
-  public void setOth1(final java.lang.Object oth1) {
+  public void setOth1(final Object oth1) {
     this.oth1 = oth1;
   }
 
@@ -80,7 +80,7 @@ public class AbstractOtherVO implements Serializable {
   // to string
 
   public String toString() {
-    java.lang.StringBuilder sb = new java.lang.StringBuilder();
+    StringBuilder sb = new StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- id=" + this.id + "\n");
     sb.append("- boo1=" + this.boo1 + "\n");

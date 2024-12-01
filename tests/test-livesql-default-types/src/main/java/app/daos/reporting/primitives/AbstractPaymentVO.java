@@ -3,7 +3,8 @@
 package app.daos.reporting.primitives;
 
 import java.io.Serializable;
-import org.hotrod.json.*;
+import java.sql.Date;
+import org.hotrod.json.JSONObject;
 
 public class AbstractPaymentVO implements Serializable {
 
@@ -11,40 +12,40 @@ public class AbstractPaymentVO implements Serializable {
 
   // VO Properties (table columns)
 
-  protected java.sql.Date paymentDate = null;
-  protected java.lang.Integer invoiceId = null;
-  protected java.lang.Integer amount = null;
+  protected Date paymentDate = null;
+  protected Integer invoiceId = null;
+  protected Integer amount = null;
 
   // getters & setters
 
-  public java.sql.Date getPaymentDate() {
+  public Date getPaymentDate() {
     return this.paymentDate;
   }
 
-  public void setPaymentDate(final java.sql.Date paymentDate) {
+  public void setPaymentDate(final Date paymentDate) {
     this.paymentDate = paymentDate;
   }
 
-  public java.lang.Integer getInvoiceId() {
+  public Integer getInvoiceId() {
     return this.invoiceId;
   }
 
-  public void setInvoiceId(final java.lang.Integer invoiceId) {
+  public void setInvoiceId(final Integer invoiceId) {
     this.invoiceId = invoiceId;
   }
 
-  public java.lang.Integer getAmount() {
+  public Integer getAmount() {
     return this.amount;
   }
 
-  public void setAmount(final java.lang.Integer amount) {
+  public void setAmount(final Integer amount) {
     this.amount = amount;
   }
 
   // to string
 
   public String toString() {
-    java.lang.StringBuilder sb = new java.lang.StringBuilder();
+    StringBuilder sb = new StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- paymentDate=" + this.paymentDate + "\n");
     sb.append("- invoiceId=" + this.invoiceId + "\n");

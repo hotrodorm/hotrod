@@ -3,7 +3,7 @@
 package app.daos.reporting.primitives;
 
 import java.io.Serializable;
-import org.hotrod.json.*;
+import org.hotrod.json.JSONObject;
 
 public class AbstractInvoiceLineVO implements Serializable {
 
@@ -11,40 +11,40 @@ public class AbstractInvoiceLineVO implements Serializable {
 
   // VO Properties (table columns)
 
-  protected java.lang.Integer invoiceId = null;
-  protected java.lang.Integer productId = null;
-  protected java.lang.Integer lineTotal = null;
+  protected Integer invoiceId = null;
+  protected Integer productId = null;
+  protected Integer lineTotal = null;
 
   // getters & setters
 
-  public java.lang.Integer getInvoiceId() {
+  public Integer getInvoiceId() {
     return this.invoiceId;
   }
 
-  public void setInvoiceId(final java.lang.Integer invoiceId) {
+  public void setInvoiceId(final Integer invoiceId) {
     this.invoiceId = invoiceId;
   }
 
-  public java.lang.Integer getProductId() {
+  public Integer getProductId() {
     return this.productId;
   }
 
-  public void setProductId(final java.lang.Integer productId) {
+  public void setProductId(final Integer productId) {
     this.productId = productId;
   }
 
-  public java.lang.Integer getLineTotal() {
+  public Integer getLineTotal() {
     return this.lineTotal;
   }
 
-  public void setLineTotal(final java.lang.Integer lineTotal) {
+  public void setLineTotal(final Integer lineTotal) {
     this.lineTotal = lineTotal;
   }
 
   // to string
 
   public String toString() {
-    java.lang.StringBuilder sb = new java.lang.StringBuilder();
+    StringBuilder sb = new StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- invoiceId=" + this.invoiceId + "\n");
     sb.append("- productId=" + this.productId + "\n");

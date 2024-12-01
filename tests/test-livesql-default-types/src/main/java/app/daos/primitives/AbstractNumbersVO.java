@@ -3,7 +3,8 @@
 package app.daos.primitives;
 
 import java.io.Serializable;
-import org.hotrod.json.*;
+import java.math.BigDecimal;
+import org.hotrod.json.JSONObject;
 
 public class AbstractNumbersVO implements Serializable {
 
@@ -11,211 +12,211 @@ public class AbstractNumbersVO implements Serializable {
 
   // VO Properties (table columns)
 
-  protected java.lang.Integer id = null;
-  protected java.lang.Integer int1 = null;
-  protected java.lang.Integer int2 = null;
-  protected java.lang.Integer int3 = null;
-  protected java.lang.Integer int4 = null;
-  protected java.lang.Integer int5 = null;
-  protected java.lang.Byte int10 = null;
-  protected java.lang.Short int20 = null;
-  protected java.lang.Short int21 = null;
-  protected java.lang.Long int30 = null;
-  protected java.lang.Long int31 = null;
-  protected java.math.BigDecimal dec1 = null;
-  protected java.math.BigDecimal dec2 = null;
-  protected java.lang.Object dec3 = null;
-  protected java.lang.Object dec4 = null;
-  protected java.math.BigDecimal dec5 = null;
-  protected java.lang.Double dou1 = null;
-  protected java.lang.Double dou2 = null;
-  protected java.lang.Object dou3 = null;
-  protected java.lang.Double dou4 = null;
-  protected java.lang.Float rea1 = null;
-  protected java.lang.Float rea2 = null;
+  protected Integer id = null;
+  protected Integer int1 = null;
+  protected Integer int2 = null;
+  protected Integer int3 = null;
+  protected Integer int4 = null;
+  protected Integer int5 = null;
+  protected Byte int10 = null;
+  protected Short int20 = null;
+  protected Short int21 = null;
+  protected Long int30 = null;
+  protected Long int31 = null;
+  protected BigDecimal dec1 = null;
+  protected BigDecimal dec2 = null;
+  protected Object dec3 = null;
+  protected Object dec4 = null;
+  protected BigDecimal dec5 = null;
+  protected Double dou1 = null;
+  protected Double dou2 = null;
+  protected Object dou3 = null;
+  protected Double dou4 = null;
+  protected Float rea1 = null;
+  protected Float rea2 = null;
 
   // getters & setters
 
-  public java.lang.Integer getId() {
+  public Integer getId() {
     return this.id;
   }
 
-  public void setId(final java.lang.Integer id) {
+  public void setId(final Integer id) {
     this.id = id;
   }
 
-  public java.lang.Integer getInt1() {
+  public Integer getInt1() {
     return this.int1;
   }
 
-  public void setInt1(final java.lang.Integer int1) {
+  public void setInt1(final Integer int1) {
     this.int1 = int1;
   }
 
-  public java.lang.Integer getInt2() {
+  public Integer getInt2() {
     return this.int2;
   }
 
-  public void setInt2(final java.lang.Integer int2) {
+  public void setInt2(final Integer int2) {
     this.int2 = int2;
   }
 
-  public java.lang.Integer getInt3() {
+  public Integer getInt3() {
     return this.int3;
   }
 
-  public void setInt3(final java.lang.Integer int3) {
+  public void setInt3(final Integer int3) {
     this.int3 = int3;
   }
 
-  public java.lang.Integer getInt4() {
+  public Integer getInt4() {
     return this.int4;
   }
 
-  public void setInt4(final java.lang.Integer int4) {
+  public void setInt4(final Integer int4) {
     this.int4 = int4;
   }
 
-  public java.lang.Integer getInt5() {
+  public Integer getInt5() {
     return this.int5;
   }
 
-  public void setInt5(final java.lang.Integer int5) {
+  public void setInt5(final Integer int5) {
     this.int5 = int5;
   }
 
-  public java.lang.Byte getInt10() {
+  public Byte getInt10() {
     return this.int10;
   }
 
-  public void setInt10(final java.lang.Byte int10) {
+  public void setInt10(final Byte int10) {
     this.int10 = int10;
   }
 
-  public java.lang.Short getInt20() {
+  public Short getInt20() {
     return this.int20;
   }
 
-  public void setInt20(final java.lang.Short int20) {
+  public void setInt20(final Short int20) {
     this.int20 = int20;
   }
 
-  public java.lang.Short getInt21() {
+  public Short getInt21() {
     return this.int21;
   }
 
-  public void setInt21(final java.lang.Short int21) {
+  public void setInt21(final Short int21) {
     this.int21 = int21;
   }
 
-  public java.lang.Long getInt30() {
+  public Long getInt30() {
     return this.int30;
   }
 
-  public void setInt30(final java.lang.Long int30) {
+  public void setInt30(final Long int30) {
     this.int30 = int30;
   }
 
-  public java.lang.Long getInt31() {
+  public Long getInt31() {
     return this.int31;
   }
 
-  public void setInt31(final java.lang.Long int31) {
+  public void setInt31(final Long int31) {
     this.int31 = int31;
   }
 
-  public java.math.BigDecimal getDec1() {
+  public BigDecimal getDec1() {
     return this.dec1;
   }
 
-  public void setDec1(final java.math.BigDecimal dec1) {
+  public void setDec1(final BigDecimal dec1) {
     this.dec1 = dec1;
   }
 
-  public java.math.BigDecimal getDec2() {
+  public BigDecimal getDec2() {
     return this.dec2;
   }
 
-  public void setDec2(final java.math.BigDecimal dec2) {
+  public void setDec2(final BigDecimal dec2) {
     this.dec2 = dec2;
   }
 
-  public java.lang.Object getDec3() {
+  public Object getDec3() {
     return this.dec3;
   }
 
-  public void setDec3(final java.lang.Object dec3) {
+  public void setDec3(final Object dec3) {
     this.dec3 = dec3;
   }
 
-  public java.lang.Object getDec4() {
+  public Object getDec4() {
     return this.dec4;
   }
 
-  public void setDec4(final java.lang.Object dec4) {
+  public void setDec4(final Object dec4) {
     this.dec4 = dec4;
   }
 
-  public java.math.BigDecimal getDec5() {
+  public BigDecimal getDec5() {
     return this.dec5;
   }
 
-  public void setDec5(final java.math.BigDecimal dec5) {
+  public void setDec5(final BigDecimal dec5) {
     this.dec5 = dec5;
   }
 
-  public java.lang.Double getDou1() {
+  public Double getDou1() {
     return this.dou1;
   }
 
-  public void setDou1(final java.lang.Double dou1) {
+  public void setDou1(final Double dou1) {
     this.dou1 = dou1;
   }
 
-  public java.lang.Double getDou2() {
+  public Double getDou2() {
     return this.dou2;
   }
 
-  public void setDou2(final java.lang.Double dou2) {
+  public void setDou2(final Double dou2) {
     this.dou2 = dou2;
   }
 
-  public java.lang.Object getDou3() {
+  public Object getDou3() {
     return this.dou3;
   }
 
-  public void setDou3(final java.lang.Object dou3) {
+  public void setDou3(final Object dou3) {
     this.dou3 = dou3;
   }
 
-  public java.lang.Double getDou4() {
+  public Double getDou4() {
     return this.dou4;
   }
 
-  public void setDou4(final java.lang.Double dou4) {
+  public void setDou4(final Double dou4) {
     this.dou4 = dou4;
   }
 
-  public java.lang.Float getRea1() {
+  public Float getRea1() {
     return this.rea1;
   }
 
-  public void setRea1(final java.lang.Float rea1) {
+  public void setRea1(final Float rea1) {
     this.rea1 = rea1;
   }
 
-  public java.lang.Float getRea2() {
+  public Float getRea2() {
     return this.rea2;
   }
 
-  public void setRea2(final java.lang.Float rea2) {
+  public void setRea2(final Float rea2) {
     this.rea2 = rea2;
   }
 
   // to string
 
   public String toString() {
-    java.lang.StringBuilder sb = new java.lang.StringBuilder();
+    StringBuilder sb = new StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- id=" + this.id + "\n");
     sb.append("- int1=" + this.int1 + "\n");

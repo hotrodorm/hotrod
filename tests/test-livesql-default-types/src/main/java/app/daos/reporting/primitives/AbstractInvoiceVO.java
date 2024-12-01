@@ -3,7 +3,8 @@
 package app.daos.reporting.primitives;
 
 import java.io.Serializable;
-import org.hotrod.json.*;
+import java.sql.Date;
+import org.hotrod.json.JSONObject;
 
 public class AbstractInvoiceVO implements Serializable {
 
@@ -11,85 +12,85 @@ public class AbstractInvoiceVO implements Serializable {
 
   // VO Properties (table columns)
 
-  protected java.lang.Integer id = null;
-  protected java.lang.Integer accountId = null;
-  protected java.lang.Integer amount = null;
-  protected java.lang.Integer branchId = null;
-  protected java.sql.Date orderDate = null;
-  protected java.lang.String type = null;
-  protected java.lang.Integer unpaidBalance = null;
-  protected java.lang.String status = null;
+  protected Integer id = null;
+  protected Integer accountId = null;
+  protected Integer amount = null;
+  protected Integer branchId = null;
+  protected Date orderDate = null;
+  protected String type = null;
+  protected Integer unpaidBalance = null;
+  protected String status = null;
 
   // getters & setters
 
-  public java.lang.Integer getId() {
+  public Integer getId() {
     return this.id;
   }
 
-  public void setId(final java.lang.Integer id) {
+  public void setId(final Integer id) {
     this.id = id;
   }
 
-  public java.lang.Integer getAccountId() {
+  public Integer getAccountId() {
     return this.accountId;
   }
 
-  public void setAccountId(final java.lang.Integer accountId) {
+  public void setAccountId(final Integer accountId) {
     this.accountId = accountId;
   }
 
-  public java.lang.Integer getAmount() {
+  public Integer getAmount() {
     return this.amount;
   }
 
-  public void setAmount(final java.lang.Integer amount) {
+  public void setAmount(final Integer amount) {
     this.amount = amount;
   }
 
-  public java.lang.Integer getBranchId() {
+  public Integer getBranchId() {
     return this.branchId;
   }
 
-  public void setBranchId(final java.lang.Integer branchId) {
+  public void setBranchId(final Integer branchId) {
     this.branchId = branchId;
   }
 
-  public java.sql.Date getOrderDate() {
+  public Date getOrderDate() {
     return this.orderDate;
   }
 
-  public void setOrderDate(final java.sql.Date orderDate) {
+  public void setOrderDate(final Date orderDate) {
     this.orderDate = orderDate;
   }
 
-  public java.lang.String getType() {
+  public String getType() {
     return this.type;
   }
 
-  public void setType(final java.lang.String type) {
+  public void setType(final String type) {
     this.type = type;
   }
 
-  public java.lang.Integer getUnpaidBalance() {
+  public Integer getUnpaidBalance() {
     return this.unpaidBalance;
   }
 
-  public void setUnpaidBalance(final java.lang.Integer unpaidBalance) {
+  public void setUnpaidBalance(final Integer unpaidBalance) {
     this.unpaidBalance = unpaidBalance;
   }
 
-  public java.lang.String getStatus() {
+  public String getStatus() {
     return this.status;
   }
 
-  public void setStatus(final java.lang.String status) {
+  public void setStatus(final String status) {
     this.status = status;
   }
 
   // to string
 
   public String toString() {
-    java.lang.StringBuilder sb = new java.lang.StringBuilder();
+    StringBuilder sb = new StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- id=" + this.id + "\n");
     sb.append("- accountId=" + this.accountId + "\n");

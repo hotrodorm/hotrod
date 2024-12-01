@@ -3,7 +3,7 @@
 package app.daos.primitives;
 
 import java.io.Serializable;
-import org.hotrod.json.*;
+import org.hotrod.json.JSONObject;
 
 public class AbstractAccountVO implements Serializable {
 
@@ -11,40 +11,40 @@ public class AbstractAccountVO implements Serializable {
 
   // VO Properties (table columns)
 
-  protected java.lang.Integer id = null;
-  protected java.lang.Integer parentId = null;
-  protected java.lang.Integer branchId = null;
+  protected Integer id = null;
+  protected Integer parentId = null;
+  protected Integer branchId = null;
 
   // getters & setters
 
-  public java.lang.Integer getId() {
+  public Integer getId() {
     return this.id;
   }
 
-  public void setId(final java.lang.Integer id) {
+  public void setId(final Integer id) {
     this.id = id;
   }
 
-  public java.lang.Integer getParentId() {
+  public Integer getParentId() {
     return this.parentId;
   }
 
-  public void setParentId(final java.lang.Integer parentId) {
+  public void setParentId(final Integer parentId) {
     this.parentId = parentId;
   }
 
-  public java.lang.Integer getBranchId() {
+  public Integer getBranchId() {
     return this.branchId;
   }
 
-  public void setBranchId(final java.lang.Integer branchId) {
+  public void setBranchId(final Integer branchId) {
     this.branchId = branchId;
   }
 
   // to string
 
   public String toString() {
-    java.lang.StringBuilder sb = new java.lang.StringBuilder();
+    StringBuilder sb = new StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- id=" + this.id + "\n");
     sb.append("- parentId=" + this.parentId + "\n");

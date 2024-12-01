@@ -3,7 +3,10 @@
 package app.daos.primitives;
 
 import java.io.Serializable;
-import org.hotrod.json.*;
+import java.sql.Time;
+import java.sql.Date;
+import java.sql.Timestamp;
+import org.hotrod.json.JSONObject;
 
 public class AbstractDatesVO implements Serializable {
 
@@ -11,67 +14,67 @@ public class AbstractDatesVO implements Serializable {
 
   // VO Properties (table columns)
 
-  protected java.lang.Integer id = null;
-  protected java.sql.Time tim1 = null;
-  protected java.sql.Date dat1 = null;
-  protected java.sql.Timestamp ts1 = null;
-  protected java.sql.Timestamp ts2 = null;
-  protected java.sql.Timestamp ts3 = null;
+  protected Integer id = null;
+  protected Time tim1 = null;
+  protected Date dat1 = null;
+  protected Timestamp ts1 = null;
+  protected Timestamp ts2 = null;
+  protected Timestamp ts3 = null;
 
   // getters & setters
 
-  public java.lang.Integer getId() {
+  public Integer getId() {
     return this.id;
   }
 
-  public void setId(final java.lang.Integer id) {
+  public void setId(final Integer id) {
     this.id = id;
   }
 
-  public java.sql.Time getTim1() {
+  public Time getTim1() {
     return this.tim1;
   }
 
-  public void setTim1(final java.sql.Time tim1) {
+  public void setTim1(final Time tim1) {
     this.tim1 = tim1;
   }
 
-  public java.sql.Date getDat1() {
+  public Date getDat1() {
     return this.dat1;
   }
 
-  public void setDat1(final java.sql.Date dat1) {
+  public void setDat1(final Date dat1) {
     this.dat1 = dat1;
   }
 
-  public java.sql.Timestamp getTs1() {
+  public Timestamp getTs1() {
     return this.ts1;
   }
 
-  public void setTs1(final java.sql.Timestamp ts1) {
+  public void setTs1(final Timestamp ts1) {
     this.ts1 = ts1;
   }
 
-  public java.sql.Timestamp getTs2() {
+  public Timestamp getTs2() {
     return this.ts2;
   }
 
-  public void setTs2(final java.sql.Timestamp ts2) {
+  public void setTs2(final Timestamp ts2) {
     this.ts2 = ts2;
   }
 
-  public java.sql.Timestamp getTs3() {
+  public Timestamp getTs3() {
     return this.ts3;
   }
 
-  public void setTs3(final java.sql.Timestamp ts3) {
+  public void setTs3(final Timestamp ts3) {
     this.ts3 = ts3;
   }
 
   // to string
 
   public String toString() {
-    java.lang.StringBuilder sb = new java.lang.StringBuilder();
+    StringBuilder sb = new StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- id=" + this.id + "\n");
     sb.append("- tim1=" + this.tim1 + "\n");

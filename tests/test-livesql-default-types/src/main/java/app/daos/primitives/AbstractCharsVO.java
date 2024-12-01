@@ -3,7 +3,7 @@
 package app.daos.primitives;
 
 import java.io.Serializable;
-import org.hotrod.json.*;
+import org.hotrod.json.JSONObject;
 
 public class AbstractCharsVO implements Serializable {
 
@@ -11,175 +11,175 @@ public class AbstractCharsVO implements Serializable {
 
   // VO Properties (table columns)
 
-  protected java.lang.Integer id = null;
-  protected java.lang.String vc1 = null;
-  protected java.lang.String vc2 = null;
-  protected java.lang.String vc3 = null;
-  protected java.lang.String vc4 = null;
-  protected java.lang.String vc5 = null;
-  protected java.lang.String vc6 = null;
-  protected java.lang.String vc7 = null;
-  protected java.lang.String cha1 = null;
-  protected java.lang.String cha2 = null;
-  protected java.lang.String cha3 = null;
-  protected java.lang.String clo1 = null;
-  protected java.lang.String clo2 = null;
-  protected java.lang.String clo3 = null;
-  protected java.lang.String clo4 = null;
-  protected java.lang.String clo5 = null;
-  protected java.lang.String clo6 = null;
-  protected java.lang.String clo7 = null;
+  protected Integer id = null;
+  protected String vc1 = null;
+  protected String vc2 = null;
+  protected String vc3 = null;
+  protected String vc4 = null;
+  protected String vc5 = null;
+  protected String vc6 = null;
+  protected String vc7 = null;
+  protected String cha1 = null;
+  protected String cha2 = null;
+  protected String cha3 = null;
+  protected String clo1 = null;
+  protected String clo2 = null;
+  protected String clo3 = null;
+  protected String clo4 = null;
+  protected String clo5 = null;
+  protected String clo6 = null;
+  protected String clo7 = null;
 
   // getters & setters
 
-  public java.lang.Integer getId() {
+  public Integer getId() {
     return this.id;
   }
 
-  public void setId(final java.lang.Integer id) {
+  public void setId(final Integer id) {
     this.id = id;
   }
 
-  public java.lang.String getVc1() {
+  public String getVc1() {
     return this.vc1;
   }
 
-  public void setVc1(final java.lang.String vc1) {
+  public void setVc1(final String vc1) {
     this.vc1 = vc1;
   }
 
-  public java.lang.String getVc2() {
+  public String getVc2() {
     return this.vc2;
   }
 
-  public void setVc2(final java.lang.String vc2) {
+  public void setVc2(final String vc2) {
     this.vc2 = vc2;
   }
 
-  public java.lang.String getVc3() {
+  public String getVc3() {
     return this.vc3;
   }
 
-  public void setVc3(final java.lang.String vc3) {
+  public void setVc3(final String vc3) {
     this.vc3 = vc3;
   }
 
-  public java.lang.String getVc4() {
+  public String getVc4() {
     return this.vc4;
   }
 
-  public void setVc4(final java.lang.String vc4) {
+  public void setVc4(final String vc4) {
     this.vc4 = vc4;
   }
 
-  public java.lang.String getVc5() {
+  public String getVc5() {
     return this.vc5;
   }
 
-  public void setVc5(final java.lang.String vc5) {
+  public void setVc5(final String vc5) {
     this.vc5 = vc5;
   }
 
-  public java.lang.String getVc6() {
+  public String getVc6() {
     return this.vc6;
   }
 
-  public void setVc6(final java.lang.String vc6) {
+  public void setVc6(final String vc6) {
     this.vc6 = vc6;
   }
 
-  public java.lang.String getVc7() {
+  public String getVc7() {
     return this.vc7;
   }
 
-  public void setVc7(final java.lang.String vc7) {
+  public void setVc7(final String vc7) {
     this.vc7 = vc7;
   }
 
-  public java.lang.String getCha1() {
+  public String getCha1() {
     return this.cha1;
   }
 
-  public void setCha1(final java.lang.String cha1) {
+  public void setCha1(final String cha1) {
     this.cha1 = cha1;
   }
 
-  public java.lang.String getCha2() {
+  public String getCha2() {
     return this.cha2;
   }
 
-  public void setCha2(final java.lang.String cha2) {
+  public void setCha2(final String cha2) {
     this.cha2 = cha2;
   }
 
-  public java.lang.String getCha3() {
+  public String getCha3() {
     return this.cha3;
   }
 
-  public void setCha3(final java.lang.String cha3) {
+  public void setCha3(final String cha3) {
     this.cha3 = cha3;
   }
 
-  public java.lang.String getClo1() {
+  public String getClo1() {
     return this.clo1;
   }
 
-  public void setClo1(final java.lang.String clo1) {
+  public void setClo1(final String clo1) {
     this.clo1 = clo1;
   }
 
-  public java.lang.String getClo2() {
+  public String getClo2() {
     return this.clo2;
   }
 
-  public void setClo2(final java.lang.String clo2) {
+  public void setClo2(final String clo2) {
     this.clo2 = clo2;
   }
 
-  public java.lang.String getClo3() {
+  public String getClo3() {
     return this.clo3;
   }
 
-  public void setClo3(final java.lang.String clo3) {
+  public void setClo3(final String clo3) {
     this.clo3 = clo3;
   }
 
-  public java.lang.String getClo4() {
+  public String getClo4() {
     return this.clo4;
   }
 
-  public void setClo4(final java.lang.String clo4) {
+  public void setClo4(final String clo4) {
     this.clo4 = clo4;
   }
 
-  public java.lang.String getClo5() {
+  public String getClo5() {
     return this.clo5;
   }
 
-  public void setClo5(final java.lang.String clo5) {
+  public void setClo5(final String clo5) {
     this.clo5 = clo5;
   }
 
-  public java.lang.String getClo6() {
+  public String getClo6() {
     return this.clo6;
   }
 
-  public void setClo6(final java.lang.String clo6) {
+  public void setClo6(final String clo6) {
     this.clo6 = clo6;
   }
 
-  public java.lang.String getClo7() {
+  public String getClo7() {
     return this.clo7;
   }
 
-  public void setClo7(final java.lang.String clo7) {
+  public void setClo7(final String clo7) {
     this.clo7 = clo7;
   }
 
   // to string
 
   public String toString() {
-    java.lang.StringBuilder sb = new java.lang.StringBuilder();
+    StringBuilder sb = new StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- id=" + this.id + "\n");
     sb.append("- vc1=" + this.vc1 + "\n");

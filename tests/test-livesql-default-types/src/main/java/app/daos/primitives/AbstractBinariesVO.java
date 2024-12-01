@@ -3,7 +3,7 @@
 package app.daos.primitives;
 
 import java.io.Serializable;
-import org.hotrod.json.*;
+import org.hotrod.json.JSONObject;
 
 public class AbstractBinariesVO implements Serializable {
 
@@ -11,7 +11,7 @@ public class AbstractBinariesVO implements Serializable {
 
   // VO Properties (table columns)
 
-  protected java.lang.Integer id = null;
+  protected Integer id = null;
   protected byte[] bin1 = null;
   protected byte[] bin2 = null;
   protected byte[] bin3 = null;
@@ -25,11 +25,11 @@ public class AbstractBinariesVO implements Serializable {
 
   // getters & setters
 
-  public java.lang.Integer getId() {
+  public Integer getId() {
     return this.id;
   }
 
-  public void setId(final java.lang.Integer id) {
+  public void setId(final Integer id) {
     this.id = id;
   }
 
@@ -116,7 +116,7 @@ public class AbstractBinariesVO implements Serializable {
   // to string
 
   public String toString() {
-    java.lang.StringBuilder sb = new java.lang.StringBuilder();
+    StringBuilder sb = new StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- id=" + this.id + "\n");
     sb.append("- bin1=" + this.bin1 + "\n");

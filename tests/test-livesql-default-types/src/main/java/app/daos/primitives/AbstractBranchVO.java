@@ -3,7 +3,8 @@
 package app.daos.primitives;
 
 import java.io.Serializable;
-import org.hotrod.json.*;
+import java.sql.Timestamp;
+import org.hotrod.json.JSONObject;
 
 public class AbstractBranchVO implements Serializable {
 
@@ -11,49 +12,49 @@ public class AbstractBranchVO implements Serializable {
 
   // VO Properties (table columns)
 
-  protected java.lang.Integer id = null;
-  protected java.lang.String region = null;
-  protected java.lang.Boolean isVip = null;
-  protected java.sql.Timestamp createdAt = null;
+  protected Integer id = null;
+  protected String region = null;
+  protected Boolean isVip = null;
+  protected Timestamp createdAt = null;
 
   // getters & setters
 
-  public java.lang.Integer getId() {
+  public Integer getId() {
     return this.id;
   }
 
-  public void setId(final java.lang.Integer id) {
+  public void setId(final Integer id) {
     this.id = id;
   }
 
-  public java.lang.String getRegion() {
+  public String getRegion() {
     return this.region;
   }
 
-  public void setRegion(final java.lang.String region) {
+  public void setRegion(final String region) {
     this.region = region;
   }
 
-  public java.lang.Boolean getIsVip() {
+  public Boolean getIsVip() {
     return this.isVip;
   }
 
-  public void setIsVip(final java.lang.Boolean isVip) {
+  public void setIsVip(final Boolean isVip) {
     this.isVip = isVip;
   }
 
-  public java.sql.Timestamp getCreatedAt() {
+  public Timestamp getCreatedAt() {
     return this.createdAt;
   }
 
-  public void setCreatedAt(final java.sql.Timestamp createdAt) {
+  public void setCreatedAt(final Timestamp createdAt) {
     this.createdAt = createdAt;
   }
 
   // to string
 
   public String toString() {
-    java.lang.StringBuilder sb = new java.lang.StringBuilder();
+    StringBuilder sb = new StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- id=" + this.id + "\n");
     sb.append("- region=" + this.region + "\n");
