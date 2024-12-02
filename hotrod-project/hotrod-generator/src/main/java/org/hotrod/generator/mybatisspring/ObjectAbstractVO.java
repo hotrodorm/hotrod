@@ -20,6 +20,7 @@ import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.spring.LazyParentClassLoading;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
+import org.hotrod.utils.AbstractClassWriter.ExternalClass;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ClassWriter;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
@@ -129,8 +130,8 @@ public class ObjectAbstractVO extends GeneratableObject {
     // Signature
 
     if (this.getBundle().getParent() != null) {
-      w.println("public class " + this.getClassName() + " implements " + LazyParentClassLoading.class.getSimpleName()
-          + ", Serializable {");
+      w.println("public class " + this.getClassName() + " implements ", LazyParentClassLoading.class, ", ",
+          Serializable.class, " {");
     } else {
       w.println("public class " + this.getClassName() + " implements ", Serializable.class, " {");
     }
@@ -143,6 +144,9 @@ public class ObjectAbstractVO extends GeneratableObject {
     w.println();
 
   }
+
+  private static final ExternalClass AUTOWIRED = ExternalClass
+      .of("org.springframework.beans.factory.annotation.Autowired");
 
   private void writeProperties() throws IOException, UnresolvableDataTypeException {
 
@@ -161,17 +165,13 @@ public class ObjectAbstractVO extends GeneratableObject {
 
       String daoClassName = this.getBundle().getParent().getDAO().getClassName();
       this.parentDAOProperty = this.toLowerInitial(daoClassName);
-      w.println("  @Autowired");
-      w.print("  private ");
-      w.printClass(daoClassName);
-      w.println(" " + this.parentDAOProperty + " = null;");
+      w.println("  @" + AUTOWIRED);
+      w.println("  private ", ExternalClass.of(daoClassName), " " + this.parentDAOProperty + " = null;");
 
       w.println();
       String voClassName = this.getBundle().getParent().getVO().getClassName();
       this.parentVOProperty = this.toLowerInitial(voClassName);
-      w.print("  private ");
-      w.printClass(voClassName);
-      w.println(" " + this.parentVOProperty + " = null;");
+      w.println("  private ", ExternalClass.of(voClassName), " " + this.parentVOProperty + " = null;");
       w.println();
     }
 
@@ -180,9 +180,7 @@ public class ObjectAbstractVO extends GeneratableObject {
   private void writeColumnProperties(final List<ColumnMetadata> columns) throws IOException {
     for (ColumnMetadata cm : columns) {
       String javaType = resolveType(cm);
-      w.print("  protected ");
-      w.printClass(javaType);
-      w.println(" " + cm.getId().getJavaMemberName() + " = null;");
+      w.println("  protected ", ExternalClass.of(javaType), " " + cm.getId().getJavaMemberName() + " = null;");
     }
     w.println();
   }
@@ -207,9 +205,7 @@ public class ObjectAbstractVO extends GeneratableObject {
         writeGetter(pkm, javaType, m);
 
         String setter = pkm.getId().getJavaSetter();
-        w.println("  public void " + setter + "(final ");
-        w.printClass(javaType);
-        w.print(" " + m + ") {");
+        w.println("  public void " + setter + "(final ", ExternalClass.of(javaType), " " + m + ") {");
         w.println("    this.unloadSuperclass();");
         w.println("    this." + m + " = " + m + ";");
         w.println("  }");
@@ -275,9 +271,7 @@ public class ObjectAbstractVO extends GeneratableObject {
   }
 
   private void writeGetter(ColumnMetadata cm, String javaType, String m) throws IOException {
-    w.print("  public ");
-    w.printClass(javaType);
-    w.println(" " + cm.getId().getJavaGetter() + "() {");
+    w.println("  public ", ExternalClass.of(javaType), " " + cm.getId().getJavaGetter() + "() {");
     w.println("    return this." + m + ";");
     w.println("  }");
     w.println();
@@ -285,18 +279,14 @@ public class ObjectAbstractVO extends GeneratableObject {
 
   private void writeSetter(final ColumnMetadata cm, final String javaType, final String m) throws IOException {
     String setter = cm.getId().getJavaSetter();
-    w.print("  public void " + setter + "(final ");
-    w.printClass(javaType);
-    w.println(" " + m + ") {");
+    w.println("  public void " + setter + "(final ", ExternalClass.of(javaType), " " + m + ") {");
     w.println("    this." + m + " = " + m + ";");
     w.println("  }");
     w.println();
   }
 
   private void writeParentGetter(ColumnMetadata cm, String javaType, String m) throws IOException {
-    w.print("  public ");
-    w.printClass(javaType);
-    w.println(" " + cm.getId().getJavaGetter() + "() {");
+    w.println("  public ", ExternalClass.of(javaType), " " + cm.getId().getJavaGetter() + "() {");
     w.println("    return this." + this.parentVOProperty + "." + cm.getId().getJavaGetter() + "();");
     w.println("  }");
     w.println();
@@ -304,9 +294,7 @@ public class ObjectAbstractVO extends GeneratableObject {
 
   private void writeParentSetter(final ColumnMetadata cm, final String javaType, final String m) throws IOException {
     String setter = cm.getId().getJavaSetter();
-    w.print("  public void " + setter + "(final ");
-    w.printClass(javaType);
-    w.println(" " + m + ") {");
+    w.println("  public void " + setter + "(final ", ExternalClass.of(javaType), " " + m + ") {");
     w.println("    this." + this.parentVOProperty + "." + setter + "(" + m + ");");
     w.println("  }");
     w.println();

@@ -1,330 +1,19695 @@
 package org.hotrod.utils;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
+public class ClassWriter extends AbstractClassWriter {
 
-import org.hotrod.generator.FileGenerator.TextWriter;
-
-public class ClassWriter {
-
-  @SuppressWarnings("unused")
-  private static final Logger log = Logger.getLogger(ClassWriter.class.getName());
-
-  private String[] headerLines;
-  private ClassPackage classPackage;
-
-  private List<String> segments;
-  private LinkedHashMap<String, String> importCode; // import name / code name (full/simple)
-  private Map<String, String> simpleImport; // simple name / import name
-
-  public ClassWriter(final ClassPackage classPackage, final String... headerLines) {
-    this.headerLines = headerLines;
-    this.classPackage = classPackage;
-    this.importCode = new LinkedHashMap<>();
-    this.simpleImport = new LinkedHashMap<>();
-    this.segments = new ArrayList<>();
+  public ClassWriter(ClassPackage classPackage, String... headerLines) {
+    super(classPackage, headerLines);
   }
 
-  // printers
+  // Using 1 parameter(s)
 
-  public void println() {
-    this.segments.add("\n");
+  public void print(String s0) {
+    this.segments.add(s0);
   }
 
-  // start with s
-
-  public void print(String s) {
-    this.segments.add(s);
-  }
-
-  public void println(String s) {
-    this.segments.add(s);
+  public void println(String s0) {
+    this.segments.add(s0);
     this.println();
   }
 
-  public void print(String s, Class<?> c) {
-    this.print(s);
-    this.print(c);
+  public void print(Class<?> c0) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
   }
 
-  public void println(String s, Class<?> c) {
-    this.print(s, c);
+  public void println(Class<?> c0) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
     this.println();
   }
 
-  public void print(String s, Class<?> c, String s2) {
-    this.print(s, c);
-    this.print(s2);
+  public void print(ExternalClass e0) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
   }
 
-  public void println(String s, Class<?> c, String s2) {
-    this.print(s, c, s2);
+  public void println(ExternalClass e0) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
     this.println();
   }
 
-  public void print(String s, Class<?> c, String s2, Class<?> c2) {
-    this.print(s, c, s2);
-    this.print(c2);
+  // Using 2 parameter(s)
+
+  public void print(String s0, String s1) {
+    this.segments.add(s0);
+    this.segments.add(s1);
   }
 
-  public void println(String s, Class<?> c, String s2, Class<?> c2) {
-    this.print(s, c, s2, c2);
+  public void println(String s0, String s1) {
+    this.segments.add(s0);
+    this.segments.add(s1);
     this.println();
   }
 
-  public void print(String s, Class<?> c, String s2, Class<?> c2, String s3) {
-    this.print(s, c, s2, c2);
-    this.print(s3);
+  public void print(String s0, Class<?> c1) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
   }
 
-  public void println(String s, Class<?> c, String s2, Class<?> c2, String s3) {
-    this.print(s, c, s2, c2, s3);
+  public void println(String s0, Class<?> c1) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
     this.println();
   }
 
-  public void print(String s, Class<?> c, String s2, Class<?> c2, String s3, Class<?> c3) {
-    this.print(s, c, s2, c2, s3);
-    this.print(c3);
+  public void print(String s0, ExternalClass e1) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
   }
 
-  public void println(String s, Class<?> c, String s2, Class<?> c2, String s3, Class<?> c3) {
-    this.print(s, c, s2, c2, s3, c3);
+  public void println(String s0, ExternalClass e1) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
     this.println();
   }
 
-  // start with c
-
-  public void registerClass(Class<?> c) {
-    ParsedClass pc = ParsedClass.of(c);
-    registerClass(pc);
+  public void print(Class<?> c0, String s1) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
   }
 
-  public void registerClass(String fullClassName) {
-    ParsedClass pc = ParsedClass.of(fullClassName);
-    registerClass(pc);
-  }
-
-  public void printClass(String fullClassName) {
-    ParsedClass pc = ParsedClass.of(fullClassName);
-    print(registerClass(pc));
-  }
-
-  public void print(Class<?> c) {
-    ParsedClass pc = ParsedClass.of(c);
-    print(registerClass(pc));
-  }
-
-  public void println(Class<?> c) {
-    this.print(c);
+  public void println(Class<?> c0, String s1) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
     this.println();
   }
 
-  public void print(Class<?> c, String s) {
-    print(c);
-    print(s);
+  public void print(Class<?> c0, Class<?> c1) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
   }
 
-  public void println(Class<?> c, String s) {
-    this.print(c, s);
+  public void println(Class<?> c0, Class<?> c1) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
     this.println();
   }
 
-  public void print(Class<?> c, String s, Class<?> c2) {
-    print(c, s);
-    print(c2);
+  public void print(Class<?> c0, ExternalClass e1) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
   }
 
-  public void println(Class<?> c, String s, Class<?> c2) {
-    this.print(c, s, c2);
+  public void println(Class<?> c0, ExternalClass e1) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
     this.println();
   }
 
-  public void print(Class<?> c, String s, Class<?> c2, String s2) {
-    print(c, s, c2);
-    print(s2);
+  public void print(ExternalClass e0, String s1) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
   }
 
-  public void println(Class<?> c, String s, Class<?> c2, String s2) {
-    this.print(c, s, c2, s2);
+  public void println(ExternalClass e0, String s1) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
     this.println();
   }
 
-  public void print(Class<?> c, String s, Class<?> c2, String s2, Class<?> c3) {
-    print(c, s, c2, s2);
-    print(c3);
+  public void print(ExternalClass e0, Class<?> c1) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
   }
 
-  public void println(Class<?> c, String s, Class<?> c2, String s2, Class<?> c3) {
-    this.print(c, s, c2, s2, c3);
+  public void println(ExternalClass e0, Class<?> c1) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
     this.println();
   }
 
-  public void print(Class<?> c, String s, Class<?> c2, String s2, Class<?> c3, String s3) {
-    print(c, s, c2, s2, c3);
-    print(s3);
+  public void print(ExternalClass e0, ExternalClass e1) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
   }
 
-  public void println(Class<?> c, String s, Class<?> c2, String s2, Class<?> c3, String s3) {
-    this.print(c, s, c2, s2, c3, s3);
+  public void println(ExternalClass e0, ExternalClass e1) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
     this.println();
   }
 
-  // writer
+  // Using 3 parameter(s)
 
-  public void writeTo(final TextWriter w) throws IOException {
-
-    if (this.headerLines != null) {
-      for (String h : this.headerLines) {
-        w.write(h + "\n");
-      }
-    }
-
-    w.write("package " + this.classPackage.getPackage() + ";\n\n");
-
-    for (String i : this.importCode.keySet()) {
-//      log.info("### " + i);
-      w.write("import " + i + ";\n");
-    }
-    w.write("\n");
-
-    for (String s : this.segments) {
-      w.write(s);
-    }
-
+  public void print(String s0, String s1, String s2) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
   }
 
-  // Utils
-
-  private String registerClass(final ParsedClass pc) {
-    if (pc.getImportName().startsWith("java.lang.") || isPrimitive(pc.getBaseClass())) {
-      // skip registering
-//      log.info("-- skip registering: " + pc.getOriginal());
-      return pc.getShortCodeName();
-    }
-
-    String registeredCodeName = this.importCode.get(pc.getImportName());
-    if (registeredCodeName != null) {
-      // already registered
-//      log.info("-- already registered: " + pc.getOriginal());
-      return registeredCodeName;
-    }
-
-    // Not registered
-
-    String otherSimpleName = this.simpleImport.get(pc.getBaseClass());
-    if (otherSimpleName == null) {
-      this.importCode.put(pc.getImportName(), pc.getBaseClass());
-      this.simpleImport.put(pc.getBaseClass(), pc.getImportName());
-//      log.info("-- register: " + pc.getShortCodeName() + " (import: " + pc.getImportName() + ")");
-      return pc.getShortCodeName();
-    } else {
-      this.importCode.put(pc.getImportName(), pc.getImportName());
-//      log.info("-- register: " + pc.getLongCodeName() + " (import: " + pc.getImportName() + ")");
-      return pc.getLongCodeName();
-    }
+  public void println(String s0, String s1, String s2) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.println();
   }
 
-  private boolean isPrimitive(String c) {
-    return "byte".equals(c) //
-        || "short".equals(c) //
-        || "int".equals(c) //
-        || "long".equals(c) //
-        || "float".equals(c) //
-        || "double".equals(c) //
-        || "boolean".equals(c) //
-        || "char".equals(c);
+  public void print(String s0, String s1, Class<?> c2) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
   }
 
-  public static class ParsedClass {
+  public void println(String s0, String s1, Class<?> c2) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.println();
+  }
 
-    private String original;
-    private String generics;
-    private String arrays;
-    private String importName;
-    private String baseClass;
-    private String shortCodeName;
-    private String longCodeName;
+  public void print(String s0, String s1, ExternalClass e2) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+  }
 
-    public static ParsedClass of(String c) {
-      return new ParsedClass(c);
-    }
+  public void println(String s0, String s1, ExternalClass e2) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.println();
+  }
 
-    public static ParsedClass of(Class<?> c) {
-      return new ParsedClass(c.getCanonicalName());
-    }
+  public void print(String s0, Class<?> c1, String s2) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+  }
 
-    private ParsedClass(String c) {
-      this.original = c;
+  public void println(String s0, Class<?> c1, String s2) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.println();
+  }
 
-      String gfree;
-      int l = c.indexOf("<");
-      int g = c.lastIndexOf(">");
-      if (l != -1 && g != -1) {
-        this.generics = c.substring(l, g + 1);
-        gfree = c.substring(0, l) + c.substring(g + 1);
-      } else {
-        this.generics = null;
-        gfree = c;
-      }
+  public void print(String s0, Class<?> c1, Class<?> c2) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+  }
 
-      int b = gfree.indexOf("[");
-      if (b != -1) {
-        this.arrays = gfree.substring(b);
-        this.importName = gfree.substring(0, b);
-      } else {
-        this.arrays = null;
-        this.importName = gfree;
-      }
+  public void println(String s0, Class<?> c1, Class<?> c2) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.println();
+  }
 
-      int dot = importName.lastIndexOf('.');
-      this.baseClass = dot == -1 ? importName : importName.substring(dot + 1);
-      this.shortCodeName = this.baseClass + coalesce(this.generics, "") + coalesce(this.arrays, "");
-      this.longCodeName = this.importName + coalesce(this.generics, "") + coalesce(this.arrays, "");
+  public void print(String s0, Class<?> c1, ExternalClass e2) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+  }
 
-    }
+  public void println(String s0, Class<?> c1, ExternalClass e2) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.println();
+  }
 
-    private String coalesce(String a, String b) {
-      return a != null ? a : b;
-    }
+  public void print(String s0, ExternalClass e1, String s2) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+  }
 
-    public String toString() {
-      return "orig: " + this.original + " - generics: " + this.generics + " - arrays: " + this.arrays
-          + " - importName: " + this.importName + " - baseClass: " + this.baseClass + " - shortCodeName: "
-          + this.shortCodeName;
-    }
+  public void println(String s0, ExternalClass e1, String s2) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.println();
+  }
 
-    public String getOriginal() {
-      return original;
-    }
+  public void print(String s0, ExternalClass e1, Class<?> c2) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+  }
 
-    public String getGenerics() {
-      return generics;
-    }
+  public void println(String s0, ExternalClass e1, Class<?> c2) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.println();
+  }
 
-    public String getArrays() {
-      return arrays;
-    }
+  public void print(String s0, ExternalClass e1, ExternalClass e2) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+  }
 
-    public String getImportName() {
-      return importName;
-    }
+  public void println(String s0, ExternalClass e1, ExternalClass e2) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.println();
+  }
 
-    public String getBaseClass() {
-      return baseClass;
-    }
+  public void print(Class<?> c0, String s1, String s2) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+  }
 
-    public String getShortCodeName() {
-      return this.shortCodeName;
-    }
+  public void println(Class<?> c0, String s1, String s2) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.println();
+  }
 
-    public String getLongCodeName() {
-      return longCodeName;
-    }
+  public void print(Class<?> c0, String s1, Class<?> c2) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+  }
 
+  public void println(Class<?> c0, String s1, Class<?> c2) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+  }
+
+  public void println(ExternalClass e0, String s1, String s2) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.println();
+  }
+
+  // Using 4 parameter(s)
+
+  public void print(String s0, String s1, String s2, String s3) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+  }
+
+  public void println(String s0, String s1, String s2, String s3) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, Class<?> c3) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+  }
+
+  public void println(String s0, String s1, String s2, Class<?> c3) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, ExternalClass e3) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, String s2, ExternalClass e3) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, String s3) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+  }
+
+  public void println(String s0, String s1, Class<?> c2, String s3) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, Class<?> c3) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+  }
+
+  public void println(String s0, String s1, Class<?> c2, Class<?> c3) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, ExternalClass e3) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, Class<?> c2, ExternalClass e3) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, String s3) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, String s3) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, Class<?> c3) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, Class<?> c3) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, ExternalClass e3) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, ExternalClass e3) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, String s3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+  }
+
+  public void println(String s0, Class<?> c1, String s2, String s3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, Class<?> c3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+  }
+
+  public void println(String s0, Class<?> c1, String s2, Class<?> c3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, ExternalClass e3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, String s2, ExternalClass e3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, String s3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, String s3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, Class<?> c3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, Class<?> c3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, ExternalClass e3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, ExternalClass e3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, String s3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, String s3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, Class<?> c3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, Class<?> c3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, ExternalClass e3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, ExternalClass e3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, String s3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, String s3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, Class<?> c3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, Class<?> c3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, ExternalClass e3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, ExternalClass e3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, String s3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, String s3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, Class<?> c3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, Class<?> c3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, ExternalClass e3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, ExternalClass e3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, String s3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, String s3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, Class<?> c3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, Class<?> c3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, ExternalClass e3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, ExternalClass e3) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+  }
+
+  public void println(Class<?> c0, String s1, String s2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+  }
+
+  public void println(Class<?> c0, String s1, String s2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, String s2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, String s3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, Class<?> c3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, ExternalClass e3) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.println();
+  }
+
+  // Using 5 parameter(s)
+
+  public void print(String s0, String s1, String s2, String s3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+  }
+
+  public void println(String s0, String s1, String s2, String s3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, String s3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(String s0, String s1, String s2, String s3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, String s3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, String s2, String s3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, Class<?> c3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+  }
+
+  public void println(String s0, String s1, String s2, Class<?> c3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, Class<?> c3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(String s0, String s1, String s2, Class<?> c3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, String s2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, ExternalClass e3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+  }
+
+  public void println(String s0, String s1, String s2, ExternalClass e3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(String s0, String s1, String s2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, String s2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, String s3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+  }
+
+  public void println(String s0, String s1, Class<?> c2, String s3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, String s3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(String s0, String s1, Class<?> c2, String s3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, String s3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, Class<?> c2, String s3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, Class<?> c3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+  }
+
+  public void println(String s0, String s1, Class<?> c2, Class<?> c3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, Class<?> c3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(String s0, String s1, Class<?> c2, Class<?> c3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, Class<?> c2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, ExternalClass e3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+  }
+
+  public void println(String s0, String s1, Class<?> c2, ExternalClass e3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(String s0, String s1, Class<?> c2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, Class<?> c2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, String s3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, String s3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, String s3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, String s3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, String s3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, String s3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, Class<?> c3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, Class<?> c3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, Class<?> c3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, Class<?> c3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, ExternalClass e3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, ExternalClass e3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, String s3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+  }
+
+  public void println(String s0, Class<?> c1, String s2, String s3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, String s3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(String s0, Class<?> c1, String s2, String s3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, String s3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, String s2, String s3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, Class<?> c3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+  }
+
+  public void println(String s0, Class<?> c1, String s2, Class<?> c3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, Class<?> c3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(String s0, Class<?> c1, String s2, Class<?> c3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, String s2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, ExternalClass e3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+  }
+
+  public void println(String s0, Class<?> c1, String s2, ExternalClass e3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(String s0, Class<?> c1, String s2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, String s2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, String s3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, String s3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, String s3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, String s3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, String s3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, String s3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, Class<?> c3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, Class<?> c3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, Class<?> c3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, Class<?> c3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, ExternalClass e3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, ExternalClass e3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, String s3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, String s3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, String s3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, String s3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, String s3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, String s3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, Class<?> c3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, Class<?> c3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, Class<?> c3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, Class<?> c3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, ExternalClass e3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, ExternalClass e3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, String s3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, String s3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, String s3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, String s3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, String s3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, String s3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, Class<?> c3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, Class<?> c3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, Class<?> c3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, Class<?> c3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, ExternalClass e3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, ExternalClass e3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, String s3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, String s3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, String s3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, String s3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, String s3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, String s3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, Class<?> c3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, Class<?> c3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, Class<?> c3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, Class<?> c3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, ExternalClass e3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, ExternalClass e3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, String s3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, String s3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, String s3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, String s3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, String s3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, String s3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, Class<?> c3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, Class<?> c3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, Class<?> c3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, Class<?> c3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, ExternalClass e3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, ExternalClass e3, String s4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+  }
+
+  public void println(Class<?> c0, String s1, String s2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(Class<?> c0, String s1, String s2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, String s2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+  }
+
+  public void println(Class<?> c0, String s1, String s2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(Class<?> c0, String s1, String s2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, String s2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+  }
+
+  public void println(Class<?> c0, String s1, String s2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(Class<?> c0, String s1, String s2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, String s2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, String s3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, String s3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, String s3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, Class<?> c3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, Class<?> c3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, Class<?> c3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, ExternalClass e3, String s4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, ExternalClass e3, Class<?> c4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, ExternalClass e3, ExternalClass e4) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.println();
+  }
+
+  // Using 6 parameter(s)
+
+  public void print(String s0, String s1, String s2, String s3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, String s1, String s2, String s3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, String s3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, String s1, String s2, String s3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, String s2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, String s3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, String s1, String s2, String s3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, String s1, String s2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, String s2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, String s1, String s2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, String s1, String s2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, String s2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, Class<?> c3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, String s1, String s2, Class<?> c3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, String s1, String s2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, String s2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, String s1, String s2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, String s1, String s2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, String s2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, String s1, String s2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, String s1, String s2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, String s2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, String s1, String s2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, String s1, String s2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, String s2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, String s1, String s2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, String s1, String s2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, String s2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, String s1, String s2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, String s1, String s2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, String s2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, String s2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, String s3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, String s1, Class<?> c2, String s3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, String s3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, String s1, Class<?> c2, String s3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, Class<?> c2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, String s3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, String s1, Class<?> c2, String s3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, String s1, Class<?> c2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, Class<?> c2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, String s1, Class<?> c2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, String s1, Class<?> c2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, Class<?> c2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, Class<?> c3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, String s1, Class<?> c2, Class<?> c3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, String s1, Class<?> c2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, Class<?> c2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, String s1, Class<?> c2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, String s1, Class<?> c2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, Class<?> c2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, String s1, Class<?> c2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, String s1, Class<?> c2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, Class<?> c2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, String s1, Class<?> c2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, String s1, Class<?> c2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, Class<?> c2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, String s1, Class<?> c2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, String s1, Class<?> c2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, Class<?> c2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, String s1, Class<?> c2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, String s1, Class<?> c2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, Class<?> c2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, Class<?> c2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, String s3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, String s3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, String s3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, String s3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, String s3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, String s3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, Class<?> c3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, Class<?> c3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, String s1, ExternalClass e2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, String s1, ExternalClass e2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, String s3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, Class<?> c1, String s2, String s3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, String s3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, Class<?> c1, String s2, String s3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, String s2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, String s3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, Class<?> c1, String s2, String s3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, Class<?> c1, String s2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, String s2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, Class<?> c1, String s2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, Class<?> c1, String s2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, String s2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, Class<?> c3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, Class<?> c1, String s2, Class<?> c3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, Class<?> c1, String s2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, String s2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, Class<?> c1, String s2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, Class<?> c1, String s2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, String s2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, Class<?> c1, String s2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, Class<?> c1, String s2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, String s2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, Class<?> c1, String s2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, Class<?> c1, String s2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, String s2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, Class<?> c1, String s2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, Class<?> c1, String s2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, String s2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, Class<?> c1, String s2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, Class<?> c1, String s2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, String s2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, String s2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, String s3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, String s3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, String s3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, String s3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, String s3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, String s3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, Class<?> c3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, Class<?> c3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, Class<?> c2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, Class<?> c2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, String s3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, String s3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, String s3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, String s3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, String s3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, String s3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, Class<?> c3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, Class<?> c3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, Class<?> c1, ExternalClass e2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, Class<?> c1, ExternalClass e2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, String s3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, String s3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, String s3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, String s3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, String s3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, String s3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, Class<?> c3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, Class<?> c3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, String s2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, String s2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, String s3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, String s3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, String s3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, String s3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, String s3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, String s3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, Class<?> c3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, Class<?> c3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, Class<?> c2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, Class<?> c2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, String s3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, String s3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, String s3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, String s3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, String s3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, String s3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, Class<?> c3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, Class<?> c3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(String s0, ExternalClass e1, ExternalClass e2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(String s0, ExternalClass e1, ExternalClass e2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(s0);
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, String s1, String s2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, String s1, String s2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, String s2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, String s1, String s2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, String s1, String s2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, String s2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, String s1, String s2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, String s1, String s2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, String s2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, String s1, String s2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, String s1, String s2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, String s2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, String s1, String s2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, String s1, String s2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, String s2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, String s1, String s2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, String s1, String s2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, String s2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, String s1, String s2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, String s1, String s2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, String s2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, String s1, String s2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, String s1, String s2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, String s2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, String s1, String s2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, String s1, String s2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, String s2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, String s2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, Class<?> c2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, Class<?> c2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, String s1, ExternalClass e2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, String s1, ExternalClass e2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, String s2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, String s2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, Class<?> c2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, Class<?> c2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, Class<?> c1, ExternalClass e2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, Class<?> c1, ExternalClass e2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, String s2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, String s2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, Class<?> c2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, Class<?> c2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(Class<?> c0, ExternalClass e1, ExternalClass e2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(Class<?> c0, ExternalClass e1, ExternalClass e2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(c0)));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, String s2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, String s2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, Class<?> c2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, Class<?> c2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, String s1, ExternalClass e2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, String s1, ExternalClass e2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(s1);
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, String s2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, String s2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, Class<?> c2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, Class<?> c2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, Class<?> c1, ExternalClass e2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, Class<?> c1, ExternalClass e2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c1)));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, String s2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, String s2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(s2);
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, Class<?> c2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, Class<?> c2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c2)));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, String s3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, String s3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, String s3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, String s3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, String s3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, String s3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, String s3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, String s3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, String s3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(s3);
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, Class<?> c3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, Class<?> c3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, Class<?> c3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, Class<?> c3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, Class<?> c3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, Class<?> c3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, Class<?> c3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, Class<?> c3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, Class<?> c3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c3)));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, ExternalClass e3, String s4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, ExternalClass e3, String s4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, ExternalClass e3, String s4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(s4);
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, ExternalClass e3, Class<?> c4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, ExternalClass e3, Class<?> c4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, ExternalClass e3, Class<?> c4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c4)));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, ExternalClass e3, ExternalClass e4, String s5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(s5);
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, ExternalClass e3, ExternalClass e4, Class<?> c5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(c5)));
+    this.println();
+  }
+
+  public void print(ExternalClass e0, ExternalClass e1, ExternalClass e2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+  }
+
+  public void println(ExternalClass e0, ExternalClass e1, ExternalClass e2, ExternalClass e3, ExternalClass e4, ExternalClass e5) {
+    this.segments.add(registerClass(ParsedClass.of(e0.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e1.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e2.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e3.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e4.getCanonicalName())));
+    this.segments.add(registerClass(ParsedClass.of(e5.getCanonicalName())));
+    this.println();
   }
 
 }

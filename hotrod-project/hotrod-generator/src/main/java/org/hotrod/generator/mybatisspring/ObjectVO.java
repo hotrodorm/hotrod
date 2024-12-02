@@ -12,6 +12,7 @@ import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.generator.GeneratableObject;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.DataSetMetadata;
+import org.hotrod.utils.AbstractClassWriter.ExternalClass;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ClassWriter;
 
@@ -87,18 +88,29 @@ public class ObjectVO extends GeneratableObject {
     }
   }
 
+  private static final ExternalClass AUTOWIRED = ExternalClass
+      .of("org.springframework.beans.factory.annotation.Autowired");
+  private static final ExternalClass COMPONENT = ExternalClass.of("org.springframework.stereotype.Component");
+  private static final ExternalClass SCOPE = ExternalClass.of("org.springframework.context.annotation.Scope");
+  private static final ExternalClass CONFIGURABLE_BEAN_FACTORY = ExternalClass
+      .of("org.springframework.beans.factory.config.ConfigurableBeanFactory");
+
   private void writeBody(ClassWriter w) throws IOException {
-    w.registerClass(this.abstractVO.getFullClassName());
+//    w.registerClass(this.abstractVO.getFullClassName());
+//
+//    w.registerClass("org.springframework.stereotype.Component");
+//    w.registerClass("org.springframework.beans.factory.config.ConfigurableBeanFactory");
+//    w.registerClass("org.springframework.context.annotation.Scope");
+//    w.registerClass(this.dao.getFullClassName());
+//    w.registerClass("org.springframework.beans.factory.annotation.Autowired");
 
-    w.registerClass("org.springframework.stereotype.Component");
-    w.registerClass("org.springframework.beans.factory.config.ConfigurableBeanFactory");
-    w.registerClass("org.springframework.context.annotation.Scope");
-    w.registerClass(this.dao.getFullClassName());
-    w.registerClass("org.springframework.beans.factory.annotation.Autowired");
+    w.println("@", COMPONENT);
 
-    w.println("@Component");
-    w.println("@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)");
-    w.print("public class " + this.getClassName() + " extends " + this.abstractVO.getClassName());
+    w.println("@", SCOPE, "(value = ", CONFIGURABLE_BEAN_FACTORY, ".SCOPE_PROTOTYPE)");
+//    w.println("@", SCOPE);
+//    w.println("(value = ", CONFIGURABLE_BEAN_FACTORY, ".SCOPE_PROTOTYPE)");
+
+    w.print("public class " + this.getClassName() + " extends ", ExternalClass.of(this.abstractVO.getFullClassName()));
 
     if (this.metadata.getDaoTag().getImplementsClasses() != null) {
       w.print(" implements " + this.metadata.getDaoTag().getImplementsClasses());
@@ -111,8 +123,8 @@ public class ObjectVO extends GeneratableObject {
     w.println();
 
     w.println("  @SuppressWarnings(\"unused\")");
-    w.println("  @Autowired");
-    w.println("  private " + this.dao.getClassName() + " " + this.dao.getMemberName() + ";");
+    w.println("  @", AUTOWIRED);
+    w.println("  private ", ExternalClass.of(this.dao.getFullClassName()), " " + this.dao.getMemberName() + ";");
     w.println();
 
     w.println("  // Add custom code below.");
