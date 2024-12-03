@@ -6,7 +6,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 
 - Core:
     - Arquetype module is removed (unused).
-    - Log4j fully removed HotRod. The Generator now uses JUL for simplicity.
+    - Log4j fully removed from HotRod; the generator now uses JUL for simplicity.
     - New class generator that handles references and cleans imports.
     - Packages are changed in the hotrod library. The "runtime" segment is now removed.
     - Removed old unused classes in the hotrod library.
