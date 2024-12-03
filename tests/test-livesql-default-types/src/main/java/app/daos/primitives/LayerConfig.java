@@ -3,14 +3,14 @@ package app.daos.primitives;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hotrod.runtime.livesql.LayerConfig;
+import org.hotrod.runtime.livesql.LayerConfigInterface;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeRule;
 import org.springframework.stereotype.Component;
-import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
 
 @Component
-public class ThisLayerConfig implements LayerConfig {
+public class LayerConfig implements LayerConfigInterface {
 
   @Override
   public List<TypeRule> getTypeRules() {
