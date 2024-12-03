@@ -56,6 +56,10 @@ public class DataSetLayout implements Serializable {
     return this.daos.getDaosPackageDir(fragmentPackage);
   }
 
+  public ClassPackage getDAOPrimitivePackage() {
+    return this.getDAOPrimitivePackage(null);
+  }
+
   public ClassPackage getDAOPrimitivePackage(final ClassPackage fragmentPackage) {
     return this.daos.getPrimitivesPackage(fragmentPackage);
   }

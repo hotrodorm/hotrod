@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.hotrod.runtime.livesql.queries.typesolver.TypeRule;
 
-public interface LayerConfig {
+public interface LayerConfigInterface {
 
   List<TypeRule> getTypeRules();
 }

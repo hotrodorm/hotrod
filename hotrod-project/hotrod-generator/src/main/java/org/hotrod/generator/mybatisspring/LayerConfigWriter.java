@@ -2,6 +2,8 @@ package org.hotrod.generator.mybatisspring;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.config.TypeSolverTag;
@@ -10,6 +12,12 @@ import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
+import org.hotrod.runtime.livesql.LayerConfigInterface;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeRule;
+import org.hotrod.utils.AbstractClassWriter.ExternalClass;
+import org.hotrod.utils.ClassWriter;
 import org.hotrod.utils.SUtil;
 
 public class LayerConfigWriter {
@@ -17,12 +25,12 @@ public class LayerConfigWriter {
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(LayerConfigWriter.class.getName());
 
-  private static final String CLASS_NAME = "ThisLayerConfig";
+  private static final String CLASS_NAME = "LayerConfig";
 
   private DataSetLayout layout;
   private TypeSolverTag typeSolver;
 
-  private TextWriter w;
+  private ClassWriter w;
 
   public LayerConfigWriter(final DataSetLayout layout, final TypeSolverTag typeSolver) {
     this.layout = layout;
@@ -36,81 +44,52 @@ public class LayerConfigWriter {
     File f = new File(dir, CLASS_NAME + ".java");
 //    log.info("f=" + f);
 
-    try {
-      this.w = fileGenerator.createWriter(f);
+    try (TextWriter tw = fileGenerator.createWriter(f)) {
+
+      this.w = new ClassWriter(this.layout.getDAOPrimitivePackage());
 
       this.writeHeader();
       this.writeRules();
       this.writeFooter();
 
+      w.writeTo(tw);
+
     } catch (IOException e) {
       throw new UncontrolledException("Could not generate LayerConfig class", e);
-    } finally {
-      try {
-        w.close();
-      } catch (IOException e) {
-        throw new UncontrolledException("Could not generate LayerConfig class", e);
-      }
     }
 
   }
 
   private void writeHeader() throws IOException {
-
-    println("package " + this.layout.getDAOPrimitivePackage(null).getPackage() + ";");
-    println();
-    println("import java.util.ArrayList;");
-    println("import java.util.List;");
-    println();
-    println("import org.hotrod.runtime.livesql.LayerConfig;");
-    println("import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;");
-    println("import org.hotrod.runtime.livesql.queries.typesolver.TypeRule;");
-    println("import org.springframework.stereotype.Component;");
-    println("import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;");
-    println();
-    println("@Component");
-    println("public class " + CLASS_NAME + " implements LayerConfig {");
-    println();
-    println("  @Override");
-    println("  public List<TypeRule> getTypeRules() {");
-    println("    List<TypeRule> rules = new ArrayList<>();");
-    println();
-
+    w.println("@", Const.COMPONENT);
+    w.println("public class " + CLASS_NAME + " implements ", LayerConfigInterface.class, " {");
+    w.println();
+    w.println("  @", Override.class);
+    w.println("  public ", List.class, "<", TypeRule.class, "> getTypeRules() {");
+    w.print("    ", List.class, "<", TypeRule.class, "> rules = ");
+    w.println("new ", ArrayList.class, "<>();");
+    w.println();
   }
 
   private void writeRules() throws IOException {
-//    log.info("%%% this.typeSolver.getWhens().size()=" + this.typeSolver.getWhens().size());
     int n = 1;
-    for (TypeSolverWhenTag w : this.typeSolver.getWhens()) {
-//      log.info("%%%  - w.getTestResultSet()=" + w.getTestResultSet());
-      if (!SUtil.isEmpty(w.getTestResultSet())) {
-        println("    rules.add(TypeRule.of(\"" + SUtil.escapeJavaString(w.getTestResultSet()) + "\", TypeHandler.of("
-            + w.getJavaType() + ".class, TypeSource.LIVESQL_RULES), " + n + "));");
+    for (TypeSolverWhenTag when : this.typeSolver.getWhens()) {
+      if (!SUtil.isEmpty(when.getTestResultSet())) {
+        w.print("    rules.add(", TypeRule.class, ".of(\"" + SUtil.escapeJavaString(when.getTestResultSet()) + "\", ",
+            TypeHandler.class);
+        w.println(".of(", ExternalClass.of(when.getJavaType()), ".class, ", TypeSource.class,
+            ".LIVESQL_RULES), " + n + "));");
       }
       n++;
     }
   }
 
   private void writeFooter() throws IOException {
-    println();
-    println("    return rules;");
-    println("  }");
-    println();
-    println("}");
-  }
-
-  @SuppressWarnings("unused")
-  private void print(final String txt) throws IOException {
-    this.w.write(txt);
-  }
-
-  private void println(final String txt) throws IOException {
-    this.w.write(txt);
-    println();
-  }
-
-  private void println() throws IOException {
-    this.w.write("\n");
+    w.println();
+    w.println("    return rules;");
+    w.println("  }");
+    w.println();
+    w.println("}");
   }
 
 }

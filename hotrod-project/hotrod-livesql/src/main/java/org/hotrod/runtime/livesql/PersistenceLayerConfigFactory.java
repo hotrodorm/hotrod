@@ -27,15 +27,15 @@ public class PersistenceLayerConfigFactory implements ApplicationContextAware {
     computeValidLayerConfigs();
   }
 
-  Map<String, LayerConfig> configs;
-  private LayerConfig defaultConfig;
+  Map<String, LayerConfigInterface> configs;
+  private LayerConfigInterface defaultConfig;
 
   private void computeValidLayerConfigs() {
-    Map<String, LayerConfig> allConfigBeans = applicationContext
-        .getBeansOfType(LayerConfig.class);
+    Map<String, LayerConfigInterface> allConfigBeans = applicationContext
+        .getBeansOfType(LayerConfigInterface.class);
     this.configs = new HashMap<>();
     this.defaultConfig = null;
-    for (Entry<String, LayerConfig> b : allConfigBeans.entrySet()) {
+    for (Entry<String, LayerConfigInterface> b : allConfigBeans.entrySet()) {
       Component[] ac = b.getValue().getClass().getAnnotationsByType(Component.class);
       if (ac != null && ac.length == 1) {
         this.configs.put(b.getKey(), b.getValue());
@@ -55,7 +55,7 @@ public class PersistenceLayerConfigFactory implements ApplicationContextAware {
 
     } else {
 
-      LayerConfig c = this.configs.get(layerQualifier);
+      LayerConfigInterface c = this.configs.get(layerQualifier);
       if (c == null) {
         throw new RuntimeException("Could not find a persistence layer configuration for qualifier: " + layerQualifier);
       }
