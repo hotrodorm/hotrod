@@ -89,6 +89,7 @@ import org.hotrod.utils.ClassWriter;
 import org.hotrod.utils.GenUtils;
 import org.hotrod.utils.JUtils;
 import org.hotrod.utils.SUtil;
+import org.hotrod.utils.Separator;
 import org.hotrod.utils.ValueTypeFactory;
 import org.hotrod.utils.ValueTypeFactory.ValueTypeManager;
 import org.nocrala.tools.database.tartarus.core.JdbcForeignKey;
@@ -2093,7 +2094,7 @@ public class ObjectDAO extends GeneratableObject {
 
   private void writeQuery(final QueryMethodTag tag) throws IOException {
 
-    w.println("  // update " + tag.getMethod());
+    w.println("  // query " + tag.getMethod());
     w.println();
 
     ParameterRenderer parameterRenderer = new ParameterRenderer() {
@@ -2109,13 +2110,10 @@ public class ObjectDAO extends GeneratableObject {
 
     String methodName = tag.getId().getJavaMemberName();
 
-    ListWriter pdef = new ListWriter(", ");
-    ListWriter pcall = new ListWriter(", ");
-    for (ParameterTag p : tag.getParameterDefinitions()) {
-      pdef.add("final " + p.getJavaType() + " " + p.getName());
-      pcall.add(p.getName());
-    }
-    String paramDef = pdef.toString();
+//    ListWriter pcall = new ListWriter(", ");
+//    for (ParameterTag p : tag.getParameterDefinitions()) {
+//      pcall.add(p.getName());
+//    }
 
     // parameter class
 
@@ -2131,14 +2129,17 @@ public class ObjectDAO extends GeneratableObject {
     // method
 
     w.print("  public int " + methodName + "(");
-    if (!tag.getParameterDefinitions().isEmpty()) {
-      w.print(paramDef);
+    Separator sep = Separator.of(", ");
+    for (ParameterTag p : tag.getParameterDefinitions()) {
+      w.print(sep.render());
+      w.print("final ", ExternalClass.of(p.getJavaType()), " " + p.getName());
     }
     w.println(") {");
     String objName = null;
     if (!tag.getParameterDefinitions().isEmpty()) {
       objName = provideObjectName(tag.getParameterDefinitions());
-      w.println("    " + this.getParamClassName(tag) + " " + objName + " = new " + this.getParamClassName(tag) + "();");
+      ExternalClass ec = ExternalClass.of(this.getParamClassName(tag));
+      w.println("    ", ec, " " + objName + " = new ", ec, "();");
       for (ParameterTag p : tag.getParameterDefinitions()) {
         w.println("    " + objName + "." + p.getName() + " = " + p.getName() + ";");
       }
@@ -2200,17 +2201,15 @@ public class ObjectDAO extends GeneratableObject {
     SelectMethodReturnType rt = sm.getReturnType(this.classPackage);
 
     // render comment
-
-    ParameterRenderer parameterRenderer = new ParameterRenderer() {
-      @Override
-      public String render(final SQLParameter parameter) {
-        return "#{" + parameter.getName() + "}";
-      }
-    };
-    String sentence = sm.renderSQLSentence(parameterRenderer);
-    w.println(renderJavaComment(sentence));
-
-    w.println();
+//    ParameterRenderer parameterRenderer = new ParameterRenderer() {
+//      @Override
+//      public String render(final SQLParameter parameter) {
+//        return "#{" + parameter.getName() + "}";
+//      }
+//    };
+//    String sentence = sm.renderSQLSentence(parameterRenderer);
+//    w.println(renderJavaComment(sentence));
+//    w.println();
 
     String methodName = sm.getMethod();
 
@@ -2240,15 +2239,32 @@ public class ObjectDAO extends GeneratableObject {
 
     // method
 
-    w.print("  public " + rt.getReturnType() + " " + methodName + "(");
-    if (!sm.getParameterDefinitions().isEmpty()) {
-      w.print(paramDef);
+    w.print("  public ");
+    ExternalClass rc = ExternalClass.of(rt.getBaseReturnVOFullClassName());
+    switch (rt.getMode()) {
+    case LIST:
+      w.print(List.class, "<", rc, ">");
+      break;
+    case CURSOR:
+      w.print(Cursor.class, "<", rc, ">");
+      break;
+    default:
+      w.print(rc);
+    }
+    w.print(" " + methodName + "(");
+
+    Separator sep = Separator.of(", ");
+    for (SelectParameterMetadata p : sm.getParameterDefinitions()) {
+      w.print(sep.render());
+      w.print("final ", ExternalClass.of(p.getParameter().getJavaType()), " " + p.getParameter().getName());
     }
     w.println(") {");
+
     String objName = null;
     if (!sm.getParameterDefinitions().isEmpty()) {
       objName = provideParamObjectName(sm.getParameterDefinitions());
-      w.println("    " + this.getParamClassName(sm) + " " + objName + " = new " + this.getParamClassName(sm) + "();");
+      ExternalClass ec = ExternalClass.of(this.getParamClassName(sm));
+      w.println("    ", ec, " " + objName + " = new ", ec, "();");
       for (SelectParameterMetadata p : sm.getParameterDefinitions()) {
         if (!p.getParameter().isInternal()) {
           w.println("    " + objName + "." + p.getParameter().getName() + " = " + p.getParameter().getName() + ";");
@@ -2270,7 +2286,7 @@ public class ObjectDAO extends GeneratableObject {
     w.print("    return ");
 
     if (sm.getResultSetMode() == ResultSetMode.CURSOR) {
-      w.print("    new " + MyBatisCursor.class + "<" + rt.getBaseReturnVOType() + ">(");
+      w.print("    new " + MyBatisCursor.class + "<" + rt.getBaseReturnVOClass() + ">(");
     }
 
     w.print("this.sqlSession." + myBatisSelectMethod + "(\"" + this.mapper.getFullSelectMethodStatementId(sm) + "\"");

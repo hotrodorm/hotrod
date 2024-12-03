@@ -531,7 +531,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
       return this.soloVO != null ? this.soloVO.getClassPackage() : this.connectedVO.getClassPackage();
     }
 
-    public String getBaseReturnVOType() { // AccountPersonVO
+    public String getBaseReturnVOClass() { // AccountPersonVO
       if (this.sm.entityVOs != null) {
         return this.sm.entityVOs.getVo().getClassName();
       }
@@ -541,19 +541,19 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
     public String getReturnType() { // AccountPersonVO, List<AccountPersonVO>, Cursor<AccountPersonVO>
       switch (this.mode) {
       case LIST:
-        return "List<" + getBaseReturnVOType() + ">";
+        return "List<" + getBaseReturnVOClass() + ">";
       case CURSOR:
-        return "Cursor<" + getBaseReturnVOType() + ">";
+        return "Cursor<" + getBaseReturnVOClass() + ">";
       default:
-        return getBaseReturnVOType(); // single-row
+        return getBaseReturnVOClass(); // single-row
       }
     }
 
-    public String getVOFullClassName() { // primitives.accounting.AccountPersonVO
+    public String getBaseReturnVOFullClassName() { // primitives.accounting.AccountPersonVO
       if (this.sm.entityVOs != null) {
         return this.sm.entityVOs.getVo().getFullClassName();
       } else {
-        return this.getReturnVOPackage().getFullClassName(getBaseReturnVOType());
+        return this.getReturnVOPackage().getFullClassName(getBaseReturnVOClass());
       }
     }
 

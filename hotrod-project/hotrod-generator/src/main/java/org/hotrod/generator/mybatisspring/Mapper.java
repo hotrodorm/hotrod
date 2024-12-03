@@ -1130,7 +1130,7 @@ public class Mapper extends GeneratableObject {
 
       SelectMethodReturnType rt = sm.getReturnType(this.layout.getDAOPackage(this.fragmentPackage));
 
-      println("  <resultMap id=\"" + resultMapName + "\" type=\"" + rt.getVOFullClassName() + "\">");
+      println("  <resultMap id=\"" + resultMapName + "\" type=\"" + rt.getBaseReturnVOFullClassName() + "\">");
 
       if (!sm.isStructured()) {
 

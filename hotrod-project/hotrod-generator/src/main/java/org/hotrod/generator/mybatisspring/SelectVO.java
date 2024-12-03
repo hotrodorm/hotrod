@@ -11,6 +11,8 @@ import org.hotrod.generator.NamePackageResolver;
 import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VORegistry.SelectVOClass;
 import org.hotrod.utils.ClassPackage;
+import org.hotrod.utils.ClassWriter;
+import org.hotrod.utils.AbstractClassWriter.ExternalClass;
 
 public class SelectVO {
 
@@ -50,48 +52,41 @@ public class SelectVO {
     File vo = new File(dir, sourceClassName);
     log.fine("vo=" + vo);
     if (!vo.exists()) {
-      TextWriter w = null;
 
-      try {
-        w = fileGenerator.createWriter(vo);
+      try (TextWriter tw = fileGenerator.createWriter(vo)) {
 
-        w.write("package " + this.classPackage.getPackage() + ";\n\n");
-
-        w.write("import " + this.abstractVO.getFullClassName() + ";\n");
-        w.write("import org.springframework.stereotype.Component;\n");
-        w.write("import org.springframework.beans.factory.config.ConfigurableBeanFactory;\n");
-        w.write("import org.springframework.context.annotation.Scope;\n\n");
-
-        w.write("@Component\n");
-        w.write("@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)\n");
-        w.write("public class " + this.className + " extends " + this.abstractVO.getName());
-
-        if (this.soloVO != null && this.soloVO.getImplementClasses() != null) {
-          w.write(" implements " + this.soloVO.getImplementClasses());
-        }
-
-        w.write(" {\n\n");
-
-        w.write("  private static final long serialVersionUID = 1L;\n\n");
-
-        w.write("  // Add custom code below.\n\n");
-
-        w.write("}\n");
+        ClassWriter w = new ClassWriter(this.classPackage);
+        writeBody(w);
+        w.writeTo(tw);
 
       } catch (IOException e) {
         throw new UncontrolledException("Could not generate VO class: could not write to file '" + vo.getName() + "'.",
             e);
-      } finally {
-        if (w != null) {
-          try {
-            w.close();
-          } catch (IOException e) {
-            throw new UncontrolledException("Could not generate VO class: could not close file '" + vo.getName() + "'.",
-                e);
-          }
-        }
       }
+
     }
+  }
+
+  private void writeBody(ClassWriter w) throws IOException {
+    w.println("@", Const.COMPONENT);
+    w.println("@", Const.SCOPE, "(value = ", Const.CONFIGURABLE_BEAN_FACTORY, ".SCOPE_PROTOTYPE)");
+    ExternalClass avo = ExternalClass.of(this.abstractVO.getFullClassName());
+    w.print("public class " + this.className + " extends ", avo);
+
+    if (this.soloVO != null && this.soloVO.getImplementClasses() != null) {
+      w.print(" implements " + this.soloVO.getImplementClasses());
+    }
+
+    w.println(" {");
+    w.println();
+
+    w.println("  private static final long serialVersionUID = 1L;");
+    w.println();
+
+    w.println("  // Add custom code below.");
+    w.println();
+
+    w.println("}");
   }
 
   public String getClassName() {

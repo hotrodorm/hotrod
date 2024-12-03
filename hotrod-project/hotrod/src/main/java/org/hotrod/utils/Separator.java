@@ -15,6 +15,10 @@ public class Separator {
     this.first = true;
   }
 
+  public static Separator of(final String s) {
+    return new Separator(s);
+  }
+
   public String render() {
     if (this.first) {
       this.first = false;
