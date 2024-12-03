@@ -30,6 +30,7 @@ import org.hotrod.runtime.livesql.expressions.aggregations.ByteArrayMax;
 import org.hotrod.runtime.livesql.expressions.aggregations.ByteArrayMin;
 import org.hotrod.runtime.livesql.expressions.aggregations.CountDistinct;
 import org.hotrod.runtime.livesql.expressions.aggregations.CountRows;
+import org.hotrod.runtime.livesql.expressions.aggregations.CountValues;
 import org.hotrod.runtime.livesql.expressions.aggregations.DateTimeMax;
 import org.hotrod.runtime.livesql.expressions.aggregations.DateTimeMin;
 import org.hotrod.runtime.livesql.expressions.aggregations.GroupConcat;
@@ -310,6 +311,10 @@ public class LiveSQL {
 
   public CountRows count() {
     return new CountRows();
+  }
+
+  public CountValues count(final ComparableExpression expression) {
+    return new CountValues(expression);
   }
 
   public CountDistinct countDistinct(final ComparableExpression expression) {
