@@ -2,6 +2,14 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
+## 5.0.0 (unreleased):
+
+- Arquetype module is removed (unused).
+- Log4j fully removed HotRod. The Generator now uses JUL for simplicity.
+- Generated classes don't include unused imports anymore.
+- Packages are changed in the hotrod library. The "runtime" segment is now removed.
+- Removed old unused classes in the hotrod library.
+
 ## 4.8.0:
 
 - LiveSQL:
