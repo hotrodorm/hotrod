@@ -2,60 +2,40 @@
 
 package app.daos.primitives;
 
+import org.springframework.stereotype.Component;
 import java.io.Serializable;
-import java.util.List;
-
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.ibatis.session.SqlSession;
+import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.LiveSQLMapper;
+import org.hotrod.spring.SpringBeanObjectFactory;
+import javax.sql.DataSource;
+import org.springframework.context.ApplicationContext;
+import org.springframework.beans.BeansException;
+import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import javax.annotation.PostConstruct;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
+import java.util.Map;
+import org.hotrod.runtime.livesql.util.CastUtil;
+import java.util.List;
+import org.hotrod.interfaces.DaoWithOrder;
 import org.hotrod.cursors.Cursor;
 import org.hotrod.runtime.livesql.queries.select.MyBatisCursor;
-
-import org.hotrod.interfaces.DaoWithOrder;
-import org.hotrod.interfaces.UpdateByExampleDao;
-import org.hotrod.interfaces.OrderBy;
-
-import app.daos.primitives.AbstractCharsVO;
-import app.daos.CharsVO;
-
-import java.lang.Override;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.spring.SpringBeanObjectFactory;
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
-import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
-import org.hotrod.runtime.livesql.LiveSQLMapper;
-import org.hotrod.runtime.livesql.util.CastUtil;
-import javax.annotation.PostConstruct;
-import javax.sql.DataSource;
-import org.hotrod.runtime.livesql.metadata.Column;
-import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
-
-import org.hotrod.runtime.livesql.metadata.NumberEntityColumn;
-import org.hotrod.runtime.livesql.metadata.StringEntityColumn;
-import org.hotrod.runtime.livesql.metadata.DateTimeEntityColumn;
-import org.hotrod.runtime.livesql.metadata.BooleanEntityColumn;
-import org.hotrod.runtime.livesql.metadata.ByteArrayEntityColumn;
-import org.hotrod.runtime.livesql.metadata.ObjectEntityColumn;
-
-import org.hotrod.runtime.livesql.metadata.Table;
-import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
-import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
-import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
+import org.hotrod.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
+import java.util.HashMap;
+import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
+import org.hotrod.interfaces.OrderBy;
+import org.hotrod.runtime.livesql.metadata.Table;
+import org.hotrod.runtime.livesql.metadata.NumberEntityColumn;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
+import org.hotrod.runtime.livesql.metadata.StringEntityColumn;
+import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.metadata.Name;
-import org.hotrod.runtime.livesql.metadata.View;
-
-import org.hotrod.runtime.livesql.queries.LiveSQLContext;
-import org.springframework.stereotype.Component;
-import org.springframework.beans.BeansException;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 @Component
 public class CharsDAO implements Serializable, ApplicationContextAware {
@@ -433,24 +413,24 @@ public class CharsDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public final NumberEntityColumn id = new NumberEntityColumn(this, "ID", "id", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
-    public final StringEntityColumn vc1 = new StringEntityColumn(this, "VC1", "vc1", "CHARACTER VARYING", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
-    public final StringEntityColumn vc2 = new StringEntityColumn(this, "VC2", "vc2", "CHARACTER VARYING", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
-    public final StringEntityColumn vc3 = new StringEntityColumn(this, "VC3", "vc3", "CHARACTER VARYING", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
-    public final StringEntityColumn vc4 = new StringEntityColumn(this, "VC4", "vc4", "CHARACTER VARYING", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
-    public final StringEntityColumn vc5 = new StringEntityColumn(this, "VC5", "vc5", "CHARACTER VARYING", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
-    public final StringEntityColumn vc6 = new StringEntityColumn(this, "VC6", "vc6", "CHARACTER VARYING", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
-    public final StringEntityColumn vc7 = new StringEntityColumn(this, "VC7", "vc7", "VARCHAR_IGNORECASE", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
-    public final StringEntityColumn cha1 = new StringEntityColumn(this, "CHA1", "cha1", "CHARACTER", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
-    public final StringEntityColumn cha2 = new StringEntityColumn(this, "CHA2", "cha2", "CHARACTER", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
-    public final StringEntityColumn cha3 = new StringEntityColumn(this, "CHA3", "cha3", "CHARACTER", 100, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
-    public final StringEntityColumn clo1 = new StringEntityColumn(this, "CLO1", "clo1", "CHARACTER LARGE OBJECT", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
-    public final StringEntityColumn clo2 = new StringEntityColumn(this, "CLO2", "clo2", "CHARACTER VARYING", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
-    public final StringEntityColumn clo3 = new StringEntityColumn(this, "CLO3", "clo3", "CHARACTER VARYING", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
-    public final StringEntityColumn clo4 = new StringEntityColumn(this, "CLO4", "clo4", "CHARACTER VARYING", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
-    public final StringEntityColumn clo5 = new StringEntityColumn(this, "CLO5", "clo5", "CHARACTER VARYING", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
-    public final StringEntityColumn clo6 = new StringEntityColumn(this, "CLO6", "clo6", "CHARACTER VARYING", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
-    public final StringEntityColumn clo7 = new StringEntityColumn(this, "CLO7", "clo7", "CHARACTER LARGE OBJECT", 1000000, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn id = new NumberEntityColumn(this, "ID", "id", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
+    public final StringEntityColumn vc1 = new StringEntityColumn(this, "VC1", "vc1", "CHARACTER VARYING", 100, 0, TypeHandler.of(String.class, TypeSource.ENTITY_COLUMN));
+    public final StringEntityColumn vc2 = new StringEntityColumn(this, "VC2", "vc2", "CHARACTER VARYING", 100, 0, TypeHandler.of(String.class, TypeSource.ENTITY_COLUMN));
+    public final StringEntityColumn vc3 = new StringEntityColumn(this, "VC3", "vc3", "CHARACTER VARYING", 100, 0, TypeHandler.of(String.class, TypeSource.ENTITY_COLUMN));
+    public final StringEntityColumn vc4 = new StringEntityColumn(this, "VC4", "vc4", "CHARACTER VARYING", 100, 0, TypeHandler.of(String.class, TypeSource.ENTITY_COLUMN));
+    public final StringEntityColumn vc5 = new StringEntityColumn(this, "VC5", "vc5", "CHARACTER VARYING", 100, 0, TypeHandler.of(String.class, TypeSource.ENTITY_COLUMN));
+    public final StringEntityColumn vc6 = new StringEntityColumn(this, "VC6", "vc6", "CHARACTER VARYING", 100, 0, TypeHandler.of(String.class, TypeSource.ENTITY_COLUMN));
+    public final StringEntityColumn vc7 = new StringEntityColumn(this, "VC7", "vc7", "VARCHAR_IGNORECASE", 100, 0, TypeHandler.of(String.class, TypeSource.ENTITY_COLUMN));
+    public final StringEntityColumn cha1 = new StringEntityColumn(this, "CHA1", "cha1", "CHARACTER", 100, 0, TypeHandler.of(String.class, TypeSource.ENTITY_COLUMN));
+    public final StringEntityColumn cha2 = new StringEntityColumn(this, "CHA2", "cha2", "CHARACTER", 100, 0, TypeHandler.of(String.class, TypeSource.ENTITY_COLUMN));
+    public final StringEntityColumn cha3 = new StringEntityColumn(this, "CHA3", "cha3", "CHARACTER", 100, 0, TypeHandler.of(String.class, TypeSource.ENTITY_COLUMN));
+    public final StringEntityColumn clo1 = new StringEntityColumn(this, "CLO1", "clo1", "CHARACTER LARGE OBJECT", 1000000, 0, TypeHandler.of(String.class, TypeSource.ENTITY_COLUMN));
+    public final StringEntityColumn clo2 = new StringEntityColumn(this, "CLO2", "clo2", "CHARACTER VARYING", 1000000, 0, TypeHandler.of(String.class, TypeSource.ENTITY_COLUMN));
+    public final StringEntityColumn clo3 = new StringEntityColumn(this, "CLO3", "clo3", "CHARACTER VARYING", 1000000, 0, TypeHandler.of(String.class, TypeSource.ENTITY_COLUMN));
+    public final StringEntityColumn clo4 = new StringEntityColumn(this, "CLO4", "clo4", "CHARACTER VARYING", 1000000, 0, TypeHandler.of(String.class, TypeSource.ENTITY_COLUMN));
+    public final StringEntityColumn clo5 = new StringEntityColumn(this, "CLO5", "clo5", "CHARACTER VARYING", 1000000, 0, TypeHandler.of(String.class, TypeSource.ENTITY_COLUMN));
+    public final StringEntityColumn clo6 = new StringEntityColumn(this, "CLO6", "clo6", "CHARACTER VARYING", 1000000, 0, TypeHandler.of(String.class, TypeSource.ENTITY_COLUMN));
+    public final StringEntityColumn clo7 = new StringEntityColumn(this, "CLO7", "clo7", "CHARACTER LARGE OBJECT", 1000000, 0, TypeHandler.of(String.class, TypeSource.ENTITY_COLUMN));
 
     // Getters
 

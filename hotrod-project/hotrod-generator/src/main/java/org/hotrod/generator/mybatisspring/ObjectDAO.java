@@ -1,11 +1,9 @@
 package org.hotrod.generator.mybatisspring;
 
-import java.awt.Cursor;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.CallableStatement;
-import java.sql.JDBCType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,6 +19,8 @@ import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import javax.sql.DataSource;
+
 import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.Constants;
 import org.hotrod.config.ConverterTag;
@@ -32,6 +32,8 @@ import org.hotrod.config.QueryMethodTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SelectMethodTag.ResultSetMode;
 import org.hotrod.config.SequenceMethodTag;
+import org.hotrod.converter.TypeConverter;
+import org.hotrod.cursors.Cursor;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
 import org.hotrod.database.PropertyType.ValueRange;
@@ -65,19 +67,21 @@ import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.metadata.BooleanEntityColumn;
 import org.hotrod.runtime.livesql.metadata.ByteArrayEntityColumn;
 import org.hotrod.runtime.livesql.metadata.DateTimeEntityColumn;
+import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.metadata.NumberEntityColumn;
 import org.hotrod.runtime.livesql.metadata.ObjectEntityColumn;
 import org.hotrod.runtime.livesql.metadata.StringEntityColumn;
+import org.hotrod.runtime.livesql.metadata.Table;
+import org.hotrod.runtime.livesql.metadata.View;
 import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.queries.select.MyBatisCursor;
-import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.runtime.livesql.util.CastUtil;
 import org.hotrod.spring.LazyParentClassLoading;
-import org.hotrod.spring.SpringBeanObjectFactory;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.AbstractClassWriter.ExternalClass;
 import org.hotrod.utils.ClassPackage;
@@ -91,8 +95,6 @@ import org.nocrala.tools.database.tartarus.core.JdbcForeignKey;
 import org.nocrala.tools.database.tartarus.core.JdbcKey;
 import org.nocrala.tools.database.tartarus.core.JdbcKeyColumn;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
-
-import ognl.TypeConverter;
 
 public class ObjectDAO extends GeneratableObject {
 
@@ -523,11 +525,11 @@ public class ObjectDAO extends GeneratableObject {
     w.println();
 
     w.println("  @", Const.AUTOWIRED);
-    w.println("  private ", SpringBeanObjectFactory.class, " springBeanObjectFactory;");
+    w.println("  private ", Const.SPRING_BEAN_OBJECT_FACTORY, " springBeanObjectFactory;");
     w.println();
 
     w.println("  @", Const.AUTOWIRED);
-    w.println("  private DataSource dataSource;");
+    w.println("  private ", DataSource.class, " dataSource;");
     w.println();
 
     w.println("  private ", Const.APPLICATION_CONTEXT, " applicationContext;");
@@ -884,6 +886,8 @@ public class ObjectDAO extends GeneratableObject {
               String fromKey = fkm.getLocal().toCamelCase(this.layout.getColumnSeam());
               String fromPhaseClassName = "SelectParent" + vo.getJavaClassIdentifier() + "From" + fromKey + "Phase";
 
+              ExternalClass voc = ExternalClass.of(vo.getFullClassName());
+
               w.println("  public class " + fromPhaseClassName + " {");
               w.println();
               w.println("    private " + voClassName + " vo;");
@@ -904,7 +908,7 @@ public class ObjectDAO extends GeneratableObject {
                     selectMethod = "selectByUI" + fkm2.getRemote().toCamelCase(this.layout.getColumnSeam());
                   }
 
-                  w.println("    public " + vo.getClassName() + " " + toMethod + "() {");
+                  w.println("    public ", voc, " " + toMethod + "() {");
                   String memberPrefix = dao.getClassName().equals(currentDAO.getClassName()) ? ""
                       : (dao.getMemberName() + ".");
                   w.println("      return " + memberPrefix + selectMethod + "(" + params + ");");
@@ -1080,17 +1084,20 @@ public class ObjectDAO extends GeneratableObject {
 
         String selectChildrenPhaseClassName = "SelectChildren" + vo.getJavaClassIdentifier() + "Phase";
 
-        w.println("  public " + selectChildrenPhaseClassName + " selectChildren" + vo.getJavaClassIdentifier()
-            + "Of(final " + this.vo.getClassName() + " vo) {");
+        ExternalClass voc = ExternalClass.of(this.vo.getFullClassName());
+
+        w.println(
+            "  public " + selectChildrenPhaseClassName + " selectChildren" + vo.getJavaClassIdentifier() + "Of(final ",
+            voc, " vo) {");
         w.println("    return new " + selectChildrenPhaseClassName + "(vo);");
         w.println("  }");
         w.println();
 
         w.println("  public class " + selectChildrenPhaseClassName + " {");
         w.println();
-        w.println("    private " + this.vo.getClassName() + " vo;");
+        w.println("    private ", voc, " vo;");
         w.println();
-        w.println("    " + selectChildrenPhaseClassName + "(final " + this.vo.getClassName() + " vo) {");
+        w.println("    " + selectChildrenPhaseClassName + "(final ", voc, " vo) {");
         w.println("      this.vo = vo;");
         w.println("    }");
         w.println();
@@ -1125,9 +1132,9 @@ public class ObjectDAO extends GeneratableObject {
 
             w.println("  public class " + fromPhaseClassName + " {");
             w.println();
-            w.println("    private " + this.vo.getClassName() + " vo;");
+            w.println("    private ", voc, " vo;");
             w.println();
-            w.println("    " + fromPhaseClassName + "(final " + this.vo.getClassName() + " vo) {");
+            w.println("    " + fromPhaseClassName + "(final ", voc, " vo) {");
             w.println("      this.vo = vo;");
             w.println("    }");
             w.println();
@@ -1160,9 +1167,14 @@ public class ObjectDAO extends GeneratableObject {
     String toMethod = (useCursor ? "cursorTo" : "to") + fkm2.getRemote().toCamelCase(dao.layout.getColumnSeam());
 
     Class<?> rt = useCursor ? Cursor.class : List.class;
-    w.println("    public ", rt, "<" + vo.getClassName() + "> " + toMethod + "(final " + vo.getJavaClassIdentifier()
-        + "OrderBy... orderBies) {");
-    w.println("      " + vo.getClassName() + " example = new " + vo.getClassName() + "();");
+
+    ExternalClass voc = ExternalClass.of(vo.getFullClassName());
+//    this.classPackage.getFullClassName(vo.getJavaClassIdentifier() + "OrderBy");
+    ExternalClass obc = ExternalClass.of(dao.getFullClassName() + "." + vo.getJavaClassIdentifier() + "OrderBy");
+
+    w.print("    public ", rt, "<", voc, "> " + toMethod);
+    w.println("(final ", obc, "... orderBies) {");
+    w.println("      ", voc, " example = new ", voc, "();");
 
     Iterator<ColumnMetadata> lit = fkm2.getLocal().getColumns().iterator();
     Iterator<ColumnMetadata> rit = fkm2.getRemote().getColumns().iterator();
@@ -1350,7 +1362,7 @@ public class ObjectDAO extends GeneratableObject {
         }
       }
     } else {
-      w.println("    int rows = this.sqlSession.insert(id, vo);");
+      w.println("    this.sqlSession.insert(id, vo);");
     }
   }
 
@@ -1663,7 +1675,7 @@ public class ObjectDAO extends GeneratableObject {
 
           w.println("  // TypeHandler for enum-FK column " + cm.getName() + ".");
           w.println();
-          w.println("  public static class " + typeHandlerClassName + " implements ", TypeHandler.class,
+          w.println("  public static class " + typeHandlerClassName + " implements ", Const.TYPE_HANDLER,
               "<" + type + "> {");
           w.println();
           w.println("    @", Override.class);
@@ -1702,7 +1714,7 @@ public class ObjectDAO extends GeneratableObject {
           w.println();
           w.println("    @", Override.class);
           w.println("    public void setParameter(final ", PreparedStatement.class,
-              " ps, final int columnIndex, final " + type + " v, final ", JDBCType.class, " jdbcType)");
+              " ps, final int columnIndex, final " + type + " v, final ", Const.JDBC_TYPE, " jdbcType)");
           w.println("        throws ", SQLException.class, " {");
           w.println("      " + ec.getValueColumn().getClassName() + " importedValue = " + type + ".encode(v);");
           w.println("      " + interType + " localValue = "
@@ -1759,7 +1771,7 @@ public class ObjectDAO extends GeneratableObject {
     w.println("  // TypeHandler for " + (property != null ? "property " + property : "column " + cm.getName())
         + " using Converter " + converter + ".");
     w.println();
-    w.println("  public static class " + typeHandlerClassName + " implements ", TypeHandler.class, "<" + type + "> {");
+    w.println("  public static class " + typeHandlerClassName + " implements ", Const.TYPE_HANDLER, "<" + type + "> {");
     w.println();
     w.println("    private static final ", TypeConverter.class,
         "<" + interType + ", " + type + "> CONVERTER = new " + converter + "();");
@@ -1796,7 +1808,7 @@ public class ObjectDAO extends GeneratableObject {
     w.println();
     w.println("    @", Override.class);
     w.println("    public void setParameter(final ", PreparedStatement.class,
-        " ps, final int columnIndex, final " + type + " value, final ", JDBCType.class, " jdbcType)");
+        " ps, final int columnIndex, final " + type + " value, final ", Const.JDBC_TYPE, " jdbcType)");
     w.println("        throws ", SQLException.class, " {");
     w.println("      " + interType + " raw = CONVERTER.encode(value, ps.getConnection());");
     w.println("      if (raw == null) {");
@@ -1876,7 +1888,8 @@ public class ObjectDAO extends GeneratableObject {
 
   private void writeMetadata() throws IOException {
 
-    String type = this.isTable() ? "Table" : "View";
+    String typeName = this.isTable() ? "Table" : "View";
+    Class<?> type = this.isTable() ? Table.class : View.class;
 
     Id catalog = this.metadata.getId().getCatalog();
     Id schema = this.metadata.getId().getSchema();
@@ -1884,45 +1897,44 @@ public class ObjectDAO extends GeneratableObject {
 
 //    String name = this.metadata.getId().getCanonicalSQLName();
 
-    w.println("  // Database " + type + " metadata");
+    w.println("  // Database " + typeName + " metadata");
     w.println();
-    w.println("  public static " + this.metadataClassName + " new" + type + "() {");
+    w.println("  public static " + this.metadataClassName + " new" + typeName + "() {");
     w.println("    return new " + this.metadataClassName + "();");
     w.println("  }");
     w.println();
-    w.println("  public static " + this.metadataClassName + " new" + type + "(final String alias) {");
+    w.println("  public static " + this.metadataClassName + " new" + typeName + "(final String alias) {");
     w.println("    return new " + this.metadataClassName + "(alias);");
     w.println("  }");
     w.println();
 
-    w.println("  public static class " + this.metadataClassName + " extends " + type + " {");
+    w.println("  public static class " + this.metadataClassName + " extends ", type, " {");
     w.println();
 
     w.println("    // Properties");
     w.println();
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String javaType = resolveType(cm);
-      String liveSQLColumnType = toLiveSQLType(javaType);
+      Class<?> liveSQLColumnType = toLiveSQLType(javaType);
       String javaMembername = cm.getId().getJavaMemberName();
       String colName = cm.getId().getCanonicalSQLName();
       String property = cm.getId().getJavaMemberName();
-      String javaConverterClass = null;
+      ExternalClass c = null;
 
-      String th;
       if (cm.getConverter() != null) {
-        javaConverterClass = cm.getConverter().getJavaClass();
-        th = TypeHandler.class.getName() + ".of(" + javaConverterClass + ".class, TypeSource.ENTITY_COLUMN)";
+        c = ExternalClass.of(cm.getConverter().getJavaClass());
       } else {
-        th = TypeHandler.class.getName() + ".of(" + javaType + ".class, TypeSource.ENTITY_COLUMN)";
+        c = ExternalClass.of(javaType);
       }
 
-      w.println("    public final " + liveSQLColumnType + " " + javaMembername + " = new " + liveSQLColumnType + "(this" //
+      w.print("    public final ", liveSQLColumnType, " " + javaMembername + " = new ", liveSQLColumnType, "(this" //
           + ", \"" + JUtils.escapeJavaString(colName) + "\"" //
           + ", \"" + JUtils.escapeJavaString(property) + "\"" //
           + ", \"" + JUtils.escapeJavaString(cm.getTypeName()) + "\"" //
           + ", " + cm.getPrecision() + "" //
-          + ", " + cm.getScale() + "" //
-          + ", " + th + ");");
+          + ", " + cm.getScale() + "");
+      w.print(", ", Const.HOTROD_TYPE_HANDLER, ".of(", c);
+      w.println(".class, ", TypeSource.class, ".ENTITY_COLUMN));");
     }
     w.println();
 
@@ -1935,21 +1947,45 @@ public class ObjectDAO extends GeneratableObject {
     w.println("    }");
     w.println();
 
-    String c = catalog == null ? "null"
-        : "Name.of(\"" + JUtils.escapeJavaString(catalog.getCanonicalSQLName()) + "\", " + catalog.isQuoted() + ")";
-    String s = schema == null ? "null"
-        : "Name.of(\"" + JUtils.escapeJavaString(schema.getCanonicalSQLName()) + "\", " + schema.isQuoted() + ")";
-    String n = "Name.of(\"" + JUtils.escapeJavaString(name.getCanonicalSQLName()) + "\", " + name.isQuoted() + ")";
-
     w.println("    // Constructors");
     w.println();
     w.println("    " + this.metadataClassName + "() {");
-    w.println("      super(" + c + ", " + s + ", " + n + ", \"" + type + "\", null);");
+    w.print("      super(");
+    if (catalog == null) {
+      w.print("null");
+    } else {
+      w.print(Name.class,
+          ".of(\"" + JUtils.escapeJavaString(catalog.getCanonicalSQLName()) + "\", " + catalog.isQuoted() + ")");
+    }
+    w.print(", ");
+    if (schema == null) {
+      w.print("null");
+    } else {
+      w.print(Name.class,
+          ".of(\"" + JUtils.escapeJavaString(schema.getCanonicalSQLName()) + "\", " + schema.isQuoted() + ")");
+    }
+    w.println(", ", Name.class, ".of(\"" + JUtils.escapeJavaString(name.getCanonicalSQLName()) + "\", "
+        + name.isQuoted() + "), \"" + typeName + "\", null);");
     w.println("      initializeColumns();");
     w.println("    }");
     w.println();
     w.println("    " + this.metadataClassName + "(final String alias) {");
-    w.println("      super(" + c + ", " + s + ", " + n + ", \"" + type + "\", alias);");
+    w.print("      super(");
+    if (catalog == null) {
+      w.print("null");
+    } else {
+      w.print(Name.class,
+          ".of(\"" + JUtils.escapeJavaString(catalog.getCanonicalSQLName()) + "\", " + catalog.isQuoted() + ")");
+    }
+    w.print(", ");
+    if (schema == null) {
+      w.print("null");
+    } else {
+      w.print(Name.class,
+          ".of(\"" + JUtils.escapeJavaString(schema.getCanonicalSQLName()) + "\", " + schema.isQuoted() + ")");
+    }
+    w.println(", ", Name.class, ".of(\"" + JUtils.escapeJavaString(name.getCanonicalSQLName()) + "\", "
+        + name.isQuoted() + "), \"" + typeName + "\", alias);");
     w.println("      initializeColumns();");
     w.println("    }");
     w.println();
@@ -2002,7 +2038,7 @@ public class ObjectDAO extends GeneratableObject {
     return ec != null ? ec.getFullClassName() : cm.getType().getJavaClassName();
   }
 
-  private String toLiveSQLType(final String javaType) {
+  private Class<?> toLiveSQLType(final String javaType) {
     if ("java.lang.Byte".equals(javaType) //
         || "java.lang.Short".equals(javaType) //
         || "java.lang.Integer".equals(javaType) //
@@ -2012,9 +2048,9 @@ public class ObjectDAO extends GeneratableObject {
         || "java.math.BigInteger".equals(javaType) //
         || "java.math.BigDecimal".equals(javaType) //
     ) {
-      return NumberEntityColumn.class.getSimpleName();
+      return NumberEntityColumn.class;
     } else if ("java.lang.String".equals(javaType)) {
-      return StringEntityColumn.class.getSimpleName();
+      return StringEntityColumn.class;
     } else if ("java.util.Date".equals(javaType) //
         || "java.sql.Date".equals(javaType) //
         || "java.sql.Timestamp".equals(javaType) //
@@ -2027,17 +2063,17 @@ public class ObjectDAO extends GeneratableObject {
         || "java.time.OffsetTime".equals(javaType) //
         || "java.time.Instant".equals(javaType) //
     ) {
-      return DateTimeEntityColumn.class.getSimpleName();
+      return DateTimeEntityColumn.class;
     } else if ("java.lang.Boolean".equals(javaType)) {
-      return BooleanEntityColumn.class.getSimpleName();
+      return BooleanEntityColumn.class;
     } else if ("byte[]".equals(javaType)) {
-      return ByteArrayEntityColumn.class.getSimpleName();
+      return ByteArrayEntityColumn.class;
     }
 
     // byte[]
     // java.lang.Object
     // <Custom Converter>
-    return ObjectEntityColumn.class.getSimpleName();
+    return ObjectEntityColumn.class;
   }
 
   private void writeSelectSequence(final SequenceMethodTag tag) throws IOException, SequencesNotSupportedException {
@@ -2234,9 +2270,7 @@ public class ObjectDAO extends GeneratableObject {
     w.print("    return ");
 
     if (sm.getResultSetMode() == ResultSetMode.CURSOR) {
-      w.print("    new "
-          + MyBatisCursor.class
-          + "<" + rt.getBaseReturnVOType() + ">(");
+      w.print("    new " + MyBatisCursor.class + "<" + rt.getBaseReturnVOType() + ">(");
     }
 
     w.print("this.sqlSession." + myBatisSelectMethod + "(\"" + this.mapper.getFullSelectMethodStatementId(sm) + "\"");

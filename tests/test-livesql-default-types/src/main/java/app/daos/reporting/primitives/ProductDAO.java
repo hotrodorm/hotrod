@@ -2,60 +2,40 @@
 
 package app.daos.reporting.primitives;
 
+import org.springframework.stereotype.Component;
 import java.io.Serializable;
-import java.util.List;
-
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.ibatis.session.SqlSession;
+import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.LiveSQLMapper;
+import org.hotrod.spring.SpringBeanObjectFactory;
+import javax.sql.DataSource;
+import org.springframework.context.ApplicationContext;
+import org.springframework.beans.BeansException;
+import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import javax.annotation.PostConstruct;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
+import java.util.Map;
+import org.hotrod.runtime.livesql.util.CastUtil;
+import java.util.List;
+import org.hotrod.interfaces.DaoWithOrder;
 import org.hotrod.cursors.Cursor;
 import org.hotrod.runtime.livesql.queries.select.MyBatisCursor;
-
-import org.hotrod.interfaces.DaoWithOrder;
-import org.hotrod.interfaces.UpdateByExampleDao;
-import org.hotrod.interfaces.OrderBy;
-
-import app.daos.reporting.primitives.AbstractProductVO;
-import app.daos.reporting.ProductVO;
-
-import java.lang.Override;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.spring.SpringBeanObjectFactory;
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
-import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
-import org.hotrod.runtime.livesql.LiveSQLMapper;
-import org.hotrod.runtime.livesql.util.CastUtil;
-import javax.annotation.PostConstruct;
-import javax.sql.DataSource;
-import org.hotrod.runtime.livesql.metadata.Column;
-import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
-
-import org.hotrod.runtime.livesql.metadata.NumberEntityColumn;
-import org.hotrod.runtime.livesql.metadata.StringEntityColumn;
-import org.hotrod.runtime.livesql.metadata.DateTimeEntityColumn;
-import org.hotrod.runtime.livesql.metadata.BooleanEntityColumn;
-import org.hotrod.runtime.livesql.metadata.ByteArrayEntityColumn;
-import org.hotrod.runtime.livesql.metadata.ObjectEntityColumn;
-
-import org.hotrod.runtime.livesql.metadata.Table;
-import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
-import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
-import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
+import org.hotrod.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
+import java.util.HashMap;
+import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
+import org.hotrod.interfaces.OrderBy;
+import org.hotrod.runtime.livesql.metadata.Table;
+import org.hotrod.runtime.livesql.metadata.NumberEntityColumn;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
+import org.hotrod.runtime.livesql.metadata.StringEntityColumn;
+import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.metadata.Name;
-import org.hotrod.runtime.livesql.metadata.View;
-
-import org.hotrod.runtime.livesql.queries.LiveSQLContext;
-import org.springframework.stereotype.Component;
-import org.springframework.beans.BeansException;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 @Component
 public class ProductDAO implements Serializable, ApplicationContextAware {
@@ -247,9 +227,9 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public final NumberEntityColumn id = new NumberEntityColumn(this, "ID", "id", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
-    public final StringEntityColumn type = new StringEntityColumn(this, "TYPE", "type", "CHARACTER VARYING", 6, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.String.class, TypeSource.ENTITY_COLUMN));
-    public final NumberEntityColumn shipping = new NumberEntityColumn(this, "SHIPPING", "shipping", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn id = new NumberEntityColumn(this, "ID", "id", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
+    public final StringEntityColumn type = new StringEntityColumn(this, "TYPE", "type", "CHARACTER VARYING", 6, 0, TypeHandler.of(String.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn shipping = new NumberEntityColumn(this, "SHIPPING", "shipping", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
 
     // Getters
 

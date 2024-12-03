@@ -42,8 +42,6 @@ import app.daos.primitives.BranchDAO.BranchTable;
 import app.daos.reporting.InvoiceVO;
 import app.daos.reporting.primitives.InvoiceDAO;
 import app.daos.reporting.primitives.InvoiceDAO.InvoiceTable;
-import app.daos.test2.FindTareasPorFiltroVO;
-import app.daos.test2.primitives.BuscadorDAO;
 
 @Configuration
 @SpringBootApplication
@@ -82,8 +80,8 @@ public class App {
   @Autowired
   private BusinessLogic businessLogic;
 
-  @Autowired
-  private BuscadorDAO buscador;
+//  @Autowired
+//  private BuscadorDAO buscador;
 
   @Autowired
   private Torcs torcs;
@@ -190,13 +188,13 @@ public class App {
 //    selectFK();
   }
 
-  private void test2() {
-    System.out.println("Will call find...");
-    Long idArea = 10L;
-    Long idSector = 20L;
-    List<FindTareasPorFiltroVO> tareas = this.buscador.findTareasPorFiltro(idArea, idSector);
-
-  }
+//  private void test2() {
+//    System.out.println("Will call find...");
+//    Long idArea = 10L;
+//    Long idSector = 20L;
+//    List<FindTareasPorFiltroVO> tareas = this.buscador.findTareasPorFiltro(idArea, idSector);
+//
+//  }
 
   private void locking() {
 
@@ -268,14 +266,11 @@ public class App {
 //        .from(b);
 //    Select<Row> q = this.sql.select().from(b);
 
-    Select<Row> q = this.sql
-        .select( //
-            b.star(), // 
-            sql.val(3).mult(7).as("n"), //
-            sql.currentDateTime().as("dt").type(LocalDateTime.class),
-            sql.val("abc").as("a").type(String.class),
-            b.region.as("aa")
-            ).from(b);
+    Select<Row> q = this.sql.select( //
+        b.star(), //
+        sql.val(3).mult(7).as("n"), //
+        sql.currentDateTime().as("dt").type(LocalDateTime.class), sql.val("abc").as("a").type(String.class),
+        b.region.as("aa")).from(b);
 
 //    log.info("** S2 **");
 

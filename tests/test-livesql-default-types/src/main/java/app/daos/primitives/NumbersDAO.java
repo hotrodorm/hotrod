@@ -2,60 +2,41 @@
 
 package app.daos.primitives;
 
+import org.springframework.stereotype.Component;
 import java.io.Serializable;
-import java.util.List;
-
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.ibatis.session.SqlSession;
+import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.LiveSQLMapper;
+import org.hotrod.spring.SpringBeanObjectFactory;
+import javax.sql.DataSource;
+import org.springframework.context.ApplicationContext;
+import org.springframework.beans.BeansException;
+import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import javax.annotation.PostConstruct;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
+import java.util.Map;
+import org.hotrod.runtime.livesql.util.CastUtil;
+import java.util.List;
+import org.hotrod.interfaces.DaoWithOrder;
 import org.hotrod.cursors.Cursor;
 import org.hotrod.runtime.livesql.queries.select.MyBatisCursor;
-
-import org.hotrod.interfaces.DaoWithOrder;
-import org.hotrod.interfaces.UpdateByExampleDao;
-import org.hotrod.interfaces.OrderBy;
-
-import app.daos.primitives.AbstractNumbersVO;
-import app.daos.NumbersVO;
-
-import java.lang.Override;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.spring.SpringBeanObjectFactory;
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
-import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
-import org.hotrod.runtime.livesql.LiveSQLMapper;
-import org.hotrod.runtime.livesql.util.CastUtil;
-import javax.annotation.PostConstruct;
-import javax.sql.DataSource;
-import org.hotrod.runtime.livesql.metadata.Column;
-import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
-
-import org.hotrod.runtime.livesql.metadata.NumberEntityColumn;
-import org.hotrod.runtime.livesql.metadata.StringEntityColumn;
-import org.hotrod.runtime.livesql.metadata.DateTimeEntityColumn;
-import org.hotrod.runtime.livesql.metadata.BooleanEntityColumn;
-import org.hotrod.runtime.livesql.metadata.ByteArrayEntityColumn;
-import org.hotrod.runtime.livesql.metadata.ObjectEntityColumn;
-
-import org.hotrod.runtime.livesql.metadata.Table;
-import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
-import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
-import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
+import org.hotrod.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
+import java.util.HashMap;
+import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
+import org.hotrod.interfaces.OrderBy;
+import org.hotrod.runtime.livesql.metadata.Table;
+import org.hotrod.runtime.livesql.metadata.NumberEntityColumn;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
+import java.math.BigDecimal;
+import org.hotrod.runtime.livesql.metadata.ObjectEntityColumn;
+import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.metadata.Name;
-import org.hotrod.runtime.livesql.metadata.View;
-
-import org.hotrod.runtime.livesql.queries.LiveSQLContext;
-import org.springframework.stereotype.Component;
-import org.springframework.beans.BeansException;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 @Component
 public class NumbersDAO implements Serializable, ApplicationContextAware {
@@ -357,28 +338,28 @@ public class NumbersDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public final NumberEntityColumn id = new NumberEntityColumn(this, "ID", "id", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
-    public final NumberEntityColumn int1 = new NumberEntityColumn(this, "INT1", "int1", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
-    public final NumberEntityColumn int2 = new NumberEntityColumn(this, "INT2", "int2", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
-    public final NumberEntityColumn int3 = new NumberEntityColumn(this, "INT3", "int3", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
-    public final NumberEntityColumn int4 = new NumberEntityColumn(this, "INT4", "int4", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
-    public final NumberEntityColumn int5 = new NumberEntityColumn(this, "INT5", "int5", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
-    public final NumberEntityColumn int10 = new NumberEntityColumn(this, "INT10", "int10", "TINYINT", 8, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Byte.class, TypeSource.ENTITY_COLUMN));
-    public final NumberEntityColumn int20 = new NumberEntityColumn(this, "INT20", "int20", "SMALLINT", 16, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Short.class, TypeSource.ENTITY_COLUMN));
-    public final NumberEntityColumn int21 = new NumberEntityColumn(this, "INT21", "int21", "SMALLINT", 16, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Short.class, TypeSource.ENTITY_COLUMN));
-    public final NumberEntityColumn int30 = new NumberEntityColumn(this, "INT30", "int30", "BIGINT", 64, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Long.class, TypeSource.ENTITY_COLUMN));
-    public final NumberEntityColumn int31 = new NumberEntityColumn(this, "INT31", "int31", "BIGINT", 64, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Long.class, TypeSource.ENTITY_COLUMN));
-    public final NumberEntityColumn dec1 = new NumberEntityColumn(this, "DEC1", "dec1", "DECIMAL", 10, 2, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.math.BigDecimal.class, TypeSource.ENTITY_COLUMN));
-    public final NumberEntityColumn dec2 = new NumberEntityColumn(this, "DEC2", "dec2", "DECIMAL", 19, 4, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.math.BigDecimal.class, TypeSource.ENTITY_COLUMN));
-    public final ObjectEntityColumn dec3 = new ObjectEntityColumn(this, "DEC3", "dec3", "NUMERIC", 10, 2, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Object.class, TypeSource.ENTITY_COLUMN));
-    public final ObjectEntityColumn dec4 = new ObjectEntityColumn(this, "DEC4", "dec4", "NUMERIC", 10, 2, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Object.class, TypeSource.ENTITY_COLUMN));
-    public final NumberEntityColumn dec5 = new NumberEntityColumn(this, "DEC5", "dec5", "DECIMAL", 10, 2, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.math.BigDecimal.class, TypeSource.ENTITY_COLUMN));
-    public final NumberEntityColumn dou1 = new NumberEntityColumn(this, "DOU1", "dou1", "DOUBLE PRECISION", 53, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Double.class, TypeSource.ENTITY_COLUMN));
-    public final NumberEntityColumn dou2 = new NumberEntityColumn(this, "DOU2", "dou2", "DOUBLE PRECISION", 53, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Double.class, TypeSource.ENTITY_COLUMN));
-    public final ObjectEntityColumn dou3 = new ObjectEntityColumn(this, "DOU3", "dou3", "DOUBLE PRECISION", 53, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Object.class, TypeSource.ENTITY_COLUMN));
-    public final NumberEntityColumn dou4 = new NumberEntityColumn(this, "DOU4", "dou4", "DOUBLE PRECISION", 53, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Double.class, TypeSource.ENTITY_COLUMN));
-    public final NumberEntityColumn rea1 = new NumberEntityColumn(this, "REA1", "rea1", "REAL", 24, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Float.class, TypeSource.ENTITY_COLUMN));
-    public final NumberEntityColumn rea2 = new NumberEntityColumn(this, "REA2", "rea2", "REAL", 24, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Float.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn id = new NumberEntityColumn(this, "ID", "id", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn int1 = new NumberEntityColumn(this, "INT1", "int1", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn int2 = new NumberEntityColumn(this, "INT2", "int2", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn int3 = new NumberEntityColumn(this, "INT3", "int3", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn int4 = new NumberEntityColumn(this, "INT4", "int4", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn int5 = new NumberEntityColumn(this, "INT5", "int5", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn int10 = new NumberEntityColumn(this, "INT10", "int10", "TINYINT", 8, 0, TypeHandler.of(Byte.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn int20 = new NumberEntityColumn(this, "INT20", "int20", "SMALLINT", 16, 0, TypeHandler.of(Short.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn int21 = new NumberEntityColumn(this, "INT21", "int21", "SMALLINT", 16, 0, TypeHandler.of(Short.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn int30 = new NumberEntityColumn(this, "INT30", "int30", "BIGINT", 64, 0, TypeHandler.of(Long.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn int31 = new NumberEntityColumn(this, "INT31", "int31", "BIGINT", 64, 0, TypeHandler.of(Long.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn dec1 = new NumberEntityColumn(this, "DEC1", "dec1", "DECIMAL", 10, 2, TypeHandler.of(BigDecimal.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn dec2 = new NumberEntityColumn(this, "DEC2", "dec2", "DECIMAL", 19, 4, TypeHandler.of(BigDecimal.class, TypeSource.ENTITY_COLUMN));
+    public final ObjectEntityColumn dec3 = new ObjectEntityColumn(this, "DEC3", "dec3", "NUMERIC", 10, 2, TypeHandler.of(Object.class, TypeSource.ENTITY_COLUMN));
+    public final ObjectEntityColumn dec4 = new ObjectEntityColumn(this, "DEC4", "dec4", "NUMERIC", 10, 2, TypeHandler.of(Object.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn dec5 = new NumberEntityColumn(this, "DEC5", "dec5", "DECIMAL", 10, 2, TypeHandler.of(BigDecimal.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn dou1 = new NumberEntityColumn(this, "DOU1", "dou1", "DOUBLE PRECISION", 53, 0, TypeHandler.of(Double.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn dou2 = new NumberEntityColumn(this, "DOU2", "dou2", "DOUBLE PRECISION", 53, 0, TypeHandler.of(Double.class, TypeSource.ENTITY_COLUMN));
+    public final ObjectEntityColumn dou3 = new ObjectEntityColumn(this, "DOU3", "dou3", "DOUBLE PRECISION", 53, 0, TypeHandler.of(Object.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn dou4 = new NumberEntityColumn(this, "DOU4", "dou4", "DOUBLE PRECISION", 53, 0, TypeHandler.of(Double.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn rea1 = new NumberEntityColumn(this, "REA1", "rea1", "REAL", 24, 0, TypeHandler.of(Float.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn rea2 = new NumberEntityColumn(this, "REA2", "rea2", "REAL", 24, 0, TypeHandler.of(Float.class, TypeSource.ENTITY_COLUMN));
 
     // Getters
 

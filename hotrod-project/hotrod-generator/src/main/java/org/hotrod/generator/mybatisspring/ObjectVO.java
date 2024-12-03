@@ -129,6 +129,10 @@ public class ObjectVO extends GeneratableObject {
   public String getFullClassName() {
     return this.classPackage.getFullClassName(this.getClassName());
   }
+  
+  public ClassPackage getClassPackage() {
+    return this.classPackage;
+  }
 
   public String getJavaClassIdentifier() {
     return this.metadata.getId().getJavaClassName();

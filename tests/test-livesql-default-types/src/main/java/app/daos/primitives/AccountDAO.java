@@ -2,64 +2,42 @@
 
 package app.daos.primitives;
 
+import org.springframework.stereotype.Component;
 import java.io.Serializable;
-import java.util.List;
-
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.ibatis.session.SqlSession;
+import org.springframework.context.annotation.Lazy;
+import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.LiveSQLMapper;
+import org.hotrod.spring.SpringBeanObjectFactory;
+import javax.sql.DataSource;
+import org.springframework.context.ApplicationContext;
+import org.springframework.beans.BeansException;
+import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import javax.annotation.PostConstruct;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
+import java.util.Map;
+import org.hotrod.runtime.livesql.util.CastUtil;
+import java.util.List;
+import org.hotrod.interfaces.DaoWithOrder;
 import org.hotrod.cursors.Cursor;
 import org.hotrod.runtime.livesql.queries.select.MyBatisCursor;
-
-import org.hotrod.interfaces.DaoWithOrder;
-import org.hotrod.interfaces.UpdateByExampleDao;
-import org.hotrod.interfaces.OrderBy;
-
-import app.daos.primitives.AbstractAccountVO;
-import app.daos.AccountVO;
-import app.daos.BranchVO;
-import app.daos.primitives.BranchDAO;
-import app.daos.primitives.AccountDAO;
-import app.daos.primitives.AccountDAO.AccountOrderBy;
-
-import java.lang.Override;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.spring.SpringBeanObjectFactory;
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
-import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
-import org.hotrod.runtime.livesql.LiveSQLMapper;
-import org.hotrod.runtime.livesql.util.CastUtil;
-import javax.annotation.PostConstruct;
-import javax.sql.DataSource;
-import org.hotrod.runtime.livesql.metadata.Column;
-import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
-
-import org.hotrod.runtime.livesql.metadata.NumberEntityColumn;
-import org.hotrod.runtime.livesql.metadata.StringEntityColumn;
-import org.hotrod.runtime.livesql.metadata.DateTimeEntityColumn;
-import org.hotrod.runtime.livesql.metadata.BooleanEntityColumn;
-import org.hotrod.runtime.livesql.metadata.ByteArrayEntityColumn;
-import org.hotrod.runtime.livesql.metadata.ObjectEntityColumn;
-
-import org.hotrod.runtime.livesql.metadata.Table;
-import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
-import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
-import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
+import app.daos.BranchVO;
+import app.daos.AccountVO;
+import org.hotrod.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
+import java.util.HashMap;
+import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
+import org.hotrod.interfaces.OrderBy;
+import org.hotrod.runtime.livesql.metadata.Table;
+import org.hotrod.runtime.livesql.metadata.NumberEntityColumn;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
+import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.metadata.Name;
-import org.hotrod.runtime.livesql.metadata.View;
-
-import org.hotrod.runtime.livesql.queries.LiveSQLContext;
-import org.springframework.stereotype.Component;
-import org.springframework.beans.BeansException;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 @Component
 public class AccountDAO implements Serializable, ApplicationContextAware {
@@ -250,13 +228,13 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       this.vo = vo;
     }
 
-    public List<AccountVO> toParentId(final AccountOrderBy... orderBies) {
+    public List<AccountVO> toParentId(final app.daos.primitives.AccountDAO.AccountOrderBy... orderBies) {
       AccountVO example = new AccountVO();
       example.setParentId(this.vo.getId());
       return select(example, orderBies);
     }
 
-    public Cursor<AccountVO> cursorToParentId(final AccountOrderBy... orderBies) {
+    public Cursor<AccountVO> cursorToParentId(final app.daos.primitives.AccountDAO.AccountOrderBy... orderBies) {
       AccountVO example = new AccountVO();
       example.setParentId(this.vo.getId());
       return selectCursor(example, orderBies);
@@ -374,9 +352,9 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public final NumberEntityColumn id = new NumberEntityColumn(this, "ID", "id", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
-    public final NumberEntityColumn parentId = new NumberEntityColumn(this, "PARENT_ID", "parentId", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
-    public final NumberEntityColumn branchId = new NumberEntityColumn(this, "BRANCH_ID", "branchId", "INTEGER", 32, 0, org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.of(java.lang.Integer.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn id = new NumberEntityColumn(this, "ID", "id", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn parentId = new NumberEntityColumn(this, "PARENT_ID", "parentId", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn branchId = new NumberEntityColumn(this, "BRANCH_ID", "branchId", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
 
     // Getters
 

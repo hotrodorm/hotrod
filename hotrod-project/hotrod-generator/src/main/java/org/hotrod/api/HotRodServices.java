@@ -53,7 +53,7 @@ public class HotRodServices {
   public void generate(final Feedback feedback) throws Exception {
     log.fine("init");
 
-    feedback.info(Constants.TOOL_NAME + " version " + BuildInformation.VERSION + " (build " + BuildInformation.BUILD_ID
+    feedback.info(Constants.TOOL_NAME + " Generator version " + BuildInformation.VERSION + " (build " + BuildInformation.BUILD_ID
         + ") - Generate");
 
     try {
