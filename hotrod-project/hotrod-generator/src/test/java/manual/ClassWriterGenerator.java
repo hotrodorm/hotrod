@@ -125,7 +125,7 @@ public class ClassWriterGenerator {
 
     @Override
     public String renderLines() {
-      return "    this.segments.add(registerClass(ParsedClass.of(" + name + ")));";
+      return "    this.segments.add(registerClass(ExternalClass.of(" + name + ")));";
     }
 
   }
@@ -148,7 +148,7 @@ public class ClassWriterGenerator {
 
     @Override
     public String renderLines() {
-      return "    this.segments.add(registerClass(ParsedClass.of(" + name + ".getCanonicalName())));";
+      return "    this.segments.add(registerClass(" + name + "));";
     }
 
   }

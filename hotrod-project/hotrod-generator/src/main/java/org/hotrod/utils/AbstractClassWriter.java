@@ -57,7 +57,7 @@ public class AbstractClassWriter {
 
   }
 
-  protected String registerClass(final ParsedClass pc) {
+  protected String registerClass(final ExternalClass pc) {
     if (pc.getImportName().startsWith("java.lang.") || isPrimitive(pc.getBaseClass())) {
       // skip registering
       return pc.getShortCodeName();
@@ -95,24 +95,6 @@ public class AbstractClassWriter {
 
   public static class ExternalClass {
 
-    private String canonicalName;
-
-    private ExternalClass(String canonicalName) {
-      this.canonicalName = canonicalName;
-    }
-
-    public static ExternalClass of(String canonicalName) {
-      return new ExternalClass(canonicalName);
-    }
-
-    public String getCanonicalName() {
-      return canonicalName;
-    }
-
-  }
-
-  public static class ParsedClass {
-
     private String original;
     private String generics;
     private String arrays;
@@ -121,15 +103,15 @@ public class AbstractClassWriter {
     private String shortCodeName;
     private String longCodeName;
 
-    public static ParsedClass of(String c) {
-      return new ParsedClass(c);
+    public static ExternalClass of(String c) {
+      return new ExternalClass(c);
     }
 
-    public static ParsedClass of(Class<?> c) {
-      return new ParsedClass(c.getCanonicalName());
+    public static ExternalClass of(Class<?> c) {
+      return new ExternalClass(c.getCanonicalName());
     }
 
-    private ParsedClass(String c) {
+    private ExternalClass(String c) {
       this.original = c;
 
       String gfree;
