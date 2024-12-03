@@ -2,6 +2,7 @@ package org.hotrod.utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,16 +44,57 @@ public class AbstractClassWriter {
 
     w.write("package " + this.classPackage.getPackage() + ";\n\n");
 
+    ImportSorter is = new ImportSorter();
     for (String i : this.importCode.keySet()) {
       String code = this.importCode.get(i);
       if (!i.equals(code)) {
-        w.write("import " + i + ";\n");
+        is.register(i);
       }
     }
-    w.write("\n");
+    is.writeTo(w);
 
     for (String s : this.segments) {
       w.write(s);
+    }
+
+  }
+
+  private class ImportSorter {
+
+    private List<String> java = new ArrayList<>();
+    private List<String> javax = new ArrayList<>();
+    private List<String> org = new ArrayList<>();
+    private List<String> other = new ArrayList<>();
+
+    public void register(final String c) {
+      if (c == null) {
+        return;
+      } else if (c.startsWith("java.")) {
+        this.java.add(c);
+      } else if (c.startsWith("javax.")) {
+        this.javax.add(c);
+      } else if (c.startsWith("org.")) {
+        this.org.add(c);
+      } else {
+        this.other.add(c);
+      }
+    }
+
+    public void writeTo(final TextWriter w) throws IOException {
+      this.writeListTo(this.java, w);
+      this.writeListTo(this.javax, w);
+      this.writeListTo(this.org, w);
+      this.writeListTo(this.other, w);
+    }
+
+    private void writeListTo(final List<String> list, final TextWriter w) throws IOException {
+      if (!list.isEmpty()) {
+        Collections.sort(list);
+        for (String i : list) {
+          w.write("import " + i + ";\n");
+        }
+        w.write("\n");
+      }
     }
 
   }
