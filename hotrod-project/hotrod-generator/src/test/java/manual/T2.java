@@ -32,6 +32,8 @@ public class T2 {
   }
 
   private static void writeBody(ClassWriter w) {
+    
+    
 
     w.print("public class VO1 {\n");
 
@@ -44,11 +46,11 @@ public class T2 {
     w.print(" b;\n");
 
     w.print(" private ");
-    w.print(ExternalClass.of("my.library.tools.Calc"));
+    w.print(ExternalClass.of("my.library.tools.Calc[]"));
     w.print(" c;\n");
 
     w.print(" private ");
-    w.print(ExternalClass.of("other.library.tools.Calc"));
+    w.print(ExternalClass.of("other.library.tools.Calc<>"));
     w.print(" d;\n");
 
     w.print("}\n");

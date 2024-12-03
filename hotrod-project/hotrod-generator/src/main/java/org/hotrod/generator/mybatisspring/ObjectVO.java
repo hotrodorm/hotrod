@@ -88,27 +88,11 @@ public class ObjectVO extends GeneratableObject {
     }
   }
 
-  private static final ExternalClass AUTOWIRED = ExternalClass
-      .of("org.springframework.beans.factory.annotation.Autowired");
-  private static final ExternalClass COMPONENT = ExternalClass.of("org.springframework.stereotype.Component");
-  private static final ExternalClass SCOPE = ExternalClass.of("org.springframework.context.annotation.Scope");
-  private static final ExternalClass CONFIGURABLE_BEAN_FACTORY = ExternalClass
-      .of("org.springframework.beans.factory.config.ConfigurableBeanFactory");
-
   private void writeBody(ClassWriter w) throws IOException {
-//    w.registerClass(this.abstractVO.getFullClassName());
-//
-//    w.registerClass("org.springframework.stereotype.Component");
-//    w.registerClass("org.springframework.beans.factory.config.ConfigurableBeanFactory");
-//    w.registerClass("org.springframework.context.annotation.Scope");
-//    w.registerClass(this.dao.getFullClassName());
-//    w.registerClass("org.springframework.beans.factory.annotation.Autowired");
 
-    w.println("@", COMPONENT);
+    w.println("@", Const.COMPONENT);
 
-    w.println("@", SCOPE, "(value = ", CONFIGURABLE_BEAN_FACTORY, ".SCOPE_PROTOTYPE)");
-//    w.println("@", SCOPE);
-//    w.println("(value = ", CONFIGURABLE_BEAN_FACTORY, ".SCOPE_PROTOTYPE)");
+    w.println("@", Const.SCOPE, "(value = ", Const.CONFIGURABLE_BEAN_FACTORY, ".SCOPE_PROTOTYPE)");
 
     w.print("public class " + this.getClassName() + " extends ", ExternalClass.of(this.abstractVO.getFullClassName()));
 
@@ -123,7 +107,7 @@ public class ObjectVO extends GeneratableObject {
     w.println();
 
     w.println("  @SuppressWarnings(\"unused\")");
-    w.println("  @", AUTOWIRED);
+    w.println("  @", Const.AUTOWIRED);
     w.println("  private ", ExternalClass.of(this.dao.getFullClassName()), " " + this.dao.getMemberName() + ";");
     w.println();
 

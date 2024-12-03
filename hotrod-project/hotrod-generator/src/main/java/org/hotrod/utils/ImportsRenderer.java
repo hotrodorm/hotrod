@@ -3,6 +3,7 @@ package org.hotrod.utils;
 import java.util.HashSet;
 import java.util.Set;
 
+@Deprecated
 public class ImportsRenderer {
 
   private Set<String> imports = new HashSet<String>();

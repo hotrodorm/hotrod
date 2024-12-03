@@ -22,7 +22,7 @@ public class ClassWriterGenerator {
       w.write("    super(classPackage, headerLines);\n");
       w.write("  }\n");
 
-      writeLevels(w, 6);
+      writeLevels(w, 5);
 
       w.write("\n}\n");
     }
