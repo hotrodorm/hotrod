@@ -3,6 +3,7 @@
 package app.daos.primitives;
 
 import java.io.Serializable;
+
 import org.hotrod.json.JSONObject;
 
 public class AbstractOtherVO implements Serializable {

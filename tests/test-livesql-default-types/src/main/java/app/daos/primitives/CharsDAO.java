@@ -2,40 +2,42 @@
 
 package app.daos.primitives;
 
-import org.springframework.stereotype.Component;
 import java.io.Serializable;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.apache.ibatis.session.SqlSession;
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
-import org.hotrod.runtime.livesql.LiveSQLMapper;
-import org.hotrod.spring.SpringBeanObjectFactory;
-import javax.sql.DataSource;
-import org.springframework.context.ApplicationContext;
-import org.springframework.beans.BeansException;
-import org.hotrod.runtime.livesql.queries.LiveSQLContext;
-import javax.annotation.PostConstruct;
-import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
-import java.util.Map;
-import org.hotrod.runtime.livesql.util.CastUtil;
-import java.util.List;
-import org.hotrod.interfaces.DaoWithOrder;
-import org.hotrod.cursors.Cursor;
-import org.hotrod.runtime.livesql.queries.select.MyBatisCursor;
-import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
-import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
-import org.hotrod.interfaces.UpdateByExampleDao;
-import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
 import java.util.HashMap;
-import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
+
+import org.apache.ibatis.session.SqlSession;
+import org.hotrod.cursors.Cursor;
+import org.hotrod.interfaces.DaoWithOrder;
 import org.hotrod.interfaces.OrderBy;
-import org.hotrod.runtime.livesql.metadata.Table;
-import org.hotrod.runtime.livesql.metadata.NumberEntityColumn;
-import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
-import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
-import org.hotrod.runtime.livesql.metadata.StringEntityColumn;
+import org.hotrod.interfaces.UpdateByExampleDao;
+import org.hotrod.runtime.livesql.LiveSQLMapper;
+import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.metadata.Name;
+import org.hotrod.runtime.livesql.metadata.NumberEntityColumn;
+import org.hotrod.runtime.livesql.metadata.StringEntityColumn;
+import org.hotrod.runtime.livesql.metadata.Table;
+import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
+import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
+import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
+import org.hotrod.runtime.livesql.queries.select.MyBatisCursor;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
+import org.hotrod.runtime.livesql.util.CastUtil;
+import org.hotrod.spring.SpringBeanObjectFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 
 @Component
 public class CharsDAO implements Serializable, ApplicationContextAware {

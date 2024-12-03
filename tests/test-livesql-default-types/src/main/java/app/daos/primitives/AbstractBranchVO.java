@@ -4,6 +4,7 @@ package app.daos.primitives;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+
 import org.hotrod.json.JSONObject;
 
 public class AbstractBranchVO implements Serializable {

@@ -4,6 +4,7 @@ package app.daos.reporting.primitives;
 
 import java.io.Serializable;
 import java.sql.Date;
+
 import org.hotrod.json.JSONObject;
 
 public class AbstractInvoiceVO implements Serializable {

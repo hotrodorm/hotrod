@@ -1629,6 +1629,7 @@ public class ObjectDAO extends GeneratableObject {
     w.println();
   }
 
+  @SuppressWarnings("unused")
   private boolean usesConverters() throws IOException {
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       if (cm.getConverter() != null) {
@@ -1641,6 +1642,7 @@ public class ObjectDAO extends GeneratableObject {
     return false;
   }
 
+  @SuppressWarnings("unused")
   private boolean hasFKPointingToEnum() throws IOException {
     for (ForeignKeyMetadata fk : this.metadata.getImportedFKs()) {
       DataSetMetadata ds = fk.getRemote().getTableMetadata();
@@ -2200,29 +2202,7 @@ public class ObjectDAO extends GeneratableObject {
 
     SelectMethodReturnType rt = sm.getReturnType(this.classPackage);
 
-    // render comment
-//    ParameterRenderer parameterRenderer = new ParameterRenderer() {
-//      @Override
-//      public String render(final SQLParameter parameter) {
-//        return "#{" + parameter.getName() + "}";
-//      }
-//    };
-//    String sentence = sm.renderSQLSentence(parameterRenderer);
-//    w.println(renderJavaComment(sentence));
-//    w.println();
-
     String methodName = sm.getMethod();
-
-    ListWriter pdef = new ListWriter(", ");
-//    ListWriter pcall = new ListWriter(", ");
-    for (SelectParameterMetadata p : sm.getParameterDefinitions()) {
-      String name = p.getParameter().getName();
-      if (!p.getParameter().isInternal()) {
-        pdef.add("final " + p.getParameter().getJavaType() + " " + name);
-//        pcall.add(name);
-      }
-    }
-    String paramDef = pdef.toString();
 
     // parameter class
 
@@ -2239,8 +2219,8 @@ public class ObjectDAO extends GeneratableObject {
 
     // method
 
-    w.print("  public ");
     ExternalClass rc = ExternalClass.of(rt.getBaseReturnVOFullClassName());
+    w.print("  public ");
     switch (rt.getMode()) {
     case LIST:
       w.print(List.class, "<", rc, ">");

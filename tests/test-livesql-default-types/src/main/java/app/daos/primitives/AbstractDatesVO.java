@@ -3,9 +3,10 @@
 package app.daos.primitives;
 
 import java.io.Serializable;
-import java.sql.Time;
 import java.sql.Date;
+import java.sql.Time;
 import java.sql.Timestamp;
+
 import org.hotrod.json.JSONObject;
 
 public class AbstractDatesVO implements Serializable {

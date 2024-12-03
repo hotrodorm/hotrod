@@ -4,6 +4,7 @@ package app.daos.primitives;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+
 import org.hotrod.json.JSONObject;
 
 public class AbstractNumbersVO implements Serializable {

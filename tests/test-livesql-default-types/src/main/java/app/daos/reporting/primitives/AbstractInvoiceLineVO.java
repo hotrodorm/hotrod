@@ -3,6 +3,7 @@
 package app.daos.reporting.primitives;
 
 import java.io.Serializable;
+
 import org.hotrod.json.JSONObject;
 
 public class AbstractInvoiceLineVO implements Serializable {
