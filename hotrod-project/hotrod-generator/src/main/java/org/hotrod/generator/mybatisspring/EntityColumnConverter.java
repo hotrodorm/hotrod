@@ -5,6 +5,8 @@ import java.io.Writer;
 
 import org.hotrod.metadata.ColumnMetadata;
 
+// Unused?
+@Deprecated
 public class EntityColumnConverter {
 
   // Properties
