@@ -20,7 +20,6 @@ import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.DAOType;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
-import org.hotrod.generator.GeneratableObject;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
@@ -28,18 +27,18 @@ import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.metadata.KeyMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.SelectMethodMetadata.SelectMethodReturnType;
-import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.StructuredColumnsMetadata;
 import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VersionControlMetadata;
+import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn.AutogenerationType;
 import org.nocrala.tools.database.tartarus.exception.ReaderException;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
-public class Mapper extends GeneratableObject {
+public class Mapper {
 
   private static final Logger log = Logger.getLogger(Mapper.class.getName());
 
@@ -99,8 +98,6 @@ public class Mapper extends GeneratableObject {
     this.layout = layout;
     this.generator = generator;
 
-    metadata.getDaoTag().addGeneratableObject(this);
-
     if (type == null) {
       throw new RuntimeException("DAOType cannot be null.");
     }
@@ -108,9 +105,9 @@ public class Mapper extends GeneratableObject {
     this.adapter = adapter;
     this.vo = vo;
 
-    this.namespace = this.layout.getMapperNamespace()
-        + (this.fragmentPackage == null ? "" : "." + this.fragmentPackage.getPackage()) + "."
-        + this.metadata.getId().getJavaMemberName();
+//    this.namespace = this.layout.getMapperNamespace()
+//        + (this.fragmentPackage == null ? "" : "." + this.fragmentPackage.getPackage()) + "."
+//        + this.metadata.getId().getJavaMemberName();
   }
 
   public void setDao(ObjectDAO dao) {
@@ -136,7 +133,8 @@ public class Mapper extends GeneratableObject {
         ? this.fragmentConfig.getFragmentPackage()
         : null;
 
-    File mapper = new File(this.layout.getMapperPrimitiveDir(fragmentPackage), sourceFileName);
+//    File mapper = new File(this.layout.getMapperPrimitiveDir(fragmentPackage), sourceFileName);
+    File mapper = new File("m");
     this.w = null;
 
     try {
@@ -203,8 +201,6 @@ public class Mapper extends GeneratableObject {
       }
 
       writeFooter();
-
-      super.markGenerated();
 
     } catch (IOException e) {
       throw new UncontrolledException(
@@ -1272,14 +1268,15 @@ public class Mapper extends GeneratableObject {
   // Info
 
   public String getRuntimeSourceFileName() {
-    File dir = this.layout.getMapperRuntimeDir(this.fragmentPackage);
+//    File dir = this.layout.getMapperRuntimeDir(this.fragmentPackage);
+    File dir = this.layout.getDAOPackageDir(fragmentPackage);
     File source = new File(dir, this.getSourceFileName());
     return source.getPath();
   }
 
   public static String assembleSourceFileName(final DataSetLayout layout, final ClassPackage fragmentPackage,
       final ObjectId id) {
-    File dir = layout.getMapperRuntimeDir(fragmentPackage);
+    File dir = layout.getDAOPackageDir(fragmentPackage);
     String sourceFile = "primitives-" + id.getDashedName() + ".xml";
     File source = new File(dir, sourceFile);
     return source.getPath();

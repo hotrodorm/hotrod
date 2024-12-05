@@ -19,8 +19,6 @@ import org.hotrod.runtime.livesql.util.PreviewRenderer;
 
 public class UpdateObject implements QueryObject {
 
-  private String mapperStatement; // DAO.update(values, [t,] predicate)
-
   private TableOrView tableOrView;
   private List<Assignment> sets = new ArrayList<>();
   private GeneralBooleanExpression wherePredicate;
@@ -29,12 +27,10 @@ public class UpdateObject implements QueryObject {
 
   UpdateObject() {
     super();
-    this.mapperStatement = null;
   }
 
   UpdateObject(final String mapperStatement) {
     super();
-    this.mapperStatement = mapperStatement;
   }
 
   void setTableOrView(final TableOrView from) {
@@ -64,11 +60,7 @@ public class UpdateObject implements QueryObject {
     parameters.put("sql", q.getSQL());
     parameters.put("extraSets", this.extraSets);
 
-    if (this.mapperStatement != null) {
-      return context.getSQLSession().update(this.mapperStatement, q.getConsolidatedParameters());
-    } else {
-      return context.getLiveSQLMapper().update(parameters);
-    }
+    return context.getLiveSQLMapper().update(parameters);
   }
 
   private LiveSQLPreparedQuery prepareQuery(final LiveSQLContext context) {

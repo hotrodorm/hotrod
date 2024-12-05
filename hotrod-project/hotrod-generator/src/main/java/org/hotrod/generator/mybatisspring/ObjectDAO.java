@@ -26,7 +26,7 @@ import org.hotrod.config.Constants;
 import org.hotrod.config.ConverterTag;
 import org.hotrod.config.EnumTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
-import org.hotrod.config.MyBatisSpringTag;
+import org.hotrod.config.JDBCTag;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.config.QueryMethodTag;
 import org.hotrod.config.SQLParameter;
@@ -44,7 +44,6 @@ import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.DAOType;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
-import org.hotrod.generator.GeneratableObject;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.identifiers.Id;
 import org.hotrod.interfaces.DaoForUpdate;
@@ -97,7 +96,7 @@ import org.nocrala.tools.database.tartarus.core.JdbcKey;
 import org.nocrala.tools.database.tartarus.core.JdbcKeyColumn;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
-public class ObjectDAO extends GeneratableObject {
+public class ObjectDAO {
 
   // Constants
 
@@ -111,7 +110,7 @@ public class ObjectDAO extends GeneratableObject {
   private DataSetLayout layout;
   private MyBatisSpringGenerator generator;
   private DAOType daoType;
-  private MyBatisSpringTag myBatisTag;
+  private JDBCTag myBatisTag;
   private DatabaseAdapter adapter;
 
   private HotRodFragmentConfigTag fragmentConfig;
@@ -133,7 +132,7 @@ public class ObjectDAO extends GeneratableObject {
   // Constructors
 
   public ObjectDAO(final AbstractDAOTag tag, final DataSetMetadata metadata, final DataSetLayout layout,
-      final MyBatisSpringGenerator generator, final DAOType type, final MyBatisSpringTag myBatisTag,
+      final MyBatisSpringGenerator generator, final DAOType type, final JDBCTag myBatisTag,
       final DatabaseAdapter adapter, final ObjectAbstractVO avo, final ObjectVO vo, final Mapper mapper) {
     super();
     log.fine("init");
@@ -144,7 +143,7 @@ public class ObjectDAO extends GeneratableObject {
     if (type == null) {
       throw new RuntimeException("DAOType cannot be null.");
     }
-    metadata.getDaoTag().addGeneratableObject(this);
+//    metadata.getDaoTag().addGeneratableObject(this);
     this.daoType = type;
     this.myBatisTag = myBatisTag;
     this.adapter = adapter;
@@ -198,8 +197,6 @@ public class ObjectDAO extends GeneratableObject {
           "");
       writeBody(mg);
       this.w.writeTo(tw);
-
-      super.markGenerated();
 
     } catch (IOException e) {
 
@@ -268,9 +265,9 @@ public class ObjectDAO extends GeneratableObject {
 
       writeMetadata();
 
-      if (this.getBundle().getParent() != null) {
-        writeAOPAspect();
-      }
+//      if (this.getBundle().getParent() != null) {
+//        writeAOPAspect();
+//      }
 
     }
 

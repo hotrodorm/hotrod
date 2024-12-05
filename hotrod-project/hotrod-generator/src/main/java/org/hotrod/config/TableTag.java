@@ -168,13 +168,11 @@ public class TableTag extends AbstractEntityDAOTag {
   @XmlElement(name = "version-control-column")
   public void setVersionControlColumn(final VersionControlColumnTag versionControlColumn) {
     this.versionControlColumn = versionControlColumn;
-    super.addChild(versionControlColumn);
   }
 
   @XmlElement
   public void setColumn(final ColumnTag c) {
     this.columns.add(c);
-    super.addChild(c);
   }
 
   // Behavior

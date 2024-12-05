@@ -6,7 +6,7 @@ import java.io.Serializable;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.MappersTag;
-import org.hotrod.config.MyBatisSpringTag;
+import org.hotrod.config.JDBCTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.utils.ClassPackage;
 
@@ -19,7 +19,7 @@ public class DataSetLayout implements Serializable {
 //  private String sessixxonFactoryGetter;
 
   private DaosTag daos;
-  private MappersTag mappers;
+//  private MappersTag mappers;
 
   public DataSetLayout(final HotRodConfigTag config, final TableTag tag) {
     initialize(config);
@@ -35,14 +35,14 @@ public class DataSetLayout implements Serializable {
     this.config = config;
 
     try {
-      MyBatisSpringTag gtag = (MyBatisSpringTag) this.config.getGenerators().getSelectedGeneratorTag();
+      JDBCTag gtag = (JDBCTag) this.config.getGenerators().getSelectedGeneratorTag();
       this.daos = gtag.getDaos();
-      this.mappers = gtag.getMappers();
+//      this.mappers = gtag.getMappers();
 //      this.sessionFactoryGetter = mybatis.getSessionFactory().getSessionFactoryGetter();
     } catch (ClassCastException e) {
-      MyBatisSpringTag mybatis = (MyBatisSpringTag) this.config.getGenerators().getSelectedGeneratorTag();
+      JDBCTag mybatis = (JDBCTag) this.config.getGenerators().getSelectedGeneratorTag();
       this.daos = mybatis.getDaos();
-      this.mappers = mybatis.getMappers();
+//      this.mappers = mybatis.getMappers();
 //      this.sessionFactoryGetter = null;
     }
 
@@ -68,17 +68,17 @@ public class DataSetLayout implements Serializable {
     return this.daos.getPrimitivesPackageDir(fragmentPackage);
   }
 
-  public File getMapperPrimitiveDir(final ClassPackage fragmentPackage) {
-    return this.mappers.getPrimitivesDir(fragmentPackage);
-  }
-
-  public File getMapperRuntimeDir(final ClassPackage fragmentPackage) {
-    return this.mappers.getRuntimeDir(fragmentPackage);
-  }
-
-  public String getMapperNamespace() {
-    return this.mappers.getNamespace();
-  }
+//  public File getMapperPrimitiveDir(final ClassPackage fragmentPackage) {
+//    return this.mappers.getPrimitivesDir(fragmentPackage);
+//  }
+//
+//  public File getMapperRuntimeDir(final ClassPackage fragmentPackage) {
+//    return this.mappers.getRuntimeDir(fragmentPackage);
+//  }
+//
+//  public String getMapperNamespace() {
+//    return this.mappers.getNamespace();
+//  }
 
   public String getColumnSeam() {
     return columnSeam;

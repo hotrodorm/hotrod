@@ -12,7 +12,7 @@ import org.hotrod.config.EnabledFKs;
 import org.hotrod.config.ExecutorTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
-import org.hotrod.config.MyBatisSpringTag;
+import org.hotrod.config.JDBCTag;
 import org.hotrod.config.QueryMethodTag;
 import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.config.TableTag;
@@ -65,7 +65,7 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
 
   private Long lastLog = null;
 
-  private MyBatisSpringTag myBatisSpringTag;
+  private JDBCTag myBatisSpringTag;
   private DataSetLayout layout;
 
   private LinkedHashMap<DataSetMetadata, ObjectAbstractVO> abstractVos = new LinkedHashMap<DataSetMetadata, ObjectAbstractVO>();
@@ -112,12 +112,12 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
 
     // Load and validate the configuration file
 
-    this.myBatisSpringTag = (MyBatisSpringTag) this.config.getGenerators().getSelectedGeneratorTag();
+    this.myBatisSpringTag = (JDBCTag) this.config.getGenerators().getSelectedGeneratorTag();
     this.layout = new DataSetLayout(this.config);
 
-    // Reset the generated object counters
-
-    this.config.resetTreeGeneratables();
+//    // Reset the generated object counters
+//
+//    this.config.resetTreeGeneratables();
 
     // Add tables
 
@@ -129,23 +129,23 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
       }
     }
 
-    // Link parent tables
-
-    for (ObjectAbstractVO avo : this.tableAbstractVOs) {
-      if (avo.getMetadata().getParentMetadata() != null) {
-        avo.getBundle().setParent(null);
-        for (ObjectAbstractVO ovo : this.tableAbstractVOs) {
-          if (avo != ovo && avo.getMetadata().getParentMetadata().getId().equals(ovo.getMetadata().getId())) {
-            avo.getBundle().setParent(ovo.getBundle());
-          }
-        }
-        if (avo.getBundle().getParent() == null) {
-          throw new InvalidConfigurationFileException(avo.getMetadata().getDaoTag(),
-              "Could not find parent table '" + avo.getMetadata().getParentMetadata().getId() + "' extended by table '"
-                  + avo.getMetadata().getId() + "'.");
-        }
-      }
-    }
+//    // Link parent tables
+//
+//    for (ObjectAbstractVO avo : this.tableAbstractVOs) {
+//      if (avo.getMetadata().getParentMetadata() != null) {
+//        avo.getBundle().setParent(null);
+//        for (ObjectAbstractVO ovo : this.tableAbstractVOs) {
+//          if (avo != ovo && avo.getMetadata().getParentMetadata().getId().equals(ovo.getMetadata().getId())) {
+//            avo.getBundle().setParent(ovo.getBundle());
+//          }
+//        }
+//        if (avo.getBundle().getParent() == null) {
+//          throw new InvalidConfigurationFileException(avo.getMetadata().getDaoTag(),
+//              "Could not find parent table '" + avo.getMetadata().getParentMetadata().getId() + "' extended by table '"
+//                  + avo.getMetadata().getId() + "'.");
+//        }
+//      }
+//    }
 
     // Add views
 
@@ -198,7 +198,7 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
 
   private EntityVOs addDaosAndMapper(final DataSetMetadata metadata, final DAOType type) throws ControlledException {
 
-    MyBatisSpringTag myBatisTag = (MyBatisSpringTag) this.config.getGenerators().getSelectedGeneratorTag();
+    JDBCTag myBatisTag = (JDBCTag) this.config.getGenerators().getSelectedGeneratorTag();
 
     DataSetLayout layout;
     ObjectAbstractVO abstractVO;
@@ -206,7 +206,7 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
     Mapper mapper;
     ObjectDAO dao;
 
-    Bundle bundle;
+//    Bundle bundle;
 
     switch (type) {
 
@@ -230,11 +230,11 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
       this.entityDAORegistry.add(vo.getFullClassName(), dao);
       mapper.setDao(dao);
 
-      bundle = new Bundle(abstractVO, vo, dao, mapper);
-      abstractVO.setBundle(bundle);
-      vo.setBundle(bundle);
-      mapper.setBundle(bundle);
-      dao.setBundle(bundle);
+//      bundle = new Bundle(abstractVO, vo, dao, mapper);
+//      abstractVO.setBundle(bundle);
+//      vo.setBundle(bundle);
+//      mapper.setBundle(bundle);
+//      dao.setBundle(bundle);
 
       break;
 
@@ -257,11 +257,11 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
       this.entityDAORegistry.add(vo.getFullClassName(), dao);
       mapper.setDao(dao);
 
-      bundle = new Bundle(abstractVO, vo, dao, mapper);
-      abstractVO.setBundle(bundle);
-      vo.setBundle(bundle);
-      mapper.setBundle(bundle);
-      dao.setBundle(bundle);
+//      bundle = new Bundle(abstractVO, vo, dao, mapper);
+//      abstractVO.setBundle(bundle);
+//      vo.setBundle(bundle);
+//      mapper.setBundle(bundle);
+//      dao.setBundle(bundle);
 
       break;
 
@@ -275,9 +275,9 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
       dao = new ObjectDAO(tag, metadata, layout, this, type, myBatisTag, this.adapter, abstractVO, vo, mapper);
       mapper.setDao(dao);
 
-      bundle = new Bundle(abstractVO, vo, dao, mapper);
-      mapper.setBundle(bundle);
-      dao.setBundle(bundle);
+//      bundle = new Bundle(abstractVO, vo, dao, mapper);
+//      mapper.setBundle(bundle);
+//      dao.setBundle(bundle);
 
       break;
 

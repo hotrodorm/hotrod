@@ -5,18 +5,17 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.hotrod.config.HotRodFragmentConfigTag;
-import org.hotrod.config.MyBatisSpringTag;
+import org.hotrod.config.JDBCTag;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
-import org.hotrod.generator.GeneratableObject;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.utils.AbstractClassWriter.ExternalClass;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ClassWriter;
 
-public class ObjectVO extends GeneratableObject {
+public class ObjectVO {
 
   private static final Logger log = Logger.getLogger(ObjectVO.class.getName());
 
@@ -25,7 +24,7 @@ public class ObjectVO extends GeneratableObject {
   @SuppressWarnings("unused")
   private MyBatisSpringGenerator generator;
   private ObjectAbstractVO abstractVO;
-  private MyBatisSpringTag myBatisTag;
+  private JDBCTag myBatisTag;
 
   private ObjectDAO dao;
 
@@ -35,14 +34,14 @@ public class ObjectVO extends GeneratableObject {
   private ClassPackage classPackage;
 
   public ObjectVO(final DataSetMetadata metadata, final DataSetLayout layout, final MyBatisSpringGenerator generator,
-      final ObjectAbstractVO abstractVO, final MyBatisSpringTag myBatisTag) {
+      final ObjectAbstractVO abstractVO, final JDBCTag myBatisTag) {
     super();
     log.fine("init");
 
     this.metadata = metadata;
     this.layout = layout;
     this.generator = generator;
-    metadata.getDaoTag().addGeneratableObject(this);
+//    metadata.getDaoTag().addGeneratableObject(this);
     this.abstractVO = abstractVO;
     this.myBatisTag = myBatisTag;
 
@@ -70,16 +69,13 @@ public class ObjectVO extends GeneratableObject {
     File dir = this.layout.getDAOPackageDir(fragmentPackage);
     File vo = new File(dir, sourceClassName);
 
-    if (vo.exists()) {
-      super.markGenerated();
-    } else {
+    if (!vo.exists()) {
 
       try (TextWriter tw = fileGenerator.createWriter(vo)) {
 
         ClassWriter w = new ClassWriter(cp);
         writeBody(w);
         w.writeTo(tw);
-        super.markGenerated();
 
       } catch (IOException e) {
         throw new UncontrolledException("Could not generate VO class: could not write to file '" + vo.getName() + "'.",
@@ -129,7 +125,7 @@ public class ObjectVO extends GeneratableObject {
   public String getFullClassName() {
     return this.classPackage.getFullClassName(this.getClassName());
   }
-  
+
   public ClassPackage getClassPackage() {
     return this.classPackage;
   }

@@ -90,13 +90,11 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   @XmlElement(name = "vo")
   public void setVO(final VOTag vo) {
     this.vos.add(vo);
-    super.addChild(vo);
   }
 
   @XmlElement(name = "expression")
   public void setExpressionsTag(final ExpressionTag exp) {
     this.expressions.addExpression(exp);
-    super.addChild(exp);
   }
 
   // Behavior

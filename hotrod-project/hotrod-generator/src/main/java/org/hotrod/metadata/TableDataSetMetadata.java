@@ -399,55 +399,24 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
     this.selectsMetadata = new ArrayList<SelectMethodMetadata>();
     boolean needsToRetrieveMetadata = false;
     for (SelectMethodTag selectTag : this.selects) {
-      // SelectMethodMetadata cachedSm =
-      // this.selectMetadataCache.get(this.javaName, selectTag.getMethod());
-      SelectMethodMetadata cachedSm = null;
-      // TODO: Clean up
-//      log.fine("[" + this.getId().getCanonicalSQLName() + "] " + selectTag.getMethod() + "() cache["
-//          + this.id.getCanonicalSQLName() + "]=" + cachedSm + " cache[" + this.selectMetadataCache.size() + "]");
-//      log.fine(" cache entries: " + this.selectMetadataCache.listNames());
-
-      if (referencesAMarkedEntity(selectTag.getReferencedEntities())) {
-        selectTag.markGenerate();
+      needsToRetrieveMetadata = true;
+      SelectGenerationTag selectGenerationTag = this.config.getGenerators().getSelectedGeneratorTag()
+          .getSelectGeneration();
+      ColumnsPrefixGenerator columnsPrefixGenerator = new ColumnsPrefixGenerator(this.adapter.getUnescapedSQLCase());
+      SelectMethodMetadata sm;
+      try {
+        sm = new SelectMethodMetadata(metadata, cr, selectTag, this.config, selectGenerationTag, columnsPrefixGenerator,
+            layout, this);
+      } catch (InvalidIdentifierException e) {
+        String msg = "Invalid method name '" + selectTag.getMethod() + "': " + e.getMessage();
+        throw new InvalidConfigurationFileException(selectTag, msg);
       }
+      this.selectsMetadata.add(sm);
+      sm.gatherMetadataPhase1();
+      log.fine(">>>   [Fresh] sm.metadataComplete()=" + sm.metadataComplete());
 
-      if (cachedSm != null && !selectTag.isToBeGenerated()) {
-
-        // use the cached metadata
-        this.selectsMetadata.add(cachedSm);
-        log.info(">>>   [Using cache] cachedSm.metadataComplete()=" + cachedSm.metadataComplete());
-
-      } else {
-
-        // retrieve fresh metadata
-        needsToRetrieveMetadata = true;
-        SelectGenerationTag selectGenerationTag = this.config.getGenerators().getSelectedGeneratorTag()
-            .getSelectGeneration();
-        ColumnsPrefixGenerator columnsPrefixGenerator = new ColumnsPrefixGenerator(this.adapter.getUnescapedSQLCase());
-        SelectMethodMetadata sm;
-        try {
-          sm = new SelectMethodMetadata(metadata, cr, selectTag, this.config, selectGenerationTag,
-              columnsPrefixGenerator, layout, this);
-        } catch (InvalidIdentifierException e) {
-          String msg = "Invalid method name '" + selectTag.getMethod() + "': " + e.getMessage();
-          throw new InvalidConfigurationFileException(selectTag, msg);
-        }
-        this.selectsMetadata.add(sm);
-        sm.gatherMetadataPhase1();
-        log.fine(">>>   [Fresh] sm.metadataComplete()=" + sm.metadataComplete());
-
-      }
     }
     return needsToRetrieveMetadata;
-  }
-
-  private boolean referencesAMarkedEntity(final Set<TableDataSetMetadata> referencedEntities) {
-    for (TableDataSetMetadata referencedEntity : referencedEntities) {
-      if (referencedEntity.getDaoTag().isToBeGenerated()) {
-        return true;
-      }
-    }
-    return false;
   }
 
   public void gatherSelectsMetadataPhase2(final VORegistry voRegistry)

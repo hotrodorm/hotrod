@@ -22,32 +22,32 @@ import org.hotrod.generator.mybatisspring.MyBatisSpringGenerator;
 import org.hotrod.utils.ClassPackage;
 import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 
-@XmlRootElement(name = "mybatis-spring")
-public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackageResolver {
+@XmlRootElement(name = "jdbc")
+public class JDBCTag extends AbstractGeneratorTag implements NamePackageResolver {
 
   private static final long serialVersionUID = 1L;
 
   // Constants
 
-  private static final Logger log = Logger.getLogger(MyBatisSpringTag.class.getName());
+  private static final Logger log = Logger.getLogger(JDBCTag.class.getName());
 
-  public static final String GENERATOR_NAME = "MyBatis-Spring";
+  public static final String GENERATOR_NAME = "jdbc";
 
   // Properties
 
   private DiscoverTag discover = null;
 
   private DaosTag daos = null;
-  private MappersTag mappers = null;
+//  private MappersTag mappers = null;
   private SelectGenerationTag selectGeneration = null;
   private ClassicFKNavigationTag classicFKNavigation = new ClassicFKNavigationTag();
   private List<PropertyTag> propertyTags = new ArrayList<PropertyTag>();
 
-  private MyBatisProperties properties = new MyBatisProperties();
+  private JDBCProperties properties = new JDBCProperties();
 
   // Constructor
 
-  public MyBatisSpringTag() {
+  public JDBCTag() {
     super("mybatis-spring");
     log.fine("init");
   }
@@ -75,15 +75,6 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
           "Duplicate <daos> tag; the generator can only have a single <dao> tag");
     }
     this.daos = daos;
-  }
-
-  @XmlElement
-  public void setMappers(final MappersTag mappers) throws InvalidConfigurationFileException {
-    if (this.mappers != null) {
-      throw new InvalidConfigurationFileException(this,
-          "Duplicate <mappers> tag; the generator can only have a single <mappers> tag");
-    }
-    this.mappers = mappers;
   }
 
   @XmlElement(name = "select-generation")
@@ -132,12 +123,6 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
     }
     this.daos.validate(basedir);
 
-    // mappers
-
-    if (this.mappers == null) {
-      this.mappers = MappersTag.DEFAULT_MAPPERS_TAG;
-    }
-
     // select-generation
 
     if (this.selectGeneration == null) {
@@ -145,13 +130,6 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
       this.selectGeneration.setTempViewBaseName(SelectGenerationTag.DEFAULT_TEMP_VIEW_NAME);
     }
     this.selectGeneration.validate(basedir);
-
-    // mappers
-
-    if (this.mappers == null) {
-      this.mappers = new MappersTag();
-    }
-    this.mappers.validate(basedir);
 
     // properties
 
@@ -177,10 +155,6 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
     return daos;
   }
 
-  public MappersTag getMappers() {
-    return mappers;
-  }
-
   @Override
   public SelectGenerationTag getSelectGeneration() {
     return selectGeneration;
@@ -192,7 +166,7 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
 
   // Produce Generator Instance
 
-  public MyBatisProperties getProperties() {
+  public JDBCProperties getProperties() {
     return properties;
   }
 

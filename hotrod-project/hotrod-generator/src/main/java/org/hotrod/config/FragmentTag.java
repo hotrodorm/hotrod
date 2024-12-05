@@ -82,11 +82,10 @@ public class FragmentTag extends AbstractConfigurationTag {
       final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
       throws UncontrolledException, ControlledException, FacetNotFoundException {
     log.fine("@@@ Will load fragment '" + this.f.getName() + "' -- at " + this.getSourceLocation());
-    super.clearChildren();
     this.fragmentConfig = ConfigurationLoader.loadFragment(primaryConfig, this.f, fileRegistry, daosTag, this, adapter,
         facetNames, currentCS);
     log.fine("Fragment loaded.");
-    super.addChildren(this.fragmentConfig.getSubTags());
+//    super.addChildren(this.fragmentConfig.getSubTags());
   }
 
   // Getters

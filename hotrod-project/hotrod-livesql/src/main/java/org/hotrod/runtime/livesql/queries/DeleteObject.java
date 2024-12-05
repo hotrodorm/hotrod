@@ -10,19 +10,15 @@ import org.hotrod.runtime.livesql.util.PreviewRenderer;
 
 public class DeleteObject implements QueryObject {
 
-  private String mapperStatement; // DAO.delete(t, predicate)
-
   private TableOrView from;
   private GeneralBooleanExpression wherePredicate;
 
   DeleteObject() {
     super();
-    this.mapperStatement = null;
   }
 
   DeleteObject(final String mapperStatement) {
     super();
-    this.mapperStatement = mapperStatement;
   }
 
   void setFrom(final TableOrView from) {
@@ -42,11 +38,7 @@ public class DeleteObject implements QueryObject {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     LinkedHashMap<String, Object> parameters = q.getParameters();
     parameters.put("sql", q.getSQL());
-    if (this.mapperStatement != null) {
-      return context.getSQLSession().delete(this.mapperStatement, q.getConsolidatedParameters());
-    } else {
-      return context.getLiveSQLMapper().delete(parameters);
-    }
+    return context.getLiveSQLMapper().delete(parameters);
   }
 
   private LiveSQLPreparedQuery prepareQuery(final LiveSQLContext context) {

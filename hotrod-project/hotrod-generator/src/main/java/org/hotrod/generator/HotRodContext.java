@@ -17,7 +17,7 @@ import org.hotrod.config.DaosTag;
 import org.hotrod.config.EnumTag;
 import org.hotrod.config.ExcludeTag;
 import org.hotrod.config.HotRodConfigTag;
-import org.hotrod.config.MyBatisSpringTag;
+import org.hotrod.config.JDBCTag;
 import org.hotrod.config.SchemaTag;
 import org.hotrod.config.SelectGenerationTag.SelectStrategy;
 import org.hotrod.config.TableTag;
@@ -170,7 +170,7 @@ public class HotRodContext {
 
       // Discover schemas
 
-      MyBatisSpringTag mst = (MyBatisSpringTag) this.config.getGenerators().getSelectedGeneratorTag();
+      JDBCTag mst = (JDBCTag) this.config.getGenerators().getSelectedGeneratorTag();
       boolean discover = mst.getDiscover() != null;
       feedback.info("Discover " + (discover ? "enabled." : "disabled."));
       feedback.info(" ");

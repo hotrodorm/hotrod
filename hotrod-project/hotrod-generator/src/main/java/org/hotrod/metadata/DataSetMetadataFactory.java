@@ -46,27 +46,10 @@ public abstract class DataSetMetadataFactory {
 
     TableTag tableTag = config.getTableTag(t);
     if (tableTag != null) {
-      if (cachedDB == null) {
-        log.fine("##### Table '" + t.getName() + "' equivalent= NOT IN CACHE");
-        tableTag.markGenerate();
-      } else {
-        JdbcTable o = findJdbcTable(cachedDB.getTables(), t.getName(), adapter);
-        log.fine("##### Table '" + t.getName() + "' equivalent=" + t.isEquivalentTo(o));
-        if (!t.isEquivalentTo(o)) {
-          tableTag.markGenerate();
-        }
-      }
       TableDataSetMetadata tm = new TableDataSetMetadata(tableTag, t, tableTag.getExtendsTag(),
           tableTag.getExtendsJdbcTable(), adapter, config, layout, selectMetadataCache, isFromCurrentCatalog,
           isFromCurrentSchema);
       log.fine("cachedConfig=" + cachedConfig);
-      if (cachedConfig != null) {
-        log.fine("cachedConfig.findEnum(tm, adapter)=" + cachedConfig.findFacetEnum(tm, adapter));
-        if (cachedConfig.findFacetEnum(tm, adapter) != null) {
-          // changed from enum to table - generate related tables
-          markGenerateRelatedEntities(tm);
-        }
-      }
       return tm;
     }
 
@@ -74,20 +57,8 @@ public abstract class DataSetMetadataFactory {
 
     EnumTag enumTag = config.getEnumTag(t);
     if (enumTag != null) {
-      if (cachedDB == null) {
-        enumTag.markGenerate();
-      } else {
-        JdbcTable o = findJdbcTable(cachedDB.getTables(), t.getName(), adapter);
-        if (!t.isEquivalentTo(o)) {
-          enumTag.markGenerate();
-        }
-      }
       EnumDataSetMetadata em = new EnumDataSetMetadata(enumTag, t, adapter, config, layout, selectMetadataCache,
           isFromCurrentCatalog, isFromCurrentSchema);
-      if (cachedConfig != null && cachedConfig.findFacetEnum(em, adapter) != null) {
-        // changed from table to enum - generate related tables
-        markGenerateRelatedEntities(em);
-      }
       return em;
     }
 
@@ -95,14 +66,6 @@ public abstract class DataSetMetadataFactory {
 
     ViewTag viewTag = config.getViewTag(t);
     if (viewTag != null) {
-      if (cachedDB == null) {
-        viewTag.markGenerate();
-      } else {
-        JdbcTable o = findJdbcTable(cachedDB.getViews(), t.getName(), adapter);
-        if (!t.isEquivalentTo(o)) {
-          viewTag.markGenerate();
-        }
-      }
       return new TableDataSetMetadata(viewTag, t, adapter, config, layout, selectMetadataCache, isFromCurrentCatalog,
           isFromCurrentSchema);
     }
@@ -134,21 +97,6 @@ public abstract class DataSetMetadataFactory {
       throw new InvalidConfigurationFileException(config, msg);
     }
 
-  }
-
-  private static void markGenerateRelatedEntities(final DataSetMetadata tm) {
-    for (ForeignKeyMetadata efk : tm.getExportedFKs()) {
-      log.fine(
-          "...marking (using exported FK) remote=" + efk.getRemote().getTableMetadata().getId().getRenderedSQLName()
-              + " local=" + efk.getLocal().getTableMetadata().getId().getRenderedSQLName());
-      efk.getRemote().getTableMetadata().getDaoTag().markGenerate();
-    }
-    for (ForeignKeyMetadata ifk : tm.getImportedFKs()) {
-      log.fine(
-          "...marking (using imported FK) remote=" + ifk.getRemote().getTableMetadata().getId().getRenderedSQLName()
-              + " local=" + ifk.getLocal().getTableMetadata().getId().getRenderedSQLName());
-      ifk.getRemote().getTableMetadata().getDaoTag().markGenerate();
-    }
   }
 
   // Utilities

@@ -124,7 +124,6 @@ public class ViewTag extends AbstractEntityDAOTag {
   @XmlElement
   public void setColumn(final ColumnTag c) {
     this.columns.add(c);
-    super.addChild(c);
   }
 
   // Behavior

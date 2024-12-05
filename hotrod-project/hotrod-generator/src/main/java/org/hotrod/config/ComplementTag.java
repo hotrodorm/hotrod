@@ -89,7 +89,6 @@ public class ComplementTag extends EnhancedSQLPart {
         }
       }
       this.parts.add(p);
-      super.addChild(p);
     }
 
   }

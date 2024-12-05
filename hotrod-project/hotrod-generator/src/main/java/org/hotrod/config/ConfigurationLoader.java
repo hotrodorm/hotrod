@@ -154,18 +154,12 @@ public class ConfigurationLoader {
       config.validateCommon(config, f, fileRegistry, f, daosTag, null, adapter, facetNames, currentCS);
       log.fine("Semantics validation #2 successful.");
 
-      config.addConverterTags();
-
-      MyBatisSpringTag mst = (MyBatisSpringTag) config.getGenerators().getSelectedGeneratorTag();
+      JDBCTag mst = (JDBCTag) config.getGenerators().getSelectedGeneratorTag();
       if (mst.getDiscover() != null && !config.getFacets().isEmpty()) {
         throw new ControlledException(config.getSourceLocation(),
             "The <discover> tag is mutually exclusive with <facet> tags. "
                 + "If you want to use discover you cannot use facets, and vice versa.");
       }
-
-      // Prepare transient values
-
-      config.activate();
 
       // Complete
 

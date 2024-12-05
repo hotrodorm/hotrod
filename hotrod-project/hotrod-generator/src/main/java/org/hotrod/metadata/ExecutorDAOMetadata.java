@@ -3,7 +3,6 @@ package org.hotrod.metadata;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import org.hotrod.config.AbstractDAOTag;
@@ -99,47 +98,25 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
       log.fine("[" + this.getId().getCanonicalSQLName() + "] " + selectTag.getMethod() + "() cache["
           + this.getJavaClassName() + "]=" + cachedSm + " cache[" + this.selectMetadataCache.size() + "]");
 
-      if (referencesAMarkedEntity(selectTag.getReferencedEntities())) {
-        selectTag.markGenerate();
+      // retrieve fresh metadata
+      needsToRetrieveMetadata = true;
+      SelectGenerationTag selectGenerationTag = this.config.getGenerators().getSelectedGeneratorTag()
+          .getSelectGeneration();
+      ColumnsPrefixGenerator columnsPrefixGenerator = new ColumnsPrefixGenerator(this.adapter.getUnescapedSQLCase());
+      SelectMethodMetadata sm;
+      try {
+        sm = new SelectMethodMetadata(metadata, cr, selectTag, this.config, selectGenerationTag, columnsPrefixGenerator,
+            layout, null);
+      } catch (InvalidIdentifierException e) {
+        String msg = "Invalid method name '" + selectTag.getMethod() + "': " + e.getMessage();
+        throw new InvalidConfigurationFileException(selectTag, msg);
       }
+      this.selectsMetadata.add(sm);
+      sm.gatherMetadataPhase1();
+      log.fine(">>>   [Fresh] sm.metadataComplete()=" + sm.metadataComplete());
 
-      if (cachedSm != null && !selectTag.isToBeGenerated()) {
-
-        // use the cached metadata
-        this.selectsMetadata.add(cachedSm);
-        log.info(">>>   [Using cache] cachedSm.metadataComplete()=" + cachedSm.metadataComplete());
-
-      } else {
-
-        // retrieve fresh metadata
-        needsToRetrieveMetadata = true;
-        SelectGenerationTag selectGenerationTag = this.config.getGenerators().getSelectedGeneratorTag()
-            .getSelectGeneration();
-        ColumnsPrefixGenerator columnsPrefixGenerator = new ColumnsPrefixGenerator(this.adapter.getUnescapedSQLCase());
-        SelectMethodMetadata sm;
-        try {
-          sm = new SelectMethodMetadata(metadata, cr, selectTag, this.config, selectGenerationTag,
-              columnsPrefixGenerator, layout, null);
-        } catch (InvalidIdentifierException e) {
-          String msg = "Invalid method name '" + selectTag.getMethod() + "': " + e.getMessage();
-          throw new InvalidConfigurationFileException(selectTag, msg);
-        }
-        this.selectsMetadata.add(sm);
-        sm.gatherMetadataPhase1();
-        log.fine(">>>   [Fresh] sm.metadataComplete()=" + sm.metadataComplete());
-
-      }
     }
     return needsToRetrieveMetadata;
-  }
-
-  private boolean referencesAMarkedEntity(final Set<TableDataSetMetadata> referencedEntities) {
-    for (TableDataSetMetadata referencedEntity : referencedEntities) {
-      if (referencedEntity.getDaoTag().isToBeGenerated()) {
-        return true;
-      }
-    }
-    return false;
   }
 
   public void gatherSelectsMetadataPhase2(final VORegistry voRegistry)

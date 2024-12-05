@@ -100,7 +100,6 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
       this.generatorsTag.enableDiscover();
     }
     this.generatorsTag.validate(basedir, parentDir, adapter, currentCS);
-    super.addChild(this.generatorsTag);
 
     // Name Solver
 
@@ -125,11 +124,6 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
   }
 
-  public void addConverterTags() {
-    for (ConverterTag c : this.converters) {
-      super.addChild(c);
-    }
-  }
 
   // Apply current catalog/schema to declared tables
 

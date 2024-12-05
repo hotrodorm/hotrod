@@ -179,17 +179,14 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
         try {
           CollectionTag c = (CollectionTag) obj; // collection
           this.collections.add(c);
-          super.addChild(c);
         } catch (ClassCastException e2) {
           try {
             AssociationTag a = (AssociationTag) obj; // association
             this.associations.add(a);
-            super.addChild(a);
           } catch (ClassCastException e3) {
             try {
               ExpressionTag exp = (ExpressionTag) obj; // expressions
               this.expressions.addExpression(exp);
-              super.addChild(exp);
             } catch (ClassCastException e4) {
               throw new InvalidConfigurationFileException(this, "The body of the tag <" + super.getTagName()
                   + "> has an invalid tag of class " + obj.getClass().getName() + ".");

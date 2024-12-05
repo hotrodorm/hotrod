@@ -182,7 +182,7 @@ public class LiveSQL {
     log.info(">>>>>>>>>>> initializing");
     List<TypeRule> customRules = persistenceLayerConfigFactory.getCustomRules(null);
     this.typeSolver = new TypeSolver(customRules, this.liveSQLDialect);
-    this.context = new LiveSQLContext(liveSQLDialect, sqlSession, liveSQLMapper, this.dataSource, this.typeSolver);
+    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, this.typeSolver);
   }
 
   // Select

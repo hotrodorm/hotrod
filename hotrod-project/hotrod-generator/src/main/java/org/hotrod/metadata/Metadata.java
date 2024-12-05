@@ -17,7 +17,7 @@ import org.hotrod.config.EnumTag;
 import org.hotrod.config.EnumTag.EnumConstant;
 import org.hotrod.config.ExecutorTag;
 import org.hotrod.config.HotRodConfigTag;
-import org.hotrod.config.MyBatisSpringTag;
+import org.hotrod.config.JDBCTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
@@ -73,7 +73,7 @@ public class Metadata {
 
     ColumnsRetriever cr = null;
 
-    MyBatisSpringTag mst = (MyBatisSpringTag) config.getGenerators().getSelectedGeneratorTag();
+    JDBCTag mst = (JDBCTag) config.getGenerators().getSelectedGeneratorTag();
     boolean autoDiscovery = mst.getDiscover() != null;
 
     try {

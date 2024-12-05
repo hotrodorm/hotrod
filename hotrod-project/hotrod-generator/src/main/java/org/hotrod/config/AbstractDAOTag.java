@@ -96,7 +96,6 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag {
 
     for (SequenceMethodTag s : this.sequences) {
       s.validate(daosTag, config, fragmentConfig, adapter);
-      super.addChild(s);
       if (seqNames.contains(s.getSequenceId())) {
         String msg = "Duplicate sequence " + s.getSequenceId().getRenderedSQLName();
         throw new InvalidConfigurationFileException(this, msg);
@@ -114,7 +113,6 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag {
 
     for (QueryMethodTag q : this.queries) {
       q.validate(daosTag, config, fragmentConfig);
-      super.addChild(q);
       if (this.declaredMethodNames.contains(q.getMethod())) {
         throw new InvalidConfigurationFileException(this,
             "Duplicate java-method-name '" + q.getMethod()
@@ -132,14 +130,11 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag {
 
     for (SelectMethodTag s : this.selects) {
       s.validate(daosTag, config, fragmentConfig, adapter, isEntity);
-      super.addChild(s);
-
       if (methodNames.contains(s.getMethod())) {
         throw new InvalidConfigurationFileException(s,
             "Duplicate method name '" + s.getMethod() + "' on <" + s.getTagName() + "> tag.");
       }
       methodNames.add(s.getMethod());
-
     }
 
   }
