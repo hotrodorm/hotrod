@@ -21,7 +21,7 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamReader;
 
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.dynamicsql.SourceLocation;
+import org.hotrod.dynamicsql.existing.SourceLocation;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;

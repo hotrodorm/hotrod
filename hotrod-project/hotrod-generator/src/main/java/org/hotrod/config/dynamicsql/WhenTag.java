@@ -5,8 +5,8 @@ import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.hotrod.dynamicsql.expressions.DynamicExpression;
-import org.hotrod.dynamicsql.expressions.WhenExpression;
+import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
+import org.hotrod.dynamicsql.existing.expressions.WhenExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
@@ -69,7 +69,7 @@ public class WhenTag extends DynamicSQLPart {
   // Java Expression
 
   @Override
-  protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
+  protected OldDynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
       throws InvalidJavaExpressionException {
 
     try {

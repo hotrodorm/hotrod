@@ -19,7 +19,7 @@ import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.dynamicsql.expressions.DynamicExpression;
+import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.exceptions.InvalidSQLException;
@@ -164,7 +164,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   }
 
   @Override
-  public DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
+  public OldDynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
       throws InvalidJavaExpressionException {
     // XXX: Pending. Develop only when/if it's needed.
     return null;

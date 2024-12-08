@@ -1,6 +1,6 @@
 package org.hotrod.exceptions;
 
-import org.hotrod.dynamicsql.SourceLocation;
+import org.hotrod.dynamicsql.existing.SourceLocation;
 
 public class InvalidJavaExpressionException extends Exception {
 

@@ -1,4 +1,4 @@
-package org.hotrod.dynamicsql;
+package org.hotrod.dynamicsql.existing;
 
 public class EvaluationFeedback {
 

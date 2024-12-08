@@ -7,9 +7,9 @@ import java.util.logging.Logger;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.config.SQLParameter;
-import org.hotrod.dynamicsql.expressions.CollectionExpression;
-import org.hotrod.dynamicsql.expressions.DynamicExpression;
-import org.hotrod.dynamicsql.expressions.LiteralExpression;
+import org.hotrod.dynamicsql.existing.expressions.CollectionExpression;
+import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
+import org.hotrod.dynamicsql.existing.expressions.LiteralExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
@@ -156,15 +156,15 @@ public class ParameterisableTextPart extends DynamicSQLPart {
   // Java Expression
 
   @Override
-  protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
+  protected OldDynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
       throws InvalidJavaExpressionException {
 
     try {
 
-      List<DynamicExpression> exprs = new ArrayList<DynamicExpression>();
+      List<OldDynamicExpression> exprs = new ArrayList<OldDynamicExpression>();
       LiteralExpression last = null;
       for (SQLSegment s : this.segments) {
-        DynamicExpression expr = s.getJavaExpression(parameterRenderer);
+        OldDynamicExpression expr = s.getJavaExpression(parameterRenderer);
         try {
           LiteralExpression v = (LiteralExpression) expr;
           if (last == null) {
@@ -184,7 +184,7 @@ public class ParameterisableTextPart extends DynamicSQLPart {
         exprs.add(last);
       }
 
-      return new CollectionExpression(exprs.toArray(new DynamicExpression[0]));
+      return new CollectionExpression(exprs.toArray(new OldDynamicExpression[0]));
 
     } catch (RuntimeException e) {
       throw new InvalidJavaExpressionException(this.getSourceLocation(),

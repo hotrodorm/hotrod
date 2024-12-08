@@ -5,8 +5,8 @@ import java.util.Iterator;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.hotrod.dynamicsql.expressions.DynamicExpression;
-import org.hotrod.dynamicsql.expressions.TrimExpression;
+import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
+import org.hotrod.dynamicsql.existing.expressions.TrimExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
@@ -102,7 +102,7 @@ public class TrimTag extends DynamicSQLPart {
   // Java Expression
 
   @Override
-  protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
+  protected OldDynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
       throws InvalidJavaExpressionException {
 
     try {

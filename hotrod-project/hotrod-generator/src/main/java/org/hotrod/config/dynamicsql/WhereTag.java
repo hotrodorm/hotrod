@@ -5,8 +5,8 @@ import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.hotrod.dynamicsql.expressions.DynamicExpression;
-import org.hotrod.dynamicsql.expressions.WhereExpression;
+import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
+import org.hotrod.dynamicsql.existing.expressions.WhereExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
@@ -78,7 +78,7 @@ public class WhereTag extends DynamicSQLPart {
   // Java Expression
 
   @Override
-  protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
+  protected OldDynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
       throws InvalidJavaExpressionException {
 
     try {

@@ -2,8 +2,8 @@ package org.hotrod.config.dynamicsql;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.hotrod.dynamicsql.expressions.DynamicExpression;
-import org.hotrod.dynamicsql.expressions.OtherwiseExpression;
+import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
+import org.hotrod.dynamicsql.existing.expressions.OtherwiseExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
@@ -49,7 +49,7 @@ public class OtherwiseTag extends DynamicSQLPart {
   // Java Expression
 
   @Override
-  protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
+  protected OldDynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
       throws InvalidJavaExpressionException {
 
     try {

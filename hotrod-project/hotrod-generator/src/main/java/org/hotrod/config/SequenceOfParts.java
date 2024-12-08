@@ -8,9 +8,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.dynamicsql.expressions.CollectionExpression;
-import org.hotrod.dynamicsql.expressions.DynamicExpression;
-import org.hotrod.dynamicsql.expressions.LiteralExpression;
+import org.hotrod.dynamicsql.existing.expressions.CollectionExpression;
+import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
+import org.hotrod.dynamicsql.existing.expressions.LiteralExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
@@ -35,7 +35,7 @@ public class SequenceOfParts extends EnhancedSQLPart {
   // Java Expression
 
   @Override
-  public DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
+  public OldDynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
       throws InvalidJavaExpressionException {
 
     try {
@@ -51,12 +51,12 @@ public class SequenceOfParts extends EnhancedSQLPart {
 
   }
 
-  private DynamicExpression[] toArray(final List<EnhancedSQLPart> parts, final ParameterRenderer parameterRenderer)
+  private OldDynamicExpression[] toArray(final List<EnhancedSQLPart> parts, final ParameterRenderer parameterRenderer)
       throws InvalidJavaExpressionException {
-    List<DynamicExpression> exps = new ArrayList<DynamicExpression>();
+    List<OldDynamicExpression> exps = new ArrayList<OldDynamicExpression>();
     LiteralExpression last = null;
     for (EnhancedSQLPart p : parts) {
-      DynamicExpression expr = p.getJavaExpression(parameterRenderer);
+      OldDynamicExpression expr = p.getJavaExpression(parameterRenderer);
       try {
         LiteralExpression le = (LiteralExpression) expr;
         if (last == null) {
@@ -75,7 +75,7 @@ public class SequenceOfParts extends EnhancedSQLPart {
     if (last != null) {
       exps.add(last);
     }
-    return exps.toArray(new DynamicExpression[0]);
+    return exps.toArray(new OldDynamicExpression[0]);
   }
 
   @Override

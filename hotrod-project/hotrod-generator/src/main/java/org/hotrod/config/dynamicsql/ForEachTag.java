@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.config.ParameterTag;
-import org.hotrod.dynamicsql.expressions.DynamicExpression;
+import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
@@ -144,7 +144,7 @@ public class ForEachTag extends DynamicSQLPart {
   // Java Expression
 
   @Override
-  protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
+  protected OldDynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
       throws InvalidJavaExpressionException {
 
     throw new UnsupportedOperationException("The <foreach> and <bind> tags are not yet supported.");

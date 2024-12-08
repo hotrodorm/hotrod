@@ -2,9 +2,9 @@ package org.hotrod.config.dynamicsql;
 
 import java.util.logging.Logger;
 
-import org.hotrod.dynamicsql.SourceLocation;
-import org.hotrod.dynamicsql.expressions.DynamicExpression;
-import org.hotrod.dynamicsql.expressions.LiteralExpression;
+import org.hotrod.dynamicsql.existing.SourceLocation;
+import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
+import org.hotrod.dynamicsql.existing.expressions.LiteralExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
@@ -75,7 +75,7 @@ public class LiteralTextPart extends DynamicSQLPart implements SQLSegment {
   // Java Expression
 
   @Override
-  public DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
+  public OldDynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
       throws InvalidJavaExpressionException {
 
     try {

@@ -15,8 +15,8 @@ import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.ParameterTag;
-import org.hotrod.dynamicsql.expressions.DynamicExpression;
-import org.hotrod.dynamicsql.expressions.LiteralExpression;
+import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
+import org.hotrod.dynamicsql.existing.expressions.LiteralExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.Generator;
@@ -250,17 +250,17 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
     return sb.toString();
   }
 
-  protected abstract DynamicExpression getJavaExpression(ParameterRenderer parameterRenderer)
+  protected abstract OldDynamicExpression getJavaExpression(ParameterRenderer parameterRenderer)
       throws InvalidJavaExpressionException;
 
   // Utils
 
-  protected DynamicExpression[] toArray(final List<DynamicSQLPart> parts, final ParameterRenderer parameterRenderer)
+  protected OldDynamicExpression[] toArray(final List<DynamicSQLPart> parts, final ParameterRenderer parameterRenderer)
       throws InvalidJavaExpressionException {
-    List<DynamicExpression> exps = new ArrayList<DynamicExpression>();
+    List<OldDynamicExpression> exps = new ArrayList<OldDynamicExpression>();
     LiteralExpression last = null;
     for (DynamicSQLPart p : parts) {
-      DynamicExpression expr = p.getJavaExpression(parameterRenderer);
+      OldDynamicExpression expr = p.getJavaExpression(parameterRenderer);
       try {
         LiteralExpression le = (LiteralExpression) expr;
         if (last == null) {
@@ -279,7 +279,7 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
     if (last != null) {
       exps.add(last);
     }
-    return exps.toArray(new DynamicExpression[0]);
+    return exps.toArray(new OldDynamicExpression[0]);
   }
 
   // Simple Caption

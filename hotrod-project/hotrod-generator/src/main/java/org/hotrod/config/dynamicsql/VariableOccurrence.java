@@ -2,8 +2,8 @@ package org.hotrod.config.dynamicsql;
 
 import java.util.logging.Logger;
 
-import org.hotrod.dynamicsql.expressions.DynamicExpression;
-import org.hotrod.dynamicsql.expressions.VariableExpression;
+import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
+import org.hotrod.dynamicsql.existing.expressions.VariableExpression;
 import org.hotrod.generator.ParameterRenderer;
 
 public class VariableOccurrence implements SQLSegment {
@@ -45,7 +45,7 @@ public class VariableOccurrence implements SQLSegment {
   }
 
   @Override
-  public DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer) {
+  public OldDynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer) {
     return new VariableExpression(this.name);
   }
 

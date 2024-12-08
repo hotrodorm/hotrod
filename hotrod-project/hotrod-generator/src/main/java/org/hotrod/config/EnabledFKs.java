@@ -23,7 +23,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.hotrod.config.AbstractHotRodConfigTag.LocationListener;
-import org.hotrod.dynamicsql.SourceLocation;
+import org.hotrod.dynamicsql.existing.SourceLocation;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;

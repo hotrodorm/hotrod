@@ -1,16 +1,16 @@
-package org.hotrod.dynamicsql.expressions;
+package org.hotrod.dynamicsql.existing.expressions;
 
 import java.util.List;
 
 import org.apache.commons.jexl3.JexlBuilder;
 import org.apache.commons.jexl3.JexlEngine;
-import org.hotrod.dynamicsql.DynamicSQLEvaluationException;
-import org.hotrod.dynamicsql.DynamicSQLParameters;
-import org.hotrod.dynamicsql.EvaluationFeedback;
+import org.hotrod.dynamicsql.existing.DynamicSQLEvaluationException;
+import org.hotrod.dynamicsql.existing.DynamicSQLParameters;
+import org.hotrod.dynamicsql.existing.EvaluationFeedback;
 import org.hotrod.utils.SUtil;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
-public abstract class DynamicExpression {
+public abstract class OldDynamicExpression {
 
   private static final int JEXL_CACHE_MAX_EXPRESSIONS = 200;
 
@@ -64,7 +64,7 @@ public abstract class DynamicExpression {
             lw.add(nextIndent + pw.toString());
           } catch (ClassCastException e1) {
             try {
-              DynamicExpression expr = (DynamicExpression) obj;
+              OldDynamicExpression expr = (OldDynamicExpression) obj;
               lw.add(expr.renderConstructor(margin + 2));
             } catch (ClassCastException e2) {
               throw new IllegalArgumentException(

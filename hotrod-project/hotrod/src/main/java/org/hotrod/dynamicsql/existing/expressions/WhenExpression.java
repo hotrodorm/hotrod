@@ -1,4 +1,4 @@
-package org.hotrod.dynamicsql.expressions;
+package org.hotrod.dynamicsql.existing.expressions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,18 +6,18 @@ import java.util.List;
 
 import org.apache.commons.jexl3.JexlException;
 import org.apache.commons.jexl3.JexlExpression;
-import org.hotrod.dynamicsql.DynamicSQLEvaluationException;
-import org.hotrod.dynamicsql.DynamicSQLParameters;
-import org.hotrod.dynamicsql.EvaluationFeedback;
+import org.hotrod.dynamicsql.existing.DynamicSQLEvaluationException;
+import org.hotrod.dynamicsql.existing.DynamicSQLParameters;
+import org.hotrod.dynamicsql.existing.EvaluationFeedback;
 import org.hotrod.exceptions.InvalidJexlExpressionException;
 
-public class WhenExpression extends DynamicExpression {
+public class WhenExpression extends OldDynamicExpression {
 
   private JexlExpression test;
 
-  private DynamicExpression[] expressions;
+  private OldDynamicExpression[] expressions;
 
-  public WhenExpression(final String test, final DynamicExpression... expressions) {
+  public WhenExpression(final String test, final OldDynamicExpression... expressions) {
     try {
       this.test = JEXL_ENGINE.createExpression(test);
     } catch (JexlException e) {
@@ -44,7 +44,7 @@ public class WhenExpression extends DynamicExpression {
     try {
       Boolean cond = (Boolean) obj;
       if (cond) {
-        for (DynamicExpression expr : this.expressions) {
+        for (OldDynamicExpression expr : this.expressions) {
           expr.evaluate(out, variables);
         }
       }

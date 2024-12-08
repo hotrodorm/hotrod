@@ -1,18 +1,18 @@
-package org.hotrod.dynamicsql.expressions;
+package org.hotrod.dynamicsql.existing.expressions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.hotrod.dynamicsql.DynamicSQLEvaluationException;
-import org.hotrod.dynamicsql.DynamicSQLParameters;
-import org.hotrod.dynamicsql.EvaluationFeedback;
+import org.hotrod.dynamicsql.existing.DynamicSQLEvaluationException;
+import org.hotrod.dynamicsql.existing.DynamicSQLParameters;
+import org.hotrod.dynamicsql.existing.EvaluationFeedback;
 
-public class CollectionExpression extends DynamicExpression {
+public class CollectionExpression extends OldDynamicExpression {
 
-  private DynamicExpression[] expressions;
+  private OldDynamicExpression[] expressions;
 
-  public CollectionExpression(final DynamicExpression... expressions) {
+  public CollectionExpression(final OldDynamicExpression... expressions) {
     this.expressions = expressions;
   }
 
@@ -20,7 +20,7 @@ public class CollectionExpression extends DynamicExpression {
   public EvaluationFeedback evaluate(final StringBuilder out, final DynamicSQLParameters variables)
       throws DynamicSQLEvaluationException {
     boolean contentRendered = false;
-    for (DynamicExpression expr : this.expressions) {
+    for (OldDynamicExpression expr : this.expressions) {
       EvaluationFeedback feedback = expr.evaluate(out, variables);
       contentRendered = contentRendered || feedback.wasContentRendered();
     }

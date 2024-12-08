@@ -1,4 +1,4 @@
-package org.hotrod.dynamicsql.expressions;
+package org.hotrod.dynamicsql.existing.expressions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,13 +7,13 @@ import java.util.Map;
 
 import org.apache.commons.jexl3.JexlException;
 import org.apache.commons.jexl3.JexlExpression;
-import org.hotrod.dynamicsql.DynamicSQLEvaluationException;
-import org.hotrod.dynamicsql.DynamicSQLParameters;
-import org.hotrod.dynamicsql.EvaluationFeedback;
+import org.hotrod.dynamicsql.existing.DynamicSQLEvaluationException;
+import org.hotrod.dynamicsql.existing.DynamicSQLParameters;
+import org.hotrod.dynamicsql.existing.EvaluationFeedback;
 import org.hotrod.exceptions.InvalidJexlExpressionException;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
-public class ForEachExpression extends DynamicExpression {
+public class ForEachExpression extends OldDynamicExpression {
 
   // Constants
 
@@ -25,10 +25,10 @@ public class ForEachExpression extends DynamicExpression {
   private String open = null;
   private String separator = null;
   private String close = null;
-  private DynamicExpression[] expressions = null;
+  private OldDynamicExpression[] expressions = null;
 
   public ForEachExpression(final String item, final String index, final String collection, final String open,
-      final String separator, final String close, final DynamicExpression... expressions) {
+      final String separator, final String close, final OldDynamicExpression... expressions) {
     this.item = item;
     this.index = index;
     try {
@@ -132,7 +132,7 @@ public class ForEachExpression extends DynamicExpression {
   private void evaluateBody(final DynamicSQLParameters variables, final ListWriter lw)
       throws DynamicSQLEvaluationException {
     StringBuilder sb = new StringBuilder();
-    for (DynamicExpression expr : this.expressions) {
+    for (OldDynamicExpression expr : this.expressions) {
       expr.evaluate(sb, variables);
     }
     lw.add(sb.toString());

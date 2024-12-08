@@ -1,4 +1,4 @@
-package org.hotrod.dynamicsql.expressions;
+package org.hotrod.dynamicsql.existing.expressions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,7 +6,7 @@ import java.util.List;
 
 public class SetExpression extends TrimExpression {
 
-  public SetExpression(final DynamicExpression... expressions) {
+  public SetExpression(final OldDynamicExpression... expressions) {
     super(null, null, null, ",", expressions);
   }
 

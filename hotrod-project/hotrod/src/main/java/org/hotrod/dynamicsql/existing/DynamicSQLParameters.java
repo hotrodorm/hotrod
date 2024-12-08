@@ -1,4 +1,4 @@
-package org.hotrod.dynamicsql;
+package org.hotrod.dynamicsql.existing;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,16 +1,16 @@
-package org.hotrod.dynamicsql.expressions;
+package org.hotrod.dynamicsql.existing.expressions;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.jexl3.JexlException;
 import org.apache.commons.jexl3.JexlExpression;
-import org.hotrod.dynamicsql.DynamicSQLEvaluationException;
-import org.hotrod.dynamicsql.DynamicSQLParameters;
-import org.hotrod.dynamicsql.EvaluationFeedback;
+import org.hotrod.dynamicsql.existing.DynamicSQLEvaluationException;
+import org.hotrod.dynamicsql.existing.DynamicSQLParameters;
+import org.hotrod.dynamicsql.existing.EvaluationFeedback;
 import org.hotrod.exceptions.InvalidJexlExpressionException;
 
-public class BindExpression extends DynamicExpression {
+public class BindExpression extends OldDynamicExpression {
 
   private String name;
   private JexlExpression value;

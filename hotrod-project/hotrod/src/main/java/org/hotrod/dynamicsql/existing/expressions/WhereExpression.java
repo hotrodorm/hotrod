@@ -1,4 +1,4 @@
-package org.hotrod.dynamicsql.expressions;
+package org.hotrod.dynamicsql.existing.expressions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,7 +6,7 @@ import java.util.List;
 
 public class WhereExpression extends TrimExpression {
 
-  public WhereExpression(final DynamicExpression... expressions) {
+  public WhereExpression(final OldDynamicExpression... expressions) {
     super("where ", "and |or ", null, null, expressions);
   }
 

@@ -4,8 +4,8 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.hotrod.dynamicsql.expressions.CollectionExpression;
-import org.hotrod.dynamicsql.expressions.DynamicExpression;
+import org.hotrod.dynamicsql.existing.expressions.CollectionExpression;
+import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
@@ -52,7 +52,7 @@ public class CollectionOfPartsTag extends DynamicSQLPart {
   // Java Expression
 
   @Override
-  public DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
+  public OldDynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
       throws InvalidJavaExpressionException {
 
     try {

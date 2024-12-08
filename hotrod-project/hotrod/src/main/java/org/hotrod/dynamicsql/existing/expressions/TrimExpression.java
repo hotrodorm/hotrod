@@ -1,4 +1,4 @@
-package org.hotrod.dynamicsql.expressions;
+package org.hotrod.dynamicsql.existing.expressions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,22 +6,22 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.hotrod.dynamicsql.DynamicSQLEvaluationException;
-import org.hotrod.dynamicsql.DynamicSQLParameters;
-import org.hotrod.dynamicsql.EvaluationFeedback;
+import org.hotrod.dynamicsql.existing.DynamicSQLEvaluationException;
+import org.hotrod.dynamicsql.existing.DynamicSQLParameters;
+import org.hotrod.dynamicsql.existing.EvaluationFeedback;
 import org.hotrod.utils.SUtil;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
-public class TrimExpression extends DynamicExpression {
+public class TrimExpression extends OldDynamicExpression {
 
   private String prefix;
   private LinkedHashSet<String> prefixOverrides;
   private String suffix;
   private LinkedHashSet<String> suffixOverrides;
-  protected DynamicExpression[] expressions;
+  protected OldDynamicExpression[] expressions;
 
   public TrimExpression(final String prefix, final String prefixOverrides, final String suffix,
-      final String suffixOverrides, final DynamicExpression... expressions) {
+      final String suffixOverrides, final OldDynamicExpression... expressions) {
     this.prefix = prefix;
     this.prefixOverrides = new LinkedHashSet<String>();
     if (prefixOverrides != null) {
@@ -56,7 +56,7 @@ public class TrimExpression extends DynamicExpression {
 
     StringBuilder sb = new StringBuilder();
     boolean contentRendered = false;
-    for (DynamicExpression expr : this.expressions) {
+    for (OldDynamicExpression expr : this.expressions) {
       EvaluationFeedback feedback = expr.evaluate(sb, variables);
       contentRendered = contentRendered || feedback.wasContentRendered();
     }
