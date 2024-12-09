@@ -30,7 +30,7 @@ public class PartialQuery {
   }
 
   public PartialQuery parameter(String name, int sqlType) {
-    this.segments.add(new ParameterSegment(name, sqlType));
+    this.segments.add(new ParameterSegment(this.factory, name, sqlType));
     return this;
   }
 

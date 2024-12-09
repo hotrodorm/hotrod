@@ -4,6 +4,7 @@ import org.apache.commons.jexl3.JexlBuilder;
 import org.apache.commons.jexl3.JexlEngine;
 import org.apache.commons.jexl3.JexlException;
 import org.apache.commons.jexl3.JexlExpression;
+import org.apache.commons.jexl3.introspection.JexlPermissions;
 import org.hotrod.dynamic.DynamicExpression;
 import org.hotrod.dynamic.DynamicExpressionException;
 import org.hotrod.dynamic.ParameterContext;
@@ -13,8 +14,8 @@ public class JEXLDynamicExpression extends DynamicExpression {
 
   private static final int JEXL_CACHE_MAX_EXPRESSIONS = 200;
 
-  protected static JexlEngine JEXL_ENGINE = new JexlBuilder().cache(JEXL_CACHE_MAX_EXPRESSIONS).strict(true)
-      .debug(false).silent(false).create();
+  public static JexlEngine JEXL_ENGINE = new JexlBuilder().cache(JEXL_CACHE_MAX_EXPRESSIONS)
+      .permissions(JexlPermissions.UNRESTRICTED).strict(true).debug(true).silent(false).create();
 
   private String txt;
   private JexlExpression expr;

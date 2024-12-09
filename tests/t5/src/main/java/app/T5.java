@@ -23,8 +23,9 @@ public class T5 {
 
     AccountDAO c5 = new AccountDAO();
 
-    Account account = new Account(123, "1015", "CHK", 500);
-    int rows = c5.update(conn, account);
+    Account filter = new Account(123, "AK", null, null);
+    Account newValues = new Account(null, null, "INV", 707);
+    int rows = c5.update(conn, filter, newValues);
 
     System.out.println("Updated rows: " + rows);
 

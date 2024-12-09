@@ -27,29 +27,33 @@ public class AccountDAO {
 
   private final DynamicModificationQuery update = builder.create() //
       .literal("UPDATE account \nSET balance = ") //
-      .parameter("balance", Types.NUMERIC) //
+      .parameter("n.balance", Types.NUMERIC) //
       .whereSegment(builder.ifSegments() //
-          .ifSegment("id != null", builder.create().literal("and id = ").parameter("id", Types.NUMERIC).end())
-          .ifSegment("name != null", builder.create().literal("and name = ").parameter("name", Types.VARCHAR).end())
-          .ifSegment("type != null", builder.create().literal("and type = ").parameter("type", Types.VARCHAR).end())
-          .ifSegment("balance != null", builder.create().literal("and balance = ").parameter("balance", Types.NUMERIC).end())
+          .ifSegment("f.id != null", builder.create().literal("and id = ").parameter("f.id", Types.NUMERIC).end())
+          .ifSegment("f.name != null", builder.create().literal("and name = ").parameter("f.name", Types.VARCHAR).end())
+          .ifSegment("f.type != null", builder.create().literal("and type = ").parameter("f.type", Types.VARCHAR).end())
+          .ifSegment("f.balance != null",
+              builder.create().literal("and balance = ").parameter("f.balance", Types.NUMERIC).end())
           .end() //
       ).endModificationQuery();
 
-  public int update(Connection conn, Account account) throws DynamicExpressionException, SQLException {
+  public int update(Connection conn, Account filter, Account newValues)
+      throws DynamicExpressionException, SQLException {
 
     // 1. Prepare the parameter context
 
     ParameterContext context = this.factory.newParameterContext();
-    context.add("id", account.getId());
-    context.add("name", account.getName());
-    context.add("type", account.getType());
-    context.add("balance", account.getBalance());
+    context.add("f", filter);
+    context.add("n", newValues);
+//    context.add("id", filter.getId());
+//    context.add("name", filter.getName());
+//    context.add("type", filter.getType());
+//    context.add("balance", filter.getBalance());
 
     // 2. Process DynamicSQL and produce query and parameters
 
     PreparedQuery preparedQuery = this.update.prepare(context);
-    System.out.println("Preview:\n" + preparedQuery.getPreview());
+    System.out.println("=== Preview===\n" + preparedQuery.getPreview());
 
     // 3. Execute the resulting query
 
