@@ -5,38 +5,28 @@ import java.util.List;
 
 import org.hotrod.dynamic.DynamicExpressionFactory;
 import org.hotrod.dynamic.segments.IfSegment;
-import org.hotrod.dynamic.segments.QuerySegment;
+import org.hotrod.dynamic.segments.SegmentList;
 
 public class WhereBuilder {
 
-  public static PartialWhere create(DynamicExpressionFactory factory) {
-    return new PartialWhere(null, factory);
+  private DynamicExpressionFactory factory;
+  private List<IfSegment> ifSegments = new ArrayList<>();
+
+  public WhereBuilder(DynamicExpressionFactory factory) {
+    this.factory = factory;
   }
 
-  public static PartialWhere create(String delimiter, DynamicExpressionFactory factory) {
-    return new PartialWhere(delimiter, factory);
+  // IF Segments
+
+  public WhereBuilder ifSegment(String test, SegmentList querySegments) {
+    this.ifSegments.add(new IfSegment(test, querySegments.getSegments(), this.factory));
+    return this;
   }
 
-  public static class PartialWhere {
+  // end
 
-    private String delimiter;
-    private DynamicExpressionFactory factory;
-    private List<QuerySegment> segments = new ArrayList<>();
-
-    public PartialWhere(String delimiter, DynamicExpressionFactory factory) {
-      this.delimiter = delimiter;
-      this.factory = factory;
-    }
-
-    public PartialWhere add(QuerySegment s) {
-      this.segments.add(s);
-      return this;
-    }
-
-    public IfSegment end() {
-      return new IfSegment(this.delimiter, this.segments, this.factory);
-    }
-
+  public List<IfSegment> end() {
+    return this.ifSegments;
   }
 
 }
