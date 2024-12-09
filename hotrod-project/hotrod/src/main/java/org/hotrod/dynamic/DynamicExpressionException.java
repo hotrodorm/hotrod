@@ -8,4 +8,8 @@ public class DynamicExpressionException extends Exception {
     super(message);
   }
 
+  public DynamicExpressionException(String message, Throwable cause) {
+    super(message, cause);
+  }
+
 }

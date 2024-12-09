@@ -40,7 +40,7 @@ public class JEXLDynamicExpression extends DynamicExpression {
     try {
       obj = this.expr.evaluate(jexlContext);
     } catch (Exception e) {
-      throw new DynamicExpressionException("Could not evaluate the expression '" + this.txt + "': " + e.getMessage());
+      throw new DynamicExpressionException("Could not evaluate the expression '" + this.txt + "'", e);
     }
     if (obj == null) {
       return null;
@@ -51,7 +51,7 @@ public class JEXLDynamicExpression extends DynamicExpression {
     } catch (ClassCastException e) {
       throw new DynamicExpressionException(
           "Invalid result of expression '" + this.txt + "': expected a result of type '" + targetClass.getName()
-              + "' but encountered '" + obj.getClass().getName() + "'");
+              + "' but encountered '" + obj.getClass().getName() + "'.");
     }
   }
 

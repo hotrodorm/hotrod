@@ -36,7 +36,7 @@ public class IfSegment extends DynamicSegment {
       }
     } catch (Throwable e) {
       throw new DynamicExpressionException(
-          "Could not evaluate the test condition '" + this.test + "' on conditional segment.");
+          "Could not evaluate the test condition '" + this.test + "' on Dynamic SQL IF segment", e);
     }
 
     // 2. Include the inner segments as needed
