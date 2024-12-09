@@ -16,12 +16,23 @@ public class AccountDAO {
   private final DynamicExpressionFactory factory = DynamicExpressionFactory.getFactory();
   private final QueryBuilder builder = new QueryBuilder(this.factory);
 
+//  private final DynamicModificationQuery update = builder.create() //
+//      .literal("UPDATE account \nSET balance = ") //
+//      .parameter("balance", Types.NUMERIC) //
+//      .ifSegment("id != null", builder.create() //
+//          .literal("\nWHERE id = ") //
+//          .parameter("id", Types.NUMERIC) //
+//          .end() //
+//      ).endModificationQuery();
+
   private final DynamicModificationQuery update = builder.create() //
       .literal("UPDATE account \nSET balance = ") //
       .parameter("balance", Types.NUMERIC) //
-      .ifSegment("id != null", builder.create() //
-          .literal("\nWHERE id = ") //
-          .parameter("id", Types.NUMERIC) //
+      .whereSegment(builder.ifSegments() //
+          .ifSegment("id != null", builder.create().literal("and id = ").parameter("id", Types.NUMERIC).end())
+          .ifSegment("name != null", builder.create().literal("and name = ").parameter("name", Types.VARCHAR).end())
+          .ifSegment("type != null", builder.create().literal("and type = ").parameter("type", Types.VARCHAR).end())
+          .ifSegment("balance != null", builder.create().literal("and balance = ").parameter("balance", Types.NUMERIC).end())
           .end() //
       ).endModificationQuery();
 

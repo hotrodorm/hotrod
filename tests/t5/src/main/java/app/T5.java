@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.hotrod.dynamic.DynamicExpressionException;
 
@@ -11,6 +12,10 @@ import app.gen.Account;
 import app.gen.AccountDAO;
 
 public class T5 {
+
+  static {
+    JULCustomFormatter.initialize(Level.INFO);
+  }
 
   public static void main(String[] args) throws SQLException, DynamicExpressionException {
 

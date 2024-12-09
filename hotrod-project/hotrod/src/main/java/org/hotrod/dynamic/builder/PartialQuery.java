@@ -10,12 +10,13 @@ import org.hotrod.dynamic.segments.IfSegment;
 import org.hotrod.dynamic.segments.LiteralSegment;
 import org.hotrod.dynamic.segments.ParameterSegment;
 import org.hotrod.dynamic.segments.QuerySegment;
-import org.hotrod.dynamic.segments.QuerySegments;
+import org.hotrod.dynamic.segments.SegmentList;
+import org.hotrod.dynamic.segments.WhereSegment;
 
 public class PartialQuery {
 
   private DynamicExpressionFactory factory;
-  private List<QuerySegment> parts = new ArrayList<>();
+  private List<QuerySegment> segments = new ArrayList<>();
 
   public PartialQuery(DynamicExpressionFactory factory) {
     this.factory = factory;
@@ -24,32 +25,42 @@ public class PartialQuery {
   // Segments
 
   public PartialQuery literal(String txt) {
-    this.parts.add(new LiteralSegment(txt));
+    this.segments.add(new LiteralSegment(txt));
     return this;
   }
 
   public PartialQuery parameter(String name, int sqlType) {
-    this.parts.add(new ParameterSegment(name, sqlType));
+    this.segments.add(new ParameterSegment(name, sqlType));
     return this;
   }
 
-  public PartialQuery ifSegment(String test, QuerySegments querySegments) {
-    this.parts.add(new IfSegment(test, querySegments.getParts(), this.factory));
+  public PartialQuery ifSegment(String test, SegmentList querySegments) {
+    this.segments.add(new IfSegment(test, querySegments.getSegments(), this.factory));
+    return this;
+  }
+
+  public PartialQuery whereSegment(List<IfSegment> ifSegments) {
+    this.segments.add(new WhereSegment(ifSegments, this.factory));
+    return this;
+  }
+
+  public PartialQuery whereSegment(String delimiter, List<IfSegment> ifSegments) {
+    this.segments.add(new WhereSegment(delimiter, ifSegments, this.factory));
     return this;
   }
 
   // end
 
-  public QuerySegments end() {
-    return new QuerySegments(this.parts);
+  public SegmentList end() {
+    return new SegmentList(this.segments);
   }
 
   public DynamicModificationQuery endModificationQuery() {
-    return new DynamicModificationQuery(this.parts);
+    return new DynamicModificationQuery(this.segments);
   }
 
   public DynamicSelectQuery endSelectQuery() {
-    return new DynamicSelectQuery(this.parts);
+    return new DynamicSelectQuery(this.segments);
   }
 
 }

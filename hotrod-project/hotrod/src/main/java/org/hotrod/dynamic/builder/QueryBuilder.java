@@ -14,4 +14,8 @@ public class QueryBuilder {
     return new PartialQuery(this.factory);
   }
 
+  public PartialIfSegments ifSegments() {
+    return new PartialIfSegments(this.factory);
+  }
+
 }

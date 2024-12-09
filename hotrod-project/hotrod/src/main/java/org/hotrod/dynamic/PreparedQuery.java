@@ -5,24 +5,30 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.hotrod.dynamic.segments.ParameterSegment;
 import org.hotrod.dynamic.segments.StaticSegmentConsumer;
+import org.hotrod.dynamic.segments.WhereSegment;
 import org.hotrod.utils.JDBCTypes;
 import org.hotrod.utils.SUtil;
 
 public class PreparedQuery implements StaticSegmentConsumer {
+
+  private static final Logger log = Logger.getLogger(PreparedQuery .class.getName());
 
   private StringBuilder sb = new StringBuilder();
   private List<ParameterSegment> parameters = new ArrayList<>();
 
   @Override
   public void consume(String literal) {
+//    log.info(">> received literal");
     this.sb.append(literal);
   }
 
   @Override
   public void consume(ParameterSegment p) {
+//    log.info(">> received parameter");
     this.parameters.add(p);
   }
 
