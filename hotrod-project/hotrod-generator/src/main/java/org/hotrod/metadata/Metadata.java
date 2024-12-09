@@ -38,7 +38,7 @@ import org.hotrod.metadata.VORegistry.VOAlreadyExistsException;
 import org.hotrod.typesolver.DriverColumnMetaData;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.ClassPackage;
-import org.hotrod.utils.JdbcTypes;
+import org.hotrod.utils.JDBCTypes;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
@@ -110,7 +110,7 @@ public class Metadata {
         } catch (UnresolvableDataTypeException e) {
           DriverColumnMetaData m = e.getColumnMetadata();
 
-          String typeName = JdbcTypes.codeToName(m.getDataType());
+          String typeName = JDBCTypes.codeToName(m.getDataType());
 
           throw new ControlledException("Unrecognized column data type (reported as '" + m.getTypeName()
               + "', JDBC type " + m.getDataType() + " "

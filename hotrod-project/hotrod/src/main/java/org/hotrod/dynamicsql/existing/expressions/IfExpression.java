@@ -18,7 +18,7 @@ public class IfExpression extends OldDynamicExpression {
 
   public IfExpression(final String test, final OldDynamicExpression... expressions) {
     try {
-      this.test = JEXL_ENGINE.createExpression(test);
+      this.test = OLD_JEXL_ENGINE.createExpression(test);
     } catch (JexlException e) {
       throw new InvalidJexlExpressionException("Invalid test expression: " + test + " (" + e.getMessage() + ")");
     }

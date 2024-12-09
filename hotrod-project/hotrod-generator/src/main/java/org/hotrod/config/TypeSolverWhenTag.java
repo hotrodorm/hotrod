@@ -8,8 +8,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.utils.JdbcTypes;
-import org.hotrod.utils.JdbcTypes.JDBCType;
+import org.hotrod.utils.JDBCTypes;
+import org.hotrod.utils.JDBCTypes.JDBCType;
 import org.hotrod.utils.OgnlExpression;
 import org.hotrod.utils.SUtil;
 
@@ -143,7 +143,7 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
         throw new InvalidConfigurationFileException(this, //
             "'force-jdbc-type-on-write' attribute cannot be empty");
       }
-      this.jdbcType = JdbcTypes.nameToType(this.forceJDBCTypeOnWrite);
+      this.jdbcType = JDBCTypes.nameToType(this.forceJDBCTypeOnWrite);
       if (this.jdbcType == null) {
         throw new InvalidConfigurationFileException(this, //
             "Invalid 'force-jdbc-type-on-write' attribute: "

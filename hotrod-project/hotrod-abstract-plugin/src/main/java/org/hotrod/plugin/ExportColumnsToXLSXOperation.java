@@ -16,9 +16,9 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.hotrod.BuildInformation;
 import org.hotrod.config.Constants;
 import org.hotrod.generator.Generator;
-import org.hotrod.runtime.BuildInformation;
 
 public class ExportColumnsToXLSXOperation extends AbstractExportColumnsOperation {
 

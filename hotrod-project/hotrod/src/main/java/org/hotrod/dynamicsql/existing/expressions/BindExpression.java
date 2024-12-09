@@ -18,7 +18,7 @@ public class BindExpression extends OldDynamicExpression {
   public BindExpression(final String name, final String valueDefinition) {
     this.name = name;
     try {
-      this.value = JEXL_ENGINE.createExpression(valueDefinition);
+      this.value = OLD_JEXL_ENGINE.createExpression(valueDefinition);
     } catch (JexlException e) {
       throw new InvalidJexlExpressionException(
           "Invalid expression on attribute value: " + valueDefinition + " (" + e.getMessage() + ")");

@@ -6,31 +6,58 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hotrod.dynamic.segments.ParameterSegment;
+import org.hotrod.utils.JDBCTypes;
+import org.hotrod.utils.SUtil;
+
 public class PreparedQuery {
 
   private StringBuilder sb = new StringBuilder();
-  private List<DynamicParameter> appliedParameters = new ArrayList<>();
+  private List<ParameterSegment> parameters = new ArrayList<>();
 
   public void addLiteral(final String literal) {
     this.sb.append(literal);
   }
 
-  public void registerParameter(DynamicParameter p) {
-    this.sb.append("?");
-    this.appliedParameters.add(p);
+  public void registerParameter(ParameterSegment p) {
+    this.parameters.add(p);
   }
 
-  public PreparedStatement prepareStatement(Connection conn) throws SQLException {
-    PreparedStatement ps = conn.prepareStatement(this.sb.toString());
-    int ordinal = 1;
-    for (DynamicParameter ap : this.appliedParameters) {
-      if (ap.getValue() != null) {
-        ps.setObject(ordinal++, ap.getValue());
-      } else {
-        ps.setNull(ordinal++, ap.getSQLType());
+  private static final int MAX_DISPLAY_VALUE = 100;
+
+  public String getPreview() {
+    StringBuilder p = new StringBuilder();
+    p.append(this.sb.toString());
+    p.append("\n=== Parameters (" + this.parameters.size() + ") ===\n");
+    int pos = 1;
+    for (ParameterSegment ps : this.parameters) {
+      String sqlTypeName = JDBCTypes.codeToShortName(ps.getSQLType());
+      Object value = ps.getValue();
+      String tostring = "" + value;
+      if (tostring.length() > MAX_DISPLAY_VALUE) {
+        tostring = tostring.substring(0, MAX_DISPLAY_VALUE - 3) + "...";
       }
+      p.append("" + pos++ + ". " + ps.getName() + " (" + SUtil.coalesce(sqlTypeName, "OTHER/" + ps.getSQLType()) + "): "
+          + tostring + (value == null ? "" : " (" + value.getClass().getName() + ")") + "\n");
     }
-    return ps;
+    if (!this.parameters.isEmpty()) {
+      p.append("======================\n");
+    }
+    return p.toString();
+  }
+
+  public int execute(Connection conn) throws SQLException, DynamicExpressionException {
+    try (PreparedStatement ps = conn.prepareStatement(this.sb.toString())) {
+      int ordinal = 1;
+      for (ParameterSegment p : this.parameters) {
+        if (p.getValue() != null) {
+          ps.setObject(ordinal++, p.getValue());
+        } else {
+          ps.setNull(ordinal++, p.getSQLType());
+        }
+      }
+      return ps.executeUpdate();
+    }
   }
 
 }

@@ -3,7 +3,7 @@ package org.hotrod.utils;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JdbcTypes {
+public class JDBCTypes {
 
   /*
    * This enum contains all JDBC types available until Java 8. It's used to be

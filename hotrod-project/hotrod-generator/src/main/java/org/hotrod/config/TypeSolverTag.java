@@ -13,8 +13,8 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.typesolver.OGNLPublicMemberAccess;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
-import org.hotrod.utils.JdbcTypes;
-import org.hotrod.utils.JdbcTypes.JDBCType;
+import org.hotrod.utils.JDBCTypes;
+import org.hotrod.utils.JDBCTypes.JDBCType;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 
 import ognl.OgnlContext;
@@ -96,7 +96,7 @@ public class TypeSolverTag extends AbstractConfigurationTag {
 //          }
             JDBCType jdbcTypeOnWrite = w.getJDBCTypeOnWrite();
             if (jdbcTypeOnWrite == null) {
-              jdbcTypeOnWrite = (c != null ? JdbcTypes.codeToType(c.getDataType()) : resultSetType);
+              jdbcTypeOnWrite = (c != null ? JDBCTypes.codeToType(c.getDataType()) : resultSetType);
             }
             log.fine("## 5 RULE MATCHES: w.getJavaType()=" + w.getJavaType() + " jdbcTypeOnWrite=" + jdbcTypeOnWrite);
             return new PropertyType(w.getJavaType(), jdbcTypeOnWrite, false);

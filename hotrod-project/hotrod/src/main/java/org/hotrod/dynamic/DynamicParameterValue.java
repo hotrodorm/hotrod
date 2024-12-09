@@ -1,11 +1,11 @@
 package org.hotrod.dynamic;
 
-public class DynamicParameter {
+public class DynamicParameterValue {
 
   private Object value;
   private int sqlType;
 
-  private DynamicParameter(Object value, int sqlType) {
+  private DynamicParameterValue(Object value, int sqlType) {
     this.value = value;
     this.sqlType = sqlType;
     if (this.value == null) {
@@ -14,8 +14,8 @@ public class DynamicParameter {
 
   }
 
-  public static DynamicParameter of(Object value, int sqlType) {
-    return new DynamicParameter(value, sqlType);
+  public static DynamicParameterValue of(Object value, int sqlType) {
+    return new DynamicParameterValue(value, sqlType);
   }
 
   public Object getValue() {

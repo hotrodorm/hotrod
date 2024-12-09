@@ -32,7 +32,7 @@ public class ForEachExpression extends OldDynamicExpression {
     this.item = item;
     this.index = index;
     try {
-      this.collection = JEXL_ENGINE.createExpression(collection);
+      this.collection = OLD_JEXL_ENGINE.createExpression(collection);
     } catch (JexlException e) {
       throw new InvalidJexlExpressionException(
           "Invalid collection expression: " + collection + " (" + e.getMessage() + ")");

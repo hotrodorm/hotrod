@@ -1,4 +1,4 @@
-package org.hotrod.runtime;
+package org.hotrod;
 
 public class BuildInformation {
 

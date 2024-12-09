@@ -6,8 +6,8 @@ import java.util.logging.Logger;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.ColumnUtils;
-import org.hotrod.utils.JdbcTypes;
-import org.hotrod.utils.JdbcTypes.JDBCType;
+import org.hotrod.utils.JDBCTypes;
+import org.hotrod.utils.JDBCTypes.JDBCType;
 
 public class PropertyType implements Serializable {
 
@@ -77,7 +77,7 @@ public class PropertyType implements Serializable {
   /* Internal type for a serial column */
   public PropertyType(final Class<?> javaClass, final ColumnMetadata m, final boolean isLOB,
       final ValueRange valueRange) throws UnresolvableDataTypeException {
-    JDBCType t = JdbcTypes.codeToType(m.getDataType());
+    JDBCType t = JDBCTypes.codeToType(m.getDataType());
     // log.info("a) code=" + m.getDataType() + " type=" + t);
     if (t == null) {
       throw new UnresolvableDataTypeException(m);
@@ -88,7 +88,7 @@ public class PropertyType implements Serializable {
   /* Internal type for a non-serial column */
   public PropertyType(final Class<?> javaClass, final ColumnMetadata m, final boolean isLOB)
       throws UnresolvableDataTypeException {
-    JDBCType t = JdbcTypes.codeToType(m.getDataType());
+    JDBCType t = JDBCTypes.codeToType(m.getDataType());
     // log.info("b) code=" + m.getDataType() + " type=" + t);
     if (t == null) {
       throw new UnresolvableDataTypeException(m);
@@ -109,7 +109,7 @@ public class PropertyType implements Serializable {
   /* Custom type for a non-serial column with unspecified JDBC type */
   public PropertyType(final String javaClassName, final ColumnMetadata m, final boolean isLOB)
       throws UnresolvableDataTypeException {
-    JDBCType t = JdbcTypes.codeToType(m.getDataType());
+    JDBCType t = JDBCTypes.codeToType(m.getDataType());
     // log.info("c) code=" + m.getDataType() + " type=" + t);
     if (t == null) {
       throw new UnresolvableDataTypeException(m);

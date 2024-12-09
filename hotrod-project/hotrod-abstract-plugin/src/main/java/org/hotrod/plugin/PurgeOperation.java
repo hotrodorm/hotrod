@@ -14,6 +14,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.hotrod.BuildInformation;
 import org.hotrod.config.ConfigurationLoader;
 import org.hotrod.config.Constants;
 import org.hotrod.config.HotRodConfigTag;
@@ -23,7 +24,6 @@ import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnrecognizedDatabaseException;
 import org.hotrod.generator.Feedback;
-import org.hotrod.runtime.BuildInformation;
 import org.hotrod.utils.SUtil;
 import org.hotrod.utils.XUtil;
 import org.nocrala.tools.database.tartarus.connectors.DatabaseConnector.IdentifierAdapter;

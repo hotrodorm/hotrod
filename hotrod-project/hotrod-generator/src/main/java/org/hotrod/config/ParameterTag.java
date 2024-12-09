@@ -10,9 +10,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.identifiers.Id;
-import org.hotrod.utils.JdbcTypes;
+import org.hotrod.utils.JDBCTypes;
 import org.hotrod.utils.SUtil;
-import org.hotrod.utils.JdbcTypes.JDBCType;
+import org.hotrod.utils.JDBCTypes.JDBCType;
 
 @XmlRootElement(name = "parameter")
 public class ParameterTag extends AbstractConfigurationTag {
@@ -133,7 +133,7 @@ public class ParameterTag extends AbstractConfigurationTag {
                   + "must be a valid JDBC type name from java.sql.Types. Valid type names are: "
                   + Stream.of(JDBCType.values()).map(t -> t.getShortTypeName()).collect(Collectors.joining(", ")));
         }
-        this.jdbcType = JdbcTypes.nameToType(this.jdbcTypeName);
+        this.jdbcType = JDBCTypes.nameToType(this.jdbcTypeName);
         if (this.jdbcType == null) {
           throw new InvalidConfigurationFileException(this, //
               "Invalid 'jdbc-type' attribute with value '" + this.jdbcTypeName

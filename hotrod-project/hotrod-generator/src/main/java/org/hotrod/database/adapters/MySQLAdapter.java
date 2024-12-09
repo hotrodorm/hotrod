@@ -20,7 +20,7 @@ import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
-import org.hotrod.utils.JdbcTypes.JDBCType;
+import org.hotrod.utils.JDBCTypes.JDBCType;
 import org.hotrod.utils.JdbcUtils;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.exception.CatalogNotSupportedException;

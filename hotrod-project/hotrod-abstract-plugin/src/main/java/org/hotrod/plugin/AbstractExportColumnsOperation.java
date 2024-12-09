@@ -9,6 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import org.hotrod.BuildInformation;
 import org.hotrod.config.Constants;
 import org.hotrod.config.DisplayMode;
 import org.hotrod.exceptions.ControlledException;
@@ -17,7 +18,6 @@ import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.Feedback;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.HotRodContext;
-import org.hotrod.runtime.BuildInformation;
 import org.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.utils.XUtil;
 

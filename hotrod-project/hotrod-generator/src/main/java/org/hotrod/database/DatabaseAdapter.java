@@ -16,8 +16,8 @@ import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
-import org.hotrod.utils.JdbcTypes;
-import org.hotrod.utils.JdbcTypes.JDBCType;
+import org.hotrod.utils.JDBCTypes;
+import org.hotrod.utils.JDBCTypes.JDBCType;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.exception.CatalogNotSupportedException;
 import org.nocrala.tools.database.tartarus.exception.InvalidCatalogException;
@@ -180,7 +180,7 @@ public abstract class DatabaseAdapter implements Serializable {
 
   protected PropertyType produceType(final Class<?> c, final ColumnMetadata m, final boolean isLOB)
       throws UnresolvableDataTypeException {
-    JDBCType jdbcType = JdbcTypes.codeToType(m.getDataType());
+    JDBCType jdbcType = JDBCTypes.codeToType(m.getDataType());
     if (jdbcType == null) {
       throw new UnresolvableDataTypeException(m);
     }

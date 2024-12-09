@@ -19,7 +19,7 @@ public class IfSegment extends DynamicSegment {
   public IfSegment(String test, List<QuerySegment> segments, DynamicExpressionFactory factory) {
     this.test = test;
     this.segments = segments;
-    this.testExpression = factory.create(this.test);
+    this.testExpression = factory.expression(this.test);
   }
 
   @Override
@@ -29,18 +29,11 @@ public class IfSegment extends DynamicSegment {
 
     Boolean cond = null;
     try {
-      Boolean o = this.testExpression.evaluate(context, Boolean.class);
-      if (o == null) {
+      cond = this.testExpression.evaluate(context, Boolean.class);
+      if (cond == null) {
         throw new DynamicExpressionException("The dynamic test condition '" + this.test
             + "' evaluated to null, but must evaluate to either true or false.");
       }
-//      try {
-//        cond = (Boolean) o;
-//      } catch (ClassCastException e) {
-//        throw new DynamicExpressionException("The dynamic test condition '" + this.test
-//            + "' must evaluate to a boolean value (boolean or Boolean), but resulted in an object of class '"
-//            + o.getClass() + "'.");
-//      }
     } catch (Throwable e) {
       throw new DynamicExpressionException(
           "Could not evaluate the test condition '" + this.test + "' on conditional segment.");

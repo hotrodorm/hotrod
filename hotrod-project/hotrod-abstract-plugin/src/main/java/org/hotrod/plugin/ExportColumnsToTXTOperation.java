@@ -9,9 +9,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashSet;
 import java.util.logging.Logger;
 
+import org.hotrod.BuildInformation;
 import org.hotrod.config.Constants;
 import org.hotrod.generator.Generator;
-import org.hotrod.runtime.BuildInformation;
 import org.nocrala.tools.texttablefmt.BorderStyle;
 import org.nocrala.tools.texttablefmt.CellStyle;
 import org.nocrala.tools.texttablefmt.CellStyle.AbbreviationStyle;

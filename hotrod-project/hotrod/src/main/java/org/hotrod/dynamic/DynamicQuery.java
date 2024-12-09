@@ -8,10 +8,14 @@ public abstract class DynamicQuery {
 
   private List<QuerySegment> parts;
 
-  protected PreparedQuery prepare(ParameterContext context) throws DynamicExpressionException {
+  public DynamicQuery(List<QuerySegment> parts) {
+    this.parts = parts;
+  }
+
+  public PreparedQuery prepare(ParameterContext context) throws DynamicExpressionException {
     PreparedQuery pq = new PreparedQuery();
     for (QuerySegment p : this.parts) {
-      p.prepare(pq, context);
+      p.prepare(pq, context); // the context is used to process dynamic SQL
     }
     return pq;
   }

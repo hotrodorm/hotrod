@@ -12,7 +12,7 @@ import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.identifiers.Id;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.Metadata;
-import org.hotrod.utils.JdbcTypes;
+import org.hotrod.utils.JDBCTypes;
 import org.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
@@ -197,7 +197,7 @@ public class ColumnTag extends AbstractConfigurationTag {
                 + "as defined in the java class java.sql.Types. "
                 + "Make sure you specify it in all uppercase letters.");
       }
-      if (JdbcTypes.nameToCode(this.jdbcType) == null) {
+      if (JDBCTypes.nameToCode(this.jdbcType) == null) {
         throw new InvalidConfigurationFileException(this,
             "Invalid 'jdbc-type' attribute with value '" + this.jdbcType
                 + "'. When specified, the attribute 'jdbc-type' of the tag <" + super.getTagName()

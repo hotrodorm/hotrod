@@ -43,7 +43,7 @@ import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VORegistry;
 import org.hotrod.utils.ColumnsMetadataRetriever;
 import org.hotrod.utils.ColumnsPrefixGenerator;
-import org.hotrod.utils.JdbcTypes;
+import org.hotrod.utils.JDBCTypes;
 import org.hotrod.utils.SUtil;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
@@ -670,10 +670,10 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     if (!VALID_ID_JDBC_TYPES.contains(jdbcType)) {
       List<String> validJdbcTypes = new ArrayList<String>();
       for (Integer t : VALID_ID_JDBC_TYPES) {
-        validJdbcTypes.add(SUtil.alignRight("" + t, 7) + " (" + JdbcTypes.codeToName(t) + ")");
+        validJdbcTypes.add(SUtil.alignRight("" + t, 7) + " (" + JDBCTypes.codeToName(t) + ")");
       }
       throw new InvalidConfigurationFileException(this,
-          "Unsupported JDBC type " + jdbcType + " (" + JdbcTypes.codeToName(jdbcType) + ") on column '"
+          "Unsupported JDBC type " + jdbcType + " (" + JDBCTypes.codeToName(jdbcType) + ") on column '"
               + baseColumn.getName() + "' of "
               + (this.tableMetadata != null ? "table '" + this.tableMetadata.getId().getCanonicalSQLName() + "'"
                   : "view '" + this.viewMetadata.getId().getCanonicalSQLName() + "'")

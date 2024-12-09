@@ -19,8 +19,8 @@ import org.hotrod.identifiers.Id;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.typesolver.DriverColumnMetaData;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
-import org.hotrod.utils.JdbcTypes;
-import org.hotrod.utils.JdbcTypes.JDBCType;
+import org.hotrod.utils.JDBCTypes;
+import org.hotrod.utils.JDBCTypes.JDBCType;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn.AutogenerationType;
 
@@ -143,13 +143,13 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
       JDBCType jdbcType;
       if (columnTag.getJdbcType() != null) {
         // User specified the JDBC type. Use the user's.
-        jdbcType = JdbcTypes.nameToType(columnTag.getJdbcType());
+        jdbcType = JDBCTypes.nameToType(columnTag.getJdbcType());
         if (jdbcType == null) {
           throw new UnresolvableDataTypeException(cm);
         }
       } else {
         // User did not specify the JDBC type. Get it from the live database.
-        jdbcType = JdbcTypes.codeToType(cm.getDataType());
+        jdbcType = JDBCTypes.codeToType(cm.getDataType());
         if (jdbcType == null) {
           throw new UnresolvableDataTypeException(cm);
         }
@@ -278,7 +278,7 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
     this.columnDefault = null;
     this.enumMetadata = null;
 
-    this.resultSetType = JdbcTypes.codeToType(this.dataType);
+    this.resultSetType = JDBCTypes.codeToType(this.dataType);
 
     log.fine(">>>>>>>> RS: '" + this.columnName + "' -- this.dataType=" + this.dataType + " -- this.resultSetType="
         + resultSetType);

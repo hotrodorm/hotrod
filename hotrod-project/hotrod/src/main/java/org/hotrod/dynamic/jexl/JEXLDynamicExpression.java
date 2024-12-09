@@ -1,14 +1,32 @@
 package org.hotrod.dynamic.jexl;
 
+import org.apache.commons.jexl3.JexlBuilder;
+import org.apache.commons.jexl3.JexlEngine;
+import org.apache.commons.jexl3.JexlException;
+import org.apache.commons.jexl3.JexlExpression;
 import org.hotrod.dynamic.DynamicExpression;
+import org.hotrod.dynamic.DynamicExpressionException;
 import org.hotrod.dynamic.ParameterContext;
+import org.hotrod.exceptions.InvalidJexlExpressionException;
 
 public class JEXLDynamicExpression extends DynamicExpression {
 
-  private String expression;
+  private static final int JEXL_CACHE_MAX_EXPRESSIONS = 200;
+
+  protected static JexlEngine JEXL_ENGINE = new JexlBuilder().cache(JEXL_CACHE_MAX_EXPRESSIONS).strict(true)
+      .debug(false).silent(false).create();
+
+  private String txt;
+  private JexlExpression expr;
 
   private JEXLDynamicExpression(String expression) {
-    this.expression = expression;
+    this.txt = expression;
+    try {
+      this.expr = JEXL_ENGINE.createExpression(this.txt);
+    } catch (JexlException e) {
+      throw new InvalidJexlExpressionException("Invalid test expression: " + this.txt + " (" + e.getMessage() + ")");
+    }
+
   }
 
   public static JEXLDynamicExpression of(String expression) {
@@ -16,8 +34,25 @@ public class JEXLDynamicExpression extends DynamicExpression {
   }
 
   @Override
-  public <T> T evaluate(ParameterContext context, Class<T> targetClass) {
-    return null;
+  public <T> T evaluate(ParameterContext context, Class<T> targetClass) throws DynamicExpressionException {
+    JEXLParameterContext jexlContext = (JEXLParameterContext) context;
+    Object obj = null;
+    try {
+      obj = this.expr.evaluate(jexlContext);
+    } catch (Exception e) {
+      throw new DynamicExpressionException("Could not evaluate the expression '" + this.txt + "': " + e.getMessage());
+    }
+    if (obj == null) {
+      return null;
+    }
+    try {
+      T t = targetClass.cast(obj);
+      return t;
+    } catch (ClassCastException e) {
+      throw new DynamicExpressionException(
+          "Invalid result of expression '" + this.txt + "': expected a result of type '" + targetClass.getName()
+              + "' but encountered '" + obj.getClass().getName() + "'");
+    }
   }
 
 }
