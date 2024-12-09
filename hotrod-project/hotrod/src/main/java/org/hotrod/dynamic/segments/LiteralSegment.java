@@ -2,9 +2,8 @@ package org.hotrod.dynamic.segments;
 
 import org.hotrod.dynamic.DynamicExpressionException;
 import org.hotrod.dynamic.ParameterContext;
-import org.hotrod.dynamic.PreparedQuery;
 
-public class LiteralSegment extends QuerySegment {
+public class LiteralSegment extends StaticSegment {
 
   private String literal;
 
@@ -13,8 +12,20 @@ public class LiteralSegment extends QuerySegment {
   }
 
   @Override
-  public void prepare(PreparedQuery pq, ParameterContext context) throws DynamicExpressionException {
-    pq.addLiteral(this.literal);
+  public void prepare(StaticSegmentConsumer sc, ParameterContext context) throws DynamicExpressionException {
+    sc.consume(this.literal);
   }
+
+//  // Static Segment
+//
+//  @Override
+//  public String getLiteral() {
+//    return this.literal;
+//  }
+//
+//  @Override
+//  public ParameterSegment getParameter() {
+//    return null;
+//  }
 
 }

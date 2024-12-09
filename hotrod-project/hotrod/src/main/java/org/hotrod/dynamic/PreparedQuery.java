@@ -7,21 +7,44 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.dynamic.segments.ParameterSegment;
+import org.hotrod.dynamic.segments.StaticSegmentConsumer;
 import org.hotrod.utils.JDBCTypes;
 import org.hotrod.utils.SUtil;
 
-public class PreparedQuery {
+public class PreparedQuery implements StaticSegmentConsumer {
 
   private StringBuilder sb = new StringBuilder();
   private List<ParameterSegment> parameters = new ArrayList<>();
 
-  public void addLiteral(final String literal) {
+  @Override
+  public void consume(String literal) {
     this.sb.append(literal);
   }
 
-  public void registerParameter(ParameterSegment p) {
+  @Override
+  public void consume(ParameterSegment p) {
     this.parameters.add(p);
   }
+
+//  @Override
+//  public void consume(StaticSegment s) {
+//    String literal = s.getLiteral();
+//    if (literal != null) {
+//      this.sb.append(literal);
+//    }
+//    ParameterSegment p = s.getParameter();
+//    if (p != null) {
+//      this.parameters.add(p);
+//    }
+//  }
+
+//  public void addLiteral(final String literal) {
+//    this.sb.append(literal);
+//  }
+//
+//  public void registerParameter(ParameterSegment p) {
+//    this.parameters.add(p);
+//  }
 
   private static final int MAX_DISPLAY_VALUE = 100;
 

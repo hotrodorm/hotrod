@@ -3,6 +3,7 @@ package org.hotrod.dynamic.segments;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class QuerySegments {
 
   private List<QuerySegment> parts = new ArrayList<>();
@@ -14,6 +15,5 @@ public class QuerySegments {
   public List<QuerySegment> getParts() {
     return parts;
   }
-  
 
 }

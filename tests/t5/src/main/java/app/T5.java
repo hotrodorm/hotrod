@@ -18,7 +18,7 @@ public class T5 {
 
     AccountDAO c5 = new AccountDAO();
 
-    Account account = new Account(123, 500);
+    Account account = new Account(123, "1015", "CHK", 500);
     int rows = c5.update(conn, account);
 
     System.out.println("Updated rows: " + rows);

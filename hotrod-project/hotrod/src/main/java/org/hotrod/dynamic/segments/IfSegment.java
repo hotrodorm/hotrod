@@ -5,9 +5,7 @@ import java.util.List;
 import org.hotrod.dynamic.DynamicExpression;
 import org.hotrod.dynamic.DynamicExpressionException;
 import org.hotrod.dynamic.DynamicExpressionFactory;
-import org.hotrod.dynamic.DynamicSegment;
 import org.hotrod.dynamic.ParameterContext;
-import org.hotrod.dynamic.PreparedQuery;
 
 public class IfSegment extends DynamicSegment {
 
@@ -23,7 +21,7 @@ public class IfSegment extends DynamicSegment {
   }
 
   @Override
-  public void prepare(PreparedQuery pq, ParameterContext context) throws DynamicExpressionException {
+  public void prepare(StaticSegmentConsumer sc, ParameterContext context) throws DynamicExpressionException {
 
     // 1. Evaluate the test condition
 
@@ -43,7 +41,7 @@ public class IfSegment extends DynamicSegment {
 
     if (cond) {
       for (QuerySegment s : this.segments) {
-        s.prepare(pq, context);
+        s.prepare(sc, context);
       }
     }
 

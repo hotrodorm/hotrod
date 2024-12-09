@@ -19,7 +19,7 @@ public class AccountDAO {
   private final DynamicModificationQuery update = builder.create() //
       .literal("UPDATE account \nSET balance = ") //
       .parameter("balance", Types.NUMERIC) //
-      .ifSegment("id + 1", builder.create() //
+      .ifSegment("id != null", builder.create() //
           .literal("\nWHERE id = ") //
           .parameter("id", Types.NUMERIC) //
           .end() //
@@ -31,6 +31,8 @@ public class AccountDAO {
 
     ParameterContext context = this.factory.newParameterContext();
     context.add("id", account.getId());
+    context.add("name", account.getName());
+    context.add("type", account.getType());
     context.add("balance", account.getBalance());
 
     // 2. Process DynamicSQL and produce query and parameters
