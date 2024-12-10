@@ -18,7 +18,7 @@ public class IfsBuilder {
 
   // IF Segments
 
-  public IfsBuilder ifSegment(String test, SegmentList querySegments) {
+  public IfsBuilder ifPart(String test, SegmentList querySegments) {
     this.ifSegments.add(new IfSegment(test, querySegments.getSegments(), this.factory));
     return this;
   }

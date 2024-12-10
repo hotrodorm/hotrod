@@ -7,6 +7,9 @@ public class Account {
   private String type;
   private Integer balance;
 
+  public Account() {
+  }
+
   public Account(Integer id, String name, String type, Integer balance) {
     this.id = id;
     this.name = name;
@@ -44,6 +47,11 @@ public class Account {
 
   public void setBalance(Integer balance) {
     this.balance = balance;
+  }
+
+  @Override
+  public String toString() {
+    return "Account [id=" + id + ", name=" + name + ", type=" + type + ", balance=" + balance + "]";
   }
 
 }

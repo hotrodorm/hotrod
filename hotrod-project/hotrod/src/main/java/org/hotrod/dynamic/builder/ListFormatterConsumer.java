@@ -20,17 +20,16 @@ public class ListFormatterConsumer implements StaticSegmentConsumer, AutoCloseab
   private boolean atStartOfEntry;
   private Pattern removePattern;
 
-  public ListFormatterConsumer(StaticSegmentConsumer parentConsumer, String prefix, String separator, String suffix,
-      String... removePrefixes) {
+  public ListFormatterConsumer(StaticSegmentConsumer parentConsumer, ListProcessor processor) {
     this.parentConsumer = parentConsumer;
-    this.prefix = prefix;
-    this.separator = separator;
-    this.suffix = suffix;
-    this.removePrefixes = removePrefixes;
+    this.prefix = processor.getHeader();
+    this.separator = processor.getSeparator();
+    this.suffix = processor.getTail();
+    this.removePrefixes = processor.getRemovePrefixes();
 
     this.isFirstSegment = true;
     this.atStartOfEntry = true;
-    this.removePattern = this.removePrefixes.length == 0 ? null
+    this.removePattern = (this.removePrefixes == null || this.removePrefixes.length == 0) ? null
         : Pattern.compile("^(\\s*(?:" + Arrays.stream(this.removePrefixes).filter(s -> s != null)
             .map(s -> s.toLowerCase()).collect(Collectors.joining("|")) + "))");
   }

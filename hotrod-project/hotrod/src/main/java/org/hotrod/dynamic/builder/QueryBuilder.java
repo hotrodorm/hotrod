@@ -14,7 +14,7 @@ public class QueryBuilder {
     return new PartialQuery(this.factory);
   }
 
-  public IfsBuilder ifsSegments() {
+  public IfsBuilder ifs() {
     return new IfsBuilder(this.factory);
   }
 

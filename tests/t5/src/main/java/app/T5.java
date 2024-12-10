@@ -3,6 +3,7 @@ package app;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -24,17 +25,20 @@ public class T5 {
     AccountDAO c5 = new AccountDAO();
 
 //    Account filter = new Account(123, "AK", "XX", 5001);
-    Account filter = new Account(123, null, "XX", null);
+    Account filter = new Account(124, null, "CHK", null);
 //    Account newValues = new Account(400, "YYY", "INV", 707);
 //    Account filter = new Account(123, null, null, null);
-    Account newValues = new Account(null, null, null, 707);
+    Account newValues = new Account(null, null, "SAV", 707);
 
     int rows = c5.update(conn, filter, newValues);
     System.out.println("Updated rows: " + rows);
 
-    rows = c5.delete(conn, filter);
-    System.out.println("Deleted rows: " + rows);
+//    rows = c5.delete(conn, filter);
+//    System.out.println("Deleted rows: " + rows);
 
+//    List<Account> accounts = c5.select(conn, filter);
+//    System.out.println("=== Rows (" + accounts.size() + ") ===");
+//    accounts.forEach(r -> System.out.println("r: " + r));
   }
 
   private static Connection getConnection() throws SQLException {

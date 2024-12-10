@@ -45,8 +45,22 @@ public class PartialQuery {
     return this;
   }
 
-  public PartialQuery where(List<IfSegment> ifSegments) {
-    this.segments.add(new WhereSegment(ifSegments, this.factory));
+  public PartialQuery set(List<IfSegment> ifSegments, String headerPrefix, String headerSuffix, String separatorPrefix,
+      String separatorSuffix, String tailPrefix, String tailSuffix, String... removePrefixes) {
+    this.segments.add(new SettersSegment(ifSegments, this.factory, headerPrefix, headerSuffix, separatorPrefix,
+        separatorSuffix, tailPrefix, tailSuffix, removePrefixes));
+    return this;
+  }
+
+  public PartialQuery where(String separator, List<IfSegment> ifSegments) {
+    this.segments.add(new WhereSegment(separator, ifSegments, this.factory));
+    return this;
+  }
+
+  public PartialQuery where(String separator, List<IfSegment> ifSegments, String headerPrefix, String headerSuffix,
+      String separatorPrefix, String separatorSuffix, String tailPrefix, String tailSuffix, String... removePrefixes) {
+    this.segments.add(new WhereSegment(separator, ifSegments, this.factory, headerPrefix, headerSuffix, separatorPrefix,
+        separatorSuffix, tailPrefix, tailSuffix, removePrefixes));
     return this;
   }
 

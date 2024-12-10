@@ -1,24 +1,17 @@
 package org.hotrod.dynamic;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.hotrod.dynamic.segments.ParameterSegment;
 import org.hotrod.dynamic.segments.StaticSegmentConsumer;
 import org.hotrod.utils.JDBCTypes;
 import org.hotrod.utils.SUtil;
 
-public class PreparedQuery implements StaticSegmentConsumer {
+public abstract class PreparedQuery implements StaticSegmentConsumer {
 
-  @SuppressWarnings("unused")
-  private static final Logger log = Logger.getLogger(PreparedQuery.class.getName());
-
-  private StringBuilder sb = new StringBuilder();
-  private List<ParameterSegment> parameters = new ArrayList<>();
+  protected StringBuilder sb = new StringBuilder();
+  protected List<ParameterSegment> parameters = new ArrayList<>();
 
   @Override
   public void consume(String literal) {
@@ -28,6 +21,11 @@ public class PreparedQuery implements StaticSegmentConsumer {
   @Override
   public void consume(ParameterSegment p) {
     this.parameters.add(p);
+  }
+
+  @Override
+  public void startNextEntry() {
+    // Nothing to do
   }
 
   private static final int MAX_DISPLAY_VALUE = 100;
@@ -51,25 +49,6 @@ public class PreparedQuery implements StaticSegmentConsumer {
       p.append("======================\n");
     }
     return p.toString();
-  }
-
-  public int execute(Connection conn) throws SQLException, DynamicExpressionException {
-    try (PreparedStatement ps = conn.prepareStatement(this.sb.toString())) {
-      int ordinal = 1;
-      for (ParameterSegment p : this.parameters) {
-        if (p.getValue() != null) {
-          ps.setObject(ordinal++, p.getValue());
-        } else {
-          ps.setNull(ordinal++, p.getSQLType());
-        }
-      }
-      return ps.executeUpdate();
-    }
-  }
-
-  @Override
-  public void startNextEntry() {
-    // Nothing to do
   }
 
 }
