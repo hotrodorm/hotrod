@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.dynamic.DynamicExpressionFactory;
+import org.hotrod.dynamic.DynamicInsertQuery;
 import org.hotrod.dynamic.DynamicModificationQuery;
 import org.hotrod.dynamic.DynamicSelectQuery;
 import org.hotrod.dynamic.segments.IfSegment;
@@ -35,7 +36,7 @@ public class PartialQuery {
     return this;
   }
 
-  public PartialQuery ifSegment(String test, SegmentList querySegments) {
+  public PartialQuery ifPart(String test, SegmentList querySegments) {
     this.segments.add(new IfSegment(test, querySegments.getSegments(), this.factory));
     return this;
   }
@@ -76,6 +77,10 @@ public class PartialQuery {
 
   public DynamicSelectQuery endSelectQuery() {
     return new DynamicSelectQuery(this.segments);
+  }
+
+  public DynamicInsertQuery endInsertQuery() {
+    return new DynamicInsertQuery(this.segments);
   }
 
 }

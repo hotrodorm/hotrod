@@ -6,14 +6,14 @@ import org.hotrod.dynamic.segments.QuerySegment;
 
 public class DynamicModificationQuery extends DynamicQuery {
 
-  public DynamicModificationQuery(List<QuerySegment> parts) {
-    super(parts);
+  public DynamicModificationQuery(List<QuerySegment> segments) {
+    super(segments);
   }
   
   public PreparedModificationQuery prepare(ParameterContext context) throws DynamicExpressionException {
     PreparedModificationQuery pq = new PreparedModificationQuery();
-    for (QuerySegment p : this.parts) {
-      p.prepare(pq, context);
+    for (QuerySegment s : this.segments) {
+      s.prepare(pq, context);
     }
     return pq;
   }
