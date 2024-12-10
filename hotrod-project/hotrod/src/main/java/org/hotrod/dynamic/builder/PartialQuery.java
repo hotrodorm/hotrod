@@ -11,6 +11,7 @@ import org.hotrod.dynamic.segments.LiteralSegment;
 import org.hotrod.dynamic.segments.ParameterSegment;
 import org.hotrod.dynamic.segments.QuerySegment;
 import org.hotrod.dynamic.segments.SegmentList;
+import org.hotrod.dynamic.segments.SettersSegment;
 import org.hotrod.dynamic.segments.WhereSegment;
 
 public class PartialQuery {
@@ -39,13 +40,13 @@ public class PartialQuery {
     return this;
   }
 
-  public PartialQuery whereSegment(List<IfSegment> ifSegments) {
-    this.segments.add(new WhereSegment(ifSegments, this.factory));
+  public PartialQuery set(List<IfSegment> ifSegments) {
+    this.segments.add(new SettersSegment(ifSegments, this.factory));
     return this;
   }
 
-  public PartialQuery whereSegment(String delimiter, List<IfSegment> ifSegments) {
-    this.segments.add(new WhereSegment(delimiter, ifSegments, this.factory));
+  public PartialQuery where(List<IfSegment> ifSegments) {
+    this.segments.add(new WhereSegment(ifSegments, this.factory));
     return this;
   }
 

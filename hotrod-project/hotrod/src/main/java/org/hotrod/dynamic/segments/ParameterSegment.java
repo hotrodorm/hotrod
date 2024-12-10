@@ -9,6 +9,7 @@ import org.hotrod.dynamic.ParameterContext;
 
 public class ParameterSegment extends StaticSegment {
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(ParameterSegment.class.getName());
 
   private DynamicExpressionFactory factory;
@@ -28,14 +29,7 @@ public class ParameterSegment extends StaticSegment {
 
   @Override
   public void prepare(StaticSegmentConsumer sc, ParameterContext context) throws DynamicExpressionException {
-//    if (!context.hasParameter(this.name)) {
-//      throw new DynamicExpressionException(
-//          "Could not find parameter with name '" + this.name + "' in the parameter object");
-//    }
-
     this.value = this.nameExpression.evaluate(context, Object.class);
-//    this.value = context.getParameterValue(this.name);
-    log.info("> " + this.name + "=" + this.value);
     sc.consume("?");
     sc.consume(this);
   }
@@ -51,17 +45,5 @@ public class ParameterSegment extends StaticSegment {
   public Object getValue() {
     return value;
   }
-
-//  // StaticSegment
-//
-//  @Override
-//  public String getLiteral() {
-//    return null;
-//  }
-//
-//  @Override
-//  public ParameterSegment getParameter() {
-//    return this;
-//  }
 
 }

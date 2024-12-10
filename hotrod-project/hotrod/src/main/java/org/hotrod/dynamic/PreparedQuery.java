@@ -67,4 +67,9 @@ public class PreparedQuery implements StaticSegmentConsumer {
     }
   }
 
+  @Override
+  public void startNextEntry() {
+    // Nothing to do
+  }
+
 }
