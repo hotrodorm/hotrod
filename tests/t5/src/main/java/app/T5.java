@@ -23,11 +23,17 @@ public class T5 {
 
     AccountDAO c5 = new AccountDAO();
 
-    Account filter = new Account(123, "AK", null, null);
-    Account newValues = new Account(null, null, "INV", 707);
-    int rows = c5.update(conn, filter, newValues);
+//    Account filter = new Account(123, "AK", "XX", 5001);
+    Account filter = new Account(123, null, "XX", null);
+//    Account newValues = new Account(400, "YYY", "INV", 707);
+//    Account filter = new Account(123, null, null, null);
+    Account newValues = new Account(null, null, null, 707);
 
+    int rows = c5.update(conn, filter, newValues);
     System.out.println("Updated rows: " + rows);
+
+    rows = c5.delete(conn, filter);
+    System.out.println("Deleted rows: " + rows);
 
   }
 
