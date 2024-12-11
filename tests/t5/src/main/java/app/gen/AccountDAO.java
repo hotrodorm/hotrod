@@ -143,7 +143,7 @@ public class AccountDAO {
 //      .literal(")") //
 //      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET, ORACLE_IDENTITY_INSERT_PROPERTIES);
 
-//  // DB2, PostgreSQL & H2 - Identity Inline
+//  // DB2, PostgreSQL, SQL Server, and H2 - Identity Inline
 //  private final DynamicInsertQuery insert = builder.create() //
 //      .literal("INSERT INTO account (") //
 //      .ifPart("n.id != null", builder.create().literal("id, ").end()).literal("name, type, balance)\n") //
@@ -207,6 +207,21 @@ public class AccountDAO {
 //      .literal(")") //
 //      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET);
 
+//  // SQL Server - Sequence Inline
+//  private final DynamicInsertQuery insert = builder.create() //
+//      .literal("INSERT INTO account (") //
+//      .literal("  id, name, type, balance\n") //
+//      .literal(") OUTPUT INSERTED.id VALUES (\n  ") //
+//      .literal("NEXT VALUE FOR seq_account") //
+//      .literal(", ") //
+//      .parameter("n.name", Types.VARCHAR) //
+//      .literal(", ") //
+//      .parameter("n.type", Types.VARCHAR) //
+//      .literal(", ") //
+//      .parameter("n.balance", Types.NUMERIC) //
+//      .literal(")") //
+//      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_STANDARD_RESULTSET);
+
 //  // H2 - Sequence Inline
 //  private final DynamicInsertQuery insert = builder.create() //
 //    .literal("INSERT INTO account (") //
@@ -242,9 +257,41 @@ public class AccountDAO {
 //      .literal(")") //
 //      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH, ORACLE_SEQUENCE_INSERT_PROPERTIES);
 
-  // DB2 - Sequence Prefetch
-  private static final InsertProperties DB2_SEQUENCE_INSERT_PROPERTIES = new InsertProperties(
-      "VALUES NEXT VALUE FOR seq_account", "n.id");
+//  // DB2 - Sequence Prefetch
+//  private static final InsertProperties DB2_SEQUENCE_INSERT_PROPERTIES = new InsertProperties(
+//      "VALUES NEXT VALUE FOR seq_account", "n.id");
+//  private final DynamicInsertQuery insert = builder.create() //
+//      .literal("INSERT INTO account (\n") //
+//      .literal("  id, name, type, balance\n") //
+//      .literal(") VALUES (\n  ") //
+//      .parameter("n.id", Types.NUMERIC).literal(", ") //
+//      .parameter("n.name", Types.VARCHAR) //
+//      .literal(", ") //
+//      .parameter("n.type", Types.VARCHAR) //
+//      .literal(", ") //
+//      .parameter("n.balance", Types.NUMERIC) //
+//      .literal(")") //
+//      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH, DB2_SEQUENCE_INSERT_PROPERTIES);
+
+//  // PostgreSQL - Sequence Prefetch
+//  private static final InsertProperties POSTGRESQL_SEQUENCE_INSERT_PROPERTIES = new InsertProperties(
+//      "SELECT NEXTVAL('seq_account')", "n.id");
+//  private final DynamicInsertQuery insert = builder.create() //
+//      .literal("INSERT INTO account (\n") //
+//      .literal("  id, name, type, balance\n") //
+//      .literal(") VALUES (\n  ") //
+//      .parameter("n.id", Types.NUMERIC).literal(", ") //
+//      .parameter("n.name", Types.VARCHAR) //
+//      .literal(", ") //
+//      .parameter("n.type", Types.VARCHAR) //
+//      .literal(", ") //
+//      .parameter("n.balance", Types.NUMERIC) //
+//      .literal(")") //
+//      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH, POSTGRESQL_SEQUENCE_INSERT_PROPERTIES);
+
+  // SQL Server - Sequence Prefetch
+  private static final InsertProperties SQLSERVER_SEQUENCE_INSERT_PROPERTIES = new InsertProperties(
+      "SELECT NEXT VALUE FOR seq_account", "n.id");
   private final DynamicInsertQuery insert = builder.create() //
       .literal("INSERT INTO account (\n") //
       .literal("  id, name, type, balance\n") //
@@ -256,7 +303,7 @@ public class AccountDAO {
       .literal(", ") //
       .parameter("n.balance", Types.NUMERIC) //
       .literal(")") //
-      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH, DB2_SEQUENCE_INSERT_PROPERTIES);
+      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH, SQLSERVER_SEQUENCE_INSERT_PROPERTIES);
 
 //  // H2 sequence Prefetch
 //  private static final InsertProperties H2_IDENTITY_INSERT_PROPERTIES = new InsertProperties(

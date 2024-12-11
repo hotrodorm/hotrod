@@ -11,8 +11,8 @@ public enum PrimaryKeyRetrievalMode {
 // -----------+------+------+------+------+------+------+------+------+
 // Oracle     | Yes  |      | Yes* |      | Yes  |      | Yes* |      |
 // DB2        | Yes  |      | Yes* |      | Yes  |      | Yes* |      |
-// PostgreSQL | Yes  |      | Yes* |      |      |      | Yes* |      |
-// SQL Server | Yes  |      |      |      |      |      |      |      |
+// PostgreSQL | Yes  |      | Yes* |      | Yes  |      | Yes* |      |
+// SQL Server | Yes  |      | Yes**|      | Yes  | Yes* | No   |      |
 // MySQL      | Yes  |      |      |      |      |      |      |      |
 // MariaDB    | Yes  |      |      |      |      |      |      |      |
 // SybaseASE  | Yes  |      |      |      |      |      |      |      |
@@ -22,6 +22,7 @@ public enum PrimaryKeyRetrievalMode {
 // -----------+------+------+------+------+------+------+------+------+
 //
 // * Preferred Mode for each type
+// ** SQL Server only implements IDENTITY ALWAYS; the BY DEFAULT variation is not supported and will crash if a PK value is provided
 
   NO_RETRIEVAL(new PreparedInsertNoRetrievalQuery()), // DONE
 
@@ -30,7 +31,7 @@ public enum PrimaryKeyRetrievalMode {
   IDENTITY_POSTFETCH(null), //
 
   SEQUENCE_PREFETCH(new PreparedInsertSequencePreFetchQuery()), // DONE
-  SEQUENCE_INLINE_STANDARD_RESULTSET(null), //
+  SEQUENCE_INLINE_STANDARD_RESULTSET(new PreparedInsertSequenceInlineStandardResultsetQuery()), // DONE
   SEQUENCE_INLINE_KEYS_RESULTSET(new PreparedInsertSequenceInlineKeysResultsetQuery()), // DONE
   SEQUENCE_POSTFETCH(null);
 

@@ -52,8 +52,9 @@ public class T5 {
 
   private static Connection getConnection() throws SQLException {
 //    return getOracleConnection();
-    return getDB2Connection();
+//    return getDB2Connection();
 //    return getPostgreSQLConnection();
+    return getSQLServerConnection();
 //  return getH2Connection();
   }
 
@@ -76,6 +77,13 @@ public class T5 {
     connectionProps.put("user", "user1");
     connectionProps.put("password", "pass1");
     return DriverManager.getConnection("jdbc:postgresql://192.168.56.200:5416/hotrod", connectionProps);
+  }
+
+  private static Connection getSQLServerConnection() throws SQLException {
+    Properties connectionProps = new Properties();
+    connectionProps.put("user", "admin");
+    connectionProps.put("password", "admin");
+    return DriverManager.getConnection("jdbc:sqlserver://192.168.56.51:1433;encrypt=true;trustServerCertificate=true", connectionProps);
   }
 
   private static Connection getH2Connection() throws SQLException {

@@ -30,9 +30,9 @@
     </dependency>
 
     <dependency>
-      <groupId>com.ibm.db2</groupId>
-      <artifactId>jcc</artifactId>
-      <version>11.5.7.0</version>
+      <groupId>com.microsoft.sqlserver</groupId>
+      <artifactId>mssql-jdbc</artifactId>
+      <version>12.2.0.jre8</version>
     </dependency>
 
 <!-- 
@@ -97,7 +97,7 @@
     </dependency>
     
  -->
- 
+
   </dependencies>
 
   <build>
