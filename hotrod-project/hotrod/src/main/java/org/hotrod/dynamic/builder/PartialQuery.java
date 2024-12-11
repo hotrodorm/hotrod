@@ -82,7 +82,7 @@ public class PartialQuery {
   }
 
   public DynamicInsertQuery endInsertQuery(PrimaryKeyRetrievalMode primaryKeyRetrievalMode) {
-    return new DynamicInsertQuery(this.segments, primaryKeyRetrievalMode, null);
+    return new DynamicInsertQuery(this.segments, primaryKeyRetrievalMode, new InsertProperties());
   }
 
   public DynamicInsertQuery endInsertQuery(PrimaryKeyRetrievalMode primaryKeyRetrievalMode,

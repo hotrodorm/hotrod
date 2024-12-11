@@ -6,6 +6,12 @@ public class InsertProperties {
   private String primaryKeyParameterName;
   private String[] generatedKeysNames;
 
+  public InsertProperties() {
+    this.sequencePreFetchSQL = null;
+    this.primaryKeyParameterName = null;
+    this.generatedKeysNames = null;
+  }
+
   public InsertProperties(String sequencePreFetchSQL, String primaryKeyParameterName, String... generatedKeysNames) {
     this.sequencePreFetchSQL = sequencePreFetchSQL;
     this.primaryKeyParameterName = primaryKeyParameterName;

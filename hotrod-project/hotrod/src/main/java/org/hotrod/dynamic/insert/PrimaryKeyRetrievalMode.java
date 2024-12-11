@@ -10,7 +10,7 @@ public enum PrimaryKeyRetrievalMode {
 // Database   | NR   | IIS  | IIK  | IPOS | SPRE | SIS  | SIK  | SPOS |
 // -----------+------+------+------+------+------+------+------+------+
 // Oracle     | Yes  |      | Yes* |      | Yes  |      | Yes* |      |
-// DB2        | Yes  |      |      |      |      |      |      |      |
+// DB2        | Yes  |      | Yes* |      | Yes  |      | Yes* |      |
 // PostgreSQL | Yes  |      | Yes* |      |      |      | Yes* |      |
 // SQL Server | Yes  |      |      |      |      |      |      |      |
 // MySQL      | Yes  |      |      |      |      |      |      |      |
