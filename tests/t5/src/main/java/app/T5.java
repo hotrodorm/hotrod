@@ -51,10 +51,33 @@ public class T5 {
   }
 
   private static Connection getConnection() throws SQLException {
+    return getOracleConnection();
+//    return getPostgreSQLConnection();
+//  return getH2Connection();
+  }
+
+
+  private static Connection getOracleConnection() throws SQLException {
+    Properties connectionProps = new Properties();
+    connectionProps.put("user", "user1");
+    connectionProps.put("password", "pass1");
+    return DriverManager.getConnection("jdbc:oracle:thin:@192.168.56.95:1521:orcl",
+        connectionProps);
+  }
+
+  private static Connection getPostgreSQLConnection() throws SQLException {
+    Properties connectionProps = new Properties();
+    connectionProps.put("user", "user1");
+    connectionProps.put("password", "pass1");
+    return DriverManager.getConnection("jdbc:postgresql://192.168.56.200:5416/hotrod",
+        connectionProps);
+  }
+
+  private static Connection getH2Connection() throws SQLException {
     Properties connectionProps = new Properties();
     connectionProps.put("user", "sa");
     connectionProps.put("password", "");
-    return DriverManager.getConnection("jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './build.sql';DB_CLOSE_DELAY=-1",
+    return DriverManager.getConnection("jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './build-h2.sql';DB_CLOSE_DELAY=-1",
         connectionProps);
   }
 

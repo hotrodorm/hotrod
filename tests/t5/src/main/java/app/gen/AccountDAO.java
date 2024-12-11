@@ -107,7 +107,10 @@ public class AccountDAO {
     List<Long> rows = preparedQuery.execute(conn, rowReader);
     return rows.get(0);
   }
-  
+
+  // ====================
+  // === NO RETRIEVAL ===
+  // ====================
 
 //  private final DynamicInsertQuery insert = builder.create() //
 //      .literal("INSERT INTO account (") //
@@ -120,23 +123,89 @@ public class AccountDAO {
 //      .literal(", ") //
 //      .parameter("n.balance", Types.NUMERIC) //
 //      .literal(")") //
-//      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
-////      .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
+//      .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
 
-  private static final InsertProperties INSERT_PROPERTIES = new InsertProperties("SELECT NEXT VALUE FOR seq_account", "n.id");
+  // ================
+  // === IDENTITY ===
+  // ================
+
+  // Oracle version
+  private static final InsertProperties ORACLE_IDENTITY_INSERT_PROPERTIES = new InsertProperties(null, null, "id");
   private final DynamicInsertQuery insert = builder.create() //
-      .literal("INSERT INTO account (\n") //
-      .literal("  id, name, type, balance\n") //
-      .literal(") VALUES (\n  ") //
-      .parameter("n.id", Types.NUMERIC)
-      .literal(", ") //
+      .literal("INSERT INTO account (") //
+      .literal("name, type, balance)\n") //
+      .literal("VALUES (") //
       .parameter("n.name", Types.VARCHAR) //
       .literal(", ") //
       .parameter("n.type", Types.VARCHAR) //
       .literal(", ") //
       .parameter("n.balance", Types.NUMERIC) //
       .literal(")") //
-      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH, INSERT_PROPERTIES);
+      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET, ORACLE_IDENTITY_INSERT_PROPERTIES);
+
+//  // PostgreSQL & H2 versions
+//  private final DynamicInsertQuery insert = builder.create() //
+//      .literal("INSERT INTO account (") //
+//      .ifPart("n.id != null", builder.create().literal("id, ").end()).literal("name, type, balance)\n") //
+//      .literal("VALUES (") //
+//      .ifPart("n.id != null", builder.create().parameter("n.id", Types.NUMERIC).literal(", ").end())
+//      .parameter("n.name", Types.VARCHAR) //
+//      .literal(", ") //
+//      .parameter("n.type", Types.VARCHAR) //
+//      .literal(", ") //
+//      .parameter("n.balance", Types.NUMERIC) //
+//      .literal(")") //
+//      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
+
+  // ================
+  // === SEQUENCE ===
+  // ================
+
+//  // H2 version
+//  private final DynamicInsertQuery insert = builder.create() //
+//      .literal("INSERT INTO account (") //
+//      .literal("  id, name, type, balance\n") //
+//      .literal(") VALUES (\n  ") //
+//      .literal("NEXT VALUE FOR seq_account") //
+//      .literal(", ") //
+//      .parameter("n.name", Types.VARCHAR) //
+//      .literal(", ") //
+//      .parameter("n.type", Types.VARCHAR) //
+//      .literal(", ") //
+//      .parameter("n.balance", Types.NUMERIC) //
+//      .literal(")") //
+//      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET);
+
+//  // PostgreSQL version
+//  private final DynamicInsertQuery insert = builder.create() //
+//      .literal("INSERT INTO account (") //
+//      .literal("  id, name, type, balance\n") //
+//      .literal(") VALUES (\n  ") //
+//      .literal("NEXTVAL('seq_account')") //
+//      .literal(", ") //
+//      .parameter("n.name", Types.VARCHAR) //
+//      .literal(", ") //
+//      .parameter("n.type", Types.VARCHAR) //
+//      .literal(", ") //
+//      .parameter("n.balance", Types.NUMERIC) //
+//      .literal(")") //
+//      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET);
+
+  // H2 sequence Prefetch
+//  private static final InsertProperties H2_IDENTITY_INSERT_PROPERTIES = new InsertProperties("SELECT NEXT VALUE FOR seq_account", "n.id", null);
+//  private final DynamicInsertQuery insert = builder.create() //
+//      .literal("INSERT INTO account (\n") //
+//      .literal("  id, name, type, balance\n") //
+//      .literal(") VALUES (\n  ") //
+//      .parameter("n.id", Types.NUMERIC)
+//      .literal(", ") //
+//      .parameter("n.name", Types.VARCHAR) //
+//      .literal(", ") //
+//      .parameter("n.type", Types.VARCHAR) //
+//      .literal(", ") //
+//      .parameter("n.balance", Types.NUMERIC) //
+//      .literal(")") //
+//      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH, INSERT_PROPERTIES);
 
   public void insert(Connection conn, Account entity) throws DynamicExpressionException, SQLException {
 

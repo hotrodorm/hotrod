@@ -3,6 +3,7 @@ package org.hotrod.dynamic.insert;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
@@ -13,20 +14,34 @@ import org.hotrod.dynamic.segments.ParameterSegment;
 
 public class PreparedInsertIdentityInlineKeyResultSetQuery extends InsertExecutor {
 
-  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(PreparedInsertIdentityInlineKeyResultSetQuery.class.getName());
 
   public Long execute(Connection conn, String sql, List<ParameterSegment> parameters, InsertProperties insertProperties)
       throws SQLException, DynamicExpressionException {
-    try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-      super.applyParameters(parameters, ps);
-      ps.executeUpdate();
-      try (ResultSet rs = ps.getGeneratedKeys()) {
-        if (rs.next()) {
-          return rs.getLong(1);
-        }
-        return null;
+    String identityColumnName = insertProperties.getIdentityColumnName();
+    if (identityColumnName == null) {
+      try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        return execute(parameters, ps);
       }
+    } else {
+      try (PreparedStatement ps = conn.prepareStatement(sql, new String[] { identityColumnName })) {
+        return execute(parameters, ps);
+      }
+    }
+  }
+
+  private Long execute(List<ParameterSegment> parameters, PreparedStatement ps) throws SQLException {
+    super.applyParameters(parameters, ps);
+    ps.executeUpdate();
+    try (ResultSet rs = ps.getGeneratedKeys()) {
+      ResultSetMetaData rm = rs.getMetaData();
+      log.info("rm.getColumnTypeName(1)=" + rm.getColumnTypeName(1));
+      log.info("rm.getColumnClassName(1)=" + rm.getColumnClassName(1));
+      log.info("rm.getColumnType(1)=" + rm.getColumnType(1));
+      if (rs.next()) {
+        return rs.getLong(1);
+      }
+      return null;
     }
   }
 

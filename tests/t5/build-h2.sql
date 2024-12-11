@@ -11,3 +11,4 @@ insert into account (id, name, type, balance) values
   (789, '1072', 'CHK', 500);
 
 create sequence seq_account start with 1000;
+

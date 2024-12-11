@@ -31,10 +31,10 @@ public class PreparedInsertSequencePreFetchQuery extends InsertExecutor {
       throw new SQLException("Could not retrieve sequence for INSERT using: " + prefetch);
     }
 
-    boolean wasSet = this.setParameter(parameters, insertProperties.getPrimaryKeyName(), seq);
+    boolean wasSet = this.setParameter(parameters, insertProperties.getPrimaryKeyParameterName(), seq);
     if (!wasSet) {
       throw new SQLException("Failed to INSERT: could not set value for primary key column parameter: "
-          + insertProperties.getPrimaryKeyName());
+          + insertProperties.getPrimaryKeyParameterName());
     }
 
     try (PreparedStatement ps = conn.prepareStatement(sql)) {

@@ -3,19 +3,25 @@ package org.hotrod.dynamic.insert;
 public class InsertProperties {
 
   private String sequencePreFetchSQL;
-  private String pkName;
+  private String primaryKeyParameterName;
+  private String identityColumnName;
 
-  public InsertProperties(String sequencePreFetchSQL, String pkName) {
+  public InsertProperties(String sequencePreFetchSQL, String primaryKeyParameterName, String identityColumnName) {
     this.sequencePreFetchSQL = sequencePreFetchSQL;
-    this.pkName = pkName;
+    this.primaryKeyParameterName = primaryKeyParameterName;
+    this.identityColumnName = identityColumnName;
   }
 
   public String getSequencePreFetchSQL() {
     return sequencePreFetchSQL;
   }
 
-  public String getPrimaryKeyName() {
-    return pkName;
+  public String getPrimaryKeyParameterName() {
+    return primaryKeyParameterName;
+  }
+
+  public String getIdentityColumnName() {
+    return identityColumnName;
   }
 
 }
