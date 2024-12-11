@@ -18,19 +18,30 @@ public class PreparedInsertSequenceInlineKeysResultsetQuery extends InsertExecut
 
   public Long execute(Connection conn, String sql, List<ParameterSegment> parameters, InsertProperties insertProperties)
       throws SQLException, DynamicExpressionException {
-    try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-      super.applyParameters(parameters, ps);
-      ps.executeUpdate();
-      log.info(">> inserted");
-      try (ResultSet rs = ps.getGeneratedKeys()) {
-        log.info(">> rs=" + rs);
-        if (rs.next()) {
-          log.info(">> keys found!");
-          return rs.getLong(1);
-        }
-        log.info(">> no keys found.");
-        return null;
+    String[] generatedKeysNames = insertProperties.getGeneratedKeysNames();
+    if (generatedKeysNames == null || generatedKeysNames.length == 0) {
+      try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        return execute(parameters, ps);
       }
+    } else {
+      try (PreparedStatement ps = conn.prepareStatement(sql, generatedKeysNames)) {
+        return execute(parameters, ps);
+      }
+    }
+  }
+
+  private Long execute(List<ParameterSegment> parameters, PreparedStatement ps) throws SQLException {
+    super.applyParameters(parameters, ps);
+    ps.executeUpdate();
+//    log.info(">> inserted");
+    try (ResultSet rs = ps.getGeneratedKeys()) {
+//      log.info(">> rs=" + rs);
+      if (rs.next()) {
+//        log.info(">> keys found!");
+        return rs.getLong(1);
+      }
+//      log.info(">> no keys found.");
+      return null;
     }
   }
 
