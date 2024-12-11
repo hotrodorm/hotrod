@@ -18,7 +18,7 @@ public enum PrimaryKeyRetrievalMode {
 // SybaseASE  | Yes  |      | Yes*^|      | --   | --   | --   | --   |
 // H2         | Yes  |      | Yes* |      | Yes  |      | Yes* |      |
 // HyperSQL   | Yes  |      | Yes* |      | Yes  |      | Yes* |      |
-// Derby      | Yes  |      |      |      |      |      |      |      |
+// Derby      | Yes  |      | Yes* |      | Yes  |      | Yes* |      |
 // -----------+------+------+------+------+------+------+------+------+
 //
 // * Preferred Mode for each type

@@ -65,7 +65,8 @@ public class T5 {
 //    return getMariaDBConnection();
 //    return getSybaseASEDBConnection();
 //    return getH2Connection();
-    return getHyperSQLConnection();
+//    return getHyperSQLConnection();
+    return getDerbyConnection();
   }
 
   private static Connection getOracleConnection() throws SQLException {
@@ -141,6 +142,14 @@ public class T5 {
     }
 
     return conn;
+  }
+
+  private static Connection getDerbyConnection() throws SQLException {
+    Properties connectionProps = new Properties();
+    connectionProps.put("user", "schema1");
+    connectionProps.put("password", "b");
+    return DriverManager.getConnection("jdbc:derby://192.168.56.26:1527/hotrod",
+        connectionProps);
   }
 
 }

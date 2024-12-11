@@ -108,7 +108,7 @@ public class AccountDAO {
 //      .literal(")") //
 //      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET, ORACLE_IDENTITY_INSERT_PROPERTIES);
 
-//  // DB2, PostgreSQL, SQL Server, MySQL, MariaDB, Sybase ASE, H2, and HyperSQL - Identity Inline
+//  // DB2, PostgreSQL, SQL Server, MySQL, MariaDB, Sybase ASE, H2, HyperSQL, and Derby - Identity Inline
 //  private final DynamicInsertQuery insert = builder.create() //
 //      .literal("INSERT INTO account (") //
 //      .ifPart("n.id != null", builder.create().literal("id, ").end()).literal("name, type, balance)\n") //
@@ -187,7 +187,7 @@ public class AccountDAO {
 //      .literal(")") //
 //      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_STANDARD_RESULTSET);
 
-//  // H2 and HyperSQL - Sequence Inline
+//  // H2, HyperSQL, and Derby - Sequence Inline
 //  private final DynamicInsertQuery insert = builder.create() //
 //    .literal("INSERT INTO account (") //
 //    .literal("  id, name, type, balance\n") //
@@ -286,7 +286,7 @@ public class AccountDAO {
 //      .literal(")") //
 //      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH, H2_IDENTITY_INSERT_PROPERTIES);
 
-  // Hyper sequence Prefetch
+  // HyperSQL, and Derby sequence Prefetch
   private static final InsertProperties H2_IDENTITY_INSERT_PROPERTIES = new InsertProperties(
       "VALUES NEXT VALUE FOR seq_account", "n.id");
   private final DynamicInsertQuery insert = builder.create() //
