@@ -73,41 +73,6 @@ public class AccountDAO {
     return accounts;
   }
 
-//  // Sequence prefetch
-//
-//  private final DynamicSelectQuery selectSequence = builder.create() //
-//      .literal("SELECT NEXT VALUE FOR seq_account") //
-//      .endSelectQuery();
-
-  private RowReader<Long> rowReader = new RowReader<Long>() {
-
-    @Override
-    public Long readRowFrom(ResultSet rs) throws SQLException {
-      return rs.getLong(1);
-    }
-
-  };
-
-//  public long selectSequencePreFetch(Connection conn) throws DynamicExpressionException, SQLException {
-//    PreparedSelectQuery<Long> preparedQuery = this.selectSequence.prepare(null, Long.class);
-//    log.info("=== Preview ===\n" + preparedQuery.getPreview());
-//    List<Long> rows = preparedQuery.execute(conn, rowReader);
-//    return rows.get(0);
-//  }
-
-  // Identity postfetch
-
-  private final DynamicSelectQuery selectIdentityPostFetch = builder.create() //
-      .literal("CALL SCOPE_IDENTITY()") //
-      .endSelectQuery();
-
-  public long selectIdentityPostFetch(Connection conn) throws DynamicExpressionException, SQLException {
-    PreparedSelectQuery<Long> preparedQuery = this.selectIdentityPostFetch.prepare(null, Long.class);
-    log.info("=== Preview ===\n" + preparedQuery.getPreview());
-    List<Long> rows = preparedQuery.execute(conn, rowReader);
-    return rows.get(0);
-  }
-
   // ====================
   // === NO RETRIEVAL ===
   // ====================
@@ -143,23 +108,23 @@ public class AccountDAO {
 //      .literal(")") //
 //      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET, ORACLE_IDENTITY_INSERT_PROPERTIES);
 
-//  // DB2, PostgreSQL, SQL Server, and H2 - Identity Inline
-//  private final DynamicInsertQuery insert = builder.create() //
-//      .literal("INSERT INTO account (") //
-//      .ifPart("n.id != null", builder.create().literal("id, ").end()).literal("name, type, balance)\n") //
-//      .literal("VALUES (") //
-//      .ifPart("n.id != null", builder.create().parameter("n.id", Types.NUMERIC).literal(", ").end())
-//      .parameter("n.name", Types.VARCHAR) //
-//      .literal(", ") //
-//      .parameter("n.type", Types.VARCHAR) //
-//      .literal(", ") //
-//      .parameter("n.balance", Types.NUMERIC) //
-//      .literal(")") //
-//      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
+  // DB2, PostgreSQL, SQL Server, MySQL, MariaDB, and H2 - Identity Inline
+  private final DynamicInsertQuery insert = builder.create() //
+      .literal("INSERT INTO account (") //
+      .ifPart("n.id != null", builder.create().literal("id, ").end()).literal("name, type, balance)\n") //
+      .literal("VALUES (") //
+      .ifPart("n.id != null", builder.create().parameter("n.id", Types.NUMERIC).literal(", ").end())
+      .parameter("n.name", Types.VARCHAR) //
+      .literal(", ") //
+      .parameter("n.type", Types.VARCHAR) //
+      .literal(", ") //
+      .parameter("n.balance", Types.NUMERIC) //
+      .literal(")") //
+      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
 
-  // ================
-  // === SEQUENCE ===
-  // ================
+  // =======================
+  // === SEQUENCE INLINE ===
+  // =======================
 
 //  // Oracle - Sequence Inline
 //  private static final InsertProperties ORACLE_SEQUENCE_INLINE_INSERT_PROPERTIES = new InsertProperties(null, null,
@@ -289,21 +254,21 @@ public class AccountDAO {
 //      .literal(")") //
 //      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH, POSTGRESQL_SEQUENCE_INSERT_PROPERTIES);
 
-  // SQL Server - Sequence Prefetch
-  private static final InsertProperties SQLSERVER_SEQUENCE_INSERT_PROPERTIES = new InsertProperties(
-      "SELECT NEXT VALUE FOR seq_account", "n.id");
-  private final DynamicInsertQuery insert = builder.create() //
-      .literal("INSERT INTO account (\n") //
-      .literal("  id, name, type, balance\n") //
-      .literal(") VALUES (\n  ") //
-      .parameter("n.id", Types.NUMERIC).literal(", ") //
-      .parameter("n.name", Types.VARCHAR) //
-      .literal(", ") //
-      .parameter("n.type", Types.VARCHAR) //
-      .literal(", ") //
-      .parameter("n.balance", Types.NUMERIC) //
-      .literal(")") //
-      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH, SQLSERVER_SEQUENCE_INSERT_PROPERTIES);
+//  // SQL Server - Sequence Prefetch
+//  private static final InsertProperties SQLSERVER_SEQUENCE_INSERT_PROPERTIES = new InsertProperties(
+//      "SELECT NEXT VALUE FOR seq_account", "n.id");
+//  private final DynamicInsertQuery insert = builder.create() //
+//      .literal("INSERT INTO account (\n") //
+//      .literal("  id, name, type, balance\n") //
+//      .literal(") VALUES (\n  ") //
+//      .parameter("n.id", Types.NUMERIC).literal(", ") //
+//      .parameter("n.name", Types.VARCHAR) //
+//      .literal(", ") //
+//      .parameter("n.type", Types.VARCHAR) //
+//      .literal(", ") //
+//      .parameter("n.balance", Types.NUMERIC) //
+//      .literal(")") //
+//      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH, SQLSERVER_SEQUENCE_INSERT_PROPERTIES);
 
 //  // H2 sequence Prefetch
 //  private static final InsertProperties H2_IDENTITY_INSERT_PROPERTIES = new InsertProperties(

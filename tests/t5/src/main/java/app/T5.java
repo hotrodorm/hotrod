@@ -54,7 +54,9 @@ public class T5 {
 //    return getOracleConnection();
 //    return getDB2Connection();
 //    return getPostgreSQLConnection();
-    return getSQLServerConnection();
+//    return getSQLServerConnection();
+//    return getMySQLConnection();
+    return getMariaDBConnection();
 //  return getH2Connection();
   }
 
@@ -83,7 +85,22 @@ public class T5 {
     Properties connectionProps = new Properties();
     connectionProps.put("user", "admin");
     connectionProps.put("password", "admin");
-    return DriverManager.getConnection("jdbc:sqlserver://192.168.56.51:1433;encrypt=true;trustServerCertificate=true", connectionProps);
+    return DriverManager.getConnection("jdbc:sqlserver://192.168.56.51:1433;encrypt=true;trustServerCertificate=true",
+        connectionProps);
+  }
+
+  private static Connection getMySQLConnection() throws SQLException {
+    Properties connectionProps = new Properties();
+    connectionProps.put("user", "user1");
+    connectionProps.put("password", "pass1");
+    return DriverManager.getConnection("jdbc:mysql://192.168.56.200:3820/hotrod", connectionProps);
+  }
+
+  private static Connection getMariaDBConnection() throws SQLException {
+    Properties connectionProps = new Properties();
+    connectionProps.put("user", "user1");
+    connectionProps.put("password", "pass1");
+    return DriverManager.getConnection("jdbc:mysql://192.168.56.200:3111/hotrod", connectionProps);
   }
 
   private static Connection getH2Connection() throws SQLException {
