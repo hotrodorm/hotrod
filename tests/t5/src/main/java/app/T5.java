@@ -1,5 +1,6 @@
 package app;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -7,6 +8,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.hotrod.dynamic.DynamicExpressionException;
+import org.hsqldb.cmdline.SqlFile;
 
 import app.gen.Account;
 import app.gen.AccountDAO;
@@ -39,6 +41,10 @@ public class T5 {
     c5.insert(conn, entity);
     System.out.println("Insert id=" + entity.getId());
 
+    entity.setId(null);
+    c5.insert(conn, entity);
+    System.out.println("Insert id=" + entity.getId());
+
 //    long id = c5.selectIdentityPostFetch(conn);
 //    System.out.println("id: " + id);
 
@@ -57,8 +63,9 @@ public class T5 {
 //    return getSQLServerConnection();
 //    return getMySQLConnection();
 //    return getMariaDBConnection();
-    return getSybaseASEDBConnection();
-//  return getH2Connection();
+//    return getSybaseASEDBConnection();
+//    return getH2Connection();
+    return getHyperSQLConnection();
   }
 
   private static Connection getOracleConnection() throws SQLException {
@@ -117,6 +124,23 @@ public class T5 {
     connectionProps.put("password", "");
     return DriverManager.getConnection("jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './build-h2.sql';DB_CLOSE_DELAY=-1",
         connectionProps);
+  }
+
+  private static Connection getHyperSQLConnection() throws SQLException {
+    Properties connectionProps = new Properties();
+    connectionProps.put("user", "SA");
+    connectionProps.put("password", "");
+    Connection conn = DriverManager.getConnection("jdbc:hsqldb:mem:db1", connectionProps);
+
+    try {
+      SqlFile sf = new SqlFile(new File("./build-hypersql.sql"));
+      sf.setConnection(conn);
+      sf.execute();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    return conn;
   }
 
 }

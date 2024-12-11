@@ -108,19 +108,19 @@ public class AccountDAO {
 //      .literal(")") //
 //      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET, ORACLE_IDENTITY_INSERT_PROPERTIES);
 
-  // DB2, PostgreSQL, SQL Server, MySQL, MariaDB, Sybase ASE, and H2 - Identity Inline
-  private final DynamicInsertQuery insert = builder.create() //
-      .literal("INSERT INTO account (") //
-      .ifPart("n.id != null", builder.create().literal("id, ").end()).literal("name, type, balance)\n") //
-      .literal("VALUES (") //
-      .ifPart("n.id != null", builder.create().parameter("n.id", Types.NUMERIC).literal(", ").end())
-      .parameter("n.name", Types.VARCHAR) //
-      .literal(", ") //
-      .parameter("n.type", Types.VARCHAR) //
-      .literal(", ") //
-      .parameter("n.balance", Types.NUMERIC) //
-      .literal(")") //
-      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
+//  // DB2, PostgreSQL, SQL Server, MySQL, MariaDB, Sybase ASE, H2, and HyperSQL - Identity Inline
+//  private final DynamicInsertQuery insert = builder.create() //
+//      .literal("INSERT INTO account (") //
+//      .ifPart("n.id != null", builder.create().literal("id, ").end()).literal("name, type, balance)\n") //
+//      .literal("VALUES (") //
+//      .ifPart("n.id != null", builder.create().parameter("n.id", Types.NUMERIC).literal(", ").end())
+//      .parameter("n.name", Types.VARCHAR) //
+//      .literal(", ") //
+//      .parameter("n.type", Types.VARCHAR) //
+//      .literal(", ") //
+//      .parameter("n.balance", Types.NUMERIC) //
+//      .literal(")") //
+//      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
 
   // =======================
   // === SEQUENCE INLINE ===
@@ -187,7 +187,7 @@ public class AccountDAO {
 //      .literal(")") //
 //      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_STANDARD_RESULTSET);
 
-//  // H2 - Sequence Inline
+//  // H2 and HyperSQL - Sequence Inline
 //  private final DynamicInsertQuery insert = builder.create() //
 //    .literal("INSERT INTO account (") //
 //    .literal("  id, name, type, balance\n") //
@@ -285,6 +285,22 @@ public class AccountDAO {
 //      .parameter("n.balance", Types.NUMERIC) //
 //      .literal(")") //
 //      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH, H2_IDENTITY_INSERT_PROPERTIES);
+
+  // Hyper sequence Prefetch
+  private static final InsertProperties H2_IDENTITY_INSERT_PROPERTIES = new InsertProperties(
+      "VALUES NEXT VALUE FOR seq_account", "n.id");
+  private final DynamicInsertQuery insert = builder.create() //
+      .literal("INSERT INTO account (\n") //
+      .literal("  id, name, type, balance\n") //
+      .literal(") VALUES (\n  ") //
+      .parameter("n.id", Types.NUMERIC).literal(", ") //
+      .parameter("n.name", Types.VARCHAR) //
+      .literal(", ") //
+      .parameter("n.type", Types.VARCHAR) //
+      .literal(", ") //
+      .parameter("n.balance", Types.NUMERIC) //
+      .literal(")") //
+      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH, H2_IDENTITY_INSERT_PROPERTIES);
 
   public void insert(Connection conn, Account entity) throws DynamicExpressionException, SQLException {
 
