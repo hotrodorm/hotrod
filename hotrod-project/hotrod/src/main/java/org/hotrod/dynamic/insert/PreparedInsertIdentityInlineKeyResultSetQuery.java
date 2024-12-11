@@ -20,10 +20,12 @@ public class PreparedInsertIdentityInlineKeyResultSetQuery extends InsertExecuto
       throws SQLException, DynamicExpressionException {
     String[] generatedKeysNames = insertProperties.getGeneratedKeysNames();
     if (generatedKeysNames == null || generatedKeysNames.length == 0) {
+      log.info(">>> Statement.RETURN_GENERATED_KEYS");
       try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
         return execute(parameters, ps);
       }
     } else {
+      log.info(">>> generatedKeysNames");
       try (PreparedStatement ps = conn.prepareStatement(sql, generatedKeysNames)) {
         return execute(parameters, ps);
       }

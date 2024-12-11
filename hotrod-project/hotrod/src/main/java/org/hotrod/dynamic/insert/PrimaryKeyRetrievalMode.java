@@ -15,7 +15,7 @@ public enum PrimaryKeyRetrievalMode {
 // SQL Server | Yes  |      | Yes*+|      | Yes  | Yes* | No   |      |
 // MySQL      | Yes  |      | Yes* |      | --   | --   | --   | --   |
 // MariaDB    | Yes  |      | Yes* |      | --   | --   | --   | --   |
-// SybaseASE  | Yes  |      |      |      |      |      |      |      |
+// SybaseASE  | Yes  |      | Yes*^|      | --   | --   | --   | --   |
 // H2         | Yes  |      | Yes* |      | Yes  |      | Yes* |      |
 // HyperSQL   | Yes  |      |      |      |      |      |      |      |
 // Derby      | Yes  |      |      |      |      |      |      |      |
@@ -23,6 +23,7 @@ public enum PrimaryKeyRetrievalMode {
 //
 // * Preferred Mode for each type
 // + SQL Server only implements IDENTITY ALWAYS; the BY DEFAULT variation is not supported and will crash if a PK value is provided
+// ^ Sybase: Specifying the PK value for an IDENTITY column was not implemented (Use: "SET IDENTITY_INSERT <table> ON" before explicit PK INSERT) 
 
   NO_RETRIEVAL(new PreparedInsertNoRetrievalQuery()), // DONE
 

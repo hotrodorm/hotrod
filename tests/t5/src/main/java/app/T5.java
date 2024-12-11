@@ -56,7 +56,8 @@ public class T5 {
 //    return getPostgreSQLConnection();
 //    return getSQLServerConnection();
 //    return getMySQLConnection();
-    return getMariaDBConnection();
+//    return getMariaDBConnection();
+    return getSybaseASEDBConnection();
 //  return getH2Connection();
   }
 
@@ -101,6 +102,13 @@ public class T5 {
     connectionProps.put("user", "user1");
     connectionProps.put("password", "pass1");
     return DriverManager.getConnection("jdbc:mysql://192.168.56.200:3111/hotrod", connectionProps);
+  }
+
+  private static Connection getSybaseASEDBConnection() throws SQLException {
+    Properties connectionProps = new Properties();
+    connectionProps.put("user", "sa");
+    connectionProps.put("password", "pass12");
+    return DriverManager.getConnection("jdbc:sybase:Tds:192.168.56.52:5000", connectionProps);
   }
 
   private static Connection getH2Connection() throws SQLException {

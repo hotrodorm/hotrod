@@ -10,4 +10,4 @@ insert into account (id, name, type, balance) values
   (456, '2055', 'SAV', 200),
   (789, '1072', 'CHK', 500);
 
--- MySQL does not implement sequences
+-- MariaDB does not implement sequences

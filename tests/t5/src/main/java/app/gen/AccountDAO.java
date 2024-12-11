@@ -108,7 +108,7 @@ public class AccountDAO {
 //      .literal(")") //
 //      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET, ORACLE_IDENTITY_INSERT_PROPERTIES);
 
-  // DB2, PostgreSQL, SQL Server, MySQL, MariaDB, and H2 - Identity Inline
+  // DB2, PostgreSQL, SQL Server, MySQL, MariaDB, Sybase ASE, and H2 - Identity Inline
   private final DynamicInsertQuery insert = builder.create() //
       .literal("INSERT INTO account (") //
       .ifPart("n.id != null", builder.create().literal("id, ").end()).literal("name, type, balance)\n") //
