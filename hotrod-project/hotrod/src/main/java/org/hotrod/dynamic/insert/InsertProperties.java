@@ -4,12 +4,12 @@ public class InsertProperties {
 
   private String sequencePreFetchSQL;
   private String primaryKeyParameterName;
-  private String identityColumnName;
+  private String[] generatedKeysNames;
 
-  public InsertProperties(String sequencePreFetchSQL, String primaryKeyParameterName, String identityColumnName) {
+  public InsertProperties(String sequencePreFetchSQL, String primaryKeyParameterName, String... generatedKeysNames) {
     this.sequencePreFetchSQL = sequencePreFetchSQL;
     this.primaryKeyParameterName = primaryKeyParameterName;
-    this.identityColumnName = identityColumnName;
+    this.generatedKeysNames = generatedKeysNames;
   }
 
   public String getSequencePreFetchSQL() {
@@ -20,8 +20,8 @@ public class InsertProperties {
     return primaryKeyParameterName;
   }
 
-  public String getIdentityColumnName() {
-    return identityColumnName;
+  public String[] getGeneratedKeysNames() {
+    return generatedKeysNames;
   }
 
 }

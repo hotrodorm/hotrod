@@ -18,13 +18,13 @@ public class PreparedInsertIdentityInlineKeyResultSetQuery extends InsertExecuto
 
   public Long execute(Connection conn, String sql, List<ParameterSegment> parameters, InsertProperties insertProperties)
       throws SQLException, DynamicExpressionException {
-    String identityColumnName = insertProperties.getIdentityColumnName();
-    if (identityColumnName == null) {
+    String[] generatedKeysNames = insertProperties.getGeneratedKeysNames();
+    if (generatedKeysNames == null || generatedKeysNames.length == 0) {
       try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
         return execute(parameters, ps);
       }
     } else {
-      try (PreparedStatement ps = conn.prepareStatement(sql, new String[] { identityColumnName })) {
+      try (PreparedStatement ps = conn.prepareStatement(sql, generatedKeysNames)) {
         return execute(parameters, ps);
       }
     }
