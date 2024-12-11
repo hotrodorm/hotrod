@@ -13,11 +13,13 @@ import org.hotrod.dynamic.DynamicInsertQuery;
 import org.hotrod.dynamic.DynamicModificationQuery;
 import org.hotrod.dynamic.DynamicSelectQuery;
 import org.hotrod.dynamic.ParameterContext;
-import org.hotrod.dynamic.PreparedInsertQuery;
 import org.hotrod.dynamic.PreparedModificationQuery;
 import org.hotrod.dynamic.PreparedSelectQuery;
 import org.hotrod.dynamic.PreparedSelectQuery.RowReader;
 import org.hotrod.dynamic.builder.QueryBuilder;
+import org.hotrod.dynamic.insert.InsertProperties;
+import org.hotrod.dynamic.insert.PreparedInsertQuery;
+import org.hotrod.dynamic.insert.PrimaryKeyRetrievalMode;
 
 public class AccountDAO {
 
@@ -71,11 +73,11 @@ public class AccountDAO {
     return accounts;
   }
 
-  // Sequence prefetch
-
-  private final DynamicSelectQuery selectSequence = builder.create() //
-      .literal("SELECT NEXT VALUE FOR seq_account") //
-      .endSelectQuery();
+//  // Sequence prefetch
+//
+//  private final DynamicSelectQuery selectSequence = builder.create() //
+//      .literal("SELECT NEXT VALUE FOR seq_account") //
+//      .endSelectQuery();
 
   private RowReader<Long> rowReader = new RowReader<Long>() {
 
@@ -86,12 +88,12 @@ public class AccountDAO {
 
   };
 
-  public long selectSequencePreFetch(Connection conn) throws DynamicExpressionException, SQLException {
-    PreparedSelectQuery<Long> preparedQuery = this.selectSequence.prepare(null, Long.class);
-    log.info("=== Preview ===\n" + preparedQuery.getPreview());
-    List<Long> rows = preparedQuery.execute(conn, rowReader);
-    return rows.get(0);
-  }
+//  public long selectSequencePreFetch(Connection conn) throws DynamicExpressionException, SQLException {
+//    PreparedSelectQuery<Long> preparedQuery = this.selectSequence.prepare(null, Long.class);
+//    log.info("=== Preview ===\n" + preparedQuery.getPreview());
+//    List<Long> rows = preparedQuery.execute(conn, rowReader);
+//    return rows.get(0);
+//  }
 
   // Identity postfetch
 
@@ -105,20 +107,36 @@ public class AccountDAO {
     List<Long> rows = preparedQuery.execute(conn, rowReader);
     return rows.get(0);
   }
+  
 
+//  private final DynamicInsertQuery insert = builder.create() //
+//      .literal("INSERT INTO account (") //
+//      .ifPart("n.id != null", builder.create().literal("id, ").end()).literal("name, type, balance)\n") //
+//      .literal("VALUES (") //
+//      .ifPart("n.id != null", builder.create().parameter("n.id", Types.NUMERIC).literal(", ").end())
+//      .parameter("n.name", Types.VARCHAR) //
+//      .literal(", ") //
+//      .parameter("n.type", Types.VARCHAR) //
+//      .literal(", ") //
+//      .parameter("n.balance", Types.NUMERIC) //
+//      .literal(")") //
+//      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
+////      .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
+
+  private static final InsertProperties INSERT_PROPERTIES = new InsertProperties("SELECT NEXT VALUE FOR seq_account", "n.id");
   private final DynamicInsertQuery insert = builder.create() //
-      .literal("INSERT INTO account (") //
-      .ifPart("n.id != null", builder.create().literal("id, ").end())
-      .literal("name, type, balance)\n") //
-      .literal("VALUES (") //
-      .ifPart("n.id != null", builder.create().parameter("n.id", Types.NUMERIC).literal(", ").end())
+      .literal("INSERT INTO account (\n") //
+      .literal("  id, name, type, balance\n") //
+      .literal(") VALUES (\n  ") //
+      .parameter("n.id", Types.NUMERIC)
+      .literal(", ") //
       .parameter("n.name", Types.VARCHAR) //
       .literal(", ") //
       .parameter("n.type", Types.VARCHAR) //
       .literal(", ") //
       .parameter("n.balance", Types.NUMERIC) //
       .literal(")") //
-      .endInsertQuery();
+      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH, INSERT_PROPERTIES);
 
   public void insert(Connection conn, Account entity) throws DynamicExpressionException, SQLException {
 
@@ -135,7 +153,7 @@ public class AccountDAO {
     // 3. Execute the resulting query
 
     Long id = preparedQuery.execute(conn);
-    entity.setId(id.intValue());
+    entity.setId(id == null ? null : id.intValue());
 
   }
 

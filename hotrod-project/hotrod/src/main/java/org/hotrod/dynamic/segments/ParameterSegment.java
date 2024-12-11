@@ -46,4 +46,8 @@ public class ParameterSegment extends StaticSegment {
     return value;
   }
 
+  public void setValue(Object value) {
+    this.value = value;
+  }
+
 }

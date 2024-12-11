@@ -7,6 +7,8 @@ import org.hotrod.dynamic.DynamicExpressionFactory;
 import org.hotrod.dynamic.DynamicInsertQuery;
 import org.hotrod.dynamic.DynamicModificationQuery;
 import org.hotrod.dynamic.DynamicSelectQuery;
+import org.hotrod.dynamic.insert.InsertProperties;
+import org.hotrod.dynamic.insert.PrimaryKeyRetrievalMode;
 import org.hotrod.dynamic.segments.IfSegment;
 import org.hotrod.dynamic.segments.LiteralSegment;
 import org.hotrod.dynamic.segments.ParameterSegment;
@@ -79,8 +81,13 @@ public class PartialQuery {
     return new DynamicSelectQuery(this.segments);
   }
 
-  public DynamicInsertQuery endInsertQuery() {
-    return new DynamicInsertQuery(this.segments);
+  public DynamicInsertQuery endInsertQuery(PrimaryKeyRetrievalMode primaryKeyRetrievalMode) {
+    return new DynamicInsertQuery(this.segments, primaryKeyRetrievalMode, null);
+  }
+
+  public DynamicInsertQuery endInsertQuery(PrimaryKeyRetrievalMode primaryKeyRetrievalMode,
+      InsertProperties insertProperties) {
+    return new DynamicInsertQuery(this.segments, primaryKeyRetrievalMode, insertProperties);
   }
 
 }
