@@ -12,12 +12,25 @@ import org.apache.commons.jexl3.introspection.JexlPermissions;
 
 public class T51 {
 
-  public static JexlEngine JEXL_ENGINE = new JexlBuilder().cache(100).strict(true).debug(true).silent(false).create();
-  public static JexlEngine JEXL_ENGINE2 = new JexlBuilder().permissions(JexlPermissions.UNRESTRICTED).create();
+//  public static JexlEngine JEXL_ENGINE = new JexlBuilder().cache(100).strict(true).debug(true).silent(false).create();
+//  public static JexlEngine JEXL_ENGINE2 = new JexlBuilder().permissions(JexlPermissions.UNRESTRICTED).create();
 
   public static void main(String[] args) {
-    JexlExpression expr = JEXL_ENGINE2.createExpression("name");
-    ObjectContext<Task> ctx = new ObjectContext<>(JEXL_ENGINE2, new Task("Task5", 500));
+
+    // Allowing: lines that end with .*
+    // Restricted: anything else
+    // See: https://commons.apache.org/proper/commons-jexl/apidocs/org/apache/commons/jexl3/introspection/JexlPermissions.html#parse(java.lang.String...)
+    JexlPermissions permissions = JexlPermissions.parse("app.*\n" //
+        + "java.math.*\n" //
+        + "java.text.*\n" //
+        + "java.util.*\n" //
+        + "java.lang { Runtime {} System {} ProcessBuilder {} Class {} }\n" //
+        + "org.apache.commons.jexl3 { JexlBuilder {} }" + "");
+
+    JexlEngine engine = new JexlBuilder().permissions(permissions).create();
+
+    JexlExpression expr = engine.createExpression("name");
+    ObjectContext<Task> ctx = new ObjectContext<>(engine, new Task("Task5", 500));
 //    MyContext ctx = new MyContext();
     Object obj = expr.evaluate(ctx);
     System.out.println("obj=" + obj);
