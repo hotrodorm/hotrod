@@ -25,8 +25,8 @@ public class T5 {
 
     Connection conn = getConnection();
 
-//    mainTests(conn);
-    dynTests(conn);
+    mainTests(conn);
+//    dynTests(conn);
 
   }
 
@@ -95,7 +95,7 @@ public class T5 {
     AccountDAO c5 = new AccountDAO();
 
 //    Account filter = new Account(123, "AK", "XX", 5001);
-    Account filter = new Account(124, null, "CHK", null);
+    Account filter = new Account(null, null, "CHK", null);
 //    Account newValues = new Account(400, "YYY", "INV", 707);
 //    Account filter = new Account(123, null, null, null);
     Account newValues = new Account(null, null, "SAV", 707);
@@ -107,12 +107,12 @@ public class T5 {
 //    long seq = c5.selectSequencePreFetch(conn);
 //    System.out.println("seq: " + seq);
 
-    c5.insert(conn, entity);
-    System.out.println("Insert id=" + entity.getId());
-
-    entity.setId(null);
-    c5.insert(conn, entity);
-    System.out.println("Insert id=" + entity.getId());
+//    c5.insert(conn, entity);
+//    System.out.println("Insert id=" + entity.getId());
+//
+//    entity.setId(null);
+//    c5.insert(conn, entity);
+//    System.out.println("Insert id=" + entity.getId());
 
 //    long id = c5.selectIdentityPostFetch(conn);
 //    System.out.println("id: " + id);
@@ -120,9 +120,9 @@ public class T5 {
 //    rows = c5.delete(conn, filter);
 //    System.out.println("Deleted rows: " + rows);
 
-//    List<Account> accounts = c5.select(conn, filter);
-//    System.out.println("=== Rows (" + accounts.size() + ") ===");
-//    accounts.forEach(r -> System.out.println("r: " + r));
+    List<Account> accounts = c5.select(conn, filter);
+    System.out.println("=== Rows (" + accounts.size() + ") ===");
+    accounts.forEach(r -> System.out.println("r: " + r));
   }
 
   private static Connection getConnection() throws SQLException {

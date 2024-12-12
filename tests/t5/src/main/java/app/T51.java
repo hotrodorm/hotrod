@@ -7,6 +7,7 @@ import org.apache.commons.jexl3.JexlBuilder;
 import org.apache.commons.jexl3.JexlContext;
 import org.apache.commons.jexl3.JexlEngine;
 import org.apache.commons.jexl3.JexlExpression;
+import org.apache.commons.jexl3.ObjectContext;
 import org.apache.commons.jexl3.introspection.JexlPermissions;
 
 public class T51 {
@@ -15,10 +16,11 @@ public class T51 {
   public static JexlEngine JEXL_ENGINE2 = new JexlBuilder().permissions(JexlPermissions.UNRESTRICTED).create();
 
   public static void main(String[] args) {
-//    JexlExpression expr = JEXL_ENGINE2.createExpression("a.name");
+    JexlExpression expr = JEXL_ENGINE2.createExpression("name");
+    ObjectContext<Task> ctx = new ObjectContext<>(JEXL_ENGINE2, new Task("Task5", 500));
 //    MyContext ctx = new MyContext();
-//    Object obj = expr.evaluate(ctx);
-//    System.out.println("obj=" + obj);
+    Object obj = expr.evaluate(ctx);
+    System.out.println("obj=" + obj);
   }
 
   public static class Task {
@@ -49,6 +51,7 @@ public class T51 {
       this.vars.put("a", new Task("Task1", 100));
       this.vars.put("b", new Task("Task2", 200));
       this.vars.put("c", new Task("Task3", 300));
+      this.vars.put("", new Task("Task4", 400));
     }
 
     @Override
