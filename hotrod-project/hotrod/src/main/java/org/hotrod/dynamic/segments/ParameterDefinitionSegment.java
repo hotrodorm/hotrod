@@ -53,7 +53,6 @@ public class ParameterDefinitionSegment extends ParameterSegment {
   }
 
   public Object getValue() {
-    log.info("GET VALUE");
     return value;
   }
 

@@ -420,12 +420,10 @@ public class AccountDAO {
 
     DynamicModificationQuery d1 = builder.create() //
         .literal("DELETE FROM account\nWHERE code in ") //
-        .foreach("t", "d.tags", "(", ", ", ")", builder.create()
-            .parameter("t", Types.VARCHAR)
-            .foreach("c", "d.codes", "(", ", ", ")", builder.create()
-                .parameter("c", Types.NUMERIC)
+        .foreach("t", "d.tags", "(", ", ", ")",
+            builder.create().parameter("t", Types.VARCHAR)
+                .foreach("c", "d.codes", "(", ", ", ")", builder.create().parameter("c", Types.NUMERIC).end()) //
                 .end()) //
-            .end()) //
         .endModificationQuery();
 
     ParameterContext context = this.factory.newParameterContext();
@@ -433,6 +431,35 @@ public class AccountDAO {
 
     PreparedModificationQuery preparedQuery = d1.prepare(context);
     System.out.println("=== Preview ===\n" + preparedQuery.getPreview());
+
+  }
+
+  public void testBind(Connection conn, Data data) throws DynamicExpressionException, SQLException {
+
+    DynamicSelectQuery d1 = builder.create() //
+        .literal("SELECT COUNT(*) FROM account\n") //
+        .bind("pattern", "'%' + d.name + '%'") //
+        .literal("WHERE type LIKE ") //
+        .parameter("pattern", Types.VARCHAR) //
+        .endSelectQuery();
+
+    ParameterContext context = this.factory.newParameterContext();
+    context.add("d", data);
+
+    RowReader<Long> countReader = new RowReader<Long>() {
+
+      @Override
+      public Long readRowFrom(ResultSet rs) throws SQLException {
+        return rs.getLong(1);
+      }
+
+    };
+
+    PreparedSelectQuery<Long> preparedQuery = d1.prepare(context, Long.class);
+    System.out.println("=== Preview ===\n" + preparedQuery.getPreview());
+
+    List<Long> counts = preparedQuery.execute(conn, countReader);
+    System.out.println("rows: " + counts.get(0));
 
   }
 

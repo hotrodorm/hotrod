@@ -42,12 +42,20 @@ public class T5 {
 //    Account filter = new Account(null, null, null, null);
 //    c5.testTrim(filter);
 
-    // Test FOREACH
-    AccountDAO c5 = new AccountDAO();
+
+//    // Test FOREACH
+//  String[] tags = new String[] { "tag-07", "tag-20", "tag-105" };
+//  List<Integer> codes = Arrays.asList(new Integer[] { 1015, 1020, 2024 });
+//  Data data = new Data("Daguerrotype", 56000, tags, codes);
+//    AccountDAO c5 = new AccountDAO();
+//    c5.testForeach(data);
+
+    // Test BIND
     String[] tags = new String[] { "tag-07", "tag-20", "tag-105" };
     List<Integer> codes = Arrays.asList(new Integer[] { 1015, 1020, 2024 });
-    Data data = new Data("Daguerrotype", 56000, tags, codes);
-    c5.testForeach(data);
+    Data data = new Data("CH", 56000, tags, codes);
+    AccountDAO c5 = new AccountDAO();
+    c5.testBind(conn, data);
 
   }
 

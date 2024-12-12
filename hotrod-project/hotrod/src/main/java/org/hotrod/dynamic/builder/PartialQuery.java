@@ -10,6 +10,7 @@ import org.hotrod.dynamic.DynamicModificationQuery;
 import org.hotrod.dynamic.DynamicSelectQuery;
 import org.hotrod.dynamic.insert.InsertProperties;
 import org.hotrod.dynamic.insert.PrimaryKeyRetrievalMode;
+import org.hotrod.dynamic.segments.BindSegment;
 import org.hotrod.dynamic.segments.ChooseSegment;
 import org.hotrod.dynamic.segments.ForEachSegment;
 import org.hotrod.dynamic.segments.IfSegment;
@@ -92,6 +93,11 @@ public class PartialQuery {
   public PartialQuery foreach(String item, String collection, String open, String separator, String close,
       SegmentList segmentList) throws DynamicExpressionException {
     this.segments.add(new ForEachSegment(item, collection, open, separator, close, segmentList, this.factory));
+    return this;
+  }
+
+  public PartialQuery bind(String name, String value) throws DynamicExpressionException {
+    this.segments.add(new BindSegment(name, value, this.factory));
     return this;
   }
 

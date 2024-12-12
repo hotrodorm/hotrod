@@ -86,7 +86,7 @@ public class ForEachSegment extends DynamicSegment {
     }
 
     if (context.hasParameter(this.item)) {
-      throw new DynamicExpressionException("Variable '" + this.item
+      throw new DynamicExpressionException("The variable '" + this.item
           + "' defined by the 'item' property of a Dynamic SQL FOREACH already exists. Cannot shadow an existing variable");
     }
 
