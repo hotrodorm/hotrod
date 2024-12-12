@@ -24,7 +24,7 @@ public class DynamicInsertQuery extends DynamicQuery {
     InsertExecutor executor = this.primaryKeyRetrievalMode.getInsertExecutor();
     PreparedInsertQuery pq = new PreparedInsertQuery(executor, this.insertProperties);
     for (QuerySegment s : this.segments) {
-      s.prepare(pq, context);
+      s.prepare(pq, context, 0);
     }
     return pq;
   }

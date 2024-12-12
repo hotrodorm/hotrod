@@ -75,7 +75,6 @@ public class ListFormatterConsumer implements StaticSegmentConsumer, AutoCloseab
   public void consume(ParameterSegment s) {
     this.isFirstSegment = false;
     this.parentConsumer.consume(s);
-
   }
 
   @Override

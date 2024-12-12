@@ -42,7 +42,8 @@ public abstract class PreparedQuery implements StaticSegmentConsumer {
       if (tostring.length() > MAX_DISPLAY_VALUE) {
         tostring = tostring.substring(0, MAX_DISPLAY_VALUE - 3) + "...";
       }
-      p.append("" + pos++ + ". " + ps.getName() + " (" + SUtil.coalesce(sqlTypeName, "OTHER/" + ps.getSQLType()) + "): "
+      String name = ps.getName();
+      p.append("" + pos++ + ". " + name + " (" + SUtil.coalesce(sqlTypeName, "OTHER/" + ps.getSQLType()) + "): "
           + tostring + (value == null ? "" : " (" + value.getClass().getName() + ")") + "\n");
     }
     if (!this.parameters.isEmpty()) {

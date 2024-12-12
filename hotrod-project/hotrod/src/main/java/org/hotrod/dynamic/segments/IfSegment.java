@@ -21,7 +21,8 @@ public class IfSegment extends DynamicSegment {
   }
 
   @Override
-  public boolean prepare(StaticSegmentConsumer sc, ParameterContext context) throws DynamicExpressionException {
+  public boolean prepare(StaticSegmentConsumer sc, ParameterContext context, int loopNestingLevel)
+      throws DynamicExpressionException {
 
     // 1. Evaluate the test condition
 
@@ -41,7 +42,7 @@ public class IfSegment extends DynamicSegment {
 
     if (cond) {
       for (QuerySegment s : this.segments) {
-        s.prepare(sc, context);
+        s.prepare(sc, context, loopNestingLevel);
       }
     }
 

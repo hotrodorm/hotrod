@@ -10,8 +10,8 @@ import org.hotrod.dynamic.segments.ParameterSegment;
 
 public abstract class InsertExecutor {
 
-  public abstract Long execute(Connection conn, String sql, List<ParameterSegment> parameters, InsertProperties insertProperties)
-      throws SQLException, DynamicExpressionException;
+  public abstract Long execute(Connection conn, String sql, List<ParameterSegment> parameters,
+      InsertProperties insertProperties) throws SQLException, DynamicExpressionException;
 
   protected void applyParameters(List<ParameterSegment> parameters, PreparedStatement ps) throws SQLException {
     int ordinal = 1;

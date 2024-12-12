@@ -17,17 +17,18 @@ public class ChooseSegment extends DynamicSegment {
   }
 
   @Override
-  public boolean prepare(StaticSegmentConsumer sc, ParameterContext context) throws DynamicExpressionException {
+  public boolean prepare(StaticSegmentConsumer sc, ParameterContext context, int loopNestingLevel)
+      throws DynamicExpressionException {
 
     for (WhenSegment w : this.whens) {
-      boolean included = w.prepare(sc, context);
+      boolean included = w.prepare(sc, context, loopNestingLevel);
       if (included) {
         return true;
       }
     }
 
     if (this.otherwise != null) {
-      return this.otherwise.prepare(sc, context);
+      return this.otherwise.prepare(sc, context, loopNestingLevel);
     }
 
     return false;

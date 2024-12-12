@@ -36,13 +36,7 @@ public class JEXLDynamicExpression extends DynamicExpression {
 
   @Override
   public <T> T evaluate(ParameterContext context, Class<T> targetClass) throws DynamicExpressionException {
-    JEXLParameterContext jexlContext = (JEXLParameterContext) context;
-    Object obj = null;
-    try {
-      obj = this.expr.evaluate(jexlContext);
-    } catch (Exception e) {
-      throw new DynamicExpressionException("Could not evaluate the expression '" + this.txt + "'", e);
-    }
+    Object obj = evaluate(context);
     if (obj == null) {
       return null;
     }
@@ -53,6 +47,16 @@ public class JEXLDynamicExpression extends DynamicExpression {
       throw new DynamicExpressionException(
           "Invalid result of expression '" + this.txt + "': expected a result of type '" + targetClass.getName()
               + "' but encountered '" + obj.getClass().getName() + "'.");
+    }
+  }
+
+  @Override
+  public Object evaluate(ParameterContext context) throws DynamicExpressionException {
+    JEXLParameterContext jexlContext = (JEXLParameterContext) context;
+    try {
+      return this.expr.evaluate(jexlContext);
+    } catch (Exception e) {
+      throw new DynamicExpressionException("Could not evaluate the expression '" + this.txt + "'", e);
     }
   }
 

@@ -12,7 +12,8 @@ public class LiteralSegment extends StaticSegment {
   }
 
   @Override
-  public boolean prepare(StaticSegmentConsumer sc, ParameterContext context) throws DynamicExpressionException {
+  public boolean prepare(StaticSegmentConsumer sc, ParameterContext context, int loopNestingLevel)
+      throws DynamicExpressionException {
     sc.consume(this.literal);
     return true;
   }

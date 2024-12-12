@@ -16,8 +16,8 @@ public class PreparedInsertSequenceInlineKeysResultsetQuery extends InsertExecut
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(PreparedInsertSequenceInlineKeysResultsetQuery.class.getName());
 
-  public Long execute(Connection conn, String sql, List<ParameterSegment> parameters, InsertProperties insertProperties)
-      throws SQLException, DynamicExpressionException {
+  public Long execute(Connection conn, String sql, List<ParameterSegment> parameters,
+      InsertProperties insertProperties) throws SQLException, DynamicExpressionException {
     String[] generatedKeysNames = insertProperties.getGeneratedKeysNames();
     if (generatedKeysNames == null || generatedKeysNames.length == 0) {
       try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {

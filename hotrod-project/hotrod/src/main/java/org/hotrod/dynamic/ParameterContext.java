@@ -15,4 +15,8 @@ public abstract class ParameterContext {
 
   public abstract Object getParameterValue(String name);
 
+  public abstract void bind(String name, Object obj) throws DynamicExpressionException;
+
+  public abstract Object unbind(String name);
+
 }

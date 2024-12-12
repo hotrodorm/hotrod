@@ -21,6 +21,8 @@ import org.hotrod.dynamic.insert.InsertProperties;
 import org.hotrod.dynamic.insert.PreparedInsertQuery;
 import org.hotrod.dynamic.insert.PrimaryKeyRetrievalMode;
 
+import app.T5.Data;
+
 public class AccountDAO {
 
   @SuppressWarnings("unused")
@@ -414,6 +416,26 @@ public class AccountDAO {
 
   }
 
+  public void testForeach(Data data) throws DynamicExpressionException {
+
+    DynamicModificationQuery d1 = builder.create() //
+        .literal("DELETE FROM account\nWHERE code in ") //
+        .foreach("t", "d.tags", "(", ", ", ")", builder.create()
+            .parameter("t", Types.VARCHAR)
+            .foreach("c", "d.codes", "(", ", ", ")", builder.create()
+                .parameter("c", Types.NUMERIC)
+                .end()) //
+            .end()) //
+        .endModificationQuery();
+
+    ParameterContext context = this.factory.newParameterContext();
+    context.add("d", data);
+
+    PreparedModificationQuery preparedQuery = d1.prepare(context);
+    System.out.println("=== Preview ===\n" + preparedQuery.getPreview());
+
+  }
+
   public void testTrim(Account filter) throws DynamicExpressionException {
 
     DynamicModificationQuery d1 = builder.create() //
@@ -423,8 +445,7 @@ public class AccountDAO {
             .ifPart("true", builder.create().literal("B").end()) //
             .ifPart("true", builder.create().literal("C").end()) //
             .end(), //
-            "\nh<", ">h","\ns<", ">s","\nt<", ">t"            
-        ) //
+            "\nh<", ">h", "\ns<", ">s", "\nt<", ">t") //
         .endModificationQuery();
 
     ParameterContext context = this.factory.newParameterContext();

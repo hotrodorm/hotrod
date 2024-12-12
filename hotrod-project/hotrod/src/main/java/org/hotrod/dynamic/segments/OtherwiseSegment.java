@@ -19,9 +19,10 @@ public class OtherwiseSegment extends DynamicSegment {
   }
 
   @Override
-  public boolean prepare(StaticSegmentConsumer sc, ParameterContext context) throws DynamicExpressionException {
+  public boolean prepare(StaticSegmentConsumer sc, ParameterContext context, int loopNestingLevel)
+      throws DynamicExpressionException {
     for (QuerySegment s : this.segments) {
-      s.prepare(sc, context);
+      s.prepare(sc, context, loopNestingLevel);
     }
     return true;
   }

@@ -9,14 +9,15 @@ import java.util.logging.Logger;
 
 import org.hotrod.dynamic.DynamicExpressionException;
 import org.hotrod.dynamic.segments.ParameterSegment;
+import org.hotrod.dynamic.segments.ParameterDefinitionSegment;
 
 public class PreparedInsertSequencePreFetchQuery extends InsertExecutor {
 
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(PreparedInsertSequencePreFetchQuery.class.getName());
 
-  public Long execute(Connection conn, String sql, List<ParameterSegment> parameters, InsertProperties insertProperties)
-      throws SQLException, DynamicExpressionException {
+  public Long execute(Connection conn, String sql, List<ParameterSegment> parameters,
+      InsertProperties insertProperties) throws SQLException, DynamicExpressionException {
 
     String prefetch = insertProperties.getSequencePreFetchSQL();
     Long seq = null;
@@ -46,9 +47,14 @@ public class PreparedInsertSequencePreFetchQuery extends InsertExecutor {
 
   private boolean setParameter(List<ParameterSegment> parameters, String name, Long value) {
     for (ParameterSegment s : parameters) {
-      if (s.getName().equals(name)) {
-        s.setValue(value);
-        return true;
+      try {
+        ParameterDefinitionSegment ps = (ParameterDefinitionSegment) s;
+        if (ps.getName().equals(name)) {
+          ps.setValue(value);
+          return true;
+        }
+      } catch (ClassCastException e) {
+        // Ignore -- it's an unnamed parameter
       }
     }
     return false;

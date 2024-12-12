@@ -5,6 +5,7 @@ import org.hotrod.dynamic.ParameterContext;
 
 public abstract class QuerySegment {
 
-  public abstract boolean prepare(StaticSegmentConsumer sc, ParameterContext context) throws DynamicExpressionException;
+  public abstract boolean prepare(StaticSegmentConsumer sc, ParameterContext context, int loopNestingLevel)
+      throws DynamicExpressionException;
 
 }

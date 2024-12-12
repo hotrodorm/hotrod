@@ -9,14 +9,13 @@ public class DynamicModificationQuery extends DynamicQuery {
   public DynamicModificationQuery(List<QuerySegment> segments) {
     super(segments);
   }
-  
+
   public PreparedModificationQuery prepare(ParameterContext context) throws DynamicExpressionException {
     PreparedModificationQuery pq = new PreparedModificationQuery();
     for (QuerySegment s : this.segments) {
-      s.prepare(pq, context);
+      s.prepare(pq, context, 0);
     }
     return pq;
   }
-
 
 }

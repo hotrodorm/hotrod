@@ -48,11 +48,12 @@ public class TrimSegment extends DynamicListSegment {
   }
 
   @Override
-  public boolean prepare(StaticSegmentConsumer sc, ParameterContext context) throws DynamicExpressionException {
+  public boolean prepare(StaticSegmentConsumer sc, ParameterContext context, int loopNestingLevel)
+      throws DynamicExpressionException {
     try (ListFormatterConsumer wc = new ListFormatterConsumer(sc, super.processor)) {
       for (IfSegment s : this.ifSegments) {
         wc.startNextEntry();
-        s.prepare(wc, context);
+        s.prepare(wc, context, loopNestingLevel);
       }
     }
     return true;

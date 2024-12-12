@@ -7,15 +7,16 @@ import org.hotrod.dynamic.ParameterContext;
 public class SetSegment extends DynamicSegment {
 
   private String column;
-  private ParameterSegment value;
+  private ParameterDefinitionSegment value;
 
-  public SetSegment(String column, ParameterSegment value, DynamicExpressionFactory factory) {
+  public SetSegment(String column, ParameterDefinitionSegment value, DynamicExpressionFactory factory) {
     this.column = column;
     this.value = value;
   }
 
   @Override
-  public boolean prepare(StaticSegmentConsumer sc, ParameterContext context) throws DynamicExpressionException {
+  public boolean prepare(StaticSegmentConsumer sc, ParameterContext context, int loopNestingLevel)
+      throws DynamicExpressionException {
     sc.consume(this.column + " = ");
     sc.consume(this.value);
     return true;

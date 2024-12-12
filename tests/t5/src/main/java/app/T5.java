@@ -4,6 +4,8 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -35,10 +37,49 @@ public class T5 {
 //    Account filter = new Account(null, null, null, null);
 //    c5.testChoose(filter);
 
-    // Test TRIM
+//    // Test TRIM
+//    AccountDAO c5 = new AccountDAO();
+//    Account filter = new Account(null, null, null, null);
+//    c5.testTrim(filter);
+
+    // Test FOREACH
     AccountDAO c5 = new AccountDAO();
-    Account filter = new Account(null, null, null, null);
-    c5.testTrim(filter);
+    String[] tags = new String[] { "tag-07", "tag-20", "tag-105" };
+    List<Integer> codes = Arrays.asList(new Integer[] { 1015, 1020, 2024 });
+    Data data = new Data("Daguerrotype", 56000, tags, codes);
+    c5.testForeach(data);
+
+  }
+
+  public static class Data {
+
+    private String name;
+    private Integer price;
+    private String[] tags;
+    private List<Integer> codes;
+
+    public Data(String name, Integer price, String[] tags, List<Integer> codes) {
+      this.name = name;
+      this.price = price;
+      this.tags = tags;
+      this.codes = codes;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public Integer getPrice() {
+      return price;
+    }
+
+    public String[] getTags() {
+      return tags;
+    }
+
+    public List<Integer> getCodes() {
+      return codes;
+    }
 
   }
 
