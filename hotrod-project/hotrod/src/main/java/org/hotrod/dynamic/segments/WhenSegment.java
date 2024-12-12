@@ -7,14 +7,14 @@ import org.hotrod.dynamic.DynamicExpressionException;
 import org.hotrod.dynamic.DynamicExpressionFactory;
 import org.hotrod.dynamic.ParameterContext;
 
-public class IfSegment extends DynamicSegment {
+public class WhenSegment extends DynamicSegment {
 
   private String test;
   private List<QuerySegment> segments;
 
   private DynamicExpression testExpression;
 
-  public IfSegment(String test, List<QuerySegment> segments, DynamicExpressionFactory factory) {
+  public WhenSegment(String test, List<QuerySegment> segments, DynamicExpressionFactory factory) {
     this.test = test;
     this.segments = segments;
     this.testExpression = factory.expression(this.test);
@@ -34,7 +34,7 @@ public class IfSegment extends DynamicSegment {
       }
     } catch (Throwable e) {
       throw new DynamicExpressionException(
-          "Could not evaluate the test condition '" + this.test + "' on Dynamic SQL IF segment", e);
+          "Could not evaluate the test condition '" + this.test + "' on Dynamic SQL WHEN segment", e);
     }
 
     // 2. Include the inner segments as needed
@@ -44,7 +44,7 @@ public class IfSegment extends DynamicSegment {
         s.prepare(sc, context);
       }
     }
-
+    
     return cond;
 
   }

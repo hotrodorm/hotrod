@@ -23,6 +23,21 @@ public class T5 {
 
     Connection conn = getConnection();
 
+//    mainTests(conn);
+    dynTests(conn);
+
+  }
+
+  private static void dynTests(Connection conn) throws DynamicExpressionException, SQLException {
+
+    // Test choose
+    AccountDAO c5 = new AccountDAO();
+    Account filter = new Account(null, null, null, null);
+    c5.testChoose(filter);
+
+  }
+
+  private static void mainTests(Connection conn) throws DynamicExpressionException, SQLException {
     AccountDAO c5 = new AccountDAO();
 
 //    Account filter = new Account(123, "AK", "XX", 5001);
@@ -64,9 +79,9 @@ public class T5 {
 //    return getMySQLConnection();
 //    return getMariaDBConnection();
 //    return getSybaseASEDBConnection();
-//    return getH2Connection();
+    return getH2Connection();
 //    return getHyperSQLConnection();
-    return getDerbyConnection();
+//    return getDerbyConnection();
   }
 
   private static Connection getOracleConnection() throws SQLException {
@@ -148,8 +163,7 @@ public class T5 {
     Properties connectionProps = new Properties();
     connectionProps.put("user", "schema1");
     connectionProps.put("password", "b");
-    return DriverManager.getConnection("jdbc:derby://192.168.56.26:1527/hotrod",
-        connectionProps);
+    return DriverManager.getConnection("jdbc:derby://192.168.56.26:1527/hotrod", connectionProps);
   }
 
 }

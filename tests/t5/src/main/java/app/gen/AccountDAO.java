@@ -23,6 +23,7 @@ import org.hotrod.dynamic.insert.PrimaryKeyRetrievalMode;
 
 public class AccountDAO {
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(AccountDAO.class.getName());
 
   private final DynamicExpressionFactory factory = DynamicExpressionFactory.getFactory();
@@ -388,6 +389,29 @@ public class AccountDAO {
     int rows = preparedQuery.execute(conn);
 
     return rows;
+  }
+
+  // === OTHER TESTS ===
+
+  public void testChoose(Account filter) throws DynamicExpressionException {
+
+    DynamicModificationQuery d1 = builder.create() //
+        .literal("DELETE FROM account\nWHERE ") //
+        .choose(builder.choose() //
+            .when("f.id != null", builder.create().literal("id = ").parameter("f.id", Types.NUMERIC).end())
+            .when("f.name != null", builder.create().literal("name = ").parameter("f.name", Types.VARCHAR).end())
+            .when("f.type != null", builder.create().literal("type = ").parameter("f.type", Types.VARCHAR).end())
+            .end()
+//            .otherwise(builder.create().literal("1 = 1").end()) //
+            )
+        .endModificationQuery();
+
+    ParameterContext context = this.factory.newParameterContext();
+    context.add("f", filter);
+
+    PreparedModificationQuery preparedQuery = d1.prepare(context);
+    System.out.println("=== Preview ===\n" + preparedQuery.getPreview());
+
   }
 
 }

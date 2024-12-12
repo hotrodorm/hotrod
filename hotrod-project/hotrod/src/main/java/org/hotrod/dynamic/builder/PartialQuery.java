@@ -9,6 +9,7 @@ import org.hotrod.dynamic.DynamicModificationQuery;
 import org.hotrod.dynamic.DynamicSelectQuery;
 import org.hotrod.dynamic.insert.InsertProperties;
 import org.hotrod.dynamic.insert.PrimaryKeyRetrievalMode;
+import org.hotrod.dynamic.segments.ChooseSegment;
 import org.hotrod.dynamic.segments.IfSegment;
 import org.hotrod.dynamic.segments.LiteralSegment;
 import org.hotrod.dynamic.segments.ParameterSegment;
@@ -64,6 +65,11 @@ public class PartialQuery {
       String separatorPrefix, String separatorSuffix, String tailPrefix, String tailSuffix, String... removePrefixes) {
     this.segments.add(new WhereSegment(separator, ifSegments, this.factory, headerPrefix, headerSuffix, separatorPrefix,
         separatorSuffix, tailPrefix, tailSuffix, removePrefixes));
+    return this;
+  }
+
+  public PartialQuery choose(ChooseSegment choose) {
+    this.segments.add(choose);
     return this;
   }
 

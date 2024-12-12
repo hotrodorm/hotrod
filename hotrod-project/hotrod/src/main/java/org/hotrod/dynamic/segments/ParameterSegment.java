@@ -28,10 +28,11 @@ public class ParameterSegment extends StaticSegment {
   }
 
   @Override
-  public void prepare(StaticSegmentConsumer sc, ParameterContext context) throws DynamicExpressionException {
+  public boolean prepare(StaticSegmentConsumer sc, ParameterContext context) throws DynamicExpressionException {
     this.value = this.nameExpression.evaluate(context, Object.class);
     sc.consume("?");
     sc.consume(this);
+    return true;
   }
 
   public String getName() {

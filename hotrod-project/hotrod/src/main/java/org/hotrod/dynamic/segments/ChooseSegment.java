@@ -1,0 +1,37 @@
+package org.hotrod.dynamic.segments;
+
+import java.util.List;
+
+import org.hotrod.dynamic.DynamicExpressionException;
+import org.hotrod.dynamic.ParameterContext;
+
+public class ChooseSegment extends DynamicSegment {
+
+  private List<WhenSegment> whens;
+  private OtherwiseSegment otherwise = null;
+
+  public ChooseSegment(List<WhenSegment> whens, OtherwiseSegment otherwise) {
+    super();
+    this.whens = whens;
+    this.otherwise = otherwise;
+  }
+
+  @Override
+  public boolean prepare(StaticSegmentConsumer sc, ParameterContext context) throws DynamicExpressionException {
+
+    for (WhenSegment w : this.whens) {
+      boolean included = w.prepare(sc, context);
+      if (included) {
+        return true;
+      }
+    }
+
+    if (this.otherwise != null) {
+      return this.otherwise.prepare(sc, context);
+    }
+
+    return false;
+
+  }
+
+}

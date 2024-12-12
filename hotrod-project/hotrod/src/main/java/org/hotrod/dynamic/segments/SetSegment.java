@@ -15,9 +15,10 @@ public class SetSegment extends DynamicSegment {
   }
 
   @Override
-  public void prepare(StaticSegmentConsumer sc, ParameterContext context) throws DynamicExpressionException {
+  public boolean prepare(StaticSegmentConsumer sc, ParameterContext context) throws DynamicExpressionException {
     sc.consume(this.column + " = ");
     sc.consume(this.value);
+    return true;
   }
 
 }

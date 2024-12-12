@@ -40,13 +40,14 @@ public class WhereSegment extends DynamicListSegment {
   }
 
   @Override
-  public void prepare(StaticSegmentConsumer sc, ParameterContext context) throws DynamicExpressionException {
+  public boolean prepare(StaticSegmentConsumer sc, ParameterContext context) throws DynamicExpressionException {
     try (ListFormatterConsumer wc = new ListFormatterConsumer(sc, super.processor)) {
       for (IfSegment s : this.ifSegments) {
         wc.startNextEntry();
         s.prepare(wc, context);
       }
     }
+    return true;
   }
 
 }
