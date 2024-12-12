@@ -30,10 +30,15 @@ public class T5 {
 
   private static void dynTests(Connection conn) throws DynamicExpressionException, SQLException {
 
-    // Test choose
+//    // Test CHOOSE
+//    AccountDAO c5 = new AccountDAO();
+//    Account filter = new Account(null, null, null, null);
+//    c5.testChoose(filter);
+
+    // Test TRIM
     AccountDAO c5 = new AccountDAO();
     Account filter = new Account(null, null, null, null);
-    c5.testChoose(filter);
+    c5.testTrim(filter);
 
   }
 

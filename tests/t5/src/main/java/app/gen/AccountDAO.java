@@ -398,12 +398,33 @@ public class AccountDAO {
     DynamicModificationQuery d1 = builder.create() //
         .literal("DELETE FROM account\nWHERE ") //
         .choose(builder.choose() //
-            .when("f.id != null", builder.create().literal("id = ").parameter("f.id", Types.NUMERIC).end())
-            .when("f.name != null", builder.create().literal("name = ").parameter("f.name", Types.VARCHAR).end())
-            .when("f.type != null", builder.create().literal("type = ").parameter("f.type", Types.VARCHAR).end())
-            .end()
+            .when("f.id != null", builder.create().literal("id = ").parameter("f.id", Types.NUMERIC).end()) //
+            .when("f.name != null", builder.create().literal("name = ").parameter("f.name", Types.VARCHAR).end()) //
+            .when("f.type != null", builder.create().literal("type = ").parameter("f.type", Types.VARCHAR).end()) //
+            .end() //
 //            .otherwise(builder.create().literal("1 = 1").end()) //
-            )
+        ) //
+        .endModificationQuery();
+
+    ParameterContext context = this.factory.newParameterContext();
+    context.add("f", filter);
+
+    PreparedModificationQuery preparedQuery = d1.prepare(context);
+    System.out.println("=== Preview ===\n" + preparedQuery.getPreview());
+
+  }
+
+  public void testTrim(Account filter) throws DynamicExpressionException {
+
+    DynamicModificationQuery d1 = builder.create() //
+        .literal("DELETE FROM account") //
+        .trim("H", "S", "T", builder.ifs() //
+            .ifPart("true", builder.create().literal("A").end()) //
+            .ifPart("true", builder.create().literal("B").end()) //
+            .ifPart("true", builder.create().literal("C").end()) //
+            .end(), //
+            "\nh<", ">h","\ns<", ">s","\nt<", ">t"            
+        ) //
         .endModificationQuery();
 
     ParameterContext context = this.factory.newParameterContext();

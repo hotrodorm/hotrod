@@ -16,6 +16,7 @@ import org.hotrod.dynamic.segments.ParameterSegment;
 import org.hotrod.dynamic.segments.QuerySegment;
 import org.hotrod.dynamic.segments.SegmentList;
 import org.hotrod.dynamic.segments.SettersSegment;
+import org.hotrod.dynamic.segments.TrimSegment;
 import org.hotrod.dynamic.segments.WhereSegment;
 
 public class PartialQuery {
@@ -70,6 +71,19 @@ public class PartialQuery {
 
   public PartialQuery choose(ChooseSegment choose) {
     this.segments.add(choose);
+    return this;
+  }
+
+  public PartialQuery trim(String header, String separator, String tail, List<IfSegment> ifSegments) {
+    this.segments.add(new TrimSegment(header, separator, tail, ifSegments, this.factory));
+    return this;
+  }
+
+  public PartialQuery trim(String header, String separator, String tail, List<IfSegment> ifSegments,
+      String headerPrefix, String headerSuffix, String separatorPrefix, String separatorSuffix, String tailPrefix,
+      String tailSuffix, String... removePrefixes) {
+    this.segments.add(new TrimSegment(header, separator, tail, ifSegments, this.factory, headerPrefix, headerSuffix,
+        separatorPrefix, separatorSuffix, tailPrefix, tailSuffix, removePrefixes));
     return this;
   }
 
