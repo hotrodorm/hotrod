@@ -106,23 +106,19 @@
   <!-- update by example -->
 
   <update id="updateByExample">
-    update account
+    UPDATE account
     <set>
-      <if test="values.id != null">"ID" = #{values.id,jdbcType=INTEGER},</if>
-      <if test="values.parentId != null">"PARENT_ID" = #{values.parentId,jdbcType=INTEGER},</if>
-      <if test="values.branchId != null">"BRANCH_ID" = #{values.branchId,jdbcType=INTEGER},</if>
+      <if test="n.id != null">,id = #{n.id,jdbcType=NUMERIC}</if>
+      <if test="n.name != null">,name = #{n.name,jdbcType=VARCHAR}</if>
+      <if test="n.type != null">,type = #{n.type,jdbcType=VARCHAR}</if>
+      <if test="n.balance != null">,balance = #{n.balance,jdbcType=NUMERIC}</if>
     </set>
-    <trim prefix="where&#xA;" prefixOverrides="and |or ">
-      <if test="filter.id != null">
-        and "ID" = #{filter.id,jdbcType=INTEGER}
-      </if>
-      <if test="filter.parentId != null">
-        and "PARENT_ID" = #{filter.parentId,jdbcType=INTEGER}
-      </if>
-      <if test="filter.branchId != null">
-        and "BRANCH_ID" = #{filter.branchId,jdbcType=INTEGER}
-      </if>
-    </trim>
+    <where>
+      <if test="f.id != null">AND id = #{f.id}</if>
+      <if test="f.name != null">AND name = #{f.name}</if>
+      <if test="f.type != null">AND type = #{f.type}</if>
+      <if test="f.balance != null">AND balance = #{f.balance}</if>
+    </where>
   </update>
 
   <!-- update by criteria -->

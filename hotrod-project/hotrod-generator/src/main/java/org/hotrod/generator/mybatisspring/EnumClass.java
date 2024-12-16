@@ -13,6 +13,7 @@ import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
+import org.hotrod.generator.Generator;
 import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.utils.AbstractClassWriter.ExternalClass;
 import org.hotrod.utils.ClassPackage;
@@ -33,7 +34,7 @@ public class EnumClass {
 
   private DaosTag daos;
   @SuppressWarnings("unused")
-  private MyBatisSpringGenerator generator;
+  private Generator generator;
   private HotRodFragmentConfigTag fragmentConfig;
   private ClassPackage fragmentPackage;
 
@@ -46,7 +47,7 @@ public class EnumClass {
   // Constructor
 
   public EnumClass(final EnumDataSetMetadata metadata, final DataSetLayout layout, final DaosTag daos,
-      final MyBatisSpringGenerator generator) {
+      final Generator generator) {
     log.fine("init");
     this.metadata = metadata;
     this.layout = layout;

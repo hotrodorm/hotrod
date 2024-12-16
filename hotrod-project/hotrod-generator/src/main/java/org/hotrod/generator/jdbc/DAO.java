@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -18,6 +17,7 @@ import org.hotrod.config.Constants;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.JDBCTag;
 import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.dynamic.ParameterContext;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.exceptions.UncontrolledException;
@@ -26,19 +26,23 @@ import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.generator.mybatisspring.Const;
 import org.hotrod.generator.mybatisspring.DataSetLayout;
-import org.hotrod.generator.mybatisspring.Mapper;
-import org.hotrod.generator.mybatisspring.MyBatisSpringGenerator;
-import org.hotrod.generator.mybatisspring.ObjectAbstractVO;
-import org.hotrod.generator.mybatisspring.ObjectVO;
+import org.hotrod.generator.mybatisspring.EnumClass;
+import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
+import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.metadata.ForeignKeyMetadata;
+import org.hotrod.metadata.KeyMetadata;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
+import org.hotrod.utils.AbstractClassWriter.ExternalClass;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ClassWriter;
 import org.hotrod.utils.SUtil;
+import org.hotrod.utils.Separator;
+
+// Optimistic version control NOT YET IMPLEMENTED
 
 public class DAO {
 
@@ -50,7 +54,7 @@ public class DAO {
 
   private DataSetMetadata metadata;
   private DataSetLayout layout;
-  private MyBatisSpringGenerator generator;
+  private JDBCGenerator generator;
   private DAOType daoType;
   private JDBCTag myBatisTag;
   private DatabaseAdapter adapter;
@@ -60,9 +64,8 @@ public class DAO {
 
   private ClassPackage classPackage;
 
-  private ObjectAbstractVO avo = null;
-  private ObjectVO vo = null;
-  private Mapper mapper = null;
+  private Entity entity = null;
+  private Model model = null;
 
   private String metadataClassName;
 
@@ -74,8 +77,8 @@ public class DAO {
   // Constructors
 
   public DAO(final AbstractDAOTag tag, final DataSetMetadata metadata, final DataSetLayout layout,
-      final MyBatisSpringGenerator generator, final DAOType type, final JDBCTag myBatisTag,
-      final DatabaseAdapter adapter, final ObjectAbstractVO avo, final ObjectVO vo, final Mapper mapper) {
+      final JDBCGenerator generator, final DAOType type, final JDBCTag myBatisTag, final DatabaseAdapter adapter,
+      final Entity entity, final Model model) {
     super();
     this.tag = tag;
     this.metadata = metadata;
@@ -88,9 +91,8 @@ public class DAO {
     this.myBatisTag = myBatisTag;
     this.adapter = adapter;
 
-    this.avo = avo;
-    this.vo = vo;
-    this.mapper = mapper;
+    this.entity = entity;
+    this.model = model;
 
     this.fragmentConfig = metadata.getFragmentConfig();
     this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
@@ -104,7 +106,7 @@ public class DAO {
     this.efkSelectors = compileDistinctFKs(this.metadata.getExportedFKs());
   }
 
-  public void generate(final FileGenerator fileGenerator, final MyBatisSpringGenerator mg)
+  public void generate(final FileGenerator fileGenerator, final JDBCGenerator mg)
       throws UncontrolledException, ControlledException {
 
     String className = this.getClassName() + ".java";
@@ -138,7 +140,7 @@ public class DAO {
 
   }
 
-  private void writeBody(final MyBatisSpringGenerator mg)
+  private void writeBody(final JDBCGenerator mg)
       throws IOException, UnresolvableDataTypeException, ControlledException, SequencesNotSupportedException {
 
     writeClassHeader();
@@ -166,7 +168,7 @@ public class DAO {
 //
 //        writeUpdateByPK(mg);
 //
-//        writeDeleteByPK(mg);
+    writeDeleteByPK(mg);
 //      }
 //
 //      if (this.isView()) {
@@ -231,31 +233,7 @@ public class DAO {
 
     // Spring properties
 
-    Map<String, String> daoMembers = new HashMap<String, String>();
-//
-//    for (DataSetMetadata ds : this.fkSelectors.keySet()) {
-//      if (!(ds.getDaoTag() instanceof EnumTag)) {
-//        ObjectDAO dao = this.generator.getDAO(ds);
-//        daoMembers.put(dao.getClassName(), dao.getMemberName());
-//      }
-//    }
-//
-//    for (DataSetMetadata ds : this.efkSelectors.keySet()) {
-//      if (!(ds.getDaoTag() instanceof EnumTag)) {
-//        ObjectDAO dao = this.generator.getDAO(ds);
-//        daoMembers.put(dao.getClassName(), dao.getMemberName());
-//      }
-//    }
-
-//    for (String className : daoMembers.keySet()) {
-//      String memberName = daoMembers.get(className);
-//      if (!className.equals(this.getClassName())) {
-//        w.println("  @", Const.LAZY);
-//        w.println("  @", Const.AUTOWIRED);
-//        w.println("  private " + className + " " + memberName + ";");
-//        w.println();
-//      }
-//    }
+//    Map<String, String> daoMembers = new HashMap<String, String>();
 
     w.println("  @", Const.AUTOWIRED);
     if (!SUtil.isEmpty(this.layout.getLiveSQLDialectBeanQualifier())) {
@@ -263,10 +241,6 @@ public class DAO {
     }
     w.println("  private ", LiveSQLDialect.class, " liveSQLDialect;");
     w.println();
-
-//    w.println("  @", Const.AUTOWIRED);
-//    w.println("  private ", LiveSQLMapper.class, " liveSQLMapper;");
-//    w.println();
 
     w.println("  @", Const.AUTOWIRED);
     w.println("  private ", Const.SPRING_BEAN_OBJECT_FACTORY, " springBeanObjectFactory;");
@@ -295,7 +269,77 @@ public class DAO {
     w.println("    this.context = new ", LiveSQLContext.class, "(this.liveSQLDialect, this.dataSource, new ",
         TypeSolver.class, "(null, this.liveSQLDialect));");
     w.println("  }");
-    w.println();
+
+  }
+
+  private void writeDeleteByPK(final JDBCGenerator mg) {
+
+    KeyMetadata pk = this.metadata.getPK();
+
+    if (pk == null) {
+      w.println();
+      w.println("  // DELETE BY PK -- Not available since the table does not have a primary key.");
+    } else {
+
+      w.println();
+      w.println("  // DELETE BY PK");
+
+      w.println();
+      w.println("    private final DynamicModificationQuery deleteByPK = builder");
+      w.println("      .literal(\"DELETE FROM account\")");
+
+      Separator sep = Separator.of("WHERE ", "  AND ");
+      for (ColumnMetadata cm : pk.getColumns()) {
+        String memId = cm.getId().getJavaMemberName();
+        String sqlId = cm.getId().getRenderedSQLName();
+        String jdbcType = cm.getType().getJDBCShortType();
+        w.println("      .literal(" + sep.render() + " + \"" + memId + " = \").parameter(\"en." + sqlId + "\", Types."
+            + jdbcType + ")");
+      }
+      w.println("      .endModificationQuery();");
+      w.println();
+
+      w.print("  public void delete(");
+      sep = new Separator(", ");
+      for (ColumnMetadata cm : pk.getColumns()) {
+        w.print(sep.render());
+        EnumDataSetMetadata em = cm.getEnumMetadata();
+        String javaClassName;
+        if (em != null) {
+          EnumClass ec = mg.getEnum(em);
+          javaClassName = ec.getFullClassName();
+        } else {
+          javaClassName = cm.getType().getJavaClassName();
+        }
+        w.print(ExternalClass.of(javaClassName), " ", cm.getId().getJavaMemberName());
+      }
+      w.println(") {");
+
+      for (ColumnMetadata cm : pk.getColumns()) {
+        String m = cm.getId().getJavaMemberName();
+        w.println("    if (" + m + " == null) return 0;");
+      }
+
+      ExternalClass em = ExternalClass.of(this.model.getFullClassName());
+
+      w.println("    ", em, " en = new ", em, "();");
+      for (ColumnMetadata cm : pk.getColumns()) {
+        String m = cm.getId().getJavaMemberName();
+        String setter = cm.getId().getJavaSetter();
+        w.println("    en." + setter + "(" + m + ");");
+      }
+
+      w.println("    ", ParameterContext.class, " context = this.factory.newParameterContext();");
+      w.println("    context.add(\"en\", en);");
+      w.println("    PreparedModificationQuery preparedQuery = this.deleteByPK.prepare(context);");
+      w.println("    System.out.println(\"=== Preview ===\\n\" + preparedQuery.getPreview());");
+      w.println("    try (Connection conn = this.dataSource.getConnection()) {");
+      w.println("      int rows = preparedQuery.execute(conn);");
+      w.println("      return rows;");
+      w.println("    }");
+      w.println("  }");
+
+    }
 
   }
 
@@ -337,6 +381,14 @@ public class DAO {
 
   public String getClassName() {
     return this.myBatisTag.getDaos().generateDAOName(this.metadata.getId());
+  }
+
+  public String getFullClassName() {
+    return this.classPackage.getFullClassName(getClassName());
+  }
+
+  public String getMemberName() {
+    return SUtil.lowerFirst(this.getClassName());
   }
 
 }
