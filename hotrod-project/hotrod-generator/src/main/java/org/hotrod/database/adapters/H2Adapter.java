@@ -222,17 +222,12 @@ public class H2Adapter extends DatabaseAdapter {
     if (canonicalName == null) {
       return null;
     }
-    log.info("-- canonicalName=" + canonicalName);
     if (isQuoted) {
-      log.info("-- 1");
       return super.quote(canonicalName);
     } else {
-      log.info("-- 2");
       if (canonicalName.matches(UNQUOTED_IDENTIFIER_PATTERN)) {
-        log.info("-- 2a");
         return canonicalName.toLowerCase();
       } else {
-        log.info("-- 2b");
         return super.quote(canonicalName);
       }
     }

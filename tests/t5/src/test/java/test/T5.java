@@ -1,4 +1,4 @@
-package app;
+package test;
 
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -9,8 +9,8 @@ import javax.sql.DataSource;
 
 import org.hotrod.dynamic.DynamicExpressionException;
 
-import app.gen.Account;
-import app.gen.AccountDAO;
+import gen.Account;
+import gen.AccountDAO;
 
 public class T5 {
 

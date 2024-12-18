@@ -45,6 +45,16 @@ public class QueryBuilder {
     return q.literal(txt);
   }
 
+  public PartialQuery literaln() {
+    PartialQuery q = new PartialQuery(this.factory);
+    return q.literaln();
+  }
+
+  public PartialQuery literaln(String txt) {
+    PartialQuery q = new PartialQuery(this.factory);
+    return q.literaln(txt);
+  }
+
   public PartialQuery parameter(String name, int sqlType) {
     PartialQuery q = new PartialQuery(this.factory);
     return q.parameter(name, sqlType);

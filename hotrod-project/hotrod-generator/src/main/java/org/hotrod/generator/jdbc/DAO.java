@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.sql.DataSource;
@@ -239,6 +240,10 @@ public class DAO {
     w.println("  private static final long serialVersionUID = 1L;");
     w.println();
 
+    w.println("  private static final ", Logger.class, " log = ", Logger.class,
+        ".getLogger(" + this.getClassName() + ".class.getName());");
+    w.println();
+
     // Spring properties
 
 //    Map<String, String> daoMembers = new HashMap<String, String>();
@@ -299,7 +304,7 @@ public class DAO {
 
       w.println();
       w.println("  private final ", DynamicModificationQuery.class, " deleteByPK = builder");
-      w.println("    .literal(\"DELETE FROM account\")");
+      w.println("    .literaln(\"DELETE FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
 
       Separator sep = Separator.of("WHERE ", "  AND ");
       for (ColumnMetadata cm : pk.getColumns()) {
@@ -345,7 +350,11 @@ public class DAO {
       w.println("    ", ParameterContext.class, " context = this.factory.newParameterContext();");
       w.println("    context.add(\"en\", en);");
       w.println("    ", PreparedModificationQuery.class, " preparedQuery = this.deleteByPK.prepare(context);");
-      w.println("    System.out.println(\"=== Preview ===\\n\" + preparedQuery.getPreview());");
+
+      w.println("    if (log.isLoggable(", Level.class, ".FINE)) {");
+      w.println("      log.fine(\"=== Preview ===\\n\" + preparedQuery.getPreview());");
+      w.println("    }");
+
       w.println("    try (", Connection.class, " conn = this.dataSource.getConnection()) {");
       w.println("      int rows = preparedQuery.execute(conn);");
       w.println("      return rows;");

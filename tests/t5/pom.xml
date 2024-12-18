@@ -12,6 +12,7 @@
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
 
+    <springboot.version>2.3.4.RELEASE</springboot.version>
     <hotrod.version>5.0.0-SNAPSHOT</hotrod.version>
   </properties>
 
@@ -20,7 +21,13 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
-      <version>2.3.4.RELEASE</version>
+      <version>${springboot.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-jdbc</artifactId>
+      <version>${springboot.version}</version>
     </dependency>
 
     <dependency>
@@ -33,6 +40,13 @@
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
       <version>${hotrod.version}</version>
+    </dependency>
+
+    <!-- To be removed -->
+    <dependency>
+      <groupId>org.mybatis.spring.boot</groupId>
+      <artifactId>mybatis-spring-boot-starter</artifactId>
+      <version>2.1.3</version>
     </dependency>
 
   </dependencies>

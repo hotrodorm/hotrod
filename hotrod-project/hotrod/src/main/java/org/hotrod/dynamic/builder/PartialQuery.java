@@ -38,6 +38,14 @@ public class PartialQuery {
     return this;
   }
 
+  public PartialQuery literaln() {
+    return this.literal("\n");
+  }
+
+  public PartialQuery literaln(String txt) {
+    return this.literal(txt).literaln();
+  }
+
   public PartialQuery parameter(String name, int sqlType) {
     this.segments.add(new ParameterDefinitionSegment(this.factory, name, sqlType));
     return this;

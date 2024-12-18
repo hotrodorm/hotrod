@@ -26,7 +26,6 @@ import org.hotrod.generator.HotRodContext;
 import org.hotrod.generator.LiveGenerator;
 import org.hotrod.generator.mybatisspring.DataSetLayout;
 import org.hotrod.generator.mybatisspring.EnumClass;
-import org.hotrod.generator.mybatisspring.LayerConfigWriter;
 import org.hotrod.generator.mybatisspring.SelectAbstractVO;
 import org.hotrod.generator.mybatisspring.SelectVO;
 import org.hotrod.metadata.DataSetMetadata;
@@ -272,6 +271,8 @@ public class JDBCGenerator implements Generator, LiveGenerator {
     for (DAO dao : this.daos.values()) {
       dao.generate(fileGenerator, this);
     }
+
+    this.layerConfigWriter.generate(fileGenerator, this);
 
   }
 

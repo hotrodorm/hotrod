@@ -6,6 +6,8 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
@@ -32,6 +34,8 @@ import app.daos.Account;
 public class AccountDAO implements Serializable, ApplicationContextAware {
 
   private static final long serialVersionUID = 1L;
+
+  private static final Logger log = Logger.getLogger(AccountDAO.class.getName());
 
   @Autowired
   private LiveSQLDialect liveSQLDialect;
@@ -62,7 +66,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   // DELETE BY PK
 
   private final DynamicModificationQuery deleteByPK = builder
-    .literal("DELETE FROM account")
+    .literaln("DELETE FROM account")
     .literal("WHERE " + "id = ").parameter("en.id", Types.INTEGER)
     .endModificationQuery();
 
@@ -73,11 +77,13 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     ParameterContext context = this.factory.newParameterContext();
     context.add("en", en);
     PreparedModificationQuery preparedQuery = this.deleteByPK.prepare(context);
-    System.out.println("=== Preview ===\n" + preparedQuery.getPreview());
+    if (log.isLoggable(Level.FINE)) {
+      log.fine("=== Preview ===\n" + preparedQuery.getPreview());
+    }
     try (Connection conn = this.dataSource.getConnection()) {
       int rows = preparedQuery.execute(conn);
       return rows;
     }
   }
-  
+
 }

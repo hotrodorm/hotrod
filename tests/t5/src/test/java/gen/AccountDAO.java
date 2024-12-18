@@ -1,4 +1,4 @@
-package app.gen;
+package gen;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -23,7 +23,7 @@ import org.hotrod.dynamic.insert.InsertProperties;
 import org.hotrod.dynamic.insert.PreparedInsertQuery;
 import org.hotrod.dynamic.insert.PrimaryKeyRetrievalMode;
 
-import app.T5.Data;
+import test.T5.Data;
 
 public class AccountDAO {
 

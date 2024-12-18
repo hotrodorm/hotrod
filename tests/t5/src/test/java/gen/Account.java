@@ -1,4 +1,4 @@
-package app.gen;
+package gen;
 
 public class Account {
 

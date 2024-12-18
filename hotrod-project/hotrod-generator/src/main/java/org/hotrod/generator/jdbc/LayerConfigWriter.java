@@ -1,4 +1,4 @@
-package org.hotrod.generator.mybatisspring;
+package org.hotrod.generator.jdbc;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +14,6 @@ import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.generator.mybatisspring.Const;
 import org.hotrod.generator.mybatisspring.DataSetLayout;
-import org.hotrod.generator.mybatisspring.MyBatisSpringGenerator;
 import org.hotrod.runtime.livesql.LayerConfigInterface;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
@@ -40,7 +39,7 @@ public class LayerConfigWriter {
     this.typeSolver = typeSolver;
   }
 
-  public void generate(final FileGenerator fileGenerator, final MyBatisSpringGenerator mg)
+  public void generate(final FileGenerator fileGenerator, final JDBCGenerator mg)
       throws UncontrolledException, ControlledException {
 
     File dir = this.layout.getDaoPrimitivePackageDir(null);

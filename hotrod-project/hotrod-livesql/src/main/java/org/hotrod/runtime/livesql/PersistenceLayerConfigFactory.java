@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class PersistenceLayerConfigFactory implements ApplicationContextAware {
 
+  private static final Logger log = Logger.getLogger(PersistenceLayerConfigFactory .class.getName());
+
   private ApplicationContext applicationContext;
 
   public void setApplicationContext(final ApplicationContext applicationContext) {
@@ -24,6 +27,7 @@ public class PersistenceLayerConfigFactory implements ApplicationContextAware {
 
   @PostConstruct
   private void initialize() {
+    log.info("POST-CONSTRUCT");
     computeValidLayerConfigs();
   }
 
@@ -31,6 +35,7 @@ public class PersistenceLayerConfigFactory implements ApplicationContextAware {
   private LayerConfigInterface defaultConfig;
 
   private void computeValidLayerConfigs() {
+    log.info("POST-CONSTRUCT 2");
     Map<String, LayerConfigInterface> allConfigBeans = applicationContext
         .getBeansOfType(LayerConfigInterface.class);
     this.configs = new HashMap<>();
@@ -45,6 +50,7 @@ public class PersistenceLayerConfigFactory implements ApplicationContextAware {
   }
 
   public List<TypeRule> getCustomRules(final String layerQualifier) {
+    log.info("POST-CONSTRUCT 3");
     if (layerQualifier == null) {
 
       if (this.configs.size() > 1) {
