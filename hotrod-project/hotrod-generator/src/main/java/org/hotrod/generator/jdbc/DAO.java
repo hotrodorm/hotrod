@@ -352,7 +352,9 @@ public class DAO {
       w.println("    ", PreparedModificationQuery.class, " preparedQuery = this.deleteByPK.prepare(context);");
 
       w.println("    if (log.isLoggable(", Level.class, ".FINE)) {");
-      w.println("      log.fine(\"=== Preview ===\\n\" + preparedQuery.getPreview());");
+      w.println("      log.fine(\"SQL: \" + preparedQuery.getPreview());");
+      w.println("    } else if (log.isLoggable(", Level.class, ".FINER)) {");
+      w.println("      log.finer(\"SQL: \" + preparedQuery.getPreview(true));");
       w.println("    }");
 
       w.println("    try (", Connection.class, " conn = this.dataSource.getConnection()) {");

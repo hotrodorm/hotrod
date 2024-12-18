@@ -31,25 +31,33 @@ public abstract class PreparedQuery implements StaticSegmentConsumer {
   private static final int MAX_DISPLAY_VALUE = 100;
 
   public String getPreview() {
-    StringBuilder p = new StringBuilder();
-    p.append(this.sb.toString());
-    p.append("\n=== Parameters (" + this.parameters.size() + ") ===\n");
-    int pos = 1;
-    for (ParameterSegment ps : this.parameters) {
-      String sqlTypeName = JDBCTypes.codeToShortName(ps.getSQLType());
-      Object value = ps.getValue();
-      String tostring = "" + value;
-      if (tostring.length() > MAX_DISPLAY_VALUE) {
-        tostring = tostring.substring(0, MAX_DISPLAY_VALUE - 3) + "...";
+    return this.getPreview(false);
+  }
+
+  public String getPreview(boolean includeParameters) {
+    if (!includeParameters) {
+      return this.sb.toString();
+    } else {
+      StringBuilder p = new StringBuilder();
+      p.append(this.sb.toString());
+      p.append("\n=== Parameters (" + this.parameters.size() + ") ===\n");
+      int pos = 1;
+      for (ParameterSegment ps : this.parameters) {
+        String sqlTypeName = JDBCTypes.codeToShortName(ps.getSQLType());
+        Object value = ps.getValue();
+        String tostring = "" + value;
+        if (tostring.length() > MAX_DISPLAY_VALUE) {
+          tostring = tostring.substring(0, MAX_DISPLAY_VALUE - 3) + "...";
+        }
+        String name = ps.getName();
+        p.append("" + pos++ + ". " + name + " (" + SUtil.coalesce(sqlTypeName, "OTHER/" + ps.getSQLType()) + "): "
+            + tostring + (value == null ? "" : " (" + value.getClass().getName() + ")") + "\n");
       }
-      String name = ps.getName();
-      p.append("" + pos++ + ". " + name + " (" + SUtil.coalesce(sqlTypeName, "OTHER/" + ps.getSQLType()) + "): "
-          + tostring + (value == null ? "" : " (" + value.getClass().getName() + ")") + "\n");
+      if (!this.parameters.isEmpty()) {
+        p.append("======================\n");
+      }
+      return p.toString();
     }
-    if (!this.parameters.isEmpty()) {
-      p.append("======================\n");
-    }
-    return p.toString();
   }
 
 }

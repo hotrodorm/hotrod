@@ -1,6 +1,7 @@
 package app;
 
 import java.sql.SQLException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.hotrod.dynamic.DynamicExpressionException;
@@ -26,6 +27,10 @@ import app.daos.primitives.AccountDAO;
 public class App {
 
   private static final Logger log = Logger.getLogger(App.class.getName());
+
+  static {
+    JULCustomFormatter.initialize(Level.INFO);
+  }
 
   @Autowired
   private AccountDAO accountDAO;

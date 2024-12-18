@@ -78,7 +78,9 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     context.add("en", en);
     PreparedModificationQuery preparedQuery = this.deleteByPK.prepare(context);
     if (log.isLoggable(Level.FINE)) {
-      log.fine("=== Preview ===\n" + preparedQuery.getPreview());
+      log.fine("SQL: " + preparedQuery.getPreview());
+    } else if (log.isLoggable(Level.FINER)) {
+      log.finer("SQL: " + preparedQuery.getPreview(true));
     }
     try (Connection conn = this.dataSource.getConnection()) {
       int rows = preparedQuery.execute(conn);

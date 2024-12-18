@@ -9,13 +9,14 @@ import javax.sql.DataSource;
 
 import org.hotrod.dynamic.DynamicExpressionException;
 
+import app.JULCustomFormatter;
 import gen.Account;
 import gen.AccountDAO;
 
 public class T5 {
 
   static {
-    JULCustomFormatter.initialize(Level.INFO);
+    JULCustomFormatter.initialize(Level.FINE);
   }
 
   public static void main(String[] args) throws SQLException, DynamicExpressionException {
