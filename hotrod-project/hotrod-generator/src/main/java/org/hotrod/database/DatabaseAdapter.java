@@ -106,6 +106,8 @@ public abstract class DatabaseAdapter implements Serializable {
   public abstract String canonizeName(String configName, boolean quoted);
 
   public abstract String renderSQLName(String canonicalName, boolean quoted);
+  
+  public abstract boolean canonicalNameRequiresQuoting(String canonicalSQLName);
 
   protected String quote(final String canonicalName) {
     return this.identifierQuoteString + canonicalName + this.identifierQuoteString;

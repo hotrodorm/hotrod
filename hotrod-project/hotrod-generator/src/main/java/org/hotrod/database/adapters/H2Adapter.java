@@ -213,10 +213,29 @@ public class H2Adapter extends DatabaseAdapter {
   private static final String UNQUOTED_IDENTIFIER_PATTERN = "[A-Z][A-Z0-9_]*";
 
   @Override
+  public boolean canonicalNameRequiresQuoting(String canonicalSQLName) {
+    return !canonicalSQLName.matches(UNQUOTED_IDENTIFIER_PATTERN);
+  }
+
+  @Override
   public String renderSQLName(final String canonicalName, final boolean isQuoted) {
-    return canonicalName == null ? null
-        : (!isQuoted && canonicalName.matches(UNQUOTED_IDENTIFIER_PATTERN) ? canonicalName.toLowerCase()
-            : super.quote(canonicalName));
+    if (canonicalName == null) {
+      return null;
+    }
+    log.info("-- canonicalName=" + canonicalName);
+    if (isQuoted) {
+      log.info("-- 1");
+      return super.quote(canonicalName);
+    } else {
+      log.info("-- 2");
+      if (canonicalName.matches(UNQUOTED_IDENTIFIER_PATTERN)) {
+        log.info("-- 2a");
+        return canonicalName.toLowerCase();
+      } else {
+        log.info("-- 2b");
+        return super.quote(canonicalName);
+      }
+    }
   }
 
   @Override

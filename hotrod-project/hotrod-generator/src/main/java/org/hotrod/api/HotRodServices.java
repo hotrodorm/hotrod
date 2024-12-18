@@ -65,7 +65,7 @@ public class HotRodServices {
 
       Generator g = hc.getConfig().getGenerators().getSelectedGeneratorTag().instantiateGenerator(hc, null,
           this.displayMode, false, feedback);
-      log.fine("Generator instantiated.");
+      log.info("Generator instantiated: "+g.getClass().getName());
 
       try {
 

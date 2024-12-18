@@ -136,8 +136,10 @@ public class Id implements Comparable<Id> {
     String javaConstantName = assembleJavaConstantName(nameParts);
     String dashedName = assembleDashedName(nameParts);
 
+    boolean quoted =    adapter.canonicalNameRequiresQuoting(canonicalSQLName);
+    
     Id id = new Id(adapter, nameParts, canonicalSQLName, false, javaClassName, javaMemberName, javaConstantName,
-        dashedName, true);
+        dashedName, quoted);
     return id;
   }
 

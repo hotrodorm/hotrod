@@ -1,0 +1,349 @@
+<hotrod-fragment package="test2">
+
+
+
+  <dao name="TareaFinder">
+    <select method="findTareasPorFiltro" vo="FindTareasPorFiltro">
+      <parameter name="fechaCreacionFrom" java-type="java.sql.Timestamp" jdbc-type="TIMESTAMP" />
+      <parameter name="fechaCreacionTo" java-type="java.sql.Timestamp" jdbc-type="TIMESTAMP" />
+      <parameter name="idArea" java-type="java.lang.Long" />
+      <parameter name="idCasoPadre" java-type="java.lang.Long" />
+      <parameter name="idCaso" java-type="java.lang.Long" />
+      <parameter name="idTipoDeAtencion" java-type="java.lang.Long" />
+      <parameter name="identificacionDV" java-type="java.lang.String" />
+      <parameter name="identificacionNumero" java-type="java.lang.String" />
+      <parameter name="pagFinalRow" java-type="java.lang.Long" />
+      <parameter name="pagInitialRow" java-type="java.lang.Long" />
+      <parameter name="tareaEsPrioridad" java-type="java.lang.String" />
+      <parameter name="tareaEstado" java-type="java.lang.String" />
+      <parameter name="tipoAtencionEsActivo" java-type="java.lang.String" />
+      <parameter name="usuarioLDAP" java-type="java.lang.String" />
+
+      <column java-name="usuarioObservadores" name="usuarioobservadores" />
+      <column java-name="tareaId" name="tareaid" />
+      <column java-name="casoId" name="casoid" />
+      <column java-name="nombreTarea" name="nombretarea" />
+      <column java-name="descripcion" name="descripcion" />
+      <column java-name="estado" name="estado" />
+      <column java-name="nombreSubProducto" name="nombresubproducto" />
+      <column java-name="idSubProducto" name="idsubproducto" />
+      <column java-name="tipoTareaId" name="tipotareaid" />
+      <column java-name="nombreTipoTarea" name="nombretipotarea" />
+      <column java-name="implementacionTipoTarea" name="implementaciontipotarea" />
+      <column java-name="fechaCreacion" name="fechacreacion" />
+      <column java-name="fechaPosSolucion" name="fechapossolucion" />
+      <column java-name="fechaSolucion" name="fechasolucion" />
+      <column java-name="prioridad" name="prioridad" />
+      <column java-name="usuariosSugerido" name="usuariossugerido" />
+      <column java-name="idTareaPadre" name="idtareapadre" />
+      <column java-name="dataTarea" name="datatarea" />
+      <column java-name="canal" name="canal" />
+      <column java-name="identificacionCliente" name="identificacioncliente" />
+      <column java-name="dvIdentificacionCliente" name="dvidentificacioncliente" />
+      <column java-name="nombreCliente" name="nombrecliente" />
+      <column java-name="apellidosCliente" name="apellidoscliente" />
+      <column java-name="identificacionEmpresa" name="identificacionempresa" />
+      <column java-name="dvIdentificacionEmpresa" name="dvidentificacionempresa" />
+      <column java-name="nombreEmpresa" name="nombreempresa" />
+      <column java-name="usuarioAsignado" name="usuarioasignado" />
+      <column java-name="razonSocialEmpresa" name="razonsocialempresa" />
+      <column java-name="emailCliente" name="emailcliente" />
+      <column java-name="emailEmpresa" name="emailempresa" />
+      <column java-name="fechaCreacionCaso" name="fechacreacioncaso" />
+      <column java-name="nombreArea" name="nombrearea" />
+      <column java-name="idArea" name="idarea" />
+      <column java-name="nombreProducto" name="nombreproducto" />
+      <column java-name="idProducto" name="idproducto" />
+      <column java-name="ppnEmpresa" name="ppnempresa" />
+      <column java-name="ppnCliente" name="ppncliente" />
+      <column java-name="idCliente" name="idcliente" />
+      <column java-name="idEmpresa" name="idempresa" />
+      <column java-name="idCanal" name="idcanal" />
+      <column java-name="diasAlerta" name="diasalerta" />
+      <column java-name="idCasoPadre" name="idcasopadre" />
+      <column java-name="cantidadAdjuntos" name="cantidadadjuntos" java-type="java.lang.Integer" />
+      <column java-name="cantidadAdjuntosTipo" name="cantidadadjuntostipo" java-type="java.lang.Integer" />
+      <column java-name="num" name="num" java-type="java.lang.Integer" />
+
+      SELECT * FROM
+      (
+      SELECT observador.OBSERVADORES usuarioObservadores
+      ,SATCO_TAREA.TAR_ID tareaId
+      ,SATCO_TAREA.CAS_ID casoId
+      ,SATCO_TAREA.TAR_NOMBRE nombreTarea
+      ,SATCO_TAREA.TAR_DESCRIPCION descripcion
+      ,SATCO_TAREA.TAR_ESTADO estado
+      ,SATCO_SUB_TIPO_ATENCION.STA_NOMBRE nombreSubProducto
+      ,SATCO_SUB_TIPO_ATENCION.STA_ID idSubProducto
+      ,SATCO_TIPO_TAREA.TT_ID tipoTareaId
+      ,SATCO_TIPO_TAREA.TT_NOMBRE nombreTipoTarea
+      ,SATCO_TIPO_TAREA.TT_IMPLEMENTACION implementacionTipoTarea
+      ,SATCO_TAREA.TAR_FECHA_CREACION fechaCreacion
+      ,SATCO_TAREA.TAR_FECHA_POS_SOL fechaPosSolucion
+      ,SATCO_TAREA.TAR_FECHA_SOLUCION fechaSolucion
+      ,SATCO_TAREA.TAR_PRIORIDAD prioridad
+      ,SATCO_TAREA.TAR_USERS_SUGERIDO usuariosSugerido
+      ,SATCO_TAREA.TAR_ID_PADRE idTareaPadre
+      ,SATCO_TAREA.TAR_DATA dataTarea
+      ,SATCO_CANAL_INGRESO.CANVAR_NOMBRE canal
+      ,SATCO_CLIENTE.CLI_NUM_IDENTIFICACION identificacionCliente
+      ,SATCO_CLIENTE.CLI_DV_IDENTIFICACION dvIdentificacionCliente
+      ,SATCO_CLIENTE.CLI_NOMBRE nombreCliente
+      ,SATCO_PACIENTE.PAC_APELLIDOS apellidosCliente
+      ,ClienteEmpresa.CLI_NUM_IDENTIFICACION identificacionEmpresa
+      ,ClienteEmpresa.CLI_DV_IDENTIFICACION dvIdentificacionEmpresa
+      ,ClienteEmpresa.CLI_NOMBRE nombreEmpresa
+      ,SATCO_USUARIO_TAREA.USUARIO_LDAP usuarioAsignado
+      ,SATCO_EMPRESA.EMP_RAZON_SOCIAL razonSocialEmpresa
+      ,SATCO_CLIENTE.CLI_EMAIL emailCliente
+      ,ClienteEmpresa.CLI_EMAIL emailEmpresa
+      ,SATCO_CASO.CAS_FECHA_CREACION fechaCreacionCaso
+      ,SATCO_AREA.AREA_NOMBRE nombreArea
+      ,SATCO_AREA.AREA_ID idArea
+      ,SATCO_TIPO_ATENCION.TAT_NOMBRE nombreProducto
+      ,SATCO_TIPO_ATENCION.TAT_ID idProducto
+      ,ClienteEmpresa.CLI_PPN_EXT ppnEmpresa
+      ,SATCO_CLIENTE.CLI_PPN_EXT ppnCliente
+      ,SATCO_CASO.PAC_ID idCliente
+      ,SATCO_CASO.EMP_ID idEmpresa
+      ,SATCO_TAREA.CANNU_ID idCanal
+      ,SATCO_TIPO_TAREA_CONFIG.TTC_DIAS_ALERTA diasAlerta
+      ,SATCO_CASO.CAS_ID_PADRE idCasoPadre
+      ,NVL(adjunto.CANTIDAD,0) cantidadAdjuntos
+      ,NVL(adjuntoTipo.CANTIDAD,0) cantidadAdjuntosTipo
+      ,ROWNUM num
+      FROM SATCO_TAREA
+      LEFT JOIN SATCO_USUARIO_TAREA ON (SATCO_TAREA.TAR_ID = SATCO_USUARIO_TAREA.TAR_ID)
+      JOIN SATCO_CASO ON (SATCO_TAREA.CAS_ID = SATCO_CASO.CAS_ID)
+      LEFT JOIN SATCO_SUB_TIPO_ATENCION ON (SATCO_SUB_TIPO_ATENCION.STA_ID = SATCO_TAREA.STA_ID)
+      LEFT JOIN SATCO_TIPO_TAREA ON (SATCO_TIPO_TAREA.TT_ID = SATCO_TAREA.TT_ID)
+      JOIN SATCO_CANAL_INGRESO ON (SATCO_CANAL_INGRESO.CANNU_ID = SATCO_TAREA.CANNU_ID)
+      LEFT JOIN SATCO_CLIENTE ON (SATCO_CLIENTE.CLI_ID = SATCO_CASO.PAC_ID)
+      LEFT JOIN SATCO_EMPRESA ON (SATCO_EMPRESA.EMP_ID = SATCO_CASO.EMP_ID)
+      LEFT JOIN SATCO_PACIENTE ON (SATCO_PACIENTE.PAC_ID = SATCO_CLIENTE.CLI_ID)
+      LEFT JOIN SATCO_CLIENTE ClienteEmpresa ON (ClienteEmpresa.CLI_ID = SATCO_EMPRESA.EMP_ID)
+      LEFT JOIN SATCO_AREA ON (SATCO_AREA.AREA_ID = SATCO_TAREA.AREA_ID)
+      LEFT JOIN SATCO_TIPO_ATENCION ON (SATCO_TIPO_ATENCION.TAT_ACTIVO = #{tipoAtencionEsActivo} AND SATCO_TIPO_ATENCION.TAT_ID
+      = SATCO_TAREA.TAT_ID)
+      LEFT JOIN SATCO_TIPO_TAREA_CONFIG ON (SATCO_TIPO_TAREA_CONFIG.STA_ID = SATCO_TAREA.STA_ID AND
+      SATCO_TIPO_TAREA_CONFIG.TT_ID = SATCO_TAREA.TT_ID)
+      <if test="usuarioLdap != null &amp;&amp; !usuarioLdap.isEmpty()">
+        LEFT JOIN SATCO_OBSERVADOR_TAREA ON (SATCO_OBSERVADOR_TAREA.USUARIO_LDAP = #{usuarioLDAP} AND
+        SATCO_OBSERVADOR_TAREA.TAR_ID = SATCO_TAREA.TAR_ID)
+      </if>
+
+      <if
+        test="idArea != null || tareaEsPrioridad != null || idCaso != null || fechaCreacionTo != null || fechaCreacionFrom != null || tareaEstado != null">
+        LEFT JOIN (
+        SELECT COUNT(SATCO_ARCHIVO_ADJUNTO_TAREA.ACDT_ID_TAREA) CANTIDAD
+        ,SATCO_ARCHIVO_ADJUNTO_TAREA.ACDT_ID_TAREA ID_TAREA
+        FROM SATCO_ARCHIVO_ADJUNTO_TAREA
+        JOIN SATCO_TAREA sa ON (sa.TAR_ID = SATCO_ARCHIVO_ADJUNTO_TAREA.ACDT_ID_TAREA)
+        WHERE
+        <if test="idArea != null">
+          AND sa.AREA_ID = #{idArea}
+        </if>
+        <if test="tareaEsPrioridad != null">
+          AND sa.TAR_PRIORIDAD = #{tareaEsPrioridad}
+        </if>
+        <if test="idCaso != null">
+          AND sa.CAS_ID = #{idCaso}
+        </if>
+        <if test="fechaCreacionTo != null">
+          AND sa.TAR_FECHA_CREACION &lt;= #{fechaCreacionTo}
+        </if>
+        <if test="fechaCreacionFrom != null">
+          AND sa.TAR_FECHA_CREACION >= #{fechaCreacionFrom}
+        </if>
+        <if test="tareaEstado != null">
+          AND sa.TAR_ESTADO = #{tareaEstado}
+        </if>
+        GROUP BY SATCO_ARCHIVO_ADJUNTO_TAREA.ACDT_ID_TAREA
+        ) adjunto ON (adjunto.ID_TAREA = SATCO_TAREA.TAR_ID)
+        LEFT JOIN (
+        SELECT COUNT(SATCO_ARCHIVO_ADJUNTO_TAREA.ACDT_ID_TAREA) CANTIDAD
+        ,SATCO_ARCHIVO_ADJUNTO_TAREA.ACDT_ID_TAREA ID_TAREA,sa.TT_ID TT_ID
+        FROM SATCO_ARCHIVO_ADJUNTO_TAREA
+        JOIN SATCO_TAREA sa ON (sa.TAR_ID = SATCO_ARCHIVO_ADJUNTO_TAREA.ACDT_ID_TAREA)
+        JOIN SATCO_TTAREA_TADJUNTO ON (SATCO_TTAREA_TADJUNTO.TT_ID = sa.TT_ID)
+        JOIN SATCO_ARCHIVO_ADJUNTO ON ((SATCO_ARCHIVO_ADJUNTO.ACD_TIPO = SATCO_TTAREA_TADJUNTO.TACA_ID AND
+        SATCO_ARCHIVO_ADJUNTO.ACD_ID = SATCO_ARCHIVO_ADJUNTO_TAREA.ACDT_ID_ARCHIVO_ADJUNTO))
+        WHERE
+        <if test="idArea != null">
+          AND sa.AREA_ID = #{idArea}
+        </if>
+        <if test="tareaEsPrioridad != null">
+          AND sa.TAR_PRIORIDAD = #{tareaEsPrioridad}
+        </if>
+        <if test="idCaso != null">
+          AND sa.CAS_ID = #{idCaso}
+        </if>
+        <if test="fechaCreacionTo != null">
+          AND sa.TAR_FECHA_CREACION &lt;= #{fechaCreacionTo}
+        </if>
+        <if test="fechaCreacionFrom != null">
+          AND sa.TAR_FECHA_CREACION >= #{fechaCreacionFrom}
+        </if>
+        <if test="tareaEstado != null">
+          AND sa.TAR_ESTADO = #{tareaEstado}
+        </if>
+        GROUP BY SATCO_ARCHIVO_ADJUNTO_TAREA.ACDT_ID_TAREA, sa.TT_ID
+        ) adjuntoTipo ON ((adjuntoTipo.ID_TAREA = SATCO_TAREA.TAR_ID AND adjuntoTipo.TT_ID = SATCO_TAREA.TT_ID))
+      </if>
+      LEFT JOIN (
+      SELECT SATCO_OBSERVADOR_TAREA.TAR_ID
+      ,LISTAGG(SATCO_OBSERVADOR_TAREA.USUARIO_LDAP,',') WITHIN GROUP (ORDER BY SATCO_OBSERVADOR_TAREA.TAR_ID) OBSERVADORES
+      FROM SATCO_OBSERVADOR_TAREA
+      GROUP BY SATCO_OBSERVADOR_TAREA.TAR_ID
+      ) observador ON (observador.TAR_ID = SATCO_TAREA.TAR_ID)
+      WHERE SATCO_TAREA.TAR_ESTADO = #{tareaEstado}
+      <if test="usuarioLdap == null || usuarioLdap.isEmpty()">
+        <choose>
+          <when test="usuarioLdap == 'NA'">
+            AND (SATCO_USUARIO_TAREA.USUARIO_LDAP IS NULL)
+          </when>
+          <when test="usuarioLdap != 'CQ'">
+            AND (SATCO_USUARIO_TAREA.USUARIO_LDAP = #{usuarioLDAP} OR SATCO_OBSERVADOR_TAREA.USUARIO_LDAP = #{usuarioLDAP})
+          </when>
+        </choose>
+      </if>
+      <if test="fechaCreacionFrom != null">
+        AND SATCO_TAREA.TAR_FECHA_CREACION >= #{fechaCreacionFrom}
+      </if>
+      <if test="fechaCreacionTo != null">
+        AND SATCO_TAREA.TAR_FECHA_CREACION &lt;= #{fechaCreacionTo}
+      </if>
+      <if test="idCaso != null">
+        AND (SATCO_CASO.CAS_ID_PADRE = #{idCasoPadre} OR SATCO_TAREA.CAS_ID = #{idCaso})
+      </if>
+      <if test="tareaEsPrioridad != null">
+        AND SATCO_TAREA.TAR_PRIORIDAD = #{tareaEsPrioridad}
+      </if>
+      <if test="idArea != null">
+        AND SATCO_TAREA.AREA_ID = #{idArea}
+      </if>
+      <if test="identificacionNumero != null">
+        AND UPPER(SATCO_CLIENTE.CLI_NUM_IDENTIFICACION) = #{identificacionNumero}
+        AND UPPER(SATCO_CLIENTE.CLI_DV_IDENTIFICACION) = #{identificacionDV}
+      </if>
+      <if test="idTipoDeAtencion != null">
+        AND SATCO_TIPO_ATENCION.TAT_ID = #{idTipoDeAtencion}
+      </if>
+      ) where num BETWEEN #{pagFinalRow} AND #{pagInitialRow}
+
+<!--
+SELECT * FROM
+(
+SELECT  observador.OBSERVADORES usuarioObservadores
+,SATCO_TAREA.TAR_ID tareaId
+,SATCO_TAREA.CAS_ID casoId
+,SATCO_TAREA.TAR_NOMBRE nombreTarea
+,SATCO_TAREA.TAR_DESCRIPCION descripcion
+,SATCO_TAREA.TAR_ESTADO estado
+,SATCO_SUB_TIPO_ATENCION.STA_NOMBRE nombreSubProducto
+,SATCO_SUB_TIPO_ATENCION.STA_ID idSubProducto
+,SATCO_TIPO_TAREA.TT_ID tipoTareaId
+,SATCO_TIPO_TAREA.TT_NOMBRE nombreTipoTarea
+,SATCO_TIPO_TAREA.TT_IMPLEMENTACION implementacionTipoTarea
+,SATCO_TAREA.TAR_FECHA_CREACION fechaCreacion
+,SATCO_TAREA.TAR_FECHA_POS_SOL fechaPosSolucion
+,SATCO_TAREA.TAR_FECHA_SOLUCION fechaSolucion
+,SATCO_TAREA.TAR_PRIORIDAD prioridad
+,SATCO_TAREA.TAR_USERS_SUGERIDO usuariosSugerido
+,SATCO_TAREA.TAR_ID_PADRE idTareaPadre
+,SATCO_TAREA.TAR_DATA dataTarea
+,SATCO_CANAL_INGRESO.CANVAR_NOMBRE canal
+,SATCO_CLIENTE.CLI_NUM_IDENTIFICACION identificacionCliente
+,SATCO_CLIENTE.CLI_DV_IDENTIFICACION dvIdentificacionCliente
+,SATCO_CLIENTE.CLI_NOMBRE nombreCliente
+,SATCO_PACIENTE.PAC_APELLIDOS apellidosCliente
+,ClienteEmpresa.CLI_NUM_IDENTIFICACION identificacionEmpresa
+,ClienteEmpresa.CLI_DV_IDENTIFICACION dvIdentificacionEmpresa
+,ClienteEmpresa.CLI_NOMBRE nombreEmpresa
+,SATCO_USUARIO_TAREA.USUARIO_LDAP usuarioAsignado
+,SATCO_EMPRESA.EMP_RAZON_SOCIAL razonSocialEmpresa
+,SATCO_CLIENTE.CLI_EMAIL emailCliente
+,ClienteEmpresa.CLI_EMAIL emailEmpresa
+,SATCO_CASO.CAS_FECHA_CREACION fechaCreacionCaso
+,SATCO_AREA.AREA_NOMBRE nombreArea
+,SATCO_AREA.AREA_ID idArea
+,SATCO_TIPO_ATENCION.TAT_NOMBRE nombreProducto
+,SATCO_TIPO_ATENCION.TAT_ID idProducto
+,ClienteEmpresa.CLI_PPN_EXT ppnEmpresa
+,SATCO_CLIENTE.CLI_PPN_EXT ppnCliente
+,SATCO_CASO.PAC_ID idCliente
+,SATCO_CASO.EMP_ID idEmpresa
+,SATCO_TAREA.CANNU_ID idCanal
+,SATCO_TIPO_TAREA_CONFIG.TTC_DIAS_ALERTA diasAlerta
+,SATCO_CASO.CAS_ID_PADRE idCasoPadre
+,NVL(adjunto.CANTIDAD,0) cantidadAdjuntos
+,NVL(adjuntoTipo.CANTIDAD,0) cantidadAdjuntosTipo
+,ROWNUM num
+FROM SATCO_TAREA  
+LEFT JOIN SATCO_USUARIO_TAREA ON (SATCO_TAREA.TAR_ID = SATCO_USUARIO_TAREA.TAR_ID)  
+JOIN SATCO_CASO ON (SATCO_TAREA.CAS_ID = SATCO_CASO.CAS_ID)  
+LEFT JOIN SATCO_SUB_TIPO_ATENCION ON (SATCO_SUB_TIPO_ATENCION.STA_ID = SATCO_TAREA.STA_ID)  
+LEFT JOIN SATCO_TIPO_TAREA ON (SATCO_TIPO_TAREA.TT_ID = SATCO_TAREA.TT_ID)  
+JOIN SATCO_CANAL_INGRESO ON (SATCO_CANAL_INGRESO.CANNU_ID = SATCO_TAREA.CANNU_ID)  
+LEFT JOIN SATCO_CLIENTE ON (SATCO_CLIENTE.CLI_ID = SATCO_CASO.PAC_ID)  
+LEFT JOIN SATCO_EMPRESA ON (SATCO_EMPRESA.EMP_ID = SATCO_CASO.EMP_ID)  
+LEFT JOIN SATCO_PACIENTE ON (SATCO_PACIENTE.PAC_ID = SATCO_CLIENTE.CLI_ID)  
+LEFT JOIN SATCO_CLIENTE ClienteEmpresa ON (ClienteEmpresa.CLI_ID = SATCO_EMPRESA.EMP_ID)  
+LEFT JOIN SATCO_AREA ON (SATCO_AREA.AREA_ID = SATCO_TAREA.AREA_ID)  
+LEFT JOIN SATCO_TIPO_ATENCION ON (SATCO_TIPO_ATENCION.TAT_ACTIVO = #{tipoAtencionEsActivo} AND SATCO_TIPO_ATENCION.TAT_ID = SATCO_TAREA.TAT_ID)
+LEFT JOIN SATCO_TIPO_TAREA_CONFIG ON (SATCO_TIPO_TAREA_CONFIG.STA_ID = SATCO_TAREA.STA_ID AND SATCO_TIPO_TAREA_CONFIG.TT_ID = SATCO_TAREA.TT_ID)  
+LEFT JOIN SATCO_OBSERVADOR_TAREA ON (SATCO_OBSERVADOR_TAREA.USUARIO_LDAP = #{usuarioLDAP} AND SATCO_OBSERVADOR_TAREA.TAR_ID = SATCO_TAREA.TAR_ID)  
+LEFT JOIN (
+SELECT  COUNT(SATCO_ARCHIVO_ADJUNTO_TAREA.ACDT_ID_TAREA) CANTIDAD
+,SATCO_ARCHIVO_ADJUNTO_TAREA.ACDT_ID_TAREA ID_TAREA
+FROM SATCO_ARCHIVO_ADJUNTO_TAREA  
+JOIN SATCO_TAREA sa ON (sa.TAR_ID = SATCO_ARCHIVO_ADJUNTO_TAREA.ACDT_ID_TAREA)  
+WHERE
+sa.AREA_ID = #{idArea}
+AND sa.TAR_PRIORIDAD = #{tareaEsPrioridad}
+AND sa.CAS_ID = #{idCaso}
+AND sa.TAR_FECHA_CREACION &lt;= #{fechaCreacionTo}
+AND sa.TAR_FECHA_CREACION >= #{fechaCreacionFrom}
+AND sa.TAR_ESTADO = #{tareaEstado}
+GROUP BY SATCO_ARCHIVO_ADJUNTO_TAREA.ACDT_ID_TAREA
+) adjunto ON (adjunto.ID_TAREA = SATCO_TAREA.TAR_ID)
+LEFT JOIN (
+SELECT  COUNT(SATCO_ARCHIVO_ADJUNTO_TAREA.ACDT_ID_TAREA) CANTIDAD
+,SATCO_ARCHIVO_ADJUNTO_TAREA.ACDT_ID_TAREA ID_TAREA,sa.TT_ID TT_ID
+FROM SATCO_ARCHIVO_ADJUNTO_TAREA  
+JOIN SATCO_TAREA sa ON (sa.TAR_ID = SATCO_ARCHIVO_ADJUNTO_TAREA.ACDT_ID_TAREA)  
+JOIN SATCO_TTAREA_TADJUNTO ON (SATCO_TTAREA_TADJUNTO.TT_ID = sa.TT_ID)  
+JOIN SATCO_ARCHIVO_ADJUNTO ON ((SATCO_ARCHIVO_ADJUNTO.ACD_TIPO = SATCO_TTAREA_TADJUNTO.TACA_ID AND SATCO_ARCHIVO_ADJUNTO.ACD_ID = SATCO_ARCHIVO_ADJUNTO_TAREA.ACDT_ID_ARCHIVO_ADJUNTO))  
+WHERE
+sa.AREA_ID = #{idArea}
+AND sa.TAR_PRIORIDAD = #{tareaEsPrioridad}
+AND sa.CAS_ID = #{idCaso}
+AND sa.TAR_FECHA_CREACION &lt;= #{fechaCreacionTo}
+AND sa.TAR_FECHA_CREACION >= #{fechaCreacionFrom}
+AND sa.TAR_ESTADO = #{tareaEstado}
+GROUP BY SATCO_ARCHIVO_ADJUNTO_TAREA.ACDT_ID_TAREA, sa.TT_ID
+) adjuntoTipo ON ((adjuntoTipo.ID_TAREA = SATCO_TAREA.TAR_ID AND adjuntoTipo.TT_ID = SATCO_TAREA.TT_ID))  
+LEFT JOIN (
+SELECT  SATCO_OBSERVADOR_TAREA.TAR_ID
+,LISTAGG(SATCO_OBSERVADOR_TAREA.USUARIO_LDAP,',') WITHIN GROUP (ORDER BY SATCO_OBSERVADOR_TAREA.TAR_ID) OBSERVADORES
+FROM SATCO_OBSERVADOR_TAREA  
+GROUP BY SATCO_OBSERVADOR_TAREA.TAR_ID
+) observador ON (observador.TAR_ID = SATCO_TAREA.TAR_ID)  
+WHERE SATCO_TAREA.TAR_ESTADO = #{tareaEstado}
+AND (SATCO_USUARIO_TAREA.USUARIO_LDAP IS NULL)
+AND (SATCO_USUARIO_TAREA.USUARIO_LDAP = #{usuarioLDAP} OR SATCO_OBSERVADOR_TAREA.USUARIO_LDAP = #{usuarioLDAP})
+AND SATCO_TAREA.TAR_FECHA_CREACION >= #{fechaCreacionFrom}
+AND SATCO_TAREA.TAR_FECHA_CREACION &lt;= #{fechaCreacionTo}
+AND (SATCO_CASO.CAS_ID_PADRE = #{idCasoPadre} OR SATCO_TAREA.CAS_ID = #{idCaso})
+AND SATCO_TAREA.TAR_PRIORIDAD = #{tareaEsPrioridad}
+AND SATCO_TAREA.AREA_ID = #{idArea}
+AND UPPER(SATCO_CLIENTE.CLI_NUM_IDENTIFICACION) = #{identificacionNumero}
+AND UPPER(SATCO_CLIENTE.CLI_DV_IDENTIFICACION) = #{identificacionDV}
+AND SATCO_TIPO_ATENCION.TAT_ID = #{idTipoDeAtencion}  
+)  where num BETWEEN #{pagFinalRow} AND #{pagInitialRow}
+-->
+    </select>
+  </dao>
+
+
+</hotrod-fragment>

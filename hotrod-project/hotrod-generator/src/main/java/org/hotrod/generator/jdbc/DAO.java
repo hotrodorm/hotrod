@@ -3,6 +3,9 @@ package org.hotrod.generator.jdbc;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -17,7 +20,12 @@ import org.hotrod.config.Constants;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.JDBCTag;
 import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.dynamic.DynamicExpressionException;
+import org.hotrod.dynamic.DynamicExpressionFactory;
+import org.hotrod.dynamic.DynamicModificationQuery;
 import org.hotrod.dynamic.ParameterContext;
+import org.hotrod.dynamic.PreparedModificationQuery;
+import org.hotrod.dynamic.builder.QueryBuilder;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.exceptions.UncontrolledException;
@@ -242,6 +250,11 @@ public class DAO {
     w.println("  private ", LiveSQLDialect.class, " liveSQLDialect;");
     w.println();
 
+    w.println("  private final ", DynamicExpressionFactory.class, " factory = ", DynamicExpressionFactory.class,
+        ".getFactory();");
+    w.println("  private final ", QueryBuilder.class, " builder = new ", QueryBuilder.class, "(this.factory);");
+    w.println();
+
     w.println("  @", Const.AUTOWIRED);
     w.println("  private ", Const.SPRING_BEAN_OBJECT_FACTORY, " springBeanObjectFactory;");
     w.println();
@@ -285,21 +298,21 @@ public class DAO {
       w.println("  // DELETE BY PK");
 
       w.println();
-      w.println("    private final DynamicModificationQuery deleteByPK = builder");
-      w.println("      .literal(\"DELETE FROM account\")");
+      w.println("  private final ", DynamicModificationQuery.class, " deleteByPK = builder");
+      w.println("    .literal(\"DELETE FROM account\")");
 
       Separator sep = Separator.of("WHERE ", "  AND ");
       for (ColumnMetadata cm : pk.getColumns()) {
         String memId = cm.getId().getJavaMemberName();
         String sqlId = cm.getId().getRenderedSQLName();
         String jdbcType = cm.getType().getJDBCShortType();
-        w.println("      .literal(" + sep.render() + " + \"" + memId + " = \").parameter(\"en." + sqlId + "\", Types."
-            + jdbcType + ")");
+        w.println("    .literal(\"" + SUtil.escapeJavaString(sep.render()) + "\" + \"" + SUtil.escapeJavaString(sqlId)
+            + " = \").parameter(\"en." + memId + "\", ", Types.class, "." + jdbcType + ")");
       }
-      w.println("      .endModificationQuery();");
+      w.println("    .endModificationQuery();");
       w.println();
 
-      w.print("  public void delete(");
+      w.print("  public int delete(");
       sep = new Separator(", ");
       for (ColumnMetadata cm : pk.getColumns()) {
         w.print(sep.render());
@@ -313,7 +326,7 @@ public class DAO {
         }
         w.print(ExternalClass.of(javaClassName), " ", cm.getId().getJavaMemberName());
       }
-      w.println(") {");
+      w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
 
       for (ColumnMetadata cm : pk.getColumns()) {
         String m = cm.getId().getJavaMemberName();
@@ -331,9 +344,9 @@ public class DAO {
 
       w.println("    ", ParameterContext.class, " context = this.factory.newParameterContext();");
       w.println("    context.add(\"en\", en);");
-      w.println("    PreparedModificationQuery preparedQuery = this.deleteByPK.prepare(context);");
+      w.println("    ", PreparedModificationQuery.class, " preparedQuery = this.deleteByPK.prepare(context);");
       w.println("    System.out.println(\"=== Preview ===\\n\" + preparedQuery.getPreview());");
-      w.println("    try (Connection conn = this.dataSource.getConnection()) {");
+      w.println("    try (", Connection.class, " conn = this.dataSource.getConnection()) {");
       w.println("      int rows = preparedQuery.execute(conn);");
       w.println("      return rows;");
       w.println("    }");
@@ -344,6 +357,7 @@ public class DAO {
   }
 
   private void writeClassFooter() throws IOException {
+    w.println();
     w.println("}");
   }
 

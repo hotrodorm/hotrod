@@ -1,0 +1,35 @@
+<hotrod>
+
+  <generators>
+    <mybatis-spring>
+      <daos package="app.daos" dao-suffix="DAO" vo-suffix="VO" abstract-vo-prefix="Abstract" abstract-vo-suffix="VO" />
+    </mybatis-spring>
+  </generators>
+  
+  <type-solver>
+    <when test="typeName == 'DATE'" java-type="java.sql.Date" />
+  </type-solver>
+
+  <converter name="boolean_stored_as_int"
+    java-type="java.lang.Boolean"
+    java-raw-type="java.lang.Integer"
+    class="app.IntegerBooleanConverter"
+  />
+
+  <table name="chars" />
+  <table name="numbers" />
+  <table name="dates" />
+  <table name="binaries" />
+  <table name="other" />
+
+  <table name="branch">
+    <column name="is_vip" converter="boolean_stored_as_int" />
+  </table>
+
+  <table name="account">
+    <column name="id" sequence="seq1" />
+  </table>
+
+  <fragment file="./reporting.xml" />
+
+</hotrod>

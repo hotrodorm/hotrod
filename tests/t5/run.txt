@@ -1,1 +1,3 @@
+rm -r src/main/java/app/daos/* && mvn -P h2 hotrod:gen
+
 mvn compile exec:java -Dexec.mainClass="app.T5"

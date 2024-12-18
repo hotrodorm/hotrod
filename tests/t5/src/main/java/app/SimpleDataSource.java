@@ -11,8 +11,6 @@ import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
-import org.hsqldb.cmdline.SqlFile;
-
 public class SimpleDataSource implements DataSource {
 
   @Override
@@ -24,13 +22,13 @@ public class SimpleDataSource implements DataSource {
   @Override
   public void setLogWriter(PrintWriter out) throws SQLException {
     // TODO Auto-generated method stub
-    
+
   }
 
   @Override
   public void setLoginTimeout(int seconds) throws SQLException {
     // TODO Auto-generated method stub
-    
+
   }
 
   @Override
@@ -66,7 +64,7 @@ public class SimpleDataSource implements DataSource {
 //  return getMySQLConnection();
 //  return getMariaDBConnection();
 //  return getSybaseASEDBConnection();
-  return getH2Connection();
+    return getH2Connection();
 //  return getHyperSQLConnection();
 //  return getDerbyConnection();
   }
@@ -76,7 +74,6 @@ public class SimpleDataSource implements DataSource {
     // TODO Auto-generated method stub
     return null;
   }
-
 
   private static Connection getOracleConnection() throws SQLException {
     Properties connectionProps = new Properties();
@@ -142,13 +139,13 @@ public class SimpleDataSource implements DataSource {
     connectionProps.put("password", "");
     Connection conn = DriverManager.getConnection("jdbc:hsqldb:mem:db1", connectionProps);
 
-    try {
-      SqlFile sf = new SqlFile(new File("./build-hypersql.sql"));
-      sf.setConnection(conn);
-      sf.execute();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+//    try {
+//      SqlFile sf = new SqlFile(new File("./build-hypersql.sql"));
+//      sf.setConnection(conn);
+//      sf.execute();
+//    } catch (Exception e) {
+//      e.printStackTrace();
+//    }
 
     return conn;
   }
@@ -160,5 +157,4 @@ public class SimpleDataSource implements DataSource {
     return DriverManager.getConnection("jdbc:derby://192.168.56.26:1527/hotrod", connectionProps);
   }
 
-  
 }

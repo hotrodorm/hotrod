@@ -104,6 +104,11 @@ public class MariaDBAdapter extends DatabaseAdapter {
   }
 
   @Override
+  public boolean canonicalNameRequiresQuoting(String canonicalSQLName) {
+    return this.mysqlAdaper.canonicalNameRequiresQuoting(canonicalSQLName);
+  }
+
+  @Override
   public String renderSQLName(final String canonicalName, final boolean isQuoted) {
     return this.mysqlAdaper.renderSQLName(canonicalName, isQuoted);
   }

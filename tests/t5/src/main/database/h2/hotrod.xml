@@ -1,0 +1,42 @@
+<hotrod>
+
+  <generators>
+    <jdbc>
+      <daos package="app.daos" />
+    </jdbc>
+  </generators>
+
+  <type-solver>
+  <!-- 
+    <when test-resultset="scale > 0" java-type="java.math.BigDecimal" />
+  -->
+    <when test-resultset="precision &lt; 2" java-type="Byte" />
+    <when test-resultset="scale > 0" java-type="Short" />
+  </type-solver>
+
+  <converter name="boolean_stored_as_int" java-type="java.lang.Boolean" java-raw-type="java.lang.Integer"
+    class="app.IntegerBooleanConverter" />
+
+<!-- 
+  <table name="chars" />
+  <table name="numbers" />
+  <table name="dates" />
+  <table name="binaries" />
+  <table name="other" />
+ -->
+
+  <table name="account">
+    <column name="id" sequence="seq1" />
+  </table>
+
+<!-- 
+  <fragment file="./reporting.xml" />
+
+  <fragment file="./test2.xml" />
+ 
+  <table name="branch">
+    <column name="is_vip" converter="boolean_stored_as_int" />
+  </table>
+ -->
+
+</hotrod>

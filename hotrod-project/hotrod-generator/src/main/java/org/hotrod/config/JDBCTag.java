@@ -18,7 +18,7 @@ import org.hotrod.generator.Feedback;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.HotRodContext;
 import org.hotrod.generator.NamePackageResolver;
-import org.hotrod.generator.mybatisspring.MyBatisSpringGenerator;
+import org.hotrod.generator.jdbc.JDBCGenerator;
 import org.hotrod.utils.ClassPackage;
 import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 
@@ -174,7 +174,7 @@ public class JDBCTag extends AbstractGeneratorTag implements NamePackageResolver
   public Generator instantiateGenerator(final HotRodContext hc, final EnabledFKs enabledFKs,
       final DisplayMode displayMode, final boolean incrementalMode, final Feedback feedback)
       throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
-    return new MyBatisSpringGenerator(hc, enabledFKs, displayMode, incrementalMode, feedback);
+    return new JDBCGenerator(hc, enabledFKs, displayMode, incrementalMode, feedback);
   }
 
   // Simple Caption

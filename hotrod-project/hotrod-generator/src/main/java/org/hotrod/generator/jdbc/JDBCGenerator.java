@@ -25,13 +25,8 @@ import org.hotrod.generator.Generator;
 import org.hotrod.generator.HotRodContext;
 import org.hotrod.generator.LiveGenerator;
 import org.hotrod.generator.mybatisspring.DataSetLayout;
-import org.hotrod.generator.mybatisspring.EntityDAORegistry;
 import org.hotrod.generator.mybatisspring.EnumClass;
 import org.hotrod.generator.mybatisspring.LayerConfigWriter;
-import org.hotrod.generator.mybatisspring.MyBatisSpringGenerator.EntityVOs;
-import org.hotrod.generator.mybatisspring.ObjectAbstractVO;
-import org.hotrod.generator.mybatisspring.ObjectDAO;
-import org.hotrod.generator.mybatisspring.ObjectVO;
 import org.hotrod.generator.mybatisspring.SelectAbstractVO;
 import org.hotrod.generator.mybatisspring.SelectVO;
 import org.hotrod.metadata.DataSetMetadata;
@@ -264,7 +259,19 @@ public class JDBCGenerator implements Generator, LiveGenerator {
 
   @Override
   public void generate(FileGenerator fileGenerator) throws UncontrolledException, ControlledException {
-    // TODO Auto-generated method stub
+    log.info("JDBC GENERATE");
+
+    for (Model vo : this.vos.values()) {
+      vo.generate(fileGenerator);
+    }
+
+    for (Entity avo : this.abstractVos.values()) {
+      avo.generate(fileGenerator);
+    }
+
+    for (DAO dao : this.daos.values()) {
+      dao.generate(fileGenerator, this);
+    }
 
   }
 

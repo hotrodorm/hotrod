@@ -428,6 +428,8 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
   @Override // LiveGenerator
   public void generate(final FileGenerator fileGenerator) throws UncontrolledException, ControlledException {
 
+    log.info("MyBatis-Spring GENERATE");
+    
     // Abstract VOs, VOs, DAOs, and Mappers for <table> & <view> tags
 
     log.fine("this.abstractVos=" + this.abstractVos.size());

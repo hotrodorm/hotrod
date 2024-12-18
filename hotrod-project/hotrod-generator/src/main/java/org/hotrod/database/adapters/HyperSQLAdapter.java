@@ -196,6 +196,11 @@ public class HyperSQLAdapter extends DatabaseAdapter {
   private static final String UNQUOTED_IDENTIFIER_PATTERN = "[A-Z][A-Z0-9_]*";
 
   @Override
+  public boolean canonicalNameRequiresQuoting(String canonicalSQLName) {
+    return !canonicalSQLName.matches(UNQUOTED_IDENTIFIER_PATTERN);
+  }
+
+  @Override
   public String renderSQLName(final String canonicalName, final boolean isQuoted) {
     return canonicalName == null ? null
         : (!isQuoted && canonicalName.matches(UNQUOTED_IDENTIFIER_PATTERN) ? canonicalName.toLowerCase()

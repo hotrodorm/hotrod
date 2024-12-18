@@ -23,7 +23,7 @@
 
   <xsd:complexType name="generators-type">
     <xsd:all>
-      <xsd:element name="mybatis-spring" type="mybatis-spring-type" minOccurs="0" />
+      <xsd:element name="jdbc" type="jdbc-type" minOccurs="0" />
     </xsd:all>
   </xsd:complexType>
 
@@ -53,14 +53,11 @@
     <xsd:attribute name="converter" type="xsd:string" />
   </xsd:complexType>
 
-  <xsd:complexType name="mybatis-spring-type">
+  <xsd:complexType name="jdbc-type">
     <xsd:sequence>
       <xsd:element name="discover" type="discover-type" minOccurs="0" maxOccurs="1" />
       <xsd:choice minOccurs="0" maxOccurs="unbounded">
         <xsd:element name="daos" type="daos-mybatis-spring-type" />
-        <xsd:element name="mappers" type="mappers-type" />
-        <xsd:element name="select-generation" type="select-generation-type" />
-        <xsd:element name="classic-fk-navigation" type="classic-fk-navigation-type" />
         <xsd:element name="property" type="property-type" />
       </xsd:choice>
     </xsd:sequence>
@@ -109,17 +106,6 @@
 
     <xsd:attribute name="sql-session-bean-qualifier" type="xsd:string" />
     <xsd:attribute name="live-sql-dialect-bean-qualifier" type="xsd:string" />
-  </xsd:complexType>
-
-  <xsd:complexType name="mappers-type">
-    <xsd:attribute name="base-dir" type="xsd:string" />
-    <xsd:attribute name="dir" type="xsd:string" use="required" />
-    <xsd:attribute name="namespace" type="xsd:string" />
-  </xsd:complexType>
-
-  <xsd:complexType name="select-generation-type">
-    <xsd:attribute name="temp-view-base-name" type="xsd:string" />
-    <xsd:attribute name="strategy" type="xsd:string" />
   </xsd:complexType>
 
   <xsd:complexType name="property-type">

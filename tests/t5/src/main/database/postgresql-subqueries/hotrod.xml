@@ -1,0 +1,16 @@
+<hotrod>
+
+  <generators>
+    <mybatis-spring>
+      <daos package="app.daos" dao-suffix="DAO" vo-suffix="VO" abstract-vo-prefix="Abstract" abstract-vo-suffix="VO" />
+    </mybatis-spring>
+  </generators>
+  
+  <table name="branch" />
+  <table name="account" />
+  <table name="invoice" />
+  <table name="invoice_line" />
+  <table name="product" />
+  <table name="payment" />
+
+</hotrod>
