@@ -29,7 +29,7 @@ public class App {
   private static final Logger log = Logger.getLogger(App.class.getName());
 
   static {
-    JULCustomFormatter.initialize(Level.INFO);
+//    JULCustomFormatter.initialize(Level.FINE);
   }
 
   @Autowired
@@ -45,9 +45,11 @@ public class App {
   @Bean
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
-      System.out.println("[ Starting... ]");
+      log.info("[ Starting... ]");
+      log.fine("fine.");
+      log.finer("finer.");
       test();
-      System.out.println("[ Ending ]");
+      log.info("[ Ending ]");
     };
   }
 

@@ -9,7 +9,6 @@ import javax.sql.DataSource;
 
 import org.hotrod.dynamic.DynamicExpressionException;
 
-import app.JULCustomFormatter;
 import gen.Account;
 import gen.AccountDAO;
 
