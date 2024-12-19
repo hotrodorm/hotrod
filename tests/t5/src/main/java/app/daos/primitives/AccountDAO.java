@@ -63,20 +63,106 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     this.context = new LiveSQLContext(this.liveSQLDialect, this.dataSource, new TypeSolver(null, this.liveSQLDialect));
   }
 
+  // UPDATE BY PK
+
+  private final DynamicModificationQuery updateByPK = builder
+    .literal("UPDATE account")
+      .set(builder.ifs()
+          .ifPart("m.id != null", builder.literal("id = ").parameter("m.id", Types.INTEGER).end())
+          .ifPart("m.parentId != null", builder.literal("parent_id = ").parameter("m.parentId", Types.INTEGER).end())
+          .ifPart("m.branchId != null", builder.literal("branch_id = ").parameter("m.branchId", Types.INTEGER).end())
+          .end())
+    .literal("WHERE " + "id = ").parameter("m.id", Types.INTEGER)
+    .endModificationQuery();
+
+  public int update(Account m) throws DynamicExpressionException, SQLException {
+    if (m.getId() == null) return 0;
+    ParameterContext context = this.factory.newParameterContext();
+    context.add("m", m);
+    PreparedModificationQuery preparedQuery = this.updateByPK.prepare(context);
+    if (log.isLoggable(Level.FINER)) {
+      log.finer("SQL: " + preparedQuery.getPreview(true));
+    } else if (log.isLoggable(Level.FINE)) {
+      log.fine("SQL: " + preparedQuery.getPreview());
+    }
+    try (Connection conn = this.dataSource.getConnection()) {
+      int rows = preparedQuery.execute(conn);
+      return rows;
+    }
+  }
+
   // DELETE BY PK
 
   private final DynamicModificationQuery deleteByPK = builder
     .literaln("DELETE FROM account")
-    .literal("WHERE " + "id = ").parameter("en.id", Types.INTEGER)
+    .literal("WHERE " + "id = ").parameter("f.id", Types.INTEGER)
     .endModificationQuery();
 
   public int delete(Integer id) throws DynamicExpressionException, SQLException {
     if (id == null) return 0;
-    Account en = new Account();
-    en.setId(id);
+    Account filter = new Account();
+    filter.setId(id);
     ParameterContext context = this.factory.newParameterContext();
-    context.add("en", en);
+    context.add("f", filter);
     PreparedModificationQuery preparedQuery = this.deleteByPK.prepare(context);
+    if (log.isLoggable(Level.FINER)) {
+      log.finer("SQL: " + preparedQuery.getPreview(true));
+    } else if (log.isLoggable(Level.FINE)) {
+      log.fine("SQL: " + preparedQuery.getPreview());
+    }
+    try (Connection conn = this.dataSource.getConnection()) {
+      int rows = preparedQuery.execute(conn);
+      return rows;
+    }
+  }
+
+  // UPDATE BY EXAMPLE
+
+  private final DynamicModificationQuery updateByExample = builder
+      .literal("UPDATE FROM account")
+      .set(builder.ifs()
+          .ifPart("m.id != null", builder.literal("id = ").parameter("m.id", Types.INTEGER).end())
+          .ifPart("m.parentId != null", builder.literal("parent_id = ").parameter("m.parentId", Types.INTEGER).end())
+          .ifPart("m.branchId != null", builder.literal("branch_id = ").parameter("m.branchId", Types.INTEGER).end())
+          .end())
+      .where("AND", builder.ifs()
+          .ifPart("f.id != null", builder.literal("id = ").parameter("f.id", Types.INTEGER).end())
+          .ifPart("f.parentId != null", builder.literal("parent_id = ").parameter("f.parentId", Types.INTEGER).end())
+          .ifPart("f.branchId != null", builder.literal("branch_id = ").parameter("f.branchId", Types.INTEGER).end())
+          .end())
+      .endModificationQuery();
+
+  public int delete(Account filter, Account updateValues) throws DynamicExpressionException, SQLException {
+    ParameterContext context = this.factory.newParameterContext();
+    context.add("f", filter);
+    context.add("u", updateValues);
+    PreparedModificationQuery preparedQuery = this.updateByExample.prepare(context);
+    if (log.isLoggable(Level.FINER)) {
+      log.finer("SQL: " + preparedQuery.getPreview(true));
+    } else if (log.isLoggable(Level.FINE)) {
+      log.fine("SQL: " + preparedQuery.getPreview());
+    }
+    try (Connection conn = this.dataSource.getConnection()) {
+      int rows = preparedQuery.execute(conn);
+      return rows;
+    }
+  }
+
+  // DELETE BY EXAMPLE
+
+  private final DynamicModificationQuery deleteByExample = builder
+      .literal("DELETE FROM account")
+      .where("AND", builder.ifs()
+          .ifPart("f.id != null", builder.literal("id = ").parameter("f.id", Types.INTEGER).end())
+          .ifPart("f.parentId != null", builder.literal("parent_id = ").parameter("f.parentId", Types.INTEGER).end())
+          .ifPart("f.branchId != null", builder.literal("branch_id = ").parameter("f.branchId", Types.INTEGER).end())
+          .end())
+      .endModificationQuery();
+
+  public int delete(Account filter) throws DynamicExpressionException, SQLException {
+    ParameterContext context = this.factory.newParameterContext();
+    context.add("f", filter);
+    PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(context);
     if (log.isLoggable(Level.FINER)) {
       log.finer("SQL: " + preparedQuery.getPreview(true));
     } else if (log.isLoggable(Level.FINE)) {

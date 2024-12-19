@@ -149,7 +149,7 @@ public class DAO {
 
   }
 
-  private void writeBody(final JDBCGenerator mg)
+  private void writeBody(final JDBCGenerator g)
       throws IOException, UnresolvableDataTypeException, ControlledException, SequencesNotSupportedException {
 
     writeClassHeader();
@@ -175,9 +175,9 @@ public class DAO {
 //
 //        writeInsert();
 //
-//        writeUpdateByPK(mg);
+    writeUpdateByPK(g);
 //
-    writeDeleteByPK(mg);
+    writeDeleteByPK(g);
 //      }
 //
 //      if (this.isView()) {
@@ -185,10 +185,10 @@ public class DAO {
 //      }
 //
 //      if (this.isTable() || this.isView()) {
-//        writeUpdateByExample();
+    writeUpdateByExample(g);
 //        writeUpdateByCriteria();
 //
-//        writeDeleteByExample();
+    writeDeleteByExample(g);
 //        writeDeleteByCriteria();
 //      }
 //
@@ -290,7 +290,49 @@ public class DAO {
 
   }
 
-  private void writeDeleteByPK(final JDBCGenerator mg) {
+  private void writeUpdateByPK(final JDBCGenerator g) {
+
+    KeyMetadata pk = this.metadata.getPK();
+
+    if (pk == null) {
+      w.println();
+      w.println("  // UPDATE BY PK -- Not available since the table does not have a primary key.");
+    } else {
+
+      w.println();
+      w.println("  // UPDATE BY PK");
+
+      w.println();
+      w.println("  private final ", DynamicModificationQuery.class, " updateByPK = builder");
+      w.println("    .literal(\"UPDATE " + this.metadata.getId().getRenderedSQLName() + "\")");
+      fragmentSet();
+      fragmentWherePK(pk, "m");
+      w.println("    .endModificationQuery();");
+      w.println();
+
+      ExternalClass em = ExternalClass.of(this.model.getFullClassName());
+      w.print("  public int update(", em, " m");
+      w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
+
+      for (ColumnMetadata cm : pk.getColumns()) {
+        String getter = cm.getId().getJavaGetter();
+        w.println("    if (m." + getter + "() == null) return 0;");
+      }
+
+      w.println("    ", ParameterContext.class, " context = this.factory.newParameterContext();");
+      w.println("    context.add(\"m\", m);");
+      w.println("    ", PreparedModificationQuery.class, " preparedQuery = this.updateByPK.prepare(context);");
+
+      fragmentLogging();
+      fragmentExecuteModification();
+
+      w.println("  }");
+
+    }
+
+  }
+
+  private void writeDeleteByPK(final JDBCGenerator g) {
 
     KeyMetadata pk = this.metadata.getPK();
 
@@ -305,32 +347,12 @@ public class DAO {
       w.println();
       w.println("  private final ", DynamicModificationQuery.class, " deleteByPK = builder");
       w.println("    .literaln(\"DELETE FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
-
-      Separator sep = Separator.of("WHERE ", "  AND ");
-      for (ColumnMetadata cm : pk.getColumns()) {
-        String memId = cm.getId().getJavaMemberName();
-        String sqlId = cm.getId().getRenderedSQLName();
-        String jdbcType = cm.getType().getJDBCShortType();
-        w.println("    .literal(\"" + SUtil.escapeJavaString(sep.render()) + "\" + \"" + SUtil.escapeJavaString(sqlId)
-            + " = \").parameter(\"en." + memId + "\", ", Types.class, "." + jdbcType + ")");
-      }
+      fragmentWherePK(pk);
       w.println("    .endModificationQuery();");
       w.println();
 
       w.print("  public int delete(");
-      sep = new Separator(", ");
-      for (ColumnMetadata cm : pk.getColumns()) {
-        w.print(sep.render());
-        EnumDataSetMetadata em = cm.getEnumMetadata();
-        String javaClassName;
-        if (em != null) {
-          EnumClass ec = mg.getEnum(em);
-          javaClassName = ec.getFullClassName();
-        } else {
-          javaClassName = cm.getType().getJavaClassName();
-        }
-        w.print(ExternalClass.of(javaClassName), " ", cm.getId().getJavaMemberName());
-      }
+      fragmentPKParameters(g, pk);
       w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
 
       for (ColumnMetadata cm : pk.getColumns()) {
@@ -339,32 +361,153 @@ public class DAO {
       }
 
       ExternalClass em = ExternalClass.of(this.model.getFullClassName());
-
-      w.println("    ", em, " en = new ", em, "();");
+      w.println("    ", em, " filter = new ", em, "();");
       for (ColumnMetadata cm : pk.getColumns()) {
         String m = cm.getId().getJavaMemberName();
         String setter = cm.getId().getJavaSetter();
-        w.println("    en." + setter + "(" + m + ");");
+        w.println("    filter." + setter + "(" + m + ");");
       }
 
       w.println("    ", ParameterContext.class, " context = this.factory.newParameterContext();");
-      w.println("    context.add(\"en\", en);");
+      w.println("    context.add(\"f\", filter);");
       w.println("    ", PreparedModificationQuery.class, " preparedQuery = this.deleteByPK.prepare(context);");
 
-      w.println("    if (log.isLoggable(", Level.class, ".FINER)) {");
-      w.println("      log.finer(\"SQL: \" + preparedQuery.getPreview(true));");
-      w.println("    } else if (log.isLoggable(", Level.class, ".FINE)) {");
-      w.println("      log.fine(\"SQL: \" + preparedQuery.getPreview());");
-      w.println("    }");
+      fragmentLogging();
+      fragmentExecuteModification();
 
-      w.println("    try (", Connection.class, " conn = this.dataSource.getConnection()) {");
-      w.println("      int rows = preparedQuery.execute(conn);");
-      w.println("      return rows;");
-      w.println("    }");
       w.println("  }");
 
     }
 
+  }
+
+  private void writeUpdateByExample(final JDBCGenerator g) {
+
+    w.println();
+    w.println("  // UPDATE BY EXAMPLE");
+
+    w.println();
+    w.println("  private final ", DynamicModificationQuery.class, " updateByExample = builder");
+    w.println("      .literal(\"UPDATE FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
+    fragmentSet();
+    fragmentWhereExample();
+    w.println("      .endModificationQuery();");
+    w.println();
+
+    ExternalClass em = ExternalClass.of(this.model.getFullClassName());
+    w.print("  public int delete(", em, " filter, ", em, " updateValues");
+    w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
+
+    w.println("    ", ParameterContext.class, " context = this.factory.newParameterContext();");
+    w.println("    context.add(\"f\", filter);");
+    w.println("    context.add(\"u\", updateValues);");
+    w.println("    ", PreparedModificationQuery.class, " preparedQuery = this.updateByExample.prepare(context);");
+
+    fragmentLogging();
+    fragmentExecuteModification();
+
+    w.println("  }");
+
+  }
+
+  private void writeDeleteByExample(final JDBCGenerator g) {
+
+    w.println();
+    w.println("  // DELETE BY EXAMPLE");
+
+    w.println();
+    w.println("  private final ", DynamicModificationQuery.class, " deleteByExample = builder");
+    w.println("      .literal(\"DELETE FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
+    fragmentWhereExample();
+    w.println("      .endModificationQuery();");
+    w.println();
+
+    ExternalClass em = ExternalClass.of(this.model.getFullClassName());
+    w.print("  public int delete(", em, " filter");
+    w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
+
+    w.println("    ", ParameterContext.class, " context = this.factory.newParameterContext();");
+    w.println("    context.add(\"f\", filter);");
+    w.println("    ", PreparedModificationQuery.class, " preparedQuery = this.deleteByExample.prepare(context);");
+
+    fragmentLogging();
+    fragmentExecuteModification();
+
+    w.println("  }");
+
+  }
+
+  private void fragmentSet() {
+    w.println("      .set(builder.ifs()");
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      String memId = cm.getId().getJavaMemberName();
+      String sqlId = cm.getId().getRenderedSQLName();
+      String jdbcType = cm.getType().getJDBCShortType();
+      w.println("          .ifPart(\"m." + SUtil.escapeJavaString(memId) + " != null\", builder.literal(\""
+          + SUtil.escapeJavaString(sqlId) + " = \").parameter(\"m." + SUtil.escapeJavaString(memId) + "\", Types."
+          + jdbcType + ").end())");
+    }
+    w.println("          .end())");
+  }
+
+  private void fragmentPKParameters(final JDBCGenerator g, KeyMetadata pk) {
+    Separator sep = new Separator(", ");
+    for (ColumnMetadata cm : pk.getColumns()) {
+      w.print(sep.render());
+      EnumDataSetMetadata em = cm.getEnumMetadata();
+      String javaClassName;
+      if (em != null) {
+        EnumClass ec = g.getEnum(em);
+        javaClassName = ec.getFullClassName();
+      } else {
+        javaClassName = cm.getType().getJavaClassName();
+      }
+      w.print(ExternalClass.of(javaClassName), " ", cm.getId().getJavaMemberName());
+    }
+  }
+
+  private void fragmentWherePK(KeyMetadata pk) {
+    this.fragmentWherePK(pk, "f");
+  }
+
+  private void fragmentWherePK(KeyMetadata pk, String objname) {
+    Separator sep = Separator.of("WHERE ", "  AND ");
+    for (ColumnMetadata cm : pk.getColumns()) {
+      String memId = cm.getId().getJavaMemberName();
+      String sqlId = cm.getId().getRenderedSQLName();
+      String jdbcType = cm.getType().getJDBCShortType();
+      w.println(
+          "    .literal(\"" + SUtil.escapeJavaString(sep.render()) + "\" + \"" + SUtil.escapeJavaString(sqlId)
+              + " = \").parameter(\"" + objname + "." + SUtil.escapeJavaString(memId) + "\", ",
+          Types.class, "." + jdbcType + ")");
+    }
+  }
+
+  private void fragmentWhereExample() {
+    w.println("      .where(\"AND\", builder.ifs()");
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      String memId = cm.getId().getJavaMemberName();
+      String sqlId = cm.getId().getRenderedSQLName();
+      String jdbcType = cm.getType().getJDBCShortType();
+      w.println("          .ifPart(\"f." + memId + " != null\", builder.literal(\"" + SUtil.escapeJavaString(sqlId)
+          + " = \").parameter(\"f." + memId + "\", ", Types.class, "." + jdbcType + ").end())");
+    }
+    w.println("          .end())");
+  }
+
+  private void fragmentLogging() {
+    w.println("    if (log.isLoggable(", Level.class, ".FINER)) {");
+    w.println("      log.finer(\"SQL: \" + preparedQuery.getPreview(true));");
+    w.println("    } else if (log.isLoggable(", Level.class, ".FINE)) {");
+    w.println("      log.fine(\"SQL: \" + preparedQuery.getPreview());");
+    w.println("    }");
+  }
+
+  private void fragmentExecuteModification() {
+    w.println("    try (", Connection.class, " conn = this.dataSource.getConnection()) {");
+    w.println("      int rows = preparedQuery.execute(conn);");
+    w.println("      return rows;");
+    w.println("    }");
   }
 
   private void writeClassFooter() throws IOException {

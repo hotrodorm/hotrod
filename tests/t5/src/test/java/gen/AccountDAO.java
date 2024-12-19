@@ -377,7 +377,8 @@ public class AccountDAO {
           .ifPart("f.id != null", builder.literal("id = ").parameter("f.id", Types.NUMERIC).end())
           .ifPart("f.name != null", builder.literal("name = ").parameter("f.name", Types.VARCHAR).end())
           .ifPart("f.type != null", builder.literal("type = ").parameter("f.type", Types.VARCHAR).end())
-          .ifPart("f.balance != null", builder.literal("balance = ").parameter("f.balance", Types.NUMERIC).end()).end() //
+          .ifPart("f.balance != null", builder.literal("balance = ").parameter("f.balance", Types.NUMERIC).end())
+          .end() //
       ).endModificationQuery();
 
   private DataSource dataSource;
