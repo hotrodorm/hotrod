@@ -77,12 +77,9 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     ParameterContext context = this.factory.newParameterContext();
     context.add("en", en);
     PreparedModificationQuery preparedQuery = this.deleteByPK.prepare(context);
-    log.info("LEVEL="+log.getLevel()+" log.isLoggable(Level.FINE)="+log.isLoggable(Level.FINE));
     if (log.isLoggable(Level.FINER)) {
-      log.info(">>> FINER");
       log.finer("SQL: " + preparedQuery.getPreview(true));
     } else if (log.isLoggable(Level.FINE)) {
-      log.info(">>> FINE");
       log.fine("SQL: " + preparedQuery.getPreview());
     }
     try (Connection conn = this.dataSource.getConnection()) {
