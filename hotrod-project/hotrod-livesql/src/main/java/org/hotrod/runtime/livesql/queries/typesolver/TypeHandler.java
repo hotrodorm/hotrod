@@ -44,7 +44,7 @@ public class TypeHandler {
   private static Map<Class<?>, TypeHandler> KNOWN_HANDLERS = new HashMap<>();
 
   public static enum TypeSource {
-    DESIGNATED_IN_LIVESQL, LIVESQL_RULES, LAYER_RULES, DIALECT_RULES, ENTITY_COLUMN
+    DESIGNATED_IN_LIVESQL, LIVESQL_RULES, LAYER_RULES, DIALECT_RULES, ENTITY_COLUMN, JDBC_DRIVER
   };
 
 //LIVESQL_DESIGNATED

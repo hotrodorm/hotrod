@@ -9,6 +9,7 @@ import org.hotrod.runtime.livesql.queries.typesolver.TypeRule.CouldNotResolveRes
 
 public class TypeSolver {
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(TypeSolver.class.getName());
 
   private List<TypeRule> layerRules;
@@ -20,8 +21,6 @@ public class TypeSolver {
   }
 
   public TypeHandler resolve(final ResultSetColumnMetadata cm) throws CouldNotResolveResultSetDataTypeException {
-
-    log.info("--- Resolving column: " + cm);
 
     // 1. Try the layer rules from the type-solver tag.
 
@@ -37,15 +36,25 @@ public class TypeSolver {
     // 2. Try the dialect rules (provided by default per the dialect)
 
     Class<?> c = this.dialect.resolveColumnType(cm);
-//    log.info("col: " + cm.getName() + " - c=" + c);
-
     if (c != null) {
       return TypeHandler.of(c, TypeSource.DIALECT_RULES);
     }
 
-    // 3. There's no rule for this type. Needs to be set directly by user
+    // 3. Use the class proposed by the JDBC driver, if available
 
-    return null;
+    String className = cm.getColumnClassName();
+    if (className == null) {
+      // The JDBC driver does not propose a default class;
+      // needs to be set directly by user
+      return null;
+    }
+
+    try {
+      return TypeHandler.of(Class.forName(className), TypeSource.JDBC_DRIVER);
+    } catch (ClassNotFoundException e) {
+      throw new CouldNotResolveResultSetDataTypeException(cm,
+          "The class '" + className + "' proposed by the JDBC driver to read the column cannot be found.");
+    }
 
   }
 
