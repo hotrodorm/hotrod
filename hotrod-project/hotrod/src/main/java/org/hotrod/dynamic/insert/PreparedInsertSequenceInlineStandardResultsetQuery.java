@@ -16,8 +16,9 @@ public class PreparedInsertSequenceInlineStandardResultsetQuery extends InsertEx
   private static final Logger log = Logger
       .getLogger(PreparedInsertSequenceInlineStandardResultsetQuery.class.getName());
 
-  public Long execute(Connection conn, String sql, List<ParameterSegment> parameters,
-      InsertProperties insertProperties) throws SQLException, DynamicExpressionException {
+  @Override
+  public Long execute(Connection conn, String sql, List<ParameterSegment> parameters, String sequencePreFetchSQL,
+      String primaryKeyParameterName, String[] generatedKeysNames) throws SQLException, DynamicExpressionException {
     try (PreparedStatement ps = conn.prepareStatement(sql)) {
       super.applyParameters(parameters, ps);
       try (ResultSet rs = ps.executeQuery()) {

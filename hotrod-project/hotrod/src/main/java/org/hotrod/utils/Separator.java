@@ -24,6 +24,10 @@ public class Separator {
     this.first = true;
   }
 
+  public void reset() {
+    this.first = true;
+  }
+
   public static Separator of(final String s) {
     return new Separator(s);
   }

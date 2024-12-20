@@ -1,7 +1,6 @@
 package app;
 
 import java.sql.SQLException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.hotrod.dynamic.DynamicExpressionException;
@@ -17,6 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import app.daos.Account;
 import app.daos.primitives.AccountDAO;
 
 @Configuration
@@ -46,16 +46,20 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       log.info("[ Starting... ]");
-      log.fine("fine.");
-      log.finer("finer.");
       test();
       log.info("[ Ending ]");
     };
   }
 
   private void test() throws SQLException, DynamicExpressionException {
-    int rows = this.accountDAO.delete(5);
-    System.out.println("Rows deleted: " + rows);
+    Account a = new Account();
+    a.setId(400);
+    a.setBranchId(10);
+    a.setParentId(null);
+
+    this.accountDAO.insert(a);
+
+    System.out.println("> Account inserted: id=" + a.getId());
   }
 
 }

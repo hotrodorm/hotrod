@@ -23,10 +23,13 @@ import org.hotrod.config.JDBCTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.dynamic.DynamicExpressionException;
 import org.hotrod.dynamic.DynamicExpressionFactory;
+import org.hotrod.dynamic.DynamicInsertQuery;
 import org.hotrod.dynamic.DynamicModificationQuery;
 import org.hotrod.dynamic.ParameterContext;
 import org.hotrod.dynamic.PreparedModificationQuery;
 import org.hotrod.dynamic.builder.QueryBuilder;
+import org.hotrod.dynamic.insert.PreparedInsertQuery;
+import org.hotrod.dynamic.insert.PrimaryKeyRetrievalMode;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.exceptions.UncontrolledException;
@@ -50,6 +53,7 @@ import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ClassWriter;
 import org.hotrod.utils.SUtil;
 import org.hotrod.utils.Separator;
+import org.nocrala.tools.database.tartarus.core.JdbcColumn.AutogenerationType;
 
 // Optimistic version control NOT YET IMPLEMENTED
 
@@ -173,11 +177,11 @@ public class DAO {
 //          writeSelectChildrenByFK();
 //        }
 //
-//        writeInsert();
+    writeInsert();
 //
-    writeUpdateByPK(g);
+    writeUpdateByPK();
 //
-    writeDeleteByPK(g);
+    writeDeleteByPK();
 //      }
 //
 //      if (this.isView()) {
@@ -185,10 +189,10 @@ public class DAO {
 //      }
 //
 //      if (this.isTable() || this.isView()) {
-    writeUpdateByExample(g);
+    writeUpdateByExample();
 //        writeUpdateByCriteria();
 //
-    writeDeleteByExample(g);
+    writeDeleteByExample();
 //        writeDeleteByCriteria();
 //      }
 //
@@ -290,7 +294,206 @@ public class DAO {
 
   }
 
-  private void writeUpdateByPK(final JDBCGenerator g) {
+  private void writeInsert() throws ControlledException {
+
+    w.println();
+    w.println("  // INSERT");
+
+    KeyMetadata pk = this.metadata.getPK();
+
+    // Limitations
+    // 1. Autogeneration for single-column PK
+    // 2. Does not retrieve DEFAULT columns
+    // 3. Retrieved single-column PK can only be numeric up to LONG (no NUMBER(19)
+    // or UUID)
+    // 4. Only retrieves a single value for a single-row INSERT (no multi-inserts)
+
+    List<ColumnMetadata> sequences = new ArrayList<>();
+    List<ColumnMetadata> identities = new ArrayList<>();
+    List<ColumnMetadata> defaults = new ArrayList<>();
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      if (cm.belongsToPK() && cm.getSequenceId() != null) {
+        sequences.add(cm);
+      }
+      if (cm.belongsToPK() && cm.getAutogenerationType() != null && cm.getAutogenerationType().isIdentity()) {
+        identities.add(cm);
+      }
+      if (cm.getColumnDefault() != null) {
+        defaults.add(cm);
+      }
+    }
+
+    InsertMechanics mechanics = computeInsertMechanics(sequences, identities, defaults);
+
+    w.println();
+    w.println("  private final ", DynamicInsertQuery.class, " insert = builder");
+
+    w.println("      .literaln(\"INSERT INTO ", SUtil.escapeJavaString(this.metadata.getId().getRenderedSQLName()),
+        " (\")");
+    int coln = this.metadata.getColumns().size();
+    int n = 1;
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      String sqlId = cm.getId().getRenderedSQLName();
+
+      // Always include column
+      if (!cm.belongsToPK()) {
+        w.println("      .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
+      }
+      if (cm.belongsToPK() && cm.getSequenceId() != null) {
+        w.println("      .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
+      }
+
+      // Never include column
+      if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_ALWAYS) {
+        // nothing to do
+      }
+
+      // Conditionally include column
+      if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
+        String pkpn = mechanics.getPrimaryKeyParameterName();
+        w.println("      .ifPart(\"" + SUtil.escapeJavaString(pkpn) + " != null\", builder.literal(\""
+            + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + " \").end())\\n\")");
+      }
+
+      n++;
+    }
+
+    w.println("      .literaln(\") VALUES (\")");
+    n = 1;
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      String memId = cm.getId().getJavaMemberName();
+      String jdbcType = cm.getType().getJDBCShortType();
+
+      // Always include column
+      if (!cm.belongsToPK()) {
+        w.println("      .literal(\"  \").parameter(\"m." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
+            "." + jdbcType + ")" + (n < coln ? ".literaln(\",\")" : ""));
+      }
+      if (cm.belongsToPK() && cm.getSequenceId() != null) {
+        String si = mechanics.getSequenceInlineSQL();
+        w.println("      .literal(\"  " + SUtil.escapeJavaString(si) + "\")" + (n < coln ? ".literaln(\",\")" : ""));
+      }
+
+      // Never include column
+      if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_ALWAYS) {
+        // nothing to do
+      }
+
+      // Conditionally include column
+      if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
+        w.println("      .ifPart(\"" + SUtil.escapeJavaString(memId) + " != null\", builder.parameter(\""
+            + SUtil.escapeJavaString(memId) + "\", Types." + jdbcType + ")" + (n < coln ? ".literal(\", \")" : "")
+            + ".end())");
+      }
+
+      n++;
+    }
+    w.println("      .literal(\")\")");
+    w.print("      .endInsertQuery(", PrimaryKeyRetrievalMode.class, "." + mechanics.getMode());
+
+    if (mechanics.getGeneratedKeysNames().length > 0) {
+      w.print(", null, null");
+      for (String gkn : mechanics.getGeneratedKeysNames()) {
+        w.print(", \"" + SUtil.escapeJavaString(gkn) + "\"");
+      }
+    }
+
+    w.println(");");
+
+    ExternalClass em = ExternalClass.of(this.model.getFullClassName());
+    w.println();
+    w.print("  public void insert(", em, " m");
+    w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
+
+    w.println("    ", ParameterContext.class, " context = this.factory.newParameterContext();");
+    w.println("    context.add(\"m\", m);");
+    w.println("    ", PreparedInsertQuery.class, " preparedQuery = this.insert.prepare(context);");
+
+    fragmentLogging();
+
+    w.println("    try (", Connection.class, " conn = this.dataSource.getConnection()) {");
+    if (pk == null) {
+      w.println("      preparedQuery.execute(conn);");
+    } else {
+      w.println("      Long pk = preparedQuery.execute(conn);");
+      w.println("      m.setId(pk == null ? null : pk.intValue());");
+    }
+    w.println("    }");
+
+    w.println("  }");
+
+  }
+
+  private InsertMechanics computeInsertMechanics(List<ColumnMetadata> sequences, List<ColumnMetadata> identities,
+      List<ColumnMetadata> defaults) throws ControlledException {
+
+    // Identity
+
+    if (identities.size() > 0) {
+      if (identities.size() == 1) {
+        @SuppressWarnings("unused")
+        ColumnMetadata cm = identities.get(0);
+        if (this.adapter.getInsertIntegration().integratesIdentities()) {
+          if (this.adapter.getInsertIntegration().identitiesMustDeclarePKColumns()) {
+            String[] pkcols = this.metadata.getPK().getColumns().stream().map(c -> c.getId().getRenderedSQLName())
+                .toArray(String[]::new);
+            return new InsertMechanics(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET, null, null, null,
+                pkcols);
+          } else {
+            return new InsertMechanics(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
+          }
+        } else {
+          return new InsertMechanics(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
+        }
+      } else { // Implement in the future
+        throw new ControlledException(
+            "HotRod does not support multiple columns generated as IDENTITY in the same table: table '"
+                + this.metadata.getId().getRenderedSQLName() + "'");
+      }
+    }
+
+    // Sequence
+
+    if (sequences.size() > 0) {
+      if (sequences.size() == 1) {
+        ColumnMetadata cm = sequences.get(0);
+        String sequenceInlineSQL = null;
+        String sequencePreFetchSQL = null;
+        try {
+          sequenceInlineSQL = this.adapter.renderInlineSequenceOnInsert(cm);
+          sequencePreFetchSQL = this.adapter.renderSelectSequence(cm);
+        } catch (SequencesNotSupportedException e) {
+          throw new ControlledException(e.getMessage());
+        }
+        if (this.adapter.getInsertIntegration().integratesSequencesKeysResultSet()) {
+          if (this.adapter.getInsertIntegration().identitiesMustDeclarePKColumns()) {
+            String[] pkcols = this.metadata.getPK().getColumns().stream().map(c -> c.getId().getRenderedSQLName())
+                .toArray(String[]::new);
+            return new InsertMechanics(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET, null, null,
+                sequenceInlineSQL, pkcols);
+          } else {
+            return new InsertMechanics(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET, null, null,
+                sequenceInlineSQL);
+          }
+        } else if (this.adapter.getInsertIntegration().integratesSequencesStandardResultSet()) {
+          return new InsertMechanics(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_STANDARD_RESULTSET, null, null,
+              sequenceInlineSQL);
+        } else {
+          return new InsertMechanics(PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH, sequencePreFetchSQL, null, null);
+        }
+      } else { // Implement in the future
+        throw new ControlledException("HotRod does not support multiple columns generated using sequences: table '"
+            + this.metadata.getId().getRenderedSQLName() + "'");
+      }
+    }
+
+    // No Identities and no columns populated by sequences
+
+    return new InsertMechanics(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
+
+  }
+
+  private void writeUpdateByPK() {
 
     KeyMetadata pk = this.metadata.getPK();
 
@@ -332,7 +535,7 @@ public class DAO {
 
   }
 
-  private void writeDeleteByPK(final JDBCGenerator g) {
+  private void writeDeleteByPK() {
 
     KeyMetadata pk = this.metadata.getPK();
 
@@ -352,7 +555,7 @@ public class DAO {
       w.println();
 
       w.print("  public int delete(");
-      fragmentPKParameters(g, pk);
+      fragmentPKParameters(pk);
       w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
 
       for (ColumnMetadata cm : pk.getColumns()) {
@@ -381,7 +584,7 @@ public class DAO {
 
   }
 
-  private void writeUpdateByExample(final JDBCGenerator g) {
+  private void writeUpdateByExample() {
 
     w.println();
     w.println("  // UPDATE BY EXAMPLE");
@@ -410,7 +613,7 @@ public class DAO {
 
   }
 
-  private void writeDeleteByExample(final JDBCGenerator g) {
+  private void writeDeleteByExample() {
 
     w.println();
     w.println("  // DELETE BY EXAMPLE");
@@ -450,14 +653,14 @@ public class DAO {
     w.println("          .end())");
   }
 
-  private void fragmentPKParameters(final JDBCGenerator g, KeyMetadata pk) {
+  private void fragmentPKParameters(KeyMetadata pk) {
     Separator sep = new Separator(", ");
     for (ColumnMetadata cm : pk.getColumns()) {
       w.print(sep.render());
       EnumDataSetMetadata em = cm.getEnumMetadata();
       String javaClassName;
       if (em != null) {
-        EnumClass ec = g.getEnum(em);
+        EnumClass ec = this.generator.getEnum(em);
         javaClassName = ec.getFullClassName();
       } else {
         javaClassName = cm.getType().getJavaClassName();

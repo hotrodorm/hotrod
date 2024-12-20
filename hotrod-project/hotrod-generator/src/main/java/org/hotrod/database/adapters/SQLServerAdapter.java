@@ -178,8 +178,7 @@ public class SQLServerAdapter extends DatabaseAdapter {
 
   @Override
   public InsertIntegration getInsertIntegration() {
-    return InsertIntegration.INTEGRATES_IDENTITIES_SEQUENCES_AND_DEFAULTS;
-    // return InsertIntegration.INTEGRATES_IDENTITIES;
+    return InsertIntegration.of(true, false, false, true, true);
   }
 
   @Override

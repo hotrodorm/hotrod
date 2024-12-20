@@ -14,10 +14,13 @@ import javax.sql.DataSource;
 
 import org.hotrod.dynamic.DynamicExpressionException;
 import org.hotrod.dynamic.DynamicExpressionFactory;
+import org.hotrod.dynamic.DynamicInsertQuery;
 import org.hotrod.dynamic.DynamicModificationQuery;
 import org.hotrod.dynamic.ParameterContext;
 import org.hotrod.dynamic.PreparedModificationQuery;
 import org.hotrod.dynamic.builder.QueryBuilder;
+import org.hotrod.dynamic.insert.PreparedInsertQuery;
+import org.hotrod.dynamic.insert.PrimaryKeyRetrievalMode;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
@@ -61,6 +64,35 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   @PostConstruct
   public void initializeContext() {
     this.context = new LiveSQLContext(this.liveSQLDialect, this.dataSource, new TypeSolver(null, this.liveSQLDialect));
+  }
+
+  // INSERT
+
+  private final DynamicInsertQuery insert = builder
+      .literaln("INSERT INTO account (")
+      .literaln("  id,")
+      .literaln("  parent_id,")
+      .literaln("  branch_id")
+      .literaln(") VALUES (")
+      .literal("  ").parameter("n.id", Types.INTEGER).literaln(",")
+      .literal("  ").parameter("n.parentId", Types.INTEGER).literaln(",")
+      .literal("  ").parameter("n.branchId", Types.INTEGER)
+      .literal(")")
+      .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
+
+  public void insert(Account m) throws DynamicExpressionException, SQLException {
+    ParameterContext context = this.factory.newParameterContext();
+    context.add("m", m);
+    PreparedInsertQuery preparedQuery = this.insert.prepare(context);
+    if (log.isLoggable(Level.FINER)) {
+      log.finer("SQL: " + preparedQuery.getPreview(true));
+    } else if (log.isLoggable(Level.FINE)) {
+      log.fine("SQL: " + preparedQuery.getPreview());
+    }
+    try (Connection conn = this.dataSource.getConnection()) {
+      Long pk = preparedQuery.execute(conn);
+      m.setId(pk == null ? null : pk.intValue());
+    }
   }
 
   // UPDATE BY PK

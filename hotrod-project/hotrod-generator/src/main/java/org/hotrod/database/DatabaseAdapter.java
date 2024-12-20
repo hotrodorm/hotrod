@@ -36,34 +36,47 @@ public abstract class DatabaseAdapter implements Serializable {
 
   private Map<String, DataType> dataTypes;
 
-  public static enum InsertIntegration {
-    INTEGRATES_IDENTITIES_SEQUENCES_AND_DEFAULTS(true, true, true), //
-    INTEGRATES_IDENTITIES_AND_SEQUENCES(true, true, false), //
-    INTEGRATES_IDENTITIES(true, false, false), //
-    INTEGRATES_SEQUENCES_AND_DEFAULTS(false, true, true), //
-    RUDIMENTARY(false, false, false) //
-    ;
+  public static class InsertIntegration {
 
     private boolean identities;
-    private boolean sequences;
+    private boolean identitiesMustDeclarePKColumns;
+    private boolean sequencesKeysResultSet;
+    private boolean sequencesStandardResultSet;
     private boolean defaults;
 
-    private InsertIntegration(final boolean identities, final boolean sequences, final boolean defaults) {
+    private InsertIntegration(boolean identities, boolean identitiesMustDeclarePKColumns,
+        boolean sequencesKeysResultSet, boolean sequencesStandardResultSet, boolean defaults) {
       this.identities = identities;
-      this.sequences = sequences;
+      this.identitiesMustDeclarePKColumns = identitiesMustDeclarePKColumns;
+      this.sequencesKeysResultSet = sequencesKeysResultSet;
+      this.sequencesStandardResultSet = sequencesStandardResultSet;
       this.defaults = defaults;
     }
 
+    public static InsertIntegration of(boolean identities, boolean identitiesMustDeclarePKColumns,
+        boolean sequencesKeysResultSet, boolean sequencesStandardResultSet, boolean defaults) {
+      return new InsertIntegration(identities, identitiesMustDeclarePKColumns, sequencesKeysResultSet,
+          sequencesStandardResultSet, defaults);
+    }
+
     public boolean integratesIdentities() {
-      return this.identities;
+      return identities;
     }
 
-    public boolean integratesSequences() {
-      return this.sequences;
+    public boolean identitiesMustDeclarePKColumns() {
+      return this.identitiesMustDeclarePKColumns;
     }
 
-    public boolean integratesDefaults() {
-      return this.defaults;
+    public boolean integratesSequencesStandardResultSet() {
+      return sequencesStandardResultSet;
+    }
+
+    public boolean integratesSequencesKeysResultSet() {
+      return sequencesKeysResultSet;
+    }
+
+    public boolean isDefaults() {
+      return defaults;
     }
 
   }
@@ -106,7 +119,7 @@ public abstract class DatabaseAdapter implements Serializable {
   public abstract String canonizeName(String configName, boolean quoted);
 
   public abstract String renderSQLName(String canonicalName, boolean quoted);
-  
+
   public abstract boolean canonicalNameRequiresQuoting(String canonicalSQLName);
 
   protected String quote(final String canonicalName) {
@@ -133,6 +146,10 @@ public abstract class DatabaseAdapter implements Serializable {
 
   public abstract String renderSequencesPrefetch(final List<ColumnMetadata> sequenceGeneratedColumns)
       throws SequencesNotSupportedException;
+
+  public String renderSelectSequence(final ColumnMetadata cm) throws SequencesNotSupportedException {
+    return this.renderSelectSequence(cm.getSequenceId());
+  }
 
   public abstract String renderSelectSequence(final ObjectId sequenceId) throws SequencesNotSupportedException;
 

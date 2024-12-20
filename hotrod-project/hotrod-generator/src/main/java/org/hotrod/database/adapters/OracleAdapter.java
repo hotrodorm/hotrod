@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
+import org.hotrod.database.DatabaseAdapter.InsertIntegration;
 import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
@@ -195,8 +196,8 @@ public class OracleAdapter extends DatabaseAdapter {
 
   @Override
   public InsertIntegration getInsertIntegration() {
-    return this.isOracle12cOrNewer ? InsertIntegration.INTEGRATES_IDENTITIES_SEQUENCES_AND_DEFAULTS
-        : InsertIntegration.INTEGRATES_SEQUENCES_AND_DEFAULTS;
+    return this.isOracle12cOrNewer ? InsertIntegration.of(true, true, true, false, true)
+        : InsertIntegration.of(false, false, false, false, true);
   }
 
   @Override

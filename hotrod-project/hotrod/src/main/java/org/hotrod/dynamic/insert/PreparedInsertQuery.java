@@ -12,17 +12,23 @@ public class PreparedInsertQuery extends PreparedQuery {
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(PreparedInsertQuery.class.getName());
 
-  private InsertExecutor executor;
-  private InsertProperties insertProperties;
+  private PrimaryKeyRetrievalMode primaryKeyRetrievalMode;
+  private String sequencePreFetchSQL;
+  private String primaryKeyParameterName;
+  private String[] generatedKeysNames;
 
-  public PreparedInsertQuery(InsertExecutor executor, InsertProperties insertProperties) {
+  public PreparedInsertQuery(PrimaryKeyRetrievalMode primaryKeyRetrievalMode, String sequencePreFetchSQL,
+      String primaryKeyParameterName, String[] generatedKeysNames) {
     super();
-    this.executor = executor;
-    this.insertProperties = insertProperties;
+    this.primaryKeyRetrievalMode = primaryKeyRetrievalMode;
+    this.sequencePreFetchSQL = sequencePreFetchSQL;
+    this.primaryKeyParameterName = primaryKeyParameterName;
+    this.generatedKeysNames = generatedKeysNames;
   }
 
   public Long execute(Connection conn) throws SQLException, DynamicExpressionException {
-    return this.executor.execute(conn, this.sb.toString(), this.parameters, this.insertProperties);
+    return this.primaryKeyRetrievalMode.getInsertExecutor().execute(conn, this.sb.toString(), this.parameters,
+        this.sequencePreFetchSQL, this.primaryKeyParameterName, this.generatedKeysNames);
   }
 
 }

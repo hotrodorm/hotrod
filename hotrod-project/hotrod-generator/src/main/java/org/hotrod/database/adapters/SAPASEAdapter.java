@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
+import org.hotrod.database.DatabaseAdapter.InsertIntegration;
 import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
@@ -163,7 +164,7 @@ public class SAPASEAdapter extends DatabaseAdapter {
 
   @Override
   public InsertIntegration getInsertIntegration() {
-    return InsertIntegration.INTEGRATES_IDENTITIES;
+    return InsertIntegration.of(true, false, false, false, false);
   }
 
   @Override

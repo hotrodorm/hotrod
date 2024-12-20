@@ -32,8 +32,8 @@ public enum PrimaryKeyRetrievalMode {
   IDENTITY_POSTFETCH(null), //
 
   SEQUENCE_PREFETCH(new PreparedInsertSequencePreFetchQuery()), // DONE
-  SEQUENCE_INLINE_STANDARD_RESULTSET(new PreparedInsertSequenceInlineStandardResultsetQuery()), // DONE
   SEQUENCE_INLINE_KEYS_RESULTSET(new PreparedInsertSequenceInlineKeysResultsetQuery()), // DONE
+  SEQUENCE_INLINE_STANDARD_RESULTSET(new PreparedInsertSequenceInlineStandardResultsetQuery()), // DONE
   SEQUENCE_POSTFETCH(null);
 
   private InsertExecutor insertExecutor;

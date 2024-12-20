@@ -19,7 +19,6 @@ import org.hotrod.dynamic.PreparedModificationQuery;
 import org.hotrod.dynamic.PreparedSelectQuery;
 import org.hotrod.dynamic.PreparedSelectQuery.RowReader;
 import org.hotrod.dynamic.builder.QueryBuilder;
-import org.hotrod.dynamic.insert.InsertProperties;
 import org.hotrod.dynamic.insert.PreparedInsertQuery;
 import org.hotrod.dynamic.insert.PrimaryKeyRetrievalMode;
 
@@ -103,7 +102,6 @@ public class AccountDAO {
   // ================
 
 //  // Oracle - Identity Inline
-//  private static final InsertProperties ORACLE_IDENTITY_INSERT_PROPERTIES = new InsertProperties(null, null, "id");
 //  private final DynamicInsertQuery insert = builder //
 //      .literal("INSERT INTO account (") //
 //      .literal("name, type, balance)\n") //
@@ -114,7 +112,7 @@ public class AccountDAO {
 //      .literal(", ") //
 //      .parameter("n.balance", Types.NUMERIC) //
 //      .literal(")") //
-//      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET, ORACLE_IDENTITY_INSERT_PROPERTIES);
+//      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET, null, null, "id");
 
 //  // DB2, PostgreSQL, SQL Server, MySQL, MariaDB, Sybase ASE, H2, HyperSQL, and Derby - Identity Inline
 //  private final DynamicInsertQuery insert = builder //
@@ -134,21 +132,19 @@ public class AccountDAO {
   // === SEQUENCE INLINE ===
   // =======================
 
-//  // Oracle - Sequence Inline
-//  private static final InsertProperties ORACLE_SEQUENCE_INLINE_INSERT_PROPERTIES = new InsertProperties(null, null,
-//      "id");
-//  private final DynamicInsertQuery insert = builder //
-//      .literal("INSERT INTO account (\n") //
-//      .literal("  id, name, type, balance\n") //
-//      .literal(") VALUES (\n  ") //
-//      .literal("seq_account.NEXTVAL, ") //
-//      .parameter("n.name", Types.VARCHAR) //
-//      .literal(", ") //
-//      .parameter("n.type", Types.VARCHAR) //
-//      .literal(", ") //
-//      .parameter("n.balance", Types.NUMERIC) //
-//      .literal(")") //
-//      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET, ORACLE_SEQUENCE_INLINE_INSERT_PROPERTIES);
+  // Oracle - Sequence Inline
+  private final DynamicInsertQuery insert = builder //
+      .literal("INSERT INTO account (\n") //
+      .literal("  id, name, type, balance\n") //
+      .literal(") VALUES (\n  ") //
+      .literal("seq_account.NEXTVAL, ") //
+      .parameter("n.name", Types.VARCHAR) //
+      .literal(", ") //
+      .parameter("n.type", Types.VARCHAR) //
+      .literal(", ") //
+      .parameter("n.balance", Types.NUMERIC) //
+      .literal(")") //
+      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET, null, null, "id");
 
 //  // DB2 - Sequence Inline
 //  private final DynamicInsertQuery insert = builder //
@@ -294,21 +290,21 @@ public class AccountDAO {
 //      .literal(")") //
 //      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH, H2_IDENTITY_INSERT_PROPERTIES);
 
-  // HyperSQL, and Derby sequence Prefetch
-  private static final InsertProperties H2_IDENTITY_INSERT_PROPERTIES = new InsertProperties(
-      "VALUES NEXT VALUE FOR seq_account", "n.id");
-  private final DynamicInsertQuery insert = builder //
-      .literal("INSERT INTO account (\n") //
-      .literal("  id, name, type, balance\n") //
-      .literal(") VALUES (\n  ") //
-      .parameter("n.id", Types.NUMERIC).literal(", ") //
-      .parameter("n.name", Types.VARCHAR) //
-      .literal(", ") //
-      .parameter("n.type", Types.VARCHAR) //
-      .literal(", ") //
-      .parameter("n.balance", Types.NUMERIC) //
-      .literal(")") //
-      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH, H2_IDENTITY_INSERT_PROPERTIES);
+//  // HyperSQL, and Derby sequence Prefetch
+//  private static final InsertProperties H2_IDENTITY_INSERT_PROPERTIES = new InsertProperties(
+//      "VALUES NEXT VALUE FOR seq_account", "n.id");
+//  private final DynamicInsertQuery insert = builder //
+//      .literal("INSERT INTO account (\n") //
+//      .literal("  id, name, type, balance\n") //
+//      .literal(") VALUES (\n  ") //
+//      .parameter("n.id", Types.NUMERIC).literal(", ") //
+//      .parameter("n.name", Types.VARCHAR) //
+//      .literal(", ") //
+//      .parameter("n.type", Types.VARCHAR) //
+//      .literal(", ") //
+//      .parameter("n.balance", Types.NUMERIC) //
+//      .literal(")") //
+//      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH, H2_IDENTITY_INSERT_PROPERTIES);
 
   public void insert(Connection conn, Account entity) throws DynamicExpressionException, SQLException {
 
@@ -356,7 +352,7 @@ public class AccountDAO {
     // 2. Process DynamicSQL and produce query and parameters
 
     PreparedModificationQuery preparedQuery = this.updateByExample.prepare(context);
-    log.info("Preview:\n"+preparedQuery.getPreview());
+    log.info("Preview:\n" + preparedQuery.getPreview());
 
     // 3. Execute the resulting query
 
@@ -367,22 +363,20 @@ public class AccountDAO {
 
   private final DynamicModificationQuery deleteByPK = builder //
       .literal("DELETE FROM account\n") //
-      .literal("WHERE id = ").parameter("f.id", Types.NUMERIC)
-      .literal("  AND id2 = ").parameter("f.id2", Types.NUMERIC)
+      .literal("WHERE id = ").parameter("f.id", Types.NUMERIC).literal("  AND id2 = ").parameter("f.id2", Types.NUMERIC)
       .endModificationQuery();
-  
+
   private final DynamicModificationQuery deleteByExample = builder //
       .literal("DELETE FROM account") //
       .where("AND", builder.ifs() //
           .ifPart("f.id != null", builder.literal("id = ").parameter("f.id", Types.NUMERIC).end())
           .ifPart("f.name != null", builder.literal("name = ").parameter("f.name", Types.VARCHAR).end())
           .ifPart("f.type != null", builder.literal("type = ").parameter("f.type", Types.VARCHAR).end())
-          .ifPart("f.balance != null", builder.literal("balance = ").parameter("f.balance", Types.NUMERIC).end())
-          .end() //
+          .ifPart("f.balance != null", builder.literal("balance = ").parameter("f.balance", Types.NUMERIC).end()).end() //
       ).endModificationQuery();
 
   private DataSource dataSource;
-  
+
   public int delete(Connection conn, Account filter) throws DynamicExpressionException, SQLException {
 
     // 1. Prepare the parameter context

@@ -8,7 +8,6 @@ import org.hotrod.dynamic.DynamicExpressionFactory;
 import org.hotrod.dynamic.DynamicInsertQuery;
 import org.hotrod.dynamic.DynamicModificationQuery;
 import org.hotrod.dynamic.DynamicSelectQuery;
-import org.hotrod.dynamic.insert.InsertProperties;
 import org.hotrod.dynamic.insert.PrimaryKeyRetrievalMode;
 import org.hotrod.dynamic.segments.BindSegment;
 import org.hotrod.dynamic.segments.ChooseSegment;
@@ -124,12 +123,13 @@ public class PartialQuery {
   }
 
   public DynamicInsertQuery endInsertQuery(PrimaryKeyRetrievalMode primaryKeyRetrievalMode) {
-    return new DynamicInsertQuery(this.segments, primaryKeyRetrievalMode, new InsertProperties());
+    return new DynamicInsertQuery(this.segments, primaryKeyRetrievalMode, null, null, null);
   }
 
-  public DynamicInsertQuery endInsertQuery(PrimaryKeyRetrievalMode primaryKeyRetrievalMode,
-      InsertProperties insertProperties) {
-    return new DynamicInsertQuery(this.segments, primaryKeyRetrievalMode, insertProperties);
+  public DynamicInsertQuery endInsertQuery(PrimaryKeyRetrievalMode primaryKeyRetrievalMode, String sequencePreFetchSQL,
+      String primaryKeyParameterName, String... generatedKeysNames) {
+    return new DynamicInsertQuery(this.segments, primaryKeyRetrievalMode, sequencePreFetchSQL, primaryKeyParameterName,
+        generatedKeysNames);
   }
 
 }

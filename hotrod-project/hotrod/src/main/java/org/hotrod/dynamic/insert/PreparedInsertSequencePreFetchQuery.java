@@ -8,20 +8,19 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.dynamic.DynamicExpressionException;
-import org.hotrod.dynamic.segments.ParameterSegment;
 import org.hotrod.dynamic.segments.ParameterDefinitionSegment;
+import org.hotrod.dynamic.segments.ParameterSegment;
 
 public class PreparedInsertSequencePreFetchQuery extends InsertExecutor {
 
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(PreparedInsertSequencePreFetchQuery.class.getName());
 
-  public Long execute(Connection conn, String sql, List<ParameterSegment> parameters,
-      InsertProperties insertProperties) throws SQLException, DynamicExpressionException {
-
-    String prefetch = insertProperties.getSequencePreFetchSQL();
+  @Override
+  public Long execute(Connection conn, String sql, List<ParameterSegment> parameters, String sequencePreFetchSQL,
+      String primaryKeyParameterName, String[] generatedKeysNames) throws SQLException, DynamicExpressionException {
     Long seq = null;
-    try (PreparedStatement ps = conn.prepareStatement(prefetch)) {
+    try (PreparedStatement ps = conn.prepareStatement(sequencePreFetchSQL)) {
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
           seq = rs.getLong(1);
@@ -29,13 +28,13 @@ public class PreparedInsertSequencePreFetchQuery extends InsertExecutor {
       }
     }
     if (seq == null) {
-      throw new SQLException("Could not retrieve sequence for INSERT using: " + prefetch);
+      throw new SQLException("Could not retrieve sequence for INSERT using: " + sequencePreFetchSQL);
     }
 
-    boolean wasSet = this.setParameter(parameters, insertProperties.getPrimaryKeyParameterName(), seq);
+    boolean wasSet = this.setParameter(parameters, primaryKeyParameterName, seq);
     if (!wasSet) {
-      throw new SQLException("Failed to INSERT: could not set value for primary key column parameter: "
-          + insertProperties.getPrimaryKeyParameterName());
+      throw new SQLException(
+          "Failed to INSERT: could not set value for primary key column parameter: " + primaryKeyParameterName);
     }
 
     try (PreparedStatement ps = conn.prepareStatement(sql)) {

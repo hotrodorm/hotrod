@@ -1218,11 +1218,11 @@ public class ObjectDAO {
       }
     }
 
-    boolean integratesSequences = this.adapter.getInsertIntegration().integratesSequences();
-    boolean integratesIdentities = this.adapter.getInsertIntegration().integratesIdentities();
-    boolean integratesDefaults = this.adapter.getInsertIntegration().integratesDefaults();
-
-    boolean extraInsert = integratesSequences && integratesDefaults && defaults != 0;
+//    boolean integratesSequences = this.adapter.getInsertIntegration().integratesSequences();
+//    boolean integratesIdentities = this.adapter.getInsertIntegration().integratesIdentities();
+//    boolean integratesDefaults = this.adapter.getInsertIntegration().integratesDefaults();
+//
+//    boolean extraInsert = integratesSequences && integratesDefaults && defaults != 0;
 
     /**
      * <pre>
@@ -1240,93 +1240,93 @@ public class ObjectDAO {
 
     String voClassName = this.avo.getFullClassName();
     String moClassName = this.vo.getFullClassName();
-    if (extraInsert) {
-      w.print("  public " + moClassName + " insert(final " + voClassName + " vo) ");
-      w.println("{");
-      w.println("    return insert(vo, false);");
-      w.println("  }");
-      w.println();
-    }
+//    if (extraInsert) {
+//      w.print("  public " + moClassName + " insert(final " + voClassName + " vo) ");
+//      w.println("{");
+//      w.println("    return insert(vo, false);");
+//      w.println("  }");
+//      w.println();
+//    }
+//
+//    w.print("  public " + moClassName + " insert(final " + voClassName + " vo");
+//    if (extraInsert) {
+//      w.print(", final boolean retrieveDefaults");
+//    }
+//    w.print(") ");
+//    w.println("{");
+//
+//    VersionControlMetadata vcm = this.metadata.getVersionControlMetadata();
+//
+//    if (vcm != null) {
+//      ColumnMetadata cm = vcm.getColumnMetadata();
+//      String literalValue = renderNumericLiteral(cm.getType().getValueRange().getInitialValue(),
+//          cm.getType().getJavaClassName());
+//      w.println("    vo." + cm.getId().getJavaMemberName() + " = " + literalValue + ";");
+//    }
+//
+//    // Decide on the mapper id
+//
+//    if (extraInsert) {
+//      w.println("    String id = retrieveDefaults ? \"" + this.mapper.getFullMapperIdInsertRetrievingDefaults()
+//          + "\" : \"" + this.mapper.getFullMapperIdInsert() + "\";");
+//    } else {
+//      w.println("    String id = \"" + this.mapper.getFullMapperIdInsert() + "\";");
+//    }
+//
+//    // Choose insert variant
+//
+//    if (identities == 0) {
+//      if (sequences == 0) { // no sequences, no identities
+//        w.println("    this.sqlSession.insert(id, vo);");
+//        this.writeVOToModel();
+//        w.println("    return mo;");
+//      } else { // sequences only
+//        if (integratesSequences) {
+//          writeInsertIntegrated(true, false, extraInsert);
+//          this.writeVOToModel();
+//          w.println("    return mo;");
+//        } else {
+//          w.println("    this.sqlSession.insert(id, vo);");
+//          this.writeVOToModel();
+//          w.println("    return mo;");
+//        }
+//      }
+//    } else {
+//      if (sequences == 0) { // identities only
+//        if (integratesIdentities) {
+//          writeInsertIntegrated(false, true, extraInsert);
+//          this.writeVOToModel();
+//          w.println("    return mo;");
+//        } else {
+//          w.println("    this.sqlSession.insert(id, vo);");
+//          this.writeVOToModel();
+//          w.println("    return mo;");
+//        }
+//      } else { // sequences & identities
+//        if (integratesSequences && integratesIdentities) {
+//          writeInsertIntegrated(true, true, extraInsert);
+//          this.writeVOToModel();
+//          w.println("    return mo;");
+//        } else if (integratesIdentities) {
+//          writeSequencesPreFetch();
+//          writeInsertIntegrated(false, true, extraInsert);
+//          this.writeVOToModel();
+//          w.println("    return mo;");
+//        } else if (integratesSequences) {
+//          writeInsertIntegrated(true, false, extraInsert);
+//          writeIdentitiesPostFetch();
+//          this.writeVOToModel();
+//          w.println("    return mo;");
+//        } else {
+//          writeSequencesPreFetch();
+//          w.println("    int rows = this.sqlSession.insert(id, vo);");
+//          writeIdentitiesPostFetch();
+//          this.writeVOToModel();
+//          w.println("    return mo;");
+//        }
 
-    w.print("  public " + moClassName + " insert(final " + voClassName + " vo");
-    if (extraInsert) {
-      w.print(", final boolean retrieveDefaults");
-    }
-    w.print(") ");
-    w.println("{");
-
-    VersionControlMetadata vcm = this.metadata.getVersionControlMetadata();
-
-    if (vcm != null) {
-      ColumnMetadata cm = vcm.getColumnMetadata();
-      String literalValue = renderNumericLiteral(cm.getType().getValueRange().getInitialValue(),
-          cm.getType().getJavaClassName());
-      w.println("    vo." + cm.getId().getJavaMemberName() + " = " + literalValue + ";");
-    }
-
-    // Decide on the mapper id
-
-    if (extraInsert) {
-      w.println("    String id = retrieveDefaults ? \"" + this.mapper.getFullMapperIdInsertRetrievingDefaults()
-          + "\" : \"" + this.mapper.getFullMapperIdInsert() + "\";");
-    } else {
-      w.println("    String id = \"" + this.mapper.getFullMapperIdInsert() + "\";");
-    }
-
-    // Choose insert variant
-
-    if (identities == 0) {
-      if (sequences == 0) { // no sequences, no identities
-        w.println("    this.sqlSession.insert(id, vo);");
-        this.writeVOToModel();
-        w.println("    return mo;");
-      } else { // sequences only
-        if (integratesSequences) {
-          writeInsertIntegrated(true, false, extraInsert);
-          this.writeVOToModel();
-          w.println("    return mo;");
-        } else {
-          w.println("    this.sqlSession.insert(id, vo);");
-          this.writeVOToModel();
-          w.println("    return mo;");
-        }
-      }
-    } else {
-      if (sequences == 0) { // identities only
-        if (integratesIdentities) {
-          writeInsertIntegrated(false, true, extraInsert);
-          this.writeVOToModel();
-          w.println("    return mo;");
-        } else {
-          w.println("    this.sqlSession.insert(id, vo);");
-          this.writeVOToModel();
-          w.println("    return mo;");
-        }
-      } else { // sequences & identities
-        if (integratesSequences && integratesIdentities) {
-          writeInsertIntegrated(true, true, extraInsert);
-          this.writeVOToModel();
-          w.println("    return mo;");
-        } else if (integratesIdentities) {
-          writeSequencesPreFetch();
-          writeInsertIntegrated(false, true, extraInsert);
-          this.writeVOToModel();
-          w.println("    return mo;");
-        } else if (integratesSequences) {
-          writeInsertIntegrated(true, false, extraInsert);
-          writeIdentitiesPostFetch();
-          this.writeVOToModel();
-          w.println("    return mo;");
-        } else {
-          writeSequencesPreFetch();
-          w.println("    int rows = this.sqlSession.insert(id, vo);");
-          writeIdentitiesPostFetch();
-          this.writeVOToModel();
-          w.println("    return mo;");
-        }
-
-      }
-    }
+//      }
+//    }
 
     w.println("  }");
     w.println();

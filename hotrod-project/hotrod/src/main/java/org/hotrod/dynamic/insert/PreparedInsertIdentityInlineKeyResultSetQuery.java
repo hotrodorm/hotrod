@@ -16,9 +16,9 @@ public class PreparedInsertIdentityInlineKeyResultSetQuery extends InsertExecuto
 
   private static final Logger log = Logger.getLogger(PreparedInsertIdentityInlineKeyResultSetQuery.class.getName());
 
-  public Long execute(Connection conn, String sql, List<ParameterSegment> parameters,
-      InsertProperties insertProperties) throws SQLException, DynamicExpressionException {
-    String[] generatedKeysNames = insertProperties.getGeneratedKeysNames();
+  @Override
+  public Long execute(Connection conn, String sql, List<ParameterSegment> parameters, String sequencePreFetchSQL,
+      String primaryKeyParameterName, String[] generatedKeysNames) throws SQLException, DynamicExpressionException {
     if (generatedKeysNames == null || generatedKeysNames.length == 0) {
       log.info(">>> Statement.RETURN_GENERATED_KEYS");
       try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {

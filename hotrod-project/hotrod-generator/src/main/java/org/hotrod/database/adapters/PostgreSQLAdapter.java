@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
+import org.hotrod.database.DatabaseAdapter.InsertIntegration;
 import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
@@ -202,7 +203,7 @@ public class PostgreSQLAdapter extends DatabaseAdapter {
 
   @Override
   public InsertIntegration getInsertIntegration() {
-    return InsertIntegration.INTEGRATES_IDENTITIES_SEQUENCES_AND_DEFAULTS;
+    return InsertIntegration.of(true, false, true, false, true);
   }
 
   @Override
@@ -223,6 +224,11 @@ public class PostgreSQLAdapter extends DatabaseAdapter {
       lw.add("nextval('" + cm.getSequenceId().getRenderedSQLName() + "') as " + cm.getId().getJavaMemberName());
     }
     return "select " + lw.toString();
+  }
+
+  @Override
+  public String renderSelectSequence(final ColumnMetadata cm) throws SequencesNotSupportedException {
+    return "select nextval('" + cm.getSequenceId().getRenderedSQLName() + "')";
   }
 
   @Override
