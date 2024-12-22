@@ -20,9 +20,9 @@ public class PreparedSelectQuery<R> extends PreparedQuery {
   }
 
   public List<R> execute(Connection conn, RowReader<R> rowReader) throws SQLException, DynamicExpressionException {
-    try (PreparedStatement ps = conn.prepareStatement(this.sql)) {
+    try (PreparedStatement ps = conn.prepareStatement(super.sql)) {
       int ordinal = 1;
-      for (ParameterSegment p : this.parameters) {
+      for (ParameterSegment p : super.parameters) {
         if (p.getValue() != null) {
           ps.setObject(ordinal++, p.getValue());
         } else {

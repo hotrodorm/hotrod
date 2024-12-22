@@ -1,6 +1,7 @@
 package org.hotrod.dynamic;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.hotrod.dynamic.segments.ParameterSegment;
@@ -30,7 +31,7 @@ public class SimpleStaticSegmentConsumer implements StaticSegmentConsumer {
   }
 
   public List<ParameterSegment> getParameters() {
-    return parameters;
+    return Collections.unmodifiableList(parameters);
   }
 
 }

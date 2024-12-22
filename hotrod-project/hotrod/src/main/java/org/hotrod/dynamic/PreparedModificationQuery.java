@@ -19,7 +19,7 @@ public class PreparedModificationQuery extends PreparedQuery {
   public int execute(Connection conn) throws SQLException, DynamicExpressionException {
     try (PreparedStatement ps = conn.prepareStatement(super.sql)) {
       int ordinal = 1;
-      for (ParameterSegment p : this.parameters) {
+      for (ParameterSegment p : super.parameters) {
         if (p.getValue() != null) {
           ps.setObject(ordinal++, p.getValue());
         } else {
