@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import org.hotrod.dynamic.DynamicExpressionException;
 import org.hotrod.dynamic.PreparedQuery;
+import org.hotrod.dynamic.SimpleStaticSegmentConsumer;
 
 public class PreparedInsertQuery extends PreparedQuery {
 
@@ -17,9 +18,9 @@ public class PreparedInsertQuery extends PreparedQuery {
   private String primaryKeyParameterName;
   private String[] generatedKeysNames;
 
-  public PreparedInsertQuery(PrimaryKeyRetrievalMode primaryKeyRetrievalMode, String sequencePreFetchSQL,
-      String primaryKeyParameterName, String[] generatedKeysNames) {
-    super();
+  public PreparedInsertQuery(SimpleStaticSegmentConsumer sc, PrimaryKeyRetrievalMode primaryKeyRetrievalMode,
+      String sequencePreFetchSQL, String primaryKeyParameterName, String[] generatedKeysNames) {
+    super(sc.getSQL(), sc.getParameters());
     this.primaryKeyRetrievalMode = primaryKeyRetrievalMode;
     this.sequencePreFetchSQL = sequencePreFetchSQL;
     this.primaryKeyParameterName = primaryKeyParameterName;
@@ -27,7 +28,7 @@ public class PreparedInsertQuery extends PreparedQuery {
   }
 
   public Long execute(Connection conn) throws SQLException, DynamicExpressionException {
-    return this.primaryKeyRetrievalMode.getInsertExecutor().execute(conn, this.sb.toString(), this.parameters,
+    return this.primaryKeyRetrievalMode.getInsertExecutor().execute(conn, this.sql, this.parameters,
         this.sequencePreFetchSQL, this.primaryKeyParameterName, this.generatedKeysNames);
   }
 

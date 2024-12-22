@@ -15,8 +15,12 @@ public class PreparedSelectQuery<R> extends PreparedQuery {
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(PreparedSelectQuery.class.getName());
 
+  public PreparedSelectQuery(SimpleStaticSegmentConsumer sc) {
+    super(sc.getSQL(), sc.getParameters());
+  }
+
   public List<R> execute(Connection conn, RowReader<R> rowReader) throws SQLException, DynamicExpressionException {
-    try (PreparedStatement ps = conn.prepareStatement(this.sb.toString())) {
+    try (PreparedStatement ps = conn.prepareStatement(this.sql)) {
       int ordinal = 1;
       for (ParameterSegment p : this.parameters) {
         if (p.getValue() != null) {

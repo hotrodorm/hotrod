@@ -1,0 +1,36 @@
+package org.hotrod.dynamic;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hotrod.dynamic.segments.ParameterSegment;
+import org.hotrod.dynamic.segments.StaticSegmentConsumer;
+
+public class SimpleStaticSegmentConsumer implements StaticSegmentConsumer {
+
+  private StringBuilder sb = new StringBuilder();
+  private List<ParameterSegment> parameters = new ArrayList<>();
+
+  @Override
+  public void consume(String literal) {
+    this.sb.append(literal);
+  }
+
+  @Override
+  public void consume(ParameterSegment p) {
+    this.parameters.add(p);
+  }
+
+  public void startNextEntry() {
+    // Nothing to do
+  }
+
+  public String getSQL() {
+    return sb.toString();
+  }
+
+  public List<ParameterSegment> getParameters() {
+    return parameters;
+  }
+
+}

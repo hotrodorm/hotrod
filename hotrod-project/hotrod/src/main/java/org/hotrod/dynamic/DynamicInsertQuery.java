@@ -23,12 +23,12 @@ public class DynamicInsertQuery extends DynamicQuery {
   }
 
   public PreparedInsertQuery prepare(ParameterContext context) throws DynamicExpressionException {
-    PreparedInsertQuery pq = new PreparedInsertQuery(this.primaryKeyRetrievalMode, this.sequencePreFetchSQL,
-        this.primaryKeyParameterName, this.generatedKeysNames);
+    SimpleStaticSegmentConsumer sc = new SimpleStaticSegmentConsumer();
     for (QuerySegment s : this.segments) {
-      s.prepare(pq, context, 0);
+      s.prepare(sc, context, 0);
     }
-    return pq;
+    return new PreparedInsertQuery(sc, this.primaryKeyRetrievalMode, this.sequencePreFetchSQL,
+        this.primaryKeyParameterName, this.generatedKeysNames);
   }
 
 }

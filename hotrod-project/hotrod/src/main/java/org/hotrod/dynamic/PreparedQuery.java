@@ -1,31 +1,19 @@
 package org.hotrod.dynamic;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.dynamic.segments.ParameterSegment;
-import org.hotrod.dynamic.segments.StaticSegmentConsumer;
 import org.hotrod.utils.JDBCTypes;
 import org.hotrod.utils.SUtil;
 
-public abstract class PreparedQuery implements StaticSegmentConsumer {
+public abstract class PreparedQuery {
 
-  protected StringBuilder sb = new StringBuilder();
-  protected List<ParameterSegment> parameters = new ArrayList<>();
+  protected String sql;
+  protected List<ParameterSegment> parameters;
 
-  @Override
-  public void consume(String literal) {
-    this.sb.append(literal);
-  }
-
-  @Override
-  public void consume(ParameterSegment p) {
-    this.parameters.add(p);
-  }
-
-  @Override
-  public void startNextEntry() {
-    // Nothing to do
+  public PreparedQuery(String sql, List<ParameterSegment> parameters) {
+    this.sql = sql;
+    this.parameters = parameters;
   }
 
   private static final int MAX_DISPLAY_VALUE = 100;
@@ -36,10 +24,10 @@ public abstract class PreparedQuery implements StaticSegmentConsumer {
 
   public String getPreview(boolean includeParameters) {
     if (!includeParameters) {
-      return this.sb.toString();
+      return this.sql;
     } else {
       StringBuilder p = new StringBuilder();
-      p.append(this.sb.toString());
+      p.append(this.sql);
       p.append("\n=== Parameters (" + this.parameters.size() + ") ===\n");
       int pos = 1;
       for (ParameterSegment ps : this.parameters) {

@@ -11,11 +11,11 @@ public class DynamicSelectQuery extends DynamicQuery {
   }
 
   public <T> PreparedSelectQuery<T> prepare(ParameterContext context, Class<T> t) throws DynamicExpressionException {
-    PreparedSelectQuery<T> pq = new PreparedSelectQuery<T>();
+    SimpleStaticSegmentConsumer sc = new SimpleStaticSegmentConsumer();
     for (QuerySegment s : this.segments) {
-      s.prepare(pq, context, 0);
+      s.prepare(sc, context, 0);
     }
-    return pq;
+    return new PreparedSelectQuery<T>(sc);
   }
 
 }

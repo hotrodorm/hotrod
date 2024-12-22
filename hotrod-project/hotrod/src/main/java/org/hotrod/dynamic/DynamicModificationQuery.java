@@ -11,11 +11,11 @@ public class DynamicModificationQuery extends DynamicQuery {
   }
 
   public PreparedModificationQuery prepare(ParameterContext context) throws DynamicExpressionException {
-    PreparedModificationQuery pq = new PreparedModificationQuery();
+    SimpleStaticSegmentConsumer sc = new SimpleStaticSegmentConsumer();
     for (QuerySegment s : this.segments) {
-      s.prepare(pq, context, 0);
+      s.prepare(sc, context, 0);
     }
-    return pq;
+    return new PreparedModificationQuery(sc);
   }
 
 }
