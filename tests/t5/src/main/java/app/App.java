@@ -55,8 +55,9 @@ public class App {
   private void test() throws SQLException, DynamicExpressionException {
     Account a = new Account();
     a.setId(400);
-    a.setBranchId(10);
-    a.setParentId(null);
+    a.setName("ACC123");
+    a.setType("CHK");
+    a.setBalance(500);
 
     this.accountDAO.insert(a);
 

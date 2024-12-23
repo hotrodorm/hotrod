@@ -13,8 +13,9 @@ public class AccountPrototype implements Serializable {
   // VO Properties (table columns)
 
   protected Integer id = null;
-  protected Integer parentId = null;
-  protected Integer branchId = null;
+  protected String name = null;
+  protected String type = null;
+  protected Integer balance = null;
 
   // getters & setters
 
@@ -26,20 +27,28 @@ public class AccountPrototype implements Serializable {
     this.id = id;
   }
 
-  public Integer getParentId() {
-    return this.parentId;
+  public String getName() {
+    return this.name;
   }
 
-  public void setParentId(final Integer parentId) {
-    this.parentId = parentId;
+  public void setName(final String name) {
+    this.name = name;
   }
 
-  public Integer getBranchId() {
-    return this.branchId;
+  public String getType() {
+    return this.type;
   }
 
-  public void setBranchId(final Integer branchId) {
-    this.branchId = branchId;
+  public void setType(final String type) {
+    this.type = type;
+  }
+
+  public Integer getBalance() {
+    return this.balance;
+  }
+
+  public void setBalance(final Integer balance) {
+    this.balance = balance;
   }
 
   // to string
@@ -48,8 +57,9 @@ public class AccountPrototype implements Serializable {
     StringBuilder sb = new StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- id=" + this.id + "\n");
-    sb.append("- parentId=" + this.parentId + "\n");
-    sb.append("- branchId=" + this.branchId);
+    sb.append("- name=" + this.name + "\n");
+    sb.append("- type=" + this.type + "\n");
+    sb.append("- balance=" + this.balance);
     return sb.toString();
   }
 
@@ -58,8 +68,9 @@ public class AccountPrototype implements Serializable {
   public JSONObject toJSONObject() {
     JSONObject obj = new JSONObject();
     obj.addProperty("id", this.id);
-    obj.addProperty("parentId", this.parentId);
-    obj.addProperty("branchId", this.branchId);
+    obj.addProperty("name", this.name);
+    obj.addProperty("type", this.type);
+    obj.addProperty("balance", this.balance);
     return obj;
   }
 

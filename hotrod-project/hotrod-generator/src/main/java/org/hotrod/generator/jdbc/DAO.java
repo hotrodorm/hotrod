@@ -303,10 +303,9 @@ public class DAO {
     KeyMetadata pk = this.metadata.getPK();
 
     // Limitations
-    // 1. Autogeneration for single-column PK
+    // 1. This version supports autogeneration for a single-column PK
     // 2. Does not retrieve DEFAULT columns
-    // 3. Retrieved single-column PK can only be numeric up to LONG (no NUMBER(19)
-    // or UUID)
+    // 3. Retrieved value can only be numeric up to LONG (no NUMBER(19) or UUID)
     // 4. Only retrieves a single value for a single-row INSERT (no multi-inserts)
 
     List<ColumnMetadata> sequences = new ArrayList<>();

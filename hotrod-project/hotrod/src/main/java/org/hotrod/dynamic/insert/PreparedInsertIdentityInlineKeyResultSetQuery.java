@@ -20,12 +20,10 @@ public class PreparedInsertIdentityInlineKeyResultSetQuery extends InsertExecuto
   public Long execute(Connection conn, String sql, List<ParameterSegment> parameters, String sequencePreFetchSQL,
       String primaryKeyParameterName, String[] generatedKeysNames) throws SQLException, DynamicExpressionException {
     if (generatedKeysNames == null || generatedKeysNames.length == 0) {
-      log.info(">>> Statement.RETURN_GENERATED_KEYS");
       try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
         return execute(parameters, ps);
       }
     } else {
-      log.info(">>> generatedKeysNames");
       try (PreparedStatement ps = conn.prepareStatement(sql, generatedKeysNames)) {
         return execute(parameters, ps);
       }
@@ -37,9 +35,6 @@ public class PreparedInsertIdentityInlineKeyResultSetQuery extends InsertExecuto
     ps.executeUpdate();
     try (ResultSet rs = ps.getGeneratedKeys()) {
       ResultSetMetaData rm = rs.getMetaData();
-      log.info("rm.getColumnTypeName(1)=" + rm.getColumnTypeName(1));
-      log.info("rm.getColumnClassName(1)=" + rm.getColumnClassName(1));
-      log.info("rm.getColumnType(1)=" + rm.getColumnType(1));
       if (rs.next()) {
         return rs.getLong(1);
       }

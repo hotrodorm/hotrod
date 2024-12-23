@@ -70,15 +70,15 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   private final DynamicInsertQuery insert = builder
       .literaln("INSERT INTO account (")
-      .literaln("  id,")
-      .literaln("  parent_id,")
-      .literaln("  branch_id")
+      .literaln("  name,")
+      .literaln("  type,")
+      .literaln("  balance")
       .literaln(") VALUES (")
-      .literal("  next value for seq1").literaln(",")
-      .literal("  ").parameter("m.parentId", Types.INTEGER).literaln(",")
-      .literal("  ").parameter("m.branchId", Types.INTEGER)
+      .literal("  ").parameter("m.name", Types.VARCHAR).literaln(",")
+      .literal("  ").parameter("m.type", Types.VARCHAR).literaln(",")
+      .literal("  ").parameter("m.balance", Types.INTEGER)
       .literal(")")
-      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET);
+      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
 
   public void insert(Account m) throws DynamicExpressionException, SQLException {
     ParameterContext context = this.factory.newParameterContext();
@@ -101,8 +101,9 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     .literal("UPDATE account")
       .set(builder.ifs()
           .ifPart("m.id != null", builder.literal("id = ").parameter("m.id", Types.INTEGER).end())
-          .ifPart("m.parentId != null", builder.literal("parent_id = ").parameter("m.parentId", Types.INTEGER).end())
-          .ifPart("m.branchId != null", builder.literal("branch_id = ").parameter("m.branchId", Types.INTEGER).end())
+          .ifPart("m.name != null", builder.literal("name = ").parameter("m.name", Types.VARCHAR).end())
+          .ifPart("m.type != null", builder.literal("type = ").parameter("m.type", Types.VARCHAR).end())
+          .ifPart("m.balance != null", builder.literal("balance = ").parameter("m.balance", Types.INTEGER).end())
           .end())
     .literal("WHERE " + "id = ").parameter("m.id", Types.INTEGER)
     .endModificationQuery();
@@ -154,13 +155,15 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .literal("UPDATE FROM account")
       .set(builder.ifs()
           .ifPart("m.id != null", builder.literal("id = ").parameter("m.id", Types.INTEGER).end())
-          .ifPart("m.parentId != null", builder.literal("parent_id = ").parameter("m.parentId", Types.INTEGER).end())
-          .ifPart("m.branchId != null", builder.literal("branch_id = ").parameter("m.branchId", Types.INTEGER).end())
+          .ifPart("m.name != null", builder.literal("name = ").parameter("m.name", Types.VARCHAR).end())
+          .ifPart("m.type != null", builder.literal("type = ").parameter("m.type", Types.VARCHAR).end())
+          .ifPart("m.balance != null", builder.literal("balance = ").parameter("m.balance", Types.INTEGER).end())
           .end())
       .where("AND", builder.ifs()
           .ifPart("f.id != null", builder.literal("id = ").parameter("f.id", Types.INTEGER).end())
-          .ifPart("f.parentId != null", builder.literal("parent_id = ").parameter("f.parentId", Types.INTEGER).end())
-          .ifPart("f.branchId != null", builder.literal("branch_id = ").parameter("f.branchId", Types.INTEGER).end())
+          .ifPart("f.name != null", builder.literal("name = ").parameter("f.name", Types.VARCHAR).end())
+          .ifPart("f.type != null", builder.literal("type = ").parameter("f.type", Types.VARCHAR).end())
+          .ifPart("f.balance != null", builder.literal("balance = ").parameter("f.balance", Types.INTEGER).end())
           .end())
       .endModificationQuery();
 
@@ -186,8 +189,9 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .literal("DELETE FROM account")
       .where("AND", builder.ifs()
           .ifPart("f.id != null", builder.literal("id = ").parameter("f.id", Types.INTEGER).end())
-          .ifPart("f.parentId != null", builder.literal("parent_id = ").parameter("f.parentId", Types.INTEGER).end())
-          .ifPart("f.branchId != null", builder.literal("branch_id = ").parameter("f.branchId", Types.INTEGER).end())
+          .ifPart("f.name != null", builder.literal("name = ").parameter("f.name", Types.VARCHAR).end())
+          .ifPart("f.type != null", builder.literal("type = ").parameter("f.type", Types.VARCHAR).end())
+          .ifPart("f.balance != null", builder.literal("balance = ").parameter("f.balance", Types.INTEGER).end())
           .end())
       .endModificationQuery();
 

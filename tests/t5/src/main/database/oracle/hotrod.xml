@@ -1,9 +1,9 @@
 <hotrod>
 
   <generators>
-    <mybatis-spring>
-      <daos package="app.daos" dao-suffix="DAO" vo-suffix="VO" abstract-vo-prefix="Abstract" abstract-vo-suffix="VO" />
-    </mybatis-spring>
+    <jdbc>
+      <daos package="app.daos" dao-suffix="DAO" vo-suffix="" abstract-vo-prefix="" abstract-vo-suffix="Prototype" />
+    </jdbc>
   </generators>
   
   <type-solver>
@@ -16,6 +16,7 @@
     class="app.IntegerBooleanConverter"
   />
 
+<!-- 
   <table name="chars" />
   <table name="numbers" />
   <table name="dates" />
@@ -25,11 +26,14 @@
   <table name="branch">
     <column name="is_vip" converter="boolean_stored_as_int" />
   </table>
-
+-->
   <table name="account">
-    <column name="id" sequence="seq1" />
+    <column name="id" sequence="seq_account" />
+  <!--
+      -->
   </table>
 
+<!-- 
   <fragment file="./reporting.xml" />
-
+ -->
 </hotrod>
