@@ -81,7 +81,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .literal("  ").parameter("m.type", Types.VARCHAR).literaln(",")
       .literal("  ").parameter("m.balance", Types.INTEGER)
       .literal(")")
-      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH, "SELECT NEXT VALUE FOR seq_account", "m.id");
+      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH, "select nextval('seq_account')", "m.id");
 
   public void insert(Account m) throws DynamicExpressionException, SQLException {
     ParameterContext context = this.factory.newParameterContext();

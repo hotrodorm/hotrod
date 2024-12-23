@@ -228,7 +228,7 @@ public class PostgreSQLAdapter extends DatabaseAdapter {
 
   @Override
   public String renderSelectSequence(final ColumnMetadata cm) throws SequencesNotSupportedException {
-    return "select nextval('" + cm.getSequenceId().getRenderedSQLName() + "')";
+    return "SELECT NEXTVAL('" + cm.getSequenceId().getRenderedSQLName() + "')";
   }
 
   @Override
