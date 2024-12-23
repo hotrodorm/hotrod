@@ -10,6 +10,7 @@ public class InsertMechanics {
   private String sequencePreFetchSQL;
   private String primaryKeyMemberName;
   private String sequenceInlineSQL;
+  private String outputClause;
   private String[] generatedKeysNames;
 
   public InsertMechanics(PrimaryKeyRetrievalMode mode) {
@@ -21,11 +22,12 @@ public class InsertMechanics {
   }
 
   public InsertMechanics(PrimaryKeyRetrievalMode mode, String sequencePreFetchSQL, String primaryKeyMemberName,
-      String sequenceInlineSQL, String... generatedKeysNames) {
+      String sequenceInlineSQL, String outputClause, String[] generatedKeysNames) {
     this.mode = mode;
     this.sequencePreFetchSQL = sequencePreFetchSQL;
     this.primaryKeyMemberName = primaryKeyMemberName;
     this.sequenceInlineSQL = sequenceInlineSQL;
+    this.outputClause = outputClause;
     this.generatedKeysNames = generatedKeysNames;
   }
 
@@ -45,14 +47,18 @@ public class InsertMechanics {
     return this.sequenceInlineSQL;
   }
 
+  public String getOutputClause() {
+    return outputClause;
+  }
+
   public String[] getGeneratedKeysNames() {
     return generatedKeysNames;
   }
 
   @Override
   public String toString() {
-    return "InsertMechanics [mode=" + mode + ", sequencePreFetchSQL=" + sequencePreFetchSQL
-        + ", primaryKeyMemberName=" + primaryKeyMemberName + ", sequenceInlineSQL=" + sequenceInlineSQL
+    return "InsertMechanics [mode=" + mode + ", sequencePreFetchSQL=" + sequencePreFetchSQL + ", primaryKeyMemberName="
+        + primaryKeyMemberName + ", sequenceInlineSQL=" + sequenceInlineSQL + ", outputClause=" + outputClause
         + ", generatedKeysNames=" + Arrays.toString(generatedKeysNames) + "]";
   }
 

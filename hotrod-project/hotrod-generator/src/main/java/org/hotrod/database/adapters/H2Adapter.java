@@ -161,7 +161,7 @@ public class H2Adapter extends DatabaseAdapter {
 
   @Override
   public InsertIntegration getInsertIntegration() {
-    return InsertIntegration.of(true, false, true, false, false);
+    return InsertIntegration.of(true, false, true, false, null, false);
   }
 
   @Override
@@ -186,12 +186,12 @@ public class H2Adapter extends DatabaseAdapter {
 
   @Override
   public String renderSelectSequence(final ObjectId sequenceId) throws SequencesNotSupportedException {
-    return "select next value for " + sequenceId.getRenderedSQLName();
+    return "SELECT NEXT VALUE FOR " + sequenceId.getRenderedSQLName();
   }
 
   @Override
   public String renderInlineSequenceOnInsert(final ColumnMetadata cm) {
-    return "next value for " + cm.getSequenceId().getRenderedSQLName();
+    return "NEXT VALUE FOR " + cm.getSequenceId().getRenderedSQLName();
   }
 
   @Override

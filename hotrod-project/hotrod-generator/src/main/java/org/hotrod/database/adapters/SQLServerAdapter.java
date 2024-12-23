@@ -178,7 +178,7 @@ public class SQLServerAdapter extends DatabaseAdapter {
 
   @Override
   public InsertIntegration getInsertIntegration() {
-    return InsertIntegration.of(true, false, false, true, true);
+    return InsertIntegration.of(true, false, false, true, "OUTPUT INSERTED.", true);
   }
 
   @Override
@@ -203,12 +203,12 @@ public class SQLServerAdapter extends DatabaseAdapter {
 
   @Override
   public String renderSelectSequence(final ObjectId sequenceId) throws SequencesNotSupportedException {
-    return "select next value for " + sequenceId.getRenderedSQLName();
+    return "SELECT NEXT VALUE FOR " + sequenceId.getRenderedSQLName();
   }
 
   @Override
   public String renderInlineSequenceOnInsert(final ColumnMetadata cm) {
-    return "next value for " + cm.getSequenceId().getRenderedSQLName();
+    return "NEXT VALUE FOR " + cm.getSequenceId().getRenderedSQLName();
   }
 
   @Override

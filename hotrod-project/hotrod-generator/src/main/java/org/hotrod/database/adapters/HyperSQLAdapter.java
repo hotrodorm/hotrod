@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
-import org.hotrod.database.DatabaseAdapter.InsertIntegration;
 import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
@@ -145,7 +144,7 @@ public class HyperSQLAdapter extends DatabaseAdapter {
 
   @Override
   public InsertIntegration getInsertIntegration() {
-    return InsertIntegration.of(true, false, false, false, false);
+    return InsertIntegration.of(true, false, false, false, null, false);
   }
 
   @Override
@@ -170,12 +169,12 @@ public class HyperSQLAdapter extends DatabaseAdapter {
 
   @Override
   public String renderSelectSequence(final ObjectId sequenceId) throws SequencesNotSupportedException {
-    return "select next value for " + sequenceId.getRenderedSQLName() + " from (values (0))";
+    return "SELECT NEXT VALUE FOR " + sequenceId.getRenderedSQLName() + " FROM (VALUES (0))";
   }
 
   @Override
   public String renderInlineSequenceOnInsert(final ColumnMetadata cm) {
-    return "next value for " + cm.getSequenceId().getRenderedSQLName();
+    return "NEXT VALUE FOR " + cm.getSequenceId().getRenderedSQLName();
   }
 
   @Override

@@ -164,7 +164,7 @@ public class SAPASEAdapter extends DatabaseAdapter {
 
   @Override
   public InsertIntegration getInsertIntegration() {
-    return InsertIntegration.of(true, false, false, false, false);
+    return InsertIntegration.of(true, false, false, false, null, false);
   }
 
   @Override

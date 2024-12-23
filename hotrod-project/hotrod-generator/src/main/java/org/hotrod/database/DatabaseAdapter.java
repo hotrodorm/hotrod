@@ -42,21 +42,23 @@ public abstract class DatabaseAdapter implements Serializable {
     private boolean identitiesMustDeclarePKColumns;
     private boolean sequencesKeysResultSet;
     private boolean sequencesStandardResultSet;
+    private String outputClause;
     private boolean defaults;
 
     private InsertIntegration(boolean identities, boolean identitiesMustDeclarePKColumns,
-        boolean sequencesKeysResultSet, boolean sequencesStandardResultSet, boolean defaults) {
+        boolean sequencesKeysResultSet, boolean sequencesStandardResultSet, String outputClause, boolean defaults) {
       this.identities = identities;
       this.identitiesMustDeclarePKColumns = identitiesMustDeclarePKColumns;
       this.sequencesKeysResultSet = sequencesKeysResultSet;
       this.sequencesStandardResultSet = sequencesStandardResultSet;
+      this.outputClause = outputClause;
       this.defaults = defaults;
     }
 
     public static InsertIntegration of(boolean identities, boolean identitiesMustDeclarePKColumns,
-        boolean sequencesKeysResultSet, boolean sequencesStandardResultSet, boolean defaults) {
+        boolean sequencesKeysResultSet, boolean sequencesStandardResultSet, String outputClause, boolean defaults) {
       return new InsertIntegration(identities, identitiesMustDeclarePKColumns, sequencesKeysResultSet,
-          sequencesStandardResultSet, defaults);
+          sequencesStandardResultSet, outputClause, defaults);
     }
 
     public boolean integratesIdentities() {
@@ -73,6 +75,10 @@ public abstract class DatabaseAdapter implements Serializable {
 
     public boolean integratesSequencesKeysResultSet() {
       return sequencesKeysResultSet;
+    }
+
+    public String getOutputClause() {
+      return outputClause;
     }
 
     public boolean isDefaults() {

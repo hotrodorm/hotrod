@@ -196,8 +196,8 @@ public class OracleAdapter extends DatabaseAdapter {
 
   @Override
   public InsertIntegration getInsertIntegration() {
-    return this.isOracle12cOrNewer ? InsertIntegration.of(true, true, true, false, true)
-        : InsertIntegration.of(false, false, false, false, true);
+    return this.isOracle12cOrNewer ? InsertIntegration.of(true, true, true, false, null, true)
+        : InsertIntegration.of(false, false, false, false, null, true);
   }
 
   @Override
@@ -222,12 +222,12 @@ public class OracleAdapter extends DatabaseAdapter {
 
   @Override
   public String renderSelectSequence(final ObjectId sequenceId) throws SequencesNotSupportedException {
-    return "select " + sequenceId.getRenderedSQLName() + ".nextval from dual";
+    return "SELECT " + sequenceId.getRenderedSQLName() + ".NEXTVAL FROM DUAL";
   }
 
   @Override
   public String renderInlineSequenceOnInsert(final ColumnMetadata cm) {
-    return cm.getSequenceId().getRenderedSQLName() + ".nextval";
+    return cm.getSequenceId().getRenderedSQLName() + ".NEXTVAL";
   }
 
   @Override

@@ -362,8 +362,16 @@ public class DAO {
 
       n++;
     }
+    w.println("      .literaln(\")\")");
 
-    w.println("      .literaln(\") VALUES (\")");
+    if (mechanics.getOutputClause() != null && mechanics.getGeneratedKeysNames() != null
+        && mechanics.getGeneratedKeysNames().length > 0) {
+      String gkn = mechanics.getGeneratedKeysNames()[0];
+      w.println("      .literaln(\"" + mechanics.getOutputClause() + SUtil.escapeJavaString(gkn) + "\")");
+    }
+
+    w.println("      .literaln(\"VALUES(\")");
+
     n = 1;
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String memId = cm.getId().getJavaMemberName();
@@ -413,7 +421,8 @@ public class DAO {
       w.print("      .endInsertQuery(", PrimaryKeyRetrievalMode.class, "." + mechanics.getMode());
     }
 
-    if (mechanics.getGeneratedKeysNames() != null && mechanics.getGeneratedKeysNames().length > 0) {
+    if (mechanics.getOutputClause() == null && mechanics.getGeneratedKeysNames() != null
+        && mechanics.getGeneratedKeysNames().length > 0) {
       w.print(", null, null");
       for (String gkn : mechanics.getGeneratedKeysNames()) {
         w.print(", \"" + SUtil.escapeJavaString(gkn) + "\"");
@@ -461,7 +470,7 @@ public class DAO {
           if (this.adapter.getInsertIntegration().identitiesMustDeclarePKColumns()) {
             String[] pkcols = this.metadata.getPK().getColumns().stream().map(c -> c.getId().getRenderedSQLName())
                 .toArray(String[]::new);
-            return new InsertMechanics(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET, null, null, null,
+            return new InsertMechanics(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET, null, null, null, null,
                 pkcols);
           } else {
             return new InsertMechanics(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
@@ -494,19 +503,24 @@ public class DAO {
             String[] pkcols = this.metadata.getPK().getColumns().stream().map(c -> c.getId().getRenderedSQLName())
                 .toArray(String[]::new);
             return new InsertMechanics(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET, null, null,
-                sequenceInlineSQL, pkcols);
+                sequenceInlineSQL, null, pkcols);
           } else {
             return new InsertMechanics(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET, null, null,
-                sequenceInlineSQL);
+                sequenceInlineSQL, null, null);
           }
         } else if (this.adapter.getInsertIntegration().integratesSequencesStandardResultSet()) {
+          String[] pkcols = null;
+          if (this.adapter.getInsertIntegration().getOutputClause() != null) {
+            pkcols = this.metadata.getPK().getColumns().stream().map(c -> c.getId().getRenderedSQLName())
+                .toArray(String[]::new);
+          }
           return new InsertMechanics(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_STANDARD_RESULTSET, null, null,
-              sequenceInlineSQL);
+              sequenceInlineSQL, this.adapter.getInsertIntegration().getOutputClause(), pkcols);
         } else {
           return new InsertMechanics(PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH, sequencePreFetchSQL,
-              cm.getId().getJavaMemberName(), null);
+              cm.getId().getJavaMemberName(), null, null, null);
         }
-      } else { // Implement in the future
+      } else { // Do not implement yet
         throw new ControlledException("HotRod does not support multiple columns generated using sequences: table '"
             + this.metadata.getId().getRenderedSQLName() + "'");
       }

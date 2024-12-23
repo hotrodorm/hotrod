@@ -203,7 +203,7 @@ public class PostgreSQLAdapter extends DatabaseAdapter {
 
   @Override
   public InsertIntegration getInsertIntegration() {
-    return InsertIntegration.of(true, false, true, false, true);
+    return InsertIntegration.of(true, false, true, false, null, true);
   }
 
   @Override
@@ -233,12 +233,12 @@ public class PostgreSQLAdapter extends DatabaseAdapter {
 
   @Override
   public String renderSelectSequence(final ObjectId sequenceId) throws SequencesNotSupportedException {
-    return "select nextval('" + sequenceId.getRenderedSQLName() + "')";
+    return "SELECT NEXTVAL('" + sequenceId.getRenderedSQLName() + "')";
   }
 
   @Override
   public String renderInlineSequenceOnInsert(final ColumnMetadata cm) {
-    return "nextval('" + cm.getSequenceId().getRenderedSQLName() + "')";
+    return "NEXTVAL('" + cm.getSequenceId().getRenderedSQLName() + "')";
   }
 
   @Override

@@ -12,6 +12,8 @@
   <table name="'CASE'" />
 -->
 
-  <table name="account" />
+  <table name="account">
+    <column name="id" sequence="seq_account" />
+  </table>
 
 </hotrod>

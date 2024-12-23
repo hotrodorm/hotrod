@@ -143,7 +143,7 @@ public class ApacheDerbyAdapter extends DatabaseAdapter {
 
   @Override
   public InsertIntegration getInsertIntegration() {
-    return InsertIntegration.of(true, false, false, false, false);
+    return InsertIntegration.of(true, false, false, false, null, false);
   }
 
   @Override
@@ -168,12 +168,12 @@ public class ApacheDerbyAdapter extends DatabaseAdapter {
 
   @Override
   public String renderSelectSequence(final ObjectId sequenceId) throws SequencesNotSupportedException {
-    return "select next value for " + sequenceId.getRenderedSQLName() + " from sysibm.sysdummy1";
+    return "SELECT NEXT VALUE FOR " + sequenceId.getRenderedSQLName() + " FROM SYSIBM.SYSDUMMY1";
   }
 
   @Override
   public String renderInlineSequenceOnInsert(final ColumnMetadata cm) {
-    return "next value for " + cm.getSequenceId().getRenderedSQLName();
+    return "NEXT VALUE FOR " + cm.getSequenceId().getRenderedSQLName();
   }
 
   @Override
