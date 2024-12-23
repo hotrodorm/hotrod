@@ -120,10 +120,16 @@ insert into branch (id, region, is_vip, created_at) values
   (106, 'NW', 1, '2024-01-06 12:34:56'),
   (107, 'SE', false, '2024-01-07 12:34:56');
 
+-- create table account (
+--   id int primary key not null,
+--   parent_id int references account (id),
+--   branch_id int references branch (id)
+-- );
+
 create table account (
   id int primary key not null,
-  parent_id int references account (id),
-  branch_id int references branch (id)
+  parent_id int,
+  branch_id int
 );
 
 insert into account (id, parent_id, branch_id) values

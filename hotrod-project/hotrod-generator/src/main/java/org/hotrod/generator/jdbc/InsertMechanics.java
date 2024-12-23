@@ -1,28 +1,30 @@
 package org.hotrod.generator.jdbc;
 
+import java.util.Arrays;
+
 import org.hotrod.dynamic.insert.PrimaryKeyRetrievalMode;
 
 public class InsertMechanics {
 
   private PrimaryKeyRetrievalMode mode;
   private String sequencePreFetchSQL;
-  private String primaryKeyParameterName;
+  private String primaryKeyMemberName;
   private String sequenceInlineSQL;
   private String[] generatedKeysNames;
 
   public InsertMechanics(PrimaryKeyRetrievalMode mode) {
     this.mode = mode;
     this.sequencePreFetchSQL = null;
-    this.primaryKeyParameterName = null;
+    this.primaryKeyMemberName = null;
     this.sequenceInlineSQL = null;
     this.generatedKeysNames = null;
   }
 
-  public InsertMechanics(PrimaryKeyRetrievalMode mode, String sequencePreFetchSQL, String primaryKeyParameterName,
+  public InsertMechanics(PrimaryKeyRetrievalMode mode, String sequencePreFetchSQL, String primaryKeyMemberName,
       String sequenceInlineSQL, String... generatedKeysNames) {
     this.mode = mode;
     this.sequencePreFetchSQL = sequencePreFetchSQL;
-    this.primaryKeyParameterName = primaryKeyParameterName;
+    this.primaryKeyMemberName = primaryKeyMemberName;
     this.sequenceInlineSQL = sequenceInlineSQL;
     this.generatedKeysNames = generatedKeysNames;
   }
@@ -35,8 +37,8 @@ public class InsertMechanics {
     return sequencePreFetchSQL;
   }
 
-  public String getPrimaryKeyParameterName() {
-    return primaryKeyParameterName;
+  public String getPrimaryKeyMemberName() {
+    return primaryKeyMemberName;
   }
 
   public String getSequenceInlineSQL() {
@@ -45,6 +47,13 @@ public class InsertMechanics {
 
   public String[] getGeneratedKeysNames() {
     return generatedKeysNames;
+  }
+
+  @Override
+  public String toString() {
+    return "InsertMechanics [mode=" + mode + ", sequencePreFetchSQL=" + sequencePreFetchSQL
+        + ", primaryKeyMemberName=" + primaryKeyMemberName + ", sequenceInlineSQL=" + sequenceInlineSQL
+        + ", generatedKeysNames=" + Arrays.toString(generatedKeysNames) + "]";
   }
 
 }

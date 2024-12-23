@@ -325,6 +325,8 @@ public class DAO {
 
     InsertMechanics mechanics = computeInsertMechanics(sequences, identities, defaults);
 
+    log.info("mechanics: " + mechanics);
+
     w.println();
     w.println("  private final ", DynamicInsertQuery.class, " insert = builder");
 
@@ -333,6 +335,7 @@ public class DAO {
     int coln = this.metadata.getColumns().size();
     int n = 1;
     for (ColumnMetadata cm : this.metadata.getColumns()) {
+      String memId = cm.getId().getJavaMemberName();
       String sqlId = cm.getId().getRenderedSQLName();
 
       // Always include column
@@ -340,6 +343,9 @@ public class DAO {
         w.println("      .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
       }
       if (cm.belongsToPK() && cm.getSequenceId() != null) {
+        w.println("      .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
+      }
+      if (cm.belongsToPK() && cm.getSequenceId() == null && cm.getAutogenerationType() == null) {
         w.println("      .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
       }
 
@@ -350,9 +356,8 @@ public class DAO {
 
       // Conditionally include column
       if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
-        String pkpn = mechanics.getPrimaryKeyParameterName();
-        w.println("      .ifPart(\"" + SUtil.escapeJavaString(pkpn) + " != null\", builder.literal(\""
-            + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + " \").end())\\n\")");
+        w.println("      .ifPart(\"m." + SUtil.escapeJavaString(memId) + " != null\", builder.literal(\""
+            + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\\n\").end())");
       }
 
       n++;
@@ -370,8 +375,17 @@ public class DAO {
             "." + jdbcType + ")" + (n < coln ? ".literaln(\",\")" : ""));
       }
       if (cm.belongsToPK() && cm.getSequenceId() != null) {
-        String si = mechanics.getSequenceInlineSQL();
-        w.println("      .literal(\"  " + SUtil.escapeJavaString(si) + "\")" + (n < coln ? ".literaln(\",\")" : ""));
+        if (mechanics.getMode() == PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH) {
+          w.println("      .literal(\"  \").parameter(\"m." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
+              "." + jdbcType + ")" + (n < coln ? ".literaln(\",\")" : ""));
+        } else {
+          String si = mechanics.getSequenceInlineSQL();
+          w.println("      .literal(\"  " + SUtil.escapeJavaString(si) + "\")" + (n < coln ? ".literaln(\",\")" : ""));
+        }
+      }
+      if (cm.belongsToPK() && cm.getSequenceId() == null && cm.getAutogenerationType() == null) {
+        w.println("      .literal(\"  \").parameter(\"m." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
+            "." + jdbcType + ")" + (n < coln ? ".literaln(\",\")" : ""));
       }
 
       // Never include column
@@ -381,7 +395,7 @@ public class DAO {
 
       // Conditionally include column
       if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
-        w.println("      .ifPart(\"" + SUtil.escapeJavaString(memId) + " != null\", builder.parameter(\""
+        w.println("      .ifPart(\"m." + SUtil.escapeJavaString(memId) + " != null\", builder.parameter(\"m."
             + SUtil.escapeJavaString(memId) + "\", Types." + jdbcType + ")" + (n < coln ? ".literal(\", \")" : "")
             + ".end())");
       }
@@ -389,9 +403,17 @@ public class DAO {
       n++;
     }
     w.println("      .literal(\")\")");
-    w.print("      .endInsertQuery(", PrimaryKeyRetrievalMode.class, "." + mechanics.getMode());
 
-    if (mechanics.getGeneratedKeysNames().length > 0) {
+    if (mechanics.getMode() == PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH) {
+      w.print("      .endInsertQuery(", PrimaryKeyRetrievalMode.class,
+          "." + mechanics.getMode() + ", \"" + SUtil.escapeJavaString(mechanics.getSequencePreFetchSQL()) + "\", \"m." //
+              + SUtil.escapeJavaString(mechanics.getPrimaryKeyMemberName()) //
+              + "\"");
+    } else {
+      w.print("      .endInsertQuery(", PrimaryKeyRetrievalMode.class, "." + mechanics.getMode());
+    }
+
+    if (mechanics.getGeneratedKeysNames() != null && mechanics.getGeneratedKeysNames().length > 0) {
       w.print(", null, null");
       for (String gkn : mechanics.getGeneratedKeysNames()) {
         w.print(", \"" + SUtil.escapeJavaString(gkn) + "\"");
@@ -465,6 +487,13 @@ public class DAO {
         } catch (SequencesNotSupportedException e) {
           throw new ControlledException(e.getMessage());
         }
+        log.info("integratesSequencesKeysResultSet()="
+            + this.adapter.getInsertIntegration().integratesSequencesKeysResultSet()
+            + " identitiesMustDeclarePKColumns()="
+            + this.adapter.getInsertIntegration().identitiesMustDeclarePKColumns()
+            + " integratesSequencesStandardResultSet()="
+            + this.adapter.getInsertIntegration().integratesSequencesStandardResultSet());
+
         if (this.adapter.getInsertIntegration().integratesSequencesKeysResultSet()) {
           if (this.adapter.getInsertIntegration().identitiesMustDeclarePKColumns()) {
             String[] pkcols = this.metadata.getPK().getColumns().stream().map(c -> c.getId().getRenderedSQLName())
@@ -479,7 +508,8 @@ public class DAO {
           return new InsertMechanics(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_STANDARD_RESULTSET, null, null,
               sequenceInlineSQL);
         } else {
-          return new InsertMechanics(PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH, sequencePreFetchSQL, null, null);
+          return new InsertMechanics(PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH, sequencePreFetchSQL,
+              cm.getId().getJavaMemberName(), null);
         }
       } else { // Implement in the future
         throw new ControlledException("HotRod does not support multiple columns generated using sequences: table '"
