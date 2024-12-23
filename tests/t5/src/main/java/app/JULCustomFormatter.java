@@ -1,4 +1,4 @@
-package test;
+package app;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

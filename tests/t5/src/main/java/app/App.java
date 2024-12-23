@@ -1,6 +1,7 @@
 package app;
 
 import java.sql.SQLException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.hotrod.dynamic.DynamicExpressionException;
@@ -29,7 +30,7 @@ public class App {
   private static final Logger log = Logger.getLogger(App.class.getName());
 
   static {
-//    JULCustomFormatter.initialize(Level.FINE);
+    JULCustomFormatter.initialize(Level.FINE);
   }
 
   @Autowired
@@ -59,7 +60,7 @@ public class App {
 
     this.accountDAO.insert(a);
 
-    System.out.println("> Account inserted: id=" + a.getId());
+    System.out.println("> Account inserted -- id=" + a.getId());
   }
 
 }

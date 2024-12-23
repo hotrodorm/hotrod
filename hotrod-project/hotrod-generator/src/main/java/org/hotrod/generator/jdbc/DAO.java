@@ -51,6 +51,7 @@ import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.AbstractClassWriter.ExternalClass;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ClassWriter;
+import org.hotrod.utils.GenUtils;
 import org.hotrod.utils.SUtil;
 import org.hotrod.utils.Separator;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn.AutogenerationType;
@@ -434,11 +435,13 @@ public class DAO {
     fragmentLogging();
 
     w.println("    try (", Connection.class, " conn = this.dataSource.getConnection()) {");
-    if (pk == null) {
+    if (mechanics.getMode() == PrimaryKeyRetrievalMode.NO_RETRIEVAL) {
       w.println("      preparedQuery.execute(conn);");
     } else {
+      String targetClass = pk.getColumns().get(0).getType().getJavaClassName();
+      String pkCast = GenUtils.convertPropertyType(Long.class.getName(), targetClass, "pk");
       w.println("      Long pk = preparedQuery.execute(conn);");
-      w.println("      m.setId(pk == null ? null : pk.intValue());");
+      w.println("      m.setId(" + pkCast + ");");
     }
     w.println("    }");
 
@@ -487,13 +490,6 @@ public class DAO {
         } catch (SequencesNotSupportedException e) {
           throw new ControlledException(e.getMessage());
         }
-        log.info("integratesSequencesKeysResultSet()="
-            + this.adapter.getInsertIntegration().integratesSequencesKeysResultSet()
-            + " identitiesMustDeclarePKColumns()="
-            + this.adapter.getInsertIntegration().identitiesMustDeclarePKColumns()
-            + " integratesSequencesStandardResultSet()="
-            + this.adapter.getInsertIntegration().integratesSequencesStandardResultSet());
-
         if (this.adapter.getInsertIntegration().integratesSequencesKeysResultSet()) {
           if (this.adapter.getInsertIntegration().identitiesMustDeclarePKColumns()) {
             String[] pkcols = this.metadata.getPK().getColumns().stream().map(c -> c.getId().getRenderedSQLName())

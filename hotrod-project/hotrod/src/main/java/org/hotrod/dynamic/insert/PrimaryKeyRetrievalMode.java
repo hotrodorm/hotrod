@@ -27,8 +27,8 @@ public enum PrimaryKeyRetrievalMode {
 
   NO_RETRIEVAL(new PreparedInsertNoRetrievalQuery()), // DONE
 
-  IDENTITY_INLINE_STANDARD_RESULTSET(null), //
   IDENTITY_INLINE_KEYS_RESULTSET(new PreparedInsertIdentityInlineKeyResultSetQuery()), // DONE
+  IDENTITY_INLINE_STANDARD_RESULTSET(null), //
   IDENTITY_POSTFETCH(null), //
 
   SEQUENCE_PREFETCH(new PreparedInsertSequencePreFetchQuery()), // DONE

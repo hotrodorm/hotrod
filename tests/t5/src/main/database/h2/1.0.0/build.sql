@@ -139,7 +139,7 @@ insert into account (id, parent_id, branch_id) values
   (4, 3, 104),
   (5, 4, 105);
 
-create sequence seq1;
+create sequence seq1 start with 700;
 
 create table invoice (
   id int,
