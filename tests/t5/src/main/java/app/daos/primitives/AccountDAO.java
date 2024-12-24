@@ -18,7 +18,7 @@ import org.hotrod.dynamic.DynamicInsertQuery;
 import org.hotrod.dynamic.DynamicModificationQuery;
 import org.hotrod.dynamic.ParameterContext;
 import org.hotrod.dynamic.PreparedModificationQuery;
-import org.hotrod.dynamic.builder.QueryBuilder;
+import org.hotrod.dynamic.builder.QueryAssembler;
 import org.hotrod.dynamic.insert.PreparedInsertQuery;
 import org.hotrod.dynamic.insert.PrimaryKeyRetrievalMode;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
@@ -44,7 +44,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   private LiveSQLDialect liveSQLDialect;
 
   private final DynamicExpressionFactory factory = DynamicExpressionFactory.getFactory();
-  private final QueryBuilder builder = new QueryBuilder(this.factory);
+  private final QueryAssembler assembler = new QueryAssembler(this.factory);
 
   @Autowired
   private SpringBeanObjectFactory springBeanObjectFactory;
@@ -68,15 +68,15 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   // INSERT
 
-  private final DynamicInsertQuery insert = builder
+  private final DynamicInsertQuery insert = assembler
       .literaln("INSERT INTO account (")
-      .ifPart("m.id != null", builder.literal("id,\n").end())
+      .if_("m.id != null", assembler.literal("id,\n").end())
       .literaln("  name,")
       .literaln("  type,")
       .literaln("  balance")
       .literaln(")")
       .literaln("VALUES(")
-      .ifPart("m.id != null", builder.parameter("m.id", Types.INTEGER).literal(", ").end())
+      .if_("m.id != null", assembler.parameter("m.id", Types.INTEGER).literal(", ").end())
       .literal("  ").parameter("m.name", Types.VARCHAR).literaln(",")
       .literal("  ").parameter("m.type", Types.VARCHAR).literaln(",")
       .literal("  ").parameter("m.balance", Types.INTEGER)
@@ -100,18 +100,18 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   // INSERT BY EXAMPLE
 
-  private final DynamicInsertQuery insertByExample = builder
+  private final DynamicInsertQuery insertByExample = assembler
       .literaln("INSERT INTO account (")
-      .ifPart("m.id != null", builder.literal("id,\n").end())
-      .ifPart("m.name != null", builder.literal("name,\n").end())
-      .ifPart("m.type != null", builder.literal("type,\n").end())
-      .ifPart("m.balance != null", builder.literal("balance\n").end())
+      .if_("m.id != null", assembler.literal("id,\n").end())
+      .if_("m.name != null", assembler.literal("name,\n").end())
+      .if_("m.type != null", assembler.literal("type,\n").end())
+      .if_("m.balance != null", assembler.literal("balance\n").end())
       .literaln(")")
       .literaln("VALUES(")
-      .ifPart("m.id != null", builder.parameter("m.id", Types.INTEGER).literal(", ").end())
-      .ifPart("m.name != null", builder.parameter("m.name", Types.VARCHAR).literal(", ").end())
-      .ifPart("m.type != null", builder.parameter("m.type", Types.VARCHAR).literal(", ").end())
-      .ifPart("m.balance != null", builder.parameter("m.balance", Types.INTEGER).end())
+      .if_("m.id != null", assembler.parameter("m.id", Types.INTEGER).literal(", ").end())
+      .if_("m.name != null", assembler.parameter("m.name", Types.VARCHAR).literal(", ").end())
+      .if_("m.type != null", assembler.parameter("m.type", Types.VARCHAR).literal(", ").end())
+      .if_("m.balance != null", assembler.parameter("m.balance", Types.INTEGER).end())
       .literal(")")
       .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
 
@@ -130,15 +130,15 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     }
   }
 
-  // UPDATE BY PK
+  // UPDATE BY PRIMARY KEY
 
-  private final DynamicModificationQuery updateByPK = builder
+  private final DynamicModificationQuery updateByPK = assembler
     .literal("UPDATE account")
-      .set(builder.ifs()
-          .ifPart("m.id != null", builder.literal("id = ").parameter("m.id", Types.INTEGER).end())
-          .ifPart("m.name != null", builder.literal("name = ").parameter("m.name", Types.VARCHAR).end())
-          .ifPart("m.type != null", builder.literal("type = ").parameter("m.type", Types.VARCHAR).end())
-          .ifPart("m.balance != null", builder.literal("balance = ").parameter("m.balance", Types.INTEGER).end())
+      .set(assembler.ifs()
+          .if_("m.id != null", assembler.literal("id = ").parameter("m.id", Types.INTEGER).end())
+          .if_("m.name != null", assembler.literal("name = ").parameter("m.name", Types.VARCHAR).end())
+          .if_("m.type != null", assembler.literal("type = ").parameter("m.type", Types.VARCHAR).end())
+          .if_("m.balance != null", assembler.literal("balance = ").parameter("m.balance", Types.INTEGER).end())
           .end())
     .literal("WHERE " + "id = ").parameter("m.id", Types.INTEGER)
     .endModificationQuery();
@@ -161,19 +161,19 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY EXAMPLE
 
-  private final DynamicModificationQuery updateByExample = builder
+  private final DynamicModificationQuery updateByExample = assembler
       .literal("UPDATE FROM account")
-      .set(builder.ifs()
-          .ifPart("m.id != null", builder.literal("id = ").parameter("m.id", Types.INTEGER).end())
-          .ifPart("m.name != null", builder.literal("name = ").parameter("m.name", Types.VARCHAR).end())
-          .ifPart("m.type != null", builder.literal("type = ").parameter("m.type", Types.VARCHAR).end())
-          .ifPart("m.balance != null", builder.literal("balance = ").parameter("m.balance", Types.INTEGER).end())
+      .set(assembler.ifs()
+          .if_("m.id != null", assembler.literal("id = ").parameter("m.id", Types.INTEGER).end())
+          .if_("m.name != null", assembler.literal("name = ").parameter("m.name", Types.VARCHAR).end())
+          .if_("m.type != null", assembler.literal("type = ").parameter("m.type", Types.VARCHAR).end())
+          .if_("m.balance != null", assembler.literal("balance = ").parameter("m.balance", Types.INTEGER).end())
           .end())
-      .where("AND", builder.ifs()
-          .ifPart("f.id != null", builder.literal("id = ").parameter("f.id", Types.INTEGER).end())
-          .ifPart("f.name != null", builder.literal("name = ").parameter("f.name", Types.VARCHAR).end())
-          .ifPart("f.type != null", builder.literal("type = ").parameter("f.type", Types.VARCHAR).end())
-          .ifPart("f.balance != null", builder.literal("balance = ").parameter("f.balance", Types.INTEGER).end())
+      .where("AND", assembler.ifs()
+          .if_("f.id != null", assembler.literal("id = ").parameter("f.id", Types.INTEGER).end())
+          .if_("f.name != null", assembler.literal("name = ").parameter("f.name", Types.VARCHAR).end())
+          .if_("f.type != null", assembler.literal("type = ").parameter("f.type", Types.VARCHAR).end())
+          .if_("f.balance != null", assembler.literal("balance = ").parameter("f.balance", Types.INTEGER).end())
           .end())
       .endModificationQuery();
 
@@ -193,9 +193,9 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     }
   }
 
-  // DELETE BY PK
+  // DELETE BY PRIMARY KEY
 
-  private final DynamicModificationQuery deleteByPK = builder
+  private final DynamicModificationQuery deleteByPK = assembler
     .literaln("DELETE FROM account")
     .literal("WHERE " + "id = ").parameter("f.id", Types.INTEGER)
     .endModificationQuery();
@@ -220,13 +220,13 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   // DELETE BY EXAMPLE
 
-  private final DynamicModificationQuery deleteByExample = builder
+  private final DynamicModificationQuery deleteByExample = assembler
       .literal("DELETE FROM account")
-      .where("AND", builder.ifs()
-          .ifPart("f.id != null", builder.literal("id = ").parameter("f.id", Types.INTEGER).end())
-          .ifPart("f.name != null", builder.literal("name = ").parameter("f.name", Types.VARCHAR).end())
-          .ifPart("f.type != null", builder.literal("type = ").parameter("f.type", Types.VARCHAR).end())
-          .ifPart("f.balance != null", builder.literal("balance = ").parameter("f.balance", Types.INTEGER).end())
+      .where("AND", assembler.ifs()
+          .if_("f.id != null", assembler.literal("id = ").parameter("f.id", Types.INTEGER).end())
+          .if_("f.name != null", assembler.literal("name = ").parameter("f.name", Types.VARCHAR).end())
+          .if_("f.type != null", assembler.literal("type = ").parameter("f.type", Types.VARCHAR).end())
+          .if_("f.balance != null", assembler.literal("balance = ").parameter("f.balance", Types.INTEGER).end())
           .end())
       .endModificationQuery();
 

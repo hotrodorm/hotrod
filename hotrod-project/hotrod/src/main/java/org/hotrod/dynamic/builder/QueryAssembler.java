@@ -10,11 +10,11 @@ import org.hotrod.dynamic.segments.OtherwiseSegment;
 import org.hotrod.dynamic.segments.SegmentList;
 import org.hotrod.dynamic.segments.WhenSegment;
 
-public class QueryBuilder {
+public class QueryAssembler {
 
   private DynamicExpressionFactory factory;
 
-  public QueryBuilder(DynamicExpressionFactory factory) {
+  public QueryAssembler(DynamicExpressionFactory factory) {
     this.factory = factory;
   }
 
@@ -22,12 +22,12 @@ public class QueryBuilder {
 //    return new PartialQuery(this.factory);
 //  }
 
-  public IfsBuilder ifs() {
-    return new IfsBuilder(this.factory);
+  public IfsAssembler ifs() {
+    return new IfsAssembler(this.factory);
   }
 
-  public ChooseBuilder choose() {
-    return new ChooseBuilder(this.factory);
+  public ChooseAssembler choose() {
+    return new ChooseAssembler(this.factory);
   }
 
   public WhenSegment when(String test, SegmentList segmentList) {
@@ -60,9 +60,9 @@ public class QueryBuilder {
     return q.parameter(name, sqlType);
   }
 
-  public PartialQuery ifPart(String test, SegmentList querySegments) {
+  public PartialQuery if_(String test, SegmentList querySegments) {
     PartialQuery q = new PartialQuery(this.factory);
-    return q.ifPart(test, querySegments);
+    return q.if_(test, querySegments);
   }
 
   public PartialQuery set(List<IfSegment> ifSegments) {

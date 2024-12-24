@@ -27,7 +27,7 @@ import org.hotrod.dynamic.DynamicInsertQuery;
 import org.hotrod.dynamic.DynamicModificationQuery;
 import org.hotrod.dynamic.ParameterContext;
 import org.hotrod.dynamic.PreparedModificationQuery;
-import org.hotrod.dynamic.builder.QueryBuilder;
+import org.hotrod.dynamic.builder.QueryAssembler;
 import org.hotrod.dynamic.insert.PreparedInsertQuery;
 import org.hotrod.dynamic.insert.PrimaryKeyRetrievalMode;
 import org.hotrod.exceptions.ControlledException;
@@ -262,7 +262,7 @@ public class DAO {
 
     w.println("  private final ", DynamicExpressionFactory.class, " factory = ", DynamicExpressionFactory.class,
         ".getFactory();");
-    w.println("  private final ", QueryBuilder.class, " builder = new ", QueryBuilder.class, "(this.factory);");
+    w.println("  private final ", QueryAssembler.class, " assembler = new ", QueryAssembler.class, "(this.factory);");
     w.println();
 
     w.println("  @", Const.AUTOWIRED);
@@ -330,7 +330,7 @@ public class DAO {
     String queryName = byExample ? "insertByExample" : "insert";
 
     w.println();
-    w.println("  private final ", DynamicInsertQuery.class, " " + queryName + " = builder");
+    w.println("  private final ", DynamicInsertQuery.class, " " + queryName + " = assembler");
 
     w.println("      .literaln(\"INSERT INTO ", SUtil.escapeJavaString(this.metadata.getId().getRenderedSQLName()),
         " (\")");
@@ -341,7 +341,7 @@ public class DAO {
       String sqlId = cm.getId().getRenderedSQLName();
 
       if (byExample) {
-        w.println("      .ifPart(\"m." + SUtil.escapeJavaString(memId) + " != null\", builder.literal(\""
+        w.println("      .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.literal(\""
             + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\\n\").end())");
       } else {
 
@@ -363,7 +363,7 @@ public class DAO {
 
         // Conditionally include column
         if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
-          w.println("      .ifPart(\"m." + SUtil.escapeJavaString(memId) + " != null\", builder.literal(\""
+          w.println("      .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.literal(\""
               + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\\n\").end())");
         }
 
@@ -387,7 +387,7 @@ public class DAO {
       String jdbcType = cm.getType().getJDBCShortType();
 
       if (byExample) {
-        w.println("      .ifPart(\"m." + SUtil.escapeJavaString(memId) + " != null\", builder.parameter(\"m."
+        w.println("      .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.parameter(\"m."
             + SUtil.escapeJavaString(memId) + "\", Types." + jdbcType + ")" + (n < coln ? ".literal(\", \")" : "")
             + ".end())");
       } else {
@@ -419,7 +419,7 @@ public class DAO {
 
         // Conditionally include column
         if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
-          w.println("      .ifPart(\"m." + SUtil.escapeJavaString(memId) + " != null\", builder.parameter(\"m."
+          w.println("      .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.parameter(\"m."
               + SUtil.escapeJavaString(memId) + "\", Types." + jdbcType + ")" + (n < coln ? ".literal(\", \")" : "")
               + ".end())");
         }
@@ -557,14 +557,14 @@ public class DAO {
 
     if (pk == null) {
       w.println();
-      w.println("  // UPDATE BY PK -- Not available since the table does not have a primary key.");
+      w.println("  // UPDATE BY PRIMARY KEY -- Not available since the table does not have a primary key.");
     } else {
 
       w.println();
-      w.println("  // UPDATE BY PK");
+      w.println("  // UPDATE BY PRIMARY KEY");
 
       w.println();
-      w.println("  private final ", DynamicModificationQuery.class, " updateByPK = builder");
+      w.println("  private final ", DynamicModificationQuery.class, " updateByPK = assembler");
       w.println("    .literal(\"UPDATE " + this.metadata.getId().getRenderedSQLName() + "\")");
       fragmentSet();
       fragmentWherePK(pk, "m");
@@ -599,7 +599,7 @@ public class DAO {
     w.println("  // UPDATE BY EXAMPLE");
 
     w.println();
-    w.println("  private final ", DynamicModificationQuery.class, " updateByExample = builder");
+    w.println("  private final ", DynamicModificationQuery.class, " updateByExample = assembler");
     w.println("      .literal(\"UPDATE FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
     fragmentSet();
     fragmentWhereExample();
@@ -628,14 +628,14 @@ public class DAO {
 
     if (pk == null) {
       w.println();
-      w.println("  // DELETE BY PK -- Not available since the table does not have a primary key.");
+      w.println("  // DELETE BY PRIMARY KEY -- Not available since the table does not have a primary key.");
     } else {
 
       w.println();
-      w.println("  // DELETE BY PK");
+      w.println("  // DELETE BY PRIMARY KEY");
 
       w.println();
-      w.println("  private final ", DynamicModificationQuery.class, " deleteByPK = builder");
+      w.println("  private final ", DynamicModificationQuery.class, " deleteByPK = assembler");
       w.println("    .literaln(\"DELETE FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
       fragmentWherePK(pk);
       w.println("    .endModificationQuery();");
@@ -677,7 +677,7 @@ public class DAO {
     w.println("  // DELETE BY EXAMPLE");
 
     w.println();
-    w.println("  private final ", DynamicModificationQuery.class, " deleteByExample = builder");
+    w.println("  private final ", DynamicModificationQuery.class, " deleteByExample = assembler");
     w.println("      .literal(\"DELETE FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
     fragmentWhereExample();
     w.println("      .endModificationQuery();");
@@ -699,12 +699,12 @@ public class DAO {
   }
 
   private void fragmentSet() {
-    w.println("      .set(builder.ifs()");
+    w.println("      .set(assembler.ifs()");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String memId = cm.getId().getJavaMemberName();
       String sqlId = cm.getId().getRenderedSQLName();
       String jdbcType = cm.getType().getJDBCShortType();
-      w.println("          .ifPart(\"m." + SUtil.escapeJavaString(memId) + " != null\", builder.literal(\""
+      w.println("          .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.literal(\""
           + SUtil.escapeJavaString(sqlId) + " = \").parameter(\"m." + SUtil.escapeJavaString(memId) + "\", Types."
           + jdbcType + ").end())");
     }
@@ -745,12 +745,12 @@ public class DAO {
   }
 
   private void fragmentWhereExample() {
-    w.println("      .where(\"AND\", builder.ifs()");
+    w.println("      .where(\"AND\", assembler.ifs()");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String memId = cm.getId().getJavaMemberName();
       String sqlId = cm.getId().getRenderedSQLName();
       String jdbcType = cm.getType().getJDBCShortType();
-      w.println("          .ifPart(\"f." + memId + " != null\", builder.literal(\"" + SUtil.escapeJavaString(sqlId)
+      w.println("          .if_(\"f." + memId + " != null\", assembler.literal(\"" + SUtil.escapeJavaString(sqlId)
           + " = \").parameter(\"f." + memId + "\", ", Types.class, "." + jdbcType + ").end())");
     }
     w.println("          .end())");

@@ -9,19 +9,19 @@ import org.hotrod.dynamic.segments.OtherwiseSegment;
 import org.hotrod.dynamic.segments.SegmentList;
 import org.hotrod.dynamic.segments.WhenSegment;
 
-public class ChooseBuilder {
+public class ChooseAssembler {
 
   private DynamicExpressionFactory factory;
   private List<WhenSegment> whens = new ArrayList<>();
   private OtherwiseSegment otherwise = null;
 
-  public ChooseBuilder(DynamicExpressionFactory factory) {
+  public ChooseAssembler(DynamicExpressionFactory factory) {
     this.factory = factory;
   }
 
   // IF Segments
 
-  public ChooseBuilder when(String test, SegmentList segmentList) {
+  public ChooseAssembler when(String test, SegmentList segmentList) {
     this.whens.add(new WhenSegment(test, segmentList.getSegments(), this.factory));
     return this;
   }

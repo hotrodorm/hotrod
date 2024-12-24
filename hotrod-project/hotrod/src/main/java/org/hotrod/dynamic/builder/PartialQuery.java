@@ -50,7 +50,7 @@ public class PartialQuery {
     return this;
   }
 
-  public PartialQuery ifPart(String test, SegmentList querySegments) {
+  public PartialQuery if_(String test, SegmentList querySegments) {
     this.segments.add(new IfSegment(test, querySegments.getSegments(), this.factory));
     return this;
   }

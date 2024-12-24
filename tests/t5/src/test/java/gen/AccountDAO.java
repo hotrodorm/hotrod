@@ -18,7 +18,7 @@ import org.hotrod.dynamic.ParameterContext;
 import org.hotrod.dynamic.PreparedModificationQuery;
 import org.hotrod.dynamic.PreparedSelectQuery;
 import org.hotrod.dynamic.PreparedSelectQuery.RowReader;
-import org.hotrod.dynamic.builder.QueryBuilder;
+import org.hotrod.dynamic.builder.QueryAssembler;
 import org.hotrod.dynamic.insert.PreparedInsertQuery;
 import org.hotrod.dynamic.insert.PrimaryKeyRetrievalMode;
 
@@ -30,16 +30,16 @@ public class AccountDAO {
   private static final Logger log = Logger.getLogger(AccountDAO.class.getName());
 
   private final DynamicExpressionFactory factory = DynamicExpressionFactory.getFactory();
-  private final QueryBuilder builder = new QueryBuilder(this.factory);
+  private final QueryAssembler builder = new QueryAssembler(this.factory);
 
   private final DynamicSelectQuery selectByExample = builder //
       .literal("SELECT id, name, type, balance\n") //
       .literal("FROM account") //
       .where("AND", builder.ifs() //
-          .ifPart("f.id != null", builder.literal("id = ").parameter("f.id", Types.NUMERIC).end())
-          .ifPart("f.name != null", builder.literal("name = ").parameter("f.name", Types.VARCHAR).end())
-          .ifPart("f.type != null", builder.literal("type = ").parameter("f.type", Types.VARCHAR).end())
-          .ifPart("f.balance != null", builder.literal("balance = ").parameter("f.balance", Types.NUMERIC).end()).end() //
+          .if_("f.id != null", builder.literal("id = ").parameter("f.id", Types.NUMERIC).end())
+          .if_("f.name != null", builder.literal("name = ").parameter("f.name", Types.VARCHAR).end())
+          .if_("f.type != null", builder.literal("type = ").parameter("f.type", Types.VARCHAR).end())
+          .if_("f.balance != null", builder.literal("balance = ").parameter("f.balance", Types.NUMERIC).end()).end() //
       ).endSelectQuery();
 
   public List<Account> select(DataSource dataSource, Account filter) throws DynamicExpressionException, SQLException {
@@ -328,16 +328,16 @@ public class AccountDAO {
   private final DynamicModificationQuery updateByExample = builder //
       .literal("UPDATE account") //
       .set(builder.ifs() //
-          .ifPart("n.id != null", builder.literal("id = ").parameter("n.id", Types.NUMERIC).end())
-          .ifPart("n.name != null", builder.literal("name = ").parameter("n.name", Types.VARCHAR).end())
-          .ifPart("n.type != null", builder.literal("type = ").parameter("n.type", Types.VARCHAR).end())
-          .ifPart("n.balance != null", builder.literal("balance = ").parameter("n.balance", Types.NUMERIC).end()) //
+          .if_("n.id != null", builder.literal("id = ").parameter("n.id", Types.NUMERIC).end())
+          .if_("n.name != null", builder.literal("name = ").parameter("n.name", Types.VARCHAR).end())
+          .if_("n.type != null", builder.literal("type = ").parameter("n.type", Types.VARCHAR).end())
+          .if_("n.balance != null", builder.literal("balance = ").parameter("n.balance", Types.NUMERIC).end()) //
           .end() //
       ).where("AND", builder.ifs() //
-          .ifPart("f.id != null", builder.literal("id = ").parameter("f.id", Types.NUMERIC).end())
-          .ifPart("f.name != null", builder.literal("name = ").parameter("f.name", Types.VARCHAR).end())
-          .ifPart("f.type != null", builder.literal("type = ").parameter("f.type", Types.VARCHAR).end())
-          .ifPart("f.balance != null", builder.literal("balance = ").parameter("f.balance", Types.NUMERIC).end()).end() //
+          .if_("f.id != null", builder.literal("id = ").parameter("f.id", Types.NUMERIC).end())
+          .if_("f.name != null", builder.literal("name = ").parameter("f.name", Types.VARCHAR).end())
+          .if_("f.type != null", builder.literal("type = ").parameter("f.type", Types.VARCHAR).end())
+          .if_("f.balance != null", builder.literal("balance = ").parameter("f.balance", Types.NUMERIC).end()).end() //
       ).endModificationQuery();
 
   public int update(Connection conn, Account filter, Account newValues)
@@ -369,10 +369,10 @@ public class AccountDAO {
   private final DynamicModificationQuery deleteByExample = builder //
       .literal("DELETE FROM account") //
       .where("AND", builder.ifs() //
-          .ifPart("f.id != null", builder.literal("id = ").parameter("f.id", Types.NUMERIC).end())
-          .ifPart("f.name != null", builder.literal("name = ").parameter("f.name", Types.VARCHAR).end())
-          .ifPart("f.type != null", builder.literal("type = ").parameter("f.type", Types.VARCHAR).end())
-          .ifPart("f.balance != null", builder.literal("balance = ").parameter("f.balance", Types.NUMERIC).end()).end() //
+          .if_("f.id != null", builder.literal("id = ").parameter("f.id", Types.NUMERIC).end())
+          .if_("f.name != null", builder.literal("name = ").parameter("f.name", Types.VARCHAR).end())
+          .if_("f.type != null", builder.literal("type = ").parameter("f.type", Types.VARCHAR).end())
+          .if_("f.balance != null", builder.literal("balance = ").parameter("f.balance", Types.NUMERIC).end()).end() //
       ).endModificationQuery();
 
   private DataSource dataSource;
@@ -475,9 +475,9 @@ public class AccountDAO {
     DynamicModificationQuery d1 = builder //
         .literal("DELETE FROM account") //
         .trim("H", "S", "T", builder.ifs() //
-            .ifPart("true", builder.literal("A").end()) //
-            .ifPart("true", builder.literal("B").end()) //
-            .ifPart("true", builder.literal("C").end()) //
+            .if_("true", builder.literal("A").end()) //
+            .if_("true", builder.literal("B").end()) //
+            .if_("true", builder.literal("C").end()) //
             .end(), //
             "\nh<", ">h", "\ns<", ">s", "\nt<", ">t") //
         .endModificationQuery();

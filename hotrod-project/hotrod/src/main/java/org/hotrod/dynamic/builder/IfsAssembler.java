@@ -7,18 +7,18 @@ import org.hotrod.dynamic.DynamicExpressionFactory;
 import org.hotrod.dynamic.segments.IfSegment;
 import org.hotrod.dynamic.segments.SegmentList;
 
-public class IfsBuilder {
+public class IfsAssembler {
 
   private DynamicExpressionFactory factory;
   private List<IfSegment> ifSegments = new ArrayList<>();
 
-  public IfsBuilder(DynamicExpressionFactory factory) {
+  public IfsAssembler(DynamicExpressionFactory factory) {
     this.factory = factory;
   }
 
   // IF Segments
 
-  public IfsBuilder ifPart(String test, SegmentList querySegments) {
+  public IfsAssembler if_(String test, SegmentList querySegments) {
     this.ifSegments.add(new IfSegment(test, querySegments.getSegments(), this.factory));
     return this;
   }
