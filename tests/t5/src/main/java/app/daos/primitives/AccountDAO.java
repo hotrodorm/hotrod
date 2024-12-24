@@ -70,11 +70,13 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   private final DynamicInsertQuery insert = builder
       .literaln("INSERT INTO account (")
+      .ifPart("m.id != null", builder.literal("id,\n").end())
       .literaln("  name,")
       .literaln("  type,")
       .literaln("  balance")
       .literaln(")")
       .literaln("VALUES(")
+      .ifPart("m.id != null", builder.parameter("m.id", Types.INTEGER).literal(", ").end())
       .literal("  ").parameter("m.name", Types.VARCHAR).literaln(",")
       .literal("  ").parameter("m.type", Types.VARCHAR).literaln(",")
       .literal("  ").parameter("m.balance", Types.INTEGER)
@@ -85,6 +87,38 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     ParameterContext context = this.factory.newParameterContext();
     context.add("m", m);
     PreparedInsertQuery preparedQuery = this.insert.prepare(context);
+    if (log.isLoggable(Level.FINER)) {
+      log.finer("SQL: " + preparedQuery.getPreview(true));
+    } else if (log.isLoggable(Level.FINE)) {
+      log.fine("SQL: " + preparedQuery.getPreview());
+    }
+    try (Connection conn = this.dataSource.getConnection()) {
+      Long pk = preparedQuery.execute(conn);
+      m.setId((pk == null) ? null : Integer.valueOf(pk.intValue()));
+    }
+  }
+
+  // INSERT BY EXAMPLE
+
+  private final DynamicInsertQuery insertByExample = builder
+      .literaln("INSERT INTO account (")
+      .ifPart("m.id != null", builder.literal("id,\n").end())
+      .ifPart("m.name != null", builder.literal("name,\n").end())
+      .ifPart("m.type != null", builder.literal("type,\n").end())
+      .ifPart("m.balance != null", builder.literal("balance\n").end())
+      .literaln(")")
+      .literaln("VALUES(")
+      .ifPart("m.id != null", builder.parameter("m.id", Types.INTEGER).literal(", ").end())
+      .ifPart("m.name != null", builder.parameter("m.name", Types.VARCHAR).literal(", ").end())
+      .ifPart("m.type != null", builder.parameter("m.type", Types.VARCHAR).literal(", ").end())
+      .ifPart("m.balance != null", builder.parameter("m.balance", Types.INTEGER).end())
+      .literal(")")
+      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
+
+  public void insertByExample(Account m) throws DynamicExpressionException, SQLException {
+    ParameterContext context = this.factory.newParameterContext();
+    context.add("m", m);
+    PreparedInsertQuery preparedQuery = this.insertByExample.prepare(context);
     if (log.isLoggable(Level.FINER)) {
       log.finer("SQL: " + preparedQuery.getPreview(true));
     } else if (log.isLoggable(Level.FINE)) {
@@ -125,31 +159,6 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     }
   }
 
-  // DELETE BY PK
-
-  private final DynamicModificationQuery deleteByPK = builder
-    .literaln("DELETE FROM account")
-    .literal("WHERE " + "id = ").parameter("f.id", Types.INTEGER)
-    .endModificationQuery();
-
-  public int delete(Integer id) throws DynamicExpressionException, SQLException {
-    if (id == null) return 0;
-    Account filter = new Account();
-    filter.setId(id);
-    ParameterContext context = this.factory.newParameterContext();
-    context.add("f", filter);
-    PreparedModificationQuery preparedQuery = this.deleteByPK.prepare(context);
-    if (log.isLoggable(Level.FINER)) {
-      log.finer("SQL: " + preparedQuery.getPreview(true));
-    } else if (log.isLoggable(Level.FINE)) {
-      log.fine("SQL: " + preparedQuery.getPreview());
-    }
-    try (Connection conn = this.dataSource.getConnection()) {
-      int rows = preparedQuery.execute(conn);
-      return rows;
-    }
-  }
-
   // UPDATE BY EXAMPLE
 
   private final DynamicModificationQuery updateByExample = builder
@@ -168,11 +177,36 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
           .end())
       .endModificationQuery();
 
-  public int delete(Account filter, Account updateValues) throws DynamicExpressionException, SQLException {
+  public int update(Account filter, Account updateValues) throws DynamicExpressionException, SQLException {
     ParameterContext context = this.factory.newParameterContext();
     context.add("f", filter);
     context.add("u", updateValues);
     PreparedModificationQuery preparedQuery = this.updateByExample.prepare(context);
+    if (log.isLoggable(Level.FINER)) {
+      log.finer("SQL: " + preparedQuery.getPreview(true));
+    } else if (log.isLoggable(Level.FINE)) {
+      log.fine("SQL: " + preparedQuery.getPreview());
+    }
+    try (Connection conn = this.dataSource.getConnection()) {
+      int rows = preparedQuery.execute(conn);
+      return rows;
+    }
+  }
+
+  // DELETE BY PK
+
+  private final DynamicModificationQuery deleteByPK = builder
+    .literaln("DELETE FROM account")
+    .literal("WHERE " + "id = ").parameter("f.id", Types.INTEGER)
+    .endModificationQuery();
+
+  public int delete(Integer id) throws DynamicExpressionException, SQLException {
+    if (id == null) return 0;
+    Account filter = new Account();
+    filter.setId(id);
+    ParameterContext context = this.factory.newParameterContext();
+    context.add("f", filter);
+    PreparedModificationQuery preparedQuery = this.deleteByPK.prepare(context);
     if (log.isLoggable(Level.FINER)) {
       log.finer("SQL: " + preparedQuery.getPreview(true));
     } else if (log.isLoggable(Level.FINE)) {

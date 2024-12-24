@@ -56,12 +56,17 @@ public class App {
     Account a = new Account();
     a.setId(400);
     a.setName("ACC123");
-    a.setType("CHK");
+    a.setType(null);
     a.setBalance(500);
 
     this.accountDAO.insert(a);
-
     System.out.println("> Account inserted -- id=" + a.getId());
+
+    Account filter = new Account();
+    filter.setType("PEN");
+    int cnt = this.accountDAO.delete(filter);
+    System.out.println("> Accounts deleted: " + cnt);
+
   }
 
 }

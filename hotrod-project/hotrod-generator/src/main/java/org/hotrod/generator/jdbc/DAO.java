@@ -178,22 +178,22 @@ public class DAO {
 //          writeSelectChildrenByFK();
 //        }
 //
-    writeInsert();
-//
+    writeInsert(false); // standard INSERT
+    writeInsert(true); // INSERT by example
+
     writeUpdateByPK();
+    writeUpdateByExample();
 //
     writeDeleteByPK();
+    writeDeleteByExample();
 //      }
 //
 //      if (this.isView()) {
-//        writeInsertByExample();
 //      }
 //
 //      if (this.isTable() || this.isView()) {
-    writeUpdateByExample();
 //        writeUpdateByCriteria();
 //
-    writeDeleteByExample();
 //        writeDeleteByCriteria();
 //      }
 //
@@ -295,10 +295,10 @@ public class DAO {
 
   }
 
-  private void writeInsert() throws ControlledException {
+  private void writeInsert(boolean byExample) throws ControlledException {
 
     w.println();
-    w.println("  // INSERT");
+    w.println("  // " + (byExample ? "INSERT BY EXAMPLE" : "INSERT"));
 
     KeyMetadata pk = this.metadata.getPK();
 
@@ -327,8 +327,10 @@ public class DAO {
 
     log.info("mechanics: " + mechanics);
 
+    String queryName = byExample ? "insertByExample" : "insert";
+
     w.println();
-    w.println("  private final ", DynamicInsertQuery.class, " insert = builder");
+    w.println("  private final ", DynamicInsertQuery.class, " " + queryName + " = builder");
 
     w.println("      .literaln(\"INSERT INTO ", SUtil.escapeJavaString(this.metadata.getId().getRenderedSQLName()),
         " (\")");
@@ -338,26 +340,33 @@ public class DAO {
       String memId = cm.getId().getJavaMemberName();
       String sqlId = cm.getId().getRenderedSQLName();
 
-      // Always include column
-      if (!cm.belongsToPK()) {
-        w.println("      .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
-      }
-      if (cm.belongsToPK() && cm.getSequenceId() != null) {
-        w.println("      .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
-      }
-      if (cm.belongsToPK() && cm.getSequenceId() == null && cm.getAutogenerationType() == null) {
-        w.println("      .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
-      }
-
-      // Never include column
-      if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_ALWAYS) {
-        // nothing to do
-      }
-
-      // Conditionally include column
-      if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
+      if (byExample) {
         w.println("      .ifPart(\"m." + SUtil.escapeJavaString(memId) + " != null\", builder.literal(\""
             + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\\n\").end())");
+      } else {
+
+        // Always include column
+        if (!cm.belongsToPK()) {
+          w.println("      .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
+        }
+        if (cm.belongsToPK() && cm.getSequenceId() != null) {
+          w.println("      .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
+        }
+        if (cm.belongsToPK() && cm.getSequenceId() == null && cm.getAutogenerationType() == null) {
+          w.println("      .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
+        }
+
+        // Never include column
+        if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_ALWAYS) {
+          // nothing to do
+        }
+
+        // Conditionally include column
+        if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
+          w.println("      .ifPart(\"m." + SUtil.escapeJavaString(memId) + " != null\", builder.literal(\""
+              + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\\n\").end())");
+        }
+
       }
 
       n++;
@@ -377,35 +386,44 @@ public class DAO {
       String memId = cm.getId().getJavaMemberName();
       String jdbcType = cm.getType().getJDBCShortType();
 
-      // Always include column
-      if (!cm.belongsToPK()) {
-        w.println("      .literal(\"  \").parameter(\"m." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
-            "." + jdbcType + ")" + (n < coln ? ".literaln(\",\")" : ""));
-      }
-      if (cm.belongsToPK() && cm.getSequenceId() != null) {
-        if (mechanics.getMode() == PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH) {
-          w.println("      .literal(\"  \").parameter(\"m." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
-              "." + jdbcType + ")" + (n < coln ? ".literaln(\",\")" : ""));
-        } else {
-          String si = mechanics.getSequenceInlineSQL();
-          w.println("      .literal(\"  " + SUtil.escapeJavaString(si) + "\")" + (n < coln ? ".literaln(\",\")" : ""));
-        }
-      }
-      if (cm.belongsToPK() && cm.getSequenceId() == null && cm.getAutogenerationType() == null) {
-        w.println("      .literal(\"  \").parameter(\"m." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
-            "." + jdbcType + ")" + (n < coln ? ".literaln(\",\")" : ""));
-      }
-
-      // Never include column
-      if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_ALWAYS) {
-        // nothing to do
-      }
-
-      // Conditionally include column
-      if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
+      if (byExample) {
         w.println("      .ifPart(\"m." + SUtil.escapeJavaString(memId) + " != null\", builder.parameter(\"m."
             + SUtil.escapeJavaString(memId) + "\", Types." + jdbcType + ")" + (n < coln ? ".literal(\", \")" : "")
             + ".end())");
+      } else {
+
+        // Always include column
+        if (!cm.belongsToPK()) {
+          w.println("      .literal(\"  \").parameter(\"m." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
+              "." + jdbcType + ")" + (n < coln ? ".literaln(\",\")" : ""));
+        }
+        if (cm.belongsToPK() && cm.getSequenceId() != null) {
+          if (mechanics.getMode() == PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH) {
+            w.println("      .literal(\"  \").parameter(\"m." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
+                "." + jdbcType + ")" + (n < coln ? ".literaln(\",\")" : ""));
+          } else {
+            String si = mechanics.getSequenceInlineSQL();
+            w.println(
+                "      .literal(\"  " + SUtil.escapeJavaString(si) + "\")" + (n < coln ? ".literaln(\",\")" : ""));
+          }
+        }
+        if (cm.belongsToPK() && cm.getSequenceId() == null && cm.getAutogenerationType() == null) {
+          w.println("      .literal(\"  \").parameter(\"m." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
+              "." + jdbcType + ")" + (n < coln ? ".literaln(\",\")" : ""));
+        }
+
+        // Never include column
+        if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_ALWAYS) {
+          // nothing to do
+        }
+
+        // Conditionally include column
+        if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
+          w.println("      .ifPart(\"m." + SUtil.escapeJavaString(memId) + " != null\", builder.parameter(\"m."
+              + SUtil.escapeJavaString(memId) + "\", Types." + jdbcType + ")" + (n < coln ? ".literal(\", \")" : "")
+              + ".end())");
+        }
+
       }
 
       n++;
@@ -430,15 +448,16 @@ public class DAO {
     }
 
     w.println(");");
+    String methodName = byExample ? "insertByExample" : "insert";
 
     ExternalClass em = ExternalClass.of(this.model.getFullClassName());
     w.println();
-    w.print("  public void insert(", em, " m");
+    w.print("  public void " + methodName + "(", em, " m");
     w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
 
     w.println("    ", ParameterContext.class, " context = this.factory.newParameterContext();");
     w.println("    context.add(\"m\", m);");
-    w.println("    ", PreparedInsertQuery.class, " preparedQuery = this.insert.prepare(context);");
+    w.println("    ", PreparedInsertQuery.class, " preparedQuery = this." + queryName + ".prepare(context);");
 
     fragmentLogging();
 
@@ -574,6 +593,35 @@ public class DAO {
 
   }
 
+  private void writeUpdateByExample() {
+
+    w.println();
+    w.println("  // UPDATE BY EXAMPLE");
+
+    w.println();
+    w.println("  private final ", DynamicModificationQuery.class, " updateByExample = builder");
+    w.println("      .literal(\"UPDATE FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
+    fragmentSet();
+    fragmentWhereExample();
+    w.println("      .endModificationQuery();");
+    w.println();
+
+    ExternalClass em = ExternalClass.of(this.model.getFullClassName());
+    w.print("  public int update(", em, " filter, ", em, " updateValues");
+    w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
+
+    w.println("    ", ParameterContext.class, " context = this.factory.newParameterContext();");
+    w.println("    context.add(\"f\", filter);");
+    w.println("    context.add(\"u\", updateValues);");
+    w.println("    ", PreparedModificationQuery.class, " preparedQuery = this.updateByExample.prepare(context);");
+
+    fragmentLogging();
+    fragmentExecuteModification();
+
+    w.println("  }");
+
+  }
+
   private void writeDeleteByPK() {
 
     KeyMetadata pk = this.metadata.getPK();
@@ -620,35 +668,6 @@ public class DAO {
       w.println("  }");
 
     }
-
-  }
-
-  private void writeUpdateByExample() {
-
-    w.println();
-    w.println("  // UPDATE BY EXAMPLE");
-
-    w.println();
-    w.println("  private final ", DynamicModificationQuery.class, " updateByExample = builder");
-    w.println("      .literal(\"UPDATE FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
-    fragmentSet();
-    fragmentWhereExample();
-    w.println("      .endModificationQuery();");
-    w.println();
-
-    ExternalClass em = ExternalClass.of(this.model.getFullClassName());
-    w.print("  public int delete(", em, " filter, ", em, " updateValues");
-    w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
-
-    w.println("    ", ParameterContext.class, " context = this.factory.newParameterContext();");
-    w.println("    context.add(\"f\", filter);");
-    w.println("    context.add(\"u\", updateValues);");
-    w.println("    ", PreparedModificationQuery.class, " preparedQuery = this.updateByExample.prepare(context);");
-
-    fragmentLogging();
-    fragmentExecuteModification();
-
-    w.println("  }");
 
   }
 

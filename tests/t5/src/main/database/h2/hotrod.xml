@@ -26,8 +26,8 @@
  -->
 
   <table name="account">
-    <column name="id" sequence="seq1" />
   <!--
+    <column name="id" sequence="seq1" />
  -->    
   </table>
 
