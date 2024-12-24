@@ -58,7 +58,7 @@ public class SimpleDataSource implements DataSource {
   @Override
   public Connection getConnection() throws SQLException {
 //  return getOracleConnection();
-  return getDB2Connection();
+//  return getDB2Connection();
 //  return getPostgreSQLConnection();
 //  return getSQLServerConnection();
 //  return getMySQLConnection();
@@ -66,7 +66,7 @@ public class SimpleDataSource implements DataSource {
 //  return getSybaseASEDBConnection();
 //    return getH2Connection();
 //  return getHyperSQLConnection();
-//  return getDerbyConnection();
+  return getDerbyConnection();
   }
 
   @Override

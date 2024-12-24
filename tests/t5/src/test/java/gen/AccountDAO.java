@@ -146,20 +146,20 @@ public class AccountDAO {
 //      .literal(")") //
 //      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET, null, null, "id");
 
-  // DB2 - Sequence Inline
-  private final DynamicInsertQuery insert = builder //
-      .literal("INSERT INTO account (") //
-      .literal("  id, name, type, balance\n") //
-      .literal(") VALUES (\n  ") //
-      .literal("NEXT VALUE FOR seq_account") //
-      .literal(", ") //
-      .parameter("n.name", Types.VARCHAR) //
-      .literal(", ") //
-      .parameter("n.type", Types.VARCHAR) //
-      .literal(", ") //
-      .parameter("n.balance", Types.NUMERIC) //
-      .literal(")") //
-      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET, null, null, "id");
+//  // DB2 - Sequence Inline
+//  private final DynamicInsertQuery insert = builder //
+//      .literal("INSERT INTO account (") //
+//      .literal("  id, name, type, balance\n") //
+//      .literal(") VALUES (\n  ") //
+//      .literal("NEXT VALUE FOR seq_account") //
+//      .literal(", ") //
+//      .parameter("n.name", Types.VARCHAR) //
+//      .literal(", ") //
+//      .parameter("n.type", Types.VARCHAR) //
+//      .literal(", ") //
+//      .parameter("n.balance", Types.NUMERIC) //
+//      .literal(")") //
+//      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET, null, null, "id");
 
 //  // PostgreSQL - Sequence Inline
 //  private final DynamicInsertQuery insert = builder //
@@ -191,20 +191,20 @@ public class AccountDAO {
 //      .literal(")") //
 //      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_STANDARD_RESULTSET);
 
-//  // H2, HyperSQL, and Derby - Sequence Inline
-//  private final DynamicInsertQuery insert = builder //
-//    .literal("INSERT INTO account (") //
-//    .literal("  id, name, type, balance\n") //
-//    .literal(") VALUES (\n  ") //
-//    .literal("NEXT VALUE FOR seq_account") //
-//    .literal(", ") //
-//    .parameter("n.name", Types.VARCHAR) //
-//    .literal(", ") //
-//    .parameter("n.type", Types.VARCHAR) //
-//    .literal(", ") //
-//    .parameter("n.balance", Types.NUMERIC) //
-//    .literal(")") //
-//    .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET);
+  // H2, HyperSQL, and Derby - Sequence Inline
+  private final DynamicInsertQuery insert = builder //
+    .literal("INSERT INTO account (") //
+    .literal("  id, name, type, balance\n") //
+    .literal(") VALUES (\n  ") //
+    .literal("NEXT VALUE FOR seq_account") //
+    .literal(", ") //
+    .parameter("n.name", Types.VARCHAR) //
+    .literal(", ") //
+    .parameter("n.type", Types.VARCHAR) //
+    .literal(", ") //
+    .parameter("n.balance", Types.NUMERIC) //
+    .literal(")") //
+    .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET);
 
   // =========================
   // === SEQUENCE PREFETCH ===
