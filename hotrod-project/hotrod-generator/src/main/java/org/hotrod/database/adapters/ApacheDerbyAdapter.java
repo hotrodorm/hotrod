@@ -143,7 +143,7 @@ public class ApacheDerbyAdapter extends DatabaseAdapter {
 
   @Override
   public InsertIntegration getInsertIntegration() {
-    return InsertIntegration.of(true, false, true, false, null, false);
+    return InsertIntegration.of(true, false, false, false, null, false);
   }
 
   @Override
