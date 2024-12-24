@@ -43,8 +43,8 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   @Autowired
   private LiveSQLDialect liveSQLDialect;
 
-  private final DynamicExpressionFactory factory = DynamicExpressionFactory.getFactory();
-  private final QueryAssembler assembler = new QueryAssembler(this.factory);
+  private final DynamicExpressionFactory expressionFactory = DynamicExpressionFactory.getFactory();
+  private final QueryAssembler assembler = new QueryAssembler(this.expressionFactory);
 
   @Autowired
   private SpringBeanObjectFactory springBeanObjectFactory;
@@ -84,7 +84,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
 
   public void insert(Account m) throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.factory.newParameterContext();
+    ParameterContext context = this.expressionFactory.newParameterContext();
     context.add("m", m);
     PreparedInsertQuery preparedQuery = this.insert.prepare(context);
     if (log.isLoggable(Level.FINER)) {
@@ -116,7 +116,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
 
   public void insertByExample(Account m) throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.factory.newParameterContext();
+    ParameterContext context = this.expressionFactory.newParameterContext();
     context.add("m", m);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(context);
     if (log.isLoggable(Level.FINER)) {
@@ -145,7 +145,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   public int update(Account m) throws DynamicExpressionException, SQLException {
     if (m.getId() == null) return 0;
-    ParameterContext context = this.factory.newParameterContext();
+    ParameterContext context = this.expressionFactory.newParameterContext();
     context.add("m", m);
     PreparedModificationQuery preparedQuery = this.updateByPK.prepare(context);
     if (log.isLoggable(Level.FINER)) {
@@ -178,7 +178,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .endModificationQuery();
 
   public int update(Account filter, Account updateValues) throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.factory.newParameterContext();
+    ParameterContext context = this.expressionFactory.newParameterContext();
     context.add("f", filter);
     context.add("u", updateValues);
     PreparedModificationQuery preparedQuery = this.updateByExample.prepare(context);
@@ -204,7 +204,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     if (id == null) return 0;
     Account filter = new Account();
     filter.setId(id);
-    ParameterContext context = this.factory.newParameterContext();
+    ParameterContext context = this.expressionFactory.newParameterContext();
     context.add("f", filter);
     PreparedModificationQuery preparedQuery = this.deleteByPK.prepare(context);
     if (log.isLoggable(Level.FINER)) {
@@ -231,7 +231,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .endModificationQuery();
 
   public int delete(Account filter) throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.factory.newParameterContext();
+    ParameterContext context = this.expressionFactory.newParameterContext();
     context.add("f", filter);
     PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(context);
     if (log.isLoggable(Level.FINER)) {

@@ -260,9 +260,10 @@ public class DAO {
     w.println("  private ", LiveSQLDialect.class, " liveSQLDialect;");
     w.println();
 
-    w.println("  private final ", DynamicExpressionFactory.class, " factory = ", DynamicExpressionFactory.class,
-        ".getFactory();");
-    w.println("  private final ", QueryAssembler.class, " assembler = new ", QueryAssembler.class, "(this.factory);");
+    w.println("  private final ", DynamicExpressionFactory.class, " expressionFactory = ",
+        DynamicExpressionFactory.class, ".getFactory();");
+    w.println("  private final ", QueryAssembler.class, " assembler = new ", QueryAssembler.class,
+        "(this.expressionFactory);");
     w.println();
 
     w.println("  @", Const.AUTOWIRED);
@@ -455,7 +456,7 @@ public class DAO {
     w.print("  public void " + methodName + "(", em, " m");
     w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
 
-    w.println("    ", ParameterContext.class, " context = this.factory.newParameterContext();");
+    w.println("    ", ParameterContext.class, " context = this.expressionFactory.newParameterContext();");
     w.println("    context.add(\"m\", m);");
     w.println("    ", PreparedInsertQuery.class, " preparedQuery = this." + queryName + ".prepare(context);");
 
@@ -580,7 +581,7 @@ public class DAO {
         w.println("    if (m." + getter + "() == null) return 0;");
       }
 
-      w.println("    ", ParameterContext.class, " context = this.factory.newParameterContext();");
+      w.println("    ", ParameterContext.class, " context = this.expressionFactory.newParameterContext();");
       w.println("    context.add(\"m\", m);");
       w.println("    ", PreparedModificationQuery.class, " preparedQuery = this.updateByPK.prepare(context);");
 
@@ -610,7 +611,7 @@ public class DAO {
     w.print("  public int update(", em, " filter, ", em, " updateValues");
     w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
 
-    w.println("    ", ParameterContext.class, " context = this.factory.newParameterContext();");
+    w.println("    ", ParameterContext.class, " context = this.expressionFactory.newParameterContext();");
     w.println("    context.add(\"f\", filter);");
     w.println("    context.add(\"u\", updateValues);");
     w.println("    ", PreparedModificationQuery.class, " preparedQuery = this.updateByExample.prepare(context);");
@@ -658,7 +659,7 @@ public class DAO {
         w.println("    filter." + setter + "(" + m + ");");
       }
 
-      w.println("    ", ParameterContext.class, " context = this.factory.newParameterContext();");
+      w.println("    ", ParameterContext.class, " context = this.expressionFactory.newParameterContext();");
       w.println("    context.add(\"f\", filter);");
       w.println("    ", PreparedModificationQuery.class, " preparedQuery = this.deleteByPK.prepare(context);");
 
@@ -687,7 +688,7 @@ public class DAO {
     w.print("  public int delete(", em, " filter");
     w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
 
-    w.println("    ", ParameterContext.class, " context = this.factory.newParameterContext();");
+    w.println("    ", ParameterContext.class, " context = this.expressionFactory.newParameterContext();");
     w.println("    context.add(\"f\", filter);");
     w.println("    ", PreparedModificationQuery.class, " preparedQuery = this.deleteByExample.prepare(context);");
 
