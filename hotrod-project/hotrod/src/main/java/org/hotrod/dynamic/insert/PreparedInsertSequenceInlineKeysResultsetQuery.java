@@ -33,14 +33,11 @@ public class PreparedInsertSequenceInlineKeysResultsetQuery extends InsertExecut
   private Long execute(List<ParameterSegment> parameters, PreparedStatement ps) throws SQLException {
     super.applyParameters(parameters, ps);
     ps.executeUpdate();
-//    log.info(">> inserted");
     try (ResultSet rs = ps.getGeneratedKeys()) {
-//      log.info(">> rs=" + rs);
       if (rs.next()) {
-//        log.info(">> keys found!");
-        return rs.getLong(1);
+        long k = rs.getLong(1);
+        return k;
       }
-//      log.info(">> no keys found.");
       return null;
     }
   }

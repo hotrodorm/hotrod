@@ -132,12 +132,27 @@ public class AccountDAO {
   // === SEQUENCE INLINE ===
   // =======================
 
-  // Oracle - Sequence Inline
+//  // Oracle - Sequence Inline
+//  private final DynamicInsertQuery insert = builder //
+//      .literal("INSERT INTO account (\n") //
+//      .literal("  id, name, type, balance\n") //
+//      .literal(") VALUES (\n  ") //
+//      .literal("seq_account.NEXTVAL, ") //
+//      .parameter("n.name", Types.VARCHAR) //
+//      .literal(", ") //
+//      .parameter("n.type", Types.VARCHAR) //
+//      .literal(", ") //
+//      .parameter("n.balance", Types.NUMERIC) //
+//      .literal(")") //
+//      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET, null, null, "id");
+
+  // DB2 - Sequence Inline
   private final DynamicInsertQuery insert = builder //
-      .literal("INSERT INTO account (\n") //
+      .literal("INSERT INTO account (") //
       .literal("  id, name, type, balance\n") //
       .literal(") VALUES (\n  ") //
-      .literal("seq_account.NEXTVAL, ") //
+      .literal("NEXT VALUE FOR seq_account") //
+      .literal(", ") //
       .parameter("n.name", Types.VARCHAR) //
       .literal(", ") //
       .parameter("n.type", Types.VARCHAR) //
@@ -145,21 +160,6 @@ public class AccountDAO {
       .parameter("n.balance", Types.NUMERIC) //
       .literal(")") //
       .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET, null, null, "id");
-
-//  // DB2 - Sequence Inline
-//  private final DynamicInsertQuery insert = builder //
-//      .literal("INSERT INTO account (") //
-//      .literal("  id, name, type, balance\n") //
-//      .literal(") VALUES (\n  ") //
-//      .literal("NEXT VALUE FOR seq_account") //
-//      .literal(", ") //
-//      .parameter("n.name", Types.VARCHAR) //
-//      .literal(", ") //
-//      .parameter("n.type", Types.VARCHAR) //
-//      .literal(", ") //
-//      .parameter("n.balance", Types.NUMERIC) //
-//      .literal(")") //
-//      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET);
 
 //  // PostgreSQL - Sequence Inline
 //  private final DynamicInsertQuery insert = builder //

@@ -58,13 +58,13 @@ public class SimpleDataSource implements DataSource {
   @Override
   public Connection getConnection() throws SQLException {
 //  return getOracleConnection();
-//  return getDB2Connection();
+  return getDB2Connection();
 //  return getPostgreSQLConnection();
 //  return getSQLServerConnection();
 //  return getMySQLConnection();
 //  return getMariaDBConnection();
 //  return getSybaseASEDBConnection();
-    return getH2Connection();
+//    return getH2Connection();
 //  return getHyperSQLConnection();
 //  return getDerbyConnection();
   }

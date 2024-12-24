@@ -128,7 +128,7 @@ public class DB2Adapter extends DatabaseAdapter {
 
   @Override
   public InsertIntegration getInsertIntegration() {
-    return InsertIntegration.of(true, false, true, false, null, true);
+    return InsertIntegration.of(true, true, true, false, null, true);
   }
 
   @Override

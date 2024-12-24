@@ -89,21 +89,21 @@ public class T5 {
     AccountDAO c5 = new AccountDAO();
 
 //    Account filter = new Account(123, "AK", "XX", 5001);
-    Account filter = new Account(null, null, "CHK", null);
+//    Account filter = new Account(null, null, "CHK", null);
 //    Account newValues = new Account(400, "YYY", "INV", 707);
 //    Account filter = new Account(123, null, null, null);
-    Account newValues = new Account(null, null, "SAV", 707);
+//    Account newValues = new Account(null, null, "SAV", 707);
     Account entity = new Account(null, "YYY", "INV", 1707);
 
-    int rows = c5.update(dataSource.getConnection(), filter, newValues);
-    System.out.println("Updated rows: " + rows);
+//    int rows = c5.update(dataSource.getConnection(), filter, newValues);
+//    System.out.println("Updated rows: " + rows);
 
 //    long seq = c5.selectSequencePreFetch(conn);
 //    System.out.println("seq: " + seq);
 
-//    c5.insert(conn, entity);
-//    System.out.println("Insert id=" + entity.getId());
-//
+    c5.insert(dataSource.getConnection(), entity);
+    System.out.println("Insert id=" + entity.getId());
+
 //    entity.setId(null);
 //    c5.insert(conn, entity);
 //    System.out.println("Insert id=" + entity.getId());

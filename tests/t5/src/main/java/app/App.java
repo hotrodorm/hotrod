@@ -30,7 +30,7 @@ public class App {
   private static final Logger log = Logger.getLogger(App.class.getName());
 
   static {
-    JULCustomFormatter.initialize(Level.FINE);
+    JULCustomFormatter.initialize(Level.FINER);
   }
 
   @Autowired
@@ -54,7 +54,7 @@ public class App {
 
   private void test() throws SQLException, DynamicExpressionException {
     Account a = new Account();
-    a.setId(400);
+//    a.setId(400);
     a.setName("ACC123");
     a.setType("CHK");
     a.setBalance(500);
