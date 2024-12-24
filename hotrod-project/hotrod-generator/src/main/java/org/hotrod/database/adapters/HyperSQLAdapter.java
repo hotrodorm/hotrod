@@ -144,7 +144,7 @@ public class HyperSQLAdapter extends DatabaseAdapter {
 
   @Override
   public InsertIntegration getInsertIntegration() {
-    return InsertIntegration.of(true, false, false, false, null, false);
+    return InsertIntegration.of(true, true, true, false, null, false);
   }
 
   @Override

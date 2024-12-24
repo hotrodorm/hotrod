@@ -813,7 +813,7 @@
         <configbasedir>src/main/database/hypersql</configbasedir>
         <jdbcdrivergroupid>org.hsqldb</jdbcdrivergroupid>
         <jdbcdriverartifactid>hsqldb</jdbcdriverartifactid>
-        <jdbcdriverversion>2.6.1</jdbcdriverversion>
+        <jdbcdriverversion>2.5.1</jdbcdriverversion>
 
         <jdbcdriverclass>org.hsqldb.jdbc.JDBCDriver</jdbcdriverclass>
         <jdbcurl>jdbc:hsqldb:hsql://localhost:9001/xdb</jdbcurl>
