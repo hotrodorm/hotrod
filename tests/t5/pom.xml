@@ -451,7 +451,7 @@
         <jdbcdriverversion>8.0.28</jdbcdriverversion>
 
         <jdbcdriverclass>com.mysql.cj.jdbc.Driver</jdbcdriverclass>
-        <jdbcurl>jdbc:mysql://192.168.56.29:3306/hotrod?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC&amp;useSSL=false</jdbcurl>
+        <jdbcurl>jdbc:mysql://192.168.56.200:3820/hotrod?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC&amp;useSSL=false</jdbcurl>
         <jdbcusername>user1</jdbcusername>
         <jdbcpassword>pass1</jdbcpassword>
         <jdbccatalog>hotrod</jdbccatalog>
@@ -542,10 +542,10 @@
         <jdbcdriverversion>2.2.5</jdbcdriverversion>
 
         <jdbcdriverclass>org.mariadb.jdbc.Driver</jdbcdriverclass>
-        <jdbcurl>jdbc:mysql://192.168.56.205:3306/database1</jdbcurl>
-        <jdbcusername>my_user</jdbcusername>
-        <jdbcpassword>mypass</jdbcpassword>
-        <jdbccatalog>database1</jdbccatalog>
+        <jdbcurl>jdbc:mysql://192.168.56.200:3111/hotrod</jdbcurl>
+        <jdbcusername>user1</jdbcusername>
+        <jdbcpassword>pass1</jdbcpassword>
+        <jdbccatalog>hotrod</jdbccatalog>
       </properties>
 
       <dependencies>
@@ -608,7 +608,7 @@
               <jdbcurl>${jdbcurl}</jdbcurl>
               <jdbcusername>${jdbcusername}</jdbcusername>
               <jdbcpassword>${jdbcpassword}</jdbcpassword>
-              <jdbccatalog>database1</jdbccatalog>
+              <jdbccatalog>${jdbccatalog}</jdbccatalog>
             </configuration>
             <dependencies>
               <dependency>
