@@ -1,12 +1,20 @@
 <hotrod>
 
   <generators>
-    <mybatis-spring>
-      <daos package="app.daos" dao-suffix="DAO" vo-suffix="VO" abstract-vo-prefix="Abstract" abstract-vo-suffix="VO" />
-    </mybatis-spring>
+    <jdbc>
+      <daos package="app.daos" dao-suffix="DAO" vo-suffix="" abstract-vo-prefix="" abstract-vo-suffix="Prototype" />
+    </jdbc>
   </generators>
-  
+
+<!--  
   <table name="invoice" />
   <table name="branch" />
+  -->
 
+  <table name="account">
+  <!--
+    <column name="id" sequence="seq_account" />
+  -->
+  </table>
+  
 </hotrod>

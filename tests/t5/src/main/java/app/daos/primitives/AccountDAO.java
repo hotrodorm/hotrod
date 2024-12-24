@@ -70,18 +70,16 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   private final DynamicInsertQuery insert = builder
       .literaln("INSERT INTO account (")
-      .literaln("  id,")
       .literaln("  name,")
       .literaln("  type,")
       .literaln("  balance")
       .literaln(")")
       .literaln("VALUES(")
-      .literal("  ").parameter("m.id", Types.INTEGER).literaln(",")
       .literal("  ").parameter("m.name", Types.VARCHAR).literaln(",")
       .literal("  ").parameter("m.type", Types.VARCHAR).literaln(",")
       .literal("  ").parameter("m.balance", Types.INTEGER)
       .literal(")")
-      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH, "SELECT NEXT VALUE FOR seq_account FROM SYSIBM.SYSDUMMY1", "m.id");
+      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
 
   public void insert(Account m) throws DynamicExpressionException, SQLException {
     ParameterContext context = this.factory.newParameterContext();
