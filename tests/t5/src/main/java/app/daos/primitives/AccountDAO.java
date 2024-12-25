@@ -4,8 +4,10 @@ package app.daos.primitives;
 
 import java.io.Serializable;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,8 +18,11 @@ import org.hotrod.dynamic.DynamicExpressionException;
 import org.hotrod.dynamic.DynamicExpressionFactory;
 import org.hotrod.dynamic.DynamicInsertQuery;
 import org.hotrod.dynamic.DynamicModificationQuery;
+import org.hotrod.dynamic.DynamicSelectQuery;
 import org.hotrod.dynamic.ParameterContext;
 import org.hotrod.dynamic.PreparedModificationQuery;
+import org.hotrod.dynamic.PreparedSelectQuery;
+import org.hotrod.dynamic.PreparedSelectQuery.RowReader;
 import org.hotrod.dynamic.builder.QueryAssembler;
 import org.hotrod.dynamic.insert.PreparedInsertQuery;
 import org.hotrod.dynamic.insert.PrimaryKeyRetrievalMode;
@@ -31,6 +36,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import app.IntegerBooleanConverter;
 import app.daos.Account;
 
 @Component
@@ -64,6 +70,69 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   @PostConstruct
   public void initializeContext() {
     this.context = new LiveSQLContext(this.liveSQLDialect, this.dataSource, new TypeSolver(null, this.liveSQLDialect));
+  }
+
+  // CONVERTERS
+
+  private IntegerBooleanConverter converter0 = new IntegerBooleanConverter();
+
+  // SELECT BY PRIMARY KEY
+
+  private final DynamicSelectQuery selectByPrimaryKey = assembler
+    .literaln("SELECT")
+    .literaln("  id,")
+    .literaln("  name,")
+    .literaln("  type,")
+    .literaln("  balance")
+    .literaln("FROM account")
+    .literal("WHERE " + "id = ").parameter("f.id", Types.INTEGER)
+    .endSelectQuery();
+
+  public Account select(Integer id) throws DynamicExpressionException, SQLException {
+    if (id == null) return null;
+    Account filter = new Account();
+    filter.setId(id);
+    ParameterContext context = this.expressionFactory.newParameterContext();
+    context.add("f", filter);
+    PreparedSelectQuery<Account> preparedQuery = this.selectByPrimaryKey.prepare(context, Account.class);
+    if (log.isLoggable(Level.FINER)) {
+      log.finer("SQL: " + preparedQuery.getPreview(true));
+    } else if (log.isLoggable(Level.FINE)) {
+      log.fine("SQL: " + preparedQuery.getPreview());
+    }
+    try (Connection conn = this.dataSource.getConnection()) {
+
+      RowReader<Account> rowReader = new RowReader<Account>() {
+
+        @Override
+        public Account readRowFrom(ResultSet rs) throws SQLException {
+          Account row = new Account();
+
+          Integer col1 = rs.getInt(1); // ID
+          if (rs.wasNull()) col1 = null;
+          row.setId(col1);
+
+          String col2 = rs.getString(2); // NAME
+          row.setName(col2);
+
+          String col3 = rs.getString(3); // TYPE
+          row.setType(col3);
+
+          Integer col4 = rs.getInt(4); // BALANCE
+          if (rs.wasNull()) col4 = null;
+          Boolean conv4 = converter0.decode(col4, conn);
+          row.setBalance(conv4);
+
+          return row;
+        }
+
+      };
+
+      List<Account> rows = preparedQuery.execute(conn, rowReader);
+      if (rows.size() == 0) return null;
+      if (rows.size() == 1) return rows.get(0);
+      throw new RuntimeException("A single row at most was expected but received " + rows.size() + " rows.");
+    }
   }
 
   // INSERT

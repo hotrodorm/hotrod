@@ -53,19 +53,23 @@ public class App {
   }
 
   private void test() throws SQLException, DynamicExpressionException {
-    Account a = new Account();
-    a.setId(400);
-    a.setName("ACC123");
-    a.setType(null);
-    a.setBalance(500);
 
-    this.accountDAO.insert(a);
-    System.out.println("> Account inserted -- id=" + a.getId());
+    Account a = this.accountDAO.select(1233333);
+    System.out.println("--> " + a);
 
-    Account filter = new Account();
-    filter.setType("PEN");
-    int cnt = this.accountDAO.delete(filter);
-    System.out.println("> Accounts deleted: " + cnt);
+//    Account a = new Account();
+//    a.setId(400);
+//    a.setName("ACC123");
+//    a.setType(null);
+//    a.setBalance(true);
+//
+//    this.accountDAO.insert(a);
+//    System.out.println("> Account inserted -- id=" + a.getId());
+//
+//    Account filter = new Account();
+//    filter.setType("PEN");
+//    int cnt = this.accountDAO.delete(filter);
+//    System.out.println("> Accounts deleted: " + cnt);
 
   }
 

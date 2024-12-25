@@ -15,7 +15,7 @@ public class AccountPrototype implements Serializable {
   protected Integer id = null;
   protected String name = null;
   protected String type = null;
-  protected Integer balance = null;
+  protected Boolean balance = null;
 
   // getters & setters
 
@@ -43,11 +43,11 @@ public class AccountPrototype implements Serializable {
     this.type = type;
   }
 
-  public Integer getBalance() {
+  public Boolean getBalance() {
     return this.balance;
   }
 
-  public void setBalance(final Integer balance) {
+  public void setBalance(final Boolean balance) {
     this.balance = balance;
   }
 

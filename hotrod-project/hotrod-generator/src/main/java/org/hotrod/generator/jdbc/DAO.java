@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -18,6 +20,7 @@ import javax.sql.DataSource;
 
 import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.Constants;
+import org.hotrod.config.ConverterTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.JDBCTag;
 import org.hotrod.database.DatabaseAdapter;
@@ -25,8 +28,11 @@ import org.hotrod.dynamic.DynamicExpressionException;
 import org.hotrod.dynamic.DynamicExpressionFactory;
 import org.hotrod.dynamic.DynamicInsertQuery;
 import org.hotrod.dynamic.DynamicModificationQuery;
+import org.hotrod.dynamic.DynamicSelectQuery;
 import org.hotrod.dynamic.ParameterContext;
 import org.hotrod.dynamic.PreparedModificationQuery;
+import org.hotrod.dynamic.PreparedSelectQuery;
+import org.hotrod.dynamic.PreparedSelectQuery.RowReader;
 import org.hotrod.dynamic.builder.QueryAssembler;
 import org.hotrod.dynamic.insert.PreparedInsertQuery;
 import org.hotrod.dynamic.insert.PrimaryKeyRetrievalMode;
@@ -159,14 +165,16 @@ public class DAO {
 
     writeClassHeader();
 
-//    if (!this.isExecutor()) {
+    if (!this.isExecutor()) {
 //
 //      writeRowParser();
-//
-//      if (this.isTable()) {
-//        writeSelectByPK(mg);
+
+      writeConverterProperties();
+
+      if (this.isTable()) {
+        writeSelectByPK();
 //        writeSelectByUI(mg);
-//      }
+      }
 //
 //      writeSelectByExample();
 //      writeSelectByCriteria();
@@ -178,14 +186,14 @@ public class DAO {
 //          writeSelectChildrenByFK();
 //        }
 //
-    writeInsert(false); // standard INSERT
-    writeInsert(true); // INSERT by example
+      writeInsert(false); // standard INSERT
+      writeInsert(true); // INSERT by example
 
-    writeUpdateByPK();
-    writeUpdateByExample();
+      writeUpdateByPK();
+      writeUpdateByExample();
 //
-    writeDeleteByPK();
-    writeDeleteByExample();
+      writeDeleteByPK();
+      writeDeleteByExample();
 //      }
 //
 //      if (this.isView()) {
@@ -207,7 +215,7 @@ public class DAO {
 //        writeAOPAspect();
 //      }
 //
-//    }
+    }
 //
 //    writeConverters();
 //
@@ -293,6 +301,66 @@ public class DAO {
     w.println("    this.context = new ", LiveSQLContext.class, "(this.liveSQLDialect, this.dataSource, new ",
         TypeSolver.class, "(null, this.liveSQLDialect));");
     w.println("  }");
+
+  }
+
+  private void writeSelectByPK() {
+
+    KeyMetadata pk = this.metadata.getPK();
+
+    if (pk == null) {
+      w.println();
+      w.println("  // SELECT BY PRIMARY KEY -- Not available since the table does not have a primary key.");
+    } else {
+
+      w.println();
+      w.println("  // SELECT BY PRIMARY KEY");
+
+      w.println();
+      w.println("  private final ", DynamicSelectQuery.class, " selectByPrimaryKey = assembler");
+      w.println("    .literaln(\"SELECT\")");
+
+      int coln = this.metadata.getColumns().size();
+      int n = 1;
+      for (ColumnMetadata cm : this.metadata.getColumns()) {
+        String sqlId = cm.getId().getRenderedSQLName();
+        w.println("    .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
+        n++;
+      }
+
+      w.println("    .literaln(\"FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
+      fragmentWherePK(pk, "f");
+      w.println("    .endSelectQuery();");
+      w.println();
+
+      ExternalClass em = ExternalClass.of(this.model.getFullClassName());
+      w.print("  public ", em, " select(");
+      fragmentPKParameters(pk);
+      w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
+
+      for (ColumnMetadata cm : pk.getColumns()) {
+        String m = cm.getId().getJavaMemberName();
+        w.println("    if (" + m + " == null) return null;");
+      }
+
+      w.println("    ", em, " filter = new ", em, "();");
+      for (ColumnMetadata cm : pk.getColumns()) {
+        String m = cm.getId().getJavaMemberName();
+        String setter = cm.getId().getJavaSetter();
+        w.println("    filter." + setter + "(" + m + ");");
+      }
+
+      w.println("    ", ParameterContext.class, " context = this.expressionFactory.newParameterContext();");
+      w.println("    context.add(\"f\", filter);");
+      w.print("    ", PreparedSelectQuery.class, "<", em, "> preparedQuery = ");
+      w.println("this.selectByPrimaryKey.prepare(context, ", em, ".class);");
+
+      fragmentLogging();
+      fragmentExecuteSelect(em, true);
+
+      w.println("  }");
+
+    }
 
   }
 
@@ -772,12 +840,170 @@ public class DAO {
     w.println("    }");
   }
 
+  private void fragmentExecuteSelect(ExternalClass m, boolean singleRow) {
+    w.println("    try (", Connection.class, " conn = this.dataSource.getConnection()) {");
+    w.println();
+    w.print("      ", RowReader.class, "<", m, "> rowReader = new ");
+    w.println(RowReader.class, "<", m, ">() {");
+    w.println();
+    w.println("        @", Override.class);
+    w.print("        public ", m, " readRowFrom(", ResultSet.class, " rs) ");
+    w.println("throws ", SQLException.class, " {");
+    w.println("          ", m, " row = new ", m, "();");
+
+    int ordinal = 1;
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      this.writeReaderLogic(cm, ordinal);
+      ordinal++;
+    }
+
+    w.println();
+    w.println("          return row;");
+    w.println("        }");
+    w.println();
+    w.println("      };");
+    w.println();
+    w.println("      ", List.class, "<", m, "> rows = preparedQuery.execute(conn, rowReader);");
+
+    if (singleRow) {
+      w.println("      if (rows.size() == 0) return null;");
+      w.println("      if (rows.size() == 1) return rows.get(0);");
+      w.println("      throw new RuntimeException(\"A single row at most was expected but received \" + rows.size() + \" rows.\");");
+    } else {
+      w.println("      return rows;");
+    }
+    w.println("    }");
+  }
+
   private void writeClassFooter() throws IOException {
     w.println();
     w.println("}");
   }
 
+  private LinkedHashMap<String, String> converterProperties = new LinkedHashMap<>();
+
+  private void writeConverterProperties() {
+    int n = 0;
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      ConverterTag ct = cm.getConverter();
+      if (ct != null) {
+        boolean found = this.converterProperties.containsKey(ct.getName());
+        if (!found) {
+          if (n == 0) {
+            w.println();
+            w.println("  // CONVERTERS");
+            w.println();
+          }
+          String property = "converter" + (n++);
+          this.converterProperties.put(ct.getName(), property);
+          ExternalClass cc = ExternalClass.of(ct.getJavaClass());
+          w.println("  private ", cc, " " + property + " = new ", cc, "();");
+        }
+      }
+    }
+  }
+
   // Utils
+
+  private static class JDBCGetter {
+
+    private String resultSetMethod;
+    private boolean returnsPrimitiveType;
+
+    private JDBCGetter(String resultSetMethod, boolean returnsPrimitiveType) {
+      this.resultSetMethod = resultSetMethod;
+      this.returnsPrimitiveType = returnsPrimitiveType;
+    }
+
+    public static JDBCGetter obj(String m) {
+      return new JDBCGetter(m, false);
+    }
+
+    public static JDBCGetter prim(String m) {
+      return new JDBCGetter(m, true);
+    }
+
+    public String getResultSetMethod() {
+      return resultSetMethod;
+    }
+
+    public boolean returnsPrimitiveType() {
+      return returnsPrimitiveType;
+    }
+
+  }
+
+  private static final Map<String, JDBCGetter> JDBC_GETTERS = new HashMap<>();
+  static {
+    JDBC_GETTERS.put("java.math.BigDecimal", JDBCGetter.obj("getBigDecimal"));
+    JDBC_GETTERS.put("java.sql.Blob", JDBCGetter.obj("getBlob"));
+    JDBC_GETTERS.put("java.lang.Byte", JDBCGetter.prim("getByte"));
+    JDBC_GETTERS.put("java.lang.Byte[]", JDBCGetter.obj("getBytes"));
+    JDBC_GETTERS.put("java.sql.Clob", JDBCGetter.obj("getClob"));
+    JDBC_GETTERS.put("java.sql.Date", JDBCGetter.obj("getDate"));
+    JDBC_GETTERS.put("java.lang.Double", JDBCGetter.prim("getDouble"));
+    JDBC_GETTERS.put("java.lang.Float", JDBCGetter.prim("getFloat"));
+    JDBC_GETTERS.put("java.lang.Integer", JDBCGetter.prim("getInt"));
+    JDBC_GETTERS.put("java.lang.Long", JDBCGetter.prim("getLong"));
+    JDBC_GETTERS.put("java.lang.Short", JDBCGetter.prim("getShort"));
+    JDBC_GETTERS.put("java.sql.SQLXML", JDBCGetter.obj("getSQLXML"));
+    JDBC_GETTERS.put("java.lang.String", JDBCGetter.obj("getString"));
+    JDBC_GETTERS.put("java.sql.Time", JDBCGetter.obj("getTime"));
+    JDBC_GETTERS.put("java.sql.Timestamp", JDBCGetter.obj("getTimestamp"));
+  }
+
+  private void writeReaderLogic(ColumnMetadata cm, int ordinal) {
+    w.println();
+    String setter = cm.getId().getJavaSetter();
+    String javaClass = cm.getType().getJavaClassName();
+    ConverterTag ct = cm.getConverter();
+    String cn = cm.getId().getCanonicalSQLName();
+
+    if (ct == null) { // No converter
+      JDBCGetter g = JDBC_GETTERS.get(javaClass);
+      String var = "col" + ordinal;
+      ExternalClass jc = ExternalClass.of(javaClass);
+      if (g != null) {
+        if (g.returnsPrimitiveType()) {
+          w.println("          ", jc, " " + var + " = rs." + g.getResultSetMethod() + "(" + ordinal + "); // " + cn);
+          w.println("          if (rs.wasNull()) " + var + " = null;");
+          w.println("          row." + setter + "(" + var + ");");
+        } else {
+          w.println("          ", jc, " " + var + " = rs." + g.getResultSetMethod() + "(" + ordinal + "); // " + cn);
+          w.println("          row." + setter + "(" + var + ");");
+        }
+      } else {
+        w.println("          ", jc, " " + var + " = rs.getObject(" + ordinal + ", ", javaClass, ".class); // " + cn);
+        w.println("          row." + setter + "(" + var + ");");
+      }
+    } else { // Converter specified
+      String var = "col" + ordinal;
+      String cvar = "conv" + ordinal;
+      String rawClass = ct.getJavaRawType();
+      ExternalClass rc = ExternalClass.of(rawClass);
+      JDBCGetter g = JDBC_GETTERS.get(rawClass);
+      javaClass = ct.getJavaType();
+      ExternalClass mc = ExternalClass.of(javaClass);
+      String property = this.converterProperties.get(ct.getName());
+      if (g != null) {
+        if (g.returnsPrimitiveType()) {
+          w.println("          ", rc, " " + var + " = rs." + g.getResultSetMethod() + "(" + ordinal + "); // " + cn);
+          w.println("          if (rs.wasNull()) " + var + " = null;");
+          w.println("          ", mc, " " + cvar + " = " + property + ".decode(" + var + ", conn);");
+          w.println("          row." + setter + "(" + cvar + ");");
+        } else {
+          w.println("          ", rc, " " + var + " = rs." + g.getResultSetMethod() + "(" + ordinal + "); // " + cn);
+          w.println("          ", mc, " " + cvar + " = " + property + ".decode(" + var + ", conn);");
+          w.println("          row." + setter + "(" + cvar + ");");
+        }
+      } else {
+        w.println("          ", rc, " " + var + " = rs.getObject(" + ordinal + ", ", rc, ".class); // " + cn);
+        w.println("          ", mc, " " + cvar + " = " + property + ".decode(" + var + ", conn);");
+        w.println("          row." + setter + "(" + cvar + ");");
+      }
+    }
+
+  }
 
   private Map<DataSetMetadata, LinkedHashSet<ForeignKeyMetadata>> compileDistinctFKs(
       final List<ForeignKeyMetadata> fks) {
@@ -805,8 +1031,130 @@ public class DAO {
     return fkSelectors;
   }
 
+//  private void writeMetadata() throws IOException {
+//
+//    String typeName = this.isTable() ? "Table" : "View";
+//    Class<?> type = this.isTable() ? Table.class : View.class;
+//
+//    Id catalog = this.metadata.getId().getCatalog();
+//    Id schema = this.metadata.getId().getSchema();
+//    Id name = this.metadata.getId().getObject();
+//
+////    String name = this.metadata.getId().getCanonicalSQLName();
+//
+//    w.println("  // Database " + typeName + " metadata");
+//    w.println();
+//    w.println("  public static " + this.metadataClassName + " new" + typeName + "() {");
+//    w.println("    return new " + this.metadataClassName + "();");
+//    w.println("  }");
+//    w.println();
+//    w.println("  public static " + this.metadataClassName + " new" + typeName + "(final String alias) {");
+//    w.println("    return new " + this.metadataClassName + "(alias);");
+//    w.println("  }");
+//    w.println();
+//
+//    w.println("  public static class " + this.metadataClassName + " extends ", type, " {");
+//    w.println();
+//
+//    w.println("    // Properties");
+//    w.println();
+//    for (ColumnMetadata cm : this.metadata.getColumns()) {
+////      String javaType = resolveType(cm);
+////      Class<?> liveSQLColumnType = toLiveSQLType(javaType);
+////      String javaMembername = cm.getId().getJavaMemberName();
+////      String colName = cm.getId().getCanonicalSQLName();
+////      String property = cm.getId().getJavaMemberName();
+////      ExternalClass c = null;
+////
+////      if (cm.getConverter() != null) {
+////        c = ExternalClass.of(cm.getConverter().getJavaClass());
+////      } else {
+////        c = ExternalClass.of(javaType);
+////      }
+////
+////      w.print("    public final ", liveSQLColumnType, " " + javaMembername + " = new ", liveSQLColumnType, "(this" //
+////          + ", \"" + JUtils.escapeJavaString(colName) + "\"" //
+////          + ", \"" + JUtils.escapeJavaString(property) + "\"" //
+////          + ", \"" + JUtils.escapeJavaString(cm.getTypeName()) + "\"" //
+////          + ", " + cm.getPrecision() + "" //
+////          + ", " + cm.getScale() + "");
+////      w.print(", ", Const.HOTROD_TYPE_HANDLER, ".of(", c);
+////      w.println(".class, ", TypeSource.class, ".ENTITY_COLUMN));");
+//    }
+//    w.println();
+//
+//    w.println("    // Getters");
+//    w.println();
+//
+//    w.println("    public ", AllColumns.class, " star() {");
+//    w.println("      return new ", AllColumns.class, "(" + this.metadata.getColumns().stream()
+//        .map(c -> "this." + c.getId().getJavaMemberName()).collect(Collectors.joining(", ")) + ");");
+//    w.println("    }");
+//    w.println();
+//
+//    w.println("    // Constructors");
+//    w.println();
+//    w.println("    " + this.metadataClassName + "() {");
+//    w.print("      super(");
+//    if (catalog == null) {
+//      w.print("null");
+//    } else {
+//      w.print(Name.class,
+//          ".of(\"" + JUtils.escapeJavaString(catalog.getCanonicalSQLName()) + "\", " + catalog.isQuoted() + ")");
+//    }
+//    w.print(", ");
+//    if (schema == null) {
+//      w.print("null");
+//    } else {
+//      w.print(Name.class,
+//          ".of(\"" + JUtils.escapeJavaString(schema.getCanonicalSQLName()) + "\", " + schema.isQuoted() + ")");
+//    }
+//    w.println(", ", Name.class, ".of(\"" + JUtils.escapeJavaString(name.getCanonicalSQLName()) + "\", "
+//        + name.isQuoted() + "), \"" + typeName + "\", null);");
+//    w.println("      initializeColumns();");
+//    w.println("    }");
+//    w.println();
+//    w.println("    " + this.metadataClassName + "(final String alias) {");
+//    w.print("      super(");
+//    if (catalog == null) {
+//      w.print("null");
+//    } else {
+//      w.print(Name.class,
+//          ".of(\"" + JUtils.escapeJavaString(catalog.getCanonicalSQLName()) + "\", " + catalog.isQuoted() + ")");
+//    }
+//    w.print(", ");
+//    if (schema == null) {
+//      w.print("null");
+//    } else {
+//      w.print(Name.class,
+//          ".of(\"" + JUtils.escapeJavaString(schema.getCanonicalSQLName()) + "\", " + schema.isQuoted() + ")");
+//    }
+//    w.println(", ", Name.class, ".of(\"" + JUtils.escapeJavaString(name.getCanonicalSQLName()) + "\", "
+//        + name.isQuoted() + "), \"" + typeName + "\", alias);");
+//    w.println("      initializeColumns();");
+//    w.println("    }");
+//    w.println();
+//
+//    w.println("    // Initialization");
+//    w.println();
+//    w.println("    private void initializeColumns() {");
+//    for (ColumnMetadata cm : this.metadata.getColumns()) {
+//      w.println("      super.add(this." + cm.getId().getJavaMemberName() + ");");
+//    }
+//
+//    w.println("    }");
+//    w.println();
+//
+//    w.println("  }");
+//    w.println();
+//  }
+
   public boolean isTable() {
     return this.daoType == DAOType.TABLE;
+  }
+
+  public boolean isExecutor() {
+    return this.daoType == DAOType.EXECUTOR;
   }
 
   public String getClassName() {

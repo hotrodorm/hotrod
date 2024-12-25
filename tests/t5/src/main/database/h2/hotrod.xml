@@ -29,6 +29,7 @@
   <!--
     <column name="id" sequence="seq1" />
  -->    
+    <column name="balance" converter="boolean_stored_as_int" />
   </table>
 
 <!-- 
