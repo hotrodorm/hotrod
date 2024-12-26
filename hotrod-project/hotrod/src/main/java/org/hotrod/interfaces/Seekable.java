@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import org.apache.ibatis.session.SqlSession;
 
+@Deprecated
 public interface Seekable<T, O> extends Persistable<T, O> {
 
   public int updateByPK() throws SQLException;

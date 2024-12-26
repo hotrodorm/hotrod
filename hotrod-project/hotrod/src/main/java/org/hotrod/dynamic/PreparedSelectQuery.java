@@ -32,7 +32,7 @@ public class PreparedSelectQuery<R> extends PreparedQuery {
       try (ResultSet rs = ps.executeQuery()) {
         List<R> rows = new ArrayList<>();
         while (rs.next()) {
-          R r = rowReader.readRowFrom(rs);
+          R r = rowReader.readRowFrom(rs, conn);
           rows.add(r);
         }
         return rows;
@@ -42,7 +42,7 @@ public class PreparedSelectQuery<R> extends PreparedQuery {
 
   public static interface RowReader<R> {
 
-    R readRowFrom(ResultSet rs) throws SQLException;
+    R readRowFrom(ResultSet rs, Connection conn) throws SQLException;
 
   }
 

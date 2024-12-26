@@ -47,9 +47,9 @@ import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.identifiers.Id;
 import org.hotrod.interfaces.DaoForUpdate;
-import org.hotrod.interfaces.DaoWithOrder;
+//import org.hotrod.interfaces.DaoWithOrder;
 import org.hotrod.interfaces.OrderBy;
-import org.hotrod.interfaces.UpdateByExampleDao;
+//import org.hotrod.interfaces.UpdateByExampleDao;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.EnumDataSetMetadata;
@@ -751,8 +751,8 @@ public class ObjectDAO {
         ExternalClass.of(this.getOrderByClassName()), "... orderBies)");
     w.print("      ");
     w.println("{");
-    w.println("    ", DaoWithOrder.class, "<" + avoClassName + ", " + this.getOrderByClassName() + "> dwo = //");
-    w.println("        new ", DaoWithOrder.class, "<>(example, orderBies);");
+//    w.println("    ", DaoWithOrder.class, "<" + avoClassName + ", " + this.getOrderByClassName() + "> dwo = //");
+//    w.println("        new ", DaoWithOrder.class, "<>(example, orderBies);");
     w.println("    return this.sqlSession.selectList(\"" + this.mapper.getFullMapperIdSelectByExample() + "\", dwo);");
     w.println("  }");
     w.println();
@@ -761,8 +761,8 @@ public class ObjectDAO {
         + this.getOrderByClassName() + "... orderBies)");
     w.print("      ");
     w.println("{");
-    w.println("    ", DaoWithOrder.class, "<" + avoClassName + ", " + this.getOrderByClassName() + "> dwo = //");
-    w.println("        new ", DaoWithOrder.class, "<>(example, orderBies);");
+//    w.println("    ", DaoWithOrder.class, "<" + avoClassName + ", " + this.getOrderByClassName() + "> dwo = //");
+//    w.println("        new ", DaoWithOrder.class, "<>(example, orderBies);");
     w.println("    return new ", MyBatisCursor.class, "<" + voClassName + ">(this.sqlSession.selectCursor(\""
         + this.mapper.getFullMapperIdSelectByExample() + "\", dwo));");
     w.println("  }");
@@ -1475,8 +1475,8 @@ public class ObjectDAO {
     w.println();
     String voClassName = this.avo.getFullClassName();
     w.println("  public int update(final " + voClassName + " example, final " + voClassName + " updateValues) {");
-    w.println("    ", UpdateByExampleDao.class, "<" + voClassName + "> fvd = //");
-    w.println("      new ", UpdateByExampleDao.class, "<" + voClassName + ">(example, updateValues);");
+//    w.println("    ", UpdateByExampleDao.class, "<" + voClassName + "> fvd = //");
+//    w.println("      new ", UpdateByExampleDao.class, "<" + voClassName + ">(example, updateValues);");
     w.println("    return this.sqlSession.update(\"" + this.mapper.getFullMapperIdUpdateByExample() + "\", fvd);");
     w.println("  }");
     w.println();

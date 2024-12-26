@@ -1,5 +1,6 @@
 package org.hotrod.interfaces;
 
+@Deprecated
 public class DaoForUpdate<P> {
 
   private P p;

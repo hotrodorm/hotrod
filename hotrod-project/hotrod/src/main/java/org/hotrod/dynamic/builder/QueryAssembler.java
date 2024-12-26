@@ -18,10 +18,6 @@ public class QueryAssembler {
     this.factory = factory;
   }
 
-//  public PartialQuery create() {
-//    return new PartialQuery(this.factory);
-//  }
-
   public IfsAssembler ifs() {
     return new IfsAssembler(this.factory);
   }
@@ -37,8 +33,6 @@ public class QueryAssembler {
   public OtherwiseSegment otherwise(SegmentList segmentList) {
     return new OtherwiseSegment(segmentList.getSegments(), this.factory);
   }
-
-  // Handy methods instead of create()
 
   public PartialQuery literal(String txt) {
     PartialQuery q = new PartialQuery(this.factory);
@@ -58,6 +52,11 @@ public class QueryAssembler {
   public PartialQuery parameter(String name, int sqlType) {
     PartialQuery q = new PartialQuery(this.factory);
     return q.parameter(name, sqlType);
+  }
+
+  public PartialQuery parameterInjection(String name) {
+    PartialQuery q = new PartialQuery(this.factory);
+    return q.parameterInjection(name);
   }
 
   public PartialQuery if_(String test, SegmentList querySegments) {
@@ -108,12 +107,12 @@ public class QueryAssembler {
   }
 
   public PartialQuery foreach(String item, String collection, String open, String separator, String close,
-      SegmentList segmentList) throws DynamicExpressionException {
+      SegmentList segmentList)  {
     PartialQuery q = new PartialQuery(this.factory);
     return q.foreach(item, collection, open, separator, close, segmentList);
   }
 
-  public PartialQuery bind(String name, String value) throws DynamicExpressionException {
+  public PartialQuery bind(String name, String value) {
     PartialQuery q = new PartialQuery(this.factory);
     return q.bind(name, value);
   }

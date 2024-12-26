@@ -14,26 +14,37 @@ public class BindSegment extends DynamicSegment {
 
   private DynamicExpression valueExpression;
 
-  public BindSegment(String name, String value, DynamicExpressionFactory factory) throws DynamicExpressionException {
-
-    if (SUtil.isEmpty(name)) {
-      throw new DynamicExpressionException("The 'name' property of a Dynamic BIND cannot be empty.");
-    }
-    this.name = name.trim();
-
-    if (SUtil.isEmpty(value)) {
-      throw new DynamicExpressionException("The 'value' property of a Dynamic BIND cannot be empty.");
-    }
+  public BindSegment(String name, String value, DynamicExpressionFactory factory) {
+    this.name = name == null ? null : name.trim();
     this.value = value;
-
     this.factory = factory;
-
     this.valueExpression = this.factory.expression(this.value);
+  }
+
+  private boolean validated = false;
+
+  private synchronized void validate() throws DynamicExpressionException {
+    if (!this.validated) {
+
+      if (SUtil.isEmpty(this.name)) {
+        throw new DynamicExpressionException("The 'name' property of a Dynamic BIND cannot be empty.");
+      }
+
+      if (SUtil.isEmpty(this.value)) {
+        throw new DynamicExpressionException("The 'value' property of a Dynamic BIND cannot be empty.");
+      }
+
+      this.validated = true;
+    }
   }
 
   @Override
   public boolean prepare(StaticSegmentConsumer sc, ParameterContext context, int loopNestingLevel)
       throws DynamicExpressionException {
+
+    if (!this.validated) {
+      this.validate();
+    }
 
     if (context.hasParameter(this.name)) {
       throw new DynamicExpressionException("The variable '" + this.name

@@ -2,9 +2,7 @@ package org.hotrod.interfaces;
 
 public interface OrderBy {
 
-  String getTableName();
-
-  String getColumnName();
+  String getSQLColumnName();
 
   boolean isAscending();
 

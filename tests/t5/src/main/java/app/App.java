@@ -1,6 +1,7 @@
 package app;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,6 +20,7 @@ import org.springframework.context.annotation.Configuration;
 
 import app.daos.Account;
 import app.daos.primitives.AccountDAO;
+import app.daos.primitives.AccountDAO.AccountOrderBy;
 
 @Configuration
 @SpringBootApplication
@@ -54,8 +56,19 @@ public class App {
 
   private void test() throws SQLException, DynamicExpressionException {
 
-    Account a = this.accountDAO.select(1233333);
-    System.out.println("--> " + a);
+    Account filter = new Account();
+    filter.setType("CHK");
+
+    List<Account> accounts = this.accountDAO.select(filter, AccountOrderBy.ID, AccountOrderBy.NAME$DESC);
+//    List<Account> accounts = this.accountDAO.select(filter);
+    for (Account a : accounts) {
+      System.out.println("--> " + a);
+    }
+
+//  List<Account> accounts = this.accountDAO.select1();
+//  for (Account a : accounts) {
+//    System.out.println("--> " + a);
+//  }
 
 //    Account a = new Account();
 //    a.setId(400);

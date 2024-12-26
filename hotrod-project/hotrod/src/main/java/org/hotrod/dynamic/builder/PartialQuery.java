@@ -3,7 +3,6 @@ package org.hotrod.dynamic.builder;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hotrod.dynamic.DynamicExpressionException;
 import org.hotrod.dynamic.DynamicExpressionFactory;
 import org.hotrod.dynamic.DynamicInsertQuery;
 import org.hotrod.dynamic.DynamicModificationQuery;
@@ -15,6 +14,7 @@ import org.hotrod.dynamic.segments.ForEachSegment;
 import org.hotrod.dynamic.segments.IfSegment;
 import org.hotrod.dynamic.segments.LiteralSegment;
 import org.hotrod.dynamic.segments.ParameterDefinitionSegment;
+import org.hotrod.dynamic.segments.ParameterInjectionSegment;
 import org.hotrod.dynamic.segments.QuerySegment;
 import org.hotrod.dynamic.segments.SegmentList;
 import org.hotrod.dynamic.segments.SettersSegment;
@@ -47,6 +47,11 @@ public class PartialQuery {
 
   public PartialQuery parameter(String name, int sqlType) {
     this.segments.add(new ParameterDefinitionSegment(this.factory, name, sqlType));
+    return this;
+  }
+
+  public PartialQuery parameterInjection(String name) {
+    this.segments.add(new ParameterInjectionSegment(this.factory, name));
     return this;
   }
 
@@ -98,12 +103,12 @@ public class PartialQuery {
   }
 
   public PartialQuery foreach(String item, String collection, String open, String separator, String close,
-      SegmentList segmentList) throws DynamicExpressionException {
+      SegmentList segmentList) {
     this.segments.add(new ForEachSegment(item, collection, open, separator, close, segmentList, this.factory));
     return this;
   }
 
-  public PartialQuery bind(String name, String value) throws DynamicExpressionException {
+  public PartialQuery bind(String name, String value) {
     this.segments.add(new BindSegment(name, value, this.factory));
     return this;
   }

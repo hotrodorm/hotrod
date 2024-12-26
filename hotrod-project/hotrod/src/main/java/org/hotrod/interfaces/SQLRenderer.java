@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
+@Deprecated
 public class SQLRenderer {
 
   public enum SQLSegmentType {

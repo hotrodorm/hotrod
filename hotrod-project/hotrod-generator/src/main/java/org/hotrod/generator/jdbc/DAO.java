@@ -45,6 +45,7 @@ import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.generator.mybatisspring.Const;
 import org.hotrod.generator.mybatisspring.DataSetLayout;
 import org.hotrod.generator.mybatisspring.EnumClass;
+import org.hotrod.interfaces.OrderBy;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.EnumDataSetMetadata;
@@ -58,6 +59,7 @@ import org.hotrod.utils.AbstractClassWriter.ExternalClass;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ClassWriter;
 import org.hotrod.utils.GenUtils;
+import org.hotrod.utils.SQLUtil;
 import org.hotrod.utils.SUtil;
 import org.hotrod.utils.Separator;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn.AutogenerationType;
@@ -171,6 +173,8 @@ public class DAO {
 
       writeConverterProperties();
 
+      writeRowReaderProperty();
+
       if (this.isTable()) {
         writeSelect(false); // by PK
 //        writeSelectByUI(mg);
@@ -210,6 +214,7 @@ public class DAO {
 //      writeOrderingEnum();
 //
 //      writeMetadata();
+      writeOrderBy();
 //
 //      if (this.getBundle().getParent() != null) {
 //        writeAOPAspect();
@@ -304,6 +309,34 @@ public class DAO {
 
   }
 
+  private void writeRowReaderProperty() {
+    ExternalClass m = ExternalClass.of(this.model.getFullClassName());
+
+    w.println();
+    w.println("  // ROW READER");
+    w.println();
+    w.print("  private final ", RowReader.class, "<", m, "> rowReader = new ");
+    w.println(RowReader.class, "<", m, ">() {");
+    w.println();
+    w.println("    @", Override.class);
+    w.print("    public ", m, " readRowFrom(", ResultSet.class, " rs, ");
+    w.print(Connection.class, " conn) ");
+    w.println("throws ", SQLException.class, " {");
+    w.println("      ", m, " row = new ", m, "();");
+
+    int ordinal = 1;
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      this.writeReaderLogic(cm, ordinal);
+      ordinal++;
+    }
+
+    w.println();
+    w.println("      return row;");
+    w.println("    }");
+    w.println();
+    w.println("  };");
+  }
+
   private void writeSelect(boolean byExample) {
 
     KeyMetadata pk = this.metadata.getPK();
@@ -330,9 +363,10 @@ public class DAO {
         n++;
       }
 
-      w.println("    .literaln(\"FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
+      w.println("    .literal(\"FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
       if (byExample) {
         fragmentWhereExample("f");
+        w.println("    .parameterInjection(\"ordering\")");
       } else {
         fragmentWherePK("f");
       }
@@ -342,7 +376,8 @@ public class DAO {
       ExternalClass em = ExternalClass.of(this.model.getFullClassName());
       if (byExample) {
         w.print("  public ", List.class, "<", em, "> select(");
-        w.print(em, " filter");
+        ExternalClass ob = ExternalClass.of(this.getOrderByClassName());
+        w.print(em, " filter, ", ob, "... orderBies");
       } else {
         w.print("  public ", em, " select(");
         fragmentPKParameters(pk);
@@ -364,6 +399,10 @@ public class DAO {
 
       w.println("    ", ParameterContext.class, " context = this.expressionFactory.newParameterContext();");
       w.println("    context.add(\"f\", filter);");
+      if (byExample) {
+        w.println("    String ordering = ", SQLUtil.class, ".render(orderBies);");
+        w.println("    context.add(\"ordering\", ordering);");
+      }
       w.print("    ", PreparedSelectQuery.class, "<", em, "> preparedQuery = ");
       w.println("this." + queryName + ".prepare(context, ", em, ".class);");
 
@@ -413,7 +452,7 @@ public class DAO {
     w.println();
     w.println("  private final ", DynamicInsertQuery.class, " " + queryName + " = assembler");
 
-    w.println("      .literaln(\"INSERT INTO ", SUtil.escapeJavaString(this.metadata.getId().getRenderedSQLName()),
+    w.println("    .literaln(\"INSERT INTO ", SUtil.escapeJavaString(this.metadata.getId().getRenderedSQLName()),
         " (\")");
     int coln = this.metadata.getColumns().size();
     int n = 1;
@@ -422,19 +461,19 @@ public class DAO {
       String sqlId = cm.getId().getRenderedSQLName();
 
       if (byExample) {
-        w.println("      .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.literal(\""
+        w.println("    .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.literal(\""
             + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\\n\").end())");
       } else {
 
         // Always include column
         if (!cm.belongsToPK()) {
-          w.println("      .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
+          w.println("    .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
         }
         if (cm.belongsToPK() && cm.getSequenceId() != null) {
-          w.println("      .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
+          w.println("    .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
         }
         if (cm.belongsToPK() && cm.getSequenceId() == null && cm.getAutogenerationType() == null) {
-          w.println("      .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
+          w.println("    .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
         }
 
         // Never include column
@@ -444,7 +483,7 @@ public class DAO {
 
         // Conditionally include column
         if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
-          w.println("      .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.literal(\""
+          w.println("    .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.literal(\""
               + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\\n\").end())");
         }
 
@@ -452,15 +491,15 @@ public class DAO {
 
       n++;
     }
-    w.println("      .literaln(\")\")");
+    w.println("    .literaln(\")\")");
 
     if (mechanics.getOutputClause() != null && mechanics.getGeneratedKeysNames() != null
         && mechanics.getGeneratedKeysNames().length > 0) {
       String gkn = mechanics.getGeneratedKeysNames()[0];
-      w.println("      .literaln(\"" + mechanics.getOutputClause() + SUtil.escapeJavaString(gkn) + "\")");
+      w.println("    .literaln(\"" + mechanics.getOutputClause() + SUtil.escapeJavaString(gkn) + "\")");
     }
 
-    w.println("      .literaln(\"VALUES(\")");
+    w.println("    .literaln(\"VALUES(\")");
 
     n = 1;
     for (ColumnMetadata cm : this.metadata.getColumns()) {
@@ -468,28 +507,27 @@ public class DAO {
       String jdbcType = cm.getType().getJDBCShortType();
 
       if (byExample) {
-        w.println("      .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.parameter(\"m."
+        w.println("    .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.parameter(\"m."
             + SUtil.escapeJavaString(memId) + "\", Types." + jdbcType + ")" + (n < coln ? ".literal(\", \")" : "")
             + ".end())");
       } else {
 
         // Always include column
         if (!cm.belongsToPK()) {
-          w.println("      .literal(\"  \").parameter(\"m." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
+          w.println("    .literal(\"  \").parameter(\"m." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
               "." + jdbcType + ")" + (n < coln ? ".literaln(\",\")" : ""));
         }
         if (cm.belongsToPK() && cm.getSequenceId() != null) {
           if (mechanics.getMode() == PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH) {
-            w.println("      .literal(\"  \").parameter(\"m." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
+            w.println("    .literal(\"  \").parameter(\"m." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
                 "." + jdbcType + ")" + (n < coln ? ".literaln(\",\")" : ""));
           } else {
             String si = mechanics.getSequenceInlineSQL();
-            w.println(
-                "      .literal(\"  " + SUtil.escapeJavaString(si) + "\")" + (n < coln ? ".literaln(\",\")" : ""));
+            w.println("    .literal(\"  " + SUtil.escapeJavaString(si) + "\")" + (n < coln ? ".literaln(\",\")" : ""));
           }
         }
         if (cm.belongsToPK() && cm.getSequenceId() == null && cm.getAutogenerationType() == null) {
-          w.println("      .literal(\"  \").parameter(\"m." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
+          w.println("    .literal(\"  \").parameter(\"m." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
               "." + jdbcType + ")" + (n < coln ? ".literaln(\",\")" : ""));
         }
 
@@ -500,7 +538,7 @@ public class DAO {
 
         // Conditionally include column
         if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
-          w.println("      .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.parameter(\"m."
+          w.println("    .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.parameter(\"m."
               + SUtil.escapeJavaString(memId) + "\", Types." + jdbcType + ")" + (n < coln ? ".literal(\", \")" : "")
               + ".end())");
         }
@@ -509,15 +547,15 @@ public class DAO {
 
       n++;
     }
-    w.println("      .literal(\")\")");
+    w.println("    .literal(\")\")");
 
     if (mechanics.getMode() == PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH) {
-      w.print("      .endInsertQuery(", PrimaryKeyRetrievalMode.class,
+      w.print("    .endInsertQuery(", PrimaryKeyRetrievalMode.class,
           "." + mechanics.getMode() + ", \"" + SUtil.escapeJavaString(mechanics.getSequencePreFetchSQL()) + "\", \"m." //
               + SUtil.escapeJavaString(mechanics.getPrimaryKeyMemberName()) //
               + "\"");
     } else {
-      w.print("      .endInsertQuery(", PrimaryKeyRetrievalMode.class, "." + mechanics.getMode());
+      w.print("    .endInsertQuery(", PrimaryKeyRetrievalMode.class, "." + mechanics.getMode());
     }
 
     if (mechanics.getOutputClause() == null && mechanics.getGeneratedKeysNames() != null
@@ -681,10 +719,10 @@ public class DAO {
 
     w.println();
     w.println("  private final ", DynamicModificationQuery.class, " updateByExample = assembler");
-    w.println("      .literal(\"UPDATE FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
+    w.println("    .literal(\"UPDATE FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
     fragmentSet();
     fragmentWhereExample("f");
-    w.println("      .endModificationQuery();");
+    w.println("    .endModificationQuery();");
     w.println();
 
     ExternalClass em = ExternalClass.of(this.model.getFullClassName());
@@ -759,9 +797,9 @@ public class DAO {
 
     w.println();
     w.println("  private final ", DynamicModificationQuery.class, " deleteByExample = assembler");
-    w.println("      .literal(\"DELETE FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
+    w.println("    .literal(\"DELETE FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
     fragmentWhereExample("f");
-    w.println("      .endModificationQuery();");
+    w.println("    .endModificationQuery();");
     w.println();
 
     ExternalClass em = ExternalClass.of(this.model.getFullClassName());
@@ -779,17 +817,59 @@ public class DAO {
 
   }
 
+  private void writeOrderBy() {
+
+    w.println();
+    w.println("  // ORDER BY");
+
+    ExternalClass ob = ExternalClass.of(this.getOrderByClassName());
+
+    w.println();
+    w.println("  public enum ", ob, " implements ", OrderBy.class, " {");
+
+    w.println();
+    int col = 1;
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      String constantBase = cm.getId().getJavaConstantName();
+      String colSQL = cm.getId().getRenderedSQLName();
+      w.println("    " + constantBase + "(\"" + SUtil.escapeJavaString(colSQL) + "\", true),");
+      w.println("    " + constantBase + "$DESC(\"" + SUtil.escapeJavaString(colSQL) + "\", false)"
+          + (col < this.metadata.getColumns().size() ? "," : ";"));
+      col++;
+    }
+
+    w.println();
+    w.println("    private String sqlColumnName;");
+    w.println("    private boolean ascending;");
+    w.println();
+    w.println("    private ", ob, "(String sqlColumnName, boolean ascending) {");
+    w.println("      this.sqlColumnName = sqlColumnName;");
+    w.println("      this.ascending = ascending;");
+    w.println("    }");
+    w.println();
+    w.println("    public String getSQLColumnName() {");
+    w.println("      return this.sqlColumnName;");
+    w.println("    }");
+    w.println();
+    w.println("    public boolean isAscending() {");
+    w.println("      return this.ascending;");
+    w.println("    }");
+    w.println();
+    w.println("  }");
+
+  }
+
   private void fragmentSet() {
-    w.println("      .set(assembler.ifs()");
+    w.println("    .set(assembler.ifs()");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String memId = cm.getId().getJavaMemberName();
       String sqlId = cm.getId().getRenderedSQLName();
       String jdbcType = cm.getType().getJDBCShortType();
-      w.println("          .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.literal(\""
+      w.println("        .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.literal(\""
           + SUtil.escapeJavaString(sqlId) + " = \").parameter(\"m." + SUtil.escapeJavaString(memId) + "\", Types."
           + jdbcType + ").end())");
     }
-    w.println("          .end())");
+    w.println("        .end())");
   }
 
   private void fragmentPKParameters(KeyMetadata pk) {
@@ -823,17 +903,16 @@ public class DAO {
   }
 
   private void fragmentWhereExample(String objname) {
-    w.println("      .where(\"AND\", assembler.ifs()");
+    w.println("    .where(\"AND\", assembler.ifs()");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String memId = cm.getId().getJavaMemberName();
       String sqlId = cm.getId().getRenderedSQLName();
       String jdbcType = cm.getType().getJDBCShortType();
-      w.println(
-          "          .if_(\"" + objname + "." + memId + " != null\", assembler.literal(\""
-              + SUtil.escapeJavaString(sqlId) + " = \").parameter(\"" + objname + "." + memId + "\", ",
-          Types.class, "." + jdbcType + ").end())");
+      w.println("        .if_(\"" + objname + "." + memId + " != null\", assembler.literal(\""
+          + SUtil.escapeJavaString(sqlId) + " = \").parameter(\"" + objname + "." + memId + "\", ", Types.class,
+          "." + jdbcType + ").end())");
     }
-    w.println("          .end())");
+    w.println("        .end())");
   }
 
   private void fragmentLogging() {
@@ -853,28 +932,7 @@ public class DAO {
 
   private void fragmentExecuteSelect(ExternalClass m, boolean singleRow) {
     w.println("    try (", Connection.class, " conn = this.dataSource.getConnection()) {");
-    w.println();
-    w.print("      ", RowReader.class, "<", m, "> rowReader = new ");
-    w.println(RowReader.class, "<", m, ">() {");
-    w.println();
-    w.println("        @", Override.class);
-    w.print("        public ", m, " readRowFrom(", ResultSet.class, " rs) ");
-    w.println("throws ", SQLException.class, " {");
-    w.println("          ", m, " row = new ", m, "();");
-
-    int ordinal = 1;
-    for (ColumnMetadata cm : this.metadata.getColumns()) {
-      this.writeReaderLogic(cm, ordinal);
-      ordinal++;
-    }
-
-    w.println();
-    w.println("          return row;");
-    w.println("        }");
-    w.println();
-    w.println("      };");
-    w.println();
-    w.println("      ", List.class, "<", m, "> rows = preparedQuery.execute(conn, rowReader);");
+    w.println("      ", List.class, "<", m, "> rows = preparedQuery.execute(conn, this.rowReader);");
 
     if (singleRow) {
       w.println("      if (rows.size() == 0) return null;");
@@ -909,7 +967,7 @@ public class DAO {
           String property = "converter" + (n++);
           this.converterProperties.put(ct.getName(), property);
           ExternalClass cc = ExternalClass.of(ct.getJavaClass());
-          w.println("  private ", cc, " " + property + " = new ", cc, "();");
+          w.println("  private final ", cc, " " + property + " = new ", cc, "();");
         }
       }
     }
@@ -977,16 +1035,16 @@ public class DAO {
       ExternalClass jc = ExternalClass.of(javaClass);
       if (g != null) {
         if (g.returnsPrimitiveType()) {
-          w.println("          ", jc, " " + var + " = rs." + g.getResultSetMethod() + "(" + ordinal + "); // " + cn);
-          w.println("          if (rs.wasNull()) " + var + " = null;");
-          w.println("          row." + setter + "(" + var + ");");
+          w.println("      ", jc, " " + var + " = rs." + g.getResultSetMethod() + "(" + ordinal + "); // " + cn);
+          w.println("      if (rs.wasNull()) " + var + " = null;");
+          w.println("      row." + setter + "(" + var + ");");
         } else {
-          w.println("          ", jc, " " + var + " = rs." + g.getResultSetMethod() + "(" + ordinal + "); // " + cn);
-          w.println("          row." + setter + "(" + var + ");");
+          w.println("      ", jc, " " + var + " = rs." + g.getResultSetMethod() + "(" + ordinal + "); // " + cn);
+          w.println("      row." + setter + "(" + var + ");");
         }
       } else {
-        w.println("          ", jc, " " + var + " = rs.getObject(" + ordinal + ", ", javaClass, ".class); // " + cn);
-        w.println("          row." + setter + "(" + var + ");");
+        w.println("      ", jc, " " + var + " = rs.getObject(" + ordinal + ", ", javaClass, ".class); // " + cn);
+        w.println("      row." + setter + "(" + var + ");");
       }
     } else { // Converter specified
       String var = "col" + ordinal;
@@ -999,19 +1057,19 @@ public class DAO {
       String property = this.converterProperties.get(ct.getName());
       if (g != null) {
         if (g.returnsPrimitiveType()) {
-          w.println("          ", rc, " " + var + " = rs." + g.getResultSetMethod() + "(" + ordinal + "); // " + cn);
-          w.println("          if (rs.wasNull()) " + var + " = null;");
-          w.println("          ", mc, " " + cvar + " = " + property + ".decode(" + var + ", conn);");
-          w.println("          row." + setter + "(" + cvar + ");");
+          w.println("      ", rc, " " + var + " = rs." + g.getResultSetMethod() + "(" + ordinal + "); // " + cn);
+          w.println("      if (rs.wasNull()) " + var + " = null;");
+          w.println("      ", mc, " " + cvar + " = " + property + ".decode(" + var + ", conn);");
+          w.println("      row." + setter + "(" + cvar + ");");
         } else {
-          w.println("          ", rc, " " + var + " = rs." + g.getResultSetMethod() + "(" + ordinal + "); // " + cn);
-          w.println("          ", mc, " " + cvar + " = " + property + ".decode(" + var + ", conn);");
-          w.println("          row." + setter + "(" + cvar + ");");
+          w.println("      ", rc, " " + var + " = rs." + g.getResultSetMethod() + "(" + ordinal + "); // " + cn);
+          w.println("      ", mc, " " + cvar + " = " + property + ".decode(" + var + ", conn);");
+          w.println("      row." + setter + "(" + cvar + ");");
         }
       } else {
-        w.println("          ", rc, " " + var + " = rs.getObject(" + ordinal + ", ", rc, ".class); // " + cn);
-        w.println("          ", mc, " " + cvar + " = " + property + ".decode(" + var + ", conn);");
-        w.println("          row." + setter + "(" + cvar + ");");
+        w.println("      ", rc, " " + var + " = rs.getObject(" + ordinal + ", ", rc, ".class); // " + cn);
+        w.println("      ", mc, " " + cvar + " = " + property + ".decode(" + var + ", conn);");
+        w.println("      row." + setter + "(" + cvar + ");");
       }
     }
 
@@ -1171,6 +1229,10 @@ public class DAO {
 
   public String getClassName() {
     return this.myBatisTag.getDaos().generateDAOName(this.metadata.getId());
+  }
+
+  private String getOrderByClassName() {
+    return this.metadata.getId().getJavaClassName() + "OrderBy";
   }
 
   public String getFullClassName() {

@@ -26,10 +26,12 @@ import org.hotrod.dynamic.PreparedSelectQuery.RowReader;
 import org.hotrod.dynamic.builder.QueryAssembler;
 import org.hotrod.dynamic.insert.PreparedInsertQuery;
 import org.hotrod.dynamic.insert.PrimaryKeyRetrievalMode;
+import org.hotrod.interfaces.OrderBy;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.spring.SpringBeanObjectFactory;
+import org.hotrod.utils.SQLUtil;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -74,7 +76,35 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   // CONVERTERS
 
-  private IntegerBooleanConverter converter0 = new IntegerBooleanConverter();
+  private final IntegerBooleanConverter converter0 = new IntegerBooleanConverter();
+
+  // ROW READER
+
+  private final RowReader<Account> rowReader = new RowReader<Account>() {
+
+    @Override
+    public Account readRowFrom(ResultSet rs, Connection conn) throws SQLException {
+      Account row = new Account();
+
+      Integer col1 = rs.getInt(1); // ID
+      if (rs.wasNull()) col1 = null;
+      row.setId(col1);
+
+      String col2 = rs.getString(2); // NAME
+      row.setName(col2);
+
+      String col3 = rs.getString(3); // TYPE
+      row.setType(col3);
+
+      Integer col4 = rs.getInt(4); // BALANCE
+      if (rs.wasNull()) col4 = null;
+      Boolean conv4 = converter0.decode(col4, conn);
+      row.setBalance(conv4);
+
+      return row;
+    }
+
+  };
 
   // SELECT BY PRIMARY KEY
 
@@ -84,7 +114,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     .literaln("  name,")
     .literaln("  type,")
     .literaln("  balance")
-    .literaln("FROM account")
+    .literal("FROM account")
     .literal("WHERE " + "id = ").parameter("f.id", Types.INTEGER)
     .endSelectQuery();
 
@@ -101,34 +131,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       log.fine("SQL: " + preparedQuery.getPreview());
     }
     try (Connection conn = this.dataSource.getConnection()) {
-
-      RowReader<Account> rowReader = new RowReader<Account>() {
-
-        @Override
-        public Account readRowFrom(ResultSet rs) throws SQLException {
-          Account row = new Account();
-
-          Integer col1 = rs.getInt(1); // ID
-          if (rs.wasNull()) col1 = null;
-          row.setId(col1);
-
-          String col2 = rs.getString(2); // NAME
-          row.setName(col2);
-
-          String col3 = rs.getString(3); // TYPE
-          row.setType(col3);
-
-          Integer col4 = rs.getInt(4); // BALANCE
-          if (rs.wasNull()) col4 = null;
-          Boolean conv4 = converter0.decode(col4, conn);
-          row.setBalance(conv4);
-
-          return row;
-        }
-
-      };
-
-      List<Account> rows = preparedQuery.execute(conn, rowReader);
+      List<Account> rows = preparedQuery.execute(conn, this.rowReader);
       if (rows.size() == 0) return null;
       if (rows.size() == 1) return rows.get(0);
       throw new RuntimeException("A single row at most was expected but received " + rows.size() + " rows.");
@@ -143,18 +146,21 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     .literaln("  name,")
     .literaln("  type,")
     .literaln("  balance")
-    .literaln("FROM account")
-      .where("AND", assembler.ifs()
-          .if_("f.id != null", assembler.literal("id = ").parameter("f.id", Types.INTEGER).end())
-          .if_("f.name != null", assembler.literal("name = ").parameter("f.name", Types.VARCHAR).end())
-          .if_("f.type != null", assembler.literal("type = ").parameter("f.type", Types.VARCHAR).end())
-          .if_("f.balance != null", assembler.literal("balance = ").parameter("f.balance", Types.INTEGER).end())
-          .end())
+    .literal("FROM account")
+    .where("AND", assembler.ifs()
+        .if_("f.id != null", assembler.literal("id = ").parameter("f.id", Types.INTEGER).end())
+        .if_("f.name != null", assembler.literal("name = ").parameter("f.name", Types.VARCHAR).end())
+        .if_("f.type != null", assembler.literal("type = ").parameter("f.type", Types.VARCHAR).end())
+        .if_("f.balance != null", assembler.literal("balance = ").parameter("f.balance", Types.INTEGER).end())
+        .end())
+    .parameterInjection("ordering")
     .endSelectQuery();
 
-  public List<Account> select(Account filter) throws DynamicExpressionException, SQLException {
+  public List<Account> select(Account filter, AccountOrderBy... orderBies) throws DynamicExpressionException, SQLException {
     ParameterContext context = this.expressionFactory.newParameterContext();
     context.add("f", filter);
+    String ordering = SQLUtil.render(orderBies);
+    context.add("ordering", ordering);
     PreparedSelectQuery<Account> preparedQuery = this.selectByExample.prepare(context, Account.class);
     if (log.isLoggable(Level.FINER)) {
       log.finer("SQL: " + preparedQuery.getPreview(true));
@@ -162,34 +168,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       log.fine("SQL: " + preparedQuery.getPreview());
     }
     try (Connection conn = this.dataSource.getConnection()) {
-
-      RowReader<Account> rowReader = new RowReader<Account>() {
-
-        @Override
-        public Account readRowFrom(ResultSet rs) throws SQLException {
-          Account row = new Account();
-
-          Integer col1 = rs.getInt(1); // ID
-          if (rs.wasNull()) col1 = null;
-          row.setId(col1);
-
-          String col2 = rs.getString(2); // NAME
-          row.setName(col2);
-
-          String col3 = rs.getString(3); // TYPE
-          row.setType(col3);
-
-          Integer col4 = rs.getInt(4); // BALANCE
-          if (rs.wasNull()) col4 = null;
-          Boolean conv4 = converter0.decode(col4, conn);
-          row.setBalance(conv4);
-
-          return row;
-        }
-
-      };
-
-      List<Account> rows = preparedQuery.execute(conn, rowReader);
+      List<Account> rows = preparedQuery.execute(conn, this.rowReader);
       return rows;
     }
   }
@@ -197,19 +176,19 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   // INSERT
 
   private final DynamicInsertQuery insert = assembler
-      .literaln("INSERT INTO account (")
-      .if_("m.id != null", assembler.literal("id,\n").end())
-      .literaln("  name,")
-      .literaln("  type,")
-      .literaln("  balance")
-      .literaln(")")
-      .literaln("VALUES(")
-      .if_("m.id != null", assembler.parameter("m.id", Types.INTEGER).literal(", ").end())
-      .literal("  ").parameter("m.name", Types.VARCHAR).literaln(",")
-      .literal("  ").parameter("m.type", Types.VARCHAR).literaln(",")
-      .literal("  ").parameter("m.balance", Types.INTEGER)
-      .literal(")")
-      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
+    .literaln("INSERT INTO account (")
+    .if_("m.id != null", assembler.literal("id,\n").end())
+    .literaln("  name,")
+    .literaln("  type,")
+    .literaln("  balance")
+    .literaln(")")
+    .literaln("VALUES(")
+    .if_("m.id != null", assembler.parameter("m.id", Types.INTEGER).literal(", ").end())
+    .literal("  ").parameter("m.name", Types.VARCHAR).literaln(",")
+    .literal("  ").parameter("m.type", Types.VARCHAR).literaln(",")
+    .literal("  ").parameter("m.balance", Types.INTEGER)
+    .literal(")")
+    .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
 
   public void insert(Account m) throws DynamicExpressionException, SQLException {
     ParameterContext context = this.expressionFactory.newParameterContext();
@@ -229,19 +208,19 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   // INSERT BY EXAMPLE
 
   private final DynamicInsertQuery insertByExample = assembler
-      .literaln("INSERT INTO account (")
-      .if_("m.id != null", assembler.literal("id,\n").end())
-      .if_("m.name != null", assembler.literal("name,\n").end())
-      .if_("m.type != null", assembler.literal("type,\n").end())
-      .if_("m.balance != null", assembler.literal("balance\n").end())
-      .literaln(")")
-      .literaln("VALUES(")
-      .if_("m.id != null", assembler.parameter("m.id", Types.INTEGER).literal(", ").end())
-      .if_("m.name != null", assembler.parameter("m.name", Types.VARCHAR).literal(", ").end())
-      .if_("m.type != null", assembler.parameter("m.type", Types.VARCHAR).literal(", ").end())
-      .if_("m.balance != null", assembler.parameter("m.balance", Types.INTEGER).end())
-      .literal(")")
-      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
+    .literaln("INSERT INTO account (")
+    .if_("m.id != null", assembler.literal("id,\n").end())
+    .if_("m.name != null", assembler.literal("name,\n").end())
+    .if_("m.type != null", assembler.literal("type,\n").end())
+    .if_("m.balance != null", assembler.literal("balance\n").end())
+    .literaln(")")
+    .literaln("VALUES(")
+    .if_("m.id != null", assembler.parameter("m.id", Types.INTEGER).literal(", ").end())
+    .if_("m.name != null", assembler.parameter("m.name", Types.VARCHAR).literal(", ").end())
+    .if_("m.type != null", assembler.parameter("m.type", Types.VARCHAR).literal(", ").end())
+    .if_("m.balance != null", assembler.parameter("m.balance", Types.INTEGER).end())
+    .literal(")")
+    .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
 
   public void insertByExample(Account m) throws DynamicExpressionException, SQLException {
     ParameterContext context = this.expressionFactory.newParameterContext();
@@ -262,12 +241,12 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   private final DynamicModificationQuery updateByPK = assembler
     .literal("UPDATE account")
-      .set(assembler.ifs()
-          .if_("m.id != null", assembler.literal("id = ").parameter("m.id", Types.INTEGER).end())
-          .if_("m.name != null", assembler.literal("name = ").parameter("m.name", Types.VARCHAR).end())
-          .if_("m.type != null", assembler.literal("type = ").parameter("m.type", Types.VARCHAR).end())
-          .if_("m.balance != null", assembler.literal("balance = ").parameter("m.balance", Types.INTEGER).end())
-          .end())
+    .set(assembler.ifs()
+        .if_("m.id != null", assembler.literal("id = ").parameter("m.id", Types.INTEGER).end())
+        .if_("m.name != null", assembler.literal("name = ").parameter("m.name", Types.VARCHAR).end())
+        .if_("m.type != null", assembler.literal("type = ").parameter("m.type", Types.VARCHAR).end())
+        .if_("m.balance != null", assembler.literal("balance = ").parameter("m.balance", Types.INTEGER).end())
+        .end())
     .literal("WHERE " + "id = ").parameter("m.id", Types.INTEGER)
     .endModificationQuery();
 
@@ -290,20 +269,20 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   // UPDATE BY EXAMPLE
 
   private final DynamicModificationQuery updateByExample = assembler
-      .literal("UPDATE FROM account")
-      .set(assembler.ifs()
-          .if_("m.id != null", assembler.literal("id = ").parameter("m.id", Types.INTEGER).end())
-          .if_("m.name != null", assembler.literal("name = ").parameter("m.name", Types.VARCHAR).end())
-          .if_("m.type != null", assembler.literal("type = ").parameter("m.type", Types.VARCHAR).end())
-          .if_("m.balance != null", assembler.literal("balance = ").parameter("m.balance", Types.INTEGER).end())
-          .end())
-      .where("AND", assembler.ifs()
-          .if_("f.id != null", assembler.literal("id = ").parameter("f.id", Types.INTEGER).end())
-          .if_("f.name != null", assembler.literal("name = ").parameter("f.name", Types.VARCHAR).end())
-          .if_("f.type != null", assembler.literal("type = ").parameter("f.type", Types.VARCHAR).end())
-          .if_("f.balance != null", assembler.literal("balance = ").parameter("f.balance", Types.INTEGER).end())
-          .end())
-      .endModificationQuery();
+    .literal("UPDATE FROM account")
+    .set(assembler.ifs()
+        .if_("m.id != null", assembler.literal("id = ").parameter("m.id", Types.INTEGER).end())
+        .if_("m.name != null", assembler.literal("name = ").parameter("m.name", Types.VARCHAR).end())
+        .if_("m.type != null", assembler.literal("type = ").parameter("m.type", Types.VARCHAR).end())
+        .if_("m.balance != null", assembler.literal("balance = ").parameter("m.balance", Types.INTEGER).end())
+        .end())
+    .where("AND", assembler.ifs()
+        .if_("f.id != null", assembler.literal("id = ").parameter("f.id", Types.INTEGER).end())
+        .if_("f.name != null", assembler.literal("name = ").parameter("f.name", Types.VARCHAR).end())
+        .if_("f.type != null", assembler.literal("type = ").parameter("f.type", Types.VARCHAR).end())
+        .if_("f.balance != null", assembler.literal("balance = ").parameter("f.balance", Types.INTEGER).end())
+        .end())
+    .endModificationQuery();
 
   public int update(Account filter, Account updateValues) throws DynamicExpressionException, SQLException {
     ParameterContext context = this.expressionFactory.newParameterContext();
@@ -349,14 +328,14 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   // DELETE BY EXAMPLE
 
   private final DynamicModificationQuery deleteByExample = assembler
-      .literal("DELETE FROM account")
-      .where("AND", assembler.ifs()
-          .if_("f.id != null", assembler.literal("id = ").parameter("f.id", Types.INTEGER).end())
-          .if_("f.name != null", assembler.literal("name = ").parameter("f.name", Types.VARCHAR).end())
-          .if_("f.type != null", assembler.literal("type = ").parameter("f.type", Types.VARCHAR).end())
-          .if_("f.balance != null", assembler.literal("balance = ").parameter("f.balance", Types.INTEGER).end())
-          .end())
-      .endModificationQuery();
+    .literal("DELETE FROM account")
+    .where("AND", assembler.ifs()
+        .if_("f.id != null", assembler.literal("id = ").parameter("f.id", Types.INTEGER).end())
+        .if_("f.name != null", assembler.literal("name = ").parameter("f.name", Types.VARCHAR).end())
+        .if_("f.type != null", assembler.literal("type = ").parameter("f.type", Types.VARCHAR).end())
+        .if_("f.balance != null", assembler.literal("balance = ").parameter("f.balance", Types.INTEGER).end())
+        .end())
+    .endModificationQuery();
 
   public int delete(Account filter) throws DynamicExpressionException, SQLException {
     ParameterContext context = this.expressionFactory.newParameterContext();
@@ -371,6 +350,37 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       int rows = preparedQuery.execute(conn);
       return rows;
     }
+  }
+
+  // ORDER BY
+
+  public enum AccountOrderBy implements OrderBy {
+
+    ID("id", true),
+    ID$DESC("id", false),
+    NAME("name", true),
+    NAME$DESC("name", false),
+    TYPE("type", true),
+    TYPE$DESC("type", false),
+    BALANCE("balance", true),
+    BALANCE$DESC("balance", false);
+
+    private String sqlColumnName;
+    private boolean ascending;
+
+    private AccountOrderBy(String sqlColumnName, boolean ascending) {
+      this.sqlColumnName = sqlColumnName;
+      this.ascending = ascending;
+    }
+
+    public String getSQLColumnName() {
+      return this.sqlColumnName;
+    }
+
+    public boolean isAscending() {
+      return this.ascending;
+    }
+
   }
 
 }

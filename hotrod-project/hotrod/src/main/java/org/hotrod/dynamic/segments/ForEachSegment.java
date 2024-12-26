@@ -31,25 +31,18 @@ public class ForEachSegment extends DynamicSegment {
   private Collection<?> coll;
 
   public ForEachSegment(String item, String collection, String open, String separator, String close,
-      SegmentList segmentList, DynamicExpressionFactory factory) throws DynamicExpressionException {
+      SegmentList segmentList, DynamicExpressionFactory factory) {
     super();
 
     this.factory = factory;
 
     // Item
 
-    if (SUtil.isEmpty(item)) {
-      throw new DynamicExpressionException("The 'item' property of a Dynamic SQL FOREACH cannot be empty.");
-    }
-    this.item = item.trim();
+    this.item = item == null ? null : item.trim();
 
     // Collection
 
-    if (SUtil.isEmpty(collection)) {
-      throw new DynamicExpressionException("The 'collection' property of a Dynamic SQL FOREACH cannot be empty.");
-    }
     this.collection = collection;
-    this.collectionExpression = this.factory.expression(this.collection);
 
     // Open, Separator, Close
 
@@ -59,15 +52,45 @@ public class ForEachSegment extends DynamicSegment {
 
     // Segments
 
-    if (segmentList == null) {
-      throw new DynamicExpressionException("The 'body' of a Dynamic SQL FOREACH cannot be empty.");
+    this.segments = segmentList == null ? null : segmentList.getSegments();
+
+  }
+
+  private boolean validated = false;
+
+  private synchronized void validate() throws DynamicExpressionException {
+    if (!this.validated) {
+
+      // Item
+
+      if (SUtil.isEmpty(this.item)) {
+        throw new DynamicExpressionException("The 'item' property of a Dynamic SQL FOREACH cannot be empty.");
+      }
+
+      // Collection
+
+      if (SUtil.isEmpty(this.collection)) {
+        throw new DynamicExpressionException("The 'collection' property of a Dynamic SQL FOREACH cannot be empty.");
+      }
+      this.collectionExpression = this.factory.expression(this.collection);
+
+      // Segments
+
+      if (this.segments == null) {
+        throw new DynamicExpressionException("The 'body' of a Dynamic SQL FOREACH cannot be empty.");
+      }
+
+      this.validated = true;
     }
-    this.segments = segmentList.getSegments();
   }
 
   @Override
   public boolean prepare(StaticSegmentConsumer sc, ParameterContext context, int loopNestingLevel)
       throws DynamicExpressionException {
+    
+    if (!this.validated) {
+      this.validate();
+    }
 
     Object obj = this.collectionExpression.evaluate(context);
     if (obj == null) {
@@ -102,7 +125,6 @@ public class ForEachSegment extends DynamicSegment {
         this.separator.prepare(sc, context, loopNestingLevel + 1);
       }
       context.bind(this.item, o);
-//      log.info("o: " + o);
       for (QuerySegment w : this.segments) {
         w.prepare(sc, context, loopNestingLevel + 1);
       }

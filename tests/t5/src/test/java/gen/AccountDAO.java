@@ -61,7 +61,7 @@ public class AccountDAO {
       RowReader<Account> rowReader = new RowReader<Account>() {
 
         @Override
-        public Account readRowFrom(ResultSet rs) throws SQLException {
+        public Account readRowFrom(ResultSet rs, Connection conn) throws SQLException {
           Account row = new Account();
           row.setId(rs.getInt(1));
           row.setName(rs.getString(2));
@@ -454,7 +454,7 @@ public class AccountDAO {
       RowReader<Long> countReader = new RowReader<Long>() {
 
         @Override
-        public Long readRowFrom(ResultSet rs) throws SQLException {
+        public Long readRowFrom(ResultSet rs, Connection conn) throws SQLException {
           return rs.getLong(1);
         }
 
