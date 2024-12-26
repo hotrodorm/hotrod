@@ -135,6 +135,65 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     }
   }
 
+  // SELECT BY EXAMPLE
+
+  private final DynamicSelectQuery selectByExample = assembler
+    .literaln("SELECT")
+    .literaln("  id,")
+    .literaln("  name,")
+    .literaln("  type,")
+    .literaln("  balance")
+    .literaln("FROM account")
+      .where("AND", assembler.ifs()
+          .if_("f.id != null", assembler.literal("id = ").parameter("f.id", Types.INTEGER).end())
+          .if_("f.name != null", assembler.literal("name = ").parameter("f.name", Types.VARCHAR).end())
+          .if_("f.type != null", assembler.literal("type = ").parameter("f.type", Types.VARCHAR).end())
+          .if_("f.balance != null", assembler.literal("balance = ").parameter("f.balance", Types.INTEGER).end())
+          .end())
+    .endSelectQuery();
+
+  public List<Account> select(Account filter) throws DynamicExpressionException, SQLException {
+    ParameterContext context = this.expressionFactory.newParameterContext();
+    context.add("f", filter);
+    PreparedSelectQuery<Account> preparedQuery = this.selectByExample.prepare(context, Account.class);
+    if (log.isLoggable(Level.FINER)) {
+      log.finer("SQL: " + preparedQuery.getPreview(true));
+    } else if (log.isLoggable(Level.FINE)) {
+      log.fine("SQL: " + preparedQuery.getPreview());
+    }
+    try (Connection conn = this.dataSource.getConnection()) {
+
+      RowReader<Account> rowReader = new RowReader<Account>() {
+
+        @Override
+        public Account readRowFrom(ResultSet rs) throws SQLException {
+          Account row = new Account();
+
+          Integer col1 = rs.getInt(1); // ID
+          if (rs.wasNull()) col1 = null;
+          row.setId(col1);
+
+          String col2 = rs.getString(2); // NAME
+          row.setName(col2);
+
+          String col3 = rs.getString(3); // TYPE
+          row.setType(col3);
+
+          Integer col4 = rs.getInt(4); // BALANCE
+          if (rs.wasNull()) col4 = null;
+          Boolean conv4 = converter0.decode(col4, conn);
+          row.setBalance(conv4);
+
+          return row;
+        }
+
+      };
+
+      List<Account> rows = preparedQuery.execute(conn, rowReader);
+      return rows;
+    }
+  }
+
   // INSERT
 
   private final DynamicInsertQuery insert = assembler

@@ -172,11 +172,11 @@ public class DAO {
       writeConverterProperties();
 
       if (this.isTable()) {
-        writeSelectByPK();
+        writeSelect(false); // by PK
 //        writeSelectByUI(mg);
       }
 //
-//      writeSelectByExample();
+      writeSelect(true); // by example
 //      writeSelectByCriteria();
 //
 //      if (this.isTable()) {
@@ -304,20 +304,22 @@ public class DAO {
 
   }
 
-  private void writeSelectByPK() {
+  private void writeSelect(boolean byExample) {
 
     KeyMetadata pk = this.metadata.getPK();
 
-    if (pk == null) {
+    if (!byExample && pk == null) {
       w.println();
       w.println("  // SELECT BY PRIMARY KEY -- Not available since the table does not have a primary key.");
     } else {
 
       w.println();
-      w.println("  // SELECT BY PRIMARY KEY");
+      w.println("  // SELECT BY " + (byExample ? "EXAMPLE" : "PRIMARY KEY"));
+
+      String queryName = byExample ? "selectByExample" : "selectByPrimaryKey";
 
       w.println();
-      w.println("  private final ", DynamicSelectQuery.class, " selectByPrimaryKey = assembler");
+      w.println("  private final ", DynamicSelectQuery.class, " " + queryName + " = assembler");
       w.println("    .literaln(\"SELECT\")");
 
       int coln = this.metadata.getColumns().size();
@@ -329,34 +331,44 @@ public class DAO {
       }
 
       w.println("    .literaln(\"FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
-      fragmentWherePK(pk, "f");
+      if (byExample) {
+        fragmentWhereExample("f");
+      } else {
+        fragmentWherePK("f");
+      }
       w.println("    .endSelectQuery();");
       w.println();
 
       ExternalClass em = ExternalClass.of(this.model.getFullClassName());
-      w.print("  public ", em, " select(");
-      fragmentPKParameters(pk);
+      if (byExample) {
+        w.print("  public ", List.class, "<", em, "> select(");
+        w.print(em, " filter");
+      } else {
+        w.print("  public ", em, " select(");
+        fragmentPKParameters(pk);
+      }
       w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
 
-      for (ColumnMetadata cm : pk.getColumns()) {
-        String m = cm.getId().getJavaMemberName();
-        w.println("    if (" + m + " == null) return null;");
-      }
-
-      w.println("    ", em, " filter = new ", em, "();");
-      for (ColumnMetadata cm : pk.getColumns()) {
-        String m = cm.getId().getJavaMemberName();
-        String setter = cm.getId().getJavaSetter();
-        w.println("    filter." + setter + "(" + m + ");");
+      if (!byExample) {
+        for (ColumnMetadata cm : pk.getColumns()) {
+          String m = cm.getId().getJavaMemberName();
+          w.println("    if (" + m + " == null) return null;");
+        }
+        w.println("    ", em, " filter = new ", em, "();");
+        for (ColumnMetadata cm : pk.getColumns()) {
+          String m = cm.getId().getJavaMemberName();
+          String setter = cm.getId().getJavaSetter();
+          w.println("    filter." + setter + "(" + m + ");");
+        }
       }
 
       w.println("    ", ParameterContext.class, " context = this.expressionFactory.newParameterContext();");
       w.println("    context.add(\"f\", filter);");
       w.print("    ", PreparedSelectQuery.class, "<", em, "> preparedQuery = ");
-      w.println("this.selectByPrimaryKey.prepare(context, ", em, ".class);");
+      w.println("this." + queryName + ".prepare(context, ", em, ".class);");
 
       fragmentLogging();
-      fragmentExecuteSelect(em, true);
+      fragmentExecuteSelect(em, !byExample);
 
       w.println("  }");
 
@@ -636,7 +648,7 @@ public class DAO {
       w.println("  private final ", DynamicModificationQuery.class, " updateByPK = assembler");
       w.println("    .literal(\"UPDATE " + this.metadata.getId().getRenderedSQLName() + "\")");
       fragmentSet();
-      fragmentWherePK(pk, "m");
+      fragmentWherePK("m");
       w.println("    .endModificationQuery();");
       w.println();
 
@@ -671,7 +683,7 @@ public class DAO {
     w.println("  private final ", DynamicModificationQuery.class, " updateByExample = assembler");
     w.println("      .literal(\"UPDATE FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
     fragmentSet();
-    fragmentWhereExample();
+    fragmentWhereExample("f");
     w.println("      .endModificationQuery();");
     w.println();
 
@@ -706,7 +718,7 @@ public class DAO {
       w.println();
       w.println("  private final ", DynamicModificationQuery.class, " deleteByPK = assembler");
       w.println("    .literaln(\"DELETE FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
-      fragmentWherePK(pk);
+      fragmentWherePK("f");
       w.println("    .endModificationQuery();");
       w.println();
 
@@ -748,7 +760,7 @@ public class DAO {
     w.println();
     w.println("  private final ", DynamicModificationQuery.class, " deleteByExample = assembler");
     w.println("      .literal(\"DELETE FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
-    fragmentWhereExample();
+    fragmentWhereExample("f");
     w.println("      .endModificationQuery();");
     w.println();
 
@@ -796,11 +808,8 @@ public class DAO {
     }
   }
 
-  private void fragmentWherePK(KeyMetadata pk) {
-    this.fragmentWherePK(pk, "f");
-  }
-
-  private void fragmentWherePK(KeyMetadata pk, String objname) {
+  private void fragmentWherePK(String objname) {
+    KeyMetadata pk = this.metadata.getPK();
     Separator sep = Separator.of("WHERE ", "  AND ");
     for (ColumnMetadata cm : pk.getColumns()) {
       String memId = cm.getId().getJavaMemberName();
@@ -813,14 +822,16 @@ public class DAO {
     }
   }
 
-  private void fragmentWhereExample() {
+  private void fragmentWhereExample(String objname) {
     w.println("      .where(\"AND\", assembler.ifs()");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String memId = cm.getId().getJavaMemberName();
       String sqlId = cm.getId().getRenderedSQLName();
       String jdbcType = cm.getType().getJDBCShortType();
-      w.println("          .if_(\"f." + memId + " != null\", assembler.literal(\"" + SUtil.escapeJavaString(sqlId)
-          + " = \").parameter(\"f." + memId + "\", ", Types.class, "." + jdbcType + ").end())");
+      w.println(
+          "          .if_(\"" + objname + "." + memId + " != null\", assembler.literal(\""
+              + SUtil.escapeJavaString(sqlId) + " = \").parameter(\"" + objname + "." + memId + "\", ",
+          Types.class, "." + jdbcType + ").end())");
     }
     w.println("          .end())");
   }
@@ -868,7 +879,8 @@ public class DAO {
     if (singleRow) {
       w.println("      if (rows.size() == 0) return null;");
       w.println("      if (rows.size() == 1) return rows.get(0);");
-      w.println("      throw new RuntimeException(\"A single row at most was expected but received \" + rows.size() + \" rows.\");");
+      w.println(
+          "      throw new RuntimeException(\"A single row at most was expected but received \" + rows.size() + \" rows.\");");
     } else {
       w.println("      return rows;");
     }
