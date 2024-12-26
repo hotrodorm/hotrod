@@ -49,4 +49,8 @@ public class VariableOccurrence implements SQLSegment {
     return new VariableExpression(this.name);
   }
 
+  public String getName() {
+    return name;
+  }
+
 }

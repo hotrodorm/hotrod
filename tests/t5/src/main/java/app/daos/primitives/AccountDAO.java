@@ -98,8 +98,12 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
       Integer col4 = rs.getInt(4); // BALANCE
       if (rs.wasNull()) col4 = null;
-      Boolean conv4 = converter0.decode(col4, conn);
-      row.setBalance(conv4);
+      row.setBalance(col4);
+
+      Integer col5 = rs.getInt(5); // ACTIVE
+      if (rs.wasNull()) col5 = null;
+      Boolean conv5 = converter0.decode(col5, conn);
+      row.setActive(conv5);
 
       return row;
     }
@@ -113,7 +117,8 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     .literaln("  id,")
     .literaln("  name,")
     .literaln("  type,")
-    .literaln("  balance")
+    .literaln("  balance,")
+    .literaln("  active")
     .literal("FROM account")
     .literal("WHERE " + "id = ").parameter("f.id", Types.INTEGER)
     .endSelectQuery();
@@ -145,13 +150,15 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     .literaln("  id,")
     .literaln("  name,")
     .literaln("  type,")
-    .literaln("  balance")
+    .literaln("  balance,")
+    .literaln("  active")
     .literal("FROM account")
     .where("AND", assembler.ifs()
         .if_("f.id != null", assembler.literal("id = ").parameter("f.id", Types.INTEGER).end())
         .if_("f.name != null", assembler.literal("name = ").parameter("f.name", Types.VARCHAR).end())
         .if_("f.type != null", assembler.literal("type = ").parameter("f.type", Types.VARCHAR).end())
         .if_("f.balance != null", assembler.literal("balance = ").parameter("f.balance", Types.INTEGER).end())
+        .if_("f.active != null", assembler.literal("active = ").parameter("f.active", Types.INTEGER).end())
         .end())
     .parameterInjection("ordering")
     .endSelectQuery();
@@ -180,13 +187,15 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     .if_("m.id != null", assembler.literal("id,\n").end())
     .literaln("  name,")
     .literaln("  type,")
-    .literaln("  balance")
+    .literaln("  balance,")
+    .literaln("  active")
     .literaln(")")
     .literaln("VALUES(")
     .if_("m.id != null", assembler.parameter("m.id", Types.INTEGER).literal(", ").end())
     .literal("  ").parameter("m.name", Types.VARCHAR).literaln(",")
     .literal("  ").parameter("m.type", Types.VARCHAR).literaln(",")
-    .literal("  ").parameter("m.balance", Types.INTEGER)
+    .literal("  ").parameter("m.balance", Types.INTEGER).literaln(",")
+    .literal("  ").parameter("m.active", Types.INTEGER)
     .literal(")")
     .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
 
@@ -212,13 +221,15 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     .if_("m.id != null", assembler.literal("id,\n").end())
     .if_("m.name != null", assembler.literal("name,\n").end())
     .if_("m.type != null", assembler.literal("type,\n").end())
-    .if_("m.balance != null", assembler.literal("balance\n").end())
+    .if_("m.balance != null", assembler.literal("balance,\n").end())
+    .if_("m.active != null", assembler.literal("active\n").end())
     .literaln(")")
     .literaln("VALUES(")
     .if_("m.id != null", assembler.parameter("m.id", Types.INTEGER).literal(", ").end())
     .if_("m.name != null", assembler.parameter("m.name", Types.VARCHAR).literal(", ").end())
     .if_("m.type != null", assembler.parameter("m.type", Types.VARCHAR).literal(", ").end())
-    .if_("m.balance != null", assembler.parameter("m.balance", Types.INTEGER).end())
+    .if_("m.balance != null", assembler.parameter("m.balance", Types.INTEGER).literal(", ").end())
+    .if_("m.active != null", assembler.parameter("m.active", Types.INTEGER).end())
     .literal(")")
     .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
 
@@ -246,6 +257,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
         .if_("m.name != null", assembler.literal("name = ").parameter("m.name", Types.VARCHAR).end())
         .if_("m.type != null", assembler.literal("type = ").parameter("m.type", Types.VARCHAR).end())
         .if_("m.balance != null", assembler.literal("balance = ").parameter("m.balance", Types.INTEGER).end())
+        .if_("m.active != null", assembler.literal("active = ").parameter("m.active", Types.INTEGER).end())
         .end())
     .literal("WHERE " + "id = ").parameter("m.id", Types.INTEGER)
     .endModificationQuery();
@@ -275,12 +287,14 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
         .if_("m.name != null", assembler.literal("name = ").parameter("m.name", Types.VARCHAR).end())
         .if_("m.type != null", assembler.literal("type = ").parameter("m.type", Types.VARCHAR).end())
         .if_("m.balance != null", assembler.literal("balance = ").parameter("m.balance", Types.INTEGER).end())
+        .if_("m.active != null", assembler.literal("active = ").parameter("m.active", Types.INTEGER).end())
         .end())
     .where("AND", assembler.ifs()
         .if_("f.id != null", assembler.literal("id = ").parameter("f.id", Types.INTEGER).end())
         .if_("f.name != null", assembler.literal("name = ").parameter("f.name", Types.VARCHAR).end())
         .if_("f.type != null", assembler.literal("type = ").parameter("f.type", Types.VARCHAR).end())
         .if_("f.balance != null", assembler.literal("balance = ").parameter("f.balance", Types.INTEGER).end())
+        .if_("f.active != null", assembler.literal("active = ").parameter("f.active", Types.INTEGER).end())
         .end())
     .endModificationQuery();
 
@@ -334,6 +348,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
         .if_("f.name != null", assembler.literal("name = ").parameter("f.name", Types.VARCHAR).end())
         .if_("f.type != null", assembler.literal("type = ").parameter("f.type", Types.VARCHAR).end())
         .if_("f.balance != null", assembler.literal("balance = ").parameter("f.balance", Types.INTEGER).end())
+        .if_("f.active != null", assembler.literal("active = ").parameter("f.active", Types.INTEGER).end())
         .end())
     .endModificationQuery();
 
@@ -363,7 +378,9 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     TYPE("type", true),
     TYPE$DESC("type", false),
     BALANCE("balance", true),
-    BALANCE$DESC("balance", false);
+    BALANCE$DESC("balance", false),
+    ACTIVE("active", true),
+    ACTIVE$DESC("active", false);
 
     private String sqlColumnName;
     private boolean ascending;
@@ -381,6 +398,36 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       return this.ascending;
     }
 
+  }
+
+  // NITRO QUERY: activateBigAccounts
+
+  private final DynamicModificationQuery query0 = assembler
+    .literal("\n      ")
+    .literal("\n      update account\n      set active = true\n      where not active\n      ")
+    .if_("minBalance != null", assembler
+      .literal("\n        and balance >= ")
+      .parameter("minBalance", Types.BIGINT)
+      .literal("\n      ")
+      .end()
+    )
+    .literal("\n    ")
+    .endModificationQuery();
+
+  public int activateBigAccounts(Long minBalance)
+      throws DynamicExpressionException, SQLException {
+    ParameterContext context = this.expressionFactory.newParameterContext();
+    context.add("minBalance", minBalance);
+    PreparedModificationQuery preparedQuery = this.query0.prepare(context);
+    if (log.isLoggable(Level.FINER)) {
+      log.finer("SQL: " + preparedQuery.getPreview(true));
+    } else if (log.isLoggable(Level.FINE)) {
+      log.fine("SQL: " + preparedQuery.getPreview());
+    }
+    try (Connection conn = this.dataSource.getConnection()) {
+      int rows = preparedQuery.execute(conn);
+      return rows;
+    }
   }
 
 }

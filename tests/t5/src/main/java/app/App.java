@@ -1,7 +1,6 @@
 package app;
 
 import java.sql.SQLException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,9 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import app.daos.Account;
 import app.daos.primitives.AccountDAO;
-import app.daos.primitives.AccountDAO.AccountOrderBy;
 
 @Configuration
 @SpringBootApplication
@@ -56,14 +53,18 @@ public class App {
 
   private void test() throws SQLException, DynamicExpressionException {
 
-    Account filter = new Account();
-    filter.setType("CHK");
+//    int rows = this.accountDAO.activateBigAccounts(150L);
+    int rows = this.accountDAO.activateBigAccounts(null);
+    System.out.println("--> rows=" + rows);
 
-    List<Account> accounts = this.accountDAO.select(filter, AccountOrderBy.ID, AccountOrderBy.NAME$DESC);
-//    List<Account> accounts = this.accountDAO.select(filter);
-    for (Account a : accounts) {
-      System.out.println("--> " + a);
-    }
+//    Account filter = new Account();
+//    filter.setType("CHK");
+//
+//    List<Account> accounts = this.accountDAO.select(filter, AccountOrderBy.ID, AccountOrderBy.NAME$DESC);
+////    List<Account> accounts = this.accountDAO.select(filter);
+//    for (Account a : accounts) {
+//      System.out.println("--> " + a);
+//    }
 
 //  List<Account> accounts = this.accountDAO.select1();
 //  for (Account a : accounts) {

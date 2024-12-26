@@ -8,8 +8,8 @@ import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.dynamicsql.existing.expressions.CollectionExpression;
-import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
 import org.hotrod.dynamicsql.existing.expressions.LiteralExpression;
+import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
@@ -193,6 +193,10 @@ public class ParameterisableTextPart extends DynamicSQLPart {
               + ", col " + this.getSourceLocation().getColumnNumber() + ": " + e.getMessage());
     }
 
+  }
+
+  public List<SQLSegment> getSegments() {
+    return segments;
   }
 
 }

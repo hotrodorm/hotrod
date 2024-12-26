@@ -147,6 +147,10 @@ public class QueryMethodTag extends AbstractMethodTag<QueryMethodTag> {
 
   // Simple Caption
 
+  public List<DynamicSQLPart> getDynamicSQLParts() {
+    return parts;
+  }
+
   @Override
   public String getInternalCaption() {
     return this.getTagName() + ":" + this.method;

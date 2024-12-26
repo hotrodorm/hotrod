@@ -15,7 +15,8 @@ public class AccountPrototype implements Serializable {
   protected Integer id = null;
   protected String name = null;
   protected String type = null;
-  protected Boolean balance = null;
+  protected Integer balance = null;
+  protected Boolean active = null;
 
   // getters & setters
 
@@ -43,12 +44,20 @@ public class AccountPrototype implements Serializable {
     this.type = type;
   }
 
-  public Boolean getBalance() {
+  public Integer getBalance() {
     return this.balance;
   }
 
-  public void setBalance(final Boolean balance) {
+  public void setBalance(final Integer balance) {
     this.balance = balance;
+  }
+
+  public Boolean getActive() {
+    return this.active;
+  }
+
+  public void setActive(final Boolean active) {
+    this.active = active;
   }
 
   // to string
@@ -59,7 +68,8 @@ public class AccountPrototype implements Serializable {
     sb.append("- id=" + this.id + "\n");
     sb.append("- name=" + this.name + "\n");
     sb.append("- type=" + this.type + "\n");
-    sb.append("- balance=" + this.balance);
+    sb.append("- balance=" + this.balance + "\n");
+    sb.append("- active=" + this.active);
     return sb.toString();
   }
 
@@ -71,6 +81,7 @@ public class AccountPrototype implements Serializable {
     obj.addProperty("name", this.name);
     obj.addProperty("type", this.type);
     obj.addProperty("balance", this.balance);
+    obj.addProperty("active", this.active);
     return obj;
   }
 

@@ -44,4 +44,8 @@ public class VerbatimTextPart implements SQLSegment {
     return null;
   }
 
+  public String getContent() {
+    return content;
+  }
+
 }

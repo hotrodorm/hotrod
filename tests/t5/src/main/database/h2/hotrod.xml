@@ -29,7 +29,18 @@
   <!--
     <column name="id" sequence="seq1" />
  -->    
-    <column name="balance" converter="boolean_stored_as_int" />
+    <column name="active" converter="boolean_stored_as_int" />
+
+    <query method="activateBigAccounts">
+      <parameter name="minBalance" java-type="java.lang.Long" />
+      update account
+      set active = true
+      where not active
+      <if test="minBalance != null">
+        and balance >= #{minBalance}
+      </if>
+    </query>
+
   </table>
 
 <!-- 
@@ -41,5 +52,10 @@
     <column name="is_vip" converter="boolean_stored_as_int" />
   </table>
  -->
+ 
+   <dao name="Reporting">
+ 
+       
+  </dao>
 
 </hotrod>

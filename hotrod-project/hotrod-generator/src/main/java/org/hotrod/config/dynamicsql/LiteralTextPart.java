@@ -3,8 +3,8 @@ package org.hotrod.config.dynamicsql;
 import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.existing.SourceLocation;
-import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
 import org.hotrod.dynamicsql.existing.expressions.LiteralExpression;
+import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
@@ -94,6 +94,12 @@ public class LiteralTextPart extends DynamicSQLPart implements SQLSegment {
   @Override
   public boolean isEmpty() {
     return this.text == null || this.text.trim().isEmpty();
+  }
+
+  // Getters
+
+  public String getText() {
+    return text;
   }
 
 }

@@ -15,8 +15,8 @@ import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.ParameterTag;
-import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
 import org.hotrod.dynamicsql.existing.expressions.LiteralExpression;
+import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.Generator;
@@ -287,6 +287,12 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
   @Override
   public String getInternalCaption() {
     return this.getTagName();
+  }
+
+  // Getters
+
+  public List<DynamicSQLPart> getParts() {
+    return parts;
   }
 
 }

@@ -10,7 +10,6 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -23,6 +22,9 @@ import org.hotrod.config.Constants;
 import org.hotrod.config.ConverterTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.JDBCTag;
+import org.hotrod.config.ParameterTag;
+import org.hotrod.config.QueryMethodTag;
+import org.hotrod.config.dynamicsql.DynamicSQLPart;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.dynamic.DynamicExpressionException;
 import org.hotrod.dynamic.DynamicExpressionFactory;
@@ -49,7 +51,6 @@ import org.hotrod.interfaces.OrderBy;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.EnumDataSetMetadata;
-import org.hotrod.metadata.ForeignKeyMetadata;
 import org.hotrod.metadata.KeyMetadata;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
@@ -63,8 +64,6 @@ import org.hotrod.utils.SQLUtil;
 import org.hotrod.utils.SUtil;
 import org.hotrod.utils.Separator;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn.AutogenerationType;
-
-// Optimistic version control NOT YET IMPLEMENTED
 
 public class DAO {
 
@@ -90,9 +89,6 @@ public class DAO {
   private Model model = null;
 
   private String metadataClassName;
-
-  private Map<DataSetMetadata, LinkedHashSet<ForeignKeyMetadata>> fkSelectors;
-  private Map<DataSetMetadata, LinkedHashSet<ForeignKeyMetadata>> efkSelectors;
 
   private ClassWriter w;
 
@@ -124,8 +120,6 @@ public class DAO {
     this.classPackage = this.layout.getDAOPrimitivePackage(this.fragmentPackage);
     this.metadataClassName = this.metadata.getId().getJavaClassName() + (this.isTable() ? "Table" : "View");
 
-    this.fkSelectors = compileDistinctFKs(this.metadata.getImportedFKs());
-    this.efkSelectors = compileDistinctFKs(this.metadata.getExportedFKs());
   }
 
   public void generate(final FileGenerator fileGenerator, final JDBCGenerator mg)
@@ -211,8 +205,6 @@ public class DAO {
 //
 //      writeEnumTypeHandlers();
 //
-//      writeOrderingEnum();
-//
 //      writeMetadata();
       writeOrderBy();
 //
@@ -221,26 +213,25 @@ public class DAO {
 //      }
 //
     }
-//
-//    writeConverters();
-//
+
 //    if (this.tag != null) {
-//
+
 //      log.fine("SQL NAME=" + this.metadata.getId().getCanonicalSQLName() + " this.tag=" + this.tag);
 //      for (SequenceMethodTag s : this.tag.getSequences()) {
 //        log.fine("s.getName()=" + s.getSequenceId().getRenderedSQLName());
 //        writeSelectSequence(s);
 //      }
-//
-//      for (QueryMethodTag q : this.tag.getQueries()) {
-//        log.fine("q.getJavaMethodName()=" + q.getMethod());
-//        writeQuery(q);
-//      }
-//
+
+    int i = 0;
+    for (QueryMethodTag q : this.tag.getQueries()) {
+      log.info("q.getJavaMethodName()=" + q.getMethod());
+      writeNitroQuery(q, i++);
+    }
+
 //      for (SelectMethodMetadata s : this.metadata.getSelectsMetadata()) {
 //        writeSelect(s);
 //      }
-//
+
 //    }
 
     writeClassFooter();
@@ -1075,149 +1066,44 @@ public class DAO {
 
   }
 
-  private Map<DataSetMetadata, LinkedHashSet<ForeignKeyMetadata>> compileDistinctFKs(
-      final List<ForeignKeyMetadata> fks) {
+  private void writeNitroQuery(QueryMethodTag q, int n) throws ControlledException {
 
-    List<ForeignKeyMetadata> sortedFKs = new ArrayList<ForeignKeyMetadata>(fks);
-    sortedFKs.sort((a, b) -> {
-      int c = a.getRemote().toCamelCase(".").compareTo(b.getRemote().toCamelCase("."));
-      if (c != 0) {
-        return c;
-      }
-      return a.getLocal().toCamelCase(".").compareTo(b.getLocal().toCamelCase("."));
-    });
+    String queryName = "query" + n;
+    String method = q.getMethod();
 
-    Map<DataSetMetadata, LinkedHashSet<ForeignKeyMetadata>> fkSelectors = new LinkedHashMap<DataSetMetadata, LinkedHashSet<ForeignKeyMetadata>>();
-    for (ForeignKeyMetadata fk : sortedFKs) {
-      DataSetMetadata ds = fk.getRemote().getTableMetadata();
-      LinkedHashSet<ForeignKeyMetadata> fkSelector = fkSelectors.get(ds);
-      if (fkSelector == null) {
-        fkSelector = new LinkedHashSet<ForeignKeyMetadata>();
-        fkSelectors.put(ds, fkSelector);
-      }
-      fkSelector.add(fk);
+    w.println();
+    w.println("  // NITRO QUERY: " + method);
+
+    w.println();
+    w.println("  private final ", DynamicModificationQuery.class, " " + queryName + " = assembler");
+
+    List<DynamicSQLPart> parts = q.getDynamicSQLParts();
+    NitroRenderer r = new NitroRenderer();
+    r.render(parts, w);
+
+    w.println("    .endModificationQuery();");
+    w.println();
+
+    w.print("  public int " + method + "(");
+    Separator sep = new Separator(", ");
+    for (ParameterTag p : q.getParameterDefinitions()) {
+      ExternalClass pc = ExternalClass.of(p.getJavaType());
+      w.print(pc, " " + p.getName() + sep.render());
     }
+    w.println(")");
+    w.println("      throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
+    w.println("    ", ParameterContext.class, " context = this.expressionFactory.newParameterContext();");
+    for (ParameterTag p : q.getParameterDefinitions()) {
+      w.println("    context.add(\"" + p.getName() + "\", " + p.getName() + ");");
+    }
+    w.println("    ", PreparedModificationQuery.class, " preparedQuery = this." + queryName + ".prepare(context);");
 
-    return fkSelectors;
+    fragmentLogging();
+    fragmentExecuteModification();
+
+    w.println("  }");
+
   }
-
-//  private void writeMetadata() throws IOException {
-//
-//    String typeName = this.isTable() ? "Table" : "View";
-//    Class<?> type = this.isTable() ? Table.class : View.class;
-//
-//    Id catalog = this.metadata.getId().getCatalog();
-//    Id schema = this.metadata.getId().getSchema();
-//    Id name = this.metadata.getId().getObject();
-//
-////    String name = this.metadata.getId().getCanonicalSQLName();
-//
-//    w.println("  // Database " + typeName + " metadata");
-//    w.println();
-//    w.println("  public static " + this.metadataClassName + " new" + typeName + "() {");
-//    w.println("    return new " + this.metadataClassName + "();");
-//    w.println("  }");
-//    w.println();
-//    w.println("  public static " + this.metadataClassName + " new" + typeName + "(final String alias) {");
-//    w.println("    return new " + this.metadataClassName + "(alias);");
-//    w.println("  }");
-//    w.println();
-//
-//    w.println("  public static class " + this.metadataClassName + " extends ", type, " {");
-//    w.println();
-//
-//    w.println("    // Properties");
-//    w.println();
-//    for (ColumnMetadata cm : this.metadata.getColumns()) {
-////      String javaType = resolveType(cm);
-////      Class<?> liveSQLColumnType = toLiveSQLType(javaType);
-////      String javaMembername = cm.getId().getJavaMemberName();
-////      String colName = cm.getId().getCanonicalSQLName();
-////      String property = cm.getId().getJavaMemberName();
-////      ExternalClass c = null;
-////
-////      if (cm.getConverter() != null) {
-////        c = ExternalClass.of(cm.getConverter().getJavaClass());
-////      } else {
-////        c = ExternalClass.of(javaType);
-////      }
-////
-////      w.print("    public final ", liveSQLColumnType, " " + javaMembername + " = new ", liveSQLColumnType, "(this" //
-////          + ", \"" + JUtils.escapeJavaString(colName) + "\"" //
-////          + ", \"" + JUtils.escapeJavaString(property) + "\"" //
-////          + ", \"" + JUtils.escapeJavaString(cm.getTypeName()) + "\"" //
-////          + ", " + cm.getPrecision() + "" //
-////          + ", " + cm.getScale() + "");
-////      w.print(", ", Const.HOTROD_TYPE_HANDLER, ".of(", c);
-////      w.println(".class, ", TypeSource.class, ".ENTITY_COLUMN));");
-//    }
-//    w.println();
-//
-//    w.println("    // Getters");
-//    w.println();
-//
-//    w.println("    public ", AllColumns.class, " star() {");
-//    w.println("      return new ", AllColumns.class, "(" + this.metadata.getColumns().stream()
-//        .map(c -> "this." + c.getId().getJavaMemberName()).collect(Collectors.joining(", ")) + ");");
-//    w.println("    }");
-//    w.println();
-//
-//    w.println("    // Constructors");
-//    w.println();
-//    w.println("    " + this.metadataClassName + "() {");
-//    w.print("      super(");
-//    if (catalog == null) {
-//      w.print("null");
-//    } else {
-//      w.print(Name.class,
-//          ".of(\"" + JUtils.escapeJavaString(catalog.getCanonicalSQLName()) + "\", " + catalog.isQuoted() + ")");
-//    }
-//    w.print(", ");
-//    if (schema == null) {
-//      w.print("null");
-//    } else {
-//      w.print(Name.class,
-//          ".of(\"" + JUtils.escapeJavaString(schema.getCanonicalSQLName()) + "\", " + schema.isQuoted() + ")");
-//    }
-//    w.println(", ", Name.class, ".of(\"" + JUtils.escapeJavaString(name.getCanonicalSQLName()) + "\", "
-//        + name.isQuoted() + "), \"" + typeName + "\", null);");
-//    w.println("      initializeColumns();");
-//    w.println("    }");
-//    w.println();
-//    w.println("    " + this.metadataClassName + "(final String alias) {");
-//    w.print("      super(");
-//    if (catalog == null) {
-//      w.print("null");
-//    } else {
-//      w.print(Name.class,
-//          ".of(\"" + JUtils.escapeJavaString(catalog.getCanonicalSQLName()) + "\", " + catalog.isQuoted() + ")");
-//    }
-//    w.print(", ");
-//    if (schema == null) {
-//      w.print("null");
-//    } else {
-//      w.print(Name.class,
-//          ".of(\"" + JUtils.escapeJavaString(schema.getCanonicalSQLName()) + "\", " + schema.isQuoted() + ")");
-//    }
-//    w.println(", ", Name.class, ".of(\"" + JUtils.escapeJavaString(name.getCanonicalSQLName()) + "\", "
-//        + name.isQuoted() + "), \"" + typeName + "\", alias);");
-//    w.println("      initializeColumns();");
-//    w.println("    }");
-//    w.println();
-//
-//    w.println("    // Initialization");
-//    w.println();
-//    w.println("    private void initializeColumns() {");
-//    for (ColumnMetadata cm : this.metadata.getColumns()) {
-//      w.println("      super.add(this." + cm.getId().getJavaMemberName() + ");");
-//    }
-//
-//    w.println("    }");
-//    w.println();
-//
-//    w.println("  }");
-//    w.println();
-//  }
 
   public boolean isTable() {
     return this.daoType == DAOType.TABLE;
