@@ -1,22 +1,22 @@
 package org.hotrod.dynamic.segments;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.logging.Logger;
 
 import org.hotrod.dynamic.DynamicExpressionException;
 import org.hotrod.dynamic.ParameterContext;
 
-public class IterationValueParameterSegment extends ParameterSegment {
+public class VariableInstanceValueSegment extends ParameterSegment {
 
   @SuppressWarnings("unused")
-  private static final Logger log = Logger.getLogger(IterationValueParameterSegment.class.getName());
+  private static final Logger log = Logger.getLogger(VariableInstanceValueSegment.class.getName());
 
   private Object value;
-  private int sqlType;
   private String originalParameterName;
 
-  public IterationValueParameterSegment(Object value, int sqlType, String originalParameterName) {
+  public VariableInstanceValueSegment(Object value, String originalParameterName) {
     this.value = value;
-    this.sqlType = sqlType;
     this.originalParameterName = originalParameterName;
   }
 
@@ -28,17 +28,18 @@ public class IterationValueParameterSegment extends ParameterSegment {
     return true;
   }
 
-  public int getSQLType() {
-    return sqlType;
-  }
-
   public Object getValue() {
     return this.value;
   }
 
   @Override
   public String getName() {
-    return "<iteration value for '" + this.originalParameterName + "'>";
+    return this.originalParameterName;
+  }
+
+  @Override
+  public void applyTo(PreparedStatement ps, int ordinal) throws SQLException {
+    ps.setObject(ordinal, this.value);
   }
 
 }

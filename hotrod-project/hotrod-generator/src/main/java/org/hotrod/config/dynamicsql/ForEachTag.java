@@ -81,7 +81,7 @@ public class ForEachTag extends DynamicSQLPart {
     log.fine("init");
 
     if (this.item != null) {
-      if (parameterDefinitions.find(this.item) != null) {
+      if (parameterDefinitions.findParameter(this.item) != null) {
         throw new InvalidConfigurationFileException(this, "Invalid <foreach> tag. "
             + "The 'item' attribute specifies a parameter or variable that is already defined. Try using a different variable name.");
       }
@@ -94,7 +94,7 @@ public class ForEachTag extends DynamicSQLPart {
     }
 
     if (this.index != null) {
-      if (parameterDefinitions.find(this.index) != null) {
+      if (parameterDefinitions.findParameter(this.index) != null) {
         throw new InvalidConfigurationFileException(this, "Invalid <foreach> tag. "
             + "The 'index' attribute specifies a parameter or variable that is already defined. Try using a different variable name.");
       }
@@ -165,6 +165,26 @@ public class ForEachTag extends DynamicSQLPart {
      * </pre>
      */
 
+  }
+
+  public String getItem() {
+    return item;
+  }
+
+  public String getCollection() {
+    return collection;
+  }
+
+  public String getOpen() {
+    return open;
+  }
+
+  public String getSeparator() {
+    return separator;
+  }
+
+  public String getClose() {
+    return close;
   }
 
 }

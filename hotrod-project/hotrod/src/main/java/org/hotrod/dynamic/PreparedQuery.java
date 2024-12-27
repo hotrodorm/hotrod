@@ -3,6 +3,8 @@ package org.hotrod.dynamic;
 import java.util.List;
 
 import org.hotrod.dynamic.segments.ParameterSegment;
+import org.hotrod.dynamic.segments.TypedParameterSegment;
+import org.hotrod.dynamic.segments.VariableInstanceValueSegment;
 import org.hotrod.utils.JDBCTypes;
 import org.hotrod.utils.SUtil;
 
@@ -31,15 +33,22 @@ public abstract class PreparedQuery {
       p.append("\n=== Parameters (" + this.parameters.size() + ") ===\n");
       int pos = 1;
       for (ParameterSegment ps : this.parameters) {
-        String sqlTypeName = JDBCTypes.codeToShortName(ps.getSQLType());
+
+        String type = "";
+        if (ps instanceof TypedParameterSegment) {
+          type = JDBCTypes.codeToShortName(((TypedParameterSegment) ps).getSQLType());
+        } else if (ps instanceof VariableInstanceValueSegment) {
+          type = "inner variable";
+        }
+
         Object value = ps.getValue();
         String tostring = "" + value;
         if (tostring.length() > MAX_DISPLAY_VALUE) {
           tostring = tostring.substring(0, MAX_DISPLAY_VALUE - 3) + "...";
         }
         String name = ps.getName();
-        p.append("" + pos++ + ". " + name + " (" + SUtil.coalesce(sqlTypeName, "OTHER/" + ps.getSQLType()) + "): "
-            + tostring + (value == null ? "" : " (" + value.getClass().getName() + ")") + "\n");
+        p.append("" + pos++ + ". " + name + " (" + SUtil.coalesce(type, "OTHER") + "): " + tostring
+            + (value == null ? "" : " (" + value.getClass().getName() + ")") + "\n");
       }
       if (!this.parameters.isEmpty()) {
         p.append("======================\n");

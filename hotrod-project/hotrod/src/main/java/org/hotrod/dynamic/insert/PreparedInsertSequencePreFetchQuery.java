@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.dynamic.DynamicExpressionException;
-import org.hotrod.dynamic.segments.ParameterDefinitionSegment;
 import org.hotrod.dynamic.segments.ParameterSegment;
+import org.hotrod.dynamic.segments.TypedParameterSegment;
 
 public class PreparedInsertSequencePreFetchQuery extends InsertExecutor {
 
@@ -46,14 +46,12 @@ public class PreparedInsertSequencePreFetchQuery extends InsertExecutor {
 
   private boolean setParameter(List<ParameterSegment> parameters, String name, Long value) {
     for (ParameterSegment s : parameters) {
-      try {
-        ParameterDefinitionSegment ps = (ParameterDefinitionSegment) s;
-        if (ps.getName().equals(name)) {
-          ps.setValue(value);
+      if (s instanceof TypedParameterSegment) {
+        if (s.getName().equals(name)) {
+          TypedParameterSegment ts = (TypedParameterSegment) s;
+          ts.setValue(value);
           return true;
         }
-      } catch (ClassCastException e) {
-        // Ignore -- it's an unnamed parameter
       }
     }
     return false;

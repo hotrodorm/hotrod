@@ -318,9 +318,8 @@
   <xsd:complexType name="trim-type">
     <xsd:group ref="leading-dynamicsql-tag" minOccurs="0" maxOccurs="unbounded" />
     <xsd:attribute name="prefix" type="xsd:string" />
-    <xsd:attribute name="prefixOverrides" type="xsd:string" />
+    <xsd:attribute name="separator" type="xsd:string" />
     <xsd:attribute name="suffix" type="xsd:string" />
-    <xsd:attribute name="suffixOverrides" type="xsd:string" />
   </xsd:complexType>
 
   <!-- foreach -->

@@ -13,12 +13,13 @@ import org.hotrod.dynamic.segments.ChooseSegment;
 import org.hotrod.dynamic.segments.ForEachSegment;
 import org.hotrod.dynamic.segments.IfSegment;
 import org.hotrod.dynamic.segments.LiteralSegment;
-import org.hotrod.dynamic.segments.ParameterDefinitionSegment;
 import org.hotrod.dynamic.segments.ParameterInjectionSegment;
+import org.hotrod.dynamic.segments.ParameterOccurrenceSegment;
 import org.hotrod.dynamic.segments.QuerySegment;
 import org.hotrod.dynamic.segments.SegmentList;
 import org.hotrod.dynamic.segments.SettersSegment;
 import org.hotrod.dynamic.segments.TrimSegment;
+import org.hotrod.dynamic.segments.VariableOccurrenceSegment;
 import org.hotrod.dynamic.segments.WhereSegment;
 
 public class PartialQuery {
@@ -46,12 +47,17 @@ public class PartialQuery {
   }
 
   public PartialQuery parameter(String name, int sqlType) {
-    this.segments.add(new ParameterDefinitionSegment(this.factory, name, sqlType));
+    this.segments.add(new ParameterOccurrenceSegment(this.factory, name, sqlType));
     return this;
   }
 
   public PartialQuery parameterInjection(String name) {
     this.segments.add(new ParameterInjectionSegment(this.factory, name));
+    return this;
+  }
+
+  public PartialQuery variable(String name) {
+    this.segments.add(new VariableOccurrenceSegment(this.factory, name));
     return this;
   }
 

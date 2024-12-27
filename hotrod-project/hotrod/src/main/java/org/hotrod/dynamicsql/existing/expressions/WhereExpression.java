@@ -7,7 +7,7 @@ import java.util.List;
 public class WhereExpression extends TrimExpression {
 
   public WhereExpression(final OldDynamicExpression... expressions) {
-    super("where ", "and |or ", null, null, expressions);
+    super("WHERE ", "AND ", null, expressions);
   }
 
   @Override

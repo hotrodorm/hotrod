@@ -89,15 +89,19 @@ public class ParameterisableTextPart extends DynamicSQLPart {
         }
       }
 
-      ParameterTag definition = parameterDefinitions.find(name);
-
-      if (definition != null) {
+      ParameterTag parameterDefinition = parameterDefinitions.findParameter(name);
+      if (parameterDefinition != null) {
         SQLParameter p = new SQLParameter(name, tag, false);
-        p.setDefinition(definition);
+        p.setDefinition(parameterDefinition);
         this.segments.add(p);
       } else {
-        throw new InvalidConfigurationFileException(tag, "Invalid parameter reference " + SQLParameter.PREFIX + name
-            + SQLParameter.SUFFIX + " in the body of the tag. There's no parameter with that name.");
+        if (parameterDefinitions.findVariable(name)) {
+          VariableOccurrence v = new VariableOccurrence(name);
+          this.segments.add(v);
+        } else {
+          throw new InvalidConfigurationFileException(tag, "Invalid parameter reference " + SQLParameter.PREFIX + name
+              + SQLParameter.SUFFIX + " in the body of the tag. There's no parameter with that name.");
+        }
       }
 
       pos = suffix + SQLParameter.SUFFIX.length();

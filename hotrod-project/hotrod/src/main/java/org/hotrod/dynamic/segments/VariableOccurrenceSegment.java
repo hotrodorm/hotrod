@@ -7,17 +7,16 @@ import org.hotrod.dynamic.DynamicExpressionException;
 import org.hotrod.dynamic.DynamicExpressionFactory;
 import org.hotrod.dynamic.ParameterContext;
 
-public class ParameterInjectionSegment extends StaticSegment {
+public class VariableOccurrenceSegment extends QuerySegment {
 
   @SuppressWarnings("unused")
-  private static final Logger log = Logger.getLogger(ParameterInjectionSegment.class.getName());
+  private static final Logger log = Logger.getLogger(VariableOccurrenceSegment.class.getName());
 
   private DynamicExpressionFactory factory;
   private String name;
-
   private DynamicExpression nameExpression;
 
-  public ParameterInjectionSegment(DynamicExpressionFactory factory, String name) {
+  public VariableOccurrenceSegment(DynamicExpressionFactory factory, String name) {
     this.factory = factory;
     this.name = name;
     this.nameExpression = this.factory.expression(this.name);
@@ -26,10 +25,11 @@ public class ParameterInjectionSegment extends StaticSegment {
   @Override
   public boolean prepare(StaticSegmentConsumer sc, ParameterContext context, int loopNestingLevel)
       throws DynamicExpressionException {
-    String v = this.nameExpression.evaluate(context, String.class);
-    if (v != null) {
-      sc.consume(v);
-    }
+
+    Object v = this.nameExpression.evaluate(context, Object.class);
+    VariableInstanceValueSegment is = new VariableInstanceValueSegment(v, this.name);
+    sc.consume("?");
+    sc.consume(is);
     return true;
   }
 

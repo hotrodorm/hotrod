@@ -1,11 +1,14 @@
 package org.hotrod.dynamic.segments;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 public abstract class ParameterSegment extends StaticSegment {
 
   public abstract String getName();
 
-  public abstract int getSQLType();
-
   public abstract Object getValue();
+
+  public abstract void applyTo(PreparedStatement ps, int ordinal) throws SQLException;
 
 }

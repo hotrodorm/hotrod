@@ -404,11 +404,19 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   private final DynamicModificationQuery query0 = assembler
     .literal("\n      ")
-    .literal("\n      update account\n      set active = true\n      where not active\n      ")
-    .if_("minBalance != null", assembler
-      .literal("\n        and balance >= ")
-      .parameter("minBalance", Types.BIGINT)
-      .literal("\n      ")
+    .literal("\n      update account\n      ")
+    .bind("x", "'INV'")
+    .literal("\n      ")
+    .choose(assembler.choose()
+      .when("minBalance > 50", assembler
+        .literal("type = ")
+        .variable("x")
+        .end()
+      )
+      .when("minBalance > 10", assembler
+        .literal("active = true")
+        .end()
+      )
       .end()
     )
     .literal("\n    ")

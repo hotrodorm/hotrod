@@ -23,11 +23,7 @@ public class PreparedSelectQuery<R> extends PreparedQuery {
     try (PreparedStatement ps = conn.prepareStatement(super.sql)) {
       int ordinal = 1;
       for (ParameterSegment p : super.parameters) {
-        if (p.getValue() != null) {
-          ps.setObject(ordinal++, p.getValue());
-        } else {
-          ps.setNull(ordinal++, p.getSQLType());
-        }
+        p.applyTo(ps, ordinal);
       }
       try (ResultSet rs = ps.executeQuery()) {
         List<R> rows = new ArrayList<>();

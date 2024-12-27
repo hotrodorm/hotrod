@@ -34,11 +34,11 @@
     <query method="activateBigAccounts">
       <parameter name="minBalance" java-type="java.lang.Long" />
       update account
-      set active = true
-      where not active
-      <if test="minBalance != null">
-        and balance >= #{minBalance}
-      </if>
+      <bind name="x" value="'INV'" />
+      <choose>
+        <when test="minBalance > 50">type = #{x}</when>
+        <when test="minBalance > 10">active = true</when>
+      </choose>
     </query>
 
   </table>

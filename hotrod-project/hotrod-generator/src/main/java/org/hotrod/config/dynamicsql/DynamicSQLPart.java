@@ -2,8 +2,10 @@ package org.hotrod.config.dynamicsql;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlElementRef;
@@ -135,6 +137,24 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
 
     private LinkedHashMap<String, ParameterTag> definitions = new LinkedHashMap<String, ParameterTag>();
 
+    private Set<String> variables = new HashSet<>();
+
+    public void addVariable(final String name, AbstractConfigurationTag tag) throws InvalidConfigurationFileException {
+      if (this.definitions.containsKey(name)) {
+        throw new InvalidConfigurationFileException(tag,
+            "A variable with name '" + name + "' cannot shadow an existing parameter definition with the same name");
+      }
+      if (this.variables.contains(name)) {
+        throw new InvalidConfigurationFileException(tag,
+            "A variable with name '" + name + "' cannot shadow an existing variable with the same name");
+      }
+      this.variables.add(name);
+    }
+
+    public void removeVariable(final String name) {
+      this.variables.remove(name);
+    }
+
     public void add(final ParameterTag p) throws InvalidConfigurationFileException {
       this.params.add(p);
 
@@ -145,8 +165,12 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
       this.definitions.put(p.getName(), p);
     }
 
-    public ParameterTag find(final String name) {
+    public ParameterTag findParameter(final String name) {
       return this.definitions.get(name);
+    }
+
+    public boolean findVariable(final String name) {
+      return this.variables.contains(name);
     }
 
     public void remove(final ParameterTag p) {

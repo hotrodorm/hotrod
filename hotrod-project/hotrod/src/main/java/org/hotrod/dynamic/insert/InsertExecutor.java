@@ -17,11 +17,7 @@ public abstract class InsertExecutor {
   protected void applyParameters(List<ParameterSegment> parameters, PreparedStatement ps) throws SQLException {
     int ordinal = 1;
     for (ParameterSegment p : parameters) {
-      if (p.getValue() != null) {
-        ps.setObject(ordinal++, p.getValue());
-      } else {
-        ps.setNull(ordinal++, p.getSQLType());
-      }
+      p.applyTo(ps, ordinal);
     }
   }
 

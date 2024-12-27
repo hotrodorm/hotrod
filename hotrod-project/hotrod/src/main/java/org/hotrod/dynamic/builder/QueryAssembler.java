@@ -2,7 +2,6 @@ package org.hotrod.dynamic.builder;
 
 import java.util.List;
 
-import org.hotrod.dynamic.DynamicExpressionException;
 import org.hotrod.dynamic.DynamicExpressionFactory;
 import org.hotrod.dynamic.segments.ChooseSegment;
 import org.hotrod.dynamic.segments.IfSegment;
@@ -59,6 +58,11 @@ public class QueryAssembler {
     return q.parameterInjection(name);
   }
 
+  public PartialQuery variable(String name) {
+    PartialQuery q = new PartialQuery(this.factory);
+    return q.variable(name);
+  }
+
   public PartialQuery if_(String test, SegmentList querySegments) {
     PartialQuery q = new PartialQuery(this.factory);
     return q.if_(test, querySegments);
@@ -107,7 +111,7 @@ public class QueryAssembler {
   }
 
   public PartialQuery foreach(String item, String collection, String open, String separator, String close,
-      SegmentList segmentList)  {
+      SegmentList segmentList) {
     PartialQuery q = new PartialQuery(this.factory);
     return q.foreach(item, collection, open, separator, close, segmentList);
   }

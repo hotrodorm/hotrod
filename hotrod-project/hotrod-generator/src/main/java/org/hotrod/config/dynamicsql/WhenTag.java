@@ -84,4 +84,10 @@ public class WhenTag extends DynamicSQLPart {
     }
   }
 
+  // Getters
+
+  public String getTest() {
+    return test;
+  }
+
 }

@@ -58,9 +58,7 @@ public class BindTag extends DynamicSQLPart {
               + "and continue with alphanumeric caracters and/or underscores but found '" + this.name + "'");
     }
 
-    ParameterTag p = new ParameterTag();
-    p.setName(this.name);
-    parameterDefinitions.add(p);
+    parameterDefinitions.addVariable(this.name, this);
 
   }
 
@@ -111,6 +109,16 @@ public class BindTag extends DynamicSQLPart {
      * 
      */
 
+  }
+
+  // Getters
+
+  public String getName() {
+    return name;
+  }
+
+  public String getValue() {
+    return value;
   }
 
 }

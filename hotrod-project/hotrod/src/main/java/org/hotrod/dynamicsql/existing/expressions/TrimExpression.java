@@ -2,51 +2,50 @@ package org.hotrod.dynamicsql.existing.expressions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.hotrod.dynamicsql.existing.DynamicSQLEvaluationException;
 import org.hotrod.dynamicsql.existing.DynamicSQLParameters;
 import org.hotrod.dynamicsql.existing.EvaluationFeedback;
-import org.hotrod.utils.SUtil;
-import org.nocrala.tools.lang.collector.listcollector.ListWriter;
+import org.hotrod.utils.Separator;
 
 public class TrimExpression extends OldDynamicExpression {
 
   private String prefix;
-  private LinkedHashSet<String> prefixOverrides;
+  private String separator;
+//  private LinkedHashSet<String> prefixOverrides;
   private String suffix;
-  private LinkedHashSet<String> suffixOverrides;
+//  private LinkedHashSet<String> suffixOverrides;
   protected OldDynamicExpression[] expressions;
 
-  public TrimExpression(final String prefix, final String prefixOverrides, final String suffix,
-      final String suffixOverrides, final OldDynamicExpression... expressions) {
+  public TrimExpression(final String prefix, final String separator, final String suffix,
+      final OldDynamicExpression... expressions) {
     this.prefix = prefix;
-    this.prefixOverrides = new LinkedHashSet<String>();
-    if (prefixOverrides != null) {
-      parseOverrides(prefixOverrides, this.prefixOverrides);
-    }
+    this.separator = separator;
+//    this.prefixOverrides = new LinkedHashSet<String>();
+//    if (prefixOverrides != null) {
+//      parseOverrides(prefixOverrides, this.prefixOverrides);
+//    }
     this.suffix = suffix;
-    this.suffixOverrides = new LinkedHashSet<String>();
-    if (suffixOverrides != null) {
-      parseOverrides(suffixOverrides, this.suffixOverrides);
-    }
+//    this.suffixOverrides = new LinkedHashSet<String>();
+//    if (suffixOverrides != null) {
+//      parseOverrides(suffixOverrides, this.suffixOverrides);
+//    }
     this.expressions = expressions;
   }
 
-  private void parseOverrides(final String overrides, final Set<String> set) {
-    if (overrides != null) {
-      String[] parts = overrides.split("\\|");
-      if (parts != null) {
-        for (String chunk : parts) {
-          if (chunk != null && !chunk.isEmpty()) {
-            set.add(chunk);
-          }
-        }
-      }
-    }
-  }
+//  private void parseOverrides(final String overrides, final Set<String> set) {
+//    if (overrides != null) {
+//      String[] parts = overrides.split("\\|");
+//      if (parts != null) {
+//        for (String chunk : parts) {
+//          if (chunk != null && !chunk.isEmpty()) {
+//            set.add(chunk);
+//          }
+//        }
+//      }
+//    }
+//  }
 
   @Override
   public EvaluationFeedback evaluate(final StringBuilder out, final DynamicSQLParameters variables)
@@ -55,8 +54,10 @@ public class TrimExpression extends OldDynamicExpression {
     // Render the body
 
     StringBuilder sb = new StringBuilder();
+    Separator sep = new Separator(this.separator);
     boolean contentRendered = false;
     for (OldDynamicExpression expr : this.expressions) {
+      sb.append(sep.render());
       EvaluationFeedback feedback = expr.evaluate(sb, variables);
       contentRendered = contentRendered || feedback.wasContentRendered();
     }
@@ -67,18 +68,18 @@ public class TrimExpression extends OldDynamicExpression {
       // Remove a prefix if found
 
       // System.out.println("rendered=" + rendered);
-      String p = this.searchForPrefix(rendered);
-      // System.out.println("p=" + p);
-      if (p != null) {
-        rendered = rendered.substring(p.length());
-      }
+//      String p = this.searchForPrefix(rendered);
+//      // System.out.println("p=" + p);
+//      if (p != null) {
+//        rendered = rendered.substring(p.length());
+//      }
 
       // Remove a suffix if found
 
-      String s = this.searchForSuffix(rendered);
-      if (s != null) {
-        rendered = rendered.substring(0, rendered.length() - s.length());
-      }
+//      String s = this.searchForSuffix(rendered);
+//      if (s != null) {
+//        rendered = rendered.substring(0, rendered.length() - s.length());
+//      }
 
       // Build the content, using the prefix and suffix if necessary
 
@@ -94,32 +95,33 @@ public class TrimExpression extends OldDynamicExpression {
 
   }
 
-  private String searchForPrefix(final String txt) {
-    for (String p : this.prefixOverrides) {
-      if (SUtil.startsWithIgnoreCase(txt, p)) {
-        return p;
-      }
-    }
-    return null;
-  }
-
-  private String searchForSuffix(final String txt) {
-    for (String p : this.suffixOverrides) {
-      if (SUtil.endsWithIgnoreCase(txt, p)) {
-        return p;
-      }
-    }
-    return null;
-  }
+//  private String searchForPrefix(final String txt) {
+//    for (String p : this.prefixOverrides) {
+//      if (SUtil.startsWithIgnoreCase(txt, p)) {
+//        return p;
+//      }
+//    }
+//    return null;
+//  }
+//
+//  private String searchForSuffix(final String txt) {
+//    for (String p : this.suffixOverrides) {
+//      if (SUtil.endsWithIgnoreCase(txt, p)) {
+//        return p;
+//      }
+//    }
+//    return null;
+//  }
 
   @Override
   public List<Object> getConstructorParameters() {
     List<Object> params = new ArrayList<Object>();
     List<String> stringParams = new ArrayList<String>();
     stringParams.add(this.prefix);
-    stringParams.add(ListWriter.render(this.prefixOverrides, "|"));
+    stringParams.add(this.separator);
+//    stringParams.add(ListWriter.render(this.prefixOverrides, "|"));
     stringParams.add(this.suffix);
-    stringParams.add(ListWriter.render(this.suffixOverrides, "|"));
+//    stringParams.add(ListWriter.render(this.suffixOverrides, "|"));
     params.add(stringParams);
     params.addAll(Arrays.asList(this.expressions));
     return params;

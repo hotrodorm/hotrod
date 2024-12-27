@@ -20,11 +20,7 @@ public class PreparedModificationQuery extends PreparedQuery {
     try (PreparedStatement ps = conn.prepareStatement(super.sql)) {
       int ordinal = 1;
       for (ParameterSegment p : super.parameters) {
-        if (p.getValue() != null) {
-          ps.setObject(ordinal++, p.getValue());
-        } else {
-          ps.setNull(ordinal++, p.getSQLType());
-        }
+        p.applyTo(ps, ordinal);
       }
       return ps.executeUpdate();
     }

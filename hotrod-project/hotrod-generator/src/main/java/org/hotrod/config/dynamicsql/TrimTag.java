@@ -25,9 +25,10 @@ public class TrimTag extends DynamicSQLPart {
   // Properties
 
   private String prefix = null;
-  private String prefixOverrides = null;
+  private String separator = null;
+//  private String prefixOverrides = null;
   private String suffix = null;
-  private String suffixOverrides = null;
+//  private String suffixOverrides = null;
 
   // JAXB Setters
 
@@ -37,21 +38,38 @@ public class TrimTag extends DynamicSQLPart {
   }
 
   @XmlAttribute
-  public void setPrefixOverrides(final String prefixOverrides) {
-    this.prefixOverrides = prefixOverrides;
+  public void setSeparator(final String separator) {
+    this.separator = separator;
   }
+
+//  @XmlAttribute
+//  public void setPrefixOverrides(final String prefixOverrides) {
+//    this.prefixOverrides = prefixOverrides;
+//  }
 
   @XmlAttribute
   public void setSuffix(final String suffix) {
     this.suffix = suffix;
   }
 
-  @XmlAttribute
-  public void setSuffixOverrides(final String suffixOverrides) {
-    this.suffixOverrides = suffixOverrides;
-  }
+//  @XmlAttribute
+//  public void setSuffixOverrides(final String suffixOverrides) {
+//    this.suffixOverrides = suffixOverrides;
+//  }
 
   // Getters
+
+  public String getPrefix() {
+    return prefix;
+  }
+
+  public String getSeparator() {
+    return separator;
+  }
+
+  public String getSuffix() {
+    return suffix;
+  }
 
   // Behavior
 
@@ -92,9 +110,10 @@ public class TrimTag extends DynamicSQLPart {
   protected TagAttribute[] getAttributes() {
     TagAttribute[] atts = { //
         new TagAttribute("prefix", this.prefix), //
-        new TagAttribute("prefixOverrides", this.prefixOverrides), //
-        new TagAttribute("suffix", this.suffix), //
-        new TagAttribute("suffixOverrides", this.suffixOverrides) //
+        new TagAttribute("separator", this.separator), //
+//        new TagAttribute("prefixOverrides", this.prefixOverrides), //
+        new TagAttribute("suffix", this.suffix) //
+//        new TagAttribute("suffixOverrides", this.suffixOverrides) //
     };
     return atts;
   }
@@ -107,8 +126,7 @@ public class TrimTag extends DynamicSQLPart {
 
     try {
 
-      return new TrimExpression(this.prefix, this.prefixOverrides, this.suffix, this.suffixOverrides,
-          toArray(this.parts, parameterRenderer));
+      return new TrimExpression(this.prefix, this.separator, this.suffix, toArray(this.parts, parameterRenderer));
 
     } catch (RuntimeException e) {
       throw new InvalidJavaExpressionException(this.getSourceLocation(),

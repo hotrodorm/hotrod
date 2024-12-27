@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.config.ComplementDAOTag;
+import org.hotrod.config.ParameterTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.VerbatimTextPart;
 import org.hotrod.config.dynamicsql.BindTag;
@@ -31,14 +32,23 @@ public class NitroRenderer {
   private static final Logger log = Logger.getLogger(NitroRenderer.class.getName());
 
   public void render(List<DynamicSQLPart> parts, ClassWriter w) throws ControlledException {
-    log.info("[0] render --- List ---");
-    this.render(parts, w, 0);
+    log.fine("[0] render --- List ---");
+    this.render(parts, w, 0, RENDER_ALL);
   }
 
-  private void render(List<DynamicSQLPart> parts, ClassWriter w, int level) throws ControlledException {
-    log.info("[" + level + "] render --- List ---");
+  interface PartFilter {
+    boolean accepts(DynamicSQLPart p);
+  }
+
+  private static final PartFilter RENDER_ALL = c -> true;
+
+  private void render(List<DynamicSQLPart> parts, ClassWriter w, int level, PartFilter filter)
+      throws ControlledException {
+    log.fine("[" + level + "] render --- List ---");
     for (DynamicSQLPart p : parts) {
-      this.renderDynamicPart(p, w, level);
+      if (filter.accepts(p)) {
+        this.renderDynamicPart(p, w, level);
+      }
     }
   }
 
@@ -59,7 +69,7 @@ public class NitroRenderer {
 //  ComplementDAOTag
 
   private void renderDynamicPart(DynamicSQLPart p, ClassWriter w, int level) throws ControlledException {
-    log.info("[" + level + "] --- selector ---");
+    log.fine("[" + level + "] --- selector ---");
     if (p instanceof LiteralTextPart) {
       render((LiteralTextPart) p, w, level);
     } else if (p instanceof IfTag) {
@@ -93,60 +103,98 @@ public class NitroRenderer {
   }
 
   private void render(LiteralTextPart t, ClassWriter w, int level) {
-    log.info("[" + level + "] render(Literal) -- " + t.getText());
-    w.println(filler(level) + ".literal(\"" + SUtil.escapeJavaString(t.getText()) + "\")");
+    log.fine("[" + level + "] render(Literal) -- " + t.getText());
+    w.println(indent(level) + ".literal(" + renderString(t.getText()) + ")");
   }
 
   private void render(IfTag t, ClassWriter w, int level) throws ControlledException {
-    log.info("[" + level + "] render(if) -- '" + t.getTest() + "'");
-    w.println(filler(level) + ".if_(\"" + SUtil.escapeJavaString(t.getTest()) + "\", assembler");
-    render(t.getParts(), w, level + 1);
-    w.println(filler(level) + "  .end()");
-    w.println(filler(level) + ")");
+    log.fine("[" + level + "] render(if) -- '" + t.getTest() + "'");
+    w.println(indent(level) + ".if_(" + renderString(t.getTest()) + ", assembler");
+    render(t.getParts(), w, level + 1, RENDER_ALL);
+    w.println(indent(level) + "  .end()");
+    w.println(indent(level) + ")");
   }
 
   private void render(WhereTag t, ClassWriter w, int level) throws ControlledException {
-    log.info("[" + level + "] render(where)");
-
+    log.fine("[" + level + "] render(where)");
+    w.println(indent(level) + ".where(\"AND\", assembler.ifs()");
+    render(t.getParts(), w, level + 1, p -> p instanceof IfTag);
+    w.println(indent(level) + "  .end()");
+    w.println(indent(level) + ")");
   }
 
   private void render(SetTag t, ClassWriter w, int level) throws ControlledException {
-    log.info("[" + level + "] render(set)");
-
+    log.fine("[" + level + "] render(set)");
+    w.println(indent(level) + ".set(assembler.ifs()");
+    render(t.getParts(), w, level + 1, p -> p instanceof IfTag);
+    w.println(indent(level) + "  .end()");
+    w.println(indent(level) + ")");
   }
 
   private void render(ChooseTag t, ClassWriter w, int level) throws ControlledException {
-    log.info("[" + level + "] render(choose)");
+    log.fine("[" + level + "] render(choose)");
+    w.println(indent(level) + ".choose(assembler.choose()");
+    render(t.getParts(), w, level + 1, p -> p instanceof WhenTag || p instanceof OtherwiseTag);
 
+    boolean otherwise = false;
+    for (DynamicSQLPart p : t.getParts()) {
+      if (p instanceof OtherwiseTag) {
+        otherwise = true;
+      }
+    }
+    if (!otherwise) {
+      w.println(indent(level) + "  .end()");
+    }
+
+    w.println(indent(level) + ")");
   }
 
   private void render(WhenTag t, ClassWriter w, int level) throws ControlledException {
-    log.info("[" + level + "] render(when)");
-
+    log.fine("[" + level + "] render(when)");
+    w.println(indent(level) + ".when(" + renderString(t.getTest()) + ", assembler");
+    render(t.getParts(), w, level + 1, RENDER_ALL);
+    w.println(indent(level) + "  .end()");
+    w.println(indent(level) + ")");
   }
 
   private void render(OtherwiseTag t, ClassWriter w, int level) throws ControlledException {
-    log.info("[" + level + "] render(otherwise)");
+    log.fine("[" + level + "] render(otherwise)");
+    w.println(indent(level) + ".otherwise(assembler");
+    render(t.getParts(), w, level + 1, RENDER_ALL);
+    w.println(indent(level) + "  .end()");
+    w.println(indent(level) + ")");
+  }
 
+  private String renderString(String s) {
+    return s == null ? "null" : "\"" + SUtil.escapeJavaString(s) + "\"";
   }
 
   private void render(TrimTag t, ClassWriter w, int level) throws ControlledException {
-    log.info("[" + level + "] render(trim)");
-
+    log.fine("[" + level + "] render(trim)");
+    w.println(indent(level) + ".trim(" + renderString(t.getPrefix()) + ", " + renderString(t.getSeparator()) + ", "
+        + renderString(t.getSuffix()) + ", assembler.ifs()");
+    render(t.getParts(), w, level + 1, p -> p instanceof IfTag);
+    w.println(indent(level) + "  .end()");
+    w.println(indent(level) + ")");
   }
 
   private void render(BindTag t, ClassWriter w, int level) throws ControlledException {
-    log.info("[" + level + "] render(bind)");
-
+    log.fine("[" + level + "] render(bind)");
+    w.println(indent(level) + ".bind(" + renderString(t.getName()) + ", " + renderString(t.getValue()) + ")");
   }
 
   private void render(ForEachTag t, ClassWriter w, int level) throws ControlledException {
-    log.info("[" + level + "] render(foreach)");
-
+    log.fine("[" + level + "] render(foreach)");
+    w.println(indent(level) + ".foreach(" + renderString(t.getItem()) + ", " + renderString(t.getCollection()) + ", "
+        + renderString(t.getOpen()) + ", " + renderString(t.getSeparator()) + ", " + renderString(t.getClose())
+        + ", assembler");
+    render(t.getParts(), w, level + 1, RENDER_ALL);
+    w.println(indent(level) + "  .end()");
+    w.println(indent(level) + ")");
   }
 
   private void render(ParameterisableTextPart t, ClassWriter w, int level) throws ControlledException {
-    log.info("[" + level + "] render(ParameterisableText):");
+    log.fine("[" + level + "] render(ParameterisableText):");
     for (SQLSegment s : t.getSegments()) {
       if (s instanceof SQLParameter) {
         render((SQLParameter) s, w, level);
@@ -164,34 +212,40 @@ public class NitroRenderer {
   }
 
   private void render(SQLParameter t, ClassWriter w, int level) throws ControlledException {
-    log.info("[" + level + "] render(SQLParameter) -- " + t.getName());
-    w.println(filler(level) + ".parameter(\"" + SUtil.escapeJavaString(t.getName()) + "\", ", Types.class,
-        "." + t.getJdbcType() + ")");
+    log.fine("[" + level + "] render(SQLParameter) -- " + t.getName());
+    ParameterTag pt = t.getDefinition();
+    log.info("pt=" + pt);
+    if (pt.getJDBCType() == null) {
+      w.println(indent(level) + ".parameterUntyped(" + renderString(t.getName()) + ")");
+    } else {
+      w.println(indent(level) + ".parameter(" + renderString(t.getName()) + ", ", Types.class,
+          "." + t.getJdbcType() + ")");
+    }
   }
 
   private void render(VariableOccurrence t, ClassWriter w, int level) throws ControlledException {
-    log.info("[" + level + "] render(VariableOccurrence)");
-    w.println(filler(level) + ".parameter(\"" + SUtil.escapeJavaString(t.getName()) + "\")");
+    log.fine("[" + level + "] render(VariableOccurrence)");
+    w.println(indent(level) + ".variable(" + renderString(t.getName()) + ")");
   }
 
   private void render(VerbatimTextPart t, ClassWriter w, int level) throws ControlledException {
-    log.info("[" + level + "] render(VerbatimTextPart)");
-    w.println(filler(level) + ".literal(\"" + SUtil.escapeJavaString(t.getContent()) + "\")");
+    log.fine("[" + level + "] render(VerbatimTextPart)");
+    w.println(indent(level) + ".literal(" + renderString(t.getContent()) + ")");
   }
 
   private void render(CollectionOfPartsTag t, ClassWriter w, int level) throws ControlledException {
-    log.info("[" + level + "] render(CollectionOfParts)");
+    log.fine("[" + level + "] render(CollectionOfParts)");
 
   }
 
   private void render(ComplementDAOTag t, ClassWriter w, int level) throws ControlledException {
-    log.info("[" + level + "] render(ComplementDAO)");
+    log.fine("[" + level + "] render(ComplementDAO)");
 
   }
 
   // Utils
 
-  private String filler(int level) {
+  private String indent(int level) {
     return SUtil.filler(' ', 4 + level * 2);
   }
 

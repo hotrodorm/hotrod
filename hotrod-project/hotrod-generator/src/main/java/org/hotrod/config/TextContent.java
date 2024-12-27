@@ -79,7 +79,7 @@ public class TextContent extends EnhancedSQLPart {
         }
       }
 
-      ParameterTag definition = parameters.find(name);
+      ParameterTag definition = parameters.findParameter(name);
 
       if (definition != null) {
         SQLParameter p = new SQLParameter(name, this, false);

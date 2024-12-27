@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.hotrod.dynamic.segments.ParameterSegment;
 import org.hotrod.dynamic.segments.StaticSegmentConsumer;
+import org.hotrod.dynamic.segments.TypedParameterSegment;
 
 public class SimpleStaticSegmentConsumer implements StaticSegmentConsumer {
 
@@ -22,6 +23,7 @@ public class SimpleStaticSegmentConsumer implements StaticSegmentConsumer {
     this.parameters.add(p);
   }
 
+  @Override
   public void startNextEntry() {
     // Nothing to do
   }

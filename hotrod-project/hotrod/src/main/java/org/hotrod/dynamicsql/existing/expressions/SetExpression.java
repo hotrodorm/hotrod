@@ -7,7 +7,7 @@ import java.util.List;
 public class SetExpression extends TrimExpression {
 
   public SetExpression(final OldDynamicExpression... expressions) {
-    super(null, null, null, ",", expressions);
+    super(null, ",", null, expressions);
   }
 
   @Override

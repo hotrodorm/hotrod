@@ -29,7 +29,7 @@ public class App {
   private static final Logger log = Logger.getLogger(App.class.getName());
 
   static {
-    JULCustomFormatter.initialize(Level.FINER);
+//    JULCustomFormatter.initialize(Level.FINER);
   }
 
   @Autowired
@@ -53,8 +53,8 @@ public class App {
 
   private void test() throws SQLException, DynamicExpressionException {
 
-//    int rows = this.accountDAO.activateBigAccounts(150L);
-    int rows = this.accountDAO.activateBigAccounts(null);
+    int rows = this.accountDAO.activateBigAccounts(150L);
+//    int rows = this.accountDAO.activateBigAccounts(null);
     System.out.println("--> rows=" + rows);
 
 //    Account filter = new Account();

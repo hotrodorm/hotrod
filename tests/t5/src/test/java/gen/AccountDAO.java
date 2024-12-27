@@ -30,16 +30,16 @@ public class AccountDAO {
   private static final Logger log = Logger.getLogger(AccountDAO.class.getName());
 
   private final DynamicExpressionFactory factory = DynamicExpressionFactory.getFactory();
-  private final QueryAssembler builder = new QueryAssembler(this.factory);
+  private final QueryAssembler assembler = new QueryAssembler(this.factory);
 
-  private final DynamicSelectQuery selectByExample = builder //
+  private final DynamicSelectQuery selectByExample = assembler //
       .literal("SELECT id, name, type, balance\n") //
       .literal("FROM account") //
-      .where("AND", builder.ifs() //
-          .if_("f.id != null", builder.literal("id = ").parameter("f.id", Types.NUMERIC).end())
-          .if_("f.name != null", builder.literal("name = ").parameter("f.name", Types.VARCHAR).end())
-          .if_("f.type != null", builder.literal("type = ").parameter("f.type", Types.VARCHAR).end())
-          .if_("f.balance != null", builder.literal("balance = ").parameter("f.balance", Types.NUMERIC).end()).end() //
+      .where("AND", assembler.ifs() //
+          .if_("f.id != null", assembler.literal("id = ").parameter("f.id", Types.NUMERIC).end())
+          .if_("f.name != null", assembler.literal("name = ").parameter("f.name", Types.VARCHAR).end())
+          .if_("f.type != null", assembler.literal("type = ").parameter("f.type", Types.VARCHAR).end())
+          .if_("f.balance != null", assembler.literal("balance = ").parameter("f.balance", Types.NUMERIC).end()).end() //
       ).endSelectQuery();
 
   public List<Account> select(DataSource dataSource, Account filter) throws DynamicExpressionException, SQLException {
@@ -192,7 +192,7 @@ public class AccountDAO {
 //      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_STANDARD_RESULTSET);
 
   // H2, HyperSQL, and Derby - Sequence Inline
-  private final DynamicInsertQuery insert = builder //
+  private final DynamicInsertQuery insert = assembler //
     .literal("INSERT INTO account (") //
     .literal("  id, name, type, balance\n") //
     .literal(") VALUES (\n  ") //
@@ -325,19 +325,19 @@ public class AccountDAO {
 
   }
 
-  private final DynamicModificationQuery updateByExample = builder //
+  private final DynamicModificationQuery updateByExample = assembler //
       .literal("UPDATE account") //
-      .set(builder.ifs() //
-          .if_("n.id != null", builder.literal("id = ").parameter("n.id", Types.NUMERIC).end())
-          .if_("n.name != null", builder.literal("name = ").parameter("n.name", Types.VARCHAR).end())
-          .if_("n.type != null", builder.literal("type = ").parameter("n.type", Types.VARCHAR).end())
-          .if_("n.balance != null", builder.literal("balance = ").parameter("n.balance", Types.NUMERIC).end()) //
+      .set(assembler.ifs() //
+          .if_("n.id != null", assembler.literal("id = ").parameter("n.id", Types.NUMERIC).end())
+          .if_("n.name != null", assembler.literal("name = ").parameter("n.name", Types.VARCHAR).end())
+          .if_("n.type != null", assembler.literal("type = ").parameter("n.type", Types.VARCHAR).end())
+          .if_("n.balance != null", assembler.literal("balance = ").parameter("n.balance", Types.NUMERIC).end()) //
           .end() //
-      ).where("AND", builder.ifs() //
-          .if_("f.id != null", builder.literal("id = ").parameter("f.id", Types.NUMERIC).end())
-          .if_("f.name != null", builder.literal("name = ").parameter("f.name", Types.VARCHAR).end())
-          .if_("f.type != null", builder.literal("type = ").parameter("f.type", Types.VARCHAR).end())
-          .if_("f.balance != null", builder.literal("balance = ").parameter("f.balance", Types.NUMERIC).end()).end() //
+      ).where("AND", assembler.ifs() //
+          .if_("f.id != null", assembler.literal("id = ").parameter("f.id", Types.NUMERIC).end())
+          .if_("f.name != null", assembler.literal("name = ").parameter("f.name", Types.VARCHAR).end())
+          .if_("f.type != null", assembler.literal("type = ").parameter("f.type", Types.VARCHAR).end())
+          .if_("f.balance != null", assembler.literal("balance = ").parameter("f.balance", Types.NUMERIC).end()).end() //
       ).endModificationQuery();
 
   public int update(Connection conn, Account filter, Account newValues)
@@ -361,18 +361,18 @@ public class AccountDAO {
     return rows;
   }
 
-  private final DynamicModificationQuery deleteByPK = builder //
+  private final DynamicModificationQuery deleteByPK = assembler //
       .literal("DELETE FROM account\n") //
       .literal("WHERE id = ").parameter("f.id", Types.NUMERIC).literal("  AND id2 = ").parameter("f.id2", Types.NUMERIC)
       .endModificationQuery();
 
-  private final DynamicModificationQuery deleteByExample = builder //
+  private final DynamicModificationQuery deleteByExample = assembler //
       .literal("DELETE FROM account") //
-      .where("AND", builder.ifs() //
-          .if_("f.id != null", builder.literal("id = ").parameter("f.id", Types.NUMERIC).end())
-          .if_("f.name != null", builder.literal("name = ").parameter("f.name", Types.VARCHAR).end())
-          .if_("f.type != null", builder.literal("type = ").parameter("f.type", Types.VARCHAR).end())
-          .if_("f.balance != null", builder.literal("balance = ").parameter("f.balance", Types.NUMERIC).end()).end() //
+      .where("AND", assembler.ifs() //
+          .if_("f.id != null", assembler.literal("id = ").parameter("f.id", Types.NUMERIC).end())
+          .if_("f.name != null", assembler.literal("name = ").parameter("f.name", Types.VARCHAR).end())
+          .if_("f.type != null", assembler.literal("type = ").parameter("f.type", Types.VARCHAR).end())
+          .if_("f.balance != null", assembler.literal("balance = ").parameter("f.balance", Types.NUMERIC).end()).end() //
       ).endModificationQuery();
 
   private DataSource dataSource;
@@ -400,12 +400,12 @@ public class AccountDAO {
 
   public void testChoose(Account filter) throws DynamicExpressionException {
 
-    DynamicModificationQuery d1 = builder //
+    DynamicModificationQuery d1 = assembler //
         .literal("DELETE FROM account\nWHERE ") //
-        .choose(builder.choose() //
-            .when("f.id != null", builder.literal("id = ").parameter("f.id", Types.NUMERIC).end()) //
-            .when("f.name != null", builder.literal("name = ").parameter("f.name", Types.VARCHAR).end()) //
-            .when("f.type != null", builder.literal("type = ").parameter("f.type", Types.VARCHAR).end()) //
+        .choose(assembler.choose() //
+            .when("f.id != null", assembler.literal("id = ").parameter("f.id", Types.NUMERIC).end()) //
+            .when("f.name != null", assembler.literal("name = ").parameter("f.name", Types.VARCHAR).end()) //
+            .when("f.type != null", assembler.literal("type = ").parameter("f.type", Types.VARCHAR).end()) //
             .end() //
 //            .otherwise(builder.literal("1 = 1").end()) //
         ) //
@@ -421,11 +421,11 @@ public class AccountDAO {
 
   public void testForeach(Data data) throws DynamicExpressionException {
 
-    DynamicModificationQuery d1 = builder //
+    DynamicModificationQuery d1 = assembler //
         .literal("DELETE FROM account\nWHERE code in ") //
-        .foreach("t", "d.tags", "(", ", ", ")",
-            builder.parameter("t", Types.VARCHAR)
-                .foreach("c", "d.codes", "(", ", ", ")", builder.parameter("c", Types.NUMERIC).end()) //
+        .foreach("t", "d.tags", "(", ", ", ")", assembler
+            .parameter("t", Types.VARCHAR)
+                .foreach("c", "d.codes", "(", ", ", ")", assembler.parameter("c", Types.NUMERIC).end()) //
                 .end()) //
         .endModificationQuery();
 
@@ -441,7 +441,7 @@ public class AccountDAO {
 
     try (Connection conn = dataSource.getConnection()) {
 
-      DynamicSelectQuery d1 = builder //
+      DynamicSelectQuery d1 = assembler //
           .literal("SELECT COUNT(*) FROM account\n") //
           .bind("pattern", "'%' + d.name + '%'") //
           .literal("WHERE type LIKE ") //
@@ -472,12 +472,12 @@ public class AccountDAO {
 
   public void testTrim(Account filter) throws DynamicExpressionException {
 
-    DynamicModificationQuery d1 = builder //
+    DynamicModificationQuery d1 = assembler //
         .literal("DELETE FROM account") //
-        .trim("H", "S", "T", builder.ifs() //
-            .if_("true", builder.literal("A").end()) //
-            .if_("true", builder.literal("B").end()) //
-            .if_("true", builder.literal("C").end()) //
+        .trim("H", "S", "T", assembler.ifs() //
+            .if_("true", assembler.literal("A").end()) //
+            .if_("true", assembler.literal("B").end()) //
+            .if_("true", assembler.literal("C").end()) //
             .end(), //
             "\nh<", ">h", "\ns<", ">s", "\nt<", ">t") //
         .endModificationQuery();

@@ -96,6 +96,7 @@ public class QueryMethodTag extends AbstractMethodTag<QueryMethodTag> {
         try {
           ParameterTag p = (ParameterTag) obj; // parameter
           p.validate();
+          log.info("## Adding parameter '" + p.getName() + "'");
           this.parameters.add(p);
         } catch (ClassCastException e2) {
           try {
