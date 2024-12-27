@@ -1089,7 +1089,7 @@ public class DAO {
     for (ParameterTag p : q.getParameterDefinitions()) {
       log.info(">> parameter '" + p.getName() + "'");
       ExternalClass pc = ExternalClass.of(p.getJavaType());
-      w.print(pc, " " + p.getName() + sep.render());
+      w.print(sep.render(), pc, " " + p.getName());
     }
     w.println(")");
     w.println("      throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");

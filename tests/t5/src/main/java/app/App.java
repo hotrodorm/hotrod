@@ -1,7 +1,8 @@
 package app;
 
 import java.sql.SQLException;
-import java.util.logging.Level;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.dynamic.DynamicExpressionException;
@@ -53,7 +54,9 @@ public class App {
 
   private void test() throws SQLException, DynamicExpressionException {
 
-    int rows = this.accountDAO.activateBigAccounts(150L);
+    List<Integer> ids = Arrays.asList(123, 789, 112, 4);
+    
+    int rows = this.accountDAO.activateBigAccounts(125L, ids);
 //    int rows = this.accountDAO.activateBigAccounts(null);
     System.out.println("--> rows=" + rows);
 

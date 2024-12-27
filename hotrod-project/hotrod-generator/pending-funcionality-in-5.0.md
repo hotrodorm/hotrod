@@ -10,4 +10,5 @@ CRUD:
 
 Nitro:
 - Graph queries.
+- TODO: jdbc-type is not required for a parameter that is not applied to the query. Maybe separate in <parameter> and <nullable-parameter>.
 
