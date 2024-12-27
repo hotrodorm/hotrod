@@ -3,12 +3,20 @@
 package app.daos.primitives;
 
 import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
+import org.hotrod.dynamic.DynamicExpressionException;
 import org.hotrod.dynamic.DynamicExpressionFactory;
+import org.hotrod.dynamic.DynamicModificationQuery;
+import org.hotrod.dynamic.ParameterContext;
+import org.hotrod.dynamic.PreparedModificationQuery;
 import org.hotrod.dynamic.builder.QueryAssembler;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
@@ -51,6 +59,38 @@ public class ReportingDAO implements Serializable, ApplicationContextAware {
   @PostConstruct
   public void initializeContext() {
     this.context = new LiveSQLContext(this.liveSQLDialect, this.dataSource, new TypeSolver(null, this.liveSQLDialect));
+  }
+
+  // NITRO QUERY: activateBigAccounts2
+
+  private final DynamicModificationQuery query0 = assembler
+    .literal("\n      ")
+    .literal("\n      ")
+    .literal("\n      UPDATE account\n      SET active = true\n      WHERE id IN \n      ")
+    .foreach("id", "ids", "(", ", ", ")", assembler
+      .literal("\n        ")
+      .variable("id")
+      .literal("\n      ")
+      .end()
+    )
+    .literal("\n    ")
+    .endModificationQuery();
+
+  public int activateBigAccounts2(Long minBalance, List ids)
+      throws DynamicExpressionException, SQLException {
+    ParameterContext context = this.expressionFactory.newParameterContext();
+    context.add("minBalance", minBalance);
+    context.add("ids", ids);
+    PreparedModificationQuery preparedQuery = this.query0.prepare(context);
+    if (log.isLoggable(Level.FINER)) {
+      log.finer("SQL: " + preparedQuery.getPreview(true));
+    } else if (log.isLoggable(Level.FINE)) {
+      log.fine("SQL: " + preparedQuery.getPreview());
+    }
+    try (Connection conn = this.dataSource.getConnection()) {
+      int rows = preparedQuery.execute(conn);
+      return rows;
+    }
   }
 
 }

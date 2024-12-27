@@ -31,6 +31,7 @@
  -->    
     <column name="active" converter="boolean_stored_as_int" />
 
+<!-- 
     <query method="activateBigAccounts">
       <parameter name="minBalance" java-type="java.lang.Long" />
       <parameter name="ids" java-type="java.util.List" jdbc-type="NUMERIC" />
@@ -41,7 +42,7 @@
         #{id}
       </foreach>
     </query>
-
+ -->
   </table>
 
 <!-- 
@@ -55,6 +56,17 @@
  -->
  
    <dao name="Reporting">
+
+    <query method="activateBigAccounts2">
+      <parameter name="minBalance" java-type="java.lang.Long" />
+      <parameter name="ids" java-type="java.util.List" jdbc-type="NUMERIC" />
+      UPDATE account
+      SET active = true
+      WHERE id IN 
+      <foreach item="id" collection="ids" open="(" separator=", " close=")">
+        #{id}
+      </foreach>
+    </query>
  
        
   </dao>

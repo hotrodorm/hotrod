@@ -19,6 +19,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import app.daos.primitives.AccountDAO;
+import app.daos.primitives.ReportingDAO;
 
 @Configuration
 @SpringBootApplication
@@ -35,6 +36,9 @@ public class App {
 
   @Autowired
   private AccountDAO accountDAO;
+
+  @Autowired
+  private ReportingDAO reportingDAO;
 
   @Autowired
   private LiveSQL sql;
@@ -56,7 +60,8 @@ public class App {
 
     List<Integer> ids = Arrays.asList(123, 789, 112, 4);
     
-    int rows = this.accountDAO.activateBigAccounts(125L, ids);
+//    int rows = this.reportingDAO.activateBigAccounts(125L, ids);
+      int rows=  this.reportingDAO.activateBigAccounts2(125L, ids);
 //    int rows = this.accountDAO.activateBigAccounts(null);
     System.out.println("--> rows=" + rows);
 

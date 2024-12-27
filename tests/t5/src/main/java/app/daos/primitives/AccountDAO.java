@@ -400,36 +400,4 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   }
 
-  // NITRO QUERY: activateBigAccounts
-
-  private final DynamicModificationQuery query0 = assembler
-    .literal("\n      ")
-    .literal("\n      ")
-    .literal("\n      UPDATE account\n      SET active = true\n      WHERE id IN \n      ")
-    .foreach("id", "ids", "(", ", ", ")", assembler
-      .literal("\n        ")
-      .variable("id")
-      .literal("\n      ")
-      .end()
-    )
-    .literal("\n    ")
-    .endModificationQuery();
-
-  public int activateBigAccounts(Long minBalance, List ids)
-      throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.expressionFactory.newParameterContext();
-    context.add("minBalance", minBalance);
-    context.add("ids", ids);
-    PreparedModificationQuery preparedQuery = this.query0.prepare(context);
-    if (log.isLoggable(Level.FINER)) {
-      log.finer("SQL: " + preparedQuery.getPreview(true));
-    } else if (log.isLoggable(Level.FINE)) {
-      log.fine("SQL: " + preparedQuery.getPreview());
-    }
-    try (Connection conn = this.dataSource.getConnection()) {
-      int rows = preparedQuery.execute(conn);
-      return rows;
-    }
-  }
-
 }
