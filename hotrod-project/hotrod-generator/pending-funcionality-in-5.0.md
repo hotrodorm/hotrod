@@ -18,7 +18,8 @@ Dynamic SQL:
 CRUD:
 
 - SELECT BY PK/EXAMPLE, UPDATE BY PK/EXAMPLE, DELETE BY PK/EXAMPLE implemented.
-- INSERT implemented with PK retrieval (identities and sequences).
+- INSERT and INSERT BY EXAMPLE implemented.
+- Primary key retrieval implemented on INSERTs for identities and sequences.
 - Logging implemented with FINE/DEBUG (SQL only) and FINER/TRACE (SQL + parameters).
 
 Nitro:
@@ -30,7 +31,7 @@ Nitro:
 
 LiveSQL:
 
-- Basic POC without MyBatis working.
+- Basic POC without plain JDBC working.
 
 ## 3. Existing Functionality Not Yet Migrated To Plain JDBC
 
