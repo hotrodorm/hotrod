@@ -1,14 +1,76 @@
-# Pending Functionality in CRUD
+# Hotrod 5.0 Functionality
+
+## 1. New Functionality
+
+LiveSQL:
+
+- Full Column Typing: the type of a column is now determined based on 1) declared runtime types, 2) declared configuration types, 3) layer rules, 4) dialect rules, and 5) JDBC driver defaults.
+- Implemented missing COUNT(expression) function.
+
+Dynamic SQL:
+
+- New Dynamic SQL engine:
+    - Used by Nitro.
+    - Can be used from plain Java at runtime.
+
+## 2. Existing Functionality Migrated To Plain JDBC
 
 CRUD:
-- Optimistic Locking.
-- Select/Update/Delete by Criteria.
-- select by FKs.
-- enums.
-- select by UI.
-- select sequence.
+
+- SELECT BY PK/EXAMPLE, UPDATE BY PK/EXAMPLE, DELETE BY PK/EXAMPLE implemented.
+- INSERT implemented with PK retrieval (identities and sequences).
+- Logging implemented with FINE/DEBUG (SQL only) and FINER/TRACE (SQL + parameters).
 
 Nitro:
+
+- Dynamic SQL.
+- General Queries implemented.
+- Flat SELECTs implemented.
+- Entity SELECTs implemented.
+
+LiveSQL:
+
+- Basic POC without MyBatis working.
+
+## 3. Existing Functionality Not Yet Migrated To Plain JDBC
+
+CRUD:
+
+- Optimistic Locking.
+- SELECT/UPDATE/DELETE by Criteria.
+- SELECT by FKs.
+- Enums.
+- SELECT by UI.
+- SELECT sequence.
+
+Nitro:
+
 - Graph queries.
 - Query mode: single-row, List, Cursor.
-- TODO: jdbc-type is not required for a parameter that is not applied to the query. Maybe separate in <parameter> and <nullable-parameter>.
+
+LiveSQL.
+
+- Fully test SELECTs.
+- UPDATE, DELETE, INSERT.
+
+## 4. Removed Functionality
+
+- Mybatis persistence layer removed in favor of plain JDBC.
+- The Arquetype module was removed.
+- Log4j fully removed from HotRod. It was still used in the generator and was switched to JUL.
+- Removed old unused classes in the hotrod library.
+
+## 5. Modified Functionality
+
+- New class writer handles references and imports for cleaners DAOs and VOs.
+- Packages are changed in the hotrod library. The "runtime" segment is now removed.
+
+## 6. Functionality Not Yet Defined
+
+Nitro:
+
+- The jdbc-type is not required for a parameter that is not applied to the query. Maybe separate in &lt;parameter> and &lt;nullable-parameter>.
+
+Dynamic SQL:
+
+- Uses JEXL (by default) to evaluate expressions, but could use other libraries such as OGNL.
