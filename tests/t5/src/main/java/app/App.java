@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import app.daos.Account;
 import app.daos.primitives.AccountDAO;
 import app.daos.primitives.ReportingDAO;
 
@@ -59,11 +60,22 @@ public class App {
   private void test() throws SQLException, DynamicExpressionException {
 
     List<Integer> ids = Arrays.asList(123, 789, 112, 4);
-    
+
 //    int rows = this.reportingDAO.activateBigAccounts(125L, ids);
-      int rows=  this.reportingDAO.activateBigAccounts2(125L, ids, "type = 'CHK'");
-//    int rows = this.accountDAO.activateBigAccounts(null);
-    System.out.println("--> rows=" + rows);
+//      int rows=  this.reportingDAO.activateBigAccounts2(125L, ids, "type = 'CHK'");
+
+    // List<BigAccount> bas = this.reportingDAO.findBigAccounts();
+//    for (BigAccount ba : bas) {
+//      System.out.println("--> " + ba);
+//    }
+
+    List<Account> bas = this.accountDAO.findBigAccounts();
+    for (Account ba : bas) {
+      System.out.println("--> " + ba);
+    }
+
+    // int rows = this.accountDAO.activateBigAccounts(null);
+//    System.out.println("--> rows=" + rows);
 
 //    Account filter = new Account();
 //    filter.setType("CHK");

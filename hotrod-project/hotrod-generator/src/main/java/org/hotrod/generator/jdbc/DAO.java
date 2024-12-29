@@ -20,6 +20,7 @@ import javax.sql.DataSource;
 import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.Constants;
 import org.hotrod.config.ConverterTag;
+import org.hotrod.config.EnhancedSQLPart;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.JDBCTag;
 import org.hotrod.config.ParameterTag;
@@ -33,6 +34,7 @@ import org.hotrod.dynamic.DynamicModificationQuery;
 import org.hotrod.dynamic.DynamicSelectQuery;
 import org.hotrod.dynamic.ParameterContext;
 import org.hotrod.dynamic.PreparedModificationQuery;
+import org.hotrod.dynamic.PreparedQuery;
 import org.hotrod.dynamic.PreparedSelectQuery;
 import org.hotrod.dynamic.PreparedSelectQuery.RowReader;
 import org.hotrod.dynamic.builder.QueryAssembler;
@@ -52,6 +54,9 @@ import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.metadata.KeyMetadata;
+import org.hotrod.metadata.SelectMethodMetadata;
+import org.hotrod.metadata.SelectMethodMetadata.SelectMethodReturnType;
+import org.hotrod.metadata.SelectParameterMetadata;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
@@ -228,9 +233,10 @@ public class DAO {
       writeNitroQuery(q, i++);
     }
 
-//      for (SelectMethodMetadata s : this.metadata.getSelectsMetadata()) {
-//        writeSelect(s);
-//      }
+    i = 0;
+    for (SelectMethodMetadata s : this.metadata.getSelectsMetadata()) {
+      writeNitroSelect(s, i++);
+    }
 
 //    }
 
@@ -907,11 +913,7 @@ public class DAO {
   }
 
   private void fragmentLogging() {
-    w.println("    if (log.isLoggable(", Level.class, ".FINER)) {");
-    w.println("      log.finer(\"SQL: \" + preparedQuery.getPreview(true));");
-    w.println("    } else if (log.isLoggable(", Level.class, ".FINE)) {");
-    w.println("      log.fine(\"SQL: \" + preparedQuery.getPreview());");
-    w.println("    }");
+    w.println("    logQuery(preparedQuery);");
   }
 
   private void fragmentExecuteModification() {
@@ -937,6 +939,14 @@ public class DAO {
   }
 
   private void writeClassFooter() throws IOException {
+    w.println();
+    w.println("  private void logQuery(", PreparedQuery.class, " preparedQuery) {");
+    w.println("    if (log.isLoggable(", Level.class, ".FINER)) {");
+    w.println("      log.finer(\"SQL: \" + preparedQuery.getPreview(true));");
+    w.println("    } else if (log.isLoggable(", Level.class, ".FINE)) {");
+    w.println("      log.fine(\"SQL: \" + preparedQuery.getPreview());");
+    w.println("    }");
+    w.println("  }");
     w.println();
     w.println("}");
   }
@@ -1074,16 +1084,19 @@ public class DAO {
     w.println();
     w.println("  // NITRO QUERY: " + method);
 
+    // 1. Query Definition
+
     w.println();
     w.println("  private final ", DynamicModificationQuery.class, " " + queryName + " = assembler");
-
     List<DynamicSQLPart> parts = q.getDynamicSQLParts();
     NitroRenderer r = new NitroRenderer();
     r.render(parts, w);
 
     w.println("    .endModificationQuery();");
-    w.println();
 
+    // 2. Method
+
+    w.println();
     w.print("  public int " + method + "(");
     Separator sep = new Separator(", ");
     for (ParameterTag p : q.getParameterDefinitions()) {
@@ -1104,6 +1117,108 @@ public class DAO {
 
     w.println("  }");
 
+  }
+
+  private void writeNitroSelect(SelectMethodMetadata s, int sno) throws ControlledException {
+
+    log.info("Nitro SELECT 1");
+
+    String selectName = "select" + sno;
+    String method = s.getMethod();
+
+    w.println();
+    w.println("  // NITRO SELECT: " + method);
+
+    // 1. Query Definition
+
+    w.println();
+    w.println("  private final ", DynamicSelectQuery.class, " " + selectName + " = assembler");
+
+    List<EnhancedSQLPart> parts = s.getParts();
+    NitroRenderer r = new NitroRenderer();
+    r.renderSelect(parts, w);
+
+//    int coln = this.metadata.getColumns().size();
+//    int n = 1;
+//    for (ColumnMetadata cm : s.getColumns()) {
+//      String sqlId = cm.getId().getRenderedSQLName();
+//      w.println("    .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
+//      n++;
+//    }
+    w.println("    .endSelectQuery();");
+    w.println();
+
+    // 2. Row Reader
+
+    String rowReaderName;
+    if (this.isExecutor()) {
+      rowReaderName = "rowReader" + sno;
+      this.writeNitroSelectRowReaderProperty(s, rowReaderName);
+    } else {
+      rowReaderName = "rowReader";
+    }
+
+    // 3. Method
+
+    SelectMethodReturnType rt = s.getReturnType(this.classPackage);
+    ExternalClass rc = ExternalClass.of(rt.getBaseReturnVOFullClassName());
+
+    w.print("  public ", List.class, "<", rc, "> " + method + "(");
+    Separator sep = new Separator(", ");
+    for (SelectParameterMetadata sp : s.getParameters()) {
+      ParameterTag p = sp.getParameter();
+      log.info(">> parameter '" + p.getName() + "'");
+      ExternalClass pc = ExternalClass.of(p.getJavaType());
+      w.print(sep.render(), pc, " " + p.getName());
+    }
+    w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
+
+    w.println("    ", ParameterContext.class, " context = this.expressionFactory.newParameterContext();");
+    for (SelectParameterMetadata sp : s.getParameters()) {
+      ParameterTag p = sp.getParameter();
+      w.println("    context.add(\"" + p.getName() + "\", " + p.getName() + ");");
+    }
+
+    w.print("    ", PreparedSelectQuery.class, "<", rc, "> preparedQuery = ");
+    w.println("this." + selectName + ".prepare(context, ", rc, ".class);");
+
+    fragmentLogging();
+
+    w.println("    try (", Connection.class, " conn = this.dataSource.getConnection()) {");
+    w.println("      ", List.class, "<", rc, "> rows = preparedQuery.execute(conn, this." + rowReaderName + ");");
+    w.println("      return rows;");
+    w.println("    }");
+
+    w.println("  }");
+
+  }
+
+  private void writeNitroSelectRowReaderProperty(SelectMethodMetadata s, String rowReaderName) {
+    SelectMethodReturnType rt = s.getReturnType(this.classPackage);
+    ExternalClass m = ExternalClass.of(rt.getBaseReturnVOFullClassName());
+    rt.getSoloVO();
+
+    w.println();
+    w.print("  private final ", RowReader.class, "<", m, "> " + rowReaderName + " = new ");
+    w.println(RowReader.class, "<", m, ">() {");
+    w.println();
+    w.println("    @", Override.class);
+    w.print("    public ", m, " readRowFrom(", ResultSet.class, " rs, ");
+    w.print(Connection.class, " conn) ");
+    w.println("throws ", SQLException.class, " {");
+    w.println("      ", m, " row = new ", m, "();");
+
+    int ordinal = 1;
+    for (ColumnMetadata cm : s.getColumns()) {
+      this.writeReaderLogic(cm, ordinal);
+      ordinal++;
+    }
+
+    w.println();
+    w.println("      return row;");
+    w.println("    }");
+    w.println();
+    w.println("  };");
   }
 
   public boolean isTable() {

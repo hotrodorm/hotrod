@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.AbstractDAOTag;
+import org.hotrod.config.EnhancedSQLPart;
 import org.hotrod.config.EnhancedSQLPart.SQLFormatter;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
@@ -22,6 +23,7 @@ import org.hotrod.exceptions.InvalidSQLException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.generator.jdbc.EntityDTOs;
 import org.hotrod.generator.mybatisspring.DataSetLayout;
 import org.hotrod.generator.mybatisspring.MyBatisSpringGenerator.EntityVOs;
 import org.hotrod.identifiers.Id;
@@ -57,7 +59,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
   private transient DataSetLayout layout;
   private TableDataSetMetadata entityMetadata;
 
-  private EntityVOs entityVOs;
+  private EntityDTOs entityVOs;
 
   @SuppressWarnings("unused")
   private transient JdbcDatabase db;
@@ -116,8 +118,13 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   }
 
-  public void setEntityVOs(final EntityVOs entityVOs) {
+  public void setEntityVOs(final EntityDTOs entityVOs) {
     this.entityVOs = entityVOs;
+  }
+
+  @Deprecated
+  public void setEntityVOs(final EntityVOs entityVOs) {
+//    this.entityVOs = entityVOs;
   }
 
   // TODO: Just a marker for phase 1
@@ -384,6 +391,10 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
     return this.tag.renderSQLSentence(parameterRenderer);
   }
 
+  public List<EnhancedSQLPart> getParts() {
+    return this.tag.getParts();
+  }
+
   @Override
   public String renderXML(final ParameterRenderer parameterRenderer) {
     SQLFormatter formatter = new SQLFormatter();
@@ -528,6 +539,10 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
     // Simpler methods
 
     private ClassPackage getReturnVOPackage() { // primitives.accounting
+      log.info("this.sm.entityVOs=" + this.sm.entityVOs);
+      if (this.sm.entityVOs != null) {
+        return this.sm.entityVOs.getVo().getClassPackage();
+      }
       return this.soloVO != null ? this.soloVO.getClassPackage() : this.connectedVO.getClassPackage();
     }
 

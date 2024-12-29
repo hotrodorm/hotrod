@@ -131,4 +131,8 @@ public class ComplementTag extends EnhancedSQLPart {
     return this.getTagName();
   }
 
+  public List<DynamicSQLPart> getParts() {
+    return parts;
+  }
+
 }

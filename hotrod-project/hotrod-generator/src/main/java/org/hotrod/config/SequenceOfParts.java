@@ -9,8 +9,8 @@ import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.dynamicsql.existing.expressions.CollectionExpression;
-import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
 import org.hotrod.dynamicsql.existing.expressions.LiteralExpression;
+import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
@@ -114,6 +114,10 @@ public class SequenceOfParts extends EnhancedSQLPart {
   @Override
   public String getInternalCaption() {
     return this.getTagName();
+  }
+
+  public List<EnhancedSQLPart> getParts() {
+    return super.eparts;
   }
 
 }

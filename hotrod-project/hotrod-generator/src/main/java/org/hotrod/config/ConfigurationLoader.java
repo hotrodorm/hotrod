@@ -68,7 +68,7 @@ public class ConfigurationLoader {
       final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
       throws ControlledException, UncontrolledException, FacetNotFoundException {
 
-    log.fine("loading file: " + f);
+    log.info("loading file: " + f);
 
     // Basic validation on the file
 
@@ -85,7 +85,7 @@ public class ConfigurationLoader {
 
     // Prepare the parser
 
-    log.fine("loading file 2");
+    log.info("loading file 2");
 
     Unmarshaller unmarshaller = null;
     XMLStreamReader xsr = null;
@@ -132,9 +132,9 @@ public class ConfigurationLoader {
 
     try {
 
-      log.fine("[ Will parse ]");
+      log.info("[ Will parse ]");
       HotRodConfigTag config = (HotRodConfigTag) unmarshaller.unmarshal(xsr);
-      log.fine("[ Parsed ]");
+      log.info("[ Parsed ]");
 
       // Validation (specific)
 
@@ -163,16 +163,16 @@ public class ConfigurationLoader {
 
       // Complete
 
-      log.fine("File loaded.");
+      log.info("File loaded.");
 
       return config;
 
     } catch (JAXBException e) {
-      log.log(Level.FINE, "JAXBException", e);
+      log.log(Level.INFO, "JAXBException", e);
       throw assembleControlledException(f, validationHandler, e);
 
     } catch (InvalidConfigurationFileException e) {
-      log.log(Level.FINE, "InvalidConfigurationFileException", e);
+      log.log(Level.INFO, "InvalidConfigurationFileException", e);
       SourceLocation loc = e.getTag().getSourceLocation();
       log.fine("loc=" + loc);
       if (loc == null) {
@@ -182,12 +182,12 @@ public class ConfigurationLoader {
       }
 
     } catch (GeneratorNotFoundException e) {
-      log.log(Level.FINE, "GeneratorNotFoundException.", e);
+      log.log(Level.INFO, "GeneratorNotFoundException.", e);
       throw new ControlledException(e.getMessage());
 
     } catch (Throwable e) {
-      log.log(Level.FINE, "Throwable detected.", e);
-      throw new ControlledException(e.getMessage());
+      log.log(Level.SEVERE, "Throwable detected.", e);
+      throw new UncontrolledException("Could not load configuration file '" + f.getPath() + "'.", e);
 
     }
 

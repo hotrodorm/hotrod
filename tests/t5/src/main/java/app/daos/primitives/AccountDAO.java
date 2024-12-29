@@ -21,6 +21,7 @@ import org.hotrod.dynamic.DynamicModificationQuery;
 import org.hotrod.dynamic.DynamicSelectQuery;
 import org.hotrod.dynamic.ParameterContext;
 import org.hotrod.dynamic.PreparedModificationQuery;
+import org.hotrod.dynamic.PreparedQuery;
 import org.hotrod.dynamic.PreparedSelectQuery;
 import org.hotrod.dynamic.PreparedSelectQuery.RowReader;
 import org.hotrod.dynamic.builder.QueryAssembler;
@@ -130,11 +131,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     ParameterContext context = this.expressionFactory.newParameterContext();
     context.add("f", filter);
     PreparedSelectQuery<Account> preparedQuery = this.selectByPrimaryKey.prepare(context, Account.class);
-    if (log.isLoggable(Level.FINER)) {
-      log.finer("SQL: " + preparedQuery.getPreview(true));
-    } else if (log.isLoggable(Level.FINE)) {
-      log.fine("SQL: " + preparedQuery.getPreview());
-    }
+    logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       List<Account> rows = preparedQuery.execute(conn, this.rowReader);
       if (rows.size() == 0) return null;
@@ -169,11 +166,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     String ordering = SQLUtil.render(orderBies);
     context.add("ordering", ordering);
     PreparedSelectQuery<Account> preparedQuery = this.selectByExample.prepare(context, Account.class);
-    if (log.isLoggable(Level.FINER)) {
-      log.finer("SQL: " + preparedQuery.getPreview(true));
-    } else if (log.isLoggable(Level.FINE)) {
-      log.fine("SQL: " + preparedQuery.getPreview());
-    }
+    logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       List<Account> rows = preparedQuery.execute(conn, this.rowReader);
       return rows;
@@ -203,11 +196,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     ParameterContext context = this.expressionFactory.newParameterContext();
     context.add("m", m);
     PreparedInsertQuery preparedQuery = this.insert.prepare(context);
-    if (log.isLoggable(Level.FINER)) {
-      log.finer("SQL: " + preparedQuery.getPreview(true));
-    } else if (log.isLoggable(Level.FINE)) {
-      log.fine("SQL: " + preparedQuery.getPreview());
-    }
+    logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       Long pk = preparedQuery.execute(conn);
       m.setId((pk == null) ? null : Integer.valueOf(pk.intValue()));
@@ -237,11 +226,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     ParameterContext context = this.expressionFactory.newParameterContext();
     context.add("m", m);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(context);
-    if (log.isLoggable(Level.FINER)) {
-      log.finer("SQL: " + preparedQuery.getPreview(true));
-    } else if (log.isLoggable(Level.FINE)) {
-      log.fine("SQL: " + preparedQuery.getPreview());
-    }
+    logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       Long pk = preparedQuery.execute(conn);
       m.setId((pk == null) ? null : Integer.valueOf(pk.intValue()));
@@ -267,11 +252,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     ParameterContext context = this.expressionFactory.newParameterContext();
     context.add("m", m);
     PreparedModificationQuery preparedQuery = this.updateByPK.prepare(context);
-    if (log.isLoggable(Level.FINER)) {
-      log.finer("SQL: " + preparedQuery.getPreview(true));
-    } else if (log.isLoggable(Level.FINE)) {
-      log.fine("SQL: " + preparedQuery.getPreview());
-    }
+    logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       int rows = preparedQuery.execute(conn);
       return rows;
@@ -303,11 +284,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     context.add("f", filter);
     context.add("u", updateValues);
     PreparedModificationQuery preparedQuery = this.updateByExample.prepare(context);
-    if (log.isLoggable(Level.FINER)) {
-      log.finer("SQL: " + preparedQuery.getPreview(true));
-    } else if (log.isLoggable(Level.FINE)) {
-      log.fine("SQL: " + preparedQuery.getPreview());
-    }
+    logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       int rows = preparedQuery.execute(conn);
       return rows;
@@ -328,11 +305,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     ParameterContext context = this.expressionFactory.newParameterContext();
     context.add("f", filter);
     PreparedModificationQuery preparedQuery = this.deleteByPK.prepare(context);
-    if (log.isLoggable(Level.FINER)) {
-      log.finer("SQL: " + preparedQuery.getPreview(true));
-    } else if (log.isLoggable(Level.FINE)) {
-      log.fine("SQL: " + preparedQuery.getPreview());
-    }
+    logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       int rows = preparedQuery.execute(conn);
       return rows;
@@ -356,11 +329,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     ParameterContext context = this.expressionFactory.newParameterContext();
     context.add("f", filter);
     PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(context);
-    if (log.isLoggable(Level.FINER)) {
-      log.finer("SQL: " + preparedQuery.getPreview(true));
-    } else if (log.isLoggable(Level.FINE)) {
-      log.fine("SQL: " + preparedQuery.getPreview());
-    }
+    logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       int rows = preparedQuery.execute(conn);
       return rows;
@@ -398,6 +367,30 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       return this.ascending;
     }
 
+  }
+
+  // NITRO SELECT: findBigAccounts
+
+  private final DynamicSelectQuery select0 = assembler
+    .literal("\nselect *\nfrom account\nwhere balance >= 300\n    ")
+    .endSelectQuery();
+
+  public List<Account> findBigAccounts() throws DynamicExpressionException, SQLException {
+    ParameterContext context = this.expressionFactory.newParameterContext();
+    PreparedSelectQuery<Account> preparedQuery = this.select0.prepare(context, Account.class);
+    logQuery(preparedQuery);
+    try (Connection conn = this.dataSource.getConnection()) {
+      List<Account> rows = preparedQuery.execute(conn, this.rowReader);
+      return rows;
+    }
+  }
+
+  private void logQuery(PreparedQuery preparedQuery) {
+    if (log.isLoggable(Level.FINER)) {
+      log.finer("SQL: " + preparedQuery.getPreview(true));
+    } else if (log.isLoggable(Level.FINE)) {
+      log.fine("SQL: " + preparedQuery.getPreview());
+    }
   }
 
 }

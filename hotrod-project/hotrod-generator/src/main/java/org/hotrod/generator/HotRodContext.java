@@ -63,6 +63,8 @@ public class HotRodContext {
       final String currentJDBCSchema, final File baseDir, final LinkedHashSet<String> facetNames,
       final Feedback feedback) throws ControlledException {
 
+    log.info("init");
+
     if (configFile != null) {
       feedback.info("");
       feedback.info("Configuration File: " + configFile);
@@ -83,6 +85,8 @@ public class HotRodContext {
         throw new ControlledException("Could not connect to the database: " + XUtil.trim(e));
       }
 
+      log.info("conn");
+
       // Database Version
 
       DatabaseConnectionVersion cv;
@@ -97,6 +101,8 @@ public class HotRodContext {
       feedback.info("Database Name: " + cv.renderDatabaseName());
       feedback.info("JDBC Driver: " + cv.renderJDBCDriverName() + " - implements JDBC Specification "
           + cv.renderJDBCSpecification());
+
+      log.info("db version");
 
       // Adapter
 
@@ -113,7 +119,7 @@ public class HotRodContext {
       } catch (SQLException e) {
         throw new ControlledException("Could not identify database at URL " + loc.getUrl() + " - " + XUtil.trim(e));
       }
-      log.fine("Adapter loaded.");
+      log.info("Adapter loaded.");
 
       // Current Catalog & Schema
 
@@ -126,13 +132,16 @@ public class HotRodContext {
       }
       feedback.info(" ");
 
+      log.info("catalog/schema");
+
       // Loading Configuration
 
       CatalogSchema currentCS = loc.getCatalogSchema();
       if (configFile != null) {
         try {
+          log.info("will load configuration");
           this.config = ConfigurationLoader.loadPrimary(baseDir, configFile, adapter, facetNames, currentCS);
-          log.fine("Main Configuration loaded.");
+          log.info("Main Configuration loaded.");
         } catch (ControlledException e) {
           if (e.getLocation() != null) {
             throw new ControlledException("\n" + e.getMessage() + "\n  in " + e.getLocation().render());
@@ -153,7 +162,7 @@ public class HotRodContext {
           throw new ControlledException("Could not load configuration file " + configFile + " - " + e.getMessage());
         }
       } else {
-        log.fine("Will load 3");
+        log.info("No config mode");
         try {
           this.config = ConfigurationLoader.prepareNoConfig(baseDir, configFile, adapter, facetNames, currentCS);
           log.fine("Default configuration loaded.");
@@ -163,6 +172,8 @@ public class HotRodContext {
           throw new ControlledException("Could not load configuration file " + configFile + " - " + e.getMessage());
         }
       }
+
+      log.info("config loaded.");
 
       // Apply current schema to declared tables with no schema and no catalog
 
@@ -190,9 +201,11 @@ public class HotRodContext {
         views.add(v.getDatabaseObjectId());
       }
 
+      log.info("db object scope.");
+
       try {
 
-        log.fine("gen 1");
+        log.info("gen 1 - strategy=" + mst.getSelectGeneration().getStrategy());
         if (mst.getSelectGeneration().getStrategy() == SelectStrategy.RESULT_SET) {
           if (discover) { // 1. Discover
 

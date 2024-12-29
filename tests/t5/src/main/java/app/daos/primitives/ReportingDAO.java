@@ -4,6 +4,7 @@ package app.daos.primitives;
 
 import java.io.Serializable;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
@@ -16,8 +17,12 @@ import javax.sql.DataSource;
 import org.hotrod.dynamic.DynamicExpressionException;
 import org.hotrod.dynamic.DynamicExpressionFactory;
 import org.hotrod.dynamic.DynamicModificationQuery;
+import org.hotrod.dynamic.DynamicSelectQuery;
 import org.hotrod.dynamic.ParameterContext;
 import org.hotrod.dynamic.PreparedModificationQuery;
+import org.hotrod.dynamic.PreparedQuery;
+import org.hotrod.dynamic.PreparedSelectQuery;
+import org.hotrod.dynamic.PreparedSelectQuery.RowReader;
 import org.hotrod.dynamic.builder.QueryAssembler;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
@@ -28,6 +33,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
+
+import app.daos.BigAccount;
 
 @Component
 public class ReportingDAO implements Serializable, ApplicationContextAware {
@@ -62,7 +69,7 @@ public class ReportingDAO implements Serializable, ApplicationContextAware {
     this.context = new LiveSQLContext(this.liveSQLDialect, this.dataSource, new TypeSolver(null, this.liveSQLDialect));
   }
 
-  // NITRO QUERY: activateBigAccounts2
+  // NITRO QUERY: activateBigAccounts
 
   private final DynamicModificationQuery query0 = assembler
     .literal("\n      ")
@@ -80,21 +87,67 @@ public class ReportingDAO implements Serializable, ApplicationContextAware {
     .literal("\n    ")
     .endModificationQuery();
 
-  public int activateBigAccounts2(Long minBalance, List ids, String filter)
+  public int activateBigAccounts(Long minBalance, List ids, String filter)
       throws DynamicExpressionException, SQLException {
     ParameterContext context = this.expressionFactory.newParameterContext();
     context.add("minBalance", minBalance);
     context.add("ids", ids);
     context.add("filter", filter);
     PreparedModificationQuery preparedQuery = this.query0.prepare(context);
+    logQuery(preparedQuery);
+    try (Connection conn = this.dataSource.getConnection()) {
+      int rows = preparedQuery.execute(conn);
+      return rows;
+    }
+  }
+
+  // NITRO SELECT: findBigAccounts
+
+  private final DynamicSelectQuery select0 = assembler
+    .literal("\nselect id, balance,\n  case when active then 'Active' else 'Inactive' end as status,\n  cast(case when type = 'CHK' then balance * 1.5 else balance * 1.2 end as int) as score\nfrom account\nwhere balance >= 300\n    ")
+    .endSelectQuery();
+
+
+  private final RowReader<BigAccount> rowReader0 = new RowReader<BigAccount>() {
+
+    @Override
+    public BigAccount readRowFrom(ResultSet rs, Connection conn) throws SQLException {
+      BigAccount row = new BigAccount();
+
+      Integer col1 = rs.getInt(1); // ID
+      if (rs.wasNull()) col1 = null;
+      row.setId(col1);
+
+      Integer col2 = rs.getInt(2); // BALANCE
+      if (rs.wasNull()) col2 = null;
+      row.setBalance(col2);
+
+      String col3 = rs.getString(3); // STATUS
+      row.setStatus(col3);
+
+      Integer col4 = rs.getInt(4); // SCORE
+      if (rs.wasNull()) col4 = null;
+      row.setScore(col4);
+
+      return row;
+    }
+
+  };
+  public List<BigAccount> findBigAccounts() throws DynamicExpressionException, SQLException {
+    ParameterContext context = this.expressionFactory.newParameterContext();
+    PreparedSelectQuery<BigAccount> preparedQuery = this.select0.prepare(context, BigAccount.class);
+    logQuery(preparedQuery);
+    try (Connection conn = this.dataSource.getConnection()) {
+      List<BigAccount> rows = preparedQuery.execute(conn, this.rowReader0);
+      return rows;
+    }
+  }
+
+  private void logQuery(PreparedQuery preparedQuery) {
     if (log.isLoggable(Level.FINER)) {
       log.finer("SQL: " + preparedQuery.getPreview(true));
     } else if (log.isLoggable(Level.FINE)) {
       log.fine("SQL: " + preparedQuery.getPreview());
-    }
-    try (Connection conn = this.dataSource.getConnection()) {
-      int rows = preparedQuery.execute(conn);
-      return rows;
     }
   }
 

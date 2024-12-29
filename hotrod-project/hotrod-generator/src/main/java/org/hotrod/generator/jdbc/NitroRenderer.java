@@ -5,8 +5,12 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.config.ComplementDAOTag;
+import org.hotrod.config.ComplementTag;
+import org.hotrod.config.EnhancedSQLPart;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.config.SQLParameter;
+import org.hotrod.config.SequenceOfParts;
+import org.hotrod.config.TextContent;
 import org.hotrod.config.VerbatimTextPart;
 import org.hotrod.config.dynamicsql.BindTag;
 import org.hotrod.config.dynamicsql.ChooseTag;
@@ -24,6 +28,7 @@ import org.hotrod.config.dynamicsql.TrimTag;
 import org.hotrod.config.dynamicsql.VariableOccurrence;
 import org.hotrod.config.dynamicsql.WhenTag;
 import org.hotrod.config.dynamicsql.WhereTag;
+import org.hotrod.config.structuredcolumns.ColumnsTag;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.utils.ClassWriter;
 import org.hotrod.utils.SUtil;
@@ -37,11 +42,21 @@ public class NitroRenderer {
     this.render(parts, w, 0, RENDER_ALL);
   }
 
+  public void renderSelect(List<EnhancedSQLPart> parts, ClassWriter w) throws ControlledException {
+    log.fine("[0] render --- List ---");
+    this.renderSelect(parts, w, 0, ERENDER_ALL);
+  }
+
   interface PartFilter {
     boolean accepts(DynamicSQLPart p);
   }
 
+  interface EnhancedPartFilter {
+    boolean accepts(EnhancedSQLPart p);
+  }
+
   private static final PartFilter RENDER_ALL = c -> true;
+  private static final EnhancedPartFilter ERENDER_ALL = c -> true;
 
   private void render(List<DynamicSQLPart> parts, ClassWriter w, int level, PartFilter filter)
       throws ControlledException {
@@ -49,6 +64,16 @@ public class NitroRenderer {
     for (DynamicSQLPart p : parts) {
       if (filter.accepts(p)) {
         this.renderDynamicPart(p, w, level);
+      }
+    }
+  }
+
+  private void renderSelect(List<EnhancedSQLPart> parts, ClassWriter w, int level, EnhancedPartFilter filter)
+      throws ControlledException {
+    log.fine("[" + level + "] render --- List ---");
+    for (EnhancedSQLPart p : parts) {
+      if (filter.accepts(p)) {
+        this.renderEnhancedPart(p, w, level);
       }
     }
   }
@@ -101,6 +126,40 @@ public class NitroRenderer {
       throw new ControlledException(
           "Could not render Nitro query: unrecognized Dynamic SQL part of type '" + p.getClass().getName() + "'");
     }
+  }
+
+  private void renderEnhancedPart(EnhancedSQLPart p, ClassWriter w, int level) throws ControlledException {
+    log.fine("[" + level + "] --- selector ---");
+    if (p instanceof ColumnsTag) {
+      render((ColumnsTag) p, w, level);
+    } else if (p instanceof ComplementTag) {
+      render((ComplementTag) p, w, level);
+    } else if (p instanceof SequenceOfParts) {
+      render((SequenceOfParts) p, w, level);
+    } else if (p instanceof TextContent) {
+      render((TextContent) p, w, level);
+    } else {
+      throw new ControlledException(
+          "Could not render Nitro query: unrecognized Dynamic SQL part of type '" + p.getClass().getName() + "'");
+    }
+  }
+
+  private void render(ColumnsTag t, ClassWriter w, int level) throws ControlledException {
+    throw new ControlledException("Could not render Nitro query: Graph queries are not yet supported");
+  }
+
+  private void render(ComplementTag t, ClassWriter w, int level) throws ControlledException {
+    render(t.getParts(), w, level, RENDER_ALL);
+  }
+
+  private void render(SequenceOfParts t, ClassWriter w, int level) throws ControlledException {
+    for (EnhancedSQLPart ep : t.getParts()) {
+      this.renderEnhancedPart(ep, w, level);
+    }
+  }
+
+  private void render(TextContent t, ClassWriter w, int level) throws ControlledException {
+    renderSQLSegments(w, level, t.getSegments());
   }
 
   private void render(LiteralTextPart t, ClassWriter w, int level) {
@@ -196,7 +255,12 @@ public class NitroRenderer {
 
   private void render(ParameterisableTextPart t, ClassWriter w, int level) throws ControlledException {
     log.fine("[" + level + "] render(ParameterisableText):");
-    for (SQLSegment s : t.getSegments()) {
+    List<SQLSegment> segments = t.getSegments();
+    renderSQLSegments(w, level, segments);
+  }
+
+  private void renderSQLSegments(ClassWriter w, int level, List<SQLSegment> segments) throws ControlledException {
+    for (SQLSegment s : segments) {
       if (s instanceof SQLParameter) {
         render((SQLParameter) s, w, level);
       } else if (s instanceof LiteralTextPart) {

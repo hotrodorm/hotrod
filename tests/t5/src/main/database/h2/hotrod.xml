@@ -43,6 +43,13 @@
       </foreach>
     </query>
  -->
+ 
+    <select method="findBigAccounts">
+select *
+from account
+where balance >= 300
+    </select> 
+ 
   </table>
 
 <!-- 
@@ -55,9 +62,11 @@
   </table>
  -->
  
+    <!--
+  -->
    <dao name="Reporting">
 
-    <query method="activateBigAccounts2">
+    <query method="activateBigAccounts">
       <parameter name="minBalance" java-type="java.lang.Long" />
       <parameter name="ids" java-type="java.util.List" jdbc-type="NUMERIC" />
       <parameter name="filter" java-type="java.lang.String" />
@@ -67,7 +76,14 @@
       <foreach item="id" collection="ids" open="(" separator=", " close=")">#{id}</foreach>
       AND ${filter}
     </query>
- 
+    
+    <select method="findBigAccounts" vo="BigAccount">
+select id, balance,
+  case when active then 'Active' else 'Inactive' end as status,
+  cast(case when type = 'CHK' then balance * 1.5 else balance * 1.2 end as int) as score
+from account
+where balance >= 300
+    </select> 
        
   </dao>
 

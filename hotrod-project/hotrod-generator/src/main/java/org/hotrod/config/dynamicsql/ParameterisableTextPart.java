@@ -62,10 +62,6 @@ public class ParameterisableTextPart extends DynamicSQLPart {
     log.info("validate");
     super.retrievePartsAndValidate(parameterDefinitions);
 
-//    int pos = 0;
-//    int prefix;
-//    int suffix;
-
     Tokenizer tokenizer = new Tokenizer(tag, this.txt);
     Token token;
     while ((token = tokenizer.next()) != null) {

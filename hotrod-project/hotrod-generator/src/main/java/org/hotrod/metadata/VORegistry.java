@@ -444,6 +444,13 @@ public class VORegistry {
       return this.tag;
     }
 
+    @Override
+    public String toString() {
+      return "SelectVOClass [classPackage=" + classPackage + ", name=" + name + ", extendsEntityVO=" + extendsEntityVO
+          + ", columnsByName=" + columnsByName + ", associations=" + associations + ", collections=" + collections
+          + ", tag=" + tag + ", implementClasses=" + implementClasses + "]";
+    }
+
   }
 
   public static class VOPropertiesRegistry {

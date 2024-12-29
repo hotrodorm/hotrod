@@ -74,6 +74,8 @@ public class JDBCGenerator implements Generator, LiveGenerator {
       final boolean incrementalMode, final Feedback feedback)
       throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
 
+    log.info("CONFIGURE GENERATION");
+
     this.hc = hc;
 
     this.dloc = this.hc.getLoc();
@@ -94,13 +96,15 @@ public class JDBCGenerator implements Generator, LiveGenerator {
   @Override
   public void prepareGeneration() throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
 
+    log.info("PREPARE GENERATION");
+
     this.jdbcTag = (JDBCTag) this.config.getGenerators().getSelectedGeneratorTag();
     this.layout = new DataSetLayout(this.config);
 
     // Add tables
 
     for (TableDataSetMetadata tm : this.md.getTables()) {
-      Model entityVOs = addDaosAndMapper(tm, DAOType.TABLE);
+      EntityDTOs entityVOs = addDaosAndMapper(tm, DAOType.TABLE);
       for (SelectMethodMetadata sm : tm.getSelectsMetadata()) {
         addSelectVOs(sm, entityVOs);
       }
@@ -109,7 +113,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
     // Add views
 
     for (TableDataSetMetadata vm : this.md.getViews()) {
-      Model entityVOs = addDaosAndMapper(vm, DAOType.VIEW);
+      EntityDTOs entityVOs = addDaosAndMapper(vm, DAOType.VIEW);
       for (SelectMethodMetadata sm : vm.getSelectsMetadata()) {
         addSelectVOs(sm, entityVOs);
       }
@@ -124,7 +128,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
     // Add executors
 
     for (ExecutorDAOMetadata dm : this.md.getExecutors()) {
-      Model entityVOs = addDaosAndMapper(dm, DAOType.EXECUTOR);
+      EntityDTOs entityVOs = addDaosAndMapper(dm, DAOType.EXECUTOR);
       for (SelectMethodMetadata sm : dm.getSelectsMetadata()) {
         addSelectVOs(sm, entityVOs);
       }
@@ -134,7 +138,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
 
   }
 
-  private Model addDaosAndMapper(final DataSetMetadata metadata, final DAOType type) throws ControlledException {
+  private EntityDTOs addDaosAndMapper(final DataSetMetadata metadata, final DAOType type) throws ControlledException {
 
     JDBCTag myBatisTag = (JDBCTag) this.config.getGenerators().getSelectedGeneratorTag();
 
@@ -204,20 +208,23 @@ public class JDBCGenerator implements Generator, LiveGenerator {
     }
     this.daos.put(metadata, dao);
 
-    return vo;
+    return vo == null ? null : new EntityDTOs(abstractVO, vo);
 
   }
 
   private LinkedHashSet<SelectAbstractVO> abstractSelectVOs = new LinkedHashSet<SelectAbstractVO>();
   private LinkedHashSet<SelectVO> selectVOs = new LinkedHashSet<SelectVO>();
 
-  private void addSelectVOs(final SelectMethodMetadata sm, final Model entityVOs) throws ControlledException {
+  private void addSelectVOs(final SelectMethodMetadata sm, final EntityDTOs entityVOs) throws ControlledException {
 
     if (entityVOs != null) {
+      log.info("entityVOs");
 
-//      sm.setEntityVOs(entityVOs);
+      sm.setEntityVOs(entityVOs);
 
     } else {
+      log.info("other");
+
       // DataSetLayout layout = new DataSetLayout(this.config);
       HotRodFragmentConfigTag fragmentConfig = sm.getFragmentConfig();
       ClassPackage fragmentPackage = fragmentConfig != null && fragmentConfig.getFragmentPackage() != null
@@ -230,6 +237,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
 
       SelectVOClass soloVO = rt.getSoloVO();
       SelectVOClass abstractSoloVO = rt.getAbstractSoloVO();
+      log.info("soloVO=" + soloVO + " - abstractSoloVO=" + abstractSoloVO);
 
       if (soloVO != null) {
         SelectAbstractVO abstractVO = new SelectAbstractVO(abstractSoloVO, this.layout, this.jdbcTag);
@@ -270,6 +278,14 @@ public class JDBCGenerator implements Generator, LiveGenerator {
 
     for (DAO dao : this.daos.values()) {
       dao.generate(fileGenerator, this);
+    }
+
+    for (SelectAbstractVO avo : this.abstractSelectVOs) {
+      avo.generate(fileGenerator);
+    }
+
+    for (SelectVO vo : this.selectVOs) {
+      vo.generate(fileGenerator);
     }
 
     this.layerConfigWriter.generate(fileGenerator, this);

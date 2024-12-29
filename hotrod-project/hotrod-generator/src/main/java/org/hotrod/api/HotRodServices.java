@@ -51,7 +51,7 @@ public class HotRodServices {
   }
 
   public void generate(final Feedback feedback) throws Exception {
-    log.fine("init");
+    log.info("init");
 
     feedback.info(Constants.TOOL_NAME + " Generator version " + BuildInformation.VERSION + " (build " + BuildInformation.BUILD_ID
         + ") - Generate");
@@ -60,6 +60,7 @@ public class HotRodServices {
 
       HotRodContext hc = new HotRodContext(configFile, jdbcdriverclass, jdbcurl, jdbcusername, jdbcpassword,
           jdbccatalog, jdbcschema, baseDir, facetNames, feedback);
+      log.info("init context");
 
       // Generate
 

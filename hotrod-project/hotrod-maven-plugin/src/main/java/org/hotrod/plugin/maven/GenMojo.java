@@ -63,7 +63,7 @@ public class GenMojo extends AbstractMojo {
   // Mojo logic
 
   public void execute() throws MojoExecutionException {
-    log.fine("init");
+    log.info("init");
 
     log.fine("this.localproperties=" + this.localproperties);
 

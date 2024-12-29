@@ -5,11 +5,16 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
+import org.hotrod.config.dynamicsql.LiteralTextPart;
+import org.hotrod.config.dynamicsql.ParameterInjection;
 import org.hotrod.config.dynamicsql.SQLSegment;
+import org.hotrod.config.dynamicsql.Tokenizer;
+import org.hotrod.config.dynamicsql.Tokenizer.Token;
+import org.hotrod.config.dynamicsql.VariableOccurrence;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
 import org.hotrod.dynamicsql.existing.expressions.LiteralExpression;
+import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
@@ -43,61 +48,138 @@ public class TextContent extends EnhancedSQLPart {
 
   @Override
   public void validate(final DaosTag daosTag, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig, final ParameterDefinitions parameters,
+      final HotRodFragmentConfigTag fragmentConfig, final ParameterDefinitions parameterDefinitions,
       final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
 
-    parameters.validate();
+    AbstractConfigurationTag tag = null;
 
-    int pos = 0;
-    int prefix;
-    int suffix;
+    parameterDefinitions.validate();
 
-    while (pos < this.txt.length() && (prefix = this.txt.indexOf(SQLParameter.PREFIX, pos)) != -1) {
+    Tokenizer tokenizer = new Tokenizer(tag, this.txt);
+    Token token;
+    while ((token = tokenizer.next()) != null) {
+      log.info("TOKEN: " + token.getType() + " - " + token.getBody());
+      switch (token.getType()) {
 
-      VerbatimTextPart verbatim = new VerbatimTextPart(this.getSourceLocation(), this.txt.substring(pos, prefix));
-      this.segments.add(verbatim);
+      case SQL_PARAMETER:
+        String name = token.getBody();
 
-      suffix = this.txt.indexOf(SQLParameter.SUFFIX, prefix + SQLParameter.PREFIX.length());
-      if (suffix == -1) {
-        throw new InvalidConfigurationFileException(this, //
-            "Unmatched parameter delimiters; found an '" + SQLParameter.PREFIX + "' but not an '" + SQLParameter.SUFFIX
-                + "'");
-      }
-
-      String name = this.txt.substring(prefix + SQLParameter.PREFIX.length(), suffix);
-
-      if (!name.matches(VALID_NAME_PATTERN)) {
-        if (name.indexOf(',') != -1) {
-          throw new InvalidConfigurationFileException(this, //
-              "Invalid parameter reference " + SQLParameter.PREFIX + name + SQLParameter.SUFFIX
-                  + " in the body of the tag. " + "The parameter must include a single alphanumeric name");
-        } else {
-          throw new InvalidConfigurationFileException(this, //
-              "Invalid parameter reference " + SQLParameter.PREFIX + name + SQLParameter.SUFFIX
-                  + " in the body of the tag. "
-                  + "\nA parameter name must start with a letter and continue with letters, digits, and/or underscores");
+        if (!name.matches(VALID_NAME_PATTERN)) {
+          if (name.indexOf(',') != -1) {
+            throw new InvalidConfigurationFileException(tag,
+                "Invalid parameter reference " + SQLParameter.PREFIX + name + SQLParameter.SUFFIX
+                    + " in the body of the tag. " + "The parameter must include a single alphanumeric name");
+          } else {
+            throw new InvalidConfigurationFileException(tag, "Invalid parameter reference " + SQLParameter.PREFIX + name
+                + SQLParameter.SUFFIX + " in the body of the tag. "
+                + "\nA parameter name must start with a letter and continue with letters, digits, and/or underscores.");
+          }
         }
+
+        ParameterTag parameterDefinition = parameterDefinitions.findParameter(name);
+        if (parameterDefinition != null) {
+          SQLParameter p = new SQLParameter(name, tag, false);
+          p.setDefinition(parameterDefinition);
+          this.segments.add(p);
+        } else {
+          if (parameterDefinitions.findVariable(name)) {
+            VariableOccurrence v = new VariableOccurrence(name);
+            this.segments.add(v);
+          } else {
+            throw new InvalidConfigurationFileException(tag, "Invalid parameter reference " + SQLParameter.PREFIX + name
+                + SQLParameter.SUFFIX + " in the body of the tag. There's no parameter with that name.");
+          }
+        }
+        break;
+
+      case PARAMETER_INJECTION:
+        name = token.getBody();
+
+        if (!name.matches(VALID_NAME_PATTERN)) {
+          if (name.indexOf(',') != -1) {
+            throw new InvalidConfigurationFileException(tag,
+                "Invalid parameter reference " + SQLParameter.PREFIX + name + SQLParameter.SUFFIX
+                    + " in the body of the tag. " + "The parameter must include a single alphanumeric name");
+          } else {
+            throw new InvalidConfigurationFileException(tag, "Invalid parameter reference " + SQLParameter.PREFIX + name
+                + SQLParameter.SUFFIX + " in the body of the tag. "
+                + "\nA parameter name must start with a letter and continue with letters, digits, and/or underscores.");
+          }
+        }
+
+        parameterDefinition = parameterDefinitions.findParameter(name);
+        if (parameterDefinition != null) {
+          ParameterInjection p = new ParameterInjection(name);
+          this.segments.add(p);
+        } else {
+          if (parameterDefinitions.findVariable(name)) {
+            ParameterInjection p = new ParameterInjection(name);
+            this.segments.add(p);
+          } else {
+            throw new InvalidConfigurationFileException(tag, "Invalid parameter reference " + SQLParameter.PREFIX + name
+                + SQLParameter.SUFFIX + " in the body of the tag. There's no parameter with that name.");
+          }
+        }
+        break;
+
+      default: // literal
+        LiteralTextPart literal = new LiteralTextPart(this.getSourceLocation(), token.getBody());
+        this.segments.add(literal);
+        break;
+
       }
-
-      ParameterTag definition = parameters.findParameter(name);
-
-      if (definition != null) {
-        SQLParameter p = new SQLParameter(name, this, false);
-        p.setDefinition(definition);
-        this.segments.add(p);
-      } else {
-        throw new InvalidConfigurationFileException(this, //
-            "Invalid parameter reference " + SQLParameter.PREFIX + name + SQLParameter.SUFFIX
-                + " in the body of the tag: no parameter with this name");
-      }
-
-      pos = suffix + SQLParameter.SUFFIX.length();
     }
 
-    if (pos < this.txt.length()) {
-      VerbatimTextPart literal = new VerbatimTextPart(this.getSourceLocation(), this.txt.substring(pos));
-      this.segments.add(literal);
-    }
+//    int pos = 0;
+//    int prefix;
+//    int suffix;
+//
+//    while (pos < this.txt.length() && (prefix = this.txt.indexOf(SQLParameter.PREFIX, pos)) != -1) {
+//
+//      VerbatimTextPart verbatim = new VerbatimTextPart(this.getSourceLocation(), this.txt.substring(pos, prefix));
+//      this.segments.add(verbatim);
+//
+//      suffix = this.txt.indexOf(SQLParameter.SUFFIX, prefix + SQLParameter.PREFIX.length());
+//      if (suffix == -1) {
+//        throw new InvalidConfigurationFileException(this, //
+//            "Unmatched parameter delimiters; found an '" + SQLParameter.PREFIX + "' but not an '" + SQLParameter.SUFFIX
+//                + "'");
+//      }
+//
+//      String name = this.txt.substring(prefix + SQLParameter.PREFIX.length(), suffix);
+//
+//      if (!name.matches(VALID_NAME_PATTERN)) {
+//        if (name.indexOf(',') != -1) {
+//          throw new InvalidConfigurationFileException(this, //
+//              "Invalid parameter reference " + SQLParameter.PREFIX + name + SQLParameter.SUFFIX
+//                  + " in the body of the tag. " + "The parameter must include a single alphanumeric name");
+//        } else {
+//          throw new InvalidConfigurationFileException(this, //
+//              "Invalid parameter reference " + SQLParameter.PREFIX + name + SQLParameter.SUFFIX
+//                  + " in the body of the tag. "
+//                  + "\nA parameter name must start with a letter and continue with letters, digits, and/or underscores");
+//        }
+//      }
+//
+//      ParameterTag definition = parameters.findParameter(name);
+//
+//      if (definition != null) {
+//        SQLParameter p = new SQLParameter(name, this, false);
+//        p.setDefinition(definition);
+//        this.segments.add(p);
+//      } else {
+//        throw new InvalidConfigurationFileException(this, //
+//            "Invalid parameter reference " + SQLParameter.PREFIX + name + SQLParameter.SUFFIX
+//                + " in the body of the tag: no parameter with this name");
+//      }
+//
+//      pos = suffix + SQLParameter.SUFFIX.length();
+//    }
+//
+//    if (pos < this.txt.length()) {
+//      VerbatimTextPart literal = new VerbatimTextPart(this.getSourceLocation(), this.txt.substring(pos));
+//      this.segments.add(literal);
+//    }
 
   }
 
@@ -154,6 +236,10 @@ public class TextContent extends EnhancedSQLPart {
   @Override
   public String getInternalCaption() {
     return this.getTagName();
+  }
+
+  public List<SQLSegment> getSegments() {
+    return segments;
   }
 
 }
