@@ -16,6 +16,7 @@ import org.hotrod.config.dynamicsql.ForEachTag;
 import org.hotrod.config.dynamicsql.IfTag;
 import org.hotrod.config.dynamicsql.LiteralTextPart;
 import org.hotrod.config.dynamicsql.OtherwiseTag;
+import org.hotrod.config.dynamicsql.ParameterInjection;
 import org.hotrod.config.dynamicsql.ParameterisableTextPart;
 import org.hotrod.config.dynamicsql.SQLSegment;
 import org.hotrod.config.dynamicsql.SetTag;
@@ -204,6 +205,8 @@ public class NitroRenderer {
         render((VariableOccurrence) s, w, level);
       } else if (s instanceof VerbatimTextPart) {
         render((VerbatimTextPart) s, w, level);
+      } else if (s instanceof ParameterInjection) {
+        render((ParameterInjection) s, w, level);
       } else {
         throw new ControlledException(
             "Could not render Nitro query (2): unrecognized Dynamic SQL part of type '" + s.getClass().getName() + "'");
@@ -231,6 +234,11 @@ public class NitroRenderer {
   private void render(VerbatimTextPart t, ClassWriter w, int level) throws ControlledException {
     log.fine("[" + level + "] render(VerbatimTextPart)");
     w.println(indent(level) + ".literal(" + renderString(t.getContent()) + ")");
+  }
+
+  private void render(ParameterInjection t, ClassWriter w, int level) throws ControlledException {
+    log.fine("[" + level + "] render(ParameterInjection)");
+    w.println(indent(level) + ".parameterInjection(" + renderString(t.getName()) + ")");
   }
 
   private void render(CollectionOfPartsTag t, ClassWriter w, int level) throws ControlledException {

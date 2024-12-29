@@ -5,6 +5,7 @@ package app.daos.primitives;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -66,21 +67,25 @@ public class ReportingDAO implements Serializable, ApplicationContextAware {
   private final DynamicModificationQuery query0 = assembler
     .literal("\n      ")
     .literal("\n      ")
-    .literal("\n      UPDATE account\n      SET active = true\n      WHERE id IN \n      ")
+    .literal("\n      ")
+    .literal("\n      UPDATE account\n      SET active = true, balance = ")
+    .parameter("minBalance", Types.BIGINT)
+    .literal("\n      WHERE id IN \n      ")
     .foreach("id", "ids", "(", ", ", ")", assembler
-      .literal("\n        ")
       .variable("id")
-      .literal("\n      ")
       .end()
     )
+    .literal("\n      AND ")
+    .parameterInjection("filter")
     .literal("\n    ")
     .endModificationQuery();
 
-  public int activateBigAccounts2(Long minBalance, List ids)
+  public int activateBigAccounts2(Long minBalance, List ids, String filter)
       throws DynamicExpressionException, SQLException {
     ParameterContext context = this.expressionFactory.newParameterContext();
     context.add("minBalance", minBalance);
     context.add("ids", ids);
+    context.add("filter", filter);
     PreparedModificationQuery preparedQuery = this.query0.prepare(context);
     if (log.isLoggable(Level.FINER)) {
       log.finer("SQL: " + preparedQuery.getPreview(true));

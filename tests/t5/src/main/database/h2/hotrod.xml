@@ -60,12 +60,12 @@
     <query method="activateBigAccounts2">
       <parameter name="minBalance" java-type="java.lang.Long" />
       <parameter name="ids" java-type="java.util.List" jdbc-type="NUMERIC" />
+      <parameter name="filter" java-type="java.lang.String" />
       UPDATE account
-      SET active = true
+      SET active = true, balance = #{minBalance}
       WHERE id IN 
-      <foreach item="id" collection="ids" open="(" separator=", " close=")">
-        #{id}
-      </foreach>
+      <foreach item="id" collection="ids" open="(" separator=", " close=")">#{id}</foreach>
+      AND ${filter}
     </query>
  
        

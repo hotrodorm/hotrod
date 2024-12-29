@@ -30,7 +30,7 @@ public abstract class PreparedQuery {
     } else {
       StringBuilder p = new StringBuilder();
       p.append(this.sql);
-      p.append("\n=== Parameters (" + this.parameters.size() + ") ===\n");
+      p.append("\n=== JDBC Parameters (" + this.parameters.size() + ") ===\n");
       int pos = 1;
       for (ParameterSegment ps : this.parameters) {
 
@@ -51,7 +51,7 @@ public abstract class PreparedQuery {
             + (value == null ? "" : " (" + value.getClass().getName() + ")") + "\n");
       }
       if (!this.parameters.isEmpty()) {
-        p.append("======================\n");
+        p.append("===========================\n");
       }
       return p.toString();
     }

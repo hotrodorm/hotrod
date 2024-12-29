@@ -31,7 +31,7 @@ public class App {
   private static final Logger log = Logger.getLogger(App.class.getName());
 
   static {
-//    JULCustomFormatter.initialize(Level.FINER);
+//    JULCustomFormat4ter.initialize(Level.FINER);
   }
 
   @Autowired
@@ -61,7 +61,7 @@ public class App {
     List<Integer> ids = Arrays.asList(123, 789, 112, 4);
     
 //    int rows = this.reportingDAO.activateBigAccounts(125L, ids);
-      int rows=  this.reportingDAO.activateBigAccounts2(125L, ids);
+      int rows=  this.reportingDAO.activateBigAccounts2(125L, ids, "type = 'CHK'");
 //    int rows = this.accountDAO.activateBigAccounts(null);
     System.out.println("--> rows=" + rows);
 
