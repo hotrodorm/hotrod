@@ -14,7 +14,7 @@ import org.hotrod.config.structuredcolumns.Expressions;
 import org.hotrod.config.structuredcolumns.VOTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
-import org.hotrod.generator.mybatisspring.DataSetLayout;
+import org.hotrod.generator.jdbc.DataSetLayout;
 import org.hotrod.identifiers.Id;
 import org.hotrod.metadata.VORegistry.EntityVOClass;
 import org.hotrod.metadata.VORegistry.SelectVOClass;

@@ -1,11 +1,10 @@
-package org.hotrod.generator.mybatisspring;
+package org.hotrod.generator.jdbc;
 
 import java.io.File;
 import java.io.Serializable;
 
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodConfigTag;
-import org.hotrod.config.MappersTag;
 import org.hotrod.config.JDBCTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.utils.ClassPackage;
@@ -16,10 +15,8 @@ public class DataSetLayout implements Serializable {
 
   private HotRodConfigTag config;
   private String columnSeam;
-//  private String sessixxonFactoryGetter;
 
   private DaosTag daos;
-//  private MappersTag mappers;
 
   public DataSetLayout(final HotRodConfigTag config, final TableTag tag) {
     initialize(config);
@@ -37,13 +34,9 @@ public class DataSetLayout implements Serializable {
     try {
       JDBCTag gtag = (JDBCTag) this.config.getGenerators().getSelectedGeneratorTag();
       this.daos = gtag.getDaos();
-//      this.mappers = gtag.getMappers();
-//      this.sessionFactoryGetter = mybatis.getSessionFactory().getSessionFactoryGetter();
     } catch (ClassCastException e) {
       JDBCTag mybatis = (JDBCTag) this.config.getGenerators().getSelectedGeneratorTag();
       this.daos = mybatis.getDaos();
-//      this.mappers = mybatis.getMappers();
-//      this.sessionFactoryGetter = null;
     }
 
   }
@@ -91,11 +84,6 @@ public class DataSetLayout implements Serializable {
   public String getLiveSQLDialectBeanQualifier() {
     return this.daos.getLiveSQLDialectBeanQualifier();
   }
-
-  // TODO: Clean up
-//  public String getSessionFactoryGetter() {
-//    return sessionFactoryGetter;
-//  }
 
   // VOs
 

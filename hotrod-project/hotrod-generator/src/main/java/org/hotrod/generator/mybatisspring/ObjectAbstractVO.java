@@ -14,6 +14,8 @@ import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.DAOType;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
+import org.hotrod.generator.jdbc.DataSetLayout;
+import org.hotrod.generator.jdbc.EnumClass;
 import org.hotrod.json.JSONObject;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;

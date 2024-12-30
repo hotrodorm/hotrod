@@ -1,4 +1,4 @@
-package org.hotrod.generator.mybatisspring;
+package org.hotrod.generator.jdbc;
 
 import org.hotrod.utils.AbstractClassWriter.ExternalClass;
 

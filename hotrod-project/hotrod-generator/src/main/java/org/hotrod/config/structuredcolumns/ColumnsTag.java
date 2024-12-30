@@ -26,7 +26,7 @@ import org.hotrod.exceptions.InvalidSQLException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.generator.mybatisspring.DataSetLayout;
+import org.hotrod.generator.jdbc.DataSetLayout;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.StructuredColumnsMetadata;

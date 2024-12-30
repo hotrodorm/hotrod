@@ -1,4 +1,4 @@
-package org.hotrod.generator.mybatisspring;
+package org.hotrod.generator.jdbc;
 
 import java.io.File;
 import java.io.IOException;

@@ -20,7 +20,7 @@ import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.SelectMetadataCache;
-import org.hotrod.generator.mybatisspring.DataSetLayout;
+import org.hotrod.generator.jdbc.DataSetLayout;
 import org.hotrod.identifiers.Id;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.utils.ColumnsPrefixGenerator;

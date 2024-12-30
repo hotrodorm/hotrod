@@ -9,6 +9,8 @@ import org.hotrod.config.JDBCTag;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
+import org.hotrod.generator.jdbc.Const;
+import org.hotrod.generator.jdbc.DataSetLayout;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.utils.AbstractClassWriter.ExternalClass;

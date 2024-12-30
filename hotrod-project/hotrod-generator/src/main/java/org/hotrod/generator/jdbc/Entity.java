@@ -14,8 +14,6 @@ import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.DAOType;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
-import org.hotrod.generator.mybatisspring.DataSetLayout;
-import org.hotrod.generator.mybatisspring.EnumClass;
 import org.hotrod.json.JSONObject;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;

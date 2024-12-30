@@ -12,8 +12,6 @@ import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
-import org.hotrod.generator.mybatisspring.Const;
-import org.hotrod.generator.mybatisspring.DataSetLayout;
 import org.hotrod.runtime.livesql.LayerConfigInterface;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;

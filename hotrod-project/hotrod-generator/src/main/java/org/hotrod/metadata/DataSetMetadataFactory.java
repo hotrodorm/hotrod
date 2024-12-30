@@ -11,7 +11,7 @@ import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.CachedMetadata;
 import org.hotrod.generator.SelectMetadataCache;
-import org.hotrod.generator.mybatisspring.DataSetLayout;
+import org.hotrod.generator.jdbc.DataSetLayout;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;

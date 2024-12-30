@@ -9,10 +9,6 @@ import org.hotrod.config.JDBCTag;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
-import org.hotrod.generator.mybatisspring.Const;
-import org.hotrod.generator.mybatisspring.DataSetLayout;
-import org.hotrod.generator.mybatisspring.ObjectAbstractVO;
-import org.hotrod.generator.mybatisspring.ObjectDAO;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.utils.AbstractClassWriter.ExternalClass;
@@ -137,6 +133,4 @@ public class Model {
     return this.metadata.getId().getJavaClassName();
   }
 
-
-  
 }
