@@ -1,12 +1,12 @@
 package org.hotrod.runtime.livesql.queries.typesolver;
 
+import org.hotrod.dynamic.DynamicExpression;
+import org.hotrod.dynamic.DynamicExpressionException;
+import org.hotrod.dynamic.DynamicExpressionFactory;
+import org.hotrod.dynamic.DynamicExpressionFactoryConfig;
+import org.hotrod.dynamic.ParameterContext;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
-import org.hotrod.typesolver.OGNLPublicMemberAccess;
 import org.hotrod.utils.SUtil;
-
-import ognl.Ognl;
-import ognl.OgnlContext;
-import ognl.OgnlException;
 
 public class TypeRule {
 
@@ -18,8 +18,8 @@ public class TypeRule {
   private String errorMessage; // If test succeeds and there's an error message, a RuntimeException is thrown
                                // with this message
 
-  private OgnlContext context = new OgnlContext(null, null, new OGNLPublicMemberAccess());
-  private Object testExpression = null;
+  private DynamicExpressionFactory factory;
+  private DynamicExpression testExpression;
 
   private TypeRule(final int ruleNumber, final String test, final TypeHandler typeHandler, final String errorMessage) {
     this.ruleNumber = ruleNumber;
@@ -27,15 +27,11 @@ public class TypeRule {
     this.typeHandler = typeHandler;
     this.errorMessage = errorMessage;
 
-    try {
-      if (SUtil.isEmpty(this.test)) {
-        throw new LiveSQLException("Invalid <type-solver> expression. Must be a non-empty OGNL expression");
-      }
-      this.testExpression = Ognl.parseExpression(this.test);
-    } catch (OgnlException e) {
-      throw new LiveSQLException(
-          "Invalid <type-solver> expression '" + this.test + "'. Must be a valid OGNL expression", e);
+    this.factory = DynamicExpressionFactoryConfig.getFactory();
+    if (SUtil.isEmpty(this.test)) {
+      throw new LiveSQLException("Invalid <type-solver> expression. Must be a non-empty OGNL expression");
     }
+    this.testExpression = this.factory.expression(this.test);
   }
 
   public static TypeRule of(final String test, final TypeHandler typeHandler, final int ruleNumber) {
@@ -47,9 +43,10 @@ public class TypeRule {
   }
 
   public TypeHandler resolve(final ResultSetColumnMetadata cm) throws CouldNotResolveResultSetDataTypeException {
+    ParameterContext context = this.factory.newObjectContext(cm);
     Object v = null;
     try {
-      v = Ognl.getValue(this.testExpression, context, cm);
+      v = this.testExpression.evaluate(context);
       if (v == null) {
         throw new CouldNotResolveResultSetDataTypeException(cm,
             "Could not evaluate Type Solver's <when> tag's test expression '" + this.test
@@ -69,7 +66,7 @@ public class TypeRule {
       throw new CouldNotResolveResultSetDataTypeException(cm,
           "Could not evaluate Type Solver's  <when> tag's test expression '" + this.test
               + "': must return a boolean value but returned a value of type " + v.getClass().getName());
-    } catch (OgnlException e) {
+    } catch (DynamicExpressionException e) {
       throw new CouldNotResolveResultSetDataTypeException(cm,
           "Could not evaluate Type Solver's <when> tag's test expression '" + this.test + "': " + e.getMessage());
     }

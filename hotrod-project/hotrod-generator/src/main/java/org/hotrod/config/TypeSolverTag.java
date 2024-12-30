@@ -9,16 +9,16 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.database.PropertyType;
+import org.hotrod.dynamic.DynamicExpressionException;
+import org.hotrod.dynamic.DynamicExpressionFactory;
+import org.hotrod.dynamic.DynamicExpressionFactoryConfig;
+import org.hotrod.dynamic.ParameterContext;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.metadata.ColumnMetadata;
-import org.hotrod.typesolver.OGNLPublicMemberAccess;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.JDBCTypes;
 import org.hotrod.utils.JDBCTypes.JDBCType;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
-
-import ognl.OgnlContext;
-import ognl.OgnlException;
 
 @XmlRootElement(name = "type-solver")
 public class TypeSolverTag extends AbstractConfigurationTag {
@@ -32,9 +32,6 @@ public class TypeSolverTag extends AbstractConfigurationTag {
   // Properties
 
   private List<TypeSolverWhenTag> whens = new ArrayList<TypeSolverWhenTag>();
-
-  private OgnlContext context;
-
   private TreeSet<RetrievedColumn> retrievedColumns = new TreeSet<>();
 
   // Constructor
@@ -65,14 +62,14 @@ public class TypeSolverTag extends AbstractConfigurationTag {
   public PropertyType resolveType(final ColumnMetadata cm, final JdbcColumn c, final JDBCType resultSetType)
       throws UnresolvableDataTypeException {
 
-    this.context = new OgnlContext(null, null, new OGNLPublicMemberAccess());
-
-    // Create a scope (aka "root object")
+    DynamicExpressionFactory factory = DynamicExpressionFactoryConfig.getFactory();
 
     RetrievedColumn rc = new RetrievedColumn(cm, c);
     if (c != null) {
       this.retrievedColumns.add(rc);
     }
+
+    ParameterContext context = factory.newObjectContext(rc);
 
     // Find the first matching rule
 
@@ -80,7 +77,9 @@ public class TypeSolverTag extends AbstractConfigurationTag {
       if (w.getTest() != null) {
         Object result = null;
         try {
-          result = w.getTestExpression().getValue(this.context, rc);
+
+          result = w.getTestExpression().evaluate(context);
+
           if (result == null) {
             throw new UnresolvableDataTypeException(cm, "Could not evaluate <when> tag's test expression '"
                 + w.getTest() + "': must return a boolean value but returned null");
@@ -104,7 +103,7 @@ public class TypeSolverTag extends AbstractConfigurationTag {
         } catch (ClassCastException e) {
           throw new UnresolvableDataTypeException(cm, "Could not evaluate <when> tag's test expression '" + w.getTest()
               + "': must return a boolean value but returned a " + result.getClass().getName());
-        } catch (OgnlException e) {
+        } catch (DynamicExpressionException e) {
           throw new UnresolvableDataTypeException(cm,
               "Could not evaluate <when> tag's test expression '" + w.getTest() + "': " + e.getMessage());
         } catch (RuntimeException e) {

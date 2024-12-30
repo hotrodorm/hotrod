@@ -7,13 +7,13 @@ import java.util.stream.Stream;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.hotrod.dynamic.DynamicExpression;
+import org.hotrod.dynamic.DynamicExpressionFactory;
+import org.hotrod.dynamic.DynamicExpressionFactoryConfig;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.JDBCTypes;
 import org.hotrod.utils.JDBCTypes.JDBCType;
-import org.hotrod.utils.OgnlExpression;
 import org.hotrod.utils.SUtil;
-
-import ognl.OgnlException;
 
 @XmlRootElement(name = "column")
 public class TypeSolverWhenTag extends AbstractConfigurationTag {
@@ -32,8 +32,8 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
   private String converter = null;
   private String forceJDBCTypeOnWrite = null;
 
-  private OgnlExpression testExpression = null;
-  private OgnlExpression testResultSetExpression = null;
+  private DynamicExpression testExpression = null;
+  private DynamicExpression testResultSetExpression = null;
   private ConverterTag converterTag = null;
   private JDBCType jdbcType = null;
 
@@ -75,6 +75,8 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
 
   public void validate(final HotRodConfigTag config) throws InvalidConfigurationFileException {
 
+    DynamicExpressionFactory factory = DynamicExpressionFactoryConfig.getFactory();
+
     // test & test-resultset
 
     if (SUtil.isEmpty(this.test) && SUtil.isEmpty(this.testResultSet)) {
@@ -83,20 +85,12 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
     }
 
     if (!SUtil.isEmpty(this.test)) {
-      try {
-        this.testExpression = new OgnlExpression(this.test);
-      } catch (OgnlException e) {
-        throw new InvalidConfigurationFileException(this, "Invalid OGNL expression: " + this.test);
-      }
+      this.testExpression = factory.expression(this.test);
       log.fine("this.testExpression=" + this.testExpression);
     }
 
     if (!SUtil.isEmpty(this.testResultSet)) {
-      try {
-        this.testResultSetExpression = new OgnlExpression(this.testResultSet);
-      } catch (OgnlException e) {
-        throw new InvalidConfigurationFileException(this, "Invalid OGNL expression: " + this.testResultSet);
-      }
+      this.testResultSetExpression = factory.expression(this.testResultSet);
       log.fine("this.testResultSetExpression=" + this.testResultSetExpression);
     }
 
@@ -181,11 +175,11 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
     return this.converterTag;
   }
 
-  public OgnlExpression getTestExpression() {
+  public DynamicExpression getTestExpression() {
     return this.testExpression;
   }
 
-  public OgnlExpression getTestResultSetExpression() {
+  public DynamicExpression getTestResultSetExpression() {
     return testResultSetExpression;
   }
 

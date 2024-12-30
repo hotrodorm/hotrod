@@ -71,16 +71,6 @@
       <version>3.4.0</version>
     </dependency>
     
-    <!-- OGNL -->
-
-<!-- 
--->
-    <dependency>
-      <groupId>ognl</groupId>
-      <artifactId>ognl</artifactId>
-      <version>3.2.14</version>
-    </dependency>
-    
     <!-- List Collector -->
 
     <dependency>
