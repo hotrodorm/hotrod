@@ -1,8 +1,8 @@
 package org.hotrod.spring;
 
-import org.hotrod.dynamic.DynamicExpressionFactory;
-import org.hotrod.dynamic.DynamicExpressionFactoryConfig;
-import org.hotrod.dynamic.assembler.QueryAssembler;
+import org.hotrod.dynamicsql.DynamicExpressionFactory;
+import org.hotrod.dynamicsql.DynamicExpressionFactoryConfig;
+import org.hotrod.dynamicsql.assembler.QueryAssembler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;

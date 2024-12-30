@@ -2,7 +2,7 @@ package org.hotrod.generator.jdbc;
 
 import java.util.Arrays;
 
-import org.hotrod.dynamic.insert.PrimaryKeyRetrievalMode;
+import org.hotrod.dynamicsql.insert.PrimaryKeyRetrievalMode;
 
 public class InsertMechanics {
 

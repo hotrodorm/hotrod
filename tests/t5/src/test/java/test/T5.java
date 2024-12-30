@@ -7,7 +7,7 @@ import java.util.logging.Level;
 
 import javax.sql.DataSource;
 
-import org.hotrod.dynamic.DynamicExpressionException;
+import org.hotrod.dynamicsql.DynamicExpressionException;
 
 import app.JULCustomFormatter;
 import gen.Account;

@@ -3,8 +3,8 @@ package app;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
-import org.hotrod.dynamic.DynamicExpressionException;
-import org.hotrod.dynamic.assembler.QueryAssembler;
+import org.hotrod.dynamicsql.DynamicExpressionException;
+import org.hotrod.dynamicsql.assembler.QueryAssembler;
 import org.hotrod.livesql.Row;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.spring.SpringBeanObjectFactory;

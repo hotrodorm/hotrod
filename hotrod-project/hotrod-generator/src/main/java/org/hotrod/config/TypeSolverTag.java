@@ -9,10 +9,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.database.PropertyType;
-import org.hotrod.dynamic.DynamicExpressionException;
-import org.hotrod.dynamic.DynamicExpressionFactory;
-import org.hotrod.dynamic.DynamicExpressionFactoryConfig;
-import org.hotrod.dynamic.ParameterContext;
+import org.hotrod.dynamicsql.DynamicExpressionException;
+import org.hotrod.dynamicsql.DynamicExpressionFactory;
+import org.hotrod.dynamicsql.DynamicExpressionFactoryConfig;
+import org.hotrod.dynamicsql.ParameterContext;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.typesolver.UnresolvableDataTypeException;

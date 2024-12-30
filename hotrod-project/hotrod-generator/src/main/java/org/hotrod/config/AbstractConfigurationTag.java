@@ -3,7 +3,7 @@ package org.hotrod.config;
 import java.io.Serializable;
 import java.util.logging.Logger;
 
-import org.hotrod.dynamic.SourceLocation;
+import org.hotrod.dynamicsql.SourceLocation;
 
 public abstract class AbstractConfigurationTag implements Serializable {
 

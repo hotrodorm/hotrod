@@ -1,10 +1,10 @@
 package org.hotrod.runtime.livesql.queries.typesolver;
 
-import org.hotrod.dynamic.DynamicExpression;
-import org.hotrod.dynamic.DynamicExpressionException;
-import org.hotrod.dynamic.DynamicExpressionFactory;
-import org.hotrod.dynamic.DynamicExpressionFactoryConfig;
-import org.hotrod.dynamic.ParameterContext;
+import org.hotrod.dynamicsql.DynamicExpression;
+import org.hotrod.dynamicsql.DynamicExpressionException;
+import org.hotrod.dynamicsql.DynamicExpressionFactory;
+import org.hotrod.dynamicsql.DynamicExpressionFactoryConfig;
+import org.hotrod.dynamicsql.ParameterContext;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.utils.SUtil;
 

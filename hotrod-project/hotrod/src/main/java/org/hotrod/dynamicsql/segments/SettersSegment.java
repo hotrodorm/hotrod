@@ -1,0 +1,51 @@
+package org.hotrod.dynamicsql.segments;
+
+import java.util.List;
+import java.util.logging.Logger;
+
+import org.hotrod.dynamicsql.DynamicExpressionException;
+import org.hotrod.dynamicsql.DynamicExpressionFactory;
+import org.hotrod.dynamicsql.ParameterContext;
+import org.hotrod.dynamicsql.assembler.ClauseFormatter;
+import org.hotrod.dynamicsql.assembler.ListFormatterConsumer;
+import org.hotrod.dynamicsql.assembler.ListProcessor;
+
+public class SettersSegment extends DynamicListSegment {
+
+  @SuppressWarnings("unused")
+  private static final Logger log = Logger.getLogger(SettersSegment.class.getName());
+
+  private List<IfSegment> ifSegments;
+
+  public SettersSegment(List<IfSegment> ifSegments, DynamicExpressionFactory factory) {
+    super(new ListProcessor( //
+        new ClauseFormatter("SET", "\n", " "), //
+        new ClauseFormatter(",", null, "\n    "), null, null));
+    this.ifSegments = ifSegments;
+  }
+
+  public SettersSegment(List<IfSegment> ifSegments, DynamicExpressionFactory factory, String headerPrefix,
+      String headerSuffix, String separatorPrefix, String separatorSuffix, String tailPrefix, String tailSuffix,
+      String[] removePrefixes) {
+    super(new ListProcessor( //
+        new ClauseFormatter("SET", headerPrefix, headerSuffix), //
+        new ClauseFormatter(",", separatorPrefix, separatorSuffix), //
+        removePrefixes, //
+        new ClauseFormatter("", tailPrefix, tailSuffix) //
+    ));
+    this.ifSegments = ifSegments;
+  }
+
+  @Override
+  public boolean prepare(StaticSegmentConsumer sc, ParameterContext context, int loopNestingLevel)
+      throws DynamicExpressionException {
+    try (ListFormatterConsumer wc = new ListFormatterConsumer(sc, super.processor)) {
+      for (IfSegment s : this.ifSegments) {
+        wc.startNextEntry();
+        s.prepare(wc, context, loopNestingLevel);
+      }
+    }
+    return true;
+  }
+
+}

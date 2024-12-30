@@ -2,7 +2,7 @@ package org.hotrod.config.dynamicsql;
 
 import java.util.logging.Logger;
 
-import org.hotrod.dynamic.SourceLocation;
+import org.hotrod.dynamicsql.SourceLocation;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.utils.SUtil;

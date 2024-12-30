@@ -7,9 +7,9 @@ import java.util.stream.Stream;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.hotrod.dynamic.DynamicExpression;
-import org.hotrod.dynamic.DynamicExpressionFactory;
-import org.hotrod.dynamic.DynamicExpressionFactoryConfig;
+import org.hotrod.dynamicsql.DynamicExpression;
+import org.hotrod.dynamicsql.DynamicExpressionFactory;
+import org.hotrod.dynamicsql.DynamicExpressionFactoryConfig;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.JDBCTypes;
 import org.hotrod.utils.JDBCTypes.JDBCType;
