@@ -68,6 +68,12 @@ LiveSQL:
 
 ## 6. Functionality TBD
 
+CRUD:
+
+- New names for DAOs and VOs.
+- New tags attributes for DAOs and VOs.
+- New package structure for DAOs and VOs.
+
 Nitro:
 
 - The jdbc-type is not required for a parameter that is not applied to the query. Maybe separate in &lt;parameter> and &lt;nullable-parameter>.
