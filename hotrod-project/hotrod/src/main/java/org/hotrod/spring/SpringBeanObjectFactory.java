@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.logging.Logger;
 
-import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
 import org.hotrod.livesql.Row;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +17,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Configuration(proxyBeanMethods = false)
-public class SpringBeanObjectFactory extends DefaultObjectFactory implements ApplicationContextAware {
+public class SpringBeanObjectFactory implements ApplicationContextAware {
 
   private static final long serialVersionUID = 1L;
 
@@ -56,7 +55,6 @@ public class SpringBeanObjectFactory extends DefaultObjectFactory implements App
 
   }
 
-  @Override
   public <T> T create(final Class<T> type) {
     if (this.voInstantiationType == VOInstantiationType.BEAN) {
       // Try to instantiate as a bean

@@ -71,6 +71,7 @@
     
     <!-- MyBatis Spring -->
 
+<!--
     <dependency>
       <groupId>org.mybatis</groupId>
       <artifactId>mybatis-spring</artifactId>
@@ -84,7 +85,7 @@
       <version>3.5.9</version>
       <scope>provided</scope>
     </dependency>
-
+-->
     <!-- OGNL -->
 
     <dependency>

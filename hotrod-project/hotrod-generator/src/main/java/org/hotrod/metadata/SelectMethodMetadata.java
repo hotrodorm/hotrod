@@ -25,7 +25,6 @@ import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.jdbc.DataSetLayout;
 import org.hotrod.generator.jdbc.EntityDTOs;
-import org.hotrod.generator.mybatisspring.MyBatisSpringGenerator.EntityVOs;
 import org.hotrod.identifiers.Id;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.VOMetadata.DuplicatePropertyNameException;
@@ -120,11 +119,6 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   public void setEntityVOs(final EntityDTOs entityVOs) {
     this.entityVOs = entityVOs;
-  }
-
-  @Deprecated
-  public void setEntityVOs(final EntityVOs entityVOs) {
-//    this.entityVOs = entityVOs;
   }
 
   // TODO: Just a marker for phase 1
