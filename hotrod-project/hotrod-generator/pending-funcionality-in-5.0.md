@@ -37,19 +37,19 @@ LiveSQL:
 
 CRUD:
 
-- Optimistic Locking.
 - SELECT/UPDATE/DELETE by Criteria.
-- SELECT by FKs.
-- Enums.
-- SELECT by UI.
 - SELECT sequence.
+- SELECT by UI.
+- Enums.
+- Optimistic Locking.
+- SELECT by FKs.
 
 Nitro:
 
 - Graph queries.
 - Query mode: single-row, List, Cursor.
 
-LiveSQL.
+LiveSQL:
 
 - Fully test SELECTs.
 - UPDATE, DELETE, INSERT.
@@ -75,8 +75,4 @@ Nitro:
 Dynamic SQL:
 
 - Uses JEXL (by default) to evaluate expressions, but could use other libraries such as OGNL.
-
-Type Solver:
-
-- Remove OGNL in favor of JEXL.
 
