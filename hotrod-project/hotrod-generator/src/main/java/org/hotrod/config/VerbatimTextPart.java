@@ -1,7 +1,7 @@
 package org.hotrod.config;
 
 import org.hotrod.config.dynamicsql.SQLSegment;
-import org.hotrod.dynamicsql.existing.SourceLocation;
+import org.hotrod.dynamic.SourceLocation;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.utils.SUtil;
 

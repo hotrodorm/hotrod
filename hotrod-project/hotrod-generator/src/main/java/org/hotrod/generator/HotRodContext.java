@@ -24,7 +24,7 @@ import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.DatabaseAdapterFactory;
-import org.hotrod.dynamicsql.existing.SourceLocation;
+import org.hotrod.dynamic.SourceLocation;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
