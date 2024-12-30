@@ -56,20 +56,21 @@ public class SpringBeanObjectFactory implements ApplicationContextAware {
   }
 
   public <T> T create(final Class<T> type) {
-    if (this.voInstantiationType == VOInstantiationType.BEAN) {
-      // Try to instantiate as a bean
-      if (this.isCollection(type) || type == List.class || type == Collection.class || type == Iterable.class
-          || type == Map.class || type == SortedSet.class || type == Set.class || type == Row.class) {
-        // Cannot be instantiated as a bean. Will be a POJO anyway
-        return super.create(type);
-      } else {
-        // Instantiate a bean
-        return this.applicationContext.getBean(type);
-      }
-    } else {
-      // will always instantiate as a POJO, per configuration setting
-      return super.create(type);
-    }
+    return null;
+//    if (this.voInstantiationType == VOInstantiationType.BEAN) {
+//      // Try to instantiate as a bean
+//      if (this.isCollection(type) || type == List.class || type == Collection.class || type == Iterable.class
+//          || type == Map.class || type == SortedSet.class || type == Set.class || type == Row.class) {
+//        // Cannot be instantiated as a bean. Will be a POJO anyway
+//        return super.create(type);
+//      } else {
+//        // Instantiate a bean
+//        return this.applicationContext.getBean(type);
+//      }
+//    } else {
+//      // will always instantiate as a POJO, per configuration setting
+//      return super.create(type);
+//    }
   }
 
 }
