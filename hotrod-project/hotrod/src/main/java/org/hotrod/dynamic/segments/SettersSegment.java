@@ -6,9 +6,9 @@ import java.util.logging.Logger;
 import org.hotrod.dynamic.DynamicExpressionException;
 import org.hotrod.dynamic.DynamicExpressionFactory;
 import org.hotrod.dynamic.ParameterContext;
-import org.hotrod.dynamic.builder.ClauseFormatter;
-import org.hotrod.dynamic.builder.ListFormatterConsumer;
-import org.hotrod.dynamic.builder.ListProcessor;
+import org.hotrod.dynamic.assembler.ClauseFormatter;
+import org.hotrod.dynamic.assembler.ListFormatterConsumer;
+import org.hotrod.dynamic.assembler.ListProcessor;
 
 public class SettersSegment extends DynamicListSegment {
 

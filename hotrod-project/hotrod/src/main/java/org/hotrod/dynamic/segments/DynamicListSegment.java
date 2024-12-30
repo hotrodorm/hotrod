@@ -1,6 +1,6 @@
 package org.hotrod.dynamic.segments;
 
-import org.hotrod.dynamic.builder.ListProcessor;
+import org.hotrod.dynamic.assembler.ListProcessor;
 
 public abstract class DynamicListSegment extends DynamicSegment {
 

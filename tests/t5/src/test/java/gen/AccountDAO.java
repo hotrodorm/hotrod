@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 import javax.sql.DataSource;
 
 import org.hotrod.dynamic.DynamicExpressionException;
-import org.hotrod.dynamic.DynamicExpressionFactory;
 import org.hotrod.dynamic.DynamicInsertQuery;
 import org.hotrod.dynamic.DynamicModificationQuery;
 import org.hotrod.dynamic.DynamicSelectQuery;
@@ -18,9 +17,10 @@ import org.hotrod.dynamic.ParameterContext;
 import org.hotrod.dynamic.PreparedModificationQuery;
 import org.hotrod.dynamic.PreparedSelectQuery;
 import org.hotrod.dynamic.PreparedSelectQuery.RowReader;
-import org.hotrod.dynamic.builder.QueryAssembler;
+import org.hotrod.dynamic.assembler.QueryAssembler;
 import org.hotrod.dynamic.insert.PreparedInsertQuery;
 import org.hotrod.dynamic.insert.PrimaryKeyRetrievalMode;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import test.T5.Data;
 
@@ -29,8 +29,8 @@ public class AccountDAO {
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(AccountDAO.class.getName());
 
-  private final DynamicExpressionFactory factory = DynamicExpressionFactory.getFactory();
-  private final QueryAssembler assembler = new QueryAssembler(this.factory);
+  @Autowired
+  private QueryAssembler assembler;
 
   private final DynamicSelectQuery selectByExample = assembler //
       .literal("SELECT id, name, type, balance\n") //
@@ -48,7 +48,7 @@ public class AccountDAO {
 
       // 1. Prepare the parameter context
 
-      ParameterContext context = this.factory.newParameterContext();
+      ParameterContext context = this.assembler.newParameterContext();
       context.add("f", filter);
 
       // 2. Process DynamicSQL and produce query and parameters
@@ -193,18 +193,18 @@ public class AccountDAO {
 
   // H2, HyperSQL, and Derby - Sequence Inline
   private final DynamicInsertQuery insert = assembler //
-    .literal("INSERT INTO account (") //
-    .literal("  id, name, type, balance\n") //
-    .literal(") VALUES (\n  ") //
-    .literal("NEXT VALUE FOR seq_account") //
-    .literal(", ") //
-    .parameter("n.name", Types.VARCHAR) //
-    .literal(", ") //
-    .parameter("n.type", Types.VARCHAR) //
-    .literal(", ") //
-    .parameter("n.balance", Types.NUMERIC) //
-    .literal(")") //
-    .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET);
+      .literal("INSERT INTO account (") //
+      .literal("  id, name, type, balance\n") //
+      .literal(") VALUES (\n  ") //
+      .literal("NEXT VALUE FOR seq_account") //
+      .literal(", ") //
+      .parameter("n.name", Types.VARCHAR) //
+      .literal(", ") //
+      .parameter("n.type", Types.VARCHAR) //
+      .literal(", ") //
+      .parameter("n.balance", Types.NUMERIC) //
+      .literal(")") //
+      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET);
 
   // =========================
   // === SEQUENCE PREFETCH ===
@@ -310,7 +310,7 @@ public class AccountDAO {
 
     // 1. Prepare the parameter context
 
-    ParameterContext context = this.factory.newParameterContext();
+    ParameterContext context = this.assembler.newParameterContext();
     context.add("n", entity);
 
     // 2. Process DynamicSQL and produce query and parameters
@@ -345,7 +345,7 @@ public class AccountDAO {
 
     // 1. Prepare the parameter context
 
-    ParameterContext context = this.factory.newParameterContext();
+    ParameterContext context = this.assembler.newParameterContext();
     context.add("f", filter);
     context.add("n", newValues);
 
@@ -381,7 +381,7 @@ public class AccountDAO {
 
     // 1. Prepare the parameter context
 
-    ParameterContext context = this.factory.newParameterContext();
+    ParameterContext context = this.assembler.newParameterContext();
     context.add("f", filter);
 
     // 2. Process DynamicSQL and produce query and parameters
@@ -411,7 +411,7 @@ public class AccountDAO {
         ) //
         .endModificationQuery();
 
-    ParameterContext context = this.factory.newParameterContext();
+    ParameterContext context = this.assembler.newParameterContext();
     context.add("f", filter);
 
     PreparedModificationQuery preparedQuery = d1.prepare(context);
@@ -423,13 +423,13 @@ public class AccountDAO {
 
     DynamicModificationQuery d1 = assembler //
         .literal("DELETE FROM account\nWHERE code in ") //
-        .foreach("t", "d.tags", "(", ", ", ")", assembler
-            .parameter("t", Types.VARCHAR)
+        .foreach("t", "d.tags", "(", ", ", ")",
+            assembler.parameter("t", Types.VARCHAR)
                 .foreach("c", "d.codes", "(", ", ", ")", assembler.parameter("c", Types.NUMERIC).end()) //
                 .end()) //
         .endModificationQuery();
 
-    ParameterContext context = this.factory.newParameterContext();
+    ParameterContext context = this.assembler.newParameterContext();
     context.add("d", data);
 
     PreparedModificationQuery preparedQuery = d1.prepare(context);
@@ -448,7 +448,7 @@ public class AccountDAO {
           .parameter("pattern", Types.VARCHAR) //
           .endSelectQuery();
 
-      ParameterContext context = this.factory.newParameterContext();
+      ParameterContext context = this.assembler.newParameterContext();
       context.add("d", data);
 
       RowReader<Long> countReader = new RowReader<Long>() {
@@ -482,7 +482,7 @@ public class AccountDAO {
             "\nh<", ">h", "\ns<", ">s", "\nt<", ">t") //
         .endModificationQuery();
 
-    ParameterContext context = this.factory.newParameterContext();
+    ParameterContext context = this.assembler.newParameterContext();
     context.add("f", filter);
 
     PreparedModificationQuery preparedQuery = d1.prepare(context);

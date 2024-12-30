@@ -1,11 +1,10 @@
 package app;
 
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.dynamic.DynamicExpressionException;
+import org.hotrod.dynamic.assembler.QueryAssembler;
 import org.hotrod.livesql.Row;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.spring.SpringBeanObjectFactory;
@@ -20,12 +19,13 @@ import org.springframework.context.annotation.Configuration;
 
 import app.daos.Account;
 import app.daos.primitives.AccountDAO;
-import app.daos.primitives.ReportingDAO;
 
 @Configuration
 @SpringBootApplication
 @ComponentScan(basePackageClasses = LiveSQL.class)
 @ComponentScan(basePackageClasses = SpringBeanObjectFactory.class)
+@ComponentScan(basePackageClasses = QueryAssembler.class)
+@ComponentScan(basePackageClasses = AccountDAO.class)
 public class App {
 
   private static final Logger log = Logger.getLogger(App.class.getName());
@@ -37,11 +37,14 @@ public class App {
   @Autowired
   private AccountDAO accountDAO;
 
-  @Autowired
-  private ReportingDAO reportingDAO;
+//  @Autowired
+//  private ReportingDAO reportingDAO;
 
   @Autowired
   private LiveSQL sql;
+
+  @Autowired
+  private QueryAssembler assembler;
 
   public static void main(String[] args) {
     SpringApplication.run(App.class, args);
@@ -51,8 +54,8 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       log.info("[ Starting... ]");
-//      test();
-      testLiveSQL();
+      test();
+//      testLiveSQL();
       log.info("[ Ending ]");
     };
   }
@@ -73,7 +76,12 @@ public class App {
 
   private void test() throws SQLException, DynamicExpressionException {
 
-    List<Integer> ids = Arrays.asList(123, 789, 112, 4);
+    System.out.println("this.assembler=" + this.assembler);
+
+    Account a = this.accountDAO.select(112);
+    System.out.println("--> a=" + a);
+
+//    List<Integer> ids = Arrays.asList(123, 789, 112, 4);
 
 //    int rows = this.reportingDAO.activateBigAccounts(125L, ids);
 //      int rows=  this.reportingDAO.activateBigAccounts2(125L, ids, "type = 'CHK'");
@@ -83,10 +91,10 @@ public class App {
 //      System.out.println("--> " + ba);
 //    }
 
-    List<Account> bas = this.accountDAO.findBigAccounts();
-    for (Account ba : bas) {
-      System.out.println("--> " + ba);
-    }
+//    List<Account> bas = this.accountDAO.findBigAccounts();
+//    for (Account ba : bas) {
+//      System.out.println("--> " + ba);
+//    }
 
     // int rows = this.accountDAO.activateBigAccounts(null);
 //    System.out.println("--> rows=" + rows);

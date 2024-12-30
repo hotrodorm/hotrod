@@ -28,7 +28,6 @@ import org.hotrod.config.QueryMethodTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.dynamic.DynamicExpressionException;
-import org.hotrod.dynamic.DynamicExpressionFactory;
 import org.hotrod.dynamic.DynamicInsertQuery;
 import org.hotrod.dynamic.DynamicModificationQuery;
 import org.hotrod.dynamic.DynamicSelectQuery;
@@ -37,7 +36,7 @@ import org.hotrod.dynamic.PreparedModificationQuery;
 import org.hotrod.dynamic.PreparedQuery;
 import org.hotrod.dynamic.PreparedSelectQuery;
 import org.hotrod.dynamic.PreparedSelectQuery.RowReader;
-import org.hotrod.dynamic.builder.QueryAssembler;
+import org.hotrod.dynamic.assembler.QueryAssembler;
 import org.hotrod.dynamic.insert.PreparedInsertQuery;
 import org.hotrod.dynamic.insert.PrimaryKeyRetrievalMode;
 import org.hotrod.exceptions.ControlledException;
@@ -93,6 +92,8 @@ public class DAO {
   private String metadataClassName;
 
   private ClassWriter w;
+
+  private List<String> initializersInPostConstruct = new ArrayList<>();
 
   // Constructors
 
@@ -237,6 +238,8 @@ public class DAO {
 
 //    }
 
+    writePostConstruct();
+
     writeClassFooter();
   }
 
@@ -267,10 +270,8 @@ public class DAO {
     w.println("  private ", LiveSQLDialect.class, " liveSQLDialect;");
     w.println();
 
-    w.println("  private final ", DynamicExpressionFactory.class, " expressionFactory = ",
-        DynamicExpressionFactory.class, ".getFactory();");
-    w.println("  private final ", QueryAssembler.class, " assembler = new ", QueryAssembler.class,
-        "(this.expressionFactory);");
+    w.println("  @", Const.AUTOWIRED);
+    w.println("  private ", QueryAssembler.class, " assembler;");
     w.println();
 
     w.println("  @", Const.AUTOWIRED);
@@ -293,14 +294,19 @@ public class DAO {
     w.println();
 
     w.println("  private ", LiveSQLContext.class, " context;");
-    w.println();
 
+  }
+
+  private void writePostConstruct() {
+    w.println();
     w.println("  @", Const.POST_CONSTRUCT);
     w.println("  public void initializeContext() {");
     w.println("    this.context = new ", LiveSQLContext.class, "(this.liveSQLDialect, this.dataSource, new ",
         TypeSolver.class, "(null, this.liveSQLDialect));");
+    for (String ini : this.initializersInPostConstruct) {
+      w.println("    this." + ini + "();");
+    }
     w.println("  }");
-
   }
 
   private void writeRowReaderProperty() {
@@ -343,29 +349,39 @@ public class DAO {
       w.println();
       w.println("  // SELECT BY " + (byExample ? "EXAMPLE" : "PRIMARY KEY"));
 
+      // Query
+
       String queryName = byExample ? "selectByExample" : "selectByPrimaryKey";
+      String initializerName = "initialize" + SUtil.capitalize(queryName);
+      this.initializersInPostConstruct.add(initializerName);
 
       w.println();
-      w.println("  private final ", DynamicSelectQuery.class, " " + queryName + " = assembler");
-      w.println("    .literaln(\"SELECT\")");
+      w.println("  private ", DynamicSelectQuery.class, " " + queryName + ";");
+      w.println();
+      w.println("  private void " + initializerName + "() {");
+      w.println("    this." + queryName + " = assembler");
 
+      w.println("      .literaln(\"SELECT\")");
       int coln = this.metadata.getColumns().size();
       int n = 1;
       for (ColumnMetadata cm : this.metadata.getColumns()) {
         String sqlId = cm.getId().getRenderedSQLName();
-        w.println("    .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
+        w.println("      .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
         n++;
       }
 
-      w.println("    .literal(\"FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
+      w.println("      .literaln(\"FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
       if (byExample) {
         fragmentWhereExample("f");
-        w.println("    .parameterInjection(\"ordering\")");
+        w.println("      .parameterInjection(\"ordering\")");
       } else {
         fragmentWherePK("f");
       }
-      w.println("    .endSelectQuery();");
+      w.println("      .endSelectQuery();");
+      w.println("  }");
       w.println();
+
+      // Method
 
       ExternalClass em = ExternalClass.of(this.model.getFullClassName());
       if (byExample) {
@@ -391,7 +407,7 @@ public class DAO {
         }
       }
 
-      w.println("    ", ParameterContext.class, " context = this.expressionFactory.newParameterContext();");
+      w.println("    ", ParameterContext.class, " context = this.assembler.newParameterContext();");
       w.println("    context.add(\"f\", filter);");
       if (byExample) {
         w.println("    String ordering = ", SQLUtil.class, ".render(orderBies);");
@@ -441,12 +457,19 @@ public class DAO {
 
     log.info("mechanics: " + mechanics);
 
+    // Query
+
     String queryName = byExample ? "insertByExample" : "insert";
+    String initializerName = "initialize" + SUtil.capitalize(queryName);
+    this.initializersInPostConstruct.add(initializerName);
 
     w.println();
-    w.println("  private final ", DynamicInsertQuery.class, " " + queryName + " = assembler");
+    w.println("  private ", DynamicInsertQuery.class, " " + queryName + ";");
+    w.println();
+    w.println("  private void " + initializerName + "() {");
+    w.println("    this." + queryName + " = assembler");
 
-    w.println("    .literaln(\"INSERT INTO ", SUtil.escapeJavaString(this.metadata.getId().getRenderedSQLName()),
+    w.println("      .literaln(\"INSERT INTO ", SUtil.escapeJavaString(this.metadata.getId().getRenderedSQLName()),
         " (\")");
     int coln = this.metadata.getColumns().size();
     int n = 1;
@@ -455,19 +478,19 @@ public class DAO {
       String sqlId = cm.getId().getRenderedSQLName();
 
       if (byExample) {
-        w.println("    .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.literal(\""
+        w.println("      .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.literal(\""
             + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\\n\").end())");
       } else {
 
         // Always include column
         if (!cm.belongsToPK()) {
-          w.println("    .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
+          w.println("      .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
         }
         if (cm.belongsToPK() && cm.getSequenceId() != null) {
-          w.println("    .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
+          w.println("      .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
         }
         if (cm.belongsToPK() && cm.getSequenceId() == null && cm.getAutogenerationType() == null) {
-          w.println("    .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
+          w.println("      .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
         }
 
         // Never include column
@@ -477,7 +500,7 @@ public class DAO {
 
         // Conditionally include column
         if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
-          w.println("    .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.literal(\""
+          w.println("      .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.literal(\""
               + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\\n\").end())");
         }
 
@@ -485,15 +508,15 @@ public class DAO {
 
       n++;
     }
-    w.println("    .literaln(\")\")");
+    w.println("      .literaln(\")\")");
 
     if (mechanics.getOutputClause() != null && mechanics.getGeneratedKeysNames() != null
         && mechanics.getGeneratedKeysNames().length > 0) {
       String gkn = mechanics.getGeneratedKeysNames()[0];
-      w.println("    .literaln(\"" + mechanics.getOutputClause() + SUtil.escapeJavaString(gkn) + "\")");
+      w.println("      .literaln(\"" + mechanics.getOutputClause() + SUtil.escapeJavaString(gkn) + "\")");
     }
 
-    w.println("    .literaln(\"VALUES(\")");
+    w.println("      .literaln(\"VALUES(\")");
 
     n = 1;
     for (ColumnMetadata cm : this.metadata.getColumns()) {
@@ -501,27 +524,28 @@ public class DAO {
       String jdbcType = cm.getType().getJDBCShortType();
 
       if (byExample) {
-        w.println("    .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.parameter(\"m."
+        w.println("      .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.parameter(\"m."
             + SUtil.escapeJavaString(memId) + "\", Types." + jdbcType + ")" + (n < coln ? ".literal(\", \")" : "")
             + ".end())");
       } else {
 
         // Always include column
         if (!cm.belongsToPK()) {
-          w.println("    .literal(\"  \").parameter(\"m." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
+          w.println("      .literal(\"  \").parameter(\"m." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
               "." + jdbcType + ")" + (n < coln ? ".literaln(\",\")" : ""));
         }
         if (cm.belongsToPK() && cm.getSequenceId() != null) {
           if (mechanics.getMode() == PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH) {
-            w.println("    .literal(\"  \").parameter(\"m." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
+            w.println("      .literal(\"  \").parameter(\"m." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
                 "." + jdbcType + ")" + (n < coln ? ".literaln(\",\")" : ""));
           } else {
             String si = mechanics.getSequenceInlineSQL();
-            w.println("    .literal(\"  " + SUtil.escapeJavaString(si) + "\")" + (n < coln ? ".literaln(\",\")" : ""));
+            w.println(
+                "      .literal(\"  " + SUtil.escapeJavaString(si) + "\")" + (n < coln ? ".literaln(\",\")" : ""));
           }
         }
         if (cm.belongsToPK() && cm.getSequenceId() == null && cm.getAutogenerationType() == null) {
-          w.println("    .literal(\"  \").parameter(\"m." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
+          w.println("      .literal(\"  \").parameter(\"m." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
               "." + jdbcType + ")" + (n < coln ? ".literaln(\",\")" : ""));
         }
 
@@ -532,7 +556,7 @@ public class DAO {
 
         // Conditionally include column
         if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
-          w.println("    .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.parameter(\"m."
+          w.println("      .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.parameter(\"m."
               + SUtil.escapeJavaString(memId) + "\", Types." + jdbcType + ")" + (n < coln ? ".literal(\", \")" : "")
               + ".end())");
         }
@@ -541,15 +565,15 @@ public class DAO {
 
       n++;
     }
-    w.println("    .literal(\")\")");
+    w.println("      .literal(\")\")");
 
     if (mechanics.getMode() == PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH) {
-      w.print("    .endInsertQuery(", PrimaryKeyRetrievalMode.class,
+      w.print("      .endInsertQuery(", PrimaryKeyRetrievalMode.class,
           "." + mechanics.getMode() + ", \"" + SUtil.escapeJavaString(mechanics.getSequencePreFetchSQL()) + "\", \"m." //
               + SUtil.escapeJavaString(mechanics.getPrimaryKeyMemberName()) //
               + "\"");
     } else {
-      w.print("    .endInsertQuery(", PrimaryKeyRetrievalMode.class, "." + mechanics.getMode());
+      w.print("      .endInsertQuery(", PrimaryKeyRetrievalMode.class, "." + mechanics.getMode());
     }
 
     if (mechanics.getOutputClause() == null && mechanics.getGeneratedKeysNames() != null
@@ -561,6 +585,10 @@ public class DAO {
     }
 
     w.println(");");
+    w.println("  }");
+
+    // Method
+
     String methodName = byExample ? "insertByExample" : "insert";
 
     ExternalClass em = ExternalClass.of(this.model.getFullClassName());
@@ -568,7 +596,7 @@ public class DAO {
     w.print("  public void " + methodName + "(", em, " m");
     w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
 
-    w.println("    ", ParameterContext.class, " context = this.expressionFactory.newParameterContext();");
+    w.println("    ", ParameterContext.class, " context = this.assembler.newParameterContext();");
     w.println("    context.add(\"m\", m);");
     w.println("    ", PreparedInsertQuery.class, " preparedQuery = this." + queryName + ".prepare(context);");
 
@@ -676,15 +704,27 @@ public class DAO {
       w.println();
       w.println("  // UPDATE BY PRIMARY KEY");
 
+      // Query
+
+      String queryName = "updateByPK";
+      String initializerName = "initialize" + SUtil.capitalize(queryName);
+      this.initializersInPostConstruct.add(initializerName);
+
       w.println();
-      w.println("  private final ", DynamicModificationQuery.class, " updateByPK = assembler");
-      w.println("    .literal(\"UPDATE " + this.metadata.getId().getRenderedSQLName() + "\")");
+      w.println("  private ", DynamicModificationQuery.class, " " + queryName + ";");
+      w.println();
+      w.println("  private void " + initializerName + "() {");
+      w.println("    this." + queryName + " = assembler");
+      w.println("      .literal(\"UPDATE " + this.metadata.getId().getRenderedSQLName() + "\")");
       fragmentSet();
       fragmentWherePK("m");
       w.println("    .endModificationQuery();");
-      w.println();
+      w.println("  }");
+
+      // Method
 
       ExternalClass em = ExternalClass.of(this.model.getFullClassName());
+      w.println();
       w.print("  public int update(", em, " m");
       w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
 
@@ -693,7 +733,7 @@ public class DAO {
         w.println("    if (m." + getter + "() == null) return 0;");
       }
 
-      w.println("    ", ParameterContext.class, " context = this.expressionFactory.newParameterContext();");
+      w.println("    ", ParameterContext.class, " context = this.assembler.newParameterContext();");
       w.println("    context.add(\"m\", m);");
       w.println("    ", PreparedModificationQuery.class, " preparedQuery = this.updateByPK.prepare(context);");
 
@@ -711,19 +751,31 @@ public class DAO {
     w.println();
     w.println("  // UPDATE BY EXAMPLE");
 
+    // Query
+
+    String queryName = "updateByExample";
+    String initializerName = "initialize" + SUtil.capitalize(queryName);
+    this.initializersInPostConstruct.add(initializerName);
+
     w.println();
-    w.println("  private final ", DynamicModificationQuery.class, " updateByExample = assembler");
-    w.println("    .literal(\"UPDATE FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
+    w.println("  private ", DynamicModificationQuery.class, " " + queryName + ";");
+    w.println();
+    w.println("  private void " + initializerName + "() {");
+    w.println("    this." + queryName + " = assembler");
+    w.println("      .literal(\"UPDATE FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
     fragmentSet();
     fragmentWhereExample("f");
-    w.println("    .endModificationQuery();");
-    w.println();
+    w.println("      .endModificationQuery();");
+    w.println("  }");
+
+    // Method
 
     ExternalClass em = ExternalClass.of(this.model.getFullClassName());
+    w.println();
     w.print("  public int update(", em, " filter, ", em, " updateValues");
     w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
 
-    w.println("    ", ParameterContext.class, " context = this.expressionFactory.newParameterContext();");
+    w.println("    ", ParameterContext.class, " context = this.assembler.newParameterContext();");
     w.println("    context.add(\"f\", filter);");
     w.println("    context.add(\"u\", updateValues);");
     w.println("    ", PreparedModificationQuery.class, " preparedQuery = this.updateByExample.prepare(context);");
@@ -747,13 +799,25 @@ public class DAO {
       w.println();
       w.println("  // DELETE BY PRIMARY KEY");
 
-      w.println();
-      w.println("  private final ", DynamicModificationQuery.class, " deleteByPK = assembler");
-      w.println("    .literaln(\"DELETE FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
-      fragmentWherePK("f");
-      w.println("    .endModificationQuery();");
-      w.println();
+      // Query
 
+      String queryName = "deleteByPK";
+      String initializerName = "initialize" + SUtil.capitalize(queryName);
+      this.initializersInPostConstruct.add(initializerName);
+
+      w.println();
+      w.println("  private ", DynamicModificationQuery.class, " " + queryName + ";");
+      w.println();
+      w.println("  private void " + initializerName + "() {");
+      w.println("    this." + queryName + " = assembler");
+      w.println("      .literaln(\"DELETE FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
+      fragmentWherePK("f");
+      w.println("      .endModificationQuery();");
+      w.println("  }");
+
+      // Method
+
+      w.println();
       w.print("  public int delete(");
       fragmentPKParameters(pk);
       w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
@@ -771,7 +835,7 @@ public class DAO {
         w.println("    filter." + setter + "(" + m + ");");
       }
 
-      w.println("    ", ParameterContext.class, " context = this.expressionFactory.newParameterContext();");
+      w.println("    ", ParameterContext.class, " context = this.assembler.newParameterContext();");
       w.println("    context.add(\"f\", filter);");
       w.println("    ", PreparedModificationQuery.class, " preparedQuery = this.deleteByPK.prepare(context);");
 
@@ -789,18 +853,30 @@ public class DAO {
     w.println();
     w.println("  // DELETE BY EXAMPLE");
 
+    // Query
+
+    String queryName = "deleteByExample";
+    String initializerName = "initialize" + SUtil.capitalize(queryName);
+    this.initializersInPostConstruct.add(initializerName);
+
     w.println();
-    w.println("  private final ", DynamicModificationQuery.class, " deleteByExample = assembler");
-    w.println("    .literal(\"DELETE FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
+    w.println("  private ", DynamicModificationQuery.class, " " + queryName + ";");
+    w.println();
+    w.println("  private void " + initializerName + "() {");
+    w.println("    this." + queryName + " = assembler");
+    w.println("      .literal(\"DELETE FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
     fragmentWhereExample("f");
-    w.println("    .endModificationQuery();");
-    w.println();
+    w.println("      .endModificationQuery();");
+    w.println("  }");
+
+    // Method
 
     ExternalClass em = ExternalClass.of(this.model.getFullClassName());
+    w.println();
     w.print("  public int delete(", em, " filter");
     w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
 
-    w.println("    ", ParameterContext.class, " context = this.expressionFactory.newParameterContext();");
+    w.println("    ", ParameterContext.class, " context = this.assembler.newParameterContext();");
     w.println("    context.add(\"f\", filter);");
     w.println("    ", PreparedModificationQuery.class, " preparedQuery = this.deleteByExample.prepare(context);");
 
@@ -854,7 +930,7 @@ public class DAO {
   }
 
   private void fragmentSet() {
-    w.println("    .set(assembler.ifs()");
+    w.println("      .set(assembler.ifs()");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String memId = cm.getId().getJavaMemberName();
       String sqlId = cm.getId().getRenderedSQLName();
@@ -890,14 +966,14 @@ public class DAO {
       String sqlId = cm.getId().getRenderedSQLName();
       String jdbcType = cm.getType().getJDBCShortType();
       w.println(
-          "    .literal(\"" + SUtil.escapeJavaString(sep.render()) + "\" + \"" + SUtil.escapeJavaString(sqlId)
+          "      .literal(\"" + SUtil.escapeJavaString(sep.render()) + "\" + \"" + SUtil.escapeJavaString(sqlId)
               + " = \").parameter(\"" + objname + "." + SUtil.escapeJavaString(memId) + "\", ",
           Types.class, "." + jdbcType + ")");
     }
   }
 
   private void fragmentWhereExample(String objname) {
-    w.println("    .where(\"AND\", assembler.ifs()");
+    w.println("      .where(\"AND\", assembler.ifs()");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String memId = cm.getId().getJavaMemberName();
       String sqlId = cm.getId().getRenderedSQLName();
@@ -1083,13 +1159,21 @@ public class DAO {
 
     // 1. Query Definition
 
+    String initializerName = "initialize" + SUtil.capitalize(queryName);
+    this.initializersInPostConstruct.add(initializerName);
+
     w.println();
-    w.println("  private final ", DynamicModificationQuery.class, " " + queryName + " = assembler");
+    w.println("  private ", DynamicModificationQuery.class, " " + queryName + ";");
+    w.println();
+    w.println("  private void " + initializerName + "() {");
+    w.println("    this." + queryName + " = assembler");
+
     List<DynamicSQLPart> parts = q.getDynamicSQLParts();
     NitroRenderer r = new NitroRenderer();
     r.render(parts, w);
 
-    w.println("    .endModificationQuery();");
+    w.println("      .endModificationQuery();");
+    w.println("  }");
 
     // 2. Method
 
@@ -1103,7 +1187,7 @@ public class DAO {
     }
     w.println(")");
     w.println("      throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
-    w.println("    ", ParameterContext.class, " context = this.expressionFactory.newParameterContext();");
+    w.println("    ", ParameterContext.class, " context = this.assembler.newParameterContext();");
     for (ParameterTag p : q.getParameterDefinitions()) {
       w.println("    context.add(\"" + p.getName() + "\", " + p.getName() + ");");
     }
@@ -1120,7 +1204,7 @@ public class DAO {
 
     log.info("Nitro SELECT 1");
 
-    String selectName = "select" + sno;
+    String queryName = "select" + sno;
     String method = s.getMethod();
 
     w.println();
@@ -1128,21 +1212,21 @@ public class DAO {
 
     // 1. Query Definition
 
+    String initializerName = "initialize" + SUtil.capitalize(queryName);
+    this.initializersInPostConstruct.add(initializerName);
+
     w.println();
-    w.println("  private final ", DynamicSelectQuery.class, " " + selectName + " = assembler");
+    w.println("  private ", DynamicSelectQuery.class, " " + queryName + ";");
+    w.println();
+    w.println("  private void " + initializerName + "() {");
+    w.println("    this." + queryName + " = assembler");
 
     List<EnhancedSQLPart> parts = s.getParts();
     NitroRenderer r = new NitroRenderer();
     r.renderSelect(parts, w);
 
-//    int coln = this.metadata.getColumns().size();
-//    int n = 1;
-//    for (ColumnMetadata cm : s.getColumns()) {
-//      String sqlId = cm.getId().getRenderedSQLName();
-//      w.println("    .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
-//      n++;
-//    }
-    w.println("    .endSelectQuery();");
+    w.println("      .endSelectQuery();");
+    w.println("  }");
     w.println();
 
     // 2. Row Reader
@@ -1170,14 +1254,14 @@ public class DAO {
     }
     w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
 
-    w.println("    ", ParameterContext.class, " context = this.expressionFactory.newParameterContext();");
+    w.println("    ", ParameterContext.class, " context = this.assembler.newParameterContext();");
     for (SelectParameterMetadata sp : s.getParameters()) {
       ParameterTag p = sp.getParameter();
       w.println("    context.add(\"" + p.getName() + "\", " + p.getName() + ");");
     }
 
     w.print("    ", PreparedSelectQuery.class, "<", rc, "> preparedQuery = ");
-    w.println("this." + selectName + ".prepare(context, ", rc, ".class);");
+    w.println("this." + queryName + ".prepare(context, ", rc, ".class);");
 
     fragmentLogging();
 

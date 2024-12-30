@@ -1,4 +1,4 @@
-package org.hotrod.dynamic.builder;
+package org.hotrod.dynamic.assembler;
 
 public class ListProcessor {
 

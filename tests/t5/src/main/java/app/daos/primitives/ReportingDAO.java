@@ -15,7 +15,6 @@ import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import org.hotrod.dynamic.DynamicExpressionException;
-import org.hotrod.dynamic.DynamicExpressionFactory;
 import org.hotrod.dynamic.DynamicModificationQuery;
 import org.hotrod.dynamic.DynamicSelectQuery;
 import org.hotrod.dynamic.ParameterContext;
@@ -23,7 +22,7 @@ import org.hotrod.dynamic.PreparedModificationQuery;
 import org.hotrod.dynamic.PreparedQuery;
 import org.hotrod.dynamic.PreparedSelectQuery;
 import org.hotrod.dynamic.PreparedSelectQuery.RowReader;
-import org.hotrod.dynamic.builder.QueryAssembler;
+import org.hotrod.dynamic.assembler.QueryAssembler;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
@@ -46,8 +45,8 @@ public class ReportingDAO implements Serializable, ApplicationContextAware {
   @Autowired
   private LiveSQLDialect liveSQLDialect;
 
-  private final DynamicExpressionFactory expressionFactory = DynamicExpressionFactory.getFactory();
-  private final QueryAssembler assembler = new QueryAssembler(this.expressionFactory);
+  @Autowired
+  private QueryAssembler assembler;
 
   @Autowired
   private SpringBeanObjectFactory springBeanObjectFactory;
@@ -64,32 +63,31 @@ public class ReportingDAO implements Serializable, ApplicationContextAware {
 
   private LiveSQLContext context;
 
-  @PostConstruct
-  public void initializeContext() {
-    this.context = new LiveSQLContext(this.liveSQLDialect, this.dataSource, new TypeSolver(null, this.liveSQLDialect));
-  }
-
   // NITRO QUERY: activateBigAccounts
 
-  private final DynamicModificationQuery query0 = assembler
-    .literal("\n      ")
-    .literal("\n      ")
-    .literal("\n      ")
-    .literal("\n      UPDATE account\n      SET active = true, balance = ")
-    .parameter("minBalance", Types.BIGINT)
-    .literal("\n      WHERE id IN \n      ")
-    .foreach("id", "ids", "(", ", ", ")", assembler
-      .variable("id")
-      .end()
-    )
-    .literal("\n      AND ")
-    .parameterInjection("filter")
-    .literal("\n    ")
-    .endModificationQuery();
+  private DynamicModificationQuery query0;
+
+  private void initializeQuery0() {
+    this.query0 = assembler
+      .literal("\n      ")
+      .literal("\n      ")
+      .literal("\n      ")
+      .literal("\n      UPDATE account\n      SET active = true, balance = ")
+      .parameter("minBalance", Types.BIGINT)
+      .literal("\n      WHERE id IN \n      ")
+      .foreach("id", "ids", "(", ", ", ")", assembler
+        .variable("id")
+        .end()
+      )
+      .literal("\n      AND ")
+      .parameterInjection("filter")
+      .literal("\n    ")
+      .endModificationQuery();
+  }
 
   public int activateBigAccounts(Long minBalance, List ids, String filter)
       throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.expressionFactory.newParameterContext();
+    ParameterContext context = this.assembler.newParameterContext();
     context.add("minBalance", minBalance);
     context.add("ids", ids);
     context.add("filter", filter);
@@ -103,9 +101,13 @@ public class ReportingDAO implements Serializable, ApplicationContextAware {
 
   // NITRO SELECT: findBigAccounts
 
-  private final DynamicSelectQuery select0 = assembler
-    .literal("\nselect id, balance,\n  case when active then 'Active' else 'Inactive' end as status,\n  cast(case when type = 'CHK' then balance * 1.5 else balance * 1.2 end as int) as score\nfrom account\nwhere balance >= 300\n    ")
-    .endSelectQuery();
+  private DynamicSelectQuery select0;
+
+  private void initializeSelect0() {
+    this.select0 = assembler
+      .literal("\nselect id, balance,\n  case when active then 'Active' else 'Inactive' end as status,\n  cast(case when type = 'CHK' then balance * 1.5 else balance * 1.2 end as int) as score\nfrom account\nwhere balance >= 300\n    ")
+      .endSelectQuery();
+  }
 
 
   private final RowReader<BigAccount> rowReader0 = new RowReader<BigAccount>() {
@@ -134,13 +136,20 @@ public class ReportingDAO implements Serializable, ApplicationContextAware {
 
   };
   public List<BigAccount> findBigAccounts() throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.expressionFactory.newParameterContext();
+    ParameterContext context = this.assembler.newParameterContext();
     PreparedSelectQuery<BigAccount> preparedQuery = this.select0.prepare(context, BigAccount.class);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       List<BigAccount> rows = preparedQuery.execute(conn, this.rowReader0);
       return rows;
     }
+  }
+
+  @PostConstruct
+  public void initializeContext() {
+    this.context = new LiveSQLContext(this.liveSQLDialect, this.dataSource, new TypeSolver(null, this.liveSQLDialect));
+    this.initializeQuery0();
+    this.initializeSelect0();
   }
 
   private void logQuery(PreparedQuery preparedQuery) {

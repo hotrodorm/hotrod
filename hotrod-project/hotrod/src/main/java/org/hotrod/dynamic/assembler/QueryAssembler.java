@@ -1,20 +1,25 @@
-package org.hotrod.dynamic.builder;
+package org.hotrod.dynamic.assembler;
 
 import java.util.List;
 
 import org.hotrod.dynamic.DynamicExpressionFactory;
+import org.hotrod.dynamic.ParameterContext;
 import org.hotrod.dynamic.segments.ChooseSegment;
 import org.hotrod.dynamic.segments.IfSegment;
 import org.hotrod.dynamic.segments.OtherwiseSegment;
 import org.hotrod.dynamic.segments.SegmentList;
 import org.hotrod.dynamic.segments.WhenSegment;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class QueryAssembler {
 
+  @Autowired
   private DynamicExpressionFactory factory;
 
-  public QueryAssembler(DynamicExpressionFactory factory) {
-    this.factory = factory;
+  public ParameterContext newParameterContext() {
+    return this.factory.newParameterContext();
   }
 
   public IfsAssembler ifs() {

@@ -318,7 +318,7 @@ public class NitroRenderer {
   // Utils
 
   private String indent(int level) {
-    return SUtil.filler(' ', 4 + level * 2);
+    return SUtil.filler(' ', 6 + level * 2);
   }
 
 }

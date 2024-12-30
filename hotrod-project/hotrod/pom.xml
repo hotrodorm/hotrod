@@ -26,12 +26,6 @@
 
   <dependencies>
 
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-jexl3</artifactId>
-      <version>3.4.0</version>
-    </dependency>
-
     <!-- Spring -->
 
     <dependency>
@@ -68,9 +62,19 @@
       <version>5.2.0.RELEASE</version>
       <scope>provided</scope>
     </dependency>
+
+    <!--  JEXL3 -->
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-jexl3</artifactId>
+      <version>3.4.0</version>
+    </dependency>
     
     <!-- OGNL -->
 
+<!-- 
+-->
     <dependency>
       <groupId>ognl</groupId>
       <artifactId>ognl</artifactId>
