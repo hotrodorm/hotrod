@@ -69,23 +69,6 @@
       <scope>provided</scope>
     </dependency>
     
-    <!-- MyBatis Spring -->
-
-<!--
-    <dependency>
-      <groupId>org.mybatis</groupId>
-      <artifactId>mybatis-spring</artifactId>
-      <version>2.0.6</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.mybatis</groupId>
-      <artifactId>mybatis</artifactId>
-      <version>3.5.9</version>
-      <scope>provided</scope>
-    </dependency>
--->
     <!-- OGNL -->
 
     <dependency>
@@ -94,17 +77,6 @@
       <version>3.2.14</version>
     </dependency>
     
-    <!-- Commons JEXL 3.1 -->
-
-<!-- 
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-jexl3</artifactId>
-      <version>3.1</version>
-      <scope>provided</scope>
-    </dependency>
- -->
- 
     <!-- List Collector -->
 
     <dependency>

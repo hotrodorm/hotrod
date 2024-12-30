@@ -9,7 +9,6 @@ import org.hotrod.dynamic.DynamicExpressionException;
 import org.hotrod.livesql.Row;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.spring.SpringBeanObjectFactory;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -27,7 +26,6 @@ import app.daos.primitives.ReportingDAO;
 @SpringBootApplication
 @ComponentScan(basePackageClasses = LiveSQL.class)
 @ComponentScan(basePackageClasses = SpringBeanObjectFactory.class)
-@MapperScan(basePackageClasses = LiveSQL.class)
 public class App {
 
   private static final Logger log = Logger.getLogger(App.class.getName());

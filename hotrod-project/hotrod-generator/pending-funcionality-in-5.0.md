@@ -66,7 +66,7 @@ LiveSQL.
 - New class writer handles references and imports for cleaners DAOs and VOs.
 - Packages are changed in the hotrod library. The "runtime" segment is now removed.
 
-## 6. Functionality Not Yet Defined
+## 6. Functionality TBD
 
 Nitro:
 
@@ -75,3 +75,8 @@ Nitro:
 Dynamic SQL:
 
 - Uses JEXL (by default) to evaluate expressions, but could use other libraries such as OGNL.
+
+Type Solver:
+
+- Remove OGNL in favor of JEXL.
+
