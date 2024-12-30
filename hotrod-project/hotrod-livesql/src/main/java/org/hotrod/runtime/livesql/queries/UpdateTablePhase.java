@@ -36,92 +36,92 @@ public class UpdateTablePhase {
   // Next stages
 
   public UpdateSetPhase set(final NumberEntityColumn column, final GeneralNumberExpression expression) {
-    this.update.addSet(column, expression);
+    this.update.addSetter(column, expression);
     return new UpdateSetPhase(this.context, this.update);
   }
 
   public UpdateSetPhase set(final NumberEntityColumn column, final Number n) {
-    this.update.addSet(column, BoxUtil.box(n));
+    this.update.addSetter(column, BoxUtil.box(n));
     return new UpdateSetPhase(this.context, this.update);
   }
 
   public UpdateSetPhase set(final NumberEntityColumn column, final NullLiteral n) {
-    this.update.addSet(column, n);
+    this.update.addSetter(column, n);
     return new UpdateSetPhase(this.context, this.update);
   }
 
   public UpdateSetPhase set(final StringEntityColumn column, final GeneralStringExpression expression) {
-    this.update.addSet(column, expression);
+    this.update.addSetter(column, expression);
     return new UpdateSetPhase(this.context, this.update);
   }
 
   public UpdateSetPhase set(final StringEntityColumn column, final String s) {
-    this.update.addSet(column, BoxUtil.box(s));
+    this.update.addSetter(column, BoxUtil.box(s));
     return new UpdateSetPhase(this.context, this.update);
   }
 
   public UpdateSetPhase set(final StringEntityColumn column, final NullLiteral n) {
-    this.update.addSet(column, n);
+    this.update.addSetter(column, n);
     return new UpdateSetPhase(this.context, this.update);
   }
 
   public UpdateSetPhase set(final DateTimeEntityColumn column, final GeneralDateTimeExpression expression) {
-    this.update.addSet(column, expression);
+    this.update.addSetter(column, expression);
     return new UpdateSetPhase(this.context, this.update);
   }
 
   public UpdateSetPhase set(final DateTimeEntityColumn column, final Date dt) {
-    this.update.addSet(column, BoxUtil.box(dt));
+    this.update.addSetter(column, BoxUtil.box(dt));
     return new UpdateSetPhase(this.context, this.update);
   }
 
   public UpdateSetPhase set(final DateTimeEntityColumn column, final NullLiteral n) {
-    this.update.addSet(column, n);
+    this.update.addSetter(column, n);
     return new UpdateSetPhase(this.context, this.update);
   }
 
   public UpdateSetPhase set(final BooleanEntityColumn column, final GeneralBooleanExpression expression) {
-    this.update.addSet(column, expression);
+    this.update.addSetter(column, expression);
     return new UpdateSetPhase(this.context, this.update);
   }
 
   public UpdateSetPhase set(final BooleanEntityColumn column, final boolean b) {
-    this.update.addSet(column, BoxUtil.box(b));
+    this.update.addSetter(column, BoxUtil.box(b));
     return new UpdateSetPhase(this.context, this.update);
   }
 
   public UpdateSetPhase set(final BooleanEntityColumn column, final NullLiteral n) {
-    this.update.addSet(column, n);
+    this.update.addSetter(column, n);
     return new UpdateSetPhase(this.context, this.update);
   }
 
   public UpdateSetPhase set(final ByteArrayEntityColumn column, final GeneralByteArrayExpression expression) {
-    this.update.addSet(column, expression);
+    this.update.addSetter(column, expression);
     return new UpdateSetPhase(this.context, this.update);
   }
 
   public UpdateSetPhase set(final ByteArrayEntityColumn column, final byte[] a) {
-    this.update.addSet(column, BoxUtil.box(a));
+    this.update.addSetter(column, BoxUtil.box(a));
     return new UpdateSetPhase(this.context, this.update);
   }
 
   public UpdateSetPhase set(final ByteArrayEntityColumn column, final NullLiteral n) {
-    this.update.addSet(column, n);
+    this.update.addSetter(column, n);
     return new UpdateSetPhase(this.context, this.update);
   }
 
   public UpdateSetPhase set(final ObjectEntityColumn column, final GeneralObjectExpression expression) {
-    this.update.addSet(column, expression);
+    this.update.addSetter(column, expression);
     return new UpdateSetPhase(this.context, this.update);
   }
 
   public UpdateSetPhase set(final ObjectEntityColumn column, final Object o) {
-    this.update.addSet(column, BoxUtil.box(o));
+    this.update.addSetter(column, BoxUtil.box(o));
     return new UpdateSetPhase(this.context, this.update);
   }
 
   public UpdateSetPhase set(final ObjectEntityColumn column, final NullLiteral n) {
-    this.update.addSet(column, n);
+    this.update.addSetter(column, n);
     return new UpdateSetPhase(this.context, this.update);
   }
 

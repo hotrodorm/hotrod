@@ -94,7 +94,7 @@ public abstract class MultiSet<R> {
   // Utilities
 
   @SuppressWarnings("unchecked")
-  protected List<R> executeLiveSQL(final LiveSQLContext context, final LiveSQLPreparedQuery q) {
+  protected List<R> executeLiveSQL(final LiveSQLContext context, final LiveSQLPreparedQuery q, boolean singleRow) {
     List<Row> rows = new ArrayList<>();
     try (Connection conn = context.getDataSource().getConnection()) {
 
@@ -132,7 +132,12 @@ public abstract class MultiSet<R> {
 
           logQueryColumns(queryColumns);
 
+          int count = 0;
           while (rs.next()) {
+            count++;
+            if (singleRow && count > 1) {
+              throw new LiveSQLException("A single row at most was expected by this query but received at least two");
+            }
             Row r = new Row();
             int i = 1;
             for (Expression qc : queryColumns.values()) {
@@ -211,16 +216,19 @@ public abstract class MultiSet<R> {
 
   @SuppressWarnings("unchecked")
   protected Cursor<R> executeLiveSQLCursor(final LiveSQLContext context, final LiveSQLPreparedQuery q) {
-    LinkedHashMap<String, Object> parameters = q.getParameters();
-    parameters.put("sql", q.getSQL());
-    return (Cursor<R>) context.getLiveSQLMapper().selectCursor(parameters);
+    throw new UnsupportedOperationException("executeCursor is not yet supported");
+//    LinkedHashMap<String, Object> parameters = q.getParameters();
+//    parameters.put("sql", q.getSQL());
+//    return (Cursor<R>) context.getLiveSQLMapper().selectCursor(parameters);
   }
 
-  @SuppressWarnings("unchecked")
   protected R executeLiveSQLOne(final LiveSQLContext context, final LiveSQLPreparedQuery q) {
-    LinkedHashMap<String, Object> parameters = q.getParameters();
-    parameters.put("sql", q.getSQL());
-    return (R) context.getLiveSQLMapper().selectOne(parameters);
+    List<R> rows = executeLiveSQL(context, q, true);
+    if (rows.isEmpty()) {
+      return null;
+    } else {
+      return rows.get(0);
+    }
   }
 
 }

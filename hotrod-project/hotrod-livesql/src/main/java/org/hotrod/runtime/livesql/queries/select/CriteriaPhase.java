@@ -10,13 +10,10 @@ public abstract class CriteriaPhase<T> implements EntitySelect<T> {
 
   protected LiveSQLContext context;
   protected AbstractSelectObject<T> select;
-  protected String mapperStatement;
 
-  protected CriteriaPhase(final LiveSQLContext context, final AbstractSelectObject<T> select,
-      final String mapperStatement) {
+  protected CriteriaPhase(final LiveSQLContext context, final AbstractSelectObject<T> select) {
     this.context = context;
     this.select = select;
-    this.mapperStatement = mapperStatement;
   }
 
   // next phases
@@ -24,15 +21,15 @@ public abstract class CriteriaPhase<T> implements EntitySelect<T> {
   // execute
 
   public final List<T> execute() {
-    return this.select.execute(this.context, this.mapperStatement);
+    return this.select.execute(this.context);
   }
 
   public final Cursor<T> executeCursor() {
-    return this.select.executeCursor(this.context, this.mapperStatement);
+    return this.select.executeCursor(this.context);
   }
 
   public final T executeOne() {
-    return this.select.executeOne(this.context, this.mapperStatement);
+    return this.select.executeOne(this.context);
   }
 
   // rendering

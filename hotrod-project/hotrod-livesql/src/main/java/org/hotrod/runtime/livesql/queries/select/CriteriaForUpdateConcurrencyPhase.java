@@ -5,8 +5,8 @@ import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 public class CriteriaForUpdateConcurrencyPhase<T> extends CriteriaPhase<T> {
 
   public CriteriaForUpdateConcurrencyPhase(final LiveSQLContext context, final AbstractSelectObject<T> select,
-      final String mapperStatement, final Number waitTime, final boolean skipLocked) {
-    super(context, select, mapperStatement);
+      final Number waitTime, final boolean skipLocked) {
+    super(context, select);
     select.setLockingConcurrency(waitTime, skipLocked);
   }
 

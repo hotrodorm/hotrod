@@ -367,52 +367,20 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
 
   @Override
   public List<R> execute(final LiveSQLContext context) {
-    return this.execute(context, null);
-  }
-
-  public List<R> execute(final LiveSQLContext context, final String entityMapperStatement) {
-
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-
-    if (entityMapperStatement == null) {
-      return executeLiveSQL(context, q);
-    } else {
-      return context.getSQLSession().selectList(entityMapperStatement, q.getConsolidatedParameters());
-    }
-
+    return executeLiveSQL(context, q, false);
   }
 
   @Override
   public Cursor<R> executeCursor(final LiveSQLContext context) {
-    return this.executeCursor(context, null);
-  }
-
-  public Cursor<R> executeCursor(final LiveSQLContext context, final String entityMapperStatement) {
-
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    if (entityMapperStatement == null) {
-      return executeLiveSQLCursor(context, q);
-    } else {
-      return new MyBatisCursor<R>(
-          context.getSQLSession().selectCursor(entityMapperStatement, q.getConsolidatedParameters()));
-    }
-
+    return executeLiveSQLCursor(context, q);
   }
 
   @Override
   public R executeOne(final LiveSQLContext context) {
-    return this.executeOne(context, null);
-  }
-
-  public R executeOne(final LiveSQLContext context, final String entityMapperStatement) {
-
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    if (entityMapperStatement == null) {
       return executeLiveSQLOne(context, q);
-    } else {
-      return context.getSQLSession().selectOne(entityMapperStatement, q.getConsolidatedParameters());
-    }
-
   }
 
   @Override

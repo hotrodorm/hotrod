@@ -15,8 +15,6 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
-import org.apache.ibatis.session.SqlSession;
-import org.hotrod.livesql.Row;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;
@@ -141,6 +139,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import org.hotrod.livesql.Row;
+
 @Component
 public class LiveSQL {
 
@@ -153,9 +153,7 @@ public class LiveSQL {
 
   private LiveSQLContext context;
 
-  private SqlSession sqlSession;
   private LiveSQLDialect liveSQLDialect;
-  private LiveSQLMapper liveSQLMapper;
   private DataSource dataSource;
   private TypeSolver typeSolver;
 
@@ -168,11 +166,8 @@ public class LiveSQL {
 
   // Constructor
 
-  public LiveSQL(final SqlSession sqlSession, final @Qualifier("liveSQLDialect") LiveSQLDialect liveSQLDialect,
-      final LiveSQLMapper liveSQLMapper, final DataSource dataSource) {
-    this.sqlSession = sqlSession;
+  public LiveSQL(final @Qualifier("liveSQLDialect") LiveSQLDialect liveSQLDialect, final DataSource dataSource) {
     this.liveSQLDialect = liveSQLDialect;
-    this.liveSQLMapper = liveSQLMapper;
     this.context = null;
     this.dataSource = dataSource;
   }

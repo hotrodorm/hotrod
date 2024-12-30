@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.dynamic.DynamicExpressionException;
+import org.hotrod.livesql.Row;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.spring.SpringBeanObjectFactory;
 import org.mybatis.spring.annotation.MapperScan;
@@ -52,9 +53,24 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       log.info("[ Starting... ]");
-      test();
+//      test();
+      testLiveSQL();
       log.info("[ Ending ]");
     };
+  }
+
+  private void testLiveSQL() throws SQLException, DynamicExpressionException {
+
+//    System.out.println(">> Will run LiveSQL");
+//    List<Row> rows = this.sql.select(sql.val(7).mult(3).as("answer")).execute();
+//    System.out.println(">> LiveSQL executed");
+//    for (Row row : rows) {
+//      System.out.println("Row=" + row);
+//    }
+
+    System.out.println(">> Will run LiveSQL");
+    Row row = this.sql.select(sql.val(7).mult(3).as("answer")).executeOne();
+    System.out.println("Row=" + row);
   }
 
   private void test() throws SQLException, DynamicExpressionException {

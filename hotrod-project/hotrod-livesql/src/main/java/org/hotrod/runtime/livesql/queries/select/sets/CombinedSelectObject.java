@@ -307,7 +307,7 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
   @Override
   public List<R> execute(final LiveSQLContext context) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    return executeLiveSQL(context, q);
+    return executeLiveSQL(context, q, false);
   }
 
   @Override

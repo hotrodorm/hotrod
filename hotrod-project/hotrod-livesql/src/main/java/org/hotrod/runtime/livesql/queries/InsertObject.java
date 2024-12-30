@@ -1,6 +1,8 @@
 package org.hotrod.runtime.livesql.queries;
 
-import java.util.LinkedHashMap;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
@@ -46,9 +48,25 @@ public class InsertObject implements QueryObject {
 
   public int execute(final LiveSQLContext context) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    LinkedHashMap<String, Object> parameters = q.getParameters();
-    parameters.put("sql", q.getSQL());
-    return context.getLiveSQLMapper().insert(parameters);
+    try (Connection conn = context.getDataSource().getConnection()) {
+      try (PreparedStatement ps = conn.prepareStatement(q.getSQL())) {
+
+        // 1. Apply parameters
+
+        int n = 1;
+        for (Object obj : q.getParameters().values()) {
+          int i = n++;
+          ps.setObject(i, obj);
+        }
+
+        // 2. Run the query
+
+        int count = ps.executeUpdate();
+        return count;
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private LiveSQLPreparedQuery prepareQuery(final LiveSQLContext context) {

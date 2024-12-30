@@ -57,10 +57,17 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
   @Override
   public List<Expression> assembleColumnsOf(final TableExpression te) {
 
+    log.info("resultSetColumns.size()=" + resultSetColumns.size());
+
     boolean isListingColumns = this.resultSetColumns != null && !this.resultSetColumns.isEmpty();
 
-    this.baseTableExpression.assembleColumns();
-    this.joins.forEach(j -> j.getTableExpression().assembleColumns());
+    if (this.baseTableExpression != null) {
+      this.baseTableExpression.assembleColumns();
+    }
+
+    if (this.joins != null) {
+      this.joins.forEach(j -> j.getTableExpression().assembleColumns());
+    }
 
     if (isListingColumns) {
 

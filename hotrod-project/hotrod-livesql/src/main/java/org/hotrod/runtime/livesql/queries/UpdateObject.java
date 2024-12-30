@@ -1,10 +1,10 @@
 package org.hotrod.runtime.livesql.queries;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.hotrod.runtime.livesql.dialects.UpdateRenderer;
 import org.hotrod.runtime.livesql.expressions.Expression;
@@ -14,16 +14,13 @@ import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.MDHelper;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
-import org.hotrod.runtime.livesql.queries.SQLParameterWriter.RenderedParameter;
 import org.hotrod.runtime.livesql.util.PreviewRenderer;
 
 public class UpdateObject implements QueryObject {
 
   private TableOrView tableOrView;
-  private List<Assignment> sets = new ArrayList<>();
+  private List<Assignment> setters = new ArrayList<>();
   private GeneralBooleanExpression wherePredicate;
-
-  private Map<String, Object> extraSets = new HashMap<>();
 
   UpdateObject() {
     super();
@@ -37,12 +34,8 @@ public class UpdateObject implements QueryObject {
     this.tableOrView = from;
   }
 
-  void addSet(final Column c, final Expression e) {
-    this.sets.add(new Assignment(c, e));
-  }
-
-  void setExtraSets(final Map<String, Object> extraSets) {
-    this.extraSets = extraSets;
+  void addSetter(final Column c, final Expression e) {
+    this.setters.add(new Assignment(c, e));
   }
 
   void setWherePredicate(final GeneralBooleanExpression predicate) {
@@ -56,11 +49,25 @@ public class UpdateObject implements QueryObject {
 
   public int execute(final LiveSQLContext context) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    LinkedHashMap<String, Object> parameters = q.getParameters();
-    parameters.put("sql", q.getSQL());
-    parameters.put("extraSets", this.extraSets);
+    try (Connection conn = context.getDataSource().getConnection()) {
+      try (PreparedStatement ps = conn.prepareStatement(q.getSQL())) {
 
-    return context.getLiveSQLMapper().update(parameters);
+        // 1. Apply parameters
+
+        int n = 1;
+        for (Object obj : q.getParameters().values()) {
+          int i = n++;
+          ps.setObject(i, obj);
+        }
+
+        // 2. Run the query
+
+        int count = ps.executeUpdate();
+        return count;
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private LiveSQLPreparedQuery prepareQuery(final LiveSQLContext context) {
@@ -81,29 +88,18 @@ public class UpdateObject implements QueryObject {
 
     w.write("\nSET\n");
     boolean first = true;
-    for (int i = 0; i < this.sets.size(); i++) {
+    for (int i = 0; i < this.setters.size(); i++) {
       w.write("    ");
       if (first) {
         first = false;
       } else {
         w.write(", ");
       }
-      Assignment s = this.sets.get(i);
+      Assignment s = this.setters.get(i);
       w.write(w.getSQLDialect().canonicalToNatural(s.getColumn().getReferenceName()));
 
       w.write(" = ");
       Helper.renderTo(s.getExpression(), w);
-      w.write("\n");
-    }
-    for (String colName : this.extraSets.keySet()) {
-      w.write("    ");
-      if (first) {
-        first = false;
-      } else {
-        w.write(", ");
-      }
-      RenderedParameter p = w.registerParameter(this.extraSets.get(colName));
-      w.write(colName + " = " + p.getPlaceholder());
       w.write("\n");
     }
 
@@ -116,6 +112,7 @@ public class UpdateObject implements QueryObject {
   }
 
   private static class Assignment {
+
     private Column c;
     private Expression e;
 

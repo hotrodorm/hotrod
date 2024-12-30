@@ -43,6 +43,7 @@
     
     <!-- MyBatis Spring -->
 
+<!-- 
     <dependency>
       <groupId>org.mybatis</groupId>
       <artifactId>mybatis-spring</artifactId>
@@ -54,7 +55,8 @@
       <artifactId>mybatis</artifactId>
       <version>3.5.9</version>
     </dependency>
-
+-->
+ 
   </dependencies>
 
   <profiles>

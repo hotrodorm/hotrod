@@ -19,14 +19,14 @@ public class UpdateSetCompletePhase implements DMLQuery {
     this.update = update;
   }
 
-  public UpdateSetCompletePhase(final LiveSQLContext context, final String mapperStatement,
-      final TableOrView tableOrView, final GeneralBooleanExpression predicate, final Map<String, Object> extraSets) {
-    this.context = context;
-    this.update = new UpdateObject(mapperStatement);
-    this.update.setTableOrView(tableOrView);
-    this.update.setWherePredicate(predicate);
-    this.update.setExtraSets(extraSets);
-  }
+//  public UpdateSetCompletePhase(final LiveSQLContext context, final String mapperStatement,
+//      final TableOrView tableOrView, final GeneralBooleanExpression predicate, final Map<String, Object> extraSets) {
+//    this.context = context;
+//    this.update = new UpdateObject(mapperStatement);
+//    this.update.setTableOrView(tableOrView);
+//    this.update.setWherePredicate(predicate);
+//    this.update.setExtraSets(extraSets);
+//  }
 
   // Current phase
 
