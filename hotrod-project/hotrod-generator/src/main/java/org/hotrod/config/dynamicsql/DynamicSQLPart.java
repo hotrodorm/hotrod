@@ -17,10 +17,7 @@ import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.ParameterTag;
-import org.hotrod.dynamicsql.existing.expressions.LiteralExpression;
-import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.ParameterRenderer;
 
@@ -219,6 +216,7 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
 
   protected abstract boolean shouldRenderTag();
 
+  @Deprecated
   public String renderXML(final ParameterRenderer parameterRenderer) {
 
     StringBuilder sb = new StringBuilder();
@@ -272,38 +270,6 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
     StringBuilder sb = new StringBuilder();
     sb.append("</" + super.getTagName() + ">");
     return sb.toString();
-  }
-
-  protected abstract OldDynamicExpression getJavaExpression(ParameterRenderer parameterRenderer)
-      throws InvalidJavaExpressionException;
-
-  // Utils
-
-  protected OldDynamicExpression[] toArray(final List<DynamicSQLPart> parts, final ParameterRenderer parameterRenderer)
-      throws InvalidJavaExpressionException {
-    List<OldDynamicExpression> exps = new ArrayList<OldDynamicExpression>();
-    LiteralExpression last = null;
-    for (DynamicSQLPart p : parts) {
-      OldDynamicExpression expr = p.getJavaExpression(parameterRenderer);
-      try {
-        LiteralExpression le = (LiteralExpression) expr;
-        if (last == null) {
-          last = le;
-        } else {
-          last.concat(le);
-        }
-      } catch (ClassCastException e) {
-        if (last != null) {
-          exps.add(last);
-          last = null;
-        }
-        exps.add(expr);
-      }
-    }
-    if (last != null) {
-      exps.add(last);
-    }
-    return exps.toArray(new OldDynamicExpression[0]);
   }
 
   // Simple Caption

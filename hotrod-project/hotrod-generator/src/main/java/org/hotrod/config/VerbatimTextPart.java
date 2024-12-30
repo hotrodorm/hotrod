@@ -2,8 +2,6 @@ package org.hotrod.config;
 
 import org.hotrod.config.dynamicsql.SQLSegment;
 import org.hotrod.dynamicsql.existing.SourceLocation;
-import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
-import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.utils.SUtil;
 
@@ -36,12 +34,6 @@ public class VerbatimTextPart implements SQLSegment {
   @Override
   public String renderXML(ParameterRenderer parameterRenderer) {
     return SUtil.escapeXmlBody(this.content);
-  }
-
-  @Override
-  public OldDynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
-      throws InvalidJavaExpressionException {
-    return null;
   }
 
   public String getContent() {

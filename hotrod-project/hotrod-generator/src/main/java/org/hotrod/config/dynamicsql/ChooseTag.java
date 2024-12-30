@@ -5,13 +5,7 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.hotrod.dynamicsql.existing.expressions.ChooseExpression;
-import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
-import org.hotrod.dynamicsql.existing.expressions.OtherwiseExpression;
-import org.hotrod.dynamicsql.existing.expressions.WhenExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.exceptions.InvalidJavaExpressionException;
-import org.hotrod.generator.ParameterRenderer;
 
 @XmlRootElement(name = "choose")
 public class ChooseTag extends DynamicSQLPart {
@@ -83,33 +77,6 @@ public class ChooseTag extends DynamicSQLPart {
   protected TagAttribute[] getAttributes() {
     TagAttribute[] atts = {};
     return atts;
-  }
-
-  // Java Expression
-
-  @Override
-  protected OldDynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
-      throws InvalidJavaExpressionException {
-
-    try {
-
-      List<WhenExpression> whenExps = new ArrayList<WhenExpression>();
-      for (WhenTag w : this.whens) {
-        WhenExpression we = (WhenExpression) w.getJavaExpression(parameterRenderer);
-        whenExps.add(we);
-      }
-
-      OtherwiseExpression o = this.otherwise == null ? null
-          : (OtherwiseExpression) this.otherwise.getJavaExpression(parameterRenderer);
-      return new ChooseExpression(o, whenExps.toArray(new WhenExpression[0]));
-
-    } catch (RuntimeException e) {
-      throw new InvalidJavaExpressionException(this.getSourceLocation(),
-          "Could not produce Java expression for tag <choose> on file '" + this.getSourceLocation().getFile().getPath()
-              + "' at line " + this.getSourceLocation().getLineNumber() + ", col "
-              + this.getSourceLocation().getColumnNumber() + ": " + e.getMessage());
-    }
-
   }
 
 }

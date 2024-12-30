@@ -4,11 +4,7 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.hotrod.dynamicsql.existing.expressions.CollectionExpression;
-import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.exceptions.InvalidJavaExpressionException;
-import org.hotrod.generator.ParameterRenderer;
 
 @XmlRootElement(name = "not-a-tag")
 public class CollectionOfPartsTag extends DynamicSQLPart {
@@ -47,25 +43,6 @@ public class CollectionOfPartsTag extends DynamicSQLPart {
   protected TagAttribute[] getAttributes() {
     TagAttribute[] atts = {};
     return atts;
-  }
-
-  // Java Expression
-
-  @Override
-  public OldDynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
-      throws InvalidJavaExpressionException {
-
-    try {
-
-      return new CollectionExpression(toArray(this.parts, parameterRenderer));
-
-    } catch (RuntimeException e) {
-      throw new InvalidJavaExpressionException(this.getSourceLocation(),
-          "Could not produce Java expression for XML tag on file '" + this.getSourceLocation().getFile().getPath()
-              + "' at line " + this.getSourceLocation().getLineNumber() + ", col "
-              + this.getSourceLocation().getColumnNumber() + ": " + e.getMessage());
-    }
-
   }
 
 }

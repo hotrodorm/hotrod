@@ -3,11 +3,7 @@ package org.hotrod.config.dynamicsql;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
-import org.hotrod.dynamicsql.existing.expressions.IfExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.exceptions.InvalidJavaExpressionException;
-import org.hotrod.generator.ParameterRenderer;
 
 @XmlRootElement(name = "if")
 public class IfTag extends DynamicSQLPart {
@@ -57,25 +53,6 @@ public class IfTag extends DynamicSQLPart {
   protected TagAttribute[] getAttributes() {
     TagAttribute[] atts = { new TagAttribute("test", this.test) };
     return atts;
-  }
-
-  // Java Expression
-
-  @Override
-  protected OldDynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
-      throws InvalidJavaExpressionException {
-
-    try {
-
-      return new IfExpression(this.test, toArray(this.parts, parameterRenderer));
-
-    } catch (RuntimeException e) {
-      throw new InvalidJavaExpressionException(this.getSourceLocation(),
-          "Could not produce Java expression for <if> tag on file '" + this.getSourceLocation().getFile().getPath()
-              + "' at line " + this.getSourceLocation().getLineNumber() + ", col "
-              + this.getSourceLocation().getColumnNumber() + ": " + e.getMessage());
-    }
-
   }
 
   // Getters

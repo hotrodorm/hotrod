@@ -5,11 +5,7 @@ import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
-import org.hotrod.dynamicsql.existing.expressions.WhereExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.exceptions.InvalidJavaExpressionException;
-import org.hotrod.generator.ParameterRenderer;
 
 @XmlRootElement(name = "where")
 public class WhereTag extends DynamicSQLPart {
@@ -73,25 +69,6 @@ public class WhereTag extends DynamicSQLPart {
   protected TagAttribute[] getAttributes() {
     TagAttribute[] atts = {};
     return atts;
-  }
-
-  // Java Expression
-
-  @Override
-  protected OldDynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
-      throws InvalidJavaExpressionException {
-
-    try {
-
-      return new WhereExpression(toArray(this.parts, parameterRenderer));
-
-    } catch (RuntimeException e) {
-      throw new InvalidJavaExpressionException(this.getSourceLocation(),
-          "Could not produce Java expression for tag <where> on file '" + this.getSourceLocation().getFile().getPath()
-              + "' at line " + this.getSourceLocation().getLineNumber() + ", col "
-              + this.getSourceLocation().getColumnNumber() + ": " + e.getMessage());
-    }
-
   }
 
 }

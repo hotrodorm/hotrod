@@ -23,9 +23,7 @@ import org.hotrod.config.dynamicsql.WhenTag;
 import org.hotrod.config.dynamicsql.WhereTag;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.metadata.Metadata;
 
@@ -115,13 +113,6 @@ public class ComplementTag extends EnhancedSQLPart {
       sb.append(p.renderXML(parameterRenderer));
     }
     formatter.add(sb.toString());
-  }
-
-  @Override
-  public OldDynamicExpression getJavaExpression(ParameterRenderer parameterRenderer)
-      throws InvalidJavaExpressionException {
-    // XXX: Pending. Develop only when/if it's needed.
-    return null;
   }
 
   // Simple Caption

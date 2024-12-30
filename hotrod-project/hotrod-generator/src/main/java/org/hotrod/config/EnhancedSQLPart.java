@@ -7,9 +7,7 @@ import java.util.logging.Logger;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.utils.SUtil;
@@ -48,20 +46,11 @@ public abstract class EnhancedSQLPart extends AbstractConfigurationTag {
 
   // Rendering
 
+  @Deprecated
   public abstract String renderStatic(final ParameterRenderer parameterRenderer);
 
+  @Deprecated
   public abstract void renderXML(final SQLFormatter formatter, final ParameterRenderer parameterRenderer);
-
-  // Java Expression Rendering
-
-  public String renderJavaExpression(final int margin, final ParameterRenderer parameterRenderer)
-      throws InvalidJavaExpressionException {
-    OldDynamicExpression expr = this.getJavaExpression(parameterRenderer);
-    return expr.renderConstructor(margin);
-  }
-
-  public abstract OldDynamicExpression getJavaExpression(ParameterRenderer parameterRenderer)
-      throws InvalidJavaExpressionException;
 
   // Rendering
 

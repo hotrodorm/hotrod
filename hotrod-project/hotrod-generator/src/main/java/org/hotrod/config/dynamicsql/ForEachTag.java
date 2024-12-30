@@ -6,10 +6,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.config.ParameterTag;
-import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.exceptions.InvalidJavaExpressionException;
-import org.hotrod.generator.ParameterRenderer;
 
 @XmlRootElement(name = "foreach")
 public class ForEachTag extends DynamicSQLPart {
@@ -136,32 +133,6 @@ public class ForEachTag extends DynamicSQLPart {
         new TagAttribute("close", this.close) //
     };
     return atts;
-  }
-
-  // Java Expression
-
-  @Override
-  protected OldDynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
-      throws InvalidJavaExpressionException {
-
-    throw new UnsupportedOperationException("The <foreach> and <bind> tags are not yet supported.");
-
-    /**
-     * <pre>
-     *
-     * try {
-     * 
-     *   return new ForEachExpression(this.item, this.index, this.collection, this.open, this.separator, this.close,
-     *       toArray(this.parts, parameterRenderer));
-     * 
-     * } catch (RuntimeException e) {
-     *   throw new InvalidJavaExpressionException(this.getSourceLocation(),
-     *       "Could not produce Java expression on <foreach> tag: " + e.getMessage());
-     * }
-     * 
-     * </pre>
-     */
-
   }
 
   public String getItem() {

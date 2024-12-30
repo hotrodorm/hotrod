@@ -3,9 +3,6 @@ package org.hotrod.config;
 import java.util.logging.Logger;
 
 import org.hotrod.config.dynamicsql.SQLSegment;
-import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
-import org.hotrod.dynamicsql.existing.expressions.LiteralExpression;
-import org.hotrod.dynamicsql.existing.expressions.VariableExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.generator.ParameterRenderer;
@@ -133,15 +130,6 @@ public class SQLParameter implements SQLSegment {
   @Override
   public String renderXML(final ParameterRenderer parameterRenderer) {
     return parameterRenderer.render(this);
-  }
-
-  @Override
-  public OldDynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer) {
-    if (this.isVariable()) {
-      return new VariableExpression(this.name);
-    } else {
-      return new LiteralExpression(parameterRenderer.render(this));
-    }
   }
 
 }

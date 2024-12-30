@@ -19,7 +19,6 @@ import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.config.structuredcolumns.ColumnsTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.metadata.SelectMethodMetadata;
@@ -383,11 +382,6 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
     for (EnhancedSQLPart p : this.parts) {
       p.renderXML(formatter, parameterRenderer);
     }
-  }
-
-  public String renderJavaExpression(final int margin, final ParameterRenderer parameterRenderer)
-      throws InvalidJavaExpressionException {
-    return this.aggregatedPart.renderJavaExpression(margin, parameterRenderer);
   }
 
   public List<ParameterTag> getParameterDefinitions() {

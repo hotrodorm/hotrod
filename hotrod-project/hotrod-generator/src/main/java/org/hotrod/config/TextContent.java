@@ -13,10 +13,7 @@ import org.hotrod.config.dynamicsql.Tokenizer.Token;
 import org.hotrod.config.dynamicsql.VariableOccurrence;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.dynamicsql.existing.expressions.LiteralExpression;
-import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.metadata.Metadata;
 
@@ -130,57 +127,6 @@ public class TextContent extends EnhancedSQLPart {
       }
     }
 
-//    int pos = 0;
-//    int prefix;
-//    int suffix;
-//
-//    while (pos < this.txt.length() && (prefix = this.txt.indexOf(SQLParameter.PREFIX, pos)) != -1) {
-//
-//      VerbatimTextPart verbatim = new VerbatimTextPart(this.getSourceLocation(), this.txt.substring(pos, prefix));
-//      this.segments.add(verbatim);
-//
-//      suffix = this.txt.indexOf(SQLParameter.SUFFIX, prefix + SQLParameter.PREFIX.length());
-//      if (suffix == -1) {
-//        throw new InvalidConfigurationFileException(this, //
-//            "Unmatched parameter delimiters; found an '" + SQLParameter.PREFIX + "' but not an '" + SQLParameter.SUFFIX
-//                + "'");
-//      }
-//
-//      String name = this.txt.substring(prefix + SQLParameter.PREFIX.length(), suffix);
-//
-//      if (!name.matches(VALID_NAME_PATTERN)) {
-//        if (name.indexOf(',') != -1) {
-//          throw new InvalidConfigurationFileException(this, //
-//              "Invalid parameter reference " + SQLParameter.PREFIX + name + SQLParameter.SUFFIX
-//                  + " in the body of the tag. " + "The parameter must include a single alphanumeric name");
-//        } else {
-//          throw new InvalidConfigurationFileException(this, //
-//              "Invalid parameter reference " + SQLParameter.PREFIX + name + SQLParameter.SUFFIX
-//                  + " in the body of the tag. "
-//                  + "\nA parameter name must start with a letter and continue with letters, digits, and/or underscores");
-//        }
-//      }
-//
-//      ParameterTag definition = parameters.findParameter(name);
-//
-//      if (definition != null) {
-//        SQLParameter p = new SQLParameter(name, this, false);
-//        p.setDefinition(definition);
-//        this.segments.add(p);
-//      } else {
-//        throw new InvalidConfigurationFileException(this, //
-//            "Invalid parameter reference " + SQLParameter.PREFIX + name + SQLParameter.SUFFIX
-//                + " in the body of the tag: no parameter with this name");
-//      }
-//
-//      pos = suffix + SQLParameter.SUFFIX.length();
-//    }
-//
-//    if (pos < this.txt.length()) {
-//      VerbatimTextPart literal = new VerbatimTextPart(this.getSourceLocation(), this.txt.substring(pos));
-//      this.segments.add(literal);
-//    }
-
   }
 
   @Override
@@ -210,25 +156,6 @@ public class TextContent extends EnhancedSQLPart {
   @Override
   public String renderSQLAngle(final DatabaseAdapter adapter, final ColumnsProvider cp) {
     return this.txt;
-  }
-
-  // Java Expression
-
-  @Override
-  public OldDynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
-      throws InvalidJavaExpressionException {
-
-    try {
-
-      return new LiteralExpression(this.txt);
-
-    } catch (RuntimeException e) {
-      throw new InvalidJavaExpressionException(this.getSourceLocation(),
-          "Could not produce Java expression for literal text on file '" + this.getSourceLocation().getFile().getPath()
-              + "' at line " + this.getSourceLocation().getLineNumber() + ", col "
-              + this.getSourceLocation().getColumnNumber() + ": " + e.getMessage());
-    }
-
   }
 
   // Simple Caption

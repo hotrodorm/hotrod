@@ -2,9 +2,7 @@ package org.hotrod.config.dynamicsql;
 
 import java.util.logging.Logger;
 
-import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
 
 public class ParameterInjection implements SQLSegment {
@@ -48,12 +46,6 @@ public class ParameterInjection implements SQLSegment {
   @Override
   public String renderXML(ParameterRenderer parameterRenderer) {
     return "${" + this.name + "}";
-  }
-
-  @Override
-  public OldDynamicExpression getJavaExpression(ParameterRenderer parameterRenderer)
-      throws InvalidJavaExpressionException {
-    return null;
   }
 
 }

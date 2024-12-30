@@ -1,6 +1,5 @@
 package org.hotrod.config;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -8,11 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.dynamicsql.existing.expressions.CollectionExpression;
-import org.hotrod.dynamicsql.existing.expressions.LiteralExpression;
-import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.metadata.Metadata;
 
@@ -29,54 +24,6 @@ public class SequenceOfParts extends EnhancedSQLPart {
   }
 
   // Behavior
-
-  // Rendering
-
-  // Java Expression
-
-  @Override
-  public OldDynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
-      throws InvalidJavaExpressionException {
-
-    try {
-
-      return new CollectionExpression(toArray(this.eparts, parameterRenderer));
-
-    } catch (RuntimeException e) {
-      throw new InvalidJavaExpressionException(this.getSourceLocation(),
-          "Could not produce Java expression for XML tag on file '" + this.getSourceLocation().getFile().getPath()
-              + "' at line " + this.getSourceLocation().getLineNumber() + ", col "
-              + this.getSourceLocation().getColumnNumber() + ": " + e.getMessage());
-    }
-
-  }
-
-  private OldDynamicExpression[] toArray(final List<EnhancedSQLPart> parts, final ParameterRenderer parameterRenderer)
-      throws InvalidJavaExpressionException {
-    List<OldDynamicExpression> exps = new ArrayList<OldDynamicExpression>();
-    LiteralExpression last = null;
-    for (EnhancedSQLPart p : parts) {
-      OldDynamicExpression expr = p.getJavaExpression(parameterRenderer);
-      try {
-        LiteralExpression le = (LiteralExpression) expr;
-        if (last == null) {
-          last = le;
-        } else {
-          last.concat(le);
-        }
-      } catch (ClassCastException e) {
-        if (last != null) {
-          exps.add(last);
-          last = null;
-        }
-        exps.add(expr);
-      }
-    }
-    if (last != null) {
-      exps.add(last);
-    }
-    return exps.toArray(new OldDynamicExpression[0]);
-  }
 
   @Override
   public void validate(final DaosTag daosTag, final HotRodConfigTag config,

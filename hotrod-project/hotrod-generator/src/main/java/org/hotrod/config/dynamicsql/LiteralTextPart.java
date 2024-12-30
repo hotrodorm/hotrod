@@ -3,10 +3,7 @@ package org.hotrod.config.dynamicsql;
 import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.existing.SourceLocation;
-import org.hotrod.dynamicsql.existing.expressions.LiteralExpression;
-import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.utils.SUtil;
 
@@ -70,25 +67,6 @@ public class LiteralTextPart extends DynamicSQLPart implements SQLSegment {
   @Override
   public String renderXML(final ParameterRenderer parameterRenderer) {
     return SUtil.escapeXmlBody(this.text);
-  }
-
-  // Java Expression
-
-  @Override
-  public OldDynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
-      throws InvalidJavaExpressionException {
-
-    try {
-
-      return new LiteralExpression(this.text);
-
-    } catch (RuntimeException e) {
-      throw new InvalidJavaExpressionException(this.getSourceLocation(),
-          "Could not produce Java expression for literal text on file '" + this.getSourceLocation().getFile().getPath()
-              + "' at line " + this.getSourceLocation().getLineNumber() + ", col "
-              + this.getSourceLocation().getColumnNumber() + ": " + e.getMessage());
-    }
-
   }
 
   @Override

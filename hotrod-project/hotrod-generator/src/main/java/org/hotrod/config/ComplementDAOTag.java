@@ -19,9 +19,7 @@ import org.hotrod.config.dynamicsql.TagAttribute;
 import org.hotrod.config.dynamicsql.TrimTag;
 import org.hotrod.config.dynamicsql.WhenTag;
 import org.hotrod.config.dynamicsql.WhereTag;
-import org.hotrod.dynamicsql.existing.expressions.OldDynamicExpression;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.exceptions.InvalidJavaExpressionException;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.ParameterRenderer;
 
@@ -99,13 +97,6 @@ public class ComplementDAOTag extends DynamicSQLPart {
       sb.append(p.renderXML(parameterRenderer));
     }
     return sb.toString();
-  }
-
-  @Override
-  public OldDynamicExpression getJavaExpression(ParameterRenderer parameterRenderer)
-      throws InvalidJavaExpressionException {
-    // XXX: Pending. Develop only when/if it's needed.
-    return null;
   }
 
   @Override
