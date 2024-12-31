@@ -14,8 +14,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
+import javax.swing.text.View;
 
 import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.Constants;
@@ -45,6 +47,7 @@ import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.DAOType;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
+import org.hotrod.identifiers.Id;
 import org.hotrod.interfaces.OrderBy;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
@@ -54,7 +57,18 @@ import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.SelectMethodMetadata.SelectMethodReturnType;
 import org.hotrod.metadata.SelectParameterMetadata;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.metadata.AllColumns;
+import org.hotrod.runtime.livesql.metadata.BooleanEntityColumn;
+import org.hotrod.runtime.livesql.metadata.ByteArrayEntityColumn;
+import org.hotrod.runtime.livesql.metadata.DateTimeEntityColumn;
+import org.hotrod.runtime.livesql.metadata.Name;
+import org.hotrod.runtime.livesql.metadata.NumberEntityColumn;
+import org.hotrod.runtime.livesql.metadata.ObjectEntityColumn;
+import org.hotrod.runtime.livesql.metadata.StringEntityColumn;
+import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.runtime.livesql.util.QueryAssemblerBean;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
@@ -62,6 +76,7 @@ import org.hotrod.utils.AbstractClassWriter.ExternalClass;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ClassWriter;
 import org.hotrod.utils.GenUtils;
+import org.hotrod.utils.JUtils;
 import org.hotrod.utils.SQLUtil;
 import org.hotrod.utils.SUtil;
 import org.hotrod.utils.Separator;
@@ -209,9 +224,11 @@ public class DAO {
 //
 //      writeEnumTypeHandlers();
 //
-//      writeMetadata();
       writeOrderBy();
-//
+
+      writeMetadata();
+
+      //
 //      if (this.getBundle().getParent() != null) {
 //        writeAOPAspect();
 //      }
@@ -887,6 +904,189 @@ public class DAO {
 
     w.println("  }");
 
+  }
+
+  private void writeMetadata() throws IOException {
+
+    Class<?> type = this.isTable() ? Table.class : View.class;
+    String typeName = type.getSimpleName();
+
+    Id catalog = this.metadata.getId().getCatalog();
+    Id schema = this.metadata.getId().getSchema();
+    Id name = this.metadata.getId().getObject();
+
+    ExternalClass pc = ExternalClass.of(type);
+    ExternalClass ec = ExternalClass.of(this.metadataClassName);
+
+    w.println();
+    w.println("  // Database " + type + " metadata");
+    w.println();
+    w.println("  public ", ec, " new", pc, "() {");
+    w.println("    return new ", ec, "();");
+    w.println("  }");
+    w.println();
+    w.println("  public ", ec, " new", pc, "(final String alias) {");
+    w.println("    return new ", ec, "(alias);");
+    w.println("  }");
+    w.println();
+    w.println("  public static class ", ec, " extends ", pc, " {");
+
+    w.println();
+    w.println("    // Properties");
+    w.println();
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      String javaType = resolveType(cm);
+      Class<?> liveSQLColumnType = toLiveSQLType(javaType);
+      String javaMembername = cm.getId().getJavaMemberName();
+      String colName = cm.getId().getCanonicalSQLName();
+      String property = cm.getId().getJavaMemberName();
+      String javaConverterClass = null;
+      String rawClass = null;
+      if (cm.getConverter() != null) {
+        javaConverterClass = cm.getConverter().getJavaClass();
+        rawClass = cm.getConverter().getJavaRawType();
+      }
+
+      ExternalClass jt = ExternalClass.of(javaType);
+      ExternalClass lt = ExternalClass.of(liveSQLColumnType);
+
+      w.println("    public final ", lt, " " + javaMembername + " = new ", lt, "(this,");
+      w.print("      " //
+          + "\"" + JUtils.escapeJavaString(colName) + "\"" //
+          + ", \"" + JUtils.escapeJavaString(property) + "\"" //
+          + ", \"" + JUtils.escapeJavaString(cm.getTypeName()) + "\"" //
+          + ", " + cm.getPrecision() //
+          + ", " + cm.getScale() //
+          + ", ");
+
+      ExternalClass th = ExternalClass.of(TypeHandler.class);
+      if (rawClass != null && javaConverterClass != null) {
+        ExternalClass rwt = ExternalClass.of(rawClass);
+        ExternalClass cvt = ExternalClass.of(javaConverterClass);
+        w.print(th, ".of(", cvt, ".class, ");
+        w.print(TypeSource.class, ".ENTITY_COLUMN)");
+      } else {
+        w.print(th, ".of(", jt, ".class, ");
+        w.print(TypeSource.class, ".ENTITY_COLUMN)");
+      }
+      w.println(");");
+
+    }
+    w.println();
+
+    w.println("    // Getters");
+    w.println();
+
+    ExternalClass ac = ExternalClass.of(AllColumns.class);
+
+    w.println("    public ", ac, " star() {");
+    w.println("      return new ", ac, "(" + this.metadata.getColumns().stream()
+        .map(c -> "this." + c.getId().getJavaMemberName()).collect(Collectors.joining(", ")) + ");");
+    w.println("    }");
+    w.println();
+
+    ExternalClass nm = ExternalClass.of(Name.class);
+
+    String c = catalog == null ? "null"
+        : "Name.of(\"" + JUtils.escapeJavaString(catalog.getCanonicalSQLName()) + "\", " + catalog.isQuoted() + ")";
+    String s = schema == null ? "null"
+        : "Name.of(\"" + JUtils.escapeJavaString(schema.getCanonicalSQLName()) + "\", " + schema.isQuoted() + ")";
+    String n = "Name.of(\"" + JUtils.escapeJavaString(name.getCanonicalSQLName()) + "\", " + name.isQuoted() + ")";
+
+    w.println("    // Constructors");
+    w.println();
+    w.println("    " + this.metadataClassName + "() {");
+    w.print("      super(");
+    if (catalog == null) {
+      w.print("null");
+    } else {
+      w.print(nm,
+          ".of(\"" + JUtils.escapeJavaString(catalog.getCanonicalSQLName()) + "\", " + catalog.isQuoted() + ")");
+    }
+    w.print(", ");
+    if (schema == null) {
+      w.print("null");
+    } else {
+      w.print(nm, ".of(\"" + JUtils.escapeJavaString(schema.getCanonicalSQLName()) + "\", " + schema.isQuoted() + ")");
+    }
+    w.print(", ");
+    w.print(nm, ".of(\"" + JUtils.escapeJavaString(name.getCanonicalSQLName()) + "\", " + name.isQuoted() + ")");
+    w.println(", \"" + typeName + "\", null);");
+    w.println("      initialize();");
+    w.println("    }");
+    w.println();
+    w.println("    " + this.metadataClassName + "(final String alias) {");
+    w.print("      super(");
+    if (catalog == null) {
+      w.print("null");
+    } else {
+      w.print(nm,
+          ".of(\"" + JUtils.escapeJavaString(catalog.getCanonicalSQLName()) + "\", " + catalog.isQuoted() + ")");
+    }
+    w.print(", ");
+    if (schema == null) {
+      w.print("null");
+    } else {
+      w.print(nm, ".of(\"" + JUtils.escapeJavaString(schema.getCanonicalSQLName()) + "\", " + schema.isQuoted() + ")");
+    }
+    w.print(", ");
+    w.print(nm, ".of(\"" + JUtils.escapeJavaString(name.getCanonicalSQLName()) + "\", " + name.isQuoted() + ")");
+    w.println(", \"" + typeName + "\", alias);");
+    w.println("      initialize();");
+    w.println("    }");
+    w.println();
+
+    w.println("    // Initialization");
+    w.println();
+    w.println("    private void initialize() {");
+    w.println("      super.columns = new ", ArrayList.class, "<>();");
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      w.println("      super.columns.add(this." + cm.getId().getJavaMemberName() + ");");
+    }
+
+    w.println("    }");
+    w.println();
+    w.println("  }");
+  }
+
+  private String resolveType(final ColumnMetadata cm) {
+    EnumClass ec = this.generator.getEnum(cm.getEnumMetadata());
+    return ec != null ? ec.getFullClassName() : cm.getType().getJavaClassName();
+  }
+
+  private Class<?> toLiveSQLType(final String javaType) {
+    if ("java.lang.Byte".equals(javaType) //
+        || "java.lang.Short".equals(javaType) //
+        || "java.lang.Integer".equals(javaType) //
+        || "java.lang.Long".equals(javaType) //
+        || "java.lang.Float".equals(javaType) //
+        || "java.lang.Double".equals(javaType) //
+        || "java.math.BigInteger".equals(javaType) //
+        || "java.math.BigDecimal".equals(javaType) //
+    ) {
+      return NumberEntityColumn.class;
+    } else if ("java.lang.String".equals(javaType)) {
+      return StringEntityColumn.class;
+    } else if ("java.util.Date".equals(javaType) //
+        || "java.sql.Date".equals(javaType) //
+        || "java.sql.Timestamp".equals(javaType) //
+        || "java.sql.Time".equals(javaType) //
+        || "java.time.LocalDateTime".equals(javaType) //
+        || "java.sql.LocalDate".equals(javaType) //
+        || "java.sql.LocalTime".equals(javaType) //
+        || "java.time.ZonedDateTime".equals(javaType) //
+        || "java.time.OffsetDateTime".equals(javaType) //
+        || "java.time.OffsetTime".equals(javaType) //
+        || "java.time.Instant".equals(javaType) //
+    ) {
+      return DateTimeEntityColumn.class;
+    } else if ("java.lang.Boolean".equals(javaType)) {
+      return BooleanEntityColumn.class;
+    } else if ("byte[]".equals(javaType)) {
+      return ByteArrayEntityColumn.class;
+    }
+
+    return ObjectEntityColumn.class;
   }
 
   private void writeOrderBy() {

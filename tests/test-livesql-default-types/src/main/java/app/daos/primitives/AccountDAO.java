@@ -355,7 +355,10 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public final NumberEntityColumn id = new NumberEntityColumn(this, "ID", "id", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn id = new NumberEntityColumn(this, "ID", "id", "INTEGER", 32, 0, 
+        TypeHandler.of(Integer.class, 
+            TypeSource.ENTITY_COLUMN
+            ));
     public final NumberEntityColumn parentId = new NumberEntityColumn(this, "PARENT_ID", "parentId", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
     public final NumberEntityColumn branchId = new NumberEntityColumn(this, "BRANCH_ID", "branchId", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
 

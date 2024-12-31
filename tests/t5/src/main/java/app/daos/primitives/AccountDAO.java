@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,7 +29,15 @@ import org.hotrod.dynamicsql.insert.PreparedInsertQuery;
 import org.hotrod.dynamicsql.insert.PrimaryKeyRetrievalMode;
 import org.hotrod.interfaces.OrderBy;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.metadata.AllColumns;
+import org.hotrod.runtime.livesql.metadata.BooleanEntityColumn;
+import org.hotrod.runtime.livesql.metadata.Name;
+import org.hotrod.runtime.livesql.metadata.NumberEntityColumn;
+import org.hotrod.runtime.livesql.metadata.StringEntityColumn;
+import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.runtime.livesql.util.QueryAssemblerBean;
 import org.hotrod.utils.SQLUtil;
@@ -391,6 +400,62 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
     public boolean isAscending() {
       return this.ascending;
+    }
+
+  }
+
+  // Database class org.hotrod.runtime.livesql.metadata.Table metadata
+
+  public AccountTable newTable() {
+    return new AccountTable();
+  }
+
+  public AccountTable newTable(final String alias) {
+    return new AccountTable(alias);
+  }
+
+  public static class AccountTable extends Table {
+
+    // Properties
+
+    public final NumberEntityColumn id = new NumberEntityColumn(this,
+      "ID", "id", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
+    public final StringEntityColumn name = new StringEntityColumn(this,
+      "NAME", "name", "CHARACTER VARYING", 20, 0, TypeHandler.of(String.class, TypeSource.ENTITY_COLUMN));
+    public final StringEntityColumn type = new StringEntityColumn(this,
+      "TYPE", "type", "CHARACTER VARYING", 3, 0, TypeHandler.of(String.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn balance = new NumberEntityColumn(this,
+      "BALANCE", "balance", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
+    public final BooleanEntityColumn active = new BooleanEntityColumn(this,
+      "ACTIVE", "active", "INTEGER", 32, 0, TypeHandler.of(IntegerBooleanConverter.class, TypeSource.ENTITY_COLUMN));
+
+    // Getters
+
+    public AllColumns star() {
+      return new AllColumns(this.id, this.name, this.type, this.balance, this.active);
+    }
+
+    // Constructors
+
+    AccountTable() {
+      super(null, null, Name.of("ACCOUNT", false), "Table", null);
+      initialize();
+    }
+
+    AccountTable(final String alias) {
+      super(null, null, Name.of("ACCOUNT", false), "Table", alias);
+      initialize();
+    }
+
+    // Initialization
+
+    private void initialize() {
+      super.columns = new ArrayList<>();
+      super.columns.add(this.id);
+      super.columns.add(this.name);
+      super.columns.add(this.type);
+      super.columns.add(this.balance);
+      super.columns.add(this.active);
     }
 
   }

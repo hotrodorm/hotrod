@@ -1,6 +1,7 @@
 package org.hotrod.dynamicsql.jexl;
 
 import org.apache.commons.jexl3.JexlBuilder;
+import org.apache.commons.jexl3.JexlContext;
 import org.apache.commons.jexl3.JexlEngine;
 import org.apache.commons.jexl3.JexlException;
 import org.apache.commons.jexl3.JexlExpression;
@@ -52,7 +53,7 @@ public class JEXLDynamicExpression extends DynamicExpression {
 
   @Override
   public Object evaluate(ParameterContext context) throws DynamicExpressionException {
-    JEXLParameterContext jexlContext = (JEXLParameterContext) context;
+    JexlContext jexlContext = (JexlContext) context;
     try {
       return this.expr.evaluate(jexlContext);
     } catch (Exception e) {

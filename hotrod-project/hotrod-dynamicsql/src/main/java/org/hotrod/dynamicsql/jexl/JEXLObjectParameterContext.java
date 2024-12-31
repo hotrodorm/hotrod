@@ -9,7 +9,6 @@ import org.hotrod.dynamicsql.ParameterContext;
 
 public class JEXLObjectParameterContext extends ParameterContext implements JexlContext {
 
-  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(JEXLObjectParameterContext.class.getName());
 
   private ObjectContext<?> context;
@@ -25,7 +24,8 @@ public class JEXLObjectParameterContext extends ParameterContext implements Jexl
 
   @Override
   public Object get(String name) {
-    return this.context.get(name);
+    Object v = this.context.get(name);
+    return v;
   }
 
   @Override

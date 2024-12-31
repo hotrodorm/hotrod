@@ -1,5 +1,7 @@
 package org.hotrod.runtime.livesql.queries.typesolver;
 
+import java.util.logging.Logger;
+
 import org.hotrod.dynamicsql.DynamicExpression;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
@@ -9,6 +11,8 @@ import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.utils.SUtil;
 
 public class TypeRule {
+
+  private static final Logger log = Logger.getLogger(TypeRule.class.getName());
 
   private int ruleNumber;
 
@@ -65,7 +69,8 @@ public class TypeRule {
     } catch (ClassCastException e) {
       throw new CouldNotResolveResultSetDataTypeException(cm,
           "Could not evaluate Type Solver's  <when> tag's test expression '" + this.test
-              + "': must return a boolean value but returned a value of type " + v.getClass().getName());
+              + "': must return a boolean value but returned a value of type "
+              + (v == null ? "null" : v.getClass().getName()));
     } catch (DynamicExpressionException e) {
       throw new CouldNotResolveResultSetDataTypeException(cm,
           "Could not evaluate Type Solver's <when> tag's test expression '" + this.test + "': " + e.getMessage());
