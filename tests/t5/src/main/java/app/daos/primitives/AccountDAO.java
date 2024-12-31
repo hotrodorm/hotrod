@@ -95,10 +95,10 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       if (rs.wasNull()) col4 = null;
       row.setBalance(col4);
 
-      Integer col5 = rs.getInt(5); // ACTIVE
-      if (rs.wasNull()) col5 = null;
-      Boolean conv5 = converter0.decode(col5, conn);
-      row.setActive(conv5);
+      Integer raw5 = rs.getInt(5); // ACTIVE
+      if (rs.wasNull()) raw5 = null;
+      Boolean col5 = converter0.decode(raw5, conn);
+      row.setActive(col5);
 
       return row;
     }

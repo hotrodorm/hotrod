@@ -1123,8 +1123,8 @@ public class DAO {
         w.println("      row." + setter + "(" + var + ");");
       }
     } else { // Converter specified
+      String raw = "raw" + ordinal;
       String var = "col" + ordinal;
-      String cvar = "conv" + ordinal;
       String rawClass = ct.getJavaRawType();
       ExternalClass rc = ExternalClass.of(rawClass);
       JDBCGetter g = JDBC_GETTERS.get(rawClass);
@@ -1133,19 +1133,19 @@ public class DAO {
       String property = this.converterProperties.get(ct.getName());
       if (g != null) {
         if (g.returnsPrimitiveType()) {
-          w.println("      ", rc, " " + var + " = rs." + g.getResultSetMethod() + "(" + ordinal + "); // " + cn);
-          w.println("      if (rs.wasNull()) " + var + " = null;");
-          w.println("      ", mc, " " + cvar + " = " + property + ".decode(" + var + ", conn);");
-          w.println("      row." + setter + "(" + cvar + ");");
+          w.println("      ", rc, " " + raw + " = rs." + g.getResultSetMethod() + "(" + ordinal + "); // " + cn);
+          w.println("      if (rs.wasNull()) " + raw + " = null;");
+          w.println("      ", mc, " " + var + " = " + property + ".decode(" + raw + ", conn);");
+          w.println("      row." + setter + "(" + var + ");");
         } else {
-          w.println("      ", rc, " " + var + " = rs." + g.getResultSetMethod() + "(" + ordinal + "); // " + cn);
-          w.println("      ", mc, " " + cvar + " = " + property + ".decode(" + var + ", conn);");
-          w.println("      row." + setter + "(" + cvar + ");");
+          w.println("      ", rc, " " + raw + " = rs." + g.getResultSetMethod() + "(" + ordinal + "); // " + cn);
+          w.println("      ", mc, " " + var + " = " + property + ".decode(" + raw + ", conn);");
+          w.println("      row." + setter + "(" + var + ");");
         }
       } else {
-        w.println("      ", rc, " " + var + " = rs.getObject(" + ordinal + ", ", rc, ".class); // " + cn);
-        w.println("      ", mc, " " + cvar + " = " + property + ".decode(" + var + ", conn);");
-        w.println("      row." + setter + "(" + cvar + ");");
+        w.println("      ", rc, " " + raw + " = rs.getObject(" + ordinal + ", ", rc, ".class); // " + cn);
+        w.println("      ", mc, " " + var + " = " + property + ".decode(" + raw + ", conn);");
+        w.println("      row." + setter + "(" + var + ");");
       }
     }
 
