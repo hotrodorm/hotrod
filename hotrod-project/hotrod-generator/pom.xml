@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>hotrod-generator</artifactId>
@@ -15,9 +16,7 @@
   </parent>
 
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <tartarus.version>3.2.7</tartarus.version>
   </properties>
 
   <dependencies>
@@ -34,7 +33,7 @@
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
       <version>5.0.0-SNAPSHOT</version>
-    </dependency>    
+    </dependency>
 
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
@@ -47,7 +46,7 @@
     <dependency>
       <groupId>org.nocrala.tools.database</groupId>
       <artifactId>tartarus</artifactId>
-      <version>3.2.7</version>
+      <version>${tartarus.version}</version>
     </dependency>
     
     <!-- Adding JAXB (RI) dependency, so any Java 9+ client will work -->
@@ -55,23 +54,23 @@
     <dependency>
       <groupId>javax.xml.bind</groupId>
       <artifactId>jaxb-api</artifactId>
-      <version>2.3.1</version>
+      <version>${jaxb.version}</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>javax.activation</groupId>
       <artifactId>activation</artifactId>
-      <version>1.1</version>
+      <version>${javax.activation.version}</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.glassfish.jaxb</groupId>
       <artifactId>jaxb-runtime</artifactId>
-      <version>2.3.1</version>
+      <version>${jaxb.version}</version>
       <scope>provided</scope>
-    </dependency>    
+    </dependency>
 
   </dependencies>
 
