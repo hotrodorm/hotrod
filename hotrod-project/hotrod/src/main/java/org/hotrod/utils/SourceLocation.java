@@ -1,4 +1,4 @@
-package org.hotrod.dynamicsql;
+package org.hotrod.utils;
 
 import java.io.File;
 import java.io.Serializable;

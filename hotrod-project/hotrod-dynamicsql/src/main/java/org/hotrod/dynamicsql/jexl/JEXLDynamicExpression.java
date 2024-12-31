@@ -7,8 +7,8 @@ import org.apache.commons.jexl3.JexlExpression;
 import org.apache.commons.jexl3.introspection.JexlPermissions;
 import org.hotrod.dynamicsql.DynamicExpression;
 import org.hotrod.dynamicsql.DynamicExpressionException;
+import org.hotrod.dynamicsql.InvalidJexlExpressionException;
 import org.hotrod.dynamicsql.ParameterContext;
-import org.hotrod.exceptions.InvalidJexlExpressionException;
 
 public class JEXLDynamicExpression extends DynamicExpression {
 

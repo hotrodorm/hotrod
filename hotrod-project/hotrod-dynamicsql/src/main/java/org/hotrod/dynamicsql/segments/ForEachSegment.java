@@ -10,10 +10,11 @@ import org.hotrod.dynamicsql.DynamicExpression;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.ParameterContext;
-import org.hotrod.utils.SUtil;
+import org.hotrod.dynamicsql.Utl;
 
 public class ForEachSegment extends DynamicSegment {
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(ForEachSegment.class.getName());
 
   private String item;
@@ -46,9 +47,9 @@ public class ForEachSegment extends DynamicSegment {
 
     // Open, Separator, Close
 
-    this.open = new LiteralSegment(SUtil.coalesce(open, ""));
-    this.separator = new LiteralSegment(SUtil.coalesce(separator, ""));
-    this.close = new LiteralSegment(SUtil.coalesce(close, ""));
+    this.open = new LiteralSegment(Utl.coalesce(open, ""));
+    this.separator = new LiteralSegment(Utl.coalesce(separator, ""));
+    this.close = new LiteralSegment(Utl.coalesce(close, ""));
 
     // Segments
 
@@ -63,13 +64,13 @@ public class ForEachSegment extends DynamicSegment {
 
       // Item
 
-      if (SUtil.isEmpty(this.item)) {
+      if (Utl.isEmpty(this.item)) {
         throw new DynamicExpressionException("The 'item' property of a Dynamic SQL FOREACH cannot be empty.");
       }
 
       // Collection
 
-      if (SUtil.isEmpty(this.collection)) {
+      if (Utl.isEmpty(this.collection)) {
         throw new DynamicExpressionException("The 'collection' property of a Dynamic SQL FOREACH cannot be empty.");
       }
       this.collectionExpression = this.factory.expression(this.collection);
@@ -87,7 +88,7 @@ public class ForEachSegment extends DynamicSegment {
   @Override
   public boolean prepare(StaticSegmentConsumer sc, ParameterContext context, int loopNestingLevel)
       throws DynamicExpressionException {
-    
+
     if (!this.validated) {
       this.validate();
     }

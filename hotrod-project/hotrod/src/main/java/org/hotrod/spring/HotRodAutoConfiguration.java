@@ -1,24 +1,14 @@
 package org.hotrod.spring;
 
-import org.hotrod.dynamicsql.DynamicExpressionFactory;
-import org.hotrod.dynamicsql.DynamicExpressionFactoryConfig;
-import org.hotrod.dynamicsql.assembler.QueryAssembler;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ComponentScan(basePackageClasses = QueryAssembler.class)
 public class HotRodAutoConfiguration {
 
   @Bean
   public SpringBeanObjectFactory getObjectFactory() {
     return new SpringBeanObjectFactory();
-  }
-
-  @Bean
-  public DynamicExpressionFactory getExpressionFactory() {
-    return DynamicExpressionFactoryConfig.getFactory();
   }
 
 }

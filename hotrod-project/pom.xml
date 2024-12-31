@@ -72,11 +72,12 @@
   </distributionManagement>
 
   <modules>
+    <module>hotrod</module>
     <module>hotrod-livesql</module>
+    <module>hotrod-dynamicsql</module>
     <module>hotrod-abstract-plugin</module>
     <module>hotrod-maven-plugin</module>
     <module>hotrod-ant-plugin</module>
-    <module>hotrod</module>
     <module>hotrod-torcs</module>
     <module>hotrod-torcs-ctp</module>
     <module>hotrod-generator</module>

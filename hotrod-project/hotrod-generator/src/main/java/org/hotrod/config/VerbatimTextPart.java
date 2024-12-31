@@ -1,9 +1,9 @@
 package org.hotrod.config;
 
 import org.hotrod.config.dynamicsql.SQLSegment;
-import org.hotrod.dynamicsql.SourceLocation;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.utils.SUtil;
+import org.hotrod.utils.SourceLocation;
 
 public class VerbatimTextPart implements SQLSegment {
 

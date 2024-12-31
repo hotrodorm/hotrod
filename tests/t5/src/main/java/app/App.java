@@ -1,6 +1,7 @@
 package app;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.DynamicExpressionException;
@@ -19,6 +20,7 @@ import org.springframework.context.annotation.Configuration;
 
 import app.daos.Account;
 import app.daos.primitives.AccountDAO;
+import app.daos.primitives.AccountDAO.AccountOrderBy;
 
 @Configuration
 @SpringBootApplication
@@ -76,10 +78,10 @@ public class App {
 
   private void test() throws SQLException, DynamicExpressionException {
 
-    System.out.println("this.assembler=" + this.assembler);
+//    System.out.println("this.assembler=" + this.assembler);
 
-    Account a = this.accountDAO.select(112);
-    System.out.println("--> a=" + a);
+//    Account a = this.accountDAO.select(112);
+//    System.out.println("--> a=" + a);
 
 //    List<Integer> ids = Arrays.asList(123, 789, 112, 4);
 
@@ -99,14 +101,13 @@ public class App {
     // int rows = this.accountDAO.activateBigAccounts(null);
 //    System.out.println("--> rows=" + rows);
 
-//    Account filter = new Account();
-//    filter.setType("CHK");
-//
-//    List<Account> accounts = this.accountDAO.select(filter, AccountOrderBy.ID, AccountOrderBy.NAME$DESC);
-////    List<Account> accounts = this.accountDAO.select(filter);
-//    for (Account a : accounts) {
-//      System.out.println("--> " + a);
-//    }
+    Account filter = new Account();
+    filter.setType("CHK");
+
+    List<Account> accounts = this.accountDAO.select(filter, AccountOrderBy.ID, AccountOrderBy.NAME$DESC);
+    for (Account a : accounts) {
+      System.out.println("--> " + a);
+    }
 
 //  List<Account> accounts = this.accountDAO.select1();
 //  for (Account a : accounts) {

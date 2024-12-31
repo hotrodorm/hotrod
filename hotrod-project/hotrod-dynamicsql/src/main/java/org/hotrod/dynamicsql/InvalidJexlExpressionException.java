@@ -1,4 +1,4 @@
-package org.hotrod.exceptions;
+package org.hotrod.dynamicsql;
 
 public class InvalidJexlExpressionException extends RuntimeException {
 

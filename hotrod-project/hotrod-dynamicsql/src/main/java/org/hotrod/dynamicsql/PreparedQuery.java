@@ -5,8 +5,6 @@ import java.util.List;
 import org.hotrod.dynamicsql.segments.ParameterSegment;
 import org.hotrod.dynamicsql.segments.TypedParameterSegment;
 import org.hotrod.dynamicsql.segments.VariableInstanceValueSegment;
-import org.hotrod.utils.JDBCTypes;
-import org.hotrod.utils.SUtil;
 
 public abstract class PreparedQuery {
 
@@ -47,7 +45,7 @@ public abstract class PreparedQuery {
           tostring = tostring.substring(0, MAX_DISPLAY_VALUE - 3) + "...";
         }
         String name = ps.getName();
-        p.append("" + pos++ + ". " + name + " (" + SUtil.coalesce(type, "OTHER") + "): " + tostring
+        p.append("" + pos++ + ". " + name + " (" + Utl.coalesce(type, "OTHER") + "): " + tostring
             + (value == null ? "" : " (" + value.getClass().getName() + ")") + "\n");
       }
       if (!this.parameters.isEmpty()) {

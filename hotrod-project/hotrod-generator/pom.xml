@@ -36,6 +36,12 @@
       <version>5.0.0-SNAPSHOT</version>
     </dependency>    
 
+    <dependency>
+      <groupId>org.hotrodorm.hotrod</groupId>
+      <artifactId>hotrod-dynamicsql</artifactId>
+      <version>5.0.0-SNAPSHOT</version>
+    </dependency>    
+
     <!-- Tartarus -->
 
     <dependency>

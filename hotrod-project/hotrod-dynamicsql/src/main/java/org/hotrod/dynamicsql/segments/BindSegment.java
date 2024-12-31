@@ -4,7 +4,7 @@ import org.hotrod.dynamicsql.DynamicExpression;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.ParameterContext;
-import org.hotrod.utils.SUtil;
+import org.hotrod.dynamicsql.Utl;
 
 public class BindSegment extends DynamicSegment {
 
@@ -26,11 +26,11 @@ public class BindSegment extends DynamicSegment {
   private synchronized void validate() throws DynamicExpressionException {
     if (!this.validated) {
 
-      if (SUtil.isEmpty(this.name)) {
+      if (Utl.isEmpty(this.name)) {
         throw new DynamicExpressionException("The 'name' property of a Dynamic BIND cannot be empty.");
       }
 
-      if (SUtil.isEmpty(this.value)) {
+      if (Utl.isEmpty(this.value)) {
         throw new DynamicExpressionException("The 'value' property of a Dynamic BIND cannot be empty.");
       }
 

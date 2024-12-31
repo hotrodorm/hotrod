@@ -14,7 +14,6 @@ public class ParameterOccurrenceSegment extends QuerySegment {
 
   private DynamicExpressionFactory factory;
   private String name;
-  private Object value;
   private int sqlType;
 
   private DynamicExpression nameExpression;
@@ -29,27 +28,11 @@ public class ParameterOccurrenceSegment extends QuerySegment {
   @Override
   public boolean prepare(StaticSegmentConsumer sc, ParameterContext context, int loopNestingLevel)
       throws DynamicExpressionException {
-      Object v = this.nameExpression.evaluate(context, Object.class);
-      ParameterInstanceValueSegment is = new ParameterInstanceValueSegment(v, this.sqlType, this.name);
-      sc.consume("?");
-      sc.consume(is);
-      return true;
+    Object v = this.nameExpression.evaluate(context, Object.class);
+    ParameterInstanceValueSegment is = new ParameterInstanceValueSegment(v, this.sqlType, this.name);
+    sc.consume("?");
+    sc.consume(is);
+    return true;
   }
-
-//  public String getName() {
-//    return name;
-//  }
-//
-//  public int getSQLType() {
-//    return sqlType;
-//  }
-//
-//  public Object getValue() {
-//    return value;
-//  }
-//
-//  public void setValue(Object value) {
-//    this.value = value;
-//  }
 
 }

@@ -1,6 +1,6 @@
 package org.hotrod.dynamicsql.assembler;
 
-import org.hotrod.utils.SUtil;
+import org.hotrod.dynamicsql.Utl;
 
 public class ClauseFormatter {
 
@@ -14,7 +14,7 @@ public class ClauseFormatter {
     this.prefix = prefix;
     this.suffix = suffix;
     this.value = this.clause == null ? null
-        : SUtil.coalesce(this.prefix, "") + this.clause + SUtil.coalesce(this.suffix, "");
+        : Utl.coalesce(this.prefix, "") + this.clause + Utl.coalesce(this.suffix, "");
   }
 
   public String getClause() {
