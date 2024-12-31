@@ -40,6 +40,7 @@ CRUD:
 - SELECT/UPDATE/DELETE by Criteria.
 - SELECT sequence.
 - SELECT by UI.
+
 - Enums.
 - Optimistic Locking.
 - SELECT by FKs.
