@@ -7,7 +7,6 @@ import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.assembler.QueryAssembler;
 import org.hotrod.livesql.Row;
 import org.hotrod.runtime.livesql.LiveSQL;
-import org.hotrod.spring.SpringBeanObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -23,7 +22,6 @@ import app.daos.primitives.AccountDAO;
 @Configuration
 @SpringBootApplication
 @ComponentScan(basePackageClasses = LiveSQL.class)
-@ComponentScan(basePackageClasses = SpringBeanObjectFactory.class)
 @ComponentScan(basePackageClasses = QueryAssembler.class)
 @ComponentScan(basePackageClasses = AccountDAO.class)
 public class App {

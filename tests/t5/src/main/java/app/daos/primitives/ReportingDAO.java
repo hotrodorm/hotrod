@@ -27,7 +27,6 @@ import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.runtime.livesql.util.QueryAssemblerBean;
-import org.hotrod.spring.SpringBeanObjectFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -50,9 +49,6 @@ public class ReportingDAO implements Serializable, ApplicationContextAware {
   private QueryAssemblerBean assemblerBean;
 
   private QueryAssembler assembler;
-
-  @Autowired
-  private SpringBeanObjectFactory springBeanObjectFactory;
 
   @Autowired
   private DataSource dataSource;

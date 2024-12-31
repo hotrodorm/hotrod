@@ -279,10 +279,6 @@ public class DAO {
     w.println();
 
     w.println("  @", Const.AUTOWIRED);
-    w.println("  private ", Const.SPRING_BEAN_OBJECT_FACTORY, " springBeanObjectFactory;");
-    w.println();
-
-    w.println("  @", Const.AUTOWIRED);
     w.println("  private ", DataSource.class, " dataSource;");
     w.println();
 
@@ -327,7 +323,7 @@ public class DAO {
     w.print("    public ", m, " readRowFrom(", ResultSet.class, " rs, ");
     w.print(Connection.class, " conn) ");
     w.println("throws ", SQLException.class, " {");
-    w.println("      ", m, " row = new ", m, "();");
+    w.println("      ", m, " row = applicationContext.getBean(", m, ".class);");
 
     int ordinal = 1;
     for (ColumnMetadata cm : this.metadata.getColumns()) {
