@@ -9,14 +9,14 @@ import org.hotrod.dynamicsql.segments.IfSegment;
 import org.hotrod.dynamicsql.segments.OtherwiseSegment;
 import org.hotrod.dynamicsql.segments.SegmentList;
 import org.hotrod.dynamicsql.segments.WhenSegment;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
 public class QueryAssembler {
 
-  @Autowired
   private DynamicExpressionFactory factory;
+
+  public QueryAssembler(DynamicExpressionFactory factory) {
+    this.factory = factory;
+  }
 
   public ParameterContext newParameterContext() {
     return this.factory.newParameterContext();

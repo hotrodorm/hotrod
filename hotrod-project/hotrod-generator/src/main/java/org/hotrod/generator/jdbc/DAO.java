@@ -56,6 +56,7 @@ import org.hotrod.metadata.SelectParameterMetadata;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
+import org.hotrod.runtime.livesql.util.QueryAssemblerBean;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.AbstractClassWriter.ExternalClass;
 import org.hotrod.utils.ClassPackage;
@@ -271,6 +272,9 @@ public class DAO {
     w.println();
 
     w.println("  @", Const.AUTOWIRED);
+    w.println("  private ", QueryAssemblerBean.class, " assemblerBean;");
+    w.println();
+
     w.println("  private ", QueryAssembler.class, " assembler;");
     w.println();
 
@@ -303,6 +307,7 @@ public class DAO {
     w.println("  public void initializeContext() {");
     w.println("    this.context = new ", LiveSQLContext.class, "(this.liveSQLDialect, this.dataSource, new ",
         TypeSolver.class, "(null, this.liveSQLDialect));");
+    w.println("    this.assembler = this.assemblerBean.getAssembler();");
     for (String ini : this.initializersInPostConstruct) {
       w.println("    this." + ini + "();");
     }

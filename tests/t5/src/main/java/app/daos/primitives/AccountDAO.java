@@ -30,6 +30,7 @@ import org.hotrod.interfaces.OrderBy;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
+import org.hotrod.runtime.livesql.util.QueryAssemblerBean;
 import org.hotrod.spring.SpringBeanObjectFactory;
 import org.hotrod.utils.SQLUtil;
 import org.springframework.beans.BeansException;
@@ -52,6 +53,8 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   private LiveSQLDialect liveSQLDialect;
 
   @Autowired
+  private QueryAssemblerBean assemblerBean;
+
   private QueryAssembler assembler;
 
   @Autowired
@@ -418,6 +421,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   @PostConstruct
   public void initializeContext() {
     this.context = new LiveSQLContext(this.liveSQLDialect, this.dataSource, new TypeSolver(null, this.liveSQLDialect));
+    this.assembler = this.assemblerBean.getAssembler();
     this.initializeSelectbyprimarykey();
     this.initializeSelectbyexample();
     this.initializeInsert();
