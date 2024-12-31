@@ -10,9 +10,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-
-import org.nocrala.tools.lang.collector.listcollector.ListWriter;
+import java.util.stream.Collectors;
 
 public class SUtil {
 
@@ -151,11 +151,7 @@ public class SUtil {
     if (txt == null) {
       return null;
     }
-    ListWriter w = new ListWriter(getFiller(' ', indent), "", "\n");
-    for (String line : txt.split("\n")) {
-      w.add(line);
-    }
-    return w.toString();
+    return Arrays.stream(txt.split("\n")).map(l -> getFiller(' ', indent) + l).collect(Collectors.joining("\n"));
   }
 
   public static String escapeJavaString(final String txt) {

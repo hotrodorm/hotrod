@@ -47,25 +47,20 @@
     </dependency>
 
     <dependency>
-      <groupId>commons-dbcp</groupId>
-      <artifactId>commons-dbcp</artifactId>
-      <version>1.4</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jdbc</artifactId>
       <version>5.2.0.RELEASE</version>
       <scope>provided</scope>
     </dependency>
 
+<!-- 
     <dependency>
-      <groupId>org.nocrala.tools.lang.collector</groupId>
-      <artifactId>list-collector</artifactId>
-      <version>1.0.5</version>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+      <version>1.4</version>
+      <scope>provided</scope>
     </dependency>
-
+ -->
   </dependencies>
 
   <build>
