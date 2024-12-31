@@ -60,6 +60,7 @@ public class ReportingDAO implements Serializable, ApplicationContextAware {
     this.applicationContext = applicationContext;
   }
 
+  @SuppressWarnings("unused")
   private LiveSQLContext context;
 
   // NITRO QUERY: activateBigAccounts
@@ -113,7 +114,7 @@ public class ReportingDAO implements Serializable, ApplicationContextAware {
 
     @Override
     public BigAccount readRowFrom(ResultSet rs, Connection conn) throws SQLException {
-      BigAccount row = new BigAccount();
+      BigAccount row = applicationContext.getBean(BigAccount.class);
 
       Integer col1 = rs.getInt(1); // ID
       if (rs.wasNull()) col1 = null;

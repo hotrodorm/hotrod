@@ -66,6 +66,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     this.applicationContext = applicationContext;
   }
 
+  @SuppressWarnings("unused")
   private LiveSQLContext context;
 
   // CONVERTERS

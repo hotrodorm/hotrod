@@ -21,6 +21,7 @@ CRUD:
 - INSERT and INSERT BY EXAMPLE implemented.
 - Primary key retrieval implemented on INSERTs for identities and sequences.
 - Logging implemented with FINE/DEBUG (SQL only) and FINER/TRACE (SQL + parameters).
+- Bean factory implemented for SELECTs.
 
 Nitro:
 
@@ -40,7 +41,6 @@ CRUD:
 - SELECT/UPDATE/DELETE by Criteria.
 - SELECT sequence.
 - SELECT by UI.
-
 - Enums.
 - Optimistic Locking.
 - SELECT by FKs.
@@ -74,6 +74,7 @@ CRUD:
 - New names for DAOs and VOs.
 - New tags attributes for DAOs and VOs.
 - New package structure for DAOs and VOs.
+- Implement SELECT BY INDEX (unique and non-unique).
 
 Nitro:
 

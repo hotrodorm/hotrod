@@ -293,6 +293,7 @@ public class DAO {
     w.println("  }");
     w.println();
 
+    w.println("  @SuppressWarnings(\"unused\")");
     w.println("  private ", LiveSQLContext.class, " context;");
 
   }
@@ -1288,7 +1289,7 @@ public class DAO {
     w.print("    public ", m, " readRowFrom(", ResultSet.class, " rs, ");
     w.print(Connection.class, " conn) ");
     w.println("throws ", SQLException.class, " {");
-    w.println("      ", m, " row = new ", m, "();");
+    w.println("      ", m, " row = applicationContext.getBean(", m, ".class);");
 
     int ordinal = 1;
     for (ColumnMetadata cm : s.getColumns()) {
