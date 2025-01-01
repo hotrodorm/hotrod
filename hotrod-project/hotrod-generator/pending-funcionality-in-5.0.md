@@ -20,7 +20,7 @@ CRUD:
 - SELECT BY PK/EXAMPLE, UPDATE BY PK/EXAMPLE, DELETE BY PK/EXAMPLE implemented.
 - INSERT and INSERT BY EXAMPLE implemented.
 - Primary key retrieval implemented on INSERTs for identities and sequences.
-- SELECT/UPDATE/DELETE by Criteria.
+- SELECT/UPDATE/DELETE BY CRITERIA.
 - Logging implemented with FINE/DEBUG (SQL only) and FINER/TRACE (SQL + parameters).
 - Bean factory implemented for SELECTs.
 - Converters when reading from the database (also in Nitro and LiveSQL).
@@ -44,7 +44,6 @@ CRUD:
 - SELECT by UI.
 - Enums.
 - Optimistic Locking.
-- SELECT by FKs.
 - Converters when writing to the database (also in Nitro and LiveSQL).
 
 Nitro:
@@ -63,6 +62,7 @@ LiveSQL:
 - The Arquetype module was removed.
 - Log4j fully removed from HotRod. It was still used in the generator and was switched to JUL.
 - Removed old unused classes in the hotrod library.
+- SELECT BY FK(s) -- this functionality was rarely used. Plus the implementation was clunky.
 
 ## 5. Modified Functionality
 
