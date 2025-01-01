@@ -19,10 +19,6 @@ public class DeleteObject implements QueryObject {
     super();
   }
 
-  DeleteObject(final String mapperStatement) {
-    super();
-  }
-
   void setFrom(final TableOrView from) {
     this.from = from;
   }

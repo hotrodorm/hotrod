@@ -36,6 +36,7 @@ import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.metadata.NumberEntityColumn;
 import org.hotrod.runtime.livesql.metadata.StringEntityColumn;
 import org.hotrod.runtime.livesql.metadata.Table;
+import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
@@ -377,6 +378,12 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       int rows = preparedQuery.execute(conn);
       return rows;
     }
+  }
+
+  // DELETE BY CRITERIA
+
+  public DeleteWherePhase delete(final AccountTable from, final GeneralBooleanExpression predicate) {
+    return new DeleteWherePhase(this.context, from, predicate);
   }
 
   // ORDER BY

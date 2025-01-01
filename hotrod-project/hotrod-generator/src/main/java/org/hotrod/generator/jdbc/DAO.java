@@ -67,6 +67,7 @@ import org.hotrod.runtime.livesql.metadata.NumberEntityColumn;
 import org.hotrod.runtime.livesql.metadata.ObjectEntityColumn;
 import org.hotrod.runtime.livesql.metadata.StringEntityColumn;
 import org.hotrod.runtime.livesql.metadata.Table;
+import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
@@ -213,17 +214,19 @@ public class DAO {
 //
       writeDeleteByPK();
       writeDeleteByExample();
+      if (this.isTable() || this.isView()) {
+        writeDeleteByCriteria();
+      }
+
 //      }
 //
 //      if (this.isView()) {
 //      }
 //
 //      if (this.isTable() || this.isView()) {
-//        writeUpdateByCriteria();
-//
 //        writeDeleteByCriteria();
 //      }
-//
+
 //      writeEnumTypeHandlers();
 //
       writeOrderBy();
@@ -921,6 +924,23 @@ public class DAO {
 
   }
 
+//  // DELETE BY CRITERIA
+//
+//  public DeleteWherePhase delete(final AccountTable from, final GeneralBooleanExpression predicate) {
+//    return new DeleteWherePhase(this.context, from, predicate);
+//  }
+
+  private void writeDeleteByCriteria() {
+    ExternalClass ec = ExternalClass.of(this.metadataClassName);
+    w.println();
+    w.println("  // DELETE BY CRITERIA");
+    w.println();
+    w.print("  public ", DeleteWherePhase.class);
+    w.println(" delete(final ", ec, " from, final ", GeneralBooleanExpression.class, " predicate) {");
+    w.println("    return new ", DeleteWherePhase.class, "(this.context, from, predicate);");
+    w.println("  }");
+  }
+
   private void writeMetadata() throws IOException {
 
     Class<?> type = this.isTable() ? Table.class : View.class;
@@ -1521,6 +1541,10 @@ public class DAO {
 
   public boolean isTable() {
     return this.daoType == DAOType.TABLE;
+  }
+
+  public boolean isView() {
+    return this.daoType == DAOType.VIEW;
   }
 
   public boolean isExecutor() {
