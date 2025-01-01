@@ -57,6 +57,7 @@ import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.SelectMethodMetadata.SelectMethodReturnType;
 import org.hotrod.metadata.SelectParameterMetadata;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.metadata.BooleanEntityColumn;
 import org.hotrod.runtime.livesql.metadata.ByteArrayEntityColumn;
@@ -67,6 +68,7 @@ import org.hotrod.runtime.livesql.metadata.ObjectEntityColumn;
 import org.hotrod.runtime.livesql.metadata.StringEntityColumn;
 import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
@@ -194,8 +196,8 @@ public class DAO {
       }
 //
       writeSelect(true); // by example
-//      writeSelectByCriteria();
-//
+      writeSelectByCriteria();
+
 //      if (this.isTable()) {
 //        if (this.generator.isClassicFKNavigationEnabled() || this.isClassicFKNavigationEnabled()) {
 //          log.fine("FK navigation");
@@ -442,6 +444,19 @@ public class DAO {
 
     }
 
+  }
+
+  private void writeSelectByCriteria() {
+    ExternalClass em = ExternalClass.of(this.model.getFullClassName());
+    ExternalClass ec = ExternalClass.of(this.metadataClassName);
+    w.println();
+    w.println("  // SELECT BY CRITERIA");
+    w.println();
+    w.print("  public ", CriteriaWherePhase.class, "<", em, "> ");
+    w.println("select(final ", ec, " from, final ", GeneralBooleanExpression.class, " predicate) {");
+    w.println("    return new ", CriteriaWherePhase.class, "<", em,
+        ">(this.context, from, predicate, this.rowReader);");
+    w.println("  }");
   }
 
   private void writeInsert(boolean byExample) throws ControlledException {
@@ -961,7 +976,7 @@ public class DAO {
 
       ExternalClass th = ExternalClass.of(TypeHandler.class);
       if (rawClass != null && javaConverterClass != null) {
-        ExternalClass rwt = ExternalClass.of(rawClass);
+//        ExternalClass rwt = ExternalClass.of(rawClass);
         ExternalClass cvt = ExternalClass.of(javaConverterClass);
         w.print(th, ".of(", cvt, ".class, ");
         w.print(TypeSource.class, ".ENTITY_COLUMN)");
@@ -987,11 +1002,11 @@ public class DAO {
 
     ExternalClass nm = ExternalClass.of(Name.class);
 
-    String c = catalog == null ? "null"
-        : "Name.of(\"" + JUtils.escapeJavaString(catalog.getCanonicalSQLName()) + "\", " + catalog.isQuoted() + ")";
-    String s = schema == null ? "null"
-        : "Name.of(\"" + JUtils.escapeJavaString(schema.getCanonicalSQLName()) + "\", " + schema.isQuoted() + ")";
-    String n = "Name.of(\"" + JUtils.escapeJavaString(name.getCanonicalSQLName()) + "\", " + name.isQuoted() + ")";
+//    String c = catalog == null ? "null"
+//        : "Name.of(\"" + JUtils.escapeJavaString(catalog.getCanonicalSQLName()) + "\", " + catalog.isQuoted() + ")";
+//    String s = schema == null ? "null"
+//        : "Name.of(\"" + JUtils.escapeJavaString(schema.getCanonicalSQLName()) + "\", " + schema.isQuoted() + ")";
+//    String n = "Name.of(\"" + JUtils.escapeJavaString(name.getCanonicalSQLName()) + "\", " + name.isQuoted() + ")";
 
     w.println("    // Constructors");
     w.println();

@@ -1,29 +1,31 @@
 package org.hotrod.runtime.livesql.queries.select;
 
+import org.hotrod.dynamicsql.PreparedSelectQuery.RowReader;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 
 public class CriteriaForUpdatePhase<T> extends CriteriaPhase<T> {
 
-  public CriteriaForUpdatePhase(final LiveSQLContext context, final AbstractSelectObject<T> select) {
-    super(context, select);
+  public CriteriaForUpdatePhase(final LiveSQLContext context, final AbstractSelectObject<T> select,
+      RowReader<T> rowReader) {
+    super(context, select, rowReader);
   }
 
   // next phases
 
   public CriteriaForUpdateConcurrencyPhase<T> noWait() {
-    return new CriteriaForUpdateConcurrencyPhase<>(super.context, this.select, null, false);
+    return new CriteriaForUpdateConcurrencyPhase<>(super.context, this.select, this.rowReader, null, false);
   }
 
   public CriteriaForUpdateConcurrencyPhase<T> wait(final int time) {
-    return new CriteriaForUpdateConcurrencyPhase<>(super.context, this.select, time, false);
+    return new CriteriaForUpdateConcurrencyPhase<>(super.context, this.select, this.rowReader, time, false);
   }
 
   public CriteriaForUpdateConcurrencyPhase<T> wait(final double time) {
-    return new CriteriaForUpdateConcurrencyPhase<>(super.context, this.select, time, false);
+    return new CriteriaForUpdateConcurrencyPhase<>(super.context, this.select, this.rowReader, time, false);
   }
 
   public CriteriaForUpdateConcurrencyPhase<T> skipLocked() {
-    return new CriteriaForUpdateConcurrencyPhase<>(super.context, this.select, null, true);
+    return new CriteriaForUpdateConcurrencyPhase<>(super.context, this.select, this.rowReader, null, true);
   }
 
 }

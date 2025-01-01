@@ -29,6 +29,7 @@ import org.hotrod.dynamicsql.insert.PreparedInsertQuery;
 import org.hotrod.dynamicsql.insert.PrimaryKeyRetrievalMode;
 import org.hotrod.interfaces.OrderBy;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.metadata.BooleanEntityColumn;
 import org.hotrod.runtime.livesql.metadata.Name;
@@ -36,6 +37,7 @@ import org.hotrod.runtime.livesql.metadata.NumberEntityColumn;
 import org.hotrod.runtime.livesql.metadata.StringEntityColumn;
 import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
@@ -182,6 +184,12 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       List<Account> rows = preparedQuery.execute(conn, this.rowReader);
       return rows;
     }
+  }
+
+  // SELECT BY CRITERIA
+
+  public CriteriaWherePhase<Account> select(final AccountTable from, final GeneralBooleanExpression predicate) {
+    return new CriteriaWherePhase<Account>(this.context, from, predicate, this.rowReader);
   }
 
   // INSERT

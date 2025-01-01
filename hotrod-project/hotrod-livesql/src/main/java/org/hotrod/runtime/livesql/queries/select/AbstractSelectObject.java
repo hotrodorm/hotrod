@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.hotrod.cursors.Cursor;
+import org.hotrod.dynamicsql.PreparedSelectQuery.RowReader;
 import org.hotrod.runtime.livesql.dialects.JoinRenderer;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.dialects.LockingRenderer;
@@ -372,6 +373,13 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
   }
 
   @Override
+  public <T> List<T> execute(LiveSQLContext context, RowReader<T> rowReader) {
+    System.out.println("%%% 2");
+    LiveSQLPreparedQuery q = this.prepareQuery(context);
+    return executeLiveSQL(context, q, rowReader, false);
+  }
+
+  @Override
   public Cursor<R> executeCursor(final LiveSQLContext context) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     return executeLiveSQLCursor(context, q);
@@ -380,7 +388,7 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
   @Override
   public R executeOne(final LiveSQLContext context) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-      return executeLiveSQLOne(context, q);
+    return executeLiveSQLOne(context, q);
   }
 
   @Override

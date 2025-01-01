@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 
 import org.hotrod.converter.TypeConverter;
 import org.hotrod.cursors.Cursor;
+import org.hotrod.dynamicsql.PreparedSelectQuery.RowReader;
 import org.hotrod.livesql.Row;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
@@ -57,6 +58,8 @@ public abstract class MultiSet<R> {
   // Execution
 
   public abstract List<R> execute(final LiveSQLContext context);
+
+  public abstract <T> List<T> execute(final LiveSQLContext context, RowReader<T> rowReader);
 
   public abstract Cursor<R> executeCursor(final LiveSQLContext context);
 
@@ -116,7 +119,6 @@ public abstract class MultiSet<R> {
           int ordinal = 1;
           for (Entry<String, Expression> et : queryColumns.entrySet()) {
             Expression expr = et.getValue();
-//              log.info(" - expr '" + et.getKey() + "'=" + expr + " -- th=" + Helper.getTypeHandler(expr));
             if (Helper.getTypeHandler(expr) == null) {
               ResultSetColumnMetadata cm = ResultSetColumnMetadata.of(rm, ordinal);
               try {
@@ -159,6 +161,53 @@ public abstract class MultiSet<R> {
             rows.add(r);
           }
           return (List<R>) rows;
+        }
+
+      }
+
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+
+  }
+
+  protected <T> List<T> executeLiveSQL(final LiveSQLContext context, final LiveSQLPreparedQuery q,
+      RowReader<T> rowReader, boolean singleRow) {
+    log.info("executeLiveSQL... q="+q);
+
+    log.info("PREVIEW:\n" + q.getSQL());
+    log.info("=== Parameters (" + q.getParameters().size() + ") ===");
+    for (String key : q.getParameters().keySet()) {
+      log.info("* " + key + ": " + q.getParameters().get(key));
+    }
+    log.info("====================");
+
+    List<T> rows = new ArrayList<>();
+    try (Connection conn = context.getDataSource().getConnection()) {
+
+      try (PreparedStatement ps = conn.prepareStatement(q.getSQL())) {
+
+        // 1. Apply parameters
+
+        int n = 1;
+        for (Object obj : q.getParameters().values()) {
+          int i = n++;
+          ps.setObject(i, obj);
+        }
+
+        // 2. Run the query
+
+        try (ResultSet rs = ps.executeQuery()) {
+          int count = 0;
+          while (rs.next()) {
+            count++;
+            if (singleRow && count > 1) {
+              throw new LiveSQLException("A single row at most was expected by this query but received at least two");
+            }
+            T row = rowReader.readRowFrom(rs, conn);
+            rows.add(row);
+          }
+          return rows;
         }
 
       }

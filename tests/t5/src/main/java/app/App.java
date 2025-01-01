@@ -1,11 +1,11 @@
 package app;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.assembler.QueryAssembler;
-import org.hotrod.livesql.Row;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Configuration;
 
 import app.daos.Account;
 import app.daos.primitives.AccountDAO;
+import app.daos.primitives.AccountDAO.AccountTable;
 
 @Configuration
 @SpringBootApplication
@@ -57,23 +58,30 @@ public class App {
 
   private void testLiveSQL() throws SQLException, DynamicExpressionException {
 
-    
 //    System.out.println(">> Will run LiveSQL");
-//    List<Row> rows = this.sql.select(sql.val(7).mult(3).as("answer")).execute();
-//    System.out.println(">> LiveSQL executed");
-//    for (Row row : rows) {
-//      System.out.println("Row=" + row);
-//    }
+//    Row row = this.sql.select(sql.val(7).mult(3).as("answer")).executeOne();
+//    System.out.println("Row=" + row);
 
-    System.out.println(">> Will run LiveSQL");
-    Row row = this.sql.select(sql.val(7).mult(3).as("answer")).executeOne();
-    System.out.println("Row=" + row);
+    System.out.println("Will select by criteria." );
+
+    AccountTable a = this.accountDAO.newTable();
+    List<Account> accounts = this.accountDAO.select(a, a.type.eq("CHK")).orderBy(a.balance.desc()).execute();
+    for (Account r : accounts) {
+      System.out.println("account=" + r);
+    }
+
+    System.out.println("Select by criteria complete." );
+
+//    List<Row> rows = this.sql.select().from(a).execute();
+//    for (Row r : rows) {
+//      System.out.println("Row=" + r);
+//    }
   }
 
   private void test() throws SQLException, DynamicExpressionException {
 
-    Account a = this.accountDAO.select(112);
-    System.out.println("--> a=" + a);
+//    Account a = this.accountDAO.select(112);
+//    System.out.println("--> a=" + a);
 
 //    List<Integer> ids = Arrays.asList(123, 789, 112, 4);
 

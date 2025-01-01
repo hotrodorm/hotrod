@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.hotrod.cursors.Cursor;
+import org.hotrod.dynamicsql.PreparedSelectQuery.RowReader;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.expressions.Expression;
@@ -308,6 +309,12 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
   public List<R> execute(final LiveSQLContext context) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     return executeLiveSQL(context, q, false);
+  }
+
+  @Override
+  public <T> List<T> execute(final LiveSQLContext context, final RowReader<T> rowReader) {
+    LiveSQLPreparedQuery q = this.prepareQuery(context);
+    return executeLiveSQL(context, q, rowReader, false);
   }
 
   @Override
