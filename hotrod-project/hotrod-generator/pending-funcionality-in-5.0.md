@@ -20,8 +20,10 @@ CRUD:
 - SELECT BY PK/EXAMPLE, UPDATE BY PK/EXAMPLE, DELETE BY PK/EXAMPLE implemented.
 - INSERT and INSERT BY EXAMPLE implemented.
 - Primary key retrieval implemented on INSERTs for identities and sequences.
+- SELECT/UPDATE/DELETE by Criteria.
 - Logging implemented with FINE/DEBUG (SQL only) and FINER/TRACE (SQL + parameters).
 - Bean factory implemented for SELECTs.
+- Converters when reading from the database (also in Nitro and LiveSQL).
 
 Nitro:
 
@@ -32,18 +34,18 @@ Nitro:
 
 LiveSQL:
 
-- Basic POC without plain JDBC working.
+- Basic POC working.
 
 ## 3. Existing Functionality Not Yet Migrated To Plain JDBC
 
 CRUD:
 
-- SELECT/UPDATE/DELETE by Criteria.
 - SELECT sequence.
 - SELECT by UI.
 - Enums.
 - Optimistic Locking.
 - SELECT by FKs.
+- Converters when writing to the database (also in Nitro and LiveSQL).
 
 Nitro:
 
@@ -72,7 +74,7 @@ LiveSQL:
 CRUD:
 
 - New names for DAOs and VOs.
-- New tags attributes for DAOs and VOs.
+- New configuration structure, tags, and attributes for DAOs and VOs.
 - New package structure for DAOs and VOs.
 - Implement SELECT BY INDEX (unique and non-unique).
 
@@ -80,7 +82,4 @@ Nitro:
 
 - The jdbc-type is not required for a parameter that is not applied to the query. Maybe separate in &lt;parameter> and &lt;nullable-parameter>.
 
-Dynamic SQL:
-
-- Uses JEXL (by default) to evaluate expressions, but could use other libraries such as OGNL.
 
