@@ -9,9 +9,9 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 
 public class ColumnsSubset extends ColumnList {
 
-  private List<Column> columns;
+  private List<EntityColumn> columns;
 
-  protected ColumnsSubset(final List<Column> columns) {
+  protected ColumnsSubset(final List<EntityColumn> columns) {
     this.columns = columns;
   }
 

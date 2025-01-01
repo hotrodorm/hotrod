@@ -1,16 +1,41 @@
 package org.hotrod.runtime.livesql.queries;
 
-import java.util.Map;
+import java.util.List;
+import java.util.logging.Logger;
 
+import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
+import org.hotrod.runtime.livesql.metadata.EntityColumn;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 
 public class UpdateSetCompletePhase implements DMLQuery {
+
+  private static final Logger log = Logger.getLogger(UpdateSetCompletePhase.class.getName());
 
   // Properties
 
   private LiveSQLContext context;
   private UpdateObject update;
+
+  public static class Setter {
+
+    private EntityColumn column;
+    private Expression expression;
+
+    public Setter(EntityColumn column, Expression expression) {
+      this.column = column;
+      this.expression = expression;
+    }
+
+    public EntityColumn getColumn() {
+      return column;
+    }
+
+    public Expression getExpression() {
+      return expression;
+    }
+
+  }
 
   // Constructor
 
@@ -19,14 +44,18 @@ public class UpdateSetCompletePhase implements DMLQuery {
     this.update = update;
   }
 
-//  public UpdateSetCompletePhase(final LiveSQLContext context, final String mapperStatement,
-//      final TableOrView tableOrView, final GeneralBooleanExpression predicate, final Map<String, Object> extraSets) {
-//    this.context = context;
-//    this.update = new UpdateObject(mapperStatement);
-//    this.update.setTableOrView(tableOrView);
-//    this.update.setWherePredicate(predicate);
-//    this.update.setExtraSets(extraSets);
-//  }
+  public UpdateSetCompletePhase(final LiveSQLContext context, final TableOrView tableOrView, final List<Setter> setters,
+      final GeneralBooleanExpression predicate) {
+    log.info("### setters = " + setters.size());
+    this.context = context;
+    this.update = new UpdateObject();
+    this.update.setTableOrView(tableOrView);
+    for (Setter s : setters) {
+      log.info("### SETTER: " + s.getColumn().getProperty() + " = " + s.getExpression());
+      this.update.addSetter(s.getColumn(), s.getExpression());
+    }
+    this.update.setWherePredicate(predicate);
+  }
 
   // Current phase
 

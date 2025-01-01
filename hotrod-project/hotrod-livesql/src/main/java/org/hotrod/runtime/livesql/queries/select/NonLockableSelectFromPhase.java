@@ -4,7 +4,7 @@ import org.hotrod.runtime.livesql.Available;
 import org.hotrod.runtime.livesql.dialects.Const;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
-import org.hotrod.runtime.livesql.metadata.Column;
+import org.hotrod.runtime.livesql.metadata.EntityColumn;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
@@ -28,7 +28,7 @@ public class NonLockableSelectFromPhase<R> extends IndividualSelectPhase<R> {
     return this;
   }
 
-  public NonLockableSelectFromPhase<R> join(final TableExpression tableViewOrSubquery, final Column... using) {
+  public NonLockableSelectFromPhase<R> join(final TableExpression tableViewOrSubquery, final EntityColumn... using) {
     this.getLastSelect().addJoin(new InnerJoin(tableViewOrSubquery, using));
     return this;
   }
@@ -38,7 +38,7 @@ public class NonLockableSelectFromPhase<R> extends IndividualSelectPhase<R> {
     return this;
   }
 
-  public NonLockableSelectFromPhase<R> leftJoin(final TableExpression tableViewOrSubquery, final Column... using) {
+  public NonLockableSelectFromPhase<R> leftJoin(final TableExpression tableViewOrSubquery, final EntityColumn... using) {
     this.getLastSelect().addJoin(new LeftOuterJoin(tableViewOrSubquery, using));
     return this;
   }
@@ -48,7 +48,7 @@ public class NonLockableSelectFromPhase<R> extends IndividualSelectPhase<R> {
     return this;
   }
 
-  public NonLockableSelectFromPhase<R> rightJoin(final TableExpression tableViewOrSubquery, final Column... using) {
+  public NonLockableSelectFromPhase<R> rightJoin(final TableExpression tableViewOrSubquery, final EntityColumn... using) {
     this.getLastSelect().addJoin(new RightOuterJoin(tableViewOrSubquery, using));
     return this;
   }
@@ -58,7 +58,7 @@ public class NonLockableSelectFromPhase<R> extends IndividualSelectPhase<R> {
     return this;
   }
 
-  public NonLockableSelectFromPhase<R> fullJoin(final TableExpression tableViewOrSubquery, final Column... using) {
+  public NonLockableSelectFromPhase<R> fullJoin(final TableExpression tableViewOrSubquery, final EntityColumn... using) {
     this.getLastSelect().addJoin(new FullOuterJoin(tableViewOrSubquery, using));
     return this;
   }

@@ -56,6 +56,7 @@ import org.hotrod.metadata.KeyMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.SelectMethodMetadata.SelectMethodReturnType;
 import org.hotrod.metadata.SelectParameterMetadata;
+import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
@@ -69,6 +70,8 @@ import org.hotrod.runtime.livesql.metadata.StringEntityColumn;
 import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
+import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase.Setter;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
@@ -211,7 +214,10 @@ public class DAO {
 
       writeUpdateByPK();
       writeUpdateByExample();
-//
+      if (this.isTable() || this.isView()) {
+        writeUpdateByCriteria();
+      }
+
       writeDeleteByPK();
       writeDeleteByExample();
       if (this.isTable() || this.isView()) {
@@ -284,8 +290,6 @@ public class DAO {
 
     // Spring properties
 
-//    Map<String, String> daoMembers = new HashMap<String, String>();
-
     w.println("  @", Const.AUTOWIRED);
     if (!SUtil.isEmpty(this.layout.getLiveSQLDialectBeanQualifier())) {
       w.println("  @", Const.QUALIFIER, "(\"" + this.layout.getLiveSQLDialectBeanQualifier() + "\")");
@@ -311,11 +315,13 @@ public class DAO {
     w.println("  public void setApplicationContext(final ", Const.APPLICATION_CONTEXT, " applicationContext) throws ",
         Const.BEANS_EXCEPTION, " {");
     w.println("    this.applicationContext = applicationContext;");
-//    w.println("    this.sqlSession.getConfiguration().setObjectFactory(this.springBeanObjectFactory);");
     w.println("  }");
     w.println();
 
-    w.println("  @SuppressWarnings(\"unused\")");
+    w.println("  @", Const.AUTOWIRED);
+    w.println("  private ", LiveSQL.class, " sql;");
+    w.println();
+
     w.println("  private ", LiveSQLContext.class, " context;");
 
   }
@@ -822,6 +828,45 @@ public class DAO {
 
     w.println("  }");
 
+  }
+
+//  // UPDATE BY CRITERIA
+//
+//  @Autowired
+//  private LiveSQL sql;
+//
+//  public UpdateSetCompletePhase update(final AccountPrototype updateValues, final AccountTable tableOrView,
+//      final GeneralBooleanExpression predicate) {
+//    List<Setter> setters = new ArrayList<>();
+//    if (updateValues.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(updateValues.getId())));
+//    if (updateValues.getName() != null) setters.add(new Setter(tableOrView.name, sql.val(updateValues.getName())));
+//    if (updateValues.getType() != null) setters.add(new Setter(tableOrView.type, sql.val(updateValues.getType())));
+//    if (updateValues.getBalance() != null) setters.add(new Setter(tableOrView.balance, sql.val(updateValues.getBalance())));
+//    if (updateValues.getActive() != null) setters.add(new Setter(tableOrView.active, sql.val(updateValues.getActive())));
+//    return new UpdateSetCompletePhase(this.context, tableOrView, setters, predicate);
+//  }
+
+  private void writeUpdateByCriteria() {
+    ExternalClass em = ExternalClass.of(this.model.getFullClassName());
+    ExternalClass ec = ExternalClass.of(this.metadataClassName);
+    w.println();
+    w.println("  // UPDATE BY CRITERIA");
+    w.println();
+    w.print("  public ", UpdateSetCompletePhase.class, " update(final ", em, " updateValues, ");
+    w.println("final ", ec, " tableOrView,");
+    w.println("      final ", GeneralBooleanExpression.class, " predicate) {");
+    w.print("    ", List.class, "<", Setter.class, "> setters");
+    w.println(" = new ", ArrayList.class, "<>();");
+
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      String getter = cm.getId().getJavaGetter();
+      String memId = cm.getId().getJavaMemberName();
+      w.println("    if (updateValues." + getter + "() != null) setters.add(new ", Setter.class,
+          "(tableOrView." + memId + ", sql.val(updateValues." + getter + "())));");
+    }
+
+    w.println("    return new ", UpdateSetCompletePhase.class, "(this.context, tableOrView, setters, predicate);");
+    w.println("  }");
   }
 
   private void writeDeleteByPK() {

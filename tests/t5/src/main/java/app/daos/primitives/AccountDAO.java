@@ -28,6 +28,7 @@ import org.hotrod.dynamicsql.assembler.QueryAssembler;
 import org.hotrod.dynamicsql.insert.PreparedInsertQuery;
 import org.hotrod.dynamicsql.insert.PrimaryKeyRetrievalMode;
 import org.hotrod.interfaces.OrderBy;
+import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
@@ -38,6 +39,8 @@ import org.hotrod.runtime.livesql.metadata.StringEntityColumn;
 import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
+import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase.Setter;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
@@ -78,7 +81,9 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     this.applicationContext = applicationContext;
   }
 
-  @SuppressWarnings("unused")
+  @Autowired
+  private LiveSQL sql;
+
   private LiveSQLContext context;
 
   // CONVERTERS
@@ -325,6 +330,19 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       int rows = preparedQuery.execute(conn);
       return rows;
     }
+  }
+
+  // UPDATE BY CRITERIA
+
+  public UpdateSetCompletePhase update(final Account updateValues, final AccountTable tableOrView,
+      final GeneralBooleanExpression predicate) {
+    List<Setter> setters = new ArrayList<>();
+    if (updateValues.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(updateValues.getId())));
+    if (updateValues.getName() != null) setters.add(new Setter(tableOrView.name, sql.val(updateValues.getName())));
+    if (updateValues.getType() != null) setters.add(new Setter(tableOrView.type, sql.val(updateValues.getType())));
+    if (updateValues.getBalance() != null) setters.add(new Setter(tableOrView.balance, sql.val(updateValues.getBalance())));
+    if (updateValues.getActive() != null) setters.add(new Setter(tableOrView.active, sql.val(updateValues.getActive())));
+    return new UpdateSetCompletePhase(this.context, tableOrView, setters, predicate);
   }
 
   // DELETE BY PRIMARY KEY

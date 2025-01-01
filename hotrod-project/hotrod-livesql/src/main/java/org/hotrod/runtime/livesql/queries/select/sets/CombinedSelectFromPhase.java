@@ -4,7 +4,7 @@ import org.hotrod.runtime.livesql.Available;
 import org.hotrod.runtime.livesql.dialects.Const;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
-import org.hotrod.runtime.livesql.metadata.Column;
+import org.hotrod.runtime.livesql.metadata.EntityColumn;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.select.CrossJoin;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
@@ -38,7 +38,7 @@ public class CombinedSelectFromPhase<R> extends CombinedSelectPhase<R> {
     return this;
   }
 
-  public CombinedSelectFromPhase<R> join(final TableExpression tableViewOrSubquery, final Column... using) {
+  public CombinedSelectFromPhase<R> join(final TableExpression tableViewOrSubquery, final EntityColumn... using) {
     this.getLastSelect().addJoin(new InnerJoin(tableViewOrSubquery, using));
     return this;
   }
@@ -48,7 +48,7 @@ public class CombinedSelectFromPhase<R> extends CombinedSelectPhase<R> {
     return this;
   }
 
-  public CombinedSelectFromPhase<R> leftJoin(final TableExpression tableViewOrSubquery, final Column... using) {
+  public CombinedSelectFromPhase<R> leftJoin(final TableExpression tableViewOrSubquery, final EntityColumn... using) {
     this.getLastSelect().addJoin(new LeftOuterJoin(tableViewOrSubquery, using));
     return this;
   }
@@ -58,7 +58,7 @@ public class CombinedSelectFromPhase<R> extends CombinedSelectPhase<R> {
     return this;
   }
 
-  public CombinedSelectFromPhase<R> rightJoin(final TableExpression tableViewOrSubquery, final Column... using) {
+  public CombinedSelectFromPhase<R> rightJoin(final TableExpression tableViewOrSubquery, final EntityColumn... using) {
     this.getLastSelect().addJoin(new RightOuterJoin(tableViewOrSubquery, using));
     return this;
   }
@@ -68,7 +68,7 @@ public class CombinedSelectFromPhase<R> extends CombinedSelectPhase<R> {
     return this;
   }
 
-  public CombinedSelectFromPhase<R> fullJoin(final TableExpression tableViewOrSubquery, final Column... using) {
+  public CombinedSelectFromPhase<R> fullJoin(final TableExpression tableViewOrSubquery, final EntityColumn... using) {
     this.getLastSelect().addJoin(new FullOuterJoin(tableViewOrSubquery, using));
     return this;
   }

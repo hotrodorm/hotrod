@@ -10,13 +10,13 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 
 public class AllColumns extends WrappingColumn {
 
-  private List<Column> columns;
+  private List<EntityColumn> columns;
 
-  public AllColumns(final Column... columns) {
+  public AllColumns(final EntityColumn... columns) {
     this.columns = Arrays.asList(columns);
   }
 
-  public ColumnsSubset filter(final Predicate<Column> predicate) {
+  public ColumnsSubset filter(final Predicate<EntityColumn> predicate) {
     return new ColumnsSubset(this.columns.stream().filter(predicate).collect(Collectors.toList()));
   }
 

@@ -8,7 +8,7 @@ import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.utils.SUtil;
 
-public class StringEntityColumn extends GeneralStringExpression implements Column {
+public class StringEntityColumn extends GeneralStringExpression implements EntityColumn {
 
   // Properties
 
@@ -63,7 +63,7 @@ public class StringEntityColumn extends GeneralStringExpression implements Colum
     return this.property;
   }
 
-  public String getName() {
+  public String getCanonicalName() {
     return this.name;
   }
 

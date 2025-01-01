@@ -8,7 +8,7 @@ import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.utils.SUtil;
 
-public class BooleanEntityColumn extends GeneralBooleanExpression implements Column {
+public class BooleanEntityColumn extends GeneralBooleanExpression implements EntityColumn {
 
   // Properties
 
@@ -63,7 +63,7 @@ public class BooleanEntityColumn extends GeneralBooleanExpression implements Col
     return this.property;
   }
 
-  public String getName() {
+  public String getCanonicalName() {
     return this.name;
   }
 

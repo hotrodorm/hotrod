@@ -5,7 +5,7 @@ import org.hotrod.runtime.livesql.Available;
 import org.hotrod.runtime.livesql.dialects.Const;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
-import org.hotrod.runtime.livesql.metadata.Column;
+import org.hotrod.runtime.livesql.metadata.EntityColumn;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject;
 import org.hotrod.runtime.livesql.queries.select.CrossJoin;
@@ -39,7 +39,7 @@ public class ObjectSelectFromPhase extends ObjectSelectExpression {
     return this;
   }
 
-  public ObjectSelectFromPhase join(final TableExpression tableViewOrSubquery, final Column... using) {
+  public ObjectSelectFromPhase join(final TableExpression tableViewOrSubquery, final EntityColumn... using) {
     this.select.addJoin(new InnerJoin(tableViewOrSubquery, using));
     return this;
   }
@@ -49,7 +49,7 @@ public class ObjectSelectFromPhase extends ObjectSelectExpression {
     return this;
   }
 
-  public ObjectSelectFromPhase leftJoin(final TableExpression tableViewOrSubquery, final Column... using) {
+  public ObjectSelectFromPhase leftJoin(final TableExpression tableViewOrSubquery, final EntityColumn... using) {
     this.select.addJoin(new LeftOuterJoin(tableViewOrSubquery, using));
     return this;
   }
@@ -59,7 +59,7 @@ public class ObjectSelectFromPhase extends ObjectSelectExpression {
     return this;
   }
 
-  public ObjectSelectFromPhase rightJoin(final TableExpression tableViewOrSubquery, final Column... using) {
+  public ObjectSelectFromPhase rightJoin(final TableExpression tableViewOrSubquery, final EntityColumn... using) {
     this.select.addJoin(new RightOuterJoin(tableViewOrSubquery, using));
     return this;
   }
@@ -69,7 +69,7 @@ public class ObjectSelectFromPhase extends ObjectSelectExpression {
     return this;
   }
 
-  public ObjectSelectFromPhase fullJoin(final TableExpression tableViewOrSubquery, final Column... using) {
+  public ObjectSelectFromPhase fullJoin(final TableExpression tableViewOrSubquery, final EntityColumn... using) {
     this.select.addJoin(new FullOuterJoin(tableViewOrSubquery, using));
     return this;
   }

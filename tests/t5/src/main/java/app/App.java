@@ -1,6 +1,7 @@
 package app;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.DynamicExpressionException;
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import app.daos.Account;
 import app.daos.primitives.AccountDAO;
 import app.daos.primitives.AccountDAO.AccountTable;
 
@@ -60,6 +62,16 @@ public class App {
 //    Row row = this.sql.select(sql.val(7).mult(3).as("answer")).executeOne();
 //    System.out.println("Row=" + row);
 
+    System.out.println("Will UPDATE by criteria.");
+    AccountTable a = this.accountDAO.newTable();
+    Account updateValues = new Account();
+    updateValues.setBalance(777);
+    int count = this.accountDAO.update(updateValues, a, a.balance.lt(150)).execute();
+    System.out.println("UPDATE by criteria complete: count=" + count);
+
+    List<Account> accounts = this.accountDAO.select(a, sql.TRUE).execute();
+    accounts.forEach(r -> System.out.println("r=" + r));
+
 //    System.out.println("Will select by criteria." );
 //    AccountTable a = this.accountDAO.newTable();
 //    List<Account> accounts = this.accountDAO.select(a, a.type.eq("CHK")).orderBy(a.balance.desc()).execute();
@@ -68,10 +80,10 @@ public class App {
 //    }
 //    System.out.println("Select by criteria complete." );
 
-    System.out.println("Will DELETE by criteria.");
-    AccountTable a = this.accountDAO.newTable();
-    int count = this.accountDAO.delete(a, a.type.eq("SAV")).execute();
-    System.out.println("DELETE by criteria complete: count=" + count);
+//    System.out.println("Will DELETE by criteria.");
+//    AccountTable a = this.accountDAO.newTable();
+//    int count = this.accountDAO.delete(a, a.type.eq("SAV")).execute();
+//    System.out.println("DELETE by criteria complete: count=" + count);
 
 //    List<Row> rows = this.sql.select().from(a).execute();
 //    for (Row r : rows) {

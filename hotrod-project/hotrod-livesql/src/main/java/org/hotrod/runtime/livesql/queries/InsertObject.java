@@ -8,7 +8,7 @@ import java.util.List;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
-import org.hotrod.runtime.livesql.metadata.Column;
+import org.hotrod.runtime.livesql.metadata.EntityColumn;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
@@ -17,7 +17,7 @@ import org.hotrod.runtime.livesql.util.PreviewRenderer;
 public class InsertObject implements QueryObject {
 
   private TableOrView into;
-  private List<Column> columns;
+  private List<EntityColumn> columns;
   private List<ComparableExpression> values;
   private SelectObject<?> select;
 
@@ -29,7 +29,7 @@ public class InsertObject implements QueryObject {
     this.into = into;
   }
 
-  void setColumns(final List<Column> columns) {
+  void setColumns(final List<EntityColumn> columns) {
     this.columns = columns;
   }
 
@@ -77,7 +77,7 @@ public class InsertObject implements QueryObject {
     if (this.columns != null) {
       w.write(" (");
       for (int i = 0; i < this.columns.size(); i++) {
-        Column c = this.columns.get(i);
+        EntityColumn c = this.columns.get(i);
         Expression expr = (Expression) c;
         Helper.renderTo(expr, w);
         if (i < this.columns.size() - 1) {

@@ -5,18 +5,22 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.hotrod.runtime.livesql.dialects.UpdateRenderer;
+import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
-import org.hotrod.runtime.livesql.metadata.Column;
+import org.hotrod.runtime.livesql.metadata.EntityColumn;
 import org.hotrod.runtime.livesql.metadata.MDHelper;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.util.PreviewRenderer;
 
 public class UpdateObject implements QueryObject {
+
+  private static final Logger log = Logger.getLogger(UpdateObject.class.getName());
 
   private TableOrView tableOrView;
   private List<Assignment> setters = new ArrayList<>();
@@ -26,15 +30,11 @@ public class UpdateObject implements QueryObject {
     super();
   }
 
-  UpdateObject(final String mapperStatement) {
-    super();
-  }
-
   void setTableOrView(final TableOrView from) {
     this.tableOrView = from;
   }
 
-  void addSetter(final Column c, final Expression e) {
+  void addSetter(final EntityColumn c, final Expression e) {
     this.setters.add(new Assignment(c, e));
   }
 
@@ -71,6 +71,11 @@ public class UpdateObject implements QueryObject {
   }
 
   private LiveSQLPreparedQuery prepareQuery(final LiveSQLContext context) {
+
+    if (this.setters.isEmpty()) {
+      throw new LiveSQLException("The UPDATE query does not include any column to update.");
+    }
+
     QueryWriter w = new QueryWriter(context);
     w.write("UPDATE ");
 
@@ -96,8 +101,7 @@ public class UpdateObject implements QueryObject {
         w.write(", ");
       }
       Assignment s = this.setters.get(i);
-      w.write(w.getSQLDialect().canonicalToNatural(s.getColumn().getReferenceName()));
-
+      w.write(w.getSQLDialect().canonicalToNatural(s.getColumn().getCanonicalName()));
       w.write(" = ");
       Helper.renderTo(s.getExpression(), w);
       w.write("\n");
@@ -113,15 +117,15 @@ public class UpdateObject implements QueryObject {
 
   private static class Assignment {
 
-    private Column c;
+    private EntityColumn c;
     private Expression e;
 
-    public Assignment(final Column c, final Expression e) {
+    public Assignment(final EntityColumn c, final Expression e) {
       this.c = c;
       this.e = e;
     }
 
-    public Column getColumn() {
+    public EntityColumn getColumn() {
       return c;
     }
 

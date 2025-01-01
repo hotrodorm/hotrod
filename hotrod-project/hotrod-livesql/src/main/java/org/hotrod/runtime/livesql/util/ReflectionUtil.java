@@ -6,12 +6,12 @@ import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.livesql.metadata.Column;
+import org.hotrod.runtime.livesql.metadata.EntityColumn;
 import org.springframework.util.ReflectionUtils;
 
 public class ReflectionUtil {
 
-  public static List<Column> getColumnsField(final Object cs, final String colName)
+  public static List<EntityColumn> getColumnsField(final Object cs, final String colName)
       throws IllegalArgumentException, IllegalAccessException {
     try {
       Field cf = ReflectionUtils.findField(cs.getClass(), colName);
@@ -20,7 +20,7 @@ public class ReflectionUtil {
         cf.setAccessible(true);
         Object object = cf.get(cs);
         @SuppressWarnings("unchecked")
-        List<Column> columns = (List<Column>) object;
+        List<EntityColumn> columns = (List<EntityColumn>) object;
         return columns;
       } else {
         return new ArrayList<>();

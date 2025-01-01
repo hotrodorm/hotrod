@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
-import org.hotrod.runtime.livesql.metadata.Column;
+import org.hotrod.runtime.livesql.metadata.EntityColumn;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.select.SHelper;
 import org.hotrod.runtime.livesql.queries.select.Select;
@@ -26,7 +26,7 @@ public class InsertIntoPhase {
 
   // Next stages
 
-  public InsertColumnsPhase columns(final List<Column> columns) {
+  public InsertColumnsPhase columns(final List<EntityColumn> columns) {
     this.insert.setColumns(columns);
     return new InsertColumnsPhase(this.context, this.insert);
   }

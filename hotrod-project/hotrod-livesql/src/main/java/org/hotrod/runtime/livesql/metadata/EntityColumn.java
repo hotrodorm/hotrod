@@ -1,6 +1,6 @@
 package org.hotrod.runtime.livesql.metadata;
 
-public interface Column {
+public interface EntityColumn {
 
   TableOrView getObjectInstance();
 
@@ -10,6 +10,8 @@ public interface Column {
 
   Name getObjectName();
 
+  String getCanonicalName();
+  
   String getReferenceName();
 
   String getType();

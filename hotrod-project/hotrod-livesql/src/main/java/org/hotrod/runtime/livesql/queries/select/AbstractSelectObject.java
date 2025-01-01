@@ -23,7 +23,7 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
-import org.hotrod.runtime.livesql.metadata.Column;
+import org.hotrod.runtime.livesql.metadata.EntityColumn;
 import org.hotrod.runtime.livesql.metadata.MDHelper;
 import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
@@ -283,7 +283,7 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
           } else { // using
             w.write(" USING (");
             Separator sep = new Separator();
-            for (Column c : pj.getUsingColumns()) {
+            for (EntityColumn c : pj.getUsingColumns()) {
               w.write(sep.render());
               w.write(w.getSQLDialect().canonicalToNatural(c.getReferenceName()));
             }
@@ -528,7 +528,7 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
         cf.setAccessible(true);
         Object object = cf.get(cs);
         @SuppressWarnings("unchecked")
-        List<Column> columns = (List<Column>) object;
+        List<EntityColumn> columns = (List<EntityColumn>) object;
         return columns.stream().map(c -> (ResultSetColumn) c).collect(Collectors.toList());
       } else {
         return new ArrayList<>();

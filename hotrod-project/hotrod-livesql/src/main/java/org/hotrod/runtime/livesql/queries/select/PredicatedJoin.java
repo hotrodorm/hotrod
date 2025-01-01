@@ -5,12 +5,12 @@ import java.util.List;
 
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLClauseException;
 import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
-import org.hotrod.runtime.livesql.metadata.Column;
+import org.hotrod.runtime.livesql.metadata.EntityColumn;
 
 public abstract class PredicatedJoin extends Join {
 
   private GeneralBooleanExpression predicate;
-  private List<Column> using;
+  private List<EntityColumn> using;
 
   public PredicatedJoin(final TableExpression tableExpression, final GeneralBooleanExpression predicate) {
     super(tableExpression);
@@ -21,7 +21,7 @@ public abstract class PredicatedJoin extends Join {
     this.using = null;
   }
 
-  public PredicatedJoin(final TableExpression tableExpression, final Column... using) {
+  public PredicatedJoin(final TableExpression tableExpression, final EntityColumn... using) {
     super(tableExpression);
     if (using.length == 0) {
       throw new InvalidLiveSQLClauseException(
@@ -35,7 +35,7 @@ public abstract class PredicatedJoin extends Join {
     return this.predicate;
   }
 
-  public List<Column> getUsingColumns() {
+  public List<EntityColumn> getUsingColumns() {
     return this.using;
   }
 
