@@ -59,7 +59,8 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
   private PropertyType type;
   private TypeSolverTag typeSolverTag;
 
-  private boolean isVersionControlColumn;
+  private boolean isOLVersionNumberColumn;
+  private boolean isOLTimestampColumn;
 
   private boolean reusesMemberFromSuperClass;
 
@@ -74,8 +75,8 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
   // From a <table>, <view>, or <enum> tag
 
   public ColumnMetadata(final DataSetMetadata dataSet, final JdbcColumn c, final DatabaseAdapter adapter,
-      final ColumnTag columnTag, final boolean isVersionControlColumn, final boolean belongsToPK,
-      final TypeSolverTag typeSolverTag, final NameSolverTag nameSolverTag)
+      final ColumnTag columnTag, final boolean isOLVersionNumberColumn, final boolean isOLTimestampColumn,
+      final boolean belongsToPK, final TypeSolverTag typeSolverTag, final NameSolverTag nameSolverTag)
       throws UnresolvableDataTypeException, InvalidIdentifierException {
     log.fine("init c=" + c);
     this.dataSet = dataSet;
@@ -121,7 +122,8 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
     this.adapter = adapter;
     this.type = ColumnMetadata.resolveJavaType(this, this.tag, this.c, null, typeSolverTag, this.adapter);
     this.typeSolverTag = typeSolverTag;
-    this.isVersionControlColumn = isVersionControlColumn;
+    this.isOLVersionNumberColumn = isOLVersionNumberColumn;
+    this.isOLTimestampColumn = isOLTimestampColumn;
     this.reusesMemberFromSuperClass = false;
   }
 
@@ -207,15 +209,16 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
     this.tag = cm.tag;
     this.type = cm.type;
     this.typeSolverTag = cm.typeSolverTag;
-    this.isVersionControlColumn = cm.isVersionControlColumn;
+    this.isOLVersionNumberColumn = cm.isOLVersionNumberColumn;
+    this.isOLTimestampColumn = cm.isOLTimestampColumn;
     this.reusesMemberFromSuperClass = false;
   }
 
   // From a <select> tag -- create view strategy
 
   public ColumnMetadata(final DataSetMetadata dataSet, final JdbcColumn c, final String selectName,
-      final DatabaseAdapter adapter, final ColumnTag columnTag, final boolean isVersionControlColumn,
-      final boolean belongsToPK, final TypeSolverTag typeSolverTag)
+      final DatabaseAdapter adapter, final ColumnTag columnTag, final boolean isOLVersionNumberColumn,
+      final boolean isOLTimestampColumn, final boolean belongsToPK, final TypeSolverTag typeSolverTag)
       throws UnresolvableDataTypeException, InvalidIdentifierException {
     this.dataSet = dataSet;
     this.c = c;
@@ -244,7 +247,8 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
     this.type = ColumnMetadata.resolveJavaType(this, this.tag, this.c, null, typeSolverTag, this.adapter);
     this.typeSolverTag = typeSolverTag;
 
-    this.isVersionControlColumn = isVersionControlColumn;
+    this.isOLVersionNumberColumn = isOLVersionNumberColumn;
+    this.isOLTimestampColumn = isOLTimestampColumn;
     this.reusesMemberFromSuperClass = false;
   }
 
@@ -252,7 +256,8 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
 
   public ColumnMetadata(final DataSetMetadata dataSet, ResultSetMetaData rm, final int colIndex,
       final String selectName, final DatabaseAdapter adapter, final ColumnTag columnTag,
-      final boolean isVersionControlColumn, final boolean belongsToPK, final TypeSolverTag typeSolverTag)
+      final boolean isOLVersionNumberColumn, final boolean isOLTimestampColumn, final boolean belongsToPK,
+      final TypeSolverTag typeSolverTag)
       throws UnresolvableDataTypeException, InvalidIdentifierException, SQLException {
     this.dataSet = dataSet;
     this.c = null;
@@ -287,7 +292,8 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
     this.type = ColumnMetadata.resolveJavaType(this, this.tag, null, this.resultSetType, typeSolverTag, this.adapter);
     this.typeSolverTag = typeSolverTag;
 
-    this.isVersionControlColumn = isVersionControlColumn;
+    this.isOLVersionNumberColumn = isOLVersionNumberColumn;
+    this.isOLTimestampColumn = isOLTimestampColumn;
     this.reusesMemberFromSuperClass = false;
   }
 
@@ -364,8 +370,12 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
     return columnDefault;
   }
 
-  public boolean isVersionControlColumn() {
-    return isVersionControlColumn;
+  public boolean isOLVersionNumberColumn() {
+    return isOLVersionNumberColumn;
+  }
+
+  public boolean isOLTimestampColumn() {
+    return isOLVersionNumberColumn;
   }
 
   public ConverterTag getConverter() {
@@ -394,8 +404,12 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
 
   // Setters
 
-  void setVersionControlColumn(boolean isVersionControlColumn) {
-    this.isVersionControlColumn = isVersionControlColumn;
+  void setOLVersionNumberColumn(boolean isOLVersionNumberColumn) {
+    this.isOLVersionNumberColumn = isOLVersionNumberColumn;
+  }
+
+  void setOLTimestampColumn(boolean isOLTimestampColumn) {
+    this.isOLTimestampColumn = isOLTimestampColumn;
   }
 
   public void setReusesMemberFromSuperClass(boolean reusesMemberFromSuperClass) {

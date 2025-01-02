@@ -91,7 +91,7 @@ public class ExportColumnsToTXTOperation extends AbstractExportColumnsOperation 
 
       t.addCell(c.getAutogeneration() == null ? "" : "" + c.getAutogeneration());
       t.addCell(c.getBelongsToPK() == null ? "" : "" + c.getBelongsToPK());
-      t.addCell(c.getIsVersionControlColumn() == null ? "" : "" + c.getIsVersionControlColumn());
+      t.addCell(c.getIsOLTimestampColumn() || c.getIsOLVersionNumberColumn() ? "true" : "");
       t.addCell(c.getNature() == null ? "" : "" + c.getNature());
       t.addCell(c.getNullable() == null ? "" : "" + c.getNullable());
 

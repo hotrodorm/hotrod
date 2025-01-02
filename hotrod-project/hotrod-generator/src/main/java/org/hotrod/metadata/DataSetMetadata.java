@@ -39,7 +39,7 @@ public interface DataSetMetadata extends Serializable {
     return null;
   }
 
-  VersionControlMetadata getVersionControlMetadata();
+  OptimisticLockingMetadata getOptimisticLocking();
 
   HotRodFragmentConfigTag getFragmentConfig();
 

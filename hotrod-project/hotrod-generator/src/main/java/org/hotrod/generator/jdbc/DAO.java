@@ -25,6 +25,7 @@ import org.hotrod.config.ConverterTag;
 import org.hotrod.config.EnhancedSQLPart;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.JDBCTag;
+import org.hotrod.config.OptimisticLockingTag.OptimisticLockingStrategy;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.config.QueryMethodTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart;
@@ -43,6 +44,7 @@ import org.hotrod.dynamicsql.insert.PreparedInsertQuery;
 import org.hotrod.dynamicsql.insert.PrimaryKeyRetrievalMode;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
+import org.hotrod.exceptions.StaleDataException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.DAOType;
 import org.hotrod.generator.FileGenerator;
@@ -53,6 +55,7 @@ import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.metadata.KeyMetadata;
+import org.hotrod.metadata.OptimisticLockingMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.SelectMethodMetadata.SelectMethodReturnType;
 import org.hotrod.metadata.SelectParameterMetadata;
@@ -212,13 +215,15 @@ public class DAO {
       writeInsert(false); // standard INSERT
       writeInsert(true); // INSERT by example
 
-      writeUpdateByPK();
+      writeUpdateByPK(this.metadata.getOptimisticLocking() != null);
+
       writeUpdateByExample();
       if (this.isTable() || this.isView()) {
         writeUpdateByCriteria();
       }
 
-      writeDeleteByPK();
+      writeDeleteByPK(this.metadata.getOptimisticLocking() != null);
+
       writeDeleteByExample();
       if (this.isTable() || this.isView()) {
         writeDeleteByCriteria();
@@ -735,9 +740,10 @@ public class DAO {
 
   }
 
-  private void writeUpdateByPK() {
+  private void writeUpdateByPK(boolean optimisticLocking) {
 
     KeyMetadata pk = this.metadata.getPK();
+    OptimisticLockingMetadata ol = optimisticLocking ? this.metadata.getOptimisticLocking() : null;
 
     if (pk == null) {
       w.println();
@@ -745,11 +751,12 @@ public class DAO {
     } else {
 
       w.println();
-      w.println("  // UPDATE BY PRIMARY KEY");
+      w.println("  // UPDATE BY PRIMARY KEY"
+          + (ol == null ? "" : (" (OPTIMISTIC LOCKING - STRATEGY: " + ol.getStrategy().getTitle() + ")")));
 
       // Query
 
-      String queryName = "updateByPK";
+      String queryName = "updateByPK" + (ol == null ? "" : "OptimisticLocking");
       String initializerName = "initialize" + SUtil.capitalize(queryName);
       this.initializersInPostConstruct.add(initializerName);
 
@@ -759,8 +766,23 @@ public class DAO {
       w.println("  private void " + initializerName + "() {");
       w.println("    this." + queryName + " = assembler");
       w.println("      .literal(\"UPDATE " + this.metadata.getId().getRenderedSQLName() + "\")");
+
       fragmentSet();
-      fragmentWherePK("m");
+
+      if (ol == null) {
+        fragmentWherePK("m");
+      } else if (ol.getStrategy() == OptimisticLockingStrategy.FULL_ROW_CHECK) {
+        fragmentWhereFullRow("m");
+      } else {
+        fragmentWherePK("m");
+        ColumnMetadata cm = this.metadata.getOptimisticLocking().getColumnMetadata();
+        String memId = cm.getId().getJavaMemberName();
+        String sqlId = cm.getId().getRenderedSQLName();
+        String jdbcType = cm.getType().getJDBCShortType();
+        w.println("      .literaln(\"  AND " + SUtil.escapeJavaString(sqlId) + " = \").parameter(\""
+            + SUtil.escapeJavaString(memId) + "\", ", Types.class, "." + jdbcType + ")");
+      }
+
       w.println("    .endModificationQuery();");
       w.println("  }");
 
@@ -778,10 +800,10 @@ public class DAO {
 
       w.println("    ", ParameterContext.class, " context = this.assembler.newParameterContext();");
       w.println("    context.add(\"m\", m);");
-      w.println("    ", PreparedModificationQuery.class, " preparedQuery = this.updateByPK.prepare(context);");
+      w.println("    ", PreparedModificationQuery.class, " preparedQuery = this." + queryName + ".prepare(context);");
 
       fragmentLogging();
-      fragmentExecuteModification();
+      fragmentExecuteModification(optimisticLocking, "UPDATE");
 
       w.println("  }");
 
@@ -830,22 +852,6 @@ public class DAO {
 
   }
 
-//  // UPDATE BY CRITERIA
-//
-//  @Autowired
-//  private LiveSQL sql;
-//
-//  public UpdateSetCompletePhase update(final AccountPrototype updateValues, final AccountTable tableOrView,
-//      final GeneralBooleanExpression predicate) {
-//    List<Setter> setters = new ArrayList<>();
-//    if (updateValues.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(updateValues.getId())));
-//    if (updateValues.getName() != null) setters.add(new Setter(tableOrView.name, sql.val(updateValues.getName())));
-//    if (updateValues.getType() != null) setters.add(new Setter(tableOrView.type, sql.val(updateValues.getType())));
-//    if (updateValues.getBalance() != null) setters.add(new Setter(tableOrView.balance, sql.val(updateValues.getBalance())));
-//    if (updateValues.getActive() != null) setters.add(new Setter(tableOrView.active, sql.val(updateValues.getActive())));
-//    return new UpdateSetCompletePhase(this.context, tableOrView, setters, predicate);
-//  }
-
   private void writeUpdateByCriteria() {
     ExternalClass em = ExternalClass.of(this.model.getFullClassName());
     ExternalClass ec = ExternalClass.of(this.metadataClassName);
@@ -869,9 +875,10 @@ public class DAO {
     w.println("  }");
   }
 
-  private void writeDeleteByPK() {
+  private void writeDeleteByPK(boolean optimisticLocking) {
 
     KeyMetadata pk = this.metadata.getPK();
+    OptimisticLockingMetadata ol = optimisticLocking ? this.metadata.getOptimisticLocking() : null;
 
     if (pk == null) {
       w.println();
@@ -879,11 +886,12 @@ public class DAO {
     } else {
 
       w.println();
-      w.println("  // DELETE BY PRIMARY KEY");
+      w.println("  // DELETE BY PRIMARY KEY"
+          + (ol == null ? "" : (" (OPTIMISTIC LOCKING - STRATEGY: " + ol.getStrategy().getTitle() + ")")));
 
       // Query
 
-      String queryName = "deleteByPK";
+      String queryName = "deleteByPK" + (ol == null ? "" : "OptimisticLocking");
       String initializerName = "initialize" + SUtil.capitalize(queryName);
       this.initializersInPostConstruct.add(initializerName);
 
@@ -893,7 +901,21 @@ public class DAO {
       w.println("  private void " + initializerName + "() {");
       w.println("    this." + queryName + " = assembler");
       w.println("      .literaln(\"DELETE FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
-      fragmentWherePK("f");
+
+      if (ol == null) {
+        fragmentWherePK("f");
+      } else if (ol.getStrategy() == OptimisticLockingStrategy.FULL_ROW_CHECK) {
+        fragmentWhereFullRow("f");
+      } else {
+        fragmentWherePK("f");
+        ColumnMetadata cm = this.metadata.getOptimisticLocking().getColumnMetadata();
+        String memId = cm.getId().getJavaMemberName();
+        String sqlId = cm.getId().getRenderedSQLName();
+        String jdbcType = cm.getType().getJDBCShortType();
+        w.println("      .literaln(\"  AND " + SUtil.escapeJavaString(sqlId) + " = \").parameter(\""
+            + SUtil.escapeJavaString(memId) + "\", ", Types.class, "." + jdbcType + ")");
+      }
+
       w.println("      .endModificationQuery();");
       w.println("  }");
 
@@ -919,10 +941,10 @@ public class DAO {
 
       w.println("    ", ParameterContext.class, " context = this.assembler.newParameterContext();");
       w.println("    context.add(\"f\", filter);");
-      w.println("    ", PreparedModificationQuery.class, " preparedQuery = this.deleteByPK.prepare(context);");
+      w.println("    ", PreparedModificationQuery.class, " preparedQuery = this." + queryName + ".prepare(context);");
 
       fragmentLogging();
-      fragmentExecuteModification();
+      fragmentExecuteModification(optimisticLocking, "DELETE");
 
       w.println("  }");
 
@@ -968,12 +990,6 @@ public class DAO {
     w.println("  }");
 
   }
-
-//  // DELETE BY CRITERIA
-//
-//  public DeleteWherePhase delete(final AccountTable from, final GeneralBooleanExpression predicate) {
-//    return new DeleteWherePhase(this.context, from, predicate);
-//  }
 
   private void writeDeleteByCriteria() {
     ExternalClass ec = ExternalClass.of(this.metadataClassName);
@@ -1041,7 +1057,6 @@ public class DAO {
 
       ExternalClass th = ExternalClass.of(TypeHandler.class);
       if (rawClass != null && javaConverterClass != null) {
-//        ExternalClass rwt = ExternalClass.of(rawClass);
         ExternalClass cvt = ExternalClass.of(javaConverterClass);
         w.print(th, ".of(", cvt, ".class, ");
         w.print(TypeSource.class, ".ENTITY_COLUMN)");
@@ -1066,13 +1081,6 @@ public class DAO {
     w.println();
 
     ExternalClass nm = ExternalClass.of(Name.class);
-
-//    String c = catalog == null ? "null"
-//        : "Name.of(\"" + JUtils.escapeJavaString(catalog.getCanonicalSQLName()) + "\", " + catalog.isQuoted() + ")";
-//    String s = schema == null ? "null"
-//        : "Name.of(\"" + JUtils.escapeJavaString(schema.getCanonicalSQLName()) + "\", " + schema.isQuoted() + ")";
-//    String n = "Name.of(\"" + JUtils.escapeJavaString(name.getCanonicalSQLName()) + "\", " + name.isQuoted() + ")";
-
     w.println("    // Constructors");
     w.println();
     w.println("    " + this.metadataClassName + "() {");
@@ -1212,14 +1220,22 @@ public class DAO {
   }
 
   private void fragmentSet() {
+    OptimisticLockingMetadata ol = this.metadata.getOptimisticLocking();
     w.println("      .set(assembler.ifs()");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
-      String memId = cm.getId().getJavaMemberName();
       String sqlId = cm.getId().getRenderedSQLName();
-      String jdbcType = cm.getType().getJDBCShortType();
-      w.println("        .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.literal(\""
-          + SUtil.escapeJavaString(sqlId) + " = \").parameter(\"m." + SUtil.escapeJavaString(memId) + "\", Types."
-          + jdbcType + ").end())");
+      if (ol != null && cm.isOLVersionNumberColumn()) {
+        w.println("        .if_(\"true\", assembler.literal(\"" + SUtil.escapeJavaString(sqlId) + " = "
+            + SUtil.escapeJavaString(sqlId) + " + 1\").end())");
+      } else if (ol != null && cm.isOLTimestampColumn()) {
+        // Ignore update on timestamp column if the strategy is TIMESTAMP
+      } else {
+        String memId = cm.getId().getJavaMemberName();
+        String jdbcType = cm.getType().getJDBCShortType();
+        w.println("        .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.literal(\""
+            + SUtil.escapeJavaString(sqlId) + " = \").parameter(\"m." + SUtil.escapeJavaString(memId) + "\", Types."
+            + jdbcType + ").end())");
+      }
     }
     w.println("        .end())");
   }
@@ -1248,7 +1264,20 @@ public class DAO {
       String sqlId = cm.getId().getRenderedSQLName();
       String jdbcType = cm.getType().getJDBCShortType();
       w.println(
-          "      .literal(\"" + SUtil.escapeJavaString(sep.render()) + "\" + \"" + SUtil.escapeJavaString(sqlId)
+          "      .literaln(\"" + SUtil.escapeJavaString(sep.render()) + "\" + \"" + SUtil.escapeJavaString(sqlId)
+              + " = \").parameter(\"" + objname + "." + SUtil.escapeJavaString(memId) + "\", ",
+          Types.class, "." + jdbcType + ")");
+    }
+  }
+
+  private void fragmentWhereFullRow(String objname) {
+    Separator sep = Separator.of("WHERE ", "  AND ");
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      String memId = cm.getId().getJavaMemberName();
+      String sqlId = cm.getId().getRenderedSQLName();
+      String jdbcType = cm.getType().getJDBCShortType();
+      w.println(
+          "      .literaln(\"" + SUtil.escapeJavaString(sep.render()) + "\" + \"" + SUtil.escapeJavaString(sqlId)
               + " = \").parameter(\"" + objname + "." + SUtil.escapeJavaString(memId) + "\", ",
           Types.class, "." + jdbcType + ")");
     }
@@ -1272,8 +1301,19 @@ public class DAO {
   }
 
   private void fragmentExecuteModification() {
+    this.fragmentExecuteModification(false, null);
+  }
+
+  private void fragmentExecuteModification(boolean optimisticLocking, String clause) {
     w.println("    try (", Connection.class, " conn = this.dataSource.getConnection()) {");
     w.println("      int rows = preparedQuery.execute(conn);");
+    if (optimisticLocking) {
+      w.println("      if (rows == 0) {");
+      w.println("        throw new ", StaleDataException.class,
+          "(" + "\"Failed optimistic locking " + clause + ". The row in the table "
+              + this.metadata.getId().getCanonicalSQLName() + " had changed since it was read\");");
+      w.println("      }");
+    }
     w.println("      return rows;");
     w.println("    }");
   }

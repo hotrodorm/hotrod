@@ -17,7 +17,7 @@
   <xsd:complexType name="table-type">
     <xsd:sequence>
       <xsd:element name="auto-generated-column" type="auto-generated-column-type" minOccurs="0" maxOccurs="1" />
-      <xsd:element name="version-control-column" type="version-control-column-type" minOccurs="0" maxOccurs="1" />
+      <xsd:element name="optimistic-locking" type="optimistic-locking-type" minOccurs="0" maxOccurs="1" />
       <xsd:element name="column" type="column-type" minOccurs="0" maxOccurs="unbounded" />
       <xsd:choice minOccurs="0" maxOccurs="unbounded">
         <xsd:element name="sequence" type="sequence-type" />
@@ -83,10 +83,11 @@
     <xsd:attribute name="always" type="xsd:string" />
   </xsd:complexType>
 
-  <!-- version-control-column -->
+  <!-- optimistic-locking -->
   
-  <xsd:complexType name="version-control-column-type">
-    <xsd:attribute name="name" type="xsd:string" use="required" />
+  <xsd:complexType name="optimistic-locking-type">
+    <xsd:attribute name="strategy" type="xsd:string" use="required" />
+    <xsd:attribute name="column" type="xsd:string" />
   </xsd:complexType>
 
   <!-- column -->

@@ -161,7 +161,7 @@ public class ExportColumnsToXLSXOperation extends AbstractExportColumnsOperation
 
         addCell(body, style, c.getAutogeneration() == null ? "" : "" + c.getAutogeneration());
         addCell(body, style, c.getBelongsToPK() == null ? "" : "" + c.getBelongsToPK());
-        addCell(body, style, c.getIsVersionControlColumn() == null ? "" : "" + c.getIsVersionControlColumn());
+        addCell(body, style, c.getIsOLTimestampColumn() || c.getIsOLVersionNumberColumn() ? "true" : "");
         addCell(body, style, c.getNature() == null ? "" : "" + c.getNature());
         addCell(body, style, c.getNullable() == null ? "" : "" + c.getNullable());
 

@@ -3,6 +3,7 @@
 package app.daos.primitives;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import org.hotrod.json.JSONObject;
 
@@ -17,6 +18,8 @@ public class AccountPrototype implements Serializable {
   protected String type = null;
   protected Integer balance = null;
   protected Boolean active = null;
+  protected Timestamp updatedAt = null;
+  protected Integer version = null;
 
   // getters & setters
 
@@ -60,6 +63,22 @@ public class AccountPrototype implements Serializable {
     this.active = active;
   }
 
+  public Timestamp getUpdatedAt() {
+    return this.updatedAt;
+  }
+
+  public void setUpdatedAt(final Timestamp updatedAt) {
+    this.updatedAt = updatedAt;
+  }
+
+  public Integer getVersion() {
+    return this.version;
+  }
+
+  public void setVersion(final Integer version) {
+    this.version = version;
+  }
+
   // to string
 
   public String toString() {
@@ -69,7 +88,9 @@ public class AccountPrototype implements Serializable {
     sb.append("- name=" + this.name + "\n");
     sb.append("- type=" + this.type + "\n");
     sb.append("- balance=" + this.balance + "\n");
-    sb.append("- active=" + this.active);
+    sb.append("- active=" + this.active + "\n");
+    sb.append("- updatedAt=" + this.updatedAt + "\n");
+    sb.append("- version=" + this.version);
     return sb.toString();
   }
 
@@ -82,6 +103,8 @@ public class AccountPrototype implements Serializable {
     obj.addProperty("type", this.type);
     obj.addProperty("balance", this.balance);
     obj.addProperty("active", this.active);
+    obj.addProperty("updatedAt", this.updatedAt);
+    obj.addProperty("version", this.version);
     return obj;
   }
 

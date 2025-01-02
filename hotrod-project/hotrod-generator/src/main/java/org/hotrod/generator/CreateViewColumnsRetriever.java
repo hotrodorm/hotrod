@@ -162,7 +162,7 @@ public class CreateViewColumnsRetriever implements ColumnsRetriever {
         ColumnTag columnTag = ctx.getTag().findColumnTag(c.getName(), this.adapter);
         log.fine("c=" + c.getName() + " / col: " + columnTag);
         ColumnMetadata cm = new ColumnMetadata(ctx.getSm(), c, ctx.getTag().getMethod(), this.adapter, columnTag, false,
-            false, this.config.getTypeSolverTag());
+            false, false, this.config.getTypeSolverTag());
         log.fine(" --> type=" + cm.getType());
         nonStructuredColumns.add(cm);
       }
@@ -285,7 +285,7 @@ public class CreateViewColumnsRetriever implements ColumnsRetriever {
           JdbcColumn c = this.db.retrieveSelectColumn(rs);
           ColumnMetadata cm;
           try {
-            cm = new ColumnMetadata(null, c, ctx.getTag().getMethod(), this.adapter, null, false, false,
+            cm = new ColumnMetadata(null, c, ctx.getTag().getMethod(), this.adapter, null, false, false, false,
                 this.config.getTypeSolverTag());
           } catch (InvalidIdentifierException e) {
             String msg = "Invalid identifier for column '" + c.getName() + "': " + e.getMessage();

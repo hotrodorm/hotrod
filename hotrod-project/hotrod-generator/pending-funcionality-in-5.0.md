@@ -40,16 +40,17 @@ LiveSQL:
 
 CRUD:
 
+- Optimistic Locking.
 - SELECT sequence.
 - SELECT by UI.
 - Enums.
-- Optimistic Locking.
 - Converters when writing to the database (also in Nitro and LiveSQL).
 
 Nitro:
 
 - Graph queries.
-- Query mode: single-row, List, Cursor.
+- Query mode: Single-row
+- Query mode: Cursor.
 
 LiveSQL:
 

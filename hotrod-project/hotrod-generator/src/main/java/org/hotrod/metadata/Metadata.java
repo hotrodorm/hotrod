@@ -273,6 +273,7 @@ public class Metadata {
       try {
         config.validateAgainstDatabase(this, conn, adapter);
       } catch (InvalidConfigurationFileException e) {
+        e.printStackTrace();
         throw new ControlledException(e.getTag().getSourceLocation(), e.getMessage());
       }
       // }

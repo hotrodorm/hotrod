@@ -215,7 +215,7 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
   }
 
   @Override
-  public VersionControlMetadata getVersionControlMetadata() {
+  public OptimisticLockingMetadata getOptimisticLocking() {
     return null;
   }
 

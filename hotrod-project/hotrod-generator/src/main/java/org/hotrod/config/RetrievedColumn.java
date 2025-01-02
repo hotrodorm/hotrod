@@ -21,7 +21,8 @@ public class RetrievedColumn implements Comparable<RetrievedColumn> {
   private Object columnDefault;
   private AutogenerationType autogenerationType;
   private Boolean belongsToPK;
-  private Boolean isVersionControlColumn;
+  private Boolean isOLVersionNumberColumn;
+  private Boolean isOLTimestampColumn;
   private ColumnNature nature;
   private Integer ordinal;
   private Boolean nullable;
@@ -39,7 +40,8 @@ public class RetrievedColumn implements Comparable<RetrievedColumn> {
     this.columnDefault = cm.getColumnDefault();
     this.autogenerationType = cm.getAutogenerationType();
     this.belongsToPK = cm.belongsToPK();
-    this.isVersionControlColumn = cm.isVersionControlColumn();
+    this.isOLVersionNumberColumn = cm.isOLVersionNumberColumn();
+    this.isOLTimestampColumn = cm.isOLTimestampColumn();
     if (c != null) {
       JdbcTable t = c.getTable();
       this.catalog = t == null ? null : t.getCatalog();
@@ -195,8 +197,12 @@ public class RetrievedColumn implements Comparable<RetrievedColumn> {
     return belongsToPK;
   }
 
-  public Boolean getIsVersionControlColumn() {
-    return isVersionControlColumn;
+  public Boolean getIsOLVersionNumberColumn() {
+    return this.isOLVersionNumberColumn;
+  }
+
+  public Boolean getIsOLTimestampColumn() {
+    return this.isOLTimestampColumn;
   }
 
   public ColumnNature getNature() {

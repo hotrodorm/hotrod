@@ -2,23 +2,23 @@ package org.hotrod.metadata;
 
 import java.io.Serializable;
 
-import org.hotrod.config.VersionControlColumnTag;
+import org.hotrod.config.OptimisticLockingTag;
+import org.hotrod.config.OptimisticLockingTag.OptimisticLockingStrategy;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
 
-public class VersionControlMetadata implements Serializable {
+public class OptimisticLockingMetadata implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
   private DataSetMetadata dataSet;
   private ColumnMetadata columnMetadata;
 
-  @SuppressWarnings("unused")
-  private VersionControlColumnTag tag;
+  private OptimisticLockingTag tag;
   @SuppressWarnings("unused")
   private DatabaseAdapter adapter;
 
-  public VersionControlMetadata(final DataSetMetadata dataSet, final VersionControlColumnTag tag,
+  public OptimisticLockingMetadata(final DataSetMetadata dataSet, final OptimisticLockingTag tag,
       final ColumnMetadata cm, final DatabaseAdapter adapter) throws UnresolvableDataTypeException {
     this.dataSet = dataSet;
     this.tag = tag;
@@ -28,6 +28,10 @@ public class VersionControlMetadata implements Serializable {
 
   public DataSetMetadata getDataSet() {
     return dataSet;
+  }
+
+  public OptimisticLockingStrategy getStrategy() {
+    return this.tag.getStrategy();
   }
 
   public ColumnMetadata getColumnMetadata() {

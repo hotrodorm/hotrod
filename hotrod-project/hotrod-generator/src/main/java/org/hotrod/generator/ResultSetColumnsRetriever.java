@@ -109,7 +109,7 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
         ColumnMetadata cm;
         try {
           cm = new ColumnMetadata(ctx.getSm(), rm, i, ctx.getTag().getMethod(), this.adapter, columnTag, false, false,
-              this.config.getTypeSolverTag());
+              false, this.config.getTypeSolverTag());
         } catch (UnresolvableDataTypeException e) {
           String msg = "Could not retrieve metadata for <" + new SelectMethodTag().getTagName()
               + ">: could not find suitable Java type for column '" + e.getColumnMetadata().getName() + "' ";
@@ -168,7 +168,7 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
         ColumnMetadata cm;
         try {
           cm = new ColumnMetadata(ctx.getSm(), rm, i, ctx.getTag().getMethod(), this.adapter, columnTag, false, false,
-              this.config.getTypeSolverTag());
+              false, this.config.getTypeSolverTag());
 
           String alias = aliasPrefix + cm.getName();
           StructuredColumnMetadata scm = new StructuredColumnMetadata(cm, entityPrefix, alias, false, null,

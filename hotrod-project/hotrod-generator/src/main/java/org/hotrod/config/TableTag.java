@@ -56,8 +56,7 @@ public class TableTag extends AbstractEntityDAOTag {
   private String javaClassName = null;
   private String columnSeam = null;
 
-  private ClassicFKNavigationTag classicFKNavigation = null;
-  private VersionControlColumnTag versionControlColumn = null;
+  private OptimisticLockingTag optimisticLocking = null;
   private List<ColumnTag> columns = new ArrayList<ColumnTag>();
 
   private DaosTag daosTag;
@@ -160,14 +159,9 @@ public class TableTag extends AbstractEntityDAOTag {
     this.columnSeam = columnSeam;
   }
 
-  @XmlElement(name = "classic-fk-navigation")
-  public void setClassicFKNavigation(final ClassicFKNavigationTag classicFKNavigation) {
-    this.classicFKNavigation = classicFKNavigation;
-  }
-
-  @XmlElement(name = "version-control-column")
-  public void setVersionControlColumn(final VersionControlColumnTag versionControlColumn) {
-    this.versionControlColumn = versionControlColumn;
+  @XmlElement(name = "optimistic-locking")
+  public void setOptimisticLocking(final OptimisticLockingTag optimisticLocking) {
+    this.optimisticLocking = optimisticLocking;
   }
 
   @XmlElement
@@ -334,10 +328,10 @@ public class TableTag extends AbstractEntityDAOTag {
 
     // implements: no validation necessary
 
-    // version-control
+    // optimistic-locking
 
-    if (this.versionControlColumn != null) {
-      this.versionControlColumn.validate();
+    if (this.optimisticLocking != null) {
+      this.optimisticLocking.validate();
     }
 
     // columns
@@ -479,8 +473,8 @@ public class TableTag extends AbstractEntityDAOTag {
       ct.validateAgainstDatabase(metadata);
     }
 
-    if (this.versionControlColumn != null) {
-      this.versionControlColumn.validateAgainstDatabase(metadata, this.id.getCanonicalSQLName(), jt);
+    if (this.optimisticLocking != null) {
+      this.optimisticLocking.validateAgainstDatabase(metadata, this.id.getCanonicalSQLName(), jt);
     }
 
     for (SelectMethodTag s : this.getSelects()) {
@@ -612,12 +606,8 @@ public class TableTag extends AbstractEntityDAOTag {
     return new DatabaseObject(c, s, n);
   }
 
-  public ClassicFKNavigationTag getClassicFKNavigation() {
-    return classicFKNavigation;
-  }
-
-  public VersionControlColumnTag getVersionControlColumn() {
-    return versionControlColumn;
+  public OptimisticLockingTag getOptimisticLocking() {
+    return optimisticLocking;
   }
 
   public List<ColumnTag> getColumns() {

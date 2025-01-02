@@ -169,16 +169,18 @@ create table account (
   name varchar(20) not null,
   type varchar(3) default 'PEN',
   balance int not null,
-  active int not null
+  active int not null,
+  updated_at timestamp not null default CURRENT_TIMESTAMP,
+  version int not null
 );
 
-insert into account (id, name, type, balance, active) values
-  (123, '1010', 'CHK', 100, true),
-  (456, '2055', 'SAV', 200, true),
-  (789, '2056', 'SAV', 300, true),
-  (111, '1072', 'CHK', 500, false),
-  (112, '1073', 'CHK', 410, false),
-  (113, '5172', 'CHK', 50, false);
+insert into account (id, name, type, balance, active, version) values
+  (123, '1010', 'CHK', 100, true, 1),
+  (456, '2055', 'SAV', 200, true, 1),
+  (789, '2056', 'SAV', 300, true, 1),
+  (111, '1072', 'CHK', 500, false, 1),
+  (112, '1073', 'CHK', 410, false, 1),
+  (113, '5172', 'CHK', 50, false, 1);
 
 create sequence seq_account start with 1000;
 
