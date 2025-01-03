@@ -70,7 +70,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
       final boolean incrementalMode, final Feedback feedback)
       throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
 
-    log.info("CONFIGURE GENERATION");
+//    log.info("CONFIGURE GENERATION");
 
     this.hc = hc;
 
@@ -92,7 +92,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
   @Override
   public void prepareGeneration() throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
 
-    log.info("PREPARE GENERATION");
+//    log.info("PREPARE GENERATION");
 
     this.jdbcTag = (JDBCTag) this.config.getGenerators().getSelectedGeneratorTag();
     this.layout = new DataSetLayout(this.config);
@@ -214,12 +214,12 @@ public class JDBCGenerator implements Generator, LiveGenerator {
   private void addSelectVOs(final SelectMethodMetadata sm, final EntityDTOs entityVOs) throws ControlledException {
 
     if (entityVOs != null) {
-      log.info("entityVOs");
+//      log.info("entityVOs");
 
       sm.setEntityVOs(entityVOs);
 
     } else {
-      log.info("other");
+//      log.info("other");
 
       // DataSetLayout layout = new DataSetLayout(this.config);
       HotRodFragmentConfigTag fragmentConfig = sm.getFragmentConfig();
@@ -233,21 +233,21 @@ public class JDBCGenerator implements Generator, LiveGenerator {
 
       SelectVOClass soloVO = rt.getSoloVO();
       SelectVOClass abstractSoloVO = rt.getAbstractSoloVO();
-      log.info("soloVO=" + soloVO + " - abstractSoloVO=" + abstractSoloVO);
+//      log.info("soloVO=" + soloVO + " - abstractSoloVO=" + abstractSoloVO);
 
       if (soloVO != null) {
         SelectAbstractVO abstractVO = new SelectAbstractVO(abstractSoloVO, this.layout, this.jdbcTag);
         this.abstractSelectVOs.add(abstractVO);
         SelectVO vo = new SelectVO(soloVO, abstractVO, this.layout);
         this.selectVOs.add(vo);
-        log.fine("### soloVO.getName()=" + soloVO.getName() + " abstractVO.getName()=" + abstractVO.getName());
+//        log.fine("### soloVO.getName()=" + soloVO.getName() + " abstractVO.getName()=" + abstractVO.getName());
       }
 
       // connected VOs (all)
 
       if (sm.getStructuredColumns() != null) {
         for (VOMetadata vo : sm.getStructuredColumns().getVOs()) {
-          log.finer("### Metadata: vo.getName()=" + vo.getName());
+//          log.finer("### Metadata: vo.getName()=" + vo.getName());
 //          registerVOs(vo);
         }
       }
@@ -262,7 +262,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
 
   @Override
   public void generate(FileGenerator fileGenerator) throws UncontrolledException, ControlledException {
-    log.info("JDBC GENERATE");
+//    log.info("JDBC GENERATE");
 
     for (Model vo : this.vos.values()) {
       vo.generate(fileGenerator);

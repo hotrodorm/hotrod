@@ -281,7 +281,7 @@ public class NitroRenderer {
   private void render(SQLParameter t, ClassWriter w, int level) throws ControlledException {
     log.fine("[" + level + "] render(SQLParameter) -- " + t.getName());
     ParameterTag pt = t.getDefinition();
-    log.info("pt=" + pt);
+//    log.info("pt=" + pt);
     if (pt.getJDBCType() == null) {
       w.println(indent(level) + ".parameterUntyped(" + renderString(t.getName()) + ")");
     } else {

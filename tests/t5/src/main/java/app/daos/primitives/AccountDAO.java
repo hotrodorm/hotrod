@@ -147,7 +147,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .literaln("  updated_at,")
       .literaln("  version")
       .literaln("FROM account")
-      .literaln("WHERE " + "id = ").parameter("f.id", Types.INTEGER)
+      .literaln("\nWHERE " + "id = ").parameter("f.id", Types.INTEGER)
       .endSelectQuery();
   }
 
@@ -308,7 +308,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
         .if_("m.updatedAt != null", assembler.literal("updated_at = ").parameter("m.updatedAt", Types.TIMESTAMP).end())
         .if_("true", assembler.literal("version = version + 1").end())
         .end())
-      .literaln("WHERE " + "id = ").parameter("m.id", Types.INTEGER)
+      .literaln("\nWHERE " + "id = ").parameter("m.id", Types.INTEGER)
       .literaln("  AND version = ").parameter("m.version", Types.INTEGER)
     .endModificationQuery();
   }
@@ -390,7 +390,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   private void initializeDeletebypkwithoptimisticlocking() {
     this.deleteByPKWithOptimisticLocking = assembler
       .literaln("DELETE FROM account")
-      .literaln("WHERE " + "id = ").parameter("f.id", Types.INTEGER)
+      .literaln("\nWHERE " + "id = ").parameter("f.id", Types.INTEGER)
       .literaln("  AND version = ").parameter("f.version", Types.INTEGER)
       .endModificationQuery();
   }

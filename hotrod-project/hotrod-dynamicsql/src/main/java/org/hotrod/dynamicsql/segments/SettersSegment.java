@@ -20,7 +20,8 @@ public class SettersSegment extends DynamicListSegment {
   public SettersSegment(List<IfSegment> ifSegments, DynamicExpressionFactory factory) {
     super(new ListProcessor( //
         new ClauseFormatter("SET", "\n", " "), //
-        new ClauseFormatter(",", null, "\n    "), null, null));
+        new ClauseFormatter(",", null, "\n    "), null, new ClauseFormatter("\n", null, null) //
+    ));
     this.ifSegments = ifSegments;
   }
 

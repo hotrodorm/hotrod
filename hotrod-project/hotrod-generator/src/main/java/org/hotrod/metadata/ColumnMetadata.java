@@ -375,7 +375,7 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
   }
 
   public boolean isOLTimestampColumn() {
-    return isOLVersionNumberColumn;
+    return this.isOLTimestampColumn;
   }
 
   public ConverterTag getConverter() {
@@ -409,6 +409,7 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
   }
 
   void setOLTimestampColumn(boolean isOLTimestampColumn) {
+    log.info("isOLTimestampColumn=" + isOLTimestampColumn);
     this.isOLTimestampColumn = isOLTimestampColumn;
   }
 

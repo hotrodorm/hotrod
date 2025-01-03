@@ -42,7 +42,7 @@ public class GenOperation {
   public GenOperation(final File baseDir, final String configfilename, final String localproperties,
       final String jdbcdriverclass, final String jdbcurl, final String jdbcusername, final String jdbcpassword,
       final String jdbccatalog, final String jdbcschema, final String facets, final String display) throws Exception {
-    log.info("init 1");
+//    log.info("init 1");
     this.baseDir = baseDir;
     this.configfilename = configfilename;
     this.localproperties = localproperties;
@@ -58,11 +58,11 @@ public class GenOperation {
   }
 
   public void execute(final Feedback feedback) throws Exception {
-    log.info("prepare");
+//    log.info("prepare");
     HotRodServices hs = new HotRodServices(this.baseDir, this.jdbcdriverclass, this.jdbcurl, this.jdbcusername,
         this.jdbcpassword, this.jdbccatalog, this.jdbcschema, this.configFile, this.displayMode, this.facetNames);
 
-    log.info("gen");
+//    log.info("gen");
     hs.generate(feedback);
 
   }

@@ -88,6 +88,7 @@
   <xsd:complexType name="optimistic-locking-type">
     <xsd:attribute name="strategy" type="xsd:string" use="required" />
     <xsd:attribute name="column" type="xsd:string" />
+    <xsd:attribute name="value" type="xsd:string" />
   </xsd:complexType>
 
   <!-- column -->

@@ -533,7 +533,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
     // Simpler methods
 
     private ClassPackage getReturnVOPackage() { // primitives.accounting
-      log.info("this.sm.entityVOs=" + this.sm.entityVOs);
+//      log.info("this.sm.entityVOs=" + this.sm.entityVOs);
       if (this.sm.entityVOs != null) {
         return this.sm.entityVOs.getVo().getClassPackage();
       }

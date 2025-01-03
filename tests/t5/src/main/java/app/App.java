@@ -61,9 +61,9 @@ public class App {
 
   private void testOptimisticLocking() throws SQLException, DynamicExpressionException {
 //    testOLInsert();
-    testOLInsertByExample() ;
+//    testOLInsertByExample() ;
 //    testOLDeleteUpdate();
-//    testOLUpdateDelete();
+    testOLUpdateDelete();
   }
 
   private void testOLInsert() throws DynamicExpressionException, SQLException {
@@ -73,6 +73,7 @@ public class App {
     a.setBalance(100);
     a.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
     a.setActive(true);
+    a.setVersion(1);
     this.accountDAO.insert(a);
     System.out.println("--> a=" + a);
 
@@ -86,6 +87,7 @@ public class App {
     a.setType("CHK");
     a.setBalance(100);
     a.setActive(true);
+    a.setVersion(1);
     this.accountDAO.insertByExample(a);
     System.out.println("--> a=" + a);
 

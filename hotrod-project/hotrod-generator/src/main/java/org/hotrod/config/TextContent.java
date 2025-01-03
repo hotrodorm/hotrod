@@ -55,7 +55,7 @@ public class TextContent extends EnhancedSQLPart {
     Tokenizer tokenizer = new Tokenizer(tag, this.txt);
     Token token;
     while ((token = tokenizer.next()) != null) {
-      log.info("TOKEN: " + token.getType() + " - " + token.getBody());
+//      log.info("TOKEN: " + token.getType() + " - " + token.getBody());
       switch (token.getType()) {
 
       case SQL_PARAMETER:

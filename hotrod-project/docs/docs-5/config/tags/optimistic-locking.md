@@ -13,8 +13,9 @@ It includes the following attributes:
 
 | Attribute | Description | Defaults to |
 | -- | -- | -- |
-| strategy | The strategy to implement optimistic locking in this table. One of: `version-number`, `timestamp`, or `full-row-check`. | Required |
-| column | - In case the version-number strategy is selected this is the numeric column used as a version number. Must be an integer-like type<br/>- In case the timestamp strategy is selected this is the TIMESTAMP column used to verify unchanged rows<br/>- In case the full-row-check strategy is selected this  attribute should not be specified | Depends |
+| strategy | The strategy to implement optimistic locking in this table. One of: `version-number`, `timestamp`, or `full-row-check`. | N/A |
+| column | - In case the version-number strategy is selected this is the numeric column used as a version number. Must be an integer-like type<br/>- In case the timestamp strategy is selected this is the TIMESTAMP column used to verify unchanged rows<br/>- In case the full-row-check strategy is selected this  attribute should not be specified | N/A |
+| value | The SQL expression that produces a new value when for the TIMESTAMP column. This attribute is required the the timestamp strategy is selected | N/A |
 
 
 ## Goal
@@ -36,9 +37,9 @@ HotRod currently supports three optimistic locking strategies:
 time the row is updated the version number changes. `UPDATE` and `DELETE` operations can detect changes in this value and abort the ongoing transaction on such event.
 - **Timestamp Column**: If a timestamp column happens to be already included in the table
 it can be used for optimistic locking. Each time the row is changed this timestamp is updated. The upside
-of this strategy is that no extra column is required. The downsides of it is that the
+of this strategy is that no extra column is required. The downside of it is that the
 column may have been intended for a different goal (not low level updates), and also the granularity of the timestamp
-value could be insufficient on highly updated rows that can occur more than once a second (milliseconds, or microseconds).
+value could be insufficient on highly updated rows that can occur more than once a second (or milliseconds, microseconds, nanoseconds).
 - **Full Row Check**: This strategy checks the entire row for changes while updating it or deleting it. The benefit of this strategy is that is doesn't require an extra column to be added to the table.
 The downside is that it needs to compare all the columns of the table before updating, and this
 could place extra load in the database. This extra load could be significant when comparing LOB
@@ -54,7 +55,7 @@ CREATE TABLE account (
   id INT PRIMARY KEY NOT NULL,
   acc_num VARCHAR(20) NOT NULL,
   balance INT NOT NULL
-  updated_at TIMESTAMP NOT NULL DEFAULT current_timestamp
+  updated_at TIMESTAMP NOT NULL
 );
 ```
 
@@ -68,7 +69,7 @@ CREATE TABLE account (
   id INT PRIMARY KEY NOT NULL,
   acc_num VARCHAR(20) NOT NULL,
   balance INT NOT NULL,
-  updated_at TIMESTAMP NOT NULL DEFAULT current_timestamp,
+  updated_at TIMESTAMP NOT NULL,
   row_version INT NOT NULL -- we need to add an extra column
 );
 ```
@@ -98,17 +99,16 @@ deleted had changed (or was removed).
 
 ### Example 2 - Timestamp Strategy
 
-To use the Timestamp strategy the table ACCOUNT needs to have a TIMESTAMP column that, when not
-specified, defaults to the current timestamp. Fortunately, our ACCOUNT table already has one. 
+To use the Timestamp strategy the table ACCOUNT needs to have a TIMESTAMP column to store the last time it was updated; our ACCOUNT table already has one. If it didn't have one, we would need to add a column for this purpose; otherwise we could not use this strategy.
 
-There's no need to change the table:
+In this case there's no need to change the table:
 
 ```sql
 CREATE TABLE account (
   id INT PRIMARY KEY NOT NULL,
   acc_num VARCHAR(20) NOT NULL,
   balance INT NOT NULL,
-  updated_at TIMESTAMP NOT NULL DEFAULT current_timestamp
+  updated_at TIMESTAMP NOT NULL
 );
 ```
 
@@ -118,11 +118,13 @@ Now, we need to declare the optimistic locking strategy in the configuration fil
 <hotrod>
 
   <table name="account">
-    <optimistic-locking strategy="timestamp" column="updated_at" />
+    <optimistic-locking strategy="timestamp" column="updated_at" value="current_timestamp" />
   </table>
 
 </hotrod>
 ```
+
+**Note**: the `current_timestamp` SQL expression is a valid expression that generates a TIMESTAMP with the current date and time in the H2 database. Change accordingly for the specific database you are using.
 
 Again, we can use the DAO as we normally do to SELECT, INSERT, UPDATE, and DELETE rows. Consider
 that UPDATE and DELETE can now throw `StaleDataException` in case the row being updated or
@@ -147,7 +149,7 @@ CREATE TABLE account (
   id INT PRIMARY KEY NOT NULL,
   acc_num VARCHAR(20) NOT NULL,
   balance INT NOT NULL,
-  updated_at TIMESTAMP NOT NULL DEFAULT current_timestamp
+  updated_at TIMESTAMP NOT NULL
 );
 ```
 

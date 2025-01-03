@@ -261,7 +261,7 @@ public class DAO {
 
     int i = 0;
     for (QueryMethodTag q : this.tag.getQueries()) {
-      log.info("q.getJavaMethodName()=" + q.getMethod());
+//      log.info("q.getJavaMethodName()=" + q.getMethod());
       writeNitroQuery(q, i++);
     }
 
@@ -501,9 +501,11 @@ public class DAO {
       }
     }
 
+    OptimisticLockingMetadata ol = this.metadata.getOptimisticLocking();
+
     InsertMechanics mechanics = computeInsertMechanics(sequences, identities, defaults);
 
-    log.info("mechanics: " + mechanics);
+//    log.info("mechanics: " + mechanics);
 
     // Query
 
@@ -526,8 +528,12 @@ public class DAO {
       String sqlId = cm.getId().getRenderedSQLName();
 
       if (byExample) {
-        w.println("      .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.literal(\""
-            + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\\n\").end())");
+        if (ol != null && ol.getStrategy() == OptimisticLockingStrategy.TIMESTAMP && cm.isOLTimestampColumn()) {
+          w.println("      .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
+        } else {
+          w.println("      .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.literal(\""
+              + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\\n\").end())");
+        }
       } else {
 
         // Always include column
@@ -572,15 +578,25 @@ public class DAO {
       String jdbcType = cm.getType().getJDBCShortType();
 
       if (byExample) {
-        w.println("      .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.parameter(\"m."
-            + SUtil.escapeJavaString(memId) + "\", Types." + jdbcType + ")" + (n < coln ? ".literal(\", \")" : "")
-            + ".end())");
+        if (ol != null && ol.getStrategy() == OptimisticLockingStrategy.TIMESTAMP && cm.isOLTimestampColumn()) {
+          w.println("      .literal(\"  " + SUtil.escapeJavaString(ol.getValue()) + "\")"
+              + (n < coln ? ".literaln(\",\")" : ""));
+        } else {
+          w.println("      .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.parameter(\"m."
+              + SUtil.escapeJavaString(memId) + "\", Types." + jdbcType + ")" + (n < coln ? ".literal(\", \")" : "")
+              + ".end())");
+        }
       } else {
 
         // Always include column
         if (!cm.belongsToPK()) {
-          w.println("      .literal(\"  \").parameter(\"m." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
-              "." + jdbcType + ")" + (n < coln ? ".literaln(\",\")" : ""));
+          if (ol != null && ol.getStrategy() == OptimisticLockingStrategy.TIMESTAMP && cm.isOLTimestampColumn()) {
+            w.println("      .literal(\"  " + SUtil.escapeJavaString(ol.getValue()) + "\")"
+                + (n < coln ? ".literaln(\",\")" : ""));
+          } else {
+            w.println("      .literal(\"  \").parameter(\"m." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
+                "." + jdbcType + ")" + (n < coln ? ".literaln(\",\")" : ""));
+          }
         }
         if (cm.belongsToPK() && cm.getSequenceId() != null) {
           if (mechanics.getMode() == PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH) {
@@ -647,13 +663,20 @@ public class DAO {
     w.println("    ", ParameterContext.class, " context = this.assembler.newParameterContext();");
     w.println("    context.add(\"m\", m);");
 
-    OptimisticLockingMetadata ol = this.metadata.getOptimisticLocking();
     if (ol != null) {
-      if (ol.getStrategy() == OptimisticLockingStrategy.VERSION_NUMBER) {
+      switch (ol.getStrategy()) {
+      case VERSION_NUMBER:
         ColumnMetadata cm = ol.getColumnMetadata();
         String setter = cm.getId().getJavaSetter();
         String zero = renderNumericLiteral(0, cm.getType().getJavaClassName());
         w.println("    m." + setter + "(" + zero + ");");
+        break;
+      case TIMESTAMP:
+        cm = ol.getColumnMetadata();
+        setter = cm.getId().getJavaSetter();
+        w.println("    m." + setter + "(null);");
+        break;
+      default: // do not add setter
       }
     }
 
@@ -1274,7 +1297,8 @@ public class DAO {
         w.println("        .if_(\"true\", assembler.literal(\"" + SUtil.escapeJavaString(sqlId) + " = "
             + SUtil.escapeJavaString(sqlId) + " + 1\").end())");
       } else if (ol != null && cm.isOLTimestampColumn()) {
-        // Ignore update on timestamp column if the strategy is TIMESTAMP
+        w.println("        .if_(\"true\", assembler.literal(\"" + SUtil.escapeJavaString(sqlId) + " = "
+            + SUtil.escapeJavaString(ol.getValue()) + "\").end())");
       } else {
         String memId = cm.getId().getJavaMemberName();
         String jdbcType = cm.getType().getJDBCShortType();
@@ -1284,6 +1308,7 @@ public class DAO {
       }
     }
     w.println("        .end())");
+
   }
 
   private void fragmentPKParameters(KeyMetadata pk) {
@@ -1304,7 +1329,7 @@ public class DAO {
 
   private void fragmentWherePK(String objname) {
     KeyMetadata pk = this.metadata.getPK();
-    Separator sep = Separator.of("WHERE ", "  AND ");
+    Separator sep = Separator.of("\nWHERE ", "  AND ");
     for (ColumnMetadata cm : pk.getColumns()) {
       String memId = cm.getId().getJavaMemberName();
       String sqlId = cm.getId().getRenderedSQLName();
@@ -1549,7 +1574,7 @@ public class DAO {
     w.print("  public int " + method + "(");
     Separator sep = new Separator(", ");
     for (ParameterTag p : q.getParameterDefinitions()) {
-      log.info(">> parameter '" + p.getName() + "'");
+//      log.info(">> parameter '" + p.getName() + "'");
       ExternalClass pc = ExternalClass.of(p.getJavaType());
       w.print(sep.render(), pc, " " + p.getName());
     }
@@ -1570,7 +1595,7 @@ public class DAO {
 
   private void writeNitroSelect(SelectMethodMetadata s, int sno) throws ControlledException {
 
-    log.info("Nitro SELECT 1");
+//    log.info("Nitro SELECT 1");
 
     String queryName = "select" + sno;
     String method = s.getMethod();

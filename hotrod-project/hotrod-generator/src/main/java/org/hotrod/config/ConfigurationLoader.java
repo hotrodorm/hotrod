@@ -68,7 +68,7 @@ public class ConfigurationLoader {
       final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
       throws ControlledException, UncontrolledException, FacetNotFoundException {
 
-    log.info("loading file: " + f);
+//    log.info("loading file: " + f);
 
     // Basic validation on the file
 
@@ -85,7 +85,7 @@ public class ConfigurationLoader {
 
     // Prepare the parser
 
-    log.info("loading file 2");
+//    log.info("loading file 2");
 
     Unmarshaller unmarshaller = null;
     XMLStreamReader xsr = null;
@@ -132,9 +132,9 @@ public class ConfigurationLoader {
 
     try {
 
-      log.info("[ Will parse ]");
+//      log.info("[ Will parse ]");
       HotRodConfigTag config = (HotRodConfigTag) unmarshaller.unmarshal(xsr);
-      log.info("[ Parsed ]");
+//      log.info("[ Parsed ]");
 
       // Validation (specific)
 
@@ -163,7 +163,7 @@ public class ConfigurationLoader {
 
       // Complete
 
-      log.info("File loaded.");
+//      log.info("File loaded.");
 
       return config;
 

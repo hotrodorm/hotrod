@@ -55,13 +55,13 @@ public class ParameterisableTextPart extends DynamicSQLPart {
   private void validate(final AbstractConfigurationTag tag, final ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
 
-    log.info("validate");
+//    log.info("validate");
     super.retrievePartsAndValidate(parameterDefinitions);
 
     Tokenizer tokenizer = new Tokenizer(tag, this.txt);
     Token token;
     while ((token = tokenizer.next()) != null) {
-      log.info("TOKEN: " + token.getType() + " - " + token.getBody());
+//      log.info("TOKEN: " + token.getType() + " - " + token.getBody());
       switch (token.getType()) {
 
       case SQL_PARAMETER:

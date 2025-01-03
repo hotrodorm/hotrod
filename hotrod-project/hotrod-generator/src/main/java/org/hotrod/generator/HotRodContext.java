@@ -63,7 +63,7 @@ public class HotRodContext {
       final String currentJDBCSchema, final File baseDir, final LinkedHashSet<String> facetNames,
       final Feedback feedback) throws ControlledException {
 
-    log.info("init");
+//    log.info("init");
 
     if (configFile != null) {
       feedback.info("");
@@ -85,7 +85,7 @@ public class HotRodContext {
         throw new ControlledException("Could not connect to the database: " + XUtil.trim(e));
       }
 
-      log.info("conn");
+//      log.info("conn");
 
       // Database Version
 
@@ -102,7 +102,7 @@ public class HotRodContext {
       feedback.info("JDBC Driver: " + cv.renderJDBCDriverName() + " - implements JDBC Specification "
           + cv.renderJDBCSpecification());
 
-      log.info("db version");
+//      log.info("db version");
 
       // Adapter
 
@@ -119,7 +119,7 @@ public class HotRodContext {
       } catch (SQLException e) {
         throw new ControlledException("Could not identify database at URL " + loc.getUrl() + " - " + XUtil.trim(e));
       }
-      log.info("Adapter loaded.");
+//      log.info("Adapter loaded.");
 
       // Current Catalog & Schema
 
@@ -132,16 +132,16 @@ public class HotRodContext {
       }
       feedback.info(" ");
 
-      log.info("catalog/schema");
+//      log.info("catalog/schema");
 
       // Loading Configuration
 
       CatalogSchema currentCS = loc.getCatalogSchema();
       if (configFile != null) {
         try {
-          log.info("will load configuration");
+//          log.info("will load configuration");
           this.config = ConfigurationLoader.loadPrimary(baseDir, configFile, adapter, facetNames, currentCS);
-          log.info("Main Configuration loaded.");
+//          log.info("Main Configuration loaded.");
         } catch (ControlledException e) {
           if (e.getLocation() != null) {
             throw new ControlledException("\n" + e.getMessage() + "\n  in " + e.getLocation().render());
@@ -173,7 +173,7 @@ public class HotRodContext {
         }
       }
 
-      log.info("config loaded.");
+//      log.info("config loaded.");
 
       // Apply current schema to declared tables with no schema and no catalog
 
@@ -201,11 +201,11 @@ public class HotRodContext {
         views.add(v.getDatabaseObjectId());
       }
 
-      log.info("db object scope.");
+//      log.info("db object scope.");
 
       try {
 
-        log.info("gen 1 - strategy=" + mst.getSelectGeneration().getStrategy());
+//        log.info("gen 1 - strategy=" + mst.getSelectGeneration().getStrategy());
         if (mst.getSelectGeneration().getStrategy() == SelectStrategy.RESULT_SET) {
           if (discover) { // 1. Discover
 
@@ -217,15 +217,15 @@ public class HotRodContext {
               for (ExcludeTag ex : s.getExcludeList()) {
                 DatabaseObject id = new DatabaseObject(s.getCanonicalCatalog(), s.getCanonicalSchema(),
                     ex.getCanonicalName());
-                log.fine("-----> exclude: " + id);
+//                log.fine("-----> exclude: " + id);
                 excludeIds.add(id);
               }
             }
 
-            log.fine("gen 2");
+//            log.fine("gen 2");
             this.db = new JdbcDatabase(conn, currentCS, tables, views, discoverCSs, excludeIds);
             removeCurrentCatalogSchema(currentCS);
-            log.fine("gen 3");
+//            log.fine("gen 3");
             this.config.getFacetTables();// FIXME
 
             DaosTag daosTag = mst.getDaos();

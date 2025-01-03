@@ -179,12 +179,14 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
               + "' on table '" + t.getName() + "'.";
           throw new InvalidConfigurationFileException(ol, msg);
         }
+        log.info("cm=" + cm);
+        log.info("ol.getStrategy()=" + ol.getStrategy());
         cm.setOLVersionNumberColumn(ol.getStrategy() == OptimisticLockingStrategy.VERSION_NUMBER);
         cm.setOLTimestampColumn(ol.getStrategy() == OptimisticLockingStrategy.TIMESTAMP);
-        this.optimisticLocking = new OptimisticLockingMetadata(this, ol, cm, this.adapter);
+        this.optimisticLocking = new OptimisticLockingMetadata(this, ol, cm, ol.getValue(), this.adapter);
         break;
       case FULL_ROW_CHECK:
-        this.optimisticLocking = new OptimisticLockingMetadata(this, ol, null, this.adapter);
+        this.optimisticLocking = new OptimisticLockingMetadata(this, ol, null, ol.getValue(), this.adapter);
         break;
       }
     }

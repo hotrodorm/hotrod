@@ -51,7 +51,7 @@ public class HotRodServices {
   }
 
   public void generate(final Feedback feedback) throws Exception {
-    log.info("init");
+//    log.info("init");
 
     feedback.info(Constants.TOOL_NAME + " Generator version " + BuildInformation.VERSION + " (build " + BuildInformation.BUILD_ID
         + ") - Generate");
@@ -60,20 +60,20 @@ public class HotRodServices {
 
       HotRodContext hc = new HotRodContext(configFile, jdbcdriverclass, jdbcurl, jdbcusername, jdbcpassword,
           jdbccatalog, jdbcschema, baseDir, facetNames, feedback);
-      log.info("init context");
+//      log.info("init context");
 
       // Generate
 
       Generator g = hc.getConfig().getGenerators().getSelectedGeneratorTag().instantiateGenerator(hc, null,
           this.displayMode, false, feedback);
-      log.info("Generator instantiated: "+g.getClass().getName());
+//      log.info("Generator instantiated: "+g.getClass().getName());
 
       try {
 
         LiveGenerator liveGenerator = (LiveGenerator) g;
 
         // a live generator
-        log.fine("live generator");
+//        log.fine("live generator");
 
         g.prepareGeneration();
         FileGenerator fg = new LocalFileGenerator();
@@ -88,7 +88,7 @@ public class HotRodServices {
         g.generate();
       }
 
-      log.fine("Generation complete.");
+//      log.fine("Generation complete.");
 
     } catch (ControlledException e) {
       if (e.getLocation() == null) {

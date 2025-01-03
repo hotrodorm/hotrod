@@ -63,9 +63,9 @@ public class GenMojo extends AbstractMojo {
   // Mojo logic
 
   public void execute() throws MojoExecutionException {
-    log.info("init");
+//    log.info("init");
 
-    log.fine("this.localproperties=" + this.localproperties);
+//    log.fine("this.localproperties=" + this.localproperties);
 
     try {
       GenOperation op = new GenOperation(this.project.getBasedir(), this.configfile, this.localproperties,
