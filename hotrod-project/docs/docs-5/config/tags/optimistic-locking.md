@@ -99,8 +99,18 @@ deleted had changed (or was removed).
 ### Example 2 - Timestamp Strategy
 
 To use the Timestamp strategy the table ACCOUNT needs to have a TIMESTAMP column that, when not
-specified, defaults to the current timestamp. Fortunately, our ACCOUNT table already has one. There's
-no need to change the table.
+specified, defaults to the current timestamp. Fortunately, our ACCOUNT table already has one. 
+
+There's no need to change the table:
+
+```sql
+CREATE TABLE account (
+  id INT PRIMARY KEY NOT NULL,
+  acc_num VARCHAR(20) NOT NULL,
+  balance INT NOT NULL,
+  updated_at TIMESTAMP NOT NULL DEFAULT current_timestamp
+);
+```
 
 Now, we need to declare the optimistic locking strategy in the configuration file, as in:
 
@@ -129,6 +139,18 @@ deleted had changed (or was removed). There's no change from the application cod
 To use the Full Row Check strategy the table ACCOUNT needs to have columns that are comparable
 to themselves. All typical data types (numbers, chars, dates, timestamps, etc.) adhere to this requirement; only a handful of exotic data types may not be practically comparable; e.g. BLOBs
 or similar.
+
+This strategy doesn't require any extra change to the table. It remains as isThere's no need to change the table:
+
+```sql
+CREATE TABLE account (
+  id INT PRIMARY KEY NOT NULL,
+  acc_num VARCHAR(20) NOT NULL,
+  balance INT NOT NULL,
+  updated_at TIMESTAMP NOT NULL DEFAULT current_timestamp
+);
+```
+
 
 We declare the optimistic locking strategy in the configuration file, as in:
 
