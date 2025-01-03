@@ -119,7 +119,7 @@ Now, we need to declare the optimistic locking strategy in the configuration fil
 
 Again, we can use the DAO as we normally do to SELECT, INSERT, UPDATE, and DELETE rows. Consider
 that UPDATE and DELETE can now throw `StaleDataException` in case the row being updated or
-deleted had changed (or was removed). There's no change from the
+deleted had changed (or was removed). There's no change from the application code perspective:
 
 ```java
   Account a = this.accountDAO.select(1015);
@@ -147,7 +147,8 @@ We declare the optimistic locking strategy in the configuration file, as in:
 
 In the same way as before, we can use the DAO as we normally do to SELECT, INSERT, UPDATE,
 and DELETE rows. Consider that UPDATE and DELETE can now throw `StaleDataException` in case the
-row being updated or deleted had changed (or was removed).
+row being updated or deleted had changed (or was removed). There's no change from the application
+code perspective:
 
 ```java
   Account a = this.accountDAO.select(1015);
