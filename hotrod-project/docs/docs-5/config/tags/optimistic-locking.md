@@ -140,7 +140,7 @@ To use the Full Row Check strategy the table ACCOUNT needs to have columns that 
 to themselves. All typical data types (numbers, chars, dates, timestamps, etc.) adhere to this requirement; only a handful of exotic data types may not be practically comparable; e.g. BLOBs
 or similar.
 
-This strategy doesn't require any extra change to the table. It remains as is
+This strategy doesn't require any extra change to the table. It remains as is:
 
 ```sql
 CREATE TABLE account (
