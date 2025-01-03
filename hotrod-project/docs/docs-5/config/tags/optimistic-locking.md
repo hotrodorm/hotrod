@@ -58,9 +58,6 @@ CREATE TABLE account (
 );
 ```
 
-The first strategy needs to modify the table to add an extra column.
-
-
 ### Example 1 - Version Number Strategy
 
 To use the Version Number strategy the table ACCOUNT needs to have an extra column to store the
@@ -94,15 +91,15 @@ that UPDATE and DELETE can now throw `StaleDataException` in case the row being 
 deleted had changed (or was removed).
 
 ```java
-  Account a = this.accountDAO.select(1015);
-  a.setBalance(a.getBalance + 200);
+  Account a = this.accountDAO.select(102501);
+  a.setBalance(a.getBalance() + 100);
   this.accountDAO.update(a); // can throw StaleDataException
 ```
 
 ### Example 2 - Timestamp Strategy
 
 To use the Timestamp strategy the table ACCOUNT needs to have a TIMESTAMP column that, when not
-specified, defaults to the current timestamp. Fortunately our ACCOUNT table already has one. There's
+specified, defaults to the current timestamp. Fortunately, our ACCOUNT table already has one. There's
 no need to change the table.
 
 Now, we need to declare the optimistic locking strategy in the configuration file, as in:
@@ -111,7 +108,7 @@ Now, we need to declare the optimistic locking strategy in the configuration fil
 <hotrod>
 
   <table name="account">
-    <optimistic-locking strategy="strategy" column="updated_at" />
+    <optimistic-locking strategy="timestamp" column="updated_at" />
   </table>
 
 </hotrod>
@@ -122,8 +119,8 @@ that UPDATE and DELETE can now throw `StaleDataException` in case the row being 
 deleted had changed (or was removed). There's no change from the application code perspective:
 
 ```java
-  Account a = this.accountDAO.select(1015);
-  a.setBalance(a.getBalance + 200);
+  Account a = this.accountDAO.select(102501);
+  a.setBalance(a.getBalance() + 100);
   this.accountDAO.update(a); // can throw StaleDataException
 ```
 
@@ -151,8 +148,8 @@ row being updated or deleted had changed (or was removed). There's no change fro
 code perspective:
 
 ```java
-  Account a = this.accountDAO.select(1015);
-  a.setBalance(a.getBalance + 200);
+  Account a = this.accountDAO.select(102501);
+  a.setBalance(a.getBalance() + 100);
   this.accountDAO.update(a); // can throw StaleDataException
 ```
 
