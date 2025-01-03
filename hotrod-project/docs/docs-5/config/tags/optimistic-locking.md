@@ -1,0 +1,50 @@
+# The `<optimistic-locking>` Tag
+
+This tag can be added to a table to enable Optimistic Locking in it. It must indicate
+which strategy is desired to implement optimistic locking in the table.
+
+Optimistic Locking affects the UPDATE by primary key and DELETE by primary key operations.
+Selecting data will retrieve all the information of a row or rows, and this data
+will be used to control concurrency according to the selected strategy.
+
+## Attributes
+
+It includes the following attributes:
+
+| Attribute | Description | Defaults to |
+| -- | -- | -- |
+| strategy | The strategy to implement optimistic locking in this table. One of: `version-number`, `timestamp`, or `full-row-check`. | Required |
+| column | - In case the version-number strategy is selected this is the numeric column used as a version number. Must be an integer-like type<br/>- In case the timestamp strategy is selected this is the TIMESTAMP column used to verify unchanged rows<br/>- In case the full-row-check strategy is selected this  attribute should not be specified | Depends |
+
+
+## Goal
+
+Optimistic locking can be used to control concurrent updates on a table. These update operation
+can take the form of an `UPDATE` or `DELETE` SQL statement that follows a `SELECT` SQL statement.
+
+When updating or deleting the row HotRod will craft the SQL statement to validate the row hasn't
+been changed since reading it. If intact, the operation will succeed. If changed, a runtime
+exception will be thrown with the aim of aborting the transaction. The business logic may choose
+to catch this exeption and try again; it would need to read the row again while doing so, to make retrieve the updated values.
+
+
+## Optimistic Locking Strategies
+
+HotRod currently supports three optimistic locking strategies:
+
+- **Version Number**: A column of the table is dedicated to store a version number for the row. Every
+time the row is updated the version number changes. `UPDATE` and `DELETE` operations can detect changes in this value and abort the ongoing transaction on such event.
+- **Timestamp Column**: If a timestamp column happens to be already included in the table
+it can be used for optimistic locking. Each time the row is changed this timestamp is updated. The upside
+of this strategy is that no extra column is required. The downsides of it is that the
+column may have been intended for a different goal (not low level updates), and also the granularity of the timestamp
+value could be insufficient on highly updated rows that can occur more than once a second (milliseconds, or microseconds).
+- **Full Row Check**: This strategy checks the entire row for changes while updating it or deleting it. The benefit of this strategy is that is doesn't require an extra column to be added to the table.
+The downside is that it needs to compare all the columns of the table before updating, and this
+could place extra load in the database. This extra load could be significant when comparing LOB
+types or other heavy values that need to be sent back and forth over the network and then
+fully compared before performing update operations.
+
+
+
+
