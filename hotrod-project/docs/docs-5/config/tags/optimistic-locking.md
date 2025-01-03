@@ -124,7 +124,7 @@ Now, we need to declare the optimistic locking strategy in the configuration fil
 </hotrod>
 ```
 
-**Note**: the `current_timestamp` SQL expression is a valid expression that generates a TIMESTAMP with the current date and time in the H2 database. Change accordingly for the specific database you are using.
+**Note**: the `current_timestamp` SQL expression is a valid expression in the H2 database that generates a TIMESTAMP with the current date and time. Change accordingly for the specific database you are using.
 
 Again, we can use the DAO as we normally do to SELECT, INSERT, UPDATE, and DELETE rows. Consider
 that UPDATE and DELETE can now throw `StaleDataException` in case the row being updated or
