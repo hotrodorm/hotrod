@@ -45,6 +45,136 @@ could place extra load in the database. This extra load could be significant whe
 types or other heavy values that need to be sent back and forth over the network and then
 fully compared before performing update operations.
 
+## Examples
+
+The following examples implement different optimistic locking strategies in the same table ACCOUNT, that originally has four columns:
+
+```sql
+CREATE TABLE account (
+  id INT PRIMARY KEY NOT NULL,
+  acc_num VARCHAR(20) NOT NULL,
+  balance INT NOT NULL
+  updated_at TIMESTAMP NOT NULL DEFAULT current_timestamp
+);
+```
+
+The first strategy needs to modify the table to add an extra column.
+
+
+### Example 1 - Version Number Strategy
+
+To use the Version Number strategy the table ACCOUNT needs to have an extra column to store the
+version number of the row. In this example, this column will have the name `row_version`, as shown below:
+
+```sql
+CREATE TABLE account (
+  id INT PRIMARY KEY NOT NULL,
+  acc_num VARCHAR(20) NOT NULL,
+  balance INT NOT NULL,
+  updated_at TIMESTAMP NOT NULL DEFAULT current_timestamp,
+  row_version INT NOT NULL -- we need to add an extra column
+);
+```
+
+When specifying the table in the configuration file the `<optimistic-locking>` tag is used to
+declare the column, as in:
+
+```xml
+<hotrod>
+
+  <table name="account">
+    <optimistic-locking strategy="version-number" column="row_version" />
+  </table>
+
+</hotrod>
+```
+
+Then, we can use the DAO as we normally do to SELECT, INSERT, UPDATE, and DELETE rows. Consider
+that UPDATE and DELETE can now throw `StaleDataException` in case the row being updated or
+deleted had changed (or was removed).
+
+```java
+  Account a = this.accountDAO.select(1015);
+  a.setBalance(a.getBalance + 200);
+  this.accountDAO.update(a); // can throw StaleDataException
+```
+
+### Example 2 - Timestamp Strategy
+
+To use the Timestamp strategy the table ACCOUNT needs to have a TIMESTAMP column that, when not
+specified, defaults to the current timestamp. Fortunately our ACCOUNT table already has one. There's
+no need to change the table.
+
+Now, we need to declare the optimistic locking strategy in the configuration file, as in:
+
+```xml
+<hotrod>
+
+  <table name="account">
+    <optimistic-locking strategy="strategy" column="updated_at" />
+  </table>
+
+</hotrod>
+```
+
+Again, we can use the DAO as we normally do to SELECT, INSERT, UPDATE, and DELETE rows. Consider
+that UPDATE and DELETE can now throw `StaleDataException` in case the row being updated or
+deleted had changed (or was removed). There's no change from the
+
+```java
+  Account a = this.accountDAO.select(1015);
+  a.setBalance(a.getBalance + 200);
+  this.accountDAO.update(a); // can throw StaleDataException
+```
+
+### Example 3 - Full Row Check Strategy
+
+To use the Full Row Check strategy the table ACCOUNT needs to have columns that are comparable
+to themselves. All typical data types (numbers, chars, dates, timestamps, etc.) adhere to this requirement; only a handful of exotic data types may not be practically comparable; e.g. BLOBs
+or similar.
+
+We declare the optimistic locking strategy in the configuration file, as in:
+
+```xml
+<hotrod>
+
+  <table name="account">
+    <optimistic-locking strategy="full-row-check" />
+  </table>
+
+</hotrod>
+```
+
+In the same way as before, we can use the DAO as we normally do to SELECT, INSERT, UPDATE,
+and DELETE rows. Consider that UPDATE and DELETE can now throw `StaleDataException` in case the
+row being updated or deleted had changed (or was removed).
+
+```java
+  Account a = this.accountDAO.select(1015);
+  a.setBalance(a.getBalance + 200);
+  this.accountDAO.update(a); // can throw StaleDataException
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
