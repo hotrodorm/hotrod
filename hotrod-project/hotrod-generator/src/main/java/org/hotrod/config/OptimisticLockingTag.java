@@ -29,14 +29,16 @@ public class OptimisticLockingTag extends AbstractConfigurationTag {
   private String column = null;
 
   public enum OptimisticLockingStrategy {
-    VERSION_NUMBER("version-number"), TIMESTAMP("timestamp"), FULL_ROW_CHECK("full-row-check");
+    VERSION_NUMBER("version-number", false), TIMESTAMP("timestamp", false), FULL_ROW_CHECK("full-row-check", true);
 
     private String attribute;
     private String title;
+    private boolean usesAllColumns;
 
-    private OptimisticLockingStrategy(String attribute) {
+    private OptimisticLockingStrategy(String attribute, boolean usesAllColumns) {
       this.attribute = attribute;
       this.title = this.attribute.toUpperCase().replace('-', ' ');
+      this.usesAllColumns = usesAllColumns;
     }
 
     public String getAttribute() {
@@ -45,6 +47,10 @@ public class OptimisticLockingTag extends AbstractConfigurationTag {
 
     public String getTitle() {
       return title;
+    }
+
+    public boolean usesAllColumns() {
+      return usesAllColumns;
     }
 
     public static OptimisticLockingStrategy parse(String title) {

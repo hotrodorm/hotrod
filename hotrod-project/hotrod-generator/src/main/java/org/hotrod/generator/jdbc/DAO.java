@@ -212,7 +212,7 @@ public class DAO {
 //          writeSelectChildrenByFK();
 //        }
 //
-      writeInsert(false); // standard INSERT
+      writeInsert(false); // INSERT standard
       writeInsert(true); // INSERT by example
 
       writeUpdateByPK(this.metadata.getOptimisticLocking() != null);
@@ -646,6 +646,17 @@ public class DAO {
 
     w.println("    ", ParameterContext.class, " context = this.assembler.newParameterContext();");
     w.println("    context.add(\"m\", m);");
+
+    OptimisticLockingMetadata ol = this.metadata.getOptimisticLocking();
+    if (ol != null) {
+      if (ol.getStrategy() == OptimisticLockingStrategy.VERSION_NUMBER) {
+        ColumnMetadata cm = ol.getColumnMetadata();
+        String setter = cm.getId().getJavaSetter();
+        String zero = renderNumericLiteral(0, cm.getType().getJavaClassName());
+        w.println("    m." + setter + "(" + zero + ");");
+      }
+    }
+
     w.println("    ", PreparedInsertQuery.class, " preparedQuery = this." + queryName + ".prepare(context);");
 
     fragmentLogging();
@@ -663,6 +674,24 @@ public class DAO {
 
     w.println("  }");
 
+  }
+
+  private String renderNumericLiteral(final long value, final String type) {
+    if (type == null) {
+      return "" + value;
+    }
+    String typet = type.trim();
+    if ("java.lang.Byte".equals(typet) || "Byte".equals(typet)) {
+      return "(byte) " + value;
+    } else if ("java.lang.Short".equals(typet) || "Short".equals(typet)) {
+      return "(short) " + value;
+    } else if ("java.lang.Integer".equals(typet) || "Integer".equals(typet)) {
+      return "" + value;
+    } else if ("java.lang.Long".equals(typet) || "Long".equals(typet)) {
+      return "" + value + "L";
+    } else {
+      return "" + value;
+    }
   }
 
   private InsertMechanics computeInsertMechanics(List<ColumnMetadata> sequences, List<ColumnMetadata> identities,
@@ -779,7 +808,7 @@ public class DAO {
         String memId = cm.getId().getJavaMemberName();
         String sqlId = cm.getId().getRenderedSQLName();
         String jdbcType = cm.getType().getJDBCShortType();
-        w.println("      .literaln(\"  AND " + SUtil.escapeJavaString(sqlId) + " = \").parameter(\""
+        w.println("      .literaln(\"  AND " + SUtil.escapeJavaString(sqlId) + " = \").parameter(\"m."
             + SUtil.escapeJavaString(memId) + "\", ", Types.class, "." + jdbcType + ")");
       }
 
@@ -912,7 +941,7 @@ public class DAO {
         String memId = cm.getId().getJavaMemberName();
         String sqlId = cm.getId().getRenderedSQLName();
         String jdbcType = cm.getType().getJDBCShortType();
-        w.println("      .literaln(\"  AND " + SUtil.escapeJavaString(sqlId) + " = \").parameter(\""
+        w.println("      .literaln(\"  AND " + SUtil.escapeJavaString(sqlId) + " = \").parameter(\"f."
             + SUtil.escapeJavaString(memId) + "\", ", Types.class, "." + jdbcType + ")");
       }
 
@@ -921,22 +950,39 @@ public class DAO {
 
       // Method
 
-      w.println();
-      w.print("  public int delete(");
-      fragmentPKParameters(pk);
-      w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
-
-      for (ColumnMetadata cm : pk.getColumns()) {
-        String m = cm.getId().getJavaMemberName();
-        w.println("    if (" + m + " == null) return 0;");
-      }
+//      public int deleteWOL(Account filter) throws DynamicExpressionException, SQLException {
+//        if (filter.getId()== null) return 0;
+//        if (filter.getVersion()== null) return 0;
 
       ExternalClass em = ExternalClass.of(this.model.getFullClassName());
-      w.println("    ", em, " filter = new ", em, "();");
-      for (ColumnMetadata cm : pk.getColumns()) {
-        String m = cm.getId().getJavaMemberName();
-        String setter = cm.getId().getJavaSetter();
-        w.println("    filter." + setter + "(" + m + ");");
+
+      w.println();
+      w.print("  public int delete" + (optimisticLocking ? "WOL" : "") + "(");
+      if (optimisticLocking) {
+        w.print(em, " filter");
+        w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
+        for (ColumnMetadata cm : pk.getColumns()) {
+          String getter = cm.getId().getJavaGetter();
+          w.println("    if (filter." + getter + "() == null) return 0;");
+        }
+        if (!ol.getStrategy().usesAllColumns()) {
+          ColumnMetadata cm = ol.getColumnMetadata();
+          String getter = cm.getId().getJavaGetter();
+          w.println("    if (filter." + getter + "() == null) return 0;");
+        }
+      } else {
+        fragmentPKParameters(pk);
+        w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
+        for (ColumnMetadata cm : pk.getColumns()) {
+          String m = cm.getId().getJavaMemberName();
+          w.println("    if (" + m + " == null) return 0;");
+        }
+        w.println("    ", em, " filter = new ", em, "();");
+        for (ColumnMetadata cm : pk.getColumns()) {
+          String m = cm.getId().getJavaMemberName();
+          String setter = cm.getId().getJavaSetter();
+          w.println("    filter." + setter + "(" + m + ");");
+        }
       }
 
       w.println("    ", ParameterContext.class, " context = this.assembler.newParameterContext();");
@@ -1310,8 +1356,8 @@ public class DAO {
     if (optimisticLocking) {
       w.println("      if (rows == 0) {");
       w.println("        throw new ", StaleDataException.class,
-          "(" + "\"Failed optimistic locking " + clause + ". The row in the table "
-              + this.metadata.getId().getCanonicalSQLName() + " has changed or was deleted since it was read\");");
+          "(" + "\"Optimistic locking " + clause + " failed. The row in the table "
+              + this.metadata.getId().getCanonicalSQLName() + " has changed or was deleted since it was read.\");");
       w.println("      }");
     }
     w.println("      return rows;");

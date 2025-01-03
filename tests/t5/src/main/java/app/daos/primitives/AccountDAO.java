@@ -244,6 +244,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   public void insert(Account m) throws DynamicExpressionException, SQLException {
     ParameterContext context = this.assembler.newParameterContext();
     context.add("m", m);
+    m.setVersion(0);
     PreparedInsertQuery preparedQuery = this.insert.prepare(context);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
@@ -282,6 +283,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   public void insertByExample(Account m) throws DynamicExpressionException, SQLException {
     ParameterContext context = this.assembler.newParameterContext();
     context.add("m", m);
+    m.setVersion(0);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(context);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
@@ -307,7 +309,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
         .if_("true", assembler.literal("version = version + 1").end())
         .end())
       .literaln("WHERE " + "id = ").parameter("m.id", Types.INTEGER)
-      .literaln("  AND version = ").parameter("version", Types.INTEGER)
+      .literaln("  AND version = ").parameter("m.version", Types.INTEGER)
     .endModificationQuery();
   }
 
@@ -320,7 +322,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     try (Connection conn = this.dataSource.getConnection()) {
       int rows = preparedQuery.execute(conn);
       if (rows == 0) {
-        throw new StaleDataException("Failed optimistic locking UPDATE. The row in the table ACCOUNT has changed or was deleted since it was read");
+        throw new StaleDataException("Optimistic locking UPDATE failed. The row in the table ACCOUNT has changed or was deleted since it was read.");
       }
       return rows;
     }
@@ -389,14 +391,13 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     this.deleteByPKWithOptimisticLocking = assembler
       .literaln("DELETE FROM account")
       .literaln("WHERE " + "id = ").parameter("f.id", Types.INTEGER)
-      .literaln("  AND version = ").parameter("version", Types.INTEGER)
+      .literaln("  AND version = ").parameter("f.version", Types.INTEGER)
       .endModificationQuery();
   }
 
-  public int delete(Integer id) throws DynamicExpressionException, SQLException {
-    if (id == null) return 0;
-    Account filter = new Account();
-    filter.setId(id);
+  public int deleteWOL(Account filter) throws DynamicExpressionException, SQLException {
+    if (filter.getId() == null) return 0;
+    if (filter.getVersion() == null) return 0;
     ParameterContext context = this.assembler.newParameterContext();
     context.add("f", filter);
     PreparedModificationQuery preparedQuery = this.deleteByPKWithOptimisticLocking.prepare(context);
@@ -404,7 +405,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     try (Connection conn = this.dataSource.getConnection()) {
       int rows = preparedQuery.execute(conn);
       if (rows == 0) {
-        throw new StaleDataException("Failed optimistic locking DELETE. The row in the table ACCOUNT has changed or was deleted since it was read");
+        throw new StaleDataException("Optimistic locking DELETE failed. The row in the table ACCOUNT has changed or was deleted since it was read.");
       }
       return rows;
     }

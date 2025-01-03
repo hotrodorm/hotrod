@@ -170,8 +170,8 @@ create table account (
   type varchar(3) default 'PEN',
   balance int not null,
   active int not null,
-  updated_at timestamp not null default CURRENT_TIMESTAMP,
-  version int not null
+  updated_at timestamp not null default CURRENT_TIMESTAMP
+  ,version int not null
 );
 
 insert into account (id, name, type, balance, active, version) values

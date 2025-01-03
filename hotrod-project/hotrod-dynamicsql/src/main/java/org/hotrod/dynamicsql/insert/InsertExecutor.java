@@ -17,7 +17,7 @@ public abstract class InsertExecutor {
   protected void applyParameters(List<ParameterSegment> parameters, PreparedStatement ps) throws SQLException {
     int ordinal = 1;
     for (ParameterSegment p : parameters) {
-      p.applyTo(ps, ordinal);
+      p.applyTo(ps, ordinal++);
     }
   }
 

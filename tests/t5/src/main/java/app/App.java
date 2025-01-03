@@ -1,6 +1,8 @@
 package app;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -51,9 +53,72 @@ public class App {
     return args -> {
       log.info("[ Starting... ]");
 //      test();
-      testLiveSQL();
+//      testLiveSQL();
+      testOptimisticLocking();
       log.info("[ Ending ]");
     };
+  }
+
+  private void testOptimisticLocking() throws SQLException, DynamicExpressionException {
+//    testOLInsert();
+    testOLInsertByExample() ;
+//    testOLDeleteUpdate();
+//    testOLUpdateDelete();
+  }
+
+  private void testOLInsert() throws DynamicExpressionException, SQLException {
+    Account a = new Account();
+    a.setName("1010-4");
+    a.setType("CHK");
+    a.setBalance(100);
+    a.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
+    a.setActive(true);
+    this.accountDAO.insert(a);
+    System.out.println("--> a=" + a);
+
+    Account b = this.accountDAO.select(a.getId());
+    System.out.println("b=" + b);
+  }
+
+  private void testOLInsertByExample() throws DynamicExpressionException, SQLException {
+    Account a = new Account();
+    a.setName("1010-4");
+    a.setType("CHK");
+    a.setBalance(100);
+    a.setActive(true);
+    this.accountDAO.insertByExample(a);
+    System.out.println("--> a=" + a);
+
+    Account b = this.accountDAO.select(a.getId());
+    System.out.println("b=" + b);
+  }
+
+  private void testOLDeleteUpdate() throws DynamicExpressionException, SQLException {
+    Account b = this.accountDAO.select(112);
+
+    Account a = this.accountDAO.select(112);
+    System.out.println("--> a=" + a);
+
+    this.accountDAO.deleteWOL(b);
+    System.out.println("Deleted b.");
+
+    a.setBalance(a.getBalance() + 100);
+    this.accountDAO.update(a);
+    System.out.println("Updated a.");
+  }
+
+  private void testOLUpdateDelete() throws DynamicExpressionException, SQLException {
+    Account b = this.accountDAO.select(112);
+
+    Account a = this.accountDAO.select(112);
+    System.out.println("--> a=" + a);
+
+    a.setBalance(a.getBalance() + 100);
+    this.accountDAO.update(a);
+    System.out.println("Updated a.");
+
+    this.accountDAO.deleteWOL(b);
+    System.out.println("Deleted b.");
   }
 
   private void testLiveSQL() throws SQLException, DynamicExpressionException {
