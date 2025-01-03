@@ -2,9 +2,14 @@
 
 ## 1. New Functionality
 
+CRUD:
+
+- Optimistic locking now implements the TIMESTAMP and FULL ROW CHECK strategies in addition to the
+existing VERSION NUMBER one.
+
 LiveSQL:
 
-- Full Column Typing: the type of a column is now determined based on 1) declared runtime types, 2) declared configuration types, 3) layer rules, 4) dialect rules, and 5) JDBC driver defaults.
+- Advanced Column Typing: simple yet comprehensive control of the type of a column for CRUD, LiveSQL, and Nitro.
 - Implemented missing COUNT(expression) function.
 
 Dynamic SQL:
@@ -12,6 +17,7 @@ Dynamic SQL:
 - New Dynamic SQL engine:
     - Used by Nitro.
     - Can be used from plain Java at runtime.
+
 
 ## 2. Existing Functionality Migrated To Plain JDBC
 
@@ -24,6 +30,7 @@ CRUD:
 - Logging implemented with FINE/DEBUG (SQL only) and FINER/TRACE (SQL + parameters).
 - Bean factory implemented for SELECTs.
 - Converters when reading from the database (also in Nitro and LiveSQL).
+- Optimistic Locking.
 
 Nitro:
 
@@ -40,7 +47,6 @@ LiveSQL:
 
 CRUD:
 
-- Optimistic Locking.
 - SELECT sequence.
 - SELECT by UI.
 - Enums.
