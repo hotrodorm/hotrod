@@ -756,7 +756,7 @@ public class DAO {
 
       // Query
 
-      String queryName = "updateByPK" + (ol == null ? "" : "OptimisticLocking");
+      String queryName = "updateByPK" + (ol == null ? "" : "WithOptimisticLocking");
       String initializerName = "initialize" + SUtil.capitalize(queryName);
       this.initializersInPostConstruct.add(initializerName);
 
@@ -891,7 +891,7 @@ public class DAO {
 
       // Query
 
-      String queryName = "deleteByPK" + (ol == null ? "" : "OptimisticLocking");
+      String queryName = "deleteByPK" + (ol == null ? "" : "WithOptimisticLocking");
       String initializerName = "initialize" + SUtil.capitalize(queryName);
       this.initializersInPostConstruct.add(initializerName);
 
@@ -1311,7 +1311,7 @@ public class DAO {
       w.println("      if (rows == 0) {");
       w.println("        throw new ", StaleDataException.class,
           "(" + "\"Failed optimistic locking " + clause + ". The row in the table "
-              + this.metadata.getId().getCanonicalSQLName() + " had changed since it was read\");");
+              + this.metadata.getId().getCanonicalSQLName() + " has changed or was deleted since it was read\");");
       w.println("      }");
     }
     w.println("      return rows;");

@@ -290,12 +290,12 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     }
   }
 
-  // UPDATE BY PRIMARY KEY (OPTIMISTIC LOCKING - STRATEGY: VERSION-NUMBER)
+  // UPDATE BY PRIMARY KEY (OPTIMISTIC LOCKING - STRATEGY: VERSION NUMBER)
 
-  private DynamicModificationQuery updateByPKOptimisticLocking;
+  private DynamicModificationQuery updateByPKWithOptimisticLocking;
 
-  private void initializeUpdatebypkoptimisticlocking() {
-    this.updateByPKOptimisticLocking = assembler
+  private void initializeUpdatebypkwithoptimisticlocking() {
+    this.updateByPKWithOptimisticLocking = assembler
       .literal("UPDATE account")
       .set(assembler.ifs()
         .if_("m.id != null", assembler.literal("id = ").parameter("m.id", Types.INTEGER).end())
@@ -315,12 +315,12 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     if (m.getId() == null) return 0;
     ParameterContext context = this.assembler.newParameterContext();
     context.add("m", m);
-    PreparedModificationQuery preparedQuery = this.updateByPKOptimisticLocking.prepare(context);
+    PreparedModificationQuery preparedQuery = this.updateByPKWithOptimisticLocking.prepare(context);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       int rows = preparedQuery.execute(conn);
       if (rows == 0) {
-        throw new StaleDataException("Failed optimistic locking UPDATE. The row in the table ACCOUNT had changed since it was read");
+        throw new StaleDataException("Failed optimistic locking UPDATE. The row in the table ACCOUNT has changed or was deleted since it was read");
       }
       return rows;
     }
@@ -381,12 +381,12 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     return new UpdateSetCompletePhase(this.context, tableOrView, setters, predicate);
   }
 
-  // DELETE BY PRIMARY KEY (OPTIMISTIC LOCKING - STRATEGY: VERSION-NUMBER)
+  // DELETE BY PRIMARY KEY (OPTIMISTIC LOCKING - STRATEGY: VERSION NUMBER)
 
-  private DynamicModificationQuery deleteByPKOptimisticLocking;
+  private DynamicModificationQuery deleteByPKWithOptimisticLocking;
 
-  private void initializeDeletebypkoptimisticlocking() {
-    this.deleteByPKOptimisticLocking = assembler
+  private void initializeDeletebypkwithoptimisticlocking() {
+    this.deleteByPKWithOptimisticLocking = assembler
       .literaln("DELETE FROM account")
       .literaln("WHERE " + "id = ").parameter("f.id", Types.INTEGER)
       .literaln("  AND version = ").parameter("version", Types.INTEGER)
@@ -399,12 +399,12 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     filter.setId(id);
     ParameterContext context = this.assembler.newParameterContext();
     context.add("f", filter);
-    PreparedModificationQuery preparedQuery = this.deleteByPKOptimisticLocking.prepare(context);
+    PreparedModificationQuery preparedQuery = this.deleteByPKWithOptimisticLocking.prepare(context);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       int rows = preparedQuery.execute(conn);
       if (rows == 0) {
-        throw new StaleDataException("Failed optimistic locking DELETE. The row in the table ACCOUNT had changed since it was read");
+        throw new StaleDataException("Failed optimistic locking DELETE. The row in the table ACCOUNT has changed or was deleted since it was read");
       }
       return rows;
     }
@@ -573,9 +573,9 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     this.initializeSelectbyexample();
     this.initializeInsert();
     this.initializeInsertbyexample();
-    this.initializeUpdatebypkoptimisticlocking();
+    this.initializeUpdatebypkwithoptimisticlocking();
     this.initializeUpdatebyexample();
-    this.initializeDeletebypkoptimisticlocking();
+    this.initializeDeletebypkwithoptimisticlocking();
     this.initializeDeletebyexample();
     this.initializeSelect0();
   }

@@ -36,7 +36,7 @@ public class OptimisticLockingTag extends AbstractConfigurationTag {
 
     private OptimisticLockingStrategy(String attribute) {
       this.attribute = attribute;
-      this.title = this.attribute.toUpperCase().replace('_', ' ');
+      this.title = this.attribute.toUpperCase().replace('-', ' ');
     }
 
     public String getAttribute() {
