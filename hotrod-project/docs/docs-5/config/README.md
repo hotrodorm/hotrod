@@ -28,7 +28,7 @@ The configuration tags are shown below:
     * [`<converter>`](./tags/converter.md)
     * [`<table>`](tags/table.md)
         * [`<column>`](tags/column.md)
-        * [`<version-control-column>`](tags/version-control-column.md)
+        * [`<optimistic-locking>`](tags/optimistic-locking.md)
         * [`<sequence>`](tags/sequence.md)
         * [`<query>`](tags/query.md)
             * [`<parameter>`](tags/parameter.md)
