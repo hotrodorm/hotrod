@@ -68,13 +68,13 @@ could place extra load in the database or be outright impossible to achieve. Thi
 be significant when comparing LOB types or other heavy values that need to be sent back and forth
 over the network and to be fully compared before performing UPDATE or DELETE operations.
 
-## Comparison of strategies
+## Comparison of Strategies
 
 | Strategy| Benefits| Drawbacks|
 | -- | -- | -- |
 | Version Number | - Always detect row changes<br/>- High performant<br/>- No extra network usage | - The table structure needs to be changed to add the extra column |
 | Timestamp | - No table structure changes needed | - May fail to detect row changes if the timestamp column granularity is to coarse |
-| Full Row Check | - No table structure changes needed | - Cannot be implemented if the table has incompatible column types<br/>- The performance may suffer if the database has to compare ag columns<br/>- May consume network bandwith to send the row back each time it's updated |
+| Full Row Check | - No table structure changes needed | - Cannot be implemented if the table has non-comparable column types<br/>- The performance may suffer if the database has to compare a lot of data (e.g. LOB columns) each time a row is updated<br/>- May consume network bandwith to send the row back each time it's updated |
 
 
 
