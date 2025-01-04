@@ -13,9 +13,8 @@ It includes the following attributes:
 
 | Attribute | Description | Defaults to |
 | -- | -- | -- |
-| strategy | The strategy to implement optimistic locking in this table. One of: `version-number`, `timestamp`, or `full-row-check`. | N/A |
-| column | - In case the version-number strategy is selected this is the numeric column used as a version number. Must be an integer-like type<br/>- In case the timestamp strategy is selected this is the TIMESTAMP column used to verify unchanged rows<br/>- In case the full-row-check strategy is selected this  attribute should not be specified | N/A |
-| value | The SQL expression that produces a new value when for the TIMESTAMP column. This attribute is required the the timestamp strategy is selected | N/A |
+| strategy | The strategy to implement optimistic locking in this table. One of: `version-number`, `timestamp`, or `full-row-check`. | Required |
+| column | - In case the version-number strategy is selected this is the numeric column used as a version number. Must be an integer-like type<br/>- In case the timestamp strategy is selected this is the TIMESTAMP column used to verify unchanged rows<br/>- In case the full-row-check strategy is selected this  attribute should not be specified | Required in some cases |
 
 
 ## Goal
@@ -150,13 +149,11 @@ Now, we need to declare the optimistic locking strategy in the configuration fil
 <hotrod>
 
   <table name="account">
-    <optimistic-locking strategy="timestamp" column="updated_at" value="current_timestamp" />
+    <optimistic-locking strategy="timestamp" column="updated_at" />
   </table>
 
 </hotrod>
 ```
-
-**Note**: the `current_timestamp` SQL expression is a valid expression in the H2 database that generates a TIMESTAMP with the current date and time. Change accordingly for the specific database you are using.
 
 Again, we can use the DAO as we normally do to SELECT, INSERT, UPDATE, and DELETE rows. Consider
 that UPDATE and DELETE can now throw `StaleDataException` in case the row being updated or

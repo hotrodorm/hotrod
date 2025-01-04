@@ -579,7 +579,7 @@ public class DAO {
 
       if (byExample) {
         if (ol != null && ol.getStrategy() == OptimisticLockingStrategy.TIMESTAMP && cm.isOLTimestampColumn()) {
-          w.println("      .literal(\"  " + SUtil.escapeJavaString(ol.getValue()) + "\")"
+          w.println("      .literal(\"  " + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\")"
               + (n < coln ? ".literaln(\",\")" : ""));
         } else {
           w.println("      .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", assembler.parameter(\"m."
@@ -591,8 +591,8 @@ public class DAO {
         // Always include column
         if (!cm.belongsToPK()) {
           if (ol != null && ol.getStrategy() == OptimisticLockingStrategy.TIMESTAMP && cm.isOLTimestampColumn()) {
-            w.println("      .literal(\"  " + SUtil.escapeJavaString(ol.getValue()) + "\")"
-                + (n < coln ? ".literaln(\",\")" : ""));
+            w.println("      .literal(\"  " + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression())
+                + "\")" + (n < coln ? ".literaln(\",\")" : ""));
           } else {
             w.println("      .literal(\"  \").parameter(\"m." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
                 "." + jdbcType + ")" + (n < coln ? ".literaln(\",\")" : ""));
@@ -1298,7 +1298,7 @@ public class DAO {
             + SUtil.escapeJavaString(sqlId) + " + 1\").end())");
       } else if (ol != null && cm.isOLTimestampColumn()) {
         w.println("        .if_(\"true\", assembler.literal(\"" + SUtil.escapeJavaString(sqlId) + " = "
-            + SUtil.escapeJavaString(ol.getValue()) + "\").end())");
+            + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\").end())");
       } else {
         String memId = cm.getId().getJavaMemberName();
         String jdbcType = cm.getType().getJDBCShortType();

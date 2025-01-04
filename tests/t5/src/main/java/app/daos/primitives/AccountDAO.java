@@ -235,7 +235,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .literal("  ").parameter("m.type", Types.VARCHAR).literaln(",")
       .literal("  ").parameter("m.balance", Types.INTEGER).literaln(",")
       .literal("  ").parameter("m.active", Types.INTEGER).literaln(",")
-      .literal("  ").parameter("m.updatedAt", Types.TIMESTAMP).literaln(",")
+      .literal("  CURRENT_TIMESTAMP").literaln(",")
       .literal("  ").parameter("m.version", Types.INTEGER)
       .literal(")")
       .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
@@ -244,7 +244,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   public void insert(Account m) throws DynamicExpressionException, SQLException {
     ParameterContext context = this.assembler.newParameterContext();
     context.add("m", m);
-    m.setVersion(0);
+    m.setUpdatedAt(null);
     PreparedInsertQuery preparedQuery = this.insert.prepare(context);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
@@ -265,7 +265,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .if_("m.type != null", assembler.literal("type,\n").end())
       .if_("m.balance != null", assembler.literal("balance,\n").end())
       .if_("m.active != null", assembler.literal("active,\n").end())
-      .if_("m.updatedAt != null", assembler.literal("updated_at,\n").end())
+      .literaln("  updated_at,")
       .if_("m.version != null", assembler.literal("version\n").end())
       .literaln(")")
       .literaln("VALUES(")
@@ -274,7 +274,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .if_("m.type != null", assembler.parameter("m.type", Types.VARCHAR).literal(", ").end())
       .if_("m.balance != null", assembler.parameter("m.balance", Types.INTEGER).literal(", ").end())
       .if_("m.active != null", assembler.parameter("m.active", Types.INTEGER).literal(", ").end())
-      .if_("m.updatedAt != null", assembler.parameter("m.updatedAt", Types.TIMESTAMP).literal(", ").end())
+      .literal("  CURRENT_TIMESTAMP").literaln(",")
       .if_("m.version != null", assembler.parameter("m.version", Types.INTEGER).end())
       .literal(")")
       .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
@@ -283,7 +283,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   public void insertByExample(Account m) throws DynamicExpressionException, SQLException {
     ParameterContext context = this.assembler.newParameterContext();
     context.add("m", m);
-    m.setVersion(0);
+    m.setUpdatedAt(null);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(context);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
@@ -292,7 +292,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     }
   }
 
-  // UPDATE BY PRIMARY KEY (OPTIMISTIC LOCKING - STRATEGY: VERSION NUMBER)
+  // UPDATE BY PRIMARY KEY (OPTIMISTIC LOCKING - STRATEGY: TIMESTAMP)
 
   private DynamicModificationQuery updateByPKWithOptimisticLocking;
 
@@ -305,11 +305,11 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
         .if_("m.type != null", assembler.literal("type = ").parameter("m.type", Types.VARCHAR).end())
         .if_("m.balance != null", assembler.literal("balance = ").parameter("m.balance", Types.INTEGER).end())
         .if_("m.active != null", assembler.literal("active = ").parameter("m.active", Types.INTEGER).end())
-        .if_("m.updatedAt != null", assembler.literal("updated_at = ").parameter("m.updatedAt", Types.TIMESTAMP).end())
-        .if_("true", assembler.literal("version = version + 1").end())
+        .if_("true", assembler.literal("updated_at = CURRENT_TIMESTAMP").end())
+        .if_("m.version != null", assembler.literal("version = ").parameter("m.version", Types.INTEGER).end())
         .end())
       .literaln("\nWHERE " + "id = ").parameter("m.id", Types.INTEGER)
-      .literaln("  AND version = ").parameter("m.version", Types.INTEGER)
+      .literaln("  AND updated_at = ").parameter("m.updatedAt", Types.TIMESTAMP)
     .endModificationQuery();
   }
 
@@ -341,8 +341,8 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
         .if_("m.type != null", assembler.literal("type = ").parameter("m.type", Types.VARCHAR).end())
         .if_("m.balance != null", assembler.literal("balance = ").parameter("m.balance", Types.INTEGER).end())
         .if_("m.active != null", assembler.literal("active = ").parameter("m.active", Types.INTEGER).end())
-        .if_("m.updatedAt != null", assembler.literal("updated_at = ").parameter("m.updatedAt", Types.TIMESTAMP).end())
-        .if_("true", assembler.literal("version = version + 1").end())
+        .if_("true", assembler.literal("updated_at = CURRENT_TIMESTAMP").end())
+        .if_("m.version != null", assembler.literal("version = ").parameter("m.version", Types.INTEGER).end())
         .end())
       .where("AND", assembler.ifs()
         .if_("f.id != null", assembler.literal("id = ").parameter("f.id", Types.INTEGER).end())
@@ -383,7 +383,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     return new UpdateSetCompletePhase(this.context, tableOrView, setters, predicate);
   }
 
-  // DELETE BY PRIMARY KEY (OPTIMISTIC LOCKING - STRATEGY: VERSION NUMBER)
+  // DELETE BY PRIMARY KEY (OPTIMISTIC LOCKING - STRATEGY: TIMESTAMP)
 
   private DynamicModificationQuery deleteByPKWithOptimisticLocking;
 
@@ -391,13 +391,13 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     this.deleteByPKWithOptimisticLocking = assembler
       .literaln("DELETE FROM account")
       .literaln("\nWHERE " + "id = ").parameter("f.id", Types.INTEGER)
-      .literaln("  AND version = ").parameter("f.version", Types.INTEGER)
+      .literaln("  AND updated_at = ").parameter("f.updatedAt", Types.TIMESTAMP)
       .endModificationQuery();
   }
 
   public int deleteWOL(Account filter) throws DynamicExpressionException, SQLException {
     if (filter.getId() == null) return 0;
-    if (filter.getVersion() == null) return 0;
+    if (filter.getUpdatedAt() == null) return 0;
     ParameterContext context = this.assembler.newParameterContext();
     context.add("f", filter);
     PreparedModificationQuery preparedQuery = this.deleteByPKWithOptimisticLocking.prepare(context);

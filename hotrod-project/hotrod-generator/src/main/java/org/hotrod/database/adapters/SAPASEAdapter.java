@@ -284,6 +284,11 @@ public class SAPASEAdapter extends DatabaseAdapter {
   }
 
   @Override
+  public String currentTimestampSQLExpression() {
+    return "GETDATE()";
+  }
+
+  @Override
   public String provideSampleValueFor(final JDBCType jdbcType) {
 
 //    select

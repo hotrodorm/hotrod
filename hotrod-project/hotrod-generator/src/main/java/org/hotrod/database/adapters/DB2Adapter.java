@@ -251,6 +251,11 @@ public class DB2Adapter extends DatabaseAdapter {
   }
 
   @Override
+  public String currentTimestampSQLExpression() {
+    return "CURRENT TIMESTAMP";
+  }
+
+  @Override
   public String provideSampleValueFor(final JDBCType jdbcType) {
 
 //    select

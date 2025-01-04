@@ -317,6 +317,11 @@ public class SQLServerAdapter extends DatabaseAdapter {
   }
 
   @Override
+  public String currentTimestampSQLExpression() {
+    return "CURRENT_TIMESTAMP";
+  }
+
+  @Override
   public String provideSampleValueFor(final JDBCType jdbcType) {
 
 //    select

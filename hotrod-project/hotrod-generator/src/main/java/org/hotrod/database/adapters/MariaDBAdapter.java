@@ -166,6 +166,11 @@ public class MariaDBAdapter extends DatabaseAdapter {
   }
 
   @Override
+  public String currentTimestampSQLExpression() {
+    return "NOW()";
+  }
+
+  @Override
   public String provideSampleValueFor(final JDBCType jdbcType) {
     return this.mysqlAdaper.provideSampleValueFor(jdbcType);
   }

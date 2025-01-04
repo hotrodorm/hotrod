@@ -185,6 +185,8 @@ public abstract class DatabaseAdapter implements Serializable {
   public abstract UnescapedSQLCase getUnescapedSQLCase();
 
   public abstract String provideSampleValueFor(JDBCType jdbcType);
+  
+  public abstract String currentTimestampSQLExpression();
 
   public abstract void setCurrentCatalogSchema(final Connection conn, final String catalog, final String schema)
       throws CatalogNotSupportedException, InvalidSchemaException, SQLException, InvalidCatalogException,

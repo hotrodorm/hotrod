@@ -27,7 +27,6 @@ public class OptimisticLockingTag extends AbstractConfigurationTag {
 
   private String sstrategy = null;
   private String column = null;
-  private String value = null;
 
   public enum OptimisticLockingStrategy {
     VERSION_NUMBER("version-number", false), TIMESTAMP("timestamp", false), FULL_ROW_CHECK("full-row-check", true);
@@ -88,11 +87,6 @@ public class OptimisticLockingTag extends AbstractConfigurationTag {
     this.column = column;
   }
 
-  @XmlAttribute(name = "value")
-  public void setSValue(final String value) {
-    this.value = value;
-  }
-
   // Behavior
 
   public void validate() throws InvalidConfigurationFileException {
@@ -136,33 +130,6 @@ public class OptimisticLockingTag extends AbstractConfigurationTag {
       if (this.column != null) {
         throw new InvalidConfigurationFileException(this, "Attribute 'column' of tag <" + super.getTagName()
             + "> cannot be specified " + "when the Full Row Check optimistic locking strategy is selected.");
-      }
-      break;
-    }
-
-    // value
-
-    switch (this.strategy) {
-    case VERSION_NUMBER:
-      if (this.value != null) {
-        throw new InvalidConfigurationFileException(this,
-            "Attribute 'value' of tag <" + super.getTagName()
-                + "> cannot be specified for the strategy VERSION NUMBER. "
-                + "It can only be specified when the TIMESTAMP strategy is selected.");
-      }
-      break;
-    case TIMESTAMP:
-      if (SUtil.isEmpty(this.value)) {
-        throw new InvalidConfigurationFileException(this, "Attribute 'value' of tag <" + super.getTagName()
-            + "> must be specified with the SQL expression that generates a new value.");
-      }
-      break;
-    case FULL_ROW_CHECK:
-      if (this.value != null) {
-        throw new InvalidConfigurationFileException(this,
-            "Attribute 'value' of tag <" + super.getTagName()
-                + "> cannot be specified for the strategy FULL ROW CHECK. "
-                + "It can only be specified when the TIMESTAMP strategy is selected.");
       }
       break;
     }
@@ -267,10 +234,6 @@ public class OptimisticLockingTag extends AbstractConfigurationTag {
 
   public String getColumn() {
     return column;
-  }
-
-  public String getValue() {
-    return value;
   }
 
   // Simple Caption
