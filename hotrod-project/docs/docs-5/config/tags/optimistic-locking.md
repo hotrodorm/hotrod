@@ -72,7 +72,7 @@ over the network and to be fully compared before performing UPDATE or DELETE ope
 The following table sohws the features and drawbacks of each strategy:
 
 | Features                   | Version Number | Timestamp | Full Row Check |
-| -- | -- | -- | -- |
+| -- |:--:|:--:|:--:|
 | Always Detect Row Changes  | :heavy_check_mark: | :x: *1 | :heavy_check_mark: |
 | Can always be implemented  | :heavy_check_mark: | :heavy_check_mark: | :x: *2 |
 | Always highly performant   | :heavy_check_mark: | :heavy_check_mark: | :x: *3 |
