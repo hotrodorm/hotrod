@@ -73,11 +73,11 @@ The following table sohws the features and drawbacks of each strategy:
 
 | Features                   | Version Number | Timestamp | Full Row Check |
 | -- | -- | -- | -- |
-| Always Detect Row Changes  | Yes | No*1 | Yes |
-| Can always be implemented  | Yes | Yes | No*2 |
-| Always highly performant   | Yes | Yes | No*3 |
-| No extra network usage     | Yes | Yes | No*4 |
-| No table structure changes | No | Yes | Yes |
+| Always Detect Row Changes  | :heavy_check_mark: | :x: *1 | :heavy_check_mark: |
+| Can always be implemented  | :heavy_check_mark: | :heavy_check_mark: | :x: *2 |
+| Always highly performant   | :heavy_check_mark: | :heavy_check_mark: | :x: *3 |
+| No extra network usage     | :heavy_check_mark: | :heavy_check_mark: | :x: *4 |
+| No table structure changes | :x: | :heavy_check_mark: | :heavy_check_mark: |
 
 *1 May fail to detect row changes if the timestamp column granularity is to coarse or if the transaction frequency is too high.
 
