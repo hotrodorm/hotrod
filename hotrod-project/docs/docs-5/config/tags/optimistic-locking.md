@@ -67,9 +67,9 @@ could place extra load in the database or be outright impossible to achieve. Thi
 be significant when comparing LOB types or other heavy values that need to be sent back and forth
 over the network and to be fully compared before performing UPDATE or DELETE operations.
 
-## Comparison of Strategies
+## Features and Drawbacks of the Strategies
 
-The following table sohws the features and drawbacks of each strategy:
+The following table shws the features and drawbacks of each strategy:
 
 | Features                   | Version Number | Timestamp | Full Row Check |
 | -- |:--:|:--:|:--:|
@@ -79,7 +79,7 @@ The following table sohws the features and drawbacks of each strategy:
 | No extra network usage     | :heavy_check_mark: | :heavy_check_mark: | :x: *4 |
 | No table structure changes | :x: | :heavy_check_mark: | :heavy_check_mark: |
 
- *1 May fail to detect row changes if the timestamp column granularity is to coarse or if the transaction frequency is too high.<br/>*2 Cannot be implemented if the table has data types that do not support equality comparisons (e.g. RAW, LONGBLOB, file-based types, etc.).<br/>*3 The performance may suffer if the database has to compare a lot of data (e.g. LOB columns) each time a row is updated.<br/> *4 May consume extra network bandwith to send the entire row back each time it's updated.
+\*1 May fail to detect row changes if the timestamp column granularity is to coarse or if the transaction frequency is too high.<br/>\*2 Cannot be implemented if the table has data types that do not support equality comparisons (e.g. RAW, LONGBLOB, file-based types, etc.).<br/>\*3 The performance may suffer if the database has to compare a lot of data (e.g. LOB columns) each time a row is updated.<br/>\*4 May consume extra network bandwith to send the entire row back each time it's updated.
 
 ## Examples
 
