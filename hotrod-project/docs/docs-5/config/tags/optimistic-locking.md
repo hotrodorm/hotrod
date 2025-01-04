@@ -81,7 +81,7 @@ The following table sohws the features and drawbacks of each strategy:
 
 *1 May fail to detect row changes if the timestamp column granularity is to coarse or if the transaction frequency is too high.
 
-*2 Cannot be implemented sometimes, when the table cannot comparable some rather exotic data types (e.g. RAW, files, etc).
+*2 Cannot be implemented if the table has data types that do not support equality comparisons (e.g. RAW, LONGBLOB, file-based types, etc).
 
 *3 The performance may suffer if the database has to compare a lot of data (e.g. LOB columns) each time a row is updated.
 
