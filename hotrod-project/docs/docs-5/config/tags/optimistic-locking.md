@@ -79,13 +79,7 @@ The following table sohws the features and drawbacks of each strategy:
 | No extra network usage     | :heavy_check_mark: | :heavy_check_mark: | :x: *4 |
 | No table structure changes | :x: | :heavy_check_mark: | :heavy_check_mark: |
 
-*1 May fail to detect row changes if the timestamp column granularity is to coarse or if the transaction frequency is too high.
-
-*2 Cannot be implemented if the table has data types that do not support equality comparisons (e.g. RAW, LONGBLOB, file-based types, etc).
-
-*3 The performance may suffer if the database has to compare a lot of data (e.g. LOB columns) each time a row is updated.
-
-*4 May consume extra network bandwith to send the row back each time it's updated.
+ *1 May fail to detect row changes if the timestamp column granularity is to coarse or if the transaction frequency is too high.<br/>*2 Cannot be implemented if the table has data types that do not support equality comparisons (e.g. RAW, LONGBLOB, file-based types, etc.).<br/>*3 The performance may suffer if the database has to compare a lot of data (e.g. LOB columns) each time a row is updated.<br/> *4 May consume extra network bandwith to send the entire row back each time it's updated.
 
 ## Examples
 
