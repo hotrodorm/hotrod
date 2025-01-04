@@ -31,20 +31,52 @@ to catch this exeption and try again; it would need to read the row again while 
 
 ## Optimistic Locking Strategies
 
-HotRod currently supports three optimistic locking strategies:
+HotRod currently supports three optimistic locking strategies. They all throw a `StaleDataException`
+during UPDATE and DELETE queries if they detect a row was modified or deleted after it was read, possibly by another concurrent session.
 
-- **Version Number**: A column of the table is dedicated to store a version number for the row. Every
-time the row is updated the version number changes. `UPDATE` and `DELETE` operations can detect changes in this value and abort the ongoing transaction on such event.
-- **Timestamp Column**: If a timestamp column happens to be already included in the table
-it can be used for optimistic locking. Each time the row is changed this timestamp is updated. The upside
-of this strategy is that no extra column is required. The downside of it is that the
-column may have been intended for a different goal (not low level updates), and also the granularity of the timestamp
-value could be insufficient on highly updated rows that can occur more than once a second (or milliseconds, microseconds, nanoseconds).
-- **Full Row Check**: This strategy checks the entire row for changes while updating it or deleting it. The benefit of this strategy is that is doesn't require an extra column to be added to the table.
-The downside is that it needs to compare all the columns of the table before updating, and this
-could place extra load in the database. This extra load could be significant when comparing LOB
-types or other heavy values that need to be sent back and forth over the network and then
-fully compared before performing update operations.
+### Version Number
+
+This strategy uses a version number column to store a version for the row data. Every time the
+row is updated this version is incremented. This way an UPDATE or DELETE operation on the row
+can detect if it was changed after it was read from the database.
+
+This version requires the table to allocate an extra column just for this purpose and, thus, will
+most likely need a table strcuture change to implement it.
+
+### Timestamp
+
+This strategy uses a TIMESTAMP column to store the date and time when the row was last updated.
+Every time the row is updated this timestamp is updated. This way an UPDATE or DELETE operation
+on the row can detect if it was changed after it was read from the database.
+
+One disadvantage of this strategy is that it may changes the original purpose of the column that
+may have been intended for a different intention (not low level updates). Another drawback is that
+this strategy may fail to detect the change if the frequency of modification is high compared to
+the granularity of the column (3 seconds, 1 millisecond, 1 microsecond, and so on).
+
+This strategy is best suited for cases when the table already has a timestamp column that can be
+used for this purpose and when the database table cannot be easily changed.
+
+### Full Row Check
+
+This strategy detects concurrent row changes while updating or deleting a row by checking all the
+values of the row for changes.
+
+The benefit of this strategy is that is doesn't require an extra column to be added to the table
+at all. The downside is that it needs to compare all the columns of the table before updating, and this
+could place extra load in the database or be outright impossible to achieve. This extra load could
+be significant when comparing LOB types or other heavy values that need to be sent back and forth
+over the network and to be fully compared before performing UPDATE or DELETE operations.
+
+## Comparison of strategies
+
+| Strategy| Benefits| Drawbacks|
+| -- | -- | -- |
+| Version Number | - Always detect row changes<br/>- High performant<br/>- No extra network usage | - The table structure needs to be changed to add the extra column |
+| Timestamp | - No table structure changes needed | - May fail to detect row changes if the timestamp column granularity is to coarse |
+| Full Row Check | - No table structure changes needed | - Cannot be implemented if the table has incompatible column types<br/>- The performance may suffer if the database has to compare ag columns<br/>- May consume network bandwith to send the row back each time it's updated |
+
+
 
 ## Examples
 
