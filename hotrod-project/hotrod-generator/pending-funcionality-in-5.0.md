@@ -48,14 +48,13 @@ LiveSQL:
 CRUD:
 
 - SELECT sequence.
-- SELECT by UI.
 - Enums.
 - Converters when writing to the database (also in Nitro and LiveSQL).
 
 Nitro:
 
+- Query mode: Single-row.
 - Graph queries.
-- Query mode: Single-row
 - Query mode: Cursor.
 
 LiveSQL:
@@ -70,6 +69,7 @@ LiveSQL:
 - Log4j fully removed from HotRod. It was still used in the generator and was switched to JUL.
 - Removed old unused classes in the hotrod library.
 - SELECT BY FK(s) -- this functionality was rarely used. Plus the implementation was clunky.
+- SELECT by unique indexes.
 
 ## 5. Modified Functionality
 
@@ -83,7 +83,6 @@ CRUD:
 - New names for DAOs and VOs.
 - New configuration structure, tags, and attributes for DAOs and VOs.
 - New package structure for DAOs and VOs.
-- Implement SELECT BY INDEX (unique and non-unique).
 
 Nitro:
 
