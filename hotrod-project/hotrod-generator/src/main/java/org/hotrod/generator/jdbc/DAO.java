@@ -1377,15 +1377,16 @@ public class DAO {
 
   private void fragmentExecuteModification(boolean optimisticLocking, String clause) {
     w.println("    try (", Connection.class, " conn = this.dataSource.getConnection()) {");
-    w.println("      int rows = preparedQuery.execute(conn);");
+    w.println("      int count = preparedQuery.execute(conn);");
     if (optimisticLocking) {
-      w.println("      if (rows == 0) {");
+      w.println("      if (count == 0) {");
       w.println("        throw new ", StaleDataException.class,
           "(" + "\"Optimistic locking " + clause + " failed. The row in the table "
-              + this.metadata.getId().getCanonicalSQLName() + " has changed or was deleted since it was read.\");");
+              + this.metadata.getId().getCanonicalSQLName()
+              + " had changed or had been deleted since it was read.\");");
       w.println("      }");
     }
-    w.println("      return rows;");
+    w.println("      return count;");
     w.println("    }");
   }
 

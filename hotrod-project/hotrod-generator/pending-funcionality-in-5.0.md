@@ -13,7 +13,7 @@
 | 9 | CRUD | Optimistic Locking | Existing | Completed |
 | 10 | CRUD | SELECT sequence | Existing | Pending |
 | 11 | CRUD | Enum Tables | Existing | Pending |
-| 12 | CRUD | Optimistic locking now implements the TIMESTAMP and FULL ROW CHECK strategies in addition to the existing VERSION NUMBER | New | Completed |
+| 12 | CRUD | Optimistic locking now implements the TIMESTAMP and FULL ROW CHECK strategies in addition to the existing VERSION NUMBER | New | Completed. Needs review. |
 | 13 | CRUD | Converters when writing to the database | New | Pending |
 | 14 | CRUD | SELECT BY FK(s) | Removed | Completed |
 | 15 | CRUD | SELECT by unique indexes| Removed | Completed |

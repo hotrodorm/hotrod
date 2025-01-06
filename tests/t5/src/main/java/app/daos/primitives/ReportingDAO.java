@@ -97,8 +97,8 @@ public class ReportingDAO implements Serializable, ApplicationContextAware {
     PreparedModificationQuery preparedQuery = this.query0.prepare(context);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
-      int rows = preparedQuery.execute(conn);
-      return rows;
+      int count = preparedQuery.execute(conn);
+      return count;
     }
   }
 

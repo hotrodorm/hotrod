@@ -61,9 +61,13 @@ public class App {
 
   private void testOptimisticLocking() throws SQLException, DynamicExpressionException {
 //    testOLInsert();
-//    testOLInsertByExample() ;
+//  testOLInsertByExample() ;
+//    testOLUpdate();
+//    testOLDelete();
+//  testOLDeleteDelete();
 //    testOLDeleteUpdate();
     testOLUpdateDelete();
+//    testOLUpdateUpdate();
   }
 
   private void testOLInsert() throws DynamicExpressionException, SQLException {
@@ -93,6 +97,21 @@ public class App {
 
     Account b = this.accountDAO.select(a.getId());
     System.out.println("b=" + b);
+  }
+
+  private void testOLUpdate() throws DynamicExpressionException, SQLException {
+    Account a = this.accountDAO.select(112);
+    System.out.println("--> a=" + a);
+    a.setBalance(a.getBalance() + 100);
+    this.accountDAO.update(a);
+    System.out.println("Updated a.");
+  }
+
+  private void testOLDelete() throws DynamicExpressionException, SQLException {
+    Account a = this.accountDAO.select(112);
+    System.out.println("--> a=" + a);
+    this.accountDAO.deleteWOL(a);
+    System.out.println("Updated a.");
   }
 
   private void testOLDeleteUpdate() throws DynamicExpressionException, SQLException {

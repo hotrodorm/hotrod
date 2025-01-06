@@ -42,7 +42,7 @@
  -->
 
   <table name="account">
-    <optimistic-locking strategy="timestamp" column="updated_at" />
+    <optimistic-locking strategy="version-number" column="version" />
   <!--
     <optimistic-locking strategy="version-number" column="version" />
     <optimistic-locking strategy="timestamp" column="updated_at" />
