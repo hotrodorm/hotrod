@@ -25,6 +25,22 @@
   <table name="other" />
  -->
 
+<!-- 
+  update(Account row);                     // no OL
+  update(Account row);                     // Version number
+  update(Account row);                     // Timestamp
+  updateOL(Account row, Account baseline); // Full row check
+  
+  update(Account values, Account filter);  // by example
+  
+  delete(int pk);                          // no OL
+  delete(int pk, int versionNumber);       // Version number
+  delete(int pk, LocalDateTime timestamp); // Timestamp
+  deleteOL(Account baseline);              // Full row check
+
+  delete(Account filter);                  // by example  
+ -->
+
   <table name="account">
     <optimistic-locking strategy="timestamp" column="updated_at" />
   <!--
