@@ -1,82 +1,40 @@
 # Hotrod 5.0 Functionality
 
-## 1. New Functionality
+| Module | Functionality | Type | Status |
+|:-- |:-- |:--:| -- |
+| CRUD | Optimistic locking now implements the TIMESTAMP and FULL ROW CHECK strategies in addition to the existing VERSION NUMBER | New | Completed |
+| LiveSQL | Advanced Column Typing: comprehensive control of the type of a column for CRUD, LiveSQL, and Nitro | New | Completed |
+| LiveSQL | Implemented missing COUNT(expression) function | New | Completed |
+| DynamicSQL | New independent DynamicSQL module | New | Completed |
+| CRUD | SELECT BY PK/EXAMPLE, UPDATE BY PK/EXAMPLE, DELETE BY PK/EXAMPLE implemented | Existing | Completed |
+| CRUD | INSERT and INSERT BY EXAMPLE implemented | Existing | Completed |
+| CRUD | Primary key retrieval implemented on INSERTs for identities and sequences | Existing | Completed |
+| CRUD | SELECT/UPDATE/DELETE BY CRITERIA | Existing | Completed |
+| CRUD | Logging implemented with FINE/DEBUG (SQL only) and FINER/TRACE (SQL + parameters) | Existing | Completed |
+| CRUD | Bean factory implemented for SELECTs | Existing | Completed |
+| CRUD | Converters when reading from the database (also in Nitro and LiveSQL) | Existing | Completed |
+| CRUD | Optimistic Locking | Existing | Completed |
+| Nitro | Dynamic SQL | Existing | Completed |
+| Nitro | General Queries implemented | Existing | Completed |
+| Nitro | Flat SELECTs implemented| Existing | Completed |
+| Nitro | Entity SELECTs implemented | Existing | Completed |
+| LiveSQL | LiveSQL module migrated to plain JDBC | Existing | Completed |
+| CRUD | SELECT sequence | Existing | Pending |
+| CRUD | Enum Tables | Existing | Pending |
+| CRUD | Converters when writing to the database | New | Pending |
+| Nitro | Converters when writing to the database | New | Pending |
+| LiveSQL | Converters when writing to the database | New | Pending |
+| Nitro | Query mode: Single-row | Existing | Pending |
+| Nitro | Graph queries | Existing | Pending |
+| Nitro | Query mode: Cursor | Existing | Pending |
+| CRUD | SELECT BY FK(s) | Removed | Completed |
+| CRUD | SELECT by unique indexes| Removed | Completed |
+| Maven Arquetype | Maven Arquetype module was removed | Removed | Completed |
+| Generator | Log4j fully removed in favor of JUL | Removed | Completed |
+| MyBatis | MyBatis fully removed | Removed | Completed |
+| CRUD | Packages are changed in the hotrod library. The "runtime" segment is now removed | Existing | Completed |
 
-CRUD:
-
-- Optimistic locking now implements the TIMESTAMP and FULL ROW CHECK strategies in addition to the
-existing VERSION NUMBER one.
-
-LiveSQL:
-
-- Advanced Column Typing: simple yet comprehensive control of the type of a column for CRUD, LiveSQL, and Nitro.
-- Implemented missing COUNT(expression) function.
-
-Dynamic SQL:
-
-- New Dynamic SQL engine:
-    - Used by Nitro.
-    - Can be used from plain Java at runtime.
-
-
-## 2. Existing Functionality Migrated To Plain JDBC
-
-CRUD:
-
-- SELECT BY PK/EXAMPLE, UPDATE BY PK/EXAMPLE, DELETE BY PK/EXAMPLE implemented.
-- INSERT and INSERT BY EXAMPLE implemented.
-- Primary key retrieval implemented on INSERTs for identities and sequences.
-- SELECT/UPDATE/DELETE BY CRITERIA.
-- Logging implemented with FINE/DEBUG (SQL only) and FINER/TRACE (SQL + parameters).
-- Bean factory implemented for SELECTs.
-- Converters when reading from the database (also in Nitro and LiveSQL).
-- Optimistic Locking.
-
-Nitro:
-
-- Dynamic SQL.
-- General Queries implemented.
-- Flat SELECTs implemented.
-- Entity SELECTs implemented.
-
-LiveSQL:
-
-- Basic POC working.
-
-## 3. Existing Functionality Not Yet Migrated To Plain JDBC
-
-CRUD:
-
-- SELECT sequence.
-- Enums.
-- Converters when writing to the database (also in Nitro and LiveSQL).
-
-Nitro:
-
-- Query mode: Single-row.
-- Graph queries.
-- Query mode: Cursor.
-
-LiveSQL:
-
-- Fully test SELECTs.
-- UPDATE, DELETE, INSERT.
-
-## 4. Removed Functionality
-
-- Mybatis persistence layer removed in favor of plain JDBC.
-- The Arquetype module was removed.
-- Log4j fully removed from HotRod. It was still used in the generator and was switched to JUL.
-- Removed old unused classes in the hotrod library.
-- SELECT BY FK(s) -- this functionality was rarely used. Plus the implementation was clunky.
-- SELECT by unique indexes.
-
-## 5. Modified Functionality
-
-- New class writer handles references and imports for cleaners DAOs and VOs.
-- Packages are changed in the hotrod library. The "runtime" segment is now removed.
-
-## 6. Functionality TBD
+## Functionality TBD
 
 CRUD:
 
