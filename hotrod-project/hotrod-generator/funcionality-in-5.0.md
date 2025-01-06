@@ -12,7 +12,7 @@
 | 8 | CRUD | Converters when reading from the database (also in Nitro and LiveSQL) | Existing | :heavy_check_mark: |
 | 9 | CRUD | Optimistic Locking | Existing | :heavy_check_mark: |
 | 10 | CRUD | SELECT sequence | Existing | soon |
-| 11 | CRUD | Enum Tables | Existing | soon |
+| 11 | CRUD | Enum Tables | Existing | :question: |
 | 12 | CRUD | Optimistic locking now implements the TIMESTAMP and FULL ROW CHECK strategies in addition to the existing VERSION NUMBER | New | :heavy_check_mark:. Needs review. |
 | 13 | CRUD | Converters when writing to the database | New | soon |
 | 14 | CRUD | SELECT BY FK(s) | Removed | :x: |
@@ -33,7 +33,7 @@
 | 29 | Nitro | Query mode: Cursor | Existing | :question: |
 | 30 | Generator | Log4j fully removed in favor of JUL | Removed | :x: |
 | 31 | Generator | MyBatis fully removed | Removed | :x: |
-| 32 | Maven Arquetype | Maven Arquetype module was removed | Removed | :x: |
+| 32 | Maven Arquetype | The Maven Arquetype module was removed | Removed | :x: |
 
 
 ## Functionality TBD
