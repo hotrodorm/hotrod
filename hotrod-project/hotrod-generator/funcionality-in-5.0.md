@@ -15,8 +15,8 @@
 | 11 | CRUD | Enum Tables | Existing | :question: |
 | 12 | CRUD | Optimistic locking now implements the TIMESTAMP and FULL ROW CHECK strategies in addition to the existing VERSION NUMBER | New | :heavy_check_mark:. Needs review. |
 | 13 | CRUD | Converters when writing to the database | New | soon |
-| 14 | CRUD | SELECT BY FK(s) | Removed | :x: |
-| 15 | CRUD | SELECT by unique indexes| Removed | :x: |
+| 14 | CRUD | SELECT BY FK(s) | Existing | :x: |
+| 15 | CRUD | SELECT by unique indexes| Existing | :x: |
 | 16 | CRUD | Packages are changed in the hotrod library. The "runtime" segment is now removed | Existing | :heavy_check_mark: |
 | 17 | LiveSQL | LiveSQL migrated to plain JDBC | Existing | :heavy_check_mark: |
 | 18 | LiveSQL | Advanced Column Typing: comprehensive control of the type of a column for CRUD, LiveSQL, and Nitro | New | :heavy_check_mark: |
@@ -31,9 +31,9 @@
 | 27 | Nitro | Query mode: Single-row | Existing | soon |
 | 28 | Nitro | Graph queries | Existing | :clock9: |
 | 29 | Nitro | Query mode: Cursor | Existing | :question: |
-| 30 | Generator | Log4j fully removed in favor of JUL | Removed | :x: |
-| 31 | Generator | MyBatis fully removed | Removed | :x: |
-| 32 | Maven Arquetype | The Maven Arquetype module was removed | Removed | :x: |
+| 30 | Generator | Log4j fully removed in favor of JUL | Existing | :x: |
+| 31 | Generator | MyBatis fully removed | Existing | :x: |
+| 32 | Maven Arquetype | The Maven Arquetype module was removed | Existing | :x: |
 
 
 ## Functionality TBD
