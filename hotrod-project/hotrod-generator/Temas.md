@@ -4,13 +4,21 @@
 
 ## 1. Nombres para el abstract VO y VO 
 
+Con el fin de unificar:
+
+- Configuración.
+- Documentación.
+- Mensajería de info y errores.
+
 Puede ser:
 
+```
    Prototype + Model
              + Entity
              + Domain
              + VO
              + otro?
+```
 
 ## 2. Tags de configuración
 
