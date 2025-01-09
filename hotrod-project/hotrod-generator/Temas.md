@@ -60,12 +60,14 @@ Podría cambiar a:
 Actualmente:
 
 ```
-   src/main/java/<package>/CuentaVO.java
-                          /primitives/CuentaDAO.java
-                          /primitives/CuentaPrototype.java
-   src/main/java/<package>/<fragment-package>/ClienteVO.java
-                                             /primitives/ClienteDAO.java
-                                             /primitives/ClientePrototype.java
+   src/main/java/com.empresa.persistencia/CuentaVO.java
+                                         /primitives/CuentaDAO.java
+                                         /primitives/CuentaPrototype.java
+   src/main/java/com.empresa.persistencia/reportes          /ClienteVO.java
+                                                            /primitives/ClienteDAO.java
+                                                            /primitives/ClientePrototype.java
+                                                            
+   <base-dir>   /<package>               /<fragment-package>/...                                          
 ```
 
 Tal vez:
