@@ -60,10 +60,10 @@ Podría cambiar a:
 Actualmente:
 
 ```
-   src/main/java/com.empresa.persistencia/CuentaVO.java
+   src/main/java/com/empresa/persistencia/CuentaVO.java
                                          /primitives/CuentaDAO.java
                                          /primitives/CuentaPrototype.java
-   src/main/java/com.empresa.persistencia/reportes          /ClienteVO.java
+   src/main/java/com/empresa/persistencia/reportes          /ClienteVO.java
                                                             /primitives/ClienteDAO.java
                                                             /primitives/ClientePrototype.java
                                                             
