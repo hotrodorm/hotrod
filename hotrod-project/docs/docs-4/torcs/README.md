@@ -14,7 +14,7 @@ Torcs does not aim to replace the official database statistical information prod
 
 Torcs is local to the application instance and only sees queries ran by the application instance. It does not see the queries ran by other application instances, queries executed by other applications, or database scheduled processes. While queries such as these can place a load into the database and slow it down, Torcs will be unaware of them.
 
-**Note**: Even though Torcs works well with any JDBC driver (including the JDBC spec 4.3), it does not implement the "database sharding" extension defined in JDBC 4.3. Using this extension is fairly rare for the vast majority of application. Nevertheless, if your application or server is relying on this functionality, do not use Torcs.
+**Note**: Even though Torcs works well with any JDBC driver (including the JDBC spec 4.3), it does not implement the "database sharding" extension defined in JDBC 4.3. Using this extension is fairly rare for the vast majority of applications. Nevertheless, if your application or server is relying on this functionality, do not use Torcs.
 
 ## What Does Torcs Do?
 
