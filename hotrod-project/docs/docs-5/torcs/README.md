@@ -14,7 +14,7 @@ Torcs does not aim to replace the official database statistical information prod
 
 Torcs can easily provide a wealth of information to a crafty developer who can start detecting slow queries, extracting live execution plans, and improving slow queries. All of this without the assistance of an expensive or elusive DBA.
 
-Consider that Torcs is local to the application instance and only sees queries that are run by the application instance. It does not see the queries executed by other application instances, queries executed by other entirely different applications, or queries executed by internal/scheduled database processes. While queries such as these can place a load into the database and slow it down, Torcs will be unaware of them.
+Consider that Torcs is local to the application instance and only sees queries that are run by the application instance. It does not see queries executed by other application instances, queries executed by other entirely different applications, or queries executed by internal and/or scheduled database processes. While queries such as these can place a load into the database and slow it down, Torcs will be unaware of them.
 
 **Note**: Even though Torcs works well with any JDBC driver (including the JDBC spec 4.3) it does not implement the "database sharding" extension defined in JDBC 4.3, a functionality that is rarely used
 by applications. Nevertheless, if your application or server is relying on this functionality, do not use Torcs.
