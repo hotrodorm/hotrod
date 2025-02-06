@@ -10,9 +10,11 @@ Torcs is not to be confused with the Torcs CTP module. The latter focuses on mor
 
 ## Limitations
 
-Torcs does not aim to replace the official database statistical information produced by a DBA using the engine's sophisticated mechanisms. This information is much more comprehensive compared to what Torcs can provide; it must be noted that some well known and pricy monitoring tools in the market fail to provide useful insight data. Torcs can easily provide a wealth of information to a crafty developer who can start detecting slow queries, extracting live execution plans, and improving slow queries. All of this without the assistance of an expensive or elusive DBA.
+Torcs does not aim to replace the official database statistical information produced by a DBA using the engine's sophisticated mechanisms. This information is much more comprehensive compared to what Torcs can provide. It must be noted, however, that some well-known and pricy monitoring tools in the market fail to provide useful insight data, especially when it comes to open source databases.
 
-Torcs is local to the application instance and only sees queries ran by the application instance. It does not see the queries ran by other application instances, queries executed by other applications, or database scheduled processes. While queries such as these can place a load into the database and slow it down, Torcs will be unaware of them.
+Torcs can easily provide a wealth of information to a crafty developer who can start detecting slow queries, extracting live execution plans, and improving slow queries. All of this without the assistance of an expensive or elusive DBA.
+
+Torcs is local to the application instance and only sees queries ran by the application instance. It does not see the queries ran by other application instances, queries executed by other applications, or queries executed by internal database scheduled processes. While queries such as these can place a load into the database and slow it down, Torcs will be unaware of them.
 
 **Note**: Even though Torcs works well with any JDBC driver (including the JDBC spec 4.3), it does not implement the "database sharding" extension defined in JDBC 4.3. Using this extension is fairly rare for the vast majority of applications. Nevertheless, if your application or server is relying on this functionality, do not use Torcs.
 
