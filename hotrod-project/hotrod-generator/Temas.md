@@ -54,7 +54,9 @@ Va a cambiar a:
 
 N/A
 
-## 4. Optimistic Locking (OL)
+## 4. Optimistic Locking (OL) y CRUD
+
+Optimistic Locking sólo afecta los UPDATEs y DELETEs de SQL:
 
 En 4.x:
 
