@@ -10,15 +10,9 @@ Con el fin de unificar:
 - Documentación.
 - Mensajería de info y errores.
 
-Puede ser:
-
-```
-   Prototype + Model
-             + Entity
-             + Domain
-             + VO
-             + otro?
-```
+Vamos a usar:
+- Layout (para la estructura re/generada)
+- Model, para el objeto al que se le puede agregar comportamiento y propiedades extras.
 
 ## 2. Tags de configuración
 
@@ -40,46 +34,57 @@ Actualmente:
        />
 ```
 
-Podría cambiar a:
+Va a cambiar a:
 
 ```xml
 <hotrod>
   <generators>
      <jdbc base-dir="src/main/java" 
-           package="mi.persistencia" 
-           primitives-package="primitives" 
-           beans-qualifier="">
-       <dao prefix="" suffix="" />
-       <prototype prefix="" suffix="" />
-       <model prefix="" suffix="" />
-       <nitro-dao prefix="" suffix="" />
+           package="mi.persistencia"
+           qualifier="">
+       <dao prefix="" suffix="" base-dir="" sub-package="" />
+       <layout prefix="" suffix="" base-dir="" sub-package="" />
+       <model prefix="" suffix="" base-dir="" sub-package="" />
+     </jdbc>
+   </generators>
+</hotrod>
 ```
 
 ## 3. Estructura de Packages
 
-Actualmente:
+N/A
 
-```
-   src/main/java/mi/persistencia/CuentaVO.java
-                                /primitives/CuentaDAO.java
-                                /primitives/CuentaPrototype.java
-   src/main/java/mi/persistencia/reportes          /ClienteVO.java
-                                                   /primitives/ClienteDAO.java
-                                                   /primitives/ClientePrototype.java
+## 4. Optimistic Locking (OL)
 
-   <base-dir>.../<package>....../<fragment-package>/...                                          
-```
+En 4.x:
 
-Tal vez:
+```java
+accountDAO.update(a); // update by PK
+accountDAO.update(a, example); // update by example
+accountDAO.update(a, t, predicate); // update by example
+accountDAO.update(a); // update by PK - OL with VERSION NUMBER
 
-```
-   src/main/java/<package>/CuentaVO.java
-   src/main/java/<package>/<fragment-package>/ClienteVO.java
-
-   src/main/java/<package>/primitives/CuentaDAO.java
-                                     /CuentaPrototype.java
-                                     /<fragment-package>/ClienteDAO.java
-                                     /<fragment-package>/ClientePrototype.java
+accountDAO.delete(id); // delete by PK
+accountDAO.delete(id, example); // delete by example
+accountDAO.delete(t, predicate); // delete by criteria
+accountDAO.delete(id); // delete by PK - OL with VERSION NUMBER
 ```
 
-## 4. 
+En 5.x:
+
+```java
+accountDAO.update(a); // update by PK
+accountDAO.update(a, example); // update by example
+accountDAO.update(a, t, predicate); // update by example
+accountDAO.update(a, baseline); // update by PK - OL with VERSION NUMBER
+accountDAO.update(a, baseline); // update by PK - OL with TIMESTAMP
+accountDAO.update(a, baseline); // update by PK - OL with FULL ROW CHECK
+
+accountDAO.delete(id); // delete by PK
+accountDAO.delete(id, example); // delete by example
+accountDAO.delete(t, predicate); // delete by criteria
+accountDAO.delete(id, baseline); // delete by PK - OL with VERSION NUMBER
+accountDAO.delete(id, baseline); // delete by PK - OL with TIMESTAMP
+accountDAO.delete(id, baseline); // delete by PK - OL with FULL ROW CHECK
+```
+
