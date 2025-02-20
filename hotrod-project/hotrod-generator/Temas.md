@@ -59,32 +59,32 @@ N/A
 En 4.x:
 
 ```java
-accountDAO.update(a); // update by PK
-accountDAO.update(a, example); // update by example
-accountDAO.update(a, t, predicate); // update by example
-accountDAO.update(a); // update by PK - OL with VERSION NUMBER
+accountDAO.update(Account a); // update by PK
+accountDAO.update(Account a, Account example); // update by example
+accountDAO.update(Account a, Table t, Predicate predicate); // update by example
+accountDAO.update(Account a); // update by PK - OL with VERSION NUMBER
 
-accountDAO.delete(id); // delete by PK
-accountDAO.delete(id, example); // delete by example
-accountDAO.delete(t, predicate); // delete by criteria
-accountDAO.delete(id); // delete by PK - OL with VERSION NUMBER
+accountDAO.delete(Integer id); // delete by PK
+accountDAO.delete(integer id, Account example); // delete by example
+accountDAO.delete(Table t, Predicate predicate); // delete by criteria
+accountDAO.delete(Integer id); // delete by PK - OL with VERSION NUMBER
 ```
 
 En 5.x:
 
 ```java
-accountDAO.update(a); // update by PK
-accountDAO.update(a, example); // update by example
-accountDAO.update(a, t, predicate); // update by example
-accountDAO.update(a, baseline); // update by PK - OL with VERSION NUMBER
-accountDAO.update(a, baseline); // update by PK - OL with TIMESTAMP
-accountDAO.update(a, baseline); // update by PK - OL with FULL ROW CHECK
+accountDAO.update(Account a); // update by PK
+accountDAO.update(Account a, Account example); // update by example
+accountDAO.update(Account a, Table t, BooleanExpression predicate); // update by example
+accountDAO.update(Account a, Account baseline); // update by PK - OL with VERSION NUMBER
+accountDAO.update(Account a, Account baseline); // update by PK - OL with TIMESTAMP
+accountDAO.update(Account a, Account baseline); // update by PK - OL with FULL ROW CHECK
 
-accountDAO.delete(id); // delete by PK
-accountDAO.delete(id, example); // delete by example
-accountDAO.delete(t, predicate); // delete by criteria
-accountDAO.delete(id, baseline); // delete by PK - OL with VERSION NUMBER
-accountDAO.delete(id, baseline); // delete by PK - OL with TIMESTAMP
-accountDAO.delete(id, baseline); // delete by PK - OL with FULL ROW CHECK
+accountDAO.delete(Account id); // delete by PK
+accountDAO.delete(Integer id, Account example); // delete by example
+accountDAO.delete(Table t, BooleanExpression predicate); // delete by criteria
+accountDAO.delete(Integer id, Account baseline); // delete by PK - OL with VERSION NUMBER
+accountDAO.delete(Integer id, Account baseline); // delete by PK - OL with TIMESTAMP
+accountDAO.delete(Integer id, Account baseline); // delete by PK - OL with FULL ROW CHECK
 ```
 
