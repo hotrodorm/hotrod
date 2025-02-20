@@ -74,15 +74,15 @@ En 5.x:
 
 ```java
 7a. accountDAO.update(Account a); // update by PK
-7b. accountDAO.update(Account a, Account baseline); // update by PK - OL with VERSION NUMBER
-7c. accountDAO.update(Account a, Account baseline); // update by PK - OL with TIMESTAMP
+7b. accountDAO.update(Account a); // update by PK - OL with VERSION NUMBER
+7c. accountDAO.update(Account a); // update by PK - OL with TIMESTAMP
 7d. accountDAO.update(Account a, Account baseline); // update by PK - OL with FULL ROW CHECK
 8.  accountDAO.update(Account a, Account example); // update by example
 9.  accountDAO.update(Account a, Table t, BooleanExpression predicate); // update by example
 
 10a. accountDAO.delete(Integer id); // delete by PK
-10b. accountDAO.delete(Integer id, Account baseline); // delete by PK - OL with VERSION NUMBER
-10c. accountDAO.delete(Integer id, Account baseline); // delete by PK - OL with TIMESTAMP
+10b. accountDAO.delete(Integer id); // delete by PK - OL with VERSION NUMBER
+10c. accountDAO.delete(Integer id); // delete by PK - OL with TIMESTAMP
 10d. accountDAO.delete(Integer id, Account baseline); // delete by PK - OL with FULL ROW CHECK
 11.  accountDAO.delete(Integer id, Account example); // delete by example
 12.  accountDAO.delete(Table t, BooleanExpression predicate); // delete by criteria
