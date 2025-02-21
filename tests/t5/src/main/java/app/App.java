@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Configuration;
 
 import app.daos.Account;
 import app.daos.primitives.AccountDAO;
+import app.daos.primitives.AccountDAO.AccountBaseline;
 import app.daos.primitives.AccountDAO.AccountTable;
 
 @Configuration
@@ -102,29 +103,32 @@ public class App {
   private void testOLUpdate() throws DynamicExpressionException, SQLException {
     Account a = this.accountDAO.select(112);
     System.out.println("--> a=" + a);
+    AccountBaseline baseline = this.accountDAO.baseline(a);
     a.setBalance(a.getBalance() + 100);
-    this.accountDAO.update(a);
+//    this.accountDAO.update(a, baseline);
     System.out.println("Updated a.");
   }
 
   private void testOLDelete() throws DynamicExpressionException, SQLException {
     Account a = this.accountDAO.select(112);
+    AccountBaseline baseline = this.accountDAO.baseline(a);
     System.out.println("--> a=" + a);
-    this.accountDAO.deleteWOL(a);
+//    this.accountDAO.delete(baseline);
     System.out.println("Updated a.");
   }
 
   private void testOLDeleteUpdate() throws DynamicExpressionException, SQLException {
     Account b = this.accountDAO.select(112);
-
+    
     Account a = this.accountDAO.select(112);
     System.out.println("--> a=" + a);
+    AccountBaseline baseline = this.accountDAO.baseline(a);
 
-    this.accountDAO.deleteWOL(b);
+    this.accountDAO.delete(b);
     System.out.println("Deleted b.");
 
     a.setBalance(a.getBalance() + 100);
-    this.accountDAO.update(a);
+//    this.accountDAO.update(a, baseline);
     System.out.println("Updated a.");
   }
 
@@ -133,12 +137,13 @@ public class App {
 
     Account a = this.accountDAO.select(112);
     System.out.println("--> a=" + a);
+    AccountBaseline baseline = this.accountDAO.baseline(a);
 
     a.setBalance(a.getBalance() + 100);
-    this.accountDAO.update(a);
+//    this.accountDAO.update(a, baseline);
     System.out.println("Updated a.");
 
-    this.accountDAO.deleteWOL(b);
+    this.accountDAO.delete(b);
     System.out.println("Deleted b.");
   }
 

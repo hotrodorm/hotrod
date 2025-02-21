@@ -28,7 +28,6 @@ import org.hotrod.dynamicsql.PreparedSelectQuery.RowReader;
 import org.hotrod.dynamicsql.assembler.QueryAssembler;
 import org.hotrod.dynamicsql.insert.PreparedInsertQuery;
 import org.hotrod.dynamicsql.insert.PrimaryKeyRetrievalMode;
-import org.hotrod.exceptions.StaleDataException;
 import org.hotrod.interfaces.OrderBy;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
@@ -130,6 +129,60 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       return row;
     }
 
+  };
+
+  // BASELINE
+
+  public class AccountBaseline {
+
+    private Integer id;
+    private String name;
+    private String type;
+    private Integer balance;
+    private Boolean active;
+    private Timestamp updatedAt;
+    private Integer version;
+
+    public Integer getId() {
+      return this.id;
+    }
+
+    public String getName() {
+      return this.name;
+    }
+
+    public String getType() {
+      return this.type;
+    }
+
+    public Integer getBalance() {
+      return this.balance;
+    }
+
+    public Boolean getActive() {
+      return this.active;
+    }
+
+    public Timestamp getUpdatedAt() {
+      return this.updatedAt;
+    }
+
+    public Integer getVersion() {
+      return this.version;
+    }
+
+  }
+
+  public AccountBaseline baseline(Account model) {
+    AccountBaseline b = new AccountBaseline();
+    b.id = model.id;
+    b.name = model.name;
+    b.type = model.type;
+    b.balance = model.balance;
+    b.active = model.active;
+    b.updatedAt = model.updatedAt;
+    b.version = model.version;
+    return b;
   };
 
   // SELECT BY PRIMARY KEY
@@ -241,15 +294,14 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
   }
 
-  public void insert(Account m) throws DynamicExpressionException, SQLException {
+  public void insert(Account model) throws DynamicExpressionException, SQLException {
     ParameterContext context = this.assembler.newParameterContext();
-    context.add("m", m);
-    m.setVersion(0);
+    context.add("m", model);
     PreparedInsertQuery preparedQuery = this.insert.prepare(context);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       Long pk = preparedQuery.execute(conn);
-      m.setId((pk == null) ? null : Integer.valueOf(pk.intValue()));
+      model.setId((pk == null) ? null : Integer.valueOf(pk.intValue()));
     }
   }
 
@@ -280,50 +332,44 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
   }
 
-  public void insertByExample(Account m) throws DynamicExpressionException, SQLException {
+  public void insertByExample(Account model) throws DynamicExpressionException, SQLException {
     ParameterContext context = this.assembler.newParameterContext();
-    context.add("m", m);
-    m.setVersion(0);
+    context.add("m", model);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(context);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       Long pk = preparedQuery.execute(conn);
-      m.setId((pk == null) ? null : Integer.valueOf(pk.intValue()));
+      model.setId((pk == null) ? null : Integer.valueOf(pk.intValue()));
     }
   }
 
-  // UPDATE BY PRIMARY KEY (OPTIMISTIC LOCKING - STRATEGY: VERSION NUMBER)
+  // UPDATE BY PRIMARY KEY
 
-  private DynamicModificationQuery updateByPKWithOptimisticLocking;
+  private DynamicModificationQuery updateByPK;
 
-  private void initializeUpdatebypkwithoptimisticlocking() {
-    this.updateByPKWithOptimisticLocking = assembler
-      .literal("UPDATE account")
-      .set(assembler.ifs()
-        .if_("m.id != null", assembler.literal("id = ").parameter("m.id", Types.INTEGER).end())
-        .if_("m.name != null", assembler.literal("name = ").parameter("m.name", Types.VARCHAR).end())
-        .if_("m.type != null", assembler.literal("type = ").parameter("m.type", Types.VARCHAR).end())
-        .if_("m.balance != null", assembler.literal("balance = ").parameter("m.balance", Types.INTEGER).end())
-        .if_("m.active != null", assembler.literal("active = ").parameter("m.active", Types.INTEGER).end())
-        .if_("m.updatedAt != null", assembler.literal("updated_at = ").parameter("m.updatedAt", Types.TIMESTAMP).end())
-        .if_("true", assembler.literal("version = version + 1").end())
-        .end())
+  private void initializeUpdatebypk() {
+    this.updateByPK = assembler
+      .literaln("UPDATE account")
+      .literaln("SET")
+      .literal("  id = ").parameter("m.id", Types.INTEGER).literaln(",")
+      .literal("  name = ").parameter("m.name", Types.VARCHAR).literaln(",")
+      .literal("  type = ").parameter("m.type", Types.VARCHAR).literaln(",")
+      .literal("  balance = ").parameter("m.balance", Types.INTEGER).literaln(",")
+      .literal("  active = ").parameter("m.active", Types.INTEGER).literaln(",")
+      .literal("  updated_at = ").parameter("m.updatedAt", Types.TIMESTAMP).literaln(",")
+      .literal("  version = ").parameter("m.version", Types.INTEGER)
       .literaln("\nWHERE " + "id = ").parameter("m.id", Types.INTEGER)
-      .literaln("  AND version = ").parameter("m.version", Types.INTEGER)
     .endModificationQuery();
   }
 
-  public int update(Account m) throws DynamicExpressionException, SQLException {
-    if (m.getId() == null) return 0;
+  public int update(Account model) throws DynamicExpressionException, SQLException {
+    if (model.getId() == null) return 0;
     ParameterContext context = this.assembler.newParameterContext();
-    context.add("m", m);
-    PreparedModificationQuery preparedQuery = this.updateByPKWithOptimisticLocking.prepare(context);
+    context.add("m", model);
+    PreparedModificationQuery preparedQuery = this.updateByPK.prepare(context);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       int count = preparedQuery.execute(conn);
-      if (count == 0) {
-        throw new StaleDataException("Optimistic locking UPDATE failed. The row in the table ACCOUNT had changed or had been deleted since it was read.");
-      }
       return count;
     }
   }
@@ -334,32 +380,32 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   private void initializeUpdatebyexample() {
     this.updateByExample = assembler
-      .literal("UPDATE FROM account")
+      .literal("UPDATE account")
       .set(assembler.ifs()
-        .if_("m.id != null", assembler.literal("id = ").parameter("m.id", Types.INTEGER).end())
-        .if_("m.name != null", assembler.literal("name = ").parameter("m.name", Types.VARCHAR).end())
-        .if_("m.type != null", assembler.literal("type = ").parameter("m.type", Types.VARCHAR).end())
-        .if_("m.balance != null", assembler.literal("balance = ").parameter("m.balance", Types.INTEGER).end())
-        .if_("m.active != null", assembler.literal("active = ").parameter("m.active", Types.INTEGER).end())
-        .if_("m.updatedAt != null", assembler.literal("updated_at = ").parameter("m.updatedAt", Types.TIMESTAMP).end())
-        .if_("true", assembler.literal("version = version + 1").end())
+        .if_("v.id != null", assembler.literal("id = ").parameter("v.id", Types.INTEGER).end())
+        .if_("v.name != null", assembler.literal("name = ").parameter("v.name", Types.VARCHAR).end())
+        .if_("v.type != null", assembler.literal("type = ").parameter("v.type", Types.VARCHAR).end())
+        .if_("v.balance != null", assembler.literal("balance = ").parameter("v.balance", Types.INTEGER).end())
+        .if_("v.active != null", assembler.literal("active = ").parameter("v.active", Types.INTEGER).end())
+        .if_("v.updatedAt != null", assembler.literal("updated_at = ").parameter("v.updatedAt", Types.TIMESTAMP).end())
+        .if_("v.version != null", assembler.literal("version = ").parameter("v.version", Types.INTEGER).end())
         .end())
       .where("AND", assembler.ifs()
-        .if_("f.id != null", assembler.literal("id = ").parameter("f.id", Types.INTEGER).end())
-        .if_("f.name != null", assembler.literal("name = ").parameter("f.name", Types.VARCHAR).end())
-        .if_("f.type != null", assembler.literal("type = ").parameter("f.type", Types.VARCHAR).end())
-        .if_("f.balance != null", assembler.literal("balance = ").parameter("f.balance", Types.INTEGER).end())
-        .if_("f.active != null", assembler.literal("active = ").parameter("f.active", Types.INTEGER).end())
-        .if_("f.updatedAt != null", assembler.literal("updated_at = ").parameter("f.updatedAt", Types.TIMESTAMP).end())
-        .if_("f.version != null", assembler.literal("version = ").parameter("f.version", Types.INTEGER).end())
+        .if_("e.id != null", assembler.literal("id = ").parameter("e.id", Types.INTEGER).end())
+        .if_("e.name != null", assembler.literal("name = ").parameter("e.name", Types.VARCHAR).end())
+        .if_("e.type != null", assembler.literal("type = ").parameter("e.type", Types.VARCHAR).end())
+        .if_("e.balance != null", assembler.literal("balance = ").parameter("e.balance", Types.INTEGER).end())
+        .if_("e.active != null", assembler.literal("active = ").parameter("e.active", Types.INTEGER).end())
+        .if_("e.updatedAt != null", assembler.literal("updated_at = ").parameter("e.updatedAt", Types.TIMESTAMP).end())
+        .if_("e.version != null", assembler.literal("version = ").parameter("e.version", Types.INTEGER).end())
         .end())
       .endModificationQuery();
   }
 
-  public int update(Account filter, Account updateValues) throws DynamicExpressionException, SQLException {
+  public int update(Account example, Account values) throws DynamicExpressionException, SQLException {
     ParameterContext context = this.assembler.newParameterContext();
-    context.add("f", filter);
-    context.add("u", updateValues);
+    context.add("e", example);
+    context.add("v", values);
     PreparedModificationQuery preparedQuery = this.updateByExample.prepare(context);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
@@ -370,43 +416,40 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateSetCompletePhase update(final Account updateValues, final AccountTable tableOrView,
+  public UpdateSetCompletePhase update(final Account values, final AccountTable tableOrView,
       final GeneralBooleanExpression predicate) {
     List<Setter> setters = new ArrayList<>();
-    if (updateValues.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(updateValues.getId())));
-    if (updateValues.getName() != null) setters.add(new Setter(tableOrView.name, sql.val(updateValues.getName())));
-    if (updateValues.getType() != null) setters.add(new Setter(tableOrView.type, sql.val(updateValues.getType())));
-    if (updateValues.getBalance() != null) setters.add(new Setter(tableOrView.balance, sql.val(updateValues.getBalance())));
-    if (updateValues.getActive() != null) setters.add(new Setter(tableOrView.active, sql.val(updateValues.getActive())));
-    if (updateValues.getUpdatedAt() != null) setters.add(new Setter(tableOrView.updatedAt, sql.val(updateValues.getUpdatedAt())));
-    if (updateValues.getVersion() != null) setters.add(new Setter(tableOrView.version, sql.val(updateValues.getVersion())));
+    if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
+    if (values.getName() != null) setters.add(new Setter(tableOrView.name, sql.val(values.getName())));
+    if (values.getType() != null) setters.add(new Setter(tableOrView.type, sql.val(values.getType())));
+    if (values.getBalance() != null) setters.add(new Setter(tableOrView.balance, sql.val(values.getBalance())));
+    if (values.getActive() != null) setters.add(new Setter(tableOrView.active, sql.val(values.getActive())));
+    if (values.getUpdatedAt() != null) setters.add(new Setter(tableOrView.updatedAt, sql.val(values.getUpdatedAt())));
+    if (values.getVersion() != null) setters.add(new Setter(tableOrView.version, sql.val(values.getVersion())));
     return new UpdateSetCompletePhase(this.context, tableOrView, setters, predicate);
   }
 
-  // DELETE BY PRIMARY KEY (OPTIMISTIC LOCKING - STRATEGY: VERSION NUMBER)
+  // DELETE BY PRIMARY KEY
 
-  private DynamicModificationQuery deleteByPKWithOptimisticLocking;
+  private DynamicModificationQuery deleteByPK;
 
-  private void initializeDeletebypkwithoptimisticlocking() {
-    this.deleteByPKWithOptimisticLocking = assembler
+  private void initializeDeletebypk() {
+    this.deleteByPK = assembler
       .literaln("DELETE FROM account")
       .literaln("\nWHERE " + "id = ").parameter("f.id", Types.INTEGER)
-      .literaln("  AND version = ").parameter("f.version", Types.INTEGER)
       .endModificationQuery();
   }
 
-  public int deleteWOL(Account filter) throws DynamicExpressionException, SQLException {
-    if (filter.getId() == null) return 0;
-    if (filter.getVersion() == null) return 0;
+  public int delete(Integer id) throws DynamicExpressionException, SQLException {
+    if (id == null) return 0;
+    Account filter = new Account();
+    filter.setId(id);
     ParameterContext context = this.assembler.newParameterContext();
     context.add("f", filter);
-    PreparedModificationQuery preparedQuery = this.deleteByPKWithOptimisticLocking.prepare(context);
+    PreparedModificationQuery preparedQuery = this.deleteByPK.prepare(context);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       int count = preparedQuery.execute(conn);
-      if (count == 0) {
-        throw new StaleDataException("Optimistic locking DELETE failed. The row in the table ACCOUNT had changed or had been deleted since it was read.");
-      }
       return count;
     }
   }
@@ -419,20 +462,20 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     this.deleteByExample = assembler
       .literal("DELETE FROM account")
       .where("AND", assembler.ifs()
-        .if_("f.id != null", assembler.literal("id = ").parameter("f.id", Types.INTEGER).end())
-        .if_("f.name != null", assembler.literal("name = ").parameter("f.name", Types.VARCHAR).end())
-        .if_("f.type != null", assembler.literal("type = ").parameter("f.type", Types.VARCHAR).end())
-        .if_("f.balance != null", assembler.literal("balance = ").parameter("f.balance", Types.INTEGER).end())
-        .if_("f.active != null", assembler.literal("active = ").parameter("f.active", Types.INTEGER).end())
-        .if_("f.updatedAt != null", assembler.literal("updated_at = ").parameter("f.updatedAt", Types.TIMESTAMP).end())
-        .if_("f.version != null", assembler.literal("version = ").parameter("f.version", Types.INTEGER).end())
+        .if_("e.id != null", assembler.literal("id = ").parameter("e.id", Types.INTEGER).end())
+        .if_("e.name != null", assembler.literal("name = ").parameter("e.name", Types.VARCHAR).end())
+        .if_("e.type != null", assembler.literal("type = ").parameter("e.type", Types.VARCHAR).end())
+        .if_("e.balance != null", assembler.literal("balance = ").parameter("e.balance", Types.INTEGER).end())
+        .if_("e.active != null", assembler.literal("active = ").parameter("e.active", Types.INTEGER).end())
+        .if_("e.updatedAt != null", assembler.literal("updated_at = ").parameter("e.updatedAt", Types.TIMESTAMP).end())
+        .if_("e.version != null", assembler.literal("version = ").parameter("e.version", Types.INTEGER).end())
         .end())
       .endModificationQuery();
   }
 
-  public int delete(Account filter) throws DynamicExpressionException, SQLException {
+  public int delete(Account example) throws DynamicExpressionException, SQLException {
     ParameterContext context = this.assembler.newParameterContext();
-    context.add("f", filter);
+    context.add("e", example);
     PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(context);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
@@ -574,9 +617,9 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     this.initializeSelectbyexample();
     this.initializeInsert();
     this.initializeInsertbyexample();
-    this.initializeUpdatebypkwithoptimisticlocking();
+    this.initializeUpdatebypk();
     this.initializeUpdatebyexample();
-    this.initializeDeletebypkwithoptimisticlocking();
+    this.initializeDeletebypk();
     this.initializeDeletebyexample();
     this.initializeSelect0();
   }

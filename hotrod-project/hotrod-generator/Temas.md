@@ -14,6 +14,35 @@ Vamos a usar:
 - Layout (para la estructura re/generada)
 - Model, para el objeto al que se le puede agregar comportamiento y propiedades extras.
 
+Otras palabras:
+
+copy
+mirror
+image
+
+replica
+reproduccion
+
+archetypo
+original
+
+sketch
+
+blueprint
+outline
+
+synopsis
+
+skeleton
+frame
+layout **
+
+projection
+
+carbon
+clone
+
+
 ## 2. Tags de configuración
 
 Actualmente:
@@ -79,7 +108,7 @@ En 5.x:
 7b.  accountDAO.update(Account a); // update by PK - OL with VERSION NUMBER
 7c.  accountDAO.update(Account a); // update by PK - OL with TIMESTAMP
 7d.  accountDAO.update(Account a, AccountBaseline baseline); // update by PK - OL with FULL ROW CHECK
-8.   accountDAO.update(Account a, Account example); // update by example
+8.   accountDAO.update(Account example, Account values); // update by example
 9.   accountDAO.update(Account a, Table t, BooleanExpression predicate); // update by example
 
 10a. accountDAO.delete(Integer id); // delete by PK
