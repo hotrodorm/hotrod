@@ -83,9 +83,9 @@ En 5.x:
 9.   accountDAO.update(Account a, Table t, BooleanExpression predicate); // update by example
 
 10a. accountDAO.delete(Integer id); // delete by PK
-10b. accountDAO.delete(Account a); // delete by PK - OL with VERSION NUMBER
-10c. accountDAO.delete(Account a); // delete by PK - OL with TIMESTAMP
-10d. accountDAO.delete(Account a); // delete by PK - OL with FULL ROW CHECK
+10b. accountDAO.delete(AccountBaseline baseline); // delete by PK - OL with VERSION NUMBER
+10c. accountDAO.delete(AccountBaseline baseline); // delete by PK - OL with TIMESTAMP
+10d. accountDAO.delete(AccountBaseline baseline); // delete by PK - OL with FULL ROW CHECK
 11.  accountDAO.delete(Account example); // delete by example
 12.  accountDAO.delete(Table t, BooleanExpression predicate); // delete by criteria
 ```
