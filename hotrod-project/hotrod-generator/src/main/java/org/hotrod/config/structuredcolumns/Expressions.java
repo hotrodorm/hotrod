@@ -9,9 +9,9 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.hotrod.config.ColumnTag;
-import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
+import org.hotrod.config.JDBCTag;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.database.DatabaseAdapter.UnescapedSQLCase;
@@ -63,11 +63,11 @@ public class Expressions implements ColumnsProvider, Serializable {
     return this.expressions.isEmpty();
   }
 
-  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+  public void validate(final JDBCTag jdbcTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, final boolean singleVOResult, final Set<String> idNames)
       throws InvalidConfigurationFileException {
     for (ExpressionTag tag : this.expressions) {
-      tag.validate(daosTag, config, fragmentConfig, singleVOResult, idNames);
+      tag.validate(jdbcTag, config, fragmentConfig, singleVOResult, idNames);
     }
   }
 

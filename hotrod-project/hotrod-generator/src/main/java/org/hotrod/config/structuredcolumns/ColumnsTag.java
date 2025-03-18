@@ -14,6 +14,7 @@ import org.hotrod.config.DaosTag;
 import org.hotrod.config.EnhancedSQLPart;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
+import org.hotrod.config.JDBCTag;
 import org.hotrod.config.Patterns;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
@@ -47,8 +48,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
   // Properties
 
-  private DaosTag daosTag;
-  private DataSetLayout layout;
+  private JDBCTag jdbcTag;
   private HotRodFragmentConfigTag fragmentConfig;
 
   private String vo = null;
@@ -102,16 +102,15 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   // ========================
 
   @Override
-  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+  public void validate(final JDBCTag jdbcTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, ParameterDefinitions parameters, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 
-    this.daosTag = daosTag;
-    this.layout = new DataSetLayout(config);
+    this.jdbcTag = jdbcTag;
     this.fragmentConfig = fragmentConfig;
 
     this.connectedVOResult = this.vo == null && this.vos.size() == 1 && this.expressions.isEmpty();
-    this.validate(daosTag, config, fragmentConfig, this.connectedVOResult, adapter);
+    this.validate(jdbcTag, config, fragmentConfig, this.connectedVOResult, adapter);
 
   }
 
@@ -165,7 +164,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   // ColumnProvider interface
   // ========================
 
-  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+  public void validate(final JDBCTag jdbcTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, final boolean connectedVOResult, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 
@@ -217,14 +216,14 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
     // vos
 
     for (VOTag vo : this.vos) {
-      vo.validate(daosTag, config, fragmentConfig, connectedVOResult, adapter);
+      vo.validate(jdbcTag, config, fragmentConfig, connectedVOResult, adapter);
     }
 
     // expressions
 
     Set<String> ids = new HashSet<String>(this.idNames);
 
-    this.expressions.validate(daosTag, config, fragmentConfig, connectedVOResult, ids);
+    this.expressions.validate(jdbcTag, config, fragmentConfig, connectedVOResult, ids);
     if (!ids.isEmpty()) {
       throw new InvalidConfigurationFileException(this, "Invalid id property '" + ids.iterator().next()
           + "'. Could not find any <expression> tag with this property name.");
@@ -260,10 +259,10 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
     List<VOMetadata> vos = new ArrayList<VOMetadata>();
     for (VOTag t : this.vos) {
-      vos.add(t.getMetadata(this.layout, this.fragmentConfig, this.daosTag));
+      vos.add(t.getMetadata(this.fragmentConfig, this.jdbcTag));
     }
 
-    ClassPackage classPackage = getVOClassPackage(this.layout, this.fragmentConfig);
+    ClassPackage classPackage = getVOClassPackage(this.jdbcTag, this.fragmentConfig);
 
     this.metadata = new StructuredColumnsMetadata(this, classPackage, !this.connectedVOResult, this.vo,
         this.expressions, vos);
@@ -280,11 +279,11 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
   // Utilities
 
-  private ClassPackage getVOClassPackage(final DataSetLayout layout, final HotRodFragmentConfigTag fragmentConfig) {
+  private ClassPackage getVOClassPackage(final JDBCTag jdbcTag, final HotRodFragmentConfigTag fragmentConfig) {
     ClassPackage fragmentPackage = fragmentConfig != null && fragmentConfig.getFragmentPackage() != null
         ? fragmentConfig.getFragmentPackage()
         : null;
-    return layout.getDAOPackage(fragmentPackage);
+    return jdbcTag.getDAOPackage(fragmentPackage);
   }
 
   // Getters

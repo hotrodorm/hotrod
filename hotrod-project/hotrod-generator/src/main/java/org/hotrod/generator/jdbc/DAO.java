@@ -100,10 +100,9 @@ public class DAO {
   private AbstractDAOTag tag;
 
   private DataSetMetadata metadata;
-  private DataSetLayout layout;
   private JDBCGenerator generator;
   private DAOType daoType;
-  private JDBCTag myBatisTag;
+  private JDBCTag jdbcTag;
   private DatabaseAdapter adapter;
 
   private HotRodFragmentConfigTag fragmentConfig;
@@ -111,7 +110,7 @@ public class DAO {
 
   private ClassPackage classPackage;
 
-  private Entity entity = null;
+  private Layout entity = null;
   private Model model = null;
 
   private String metadataClassName;
@@ -122,19 +121,18 @@ public class DAO {
 
   // Constructors
 
-  public DAO(final AbstractDAOTag tag, final DataSetMetadata metadata, final DataSetLayout layout,
+  public DAO(final AbstractDAOTag tag, final DataSetMetadata metadata, 
       final JDBCGenerator generator, final DAOType type, final JDBCTag myBatisTag, final DatabaseAdapter adapter,
-      final Entity entity, final Model model) {
+      final Layout entity, final Model model) {
     super();
     this.tag = tag;
     this.metadata = metadata;
-    this.layout = layout;
     this.generator = generator;
     if (type == null) {
       throw new RuntimeException("DAOType cannot be null.");
     }
     this.daoType = type;
-    this.myBatisTag = myBatisTag;
+    this.jdbcTag = myBatisTag;
     this.adapter = adapter;
 
     this.entity = entity;
@@ -145,7 +143,7 @@ public class DAO {
         ? this.fragmentConfig.getFragmentPackage()
         : null;
 
-    this.classPackage = this.layout.getDAOPrimitivePackage(this.fragmentPackage);
+    this.classPackage = this.jdbcTag.getDAOPackage(this.fragmentPackage);
     this.metadataClassName = this.metadata.getId().getJavaClassName() + (this.isTable() ? "Table" : "View");
 
   }
@@ -155,7 +153,7 @@ public class DAO {
 
     String className = this.getClassName() + ".java";
 
-    File dir = this.layout.getDaoPrimitivePackageDir(this.fragmentPackage);
+    File dir = this.jdbcTag.getDAOPackageDir(this.fragmentPackage);
     File f = new File(dir, className);
     log.fine("f=" + f);
 
@@ -298,8 +296,8 @@ public class DAO {
     // Spring properties
 
     w.println("  @", Const.AUTOWIRED);
-    if (!SUtil.isEmpty(this.layout.getLiveSQLDialectBeanQualifier())) {
-      w.println("  @", Const.QUALIFIER, "(\"" + this.layout.getLiveSQLDialectBeanQualifier() + "\")");
+    if (!SUtil.isEmpty(this.jdbcTag.getQualifier())) {
+      w.println("  @", Const.QUALIFIER, "(\"" + this.jdbcTag.getQualifier() + "\")");
     }
     w.println("  private ", LiveSQLDialect.class, " liveSQLDialect;");
     w.println();
@@ -1784,7 +1782,7 @@ public class DAO {
   }
 
   public String getClassName() {
-    return this.myBatisTag.getDaos().generateDAOName(this.metadata.getId());
+    return this.jdbcTag.getDAOName(this.metadata.getId());
   }
 
   private String getOrderByClassName() {

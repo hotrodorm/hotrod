@@ -4,40 +4,39 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import org.hotrod.config.JDBCTag;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
-import org.hotrod.generator.NamePackageResolver;
 import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VORegistry.SelectVOClass;
+import org.hotrod.utils.AbstractClassWriter.ExternalClass;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ClassWriter;
-import org.hotrod.utils.AbstractClassWriter.ExternalClass;
 
-public class SelectVO {
+public class SelectModel {
 
-  private static final Logger log = Logger.getLogger(SelectVO.class.getName());
+  private static final Logger log = Logger.getLogger(SelectModel.class.getName());
 
-  private DataSetLayout layout;
+  private JDBCTag jdbcTag;
 
   private SelectVOClass soloVO;
   private String className;
   private ClassPackage classPackage;
 
-  private SelectAbstractVO abstractVO;
+  private SelectLayout abstractVO;
 
-  public SelectVO(final SelectVOClass soloVO, final SelectAbstractVO abstractVO, final DataSetLayout layout) {
+  public SelectModel(final SelectVOClass soloVO, final SelectLayout abstractVO, final JDBCTag jdbcTag) {
     log.fine("init");
-    this.layout = layout;
+    this.jdbcTag = jdbcTag;
     this.soloVO = soloVO;
     this.className = soloVO.getName();
     this.classPackage = soloVO.getClassPackage();
     this.abstractVO = abstractVO;
   }
 
-  public SelectVO(final VOMetadata vo, final SelectAbstractVO abstractVO, final DataSetLayout layout,
-      final NamePackageResolver npResolver) {
-    this.layout = layout;
+  public SelectModel(final VOMetadata vo, final SelectLayout abstractVO, final JDBCTag jdbcTag) {
+    this.jdbcTag = jdbcTag;
     this.className = vo.getName();
     this.classPackage = vo.getClassPackage();
     this.abstractVO = abstractVO;
@@ -47,7 +46,7 @@ public class SelectVO {
     log.fine("GENERATE VO...");
     String sourceClassName = this.className + ".java";
 
-    File dir = this.layout.getVOPackageDir(this.classPackage);
+    File dir = this.jdbcTag.getModelPackageDir(this.classPackage);
 
     File vo = new File(dir, sourceClassName);
     log.fine("vo=" + vo);

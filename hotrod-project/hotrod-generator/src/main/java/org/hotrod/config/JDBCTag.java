@@ -6,24 +6,29 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidPackageException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.Feedback;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.HotRodContext;
-import org.hotrod.generator.NamePackageResolver;
 import org.hotrod.generator.jdbc.JDBCGenerator;
+import org.hotrod.identifiers.ObjectId;
 import org.hotrod.utils.ClassPackage;
+import org.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 
 @XmlRootElement(name = "jdbc")
-public class JDBCTag extends AbstractGeneratorTag implements NamePackageResolver {
+public class JDBCTag extends AbstractGeneratorTag {
 
   private static final long serialVersionUID = 1L;
 
@@ -33,14 +38,25 @@ public class JDBCTag extends AbstractGeneratorTag implements NamePackageResolver
 
   public static final String GENERATOR_NAME = "jdbc";
 
+  private static final String DEFAULT_BASE_DIR = "src/main/java";
+  private static final String DEFAULT_MAIN_PACKAGE = "app.persistence";
+
+  private static final Pattern QUALIFIER_PATTERN = Pattern.compile("^[a-zA-Z0-9_]+$");
+
   // Properties
 
-  private DiscoverTag discover = null;
+  private String sBaseDir = null;
+  private String sPackage = null;
+  private String qualifier = null;
 
-  private DaosTag daos = null;
-//  private MappersTag mappers = null;
-  private SelectGenerationTag selectGeneration = null;
-  private ClassicFKNavigationTag classicFKNavigation = new ClassicFKNavigationTag();
+  private File baseDir;
+  private ClassPackage mainPackage;
+
+  private DiscoverTag discover = null;
+  private JDBCDAOTag dao = null;
+  private JDBCLayoutTag layout = null;
+  private JDBCModelTag model = null;
+
   private List<PropertyTag> propertyTags = new ArrayList<PropertyTag>();
 
   private JDBCProperties properties = new JDBCProperties();
@@ -48,7 +64,7 @@ public class JDBCTag extends AbstractGeneratorTag implements NamePackageResolver
   // Constructor
 
   public JDBCTag() {
-    super("mybatis-spring");
+    super("jdbc");
     log.fine("init");
   }
 
@@ -61,35 +77,62 @@ public class JDBCTag extends AbstractGeneratorTag implements NamePackageResolver
     }
   }
 
+  // No Config
+
+  public static JDBCTag getNoConfigTag() {
+    JDBCTag t = new JDBCTag();
+    t.baseDir = new File("src/main/java");
+//    t.mainPackage = new ClassPackage("app.persistence");
+    return t;
+  }
+
   // JAXB Setters
+
+  @XmlAttribute(name = "base-dir")
+  public void setBaseDir(final String sBaseDir) {
+    this.sBaseDir = sBaseDir;
+  }
+
+  @XmlAttribute(name = "package")
+  public void setSPackage(final String sPackage) {
+    this.sPackage = sPackage;
+  }
+
+  @XmlAttribute(name = "qualifier")
+  public void setQualifier(final String qualifier) {
+    this.qualifier = qualifier;
+  }
 
   @XmlElement(name = "discover")
   public void setDiscover(final DiscoverTag discover) {
     this.discover = discover;
   }
 
-  @XmlElement(name = "daos")
-  public void setDaos(final DaosTag daos) throws InvalidConfigurationFileException {
-    if (this.daos != null) {
+  @XmlElement(name = "dao")
+  public void setDAO(final JDBCDAOTag dao) throws InvalidConfigurationFileException {
+    if (this.dao != null) {
       throw new InvalidConfigurationFileException(this,
-          "Duplicate <daos> tag; the generator can only have a single <dao> tag");
+          "Duplicate <dao> tag; the JDBC generator can only have a single <dao> tag");
     }
-    this.daos = daos;
+    this.dao = dao;
   }
 
-  @XmlElement(name = "select-generation")
-  public void setSelectGeneration(final SelectGenerationTag selectGeneration) throws InvalidConfigurationFileException {
-    if (this.selectGeneration != null) {
+  @XmlElement(name = "layout")
+  public void setLayout(final JDBCLayoutTag layout) throws InvalidConfigurationFileException {
+    if (this.layout != null) {
       throw new InvalidConfigurationFileException(this,
-          "Duplicate <select-generation> tag; the generator can only have a single <select-generation> tag");
+          "Duplicate <layout> tag; the JDBC generator can only have a single <layout> tag");
     }
-    this.selectGeneration = selectGeneration;
+    this.layout = layout;
   }
 
-  @XmlElement(name = "classic-fk-navigation")
-  public void setClassicFKNavigation(final ClassicFKNavigationTag classicFKNavigation)
-      throws InvalidConfigurationFileException {
-    this.classicFKNavigation = classicFKNavigation;
+  @XmlElement(name = "model")
+  public void setModel(final JDBCModelTag model) throws InvalidConfigurationFileException {
+    if (this.model != null) {
+      throw new InvalidConfigurationFileException(this,
+          "Duplicate <model> tag; the JDBC generator can only have a single <model> tag");
+    }
+    this.model = model;
   }
 
   @XmlElement
@@ -107,8 +150,58 @@ public class JDBCTag extends AbstractGeneratorTag implements NamePackageResolver
   // Validate
 
   @Override
-  public void validate(final File basedir, final File parentDir, final DatabaseAdapter adapter,
+  public void validate(final File currentDir, final File parentDir, final DatabaseAdapter adapter,
       final CatalogSchema currentCS) throws InvalidConfigurationFileException {
+
+    // base-dir
+
+    if (this.sBaseDir == null) {
+      this.sBaseDir = DEFAULT_BASE_DIR;
+    }
+    if (SUtil.isEmpty(this.sBaseDir)) {
+      throw new InvalidConfigurationFileException(this,
+          "When specified, the attribute 'base-dir' of the tag <" + super.getTagName() + "> cannot be empty.");
+    }
+    this.baseDir = new File(currentDir, this.sBaseDir);
+    if (!this.baseDir.exists()) {
+      throw new InvalidConfigurationFileException(this, "Attribute 'base-dir' of the tag <" + super.getTagName()
+          + "> with value '" + this.sBaseDir + "' must point to an existing dir.");
+    }
+    if (!this.baseDir.isDirectory()) {
+      throw new InvalidConfigurationFileException(this, "Attribute 'base-dir' of the tag <" + super.getTagName()
+          + "> with value '" + this.sBaseDir + "' points to a file entry that is not a directory.");
+    }
+
+    // package
+
+    if (this.sPackage == null) {
+      try {
+        this.mainPackage = new ClassPackage(DEFAULT_MAIN_PACKAGE);
+      } catch (InvalidPackageException e) {
+        throw new InvalidConfigurationFileException(null,
+            "The default package '" + DEFAULT_MAIN_PACKAGE + "' is invalid");
+      }
+    } else {
+      try {
+        this.mainPackage = new ClassPackage(this.sPackage);
+      } catch (InvalidPackageException e) {
+        throw new InvalidConfigurationFileException(this, "Invalid package '" + this.sPackage
+            + "' on attribute 'package' of the tag <" + super.getTagName() + ">: " + e.getMessage());
+      }
+    }
+
+    // qualifier
+
+    if (this.qualifier != null) {
+      if (SUtil.isEmpty(this.qualifier)) {
+        throw new InvalidConfigurationFileException(null, "When specified, the qualifier cannot be empty.");
+      }
+      Matcher m = QUALIFIER_PATTERN.matcher(this.qualifier);
+      if (!m.matches()) {
+        throw new InvalidConfigurationFileException(null,
+            "When specified, the qualifier must be an alphanumeric value (underscores are permitted).");
+      }
+    }
 
     // discovery
 
@@ -116,20 +209,26 @@ public class JDBCTag extends AbstractGeneratorTag implements NamePackageResolver
       this.discover.validate(adapter, currentCS);
     }
 
-    // daos
+    // dao
 
-    if (this.daos == null) {
-      this.daos = new DaosTag();
+    if (this.dao == null) {
+      this.dao = new JDBCDAOTag();
     }
-    this.daos.validate(basedir);
+    this.dao.validate(currentDir, this.baseDir, this.mainPackage);
 
-    // select-generation
+    // layout
 
-    if (this.selectGeneration == null) {
-      this.selectGeneration = new SelectGenerationTag();
-      this.selectGeneration.setTempViewBaseName(SelectGenerationTag.DEFAULT_TEMP_VIEW_NAME);
+    if (this.layout == null) {
+      this.layout = new JDBCLayoutTag();
     }
-    this.selectGeneration.validate(basedir);
+    this.layout.validate(currentDir, this.baseDir, this.mainPackage);
+
+    // model
+
+    if (this.model == null) {
+      this.model = new JDBCModelTag();
+    }
+    this.model.validate(currentDir, this.baseDir, this.mainPackage);
 
     // properties
 
@@ -147,28 +246,39 @@ public class JDBCTag extends AbstractGeneratorTag implements NamePackageResolver
 
   // Getters
 
+  public String getQualifier() {
+    return qualifier;
+  }
+
+  public File getBaseDir() {
+    return baseDir;
+  }
+
+  public ClassPackage getMainPackage() {
+    return mainPackage;
+  }
+
   public DiscoverTag getDiscover() {
     return this.discover;
   }
 
-  public DaosTag getDaos() {
-    return daos;
+  public JDBCDAOTag getDao() {
+    return dao;
   }
 
-  @Override
-  public SelectGenerationTag getSelectGeneration() {
-    return selectGeneration;
+  public JDBCLayoutTag getLayout() {
+    return layout;
   }
 
-  public ClassicFKNavigationTag getClassicFKNavigation() {
-    return classicFKNavigation;
+  public JDBCModelTag getModel() {
+    return model;
   }
-
-  // Produce Generator Instance
 
   public JDBCProperties getProperties() {
     return properties;
   }
+
+  // Produce Generator Instance
 
   @Override
   public Generator instantiateGenerator(final HotRodContext hc, final EnabledFKs enabledFKs,
@@ -184,21 +294,60 @@ public class JDBCTag extends AbstractGeneratorTag implements NamePackageResolver
     return this.getTagName();
   }
 
-  // NamePackageResolver implementation
+  // DAO: Names and Packages
 
-  @Override
-  public String generateAbstractVOName(final String name) {
-    return this.getDaos().generateAbstractVOName(name);
+  public String getDAOName(ObjectId id) {
+    return null;
   }
 
-  @Override
-  public String generateVOName(final String name) {
-    return this.getDaos().generateVOName(name);
+  public ClassPackage getDAOPackage(ClassPackage fragmentPackage) {
+    return null;
   }
 
-  @Override
-  public ClassPackage getPrimitivesVOPackage(final ClassPackage cp) {
-    return this.getDaos().getPrimitivesVOPackage(cp);
+  public ClassPackage getDAOPackage() {
+    return null;
+  }
+
+  public File getDAOPackageDir(ClassPackage fragmentPackage) {
+    return null;
+  }
+
+  // Layout: Names and Packages
+
+  public String getLayoutName(ObjectId id) {
+    return null;
+  }
+
+  public ClassPackage getLayoutPackage(ClassPackage fragmentPackage) {
+    return null;
+  }
+
+  public File getLayoutPackageDir(ClassPackage fragmentPackage) {
+    return null;
+  }
+
+  // Model: Names and Packages
+
+  public String getModelName(ObjectId id) {
+    return null;
+  }
+
+  public File getModelPackageDir(ClassPackage fragmentPackage) {
+    return null;
+  }
+
+  // Nitro
+
+  public String getNitroDAOName(String baseName) {
+    return null;
+  }
+
+  public String getNitroLayoutName(String baseName) {
+    return null;
+  }
+
+  public String getNitroModelName(String baseName) {
+    return null;
   }
 
 }

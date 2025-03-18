@@ -44,7 +44,7 @@ public class TextContent extends EnhancedSQLPart {
   // Behavior
 
   @Override
-  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+  public void validate(final JDBCTag jdbcTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, final ParameterDefinitions parameterDefinitions,
       final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
 

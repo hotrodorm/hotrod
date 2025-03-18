@@ -11,9 +11,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.ConverterTag;
-import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
+import org.hotrod.config.JDBCTag;
 import org.hotrod.config.Patterns;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.metadata.StructuredColumnMetadata;
@@ -76,7 +76,7 @@ public class ExpressionTag extends AbstractConfigurationTag {
 
   // Behavior
 
-  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+  public void validate(final JDBCTag jdbcTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, final boolean singleVOResult, final Set<String> ids)
       throws InvalidConfigurationFileException {
 

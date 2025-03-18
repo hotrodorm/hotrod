@@ -45,7 +45,7 @@ public class ViewTag extends AbstractEntityDAOTag {
   private String javaClassName = null;
   private List<ColumnTag> columns = new ArrayList<ColumnTag>();
 
-  private DaosTag daosTag;
+  private JDBCTag jdbcTag;
   private HotRodFragmentConfigTag fragmentConfig;
   private ClassPackage fragmentPackage;
 
@@ -57,11 +57,11 @@ public class ViewTag extends AbstractEntityDAOTag {
 
   // Constructor for Discover
 
-  public ViewTag(final JdbcTable t, final DaosTag daosTag, final HotRodFragmentConfigTag fragmentConfig,
+  public ViewTag(final JdbcTable t, final JDBCTag jdbcTag, final HotRodFragmentConfigTag fragmentConfig,
       final HotRodConfigTag config, final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
     super("view", true);
 
-    this.daosTag = daosTag;
+    this.jdbcTag = jdbcTag;
     this.fragmentConfig = fragmentConfig;
     this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
         ? this.fragmentConfig.getFragmentPackage()
@@ -128,13 +128,13 @@ public class ViewTag extends AbstractEntityDAOTag {
 
   // Behavior
 
-  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+  public void validate(final JDBCTag jdbcTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter, final CatalogSchema currentCS)
       throws InvalidConfigurationFileException {
 
     log.fine("validate");
 
-    this.daosTag = daosTag;
+    this.jdbcTag = jdbcTag;
     this.fragmentConfig = fragmentConfig;
     this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
         ? this.fragmentConfig.getFragmentPackage()
@@ -238,7 +238,7 @@ public class ViewTag extends AbstractEntityDAOTag {
 
     // sequences, queries, and selects
 
-    super.validate(daosTag, config, fragmentConfig, adapter);
+    super.validate(jdbcTag, config, fragmentConfig, adapter);
 
   }
 
@@ -311,7 +311,7 @@ public class ViewTag extends AbstractEntityDAOTag {
 
   @Override
   public ClassPackage getPackage() {
-    return this.daosTag.getDaoPackage(this.fragmentPackage);
+    return this.jdbcTag.getDAOPackage(this.fragmentPackage);
   }
 
   @Override

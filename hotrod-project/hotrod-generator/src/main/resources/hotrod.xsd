@@ -54,12 +54,15 @@
   </xsd:complexType>
 
   <xsd:complexType name="jdbc-type">
+    <xsd:attribute name="base-dir" type="xsd:string" />
+    <xsd:attribute name="package" type="xsd:string" />
+    <xsd:attribute name="qualifier" type="xsd:string" />
     <xsd:sequence>
       <xsd:element name="discover" type="discover-type" minOccurs="0" maxOccurs="1" />
-      <xsd:choice minOccurs="0" maxOccurs="unbounded">
-        <xsd:element name="daos" type="daos-mybatis-spring-type" />
-        <xsd:element name="property" type="property-type" />
-      </xsd:choice>
+      <xsd:element name="dao" type="dao-config-type" minOccurs="0" maxOccurs="1" />
+      <xsd:element name="layout" type="layout-config-type" minOccurs="0" maxOccurs="1" />
+      <xsd:element name="model" type="model-config-type" minOccurs="0" maxOccurs="1" />
+      <xsd:element name="property" type="property-type" minOccurs="0" maxOccurs="unbounded" />
     </xsd:sequence>
   </xsd:complexType>
 
@@ -82,6 +85,28 @@
     <xsd:attribute name="name" type="xsd:string" use="required" />
   </xsd:complexType>
 
+  <xsd:complexType name="dao-config-type">
+    <xsd:attribute name="prefix" type="xsd:string" />
+    <xsd:attribute name="suffix" type="xsd:string" />
+    <xsd:attribute name="base-dir" type="xsd:string" />
+    <xsd:attribute name="sub-package" type="xsd:string" />
+  </xsd:complexType>
+
+  <xsd:complexType name="layout-config-type">
+    <xsd:attribute name="prefix" type="xsd:string" />
+    <xsd:attribute name="suffix" type="xsd:string" />
+    <xsd:attribute name="base-dir" type="xsd:string" />
+    <xsd:attribute name="sub-package" type="xsd:string" />
+  </xsd:complexType>
+
+  <xsd:complexType name="model-config-type">
+    <xsd:attribute name="prefix" type="xsd:string" />
+    <xsd:attribute name="suffix" type="xsd:string" />
+    <xsd:attribute name="base-dir" type="xsd:string" />
+    <xsd:attribute name="sub-package" type="xsd:string" />
+  </xsd:complexType>
+
+<!-- 
   <xsd:complexType name="daos-mybatis-spring-type">
     <xsd:attribute name="base-dir" type="xsd:string" />
     <xsd:attribute name="package" type="xsd:string" />
@@ -107,7 +132,8 @@
     <xsd:attribute name="sql-session-bean-qualifier" type="xsd:string" />
     <xsd:attribute name="live-sql-dialect-bean-qualifier" type="xsd:string" />
   </xsd:complexType>
-
+ -->
+ 
   <xsd:complexType name="property-type">
     <xsd:attribute name="name" type="xsd:string" use="required" />
     <xsd:attribute name="value" type="xsd:string" use="required" />

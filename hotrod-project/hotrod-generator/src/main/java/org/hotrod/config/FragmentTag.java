@@ -48,7 +48,7 @@ public class FragmentTag extends AbstractConfigurationTag {
   // Behavior
 
   public void validate(final HotRodConfigTag primaryConfig, final File parentDir, final FileRegistry fileRegistry,
-      final File parentFile, final DaosTag daosTag, final DatabaseAdapter adapter,
+      final File parentFile, final JDBCTag jdbcTag, final DatabaseAdapter adapter,
       final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
       throws InvalidConfigurationFileException, ControlledException, UncontrolledException, FacetNotFoundException {
 
@@ -72,17 +72,17 @@ public class FragmentTag extends AbstractConfigurationTag {
           + "'. Must be a normal file, not a directory or other special file.");
     }
 
-    load(primaryConfig, fileRegistry, daosTag, adapter, facetNames, currentCS);
+    load(primaryConfig, fileRegistry, jdbcTag, adapter, facetNames, currentCS);
 
     log.fine("Fragment loaded.");
 
   }
 
-  public void load(final HotRodConfigTag primaryConfig, final FileRegistry fileRegistry, final DaosTag daosTag,
+  public void load(final HotRodConfigTag primaryConfig, final FileRegistry fileRegistry, final JDBCTag jdbcTag,
       final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
       throws UncontrolledException, ControlledException, FacetNotFoundException {
     log.fine("@@@ Will load fragment '" + this.f.getName() + "' -- at " + this.getSourceLocation());
-    this.fragmentConfig = ConfigurationLoader.loadFragment(primaryConfig, this.f, fileRegistry, daosTag, this, adapter,
+    this.fragmentConfig = ConfigurationLoader.loadFragment(primaryConfig, this.f, fileRegistry, jdbcTag, this, adapter,
         facetNames, currentCS);
     log.fine("Fragment loaded.");
 //    super.addChildren(this.fragmentConfig.getSubTags());

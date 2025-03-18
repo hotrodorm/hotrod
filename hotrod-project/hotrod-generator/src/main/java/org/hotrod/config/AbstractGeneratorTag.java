@@ -30,10 +30,6 @@ public abstract class AbstractGeneratorTag extends AbstractConfigurationTag {
   public abstract void validate(File basedir, final File parentDir, final DatabaseAdapter adapter,
       final CatalogSchema currentCS) throws InvalidConfigurationFileException;
 
-  public abstract DaosTag getDaos();
-
-  public abstract SelectGenerationTag getSelectGeneration();
-
   public abstract Generator instantiateGenerator(HotRodContext hc, EnabledFKs enabledFKs, DisplayMode displayMode,
       boolean incrementalMode, Feedback feedback)
       throws UncontrolledException, ControlledException, InvalidConfigurationFileException;

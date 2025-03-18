@@ -6,15 +6,14 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.config.AbstractConfigurationTag;
-import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
+import org.hotrod.config.JDBCTag;
 import org.hotrod.config.structuredcolumns.AssociationTag;
 import org.hotrod.config.structuredcolumns.CollectionTag;
 import org.hotrod.config.structuredcolumns.Expressions;
 import org.hotrod.config.structuredcolumns.VOTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
-import org.hotrod.generator.jdbc.DataSetLayout;
 import org.hotrod.identifiers.Id;
 import org.hotrod.metadata.VORegistry.EntityVOClass;
 import org.hotrod.metadata.VORegistry.SelectVOClass;
@@ -58,8 +57,8 @@ public class VOMetadata implements Serializable {
 
   // Constructors
 
-  public VOMetadata(final VOTag tag, final DataSetLayout layout, final HotRodFragmentConfigTag fragmentConfig,
-      final DaosTag daosTag) throws InvalidConfigurationFileException {
+  public VOMetadata(final VOTag tag, final HotRodFragmentConfigTag fragmentConfig, final JDBCTag jdbcTag)
+      throws InvalidConfigurationFileException {
     log.fine("init");
 
     this.tag = tag;
@@ -75,7 +74,7 @@ public class VOMetadata implements Serializable {
     this.associations = new ArrayList<VOMetadata>();
     this.associationMembers = new ArrayList<VOMember>();
     for (AssociationTag a : tag.getAssociations()) {
-      VOMetadata am = a.getMetadata(layout, fragmentConfig, daosTag);
+      VOMetadata am = a.getMetadata(fragmentConfig, jdbcTag);
       this.associations.add(am);
       VOMember m;
       try {
@@ -90,7 +89,7 @@ public class VOMetadata implements Serializable {
     this.collections = new ArrayList<VOMetadata>();
     this.collectionMembers = new ArrayList<VOMember>();
     for (CollectionTag c : tag.getCollections()) {
-      VOMetadata com = c.getMetadata(layout, fragmentConfig, daosTag);
+      VOMetadata com = c.getMetadata(fragmentConfig, jdbcTag);
       this.collections.add(com);
       VOMember m;
       try {
@@ -105,9 +104,9 @@ public class VOMetadata implements Serializable {
     // package & class name
 
     if (tag.getExtendedVO() != null) { // extended VO from a table or view
-      this.classPackage = getVOClassPackage(layout, fragmentConfig);
-      this.name = daosTag.generateNitroVOName(tag.getExtendedVO());
-      this.abstractName = daosTag.generateNitroAbstractVOName(tag.getExtendedVO());
+      this.classPackage = getVOClassPackage(jdbcTag, fragmentConfig);
+      this.name = jdbcTag.getNitroModelName(tag.getExtendedVO());
+      this.abstractName = jdbcTag.getNitroLayoutName(tag.getExtendedVO());
       this.entityVOSuperClass = tag.getVORegistry()
           .findEntityVOClass(this.tableMetadata != null ? this.tableMetadata : this.viewMetadata);
       if (this.entityVOSuperClass == null) {
@@ -117,13 +116,13 @@ public class VOMetadata implements Serializable {
     } else { // it's a table or view VO
       this.entityVOSuperClass = null;
       if (this.tableMetadata != null) {
-        this.classPackage = getVOClassPackage(layout, this.tableMetadata.getFragmentConfig());
-        this.name = daosTag.generateVOName(this.tableMetadata.getId());
-        this.abstractName = daosTag.generateAbstractVOName(this.tableMetadata.getId());
+        this.classPackage = getVOClassPackage(jdbcTag, this.tableMetadata.getFragmentConfig());
+        this.name = jdbcTag.getModelName(this.tableMetadata.getId());
+        this.abstractName = jdbcTag.getLayoutName(this.tableMetadata.getId());
       } else {
-        this.classPackage = getVOClassPackage(layout, this.viewMetadata.getFragmentConfig());
-        this.name = daosTag.generateVOName(this.viewMetadata.getId());
-        this.abstractName = daosTag.generateAbstractVOName(this.viewMetadata.getId());
+        this.classPackage = getVOClassPackage(jdbcTag, this.viewMetadata.getFragmentConfig());
+        this.name = jdbcTag.getModelName(this.viewMetadata.getId());
+        this.abstractName = jdbcTag.getLayoutName(this.viewMetadata.getId());
       }
     }
 
@@ -291,11 +290,11 @@ public class VOMetadata implements Serializable {
 
   // Utilities
 
-  private ClassPackage getVOClassPackage(final DataSetLayout layout, final HotRodFragmentConfigTag fragmentConfig) {
+  private ClassPackage getVOClassPackage(final JDBCTag jdbcTag, final HotRodFragmentConfigTag fragmentConfig) {
     ClassPackage fragmentPackage = fragmentConfig != null && fragmentConfig.getFragmentPackage() != null
         ? fragmentConfig.getFragmentPackage()
         : null;
-    return layout.getDAOPackage(fragmentPackage);
+    return jdbcTag.getDAOPackage(fragmentPackage);
   }
 
   // toString

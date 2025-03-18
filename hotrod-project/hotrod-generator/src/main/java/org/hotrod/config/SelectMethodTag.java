@@ -131,7 +131,7 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
   // Behavior
 
-  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+  public void validate(final JDBCTag jdbcTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter, final boolean belongsToEntity)
       throws InvalidConfigurationFileException {
 
@@ -232,8 +232,8 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
                   + "and continue with letters, digits, and/or underscores.");
         }
 
-        this.voClassName = daosTag.generateNitroVOName(this.vo);
-        this.abstractVoClassName = daosTag.generateNitroAbstractVOName(this.vo);
+        this.voClassName = jdbcTag.getNitroModelName(this.vo);
+        this.abstractVoClassName = jdbcTag.getNitroLayoutName(this.vo);
 
       }
     }
@@ -280,7 +280,7 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
     for (EnhancedSQLPart p : this.parts) {
       // log.info("VAL p: " + p.getClass().getName());
-      p.validate(daosTag, config, fragmentConfig, this.parameters, adapter);
+      p.validate(jdbcTag, config, fragmentConfig, this.parameters, adapter);
     }
 
     // all validations cleared

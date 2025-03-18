@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -35,6 +36,7 @@ import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.exception.DatabaseObjectNotFoundException;
 import org.nocrala.tools.database.tartarus.exception.ReaderException;
 
+@Deprecated
 public class PurgeOperation {
 
   private static final Logger log = Logger.getLogger(PurgeOperation.class.getName());
@@ -130,14 +132,14 @@ public class PurgeOperation {
       }
 
       IdentifierAdapter identifierAdapter = db.getDatabaseConnector().getIdentifierAdapter();
-      String baseName = config.getGenerators().getSelectedGeneratorTag().getSelectGeneration().getTempViewBaseName();
+//      String baseName = config.getGenerators().getSelectedGeneratorTag().getSelectGeneration().getTempViewBaseName();
 
-      List<ObjectName> tempViews;
-      try {
-        tempViews = db.findViews(baseName + "%");
-      } catch (SQLException e) {
-        throw new OperationException("Could 2 not retrieve the list of temp views:" + XUtil.trim(e));
-      }
+      List<ObjectName> tempViews = new ArrayList<>();
+//      try {
+//        tempViews = db.findViews(baseName + "%");
+//      } catch (SQLException e) {
+//        throw new OperationException("Could 2 not retrieve the list of temp views:" + XUtil.trim(e));
+//      }
       if (tempViews.isEmpty()) {
         feedback.info("No temp views found. Nothing to drop.");
       } else {

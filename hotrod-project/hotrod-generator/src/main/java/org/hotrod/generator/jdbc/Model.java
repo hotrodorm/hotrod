@@ -20,11 +20,10 @@ public class Model {
   private static final Logger log = Logger.getLogger(Model.class.getName());
 
   private DataSetMetadata metadata;
-  private DataSetLayout layout;
   @SuppressWarnings("unused")
   private JDBCGenerator generator;
-  private Entity abstractVO;
-  private JDBCTag myBatisTag;
+  private Layout abstractVO;
+  private JDBCTag jdbcTag;
 
   private DAO dao;
 
@@ -33,24 +32,22 @@ public class Model {
 
   private ClassPackage classPackage;
 
-  public Model(final DataSetMetadata metadata, final DataSetLayout layout, final JDBCGenerator generator,
-      final Entity abstractVO, final JDBCTag myBatisTag) {
+  public Model(final DataSetMetadata metadata, final JDBCGenerator generator, final Layout abstractVO,
+      final JDBCTag jdbcTag) {
     super();
     log.fine("init");
 
     this.metadata = metadata;
-    this.layout = layout;
     this.generator = generator;
-//    metadata.getDaoTag().addGeneratableObject(this);
     this.abstractVO = abstractVO;
-    this.myBatisTag = myBatisTag;
+    this.jdbcTag = jdbcTag;
 
     this.fragmentConfig = this.metadata.getFragmentConfig();
     this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
         ? this.fragmentConfig.getFragmentPackage()
         : null;
 
-    this.classPackage = this.layout.getDAOPackage(this.fragmentPackage);
+    this.classPackage = this.jdbcTag.getDAOPackage(this.fragmentPackage);
   }
 
   public void setDAO(DAO dao) {
@@ -64,9 +61,9 @@ public class Model {
         ? this.fragmentConfig.getFragmentPackage()
         : null;
 
-    ClassPackage cp = this.layout.getDAOPackage(fragmentPackage);
+    ClassPackage cp = this.jdbcTag.getDAOPackage(fragmentPackage);
 
-    File dir = this.layout.getDAOPackageDir(fragmentPackage);
+    File dir = this.jdbcTag.getDAOPackageDir(fragmentPackage);
     File vo = new File(dir, sourceClassName);
 
     if (!vo.exists()) {
@@ -117,7 +114,7 @@ public class Model {
 
   public String getClassName() {
     ObjectId id = this.metadata.getId();
-    String name = this.myBatisTag.getDaos().generateVOName(id);
+    String name = this.jdbcTag.getModelName(id);
     return name;
   }
 

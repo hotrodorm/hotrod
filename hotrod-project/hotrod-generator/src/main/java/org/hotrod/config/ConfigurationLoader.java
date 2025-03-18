@@ -33,8 +33,8 @@ import org.hotrod.exceptions.GeneratorNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.utils.FileRegistry;
-import org.hotrod.utils.SourceLocation;
 import org.hotrod.utils.FileRegistry.FileAlreadyRegisteredException;
+import org.hotrod.utils.SourceLocation;
 import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
@@ -148,10 +148,11 @@ public class ConfigurationLoader {
 
       // Validation (common)
 
-      DaosTag daosTag = (DaosTag) config.getGenerators().getSelectedGeneratorTag().getDaos();
+      JDBCTag jdbcTag = (JDBCTag) config.getGenerators().getSelectedGeneratorTag();
+
       FileRegistry fileRegistry = new FileRegistry(f);
 
-      config.validateCommon(config, f, fileRegistry, f, daosTag, null, adapter, facetNames, currentCS);
+      config.validateCommon(config, f, fileRegistry, f, jdbcTag, null, adapter, facetNames, currentCS);
       log.fine("Semantics validation #2 successful.");
 
       JDBCTag mst = (JDBCTag) config.getGenerators().getSelectedGeneratorTag();
@@ -206,10 +207,10 @@ public class ConfigurationLoader {
     } catch (GeneratorNotFoundException e) {
       throw new ControlledException("No Config Error: " + e.getMessage());
     }
-    DaosTag daosTag = (DaosTag) config.getGenerators().getSelectedGeneratorTag().getDaos();
+    JDBCTag jdbcTag = JDBCTag.getNoConfigTag();
     FileRegistry fileRegistry = new FileRegistry(f);
     try {
-      config.validateCommon(config, f, fileRegistry, f, daosTag, null, adapter, facetNames, currentCS);
+      config.validateCommon(config, f, fileRegistry, f, jdbcTag, null, adapter, facetNames, currentCS);
     } catch (InvalidConfigurationFileException e) {
       throw new ControlledException("No Config Error: " + e.getMessage());
     } catch (UncontrolledException e) {
@@ -221,7 +222,7 @@ public class ConfigurationLoader {
   }
 
   public static HotRodFragmentConfigTag loadFragment(final HotRodConfigTag primaryConfig, final File f,
-      final FileRegistry fileRegistry, final DaosTag daosTag, final FragmentTag fragmentTag,
+      final FileRegistry fileRegistry, final JDBCTag jdbcTag, final FragmentTag fragmentTag,
       final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
       throws UncontrolledException, ControlledException, FacetNotFoundException {
 
@@ -297,7 +298,7 @@ public class ConfigurationLoader {
       log.fine("  --     tag: " + fragmentTag.getSourceLocation());
       fileRegistry.add(fragmentTag, f);
       log.fine("----2> fileRegistry=" + fileRegistry);
-      fragmentConfig.validateCommon(primaryConfig, f, fileRegistry, f, daosTag, fragmentConfig, adapter, facetNames,
+      fragmentConfig.validateCommon(primaryConfig, f, fileRegistry, f, jdbcTag, fragmentConfig, adapter, facetNames,
           currentCS);
 
       // Complete

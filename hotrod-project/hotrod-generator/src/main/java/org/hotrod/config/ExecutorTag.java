@@ -24,7 +24,7 @@ public class ExecutorTag extends AbstractDAOTag {
 
   private String name = null;
 
-  private DaosTag daosTag;
+  private JDBCTag jdbcTag;
   private HotRodFragmentConfigTag fragmentConfig;
   private ClassPackage fragmentPackage;
 
@@ -45,13 +45,13 @@ public class ExecutorTag extends AbstractDAOTag {
 
   // Behavior
 
-  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+  public void validate(final JDBCTag jdbcTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 
-    log.fine("validate Table tag: " + daosTag.getInternalCaption());
+    log.fine("validate Table tag: " + jdbcTag.getInternalCaption());
 
-    this.daosTag = daosTag;
+    this.jdbcTag = jdbcTag;
     this.fragmentConfig = fragmentConfig;
     this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
         ? this.fragmentConfig.getFragmentPackage()
@@ -69,11 +69,11 @@ public class ExecutorTag extends AbstractDAOTag {
               + this.name + "'. " + "Valid java class names start with an uppercase letter and continue with "
               + "letters, digits, dollar signs, and/or underscores.");
     }
-    this.javaClassName = daosTag.generateNitroDAOName(this.name);
+    this.javaClassName = jdbcTag.getNitroDAOName(this.name);
 
     // sequences, queries, selects
 
-    super.validate(daosTag, config, fragmentConfig, adapter);
+    super.validate(jdbcTag, config, fragmentConfig, adapter);
 
   }
 
@@ -89,7 +89,7 @@ public class ExecutorTag extends AbstractDAOTag {
 
   @Override
   public ClassPackage getPackage() {
-    return this.daosTag.getDaoPackage(this.fragmentPackage);
+    return this.jdbcTag.getDAOPackage(this.fragmentPackage);
   }
 
   @Override

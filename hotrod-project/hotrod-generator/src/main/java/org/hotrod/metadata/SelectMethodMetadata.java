@@ -12,6 +12,7 @@ import org.hotrod.config.EnhancedSQLPart;
 import org.hotrod.config.EnhancedSQLPart.SQLFormatter;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
+import org.hotrod.config.JDBCTag;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
@@ -23,7 +24,6 @@ import org.hotrod.exceptions.InvalidSQLException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.generator.jdbc.DataSetLayout;
 import org.hotrod.generator.jdbc.EntityDTOs;
 import org.hotrod.identifiers.Id;
 import org.hotrod.identifiers.ObjectId;
@@ -55,7 +55,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
   @SuppressWarnings("unused")
   private transient Metadata metadata;
   private ColumnsRetriever cr;
-  private transient DataSetLayout layout;
+  private transient JDBCTag jdbcTag;
   private TableDataSetMetadata entityMetadata;
 
   private EntityDTOs entityVOs;
@@ -87,11 +87,11 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   public SelectMethodMetadata(final Metadata metadata, final ColumnsRetriever cr, final SelectMethodTag tag,
       final HotRodConfigTag config, final SelectGenerationTag selectGenerationTag,
-      final ColumnsPrefixGenerator columnsPrefixGenerator, final DataSetLayout layout,
+      final ColumnsPrefixGenerator columnsPrefixGenerator, final JDBCTag jdbcTag,
       final TableDataSetMetadata entityMetadata) throws InvalidIdentifierException, InvalidConfigurationFileException {
     this.metadata = metadata;
     this.cr = cr;
-    this.layout = layout;
+    this.jdbcTag = jdbcTag;
     this.entityMetadata = entityMetadata;
     this.entityVOs = null;
     this.db = metadata.getJdbcDatabase();
@@ -111,7 +111,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
     ClassPackage fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
         ? this.fragmentConfig.getFragmentPackage()
         : null;
-    this.classPackage = layout.getDAOPackage(fragmentPackage);
+    this.classPackage = jdbcTag.getDAOPackage(fragmentPackage);
 
     this.selectMethodReturnType = null;
 
@@ -258,7 +258,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
     }
 
-    this.selectMethodReturnType = new SelectMethodReturnType(this, this.classPackage, this.tag, this.layout);
+    this.selectMethodReturnType = new SelectMethodReturnType(this, this.classPackage, this.tag, this.jdbcTag);
 
   }
 
@@ -439,7 +439,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
     private ResultSetMode mode;
 
     public SelectMethodReturnType(final SelectMethodMetadata sm, final ClassPackage voClassPackage,
-        final AbstractConfigurationTag tag, final DataSetLayout layout) throws InvalidConfigurationFileException {
+        final AbstractConfigurationTag tag, final JDBCTag jdbcTag) throws InvalidConfigurationFileException {
 
       this.sm = sm;
 

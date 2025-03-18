@@ -70,7 +70,7 @@ public class EnumTag extends AbstractEntityDAOTag {
 
   private LinkedHashMap<JdbcColumn, EnumColumn> extraColumns = null;
 
-  private DaosTag daosTag;
+  private JDBCTag jdbcTag;
   private HotRodConfigTag config;
   private HotRodFragmentConfigTag fragmentConfig = null;
   private ClassPackage fragmentPackage;
@@ -116,11 +116,11 @@ public class EnumTag extends AbstractEntityDAOTag {
 
   // Behavior
 
-  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+  public void validate(final JDBCTag jdbcTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter, final CatalogSchema currentCS)
       throws InvalidConfigurationFileException {
 
-    this.daosTag = daosTag;
+    this.jdbcTag = jdbcTag;
     this.config = config;
     this.fragmentConfig = fragmentConfig;
     this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
@@ -609,7 +609,7 @@ public class EnumTag extends AbstractEntityDAOTag {
 
   @Override
   public ClassPackage getPackage() {
-    return this.daosTag.getDaoPackage(this.fragmentPackage);
+    return this.jdbcTag.getDAOPackage(this.fragmentPackage);
   }
 
   @Override

@@ -8,10 +8,10 @@ import org.hotrod.config.EnumTag.EnumConstant;
 import org.hotrod.config.EnumTag.EnumProperty;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
+import org.hotrod.config.JDBCTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.SelectMetadataCache;
-import org.hotrod.generator.jdbc.DataSetLayout;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
@@ -26,10 +26,10 @@ public class EnumDataSetMetadata extends TableDataSetMetadata {
   // Constructor
 
   public EnumDataSetMetadata(final EnumTag tag, final JdbcTable t, final DatabaseAdapter adapter,
-      final HotRodConfigTag config, final DataSetLayout layout, final SelectMetadataCache selectMetadataCache,
+      final HotRodConfigTag config, final JDBCTag jdbcTag, final SelectMetadataCache selectMetadataCache,
       final boolean isFromCurrentCatalog, final boolean isFromCurrentSchema)
       throws UnresolvableDataTypeException, InvalidConfigurationFileException {
-    super(tag, t, adapter, config, layout, selectMetadataCache, isFromCurrentCatalog, isFromCurrentSchema);
+    super(tag, t, adapter, config, jdbcTag, selectMetadataCache, isFromCurrentCatalog, isFromCurrentSchema);
     log.fine("init");
     this.tag = tag;
   }

@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.config.Constants;
+import org.hotrod.config.JDBCTag;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
-import org.hotrod.generator.NamePackageResolver;
 import org.hotrod.json.JSONArray;
 import org.hotrod.json.JSONObject;
 import org.hotrod.metadata.ColumnMetadata;
@@ -25,15 +25,15 @@ import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ClassWriter;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
-public class SelectAbstractVO {
+public class SelectLayout {
 
   // Constants
 
-  private static final Logger log = Logger.getLogger(SelectAbstractVO.class.getName());
+  private static final Logger log = Logger.getLogger(SelectLayout.class.getName());
 
   // Properties
 
-  private DataSetLayout layout;
+  private JDBCTag jdbcTag;
 
   private String name;
   private ClassPackage classPackage;
@@ -43,20 +43,18 @@ public class SelectAbstractVO {
   private List<VOMember> collectionMembers;
 
   private String superClassName;
-//  private ClassPackage superClassPackage;
 
   private ClassWriter w;
 
   // Constructors
 
   // From a solo VO
-  public SelectAbstractVO(final SelectVOClass abstractSoloVO, final DataSetLayout layout,
-      final NamePackageResolver npResolver) {
+  public SelectLayout(final SelectVOClass abstractSoloVO, final JDBCTag jdbcTag) {
     log.fine("init");
-    this.layout = layout;
+    this.jdbcTag = jdbcTag;
 
     this.name = abstractSoloVO.getName();
-    this.classPackage = npResolver.getPrimitivesVOPackage(abstractSoloVO.getClassPackage());
+    this.classPackage = this.jdbcTag.getLayoutPackage(abstractSoloVO.getClassPackage());
 
     this.columns = new ArrayList<ColumnMetadata>(abstractSoloVO.getColumnsByName().values());
     log.fine("Name: " + this.name + " this.columns.size()=" + this.columns.size());
@@ -69,10 +67,10 @@ public class SelectAbstractVO {
   }
 
   // From a connected VO
-  public SelectAbstractVO(final VOMetadata vo, final DataSetLayout layout, final NamePackageResolver npResolver) {
-    this.layout = layout;
+  public SelectLayout(final VOMetadata vo, final JDBCTag jdbcTag) {
+    this.jdbcTag = jdbcTag;
     this.name = vo.getAbstractName();
-    this.classPackage = npResolver.getPrimitivesVOPackage(vo.getClassPackage());
+    this.classPackage = this.jdbcTag.getLayoutPackage(vo.getClassPackage());
     this.columns = new ArrayList<ColumnMetadata>();
     log.fine("vo.getDeclaredColumns().size()=" + vo.getDeclaredColumns().size());
     for (ColumnMetadata cm : vo.getDeclaredColumns()) {
@@ -91,7 +89,7 @@ public class SelectAbstractVO {
 
     String className = this.name + ".java";
 
-    File dir = this.layout.getVOPackageDir(this.classPackage);
+    File dir = this.jdbcTag.getModelPackageDir(this.classPackage);
     File f = new File(dir, className);
 
     try (TextWriter tw = fileGenerator.createWriter(f)) {

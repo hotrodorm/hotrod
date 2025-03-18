@@ -13,9 +13,9 @@ import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlMixed;
 
 import org.hotrod.config.AbstractConfigurationTag;
-import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
+import org.hotrod.config.JDBCTag;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.Generator;
@@ -64,7 +64,7 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
 
   // Validation
 
-  public final void validate(final DaosTag daosTag, final HotRodConfigTag config,
+  public final void validate(final JDBCTag jdbcTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, final ParameterDefinitions parameters)
       throws InvalidConfigurationFileException {
     retrievePartsAndValidate(parameters);

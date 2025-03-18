@@ -2,15 +2,15 @@ package org.hotrod.generator.jdbc;
 
 public class EntityDTOs {
 
-  private Entity abstractVO;
+  private Layout abstractVO;
   private Model vo;
 
-  public EntityDTOs(Entity abstractVO, Model vo) {
+  public EntityDTOs(Layout abstractVO, Model vo) {
     this.abstractVO = abstractVO;
     this.vo = vo;
   }
 
-  public Entity getAbstractVO() {
+  public Layout getAbstractVO() {
     return abstractVO;
   }
 

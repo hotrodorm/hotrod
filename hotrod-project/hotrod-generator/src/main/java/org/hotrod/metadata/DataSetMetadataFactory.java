@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import org.hotrod.config.EnumTag;
 import org.hotrod.config.HotRodConfigTag;
+import org.hotrod.config.JDBCTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
@@ -21,15 +22,15 @@ public abstract class DataSetMetadataFactory {
   private static final Logger log = Logger.getLogger(DataSetMetadataFactory.class.getName());
 
   public static TableDataSetMetadata getMetadata(final JdbcTable t, final boolean isTable, final boolean autoDiscovery,
-      final DatabaseAdapter adapter, final HotRodConfigTag config, final DataSetLayout layout,
+      final DatabaseAdapter adapter, final HotRodConfigTag config, final JDBCTag jdbcTag,
       final boolean isFromCurrentCatalog, final boolean isFromCurrentSchema)
       throws UnresolvableDataTypeException, InvalidConfigurationFileException {
-    return getMetadata(t, isTable, autoDiscovery, adapter, config, layout, null, isFromCurrentCatalog,
+    return getMetadata(t, isTable, autoDiscovery, adapter, config, jdbcTag, null, isFromCurrentCatalog,
         isFromCurrentSchema);
   }
 
   private static TableDataSetMetadata getMetadata(final JdbcTable t, final boolean isTable, final boolean autoDiscovery,
-      final DatabaseAdapter adapter, final HotRodConfigTag config, final DataSetLayout layout,
+      final DatabaseAdapter adapter, final HotRodConfigTag config, final JDBCTag jdbcTag,
       final CachedMetadata cachedMetadata, final boolean isFromCurrentCatalog, final boolean isFromCurrentSchema)
       throws UnresolvableDataTypeException, InvalidConfigurationFileException {
 
@@ -47,7 +48,7 @@ public abstract class DataSetMetadataFactory {
     TableTag tableTag = config.getTableTag(t);
     if (tableTag != null) {
       TableDataSetMetadata tm = new TableDataSetMetadata(tableTag, t, tableTag.getExtendsTag(),
-          tableTag.getExtendsJdbcTable(), adapter, config, layout, selectMetadataCache, isFromCurrentCatalog,
+          tableTag.getExtendsJdbcTable(), adapter, config, jdbcTag, selectMetadataCache, isFromCurrentCatalog,
           isFromCurrentSchema);
       log.fine("cachedConfig=" + cachedConfig);
       return tm;
@@ -57,7 +58,7 @@ public abstract class DataSetMetadataFactory {
 
     EnumTag enumTag = config.getEnumTag(t);
     if (enumTag != null) {
-      EnumDataSetMetadata em = new EnumDataSetMetadata(enumTag, t, adapter, config, layout, selectMetadataCache,
+      EnumDataSetMetadata em = new EnumDataSetMetadata(enumTag, t, adapter, config, jdbcTag, selectMetadataCache,
           isFromCurrentCatalog, isFromCurrentSchema);
       return em;
     }
@@ -66,7 +67,7 @@ public abstract class DataSetMetadataFactory {
 
     ViewTag viewTag = config.getViewTag(t);
     if (viewTag != null) {
-      return new TableDataSetMetadata(viewTag, t, adapter, config, layout, selectMetadataCache, isFromCurrentCatalog,
+      return new TableDataSetMetadata(viewTag, t, adapter, config, jdbcTag, selectMetadataCache, isFromCurrentCatalog,
           isFromCurrentSchema);
     }
 
@@ -81,14 +82,14 @@ public abstract class DataSetMetadataFactory {
         tableTag.setName(t.getName());
         tableTag.validate(null, config, null, adapter, null);
         return new TableDataSetMetadata(tableTag, t, tableTag.getExtendsTag(), tableTag.getExtendsJdbcTable(), adapter,
-            config, layout, selectMetadataCache, isFromCurrentCatalog, isFromCurrentSchema);
+            config, jdbcTag, selectMetadataCache, isFromCurrentCatalog, isFromCurrentSchema);
       } else {
         viewTag = new ViewTag();
         viewTag.setCatalog(t.getCatalog());
         viewTag.setSchema(t.getSchema());
         viewTag.setName(t.getName());
         viewTag.validate(null, config, null, adapter, null);
-        return new TableDataSetMetadata(viewTag, t, adapter, config, layout, selectMetadataCache, isFromCurrentCatalog,
+        return new TableDataSetMetadata(viewTag, t, adapter, config, jdbcTag, selectMetadataCache, isFromCurrentCatalog,
             isFromCurrentSchema);
       }
 

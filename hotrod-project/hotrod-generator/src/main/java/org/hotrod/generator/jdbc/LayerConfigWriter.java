@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.hotrod.config.JDBCTag;
 import org.hotrod.config.TypeSolverTag;
 import org.hotrod.config.TypeSolverWhenTag;
 import org.hotrod.exceptions.ControlledException;
@@ -27,26 +28,26 @@ public class LayerConfigWriter {
 
   private static final String CLASS_NAME = "LayerConfig";
 
-  private DataSetLayout layout;
+  private JDBCTag jdbcTag;
   private TypeSolverTag typeSolver;
 
   private ClassWriter w;
 
-  public LayerConfigWriter(final DataSetLayout layout, final TypeSolverTag typeSolver) {
-    this.layout = layout;
+  public LayerConfigWriter(final JDBCTag jdbcTag, final TypeSolverTag typeSolver) {
+    this.jdbcTag = jdbcTag;
     this.typeSolver = typeSolver;
   }
 
   public void generate(final FileGenerator fileGenerator, final JDBCGenerator mg)
       throws UncontrolledException, ControlledException {
 
-    File dir = this.layout.getDaoPrimitivePackageDir(null);
+    File dir = this.jdbcTag.getDAOPackageDir(null);
     File f = new File(dir, CLASS_NAME + ".java");
 //    log.info("f=" + f);
 
     try (TextWriter tw = fileGenerator.createWriter(f)) {
 
-      this.w = new ClassWriter(this.layout.getDAOPrimitivePackage());
+      this.w = new ClassWriter(this.jdbcTag.getDAOPackage());
 
       this.writeHeader();
       this.writeRules();

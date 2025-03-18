@@ -9,8 +9,8 @@ import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.ExecutorTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
+import org.hotrod.config.JDBCTag;
 import org.hotrod.config.QueryMethodTag;
-import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.database.DatabaseAdapter;
@@ -20,7 +20,6 @@ import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.SelectMetadataCache;
-import org.hotrod.generator.jdbc.DataSetLayout;
 import org.hotrod.identifiers.Id;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.utils.ColumnsPrefixGenerator;
@@ -86,8 +85,8 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
   // Select Methods meta data gathering
 
   @SuppressWarnings("unused")
-  public boolean gatherSelectsMetadataPhase1(final Metadata metadata, final ColumnsRetriever cr,
-      final DataSetLayout layout) throws InvalidConfigurationFileException {
+  public boolean gatherSelectsMetadataPhase1(final Metadata metadata, final ColumnsRetriever cr, final JDBCTag jdbcTag)
+      throws InvalidConfigurationFileException {
     this.selectsMetadata = new ArrayList<SelectMethodMetadata>();
     boolean needsToRetrieveMetadata = false;
     for (SelectMethodTag selectTag : this.selects) {
@@ -100,13 +99,11 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
 
       // retrieve fresh metadata
       needsToRetrieveMetadata = true;
-      SelectGenerationTag selectGenerationTag = this.config.getGenerators().getSelectedGeneratorTag()
-          .getSelectGeneration();
       ColumnsPrefixGenerator columnsPrefixGenerator = new ColumnsPrefixGenerator(this.adapter.getUnescapedSQLCase());
       SelectMethodMetadata sm;
       try {
-        sm = new SelectMethodMetadata(metadata, cr, selectTag, this.config, selectGenerationTag, columnsPrefixGenerator,
-            layout, null);
+        sm = new SelectMethodMetadata(metadata, cr, selectTag, this.config, null, columnsPrefixGenerator, jdbcTag,
+            null);
       } catch (InvalidIdentifierException e) {
         String msg = "Invalid method name '" + selectTag.getMethod() + "': " + e.getMessage();
         throw new InvalidConfigurationFileException(selectTag, msg);

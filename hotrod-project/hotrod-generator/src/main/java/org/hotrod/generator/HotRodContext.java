@@ -181,8 +181,8 @@ public class HotRodContext {
 
       // Discover schemas
 
-      JDBCTag mst = (JDBCTag) this.config.getGenerators().getSelectedGeneratorTag();
-      boolean discover = mst.getDiscover() != null;
+      JDBCTag jdbcTag = (JDBCTag) this.config.getGenerators().getSelectedGeneratorTag();
+      boolean discover = jdbcTag.getDiscover() != null;
       feedback.info("Discover " + (discover ? "enabled." : "disabled."));
       feedback.info(" ");
 
@@ -206,62 +206,62 @@ public class HotRodContext {
       try {
 
 //        log.info("gen 1 - strategy=" + mst.getSelectGeneration().getStrategy());
-        if (mst.getSelectGeneration().getStrategy() == SelectStrategy.RESULT_SET) {
-          if (discover) { // 1. Discover
+//        if (mst.getSelectGeneration().getStrategy() == SelectStrategy.RESULT_SET) {
 
-            List<CatalogSchema> discoverCSs = new ArrayList<>();
-            Set<DatabaseObject> excludeIds = new HashSet<>();
+        if (discover) { // 1. Discover
 
-            for (SchemaTag s : mst.getDiscover().getAllSchemaTags()) {
-              discoverCSs.add(new CatalogSchema(s.getCanonicalCatalog(), s.getCanonicalSchema()));
-              for (ExcludeTag ex : s.getExcludeList()) {
-                DatabaseObject id = new DatabaseObject(s.getCanonicalCatalog(), s.getCanonicalSchema(),
-                    ex.getCanonicalName());
+          List<CatalogSchema> discoverCSs = new ArrayList<>();
+          Set<DatabaseObject> excludeIds = new HashSet<>();
+
+          for (SchemaTag s : jdbcTag.getDiscover().getAllSchemaTags()) {
+            discoverCSs.add(new CatalogSchema(s.getCanonicalCatalog(), s.getCanonicalSchema()));
+            for (ExcludeTag ex : s.getExcludeList()) {
+              DatabaseObject id = new DatabaseObject(s.getCanonicalCatalog(), s.getCanonicalSchema(),
+                  ex.getCanonicalName());
 //                log.fine("-----> exclude: " + id);
-                excludeIds.add(id);
-              }
+              excludeIds.add(id);
             }
+          }
 
 //            log.fine("gen 2");
-            this.db = new JdbcDatabase(conn, currentCS, tables, views, discoverCSs, excludeIds);
-            removeCurrentCatalogSchema(currentCS);
+          this.db = new JdbcDatabase(conn, currentCS, tables, views, discoverCSs, excludeIds);
+          removeCurrentCatalogSchema(currentCS);
 //            log.fine("gen 3");
-            this.config.getFacetTables();// FIXME
+          this.config.getFacetTables();// FIXME
 
-            DaosTag daosTag = mst.getDaos();
-            try {
-              log.fine("gen 3.1");
-              for (JdbcTable t : this.db.getTables()) {
-                config.includeInAllFacets(t, false, daosTag, config, adapter);
-              }
-              log.fine("gen 3.2");
-              this.config.getFacetTables();// FIXME
-              for (JdbcTable v : this.db.getViews()) {
-                config.includeInAllFacets(v, true, daosTag, config, adapter);
-              }
-              this.config.getFacetTables();// FIXME
-            } catch (InvalidConfigurationFileException e) {
-              throw new ControlledException(
-                  "Could not use a discovered table or view because of its peculiar name. " + e.getMessage());
+          try {
+            log.fine("gen 3.1");
+            for (JdbcTable t : this.db.getTables()) {
+              config.includeInAllFacets(t, false, jdbcTag, config, adapter);
+            }
+            log.fine("gen 3.2");
+            this.config.getFacetTables();// FIXME
+            for (JdbcTable v : this.db.getViews()) {
+              config.includeInAllFacets(v, true, jdbcTag, config, adapter);
             }
             this.config.getFacetTables();// FIXME
-
-          } else { // 2. No Discover
-
-            log.fine("gen 4");
-            this.db = new JdbcDatabase(conn, currentCS, tables, views);
-            removeCurrentCatalogSchema(currentCS);
-            log.fine("gen 5");
-
+          } catch (InvalidConfigurationFileException e) {
+            throw new ControlledException(
+                "Could not use a discovered table or view because of its peculiar name. " + e.getMessage());
           }
-        } else { // 3. Create View Strategy
+          this.config.getFacetTables();// FIXME
 
-          log.fine("gen 6");
-          this.db = new JdbcDatabase(loc, tables, views);
+        } else { // 2. No Discover
+
+          log.fine("gen 4");
+          this.db = new JdbcDatabase(conn, currentCS, tables, views);
           removeCurrentCatalogSchema(currentCS);
-          log.fine("gen 7");
+          log.fine("gen 5");
 
         }
+//        } else { // 3. Create View Strategy
+//
+//          log.fine("gen 6");
+//          this.db = new JdbcDatabase(loc, tables, views);
+//          removeCurrentCatalogSchema(currentCS);
+//          log.fine("gen 7");
+//
+//        }
 
         log.fine("gen 8");
         this.config.getFacetTables(); // FIXME

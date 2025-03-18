@@ -76,10 +76,10 @@ public class QueryMethodTag extends AbstractMethodTag<QueryMethodTag> {
 
   // Behavior
 
-  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+  public void validate(final JDBCTag jdbcTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig) throws InvalidConfigurationFileException {
 
-    super.validate(daosTag, config, fragmentConfig);
+    super.validate(jdbcTag, config, fragmentConfig);
 
     // content text, parameters, dynamic SQL tags
 
@@ -90,7 +90,7 @@ public class QueryMethodTag extends AbstractMethodTag<QueryMethodTag> {
       try {
         String s = (String) obj; // content text
         DynamicSQLPart p = new ParameterisableTextPart(s, this, this.parameters);
-        p.validate(daosTag, config, fragmentConfig, this.parameters);
+        p.validate(jdbcTag, config, fragmentConfig, this.parameters);
         this.parts.add(p);
       } catch (ClassCastException e1) {
         try {
@@ -101,7 +101,7 @@ public class QueryMethodTag extends AbstractMethodTag<QueryMethodTag> {
         } catch (ClassCastException e2) {
           try {
             DynamicSQLPart p = (DynamicSQLPart) obj; // dynamic SQL part
-            p.validate(daosTag, config, fragmentConfig, this.parameters);
+            p.validate(jdbcTag, config, fragmentConfig, this.parameters);
             this.parts.add(p);
           } catch (ClassCastException e3) {
             throw new InvalidConfigurationFileException(this, "The body of the tag <" + super.getTagName()

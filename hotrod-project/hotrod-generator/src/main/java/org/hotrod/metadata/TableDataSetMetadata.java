@@ -12,6 +12,7 @@ import org.hotrod.config.ColumnTag;
 import org.hotrod.config.EnumTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
+import org.hotrod.config.JDBCTag;
 import org.hotrod.config.OptimisticLockingTag;
 import org.hotrod.config.OptimisticLockingTag.OptimisticLockingStrategy;
 import org.hotrod.config.QueryMethodTag;
@@ -88,7 +89,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
   protected TableDataSetMetadata(final TableTag tableTag, final JdbcTable t, final TableTag parentTag,
       final JdbcTable parentJdbcTable, final DatabaseAdapter adapter, final HotRodConfigTag config,
-      final DataSetLayout layout, final SelectMetadataCache selectMetadataCache, final boolean isFromCurrentCatalog,
+      final JDBCTag jdbcTag, final SelectMetadataCache selectMetadataCache, final boolean isFromCurrentCatalog,
       final boolean isFromCurrentSchema) throws UnresolvableDataTypeException, InvalidConfigurationFileException {
     log.fine("init t=" + t.getName());
     this.t = t;
@@ -110,7 +111,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
     ClassPackage fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
         ? this.fragmentConfig.getFragmentPackage()
         : null;
-    this.classPackage = layout.getDAOPrimitivePackage(fragmentPackage);
+    this.classPackage = jdbcTag.getDAOPackage(fragmentPackage);
 
     this.cols = getColumnsMetadata(this.t.getColumns(), tableTag);
     this.pk = getKeyMetadata(this.t.getPk(), tableTag);
@@ -200,7 +201,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
   // Enum Constructor
 
   protected TableDataSetMetadata(final EnumTag enumTag, final JdbcTable t, final DatabaseAdapter adapter,
-      final HotRodConfigTag config, final DataSetLayout layout, final SelectMetadataCache selectMetadataCache,
+      final HotRodConfigTag config, final JDBCTag jdbcTag, final SelectMetadataCache selectMetadataCache,
       final boolean isFromCurrentCatalog, final boolean isFromCurrentSchema)
       throws UnresolvableDataTypeException, InvalidConfigurationFileException {
     this.t = t;
@@ -222,7 +223,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
     ClassPackage fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
         ? this.fragmentConfig.getFragmentPackage()
         : null;
-    this.classPackage = layout.getDAOPrimitivePackage(fragmentPackage);
+    this.classPackage = jdbcTag.getDAOPackage(fragmentPackage);
 
     this.cols = getColumnsMetadata(this.t.getColumns(), enumTag);
     this.pk = null;
@@ -245,7 +246,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
   // View Constructor
 
   protected TableDataSetMetadata(final ViewTag viewTag, final JdbcTable t, final DatabaseAdapter adapter,
-      final HotRodConfigTag config, final DataSetLayout layout, final SelectMetadataCache selectMetadataCache,
+      final HotRodConfigTag config, final JDBCTag jdbcTag, final SelectMetadataCache selectMetadataCache,
       final boolean isFromCurrentCatalog, final boolean isFromCurrentSchema)
       throws UnresolvableDataTypeException, InvalidConfigurationFileException {
 
@@ -268,7 +269,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
     ClassPackage fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
         ? this.fragmentConfig.getFragmentPackage()
         : null;
-    this.classPackage = layout.getDAOPrimitivePackage(fragmentPackage);
+    this.classPackage = jdbcTag.getDAOPackage(fragmentPackage);
 
     this.cols = getColumnsMetadata(this.t.getColumns(), viewTag);
     this.pk = null;
@@ -398,18 +399,17 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
   @SuppressWarnings("unused")
   public boolean gatherSelectsMetadataPhase1(final Metadata metadata, final ColumnsRetriever cr,
-      final DataSetLayout layout) throws InvalidConfigurationFileException {
+      final JDBCTag jdbcTag) throws InvalidConfigurationFileException {
     this.selectsMetadata = new ArrayList<SelectMethodMetadata>();
     boolean needsToRetrieveMetadata = false;
     for (SelectMethodTag selectTag : this.selects) {
       needsToRetrieveMetadata = true;
-      SelectGenerationTag selectGenerationTag = this.config.getGenerators().getSelectedGeneratorTag()
-          .getSelectGeneration();
+      SelectGenerationTag selectGenerationTag = null;
       ColumnsPrefixGenerator columnsPrefixGenerator = new ColumnsPrefixGenerator(this.adapter.getUnescapedSQLCase());
       SelectMethodMetadata sm;
       try {
         sm = new SelectMethodMetadata(metadata, cr, selectTag, this.config, selectGenerationTag, columnsPrefixGenerator,
-            layout, this);
+            jdbcTag, this);
       } catch (InvalidIdentifierException e) {
         String msg = "Invalid method name '" + selectTag.getMethod() + "': " + e.getMessage();
         throw new InvalidConfigurationFileException(selectTag, msg);

@@ -16,9 +16,9 @@ import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.config.AbstractConfigurationTag;
-import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
+import org.hotrod.config.JDBCTag;
 import org.hotrod.config.Patterns;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
@@ -30,17 +30,16 @@ import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.InvalidSQLException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.ColumnsRetriever;
-import org.hotrod.generator.jdbc.DataSetLayout;
 import org.hotrod.identifiers.Id;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata.IdColumnNotFoundException;
-import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VORegistry;
+import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.ColumnsMetadataRetriever;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.hotrod.utils.JDBCTypes;
@@ -159,7 +158,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
   // Behavior
 
-  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+  public void validate(final JDBCTag jdbcTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, final boolean singleVOResult, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 
@@ -363,18 +362,18 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
     // expressions
 
-    this.expressions.validate(daosTag, config, fragmentConfig, singleVOResult, this.idNames);
+    this.expressions.validate(jdbcTag, config, fragmentConfig, singleVOResult, this.idNames);
 
     // associations
 
     for (AssociationTag a : this.associations) {
-      a.validate(daosTag, config, fragmentConfig, false, adapter);
+      a.validate(jdbcTag, config, fragmentConfig, false, adapter);
     }
 
     // collections
 
     for (CollectionTag c : this.collections) {
-      c.validate(daosTag, config, fragmentConfig, false, adapter);
+      c.validate(jdbcTag, config, fragmentConfig, false, adapter);
     }
 
     log.fine("Validation complete.");
@@ -824,9 +823,9 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     return entities;
   }
 
-  public VOMetadata getMetadata(final DataSetLayout layout, final HotRodFragmentConfigTag fragmentConfig,
-      final DaosTag daosTag) throws InvalidConfigurationFileException {
-    return new VOMetadata(this, layout, fragmentConfig, daosTag);
+  public VOMetadata getMetadata(final HotRodFragmentConfigTag fragmentConfig, final JDBCTag jdbcTag)
+      throws InvalidConfigurationFileException {
+    return new VOMetadata(this, fragmentConfig, jdbcTag);
   }
 
   // Rendering

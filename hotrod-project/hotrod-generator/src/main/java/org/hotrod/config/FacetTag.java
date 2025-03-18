@@ -74,7 +74,7 @@ public class FacetTag extends AbstractConfigurationTag {
 
   // Behavior
 
-  public void validate(final HotRodConfigTag config, final DaosTag daosTag,
+  public void validate(final HotRodConfigTag config, final JDBCTag jdbcTag,
       final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 
@@ -88,19 +88,19 @@ public class FacetTag extends AbstractConfigurationTag {
     // daos
 
     for (TableTag t : this.tables) {
-      t.validate(daosTag, config, fragmentConfig, adapter);
+      t.validate(jdbcTag, config, fragmentConfig, adapter);
     }
 
     for (ViewTag v : this.views) {
-      v.validate(daosTag, config, fragmentConfig, adapter);
+      v.validate(jdbcTag, config, fragmentConfig, adapter);
     }
 
     for (EnumTag e : this.enums) {
-      e.validate(daosTag, config, fragmentConfig, adapter);
+      e.validate(jdbcTag, config, fragmentConfig, adapter);
     }
 
     for (ExecutorTag dao : this.daos) {
-      dao.validate(daosTag, config, fragmentConfig, adapter);
+      dao.validate(jdbcTag, config, fragmentConfig, adapter);
     }
 
   }
@@ -122,15 +122,15 @@ public class FacetTag extends AbstractConfigurationTag {
     this.daos.addAll(daos);
   }
 
-  public void includeTable(final JdbcTable t, final DaosTag daosTag, final HotRodConfigTag config,
+  public void includeTable(final JdbcTable t, final JDBCTag jdbcTag, final HotRodConfigTag config,
       final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
-    TableTag tt = new TableTag(t, daosTag, null, config, adapter);
+    TableTag tt = new TableTag(t, jdbcTag, null, config, adapter);
     mergeTable(tt);
   }
 
-  public void includeView(final JdbcTable t, final DaosTag daosTag, final HotRodConfigTag config,
+  public void includeView(final JdbcTable t, final JDBCTag jdbcTag, final HotRodConfigTag config,
       final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
-    ViewTag vt = new ViewTag(t, daosTag, null, config, adapter);
+    ViewTag vt = new ViewTag(t, jdbcTag, null, config, adapter);
     mergeView(vt);
   }
 

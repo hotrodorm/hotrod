@@ -19,7 +19,7 @@ public abstract class AbstractMethodTag<M extends AbstractMethodTag<M>> extends 
     super(tagName);
   }
 
-  protected void validate(final DaosTag daosTag, final HotRodConfigTag config,
+  protected void validate(final JDBCTag jdbcTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig) throws InvalidConfigurationFileException {
 
     // method

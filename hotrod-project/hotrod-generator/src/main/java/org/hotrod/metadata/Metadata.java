@@ -12,7 +12,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.hotrod.config.DaosTag;
 import org.hotrod.config.EnumTag;
 import org.hotrod.config.EnumTag.EnumConstant;
 import org.hotrod.config.ExecutorTag;
@@ -29,7 +28,6 @@ import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.DAONamespace;
 import org.hotrod.generator.DAONamespace.DuplicateDAOClassException;
 import org.hotrod.generator.DAONamespace.DuplicateDAOClassMethodException;
-import org.hotrod.generator.jdbc.DataSetLayout;
 import org.hotrod.generator.SelectMetadataCache;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.VORegistry.EntityVOClass;
@@ -80,8 +78,7 @@ public class Metadata {
 
       // Prepare tables meta data
 
-      DataSetLayout layout = new DataSetLayout(config);
-      DaosTag daosTag = (DaosTag) config.getGenerators().getSelectedGeneratorTag().getDaos();
+      JDBCTag jdbcTag = (JDBCTag) config.getGenerators().getSelectedGeneratorTag();
 
       this.tables = new LinkedHashSet<TableDataSetMetadata>();
       for (JdbcTable t : this.db.getTables()) {
@@ -94,7 +91,7 @@ public class Metadata {
               || t.getSchema().equals(this.dloc.getCatalogSchema().getSchema());
 
           TableDataSetMetadata tm = DataSetMetadataFactory.getMetadata(t, true, autoDiscovery, this.adapter, config,
-              layout, isFromCurrentCatalog, isFromCurrentSchema);
+              jdbcTag, isFromCurrentCatalog, isFromCurrentSchema);
           log.fine("*** tm=" + tm);
 
           this.tables.add(tm);
@@ -102,8 +99,8 @@ public class Metadata {
           ClassPackage fragmentPackage = tm.getFragmentConfig() != null
               && tm.getFragmentConfig().getFragmentPackage() != null ? tm.getFragmentConfig().getFragmentPackage()
                   : null;
-          ClassPackage classPackage = layout.getDAOPackage(fragmentPackage);
-          String voName = daosTag.generateVOName(tm.getId());
+          ClassPackage classPackage = jdbcTag.getDAOPackage(fragmentPackage);
+          String voName = jdbcTag.getModelName(tm.getId());
           EntityVOClass vo = new EntityVOClass(tm, classPackage, voName, tm.getColumns(), tm.getDaoTag());
           this.voRegistry.addVO(vo);
 
@@ -224,15 +221,15 @@ public class Metadata {
           boolean isFromCurrentSchema = v.getSchema() == null
               || v.getSchema().equals(this.dloc.getCatalogSchema().getSchema());
 
-          vmd = DataSetMetadataFactory.getMetadata(v, false, autoDiscovery, this.adapter, config, layout,
+          vmd = DataSetMetadataFactory.getMetadata(v, false, autoDiscovery, this.adapter, config, jdbcTag,
               isFromCurrentCatalog, isFromCurrentSchema);
           this.views.add(vmd);
 
           ClassPackage fragmentPackage = vmd.getFragmentConfig() != null
               && vmd.getFragmentConfig().getFragmentPackage() != null ? vmd.getFragmentConfig().getFragmentPackage()
                   : null;
-          ClassPackage classPackage = layout.getDAOPackage(fragmentPackage);
-          String voName = daosTag.generateVOName(vmd.getId());
+          ClassPackage classPackage = jdbcTag.getDAOPackage(fragmentPackage);
+          String voName = jdbcTag.getModelName(vmd.getId());
           EntityVOClass vo = new EntityVOClass(vmd, classPackage, voName, vmd.getColumns(), vmd.getDaoTag());
           this.voRegistry.addVO(vo);
 
@@ -282,7 +279,7 @@ public class Metadata {
 
       for (TableDataSetMetadata tm : this.tables) {
         try {
-          tm.gatherSelectsMetadataPhase1(this, cr, layout);
+          tm.gatherSelectsMetadataPhase1(this, cr, jdbcTag);
         } catch (InvalidConfigurationFileException e) {
           throw new ControlledException(e.getTag().getSourceLocation(), e.getMessage());
         }
@@ -290,7 +287,7 @@ public class Metadata {
 
       for (TableDataSetMetadata vm : this.views) {
         try {
-          vm.gatherSelectsMetadataPhase1(this, cr, layout);
+          vm.gatherSelectsMetadataPhase1(this, cr, jdbcTag);
         } catch (InvalidConfigurationFileException e) {
           throw new ControlledException(e.getTag().getSourceLocation(), e.getMessage());
         }
@@ -298,7 +295,7 @@ public class Metadata {
 
       for (TableDataSetMetadata em : this.enums) {
         try {
-          em.gatherSelectsMetadataPhase1(this, cr, layout);
+          em.gatherSelectsMetadataPhase1(this, cr, jdbcTag);
         } catch (InvalidConfigurationFileException e) {
           throw new ControlledException(e.getTag().getSourceLocation(), e.getMessage());
         }
@@ -306,7 +303,7 @@ public class Metadata {
 
       for (ExecutorDAOMetadata dm : this.executors) {
         try {
-          dm.gatherSelectsMetadataPhase1(this, cr, layout);
+          dm.gatherSelectsMetadataPhase1(this, cr, jdbcTag);
         } catch (InvalidConfigurationFileException e) {
           throw new ControlledException(e.getTag().getSourceLocation(), e.getMessage());
         }

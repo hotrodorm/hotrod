@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.SUtil;
 
+@Deprecated
 @XmlRootElement(name = "select-generation")
 public class SelectGenerationTag extends AbstractConfigurationTag {
 

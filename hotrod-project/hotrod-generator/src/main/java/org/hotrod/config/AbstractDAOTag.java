@@ -86,7 +86,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag {
 
   // Behavior
 
-  protected void validate(final DaosTag daosTag, final HotRodConfigTag config,
+  protected void validate(final JDBCTag jdbcTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 
@@ -95,7 +95,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag {
     Set<ObjectId> seqNames = new HashSet<ObjectId>();
 
     for (SequenceMethodTag s : this.sequences) {
-      s.validate(daosTag, config, fragmentConfig, adapter);
+      s.validate(jdbcTag, config, fragmentConfig, adapter);
       if (seqNames.contains(s.getSequenceId())) {
         String msg = "Duplicate sequence " + s.getSequenceId().getRenderedSQLName();
         throw new InvalidConfigurationFileException(this, msg);
@@ -112,7 +112,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag {
     // queries
 
     for (QueryMethodTag q : this.queries) {
-      q.validate(daosTag, config, fragmentConfig);
+      q.validate(jdbcTag, config, fragmentConfig);
       if (this.declaredMethodNames.contains(q.getMethod())) {
         throw new InvalidConfigurationFileException(this,
             "Duplicate java-method-name '" + q.getMethod()
@@ -129,7 +129,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag {
     Set<String> methodNames = new HashSet<String>();
 
     for (SelectMethodTag s : this.selects) {
-      s.validate(daosTag, config, fragmentConfig, adapter, isEntity);
+      s.validate(jdbcTag, config, fragmentConfig, adapter, isEntity);
       if (methodNames.contains(s.getMethod())) {
         throw new InvalidConfigurationFileException(s,
             "Duplicate method name '" + s.getMethod() + "' on <" + s.getTagName() + "> tag.");

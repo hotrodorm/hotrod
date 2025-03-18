@@ -62,13 +62,13 @@ public class SequenceMethodTag extends AbstractMethodTag<SequenceMethodTag> {
 
   // Behavior
 
-  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+  public void validate(final JDBCTag jdbcTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 
     log.fine(">>> VALIDATING SEQUENCE.");
 
-    super.validate(daosTag, config, fragmentConfig);
+    super.validate(jdbcTag, config, fragmentConfig);
 
     // name
 

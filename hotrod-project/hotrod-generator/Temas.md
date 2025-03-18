@@ -11,36 +11,28 @@ Con el fin de unificar:
 - Mensajería de info y errores.
 
 Vamos a usar:
-- Layout (para la estructura re/generada)
-- Model, para el objeto al que se le puede agregar comportamiento y propiedades extras.
 
-Otras palabras:
+- **Layout**: (para la estructura re/generada)
+- **Model**: para el objeto al que se le puede agregar comportamiento y propiedades extras.
 
-copy
-mirror
-image
+Otras palabras consideradas:
 
-replica
-reproduccion
-
-archetypo
-original
-
-sketch
-
-blueprint
-outline
-
-synopsis
-
-skeleton
-frame
-layout **
-
-projection
-
-carbon
-clone
+- copy
+- mirror
+- image
+- replica
+- reproduccion
+- archetypo
+- original
+- sketch
+- blueprint
+- outline
+- synopsis
+- skeleton
+- frame
+- projection
+- carbon
+- clone
 
 
 ## 2. Tags de configuración

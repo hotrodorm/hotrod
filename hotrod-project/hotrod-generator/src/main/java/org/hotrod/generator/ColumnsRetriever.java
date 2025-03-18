@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.SelectGenerationTag;
-import org.hotrod.config.SelectGenerationTag.SelectStrategy;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
@@ -39,12 +38,12 @@ public interface ColumnsRetriever extends AutoCloseable {
 
   static ColumnsRetriever getInstance(final HotRodConfigTag config, final DatabaseLocation dloc,
       final DatabaseAdapter adapter, final JdbcDatabase db, final Connection conn) throws SQLException {
-    SelectGenerationTag selectGenerationTag = config.getGenerators().getSelectedGeneratorTag().getSelectGeneration();
-    if (selectGenerationTag.getStrategy() == SelectStrategy.RESULT_SET) {
-      return new ResultSetColumnsRetriever(config, dloc, selectGenerationTag, adapter, db, conn);
-    } else {
-      return new CreateViewColumnsRetriever(config, dloc, selectGenerationTag, adapter, db, conn);
-    }
+    SelectGenerationTag selectGenerationTag = null;
+//    if (selectGenerationTag.getStrategy() == SelectStrategy.RESULT_SET) {
+    return new ResultSetColumnsRetriever(config, dloc, selectGenerationTag, adapter, db, conn);
+//    } else {
+//      return new CreateViewColumnsRetriever(config, dloc, selectGenerationTag, adapter, db, conn);
+//    }
   }
 
 }
