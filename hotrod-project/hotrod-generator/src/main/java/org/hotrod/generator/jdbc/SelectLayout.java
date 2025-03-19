@@ -89,7 +89,7 @@ public class SelectLayout {
 
     String className = this.name + ".java";
 
-    File dir = this.jdbcTag.getModelPackageDir(this.classPackage);
+    File dir = this.jdbcTag.getLayoutPackageDir(this.classPackage);
     File f = new File(dir, className);
 
     try (TextWriter tw = fileGenerator.createWriter(f)) {

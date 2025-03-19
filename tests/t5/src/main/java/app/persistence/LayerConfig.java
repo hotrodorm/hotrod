@@ -1,4 +1,4 @@
-package app.daos.primitives;
+package app.persistence;
 
 import java.util.ArrayList;
 import java.util.List;

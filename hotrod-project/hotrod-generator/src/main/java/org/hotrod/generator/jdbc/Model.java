@@ -47,7 +47,7 @@ public class Model {
         ? this.fragmentConfig.getFragmentPackage()
         : null;
 
-    this.classPackage = this.jdbcTag.getDAOPackage(this.fragmentPackage);
+    this.classPackage = this.jdbcTag.getModelPackage(this.fragmentPackage);
   }
 
   public void setDAO(DAO dao) {
@@ -61,9 +61,9 @@ public class Model {
         ? this.fragmentConfig.getFragmentPackage()
         : null;
 
-    ClassPackage cp = this.jdbcTag.getDAOPackage(fragmentPackage);
+    ClassPackage cp = this.jdbcTag.getModelPackage(fragmentPackage);
 
-    File dir = this.jdbcTag.getDAOPackageDir(fragmentPackage);
+    File dir = this.jdbcTag.getModelPackageDir(fragmentPackage);
     File vo = new File(dir, sourceClassName);
 
     if (!vo.exists()) {

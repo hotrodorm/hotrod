@@ -18,10 +18,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import app.daos.Account;
-import app.daos.primitives.AccountDAO;
-import app.daos.primitives.AccountDAO.AccountBaseline;
-import app.daos.primitives.AccountDAO.AccountTable;
+import app.persistence.dao.AccountDAO;
+import app.persistence.dao.AccountDAO.AccountBaseline;
+import app.persistence.dao.AccountDAO.AccountTable;
+import app.persistence.model.Account;
 
 @Configuration
 @SpringBootApplication
@@ -119,7 +119,7 @@ public class App {
 
   private void testOLDeleteUpdate() throws DynamicExpressionException, SQLException {
     Account b = this.accountDAO.select(112);
-    
+
     Account a = this.accountDAO.select(112);
     System.out.println("--> a=" + a);
     AccountBaseline baseline = this.accountDAO.baseline(a);

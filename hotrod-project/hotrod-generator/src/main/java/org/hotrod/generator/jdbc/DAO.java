@@ -413,7 +413,7 @@ public class DAO {
     w.println("    ", b, " b = new ", b, "();");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String mem = cm.getId().getJavaMemberName();
-      w.println("    b." + mem + " = model." + mem + ";");
+      w.println("    b." + mem + " = model." + cm.getId().getJavaGetter() + "();");
     }
     w.println("    return b;");
     w.println("  };");

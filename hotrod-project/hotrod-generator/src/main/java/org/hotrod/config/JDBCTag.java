@@ -39,7 +39,7 @@ public class JDBCTag extends AbstractGeneratorTag {
   public static final String GENERATOR_NAME = "jdbc";
 
   private static final String DEFAULT_BASE_DIR = "src/main/java";
-  private static final String DEFAULT_MAIN_PACKAGE = "app.persistence";
+  private static final String DEFAULT_LAYER_PACKAGE = "app.persistence";
 
   private static final Pattern QUALIFIER_PATTERN = Pattern.compile("^[a-zA-Z0-9_]+$");
 
@@ -50,7 +50,7 @@ public class JDBCTag extends AbstractGeneratorTag {
   private String qualifier = null;
 
   private File baseDir;
-  private ClassPackage mainPackage;
+  private ClassPackage layerPackage;
 
   private DiscoverTag discover = null;
   private JDBCDAOTag dao = null;
@@ -172,20 +172,20 @@ public class JDBCTag extends AbstractGeneratorTag {
           + "> with value '" + this.sBaseDir + "' points to a file entry that is not a directory.");
     }
 
-    // package
+    // layer package
 
     if (this.sPackage == null) {
       try {
-        this.mainPackage = new ClassPackage(DEFAULT_MAIN_PACKAGE);
+        this.layerPackage = new ClassPackage(DEFAULT_LAYER_PACKAGE);
       } catch (InvalidPackageException e) {
         throw new InvalidConfigurationFileException(null,
-            "The default package '" + DEFAULT_MAIN_PACKAGE + "' is invalid");
+            "The default layer package '" + DEFAULT_LAYER_PACKAGE + "' is invalid");
       }
     } else {
       try {
-        this.mainPackage = new ClassPackage(this.sPackage);
+        this.layerPackage = new ClassPackage(this.sPackage);
       } catch (InvalidPackageException e) {
-        throw new InvalidConfigurationFileException(this, "Invalid package '" + this.sPackage
+        throw new InvalidConfigurationFileException(this, "Invalid layer package '" + this.sPackage
             + "' on attribute 'package' of the tag <" + super.getTagName() + ">: " + e.getMessage());
       }
     }
@@ -214,21 +214,21 @@ public class JDBCTag extends AbstractGeneratorTag {
     if (this.dao == null) {
       this.dao = new JDBCDAOTag();
     }
-    this.dao.validate(currentDir, this.baseDir, this.mainPackage);
+    this.dao.validate(currentDir, this.baseDir, this.layerPackage);
 
     // layout
 
     if (this.layout == null) {
       this.layout = new JDBCLayoutTag();
     }
-    this.layout.validate(currentDir, this.baseDir, this.mainPackage);
+    this.layout.validate(currentDir, this.baseDir, this.layerPackage);
 
     // model
 
     if (this.model == null) {
       this.model = new JDBCModelTag();
     }
-    this.model.validate(currentDir, this.baseDir, this.mainPackage);
+    this.model.validate(currentDir, this.baseDir, this.layerPackage);
 
     // properties
 
@@ -254,8 +254,15 @@ public class JDBCTag extends AbstractGeneratorTag {
     return baseDir;
   }
 
-  public ClassPackage getMainPackage() {
-    return mainPackage;
+  public ClassPackage getLayerPackage() {
+    return layerPackage;
+  }
+
+  public File getLayerPackageDir() {
+    ClassPackage p = this.getLayerPackage();
+    File dir = p.getPackageDir(this.baseDir);
+    dir.mkdirs();
+    return dir;
   }
 
   public DiscoverTag getDiscover() {
@@ -297,57 +304,57 @@ public class JDBCTag extends AbstractGeneratorTag {
   // DAO: Names and Packages
 
   public String getDAOName(ObjectId id) {
-    return null;
+    return this.dao.getName(id);
   }
 
   public ClassPackage getDAOPackage(ClassPackage fragmentPackage) {
-    return null;
-  }
-
-  public ClassPackage getDAOPackage() {
-    return null;
+    return this.dao.getPackage(fragmentPackage);
   }
 
   public File getDAOPackageDir(ClassPackage fragmentPackage) {
-    return null;
+    return this.dao.getPackageDir(fragmentPackage);
   }
 
   // Layout: Names and Packages
 
   public String getLayoutName(ObjectId id) {
-    return null;
+    return this.layout.getName(id);
   }
 
   public ClassPackage getLayoutPackage(ClassPackage fragmentPackage) {
-    return null;
+    return this.layout.getPackage(fragmentPackage);
   }
 
   public File getLayoutPackageDir(ClassPackage fragmentPackage) {
-    return null;
+    return this.layout.getPackageDir(fragmentPackage);
   }
 
   // Model: Names and Packages
 
   public String getModelName(ObjectId id) {
-    return null;
+    return this.model.getName(id);
+  }
+
+  public ClassPackage getModelPackage(ClassPackage fragmentPackage) {
+    return this.model.getPackage(fragmentPackage);
   }
 
   public File getModelPackageDir(ClassPackage fragmentPackage) {
-    return null;
+    return this.model.getPackageDir(fragmentPackage);
   }
 
   // Nitro
 
   public String getNitroDAOName(String baseName) {
-    return null;
+    return baseName;
   }
 
   public String getNitroLayoutName(String baseName) {
-    return null;
+    return this.layout.getNitroName(baseName);
   }
 
   public String getNitroModelName(String baseName) {
-    return null;
+    return this.model.getNitroName(baseName);
   }
 
 }

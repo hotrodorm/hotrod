@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidPackageException;
+import org.hotrod.identifiers.ObjectId;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.SUtil;
 
@@ -119,16 +120,21 @@ public class JDBCModelTag extends AbstractConfigurationTag {
     // sub-package
 
     if (this.sSubPackage == null) {
-      ClassPackage sp = null;
-      try {
-        sp = new ClassPackage(DEFAULT_SUBPACKAGE);
-      } catch (InvalidPackageException e) {
-        throw new InvalidConfigurationFileException(this,
-            "Invalid default sub-package '" + DEFAULT_SUBPACKAGE
-                + "'. Please specify a sub-package on the attribute 'sub-package' of the tag <" + super.getTagName()
-                + ">: " + e.getMessage());
+      String ds = getDefaultSubPackage();
+      if (ds == null) {
+        this.itemPackage = mainPackage;
+      } else {
+        ClassPackage sp = null;
+        try {
+          sp = new ClassPackage(ds);
+        } catch (InvalidPackageException e) {
+          throw new InvalidConfigurationFileException(this,
+              "Invalid default sub-package '" + ds
+                  + "'. Please specify a sub-package on the attribute 'sub-package' of the tag <" + super.getTagName()
+                  + ">: " + e.getMessage());
+        }
+        this.itemPackage = mainPackage.append(sp);
       }
-      this.itemPackage = mainPackage.append(sp);
     } else {
       try {
         this.itemPackage = new ClassPackage(this.sSubPackage);
@@ -140,10 +146,33 @@ public class JDBCModelTag extends AbstractConfigurationTag {
 
   }
 
+  private String getDefaultSubPackage() {
+    return DEFAULT_SUBPACKAGE;
+  }
+
   // Getters
 
-  public String generateName(final String baseName) {
+  public String getName(final ObjectId id) {
+    return this.prefix + id.getJavaClassName() + this.suffix;
+  }
+
+  public String getNitroName(final String baseName) {
     return this.prefix + baseName + this.suffix;
+  }
+
+  public ClassPackage getPackage(final ClassPackage fragmentPackage) {
+    if (fragmentPackage != null) {
+      return this.itemPackage.append(fragmentPackage);
+    } else {
+      return this.itemPackage;
+    }
+  }
+
+  public File getPackageDir(final ClassPackage fragmentPackage) {
+    ClassPackage p = this.getPackage(fragmentPackage);
+    File dir = p.getPackageDir(this.baseDir);
+    dir.mkdirs();
+    return dir;
   }
 
   // Simple Caption

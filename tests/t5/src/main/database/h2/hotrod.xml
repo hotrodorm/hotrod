@@ -1,8 +1,16 @@
 <hotrod>
 
   <generators>
+  <!-- 
+    <jdbc base-dir="src/main/java" package="app.daos">
+   -->
     <jdbc>
-      <daos package="app.daos" />
+    <!--    <daos package="app.daos" />  -->
+    <!-- 
+       <dao prefix="" suffix="" base-dir="" sub-package="" />
+       <layout prefix="" suffix="" base-dir="" sub-package="" />
+       <model prefix="" suffix="" base-dir="" sub-package="" />
+        -->
     </jdbc>
   </generators>
 
@@ -62,12 +70,14 @@
     </query>
  -->
  
+<!-- ###  
     <select method="findBigAccounts">
 select *
 from account
 where balance >= 300
     </select> 
- 
+  -->
+  
   </table>
 
 <!-- 
@@ -80,8 +90,7 @@ where balance >= 300
   </table>
  -->
  
-    <!--
-  -->
+    <!-- ###
    <dao name="Reporting">
 
     <query method="activateBigAccounts">
@@ -104,5 +113,6 @@ where balance >= 300
     </select> 
        
   </dao>
+  -->
 
 </hotrod>

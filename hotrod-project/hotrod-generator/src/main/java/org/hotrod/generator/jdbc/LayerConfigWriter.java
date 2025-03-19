@@ -41,13 +41,13 @@ public class LayerConfigWriter {
   public void generate(final FileGenerator fileGenerator, final JDBCGenerator mg)
       throws UncontrolledException, ControlledException {
 
-    File dir = this.jdbcTag.getDAOPackageDir(null);
+    File dir = this.jdbcTag.getLayerPackageDir();
     File f = new File(dir, CLASS_NAME + ".java");
 //    log.info("f=" + f);
 
     try (TextWriter tw = fileGenerator.createWriter(f)) {
 
-      this.w = new ClassWriter(this.jdbcTag.getDAOPackage());
+      this.w = new ClassWriter(this.jdbcTag.getLayerPackage());
 
       this.writeHeader();
       this.writeRules();
