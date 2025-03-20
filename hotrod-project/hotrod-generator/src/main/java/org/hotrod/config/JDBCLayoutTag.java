@@ -120,13 +120,10 @@ public class JDBCLayoutTag extends AbstractConfigurationTag {
     // sub-package
 
     if (this.sSubPackage == null) {
-      log.info("Layout 1");
       String ds = getDefaultSubPackage();
       if (ds == null) {
-        log.info("Layout 2");
         this.itemPackage = mainPackage;
       } else {
-        log.info("Layout 3");
         ClassPackage sp = null;
         try {
           sp = new ClassPackage(ds);
@@ -139,7 +136,6 @@ public class JDBCLayoutTag extends AbstractConfigurationTag {
         this.itemPackage = mainPackage.append(sp);
       }
     } else {
-      log.info("Layout 4");
       try {
         this.itemPackage = new ClassPackage(this.sSubPackage);
       } catch (InvalidPackageException e) {

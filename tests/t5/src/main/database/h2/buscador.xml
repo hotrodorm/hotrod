@@ -1,4 +1,4 @@
-<hotrod-fragment package="test2">
+<hotrod-fragment package="buscador">
 
   <dao name="Buscador">
  

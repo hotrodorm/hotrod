@@ -123,12 +123,10 @@ public class JDBCDAOTag extends AbstractConfigurationTag {
       String ds = getDefaultSubPackage();
       if (ds == null) {
         this.itemPackage = mainPackage;
-        log.info("DAO 1 ds=" + ds );
       } else {
         ClassPackage sp = null;
         try {
           sp = new ClassPackage(ds);
-          log.info("DAO 2 ds=" + ds + " -- sp=" + sp);
         } catch (InvalidPackageException e) {
           throw new InvalidConfigurationFileException(this,
               "Invalid default sub-package '" + ds
@@ -138,7 +136,6 @@ public class JDBCDAOTag extends AbstractConfigurationTag {
         this.itemPackage = mainPackage.append(sp);
       }
     } else {
-      log.info("DAO 3");
       try {
         this.itemPackage = new ClassPackage(this.sSubPackage);
       } catch (InvalidPackageException e) {

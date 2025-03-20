@@ -25,6 +25,8 @@
   <converter name="boolean_stored_as_int" java-type="java.lang.Boolean" java-raw-type="java.lang.Integer"
     class="app.IntegerBooleanConverter" />
 
+  <table name="product" />
+
 <!-- 
   <table name="chars" />
   <table name="numbers" />
@@ -80,11 +82,10 @@ where balance >= 300
   
   </table>
 
-<!-- 
   <fragment file="./reporting.xml" />
-
+  <fragment file="./buscador.xml" />
+<!--
   <fragment file="./test2.xml" />
- 
   <table name="branch">
     <column name="is_vip" converter="boolean_stored_as_int" />
   </table>
@@ -92,7 +93,7 @@ where balance >= 300
  
     <!-- ###
   -->
-   <dao name="Reporting">
+   <dao name="OperationDAO">
 
     <query method="activateBigAccounts">
       <parameter name="minBalance" java-type="java.lang.Long" />

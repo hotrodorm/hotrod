@@ -390,7 +390,7 @@ public class DAO {
     w.println("  // BASELINE");
 
     w.println();
-    w.println("  public class AccountBaseline {");
+    w.println("  public class ", b, " {");
     w.println();
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String javaType = resolveType(cm);
@@ -1715,7 +1715,6 @@ public class DAO {
     Separator sep = new Separator(", ");
     for (SelectParameterMetadata sp : s.getParameters()) {
       ParameterTag p = sp.getParameter();
-      log.info(">> parameter '" + p.getName() + "'");
       ExternalClass pc = ExternalClass.of(p.getJavaType());
       w.print(sep.render(), pc, " " + p.getName());
     }
