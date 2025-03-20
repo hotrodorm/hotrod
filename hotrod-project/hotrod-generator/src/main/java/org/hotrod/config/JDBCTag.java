@@ -80,8 +80,9 @@ public class JDBCTag extends AbstractGeneratorTag {
   // No Config
 
   public static JDBCTag getNoConfigTag() {
+    log.info("no-config");
     JDBCTag t = new JDBCTag();
-    t.baseDir = new File("src/main/java");
+    t.baseDir = new File(DEFAULT_BASE_DIR);
 //    t.mainPackage = new ClassPackage("app.persistence");
     return t;
   }
@@ -89,7 +90,7 @@ public class JDBCTag extends AbstractGeneratorTag {
   // JAXB Setters
 
   @XmlAttribute(name = "base-dir")
-  public void setBaseDir(final String sBaseDir) {
+  public void setSBaseDir(final String sBaseDir) {
     this.sBaseDir = sBaseDir;
   }
 
@@ -99,12 +100,12 @@ public class JDBCTag extends AbstractGeneratorTag {
   }
 
   @XmlAttribute(name = "qualifier")
-  public void setQualifier(final String qualifier) {
+  public void setSQualifier(final String qualifier) {
     this.qualifier = qualifier;
   }
 
   @XmlElement(name = "discover")
-  public void setDiscover(final DiscoverTag discover) {
+  public void setSDiscover(final DiscoverTag discover) {
     this.discover = discover;
   }
 
@@ -178,7 +179,7 @@ public class JDBCTag extends AbstractGeneratorTag {
       try {
         this.layerPackage = new ClassPackage(DEFAULT_LAYER_PACKAGE);
       } catch (InvalidPackageException e) {
-        throw new InvalidConfigurationFileException(null,
+        throw new InvalidConfigurationFileException(this,
             "The default layer package '" + DEFAULT_LAYER_PACKAGE + "' is invalid");
       }
     } else {
@@ -194,11 +195,11 @@ public class JDBCTag extends AbstractGeneratorTag {
 
     if (this.qualifier != null) {
       if (SUtil.isEmpty(this.qualifier)) {
-        throw new InvalidConfigurationFileException(null, "When specified, the qualifier cannot be empty.");
+        throw new InvalidConfigurationFileException(this, "When specified, the qualifier cannot be empty.");
       }
       Matcher m = QUALIFIER_PATTERN.matcher(this.qualifier);
       if (!m.matches()) {
-        throw new InvalidConfigurationFileException(null,
+        throw new InvalidConfigurationFileException(this,
             "When specified, the qualifier must be an alphanumeric value (underscores are permitted).");
       }
     }

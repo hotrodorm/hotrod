@@ -173,9 +173,9 @@ public class ConfigurationLoader {
       throw assembleControlledException(f, validationHandler, e);
 
     } catch (InvalidConfigurationFileException e) {
-      log.log(Level.INFO, "InvalidConfigurationFileException", e);
+//      log.log(Level.INFO, "InvalidConfigurationFileException", e);
       SourceLocation loc = e.getTag().getSourceLocation();
-      log.fine("loc=" + loc);
+//      log.fine("loc=" + loc);
       if (loc == null) {
         throw new ControlledException("Invalid configuration file '" + f.getPath() + "': " + e.getMessage());
       } else {

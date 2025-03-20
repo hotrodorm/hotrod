@@ -49,17 +49,17 @@ public class JDBCDAOTag extends AbstractConfigurationTag {
   // JAXB Setters
 
   @XmlAttribute(name = "prefix")
-  public void setPrefix(final String prefix) {
+  public void setSPrefix(final String prefix) {
     this.prefix = prefix;
   }
 
   @XmlAttribute(name = "suffix")
-  public void setSuffix(final String suffix) {
+  public void setSSuffix(final String suffix) {
     this.suffix = suffix;
   }
 
   @XmlAttribute(name = "base-dir")
-  public void setBaseDir(final String sBaseDir) {
+  public void setSBaseDir(final String sBaseDir) {
     this.sBaseDir = sBaseDir;
   }
 

@@ -13,9 +13,6 @@ public class ClassPackage implements Serializable {
 
   private static final Logger log = Logger.getLogger(ClassPackage.class.getName());
 
-  private static final String CHUNK_PATTERN = "[a-zA-Z][a-zA-Z$_0-9]*+";
-  private static final String PACKAGE_PATTERN = CHUNK_PATTERN + "(\\." + CHUNK_PATTERN + ")*";
-
   private String pkg;
   private String[] names;
 
@@ -33,19 +30,54 @@ public class ClassPackage implements Serializable {
     }
 
     this.pkg = pkg;
+
+// package Identifier {. Identifier} ;
+//    
+//  Identifier:
+//    IdentifierChars but not a Keyword or BooleanLiteral or NullLiteral
+//
+//  IdentifierChars:
+//    JavaLetter {JavaLetterOrDigit}
+//
+//  JavaLetter:
+//    any Unicode character that is a "Java letter": Character.isJavaIdentifierStart(int) returns true
+//
+//  JavaLetterOrDigit:
+//    any Unicode character that is a "Java letter-or-digit": Character.isJavaIdentifierPart(int) returns true.    
+
     this.names = pkg.split("\\.");
 
-    if (!pkg.matches(PACKAGE_PATTERN)) {
-      throw new InvalidPackageException(
-          "Package '" + this.pkg + "' is not valid. " + "Must contain alphanumeric or underscore characters only.");
-    }
-
     for (String name : this.names) {
-      if (!name.matches(CHUNK_PATTERN)) {
-        throw new InvalidPackageException("Package section '" + name + "' of the package '" + this.pkg
-            + "' is not valid. " + "Must contain alphanumeric or underscore characters only.");
+      if (!this.isIdentifier(name)) {
+        throw new InvalidPackageException("Invalid identifier '" + name + "' in the java package '" + this.pkg
+            + "'. A java package must be a sequence of identifiers separated by periods; "
+            + "each identifier starts with a java letter and continues with java letters or digits. "
+            + "See https://docs.oracle.com/javase/specs/jls/se16/html/jls-7.html#jls-7.4 for details.");
       }
     }
+  }
+
+  private boolean isIdentifier(String name) {
+//    log.info("name=" + name);
+    if (name == null)
+      return false;
+    if (name.isEmpty())
+      return false;
+    for (int i = 0; i < name.length(); i++) {
+      int c = name.charAt(i);
+//      log.info("* i = " + i + " - c: " + c);
+      if (i == 0) {
+        if (!Character.isJavaIdentifierStart(c)) {
+          return false;
+        }
+      } else {
+//        log.info("Character.isJavaIdentifierPart(" + ((char) c) + ")=" + Character.isJavaIdentifierPart(c));
+        if (!Character.isJavaIdentifierPart(c)) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   public File getPackageDir(final File baseDir) {
