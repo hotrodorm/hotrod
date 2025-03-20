@@ -48,8 +48,9 @@ public class StructuredColumnsMetadata implements Serializable {
     this.vos = vos;
   }
 
-  public void registerVOs(final ClassPackage classPackage, final VORegistry voRegistry) throws VOAlreadyExistsException,
-      StructuredVOAlreadyExistsException, DuplicatePropertyNameException, InvalidConfigurationFileException {
+  public void registerVOs(final ClassPackage fragmentPackage, final ClassPackage classPackage,
+      final VORegistry voRegistry) throws VOAlreadyExistsException, StructuredVOAlreadyExistsException,
+      DuplicatePropertyNameException, InvalidConfigurationFileException {
 
     List<VOProperty> properties = new ArrayList<VOProperty>();
     log.fine("this.vos.size()=" + this.vos.size());
@@ -74,8 +75,8 @@ public class StructuredColumnsMetadata implements Serializable {
 
       List<VOMember> collections = new ArrayList<VOMember>();
 
-      this.soloVOClass = new SelectVOClass(classPackage, this.vo, null, null, properties, associations, collections,
-          this.tag);
+      this.soloVOClass = new SelectVOClass(fragmentPackage, classPackage, this.vo, null, null, properties, associations,
+          collections, this.tag);
       voRegistry.addVO(this.soloVOClass);
 
     } else { // connected VO
@@ -85,7 +86,7 @@ public class StructuredColumnsMetadata implements Serializable {
     // Register sub tree
 
     for (VOMetadata vo : this.vos) {
-      vo.registerSubTreeVOs(classPackage, voRegistry);
+      vo.registerSubTreeVOs(fragmentPackage, classPackage, voRegistry);
     }
 
   }

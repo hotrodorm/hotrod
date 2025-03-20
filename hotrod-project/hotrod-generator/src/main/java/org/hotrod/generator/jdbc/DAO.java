@@ -57,7 +57,7 @@ import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.metadata.KeyMetadata;
 import org.hotrod.metadata.OptimisticLockingMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
-import org.hotrod.metadata.SelectMethodMetadata.SelectMethodReturnType;
+import org.hotrod.metadata.SelectMethodReturnType;
 import org.hotrod.metadata.SelectParameterMetadata;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
@@ -121,9 +121,9 @@ public class DAO {
 
   // Constructors
 
-  public DAO(final AbstractDAOTag tag, final DataSetMetadata metadata, 
-      final JDBCGenerator generator, final DAOType type, final JDBCTag myBatisTag, final DatabaseAdapter adapter,
-      final Layout entity, final Model model) {
+  public DAO(final AbstractDAOTag tag, final DataSetMetadata metadata, final JDBCGenerator generator,
+      final DAOType type, final JDBCTag myBatisTag, final DatabaseAdapter adapter, final Layout entity,
+      final Model model) {
     super();
     this.tag = tag;
     this.metadata = metadata;

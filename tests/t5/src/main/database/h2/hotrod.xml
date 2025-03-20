@@ -71,12 +71,12 @@
  -->
  
 <!-- ###  
+  -->
     <select method="findBigAccounts">
 select *
 from account
 where balance >= 300
     </select> 
-  -->
   
   </table>
 
@@ -91,6 +91,7 @@ where balance >= 300
  -->
  
     <!-- ###
+  -->
    <dao name="Reporting">
 
     <query method="activateBigAccounts">
@@ -113,6 +114,5 @@ where balance >= 300
     </select> 
        
   </dao>
-  -->
 
 </hotrod>

@@ -29,7 +29,7 @@ import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.metadata.ExecutorDAOMetadata;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.metadata.SelectMethodMetadata;
-import org.hotrod.metadata.SelectMethodMetadata.SelectMethodReturnType;
+import org.hotrod.metadata.SelectMethodReturnType;
 import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VORegistry;

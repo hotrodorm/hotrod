@@ -50,7 +50,7 @@ public class VORegistry {
   // From <select> tags
   public void addVO(final SelectVOClass structuredVOClass)
       throws VOAlreadyExistsException, StructuredVOAlreadyExistsException {
-    ClassPackage classPackage = structuredVOClass.getClassPackage();
+    ClassPackage classPackage = structuredVOClass.getFragmentPackage();
     FragmentRegistry f = this.fragmentsByPackage.get(classPackage);
     if (f == null) {
       f = new FragmentRegistry(classPackage);
@@ -125,11 +125,6 @@ public class VORegistry {
     }
 
     public void addVO(final SelectVOClass voClass) throws VOAlreadyExistsException, StructuredVOAlreadyExistsException {
-      log.fine(
-          "[graph] fragment=" + this.classPackage.getPackage() + " voClass=" + voClass.getClassPackage().getPackage()
-              + " / " + voClass.getName() + " " + this.vosByName.containsKey(voClass.getName()) + "/"
-              + this.structuredVOsByName.containsKey(voClass.getName()));
-
       {
         EntityVOClass other = this.vosByName.get(voClass.getName());
         if (other != null) {
@@ -297,6 +292,7 @@ public class VORegistry {
 
     // Properties
 
+    private ClassPackage fragmentPackage;
     private ClassPackage classPackage;
     private String name;
     private EntityVOClass extendsEntityVO;
@@ -308,9 +304,10 @@ public class VORegistry {
 
     // Constructor
 
-    public SelectVOClass(final ClassPackage classPackage, final String name, final EntityVOClass extendsEntityVO,
-        final String implementClasses, final List<VOProperty> properties, final List<VOMember> associations,
-        final List<VOMember> collections, final AbstractConfigurationTag tag) throws DuplicatePropertyNameException {
+    public SelectVOClass(final ClassPackage fragmentPackage, final ClassPackage classPackage, final String name,
+        final EntityVOClass extendsEntityVO, final String implementClasses, final List<VOProperty> properties,
+        final List<VOMember> associations, final List<VOMember> collections, final AbstractConfigurationTag tag)
+        throws DuplicatePropertyNameException {
 
       this.tag = tag;
       if (this.tag == null) {
@@ -319,6 +316,7 @@ public class VORegistry {
 
       VOPropertiesRegistry reg = new VOPropertiesRegistry(name);
 
+      this.fragmentPackage = fragmentPackage;
       this.classPackage = classPackage;
       this.name = name;
       this.extendsEntityVO = extendsEntityVO;
@@ -351,7 +349,7 @@ public class VORegistry {
     public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((classPackage == null) ? 0 : classPackage.hashCode());
+      result = prime * result + ((fragmentPackage == null) ? 0 : fragmentPackage.hashCode());
       result = prime * result + ((columnsByName == null) ? 0 : columnsByName.hashCode());
       result = prime * result + ((extendsEntityVO == null) ? 0 : extendsEntityVO.hashCode());
       result = prime * result + ((name == null) ? 0 : name.hashCode());
@@ -369,7 +367,7 @@ public class VORegistry {
       } catch (ClassCastException e) {
         return false;
       }
-      if (!this.classPackage.equals(other.classPackage)) {
+      if (!this.fragmentPackage.equals(other.fragmentPackage)) {
         return false;
       }
       if (!this.name.equals(other.name)) {
@@ -416,6 +414,10 @@ public class VORegistry {
 
     // Getters
 
+    public ClassPackage getFragmentPackage() {
+      return fragmentPackage;
+    }
+
     public ClassPackage getClassPackage() {
       return classPackage;
     }
@@ -446,9 +448,9 @@ public class VORegistry {
 
     @Override
     public String toString() {
-      return "SelectVOClass [classPackage=" + classPackage + ", name=" + name + ", extendsEntityVO=" + extendsEntityVO
-          + ", columnsByName=" + columnsByName + ", associations=" + associations + ", collections=" + collections
-          + ", tag=" + tag + ", implementClasses=" + implementClasses + "]";
+      return "SelectVOClass [fragmentPackage=" + fragmentPackage + ", name=" + name + ", extendsEntityVO="
+          + extendsEntityVO + ", columnsByName=" + columnsByName + ", associations=" + associations + ", collections="
+          + collections + ", tag=" + tag + ", implementClasses=" + implementClasses + "]";
     }
 
   }
@@ -568,9 +570,9 @@ public class VORegistry {
       return this.thisOne != null ? this.thisOne.getName() : this.thisOneSt.getName();
     }
 
-    public ClassPackage getThisPackage() {
-      return this.thisOne != null ? this.thisOne.getClassPackage() : this.thisOneSt.getClassPackage();
-    }
+//    public ClassPackage getThisPackage() {
+//      return this.thisOne != null ? this.thisOne.getClassPackage() : this.thisOneSt.getClassPackage();
+//    }
 
   }
 
@@ -608,9 +610,9 @@ public class VORegistry {
       return this.thisOne != null ? this.thisOne.getName() : this.thisOneSt.getName();
     }
 
-    public ClassPackage getThisPackage() {
-      return this.thisOne != null ? this.thisOne.getClassPackage() : this.thisOneSt.getClassPackage();
-    }
+//    public ClassPackage getThisPackage() {
+//      return this.thisOne != null ? this.thisOne.getClassPackage() : this.thisOneSt.getClassPackage();
+//    }
 
   }
 

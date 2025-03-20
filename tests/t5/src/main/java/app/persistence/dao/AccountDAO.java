@@ -589,6 +589,26 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   }
 
+  // NITRO SELECT: findBigAccounts
+
+  private DynamicSelectQuery select0;
+
+  private void initializeSelect0() {
+    this.select0 = assembler
+      .literal("\nselect *\nfrom account\nwhere balance >= 300\n    ")
+      .endSelectQuery();
+  }
+
+  public List<Account> findBigAccounts() throws DynamicExpressionException, SQLException {
+    ParameterContext context = this.assembler.newParameterContext();
+    PreparedSelectQuery<Account> preparedQuery = this.select0.prepare(context, Account.class);
+    logQuery(preparedQuery);
+    try (Connection conn = this.dataSource.getConnection()) {
+      List<Account> rows = preparedQuery.execute(conn, this.rowReader);
+      return rows;
+    }
+  }
+
   @PostConstruct
   public void initializeContext() {
     this.context = new LiveSQLContext(this.liveSQLDialect, this.dataSource, new TypeSolver(null, this.liveSQLDialect));
@@ -601,6 +621,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     this.initializeUpdatebyexample();
     this.initializeDeletebypk();
     this.initializeDeletebyexample();
+    this.initializeSelect0();
   }
 
   private void logQuery(PreparedQuery preparedQuery) {

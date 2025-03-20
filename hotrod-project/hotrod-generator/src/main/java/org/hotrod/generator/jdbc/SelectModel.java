@@ -22,7 +22,9 @@ public class SelectModel {
 
   private SelectVOClass soloVO;
   private String className;
+
   private ClassPackage classPackage;
+  private File dir;
 
   private SelectLayout abstractVO;
 
@@ -31,7 +33,10 @@ public class SelectModel {
     this.jdbcTag = jdbcTag;
     this.soloVO = soloVO;
     this.className = soloVO.getName();
-    this.classPackage = soloVO.getClassPackage();
+
+    this.classPackage = this.jdbcTag.getModelPackage(soloVO.getFragmentPackage());
+    this.dir = this.jdbcTag.getModelPackageDir(soloVO.getFragmentPackage());
+
     this.abstractVO = abstractVO;
   }
 
@@ -46,9 +51,7 @@ public class SelectModel {
     log.fine("GENERATE VO...");
     String sourceClassName = this.className + ".java";
 
-    File dir = this.jdbcTag.getModelPackageDir(this.classPackage);
-
-    File vo = new File(dir, sourceClassName);
+    File vo = new File(this.dir, sourceClassName);
     log.fine("vo=" + vo);
     if (!vo.exists()) {
 

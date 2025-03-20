@@ -134,9 +134,9 @@ public class VOMetadata implements Serializable {
     return entityVOSuperClass;
   }
 
-  public void registerSubTreeVOs(final ClassPackage classPackage, final VORegistry voRegistry)
-      throws VOAlreadyExistsException, StructuredVOAlreadyExistsException, DuplicatePropertyNameException,
-      InvalidConfigurationFileException {
+  public void registerSubTreeVOs(final ClassPackage fragmentPackage, final ClassPackage classPackage,
+      final VORegistry voRegistry) throws VOAlreadyExistsException, StructuredVOAlreadyExistsException,
+      DuplicatePropertyNameException, InvalidConfigurationFileException {
 
     if (this.entityVOSuperClass != null) { // new VO (extends an entity VO)
 
@@ -182,8 +182,8 @@ public class VOMetadata implements Serializable {
         }
       }
 
-      SelectVOClass voClass = new SelectVOClass(classPackage, this.name, this.entityVOSuperClass, null, properties,
-          associationMembers, collectionMembers, this.tag);
+      SelectVOClass voClass = new SelectVOClass(fragmentPackage, classPackage, this.name, this.entityVOSuperClass, null,
+          properties, associationMembers, collectionMembers, this.tag);
       voRegistry.addVO(voClass);
 
     }
@@ -191,10 +191,10 @@ public class VOMetadata implements Serializable {
     // Register sub tree
 
     for (VOMetadata vo : this.associations) {
-      vo.registerSubTreeVOs(classPackage, voRegistry);
+      vo.registerSubTreeVOs(fragmentPackage, classPackage, voRegistry);
     }
     for (VOMetadata vo : this.collections) {
-      vo.registerSubTreeVOs(classPackage, voRegistry);
+      vo.registerSubTreeVOs(fragmentPackage, classPackage, voRegistry);
     }
 
   }

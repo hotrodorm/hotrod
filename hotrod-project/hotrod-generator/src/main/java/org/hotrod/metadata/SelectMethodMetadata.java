@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.EnhancedSQLPart;
 import org.hotrod.config.EnhancedSQLPart.SQLFormatter;
@@ -79,7 +78,9 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   private ObjectId id;
 
-  private ClassPackage classPackage;
+  private ClassPackage fragmentPackage;
+  private ClassPackage layoutPackage;
+  private ClassPackage modelPackage;
 
   private SelectMethodReturnType selectMethodReturnType;
 
@@ -108,10 +109,11 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
     this.nonStructuredColumns = null;
     this.structuredColumns = null;
 
-    ClassPackage fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
+    this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
         ? this.fragmentConfig.getFragmentPackage()
         : null;
-    this.classPackage = jdbcTag.getDAOPackage(fragmentPackage);
+    this.layoutPackage = this.jdbcTag.getLayoutPackage(this.fragmentPackage);
+    this.modelPackage = this.jdbcTag.getModelPackage(this.fragmentPackage);
 
     this.selectMethodReturnType = null;
 
@@ -202,8 +204,8 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
         SelectVOClass vo = null;
         try {
-          vo = new SelectVOClass(this.classPackage, this.tag.getVOClassName(), null, null, properties, associations,
-              collections, this.tag);
+          vo = new SelectVOClass(this.fragmentPackage, this.modelPackage, this.tag.getVOClassName(), null, null,
+              properties, associations, collections, this.tag);
           log.fine("--> Adding VO: " + vo);
           voRegistry.addVO(vo);
         } catch (VOAlreadyExistsException e) {
@@ -230,7 +232,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
         log.fine("Graph columns - Phase 2");
         this.tag.getStructuredColumns().gatherMetadataPhase2();
         this.structuredColumns = this.tag.getStructuredColumns().getMetadata();
-        this.structuredColumns.registerVOs(this.classPackage, voRegistry);
+        this.structuredColumns.registerVOs(this.fragmentPackage, this.modelPackage, voRegistry);
 
       } catch (InvalidSQLException e) {
         String msg = "Could not create temporary SQL view to retrieve metadata.\n" + "[ " + e.getMessage() + " ]\n"
@@ -244,12 +246,12 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
         throw new InvalidConfigurationFileException(this.tag, msg);
       } catch (VOAlreadyExistsException e) {
         throw new InvalidConfigurationFileException(e.getTag(),
-            "Duplicate VO name '" + e.getThisName() + "' in package '" + e.getThisPackage().getPackage()
+            "Duplicate VO name '" + e.getThisName() + "' in package '" + modelPackage.getPackage()
                 + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
                 + ".");
       } catch (StructuredVOAlreadyExistsException e) {
         throw new InvalidConfigurationFileException(e.getThisTag(),
-            "Duplicate VO name '" + e.getThisName() + "' in package '" + e.getThisPackage().getPackage()
+            "Duplicate VO name '" + e.getThisName() + "' in package '" + modelPackage.getPackage()
                 + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
                 + ".");
       } catch (DuplicatePropertyNameException e) {
@@ -258,7 +260,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
     }
 
-    this.selectMethodReturnType = new SelectMethodReturnType(this, this.classPackage, this.tag, this.jdbcTag);
+    this.selectMethodReturnType = new SelectMethodReturnType(this, this.fragmentPackage, this.tag, this.jdbcTag);
 
   }
 
@@ -410,6 +412,14 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
     return this.tag.getResultSetMode();
   }
 
+  public SelectMethodTag getTag() {
+    return this.tag;
+  }
+
+  public EntityDTOs getEntityVOs() {
+    return entityVOs;
+  }
+
   @Override
   @Deprecated
   public List<SelectMethodMetadata> getSelectsMetadata() {
@@ -422,150 +432,6 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   public boolean metadataComplete() {
     return this.selectMethodReturnType != null;
-  }
-
-  // Classes
-
-  public static class SelectMethodReturnType implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    private SelectMethodMetadata sm;
-
-    private SelectVOClass soloVO;
-    private SelectVOClass abstractSoloVO;
-    private transient VOMetadata connectedVO;
-
-    private ResultSetMode mode;
-
-    public SelectMethodReturnType(final SelectMethodMetadata sm, final ClassPackage voClassPackage,
-        final AbstractConfigurationTag tag, final JDBCTag jdbcTag) throws InvalidConfigurationFileException {
-
-      this.sm = sm;
-
-      if (sm.isStructured()) { // graph columns
-
-        StructuredColumnsMetadata structCols = sm.getStructuredColumns();
-        this.mode = sm.getResultSetMode();
-        if (structCols.getSoloVOClass() == null) { // it's a connected VO
-          log.finer(">>> it's a connected VO (1)");
-          this.soloVO = null;
-          this.abstractSoloVO = null;
-
-          this.connectedVO = structCols.getVOs().get(0);
-
-        } else { // solo VO from a <columns> tag
-          log.info(">>> solo VO from a <columns> tag (2)");
-          List<VOMember> associations = new ArrayList<VOMember>();
-          for (VOMetadata vo : sm.getStructuredColumns().getVOs()) {
-            VOMember m;
-            try {
-              m = new VOMember(vo.getProperty(), vo.getClassPackage(), vo.getName(), vo.getTag());
-            } catch (InvalidIdentifierException e) {
-              String msg = "Invalid property '" + vo.getProperty() + "':" + e.getMessage();
-              throw new InvalidConfigurationFileException(tag, msg);
-            }
-            associations.add(m);
-          }
-          this.soloVO = structCols.getSoloVOClass();
-          this.connectedVO = null;
-        }
-
-      } else { // solo VO from non-graph columns
-        log.finer(">>> solo VO (3)");
-
-        List<VOProperty> properties = new ArrayList<VOProperty>();
-        for (ColumnMetadata cm : sm.getNonStructuredColumns()) {
-          StructuredColumnMetadata m = new StructuredColumnMetadata(cm, "entityPrefix2", "columnAlias", false, null);
-          VOProperty p = new VOProperty(cm.getId().getJavaMemberName(), m, EnclosingTagType.NON_STRUCTURED_SELECT,
-              sm.tag);
-          properties.add(p);
-        }
-
-        this.mode = sm.getResultSetMode();
-
-        if (sm.tag.belongsToEntity()) {
-
-          this.soloVO = null;
-          this.abstractSoloVO = null;
-
-        } else {
-
-          List<VOMember> associations = new ArrayList<VOMember>();
-          List<VOMember> collections = new ArrayList<VOMember>();
-          try {
-            this.soloVO = new SelectVOClass(voClassPackage, sm.getVOClassName(), null, sm.tag.getImplementsClasses(),
-                properties, associations, collections, tag);
-            this.abstractSoloVO = new SelectVOClass(voClassPackage, sm.getAbstractVOClassName(), null, null, properties,
-                associations, collections, tag);
-          } catch (DuplicatePropertyNameException e) {
-            // swallow this exception
-          }
-          this.connectedVO = null;
-
-          log.finer(">>> sm.getVOClassName()=" + sm.getVOClassName() + " sm.getAbstractVOClassName()="
-              + sm.getAbstractVOClassName());
-          log.finer("this.soloVO.getName()=" + (this.soloVO == null ? "null" : this.soloVO.getName())
-              + " this.connectedVO.getName()=" + (this.connectedVO == null ? "null" : this.connectedVO.getName()));
-
-        }
-
-      }
-
-    }
-
-    public SelectVOClass getSoloVO() {
-      return soloVO;
-    }
-
-    public SelectVOClass getAbstractSoloVO() {
-      return this.abstractSoloVO;
-    }
-
-    public VOMetadata getConnectedVO() {
-      return connectedVO;
-    }
-
-    public ResultSetMode getMode() {
-      return this.mode;
-    }
-
-    // Simpler methods
-
-    private ClassPackage getReturnVOPackage() { // primitives.accounting
-//      log.info("this.sm.entityVOs=" + this.sm.entityVOs);
-      if (this.sm.entityVOs != null) {
-        return this.sm.entityVOs.getVo().getClassPackage();
-      }
-      return this.soloVO != null ? this.soloVO.getClassPackage() : this.connectedVO.getClassPackage();
-    }
-
-    public String getBaseReturnVOClass() { // AccountPersonVO
-      if (this.sm.entityVOs != null) {
-        return this.sm.entityVOs.getVo().getClassName();
-      }
-      return this.soloVO != null ? this.soloVO.getName() : this.connectedVO.getName();
-    }
-
-    public String getReturnType() { // AccountPersonVO, List<AccountPersonVO>, Cursor<AccountPersonVO>
-      switch (this.mode) {
-      case LIST:
-        return "List<" + getBaseReturnVOClass() + ">";
-      case CURSOR:
-        return "Cursor<" + getBaseReturnVOClass() + ">";
-      default:
-        return getBaseReturnVOClass(); // single-row
-      }
-    }
-
-    public String getBaseReturnVOFullClassName() { // primitives.accounting.AccountPersonVO
-      if (this.sm.entityVOs != null) {
-        return this.sm.entityVOs.getVo().getFullClassName();
-      } else {
-        return this.getReturnVOPackage().getFullClassName(getBaseReturnVOClass());
-      }
-    }
-
   }
 
   @Override

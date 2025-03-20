@@ -37,6 +37,7 @@ public class SelectLayout {
 
   private String name;
   private ClassPackage classPackage;
+  private File dir;
 
   private List<ColumnMetadata> columns;
   private List<VOMember> associationMembers;
@@ -54,7 +55,8 @@ public class SelectLayout {
     this.jdbcTag = jdbcTag;
 
     this.name = abstractSoloVO.getName();
-    this.classPackage = this.jdbcTag.getLayoutPackage(abstractSoloVO.getClassPackage());
+    this.classPackage = this.jdbcTag.getLayoutPackage(abstractSoloVO.getFragmentPackage());
+    this.dir = this.jdbcTag.getLayoutPackageDir(abstractSoloVO.getFragmentPackage());
 
     this.columns = new ArrayList<ColumnMetadata>(abstractSoloVO.getColumnsByName().values());
     log.fine("Name: " + this.name + " this.columns.size()=" + this.columns.size());
@@ -69,8 +71,11 @@ public class SelectLayout {
   // From a connected VO
   public SelectLayout(final VOMetadata vo, final JDBCTag jdbcTag) {
     this.jdbcTag = jdbcTag;
+
     this.name = vo.getAbstractName();
     this.classPackage = this.jdbcTag.getLayoutPackage(vo.getClassPackage());
+    this.dir = this.jdbcTag.getLayoutPackageDir(vo.getClassPackage());
+
     this.columns = new ArrayList<ColumnMetadata>();
     log.fine("vo.getDeclaredColumns().size()=" + vo.getDeclaredColumns().size());
     for (ColumnMetadata cm : vo.getDeclaredColumns()) {
@@ -89,8 +94,7 @@ public class SelectLayout {
 
     String className = this.name + ".java";
 
-    File dir = this.jdbcTag.getLayoutPackageDir(this.classPackage);
-    File f = new File(dir, className);
+    File f = new File(this.dir, className);
 
     try (TextWriter tw = fileGenerator.createWriter(f)) {
 
