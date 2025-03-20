@@ -60,12 +60,12 @@ Va a cambiar a:
 ```xml
 <hotrod>
   <generators>
-     <jdbc base-dir="src/main/java" 
+     <jdbc base-dir="src/main/java"
            package="mi.persistencia"
            qualifier="">
-       <dao prefix="" suffix="" base-dir="" sub-package="" />
-       <layout prefix="" suffix="" base-dir="" sub-package="" />
-       <model prefix="" suffix="" base-dir="" sub-package="" />
+       <dao prefix="" suffix="" base-dir="" subpackage="" />
+       <layout prefix="" suffix="" base-dir="" subpackage="" />
+       <model prefix="" suffix="" base-dir="" subpackage="" />
      </jdbc>
    </generators>
 </hotrod>

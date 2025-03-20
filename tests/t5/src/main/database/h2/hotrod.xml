@@ -1,15 +1,12 @@
 <hotrod>
 
   <generators>
-  <!-- 
-    <jdbc base-dir="src/main/java" package="app.daos">
-   -->
     <jdbc>
-    <!--    <daos package="app.daos" />  -->
-    <!-- 
-       <dao prefix="" suffix="" base-dir="" sub-package="" />
-       <layout prefix="" suffix="" base-dir="" sub-package="" />
-       <model prefix="" suffix="" base-dir="" sub-package="" />
+    <!--
+    <jdbc base-dir="" package="" qualifier="">
+       <dao prefix="" suffix="" base-dir="" subpackage="" />
+       <layout prefix="" suffix="" base-dir="" subpackage="" />
+       <model prefix="" suffix="" base-dir="" subpackage="" />
         -->
     </jdbc>
   </generators>
@@ -27,7 +24,7 @@
 
   <table name="product" />
 
-<!-- 
+<!--
   <table name="chars" />
   <table name="numbers" />
   <table name="dates" />
@@ -35,12 +32,12 @@
   <table name="other" />
  -->
 
-<!-- 
+<!--
   update(Account row);                     // no OL
   update(Account row);                     // Version number
   update(Account row);                     // Timestamp
   updateOL(Account row, Account baseline); // Full row check
-  
+
   update(Account values, Account filter);  // by example
   
   delete(int pk);                          // no OL

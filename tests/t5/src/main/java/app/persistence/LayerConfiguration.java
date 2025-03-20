@@ -10,7 +10,7 @@ import org.hotrod.runtime.livesql.queries.typesolver.TypeRule;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LayerConfig implements LayerConfigInterface {
+public class LayerConfiguration implements LayerConfigInterface {
 
   @Override
   public List<TypeRule> getTypeRules() {

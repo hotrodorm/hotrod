@@ -63,7 +63,7 @@ public class JDBCLayoutTag extends AbstractConfigurationTag {
     this.sBaseDir = sBaseDir;
   }
 
-  @XmlAttribute(name = "sub-package")
+  @XmlAttribute(name = "subpackage")
   public void setSSubPackage(final String sSubPackage) {
     this.sSubPackage = sSubPackage;
   }
@@ -129,18 +129,19 @@ public class JDBCLayoutTag extends AbstractConfigurationTag {
           sp = new ClassPackage(ds);
         } catch (InvalidPackageException e) {
           throw new InvalidConfigurationFileException(this,
-              "Invalid default sub-package '" + ds
-                  + "'. Please specify a sub-package on the attribute 'sub-package' of the tag <" + super.getTagName()
+              "Invalid default subpackage '" + ds
+                  + "'. Please specify a subpackage on the attribute 'subpackage' of the tag <" + super.getTagName()
                   + ">: " + e.getMessage());
         }
         this.itemPackage = mainPackage.append(sp);
       }
     } else {
       try {
-        this.itemPackage = new ClassPackage(this.sSubPackage);
+        ClassPackage sp = new ClassPackage(this.sSubPackage);
+        this.itemPackage = mainPackage.append(sp);
       } catch (InvalidPackageException e) {
-        throw new InvalidConfigurationFileException(this, "Invalid package '" + this.sSubPackage
-            + "' on attribute 'sub-package' of the tag <" + super.getTagName() + ">: " + e.getMessage());
+        throw new InvalidConfigurationFileException(this, "Invalid subpackage '" + this.sSubPackage
+            + "' on attribute 'subpackage' of the tag <" + super.getTagName() + ">: " + e.getMessage());
       }
     }
 

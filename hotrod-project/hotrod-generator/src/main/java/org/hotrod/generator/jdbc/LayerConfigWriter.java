@@ -26,7 +26,7 @@ public class LayerConfigWriter {
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(LayerConfigWriter.class.getName());
 
-  private static final String CLASS_NAME = "LayerConfig";
+  private static final String CLASS_NAME = "LayerConfiguration";
 
   private JDBCTag jdbcTag;
   private TypeSolverTag typeSolver;
