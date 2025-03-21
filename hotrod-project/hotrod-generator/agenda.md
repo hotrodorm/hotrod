@@ -1,8 +1,8 @@
 # Agenda
 
-Subject to discuss.
+This agenda includes the subject open to discussion for 5.0.
 
-## 1. Nombres para el abstract VO y VO 
+## 1. Names for the Value Objects for Tables, Views, and for Nitro Result Sets
 
 With the aim of unifying:
 
@@ -12,7 +12,7 @@ With the aim of unifying:
 
 We'll use:
 
-- **Layout**: for the structure that mimics the database tables and views.
+- **Layout**: for the class with structure and no behavior that mimics the database columns for a table, view or Nitro result set.
 - **Model**: for the class where the developer can add extra behavior and properties.
 
 Other words considered:
@@ -41,17 +41,20 @@ Currently:
 ```xml
 <hotrod>
   <generators>
-     <mybatis-spring>
-       <daos
-         base-dir="src/main/java" package="mi.persistencia" primitives-package="primitives"
-         dao-prefix="" dao-suffix=""
-         abstract-vo-prefix="" abstract-vo-suffix=""
-         vo-prefix="" vo-suffix=""
-         ndao-prefix="" ndao-suffix=""
-         nabstract-vo-prefix="" nabstract-vo-suffix=""
-         nvo-prefix="" nvo-suffix=""
-         bean-qualifier=""
-       />
+    <mybatis-spring>
+      <daos
+        base-dir="src/main/java" package="my.persistence" primitives-package="primitives"
+        dao-prefix="" dao-suffix=""
+        abstract-vo-prefix="" abstract-vo-suffix=""
+        vo-prefix="" vo-suffix=""
+        ndao-prefix="" ndao-suffix=""
+        nabstract-vo-prefix="" nabstract-vo-suffix=""
+        nvo-prefix="" nvo-suffix=""
+        bean-qualifier=""
+      />
+    </mybatis-spring>
+  </generators>
+</hotrod>
 ```
 
 New configuration:
@@ -74,11 +77,11 @@ New configuration:
 
 Resolved by #2.
 
-## 4. Optimistic Locking (OL) y CRUD
+## 4. Optimistic Locking (OL) and CRUD
 
-Optimistic Locking sólo afecta los UPDATEs y DELETEs de SQL:
+Optimistic Locking only affects the SQL UPDATEs and DELETEs:
 
-En 4.x:
+In 4.x:
 
 ```java
 1a.  accountDAO.update(Account a); // update by PK
@@ -92,7 +95,7 @@ En 4.x:
 6.   accountDAO.delete(Table t, Predicate predicate); // delete by criteria
 ```
 
-En 5.x:
+In 5.x:
 
 ```java
 7a.  accountDAO.update(Account a); // update by PK
