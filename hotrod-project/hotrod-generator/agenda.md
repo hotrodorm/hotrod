@@ -63,7 +63,7 @@ New configuration:
 <hotrod>
   <generators>
      <jdbc base-dir="src/main/java"
-           package="mi.persistencia"
+           package="my.persistence"
            qualifier="">
        <dao prefix="" suffix="" base-dir="" subpackage="" />
        <layout prefix="" suffix="" base-dir="" subpackage="" />
@@ -131,7 +131,9 @@ Switch from `java-name` to `property` and from `java-type` to `type`. Affects:
 
 This should be running correctly but it's not tested.
 
+## 7. Implement `.parameterNullable()` in Dynamic SQL
 
+Differentiate between `.parameter(name)` and `.parameterNullable(name, jdbcType)`.
 
 
 
