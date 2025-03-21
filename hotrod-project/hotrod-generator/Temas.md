@@ -1,28 +1,28 @@
 # Agenda
 
-Éstos son los temas a conversar.
+Subject to discuss.
 
 ## 1. Nombres para el abstract VO y VO 
 
-Con el fin de unificar:
+With the aim of unifying:
 
-- Configuración.
-- Documentación.
-- Mensajería de info y errores.
+- The configuration.
+- The documentation.
+- The messaging and errors.
 
-Vamos a usar:
+We'll use:
 
-- **Layout**: (para la estructura re/generada)
-- **Model**: para el objeto al que se le puede agregar comportamiento y propiedades extras.
+- **Layout**: for the structure that mimics the database tables and views.
+- **Model**: for the class where the developer can add extra behavior and properties.
 
-Otras palabras consideradas:
+Other words considered:
 
 - copy
 - mirror
 - image
 - replica
-- reproduccion
-- archetypo
+- reproduction
+- archetype
 - original
 - sketch
 - blueprint
@@ -34,10 +34,9 @@ Otras palabras consideradas:
 - carbon
 - clone
 
+## 2. New Configuration Tags
 
-## 2. Tags de configuración
-
-Actualmente:
+Currently:
 
 ```xml
 <hotrod>
@@ -55,7 +54,7 @@ Actualmente:
        />
 ```
 
-Va a cambiar a:
+New configuration:
 
 ```xml
 <hotrod>
@@ -71,9 +70,9 @@ Va a cambiar a:
 </hotrod>
 ```
 
-## 3. Estructura de Packages
+## 3. Package Structure
 
-N/A
+Resolved by #2.
 
 ## 4. Optimistic Locking (OL) y CRUD
 
@@ -110,4 +109,30 @@ En 5.x:
 11.  accountDAO.delete(Account example); // delete by example
 12.  accountDAO.delete(Table t, BooleanExpression predicate); // delete by criteria
 ```
+
+## 5. Column Attributes
+
+Switch from `java-name` to `property` and from `java-type` to `type`. Affects:
+
+- `<column>.java-name`
+- `<column>.java-type`
+- `<table>.java-name`
+- `<view>.java-name`
+- `<enum>.java-name`
+- `<parameter>.java-type`
+- `<converter>.java-type`
+- `<converter>.java-raw-type`
+- `<type-solver>/<when>.java-type`
+
+## 6. Test Select Mode: Cursor
+
+This should be running correctly but it's not tested.
+
+
+
+
+
+
+
+
 
