@@ -63,11 +63,11 @@ New configuration:
 <hotrod>
   <generators>
      <jdbc base-dir="src/main/java"
-           package="my.persistence"
+           package="app.persistence"
            qualifier="">
-       <dao prefix="" suffix="" base-dir="" subpackage="" />
-       <layout prefix="" suffix="" base-dir="" subpackage="" />
-       <model prefix="" suffix="" base-dir="" subpackage="" />
+       <dao prefix="" suffix="DAO" base-dir="" subpackage="dao" />
+       <layout prefix="" suffix="Layout" base-dir="" subpackage="layout" />
+       <model prefix="" suffix="" base-dir="" subpackage="model" />
      </jdbc>
    </generators>
 </hotrod>
