@@ -325,9 +325,16 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
   }
 
   @Override
-  public Cursor<T> executeCursor(final LiveSQLContext context, RowReader<T> rowReader) throws SQLException {
+  public Cursor<T> executeCursor(final LiveSQLContext context, Integer fetchSize) throws SQLException {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    return executeLiveSQLCursor(context, q, rowReader);
+    return executeLiveSQLCursor(context, q, null, fetchSize);
+  }
+
+  @Override
+  public Cursor<T> executeCursor(final LiveSQLContext context, final RowReader<T> rowReader, final Integer fetchSize)
+      throws SQLException {
+    LiveSQLPreparedQuery q = this.prepareQuery(context);
+    return executeLiveSQLCursor(context, q, rowReader, fetchSize);
   }
 
   @Override

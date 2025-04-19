@@ -13,6 +13,8 @@ public abstract class Select<R> implements Query {
 
   public abstract Cursor<R> executeCursor() throws SQLException;
 
+  public abstract Cursor<R> executeCursor(int fetchSize) throws SQLException;
+
   public abstract R executeOne();
 
   protected abstract CombinedSelectObject<R> getCombinedSelect();

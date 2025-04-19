@@ -30,9 +30,14 @@ public abstract class CriteriaPhase<T> implements EntitySelect<T> {
   }
 
   public final Cursor<T> executeCursor() throws SQLException {
-    return this.select.executeCursor(this.context, this.rowReader);
+    return this.select.executeCursor(this.context, this.rowReader, null);
   }
 
+  public final Cursor<T> executeCursor(int fetchSize) throws SQLException {
+    return this.select.executeCursor(this.context, this.rowReader, fetchSize);
+  }
+
+  
   public final T executeOne() {
     return this.select.executeOne(this.context);
   }

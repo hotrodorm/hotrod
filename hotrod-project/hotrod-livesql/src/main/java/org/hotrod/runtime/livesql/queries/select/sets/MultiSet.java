@@ -52,7 +52,10 @@ public abstract class MultiSet<T> {
 
   public abstract Cursor<T> executeCursor(final LiveSQLContext context) throws SQLException;
 
-  public abstract Cursor<T> executeCursor(final LiveSQLContext context, RowReader<T> rowReader) throws SQLException;
+  public abstract Cursor<T> executeCursor(final LiveSQLContext context, Integer fetchSize) throws SQLException;
+
+  public abstract Cursor<T> executeCursor(final LiveSQLContext context, RowReader<T> rowReader, Integer fetchSize)
+      throws SQLException;
 
   public abstract T executeOne(final LiveSQLContext context);
 
@@ -136,12 +139,12 @@ public abstract class MultiSet<T> {
 
   protected Cursor<T> executeLiveSQLCursor(final LiveSQLContext context, final LiveSQLPreparedQuery q)
       throws SQLException {
-    return executeLiveSQLCursor(context, q, null);
+    return executeLiveSQLCursor(context, q, null, null);
   }
 
   protected Cursor<T> executeLiveSQLCursor(final LiveSQLContext context, final LiveSQLPreparedQuery q,
-      final RowReader<T> rowReader) throws SQLException {
-    return new RowCursor<>(context, q, rowReader);
+      final RowReader<T> rowReader, Integer fetchSize) throws SQLException {
+    return new RowCursor<>(context, q, rowReader, fetchSize);
   }
 
   protected T executeLiveSQLOne(final LiveSQLContext context, final LiveSQLPreparedQuery q) {

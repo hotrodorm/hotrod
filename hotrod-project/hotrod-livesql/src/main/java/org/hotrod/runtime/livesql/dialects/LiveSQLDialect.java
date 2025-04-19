@@ -11,7 +11,7 @@ import org.hotrod.runtime.livesql.queries.select.SHelper;
 import org.hotrod.runtime.livesql.queries.typesolver.ResultSetColumnMetadata;
 
 public abstract class LiveSQLDialect {
-  
+
   protected static final int DEFAULT_FETCH_SIZE = 50;
 
   private boolean discovered; // discovered or designated
@@ -71,8 +71,6 @@ public abstract class LiveSQLDialect {
   protected String renderVersion() {
     return "" + databaseMajorVersion + "." + databaseMinorVersion + " (" + databaseVersion + ")";
   }
-  
-  
 
   // Parsing
 
@@ -100,7 +98,7 @@ public abstract class LiveSQLDialect {
     return null;
   }
 
-  public abstract void enableSelectStreaming(PreparedStatement ps) throws SQLException;
+  public abstract void enableSelectStreaming(PreparedStatement ps, Integer fetchSize) throws SQLException;
 
   public abstract WithRenderer getWithRenderer();
 

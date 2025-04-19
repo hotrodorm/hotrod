@@ -32,8 +32,12 @@ public class HyperSQLDialect extends LiveSQLDialect {
     super(discovered, productName, productVersion, majorVersion, minorVersion);
   }
 
-  public void enableSelectStreaming(PreparedStatement ps) throws SQLException {
-    // Nothing to do; streaming not available
+  @Override
+  public void enableSelectStreaming(PreparedStatement ps, Integer fetchSize) throws SQLException {
+    // Streaming not available
+    if (fetchSize != null) {
+      ps.setFetchSize(fetchSize);
+    }
   }
 
   // WITH rendering

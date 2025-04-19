@@ -38,8 +38,12 @@ public class DB2Dialect extends LiveSQLDialect {
     super(discovered, productName, productVersion, majorVersion, minorVersion);
   }
 
-  public void enableSelectStreaming(PreparedStatement ps) throws SQLException {
-    // Nothing to do; streaming enabled by default
+  @Override
+  public void enableSelectStreaming(PreparedStatement ps, Integer fetchSize) throws SQLException {
+    // Streaming enabled by default
+    if (fetchSize != null) {
+      ps.setFetchSize(fetchSize);
+    }
   }
 
   // WITH rendering

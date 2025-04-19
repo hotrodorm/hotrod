@@ -62,6 +62,11 @@ public class AbstractSelectPhase<R> extends Select<R> {
   }
 
   @Override
+  public final Cursor<R> executeCursor(int fetchSize) throws SQLException {
+    return this.combined.executeCursor(this.context, fetchSize);
+  }
+
+  @Override
   public final R executeOne() {
     return this.combined.executeOne(this.context);
   }

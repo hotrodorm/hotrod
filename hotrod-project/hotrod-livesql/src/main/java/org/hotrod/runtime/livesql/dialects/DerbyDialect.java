@@ -37,8 +37,12 @@ public class DerbyDialect extends LiveSQLDialect {
     super(discovered, productName, productVersion, majorVersion, minorVersion);
   }
 
-  public void enableSelectStreaming(PreparedStatement ps) throws SQLException {
-    // Nothing to do; no streaming available
+  @Override
+  public void enableSelectStreaming(PreparedStatement ps, Integer fetchSize) throws SQLException {
+    // No streaming available
+    if (fetchSize != null) {
+      ps.setFetchSize(fetchSize);
+    }
   }
 
   // WITH rendering

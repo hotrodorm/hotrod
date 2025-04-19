@@ -34,7 +34,9 @@ public class MySQLDialect extends LiveSQLDialect {
     super(discovered, productName, productVersion, majorVersion, minorVersion);
   }
 
-  public void enableSelectStreaming(PreparedStatement ps) throws SQLException {
+  @Override
+  public void enableSelectStreaming(PreparedStatement ps, Integer fetchSize) throws SQLException {
+    // Ignore fetch size to enable streaming
     ps.setFetchSize(Integer.MIN_VALUE);
   }
 

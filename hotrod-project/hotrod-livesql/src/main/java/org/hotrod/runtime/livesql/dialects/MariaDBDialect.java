@@ -32,8 +32,13 @@ public class MariaDBDialect extends LiveSQLDialect {
     super(discovered, productName, productVersion, majorVersion, minorVersion);
   }
 
-  public void enableSelectStreaming(PreparedStatement ps) throws SQLException {
-    ps.setFetchSize(DEFAULT_FETCH_SIZE);
+  @Override
+  public void enableSelectStreaming(PreparedStatement ps, Integer fetchSize) throws SQLException {
+    if (fetchSize != null) {
+      ps.setFetchSize(fetchSize);
+    } else {
+      ps.setFetchSize(DEFAULT_FETCH_SIZE);
+    }
   }
 
   // WITH rendering

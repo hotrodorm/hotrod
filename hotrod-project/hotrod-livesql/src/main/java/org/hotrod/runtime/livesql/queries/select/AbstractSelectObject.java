@@ -387,9 +387,16 @@ public abstract class AbstractSelectObject<T> extends MultiSet<T> implements Que
   }
 
   @Override
-  public Cursor<T> executeCursor(final LiveSQLContext context, RowReader<T> rowReader) throws SQLException {
+  public Cursor<T> executeCursor(final LiveSQLContext context, final Integer fetchSize) throws SQLException {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    return executeLiveSQLCursor(context, q, rowReader);
+    return executeLiveSQLCursor(context, q, null, fetchSize);
+  }
+
+  @Override
+  public Cursor<T> executeCursor(final LiveSQLContext context, RowReader<T> rowReader, Integer fetchSize)
+      throws SQLException {
+    LiveSQLPreparedQuery q = this.prepareQuery(context);
+    return executeLiveSQLCursor(context, q, rowReader, fetchSize);
   }
 
   @Override

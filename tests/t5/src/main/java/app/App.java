@@ -154,13 +154,13 @@ public class App {
   private void testLiveSQLCursor() throws SQLException, DynamicExpressionException, IOException {
 
 //    try (Cursor<Row> rows = this.sql.select(sql.val(7).mult(3).as("answer"), sql.ONE.as("one"))
-//        .executeCursor();) {
+//        .executeCursor(60);) {
 //      System.out.println(">> Rows:");
 //      rows.forEach(r -> System.out.println(r));
 //    }
 
     AccountTable a = this.accountDAO.newTable();
-    try (Cursor<Account> accounts = this.accountDAO.select(a, sql.TRUE).executeCursor();) {
+    try (Cursor<Account> accounts = this.accountDAO.select(a, sql.TRUE).executeCursor(60);) {
       System.out.println(">> Accounts:");
       accounts.forEach(r -> System.out.println(r));
     }
