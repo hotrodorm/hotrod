@@ -1,9 +1,10 @@
 package org.hotrod.runtime.livesql.queries.select;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import org.hotrod.cursors.Cursor;
-import org.hotrod.dynamicsql.PreparedSelectQuery.RowReader;
+import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
@@ -28,8 +29,8 @@ public abstract class CriteriaPhase<T> implements EntitySelect<T> {
     return this.select.execute(this.context, this.rowReader);
   }
 
-  public final Cursor<T> executeCursor() {
-    return this.select.executeCursor(this.context);
+  public final Cursor<T> executeCursor() throws SQLException {
+    return this.select.executeCursor(this.context, this.rowReader);
   }
 
   public final T executeOne() {

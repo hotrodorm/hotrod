@@ -1,5 +1,6 @@
 package org.hotrod.runtime.livesql.queries.select;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import org.hotrod.cursors.Cursor;
@@ -10,7 +11,7 @@ public abstract class Select<R> implements Query {
 
   public abstract List<R> execute();
 
-  public abstract Cursor<R> executeCursor();
+  public abstract Cursor<R> executeCursor() throws SQLException;
 
   public abstract R executeOne();
 

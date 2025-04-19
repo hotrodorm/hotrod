@@ -1,5 +1,6 @@
 package org.hotrod.runtime.livesql.queries.select;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import org.hotrod.cursors.Cursor;
@@ -13,6 +14,6 @@ public interface EntitySelect<R> extends Query {
 
   R executeOne();
 
-  Cursor<R> executeCursor();
+  Cursor<R> executeCursor() throws SQLException;
 
 }

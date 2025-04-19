@@ -36,10 +36,4 @@ public class PreparedSelectQuery<R> extends PreparedQuery {
     }
   }
 
-  public static interface RowReader<R> {
-
-    R readRowFrom(ResultSet rs, Connection conn) throws SQLException;
-
-  }
-
 }

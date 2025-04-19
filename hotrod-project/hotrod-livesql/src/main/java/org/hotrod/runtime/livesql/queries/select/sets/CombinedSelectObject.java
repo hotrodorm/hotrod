@@ -1,12 +1,13 @@
 package org.hotrod.runtime.livesql.queries.select.sets;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.hotrod.cursors.Cursor;
-import org.hotrod.dynamicsql.PreparedSelectQuery.RowReader;
+import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.expressions.Expression;
@@ -33,29 +34,29 @@ import org.hotrod.runtime.livesql.util.IdUtil;
  * </pre>
  */
 
-public class CombinedSelectObject<R> extends MultiSet<R> {
+public class CombinedSelectObject<T> extends MultiSet<T> {
 
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(CombinedSelectObject.class.getName());
 
   private boolean forceParenthesis;
-  private MultiSet<R> first;
-  private List<SetOperatorTerm<R>> combined;
-  private SelectObject<R> lastSelect; // TODO: Remove?
+  private MultiSet<T> first;
+  private List<SetOperatorTerm<T>> combined;
+  private SelectObject<T> lastSelect; // TODO: Remove?
 
   private List<CombinedOrderingTerm> orderingTerms = null;
   private Integer offset = null;
   private Integer limit = null;
 
-  public CombinedSelectObject(final MultiSet<R> first) {
+  public CombinedSelectObject(final MultiSet<T> first) {
     initialize(first, false);
   }
 
-  public CombinedSelectObject(final MultiSet<R> first, final boolean forceParenthesis) {
+  public CombinedSelectObject(final MultiSet<T> first, final boolean forceParenthesis) {
     initialize(first, forceParenthesis);
   }
 
-  private void initialize(final MultiSet<R> first, final boolean forceParenthesis) {
+  private void initialize(final MultiSet<T> first, final boolean forceParenthesis) {
     this.forceParenthesis = forceParenthesis;
     this.first = first;
     this.combined = new ArrayList<>();
@@ -63,7 +64,7 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
     first.setParent(this);
   }
 
-  public CombinedSelectObject(final SelectObject<R> first) {
+  public CombinedSelectObject(final SelectObject<T> first) {
     this.forceParenthesis = false;
     this.first = first;
     this.combined = new ArrayList<>();
@@ -71,14 +72,14 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
     first.setParent(this);
   }
 
-  public void add(final SetOperator operator, final MultiSet<R> multiset) {
-    SetOperatorTerm<R> term = new SetOperatorTerm<>(operator, multiset);
+  public void add(final SetOperator operator, final MultiSet<T> multiset) {
+    SetOperatorTerm<T> term = new SetOperatorTerm<>(operator, multiset);
     this.combined.add(term);
     multiset.setParent(this);
   }
 
-  public void add(final SetOperator operator, final SelectObject<R> select) {
-    SetOperatorTerm<R> term = new SetOperatorTerm<>(operator, select);
+  public void add(final SetOperator operator, final SelectObject<T> select) {
+    SetOperatorTerm<T> term = new SetOperatorTerm<>(operator, select);
     this.combined.add(term);
     this.lastSelect = select;
     select.setParent(this);
@@ -106,7 +107,7 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
   public void flatten() {
     if (this.combined.isEmpty()) {
       try {
-        CombinedSelectObject<R> nestedFirst = (CombinedSelectObject<R>) this.first;
+        CombinedSelectObject<T> nestedFirst = (CombinedSelectObject<T>) this.first;
         if (!nestedFirst.forceParenthesis) {
           this.first = nestedFirst.first;
           this.combined = nestedFirst.combined;
@@ -165,7 +166,7 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
 
     this.first.renderTo(w, false);
 
-    for (SetOperatorTerm<R> t : this.combined) {
+    for (SetOperatorTerm<T> t : this.combined) {
       w.write("\n");
       t.getOperator().renderTo(w);
       t.getMultiset().renderTo(w, true);
@@ -216,7 +217,7 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
 
   // Combining
 
-  public CombinedSelectObject<R> prepareCombinationWith(final SetOperator op) {
+  public CombinedSelectObject<T> prepareCombinationWith(final SetOperator op) {
 
     if (this.combined.isEmpty()) {
 //      System.out.println("// 0 no precedence yet");
@@ -245,8 +246,8 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
        * </pre>
        */
 
-      SetOperatorTerm<R> last = this.combined.remove(this.combined.size() - 1);
-      CombinedSelectObject<R> o = new CombinedSelectObject<R>(last.getMultiset());
+      SetOperatorTerm<T> last = this.combined.remove(this.combined.size() - 1);
+      CombinedSelectObject<T> o = new CombinedSelectObject<T>(last.getMultiset());
       o.setParent(this);
       this.combined.add(new SetOperatorTerm<>(last.getOperator(), o));
       return o;
@@ -266,9 +267,9 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
        * </pre>
        */
 
-      CombinedSelectObject<R> cm2;
+      CombinedSelectObject<T> cm2;
       if (this.getParent() == null) {
-        cm2 = new CombinedSelectObject<R>(this);
+        cm2 = new CombinedSelectObject<T>(this);
         this.setParent(cm2);
       } else {
         cm2 = this.getParent();
@@ -290,14 +291,14 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
 
   // Combining
 
-  public final SelectObject<R> getLastSelect() {
+  public final SelectObject<T> getLastSelect() {
     return this.lastSelect;
   }
 
   @Override
   public List<Expression> assembleColumnsOf(final TableExpression te) {
     List<Expression> cols = this.first.assembleColumnsOf(te);
-    for (SetOperatorTerm<R> o : this.combined) {
+    for (SetOperatorTerm<T> o : this.combined) {
       o.getMultiset().assembleColumnsOf(te);
     }
     return cols;
@@ -306,25 +307,31 @@ public class CombinedSelectObject<R> extends MultiSet<R> {
   // MultiSet execution
 
   @Override
-  public List<R> execute(final LiveSQLContext context) {
+  public List<T> execute(final LiveSQLContext context) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     return executeLiveSQL(context, q, false);
   }
 
   @Override
-  public <T> List<T> execute(final LiveSQLContext context, final RowReader<T> rowReader) {
+  public List<T> execute(final LiveSQLContext context, final RowReader<T> rowReader) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    return executeLiveSQL(context, q, rowReader, false);
+    return executeLiveSQL(context, q, false, rowReader);
   }
 
   @Override
-  public Cursor<R> executeCursor(final LiveSQLContext context) {
+  public Cursor<T> executeCursor(final LiveSQLContext context) throws SQLException {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     return executeLiveSQLCursor(context, q);
   }
 
   @Override
-  public R executeOne(final LiveSQLContext context) {
+  public Cursor<T> executeCursor(final LiveSQLContext context, RowReader<T> rowReader) throws SQLException {
+    LiveSQLPreparedQuery q = this.prepareQuery(context);
+    return executeLiveSQLCursor(context, q, rowReader);
+  }
+
+  @Override
+  public T executeOne(final LiveSQLContext context) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     return executeLiveSQLOne(context, q);
   }

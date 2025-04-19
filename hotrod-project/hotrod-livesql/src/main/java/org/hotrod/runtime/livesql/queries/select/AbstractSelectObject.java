@@ -1,6 +1,7 @@
 package org.hotrod.runtime.livesql.queries.select;
 
 import java.lang.reflect.Field;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -11,7 +12,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.hotrod.cursors.Cursor;
-import org.hotrod.dynamicsql.PreparedSelectQuery.RowReader;
+import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.runtime.livesql.dialects.JoinRenderer;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.dialects.LockingRenderer;
@@ -41,7 +42,7 @@ import org.hotrod.utils.SUtil;
 import org.hotrod.utils.Separator;
 import org.springframework.util.ReflectionUtils;
 
-public abstract class AbstractSelectObject<R> extends MultiSet<R> implements QueryObject {
+public abstract class AbstractSelectObject<T> extends MultiSet<T> implements QueryObject {
 
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(AbstractSelectObject.class.getName());
@@ -367,26 +368,32 @@ public abstract class AbstractSelectObject<R> extends MultiSet<R> implements Que
   }
 
   @Override
-  public List<R> execute(final LiveSQLContext context) {
+  public List<T> execute(final LiveSQLContext context) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     return executeLiveSQL(context, q, false);
   }
 
   @Override
-  public <T> List<T> execute(LiveSQLContext context, RowReader<T> rowReader) {
+  public List<T> execute(LiveSQLContext context, RowReader<T> rowReader) {
     System.out.println("%%% 2");
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    return executeLiveSQL(context, q, rowReader, false);
+    return executeLiveSQL(context, q, false, rowReader);
   }
 
   @Override
-  public Cursor<R> executeCursor(final LiveSQLContext context) {
+  public Cursor<T> executeCursor(final LiveSQLContext context) throws SQLException {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     return executeLiveSQLCursor(context, q);
   }
 
   @Override
-  public R executeOne(final LiveSQLContext context) {
+  public Cursor<T> executeCursor(final LiveSQLContext context, RowReader<T> rowReader) throws SQLException {
+    LiveSQLPreparedQuery q = this.prepareQuery(context);
+    return executeLiveSQLCursor(context, q, rowReader);
+  }
+
+  @Override
+  public T executeOne(final LiveSQLContext context) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     return executeLiveSQLOne(context, q);
   }

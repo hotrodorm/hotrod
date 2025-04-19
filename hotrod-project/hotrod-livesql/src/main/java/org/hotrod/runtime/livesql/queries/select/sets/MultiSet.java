@@ -1,47 +1,36 @@
 package org.hotrod.runtime.livesql.queries.select.sets;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.logging.Logger;
 
-import org.hotrod.converter.TypeConverter;
 import org.hotrod.cursors.Cursor;
-import org.hotrod.dynamicsql.PreparedSelectQuery.RowReader;
-import org.hotrod.livesql.Row;
+import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.TableExpression;
-import org.hotrod.runtime.livesql.queries.typesolver.ResultSetColumnMetadata;
-import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
-import org.hotrod.runtime.livesql.queries.typesolver.TypeRule.CouldNotResolveResultSetDataTypeException;
 import org.hotrod.runtime.livesql.util.PreviewRenderer;
 
-public abstract class MultiSet<R> {
+public abstract class MultiSet<T> {
 
   private static final Logger log = Logger.getLogger(MultiSet.class.getName());
 
-  private CombinedSelectObject<R> parent;
+  private CombinedSelectObject<T> parent;
 
-  public void setParent(final CombinedSelectObject<R> parent) {
+  public void setParent(final CombinedSelectObject<T> parent) {
     this.parent = parent;
   }
 
-  public CombinedSelectObject<R> getParent() {
+  public CombinedSelectObject<T> getParent() {
     return this.parent;
   }
 
@@ -57,13 +46,15 @@ public abstract class MultiSet<R> {
 
   // Execution
 
-  public abstract List<R> execute(final LiveSQLContext context);
+  public abstract List<T> execute(final LiveSQLContext context);
 
-  public abstract <T> List<T> execute(final LiveSQLContext context, RowReader<T> rowReader);
+  public abstract List<T> execute(final LiveSQLContext context, RowReader<T> rowReader);
 
-  public abstract Cursor<R> executeCursor(final LiveSQLContext context);
+  public abstract Cursor<T> executeCursor(final LiveSQLContext context) throws SQLException;
 
-  public abstract R executeOne(final LiveSQLContext context);
+  public abstract Cursor<T> executeCursor(final LiveSQLContext context, RowReader<T> rowReader) throws SQLException;
+
+  public abstract T executeOne(final LiveSQLContext context);
 
   public String getPreview(final LiveSQLContext context) {
     log.fine("previewing");
@@ -94,93 +85,13 @@ public abstract class MultiSet<R> {
 
   public abstract void flatten();
 
-  // Utilities
-
-  @SuppressWarnings("unchecked")
-  protected List<R> executeLiveSQL(final LiveSQLContext context, final LiveSQLPreparedQuery q, boolean singleRow) {
-    List<Row> rows = new ArrayList<>();
-    try (Connection conn = context.getDataSource().getConnection()) {
-
-      try (PreparedStatement ps = conn.prepareStatement(q.getSQL())) {
-
-        // 1. Apply parameters
-
-        int n = 1;
-        for (Object obj : q.getParameters().values()) {
-          int i = n++;
-          ps.setObject(i, obj);
-        }
-
-        // 2. Run the query
-
-        try (ResultSet rs = ps.executeQuery()) {
-          LinkedHashMap<String, Expression> queryColumns = q.getQueryColumns();
-          ResultSetMetaData rm = rs.getMetaData();
-          int ordinal = 1;
-          for (Entry<String, Expression> et : queryColumns.entrySet()) {
-            Expression expr = et.getValue();
-            if (Helper.getTypeHandler(expr) == null) {
-              ResultSetColumnMetadata cm = ResultSetColumnMetadata.of(rm, ordinal);
-              try {
-                TypeHandler th = context.getTypeSolver().resolve(cm);
-                Helper.setTypeHandler(expr, th);
-              } catch (CouldNotResolveResultSetDataTypeException e) {
-                throw new LiveSQLException(
-                    "Could not determine the application type for the column '" + et.getKey() + "' in the query", e);
-              }
-            }
-            ordinal++;
-          }
-
-          logQueryColumns(queryColumns);
-
-          int count = 0;
-          while (rs.next()) {
-            count++;
-            if (singleRow && count > 1) {
-              throw new LiveSQLException("A single row at most was expected by this query but received at least two");
-            }
-            Row r = new Row();
-            int i = 1;
-            for (Expression qc : queryColumns.values()) {
-              Object value;
-              String alias = Helper.getReferenceName(qc);
-              TypeHandler th = Helper.getTypeHandler(qc);
-              if (th == null) { // No typeHandler: use the JDBC default value
-                value = rs.getObject(i);
-              } else if (th.getConverter() == null) { // TypeHandler with no converter: use the defined class
-                value = rs.getObject(i, th.getJavaClass());
-              } else { // TypeHandler with converter: read as defined class and apply converter
-                Object raw = rs.getObject(i, th.getRawClass());
-                TypeConverter<?, ?> converter = th.getConverter();
-                value = this.applyConverter(raw, converter, conn);
-              }
-              r.put(alias, value);
-              i++;
-            }
-            rows.add(r);
-          }
-          return (List<R>) rows;
-        }
-
-      }
-
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
-
+  protected List<T> executeLiveSQL(final LiveSQLContext context, final LiveSQLPreparedQuery q,
+      final boolean singleRow) {
+    return this.executeLiveSQL(context, q, singleRow, null);
   }
 
-  protected <T> List<T> executeLiveSQL(final LiveSQLContext context, final LiveSQLPreparedQuery q,
-      RowReader<T> rowReader, boolean singleRow) {
-    log.info("executeLiveSQL... q="+q);
-
-    log.info("PREVIEW:\n" + q.getSQL());
-    log.info("=== Parameters (" + q.getParameters().size() + ") ===");
-    for (String key : q.getParameters().keySet()) {
-      log.info("* " + key + ": " + q.getParameters().get(key));
-    }
-    log.info("====================");
+  protected List<T> executeLiveSQL(final LiveSQLContext context, final LiveSQLPreparedQuery q, final boolean singleRow,
+      RowReader<T> rowReader) {
 
     List<T> rows = new ArrayList<>();
     try (Connection conn = context.getDataSource().getConnection()) {
@@ -198,6 +109,11 @@ public abstract class MultiSet<R> {
         // 2. Run the query
 
         try (ResultSet rs = ps.executeQuery()) {
+
+          if (rowReader == null) {
+            rowReader = new GenericRowReader<>(context, q, rs);
+          }
+
           int count = 0;
           while (rs.next()) {
             count++;
@@ -218,61 +134,18 @@ public abstract class MultiSet<R> {
 
   }
 
-//  private void retrieveClasses(TypeConverter<?, ?> converter) {
-////    try {
-//    log.info("* --- methods ---");
-//    Method[] d = converter.getClass().getDeclaredMethods();
-//    for (Method m : d) {
-//      log.info("* m=" + m);
-//    }
-//
-////    } catch (NoSuchMethodException | SecurityException e) {
-////      e.printStackTrace();
-////    }
-//  }
-
-  private void logQueryColumns(LinkedHashMap<String, Expression> queryColumns) {
-    int n;
-    n = 1;
-    for (Expression qc : queryColumns.values()) {
-      int i = n++;
-      String alias = Helper.getReferenceName(qc);
-      TypeHandler th = Helper.getTypeHandler(qc);
-      log.info("- column #" + i + " '" + alias + "': " + th);
-    }
+  protected Cursor<T> executeLiveSQLCursor(final LiveSQLContext context, final LiveSQLPreparedQuery q)
+      throws SQLException {
+    return executeLiveSQLCursor(context, q, null);
   }
 
-  private Object applyConverter(final Object raw, final TypeConverter<?, ?> converter, final Connection conn) {
-
-    Method m;
-    try {
-      m = TypeConverter.class.getMethod("decode", Object.class, Connection.class);
-    } catch (NoSuchMethodException | SecurityException e) {
-      throw new RuntimeException("Could not use converter", e);
-    }
-
-    Object value;
-    try {
-      value = m.invoke(converter, raw, conn);
-    } catch (InvocationTargetException e) {
-      throw new RuntimeException("Converter's decode() method threw an exception", e);
-    } catch (IllegalAccessException | IllegalArgumentException e) {
-      throw new RuntimeException("Could not invoke converter's decode() method", e);
-    }
-
-    return value;
+  protected Cursor<T> executeLiveSQLCursor(final LiveSQLContext context, final LiveSQLPreparedQuery q,
+      final RowReader<T> rowReader) throws SQLException {
+    return new RowCursor<>(context, q, rowReader);
   }
 
-  @SuppressWarnings("unchecked")
-  protected Cursor<R> executeLiveSQLCursor(final LiveSQLContext context, final LiveSQLPreparedQuery q) {
-    throw new UnsupportedOperationException("executeCursor is not yet supported");
-//    LinkedHashMap<String, Object> parameters = q.getParameters();
-//    parameters.put("sql", q.getSQL());
-//    return (Cursor<R>) context.getLiveSQLMapper().selectCursor(parameters);
-  }
-
-  protected R executeLiveSQLOne(final LiveSQLContext context, final LiveSQLPreparedQuery q) {
-    List<R> rows = executeLiveSQL(context, q, true);
+  protected T executeLiveSQLOne(final LiveSQLContext context, final LiveSQLPreparedQuery q) {
+    List<T> rows = executeLiveSQL(context, q, true);
     if (rows.isEmpty()) {
       return null;
     } else {

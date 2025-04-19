@@ -4,16 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.hotrod.dynamicsql.PreparedSelectQuery.RowReader;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.utils.Separator;
 
-public class SelectObject<R> extends AbstractSelectObject<R> {
+public class SelectObject<T> extends AbstractSelectObject<T> {
 
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(SelectObject.class.getName());
@@ -160,6 +158,5 @@ public class SelectObject<R> extends AbstractSelectObject<R> {
   public void flatten() {
     // Nothing to do. It's already a single level
   }
-
 
 }

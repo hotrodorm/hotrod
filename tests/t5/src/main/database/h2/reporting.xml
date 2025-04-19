@@ -2,14 +2,6 @@
 
   <dao name="Reporting">
 
-    <select method="findBigAccounts" vo="BigAccount">
-select id, balance,
-  case when active then 'Active' else 'Inactive' end as status,
-  cast(case when type = 'CHK' then balance * 1.5 else balance * 1.2 end as int) as score
-from account
-where balance >= 300
-    </select>
-     
   </dao>
 
   <table name="payment" />

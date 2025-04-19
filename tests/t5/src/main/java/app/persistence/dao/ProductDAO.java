@@ -23,7 +23,7 @@ import org.hotrod.dynamicsql.ParameterContext;
 import org.hotrod.dynamicsql.PreparedModificationQuery;
 import org.hotrod.dynamicsql.PreparedQuery;
 import org.hotrod.dynamicsql.PreparedSelectQuery;
-import org.hotrod.dynamicsql.PreparedSelectQuery.RowReader;
+import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.dynamicsql.assembler.QueryAssembler;
 import org.hotrod.dynamicsql.insert.PreparedInsertQuery;
 import org.hotrod.dynamicsql.insert.PrimaryKeyRetrievalMode;

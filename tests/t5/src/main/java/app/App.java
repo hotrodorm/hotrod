@@ -1,13 +1,16 @@
 package app;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.hotrod.cursors.Cursor;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.assembler.QueryAssembler;
+import org.hotrod.livesql.Row;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -55,7 +58,8 @@ public class App {
       log.info("[ Starting... ]");
 //      test();
 //      testLiveSQL();
-      testOptimisticLocking();
+      testLiveSQLCursor();
+//      testOptimisticLocking();
       log.info("[ Ending ]");
     };
   }
@@ -147,21 +151,41 @@ public class App {
     System.out.println("Deleted b.");
   }
 
+  private void testLiveSQLCursor() throws SQLException, DynamicExpressionException, IOException {
+
+//    try (Cursor<Row> rows = this.sql.select(sql.val(7).mult(3).as("answer"), sql.ONE.as("one"))
+//        .executeCursor();) {
+//      System.out.println(">> Rows:");
+//      rows.forEach(r -> System.out.println(r));
+//    }
+
+    AccountTable a = this.accountDAO.newTable();
+    try (Cursor<Account> accounts = this.accountDAO.select(a, a.active).executeCursor();) {
+      System.out.println(">> Accounts:");
+      accounts.forEach(r -> System.out.println(r));
+    }
+    
+  }
+
   private void testLiveSQL() throws SQLException, DynamicExpressionException {
 
-//    System.out.println(">> Will run LiveSQL");
+    AccountTable a = this.accountDAO.newTable();
+    List<Account> accounts = this.accountDAO.select(a, a.active).execute();
+    System.out.println(">> Accounts:");
+    accounts.forEach(r -> System.out.println(r));
+
 //    Row row = this.sql.select(sql.val(7).mult(3).as("answer")).executeOne();
 //    System.out.println("Row=" + row);
 
-    System.out.println("Will UPDATE by criteria.");
-    AccountTable a = this.accountDAO.newTable();
-    Account updateValues = new Account();
-    updateValues.setBalance(777);
-    int count = this.accountDAO.update(updateValues, a, a.balance.lt(150)).execute();
-    System.out.println("UPDATE by criteria complete: count=" + count);
-
-    List<Account> accounts = this.accountDAO.select(a, sql.TRUE).execute();
-    accounts.forEach(r -> System.out.println("r=" + r));
+//    System.out.println("Will UPDATE by criteria.");
+//    AccountTable a = this.accountDAO.newTable();
+//    Account updateValues = new Account();
+//    updateValues.setBalance(777);
+//    int count = this.accountDAO.update(updateValues, a, a.balance.lt(150)).execute();
+//    System.out.println("UPDATE by criteria complete: count=" + count);
+//
+//    List<Account> accounts = this.accountDAO.select(a, sql.TRUE).execute();
+//    accounts.forEach(r -> System.out.println("r=" + r));
 
 //    System.out.println("Will select by criteria." );
 //    AccountTable a = this.accountDAO.newTable();

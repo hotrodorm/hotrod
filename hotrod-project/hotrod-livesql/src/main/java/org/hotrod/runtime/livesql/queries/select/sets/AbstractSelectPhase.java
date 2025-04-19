@@ -1,5 +1,6 @@
 package org.hotrod.runtime.livesql.queries.select.sets;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import org.hotrod.cursors.Cursor;
@@ -56,7 +57,7 @@ public class AbstractSelectPhase<R> extends Select<R> {
   }
 
   @Override
-  public final Cursor<R> executeCursor() {
+  public final Cursor<R> executeCursor() throws SQLException {
     return this.combined.executeCursor(this.context);
   }
 
