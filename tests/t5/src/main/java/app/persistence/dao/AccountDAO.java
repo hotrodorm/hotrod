@@ -6,7 +6,6 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +32,6 @@ import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
-import org.hotrod.runtime.livesql.metadata.BooleanEntityColumn;
-import org.hotrod.runtime.livesql.metadata.DateTimeEntityColumn;
 import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.metadata.NumberEntityColumn;
 import org.hotrod.runtime.livesql.metadata.StringEntityColumn;
@@ -55,7 +52,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import app.IntegerBooleanConverter;
 import app.persistence.model.Account;
 
 @Component
@@ -88,10 +84,6 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   private LiveSQLContext context;
 
-  // CONVERTERS
-
-  private final IntegerBooleanConverter converter0 = new IntegerBooleanConverter();
-
   // ROW READER
 
   private final RowReader<Account> rowReader = new RowReader<Account>() {
@@ -100,31 +92,19 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     public Account readRowFrom(ResultSet rs, Connection conn) throws SQLException {
       Account row = applicationContext.getBean(Account.class);
 
-      Integer col1 = rs.getInt(1); // ID
+      Integer col1 = rs.getInt(1); // id
       if (rs.wasNull()) col1 = null;
       row.setId(col1);
 
-      String col2 = rs.getString(2); // NAME
+      String col2 = rs.getString(2); // name
       row.setName(col2);
 
-      String col3 = rs.getString(3); // TYPE
+      String col3 = rs.getString(3); // type
       row.setType(col3);
 
-      Integer col4 = rs.getInt(4); // BALANCE
+      Integer col4 = rs.getInt(4); // balance
       if (rs.wasNull()) col4 = null;
       row.setBalance(col4);
-
-      Integer raw5 = rs.getInt(5); // ACTIVE
-      if (rs.wasNull()) raw5 = null;
-      Boolean col5 = converter0.decode(raw5, conn);
-      row.setActive(col5);
-
-      Timestamp col6 = rs.getTimestamp(6); // UPDATED_AT
-      row.setUpdatedAt(col6);
-
-      Integer col7 = rs.getInt(7); // VERSION
-      if (rs.wasNull()) col7 = null;
-      row.setVersion(col7);
 
       return row;
     }
@@ -139,9 +119,6 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     private String name;
     private String type;
     private Integer balance;
-    private Boolean active;
-    private Timestamp updatedAt;
-    private Integer version;
 
     public Integer getId() {
       return this.id;
@@ -159,18 +136,6 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       return this.balance;
     }
 
-    public Boolean getActive() {
-      return this.active;
-    }
-
-    public Timestamp getUpdatedAt() {
-      return this.updatedAt;
-    }
-
-    public Integer getVersion() {
-      return this.version;
-    }
-
   }
 
   public AccountBaseline baseline(Account model) {
@@ -179,9 +144,6 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     b.name = model.getName();
     b.type = model.getType();
     b.balance = model.getBalance();
-    b.active = model.getActive();
-    b.updatedAt = model.getUpdatedAt();
-    b.version = model.getVersion();
     return b;
   };
 
@@ -195,10 +157,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .literaln("  id,")
       .literaln("  name,")
       .literaln("  type,")
-      .literaln("  balance,")
-      .literaln("  active,")
-      .literaln("  updated_at,")
-      .literaln("  version")
+      .literaln("  balance")
       .literaln("FROM account")
       .literaln("\nWHERE " + "id = ").parameter("f.id", Types.INTEGER)
       .endSelectQuery();
@@ -230,19 +189,13 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .literaln("  id,")
       .literaln("  name,")
       .literaln("  type,")
-      .literaln("  balance,")
-      .literaln("  active,")
-      .literaln("  updated_at,")
-      .literaln("  version")
+      .literaln("  balance")
       .literaln("FROM account")
       .where("AND", assembler.ifs()
         .if_("f.id != null", assembler.literal("id = ").parameter("f.id", Types.INTEGER).end())
         .if_("f.name != null", assembler.literal("name = ").parameter("f.name", Types.VARCHAR).end())
         .if_("f.type != null", assembler.literal("type = ").parameter("f.type", Types.VARCHAR).end())
         .if_("f.balance != null", assembler.literal("balance = ").parameter("f.balance", Types.INTEGER).end())
-        .if_("f.active != null", assembler.literal("active = ").parameter("f.active", Types.INTEGER).end())
-        .if_("f.updatedAt != null", assembler.literal("updated_at = ").parameter("f.updatedAt", Types.TIMESTAMP).end())
-        .if_("f.version != null", assembler.literal("version = ").parameter("f.version", Types.INTEGER).end())
         .end())
       .parameterInjection("ordering")
       .endSelectQuery();
@@ -274,24 +227,18 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   private void initializeInsert() {
     this.insert = assembler
       .literaln("INSERT INTO account (")
-      .if_("m.id != null", assembler.literal("id,\n").end())
+      .literaln("  id,")
       .literaln("  name,")
       .literaln("  type,")
-      .literaln("  balance,")
-      .literaln("  active,")
-      .literaln("  updated_at,")
-      .literaln("  version")
+      .literaln("  balance")
       .literaln(")")
       .literaln("VALUES(")
-      .if_("m.id != null", assembler.parameter("m.id", Types.INTEGER).literal(", ").end())
+      .literal("  NEXTVAL('seq_account')").literaln(",")
       .literal("  ").parameter("m.name", Types.VARCHAR).literaln(",")
       .literal("  ").parameter("m.type", Types.VARCHAR).literaln(",")
-      .literal("  ").parameter("m.balance", Types.INTEGER).literaln(",")
-      .literal("  ").parameter("m.active", Types.INTEGER).literaln(",")
-      .literal("  ").parameter("m.updatedAt", Types.TIMESTAMP).literaln(",")
-      .literal("  ").parameter("m.version", Types.INTEGER)
+      .literal("  ").parameter("m.balance", Types.INTEGER)
       .literal(")")
-      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
+      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET);
   }
 
   public void insert(Account model) throws DynamicExpressionException, SQLException {
@@ -315,21 +262,15 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .if_("m.id != null", assembler.literal("id,\n").end())
       .if_("m.name != null", assembler.literal("name,\n").end())
       .if_("m.type != null", assembler.literal("type,\n").end())
-      .if_("m.balance != null", assembler.literal("balance,\n").end())
-      .if_("m.active != null", assembler.literal("active,\n").end())
-      .if_("m.updatedAt != null", assembler.literal("updated_at,\n").end())
-      .if_("m.version != null", assembler.literal("version\n").end())
+      .if_("m.balance != null", assembler.literal("balance\n").end())
       .literaln(")")
       .literaln("VALUES(")
       .if_("m.id != null", assembler.parameter("m.id", Types.INTEGER).literal(", ").end())
       .if_("m.name != null", assembler.parameter("m.name", Types.VARCHAR).literal(", ").end())
       .if_("m.type != null", assembler.parameter("m.type", Types.VARCHAR).literal(", ").end())
-      .if_("m.balance != null", assembler.parameter("m.balance", Types.INTEGER).literal(", ").end())
-      .if_("m.active != null", assembler.parameter("m.active", Types.INTEGER).literal(", ").end())
-      .if_("m.updatedAt != null", assembler.parameter("m.updatedAt", Types.TIMESTAMP).literal(", ").end())
-      .if_("m.version != null", assembler.parameter("m.version", Types.INTEGER).end())
+      .if_("m.balance != null", assembler.parameter("m.balance", Types.INTEGER).end())
       .literal(")")
-      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
+      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET);
   }
 
   public void insertByExample(Account model) throws DynamicExpressionException, SQLException {
@@ -354,10 +295,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .literal("  id = ").parameter("m.id", Types.INTEGER).literaln(",")
       .literal("  name = ").parameter("m.name", Types.VARCHAR).literaln(",")
       .literal("  type = ").parameter("m.type", Types.VARCHAR).literaln(",")
-      .literal("  balance = ").parameter("m.balance", Types.INTEGER).literaln(",")
-      .literal("  active = ").parameter("m.active", Types.INTEGER).literaln(",")
-      .literal("  updated_at = ").parameter("m.updatedAt", Types.TIMESTAMP).literaln(",")
-      .literal("  version = ").parameter("m.version", Types.INTEGER)
+      .literal("  balance = ").parameter("m.balance", Types.INTEGER)
       .literaln("\nWHERE " + "id = ").parameter("m.id", Types.INTEGER)
     .endModificationQuery();
   }
@@ -386,18 +324,12 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
         .if_("v.name != null", assembler.literal("name = ").parameter("v.name", Types.VARCHAR).end())
         .if_("v.type != null", assembler.literal("type = ").parameter("v.type", Types.VARCHAR).end())
         .if_("v.balance != null", assembler.literal("balance = ").parameter("v.balance", Types.INTEGER).end())
-        .if_("v.active != null", assembler.literal("active = ").parameter("v.active", Types.INTEGER).end())
-        .if_("v.updatedAt != null", assembler.literal("updated_at = ").parameter("v.updatedAt", Types.TIMESTAMP).end())
-        .if_("v.version != null", assembler.literal("version = ").parameter("v.version", Types.INTEGER).end())
         .end())
       .where("AND", assembler.ifs()
         .if_("e.id != null", assembler.literal("id = ").parameter("e.id", Types.INTEGER).end())
         .if_("e.name != null", assembler.literal("name = ").parameter("e.name", Types.VARCHAR).end())
         .if_("e.type != null", assembler.literal("type = ").parameter("e.type", Types.VARCHAR).end())
         .if_("e.balance != null", assembler.literal("balance = ").parameter("e.balance", Types.INTEGER).end())
-        .if_("e.active != null", assembler.literal("active = ").parameter("e.active", Types.INTEGER).end())
-        .if_("e.updatedAt != null", assembler.literal("updated_at = ").parameter("e.updatedAt", Types.TIMESTAMP).end())
-        .if_("e.version != null", assembler.literal("version = ").parameter("e.version", Types.INTEGER).end())
         .end())
       .endModificationQuery();
   }
@@ -423,9 +355,6 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     if (values.getName() != null) setters.add(new Setter(tableOrView.name, sql.val(values.getName())));
     if (values.getType() != null) setters.add(new Setter(tableOrView.type, sql.val(values.getType())));
     if (values.getBalance() != null) setters.add(new Setter(tableOrView.balance, sql.val(values.getBalance())));
-    if (values.getActive() != null) setters.add(new Setter(tableOrView.active, sql.val(values.getActive())));
-    if (values.getUpdatedAt() != null) setters.add(new Setter(tableOrView.updatedAt, sql.val(values.getUpdatedAt())));
-    if (values.getVersion() != null) setters.add(new Setter(tableOrView.version, sql.val(values.getVersion())));
     return new UpdateSetCompletePhase(this.context, tableOrView, setters, predicate);
   }
 
@@ -466,9 +395,6 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
         .if_("e.name != null", assembler.literal("name = ").parameter("e.name", Types.VARCHAR).end())
         .if_("e.type != null", assembler.literal("type = ").parameter("e.type", Types.VARCHAR).end())
         .if_("e.balance != null", assembler.literal("balance = ").parameter("e.balance", Types.INTEGER).end())
-        .if_("e.active != null", assembler.literal("active = ").parameter("e.active", Types.INTEGER).end())
-        .if_("e.updatedAt != null", assembler.literal("updated_at = ").parameter("e.updatedAt", Types.TIMESTAMP).end())
-        .if_("e.version != null", assembler.literal("version = ").parameter("e.version", Types.INTEGER).end())
         .end())
       .endModificationQuery();
   }
@@ -501,13 +427,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     TYPE("type", true),
     TYPE$DESC("type", false),
     BALANCE("balance", true),
-    BALANCE$DESC("balance", false),
-    ACTIVE("active", true),
-    ACTIVE$DESC("active", false),
-    UPDATED_AT("updated_at", true),
-    UPDATED_AT$DESC("updated_at", false),
-    VERSION("version", true),
-    VERSION$DESC("version", false);
+    BALANCE$DESC("balance", false);
 
     private String sqlColumnName;
     private boolean ascending;
@@ -542,35 +462,29 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     // Properties
 
     public final NumberEntityColumn id = new NumberEntityColumn(this,
-      "ID", "id", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
+      "id", "id", "int4", 10, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
     public final StringEntityColumn name = new StringEntityColumn(this,
-      "NAME", "name", "CHARACTER VARYING", 20, 0, TypeHandler.of(String.class, TypeSource.ENTITY_COLUMN));
+      "name", "name", "varchar", 20, 0, TypeHandler.of(String.class, TypeSource.ENTITY_COLUMN));
     public final StringEntityColumn type = new StringEntityColumn(this,
-      "TYPE", "type", "CHARACTER VARYING", 3, 0, TypeHandler.of(String.class, TypeSource.ENTITY_COLUMN));
+      "type", "type", "varchar", 3, 0, TypeHandler.of(String.class, TypeSource.ENTITY_COLUMN));
     public final NumberEntityColumn balance = new NumberEntityColumn(this,
-      "BALANCE", "balance", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
-    public final BooleanEntityColumn active = new BooleanEntityColumn(this,
-      "ACTIVE", "active", "INTEGER", 32, 0, TypeHandler.of(IntegerBooleanConverter.class, TypeSource.ENTITY_COLUMN));
-    public final DateTimeEntityColumn updatedAt = new DateTimeEntityColumn(this,
-      "UPDATED_AT", "updatedAt", "TIMESTAMP", 26, 6, TypeHandler.of(Timestamp.class, TypeSource.ENTITY_COLUMN));
-    public final NumberEntityColumn version = new NumberEntityColumn(this,
-      "VERSION", "version", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
+      "balance", "balance", "int4", 10, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this.id, this.name, this.type, this.balance, this.active, this.updatedAt, this.version);
+      return new AllColumns(this.id, this.name, this.type, this.balance);
     }
 
     // Constructors
 
     AccountTable() {
-      super(null, null, Name.of("ACCOUNT", false), "Table", null);
+      super(null, null, Name.of("account", false), "Table", null);
       initialize();
     }
 
     AccountTable(final String alias) {
-      super(null, null, Name.of("ACCOUNT", false), "Table", alias);
+      super(null, null, Name.of("account", false), "Table", alias);
       initialize();
     }
 
@@ -582,31 +496,8 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       super.columns.add(this.name);
       super.columns.add(this.type);
       super.columns.add(this.balance);
-      super.columns.add(this.active);
-      super.columns.add(this.updatedAt);
-      super.columns.add(this.version);
     }
 
-  }
-
-  // NITRO SELECT: findBigAccounts
-
-  private DynamicSelectQuery select0;
-
-  private void initializeSelect0() {
-    this.select0 = assembler
-      .literal("\nselect *\nfrom account\nwhere balance >= 300\n    ")
-      .endSelectQuery();
-  }
-
-  public List<Account> findBigAccounts() throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.assembler.newParameterContext();
-    PreparedSelectQuery<Account> preparedQuery = this.select0.prepare(context, Account.class);
-    logQuery(preparedQuery);
-    try (Connection conn = this.dataSource.getConnection()) {
-      List<Account> rows = preparedQuery.execute(conn, this.rowReader);
-      return rows;
-    }
   }
 
   @PostConstruct
@@ -621,7 +512,6 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     this.initializeUpdatebyexample();
     this.initializeDeletebypk();
     this.initializeDeletebyexample();
-    this.initializeSelect0();
   }
 
   private void logQuery(PreparedQuery preparedQuery) {

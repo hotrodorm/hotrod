@@ -80,9 +80,9 @@ public class App {
     a.setName("1010-4");
     a.setType("CHK");
     a.setBalance(100);
-    a.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
-    a.setActive(true);
-    a.setVersion(1);
+//    a.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
+//    a.setActive(true);
+//    a.setVersion(1);
     this.accountDAO.insert(a);
     System.out.println("--> a=" + a);
 
@@ -95,8 +95,8 @@ public class App {
     a.setName("1010-4");
     a.setType("CHK");
     a.setBalance(100);
-    a.setActive(true);
-    a.setVersion(1);
+//    a.setActive(true);
+//    a.setVersion(1);
     this.accountDAO.insertByExample(a);
     System.out.println("--> a=" + a);
 
@@ -160,7 +160,7 @@ public class App {
 //    }
 
     AccountTable a = this.accountDAO.newTable();
-    try (Cursor<Account> accounts = this.accountDAO.select(a, a.active).executeCursor();) {
+    try (Cursor<Account> accounts = this.accountDAO.select(a, sql.TRUE).executeCursor();) {
       System.out.println(">> Accounts:");
       accounts.forEach(r -> System.out.println(r));
     }
@@ -170,7 +170,7 @@ public class App {
   private void testLiveSQL() throws SQLException, DynamicExpressionException {
 
     AccountTable a = this.accountDAO.newTable();
-    List<Account> accounts = this.accountDAO.select(a, a.active).execute();
+    List<Account> accounts = this.accountDAO.select(a, a.balance.gt(500)).execute();
     System.out.println(">> Accounts:");
     accounts.forEach(r -> System.out.println(r));
 
