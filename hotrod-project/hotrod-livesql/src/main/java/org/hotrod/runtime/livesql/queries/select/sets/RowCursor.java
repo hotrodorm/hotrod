@@ -26,6 +26,8 @@ public class RowCursor<T> implements Cursor<T> {
 
       this.conn = context.getDataSource().getConnection();
       this.ps = conn.prepareStatement(q.getSQL());
+      
+      context.getLiveSQLDialect().enableSelectStreaming(this.ps);
 
       // 1. Apply parameters
 

@@ -1,5 +1,7 @@
 package org.hotrod.runtime.livesql.dialects;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,7 +17,6 @@ import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.LockingConcurrency;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.LockingMode;
-import org.hotrod.utils.Separator;
 import org.hotrod.runtime.livesql.queries.select.CrossJoin;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.InnerJoin;
@@ -29,12 +30,17 @@ import org.hotrod.runtime.livesql.queries.select.NaturalLeftOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.NaturalRightOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.RightOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.UnionJoin;
+import org.hotrod.utils.Separator;
 
 public class PostgreSQLDialect extends LiveSQLDialect {
 
   public PostgreSQLDialect(final boolean discovered, final String productName, final String productVersion,
       final int majorVersion, final int minorVersion) {
     super(discovered, productName, productVersion, majorVersion, minorVersion);
+  }
+
+  public void enableSelectStreaming(PreparedStatement ps) throws SQLException {
+    ps.setFetchSize(DEFAULT_FETCH_SIZE);
   }
 
   // WITH rendering
@@ -340,8 +346,8 @@ public class PostgreSQLDialect extends LiveSQLDialect {
       // String functions
 
       @Override
-      public void locate(final QueryWriter w, final GeneralStringExpression substring, final GeneralStringExpression string,
-          final GeneralNumberExpression from) {
+      public void locate(final QueryWriter w, final GeneralStringExpression substring,
+          final GeneralStringExpression string, final GeneralNumberExpression from) {
         if (from == null) {
           this.write(w, "strpos", string, substring);
         } else {
@@ -380,7 +386,8 @@ public class PostgreSQLDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void dateTime(final QueryWriter w, final GeneralDateTimeExpression date, final GeneralDateTimeExpression time) {
+      public void dateTime(final QueryWriter w, final GeneralDateTimeExpression date,
+          final GeneralDateTimeExpression time) {
         w.write("(");
         Helper.renderTo(date, w);
         w.write(" + ");

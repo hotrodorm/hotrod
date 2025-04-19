@@ -1,5 +1,7 @@
 package org.hotrod.runtime.livesql.dialects;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -28,6 +30,10 @@ public class HyperSQLDialect extends LiveSQLDialect {
   public HyperSQLDialect(final boolean discovered, final String productName, final String productVersion,
       final int majorVersion, final int minorVersion) {
     super(discovered, productName, productVersion, majorVersion, minorVersion);
+  }
+
+  public void enableSelectStreaming(PreparedStatement ps) throws SQLException {
+    // Nothing to do; streaming not available
   }
 
   // WITH rendering

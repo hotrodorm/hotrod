@@ -1,5 +1,7 @@
 package org.hotrod.runtime.livesql.dialects;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +35,10 @@ public class DerbyDialect extends LiveSQLDialect {
   public DerbyDialect(final boolean discovered, final String productName, final String productVersion,
       final int majorVersion, final int minorVersion) {
     super(discovered, productName, productVersion, majorVersion, minorVersion);
+  }
+
+  public void enableSelectStreaming(PreparedStatement ps) throws SQLException {
+    // Nothing to do; no streaming available
   }
 
   // WITH rendering
@@ -276,12 +282,14 @@ public class DerbyDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void dateTime(final QueryWriter w, final GeneralDateTimeExpression date, final GeneralDateTimeExpression time) {
+      public void dateTime(final QueryWriter w, final GeneralDateTimeExpression date,
+          final GeneralDateTimeExpression time) {
         throw new UnsupportedLiveSQLFeatureException("DATETIME() is not supported in Derby database");
       }
 
       @Override
-      public void extract(final QueryWriter w, final GeneralDateTimeExpression datetime, final DateTimeFieldExpression field) {
+      public void extract(final QueryWriter w, final GeneralDateTimeExpression datetime,
+          final DateTimeFieldExpression field) {
         throw new UnsupportedLiveSQLFeatureException("EXTRACT() is not supported in Derby database");
       }
 

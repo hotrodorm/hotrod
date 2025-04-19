@@ -1,5 +1,7 @@
 package org.hotrod.runtime.livesql.dialects;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +35,10 @@ public class SybaseASEDialect extends LiveSQLDialect {
   public SybaseASEDialect(final boolean discovered, final String productName, final String productVersion,
       final int majorVersion, final int minorVersion) {
     super(discovered, productName, productVersion, majorVersion, minorVersion);
+  }
+
+  public void enableSelectStreaming(PreparedStatement ps) throws SQLException {
+    // Nothing to do; streaming not available
   }
 
   // WITH rendering
@@ -261,8 +267,8 @@ public class SybaseASEDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void locate(final QueryWriter w, final GeneralStringExpression substring, final GeneralStringExpression string,
-          final GeneralNumberExpression from) {
+      public void locate(final QueryWriter w, final GeneralStringExpression substring,
+          final GeneralStringExpression string, final GeneralNumberExpression from) {
         if (from == null) {
           this.write(w, "charindex", substring, string);
         } else {
@@ -308,12 +314,14 @@ public class SybaseASEDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void dateTime(final QueryWriter w, final GeneralDateTimeExpression date, final GeneralDateTimeExpression time) {
+      public void dateTime(final QueryWriter w, final GeneralDateTimeExpression date,
+          final GeneralDateTimeExpression time) {
         throw new UnsupportedLiveSQLFeatureException("Sybase ASE does not suppor the DATETIME() function");
       }
 
       @Override
-      public void extract(final QueryWriter w, final GeneralDateTimeExpression datetime, final DateTimeFieldExpression field) {
+      public void extract(final QueryWriter w, final GeneralDateTimeExpression datetime,
+          final DateTimeFieldExpression field) {
         w.write("datepart(");
         Helper.renderTo(field, w);
         w.write(", ");

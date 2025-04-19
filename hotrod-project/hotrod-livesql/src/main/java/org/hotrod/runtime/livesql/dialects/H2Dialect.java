@@ -2,6 +2,8 @@ package org.hotrod.runtime.livesql.dialects;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetTime;
@@ -36,6 +38,10 @@ public class H2Dialect extends LiveSQLDialect {
   public H2Dialect(final boolean discovered, final String productName, final String productVersion,
       final int majorVersion, final int minorVersion) {
     super(discovered, productName, productVersion, majorVersion, minorVersion);
+  }
+
+  public void enableSelectStreaming(PreparedStatement ps) throws SQLException {
+    // Nothing to do; streaming not available
   }
 
   @Override
@@ -392,7 +398,8 @@ public class H2Dialect extends LiveSQLDialect {
       }
 
       @Override
-      public void dateTime(final QueryWriter w, final GeneralDateTimeExpression date, final GeneralDateTimeExpression time) {
+      public void dateTime(final QueryWriter w, final GeneralDateTimeExpression date,
+          final GeneralDateTimeExpression time) {
         w.write("(");
         Helper.renderTo(date, w);
         w.write(" + ");

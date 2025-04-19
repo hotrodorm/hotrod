@@ -1,5 +1,8 @@
 package org.hotrod.runtime.livesql.dialects;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 import org.hotrod.runtime.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.numbers.GeneralNumberExpression;
@@ -27,6 +30,10 @@ public class MariaDBDialect extends LiveSQLDialect {
   public MariaDBDialect(final boolean discovered, final String productName, final String productVersion,
       final int majorVersion, final int minorVersion) {
     super(discovered, productName, productVersion, majorVersion, minorVersion);
+  }
+
+  public void enableSelectStreaming(PreparedStatement ps) throws SQLException {
+    ps.setFetchSize(DEFAULT_FETCH_SIZE);
   }
 
   // WITH rendering

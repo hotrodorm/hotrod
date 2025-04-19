@@ -1,5 +1,7 @@
 package org.hotrod.runtime.livesql.dialects;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.exceptions.InvalidLiteralException;
@@ -13,7 +15,6 @@ import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.LockingConcurrency;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.LockingMode;
-import org.hotrod.utils.Separator;
 import org.hotrod.runtime.livesql.queries.select.CrossJoin;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.InnerJoin;
@@ -27,12 +28,17 @@ import org.hotrod.runtime.livesql.queries.select.NaturalLeftOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.NaturalRightOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.RightOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.UnionJoin;
+import org.hotrod.utils.Separator;
 
 public class OracleDialect extends LiveSQLDialect {
 
   public OracleDialect(final boolean discovered, final String productName, final String productVersion,
       final int majorVersion, final int minorVersion) {
     super(discovered, productName, productVersion, majorVersion, minorVersion);
+  }
+
+  public void enableSelectStreaming(PreparedStatement ps) throws SQLException {
+    // Nothing to do; streaming enabled by default
   }
 
   // WITH rendering
@@ -391,8 +397,8 @@ public class OracleDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void locate(final QueryWriter w, final GeneralStringExpression substring, final GeneralStringExpression string,
-          final GeneralNumberExpression from) {
+      public void locate(final QueryWriter w, final GeneralStringExpression substring,
+          final GeneralStringExpression string, final GeneralNumberExpression from) {
         if (from == null) {
           this.write(w, "instr", string, substring);
         } else {
@@ -432,7 +438,8 @@ public class OracleDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void dateTime(final QueryWriter w, final GeneralDateTimeExpression date, final GeneralDateTimeExpression time) {
+      public void dateTime(final QueryWriter w, final GeneralDateTimeExpression date,
+          final GeneralDateTimeExpression time) {
         w.write("to_date(to_char(");
         Helper.renderTo(date, w);
         w.write(", 'yyyymmdd') || ' ' || ");

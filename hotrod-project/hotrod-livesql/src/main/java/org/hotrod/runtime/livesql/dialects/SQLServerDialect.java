@@ -1,5 +1,7 @@
 package org.hotrod.runtime.livesql.dialects;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,7 +19,6 @@ import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.LockingConcurrency;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.LockingMode;
-import org.hotrod.utils.Separator;
 import org.hotrod.runtime.livesql.queries.select.CrossJoin;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.InnerJoin;
@@ -31,12 +32,17 @@ import org.hotrod.runtime.livesql.queries.select.NaturalLeftOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.NaturalRightOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.RightOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.UnionJoin;
+import org.hotrod.utils.Separator;
 
 public class SQLServerDialect extends LiveSQLDialect {
 
   public SQLServerDialect(final boolean discovered, final String productName, final String productVersion,
       final int majorVersion, final int minorVersion) {
     super(discovered, productName, productVersion, majorVersion, minorVersion);
+  }
+
+  public void enableSelectStreaming(PreparedStatement ps) throws SQLException {
+    // Nothing to do; streaming enabled by default
   }
 
   // WITH rendering
@@ -346,8 +352,8 @@ public class SQLServerDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void locate(final QueryWriter w, final GeneralStringExpression substring, final GeneralStringExpression string,
-          final GeneralNumberExpression from) {
+      public void locate(final QueryWriter w, final GeneralStringExpression substring,
+          final GeneralStringExpression string, final GeneralNumberExpression from) {
         if (from == null) {
           this.write(w, "charindex", substring, string);
         } else {
@@ -397,7 +403,8 @@ public class SQLServerDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void dateTime(final QueryWriter w, final GeneralDateTimeExpression date, final GeneralDateTimeExpression time) {
+      public void dateTime(final QueryWriter w, final GeneralDateTimeExpression date,
+          final GeneralDateTimeExpression time) {
         w.write("(");
         Helper.renderTo(date, w);
         w.write(" + ");
@@ -406,7 +413,8 @@ public class SQLServerDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void extract(final QueryWriter w, final GeneralDateTimeExpression datetime, final DateTimeFieldExpression field) {
+      public void extract(final QueryWriter w, final GeneralDateTimeExpression datetime,
+          final DateTimeFieldExpression field) {
         w.write("datepart(");
         Helper.renderTo(field, w);
         w.write(", ");

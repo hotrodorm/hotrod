@@ -1,5 +1,7 @@
 package org.hotrod.runtime.livesql.dialects;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -9,6 +11,8 @@ import org.hotrod.runtime.livesql.queries.select.SHelper;
 import org.hotrod.runtime.livesql.queries.typesolver.ResultSetColumnMetadata;
 
 public abstract class LiveSQLDialect {
+  
+  protected static final int DEFAULT_FETCH_SIZE = 50;
 
   private boolean discovered; // discovered or designated
   private String databaseName;
@@ -67,6 +71,8 @@ public abstract class LiveSQLDialect {
   protected String renderVersion() {
     return "" + databaseMajorVersion + "." + databaseMinorVersion + " (" + databaseVersion + ")";
   }
+  
+  
 
   // Parsing
 
@@ -93,6 +99,8 @@ public abstract class LiveSQLDialect {
   public Class<?> resolveColumnType(final ResultSetColumnMetadata m) {
     return null;
   }
+
+  public abstract void enableSelectStreaming(PreparedStatement ps) throws SQLException;
 
   public abstract WithRenderer getWithRenderer();
 
