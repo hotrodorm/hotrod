@@ -149,21 +149,21 @@ A converter is implemented. The database column "status" (type `INTEGER`) is rep
 This is correct:
 
 ```sql
-.where(t.status.eq("PEND")) // LiveSQL
+.where(t.status.eq("PEND")) --  LiveSQL
 WHERE t.status = 'PEND'     -- Valid SQL
 
-.where(t.status.ne("ACT"))  // Liv
-WHERE t.status <> 'ACT' -- Valid SQL
+.where(t.status.ne("ACT"))  // LiveSQL
+WHERE t.status <> 'ACT'     -- Valid SQL
 ```
 
 But this will fail:
 
 ```sql
-.where(t.status.gt("PEN"))
-WHERE t.status > 'PEN' -- Invalid SQL: status is int!
+.where(t.status.gt("PEN"))  // LiveSQL
+WHERE t.status > 'PEN'      -- Invalid SQL: status is int!
 
-.where(t.status.length().eq(3))
-WHERE length(t.status) = 3  -- Invalid SQL: status is int!
+.where(t.status.length().eq(3))  // LiveSQL
+WHERE length(t.status) = 3       -- Invalid SQL: status is int!
 ```
 
 Which operators should we consider?
