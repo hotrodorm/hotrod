@@ -129,11 +129,58 @@ Switch from `java-name` to `property` and from `java-type` to `type`. Affects:
 
 ## 6. Test Select Mode: Cursor
 
-This should be running correctly but it's not tested.
+DONE.
 
 ## 7. Implement `.parameterNullable()` in Dynamic SQL
 
 Differentiate between `.parameter(name)` and `.parameterNullable(name, jdbcType)`.
+
+## 8. Converter output parameters
+
+A converter is implemented to use a `status` value as String and to store it as INTEGER in the database.
+
+| App Value<br/>(Java String) | Stored<br/>(database INTEGER) |
+|:-:|:-:|
+| PEN  |                      1 |
+| RECH |                      2 |
+| ACT  |                      3 |
+| ANUL |                      4 |
+
+This is correct:
+
+```sql
+.where(t.status.eq("PEND"))
+WHERE t.status = 'PEND' -- Valid SQL
+```
+
+But this will fail:
+
+```sql
+.where(t.status.lenth().eq(3))
+WHERE length(t.status) = 3  -- Invalid SQL: status is int!
+```
+
+Which operators should we consider?
+
+```sql
+=
+<>
+>
+<
+>=
+<=
+between
+like
++
+-
+*
+/
+mod()
+abs()
+length()
+etc.
+```
+
 
 
 
