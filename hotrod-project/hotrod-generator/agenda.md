@@ -149,10 +149,10 @@ A converter is implemented. The database column "status" (type `INTEGER`) is rep
 This is correct:
 
 ```sql
-.where(t.status.eq("PEND"))
-WHERE t.status = 'PEND' -- Valid SQL
+.where(t.status.eq("PEND")) // LiveSQL
+WHERE t.status = 'PEND'     -- Valid SQL
 
-.where(t.status.ne("ACT"))
+.where(t.status.ne("ACT"))  // Liv
 WHERE t.status <> 'ACT' -- Valid SQL
 ```
 
