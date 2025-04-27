@@ -135,9 +135,9 @@ DONE.
 
 Differentiate between `.parameter(name)` and `.parameterNullable(name, jdbcType)`.
 
-## 8. Converter output parameters
+## 8. Converter Output Parameters
 
-A converter is implemented to use a `status` value as String and to store it as INTEGER in the database.
+A converter is implemented. The database column "status" (type `INTEGER`) is represented in Java as a `String` according to the following logic:
 
 | App Value<br/>(Java String) | Stored<br/>(database INTEGER) |
 |:-:|:-:|
@@ -151,12 +151,18 @@ This is correct:
 ```sql
 .where(t.status.eq("PEND"))
 WHERE t.status = 'PEND' -- Valid SQL
+
+.where(t.status.ne("ACT"))
+WHERE t.status <> 'ACT' -- Valid SQL
 ```
 
 But this will fail:
 
 ```sql
-.where(t.status.lenth().eq(3))
+.where(t.status.gt("PEN"))
+WHERE t.status > 'PEN' -- Invalid SQL: status is int!
+
+.where(t.status.length().eq(3))
 WHERE length(t.status) = 3  -- Invalid SQL: status is int!
 ```
 
@@ -181,6 +187,7 @@ length()
 etc.
 ```
 
+Maybe columns with converter should only implement `=` and `<>`.
 
 
 
