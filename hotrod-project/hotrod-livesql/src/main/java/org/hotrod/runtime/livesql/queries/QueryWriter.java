@@ -123,38 +123,38 @@ public class QueryWriter {
 
   // Prepared Query
 
-  public static class LiveSQLPreparedQuery {
-
-    private String sql;
-    private LinkedHashMap<String, Object> parameters;
-    private LinkedHashMap<String, Expression> queryColumns;
-
-    public LiveSQLPreparedQuery(final String sql, final LinkedHashMap<String, Object> parameters,
-        final LinkedHashMap<String, Expression> queryColumns) {
-      this.sql = sql;
-      this.parameters = parameters;
-      this.queryColumns = queryColumns;
-    }
-
-    public String getSQL() {
-      return sql;
-    }
-
-    public LinkedHashMap<String, Object> getParameters() {
-      return parameters;
-    }
-
-    public LinkedHashMap<String, Expression> getQueryColumns() {
-      return queryColumns;
-    }
-
-    public LinkedHashMap<String, Object> getConsolidatedParameters() {
-      LinkedHashMap<String, Object> c = new LinkedHashMap<String, Object>();
-      c.putAll(this.parameters);
-      c.put("sql", this.sql);
-      return c;
-    }
-
-  }
+//  public static class LiveSQLPreparedQuery {
+//
+//    private String sql;
+//    private LinkedHashMap<String, Object> parameters;
+//    private LinkedHashMap<String, Expression> queryColumns;
+//
+//    public LiveSQLPreparedQuery(final String sql, final LinkedHashMap<String, Object> parameters,
+//        final LinkedHashMap<String, Expression> queryColumns) {
+//      this.sql = sql;
+//      this.parameters = parameters;
+//      this.queryColumns = queryColumns;
+//    }
+//
+//    public String getSQL() {
+//      return sql;
+//    }
+//
+//    public LinkedHashMap<String, Object> getParameters() {
+//      return parameters;
+//    }
+//
+//    public LinkedHashMap<String, Expression> getQueryColumns() {
+//      return queryColumns;
+//    }
+//
+//    public LinkedHashMap<String, Object> getConsolidatedParameters() {
+//      LinkedHashMap<String, Object> c = new LinkedHashMap<String, Object>();
+//      c.putAll(this.parameters);
+//      c.put("sql", this.sql);
+//      return c;
+//    }
+//
+//  }
 
 }

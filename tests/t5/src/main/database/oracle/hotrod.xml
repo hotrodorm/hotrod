@@ -2,19 +2,27 @@
 
   <generators>
     <jdbc>
-      <daos package="app.daos" dao-suffix="DAO" vo-suffix="" abstract-vo-prefix="" abstract-vo-suffix="Prototype" />
+    <!--
+    <jdbc base-dir="" package="" qualifier="">
+       <dao prefix="" suffix="" base-dir="" subpackage="" />
+       <layout prefix="" suffix="" base-dir="" subpackage="" />
+       <model prefix="" suffix="" base-dir="" subpackage="" />
+        -->
     </jdbc>
   </generators>
   
-  <type-solver>
-    <when test="typeName == 'DATE'" java-type="java.sql.Date" />
-  </type-solver>
-
-  <converter name="boolean_stored_as_int"
+  <converter name="util_SN_to_Boolean"
     java-type="java.lang.Boolean"
-    java-raw-type="java.lang.Integer"
-    class="app.IntegerBooleanConverter"
+    java-raw-type="java.lang.String"
+    class="app.StringBooleanConverter"
   />
+
+  <table name="A" java-name="A">
+    <column name="ID" java-name="id" />
+    <column name="FECHA" java-name="fecha" java-type="java.sql.Timestamp" />
+    <column name="ES_ACTIVO" java-name="esActivo" converter="util_SN_to_Boolean" />
+  </table>
+
 
 <!-- 
   <table name="chars" />
@@ -26,12 +34,10 @@
   <table name="branch">
     <column name="is_vip" converter="boolean_stored_as_int" />
   </table>
--->
   <table name="account">
     <column name="id" sequence="seq_account" />
-  <!--
-      -->
   </table>
+-->
 
 <!-- 
   <fragment file="./reporting.xml" />

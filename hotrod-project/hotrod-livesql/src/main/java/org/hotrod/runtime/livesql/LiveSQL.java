@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
+import org.hotrod.livesql.Row;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;
@@ -139,8 +140,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import org.hotrod.livesql.Row;
-
 @Component
 public class LiveSQL {
 
@@ -174,10 +173,9 @@ public class LiveSQL {
 
   @PostConstruct
   private void initialize() {
-    log.info(">>>>>>>>>>> initializing");
     List<TypeRule> customRules = persistenceLayerConfigFactory.getCustomRules(null);
     this.typeSolver = new TypeSolver(customRules, this.liveSQLDialect);
-    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, this.typeSolver);
+    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, this.typeSolver, log);
   }
 
   // Select

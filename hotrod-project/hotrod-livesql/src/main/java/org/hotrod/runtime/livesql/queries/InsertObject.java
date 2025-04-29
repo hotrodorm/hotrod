@@ -10,9 +10,7 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.metadata.EntityColumn;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
-import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.select.SelectObject;
-import org.hotrod.runtime.livesql.util.PreviewRenderer;
 
 public class InsertObject implements QueryObject {
 
@@ -41,9 +39,9 @@ public class InsertObject implements QueryObject {
     this.select = select;
   }
 
-  public String getPreview(final LiveSQLContext context) {
+  public String getPreview(final LiveSQLContext context, boolean includeParameters) {
     LiveSQLPreparedQuery pq = this.prepareQuery(context);
-    return PreviewRenderer.render(pq);
+    return pq.getPreview(includeParameters);
   }
 
   public int execute(final LiveSQLContext context) {

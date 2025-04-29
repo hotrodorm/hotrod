@@ -7,8 +7,6 @@ import java.sql.SQLException;
 import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
-import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
-import org.hotrod.runtime.livesql.util.PreviewRenderer;
 
 public class DeleteObject implements QueryObject {
 
@@ -27,9 +25,9 @@ public class DeleteObject implements QueryObject {
     this.wherePredicate = predicate;
   }
 
-  public String getPreview(final LiveSQLContext context) {
+  public String getPreview(final LiveSQLContext context, boolean includeParameters) {
     LiveSQLPreparedQuery pq = this.prepareQuery(context);
-    return PreviewRenderer.render(pq);
+    return pq.getPreview(includeParameters);
   }
 
   public int execute(final LiveSQLContext context) {

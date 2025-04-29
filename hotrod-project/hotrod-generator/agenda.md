@@ -131,6 +131,24 @@ Switch from `java-name` to `property` and from `java-type` to `type`. Affects:
 
 DONE.
 
+Using default fetch size:
+
+```java
+  AccountTable a = this.accountDAO.newTable();
+  try (Cursor<Account> accounts = this.accountDAO.select(a, a.balance.ge(100)).executeCursor();) {
+    accounts.forEach(r -> System.out.println(r));
+  }
+```
+
+Using specific fetch size:
+
+```java
+  AccountTable a = this.accountDAO.newTable();
+  try (Cursor<Account> accounts = this.accountDAO.select(a, a.balance.ge(100)).executeCursor(30);) {
+    accounts.forEach(r -> System.out.println(r));
+  }
+```
+
 ## 7. Implement `.parameterNullable()` in Dynamic SQL
 
 Differentiate between `.parameter(name)` and `.parameterNullable(name, jdbcType)`.
@@ -190,7 +208,13 @@ etc.
 Maybe columns with converter should only implement `=` and `<>`.
 
 
+## 9. Fix Logger
 
+Logger works well for CRUD operations, but not for Criteria queries.
+
+## 10. Dialects Default to java.time.*
+
+In 5.0 the dialect default types for DATE, TIME, and TIMESTAMP will be the java.time.* classes rather than the java.sql.Timestamp, java.sql.Date, or java.util.Date, or java.sql.Time.
 
 
 

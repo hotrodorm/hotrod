@@ -336,7 +336,7 @@ public class DAO {
     w.println("  @", Const.POST_CONSTRUCT);
     w.println("  public void initializeContext() {");
     w.println("    this.context = new ", LiveSQLContext.class, "(this.liveSQLDialect, this.dataSource, new ",
-        TypeSolver.class, "(null, this.liveSQLDialect));");
+        TypeSolver.class, "(null, this.liveSQLDialect), log);");
     w.println("    this.assembler = this.assemblerBean.getAssembler();");
     for (String ini : this.initializersInPostConstruct) {
       w.println("    this." + ini + "();");

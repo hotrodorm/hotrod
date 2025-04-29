@@ -15,8 +15,6 @@ import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpressio
 import org.hotrod.runtime.livesql.metadata.EntityColumn;
 import org.hotrod.runtime.livesql.metadata.MDHelper;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
-import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
-import org.hotrod.runtime.livesql.util.PreviewRenderer;
 
 public class UpdateObject implements QueryObject {
 
@@ -28,6 +26,7 @@ public class UpdateObject implements QueryObject {
 
   UpdateObject() {
     super();
+    log.fine("init");
   }
 
   void setTableOrView(final TableOrView from) {
@@ -42,9 +41,9 @@ public class UpdateObject implements QueryObject {
     this.wherePredicate = predicate;
   }
 
-  public String getPreview(final LiveSQLContext context) {
+  public String getPreview(final LiveSQLContext context, final boolean includeParameters) {
     LiveSQLPreparedQuery pq = this.prepareQuery(context);
-    return PreviewRenderer.render(pq);
+    return pq.getPreview(includeParameters);
   }
 
   public int execute(final LiveSQLContext context) {

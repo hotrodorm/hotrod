@@ -12,7 +12,8 @@ public class DeleteWherePhase implements DMLQuery {
 
   // Constructor
 
-  public DeleteWherePhase(final LiveSQLContext context, final DeleteObject delete, final GeneralBooleanExpression predicate) {
+  public DeleteWherePhase(final LiveSQLContext context, final DeleteObject delete,
+      final GeneralBooleanExpression predicate) {
     this.context = context;
     this.delete = delete;
     this.delete.setWherePredicate(predicate);
@@ -32,7 +33,12 @@ public class DeleteWherePhase implements DMLQuery {
 
   @Override
   public String getPreview() {
-    return this.delete.getPreview(this.context);
+    return this.delete.getPreview(this.context, false);
+  }
+
+  @Override
+  public String getPreview(boolean includeParameters) {
+    return this.delete.getPreview(this.context, includeParameters);
   }
 
   // Execute

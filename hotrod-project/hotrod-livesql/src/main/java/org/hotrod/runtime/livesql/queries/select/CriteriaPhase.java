@@ -25,7 +25,6 @@ public abstract class CriteriaPhase<T> implements EntitySelect<T> {
   // execute
 
   public final List<T> execute() {
-    System.out.println("%%% 1");
     return this.select.execute(this.context, this.rowReader);
   }
 
@@ -37,7 +36,6 @@ public abstract class CriteriaPhase<T> implements EntitySelect<T> {
     return this.select.executeCursor(this.context, this.rowReader, fetchSize);
   }
 
-  
   public final T executeOne() {
     return this.select.executeOne(this.context);
   }
@@ -50,7 +48,12 @@ public abstract class CriteriaPhase<T> implements EntitySelect<T> {
 
   @Override
   public String getPreview() {
-    return this.select.getPreview(this.context);
+    return this.select.getPreview(this.context, false);
+  }
+
+  @Override
+  public String getPreview(boolean includeParameters) {
+    return this.select.getPreview(this.context, includeParameters);
   }
 
 }

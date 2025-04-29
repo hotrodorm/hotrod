@@ -16,7 +16,7 @@ public abstract class PreparedQuery {
     this.parameters = parameters;
   }
 
-  private static final int MAX_DISPLAY_VALUE = 100;
+  public static final int MAX_DISPLAY_VALUE = 100;
 
   public String getPreview() {
     return this.getPreview(false);

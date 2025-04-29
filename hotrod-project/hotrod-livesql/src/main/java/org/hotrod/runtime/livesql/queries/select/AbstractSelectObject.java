@@ -31,9 +31,9 @@ import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.OHelper;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import org.hotrod.runtime.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.QueryObject;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
-import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;
 import org.hotrod.runtime.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.runtime.livesql.queries.select.sets.MultiSet;
@@ -375,7 +375,6 @@ public abstract class AbstractSelectObject<T> extends MultiSet<T> implements Que
 
   @Override
   public List<T> execute(LiveSQLContext context, RowReader<T> rowReader) {
-    System.out.println("%%% 2");
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     return executeLiveSQL(context, q, false, rowReader);
   }

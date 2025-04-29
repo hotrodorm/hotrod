@@ -28,7 +28,12 @@ public class DeleteFromPhase implements DMLQuery {
 
   @Override
   public String getPreview() {
-    return this.delete.getPreview(this.context);
+    return this.delete.getPreview(this.context, false);
+  }
+
+  @Override
+  public String getPreview(boolean includeParameters) {
+    return this.delete.getPreview(this.context, includeParameters);
   }
 
   // Execute

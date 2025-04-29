@@ -75,7 +75,12 @@ public class AbstractSelectPhase<R> extends Select<R> {
 
   @Override
   public final String getPreview() {
-    return this.combined.getPreview(this.context);
+    return this.combined.getPreview(this.context, false);
+  }
+
+  @Override
+  public final String getPreview(boolean includeParameters) {
+    return this.combined.getPreview(this.context, includeParameters);
   }
 
 }

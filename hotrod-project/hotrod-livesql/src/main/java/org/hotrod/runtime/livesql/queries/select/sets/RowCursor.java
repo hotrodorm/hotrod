@@ -10,7 +10,7 @@ import java.util.Iterator;
 import org.hotrod.cursors.Cursor;
 import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
-import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
+import org.hotrod.runtime.livesql.queries.LiveSQLPreparedQuery;
 
 public class RowCursor<T> implements Cursor<T> {
 
@@ -19,14 +19,14 @@ public class RowCursor<T> implements Cursor<T> {
   private ResultSet rs;
   private RowReader<T> rowReader;
 
-  public RowCursor(final LiveSQLContext context, final LiveSQLPreparedQuery q, final RowReader<T> rowReader, final Integer fetchSize)
-      throws SQLException {
+  public RowCursor(final LiveSQLContext context, final LiveSQLPreparedQuery q, final RowReader<T> rowReader,
+      final Integer fetchSize) throws SQLException {
 
     try {
 
       this.conn = context.getDataSource().getConnection();
       this.ps = conn.prepareStatement(q.getSQL());
-      
+
       context.getLiveSQLDialect().enableSelectStreaming(this.ps, fetchSize);
 
       // 1. Apply parameters

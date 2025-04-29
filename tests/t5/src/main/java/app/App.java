@@ -2,15 +2,12 @@ package app;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.cursors.Cursor;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.assembler.QueryAssembler;
-import org.hotrod.livesql.Row;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -36,11 +33,14 @@ public class App {
   private static final Logger log = Logger.getLogger(App.class.getName());
 
   static {
-//    JULCustomFormat4ter.initialize(Level.FINER);
+//    JULCustomFormatter.initialize(Level.FINER);
   }
 
   @Autowired
   private AccountDAO accountDAO;
+
+//  @Autowired
+//  private ADAO aDAO;
 
 //  @Autowired
 //  private ReportingDAO reportingDAO;
@@ -57,8 +57,9 @@ public class App {
     return args -> {
       log.info("[ Starting... ]");
 //      test();
-//      testLiveSQL();
-      testLiveSQLCursor();
+      testLiveSQL();
+//      testLiveSQLCursor();
+//      testConverter5();
 //      testOptimisticLocking();
       log.info("[ Ending ]");
     };
@@ -151,6 +152,23 @@ public class App {
     System.out.println("Deleted b.");
   }
 
+//  private void testConverter5() throws SQLException, DynamicExpressionException, IOException {
+//    ATable a = this.aDAO.newTable();
+//
+//    System.out.println(">> query 1");
+//
+//    Select<Row> q = this.sql.select(a.star()).from(a)
+////        .where(a.esActivo.eq(true))
+//    ;
+//    System.out.println(">> q:" + q.getPreview());
+//
+//    List<Row> lista = q.execute();
+//
+//    System.out.println(">> A:");
+//    lista.forEach(r -> System.out.println(r));
+//
+//  }
+
   private void testLiveSQLCursor() throws SQLException, DynamicExpressionException, IOException {
 
 //    try (Cursor<Row> rows = this.sql.select(sql.val(7).mult(3).as("answer"), sql.ONE.as("one"))
@@ -164,15 +182,18 @@ public class App {
       System.out.println(">> Accounts:");
       accounts.forEach(r -> System.out.println(r));
     }
-    
+
   }
 
   private void testLiveSQL() throws SQLException, DynamicExpressionException {
 
-    AccountTable a = this.accountDAO.newTable();
-    List<Account> accounts = this.accountDAO.select(a, a.balance.gt(500)).execute();
-    System.out.println(">> Accounts:");
-    accounts.forEach(r -> System.out.println(r));
+    Account ax = this.accountDAO.select(123);
+    System.out.println(">> Account 123: " + ax);
+
+//    AccountTable a = this.accountDAO.newTable();
+//    List<Account> accounts = this.accountDAO.select(a, a.balance.gt(500)).execute();
+//    System.out.println(">> Accounts:");
+//    accounts.forEach(r -> System.out.println(r));
 
 //    Row row = this.sql.select(sql.val(7).mult(3).as("answer")).executeOne();
 //    System.out.println("Row=" + row);

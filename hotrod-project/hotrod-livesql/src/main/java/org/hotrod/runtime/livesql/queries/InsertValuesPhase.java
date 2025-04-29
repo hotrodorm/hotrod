@@ -20,7 +20,12 @@ public class InsertValuesPhase implements DMLQuery {
 
   @Override
   public String getPreview() {
-    return this.insert.getPreview(this.context);
+    return this.insert.getPreview(this.context, false);
+  }
+
+  @Override
+  public String getPreview(boolean includeParameters) {
+    return this.insert.getPreview(this.context, includeParameters);
   }
 
   // Execute

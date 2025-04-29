@@ -1,5 +1,18 @@
 package org.hotrod.dynamicsql.segments;
 
+/**
+ * <pre>
+ * - QuerySegment
+     - StaticSegment
+       - ParameterSegment
+         - TypedParameterSegment
+           - ParameterInstanceValueSegment
+         - VariableInstanceValueSegment
+       - ParameterInjectionSegment
+     - ParameterOccurenceSegment
+ * </pre>
+ */
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 

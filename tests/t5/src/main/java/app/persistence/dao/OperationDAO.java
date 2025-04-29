@@ -150,7 +150,7 @@ public class OperationDAO implements Serializable, ApplicationContextAware {
 
   @PostConstruct
   public void initializeContext() {
-    this.context = new LiveSQLContext(this.liveSQLDialect, this.dataSource, new TypeSolver(null, this.liveSQLDialect));
+    this.context = new LiveSQLContext(this.liveSQLDialect, this.dataSource, new TypeSolver(null, this.liveSQLDialect), log);
     this.assembler = this.assemblerBean.getAssembler();
     this.initializeQuery0();
     this.initializeSelect0();

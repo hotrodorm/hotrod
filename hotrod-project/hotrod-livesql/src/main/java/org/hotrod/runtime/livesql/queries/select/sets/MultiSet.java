@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.hotrod.cursors.Cursor;
@@ -13,12 +14,11 @@ import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
+import org.hotrod.runtime.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
-import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.TableExpression;
-import org.hotrod.runtime.livesql.util.PreviewRenderer;
 
 public abstract class MultiSet<T> {
 
@@ -59,10 +59,9 @@ public abstract class MultiSet<T> {
 
   public abstract T executeOne(final LiveSQLContext context);
 
-  public String getPreview(final LiveSQLContext context) {
-    log.fine("previewing");
+  public String getPreview(final LiveSQLContext context, final boolean includeParameters) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    return PreviewRenderer.render(q);
+    return q.getPreview(includeParameters);
   }
 
   protected LiveSQLPreparedQuery prepareQuery(final LiveSQLContext context) {
@@ -94,7 +93,13 @@ public abstract class MultiSet<T> {
   }
 
   protected List<T> executeLiveSQL(final LiveSQLContext context, final LiveSQLPreparedQuery q, final boolean singleRow,
-      RowReader<T> rowReader) {
+      final RowReader<T> rowReader) {
+
+    if (context.getLogger().isLoggable(Level.FINER)) {
+      context.getLogger().finer("SQL: " + q.getPreview(false));
+    } else if (context.getLogger().isLoggable(Level.FINE)) {
+      context.getLogger().fine("SQL: " + q.getPreview(true));
+    }
 
     List<T> rows = new ArrayList<>();
     try (Connection conn = context.getDataSource().getConnection()) {
@@ -113,9 +118,8 @@ public abstract class MultiSet<T> {
 
         try (ResultSet rs = ps.executeQuery()) {
 
-          if (rowReader == null) {
-            rowReader = new GenericRowReader<>(context, q, rs);
-          }
+          final RowReader<T> effectiveRowReader = rowReader != null ? rowReader
+              : new GenericRowReader<>(context, q, rs);
 
           int count = 0;
           while (rs.next()) {
@@ -123,7 +127,7 @@ public abstract class MultiSet<T> {
             if (singleRow && count > 1) {
               throw new LiveSQLException("A single row at most was expected by this query but received at least two");
             }
-            T row = rowReader.readRowFrom(rs, conn);
+            T row = effectiveRowReader.readRowFrom(rs, conn);
             rows.add(row);
           }
           return rows;

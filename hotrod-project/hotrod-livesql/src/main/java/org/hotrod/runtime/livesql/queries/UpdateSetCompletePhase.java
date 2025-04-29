@@ -69,7 +69,12 @@ public class UpdateSetCompletePhase implements DMLQuery {
 
   @Override
   public String getPreview() {
-    return this.update.getPreview(this.context);
+    return this.update.getPreview(this.context, false);
+  }
+
+  @Override
+  public String getPreview(boolean includeParameters) {
+    return this.update.getPreview(this.context, includeParameters);
   }
 
   // Execute

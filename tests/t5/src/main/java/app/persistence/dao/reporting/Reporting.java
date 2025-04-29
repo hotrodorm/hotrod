@@ -54,7 +54,7 @@ public class Reporting implements Serializable, ApplicationContextAware {
 
   @PostConstruct
   public void initializeContext() {
-    this.context = new LiveSQLContext(this.liveSQLDialect, this.dataSource, new TypeSolver(null, this.liveSQLDialect));
+    this.context = new LiveSQLContext(this.liveSQLDialect, this.dataSource, new TypeSolver(null, this.liveSQLDialect), log);
     this.assembler = this.assemblerBean.getAssembler();
   }
 

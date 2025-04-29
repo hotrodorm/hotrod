@@ -17,7 +17,7 @@ import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
-import org.hotrod.runtime.livesql.queries.QueryWriter.LiveSQLPreparedQuery;
+import org.hotrod.runtime.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.runtime.livesql.queries.typesolver.ResultSetColumnMetadata;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeRule.CouldNotResolveResultSetDataTypeException;
