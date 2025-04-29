@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
-import org.hotrod.database.DatabaseAdapter.InsertIntegration;
 import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
@@ -127,15 +126,15 @@ public class OracleAdapter extends DatabaseAdapter {
 
     case Types.TIMESTAMP:
       return "DATE".equalsIgnoreCase(m.getTypeName()) ? new PropertyType(java.util.Date.class, m, false)
-          : new PropertyType(java.sql.Timestamp.class, m, false);
+          : new PropertyType(java.time.LocalDateTime.class, m, false);
 
     case -101: // timestamp with time zone.
       // Invalid JDBC type (-101) reported by the Oracle JDBC Driver.
-      return new PropertyType(java.sql.Timestamp.class, JDBCType.TIMESTAMP, false);
+      return new PropertyType(java.time.ZonedDateTime.class, JDBCType.TIMESTAMP, false);
 
     case -102: // timestamp with local time zone.
       // Invalid JDBC type (-102) reported by the Oracle JDBC Driver.
-      return new PropertyType(java.sql.Timestamp.class, JDBCType.TIMESTAMP, false);
+      return new PropertyType(java.time.ZonedDateTime.class, JDBCType.TIMESTAMP, false);
 
     // Binary types
 

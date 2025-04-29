@@ -4,10 +4,10 @@ package app.persistence.dao.reporting;
 
 import java.io.Serializable;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -33,9 +33,9 @@ import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
-import org.hotrod.runtime.livesql.metadata.DateTimeEntityColumn;
 import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.metadata.NumberEntityColumn;
+import org.hotrod.runtime.livesql.metadata.ObjectEntityColumn;
 import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
@@ -93,7 +93,7 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
     public Payment readRowFrom(ResultSet rs, Connection conn) throws SQLException {
       Payment row = applicationContext.getBean(Payment.class);
 
-      Date col1 = rs.getDate(1); // PAYMENT_DATE
+      LocalDate col1 = rs.getObject(1, java.time.LocalDate.class); // PAYMENT_DATE
       row.setPaymentDate(col1);
 
       Integer col2 = rs.getInt(2); // INVOICE_ID
@@ -113,11 +113,11 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
 
   public class PaymentBaseline {
 
-    private Date paymentDate;
+    private LocalDate paymentDate;
     private Integer invoiceId;
     private Integer amount;
 
-    public Date getPaymentDate() {
+    public LocalDate getPaymentDate() {
       return this.paymentDate;
     }
 
@@ -360,8 +360,8 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public final DateTimeEntityColumn paymentDate = new DateTimeEntityColumn(this,
-      "PAYMENT_DATE", "paymentDate", "DATE", 10, 0, TypeHandler.of(Date.class, TypeSource.ENTITY_COLUMN));
+    public final ObjectEntityColumn paymentDate = new ObjectEntityColumn(this,
+      "PAYMENT_DATE", "paymentDate", "DATE", 10, 0, TypeHandler.of(LocalDate.class, TypeSource.ENTITY_COLUMN));
     public final NumberEntityColumn invoiceId = new NumberEntityColumn(this,
       "INVOICE_ID", "invoiceId", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
     public final NumberEntityColumn amount = new NumberEntityColumn(this,

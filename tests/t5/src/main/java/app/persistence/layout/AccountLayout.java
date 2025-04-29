@@ -3,7 +3,7 @@
 package app.persistence.layout;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import org.hotrod.json.JSONObject;
 
@@ -18,7 +18,7 @@ public class AccountLayout implements Serializable {
   protected String type = null;
   protected Integer balance = null;
   protected Boolean active = null;
-  protected Timestamp updatedAt = null;
+  protected LocalDateTime updatedAt = null;
   protected Integer version = null;
 
   // getters & setters
@@ -63,11 +63,11 @@ public class AccountLayout implements Serializable {
     this.active = active;
   }
 
-  public Timestamp getUpdatedAt() {
+  public LocalDateTime getUpdatedAt() {
     return this.updatedAt;
   }
 
-  public void setUpdatedAt(final Timestamp updatedAt) {
+  public void setUpdatedAt(final LocalDateTime updatedAt) {
     this.updatedAt = updatedAt;
   }
 

@@ -95,11 +95,11 @@ public class DB2Adapter extends DatabaseAdapter {
       return new PropertyType(String.class, m, true);
 
     case Types.DATE:
-      return new PropertyType(java.sql.Date.class, m, false);
+      return new PropertyType(java.time.LocalDate.class, m, false);
     case Types.TIME:
-      return new PropertyType(java.sql.Time.class, m, false);
+      return new PropertyType(java.time.LocalTime.class, m, false);
     case Types.TIMESTAMP:
-      return new PropertyType(java.sql.Timestamp.class, m, false);
+      return new PropertyType(java.time.LocalDateTime.class, m, false);
 
     case Types.LONGVARBINARY:
       return new PropertyType("byte[]", m, false);

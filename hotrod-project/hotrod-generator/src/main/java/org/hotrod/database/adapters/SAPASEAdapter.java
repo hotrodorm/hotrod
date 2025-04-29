@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
-import org.hotrod.database.DatabaseAdapter.InsertIntegration;
 import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
@@ -127,21 +126,21 @@ public class SAPASEAdapter extends DatabaseAdapter {
     // Date/Time types
 
     case Types.DATE:
-      return new PropertyType(java.sql.Date.class, m, false);
+      return new PropertyType(java.time.LocalDate.class, m, false);
 
     case Types.TIMESTAMP:
-      return new PropertyType(java.sql.Timestamp.class, m, false);
+      return new PropertyType(java.time.LocalDateTime.class, m, false);
 
     case 10: // BIGTIME
       // Invalid JDBC type (10) reported by the SAP ASE JDBC Driver.
-      return new PropertyType(java.sql.Timestamp.class, JDBCType.TIMESTAMP, false);
+      return new PropertyType(java.time.LocalTime.class, JDBCType.TIMESTAMP, false);
 
     case 11: // BIGDATETIME
       // Invalid JDBC type (11) reported by the SAP ASE JDBC Driver.
-      return new PropertyType(java.sql.Timestamp.class, JDBCType.TIMESTAMP, false);
+      return new PropertyType(java.time.LocalDateTime.class, JDBCType.TIMESTAMP, false);
 
     case Types.TIME:
-      return new PropertyType(java.sql.Timestamp.class, m, false);
+      return new PropertyType(java.time.LocalTime.class, m, false);
 
     // LOB types
 

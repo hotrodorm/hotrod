@@ -119,18 +119,14 @@ public class SQLServerAdapter extends DatabaseAdapter {
     // Date/Time types
 
     case Types.DATE:
-      return new PropertyType(java.sql.Date.class, m, false);
+      return new PropertyType(java.time.LocalDate.class, m, false);
     case Types.TIME:
-      if (m.getScale() <= 3) {
-        return new PropertyType(java.sql.Time.class, m, false);
-      } else {
-        return new PropertyType(java.sql.Timestamp.class, m, false);
-      }
+      return new PropertyType(java.time.LocalTime.class, m, false);
     case Types.TIMESTAMP: // DATETIME, DATETIME2, SMALLDATETIME
-      return new PropertyType(java.sql.Timestamp.class, m, false);
+      return new PropertyType(java.time.LocalDateTime.class, m, false);
     case -155: // DATETIMEOFFSET
       // Invalid JDBC type (-155) reported by the SQL Server JDBC Driver.
-      return new PropertyType(java.sql.Timestamp.class, JDBCType.TIMESTAMP, false);
+      return new PropertyType(java.time.OffsetDateTime.class, JDBCType.TIMESTAMP, false);
 
     // Binary types
 

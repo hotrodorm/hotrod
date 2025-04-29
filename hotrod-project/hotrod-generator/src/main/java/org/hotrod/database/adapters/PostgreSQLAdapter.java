@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
-import org.hotrod.database.DatabaseAdapter.InsertIntegration;
 import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
@@ -138,23 +137,23 @@ public class PostgreSQLAdapter extends DatabaseAdapter {
 
     case java.sql.Types.DATE:
       if ("date".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(java.sql.Date.class, m, false);
+        return new PropertyType(java.time.LocalDate.class, m, false);
       }
       break;
 
     case java.sql.Types.TIME:
       if ("time".equals(m.getTypeName())) {
-        return new PropertyType(java.sql.Timestamp.class, m, false);
+        return new PropertyType(java.time.LocalTime.class, m, false);
       } else if ("timetz".equals(m.getTypeName())) {
-        return new PropertyType(java.sql.Timestamp.class, m, false);
+        return new PropertyType(java.time.OffsetTime.class, m, false);
       }
       break;
 
     case java.sql.Types.TIMESTAMP:
       if ("timestamp".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(java.sql.Timestamp.class, m, false);
+        return new PropertyType(java.time.LocalDateTime.class, m, false);
       } else if ("timestamptz".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(java.sql.Timestamp.class, m, false);
+        return new PropertyType(java.time.ZonedDateTime.class, m, false);
       }
       break;
 

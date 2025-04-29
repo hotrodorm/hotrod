@@ -6,8 +6,8 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.sql.Types;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -119,7 +119,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       Boolean col5 = converter0.decode(raw5, conn);
       row.setActive(col5);
 
-      Timestamp col6 = rs.getTimestamp(6); // UPDATED_AT
+      LocalDateTime col6 = rs.getObject(6, java.time.LocalDateTime.class); // UPDATED_AT
       row.setUpdatedAt(col6);
 
       Integer col7 = rs.getInt(7); // VERSION
@@ -140,7 +140,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     private String type;
     private Integer balance;
     private Boolean active;
-    private Timestamp updatedAt;
+    private LocalDateTime updatedAt;
     private Integer version;
 
     public Integer getId() {
@@ -163,7 +163,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       return this.active;
     }
 
-    public Timestamp getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
       return this.updatedAt;
     }
 
@@ -552,7 +552,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     public final BooleanEntityColumn active = new BooleanEntityColumn(this,
       "ACTIVE", "active", "INTEGER", 32, 0, TypeHandler.of(IntegerBooleanConverter.class, TypeSource.ENTITY_COLUMN));
     public final DateTimeEntityColumn updatedAt = new DateTimeEntityColumn(this,
-      "UPDATED_AT", "updatedAt", "TIMESTAMP", 26, 6, TypeHandler.of(Timestamp.class, TypeSource.ENTITY_COLUMN));
+      "UPDATED_AT", "updatedAt", "TIMESTAMP", 26, 6, TypeHandler.of(LocalDateTime.class, TypeSource.ENTITY_COLUMN));
     public final NumberEntityColumn version = new NumberEntityColumn(this,
       "VERSION", "version", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
 

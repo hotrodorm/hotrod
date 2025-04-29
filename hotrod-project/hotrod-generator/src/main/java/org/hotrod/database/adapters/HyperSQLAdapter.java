@@ -111,11 +111,11 @@ public class HyperSQLAdapter extends DatabaseAdapter {
       // Date/Time types
 
     case java.sql.Types.DATE:
-      return new PropertyType(java.sql.Date.class, m, false);
+      return new PropertyType(java.time.LocalDate.class, m, false);
     case java.sql.Types.TIME:
-      return new PropertyType(java.sql.Time.class, m, false);
+      return new PropertyType(java.time.LocalTime.class, m, false);
     case java.sql.Types.TIMESTAMP:
-      return new PropertyType(java.sql.Timestamp.class, m, false);
+      return new PropertyType(java.time.LocalDateTime.class, m, false);
 
     case java.sql.Types.BOOLEAN:
       return new PropertyType(Boolean.class, m, false);

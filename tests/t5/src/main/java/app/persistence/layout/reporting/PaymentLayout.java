@@ -3,7 +3,7 @@
 package app.persistence.layout.reporting;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.time.LocalDate;
 
 import org.hotrod.json.JSONObject;
 
@@ -13,17 +13,17 @@ public class PaymentLayout implements Serializable {
 
   // VO Properties (table columns)
 
-  protected Date paymentDate = null;
+  protected LocalDate paymentDate = null;
   protected Integer invoiceId = null;
   protected Integer amount = null;
 
   // getters & setters
 
-  public Date getPaymentDate() {
+  public LocalDate getPaymentDate() {
     return this.paymentDate;
   }
 
-  public void setPaymentDate(final Date paymentDate) {
+  public void setPaymentDate(final LocalDate paymentDate) {
     this.paymentDate = paymentDate;
   }
 
