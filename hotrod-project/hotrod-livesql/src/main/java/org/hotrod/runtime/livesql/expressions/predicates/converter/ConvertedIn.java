@@ -13,21 +13,19 @@ public class ConvertedIn<R, D> extends Predicate {
 
   private static final Logger log = Logger.getLogger(ConvertedIn.class.getName());
 
-  private ConvertedColumn<R, D> a;
-  private D[] d;
+  private ConvertedColumn<R, D> c;
   private TypeConverter<R, D> converter;
+  private D[] d;
 
-  public ConvertedIn(final ConvertedColumn<R, D> a, final TypeConverter<R, D> converter, final D... d) {
+  public ConvertedIn(final ConvertedColumn<R, D> c, final TypeConverter<R, D> converter, final D... d) {
     super(Expression.PRECEDENCE_EQ_NE_LT_LE_GT_GE);
-    this.a = a;
+    this.c = c;
     this.converter = converter;
-
     if (d.length == 0) {
       throw new RuntimeException("The IN operator must use a non-empty list of values, but none was provided.");
     }
-
     this.d = d;
-    super.register(this.a);
+    super.register(this.c);
   }
 
   @Override
@@ -35,7 +33,7 @@ public class ConvertedIn<R, D> extends Predicate {
 
     // 1. The column
 
-    super.renderInner(this.a, w);
+    super.renderInner(this.c, w);
 
     // 2. Operator open
 

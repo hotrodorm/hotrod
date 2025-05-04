@@ -5,9 +5,9 @@ import org.hotrod.runtime.livesql.expressions.predicates.IsNull;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 
-public abstract class GenericExpression extends Expression implements OrderingTerm {
+public abstract class ExistenceExpression extends Expression implements OrderingTerm {
 
-  protected GenericExpression(int precedence) {
+  protected ExistenceExpression(int precedence) {
     super(precedence);
   }
 

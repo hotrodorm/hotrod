@@ -1,12 +1,9 @@
 package org.hotrod.runtime.livesql.metadata;
 
-import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
-import org.hotrod.runtime.livesql.expressions.AliasedEntityColumn;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
-import org.hotrod.utils.SUtil;
 
 public class BooleanEntityColumn extends GeneralBooleanExpression implements EntityColumn {
 
@@ -43,15 +40,6 @@ public class BooleanEntityColumn extends GeneralBooleanExpression implements Ent
       w.write(".");
     }
     w.write(w.getSQLDialect().canonicalToNatural(this.name));
-  }
-
-  // Aliasing
-
-  public AliasedEntityColumn as(final String alias) {
-    if (SUtil.isEmpty(alias)) {
-      throw new LiveSQLException("An alias specified with the .as() method cannot be null");
-    }
-    return new AliasedEntityColumn(this, alias);
   }
 
   // Getters

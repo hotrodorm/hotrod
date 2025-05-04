@@ -12,14 +12,16 @@ import org.hotrod.dynamicsql.assembler.QueryAssembler;
 import org.hotrod.livesql.Row;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.SortableExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.expressions.predicates.converter.ConvertedCoalesce;
 import org.hotrod.runtime.livesql.expressions.predicates.converter.ConvertedColumn;
 import org.hotrod.runtime.livesql.expressions.predicates.converter.ConvertedEqual;
 import org.hotrod.runtime.livesql.expressions.predicates.converter.ConvertedIn;
 import org.hotrod.runtime.livesql.expressions.predicates.converter.ConvertedNotEqual;
 import org.hotrod.runtime.livesql.expressions.predicates.converter.ConvertedNotIn;
+import org.hotrod.runtime.livesql.expressions.predicates.converter.ConvertedNullIf;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
-import org.hotrod.runtime.livesql.ordering.OrderByDirectionPhase;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
@@ -186,7 +188,10 @@ public class App {
 
 //    SelectWherePhase<Row> q = this.sql.select().from(a).where(dactive.eq(true));
 //    SelectWherePhase<Row> q = this.sql.select().from(a).where(dtype.ne(AccountType.CHK));
-    Select<Row> q = this.sql.select().from(a).where(dtype.notIn(AccountType.CHK, AccountType.INV)).orderBy(dactive);
+    Select<Row> q = this.sql.select(a.balance.as("bal"), dactive.as("dac"), // 
+        dactive.coalesce(true).as("coa"), dtype.nullIf(AccountType.PEN).as("tnull")
+        ) //
+        .from(a).where(dtype.notIn(AccountType.CHK, AccountType.INV)).orderBy(dactive.desc());
 //    Select<Row> q = this.sql.select().from(a).where(dtype.notIn(AccountType.CHK, AccountType.INV)).orderBy(a.balance);
     System.out.println("query:\n" + q.getPreview(true));
     List<Row> rows = q.execute();
@@ -216,16 +221,12 @@ public class App {
       this.converter = converter;
     }
 
-//    public abstract E coalesce(final D d);
-//
-//    public abstract E nullIf(final D d);
-
     public Predicate eq(final D d) {
-      return new ConvertedEqual<R, D>(this, d, this.converter);
+      return new ConvertedEqual<R, D>(this, this.converter, d);
     }
 
     public Predicate ne(final D d) {
-      return new ConvertedNotEqual<R, D>(this, d, this.converter);
+      return new ConvertedNotEqual<R, D>(this, this.converter, d);
     }
 
     public Predicate in(final D... d) {
@@ -236,12 +237,13 @@ public class App {
       return new ConvertedNotIn<R, D>(this, this.converter, d);
     }
 
-//    public AliasedExpression as(final String alias) {
-//      if (SUtil.isEmpty(alias)) {
-//        throw new LiveSQLException("An alias specified with the .as() method cannot be null");
-//      }
-//      return new AliasedExpression(this, alias);
-//    }
+    public SortableExpression coalesce(final D d) {
+      return new ConvertedCoalesce<R, D>(this, this.converter, d);
+    }
+
+    public SortableExpression nullIf(final D d) {
+      return new ConvertedNullIf<R, D>(this, this.converter, d);
+    }
 
   }
 

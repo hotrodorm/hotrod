@@ -11,22 +11,12 @@ import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderByDirectionPhase;
 import org.hotrod.runtime.livesql.queries.select.Select;
 
-public abstract class EquatableExpression extends GenericExpression {
+public abstract class EquatableExpression extends SortableExpression {
 
   // Constructor
 
   protected EquatableExpression(final int precedence) {
     super(precedence);
-  }
-
-  // Column ordering
-
-  public final OrderByDirectionPhase asc() {
-    return new OrderByDirectionPhase(this, true);
-  }
-
-  public final OrderByDirectionPhase desc() {
-    return new OrderByDirectionPhase(this, false);
   }
 
   // In subquery
