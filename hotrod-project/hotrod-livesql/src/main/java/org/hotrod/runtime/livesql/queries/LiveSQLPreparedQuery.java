@@ -42,7 +42,7 @@ public class LiveSQLPreparedQuery {
   }
 
   public String getPreview(boolean includeParameters) {
-    if (includeParameters) {
+    if (!includeParameters) {
 
       return this.sql;
 

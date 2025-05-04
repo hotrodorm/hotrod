@@ -13,6 +13,7 @@ import org.hotrod.runtime.livesql.queries.select.SHelper;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.select.sets.CombinedSelectObject;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
+import org.hotrod.utils.SUtil;
 
 public abstract class Expression extends ResultSetColumn {
 
@@ -88,6 +89,16 @@ public abstract class Expression extends ResultSetColumn {
     this.tablesOrViews = expr.tablesOrViews;
     this.typeHandler = expr.typeHandler;
   }
+  
+//  // Aliasing
+//
+//  public final AliasedExpression as(final String alias) {
+//    if (SUtil.isEmpty(alias)) {
+//      throw new LiveSQLException("An alias specified with the .as() method cannot be null");
+//    }
+//    return new AliasedExpression(this, alias);
+//  }
+
 
   // Shielded getters
 

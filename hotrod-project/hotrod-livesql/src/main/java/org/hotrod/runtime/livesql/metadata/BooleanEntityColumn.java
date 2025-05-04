@@ -13,12 +13,10 @@ public class BooleanEntityColumn extends GeneralBooleanExpression implements Ent
   // Properties
 
   private TableOrView objectInstance;
-
   private String name;
   private String type;
   private Integer columnSize;
   private Integer decimalDigits;
-
   private String property;
 
   // Constructor

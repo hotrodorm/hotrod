@@ -5,10 +5,24 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.hotrod.converter.TypeConverter;
 import org.hotrod.cursors.Cursor;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.assembler.QueryAssembler;
+import org.hotrod.livesql.Row;
 import org.hotrod.runtime.livesql.LiveSQL;
+import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.expressions.predicates.converter.ConvertedColumn;
+import org.hotrod.runtime.livesql.expressions.predicates.converter.ConvertedEqual;
+import org.hotrod.runtime.livesql.expressions.predicates.converter.ConvertedIn;
+import org.hotrod.runtime.livesql.expressions.predicates.converter.ConvertedNotEqual;
+import org.hotrod.runtime.livesql.expressions.predicates.converter.ConvertedNotIn;
+import org.hotrod.runtime.livesql.metadata.TableOrView;
+import org.hotrod.runtime.livesql.ordering.OrderByDirectionPhase;
+import org.hotrod.runtime.livesql.queries.select.Select;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -18,6 +32,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import app.AccountTypeConverter.AccountType;
 import app.persistence.dao.AccountDAO;
 import app.persistence.dao.AccountDAO.AccountBaseline;
 import app.persistence.dao.AccountDAO.AccountTable;
@@ -57,9 +72,10 @@ public class App {
     return args -> {
       log.info("[ Starting... ]");
 //      test();
-      testLiveSQL();
+//      testLiveSQL();
 //      testLiveSQLCursor();
 //      testConverter5();
+      testConverter6();
 //      testOptimisticLocking();
       log.info("[ Ending ]");
     };
@@ -79,7 +95,7 @@ public class App {
   private void testOLInsert() throws DynamicExpressionException, SQLException {
     Account a = new Account();
     a.setName("1010-4");
-    a.setType("CHK");
+    a.setType(AccountType.CHK);
     a.setBalance(100);
 //    a.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
 //    a.setActive(true);
@@ -94,7 +110,7 @@ public class App {
   private void testOLInsertByExample() throws DynamicExpressionException, SQLException {
     Account a = new Account();
     a.setName("1010-4");
-    a.setType("CHK");
+    a.setType(AccountType.CHK);
     a.setBalance(100);
 //    a.setActive(true);
 //    a.setVersion(1);
@@ -150,6 +166,83 @@ public class App {
 
     this.accountDAO.delete(b);
     System.out.println("Deleted b.");
+  }
+
+  private void testConverter6() throws SQLException, DynamicExpressionException, IOException {
+
+    AccountTable a = this.accountDAO.newTable();
+
+    TypeHandler th = TypeHandler.of(IntegerBooleanConverter.class, TypeSource.ENTITY_COLUMN);
+    @SuppressWarnings("unchecked")
+    TypeConverter<Integer, Boolean> converter = (TypeConverter<Integer, Boolean>) th.getConverter();
+    OneConvertedColumn<Integer, Boolean> dactive = new OneConvertedColumn<Integer, Boolean>(a, "ACTIVE", "active",
+        "INTEGER", 32, 0, TypeHandler.of(IntegerBooleanConverter.class, TypeSource.ENTITY_COLUMN), converter);
+
+    TypeHandler th2 = TypeHandler.of(AccountTypeConverter.class, TypeSource.ENTITY_COLUMN);
+    @SuppressWarnings("unchecked")
+    TypeConverter<String, AccountType> converter2 = (TypeConverter<String, AccountType>) th2.getConverter();
+    OneConvertedColumn<String, AccountType> dtype = new OneConvertedColumn<String, AccountType>(a, "TYPE", "type",
+        "VARCHAR", 3, 0, TypeHandler.of(IntegerBooleanConverter.class, TypeSource.ENTITY_COLUMN), converter2);
+
+//    SelectWherePhase<Row> q = this.sql.select().from(a).where(dactive.eq(true));
+//    SelectWherePhase<Row> q = this.sql.select().from(a).where(dtype.ne(AccountType.CHK));
+    Select<Row> q = this.sql.select().from(a).where(dtype.notIn(AccountType.CHK, AccountType.INV)).orderBy(dactive);
+//    Select<Row> q = this.sql.select().from(a).where(dtype.notIn(AccountType.CHK, AccountType.INV)).orderBy(a.balance);
+    System.out.println("query:\n" + q.getPreview(true));
+    List<Row> rows = q.execute();
+
+    for (Row r : rows) {
+      System.out.println("Row=" + r);
+    }
+  }
+
+  public class OneConvertedColumn<R, D> extends ConvertedColumn<R, D> {
+
+    private String type;
+    private Integer columnSize;
+    private Integer decimalDigits;
+    private String property;
+    private TypeConverter<R, D> converter;
+
+    public OneConvertedColumn(final TableOrView objectInstance, final String name, final String property,
+        final String type, final Integer columnSize, final Integer decimalDigits, final TypeHandler handler,
+        final TypeConverter<R, D> converter) {
+      super(Expression.PRECEDENCE_COLUMN, objectInstance, name);
+      this.property = property;
+      this.type = type;
+      this.columnSize = columnSize;
+      this.decimalDigits = decimalDigits;
+      super.setTypeHandler(handler);
+      this.converter = converter;
+    }
+
+//    public abstract E coalesce(final D d);
+//
+//    public abstract E nullIf(final D d);
+
+    public Predicate eq(final D d) {
+      return new ConvertedEqual<R, D>(this, d, this.converter);
+    }
+
+    public Predicate ne(final D d) {
+      return new ConvertedNotEqual<R, D>(this, d, this.converter);
+    }
+
+    public Predicate in(final D... d) {
+      return new ConvertedIn<R, D>(this, this.converter, d);
+    }
+
+    public Predicate notIn(final D... d) {
+      return new ConvertedNotIn<R, D>(this, this.converter, d);
+    }
+
+//    public AliasedExpression as(final String alias) {
+//      if (SUtil.isEmpty(alias)) {
+//        throw new LiveSQLException("An alias specified with the .as() method cannot be null");
+//      }
+//      return new AliasedExpression(this, alias);
+//    }
+
   }
 
 //  private void testConverter5() throws SQLException, DynamicExpressionException, IOException {

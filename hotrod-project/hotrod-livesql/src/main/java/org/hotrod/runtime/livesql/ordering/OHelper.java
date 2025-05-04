@@ -1,5 +1,7 @@
 package org.hotrod.runtime.livesql.ordering;
 
+import org.hotrod.runtime.livesql.expressions.EquatableExpression;
+import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 
 public class OHelper {
@@ -9,7 +11,12 @@ public class OHelper {
       OrderingExpression oe = (OrderingExpression) term;
       oe.renderTo(w);
     } catch (ClassCastException e) {
-      throw new RuntimeException("Could not render OrderingTerm of class " + term.getClass().getName());
+      try {
+        EquatableExpression ee = (EquatableExpression) term;
+        Helper.renderTo(ee, w);
+      } catch (ClassCastException e2) {
+        throw new RuntimeException("Could not render OrderingTerm of class " + term.getClass().getName());
+      }
     }
   }
 

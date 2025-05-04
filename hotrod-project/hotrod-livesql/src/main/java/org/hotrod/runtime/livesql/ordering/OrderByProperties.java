@@ -1,7 +1,7 @@
 package org.hotrod.runtime.livesql.ordering;
 
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
-import org.hotrod.runtime.livesql.expressions.ComparableExpression;
+import org.hotrod.runtime.livesql.expressions.EquatableExpression;
 import org.hotrod.runtime.livesql.expressions.Helper;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.utils.SUtil;
@@ -25,14 +25,14 @@ public class OrderByProperties {
 
   }
 
-  private ComparableExpression expression; // a.name, a.qty * a.price desc
+  private EquatableExpression expression; // a.name, a.qty * a.price desc
   private String alias; // "total" desc
   private Integer ordinal; // 1 desc
 
   private boolean ascending;
   private NullsOrdering nullsOrdering;
 
-  public OrderByProperties(final ComparableExpression expression, final boolean ascending) {
+  public OrderByProperties(final EquatableExpression expression, final boolean ascending) {
     if (expression == null) {
       throw new InvalidLiveSQLStatementException(
           "Cannot use null value as column ordering. " + "Please specify a non null column in the ORDER BY clause");

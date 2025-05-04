@@ -22,6 +22,9 @@
   <converter name="boolean_stored_as_int" java-type="java.lang.Boolean" java-raw-type="java.lang.Integer"
     class="app.IntegerBooleanConverter" />
 
+  <converter name="account_type_stored_as_char" java-type="app.AccountTypeConverter.AccountType" java-raw-type="java.lang.String"
+    class="app.AccountTypeConverter" />
+
   <table name="product" />
 
 <!--
@@ -55,6 +58,7 @@
     <optimistic-locking strategy="full-row-check" />
     <column name="id" sequence="seq1" />
  -->    
+    <column name="type" converter="account_type_stored_as_char" />
     <column name="active" converter="boolean_stored_as_int" />
 <!-- 
     <query method="activateBigAccounts">
@@ -70,12 +74,12 @@
  -->
  
 <!-- ###  
-  -->
     <select method="findBigAccounts">
 select *
 from account
 where balance >= 300
     </select> 
+  -->
   
   </table>
 
@@ -89,7 +93,6 @@ where balance >= 300
  -->
  
     <!-- ###
-  -->
    <dao name="OperationDAO">
 
     <query method="activateBigAccounts">
@@ -112,5 +115,6 @@ where balance >= 300
     </select> 
        
   </dao>
+  -->
 
 </hotrod>

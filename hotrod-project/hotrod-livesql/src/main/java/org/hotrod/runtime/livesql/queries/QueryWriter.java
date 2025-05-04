@@ -95,6 +95,7 @@ public class QueryWriter {
 
   public LiveSQLPreparedQuery getPreparedQuery(final List<Expression> columns) {
     LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+    log.info(">>> this.paramWriter.getParameters().size()=" + this.paramWriter.getParameters().size());
     for (QueryParameter p : this.paramWriter.getParameters()) {
       params.put(p.getName(), p.getValue());
     }
