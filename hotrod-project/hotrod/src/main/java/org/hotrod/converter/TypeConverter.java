@@ -41,12 +41,12 @@ import java.sql.SQLException;
  *         </ul>
  *
  * @param <R> The raw type read/written to the database.
- * @param <A> The domain (application) type.
+ * @param <D> The domain type.
  */
-public interface TypeConverter<R, A> {
+public interface TypeConverter<R, D> {
 
-  A decode(R raw, Connection conn) throws SQLException;
+  D decode(R raw, Connection conn) throws SQLException;
 
-  R encode(A domain, Connection conn) throws SQLException;
+  R encode(D domain, Connection conn) throws SQLException;
 
 }

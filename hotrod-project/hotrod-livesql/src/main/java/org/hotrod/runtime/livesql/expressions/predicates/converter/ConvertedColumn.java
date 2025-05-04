@@ -5,14 +5,17 @@ import org.hotrod.runtime.livesql.expressions.EquatableExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.SortableExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.metadata.EntityColumn;
+import org.hotrod.runtime.livesql.metadata.MDHelper;
+import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
 
-public class ConvertedColumn<R, D> extends EquatableExpression {
+public class ConvertedColumn<R, D> extends EquatableExpression implements EntityColumn {
 
   private TableOrView objectInstance;
-  private String name;
+  private String canonicalName;
   private TypeConverter<R, D> converter;
 
   private String property;
@@ -20,12 +23,12 @@ public class ConvertedColumn<R, D> extends EquatableExpression {
   private Integer columnSize;
   private Integer decimalDigits;
 
-  public ConvertedColumn(final TableOrView objectInstance, final String name, final String property, final String type,
-      final Integer columnSize, final Integer decimalDigits, final TypeHandler handler,
+  public ConvertedColumn(final TableOrView objectInstance, final String canonicalName, final String property,
+      final String type, final Integer columnSize, final Integer decimalDigits, final TypeHandler<R, D> handler,
       final TypeConverter<R, D> converter) {
     super(Expression.PRECEDENCE_COLUMN);
     this.objectInstance = objectInstance;
-    this.name = name;
+    this.canonicalName = canonicalName;
     this.converter = converter;
     this.property = property;
     this.type = type;
@@ -64,7 +67,59 @@ public class ConvertedColumn<R, D> extends EquatableExpression {
           w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(this.objectInstance.getAlias())));
       w.write(".");
     }
-    w.write(w.getSQLDialect().canonicalToNatural(this.name));
+    w.write(w.getSQLDialect().canonicalToNatural(this.canonicalName));
+  }
+
+  // EntityColumn
+
+  @Override
+  public TableOrView getObjectInstance() {
+    return this.objectInstance;
+  }
+
+  @Override
+  public Name getCatalog() {
+    return this.objectInstance.getCatalog();
+  }
+
+  @Override
+  public Name getSchema() {
+    return this.objectInstance.getSchema();
+  }
+
+  @Override
+  public Name getObjectName() {
+    return MDHelper.getName(this.objectInstance);
+  }
+
+  @Override
+  public String getCanonicalName() {
+    return this.canonicalName;
+  }
+
+  @Override
+  public String getType() {
+    return this.type;
+  }
+
+  @Override
+  public Integer getColumnSize() {
+    return this.columnSize;
+  }
+
+  @Override
+  public Integer getDecimalDigits() {
+    return this.decimalDigits;
+  }
+
+  @Override
+  public final String getProperty() {
+    return property;
+  }
+
+  @Override
+  public String getReferenceName() {
+    return this.property;
   }
 
 }

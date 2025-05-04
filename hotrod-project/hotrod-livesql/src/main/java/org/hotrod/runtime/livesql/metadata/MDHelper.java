@@ -18,4 +18,8 @@ public class MDHelper {
     return wc.unwrap();
   }
 
+  public static Name getName(TableOrView objectInstance) {
+    return objectInstance.getName();
+  }
+
 }

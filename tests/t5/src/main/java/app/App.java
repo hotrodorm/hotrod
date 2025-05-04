@@ -5,18 +5,15 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.hotrod.converter.TypeConverter;
 import org.hotrod.cursors.Cursor;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.assembler.QueryAssembler;
 import org.hotrod.livesql.Row;
 import org.hotrod.runtime.livesql.LiveSQL;
-import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.converter.ConvertedColumn;
-import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
-import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -166,23 +163,22 @@ public class App {
 
     AccountTable a = this.accountDAO.newTable();
 
-    TypeHandler th = TypeHandler.of(IntegerBooleanConverter.class, TypeSource.ENTITY_COLUMN);
-    @SuppressWarnings("unchecked")
-    TypeConverter<Integer, Boolean> converter = (TypeConverter<Integer, Boolean>) th.getConverter();
+//    TypeConverter<Integer, Boolean> converter = new IntegerBooleanConverter();
+    TypeHandler<Integer, Boolean> th = TypeHandler.forConverter(new IntegerBooleanConverter(), TypeSource.ENTITY_COLUMN);
     ConvertedColumn<Integer, Boolean> dactive = new ConvertedColumn<Integer, Boolean>(a, "ACTIVE", "active", "INTEGER",
-        32, 0, TypeHandler.of(IntegerBooleanConverter.class, TypeSource.ENTITY_COLUMN), converter);
+        32, 0, th, th.getConverter());
 
-    TypeHandler th2 = TypeHandler.of(AccountTypeConverter.class, TypeSource.ENTITY_COLUMN);
-    @SuppressWarnings("unchecked")
-    TypeConverter<String, AccountType> converter2 = (TypeConverter<String, AccountType>) th2.getConverter();
-    ConvertedColumn<String, AccountType> dtype = new ConvertedColumn<String, AccountType>(a, "TYPE", "type", "VARCHAR",
-        3, 0, TypeHandler.of(IntegerBooleanConverter.class, TypeSource.ENTITY_COLUMN), converter2);
+//    TypeHandler th2 = TypeHandler.of(AccountTypeConverter.class, TypeSource.ENTITY_COLUMN);
+//    @SuppressWarnings("unchecked")
+//    TypeConverter<String, AccountType> converter2 = (TypeConverter<String, AccountType>) th2.getConverter();
+//    ConvertedColumn<String, AccountType> dtype = new ConvertedColumn<String, AccountType>(a, "TYPE", "type", "VARCHAR",
+//        3, 0, TypeHandler.of(IntegerBooleanConverter.class, TypeSource.ENTITY_COLUMN), converter2);
 
 //    SelectWherePhase<Row> q = this.sql.select().from(a).where(dactive.eq(true));
 //    SelectWherePhase<Row> q = this.sql.select().from(a).where(dtype.ne(AccountType.CHK));
     Select<Row> q = this.sql.select(a.balance.as("bal"), dactive.as("dac"), //
-        dactive.coalesce(true).as("coa"), dtype.nullIf(AccountType.PEN).as("tnull")) //
-        .from(a).where(dtype.notIn(AccountType.CHK, AccountType.INV)).orderBy(a.balance);
+        dactive.coalesce(true).as("coa"), a.dtype.nullIf(AccountType.PEN).as("tnull")) //
+        .from(a).where(a.dtype.notIn(AccountType.CHK, AccountType.INV)).orderBy(a.balance);
 //    Select<Row> q = this.sql.select().from(a).where(dtype.notIn(AccountType.CHK, AccountType.INV)).orderBy(a.balance);
     System.out.println("query:\n" + q.getPreview(true));
     List<Row> rows = q.execute();

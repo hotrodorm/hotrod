@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
-import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeRule.CouldNotResolveResultSetDataTypeException;
 
 public class TypeSolver {
@@ -37,7 +36,7 @@ public class TypeSolver {
 
     Class<?> c = this.dialect.resolveColumnType(cm);
     if (c != null) {
-      return TypeHandler.of(c, TypeSource.DIALECT_RULES);
+      return TypeHandler.forClass(c, TypeSource.DIALECT_RULES);
     }
 
     // 3. Use the class proposed by the JDBC driver, if available
@@ -50,7 +49,7 @@ public class TypeSolver {
     }
 
     try {
-      return TypeHandler.of(Class.forName(className), TypeSource.JDBC_DRIVER);
+      return TypeHandler.forClass(Class.forName(className), TypeSource.JDBC_DRIVER);
     } catch (ClassNotFoundException e) {
       throw new CouldNotResolveResultSetDataTypeException(cm,
           "The class '" + className + "' proposed by the JDBC driver to read the column cannot be found.");

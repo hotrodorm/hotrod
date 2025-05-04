@@ -43,8 +43,8 @@ import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase.Setter;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
-import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeSource;
 import org.hotrod.runtime.livesql.util.QueryAssemblerBean;
 import org.hotrod.utils.SQLUtil;
 import org.springframework.beans.BeansException;
@@ -361,11 +361,11 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
     // Properties
 
     public final ObjectEntityColumn paymentDate = new ObjectEntityColumn(this,
-      "PAYMENT_DATE", "paymentDate", "DATE", 10, 0, TypeHandler.of(LocalDate.class, TypeSource.ENTITY_COLUMN));
+      "PAYMENT_DATE", "paymentDate", "DATE", 10, 0, TypeHandler.forClass(LocalDate.class, TypeSource.ENTITY_COLUMN));
     public final NumberEntityColumn invoiceId = new NumberEntityColumn(this,
-      "INVOICE_ID", "invoiceId", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
+      "INVOICE_ID", "invoiceId", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.ENTITY_COLUMN));
     public final NumberEntityColumn amount = new NumberEntityColumn(this,
-      "AMOUNT", "amount", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
+      "AMOUNT", "amount", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.ENTITY_COLUMN));
 
     // Getters
 

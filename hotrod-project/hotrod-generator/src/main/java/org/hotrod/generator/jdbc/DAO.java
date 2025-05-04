@@ -77,8 +77,8 @@ import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase.Setter;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
-import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeSource;
 import org.hotrod.runtime.livesql.util.QueryAssemblerBean;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.AbstractClassWriter.ExternalClass;
@@ -1187,6 +1187,9 @@ public class DAO {
 
       ExternalClass jt = ExternalClass.of(javaType);
       ExternalClass lt = ExternalClass.of(liveSQLColumnType);
+
+//      public final NumberEntityColumn balance = new NumberEntityColumn(this,
+//          "BALANCE", "balance", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
 
       w.println("    public final ", lt, " " + javaMembername + " = new ", lt, "(this,");
       w.print("      " //

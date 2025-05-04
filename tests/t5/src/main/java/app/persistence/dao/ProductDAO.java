@@ -42,8 +42,8 @@ import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase.Setter;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
-import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeSource;
 import org.hotrod.runtime.livesql.util.QueryAssemblerBean;
 import org.hotrod.utils.SQLUtil;
 import org.springframework.beans.BeansException;
@@ -360,11 +360,11 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     // Properties
 
     public final NumberEntityColumn id = new NumberEntityColumn(this,
-      "ID", "id", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
+      "ID", "id", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.ENTITY_COLUMN));
     public final StringEntityColumn type = new StringEntityColumn(this,
-      "TYPE", "type", "CHARACTER VARYING", 6, 0, TypeHandler.of(String.class, TypeSource.ENTITY_COLUMN));
+      "TYPE", "type", "CHARACTER VARYING", 6, 0, TypeHandler.forClass(String.class, TypeSource.ENTITY_COLUMN));
     public final NumberEntityColumn shipping = new NumberEntityColumn(this,
-      "SHIPPING", "shipping", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
+      "SHIPPING", "shipping", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.ENTITY_COLUMN));
 
     // Getters
 

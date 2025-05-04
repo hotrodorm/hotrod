@@ -15,8 +15,8 @@ import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.runtime.livesql.LayerConfigInterface;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
-import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler.TypeSource;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeRule;
+import org.hotrod.runtime.livesql.queries.typesolver.TypeSource;
 import org.hotrod.utils.AbstractClassWriter.ExternalClass;
 import org.hotrod.utils.ClassWriter;
 import org.hotrod.utils.SUtil;
@@ -43,7 +43,6 @@ public class LayerConfigWriter {
 
     File dir = this.jdbcTag.getLayerPackageDir();
     File f = new File(dir, CLASS_NAME + ".java");
-//    log.info("f=" + f);
 
     try (TextWriter tw = fileGenerator.createWriter(f)) {
 
