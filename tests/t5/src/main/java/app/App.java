@@ -12,15 +12,7 @@ import org.hotrod.dynamicsql.assembler.QueryAssembler;
 import org.hotrod.livesql.Row;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.expressions.SortableExpression;
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
-import org.hotrod.runtime.livesql.expressions.predicates.converter.ConvertedCoalesce;
 import org.hotrod.runtime.livesql.expressions.predicates.converter.ConvertedColumn;
-import org.hotrod.runtime.livesql.expressions.predicates.converter.ConvertedEqual;
-import org.hotrod.runtime.livesql.expressions.predicates.converter.ConvertedIn;
-import org.hotrod.runtime.livesql.expressions.predicates.converter.ConvertedNotEqual;
-import org.hotrod.runtime.livesql.expressions.predicates.converter.ConvertedNotIn;
-import org.hotrod.runtime.livesql.expressions.predicates.converter.ConvertedNullIf;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.select.Select;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
@@ -177,21 +169,20 @@ public class App {
     TypeHandler th = TypeHandler.of(IntegerBooleanConverter.class, TypeSource.ENTITY_COLUMN);
     @SuppressWarnings("unchecked")
     TypeConverter<Integer, Boolean> converter = (TypeConverter<Integer, Boolean>) th.getConverter();
-    OneConvertedColumn<Integer, Boolean> dactive = new OneConvertedColumn<Integer, Boolean>(a, "ACTIVE", "active",
-        "INTEGER", 32, 0, TypeHandler.of(IntegerBooleanConverter.class, TypeSource.ENTITY_COLUMN), converter);
+    ConvertedColumn<Integer, Boolean> dactive = new ConvertedColumn<Integer, Boolean>(a, "ACTIVE", "active", "INTEGER",
+        32, 0, TypeHandler.of(IntegerBooleanConverter.class, TypeSource.ENTITY_COLUMN), converter);
 
     TypeHandler th2 = TypeHandler.of(AccountTypeConverter.class, TypeSource.ENTITY_COLUMN);
     @SuppressWarnings("unchecked")
     TypeConverter<String, AccountType> converter2 = (TypeConverter<String, AccountType>) th2.getConverter();
-    OneConvertedColumn<String, AccountType> dtype = new OneConvertedColumn<String, AccountType>(a, "TYPE", "type",
-        "VARCHAR", 3, 0, TypeHandler.of(IntegerBooleanConverter.class, TypeSource.ENTITY_COLUMN), converter2);
+    ConvertedColumn<String, AccountType> dtype = new ConvertedColumn<String, AccountType>(a, "TYPE", "type", "VARCHAR",
+        3, 0, TypeHandler.of(IntegerBooleanConverter.class, TypeSource.ENTITY_COLUMN), converter2);
 
 //    SelectWherePhase<Row> q = this.sql.select().from(a).where(dactive.eq(true));
 //    SelectWherePhase<Row> q = this.sql.select().from(a).where(dtype.ne(AccountType.CHK));
-    Select<Row> q = this.sql.select(a.balance.as("bal"), dactive.as("dac"), // 
-        dactive.coalesce(true).as("coa"), dtype.nullIf(AccountType.PEN).as("tnull")
-        ) //
-        .from(a).where(dtype.notIn(AccountType.CHK, AccountType.INV)).orderBy(dactive.desc());
+    Select<Row> q = this.sql.select(a.balance.as("bal"), dactive.as("dac"), //
+        dactive.coalesce(true).as("coa"), dtype.nullIf(AccountType.PEN).as("tnull")) //
+        .from(a).where(dtype.notIn(AccountType.CHK, AccountType.INV)).orderBy(a.balance);
 //    Select<Row> q = this.sql.select().from(a).where(dtype.notIn(AccountType.CHK, AccountType.INV)).orderBy(a.balance);
     System.out.println("query:\n" + q.getPreview(true));
     List<Row> rows = q.execute();
@@ -201,51 +192,25 @@ public class App {
     }
   }
 
-  public class OneConvertedColumn<R, D> extends ConvertedColumn<R, D> {
-
-    private String type;
-    private Integer columnSize;
-    private Integer decimalDigits;
-    private String property;
-    private TypeConverter<R, D> converter;
-
-    public OneConvertedColumn(final TableOrView objectInstance, final String name, final String property,
-        final String type, final Integer columnSize, final Integer decimalDigits, final TypeHandler handler,
-        final TypeConverter<R, D> converter) {
-      super(Expression.PRECEDENCE_COLUMN, objectInstance, name);
-      this.property = property;
-      this.type = type;
-      this.columnSize = columnSize;
-      this.decimalDigits = decimalDigits;
-      super.setTypeHandler(handler);
-      this.converter = converter;
-    }
-
-    public Predicate eq(final D d) {
-      return new ConvertedEqual<R, D>(this, this.converter, d);
-    }
-
-    public Predicate ne(final D d) {
-      return new ConvertedNotEqual<R, D>(this, this.converter, d);
-    }
-
-    public Predicate in(final D... d) {
-      return new ConvertedIn<R, D>(this, this.converter, d);
-    }
-
-    public Predicate notIn(final D... d) {
-      return new ConvertedNotIn<R, D>(this, this.converter, d);
-    }
-
-    public SortableExpression coalesce(final D d) {
-      return new ConvertedCoalesce<R, D>(this, this.converter, d);
-    }
-
-    public SortableExpression nullIf(final D d) {
-      return new ConvertedNullIf<R, D>(this, this.converter, d);
-    }
-
-  }
+//  public class OneConvertedColumn<R, D> extends ConvertedColumn<R, D> {
+//
+//    private String property;
+//    private String type;
+//    private Integer columnSize;
+//    private Integer decimalDigits;
+//
+//    public OneConvertedColumn(final TableOrView objectInstance, final String name, final String property,
+//        final String type, final Integer columnSize, final Integer decimalDigits, final TypeHandler handler,
+//        final TypeConverter<R, D> converter) {
+//      super(Expression.PRECEDENCE_COLUMN, objectInstance, name, converter);
+//      this.property = property;
+//      this.type = type;
+//      this.columnSize = columnSize;
+//      this.decimalDigits = decimalDigits;
+//      super.setTypeHandler(handler);
+//    }
+//
+//  }
 
 //  private void testConverter5() throws SQLException, DynamicExpressionException, IOException {
 //    ATable a = this.aDAO.newTable();
