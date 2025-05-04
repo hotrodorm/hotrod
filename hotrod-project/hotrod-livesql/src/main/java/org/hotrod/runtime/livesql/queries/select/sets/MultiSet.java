@@ -22,6 +22,7 @@ import org.hotrod.runtime.livesql.queries.select.TableExpression;
 
 public abstract class MultiSet<T> {
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(MultiSet.class.getName());
 
   private CombinedSelectObject<T> parent;

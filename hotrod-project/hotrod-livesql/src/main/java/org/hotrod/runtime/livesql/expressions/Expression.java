@@ -89,7 +89,7 @@ public abstract class Expression extends ResultSetColumn {
     this.tablesOrViews = expr.tablesOrViews;
     this.typeHandler = expr.typeHandler;
   }
-  
+
   // Aliasing
 
   public final AliasedExpression as(final String alias) {
@@ -98,7 +98,6 @@ public abstract class Expression extends ResultSetColumn {
     }
     return new AliasedExpression(this, alias);
   }
-
 
   // Shielded getters
 
@@ -191,12 +190,6 @@ public abstract class Expression extends ResultSetColumn {
   }
 
   protected abstract void renderTo(final QueryWriter w);
-
-  @Deprecated
-  protected void captureTypeHandler() {
-    // Nothing to do by default
-    // SubqueryTTTColumn, AliasedExpression, and TypedExpression override this method
-  }
 
   protected String render() {
     return this.getClass().getSimpleName() + "@" + System.identityHashCode(this) + ": typeHandler=" + this.typeHandler;

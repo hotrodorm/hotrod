@@ -38,7 +38,7 @@ public class GenericRowReader<T> implements RowReader<T> {
       if (Helper.getTypeHandler(expr) == null) {
         ResultSetColumnMetadata cm = ResultSetColumnMetadata.of(rm, ordinal);
         try {
-          TypeHandler th = context.getTypeSolver().resolve(cm);
+          TypeHandler<?, ?> th = context.getTypeSolver().resolve(cm);
           Helper.setTypeHandler(expr, th);
         } catch (CouldNotResolveResultSetDataTypeException e) {
           throw new LiveSQLException(
@@ -58,7 +58,7 @@ public class GenericRowReader<T> implements RowReader<T> {
     for (Expression qc : queryColumns.values()) {
       Object value;
       String alias = Helper.getReferenceName(qc);
-      TypeHandler th = Helper.getTypeHandler(qc);
+      TypeHandler<?, ?> th = Helper.getTypeHandler(qc);
       if (th == null) { // No typeHandler: use the JDBC default value
         value = rs.getObject(i);
       } else if (th.getConverter() == null) { // TypeHandler with no converter: use the defined class
@@ -101,7 +101,7 @@ public class GenericRowReader<T> implements RowReader<T> {
     for (Expression qc : this.queryColumns.values()) {
       int i = n++;
       String alias = Helper.getReferenceName(qc);
-      TypeHandler th = Helper.getTypeHandler(qc);
+      TypeHandler<?, ?> th = Helper.getTypeHandler(qc);
       log.info("- column #" + i + " '" + alias + "': " + th);
     }
   }

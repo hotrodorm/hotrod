@@ -33,11 +33,6 @@ public class AliasedExpression extends Expression {
   }
 
   @Override
-  protected void captureTypeHandler() {
-    super.setTypeHandler(this.referencedExpression.getTypeHandler());
-  }
-
-  @Override
   protected void renderTo(final QueryWriter w) {
     this.referencedExpression.renderTo(w);
     w.write(" as ");

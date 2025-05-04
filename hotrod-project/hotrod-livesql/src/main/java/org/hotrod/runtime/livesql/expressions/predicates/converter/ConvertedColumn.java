@@ -45,11 +45,13 @@ public class ConvertedColumn<R, D> extends EquatableExpression implements Entity
     return new ConvertedNotEqual<R, D>(this, this.converter, d);
   }
 
-  public Predicate in(@SuppressWarnings("unchecked") final D... d) {
+  @SuppressWarnings("unchecked")
+  public Predicate in(final D... d) {
     return new ConvertedIn<R, D>(this, this.converter, d);
   }
 
-  public Predicate notIn(@SuppressWarnings("unchecked") final D... d) {
+  @SuppressWarnings("unchecked")
+  public Predicate notIn(final D... d) {
     return new ConvertedNotIn<R, D>(this, this.converter, d);
   }
 

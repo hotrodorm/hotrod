@@ -19,13 +19,13 @@ public class TypeSolver {
     this.dialect = dialect;
   }
 
-  public TypeHandler resolve(final ResultSetColumnMetadata cm) throws CouldNotResolveResultSetDataTypeException {
+  public TypeHandler<?, ?> resolve(final ResultSetColumnMetadata cm) throws CouldNotResolveResultSetDataTypeException {
 
     // 1. Try the layer rules from the type-solver tag.
 
     if (this.layerRules != null) {
       for (TypeRule r : this.layerRules) {
-        TypeHandler th = r.resolve(cm);
+        TypeHandler<?, ?> th = r.resolve(cm);
         if (th != null) {
           return th;
         }

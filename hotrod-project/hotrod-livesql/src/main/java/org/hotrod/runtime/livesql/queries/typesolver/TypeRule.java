@@ -12,20 +12,22 @@ import org.hotrod.utils.SUtil;
 
 public class TypeRule {
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(TypeRule.class.getName());
 
   private int ruleNumber;
 
   private String test;
 
-  private TypeHandler typeHandler; // If test succeeds and there's no error message, this is the outcome
+  private TypeHandler<?, ?> typeHandler; // If test succeeds and there's no error message, this is the outcome
   private String errorMessage; // If test succeeds and there's an error message, a RuntimeException is thrown
                                // with this message
 
   private DynamicExpressionFactory factory;
   private DynamicExpression testExpression;
 
-  private TypeRule(final int ruleNumber, final String test, final TypeHandler typeHandler, final String errorMessage) {
+  private TypeRule(final int ruleNumber, final String test, final TypeHandler<?, ?> typeHandler,
+      final String errorMessage) {
     this.ruleNumber = ruleNumber;
     this.test = test;
     this.typeHandler = typeHandler;
@@ -38,7 +40,7 @@ public class TypeRule {
     this.testExpression = this.factory.expression(this.test);
   }
 
-  public static TypeRule of(final String test, final TypeHandler typeHandler, final int ruleNumber) {
+  public static TypeRule of(final String test, final TypeHandler<?, ?> typeHandler, final int ruleNumber) {
     return new TypeRule(ruleNumber, test, typeHandler, null);
   }
 
@@ -46,7 +48,7 @@ public class TypeRule {
     return new TypeRule(ruleNumber, test, null, errorMessage);
   }
 
-  public TypeHandler resolve(final ResultSetColumnMetadata cm) throws CouldNotResolveResultSetDataTypeException {
+  public TypeHandler<?, ?> resolve(final ResultSetColumnMetadata cm) throws CouldNotResolveResultSetDataTypeException {
     ParameterContext context = this.factory.newObjectContext(cm);
     Object v = null;
     try {
@@ -77,7 +79,7 @@ public class TypeRule {
     }
   }
 
-  public TypeHandler getTypeHandler() {
+  public TypeHandler<?, ?> getTypeHandler() {
     return typeHandler;
   }
 

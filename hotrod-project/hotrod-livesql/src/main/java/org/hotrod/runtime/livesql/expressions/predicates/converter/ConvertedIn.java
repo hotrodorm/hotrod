@@ -18,8 +18,8 @@ public class ConvertedIn<R, D> extends Predicate {
   private TypeConverter<R, D> converter;
   private D[] d;
 
-  public ConvertedIn(final ConvertedColumn<R, D> c, final TypeConverter<R, D> converter,
-      @SuppressWarnings("unchecked") final D... d) {
+  @SuppressWarnings("unchecked")
+  public ConvertedIn(final ConvertedColumn<R, D> c, final TypeConverter<R, D> converter, final D... d) {
     super(Expression.PRECEDENCE_EQ_NE_LT_LE_GT_GE);
     this.c = c;
     this.converter = converter;

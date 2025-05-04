@@ -87,7 +87,7 @@ public class LiveSQLPreparedQuery {
         sb.append("--- Query Columns ---\n");
         for (String name : queryColumns.keySet()) {
           Expression expr = queryColumns.get(name);
-          TypeHandler th = Helper.getTypeHandler(expr);
+          TypeHandler<?, ?> th = Helper.getTypeHandler(expr);
           sb.append(" * " + name + ": " + (th != null ? THelper.render(th)
               : "(type to be determined by query metadata or by <type-solver> rules)") + "\n");
         }

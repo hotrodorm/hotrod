@@ -21,11 +21,6 @@ public class TypedExpression extends Expression {
   }
 
   @Override
-  protected void captureTypeHandler() {
-    super.setTypeHandler(this.expr.getTypeHandler());
-  }
-
-  @Override
   protected void renderTo(QueryWriter w) {
     this.expr.renderTo(w);
   }
