@@ -164,9 +164,13 @@ public class App {
     AccountTable a = this.accountDAO.newTable();
 
 //    TypeConverter<Integer, Boolean> converter = new IntegerBooleanConverter();
-    TypeHandler<Integer, Boolean> th = TypeHandler.forConverter(new IntegerBooleanConverter(), TypeSource.ENTITY_COLUMN);
-    ConvertedColumn<Integer, Boolean> dactive = new ConvertedColumn<Integer, Boolean>(a, "ACTIVE", "active", "INTEGER",
-        32, 0, th, th.getConverter());
+//    {
+//      TypeHandler<Integer, Boolean> th = TypeHandler.forConverter(new IntegerBooleanConverter(),
+//          TypeSource.ENTITY_COLUMN);
+//      ConvertedColumn<Integer, Boolean> dactive = new ConvertedColumn<Integer, Boolean>(a, "ACTIVE", "active",
+//          "INTEGER", 32, 0, th, th.getConverter());
+//    }
+//    Integer th = 12;
 
 //    TypeHandler th2 = TypeHandler.of(AccountTypeConverter.class, TypeSource.ENTITY_COLUMN);
 //    @SuppressWarnings("unchecked")
@@ -176,9 +180,9 @@ public class App {
 
 //    SelectWherePhase<Row> q = this.sql.select().from(a).where(dactive.eq(true));
 //    SelectWherePhase<Row> q = this.sql.select().from(a).where(dtype.ne(AccountType.CHK));
-    Select<Row> q = this.sql.select(a.balance.as("bal"), dactive.as("dac"), //
-        dactive.coalesce(true).as("coa"), a.dtype.nullIf(AccountType.PEN).as("tnull")) //
-        .from(a).where(a.dtype.notIn(AccountType.CHK, AccountType.INV)).orderBy(a.balance);
+    Select<Row> q = this.sql.select(a.balance.as("bal"), a.active.as("dac"), //
+        a.active.coalesce(true).as("coa"), a.type.nullIf(AccountType.PEN).as("tnull")) //
+        .from(a).where(a.type.notIn(AccountType.CHK, null).and(a.active.eq(true))).orderBy(a.balance);
 //    Select<Row> q = this.sql.select().from(a).where(dtype.notIn(AccountType.CHK, AccountType.INV)).orderBy(a.balance);
     System.out.println("query:\n" + q.getPreview(true));
     List<Row> rows = q.execute();

@@ -8,7 +8,6 @@ import org.hotrod.runtime.livesql.expressions.asymmetric.NeAll;
 import org.hotrod.runtime.livesql.expressions.asymmetric.NeAny;
 import org.hotrod.runtime.livesql.expressions.asymmetric.NotInSubquery;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
-import org.hotrod.runtime.livesql.ordering.OrderByDirectionPhase;
 import org.hotrod.runtime.livesql.queries.select.Select;
 
 public abstract class EquatableExpression extends SortableExpression {

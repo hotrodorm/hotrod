@@ -10,11 +10,12 @@ import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
 
 public class Helper {
 
-  public static TypeHandler getTypeHandler(final Expression expr) {
+  @SuppressWarnings("unchecked")
+  public static <R, D> TypeHandler<R, D> getTypeHandler(final Expression expr) {
     return expr.getTypeHandler();
   }
 
-  public static void setTypeHandler(final Expression expr, final TypeHandler typeHandler) {
+  public static <R, D> void setTypeHandler(final Expression expr, final TypeHandler<R, D> typeHandler) {
     expr.setTypeHandler(typeHandler);
   }
 

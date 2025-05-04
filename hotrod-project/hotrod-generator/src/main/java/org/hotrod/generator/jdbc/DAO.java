@@ -62,6 +62,7 @@ import org.hotrod.metadata.SelectParameterMetadata;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
+import org.hotrod.runtime.livesql.expressions.predicates.converter.ConvertedColumn;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.metadata.BooleanEntityColumn;
 import org.hotrod.runtime.livesql.metadata.ByteArrayEntityColumn;
@@ -1172,44 +1173,73 @@ public class DAO {
     w.println();
     w.println("    // Properties");
     w.println();
+    int thId = 0;
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String javaType = resolveType(cm);
       Class<?> liveSQLColumnType = toLiveSQLType(javaType);
-      String javaMembername = cm.getId().getJavaMemberName();
-      String colName = cm.getId().getCanonicalSQLName();
+      String memberName = cm.getId().getJavaMemberName();
+      String canonicalName = cm.getId().getCanonicalSQLName();
       String property = cm.getId().getJavaMemberName();
-      String javaConverterClass = null;
-      String rawClass = null;
-      if (cm.getConverter() != null) {
-        javaConverterClass = cm.getConverter().getJavaClass();
-        rawClass = cm.getConverter().getJavaRawType();
-      }
+//      String javaConverterClass = null;
+//      String rawClass = null;
+//      if (cm.getConverter() != null) {
+//        javaConverterClass = cm.getConverter().getJavaClass();
+//        rawClass = cm.getConverter().getJavaRawType();
+//      }
 
       ExternalClass jt = ExternalClass.of(javaType);
       ExternalClass lt = ExternalClass.of(liveSQLColumnType);
 
+//      ExternalClass th = ExternalClass.of(TypeHandler.class);
+
+      if (cm.getConverter() == null) {
+
 //      public final NumberEntityColumn balance = new NumberEntityColumn(this,
-//          "BALANCE", "balance", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
+//      "BALANCE", "balance", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
 
-      w.println("    public final ", lt, " " + javaMembername + " = new ", lt, "(this,");
-      w.print("      " //
-          + "\"" + JUtils.escapeJavaString(colName) + "\"" //
-          + ", \"" + JUtils.escapeJavaString(property) + "\"" //
-          + ", \"" + JUtils.escapeJavaString(cm.getTypeName()) + "\"" //
-          + ", " + cm.getPrecision() //
-          + ", " + cm.getScale() //
-          + ", ");
+        w.println("    public final ", lt, " " + memberName + " = new ", lt, "(this,");
+        w.print("      " //
+            + "\"" + JUtils.escapeJavaString(canonicalName) + "\"" //
+            + ", \"" + JUtils.escapeJavaString(property) + "\"" //
+            + ", \"" + JUtils.escapeJavaString(cm.getTypeName()) + "\"" //
+            + ", " + cm.getPrecision() //
+            + ", " + cm.getScale() //
+            + ", ");
 
-      ExternalClass th = ExternalClass.of(TypeHandler.class);
-      if (rawClass != null && javaConverterClass != null) {
-        ExternalClass cvt = ExternalClass.of(javaConverterClass);
-        w.print(th, ".of(", cvt, ".class, ");
+//        if (rawClass != null && javaConverterClass != null) {
+//          ExternalClass cvt = ExternalClass.of(javaConverterClass);
+//          w.print(TypeHandler.class, ".of(", cvt, ".class, ");
+//          w.print(TypeSource.class, ".ENTITY_COLUMN)");
+//        } else {
+        w.print(TypeHandler.class, ".forClass(", jt, ".class, ");
         w.print(TypeSource.class, ".ENTITY_COLUMN)");
+//        }
+        w.println(");");
+
       } else {
-        w.print(th, ".of(", jt, ".class, ");
-        w.print(TypeSource.class, ".ENTITY_COLUMN)");
+        ExternalClass rawClass = ExternalClass.of(cm.getConverter().getRawClass());
+        ExternalClass domainClass = ExternalClass.of(cm.getConverter().getDomainClass());
+        ExternalClass converterClass = ExternalClass.of(cm.getConverter().getConverterClass());
+
+//      private final TypeHandler<String, AccountType> th = TypeHandler.forConverter(new AccountTypeConverter(), TypeSource.ENTITY_COLUMN);
+//  public final ConvertedColumn<String, AccountType> dtype = new ConvertedColumn<String, AccountType>(this, "TYPE", "type", "VARCHAR", 3, 0, th, th.getConverter());
+
+        w.print("    private final ", TypeHandler.class, "<", rawClass, ", ");
+        w.print(domainClass, "> th" + thId + " = ", TypeHandler.class, ".forConverter(new ", converterClass);
+        w.println("(), TypeSource.ENTITY_COLUMN);");
+
+        w.print("    public final ", ConvertedColumn.class, "<", rawClass, ", ");
+        w.print(domainClass, "> " + memberName + " = new ", ConvertedColumn.class);
+        w.println("<", rawClass, ", ", domainClass, ">(this, \"" //
+            + JUtils.escapeJavaString(canonicalName) + "\", \"" //
+            + JUtils.escapeJavaString(property) + "\", \"" //
+            + JUtils.escapeJavaString(cm.getTypeName()) + "\", " //
+            + cm.getPrecision() //
+            + ", " + cm.getScale() //
+            + ", th" + thId + ", th" + thId + ".getConverter());");
+        thId++;
+
       }
-      w.println(");");
 
     }
     w.println();
@@ -1510,7 +1540,7 @@ public class DAO {
           }
           String property = "converter" + (n++);
           this.converterProperties.put(ct.getName(), property);
-          ExternalClass cc = ExternalClass.of(ct.getJavaClass());
+          ExternalClass cc = ExternalClass.of(ct.getConverterClass());
           w.println("  private final ", cc, " " + property + " = new ", cc, "();");
         }
       }
@@ -1593,10 +1623,10 @@ public class DAO {
     } else { // Converter specified
       String raw = "raw" + ordinal;
       String var = "col" + ordinal;
-      String rawClass = ct.getJavaRawType();
+      String rawClass = ct.getRawClass();
       ExternalClass rc = ExternalClass.of(rawClass);
       JDBCGetter g = JDBC_GETTERS.get(rawClass);
-      javaClass = ct.getJavaType();
+      javaClass = ct.getDomainClass();
       ExternalClass mc = ExternalClass.of(javaClass);
       String property = this.converterProperties.get(ct.getName());
       if (g != null) {

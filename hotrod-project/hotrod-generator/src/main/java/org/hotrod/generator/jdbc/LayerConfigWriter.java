@@ -75,9 +75,9 @@ public class LayerConfigWriter {
     int n = 1;
     for (TypeSolverWhenTag when : this.typeSolver.getWhens()) {
       if (!SUtil.isEmpty(when.getTestResultSet())) {
-        w.print("    rules.add(", TypeRule.class, ".of(\"" + SUtil.escapeJavaString(when.getTestResultSet()) + "\", ",
-            TypeHandler.class);
-        w.println(".of(", ExternalClass.of(when.getJavaType()), ".class, ", TypeSource.class,
+        w.print("    rules.add(", TypeRule.class,
+            ".of(\"" + SUtil.escapeJavaString(when.getTestResultSet()) + "\", ", TypeHandler.class);
+        w.println(".forClass(", ExternalClass.of(when.getJavaType()), ".class, ", TypeSource.class,
             ".LIVESQL_RULES), " + n + "));");
       }
       n++;

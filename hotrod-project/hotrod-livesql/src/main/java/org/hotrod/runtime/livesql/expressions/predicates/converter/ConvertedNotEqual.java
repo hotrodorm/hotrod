@@ -11,6 +11,7 @@ import org.hotrod.runtime.livesql.queries.SQLParameterWriter.RenderedParameter;
 
 public class ConvertedNotEqual<R, D> extends Predicate {
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(ConvertedNotEqual.class.getName());
 
   private ConvertedColumn<R, D> c;
@@ -22,7 +23,6 @@ public class ConvertedNotEqual<R, D> extends Predicate {
     this.c = c;
     this.converter = converter;
     this.d = d;
-    super.register(this.c);
   }
 
   @Override
@@ -41,7 +41,6 @@ public class ConvertedNotEqual<R, D> extends Predicate {
     R raw;
     try {
       raw = this.converter.encode(this.d, null);
-//      log.info("raw=" + raw);
     } catch (SQLException e) {
       throw new RuntimeException("Could not encode converted value to raw value.", e);
     }

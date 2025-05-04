@@ -24,9 +24,9 @@ public class ConverterTag extends AbstractConfigurationTag {
   // Properties
 
   private String name = null;
-  private String javaType = null;
-  private String javaRawType = null;
-  private String javaClass = null;
+  private String rawClass = null;
+  private String domainClass = null;
+  private String converterClass = null;
 
   private String jdbcGetterMethod;
   private String jdbcSetterMethod;
@@ -44,19 +44,19 @@ public class ConverterTag extends AbstractConfigurationTag {
     this.name = name;
   }
 
-  @XmlAttribute(name = "java-type")
-  public void setJavaType(final String javaType) {
-    this.javaType = javaType;
-  }
-
   @XmlAttribute(name = "java-raw-type")
   public void setJavaRawType(final String javaRawType) {
-    this.javaRawType = javaRawType;
+    this.rawClass = javaRawType;
+  }
+
+  @XmlAttribute(name = "java-type")
+  public void setJavaType(final String javaType) {
+    this.domainClass = javaType;
   }
 
   @XmlAttribute(name = "class")
   public void setJavaClass(final String javaClass) {
-    this.javaClass = javaClass;
+    this.converterClass = javaClass;
   }
 
   // Behavior
@@ -74,48 +74,47 @@ public class ConverterTag extends AbstractConfigurationTag {
           + "> must be a valid name. An alphanumeric name was expected but '" + this.name + "' was specified.");
     }
 
-    // java-type
+    // java-raw-type (raw)
 
-    if (SUtil.isEmpty(this.javaType)) {
-      throw new InvalidConfigurationFileException(this,
-          "Attribute 'java-type' of tag <" + super.getTagName() + "> with name '" + this.name + "' cannot be empty.");
-    }
-    if (!this.javaType.matches(FULL_CLASS_NAME_PATTERN)) {
-      throw new InvalidConfigurationFileException(this, "Attribute 'java-type' of tag <" + super.getTagName()
-          + "> must be a valid java full class name, but '" + this.javaType + "' was specified.");
-    }
-
-    // java-raw-type
-
-    if (SUtil.isEmpty(this.javaRawType)) {
+    if (SUtil.isEmpty(this.rawClass)) {
       throw new InvalidConfigurationFileException(this,
           "Attribute 'java-raw-type' of tag <" + super.getTagName() + "> cannot be empty.");
     }
-    if (!this.javaRawType.matches(FULL_CLASS_NAME_PATTERN)) {
-      throw new InvalidConfigurationFileException(this,
-          "Attribute 'java-raw-type' of tag <" + super.getTagName()
-              + "> must be a valid java full class name, but '" + this.javaRawType + "' was specified.");
+    if (!this.rawClass.matches(FULL_CLASS_NAME_PATTERN)) {
+      throw new InvalidConfigurationFileException(this, "Attribute 'java-raw-type' of tag <" + super.getTagName()
+          + "> must be a valid java full class name, but '" + this.rawClass + "' was specified.");
     }
-    Accessors gs = ACCESSORS.get(this.javaRawType);
+    Accessors gs = ACCESSORS.get(this.rawClass);
     if (gs == null) {
 
       String types = ListWriter.render(new ArrayList<String>(ACCESSORS.keySet()), "", " - ", "\n", "", "", "");
       throw new InvalidConfigurationFileException(this,
-          "Unsupported java-raw-type '" + this.javaRawType + "' on tag <" + super.getTagName()
+          "Unsupported java-raw-type '" + this.rawClass + "' on tag <" + super.getTagName()
               + ">. No simple JDBC getter and setter found for this type. " + "The supported types are:\n" + types);
     }
     this.jdbcGetterMethod = gs.getGetter();
     this.jdbcSetterMethod = gs.getSetter();
 
-    // class
+    // java-type (domain)
 
-    if (SUtil.isEmpty(this.javaClass)) {
+    if (SUtil.isEmpty(this.domainClass)) {
+      throw new InvalidConfigurationFileException(this,
+          "Attribute 'java-type' of tag <" + super.getTagName() + "> with name '" + this.name + "' cannot be empty.");
+    }
+    if (!this.domainClass.matches(FULL_CLASS_NAME_PATTERN)) {
+      throw new InvalidConfigurationFileException(this, "Attribute 'java-type' of tag <" + super.getTagName()
+          + "> must be a valid java full class name, but '" + this.domainClass + "' was specified.");
+    }
+
+    // class (converter)
+
+    if (SUtil.isEmpty(this.converterClass)) {
       throw new InvalidConfigurationFileException(this,
           "Attribute 'class' of tag <" + super.getTagName() + "> cannot be empty.");
     }
-    if (!this.javaClass.matches(FULL_CLASS_NAME_PATTERN)) {
+    if (!this.converterClass.matches(FULL_CLASS_NAME_PATTERN)) {
       throw new InvalidConfigurationFileException(this, "Attribute 'java-class' of tag <" + super.getTagName()
-          + "> must be a valid java full class name, but '" + this.javaType + "' was specified.");
+          + "> must be a valid java full class name, but '" + this.domainClass + "' was specified.");
     }
 
   }
@@ -189,16 +188,16 @@ public class ConverterTag extends AbstractConfigurationTag {
     return name;
   }
 
-  public String getJavaType() {
-    return javaType;
+  public String getRawClass() {
+    return rawClass;
   }
 
-  public String getJavaRawType() {
-    return javaRawType;
+  public String getDomainClass() {
+    return domainClass;
   }
 
-  public String getJavaClass() {
-    return javaClass;
+  public String getConverterClass() {
+    return converterClass;
   }
 
   public String getJdbcGetterMethod() {

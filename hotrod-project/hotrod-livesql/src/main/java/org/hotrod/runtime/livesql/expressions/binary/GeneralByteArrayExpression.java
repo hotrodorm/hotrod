@@ -7,7 +7,6 @@ import java.util.stream.Stream;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Between;
 import org.hotrod.runtime.livesql.expressions.predicates.Equal;
-import org.hotrod.runtime.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.GreaterThan;
 import org.hotrod.runtime.livesql.expressions.predicates.GreaterThanOrEqualTo;
 import org.hotrod.runtime.livesql.expressions.predicates.InList;

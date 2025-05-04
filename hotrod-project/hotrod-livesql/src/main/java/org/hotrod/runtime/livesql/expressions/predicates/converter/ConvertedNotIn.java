@@ -11,13 +11,15 @@ import org.hotrod.runtime.livesql.queries.SQLParameterWriter.RenderedParameter;
 
 public class ConvertedNotIn<R, D> extends Predicate {
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(ConvertedNotIn.class.getName());
 
   private ConvertedColumn<R, D> c;
   private TypeConverter<R, D> converter;
   private D[] d;
 
-  public ConvertedNotIn(final ConvertedColumn<R, D> c, final TypeConverter<R, D> converter, final D... d) {
+  public ConvertedNotIn(final ConvertedColumn<R, D> c, final TypeConverter<R, D> converter,
+      @SuppressWarnings("unchecked") final D... d) {
     super(Expression.PRECEDENCE_EQ_NE_LT_LE_GT_GE);
     this.c = c;
     this.converter = converter;
@@ -25,7 +27,6 @@ public class ConvertedNotIn<R, D> extends Predicate {
       throw new RuntimeException("The NOT IN operator must use a non-empty list of values, but none was provided.");
     }
     this.d = d;
-    super.register(this.c);
   }
 
   @Override
@@ -46,7 +47,6 @@ public class ConvertedNotIn<R, D> extends Predicate {
       R raw;
       try {
         raw = this.converter.encode(v, null);
-//        log.info("raw=" + raw);
       } catch (SQLException e) {
         throw new RuntimeException("Could not encode converted value to raw value.", e);
       }

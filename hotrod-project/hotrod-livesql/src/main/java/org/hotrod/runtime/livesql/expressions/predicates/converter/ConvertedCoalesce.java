@@ -11,6 +11,7 @@ import org.hotrod.runtime.livesql.queries.SQLParameterWriter.RenderedParameter;
 
 public class ConvertedCoalesce<R, D> extends SortableExpression {
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(ConvertedCoalesce.class.getName());
 
   private ConvertedColumn<R, D> c;
@@ -22,7 +23,6 @@ public class ConvertedCoalesce<R, D> extends SortableExpression {
     this.c = c;
     this.converter = converter;
     this.d = d;
-    super.register(this.c);
   }
 
   @Override
@@ -37,7 +37,6 @@ public class ConvertedCoalesce<R, D> extends SortableExpression {
     R raw;
     try {
       raw = this.converter.encode(this.d, null);
-      log.info("raw=" + raw);
     } catch (SQLException e) {
       throw new RuntimeException("Could not encode converted value to raw value.", e);
     }
