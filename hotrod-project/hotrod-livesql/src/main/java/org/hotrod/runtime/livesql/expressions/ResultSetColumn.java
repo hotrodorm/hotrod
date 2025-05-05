@@ -7,16 +7,24 @@ import java.util.List;
  *                ResultSetColumn (unwrap)
  *               /               \
  *              /                 \
- *  WrappingColumn                Expression (rt)   {I} OrderingTerm
+ *  WrappingColumn                Expression (as)   {I} OrderingTerm
  *  |  |  |                      /       |  \             /      \
- *  |  |  AllColumns   AliasedExpression |   \           /     OrderingExpression (rt)
+ *  |  |  AllColumns   AliasedExpression |   \           /     OrderingExpression ()
  *  |  |                                 |    \         /
  *  |  ColumnList           TypedExpression    \       /          
  *  |    |  |                                   \     /
- *  |    |  ColumnsSubset                 GenericExpression (isNull,isNotNull,as,type)
+ *  |    |  ColumnsSubset                 ExistenceExpression (isNull,isNotNull)
  *  |    ColumnsAliased                            |
  *  |                                              |
- *  AllSubqueryColumns                   ComparableExpression (asc/desc,=,<>,<,>,<=,>=,...)
+ *  AllSubqueryColumns                   SortableExpression (asc/desc)
+ *                                                 |
+ *                                                 |
+ *                                       EquatableExpression (=All,=Any,<>All,<>Any,in,not in)
+ *                                                 |   \
+ *                                                 |  ConvertedColumn (coalesce,=,in,<>,not in,nullif)
+ *                                                 |
+ *                                       ComparableExpression (<All,>All,<=All,>=All,<Any,>Any,<=Any,>=Any)
+ *                                               /    \
  *                                              /      \
  *                              {I} Column     /        \    {I} SubqueryColumn
  *                                      \     /          \        /
