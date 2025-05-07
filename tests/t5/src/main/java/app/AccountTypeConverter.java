@@ -13,13 +13,13 @@ public class AccountTypeConverter implements TypeConverter<String, AccountType> 
 
     PEN, CHK, SAV, INV;
 
-    public static AccountType parse(String v) {
+    public static AccountType parse(String raw) {
       for (AccountType t : AccountType.values()) {
-        if (t.name().contentEquals(v)) {
+        if (t.name().equals(raw)) {
           return t;
         }
       }
-      throw new RuntimeException("Could not decode value: Account type '" + v + "' does not exist.");
+      throw new RuntimeException("Could not decode database value: Account type '" + raw + "' does not exist.");
     }
   }
 

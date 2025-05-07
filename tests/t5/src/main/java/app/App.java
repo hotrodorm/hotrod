@@ -183,7 +183,7 @@ public class App {
     Select<Row> q = this.sql.select(a.balance.as("bal"), a.active.as("dac"), //
         a.active.coalesce(true).as("coa"), a.type.nullIf(AccountType.PEN).as("tnull")) //
         .from(a)
-        .where(a.type.notIn(AccountType.CHK, null).and(a.active.eq(true))).orderBy(a.balance);
+        .where(a.type.notIn(AccountType.CHK, AccountType.PEN).and(a.active.eq(true))).orderBy(a.balance);
 //    Select<Row> q = this.sql.select().from(a).where(dtype.notIn(AccountType.CHK, AccountType.INV)).orderBy(a.balance);
     System.out.println("query:\n" + q.getPreview(true));
     List<Row> rows = q.execute();
