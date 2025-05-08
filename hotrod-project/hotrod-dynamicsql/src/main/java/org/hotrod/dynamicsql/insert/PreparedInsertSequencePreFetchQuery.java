@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.DynamicExpressionException;
-import org.hotrod.dynamicsql.segments.ParameterSegment;
-import org.hotrod.dynamicsql.segments.TypedParameterSegment;
+import org.hotrod.dynamicsql.parameters.ParameterInstance;
+import org.hotrod.dynamicsql.parameters.ParameterNotNullableChangeableInstance;
 
 public class PreparedInsertSequencePreFetchQuery extends InsertExecutor {
 
@@ -17,7 +17,7 @@ public class PreparedInsertSequencePreFetchQuery extends InsertExecutor {
   private static final Logger log = Logger.getLogger(PreparedInsertSequencePreFetchQuery.class.getName());
 
   @Override
-  public Long execute(Connection conn, String sql, List<ParameterSegment> parameters, String sequencePreFetchSQL,
+  public Long execute(Connection conn, String sql, List<ParameterInstance> parameters, String sequencePreFetchSQL,
       String primaryKeyParameterName, String[] generatedKeysNames) throws SQLException, DynamicExpressionException {
     Long seq = null;
     try (PreparedStatement ps = conn.prepareStatement(sequencePreFetchSQL)) {
@@ -44,11 +44,11 @@ public class PreparedInsertSequencePreFetchQuery extends InsertExecutor {
     }
   }
 
-  private boolean setParameter(List<ParameterSegment> parameters, String name, Long value) {
-    for (ParameterSegment s : parameters) {
-      if (s instanceof TypedParameterSegment) {
+  private boolean setParameter(List<ParameterInstance> parameters, String name, Long value) {
+    for (ParameterInstance s : parameters) {
+      if (s instanceof ParameterNotNullableChangeableInstance) {
+        ParameterNotNullableChangeableInstance ts = (ParameterNotNullableChangeableInstance) s;
         if (s.getName().equals(name)) {
-          TypedParameterSegment ts = (TypedParameterSegment) s;
           ts.setValue(value);
           return true;
         }

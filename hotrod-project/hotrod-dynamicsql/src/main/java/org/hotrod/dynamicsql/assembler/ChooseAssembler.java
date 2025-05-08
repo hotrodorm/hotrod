@@ -19,7 +19,7 @@ public class ChooseAssembler {
     this.factory = factory;
   }
 
-  // IF Segments
+  // When Segments
 
   public ChooseAssembler when(String test, SegmentList segmentList) {
     this.whens.add(new WhenSegment(test, segmentList.getSegments(), this.factory));

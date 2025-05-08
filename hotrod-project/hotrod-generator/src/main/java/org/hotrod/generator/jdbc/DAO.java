@@ -39,7 +39,7 @@ import org.hotrod.dynamicsql.PreparedModificationQuery;
 import org.hotrod.dynamicsql.PreparedQuery;
 import org.hotrod.dynamicsql.PreparedSelectQuery;
 import org.hotrod.dynamicsql.RowReader;
-import org.hotrod.dynamicsql.assembler.QueryAssembler;
+import org.hotrod.dynamicsql.assembler.QueryBuilder;
 import org.hotrod.dynamicsql.insert.PreparedInsertQuery;
 import org.hotrod.dynamicsql.insert.PrimaryKeyRetrievalMode;
 import org.hotrod.exceptions.ControlledException;
@@ -307,7 +307,7 @@ public class DAO {
     w.println("  private ", QueryAssemblerBean.class, " assemblerBean;");
     w.println();
 
-    w.println("  private ", QueryAssembler.class, " assembler;");
+    w.println("  private ", QueryBuilder.class, " assembler;");
     w.println();
 
     w.println("  @", Const.AUTOWIRED);

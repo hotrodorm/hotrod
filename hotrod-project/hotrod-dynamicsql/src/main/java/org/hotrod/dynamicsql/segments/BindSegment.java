@@ -6,7 +6,7 @@ import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.ParameterContext;
 import org.hotrod.dynamicsql.Utl;
 
-public class BindSegment extends DynamicSegment {
+public class BindSegment extends ControlSegment {
 
   private String name;
   private String value;

@@ -12,14 +12,15 @@ import org.hotrod.dynamicsql.segments.BindSegment;
 import org.hotrod.dynamicsql.segments.ChooseSegment;
 import org.hotrod.dynamicsql.segments.ForEachSegment;
 import org.hotrod.dynamicsql.segments.IfSegment;
-import org.hotrod.dynamicsql.segments.LiteralSegment;
 import org.hotrod.dynamicsql.segments.ParameterInjectionSegment;
-import org.hotrod.dynamicsql.segments.ParameterOccurrenceSegment;
+import org.hotrod.dynamicsql.segments.ParameterNotNullableSegment;
+import org.hotrod.dynamicsql.segments.ParameterNullableSegment;
 import org.hotrod.dynamicsql.segments.QuerySegment;
 import org.hotrod.dynamicsql.segments.SegmentList;
 import org.hotrod.dynamicsql.segments.SettersSegment;
+import org.hotrod.dynamicsql.segments.StaticContentSegment;
 import org.hotrod.dynamicsql.segments.TrimSegment;
-import org.hotrod.dynamicsql.segments.VariableOccurrenceSegment;
+import org.hotrod.dynamicsql.segments.VariableSegment;
 import org.hotrod.dynamicsql.segments.WhereSegment;
 
 public class PartialQuery {
@@ -33,8 +34,8 @@ public class PartialQuery {
 
   // Segments
 
-  public PartialQuery literal(String txt) {
-    this.segments.add(new LiteralSegment(txt));
+  public PartialQuery literal(String text) {
+    this.segments.add(new StaticContentSegment(text));
     return this;
   }
 
@@ -42,12 +43,17 @@ public class PartialQuery {
     return this.literal("\n");
   }
 
-  public PartialQuery literaln(String txt) {
-    return this.literal(txt).literaln();
+  public PartialQuery literaln(String text) {
+    return this.literal(text).literaln();
   }
 
-  public PartialQuery parameter(String name, int sqlType) {
-    this.segments.add(new ParameterOccurrenceSegment(this.factory, name, sqlType));
+  public PartialQuery parameter(String name) {
+    this.segments.add(new ParameterNotNullableSegment(this.factory, name));
+    return this;
+  }
+
+  public PartialQuery parameterNullable(String name, int sqlType) {
+    this.segments.add(new ParameterNullableSegment(this.factory, name, sqlType));
     return this;
   }
 
@@ -57,35 +63,35 @@ public class PartialQuery {
   }
 
   public PartialQuery variable(String name) {
-    this.segments.add(new VariableOccurrenceSegment(this.factory, name));
+    this.segments.add(new VariableSegment(this.factory, name));
     return this;
   }
 
-  public PartialQuery if_(String test, SegmentList querySegments) {
-    this.segments.add(new IfSegment(test, querySegments.getSegments(), this.factory));
+  public PartialQuery if_(String test, SegmentList content) {
+    this.segments.add(new IfSegment(test, content.getSegments(), this.factory));
     return this;
   }
 
-  public PartialQuery set(List<IfSegment> ifSegments) {
-    this.segments.add(new SettersSegment(ifSegments, this.factory));
+  public PartialQuery set(List<IfSegment> content) {
+    this.segments.add(new SettersSegment(content, this.factory));
     return this;
   }
 
-  public PartialQuery set(List<IfSegment> ifSegments, String headerPrefix, String headerSuffix, String separatorPrefix,
+  public PartialQuery set(List<IfSegment> content, String headerPrefix, String headerSuffix, String separatorPrefix,
       String separatorSuffix, String tailPrefix, String tailSuffix, String... removePrefixes) {
-    this.segments.add(new SettersSegment(ifSegments, this.factory, headerPrefix, headerSuffix, separatorPrefix,
+    this.segments.add(new SettersSegment(content, this.factory, headerPrefix, headerSuffix, separatorPrefix,
         separatorSuffix, tailPrefix, tailSuffix, removePrefixes));
     return this;
   }
 
-  public PartialQuery where(String separator, List<IfSegment> ifSegments) {
-    this.segments.add(new WhereSegment(separator, ifSegments, this.factory));
+  public PartialQuery where(String separator, List<IfSegment> content) {
+    this.segments.add(new WhereSegment(separator, content, this.factory));
     return this;
   }
 
-  public PartialQuery where(String separator, List<IfSegment> ifSegments, String headerPrefix, String headerSuffix,
+  public PartialQuery where(String separator, List<IfSegment> content, String headerPrefix, String headerSuffix,
       String separatorPrefix, String separatorSuffix, String tailPrefix, String tailSuffix, String... removePrefixes) {
-    this.segments.add(new WhereSegment(separator, ifSegments, this.factory, headerPrefix, headerSuffix, separatorPrefix,
+    this.segments.add(new WhereSegment(separator, content, this.factory, headerPrefix, headerSuffix, separatorPrefix,
         separatorSuffix, tailPrefix, tailSuffix, removePrefixes));
     return this;
   }
@@ -95,22 +101,22 @@ public class PartialQuery {
     return this;
   }
 
-  public PartialQuery trim(String header, String separator, String tail, List<IfSegment> ifSegments) {
-    this.segments.add(new TrimSegment(header, separator, tail, ifSegments, this.factory));
+  public PartialQuery trim(String header, String separator, String tail, List<IfSegment> content) {
+    this.segments.add(new TrimSegment(header, separator, tail, content, this.factory));
     return this;
   }
 
-  public PartialQuery trim(String header, String separator, String tail, List<IfSegment> ifSegments,
-      String headerPrefix, String headerSuffix, String separatorPrefix, String separatorSuffix, String tailPrefix,
-      String tailSuffix, String... removePrefixes) {
-    this.segments.add(new TrimSegment(header, separator, tail, ifSegments, this.factory, headerPrefix, headerSuffix,
+  public PartialQuery trim(String header, String separator, String tail, List<IfSegment> content, String headerPrefix,
+      String headerSuffix, String separatorPrefix, String separatorSuffix, String tailPrefix, String tailSuffix,
+      String... removePrefixes) {
+    this.segments.add(new TrimSegment(header, separator, tail, content, this.factory, headerPrefix, headerSuffix,
         separatorPrefix, separatorSuffix, tailPrefix, tailSuffix, removePrefixes));
     return this;
   }
 
   public PartialQuery foreach(String item, String collection, String open, String separator, String close,
-      SegmentList segmentList) {
-    this.segments.add(new ForEachSegment(item, collection, open, separator, close, segmentList, this.factory));
+      SegmentList content) {
+    this.segments.add(new ForEachSegment(item, collection, open, separator, close, content, this.factory));
     return this;
   }
 

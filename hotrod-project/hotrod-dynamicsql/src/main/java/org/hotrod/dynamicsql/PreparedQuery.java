@@ -2,16 +2,16 @@ package org.hotrod.dynamicsql;
 
 import java.util.List;
 
-import org.hotrod.dynamicsql.segments.ParameterSegment;
-import org.hotrod.dynamicsql.segments.TypedParameterSegment;
-import org.hotrod.dynamicsql.segments.VariableInstanceValueSegment;
+import org.hotrod.dynamicsql.parameters.ParameterInstance;
+import org.hotrod.dynamicsql.parameters.ParameterNullableInstance;
+import org.hotrod.dynamicsql.parameters.VariableInstance;
 
 public abstract class PreparedQuery {
 
   protected String sql;
-  protected List<ParameterSegment> parameters;
+  protected List<ParameterInstance> parameters;
 
-  public PreparedQuery(String sql, List<ParameterSegment> parameters) {
+  public PreparedQuery(String sql, List<ParameterInstance> parameters) {
     this.sql = sql;
     this.parameters = parameters;
   }
@@ -30,13 +30,11 @@ public abstract class PreparedQuery {
       p.append(this.sql);
       p.append("\n=== JDBC Parameters (" + this.parameters.size() + ") ===\n");
       int pos = 1;
-      for (ParameterSegment ps : this.parameters) {
+      for (ParameterInstance ps : this.parameters) {
 
-        String type = "";
-        if (ps instanceof TypedParameterSegment) {
-          type = JDBCTypes.codeToShortName(((TypedParameterSegment) ps).getSQLType());
-        } else if (ps instanceof VariableInstanceValueSegment) {
-          type = "inner variable";
+        String jdbcType = null;
+        if (ps instanceof ParameterNullableInstance) {
+          jdbcType = JDBCTypes.codeToShortName(((ParameterNullableInstance) ps).getSQLType());
         }
 
         Object value = ps.getValue();
@@ -45,8 +43,8 @@ public abstract class PreparedQuery {
           tostring = tostring.substring(0, MAX_DISPLAY_VALUE - 3) + "...";
         }
         String name = ps.getName();
-        p.append("" + pos++ + ". " + name + " (" + Utl.coalesce(type, "OTHER") + "): " + tostring
-            + (value == null ? "" : " (" + value.getClass().getName() + ")") + "\n");
+        p.append("" + pos++ + ". " + name + (jdbcType == null ? "" : " (" + Utl.coalesce(jdbcType, "OTHER") + ")")
+            + ": " + tostring + (value == null ? "" : " (" + value.getClass().getName() + ")") + "\n");
       }
       if (!this.parameters.isEmpty()) {
         p.append("===========================\n");

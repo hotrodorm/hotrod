@@ -8,32 +8,52 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.hotrod.dynamicsql.segments.ParameterSegment;
+import org.hotrod.dynamicsql.parameters.ParameterInstance;
 
 public class PreparedSelectQuery<R> extends PreparedQuery {
 
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(PreparedSelectQuery.class.getName());
 
-  public PreparedSelectQuery(SimpleStaticSegmentConsumer sc) {
+  private RowReader<R> rr;
+
+  public PreparedSelectQuery(SimpleStaticSegmentConsumer sc, RowReader<R> rr) {
     super(sc.getSQL(), sc.getParameters());
+    this.rr = rr;
   }
 
-  public List<R> execute(Connection conn, RowReader<R> rowReader) throws SQLException, DynamicExpressionException {
+  public List<R> execute(Connection conn) throws SQLException, DynamicExpressionException {
     try (PreparedStatement ps = conn.prepareStatement(super.sql)) {
       int ordinal = 1;
-      for (ParameterSegment p : super.parameters) {
+      for (ParameterInstance p : super.parameters) {
         p.applyTo(ps, ordinal++);
       }
       try (ResultSet rs = ps.executeQuery()) {
         List<R> rows = new ArrayList<>();
         while (rs.next()) {
-          R r = rowReader.readRowFrom(rs, conn);
+          R r = this.rr.readRowFrom(rs, conn);
           rows.add(r);
         }
         return rows;
       }
     }
   }
+
+//  public List<R> execute(Connection conn, RowReader<R> rowReader) throws SQLException, DynamicExpressionException {
+//    try (PreparedStatement ps = conn.prepareStatement(super.sql)) {
+//      int ordinal = 1;
+//      for (ParameterInstance p : super.parameters) {
+//        p.applyTo(ps, ordinal++);
+//      }
+//      try (ResultSet rs = ps.executeQuery()) {
+//        List<R> rows = new ArrayList<>();
+//        while (rs.next()) {
+//          R r = rowReader.readRowFrom(rs, conn);
+//          rows.add(r);
+//        }
+//        return rows;
+//      }
+//    }
+//  }
 
 }

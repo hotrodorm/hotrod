@@ -7,7 +7,7 @@ import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.ParameterContext;
 
-public class ParameterInjectionSegment extends StaticSegment {
+public class ParameterInjectionSegment extends DynamicContentSegment {
 
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(ParameterInjectionSegment.class.getName());

@@ -3,6 +3,7 @@ package org.hotrod.dynamicsql.assembler;
 import java.util.List;
 
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
+import org.hotrod.dynamicsql.DynamicExpressionFactoryConfig;
 import org.hotrod.dynamicsql.ParameterContext;
 import org.hotrod.dynamicsql.segments.ChooseSegment;
 import org.hotrod.dynamicsql.segments.IfSegment;
@@ -10,11 +11,15 @@ import org.hotrod.dynamicsql.segments.OtherwiseSegment;
 import org.hotrod.dynamicsql.segments.SegmentList;
 import org.hotrod.dynamicsql.segments.WhenSegment;
 
-public class QueryAssembler {
+public class QueryBuilder {
 
   private DynamicExpressionFactory factory;
 
-  public QueryAssembler(DynamicExpressionFactory factory) {
+  public QueryBuilder() {
+    this.factory = DynamicExpressionFactoryConfig.getFactory();
+  }
+
+  public QueryBuilder(DynamicExpressionFactory factory) {
     this.factory = factory;
   }
 
@@ -53,9 +58,14 @@ public class QueryAssembler {
     return q.literaln(txt);
   }
 
-  public PartialQuery parameter(String name, int sqlType) {
+  public PartialQuery parameter(String name) {
     PartialQuery q = new PartialQuery(this.factory);
-    return q.parameter(name, sqlType);
+    return q.parameter(name);
+  }
+
+  public PartialQuery parameterNullable(String name, int sqlType) {
+    PartialQuery q = new PartialQuery(this.factory);
+    return q.parameterNullable(name, sqlType);
   }
 
   public PartialQuery parameterInjection(String name) {

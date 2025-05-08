@@ -6,28 +6,33 @@ import org.hotrod.dynamicsql.DynamicExpression;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.ParameterContext;
+import org.hotrod.dynamicsql.parameters.ParameterInstance;
+import org.hotrod.dynamicsql.parameters.ParameterNullableInstance;
 
-public class VariableOccurrenceSegment extends QuerySegment {
+public class ParameterNullableSegment extends DynamicContentSegment {
 
   @SuppressWarnings("unused")
-  private static final Logger log = Logger.getLogger(VariableOccurrenceSegment.class.getName());
+  private static final Logger log = Logger.getLogger(ParameterNullableSegment.class.getName());
 
   private DynamicExpressionFactory factory;
   private String name;
+  private int sqlType;
+
   private DynamicExpression nameExpression;
 
-  public VariableOccurrenceSegment(DynamicExpressionFactory factory, String name) {
+  public ParameterNullableSegment(DynamicExpressionFactory factory, String name, int sqlType) {
     this.factory = factory;
     this.name = name;
+    this.sqlType = sqlType;
     this.nameExpression = this.factory.expression(this.name);
   }
 
   @Override
   public boolean prepare(StaticSegmentConsumer sc, ParameterContext context, int loopNestingLevel)
       throws DynamicExpressionException {
-
     Object v = this.nameExpression.evaluate(context, Object.class);
-    VariableInstanceValueSegment is = new VariableInstanceValueSegment(v, this.name);
+    Integer index = ParameterInstance.getCounterAndIncrement(this, loopNestingLevel);
+    ParameterNullableInstance is = new ParameterNullableInstance(this.sqlType, this.name, index, v);
     sc.consume("?");
     sc.consume(is);
     return true;

@@ -6,7 +6,7 @@ import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.ParameterContext;
 
-public class OtherwiseSegment extends DynamicSegment {
+public class OtherwiseSegment extends ControlSegment {
 
   private List<QuerySegment> segments;
 

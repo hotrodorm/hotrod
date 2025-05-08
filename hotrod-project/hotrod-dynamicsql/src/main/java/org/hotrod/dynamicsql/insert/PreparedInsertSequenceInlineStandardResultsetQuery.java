@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.DynamicExpressionException;
-import org.hotrod.dynamicsql.segments.ParameterSegment;
+import org.hotrod.dynamicsql.parameters.ParameterInstance;
 
 public class PreparedInsertSequenceInlineStandardResultsetQuery extends InsertExecutor {
 
@@ -17,7 +17,7 @@ public class PreparedInsertSequenceInlineStandardResultsetQuery extends InsertEx
       .getLogger(PreparedInsertSequenceInlineStandardResultsetQuery.class.getName());
 
   @Override
-  public Long execute(Connection conn, String sql, List<ParameterSegment> parameters, String sequencePreFetchSQL,
+  public Long execute(Connection conn, String sql, List<ParameterInstance> parameters, String sequencePreFetchSQL,
       String primaryKeyParameterName, String[] generatedKeysNames) throws SQLException, DynamicExpressionException {
     try (PreparedStatement ps = conn.prepareStatement(sql)) {
       super.applyParameters(parameters, ps);

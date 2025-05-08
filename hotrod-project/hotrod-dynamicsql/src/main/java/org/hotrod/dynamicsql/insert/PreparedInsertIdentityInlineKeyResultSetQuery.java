@@ -10,14 +10,14 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.DynamicExpressionException;
-import org.hotrod.dynamicsql.segments.ParameterSegment;
+import org.hotrod.dynamicsql.parameters.ParameterInstance;
 
 public class PreparedInsertIdentityInlineKeyResultSetQuery extends InsertExecutor {
 
   private static final Logger log = Logger.getLogger(PreparedInsertIdentityInlineKeyResultSetQuery.class.getName());
 
   @Override
-  public Long execute(Connection conn, String sql, List<ParameterSegment> parameters, String sequencePreFetchSQL,
+  public Long execute(Connection conn, String sql, List<ParameterInstance> parameters, String sequencePreFetchSQL,
       String primaryKeyParameterName, String[] generatedKeysNames) throws SQLException, DynamicExpressionException {
     if (generatedKeysNames == null || generatedKeysNames.length == 0) {
       try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -30,7 +30,7 @@ public class PreparedInsertIdentityInlineKeyResultSetQuery extends InsertExecuto
     }
   }
 
-  private Long execute(List<ParameterSegment> parameters, PreparedStatement ps) throws SQLException {
+  private Long execute(List<ParameterInstance> parameters, PreparedStatement ps) throws SQLException {
     super.applyParameters(parameters, ps);
     ps.executeUpdate();
     try (ResultSet rs = ps.getGeneratedKeys()) {

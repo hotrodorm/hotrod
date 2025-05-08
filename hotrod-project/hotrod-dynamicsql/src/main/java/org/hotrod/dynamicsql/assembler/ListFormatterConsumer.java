@@ -5,7 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.hotrod.dynamicsql.segments.ParameterSegment;
+import org.hotrod.dynamicsql.parameters.ParameterInstance;
 import org.hotrod.dynamicsql.segments.StaticSegmentConsumer;
 
 public class ListFormatterConsumer implements StaticSegmentConsumer, AutoCloseable {
@@ -72,7 +72,7 @@ public class ListFormatterConsumer implements StaticSegmentConsumer, AutoCloseab
   }
 
   @Override
-  public void consume(ParameterSegment s) {
+  public void consume(ParameterInstance s) {
     this.isFirstSegment = false;
     this.parentConsumer.consume(s);
   }

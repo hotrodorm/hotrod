@@ -5,7 +5,7 @@ import java.util.List;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.ParameterContext;
 
-public class ChooseSegment extends DynamicSegment {
+public class ChooseSegment extends ControlSegment {
 
   private List<WhenSegment> whens;
   private OtherwiseSegment otherwise = null;

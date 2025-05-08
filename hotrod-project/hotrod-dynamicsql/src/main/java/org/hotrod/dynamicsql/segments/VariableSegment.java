@@ -6,22 +6,21 @@ import org.hotrod.dynamicsql.DynamicExpression;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.ParameterContext;
+import org.hotrod.dynamicsql.parameters.ParameterInstance;
+import org.hotrod.dynamicsql.parameters.VariableInstance;
 
-public class ParameterOccurrenceSegment extends QuerySegment {
+public class VariableSegment extends DynamicContentSegment {
 
   @SuppressWarnings("unused")
-  private static final Logger log = Logger.getLogger(ParameterOccurrenceSegment.class.getName());
+  private static final Logger log = Logger.getLogger(VariableSegment.class.getName());
 
   private DynamicExpressionFactory factory;
   private String name;
-  private int sqlType;
-
   private DynamicExpression nameExpression;
 
-  public ParameterOccurrenceSegment(DynamicExpressionFactory factory, String name, int sqlType) {
+  public VariableSegment(DynamicExpressionFactory factory, String name) {
     this.factory = factory;
     this.name = name;
-    this.sqlType = sqlType;
     this.nameExpression = this.factory.expression(this.name);
   }
 
@@ -29,7 +28,8 @@ public class ParameterOccurrenceSegment extends QuerySegment {
   public boolean prepare(StaticSegmentConsumer sc, ParameterContext context, int loopNestingLevel)
       throws DynamicExpressionException {
     Object v = this.nameExpression.evaluate(context, Object.class);
-    ParameterInstanceValueSegment is = new ParameterInstanceValueSegment(v, this.sqlType, this.name);
+    Integer index = ParameterInstance.getCounterAndIncrement(this, loopNestingLevel);
+    VariableInstance is = new VariableInstance(this.name, index, v);
     sc.consume("?");
     sc.consume(is);
     return true;

@@ -12,16 +12,16 @@ import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.ParameterContext;
 import org.hotrod.dynamicsql.Utl;
 
-public class ForEachSegment extends DynamicSegment {
+public class ForEachSegment extends ControlSegment {
 
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(ForEachSegment.class.getName());
 
   private String item;
   private String collection;
-  private LiteralSegment open;
-  private LiteralSegment separator;
-  private LiteralSegment close;
+  private StaticContentSegment open;
+  private StaticContentSegment separator;
+  private StaticContentSegment close;
 
   private DynamicExpressionFactory factory;
   private DynamicExpression collectionExpression;
@@ -47,9 +47,9 @@ public class ForEachSegment extends DynamicSegment {
 
     // Open, Separator, Close
 
-    this.open = new LiteralSegment(Utl.coalesce(open, ""));
-    this.separator = new LiteralSegment(Utl.coalesce(separator, ""));
-    this.close = new LiteralSegment(Utl.coalesce(close, ""));
+    this.open = new StaticContentSegment(Utl.coalesce(open, ""));
+    this.separator = new StaticContentSegment(Utl.coalesce(separator, ""));
+    this.close = new StaticContentSegment(Utl.coalesce(close, ""));
 
     // Segments
 
