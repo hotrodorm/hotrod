@@ -80,7 +80,6 @@ public class OperationDAO implements Serializable, ApplicationContextAware {
       .literal("\n      WHERE id IN \n      ")
       .foreach("id", "ids", "(", ", ", ")", dyn
         .variable("id")
-        .end()
       )
       .literal("\n      AND ")
       .parameterInjection("filter")

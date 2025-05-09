@@ -111,6 +111,7 @@ public class DAO {
 
   private ClassPackage classPackage;
 
+  @SuppressWarnings("unused")
   private Layout entity = null;
   private Model model = null;
 
@@ -578,7 +579,7 @@ public class DAO {
           w.println("      .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
         } else {
           w.println("      .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", dyn.literal(\""
-              + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\\n\").end())");
+              + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\\n\"))");
         }
       } else {
 
@@ -601,7 +602,7 @@ public class DAO {
         // Conditionally include column
         if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
           w.println("      .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", dyn.literal(\""
-              + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\\n\").end())");
+              + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\\n\"))");
         }
 
       }
@@ -629,7 +630,7 @@ public class DAO {
               + (n < coln ? ".literaln(\",\")" : ""));
         } else {
           w.println("      .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", dyn.parameter(\"m."
-              + SUtil.escapeJavaString(memId) + "\")" + (n < coln ? ".literal(\", \")" : "") + ".end())");
+              + SUtil.escapeJavaString(memId) + "\")" + (n < coln ? ".literal(\", \")" : "") + ")");
         }
       } else {
 
@@ -666,7 +667,7 @@ public class DAO {
         // Conditionally include column
         if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
           w.println("      .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\", dyn.parameter(\"m."
-              + SUtil.escapeJavaString(memId) + "\")" + (n < coln ? ".literal(\", \")" : "") + ".end())");
+              + SUtil.escapeJavaString(memId) + "\")" + (n < coln ? ".literal(\", \")" : "") + ")");
         }
 
       }
@@ -1399,16 +1400,15 @@ public class DAO {
       String sqlId = cm.getId().getRenderedSQLName();
       if (ol != null && cm.isOLVersionNumberColumn()) {
         w.println("        .if_(\"true\", dyn.literal(\"" + ns + "." + SUtil.escapeJavaString(sqlId) + " = "
-            + SUtil.escapeJavaString(sqlId) + " + 1\").end())");
+            + SUtil.escapeJavaString(sqlId) + " + 1\"))");
       } else if (ol != null && cm.isOLTimestampColumn()) {
         w.println("        .if_(\"true\", dyn.literal(\"" + ns + "." + SUtil.escapeJavaString(sqlId) + " = "
-            + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\").end())");
+            + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\"))");
       } else {
         String memId = cm.getId().getJavaMemberName();
-        String jdbcType = cm.getType().getJDBCShortType();
         w.println("        .if_(\"" + ns + "." + SUtil.escapeJavaString(memId) + " != null\", dyn.literal(\""
             + SUtil.escapeJavaString(sqlId) + " = \").parameter(\"" + ns + "." + SUtil.escapeJavaString(memId)
-            + "\").end())");
+            + "\"))");
       }
     }
     w.println("        .end())");
@@ -1461,7 +1461,7 @@ public class DAO {
       String memId = cm.getId().getJavaMemberName();
       String sqlId = cm.getId().getRenderedSQLName();
       w.println("        .if_(\"" + ns + "." + memId + " != null\", dyn.literal(\"" + SUtil.escapeJavaString(sqlId)
-          + " = \").parameter(\"" + ns + "." + memId + "\").end())");
+          + " = \").parameter(\"" + ns + "." + memId + "\"))");
     }
     w.println("        .end())");
   }

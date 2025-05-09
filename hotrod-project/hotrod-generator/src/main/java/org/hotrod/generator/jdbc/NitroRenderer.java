@@ -171,7 +171,6 @@ public class NitroRenderer {
     log.fine("[" + level + "] render(if) -- '" + t.getTest() + "'");
     w.println(indent(level) + ".if_(" + renderString(t.getTest()) + ", dyn");
     render(t.getParts(), w, level + 1, RENDER_ALL);
-    w.println(indent(level) + "  .end()");
     w.println(indent(level) + ")");
   }
 
@@ -249,7 +248,6 @@ public class NitroRenderer {
         + renderString(t.getOpen()) + ", " + renderString(t.getSeparator()) + ", " + renderString(t.getClose())
         + ", dyn");
     render(t.getParts(), w, level + 1, RENDER_ALL);
-    w.println(indent(level) + "  .end()");
     w.println(indent(level) + ")");
   }
 

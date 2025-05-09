@@ -108,7 +108,7 @@ public class TestExamples {
       DynamicModificationQuery q = dyn //
           .literal("UPDATE employee SET salary = salary + ") //
           .parameter("salaryIncrease") //
-          .if_("!empty dept", dyn.literal(" WHERE dept_no = ").parameter("dept").end()) //
+          .if_("!empty dept", dyn.literal(" WHERE dept_no = ").parameter("dept")) //
           .endModificationQuery();
 
       ParameterContext ctx = dyn.newParameterContext();
@@ -122,7 +122,7 @@ public class TestExamples {
     }
   }
 
-  // Example 5. Selecting data (single column)
+  // Example 5. Selecting data into a single column
 //  @Test
   public void example5() throws DynamicExpressionException, SQLException {
     try (Connection conn = getConnection()) {
@@ -146,7 +146,7 @@ public class TestExamples {
     }
   }
 
-  // Example 5. Selecting data (two to six columns)
+  // Example 5. Selecting data using tuples (two to six columns)
 //  @Test
   public void example6() throws DynamicExpressionException, SQLException {
     try (Connection conn = getConnection()) {
@@ -268,13 +268,13 @@ public class TestExamples {
       DynamicSelectQuery q = dyn //
           .literal("SELECT *, salary * 1.31 as gross_salary FROM employee WHERE active = 'Y'") //
           .choose() //
-          .when("ordering == 1", dyn.literal(" ORDER BY last_name").end()) //
-          .when("ordering == 2", dyn.literal(" ORDER BY hired_on DESC").end()) //
-          .otherwise(dyn.literal(" ORDER BY salary").end()) //
+          .when("ordering == 1", dyn.literal(" ORDER BY last_name")) //
+          .when("ordering == 2", dyn.literal(" ORDER BY hired_on DESC")) //
+          .otherwise(dyn.literal(" ORDER BY salary")) //
           .endSelectQuery();
 
       ParameterContext ctx = dyn.newParameterContext();
-      ctx.add("ordering", null);
+      ctx.add("ordering", 2);
 
       PreparedSelectQuery<Row> pq = q.prepare(ctx);
       System.out.println("Dynamic Query:\n" + pq.getPreview());

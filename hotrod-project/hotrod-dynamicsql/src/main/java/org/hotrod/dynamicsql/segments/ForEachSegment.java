@@ -32,7 +32,7 @@ public class ForEachSegment extends ControlSegment {
   private Collection<?> coll;
 
   public ForEachSegment(String item, String collection, String open, String separator, String close,
-      SegmentList segmentList, DynamicExpressionFactory factory) {
+      List<QuerySegment> segments, DynamicExpressionFactory factory) {
     super();
 
     this.factory = factory;
@@ -53,7 +53,7 @@ public class ForEachSegment extends ControlSegment {
 
     // Segments
 
-    this.segments = segmentList == null ? null : segmentList.getSegments();
+    this.segments = segments;
 
   }
 

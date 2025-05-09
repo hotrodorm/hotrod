@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.segments.IfSegment;
-import org.hotrod.dynamicsql.segments.SegmentList;
 
 public class IfsAssembler {
 
@@ -18,8 +17,8 @@ public class IfsAssembler {
 
   // IF Segments
 
-  public IfsAssembler if_(String test, SegmentList querySegments) {
-    this.ifSegments.add(new IfSegment(test, querySegments.getSegments(), this.factory));
+  public IfsAssembler if_(String test, Sentence sentence) {
+    this.ifSegments.add(new IfSegment(test, sentence.segments, this.factory));
     return this;
   }
 

@@ -15,80 +15,79 @@ import org.hotrod.dynamicsql.segments.ParameterInjectionSegment;
 import org.hotrod.dynamicsql.segments.ParameterNotNullableSegment;
 import org.hotrod.dynamicsql.segments.ParameterNullableSegment;
 import org.hotrod.dynamicsql.segments.QuerySegment;
-import org.hotrod.dynamicsql.segments.SegmentList;
 import org.hotrod.dynamicsql.segments.SettersSegment;
 import org.hotrod.dynamicsql.segments.StaticContentSegment;
 import org.hotrod.dynamicsql.segments.TrimSegment;
 import org.hotrod.dynamicsql.segments.VariableSegment;
 import org.hotrod.dynamicsql.segments.WhereSegment;
 
-public class PartialQuery {
+public class Sentence {
 
-  private DynamicExpressionFactory factory;
+  DynamicExpressionFactory factory;
   List<QuerySegment> segments = new ArrayList<>();
 
-  public PartialQuery(DynamicExpressionFactory factory) {
+  public Sentence(DynamicExpressionFactory factory) {
     this.factory = factory;
   }
 
   // Segments
 
-  public PartialQuery literal(String text) {
+  public Sentence literal(String text) {
     this.segments.add(new StaticContentSegment(text));
     return this;
   }
 
-  public PartialQuery literaln() {
+  public Sentence literaln() {
     return this.literal("\n");
   }
 
-  public PartialQuery literaln(String text) {
+  public Sentence literaln(String text) {
     return this.literal(text).literaln();
   }
 
-  public PartialQuery parameter(String name) {
+  public Sentence parameter(String name) {
     this.segments.add(new ParameterNotNullableSegment(this.factory, name));
     return this;
   }
 
-  public PartialQuery parameterNullable(String name, int sqlType) {
+  public Sentence parameterNullable(String name, int sqlType) {
     this.segments.add(new ParameterNullableSegment(this.factory, name, sqlType));
     return this;
   }
 
-  public PartialQuery parameterInjection(String name) {
+  public Sentence parameterInjection(String name) {
     this.segments.add(new ParameterInjectionSegment(this.factory, name));
     return this;
   }
 
-  public PartialQuery variable(String name) {
+  public Sentence variable(String name) {
     this.segments.add(new VariableSegment(this.factory, name));
     return this;
   }
 
-  public PartialQuery if_(String test, SegmentList content) {
-    this.segments.add(new IfSegment(test, content.getSegments(), this.factory));
+  public Sentence if_(String test, Sentence query) {
+    this.segments.add(new IfSegment(test, query.segments, this.factory));
     return this;
   }
 
-  public PartialQuery set(List<IfSegment> content) {
+  public Sentence set(List<IfSegment> content) {
     this.segments.add(new SettersSegment(content, this.factory));
     return this;
   }
 
-  public PartialQuery set(List<IfSegment> content, String headerPrefix, String headerSuffix, String separatorPrefix,
+  public Sentence set(List<IfSegment> content, String headerPrefix, String headerSuffix, String separatorPrefix,
       String separatorSuffix, String tailPrefix, String tailSuffix, String... removePrefixes) {
     this.segments.add(new SettersSegment(content, this.factory, headerPrefix, headerSuffix, separatorPrefix,
         separatorSuffix, tailPrefix, tailSuffix, removePrefixes));
     return this;
   }
 
-  public PartialQuery where(String separator, List<IfSegment> content) {
+  public Sentence where(String separator, List<IfSegment> content) {
     this.segments.add(new WhereSegment(separator, content, this.factory));
     return this;
   }
 
-  public PartialQuery where(String separator, List<IfSegment> content, String headerPrefix, String headerSuffix,
+  public Sentence where(String separator, List<IfSegment> content, String headerPrefix, String headerSuffix,
       String separatorPrefix, String separatorSuffix, String tailPrefix, String tailSuffix, String... removePrefixes) {
     this.segments.add(new WhereSegment(separator, content, this.factory, headerPrefix, headerSuffix, separatorPrefix,
         separatorSuffix, tailPrefix, tailSuffix, removePrefixes));
@@ -96,15 +95,15 @@ public class PartialQuery {
   }
 
   public ChooseAssembler choose() {
-    return new ChooseAssembler(this.factory, this);
+    return new ChooseAssembler(this);
   }
 
-  public PartialQuery trim(String header, String separator, String tail, List<IfSegment> content) {
+  public Sentence trim(String header, String separator, String tail, List<IfSegment> content) {
     this.segments.add(new TrimSegment(header, separator, tail, content, this.factory));
     return this;
   }
 
-  public PartialQuery trim(String header, String separator, String tail, List<IfSegment> content, String headerPrefix,
+  public Sentence trim(String header, String separator, String tail, List<IfSegment> content, String headerPrefix,
       String headerSuffix, String separatorPrefix, String separatorSuffix, String tailPrefix, String tailSuffix,
       String... removePrefixes) {
     this.segments.add(new TrimSegment(header, separator, tail, content, this.factory, headerPrefix, headerSuffix,
@@ -112,22 +111,22 @@ public class PartialQuery {
     return this;
   }
 
-  public PartialQuery foreach(String item, String collection, String open, String separator, String close,
-      SegmentList content) {
-    this.segments.add(new ForEachSegment(item, collection, open, separator, close, content, this.factory));
+  public Sentence foreach(String item, String collection, String open, String separator, String close,
+      Sentence content) {
+    this.segments.add(new ForEachSegment(item, collection, open, separator, close, content.segments, this.factory));
     return this;
   }
 
-  public PartialQuery bind(String name, String value) {
+  public Sentence bind(String name, String value) {
     this.segments.add(new BindSegment(name, value, this.factory));
     return this;
   }
 
   // end
 
-  public SegmentList end() {
-    return new SegmentList(this.segments);
-  }
+//  public SegmentList end() {
+//    return new SegmentList(this.segments);
+//  }
 
   public DynamicModificationQuery endModificationQuery() {
     return new DynamicModificationQuery(this.segments);

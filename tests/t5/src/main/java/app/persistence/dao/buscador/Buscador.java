@@ -77,10 +77,8 @@ public class Buscador implements Serializable, ApplicationContextAware {
         .literal("\n        left join b on b.aid = a.id\n          ")
         .if_("idSector != null", dyn
           .literal("\n            where b.val is not null\n          ")
-          .end()
         )
         .literal("\n        ")
-        .end()
       )
       .literal("\n      ")
       .literal("\n\n    ")

@@ -17,6 +17,7 @@ import org.hotrod.utils.SUtil;
 
 public class GenOperation {
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(GenOperation.class.getName());
 
   private File baseDir;

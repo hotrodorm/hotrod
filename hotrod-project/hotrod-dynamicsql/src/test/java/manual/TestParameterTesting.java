@@ -28,8 +28,7 @@ public class TestParameterTesting {
 
 //    DynamicSelectQuery q = b.literal("SELECT * FROM t WHERE a >= ").parameter("id").endSelectQuery();
     DynamicSelectQuery q = dyn.literal("SELECT * FROM t WHERE a in ") //
-        .foreach("v", "codes", "(", ", ", ")", dyn.parameter("v").end() //
-        ). //
+        .foreach("v", "codes", "(", ", ", ")", dyn.parameter("v")). //
         endSelectQuery();
 
     ParameterContext ctx = dyn.newParameterContext();
@@ -66,8 +65,7 @@ public class TestParameterTesting {
 
 //    DynamicSelectQuery q = b.literal("SELECT * FROM t WHERE a >= ").parameter("id").endSelectQuery();
     DynamicSelectQuery q = dyn.literal("SELECT a, a*a as b, b ||'...' as c FROM t WHERE a in ") //
-        .foreach("v", "codes", "(", ", ", ")", dyn.parameter("v").end() //
-        ). //
+        .foreach("v", "codes", "(", ", ", ")", dyn.parameter("v")). //
         endSelectQuery();
 
     ParameterContext ctx = dyn.newParameterContext();

@@ -152,9 +152,9 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
       .literaln("  shipping")
       .literaln("FROM product")
       .where("AND", dyn.ifs()
-        .if_("f.id != null", dyn.literal("id = ").parameter("f.id").end())
-        .if_("f.type != null", dyn.literal("type = ").parameter("f.type").end())
-        .if_("f.shipping != null", dyn.literal("shipping = ").parameter("f.shipping").end())
+        .if_("f.id != null", dyn.literal("id = ").parameter("f.id"))
+        .if_("f.type != null", dyn.literal("type = ").parameter("f.type"))
+        .if_("f.shipping != null", dyn.literal("shipping = ").parameter("f.shipping"))
         .end())
       .parameterInjection("ordering")
       .endSelectQuery();
@@ -215,14 +215,14 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
       .literaln("INSERT INTO product (")
-      .if_("m.id != null", dyn.literal("id,\n").end())
-      .if_("m.type != null", dyn.literal("type,\n").end())
-      .if_("m.shipping != null", dyn.literal("shipping\n").end())
+      .if_("m.id != null", dyn.literal("id,\n"))
+      .if_("m.type != null", dyn.literal("type,\n"))
+      .if_("m.shipping != null", dyn.literal("shipping\n"))
       .literaln(")")
       .literaln("VALUES(")
-      .if_("m.id != null", dyn.parameter("m.id").literal(", ").end())
-      .if_("m.type != null", dyn.parameter("m.type").literal(", ").end())
-      .if_("m.shipping != null", dyn.parameter("m.shipping").end())
+      .if_("m.id != null", dyn.parameter("m.id").literal(", "))
+      .if_("m.type != null", dyn.parameter("m.type").literal(", "))
+      .if_("m.shipping != null", dyn.parameter("m.shipping"))
       .literal(")")
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
@@ -247,14 +247,14 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     this.updateByExample = dyn
       .literal("UPDATE product")
       .set(dyn.ifs()
-        .if_("v.id != null", dyn.literal("id = ").parameter("v.id").end())
-        .if_("v.type != null", dyn.literal("type = ").parameter("v.type").end())
-        .if_("v.shipping != null", dyn.literal("shipping = ").parameter("v.shipping").end())
+        .if_("v.id != null", dyn.literal("id = ").parameter("v.id"))
+        .if_("v.type != null", dyn.literal("type = ").parameter("v.type"))
+        .if_("v.shipping != null", dyn.literal("shipping = ").parameter("v.shipping"))
         .end())
       .where("AND", dyn.ifs()
-        .if_("e.id != null", dyn.literal("id = ").parameter("e.id").end())
-        .if_("e.type != null", dyn.literal("type = ").parameter("e.type").end())
-        .if_("e.shipping != null", dyn.literal("shipping = ").parameter("e.shipping").end())
+        .if_("e.id != null", dyn.literal("id = ").parameter("e.id"))
+        .if_("e.type != null", dyn.literal("type = ").parameter("e.type"))
+        .if_("e.shipping != null", dyn.literal("shipping = ").parameter("e.shipping"))
         .end())
       .endModificationQuery();
   }
@@ -292,9 +292,9 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     this.deleteByExample = dyn
       .literal("DELETE FROM product")
       .where("AND", dyn.ifs()
-        .if_("e.id != null", dyn.literal("id = ").parameter("e.id").end())
-        .if_("e.type != null", dyn.literal("type = ").parameter("e.type").end())
-        .if_("e.shipping != null", dyn.literal("shipping = ").parameter("e.shipping").end())
+        .if_("e.id != null", dyn.literal("id = ").parameter("e.id"))
+        .if_("e.type != null", dyn.literal("type = ").parameter("e.type"))
+        .if_("e.shipping != null", dyn.literal("shipping = ").parameter("e.shipping"))
         .end())
       .endModificationQuery();
   }

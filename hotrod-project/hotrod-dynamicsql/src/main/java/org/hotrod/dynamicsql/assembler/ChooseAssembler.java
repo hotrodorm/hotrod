@@ -3,41 +3,38 @@ package org.hotrod.dynamicsql.assembler;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.segments.ChooseSegment;
 import org.hotrod.dynamicsql.segments.OtherwiseSegment;
-import org.hotrod.dynamicsql.segments.SegmentList;
 import org.hotrod.dynamicsql.segments.WhenSegment;
 
 public class ChooseAssembler {
 
-  private DynamicExpressionFactory factory;
-  private PartialQuery query;
+  private Sentence parent;
   private List<WhenSegment> whens = new ArrayList<>();
   private OtherwiseSegment otherwise = null;
 
-  public ChooseAssembler(DynamicExpressionFactory factory, PartialQuery query) {
-    this.factory = factory;
-    this.query = query;
+  public ChooseAssembler(Sentence parent) {
+    this.parent = parent;
   }
 
   // When Segments
 
-  public ChooseAssembler when(String test, SegmentList segmentList) {
-    this.whens.add(new WhenSegment(test, segmentList.getSegments(), this.factory));
+  public ChooseAssembler when(String test, Sentence sentence) {
+    this.whens.add(new WhenSegment(test, sentence.segments, this.parent.factory));
     return this;
   }
 
-  public PartialQuery otherwise(SegmentList segmentList) {
-    this.query.segments.add(new ChooseSegment(this.whens, new OtherwiseSegment(segmentList, this.factory)));
-    return this.query;
+  public Sentence otherwise(Sentence sentence) {
+    this.parent.segments
+        .add(new ChooseSegment(this.whens, new OtherwiseSegment(sentence.segments, this.parent.factory)));
+    return this.parent;
   }
 
   // end
 
-  public PartialQuery end() {
-    this.query.segments.add(new ChooseSegment(this.whens, this.otherwise));
-    return this.query;
+  public Sentence end() {
+    this.parent.segments.add(new ChooseSegment(this.whens, this.otherwise));
+    return this.parent;
   }
 
 }
