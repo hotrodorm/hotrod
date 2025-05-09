@@ -80,7 +80,7 @@ import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeSource;
-import org.hotrod.runtime.livesql.util.QueryAssemblerBean;
+import org.hotrod.runtime.livesql.util.DynamicSQLBean;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.AbstractClassWriter.ExternalClass;
 import org.hotrod.utils.ClassPackage;
@@ -304,7 +304,7 @@ public class DAO {
     w.println();
 
     w.println("  @", Const.AUTOWIRED);
-    w.println("  private ", QueryAssemblerBean.class, " assemblerBean;");
+    w.println("  private ", DynamicSQLBean.class, " dynamicSQLBean;");
     w.println();
 
     w.println("  private ", DynamicSQL.class, " dyn;");
@@ -338,7 +338,7 @@ public class DAO {
     w.println("  public void initializeContext() {");
     w.println("    this.context = new ", LiveSQLContext.class, "(this.liveSQLDialect, this.dataSource, new ",
         TypeSolver.class, "(null, this.liveSQLDialect), log);");
-    w.println("    this.dyn = this.assemblerBean.getAssembler();");
+    w.println("    this.dyn = this.dynamicSQLBean.getDynamicSQL();");
     for (String ini : this.initializersInPostConstruct) {
       w.println("    this." + ini + "();");
     }

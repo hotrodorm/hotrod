@@ -24,7 +24,7 @@ import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
-import org.hotrod.runtime.livesql.util.QueryAssemblerBean;
+import org.hotrod.runtime.livesql.util.DynamicSQLBean;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -44,7 +44,7 @@ public class Buscador implements Serializable, ApplicationContextAware {
   private LiveSQLDialect liveSQLDialect;
 
   @Autowired
-  private QueryAssemblerBean assemblerBean;
+  private DynamicSQLBean dynamicSQLBean;
 
   private DynamicSQL dyn;
 
@@ -120,7 +120,7 @@ public class Buscador implements Serializable, ApplicationContextAware {
   @PostConstruct
   public void initializeContext() {
     this.context = new LiveSQLContext(this.liveSQLDialect, this.dataSource, new TypeSolver(null, this.liveSQLDialect), log);
-    this.dyn = this.assemblerBean.getAssembler();
+    this.dyn = this.dynamicSQLBean.getDynamicSQL();
     this.initializeSelect0();
   }
 

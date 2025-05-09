@@ -44,7 +44,7 @@ import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.runtime.livesql.queries.typesolver.TypeSource;
-import org.hotrod.runtime.livesql.util.QueryAssemblerBean;
+import org.hotrod.runtime.livesql.util.DynamicSQLBean;
 import org.hotrod.utils.SQLUtil;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +65,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   private LiveSQLDialect liveSQLDialect;
 
   @Autowired
-  private QueryAssemblerBean assemblerBean;
+  private DynamicSQLBean dynamicSQLBean;
 
   private DynamicSQL dyn;
 
@@ -398,7 +398,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   @PostConstruct
   public void initializeContext() {
     this.context = new LiveSQLContext(this.liveSQLDialect, this.dataSource, new TypeSolver(null, this.liveSQLDialect), log);
-    this.dyn = this.assemblerBean.getAssembler();
+    this.dyn = this.dynamicSQLBean.getDynamicSQL();
     this.initializeSelectbyexample();
     this.initializeInsert();
     this.initializeInsertbyexample();
