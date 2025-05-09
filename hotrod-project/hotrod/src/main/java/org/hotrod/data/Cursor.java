@@ -1,4 +1,4 @@
-package org.hotrod.cursors;
+package org.hotrod.data;
 
 import java.io.Closeable;
 

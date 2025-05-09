@@ -5,10 +5,10 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.hotrod.cursors.Cursor;
+import org.hotrod.data.Cursor;
+import org.hotrod.data.Row;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.assembler.DynamicSQL;
-import org.hotrod.livesql.Row;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.expressions.predicates.converter.ConvertedColumn;
 import org.hotrod.runtime.livesql.queries.select.Select;

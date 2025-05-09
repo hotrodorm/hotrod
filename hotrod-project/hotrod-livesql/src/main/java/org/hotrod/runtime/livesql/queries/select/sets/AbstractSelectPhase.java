@@ -3,7 +3,7 @@ package org.hotrod.runtime.livesql.queries.select.sets;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.hotrod.cursors.Cursor;
+import org.hotrod.data.Cursor;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.ctes.CTE;

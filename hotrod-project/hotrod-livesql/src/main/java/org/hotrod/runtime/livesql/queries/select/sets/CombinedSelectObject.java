@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import org.hotrod.cursors.Cursor;
-import org.hotrod.dynamicsql.RowReader;
+import org.hotrod.data.Cursor;
+import org.hotrod.data.RowReader;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.expressions.Expression;

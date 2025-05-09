@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.hotrod.data.Cursor;
+import org.hotrod.data.RowReader;
 import org.hotrod.dynamicsql.parameters.ParameterInstance;
 
 public class PreparedSelectQuery<R> extends PreparedQuery {
@@ -23,11 +25,8 @@ public class PreparedSelectQuery<R> extends PreparedQuery {
   }
 
   public List<R> execute(Connection conn) throws SQLException, DynamicExpressionException {
-    try (PreparedStatement ps = conn.prepareStatement(super.sql)) {
-      int ordinal = 1;
-      for (ParameterInstance p : super.parameters) {
-        p.applyTo(ps, ordinal++);
-      }
+    try (PreparedStatement ps = prepareStatement(conn)) {
+      applyParameters(ps);
       try (ResultSet rs = ps.executeQuery()) {
         List<R> rows = new ArrayList<>();
         while (rs.next()) {
@@ -39,21 +38,40 @@ public class PreparedSelectQuery<R> extends PreparedQuery {
     }
   }
 
-//  public List<R> execute(Connection conn, RowReader<R> rowReader) throws SQLException, DynamicExpressionException {
-//    try (PreparedStatement ps = conn.prepareStatement(super.sql)) {
-//      int ordinal = 1;
-//      for (ParameterInstance p : super.parameters) {
-//        p.applyTo(ps, ordinal++);
-//      }
-//      try (ResultSet rs = ps.executeQuery()) {
-//        List<R> rows = new ArrayList<>();
-//        while (rs.next()) {
-//          R r = rowReader.readRowFrom(rs, conn);
-//          rows.add(r);
-//        }
-//        return rows;
-//      }
-//    }
-//  }
+  public R executeOne(Connection conn) throws SQLException, DynamicExpressionException {
+    try (PreparedStatement ps = prepareStatement(conn)) {
+      applyParameters(ps);
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          R r = this.rr.readRowFrom(rs, conn);
+          if (rs.next()) {
+            throw new RuntimeException(".executeOne() expects a single row at the most, "
+                + "but this SELECT query produced more than one row");
+          }
+          return r;
+        }
+        return null;
+      }
+    }
+  }
+
+  PreparedStatement prepareStatement(Connection conn) throws SQLException {
+    return conn.prepareStatement(super.sql);
+  }
+
+  void applyParameters(PreparedStatement ps) throws SQLException {
+    int ordinal = 1;
+    for (ParameterInstance p : super.parameters) {
+      p.applyTo(ps, ordinal++);
+    }
+  }
+
+  public Cursor<R> executeCursor(Connection conn) throws SQLException {
+    return new DynCursor<R>(conn, this, this.rr, null);
+  }
+
+  public Cursor<R> executeCursor(Connection conn, Integer fetchSize) throws SQLException {
+    return new DynCursor<R>(conn, this, this.rr, fetchSize);
+  }
 
 }

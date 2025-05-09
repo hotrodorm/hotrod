@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hotrod.data.RowReader;
+
 public class MapRowReader implements RowReader<Map<String, Object>> {
 
   private List<String> columns = null;

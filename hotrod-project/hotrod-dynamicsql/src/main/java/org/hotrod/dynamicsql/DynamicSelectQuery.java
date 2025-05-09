@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import org.hotrod.data.RowReader;
 import org.hotrod.dynamicsql.segments.QuerySegment;
 import org.hotrod.dynamicsql.tuples.Tuple2;
 import org.hotrod.dynamicsql.tuples.Tuple3;

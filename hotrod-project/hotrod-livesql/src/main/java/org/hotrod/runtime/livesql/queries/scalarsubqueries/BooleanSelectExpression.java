@@ -1,6 +1,6 @@
 package org.hotrod.runtime.livesql.queries.scalarsubqueries;
 
-import org.hotrod.livesql.Row;
+import org.hotrod.data.Row;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;

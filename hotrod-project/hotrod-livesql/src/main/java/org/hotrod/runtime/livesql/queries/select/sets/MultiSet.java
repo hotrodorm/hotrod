@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.hotrod.cursors.Cursor;
-import org.hotrod.dynamicsql.RowReader;
+import org.hotrod.data.Cursor;
+import org.hotrod.data.RowReader;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;

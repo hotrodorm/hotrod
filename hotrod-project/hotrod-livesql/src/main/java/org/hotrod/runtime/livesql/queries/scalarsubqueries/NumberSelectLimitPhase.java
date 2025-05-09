@@ -1,6 +1,6 @@
 package org.hotrod.runtime.livesql.queries.scalarsubqueries;
 
-import org.hotrod.livesql.Row;
+import org.hotrod.data.Row;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject;
 
 public class NumberSelectLimitPhase extends NumberSelectExpression {

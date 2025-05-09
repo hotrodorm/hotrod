@@ -1,4 +1,4 @@
-package org.hotrod.livesql;
+package org.hotrod.data;
 
 import java.util.Collection;
 import java.util.HashMap;

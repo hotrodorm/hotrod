@@ -11,8 +11,8 @@ import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import org.hotrod.cursors.Cursor;
-import org.hotrod.dynamicsql.RowReader;
+import org.hotrod.data.Cursor;
+import org.hotrod.data.RowReader;
 import org.hotrod.runtime.livesql.dialects.JoinRenderer;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.dialects.LockingRenderer;

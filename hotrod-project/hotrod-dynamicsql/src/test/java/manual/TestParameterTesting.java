@@ -1,5 +1,6 @@
 package manual;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -7,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.hotrod.data.Cursor;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicSelectQuery;
 import org.hotrod.dynamicsql.ParameterContext;
@@ -57,7 +59,7 @@ public class TestParameterTesting {
   }
 
   @Test
-  public void test2() throws DynamicExpressionException, SQLException {
+  public void test2() throws DynamicExpressionException, SQLException, IOException {
 
     DynamicSQL dyn = new DynamicSQL();
 
@@ -98,8 +100,17 @@ public class TestParameterTesting {
     try (Connection conn = DriverManager
         .getConnection("jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1", "", "")) {
       System.out.println("-- Connected --");
+
       List<Tuple3<Integer, Integer, String>> rows = pq.execute(conn);
       rows.forEach(r -> System.out.println("r: " + r.getA() + " - " + r.getB() + " - " + r.getC()));
+
+//      Tuple3<Integer, Integer, String> r = pq.executeOne(conn);
+//      System.out.println("r: " + r.getA() + " - " + r.getB() + " - " + r.getC());
+
+//      try (Cursor<Tuple3<Integer, Integer, String>> rows = pq.executeCursor(conn)) {
+//        rows.forEach(r -> System.out.println("r: " + r.getA() + " - " + r.getB() + " - " + r.getC()));
+//      }
+
     }
 
     Assertions.assertTrue(true);

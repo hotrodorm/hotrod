@@ -1,4 +1,4 @@
-package org.hotrod.dynamicsql;
+package org.hotrod.data;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

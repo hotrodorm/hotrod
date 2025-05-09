@@ -1,46 +1,42 @@
-package org.hotrod.runtime.livesql.queries.select.sets;
+package org.hotrod.dynamicsql;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.hotrod.data.Cursor;
+import org.hotrod.data.Row;
 import org.hotrod.data.RowReader;
-import org.hotrod.runtime.livesql.queries.LiveSQLContext;
-import org.hotrod.runtime.livesql.queries.LiveSQLPreparedQuery;
 
-public class RowCursor<T> implements Cursor<T> {
+public class DynCursor<R> implements Cursor<R> {
 
   private Connection conn;
   private PreparedStatement ps;
   private ResultSet rs;
-  private RowReader<T> rowReader;
+  private RowReader<R> rowReader;
 
-  public RowCursor(final LiveSQLContext context, final LiveSQLPreparedQuery q, final RowReader<T> rowReader,
-      final Integer fetchSize) throws SQLException {
+  public DynCursor(Connection conn, PreparedSelectQuery<R> q, RowReader<R> rowReader, final Integer fetchSize)
+      throws SQLException {
 
     try {
 
-      this.conn = context.getDataSource().getConnection();
-      this.ps = conn.prepareStatement(q.getSQL());
-
-      context.getLiveSQLDialect().enableSelectStreaming(this.ps, fetchSize);
-
-      // 1. Apply parameters
-
-      int n = 1;
-      for (Object obj : q.getParameters().values()) {
-        int i = n++;
-        ps.setObject(i, obj);
+      this.ps = q.prepareStatement(conn);
+      if (fetchSize != null) {
+        this.ps.setFetchSize(fetchSize);
       }
 
-      this.rs = ps.executeQuery();
+      q.applyParameters(this.ps);
+
+      this.rs = this.ps.executeQuery();
 
       if (rowReader == null) {
-        this.rowReader = new GenericRowReader<>(context, q, rs);
+        this.rowReader = new DynRowReader(rs.getMetaData());
       } else {
         this.rowReader = rowReader;
       }
@@ -57,7 +53,7 @@ public class RowCursor<T> implements Cursor<T> {
   }
 
   @Override
-  public Iterator<T> iterator() {
+  public Iterator<R> iterator() {
     return new CursorIterator<>(this.conn, this.rs, this.rowReader);
   }
 
@@ -107,7 +103,7 @@ public class RowCursor<T> implements Cursor<T> {
       try {
         return this.rs.next();
       } catch (SQLException e) {
-        throw new RuntimeException("Could not move to the next row of the result set", e);
+        throw new RuntimeException("Could not advance to the next row of the result set", e);
       }
     }
 
@@ -118,6 +114,33 @@ public class RowCursor<T> implements Cursor<T> {
       } catch (SQLException e) {
         throw new RuntimeException("Could not read the result set row", e);
       }
+    }
+
+  }
+
+  class DynRowReader implements RowReader<R> {
+
+    private List<String> columns = null;
+
+    public DynRowReader(ResultSetMetaData rm) throws SQLException {
+      int columnCount = rm.getColumnCount();
+      this.columns = new ArrayList<>();
+      for (int i = 1; i <= columnCount; i++) {
+        columns.add(rm.getColumnName(i));
+      }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public R readRowFrom(ResultSet rs, Connection conn) throws SQLException {
+      Row row = new Row();
+      int i = 1;
+      for (String column : this.columns) {
+        Object value = rs.getObject(i);
+        row.put(column, value);
+        i++;
+      }
+      return (R) row;
     }
 
   }
