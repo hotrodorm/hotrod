@@ -12,11 +12,13 @@ import org.hotrod.dynamicsql.segments.WhenSegment;
 public class ChooseAssembler {
 
   private DynamicExpressionFactory factory;
+  private PartialQuery query;
   private List<WhenSegment> whens = new ArrayList<>();
   private OtherwiseSegment otherwise = null;
 
-  public ChooseAssembler(DynamicExpressionFactory factory) {
+  public ChooseAssembler(DynamicExpressionFactory factory, PartialQuery query) {
     this.factory = factory;
+    this.query = query;
   }
 
   // When Segments
@@ -26,14 +28,16 @@ public class ChooseAssembler {
     return this;
   }
 
-  public ChooseSegment otherwise(SegmentList segmentList) {
-    return new ChooseSegment(this.whens, new OtherwiseSegment(segmentList, this.factory));
+  public PartialQuery otherwise(SegmentList segmentList) {
+    this.query.segments.add(new ChooseSegment(this.whens, new OtherwiseSegment(segmentList, this.factory)));
+    return this.query;
   }
 
   // end
 
-  public ChooseSegment end() {
-    return new ChooseSegment(this.whens, this.otherwise);
+  public PartialQuery end() {
+    this.query.segments.add(new ChooseSegment(this.whens, this.otherwise));
+    return this.query;
   }
 
 }

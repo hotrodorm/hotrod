@@ -5,7 +5,6 @@ import java.util.List;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.DynamicExpressionFactoryConfig;
 import org.hotrod.dynamicsql.ParameterContext;
-import org.hotrod.dynamicsql.segments.ChooseSegment;
 import org.hotrod.dynamicsql.segments.IfSegment;
 import org.hotrod.dynamicsql.segments.OtherwiseSegment;
 import org.hotrod.dynamicsql.segments.SegmentList;
@@ -32,7 +31,8 @@ public class DynamicSQL {
   }
 
   public ChooseAssembler choose() {
-    return new ChooseAssembler(this.factory);
+    PartialQuery q = new PartialQuery(this.factory);
+    return new ChooseAssembler(this.factory, q);
   }
 
   public WhenSegment when(String test, SegmentList segmentList) {
@@ -105,11 +105,6 @@ public class DynamicSQL {
     PartialQuery q = new PartialQuery(this.factory);
     return q.where(separator, ifSegments, headerPrefix, headerSuffix, separatorPrefix, separatorSuffix, tailPrefix,
         tailSuffix, removePrefixes);
-  }
-
-  public PartialQuery choose(ChooseSegment choose) {
-    PartialQuery q = new PartialQuery(this.factory);
-    return q.choose(choose);
   }
 
   public PartialQuery trim(String header, String separator, String tail, List<IfSegment> ifSegments) {

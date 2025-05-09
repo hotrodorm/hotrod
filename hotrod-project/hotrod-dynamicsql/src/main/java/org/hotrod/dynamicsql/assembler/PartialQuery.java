@@ -9,7 +9,6 @@ import org.hotrod.dynamicsql.DynamicModificationQuery;
 import org.hotrod.dynamicsql.DynamicSelectQuery;
 import org.hotrod.dynamicsql.insert.PrimaryKeyRetrievalMode;
 import org.hotrod.dynamicsql.segments.BindSegment;
-import org.hotrod.dynamicsql.segments.ChooseSegment;
 import org.hotrod.dynamicsql.segments.ForEachSegment;
 import org.hotrod.dynamicsql.segments.IfSegment;
 import org.hotrod.dynamicsql.segments.ParameterInjectionSegment;
@@ -26,7 +25,7 @@ import org.hotrod.dynamicsql.segments.WhereSegment;
 public class PartialQuery {
 
   private DynamicExpressionFactory factory;
-  private List<QuerySegment> segments = new ArrayList<>();
+  List<QuerySegment> segments = new ArrayList<>();
 
   public PartialQuery(DynamicExpressionFactory factory) {
     this.factory = factory;
@@ -96,9 +95,8 @@ public class PartialQuery {
     return this;
   }
 
-  public PartialQuery choose(ChooseSegment choose) {
-    this.segments.add(choose);
-    return this;
+  public ChooseAssembler choose() {
+    return new ChooseAssembler(this.factory, this);
   }
 
   public PartialQuery trim(String header, String separator, String tail, List<IfSegment> content) {
