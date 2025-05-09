@@ -93,6 +93,7 @@ where balance >= 300
  -->
  
     <!-- ###
+  -->
    <dao name="OperationDAO">
 
     <query method="activateBigAccounts">
@@ -115,6 +116,5 @@ where balance >= 300
     </select> 
        
   </dao>
-  -->
-
+ 
 </hotrod>

@@ -24,7 +24,7 @@ import org.hotrod.dynamicsql.PreparedModificationQuery;
 import org.hotrod.dynamicsql.PreparedQuery;
 import org.hotrod.dynamicsql.PreparedSelectQuery;
 import org.hotrod.dynamicsql.RowReader;
-import org.hotrod.dynamicsql.assembler.QueryAssembler;
+import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.hotrod.dynamicsql.insert.PreparedInsertQuery;
 import org.hotrod.dynamicsql.insert.PrimaryKeyRetrievalMode;
 import org.hotrod.interfaces.OrderBy;
@@ -67,7 +67,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   @Autowired
   private QueryAssemblerBean assemblerBean;
 
-  private QueryAssembler assembler;
+  private DynamicSQL dyn;
 
   @Autowired
   private DataSource dataSource;
@@ -145,30 +145,30 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   private DynamicSelectQuery selectByExample;
 
   private void initializeSelectbyexample() {
-    this.selectByExample = assembler
+    this.selectByExample = dyn
       .literaln("SELECT")
       .literaln("  id,")
       .literaln("  type,")
       .literaln("  shipping")
       .literaln("FROM product")
-      .where("AND", assembler.ifs()
-        .if_("f.id != null", assembler.literal("id = ").parameter("f.id", Types.INTEGER).end())
-        .if_("f.type != null", assembler.literal("type = ").parameter("f.type", Types.VARCHAR).end())
-        .if_("f.shipping != null", assembler.literal("shipping = ").parameter("f.shipping", Types.INTEGER).end())
+      .where("AND", dyn.ifs()
+        .if_("f.id != null", dyn.literal("id = ").parameter("f.id").end())
+        .if_("f.type != null", dyn.literal("type = ").parameter("f.type").end())
+        .if_("f.shipping != null", dyn.literal("shipping = ").parameter("f.shipping").end())
         .end())
       .parameterInjection("ordering")
       .endSelectQuery();
   }
 
   public List<Product> select(Product filter, ProductOrderBy... orderBies) throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.assembler.newParameterContext();
+    ParameterContext context = this.dyn.newParameterContext();
     context.add("f", filter);
     String ordering = SQLUtil.render(orderBies);
     context.add("ordering", ordering);
-    PreparedSelectQuery<Product> preparedQuery = this.selectByExample.prepare(context, Product.class);
+    PreparedSelectQuery<Product> preparedQuery = this.selectByExample.prepare(context, this.rowReader);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
-      List<Product> rows = preparedQuery.execute(conn, this.rowReader);
+      List<Product> rows = preparedQuery.execute(conn);
       return rows;
     }
   }
@@ -184,22 +184,22 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   private DynamicInsertQuery insert;
 
   private void initializeInsert() {
-    this.insert = assembler
+    this.insert = dyn
       .literaln("INSERT INTO product (")
       .literaln("  id,")
       .literaln("  type,")
       .literaln("  shipping")
       .literaln(")")
       .literaln("VALUES(")
-      .literal("  ").parameter("m.id", Types.INTEGER).literaln(",")
-      .literal("  ").parameter("m.type", Types.VARCHAR).literaln(",")
-      .literal("  ").parameter("m.shipping", Types.INTEGER)
+      .literal("  ").parameterNullable("m.id", Types.INTEGER).literaln(",")
+      .literal("  ").parameterNullable("m.type", Types.VARCHAR).literaln(",")
+      .literal("  ").parameterNullable("m.shipping", Types.INTEGER)
       .literal(")")
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
   public void insert(Product model) throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.assembler.newParameterContext();
+    ParameterContext context = this.dyn.newParameterContext();
     context.add("m", model);
     PreparedInsertQuery preparedQuery = this.insert.prepare(context);
     logQuery(preparedQuery);
@@ -213,22 +213,22 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   private DynamicInsertQuery insertByExample;
 
   private void initializeInsertbyexample() {
-    this.insertByExample = assembler
+    this.insertByExample = dyn
       .literaln("INSERT INTO product (")
-      .if_("m.id != null", assembler.literal("id,\n").end())
-      .if_("m.type != null", assembler.literal("type,\n").end())
-      .if_("m.shipping != null", assembler.literal("shipping\n").end())
+      .if_("m.id != null", dyn.literal("id,\n").end())
+      .if_("m.type != null", dyn.literal("type,\n").end())
+      .if_("m.shipping != null", dyn.literal("shipping\n").end())
       .literaln(")")
       .literaln("VALUES(")
-      .if_("m.id != null", assembler.parameter("m.id", Types.INTEGER).literal(", ").end())
-      .if_("m.type != null", assembler.parameter("m.type", Types.VARCHAR).literal(", ").end())
-      .if_("m.shipping != null", assembler.parameter("m.shipping", Types.INTEGER).end())
+      .if_("m.id != null", dyn.parameter("m.id").literal(", ").end())
+      .if_("m.type != null", dyn.parameter("m.type").literal(", ").end())
+      .if_("m.shipping != null", dyn.parameter("m.shipping").end())
       .literal(")")
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
   public void insertByExample(Product model) throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.assembler.newParameterContext();
+    ParameterContext context = this.dyn.newParameterContext();
     context.add("m", model);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(context);
     logQuery(preparedQuery);
@@ -244,23 +244,23 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   private DynamicModificationQuery updateByExample;
 
   private void initializeUpdatebyexample() {
-    this.updateByExample = assembler
+    this.updateByExample = dyn
       .literal("UPDATE product")
-      .set(assembler.ifs()
-        .if_("v.id != null", assembler.literal("id = ").parameter("v.id", Types.INTEGER).end())
-        .if_("v.type != null", assembler.literal("type = ").parameter("v.type", Types.VARCHAR).end())
-        .if_("v.shipping != null", assembler.literal("shipping = ").parameter("v.shipping", Types.INTEGER).end())
+      .set(dyn.ifs()
+        .if_("v.id != null", dyn.literal("id = ").parameter("v.id").end())
+        .if_("v.type != null", dyn.literal("type = ").parameter("v.type").end())
+        .if_("v.shipping != null", dyn.literal("shipping = ").parameter("v.shipping").end())
         .end())
-      .where("AND", assembler.ifs()
-        .if_("e.id != null", assembler.literal("id = ").parameter("e.id", Types.INTEGER).end())
-        .if_("e.type != null", assembler.literal("type = ").parameter("e.type", Types.VARCHAR).end())
-        .if_("e.shipping != null", assembler.literal("shipping = ").parameter("e.shipping", Types.INTEGER).end())
+      .where("AND", dyn.ifs()
+        .if_("e.id != null", dyn.literal("id = ").parameter("e.id").end())
+        .if_("e.type != null", dyn.literal("type = ").parameter("e.type").end())
+        .if_("e.shipping != null", dyn.literal("shipping = ").parameter("e.shipping").end())
         .end())
       .endModificationQuery();
   }
 
   public int update(Product example, Product values) throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.assembler.newParameterContext();
+    ParameterContext context = this.dyn.newParameterContext();
     context.add("e", example);
     context.add("v", values);
     PreparedModificationQuery preparedQuery = this.updateByExample.prepare(context);
@@ -289,18 +289,18 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   private DynamicModificationQuery deleteByExample;
 
   private void initializeDeletebyexample() {
-    this.deleteByExample = assembler
+    this.deleteByExample = dyn
       .literal("DELETE FROM product")
-      .where("AND", assembler.ifs()
-        .if_("e.id != null", assembler.literal("id = ").parameter("e.id", Types.INTEGER).end())
-        .if_("e.type != null", assembler.literal("type = ").parameter("e.type", Types.VARCHAR).end())
-        .if_("e.shipping != null", assembler.literal("shipping = ").parameter("e.shipping", Types.INTEGER).end())
+      .where("AND", dyn.ifs()
+        .if_("e.id != null", dyn.literal("id = ").parameter("e.id").end())
+        .if_("e.type != null", dyn.literal("type = ").parameter("e.type").end())
+        .if_("e.shipping != null", dyn.literal("shipping = ").parameter("e.shipping").end())
         .end())
       .endModificationQuery();
   }
 
   public int delete(Product example) throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.assembler.newParameterContext();
+    ParameterContext context = this.dyn.newParameterContext();
     context.add("e", example);
     PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(context);
     logQuery(preparedQuery);
@@ -398,7 +398,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   @PostConstruct
   public void initializeContext() {
     this.context = new LiveSQLContext(this.liveSQLDialect, this.dataSource, new TypeSolver(null, this.liveSQLDialect), log);
-    this.assembler = this.assemblerBean.getAssembler();
+    this.dyn = this.assemblerBean.getAssembler();
     this.initializeSelectbyexample();
     this.initializeInsert();
     this.initializeInsertbyexample();

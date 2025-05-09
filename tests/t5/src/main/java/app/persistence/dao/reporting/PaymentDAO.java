@@ -25,7 +25,7 @@ import org.hotrod.dynamicsql.PreparedModificationQuery;
 import org.hotrod.dynamicsql.PreparedQuery;
 import org.hotrod.dynamicsql.PreparedSelectQuery;
 import org.hotrod.dynamicsql.RowReader;
-import org.hotrod.dynamicsql.assembler.QueryAssembler;
+import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.hotrod.dynamicsql.insert.PreparedInsertQuery;
 import org.hotrod.dynamicsql.insert.PrimaryKeyRetrievalMode;
 import org.hotrod.interfaces.OrderBy;
@@ -68,7 +68,7 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
   @Autowired
   private QueryAssemblerBean assemblerBean;
 
-  private QueryAssembler assembler;
+  private DynamicSQL dyn;
 
   @Autowired
   private DataSource dataSource;
@@ -146,30 +146,30 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
   private DynamicSelectQuery selectByExample;
 
   private void initializeSelectbyexample() {
-    this.selectByExample = assembler
+    this.selectByExample = dyn
       .literaln("SELECT")
       .literaln("  payment_date,")
       .literaln("  invoice_id,")
       .literaln("  amount")
       .literaln("FROM payment")
-      .where("AND", assembler.ifs()
-        .if_("f.paymentDate != null", assembler.literal("payment_date = ").parameter("f.paymentDate", Types.DATE).end())
-        .if_("f.invoiceId != null", assembler.literal("invoice_id = ").parameter("f.invoiceId", Types.INTEGER).end())
-        .if_("f.amount != null", assembler.literal("amount = ").parameter("f.amount", Types.INTEGER).end())
+      .where("AND", dyn.ifs()
+        .if_("f.paymentDate != null", dyn.literal("payment_date = ").parameter("f.paymentDate").end())
+        .if_("f.invoiceId != null", dyn.literal("invoice_id = ").parameter("f.invoiceId").end())
+        .if_("f.amount != null", dyn.literal("amount = ").parameter("f.amount").end())
         .end())
       .parameterInjection("ordering")
       .endSelectQuery();
   }
 
   public List<Payment> select(Payment filter, PaymentOrderBy... orderBies) throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.assembler.newParameterContext();
+    ParameterContext context = this.dyn.newParameterContext();
     context.add("f", filter);
     String ordering = SQLUtil.render(orderBies);
     context.add("ordering", ordering);
-    PreparedSelectQuery<Payment> preparedQuery = this.selectByExample.prepare(context, Payment.class);
+    PreparedSelectQuery<Payment> preparedQuery = this.selectByExample.prepare(context, this.rowReader);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
-      List<Payment> rows = preparedQuery.execute(conn, this.rowReader);
+      List<Payment> rows = preparedQuery.execute(conn);
       return rows;
     }
   }
@@ -185,22 +185,22 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
   private DynamicInsertQuery insert;
 
   private void initializeInsert() {
-    this.insert = assembler
+    this.insert = dyn
       .literaln("INSERT INTO payment (")
       .literaln("  payment_date,")
       .literaln("  invoice_id,")
       .literaln("  amount")
       .literaln(")")
       .literaln("VALUES(")
-      .literal("  ").parameter("m.paymentDate", Types.DATE).literaln(",")
-      .literal("  ").parameter("m.invoiceId", Types.INTEGER).literaln(",")
-      .literal("  ").parameter("m.amount", Types.INTEGER)
+      .literal("  ").parameterNullable("m.paymentDate", Types.DATE).literaln(",")
+      .literal("  ").parameterNullable("m.invoiceId", Types.INTEGER).literaln(",")
+      .literal("  ").parameterNullable("m.amount", Types.INTEGER)
       .literal(")")
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
   public void insert(Payment model) throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.assembler.newParameterContext();
+    ParameterContext context = this.dyn.newParameterContext();
     context.add("m", model);
     PreparedInsertQuery preparedQuery = this.insert.prepare(context);
     logQuery(preparedQuery);
@@ -214,22 +214,22 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
   private DynamicInsertQuery insertByExample;
 
   private void initializeInsertbyexample() {
-    this.insertByExample = assembler
+    this.insertByExample = dyn
       .literaln("INSERT INTO payment (")
-      .if_("m.paymentDate != null", assembler.literal("payment_date,\n").end())
-      .if_("m.invoiceId != null", assembler.literal("invoice_id,\n").end())
-      .if_("m.amount != null", assembler.literal("amount\n").end())
+      .if_("m.paymentDate != null", dyn.literal("payment_date,\n").end())
+      .if_("m.invoiceId != null", dyn.literal("invoice_id,\n").end())
+      .if_("m.amount != null", dyn.literal("amount\n").end())
       .literaln(")")
       .literaln("VALUES(")
-      .if_("m.paymentDate != null", assembler.parameter("m.paymentDate", Types.DATE).literal(", ").end())
-      .if_("m.invoiceId != null", assembler.parameter("m.invoiceId", Types.INTEGER).literal(", ").end())
-      .if_("m.amount != null", assembler.parameter("m.amount", Types.INTEGER).end())
+      .if_("m.paymentDate != null", dyn.parameter("m.paymentDate").literal(", ").end())
+      .if_("m.invoiceId != null", dyn.parameter("m.invoiceId").literal(", ").end())
+      .if_("m.amount != null", dyn.parameter("m.amount").end())
       .literal(")")
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
   public void insertByExample(Payment model) throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.assembler.newParameterContext();
+    ParameterContext context = this.dyn.newParameterContext();
     context.add("m", model);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(context);
     logQuery(preparedQuery);
@@ -245,23 +245,23 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
   private DynamicModificationQuery updateByExample;
 
   private void initializeUpdatebyexample() {
-    this.updateByExample = assembler
+    this.updateByExample = dyn
       .literal("UPDATE payment")
-      .set(assembler.ifs()
-        .if_("v.paymentDate != null", assembler.literal("payment_date = ").parameter("v.paymentDate", Types.DATE).end())
-        .if_("v.invoiceId != null", assembler.literal("invoice_id = ").parameter("v.invoiceId", Types.INTEGER).end())
-        .if_("v.amount != null", assembler.literal("amount = ").parameter("v.amount", Types.INTEGER).end())
+      .set(dyn.ifs()
+        .if_("v.paymentDate != null", dyn.literal("payment_date = ").parameter("v.paymentDate").end())
+        .if_("v.invoiceId != null", dyn.literal("invoice_id = ").parameter("v.invoiceId").end())
+        .if_("v.amount != null", dyn.literal("amount = ").parameter("v.amount").end())
         .end())
-      .where("AND", assembler.ifs()
-        .if_("e.paymentDate != null", assembler.literal("payment_date = ").parameter("e.paymentDate", Types.DATE).end())
-        .if_("e.invoiceId != null", assembler.literal("invoice_id = ").parameter("e.invoiceId", Types.INTEGER).end())
-        .if_("e.amount != null", assembler.literal("amount = ").parameter("e.amount", Types.INTEGER).end())
+      .where("AND", dyn.ifs()
+        .if_("e.paymentDate != null", dyn.literal("payment_date = ").parameter("e.paymentDate").end())
+        .if_("e.invoiceId != null", dyn.literal("invoice_id = ").parameter("e.invoiceId").end())
+        .if_("e.amount != null", dyn.literal("amount = ").parameter("e.amount").end())
         .end())
       .endModificationQuery();
   }
 
   public int update(Payment example, Payment values) throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.assembler.newParameterContext();
+    ParameterContext context = this.dyn.newParameterContext();
     context.add("e", example);
     context.add("v", values);
     PreparedModificationQuery preparedQuery = this.updateByExample.prepare(context);
@@ -290,18 +290,18 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
   private DynamicModificationQuery deleteByExample;
 
   private void initializeDeletebyexample() {
-    this.deleteByExample = assembler
+    this.deleteByExample = dyn
       .literal("DELETE FROM payment")
-      .where("AND", assembler.ifs()
-        .if_("e.paymentDate != null", assembler.literal("payment_date = ").parameter("e.paymentDate", Types.DATE).end())
-        .if_("e.invoiceId != null", assembler.literal("invoice_id = ").parameter("e.invoiceId", Types.INTEGER).end())
-        .if_("e.amount != null", assembler.literal("amount = ").parameter("e.amount", Types.INTEGER).end())
+      .where("AND", dyn.ifs()
+        .if_("e.paymentDate != null", dyn.literal("payment_date = ").parameter("e.paymentDate").end())
+        .if_("e.invoiceId != null", dyn.literal("invoice_id = ").parameter("e.invoiceId").end())
+        .if_("e.amount != null", dyn.literal("amount = ").parameter("e.amount").end())
         .end())
       .endModificationQuery();
   }
 
   public int delete(Payment example) throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.assembler.newParameterContext();
+    ParameterContext context = this.dyn.newParameterContext();
     context.add("e", example);
     PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(context);
     logQuery(preparedQuery);
@@ -399,7 +399,7 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
   @PostConstruct
   public void initializeContext() {
     this.context = new LiveSQLContext(this.liveSQLDialect, this.dataSource, new TypeSolver(null, this.liveSQLDialect), log);
-    this.assembler = this.assemblerBean.getAssembler();
+    this.dyn = this.assemblerBean.getAssembler();
     this.initializeSelectbyexample();
     this.initializeInsert();
     this.initializeInsertbyexample();

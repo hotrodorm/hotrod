@@ -169,7 +169,7 @@ public class NitroRenderer {
 
   private void render(IfTag t, ClassWriter w, int level) throws ControlledException {
     log.fine("[" + level + "] render(if) -- '" + t.getTest() + "'");
-    w.println(indent(level) + ".if_(" + renderString(t.getTest()) + ", assembler");
+    w.println(indent(level) + ".if_(" + renderString(t.getTest()) + ", dyn");
     render(t.getParts(), w, level + 1, RENDER_ALL);
     w.println(indent(level) + "  .end()");
     w.println(indent(level) + ")");
@@ -177,7 +177,7 @@ public class NitroRenderer {
 
   private void render(WhereTag t, ClassWriter w, int level) throws ControlledException {
     log.fine("[" + level + "] render(where)");
-    w.println(indent(level) + ".where(\"AND\", assembler.ifs()");
+    w.println(indent(level) + ".where(\"AND\", dyn.ifs()");
     render(t.getParts(), w, level + 1, p -> p instanceof IfTag);
     w.println(indent(level) + "  .end()");
     w.println(indent(level) + ")");
@@ -185,7 +185,7 @@ public class NitroRenderer {
 
   private void render(SetTag t, ClassWriter w, int level) throws ControlledException {
     log.fine("[" + level + "] render(set)");
-    w.println(indent(level) + ".set(assembler.ifs()");
+    w.println(indent(level) + ".set(dyn.ifs()");
     render(t.getParts(), w, level + 1, p -> p instanceof IfTag);
     w.println(indent(level) + "  .end()");
     w.println(indent(level) + ")");
@@ -193,7 +193,7 @@ public class NitroRenderer {
 
   private void render(ChooseTag t, ClassWriter w, int level) throws ControlledException {
     log.fine("[" + level + "] render(choose)");
-    w.println(indent(level) + ".choose(assembler.choose()");
+    w.println(indent(level) + ".choose(dyn.choose()");
     render(t.getParts(), w, level + 1, p -> p instanceof WhenTag || p instanceof OtherwiseTag);
 
     boolean otherwise = false;
@@ -211,7 +211,7 @@ public class NitroRenderer {
 
   private void render(WhenTag t, ClassWriter w, int level) throws ControlledException {
     log.fine("[" + level + "] render(when)");
-    w.println(indent(level) + ".when(" + renderString(t.getTest()) + ", assembler");
+    w.println(indent(level) + ".when(" + renderString(t.getTest()) + ", dyn");
     render(t.getParts(), w, level + 1, RENDER_ALL);
     w.println(indent(level) + "  .end()");
     w.println(indent(level) + ")");
@@ -219,7 +219,7 @@ public class NitroRenderer {
 
   private void render(OtherwiseTag t, ClassWriter w, int level) throws ControlledException {
     log.fine("[" + level + "] render(otherwise)");
-    w.println(indent(level) + ".otherwise(assembler");
+    w.println(indent(level) + ".otherwise(dyn");
     render(t.getParts(), w, level + 1, RENDER_ALL);
     w.println(indent(level) + "  .end()");
     w.println(indent(level) + ")");
@@ -232,7 +232,7 @@ public class NitroRenderer {
   private void render(TrimTag t, ClassWriter w, int level) throws ControlledException {
     log.fine("[" + level + "] render(trim)");
     w.println(indent(level) + ".trim(" + renderString(t.getPrefix()) + ", " + renderString(t.getSeparator()) + ", "
-        + renderString(t.getSuffix()) + ", assembler.ifs()");
+        + renderString(t.getSuffix()) + ", dyn.ifs()");
     render(t.getParts(), w, level + 1, p -> p instanceof IfTag);
     w.println(indent(level) + "  .end()");
     w.println(indent(level) + ")");
@@ -247,7 +247,7 @@ public class NitroRenderer {
     log.fine("[" + level + "] render(foreach)");
     w.println(indent(level) + ".foreach(" + renderString(t.getItem()) + ", " + renderString(t.getCollection()) + ", "
         + renderString(t.getOpen()) + ", " + renderString(t.getSeparator()) + ", " + renderString(t.getClose())
-        + ", assembler");
+        + ", dyn");
     render(t.getParts(), w, level + 1, RENDER_ALL);
     w.println(indent(level) + "  .end()");
     w.println(indent(level) + ")");
@@ -285,7 +285,7 @@ public class NitroRenderer {
     if (pt.getJDBCType() == null) {
       w.println(indent(level) + ".parameterUntyped(" + renderString(t.getName()) + ")");
     } else {
-      w.println(indent(level) + ".parameter(" + renderString(t.getName()) + ", ", Types.class,
+      w.println(indent(level) + ".parameterNullable(" + renderString(t.getName()) + ", ", Types.class,
           "." + t.getJdbcType() + ")");
     }
   }

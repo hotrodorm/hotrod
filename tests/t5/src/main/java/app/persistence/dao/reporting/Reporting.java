@@ -10,7 +10,7 @@ import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import org.hotrod.dynamicsql.PreparedQuery;
-import org.hotrod.dynamicsql.assembler.QueryAssembler;
+import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
@@ -35,7 +35,7 @@ public class Reporting implements Serializable, ApplicationContextAware {
   @Autowired
   private QueryAssemblerBean assemblerBean;
 
-  private QueryAssembler assembler;
+  private DynamicSQL dyn;
 
   @Autowired
   private DataSource dataSource;
@@ -55,7 +55,7 @@ public class Reporting implements Serializable, ApplicationContextAware {
   @PostConstruct
   public void initializeContext() {
     this.context = new LiveSQLContext(this.liveSQLDialect, this.dataSource, new TypeSolver(null, this.liveSQLDialect), log);
-    this.assembler = this.assemblerBean.getAssembler();
+    this.dyn = this.assemblerBean.getAssembler();
   }
 
   private void logQuery(PreparedQuery preparedQuery) {

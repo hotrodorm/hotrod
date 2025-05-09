@@ -11,15 +11,15 @@ import org.hotrod.dynamicsql.segments.OtherwiseSegment;
 import org.hotrod.dynamicsql.segments.SegmentList;
 import org.hotrod.dynamicsql.segments.WhenSegment;
 
-public class QueryBuilder {
+public class DynamicSQL {
 
   private DynamicExpressionFactory factory;
 
-  public QueryBuilder() {
+  public DynamicSQL() {
     this.factory = DynamicExpressionFactoryConfig.getFactory();
   }
 
-  public QueryBuilder(DynamicExpressionFactory factory) {
+  public DynamicSQL(DynamicExpressionFactory factory) {
     this.factory = factory;
   }
 

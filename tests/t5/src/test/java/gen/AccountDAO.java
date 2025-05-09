@@ -17,7 +17,7 @@ import org.hotrod.dynamicsql.ParameterContext;
 import org.hotrod.dynamicsql.PreparedModificationQuery;
 import org.hotrod.dynamicsql.PreparedSelectQuery;
 import org.hotrod.dynamicsql.RowReader;
-import org.hotrod.dynamicsql.assembler.QueryAssembler;
+import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.hotrod.dynamicsql.insert.PreparedInsertQuery;
 import org.hotrod.dynamicsql.insert.PrimaryKeyRetrievalMode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,16 +30,17 @@ public class AccountDAO {
   private static final Logger log = Logger.getLogger(AccountDAO.class.getName());
 
   @Autowired
-  private QueryAssembler assembler;
+  private DynamicSQL assembler;
 
   private final DynamicSelectQuery selectByExample = assembler //
       .literal("SELECT id, name, type, balance\n") //
       .literal("FROM account") //
       .where("AND", assembler.ifs() //
-          .if_("f.id != null", assembler.literal("id = ").parameter("f.id", Types.NUMERIC).end())
-          .if_("f.name != null", assembler.literal("name = ").parameter("f.name", Types.VARCHAR).end())
-          .if_("f.type != null", assembler.literal("type = ").parameter("f.type", Types.VARCHAR).end())
-          .if_("f.balance != null", assembler.literal("balance = ").parameter("f.balance", Types.NUMERIC).end()).end() //
+          .if_("f.id != null", assembler.literal("id = ").parameterNullable("f.id", Types.NUMERIC).end())
+          .if_("f.name != null", assembler.literal("name = ").parameterNullable("f.name", Types.VARCHAR).end())
+          .if_("f.type != null", assembler.literal("type = ").parameterNullable("f.type", Types.VARCHAR).end())
+          .if_("f.balance != null", assembler.literal("balance = ").parameterNullable("f.balance", Types.NUMERIC).end())
+          .end() //
       ).endSelectQuery();
 
   public List<Account> select(DataSource dataSource, Account filter) throws DynamicExpressionException, SQLException {
@@ -51,12 +52,7 @@ public class AccountDAO {
       ParameterContext context = this.assembler.newParameterContext();
       context.add("f", filter);
 
-      // 2. Process DynamicSQL and produce query and parameters
-
-      PreparedSelectQuery<Account> preparedQuery = this.selectByExample.prepare(context, Account.class);
-      System.out.println("=== Preview ===\n" + preparedQuery.getPreview());
-
-      // 3. Execute the resulting query
+      // 2. Execute the resulting query
 
       RowReader<Account> rowReader = new RowReader<Account>() {
 
@@ -72,7 +68,12 @@ public class AccountDAO {
 
       };
 
-      List<Account> accounts = preparedQuery.execute(conn, rowReader);
+      // 3. Process DynamicSQL and produce query and parameters
+
+      PreparedSelectQuery<Account> preparedQuery = this.selectByExample.prepare(context, rowReader);
+      System.out.println("=== Preview ===\n" + preparedQuery.getPreview());
+
+      List<Account> accounts = preparedQuery.execute(conn);
 
       return accounts;
 
@@ -198,11 +199,11 @@ public class AccountDAO {
       .literal(") VALUES (\n  ") //
       .literal("NEXT VALUE FOR seq_account") //
       .literal(", ") //
-      .parameter("n.name", Types.VARCHAR) //
+      .parameterNullable("n.name", Types.VARCHAR) //
       .literal(", ") //
-      .parameter("n.type", Types.VARCHAR) //
+      .parameterNullable("n.type", Types.VARCHAR) //
       .literal(", ") //
-      .parameter("n.balance", Types.NUMERIC) //
+      .parameterNullable("n.balance", Types.NUMERIC) //
       .literal(")") //
       .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET);
 
@@ -328,16 +329,17 @@ public class AccountDAO {
   private final DynamicModificationQuery updateByExample = assembler //
       .literal("UPDATE account") //
       .set(assembler.ifs() //
-          .if_("n.id != null", assembler.literal("id = ").parameter("n.id", Types.NUMERIC).end())
-          .if_("n.name != null", assembler.literal("name = ").parameter("n.name", Types.VARCHAR).end())
-          .if_("n.type != null", assembler.literal("type = ").parameter("n.type", Types.VARCHAR).end())
-          .if_("n.balance != null", assembler.literal("balance = ").parameter("n.balance", Types.NUMERIC).end()) //
+          .if_("n.id != null", assembler.literal("id = ").parameterNullable("n.id", Types.NUMERIC).end())
+          .if_("n.name != null", assembler.literal("name = ").parameterNullable("n.name", Types.VARCHAR).end())
+          .if_("n.type != null", assembler.literal("type = ").parameterNullable("n.type", Types.VARCHAR).end())
+          .if_("n.balance != null", assembler.literal("balance = ").parameterNullable("n.balance", Types.NUMERIC).end()) //
           .end() //
       ).where("AND", assembler.ifs() //
-          .if_("f.id != null", assembler.literal("id = ").parameter("f.id", Types.NUMERIC).end())
-          .if_("f.name != null", assembler.literal("name = ").parameter("f.name", Types.VARCHAR).end())
-          .if_("f.type != null", assembler.literal("type = ").parameter("f.type", Types.VARCHAR).end())
-          .if_("f.balance != null", assembler.literal("balance = ").parameter("f.balance", Types.NUMERIC).end()).end() //
+          .if_("f.id != null", assembler.literal("id = ").parameterNullable("f.id", Types.NUMERIC).end())
+          .if_("f.name != null", assembler.literal("name = ").parameterNullable("f.name", Types.VARCHAR).end())
+          .if_("f.type != null", assembler.literal("type = ").parameterNullable("f.type", Types.VARCHAR).end())
+          .if_("f.balance != null", assembler.literal("balance = ").parameterNullable("f.balance", Types.NUMERIC).end())
+          .end() //
       ).endModificationQuery();
 
   public int update(Connection conn, Account filter, Account newValues)
@@ -363,16 +365,17 @@ public class AccountDAO {
 
   private final DynamicModificationQuery deleteByPK = assembler //
       .literal("DELETE FROM account\n") //
-      .literal("WHERE id = ").parameter("f.id", Types.NUMERIC).literal("  AND id2 = ").parameter("f.id2", Types.NUMERIC)
-      .endModificationQuery();
+      .literal("WHERE id = ").parameterNullable("f.id", Types.NUMERIC).literal("  AND id2 = ")
+      .parameterNullable("f.id2", Types.NUMERIC).endModificationQuery();
 
   private final DynamicModificationQuery deleteByExample = assembler //
       .literal("DELETE FROM account") //
       .where("AND", assembler.ifs() //
-          .if_("f.id != null", assembler.literal("id = ").parameter("f.id", Types.NUMERIC).end())
-          .if_("f.name != null", assembler.literal("name = ").parameter("f.name", Types.VARCHAR).end())
-          .if_("f.type != null", assembler.literal("type = ").parameter("f.type", Types.VARCHAR).end())
-          .if_("f.balance != null", assembler.literal("balance = ").parameter("f.balance", Types.NUMERIC).end()).end() //
+          .if_("f.id != null", assembler.literal("id = ").parameterNullable("f.id", Types.NUMERIC).end())
+          .if_("f.name != null", assembler.literal("name = ").parameterNullable("f.name", Types.VARCHAR).end())
+          .if_("f.type != null", assembler.literal("type = ").parameterNullable("f.type", Types.VARCHAR).end())
+          .if_("f.balance != null", assembler.literal("balance = ").parameterNullable("f.balance", Types.NUMERIC).end())
+          .end() //
       ).endModificationQuery();
 
   private DataSource dataSource;
@@ -403,9 +406,9 @@ public class AccountDAO {
     DynamicModificationQuery d1 = assembler //
         .literal("DELETE FROM account\nWHERE ") //
         .choose(assembler.choose() //
-            .when("f.id != null", assembler.literal("id = ").parameter("f.id", Types.NUMERIC).end()) //
-            .when("f.name != null", assembler.literal("name = ").parameter("f.name", Types.VARCHAR).end()) //
-            .when("f.type != null", assembler.literal("type = ").parameter("f.type", Types.VARCHAR).end()) //
+            .when("f.id != null", assembler.literal("id = ").parameterNullable("f.id", Types.NUMERIC).end()) //
+            .when("f.name != null", assembler.literal("name = ").parameterNullable("f.name", Types.VARCHAR).end()) //
+            .when("f.type != null", assembler.literal("type = ").parameterNullable("f.type", Types.VARCHAR).end()) //
             .end() //
 //            .otherwise(builder.literal("1 = 1").end()) //
         ) //
@@ -424,8 +427,8 @@ public class AccountDAO {
     DynamicModificationQuery d1 = assembler //
         .literal("DELETE FROM account\nWHERE code in ") //
         .foreach("t", "d.tags", "(", ", ", ")",
-            assembler.parameter("t", Types.VARCHAR)
-                .foreach("c", "d.codes", "(", ", ", ")", assembler.parameter("c", Types.NUMERIC).end()) //
+            assembler.parameterNullable("t", Types.VARCHAR)
+                .foreach("c", "d.codes", "(", ", ", ")", assembler.parameterNullable("c", Types.NUMERIC).end()) //
                 .end()) //
         .endModificationQuery();
 
@@ -445,7 +448,7 @@ public class AccountDAO {
           .literal("SELECT COUNT(*) FROM account\n") //
           .bind("pattern", "'%' + d.name + '%'") //
           .literal("WHERE type LIKE ") //
-          .parameter("pattern", Types.VARCHAR) //
+          .parameterNullable("pattern", Types.VARCHAR) //
           .endSelectQuery();
 
       ParameterContext context = this.assembler.newParameterContext();
@@ -460,10 +463,10 @@ public class AccountDAO {
 
       };
 
-      PreparedSelectQuery<Long> preparedQuery = d1.prepare(context, Long.class);
+      PreparedSelectQuery<Long> preparedQuery = d1.prepare(context, countReader);
       System.out.println("=== Preview ===\n" + preparedQuery.getPreview());
 
-      List<Long> counts = preparedQuery.execute(conn, countReader);
+      List<Long> counts = preparedQuery.execute(conn);
       System.out.println("rows: " + counts.get(0));
 
     }

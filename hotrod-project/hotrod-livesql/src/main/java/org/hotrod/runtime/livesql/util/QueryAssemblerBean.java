@@ -1,19 +1,19 @@
 package org.hotrod.runtime.livesql.util;
 
 import org.hotrod.dynamicsql.DynamicExpressionFactoryConfig;
-import org.hotrod.dynamicsql.assembler.QueryBuilder;
+import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.springframework.stereotype.Component;
 
 @Component
 public class QueryAssemblerBean {
 
-  private QueryBuilder assembler;
+  private DynamicSQL assembler;
 
   public QueryAssemblerBean() {
-    this.assembler = new QueryBuilder(DynamicExpressionFactoryConfig.getFactory());
+    this.assembler = new DynamicSQL(DynamicExpressionFactoryConfig.getFactory());
   }
 
-  public QueryBuilder getAssembler() {
+  public DynamicSQL getAssembler() {
     return assembler;
   }
 

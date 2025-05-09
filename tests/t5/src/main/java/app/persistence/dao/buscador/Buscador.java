@@ -19,7 +19,7 @@ import org.hotrod.dynamicsql.ParameterContext;
 import org.hotrod.dynamicsql.PreparedQuery;
 import org.hotrod.dynamicsql.PreparedSelectQuery;
 import org.hotrod.dynamicsql.RowReader;
-import org.hotrod.dynamicsql.assembler.QueryAssembler;
+import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
@@ -46,7 +46,7 @@ public class Buscador implements Serializable, ApplicationContextAware {
   @Autowired
   private QueryAssemblerBean assemblerBean;
 
-  private QueryAssembler assembler;
+  private DynamicSQL dyn;
 
   @Autowired
   private DataSource dataSource;
@@ -68,14 +68,14 @@ public class Buscador implements Serializable, ApplicationContextAware {
   private DynamicSelectQuery select0;
 
   private void initializeSelect0() {
-    this.select0 = assembler
+    this.select0 = dyn
       .literal("\n\n      ")
       .literal("\n      ")
       .literal("\n\n      select *\n      from a\n      ")
       .literal("\n        ")
-      .if_("idArea != null", assembler
+      .if_("idArea != null", dyn
         .literal("\n        left join b on b.aid = a.id\n          ")
-        .if_("idSector != null", assembler
+        .if_("idSector != null", dyn
           .literal("\n            where b.val is not null\n          ")
           .end()
         )
@@ -106,13 +106,13 @@ public class Buscador implements Serializable, ApplicationContextAware {
 
   };
   public List<FindTareasPorFiltro> findTareasPorFiltro(Long idArea, Long idSector) throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.assembler.newParameterContext();
+    ParameterContext context = this.dyn.newParameterContext();
     context.add("idArea", idArea);
     context.add("idSector", idSector);
-    PreparedSelectQuery<FindTareasPorFiltro> preparedQuery = this.select0.prepare(context, FindTareasPorFiltro.class);
+    PreparedSelectQuery<FindTareasPorFiltro> preparedQuery = this.select0.prepare(context, this.rowReader0);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
-      List<FindTareasPorFiltro> rows = preparedQuery.execute(conn, this.rowReader0);
+      List<FindTareasPorFiltro> rows = preparedQuery.execute(conn);
       return rows;
     }
   }
@@ -120,7 +120,7 @@ public class Buscador implements Serializable, ApplicationContextAware {
   @PostConstruct
   public void initializeContext() {
     this.context = new LiveSQLContext(this.liveSQLDialect, this.dataSource, new TypeSolver(null, this.liveSQLDialect), log);
-    this.assembler = this.assemblerBean.getAssembler();
+    this.dyn = this.assemblerBean.getAssembler();
     this.initializeSelect0();
   }
 

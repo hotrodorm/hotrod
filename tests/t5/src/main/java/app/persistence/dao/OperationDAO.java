@@ -22,7 +22,7 @@ import org.hotrod.dynamicsql.PreparedModificationQuery;
 import org.hotrod.dynamicsql.PreparedQuery;
 import org.hotrod.dynamicsql.PreparedSelectQuery;
 import org.hotrod.dynamicsql.RowReader;
-import org.hotrod.dynamicsql.assembler.QueryAssembler;
+import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
@@ -49,7 +49,7 @@ public class OperationDAO implements Serializable, ApplicationContextAware {
   @Autowired
   private QueryAssemblerBean assemblerBean;
 
-  private QueryAssembler assembler;
+  private DynamicSQL dyn;
 
   @Autowired
   private DataSource dataSource;
@@ -71,14 +71,14 @@ public class OperationDAO implements Serializable, ApplicationContextAware {
   private DynamicModificationQuery query0;
 
   private void initializeQuery0() {
-    this.query0 = assembler
+    this.query0 = dyn
       .literal("\n      ")
       .literal("\n      ")
       .literal("\n      ")
       .literal("\n      UPDATE account\n      SET active = true, balance = ")
-      .parameter("minBalance", Types.BIGINT)
+      .parameterNullable("minBalance", Types.BIGINT)
       .literal("\n      WHERE id IN \n      ")
-      .foreach("id", "ids", "(", ", ", ")", assembler
+      .foreach("id", "ids", "(", ", ", ")", dyn
         .variable("id")
         .end()
       )
@@ -90,7 +90,7 @@ public class OperationDAO implements Serializable, ApplicationContextAware {
 
   public int activateBigAccounts(Long minBalance, List ids, String filter)
       throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.assembler.newParameterContext();
+    ParameterContext context = this.dyn.newParameterContext();
     context.add("minBalance", minBalance);
     context.add("ids", ids);
     context.add("filter", filter);
@@ -107,7 +107,7 @@ public class OperationDAO implements Serializable, ApplicationContextAware {
   private DynamicSelectQuery select0;
 
   private void initializeSelect0() {
-    this.select0 = assembler
+    this.select0 = dyn
       .literal("\nselect id, balance,\n  case when active then 'Active' else 'Inactive' end as status,\n  cast(case when type = 'CHK' then balance * 1.5 else balance * 1.2 end as int) as score\nfrom account\nwhere balance >= 300\n    ")
       .endSelectQuery();
   }
@@ -139,11 +139,11 @@ public class OperationDAO implements Serializable, ApplicationContextAware {
 
   };
   public List<BigAccount> findBigAccounts() throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.assembler.newParameterContext();
-    PreparedSelectQuery<BigAccount> preparedQuery = this.select0.prepare(context, BigAccount.class);
+    ParameterContext context = this.dyn.newParameterContext();
+    PreparedSelectQuery<BigAccount> preparedQuery = this.select0.prepare(context, this.rowReader0);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
-      List<BigAccount> rows = preparedQuery.execute(conn, this.rowReader0);
+      List<BigAccount> rows = preparedQuery.execute(conn);
       return rows;
     }
   }
@@ -151,7 +151,7 @@ public class OperationDAO implements Serializable, ApplicationContextAware {
   @PostConstruct
   public void initializeContext() {
     this.context = new LiveSQLContext(this.liveSQLDialect, this.dataSource, new TypeSolver(null, this.liveSQLDialect), log);
-    this.assembler = this.assemblerBean.getAssembler();
+    this.dyn = this.assemblerBean.getAssembler();
     this.initializeQuery0();
     this.initializeSelect0();
   }
