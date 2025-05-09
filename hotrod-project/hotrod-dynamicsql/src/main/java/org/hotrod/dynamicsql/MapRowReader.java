@@ -5,29 +5,28 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import org.hotrod.data.Row;
 import org.hotrod.data.RowReader;
 
-public class MapRowReader implements RowReader<Map<String, Object>> {
+public class MapRowReader implements RowReader<Row> {
 
   private List<String> columns = null;
 
   @Override
-  public Map<String, Object> readRowFrom(ResultSet rs, Connection conn) throws SQLException {
+  public Row readRowFrom(ResultSet rs, Connection conn) throws SQLException {
     if (this.columns == null) {
       this.initialize(rs.getMetaData());
     }
-    Map<String, Object> m = new HashMap<>();
+    Row row = new Row();
     int i = 1;
     for (String column : this.columns) {
       Object value = rs.getObject(i);
-      m.put(column, value);
+      row.put(column, value);
       i++;
     }
-    return m;
+    return row;
   }
 
   private void initialize(ResultSetMetaData rm) throws SQLException {

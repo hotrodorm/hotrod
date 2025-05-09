@@ -6,10 +6,14 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import org.hotrod.data.Row;
 import org.hotrod.data.RowReader;
 import org.hotrod.dynamicsql.segments.QuerySegment;
 import org.hotrod.dynamicsql.tuples.Tuple2;
 import org.hotrod.dynamicsql.tuples.Tuple3;
+import org.hotrod.dynamicsql.tuples.Tuple4;
+import org.hotrod.dynamicsql.tuples.Tuple5;
+import org.hotrod.dynamicsql.tuples.Tuple6;
 
 public class DynamicSelectQuery extends DynamicQuery {
 
@@ -26,12 +30,12 @@ public class DynamicSelectQuery extends DynamicQuery {
     return new PreparedSelectQuery<T>(sc, rr);
   }
 
-  public PreparedSelectQuery<Map<String, Object>> prepare(ParameterContext context) throws DynamicExpressionException {
+  public PreparedSelectQuery<Row> prepare(ParameterContext context) throws DynamicExpressionException {
     SimpleStaticSegmentConsumer sc = new SimpleStaticSegmentConsumer();
     for (QuerySegment s : this.segments) {
       s.prepare(sc, context, 0);
     }
-    return new PreparedSelectQuery<Map<String, Object>>(sc, new MapRowReader());
+    return new PreparedSelectQuery<Row>(sc, new MapRowReader());
   }
 
   public <A> PreparedSelectQuery<A> prepare(ParameterContext context, Class<A> a) throws DynamicExpressionException {
@@ -82,6 +86,71 @@ public class DynamicSelectQuery extends DynamicQuery {
         tuple.setA(rs.getObject(1, a));
         tuple.setB(rs.getObject(2, b));
         tuple.setC(rs.getObject(3, c));
+        return tuple;
+      }
+
+    });
+  }
+
+  public <A, B, C, D> PreparedSelectQuery<Tuple4<A, B, C, D>> prepare(ParameterContext context, Class<A> a, Class<B> b,
+      Class<C> c, Class<D> d) throws DynamicExpressionException {
+    SimpleStaticSegmentConsumer sc = new SimpleStaticSegmentConsumer();
+    for (QuerySegment s : this.segments) {
+      s.prepare(sc, context, 0);
+    }
+    return new PreparedSelectQuery<Tuple4<A, B, C, D>>(sc, new RowReader<Tuple4<A, B, C, D>>() {
+
+      @Override
+      public Tuple4<A, B, C, D> readRowFrom(ResultSet rs, Connection conn) throws SQLException {
+        Tuple4<A, B, C, D> tuple = new Tuple4<>();
+        tuple.setA(rs.getObject(1, a));
+        tuple.setB(rs.getObject(2, b));
+        tuple.setC(rs.getObject(3, c));
+        tuple.setD(rs.getObject(4, d));
+        return tuple;
+      }
+
+    });
+  }
+
+  public <A, B, C, D, E> PreparedSelectQuery<Tuple5<A, B, C, D, E>> prepare(ParameterContext context, Class<A> a,
+      Class<B> b, Class<C> c, Class<D> d, Class<E> e) throws DynamicExpressionException {
+    SimpleStaticSegmentConsumer sc = new SimpleStaticSegmentConsumer();
+    for (QuerySegment s : this.segments) {
+      s.prepare(sc, context, 0);
+    }
+    return new PreparedSelectQuery<Tuple5<A, B, C, D, E>>(sc, new RowReader<Tuple5<A, B, C, D, E>>() {
+
+      @Override
+      public Tuple5<A, B, C, D, E> readRowFrom(ResultSet rs, Connection conn) throws SQLException {
+        Tuple5<A, B, C, D, E> tuple = new Tuple5<>();
+        tuple.setA(rs.getObject(1, a));
+        tuple.setB(rs.getObject(2, b));
+        tuple.setC(rs.getObject(3, c));
+        tuple.setD(rs.getObject(4, d));
+        tuple.setE(rs.getObject(5, e));
+        return tuple;
+      }
+
+    });
+  }
+
+  public <A, B, C, D, E, F> PreparedSelectQuery<Tuple6<A, B, C, D, E, F>> prepare(ParameterContext context, Class<A> a,
+      Class<B> b, Class<C> c, Class<D> d, Class<E> e, Class<F> f) throws DynamicExpressionException {
+    SimpleStaticSegmentConsumer sc = new SimpleStaticSegmentConsumer();
+    for (QuerySegment s : this.segments) {
+      s.prepare(sc, context, 0);
+    }
+    return new PreparedSelectQuery<Tuple6<A, B, C, D, E, F>>(sc, new RowReader<Tuple6<A, B, C, D, E, F>>() {
+
+      @Override
+      public Tuple6<A, B, C, D, E, F> readRowFrom(ResultSet rs, Connection conn) throws SQLException {
+        Tuple6<A, B, C, D, E, F> tuple = new Tuple6<>();
+        tuple.setA(rs.getObject(1, a));
+        tuple.setB(rs.getObject(2, b));
+        tuple.setC(rs.getObject(3, c));
+        tuple.setD(rs.getObject(4, d));
+        tuple.setE(rs.getObject(5, e));
         return tuple;
       }
 
