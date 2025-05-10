@@ -1,5 +1,6 @@
 package examples;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -8,6 +9,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
+import org.hotrod.data.Cursor;
 import org.hotrod.data.Row;
 import org.hotrod.data.RowReader;
 import org.hotrod.dynamicsql.DynamicExpressionException;
@@ -30,6 +32,19 @@ public class TestExamples {
 
       DynamicModificationQuery q = dyn.literal("UPDATE employee SET salary = salary + 10").endModificationQuery();
 
+      int count = q.execute(conn);
+      System.out.println("Updated rows: " + count);
+    }
+  }
+
+  // Example 1.1: Previewing the assembled query (and parameters, if any)
+//  @Test
+  public void example1_1() throws DynamicExpressionException, SQLException {
+    try (Connection conn = getConnection()) {
+      DynamicSQL dyn = new DynamicSQL();
+
+      DynamicModificationQuery q = dyn.literal("UPDATE employee SET salary = salary + 10").endModificationQuery();
+
       PreparedModificationQuery p = q.prepare();
       System.out.println("Dynamic Query:\n" + p.getPreview());
       int count = p.execute(conn);
@@ -37,7 +52,7 @@ public class TestExamples {
     }
   }
 
-  // Example 2: Adding parameters
+  // Example 2: Applying parameters
 //  @Test
   public void example2() throws DynamicExpressionException, SQLException {
     try (Connection conn = getConnection()) {
@@ -61,7 +76,7 @@ public class TestExamples {
     }
   }
 
-  // Example 3: Resolving parameters using JEXL syntax, no result set
+  // Example 3: Applying parameters: bean syntax (JEXL)
 
   public class Department {
     public int minSalary;
@@ -100,6 +115,35 @@ public class TestExamples {
     }
   }
 
+  // Example 12. Injecting Parameters
+//  @Test
+  public void example12() throws DynamicExpressionException, SQLException {
+    try (Connection conn = getConnection()) {
+      DynamicSQL dyn = new DynamicSQL();
+
+      DynamicSelectQuery q = dyn //
+          .literal("SELECT * FROM ") //
+          .parameterInjection("table") //
+          .literal(" ORDER BY ") //
+          .parameterInjection("ordering") //
+          .endSelectQuery();
+
+      Parameters params = dyn.newParameters();
+      params.add("table", "employee");
+      params.add("ordering", "hired_on DESC");
+
+      PreparedSelectQuery<Row> p = q.prepare(params);
+      System.out.println("Dynamic Query:\n" + p.getPreview());
+      List<Row> rows = p.execute(conn);
+      for (Row r : rows) {
+        System.out.println(r);
+      }
+    } catch (RuntimeException e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
+
   // Example 4. Making it dynamic: Dynamic SQL IF
 //  @Test
   public void example4() throws DynamicExpressionException, SQLException {
@@ -123,7 +167,7 @@ public class TestExamples {
     }
   }
 
-  // Example 5. Selecting data into a single column
+  // Example 5. Selecting data: Single column
 //  @Test
   public void example5() throws DynamicExpressionException, SQLException {
     try (Connection conn = getConnection()) {
@@ -147,7 +191,7 @@ public class TestExamples {
     }
   }
 
-  // Example 5. Selecting data using tuples (two to six columns)
+  // Example 5. Selecting data: Tuples (two to six columns)
 //  @Test
   public void example6() throws DynamicExpressionException, SQLException {
     try (Connection conn = getConnection()) {
@@ -172,7 +216,7 @@ public class TestExamples {
     }
   }
 
-  // Example 6. Selecting data to a Map
+  // Example 6. Selecting data: Row
 //  @Test
   public void example7() throws DynamicExpressionException, SQLException {
     try (Connection conn = getConnection()) {
@@ -196,7 +240,7 @@ public class TestExamples {
     }
   }
 
-  // Example 8. Selecting data using a custom RowReader
+  // Example 8. Selecting data: Custom RowReader
 
   class MyEmployee {
 
@@ -254,6 +298,60 @@ public class TestExamples {
         System.out.println(
             "Name: " + r.getFirstName() + " -- Hired: " + r.getHired() + " -- Gross Salary: " + r.getGrossSalary());
       }
+    } catch (RuntimeException e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
+
+  // Example X1. Selecting a single row
+//  @Test
+  public void exampleX1() throws DynamicExpressionException, SQLException {
+    try (Connection conn = getConnection()) {
+      DynamicSQL dyn = new DynamicSQL();
+
+      DynamicSelectQuery q = dyn //
+          .literal("SELECT * FROM employee WHERE id = ") //
+          .parameter("id") //
+          .endSelectQuery();
+
+      Parameters params = dyn.newParameters();
+      params.add("id", 104);
+
+      PreparedSelectQuery<Row> p = q.prepare(params);
+      System.out.println("Dynamic Query:\n" + p.getPreview());
+      Row row = p.executeOne(conn);
+      System.out.println(row);
+
+    } catch (RuntimeException e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
+
+  // Example X2. Selecting using a Cursor
+  @Test
+  public void exampleX2() throws DynamicExpressionException, SQLException, IOException {
+    try (Connection conn = getConnection()) {
+      DynamicSQL dyn = new DynamicSQL();
+
+      DynamicSelectQuery q = dyn //
+          .literal("SELECT * FROM employee WHERE last_name = ") //
+          .parameter("last") //
+          .literal(" ORDER BY hired_on DESC").endSelectQuery();
+
+      Parameters params = dyn.newParameters();
+      params.add("last", "Smith");
+
+      PreparedSelectQuery<Row> p = q.prepare(params);
+      System.out.println("Dynamic Query:\n" + p.getPreview());
+
+      try (Cursor<Row> rows = p.executeCursor(conn)) {
+        for (Row r : rows) {
+          System.out.println(r);
+        }
+      }
+
     } catch (RuntimeException e) {
       e.printStackTrace();
       throw e;
@@ -329,35 +427,6 @@ public class TestExamples {
 
       Parameters params = dyn.newParameters();
       params.add("part", "mit");
-
-      PreparedSelectQuery<Row> p = q.prepare(params);
-      System.out.println("Dynamic Query:\n" + p.getPreview());
-      List<Row> rows = p.execute(conn);
-      for (Row r : rows) {
-        System.out.println(r);
-      }
-    } catch (RuntimeException e) {
-      e.printStackTrace();
-      throw e;
-    }
-  }
-
-  // Example 12. Parameter Injection
-//  @Test
-  public void example12() throws DynamicExpressionException, SQLException {
-    try (Connection conn = getConnection()) {
-      DynamicSQL dyn = new DynamicSQL();
-
-      DynamicSelectQuery q = dyn //
-          .literal("SELECT * FROM ") //
-          .parameterInjection("table") //
-          .literal(" ORDER BY ") //
-          .parameterInjection("ordering") //
-          .endSelectQuery();
-
-      Parameters params = dyn.newParameters();
-      params.add("table", "employee");
-      params.add("ordering", "hired_on DESC");
 
       PreparedSelectQuery<Row> p = q.prepare(params);
       System.out.println("Dynamic Query:\n" + p.getPreview());
@@ -450,7 +519,7 @@ public class TestExamples {
     public LocalDate hiredDate;
   }
 
-  @Test
+//  @Test
   public void example15() throws DynamicExpressionException, SQLException {
     try (Connection conn = getConnection()) {
       DynamicSQL dyn = new DynamicSQL();
