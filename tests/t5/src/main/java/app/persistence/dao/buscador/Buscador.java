@@ -16,7 +16,7 @@ import javax.sql.DataSource;
 import org.hotrod.data.RowReader;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicSelectQuery;
-import org.hotrod.dynamicsql.ParameterContext;
+import org.hotrod.dynamicsql.Parameters;
 import org.hotrod.dynamicsql.PreparedQuery;
 import org.hotrod.dynamicsql.PreparedSelectQuery;
 import org.hotrod.dynamicsql.assembler.DynamicSQL;
@@ -104,7 +104,7 @@ public class Buscador implements Serializable, ApplicationContextAware {
 
   };
   public List<FindTareasPorFiltro> findTareasPorFiltro(Long idArea, Long idSector) throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.dyn.newParameterContext();
+    Parameters context = this.dyn.newParameters();
     context.add("idArea", idArea);
     context.add("idSector", idSector);
     PreparedSelectQuery<FindTareasPorFiltro> preparedQuery = this.select0.prepare(context, this.rowReader0);

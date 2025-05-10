@@ -18,7 +18,7 @@ import org.hotrod.data.RowReader;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicModificationQuery;
 import org.hotrod.dynamicsql.DynamicSelectQuery;
-import org.hotrod.dynamicsql.ParameterContext;
+import org.hotrod.dynamicsql.Parameters;
 import org.hotrod.dynamicsql.PreparedModificationQuery;
 import org.hotrod.dynamicsql.PreparedQuery;
 import org.hotrod.dynamicsql.PreparedSelectQuery;
@@ -89,7 +89,7 @@ public class OperationDAO implements Serializable, ApplicationContextAware {
 
   public int activateBigAccounts(Long minBalance, List ids, String filter)
       throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.dyn.newParameterContext();
+    Parameters context = this.dyn.newParameters();
     context.add("minBalance", minBalance);
     context.add("ids", ids);
     context.add("filter", filter);
@@ -138,7 +138,7 @@ public class OperationDAO implements Serializable, ApplicationContextAware {
 
   };
   public List<BigAccount> findBigAccounts() throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.dyn.newParameterContext();
+    Parameters context = this.dyn.newParameters();
     PreparedSelectQuery<BigAccount> preparedQuery = this.select0.prepare(context, this.rowReader0);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {

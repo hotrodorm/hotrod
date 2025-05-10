@@ -5,7 +5,7 @@ import java.util.List;
 import org.hotrod.dynamicsql.DynamicExpression;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
-import org.hotrod.dynamicsql.ParameterContext;
+import org.hotrod.dynamicsql.Parameters;
 
 public class WhenSegment extends ControlSegment {
 
@@ -21,7 +21,7 @@ public class WhenSegment extends ControlSegment {
   }
 
   @Override
-  public boolean prepare(StaticSegmentConsumer sc, ParameterContext context, int loopNestingLevel)
+  public boolean prepare(StaticSegmentConsumer sc, Parameters context, int loopNestingLevel)
       throws DynamicExpressionException {
 
     // 1. Evaluate the test condition

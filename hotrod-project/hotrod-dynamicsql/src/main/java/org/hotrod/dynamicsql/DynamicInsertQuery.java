@@ -22,7 +22,7 @@ public class DynamicInsertQuery extends DynamicQuery {
     this.generatedKeysNames = generatedKeysNames;
   }
 
-  public PreparedInsertQuery prepare(ParameterContext context) throws DynamicExpressionException {
+  public PreparedInsertQuery prepare(Parameters context) throws DynamicExpressionException {
     SimpleStaticSegmentConsumer sc = new SimpleStaticSegmentConsumer();
     for (QuerySegment s : this.segments) {
       s.prepare(sc, context, 0);

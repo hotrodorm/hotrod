@@ -1,31 +1,32 @@
 package org.hotrod.dynamicsql.segments;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
-import org.hotrod.dynamicsql.ParameterContext;
+import org.hotrod.dynamicsql.Parameters;
 import org.hotrod.dynamicsql.assembler.ClauseFormatter;
+import org.hotrod.dynamicsql.assembler.IfSentence;
 import org.hotrod.dynamicsql.assembler.ListFormatterConsumer;
 import org.hotrod.dynamicsql.assembler.ListProcessor;
+import org.hotrod.dynamicsql.assembler.Shield;
 
 public class SettersSegment extends DynamicListSegment {
 
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(SettersSegment.class.getName());
 
-  private List<IfSegment> ifSegments;
+  private IfSentence ifSentence;
 
-  public SettersSegment(List<IfSegment> ifSegments, DynamicExpressionFactory factory) {
+  public SettersSegment(IfSentence ifSentence, DynamicExpressionFactory factory) {
     super(new ListProcessor( //
         new ClauseFormatter("SET", "\n", " "), //
         new ClauseFormatter(",", null, "\n    "), null, new ClauseFormatter("\n", null, null) //
     ));
-    this.ifSegments = ifSegments;
+    this.ifSentence = ifSentence;
   }
 
-  public SettersSegment(List<IfSegment> ifSegments, DynamicExpressionFactory factory, String headerPrefix,
+  public SettersSegment(IfSentence ifSentence, DynamicExpressionFactory factory, String headerPrefix,
       String headerSuffix, String separatorPrefix, String separatorSuffix, String tailPrefix, String tailSuffix,
       String[] removePrefixes) {
     super(new ListProcessor( //
@@ -34,14 +35,14 @@ public class SettersSegment extends DynamicListSegment {
         removePrefixes, //
         new ClauseFormatter("", tailPrefix, tailSuffix) //
     ));
-    this.ifSegments = ifSegments;
+    this.ifSentence = ifSentence;
   }
 
   @Override
-  public boolean prepare(StaticSegmentConsumer sc, ParameterContext context, int loopNestingLevel)
+  public boolean prepare(StaticSegmentConsumer sc, Parameters context, int loopNestingLevel)
       throws DynamicExpressionException {
     try (ListFormatterConsumer wc = new ListFormatterConsumer(sc, super.processor)) {
-      for (IfSegment s : this.ifSegments) {
+      for (IfSegment s : Shield.getSegments(this.ifSentence)) {
         wc.startNextEntry();
         s.prepare(wc, context, loopNestingLevel);
       }

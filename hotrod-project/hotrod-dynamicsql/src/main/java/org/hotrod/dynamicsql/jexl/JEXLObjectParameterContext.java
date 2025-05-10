@@ -5,9 +5,9 @@ import java.util.logging.Logger;
 import org.apache.commons.jexl3.JexlContext;
 import org.apache.commons.jexl3.ObjectContext;
 import org.hotrod.dynamicsql.DynamicExpressionException;
-import org.hotrod.dynamicsql.ParameterContext;
+import org.hotrod.dynamicsql.Parameters;
 
-public class JEXLObjectParameterContext extends ParameterContext implements JexlContext {
+public class JEXLObjectParameterContext extends Parameters implements JexlContext {
 
   private static final Logger log = Logger.getLogger(JEXLObjectParameterContext.class.getName());
 

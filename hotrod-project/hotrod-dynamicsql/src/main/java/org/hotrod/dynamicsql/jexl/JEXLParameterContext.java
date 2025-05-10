@@ -5,9 +5,9 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.jexl3.JexlContext;
 import org.hotrod.dynamicsql.DynamicExpressionException;
-import org.hotrod.dynamicsql.ParameterContext;
+import org.hotrod.dynamicsql.Parameters;
 
-public class JEXLParameterContext extends ParameterContext implements JexlContext {
+public class JEXLParameterContext extends Parameters implements JexlContext {
 
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(JEXLParameterContext.class.getName());

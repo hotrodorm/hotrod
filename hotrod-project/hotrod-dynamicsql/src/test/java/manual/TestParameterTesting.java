@@ -10,7 +10,7 @@ import java.util.List;
 import org.hotrod.data.Row;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicSelectQuery;
-import org.hotrod.dynamicsql.ParameterContext;
+import org.hotrod.dynamicsql.Parameters;
 import org.hotrod.dynamicsql.PreparedSelectQuery;
 import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.hotrod.dynamicsql.tuples.Tuple3;
@@ -31,7 +31,7 @@ public class TestParameterTesting {
         .foreach("v", "codes", "(", ", ", ")", dyn.parameter("v")). //
         endSelectQuery();
 
-    ParameterContext ctx = dyn.newParameterContext();
+    Parameters ctx = dyn.newParameters();
     ctx.add("id", 12);
     ctx.add("name", "ghi");
     ctx.add("cost", 105.43);
@@ -68,7 +68,7 @@ public class TestParameterTesting {
         .foreach("v", "codes", "(", ", ", ")", dyn.parameter("v")). //
         endSelectQuery();
 
-    ParameterContext ctx = dyn.newParameterContext();
+    Parameters ctx = dyn.newParameters();
     ctx.add("id", 12);
     ctx.add("name", "ghi");
     ctx.add("cost", 105.43);

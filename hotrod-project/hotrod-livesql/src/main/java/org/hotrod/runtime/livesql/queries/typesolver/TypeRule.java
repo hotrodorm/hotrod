@@ -6,7 +6,7 @@ import org.hotrod.dynamicsql.DynamicExpression;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.DynamicExpressionFactoryConfig;
-import org.hotrod.dynamicsql.ParameterContext;
+import org.hotrod.dynamicsql.Parameters;
 import org.hotrod.runtime.livesql.exceptions.LiveSQLException;
 import org.hotrod.utils.SUtil;
 
@@ -49,7 +49,7 @@ public class TypeRule {
   }
 
   public TypeHandler<?, ?> resolve(final ResultSetColumnMetadata cm) throws CouldNotResolveResultSetDataTypeException {
-    ParameterContext context = this.factory.newObjectContext(cm);
+    Parameters context = this.factory.newObjectContext(cm);
     Object v = null;
     try {
       v = this.testExpression.evaluate(context);

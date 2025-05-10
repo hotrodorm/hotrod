@@ -21,7 +21,7 @@ public class DynamicSelectQuery extends DynamicQuery {
     super(segments);
   }
 
-  public <T> PreparedSelectQuery<T> prepare(ParameterContext context, RowReader<T> rr)
+  public <T> PreparedSelectQuery<T> prepare(Parameters context, RowReader<T> rr)
       throws DynamicExpressionException {
     SimpleStaticSegmentConsumer sc = new SimpleStaticSegmentConsumer();
     for (QuerySegment s : this.segments) {
@@ -30,7 +30,7 @@ public class DynamicSelectQuery extends DynamicQuery {
     return new PreparedSelectQuery<T>(sc, rr);
   }
 
-  public PreparedSelectQuery<Row> prepare(ParameterContext context) throws DynamicExpressionException {
+  public PreparedSelectQuery<Row> prepare(Parameters context) throws DynamicExpressionException {
     SimpleStaticSegmentConsumer sc = new SimpleStaticSegmentConsumer();
     for (QuerySegment s : this.segments) {
       s.prepare(sc, context, 0);
@@ -38,7 +38,7 @@ public class DynamicSelectQuery extends DynamicQuery {
     return new PreparedSelectQuery<Row>(sc, new MapRowReader());
   }
 
-  public <A> PreparedSelectQuery<A> prepare(ParameterContext context, Class<A> a) throws DynamicExpressionException {
+  public <A> PreparedSelectQuery<A> prepare(Parameters context, Class<A> a) throws DynamicExpressionException {
     SimpleStaticSegmentConsumer sc = new SimpleStaticSegmentConsumer();
     for (QuerySegment s : this.segments) {
       s.prepare(sc, context, 0);
@@ -53,7 +53,7 @@ public class DynamicSelectQuery extends DynamicQuery {
     });
   }
 
-  public <A, B> PreparedSelectQuery<Tuple2<A, B>> prepare(ParameterContext context, Class<A> a, Class<B> b)
+  public <A, B> PreparedSelectQuery<Tuple2<A, B>> prepare(Parameters context, Class<A> a, Class<B> b)
       throws DynamicExpressionException {
     SimpleStaticSegmentConsumer sc = new SimpleStaticSegmentConsumer();
     for (QuerySegment s : this.segments) {
@@ -72,7 +72,7 @@ public class DynamicSelectQuery extends DynamicQuery {
     });
   }
 
-  public <A, B, C> PreparedSelectQuery<Tuple3<A, B, C>> prepare(ParameterContext context, Class<A> a, Class<B> b,
+  public <A, B, C> PreparedSelectQuery<Tuple3<A, B, C>> prepare(Parameters context, Class<A> a, Class<B> b,
       Class<C> c) throws DynamicExpressionException {
     SimpleStaticSegmentConsumer sc = new SimpleStaticSegmentConsumer();
     for (QuerySegment s : this.segments) {
@@ -92,7 +92,7 @@ public class DynamicSelectQuery extends DynamicQuery {
     });
   }
 
-  public <A, B, C, D> PreparedSelectQuery<Tuple4<A, B, C, D>> prepare(ParameterContext context, Class<A> a, Class<B> b,
+  public <A, B, C, D> PreparedSelectQuery<Tuple4<A, B, C, D>> prepare(Parameters context, Class<A> a, Class<B> b,
       Class<C> c, Class<D> d) throws DynamicExpressionException {
     SimpleStaticSegmentConsumer sc = new SimpleStaticSegmentConsumer();
     for (QuerySegment s : this.segments) {
@@ -113,7 +113,7 @@ public class DynamicSelectQuery extends DynamicQuery {
     });
   }
 
-  public <A, B, C, D, E> PreparedSelectQuery<Tuple5<A, B, C, D, E>> prepare(ParameterContext context, Class<A> a,
+  public <A, B, C, D, E> PreparedSelectQuery<Tuple5<A, B, C, D, E>> prepare(Parameters context, Class<A> a,
       Class<B> b, Class<C> c, Class<D> d, Class<E> e) throws DynamicExpressionException {
     SimpleStaticSegmentConsumer sc = new SimpleStaticSegmentConsumer();
     for (QuerySegment s : this.segments) {
@@ -135,7 +135,7 @@ public class DynamicSelectQuery extends DynamicQuery {
     });
   }
 
-  public <A, B, C, D, E, F> PreparedSelectQuery<Tuple6<A, B, C, D, E, F>> prepare(ParameterContext context, Class<A> a,
+  public <A, B, C, D, E, F> PreparedSelectQuery<Tuple6<A, B, C, D, E, F>> prepare(Parameters context, Class<A> a,
       Class<B> b, Class<C> c, Class<D> d, Class<E> e, Class<F> f) throws DynamicExpressionException {
     SimpleStaticSegmentConsumer sc = new SimpleStaticSegmentConsumer();
     for (QuerySegment s : this.segments) {

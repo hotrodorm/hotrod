@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 import org.hotrod.dynamicsql.DynamicExpression;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
-import org.hotrod.dynamicsql.ParameterContext;
+import org.hotrod.dynamicsql.Parameters;
 import org.hotrod.dynamicsql.Utl;
 
 public class ForEachSegment extends ControlSegment {
@@ -86,7 +86,7 @@ public class ForEachSegment extends ControlSegment {
   }
 
   @Override
-  public boolean prepare(StaticSegmentConsumer sc, ParameterContext context, int loopNestingLevel)
+  public boolean prepare(StaticSegmentConsumer sc, Parameters context, int loopNestingLevel)
       throws DynamicExpressionException {
 
     if (!this.validated) {

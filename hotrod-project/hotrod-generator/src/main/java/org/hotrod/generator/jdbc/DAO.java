@@ -35,7 +35,7 @@ import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicInsertQuery;
 import org.hotrod.dynamicsql.DynamicModificationQuery;
 import org.hotrod.dynamicsql.DynamicSelectQuery;
-import org.hotrod.dynamicsql.ParameterContext;
+import org.hotrod.dynamicsql.Parameters;
 import org.hotrod.dynamicsql.PreparedModificationQuery;
 import org.hotrod.dynamicsql.PreparedQuery;
 import org.hotrod.dynamicsql.PreparedSelectQuery;
@@ -491,7 +491,7 @@ public class DAO {
         }
       }
 
-      w.println("    ", ParameterContext.class, " context = this.dyn.newParameterContext();");
+      w.println("    ", Parameters.class, " context = this.dyn.newParameterContext();");
       w.println("    context.add(\"f\", filter);");
       if (byExample) {
         w.println("    String ordering = ", SQLUtil.class, ".render(orderBies);");
@@ -705,7 +705,7 @@ public class DAO {
     w.print("  public void " + methodName + "(", em, " model");
     w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
 
-    w.println("    ", ParameterContext.class, " context = this.dyn.newParameterContext();");
+    w.println("    ", Parameters.class, " context = this.dyn.newParameterContext();");
     w.println("    context.add(\"m\", model);");
 
     if (ol != null) {
@@ -918,7 +918,7 @@ public class DAO {
         w.println("    if (model." + getter + "() == null) return 0;");
       }
 
-      w.println("    ", ParameterContext.class, " context = this.dyn.newParameterContext();");
+      w.println("    ", Parameters.class, " context = this.dyn.newParameterContext();");
       w.println("    context.add(\"m\", model);");
       if (ol != null && ol.getStrategy() == OptimisticLockingStrategy.FULL_ROW_CHECK) {
         w.println("    context.add(\"b\", baseline);");
@@ -963,7 +963,7 @@ public class DAO {
     w.print("  public int update(", em, " example, ", em, " values");
     w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
 
-    w.println("    ", ParameterContext.class, " context = this.dyn.newParameterContext();");
+    w.println("    ", Parameters.class, " context = this.dyn.newParameterContext();");
     w.println("    context.add(\"e\", example);");
     w.println("    context.add(\"v\", values);");
     w.println("    ", PreparedModificationQuery.class, " preparedQuery = this.updateByExample.prepare(context);");
@@ -1063,7 +1063,7 @@ public class DAO {
           String getter = cm.getId().getJavaGetter();
           w.println("    if (baseline." + getter + "() == null) return 0;");
         }
-        w.println("    ", ParameterContext.class, " context = this.dyn.newParameterContext();");
+        w.println("    ", Parameters.class, " context = this.dyn.newParameterContext();");
         w.println("    context.add(\"b\", baseline);");
       } else {
         fragmentPKParameters(pk);
@@ -1078,7 +1078,7 @@ public class DAO {
           String setter = cm.getId().getJavaSetter();
           w.println("    filter." + setter + "(" + m + ");");
         }
-        w.println("    ", ParameterContext.class, " context = this.dyn.newParameterContext();");
+        w.println("    ", Parameters.class, " context = this.dyn.newParameterContext();");
         w.println("    context.add(\"f\", filter);");
       }
 
@@ -1121,7 +1121,7 @@ public class DAO {
     w.print("  public int delete(", em, " example");
     w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
 
-    w.println("    ", ParameterContext.class, " context = this.dyn.newParameterContext();");
+    w.println("    ", Parameters.class, " context = this.dyn.newParameterContext();");
     w.println("    context.add(\"e\", example);");
     w.println("    ", PreparedModificationQuery.class, " preparedQuery = this.deleteByExample.prepare(context);");
 
@@ -1680,7 +1680,7 @@ public class DAO {
     }
     w.println(")");
     w.println("      throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
-    w.println("    ", ParameterContext.class, " context = this.dyn.newParameterContext();");
+    w.println("    ", Parameters.class, " context = this.dyn.newParameterContext();");
     for (ParameterTag p : q.getParameterDefinitions()) {
       w.println("    context.add(\"" + p.getName() + "\", " + p.getName() + ");");
     }
@@ -1746,7 +1746,7 @@ public class DAO {
     }
     w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
 
-    w.println("    ", ParameterContext.class, " context = this.dyn.newParameterContext();");
+    w.println("    ", Parameters.class, " context = this.dyn.newParameterContext();");
     for (SelectParameterMetadata sp : s.getParameters()) {
       ParameterTag p = sp.getParameter();
       w.println("    context.add(\"" + p.getName() + "\", " + p.getName() + ");");

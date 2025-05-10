@@ -9,7 +9,7 @@ import org.apache.commons.jexl3.introspection.JexlPermissions;
 import org.hotrod.dynamicsql.DynamicExpression;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.InvalidJexlExpressionException;
-import org.hotrod.dynamicsql.ParameterContext;
+import org.hotrod.dynamicsql.Parameters;
 
 public class JEXLDynamicExpression extends DynamicExpression {
 
@@ -36,7 +36,7 @@ public class JEXLDynamicExpression extends DynamicExpression {
   }
 
   @Override
-  public <T> T evaluate(ParameterContext context, Class<T> targetClass) throws DynamicExpressionException {
+  public <T> T evaluate(Parameters context, Class<T> targetClass) throws DynamicExpressionException {
     Object obj = evaluate(context);
     if (obj == null) {
       return null;
@@ -52,7 +52,7 @@ public class JEXLDynamicExpression extends DynamicExpression {
   }
 
   @Override
-  public Object evaluate(ParameterContext context) throws DynamicExpressionException {
+  public Object evaluate(Parameters context) throws DynamicExpressionException {
     JexlContext jexlContext = (JexlContext) context;
     try {
       return this.expr.evaluate(jexlContext);

@@ -1,7 +1,7 @@
 package org.hotrod.dynamicsql.segments;
 
 import org.hotrod.dynamicsql.DynamicExpressionException;
-import org.hotrod.dynamicsql.ParameterContext;
+import org.hotrod.dynamicsql.Parameters;
 
 /**
  * <pre>
@@ -57,7 +57,7 @@ generated **
 
 public abstract class QuerySegment {
 
-  public abstract boolean prepare(StaticSegmentConsumer sc, ParameterContext context, int loopNestingLevel)
+  public abstract boolean prepare(StaticSegmentConsumer sc, Parameters context, int loopNestingLevel)
       throws DynamicExpressionException;
 
 }

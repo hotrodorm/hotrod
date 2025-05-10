@@ -12,10 +12,10 @@ public class DynamicModificationQuery extends DynamicQuery {
   }
 
   public PreparedModificationQuery prepare() throws DynamicExpressionException {
-    return this.prepare(new DynamicSQL().newParameterContext());
+    return this.prepare(new DynamicSQL().newParameters());
   }
 
-  public PreparedModificationQuery prepare(ParameterContext context) throws DynamicExpressionException {
+  public PreparedModificationQuery prepare(Parameters context) throws DynamicExpressionException {
     SimpleStaticSegmentConsumer sc = new SimpleStaticSegmentConsumer();
     for (QuerySegment s : this.segments) {
       s.prepare(sc, context, 0);

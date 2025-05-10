@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 import org.hotrod.dynamicsql.DynamicExpression;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
-import org.hotrod.dynamicsql.ParameterContext;
+import org.hotrod.dynamicsql.Parameters;
 
 public class ParameterInjectionSegment extends DynamicContentSegment {
 
@@ -24,7 +24,7 @@ public class ParameterInjectionSegment extends DynamicContentSegment {
   }
 
   @Override
-  public boolean prepare(StaticSegmentConsumer sc, ParameterContext context, int loopNestingLevel)
+  public boolean prepare(StaticSegmentConsumer sc, Parameters context, int loopNestingLevel)
       throws DynamicExpressionException {
     String v = this.nameExpression.evaluate(context, String.class);
     if (v != null) {

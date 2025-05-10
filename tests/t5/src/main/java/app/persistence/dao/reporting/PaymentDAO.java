@@ -21,7 +21,7 @@ import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicInsertQuery;
 import org.hotrod.dynamicsql.DynamicModificationQuery;
 import org.hotrod.dynamicsql.DynamicSelectQuery;
-import org.hotrod.dynamicsql.ParameterContext;
+import org.hotrod.dynamicsql.Parameters;
 import org.hotrod.dynamicsql.PreparedModificationQuery;
 import org.hotrod.dynamicsql.PreparedQuery;
 import org.hotrod.dynamicsql.PreparedSelectQuery;
@@ -162,7 +162,7 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
   }
 
   public List<Payment> select(Payment filter, PaymentOrderBy... orderBies) throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.dyn.newParameterContext();
+    Parameters context = this.dyn.newParameters();
     context.add("f", filter);
     String ordering = SQLUtil.render(orderBies);
     context.add("ordering", ordering);
@@ -200,7 +200,7 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
   }
 
   public void insert(Payment model) throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.dyn.newParameterContext();
+    Parameters context = this.dyn.newParameters();
     context.add("m", model);
     PreparedInsertQuery preparedQuery = this.insert.prepare(context);
     logQuery(preparedQuery);
@@ -229,7 +229,7 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
   }
 
   public void insertByExample(Payment model) throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.dyn.newParameterContext();
+    Parameters context = this.dyn.newParameters();
     context.add("m", model);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(context);
     logQuery(preparedQuery);
@@ -261,7 +261,7 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
   }
 
   public int update(Payment example, Payment values) throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.dyn.newParameterContext();
+    Parameters context = this.dyn.newParameters();
     context.add("e", example);
     context.add("v", values);
     PreparedModificationQuery preparedQuery = this.updateByExample.prepare(context);
@@ -301,7 +301,7 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
   }
 
   public int delete(Payment example) throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.dyn.newParameterContext();
+    Parameters context = this.dyn.newParameters();
     context.add("e", example);
     PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(context);
     logQuery(preparedQuery);

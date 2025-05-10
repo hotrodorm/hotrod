@@ -21,7 +21,7 @@ import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicInsertQuery;
 import org.hotrod.dynamicsql.DynamicModificationQuery;
 import org.hotrod.dynamicsql.DynamicSelectQuery;
-import org.hotrod.dynamicsql.ParameterContext;
+import org.hotrod.dynamicsql.Parameters;
 import org.hotrod.dynamicsql.PreparedModificationQuery;
 import org.hotrod.dynamicsql.PreparedQuery;
 import org.hotrod.dynamicsql.PreparedSelectQuery;
@@ -212,7 +212,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     if (id == null) return null;
     Account filter = new Account();
     filter.setId(id);
-    ParameterContext context = this.dyn.newParameterContext();
+    Parameters context = this.dyn.newParameters();
     context.add("f", filter);
     PreparedSelectQuery<Account> preparedQuery = this.selectByPrimaryKey.prepare(context, this.rowReader);
     logQuery(preparedQuery);
@@ -253,7 +253,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   }
 
   public List<Account> select(Account filter, AccountOrderBy... orderBies) throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.dyn.newParameterContext();
+    Parameters context = this.dyn.newParameters();
     context.add("f", filter);
     String ordering = SQLUtil.render(orderBies);
     context.add("ordering", ordering);
@@ -299,7 +299,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   }
 
   public void insert(Account model) throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.dyn.newParameterContext();
+    Parameters context = this.dyn.newParameters();
     context.add("m", model);
     PreparedInsertQuery preparedQuery = this.insert.prepare(context);
     logQuery(preparedQuery);
@@ -337,7 +337,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   }
 
   public void insertByExample(Account model) throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.dyn.newParameterContext();
+    Parameters context = this.dyn.newParameters();
     context.add("m", model);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(context);
     logQuery(preparedQuery);
@@ -368,7 +368,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   public int update(Account model) throws DynamicExpressionException, SQLException {
     if (model.getId() == null) return 0;
-    ParameterContext context = this.dyn.newParameterContext();
+    Parameters context = this.dyn.newParameters();
     context.add("m", model);
     PreparedModificationQuery preparedQuery = this.updateByPK.prepare(context);
     logQuery(preparedQuery);
@@ -407,7 +407,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   }
 
   public int update(Account example, Account values) throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.dyn.newParameterContext();
+    Parameters context = this.dyn.newParameters();
     context.add("e", example);
     context.add("v", values);
     PreparedModificationQuery preparedQuery = this.updateByExample.prepare(context);
@@ -448,7 +448,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     if (id == null) return 0;
     Account filter = new Account();
     filter.setId(id);
-    ParameterContext context = this.dyn.newParameterContext();
+    Parameters context = this.dyn.newParameters();
     context.add("f", filter);
     PreparedModificationQuery preparedQuery = this.deleteByPK.prepare(context);
     logQuery(preparedQuery);
@@ -478,7 +478,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   }
 
   public int delete(Account example) throws DynamicExpressionException, SQLException {
-    ParameterContext context = this.dyn.newParameterContext();
+    Parameters context = this.dyn.newParameters();
     context.add("e", example);
     PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(context);
     logQuery(preparedQuery);

@@ -1,13 +1,15 @@
 package org.hotrod.dynamicsql.assembler;
 
-import java.util.List;
+import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.DynamicExpressionFactoryConfig;
-import org.hotrod.dynamicsql.ParameterContext;
-import org.hotrod.dynamicsql.segments.IfSegment;
+import org.hotrod.dynamicsql.Parameters;
 
 public class DynamicSQL {
+
+  @SuppressWarnings("unused")
+  private static final Logger log = Logger.getLogger(DynamicSQL.class.getName());
 
   private DynamicExpressionFactory factory;
 
@@ -19,12 +21,14 @@ public class DynamicSQL {
     this.factory = factory;
   }
 
-  public ParameterContext newParameterContext() {
+  public Parameters newParameters() {
     return this.factory.newParameterContext();
   }
 
-  public IfsAssembler ifs() {
-    return new IfsAssembler(this.factory);
+  public IfSentence ifs(String test, Sentence sentence) {
+    IfSentence is = new IfSentence(this.factory);
+    IfSentence if_ = is.if_(test, sentence);
+    return if_;
   }
 
   public ChooseAssembler choose() {
@@ -72,40 +76,40 @@ public class DynamicSQL {
     return q.if_(test, sentence);
   }
 
-  public Sentence set(List<IfSegment> ifSegments) {
+  public Sentence set(IfSentence ifSentence) {
     Sentence q = new Sentence(this.factory);
-    return q.set(ifSegments);
+    return q.set(ifSentence);
   }
 
-  public Sentence set(List<IfSegment> ifSegments, String headerPrefix, String headerSuffix, String separatorPrefix,
+  public Sentence set(IfSentence ifSentence, String headerPrefix, String headerSuffix, String separatorPrefix,
       String separatorSuffix, String tailPrefix, String tailSuffix, String... removePrefixes) {
     Sentence q = new Sentence(this.factory);
-    return q.set(ifSegments, headerPrefix, headerSuffix, separatorPrefix, separatorSuffix, tailPrefix, tailSuffix,
+    return q.set(ifSentence, headerPrefix, headerSuffix, separatorPrefix, separatorSuffix, tailPrefix, tailSuffix,
         removePrefixes);
   }
 
-  public Sentence where(String separator, List<IfSegment> ifSegments) {
+  public Sentence where(String separator, IfSentence ifSentence) {
     Sentence q = new Sentence(this.factory);
-    return q.where(separator, ifSegments);
+    return q.where(separator, ifSentence);
   }
 
-  public Sentence where(String separator, List<IfSegment> ifSegments, String headerPrefix, String headerSuffix,
+  public Sentence where(String separator, IfSentence ifSentence, String headerPrefix, String headerSuffix,
       String separatorPrefix, String separatorSuffix, String tailPrefix, String tailSuffix, String... removePrefixes) {
     Sentence q = new Sentence(this.factory);
-    return q.where(separator, ifSegments, headerPrefix, headerSuffix, separatorPrefix, separatorSuffix, tailPrefix,
+    return q.where(separator, ifSentence, headerPrefix, headerSuffix, separatorPrefix, separatorSuffix, tailPrefix,
         tailSuffix, removePrefixes);
   }
 
-  public Sentence trim(String header, String separator, String tail, List<IfSegment> ifSegments) {
+  public Sentence trim(String header, String separator, String tail, IfSentence ifSentence) {
     Sentence q = new Sentence(this.factory);
-    return q.trim(header, separator, tail, ifSegments);
+    return q.trim(header, separator, tail, ifSentence);
   }
 
-  public Sentence trim(String header, String separator, String tail, List<IfSegment> ifSegments, String headerPrefix,
+  public Sentence trim(String header, String separator, String tail, IfSentence ifSentence, String headerPrefix,
       String headerSuffix, String separatorPrefix, String separatorSuffix, String tailPrefix, String tailSuffix,
       String... removePrefixes) {
     Sentence q = new Sentence(this.factory);
-    return q.trim(header, separator, tail, ifSegments, headerPrefix, headerSuffix, separatorPrefix, separatorSuffix,
+    return q.trim(header, separator, tail, ifSentence, headerPrefix, headerSuffix, separatorPrefix, separatorSuffix,
         tailPrefix, tailSuffix, removePrefixes);
   }
 

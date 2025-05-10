@@ -3,7 +3,7 @@ package org.hotrod.dynamicsql.segments;
 import java.util.List;
 
 import org.hotrod.dynamicsql.DynamicExpressionException;
-import org.hotrod.dynamicsql.ParameterContext;
+import org.hotrod.dynamicsql.Parameters;
 
 public class ChooseSegment extends ControlSegment {
 
@@ -17,7 +17,7 @@ public class ChooseSegment extends ControlSegment {
   }
 
   @Override
-  public boolean prepare(StaticSegmentConsumer sc, ParameterContext context, int loopNestingLevel)
+  public boolean prepare(StaticSegmentConsumer sc, Parameters context, int loopNestingLevel)
       throws DynamicExpressionException {
 
     for (WhenSegment w : this.whens) {

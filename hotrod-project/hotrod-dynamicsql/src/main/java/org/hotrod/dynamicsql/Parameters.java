@@ -3,7 +3,7 @@ package org.hotrod.dynamicsql;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class ParameterContext {
+public abstract class Parameters {
 
   public Map<String, Object> params = new HashMap<>();
 

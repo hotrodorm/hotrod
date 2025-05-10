@@ -1,7 +1,7 @@
 package org.hotrod.dynamicsql.segments;
 
 import org.hotrod.dynamicsql.DynamicExpressionException;
-import org.hotrod.dynamicsql.ParameterContext;
+import org.hotrod.dynamicsql.Parameters;
 
 public class StaticContentSegment extends ContentSegment {
 
@@ -12,7 +12,7 @@ public class StaticContentSegment extends ContentSegment {
   }
 
   @Override
-  public boolean prepare(StaticSegmentConsumer sc, ParameterContext context, int loopNestingLevel)
+  public boolean prepare(StaticSegmentConsumer sc, Parameters context, int loopNestingLevel)
       throws DynamicExpressionException {
     sc.consume(this.literal);
     return true;

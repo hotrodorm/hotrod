@@ -65,31 +65,31 @@ public class Sentence {
     return this;
   }
 
-  public Sentence if_(String test, Sentence query) {
-    this.segments.add(new IfSegment(test, query.segments, this.factory));
+  public Sentence if_(String test, Sentence sentence) {
+    this.segments.add(new IfSegment(test, sentence, this.factory));
     return this;
   }
 
-  public Sentence set(List<IfSegment> content) {
-    this.segments.add(new SettersSegment(content, this.factory));
+  public Sentence set(IfSentence ifSentence) {
+    this.segments.add(new SettersSegment(ifSentence, this.factory));
     return this;
   }
 
-  public Sentence set(List<IfSegment> content, String headerPrefix, String headerSuffix, String separatorPrefix,
+  public Sentence set(IfSentence ifSentence, String headerPrefix, String headerSuffix, String separatorPrefix,
       String separatorSuffix, String tailPrefix, String tailSuffix, String... removePrefixes) {
-    this.segments.add(new SettersSegment(content, this.factory, headerPrefix, headerSuffix, separatorPrefix,
+    this.segments.add(new SettersSegment(ifSentence, this.factory, headerPrefix, headerSuffix, separatorPrefix,
         separatorSuffix, tailPrefix, tailSuffix, removePrefixes));
     return this;
   }
 
-  public Sentence where(String separator, List<IfSegment> content) {
-    this.segments.add(new WhereSegment(separator, content, this.factory));
+  public Sentence where(String separator, IfSentence ifSentence) {
+    this.segments.add(new WhereSegment(separator, ifSentence, this.factory));
     return this;
   }
 
-  public Sentence where(String separator, List<IfSegment> content, String headerPrefix, String headerSuffix,
+  public Sentence where(String separator, IfSentence ifSentence, String headerPrefix, String headerSuffix,
       String separatorPrefix, String separatorSuffix, String tailPrefix, String tailSuffix, String... removePrefixes) {
-    this.segments.add(new WhereSegment(separator, content, this.factory, headerPrefix, headerSuffix, separatorPrefix,
+    this.segments.add(new WhereSegment(separator, ifSentence, this.factory, headerPrefix, headerSuffix, separatorPrefix,
         separatorSuffix, tailPrefix, tailSuffix, removePrefixes));
     return this;
   }
@@ -98,15 +98,15 @@ public class Sentence {
     return new ChooseAssembler(this);
   }
 
-  public Sentence trim(String header, String separator, String tail, List<IfSegment> content) {
-    this.segments.add(new TrimSegment(header, separator, tail, content, this.factory));
+  public Sentence trim(String header, String separator, String tail, IfSentence ifSentence) {
+    this.segments.add(new TrimSegment(header, separator, tail, ifSentence, this.factory));
     return this;
   }
 
-  public Sentence trim(String header, String separator, String tail, List<IfSegment> content, String headerPrefix,
+  public Sentence trim(String header, String separator, String tail, IfSentence ifSentence, String headerPrefix,
       String headerSuffix, String separatorPrefix, String separatorSuffix, String tailPrefix, String tailSuffix,
       String... removePrefixes) {
-    this.segments.add(new TrimSegment(header, separator, tail, content, this.factory, headerPrefix, headerSuffix,
+    this.segments.add(new TrimSegment(header, separator, tail, ifSentence, this.factory, headerPrefix, headerSuffix,
         separatorPrefix, separatorSuffix, tailPrefix, tailSuffix, removePrefixes));
     return this;
   }

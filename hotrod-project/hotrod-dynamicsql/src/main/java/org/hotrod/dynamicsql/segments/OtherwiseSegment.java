@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
-import org.hotrod.dynamicsql.ParameterContext;
+import org.hotrod.dynamicsql.Parameters;
 
 public class OtherwiseSegment extends ControlSegment {
 
@@ -19,7 +19,7 @@ public class OtherwiseSegment extends ControlSegment {
   }
 
   @Override
-  public boolean prepare(StaticSegmentConsumer sc, ParameterContext context, int loopNestingLevel)
+  public boolean prepare(StaticSegmentConsumer sc, Parameters context, int loopNestingLevel)
       throws DynamicExpressionException {
     for (QuerySegment s : this.segments) {
       s.prepare(sc, context, loopNestingLevel);

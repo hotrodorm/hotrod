@@ -14,7 +14,7 @@ import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicInsertQuery;
 import org.hotrod.dynamicsql.DynamicModificationQuery;
 import org.hotrod.dynamicsql.DynamicSelectQuery;
-import org.hotrod.dynamicsql.ParameterContext;
+import org.hotrod.dynamicsql.Parameters;
 import org.hotrod.dynamicsql.PreparedModificationQuery;
 import org.hotrod.dynamicsql.PreparedSelectQuery;
 import org.hotrod.dynamicsql.assembler.DynamicSQL;
@@ -49,7 +49,7 @@ public class AccountDAO {
 
       // 1. Prepare the parameter context
 
-      ParameterContext context = this.assembler.newParameterContext();
+      Parameters context = this.assembler.newParameters();
       context.add("f", filter);
 
       // 2. Execute the resulting query
@@ -311,7 +311,7 @@ public class AccountDAO {
 
     // 1. Prepare the parameter context
 
-    ParameterContext context = this.assembler.newParameterContext();
+    Parameters context = this.assembler.newParameters();
     context.add("n", entity);
 
     // 2. Process DynamicSQL and produce query and parameters
@@ -347,7 +347,7 @@ public class AccountDAO {
 
     // 1. Prepare the parameter context
 
-    ParameterContext context = this.assembler.newParameterContext();
+    Parameters context = this.assembler.newParameters();
     context.add("f", filter);
     context.add("n", newValues);
 
@@ -386,7 +386,7 @@ public class AccountDAO {
 
     // 1. Prepare the parameter context
 
-    ParameterContext context = this.assembler.newParameterContext();
+    Parameters context = this.assembler.newParameters();
     context.add("f", filter);
 
     // 2. Process DynamicSQL and produce query and parameters
@@ -415,7 +415,7 @@ public class AccountDAO {
             .end() //
         .endModificationQuery();
 
-    ParameterContext context = this.assembler.newParameterContext();
+    Parameters context = this.assembler.newParameters();
     context.add("f", filter);
 
     PreparedModificationQuery preparedQuery = d1.prepare(context);
@@ -432,7 +432,7 @@ public class AccountDAO {
                 .foreach("c", "d.codes", "(", ", ", ")", assembler.parameterNullable("c", Types.NUMERIC))) //
         .endModificationQuery();
 
-    ParameterContext context = this.assembler.newParameterContext();
+    Parameters context = this.assembler.newParameters();
     context.add("d", data);
 
     PreparedModificationQuery preparedQuery = d1.prepare(context);
@@ -451,7 +451,7 @@ public class AccountDAO {
           .parameterNullable("pattern", Types.VARCHAR) //
           .endSelectQuery();
 
-      ParameterContext context = this.assembler.newParameterContext();
+      Parameters context = this.assembler.newParameters();
       context.add("d", data);
 
       RowReader<Long> countReader = new RowReader<Long>() {
@@ -485,7 +485,7 @@ public class AccountDAO {
             "\nh<", ">h", "\ns<", ">s", "\nt<", ">t") //
         .endModificationQuery();
 
-    ParameterContext context = this.assembler.newParameterContext();
+    Parameters context = this.assembler.newParameters();
     context.add("f", filter);
 
     PreparedModificationQuery preparedQuery = d1.prepare(context);

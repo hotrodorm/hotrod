@@ -12,7 +12,7 @@ import org.hotrod.database.PropertyType;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.DynamicExpressionFactoryConfig;
-import org.hotrod.dynamicsql.ParameterContext;
+import org.hotrod.dynamicsql.Parameters;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
@@ -69,7 +69,7 @@ public class TypeSolverTag extends AbstractConfigurationTag {
       this.retrievedColumns.add(rc);
     }
 
-    ParameterContext context = factory.newObjectContext(rc);
+    Parameters context = factory.newObjectContext(rc);
 
     // Find the first matching rule
 
