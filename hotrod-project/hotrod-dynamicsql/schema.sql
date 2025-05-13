@@ -18,7 +18,7 @@ create table employee (
   hired_on date,
   salary integer,
   dept_no integer,
-  active char(1) not null check (active in ('Y', 'N'))
+  active char(1) default 'Y' check (active in ('Y', 'N'))
 );
 
 insert into employee (id, first_name, last_name, hired_on, salary, dept_no, active) values

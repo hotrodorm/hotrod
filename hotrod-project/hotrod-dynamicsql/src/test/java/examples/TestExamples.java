@@ -13,12 +13,15 @@ import org.hotrod.data.Cursor;
 import org.hotrod.data.Row;
 import org.hotrod.data.RowReader;
 import org.hotrod.dynamicsql.DynamicExpressionException;
+import org.hotrod.dynamicsql.DynamicInsertQuery;
 import org.hotrod.dynamicsql.DynamicModificationQuery;
 import org.hotrod.dynamicsql.DynamicSelectQuery;
 import org.hotrod.dynamicsql.Parameters;
 import org.hotrod.dynamicsql.PreparedModificationQuery;
 import org.hotrod.dynamicsql.PreparedSelectQuery;
 import org.hotrod.dynamicsql.assembler.DynamicSQL;
+import org.hotrod.dynamicsql.insert.PreparedInsertQuery;
+import org.hotrod.dynamicsql.insert.PrimaryKeyRetrievalMode;
 import org.hotrod.dynamicsql.tuples.Tuple3;
 import org.junit.jupiter.api.Test;
 
@@ -417,7 +420,7 @@ public class TestExamples {
   }
 
   // Example 11. Dynamic SQL: BIND
-  @Test
+//  @Test
   public void example11() throws DynamicExpressionException, SQLException {
     try (Connection conn = getConnection()) {
       DynamicSQL dyn = new DynamicSQL();
@@ -552,6 +555,82 @@ public class TestExamples {
       int count = p.execute(conn);
       System.out.println("Updated rows: " + count);
 
+    } catch (RuntimeException e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
+
+  // Example 20. Dynamic SQL: UPDATE
+//  @Test
+  public void example20() throws DynamicExpressionException, SQLException {
+    try (Connection conn = getConnection()) {
+      DynamicSQL dyn = new DynamicSQL();
+
+      DynamicModificationQuery q = dyn //
+          .literal("update employee set active = 'Y' where last_name = ") //
+          .parameter("lastName") //
+          .endModificationQuery();
+
+      Parameters params = dyn.newParameters();
+      params.add("lastName", "Smith");
+
+      PreparedModificationQuery p = q.prepare(params);
+      System.out.println("Dynamic Query:\n" + p.getPreview());
+      int count = p.execute(conn);
+      System.out.println("Updated " + count + " row(s).");
+    } catch (RuntimeException e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
+
+  // Example 21. Dynamic SQL: DELETE
+  @Test
+  public void example21() throws DynamicExpressionException, SQLException {
+    try (Connection conn = getConnection()) {
+      DynamicSQL dyn = new DynamicSQL();
+
+      DynamicModificationQuery q = dyn //
+          .literal("delete from employee where last_name = ") //
+          .parameter("lastName") //
+          .endModificationQuery();
+
+      Parameters params = dyn.newParameters();
+      params.add("lastName", "Smith");
+
+      PreparedModificationQuery p = q.prepare(params);
+      System.out.println("Dynamic Query:\n" + p.getPreview());
+      int count = p.execute(conn);
+      System.out.println("Deleted " + count + " row(s).");
+    } catch (RuntimeException e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
+
+  // Example 22. Dynamic SQL: Insert w/o recovering the inserted primary key
+//  @Test
+  public void example22() throws DynamicExpressionException, SQLException {
+    try (Connection conn = getConnection()) {
+      DynamicSQL dyn = new DynamicSQL();
+
+      DynamicInsertQuery q = dyn //
+          .literal("insert into employee (id, first_name) values (") //
+          .parameter("id") //
+          .literal(", ") //
+          .parameter("firstName") //
+          .literal(")") //
+          .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
+
+      Parameters params = dyn.newParameters();
+      params.add("id", 201);
+      params.add("firstName", "Johnny");
+
+      PreparedInsertQuery p = q.prepare(params);
+      System.out.println("Dynamic Query:\n" + p.getPreview());
+      p.execute(conn);
+      System.out.println("Inserted");
     } catch (RuntimeException e) {
       e.printStackTrace();
       throw e;

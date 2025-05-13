@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.hotrod.dynamicsql.DShield;
 import org.hotrod.dynamicsql.DynamicExpression;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
@@ -109,7 +110,7 @@ public class ForEachSegment extends ControlSegment {
               + obj.getClass().getName());
     }
 
-    if (context.hasParameter(this.item)) {
+    if (DShield.hasParameter(context, this.item)) {
       throw new DynamicExpressionException("The variable '" + this.item
           + "' defined by the 'item' property of a Dynamic SQL FOREACH already exists. Cannot shadow an existing variable");
     }
@@ -125,12 +126,12 @@ public class ForEachSegment extends ControlSegment {
       } else {
         this.separator.prepare(sc, context, loopNestingLevel + 1);
       }
-      context.bind(this.item, o);
+      DShield.bind(context, this.item, o);
       for (QuerySegment w : this.segments) {
         w.prepare(sc, context, loopNestingLevel + 1);
       }
     }
-    context.unbind(this.item);
+    DShield.unbind(context, this.item);
 
     this.close.prepare(sc, context, loopNestingLevel);
 

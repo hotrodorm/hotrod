@@ -1,5 +1,6 @@
 package org.hotrod.dynamicsql.segments;
 
+import org.hotrod.dynamicsql.DShield;
 import org.hotrod.dynamicsql.DynamicExpression;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
@@ -46,13 +47,13 @@ public class BindSegment extends ControlSegment {
       this.validate();
     }
 
-    if (context.hasParameter(this.name)) {
+    if (DShield.hasParameter(context, this.name)) {
       throw new DynamicExpressionException("The variable '" + this.name
           + "' defined by the 'name' property of a Dynamic SQL BIND already exists. Cannot shadow an existing variable");
     }
 
     Object obj = this.valueExpression.evaluate(context);
-    context.bind(this.name, obj);
+    DShield.bind(context, this.name, obj);
 
     return true;
 

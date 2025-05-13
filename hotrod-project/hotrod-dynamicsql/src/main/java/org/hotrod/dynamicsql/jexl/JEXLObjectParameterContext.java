@@ -40,22 +40,22 @@ public class JEXLObjectParameterContext extends Parameters implements JexlContex
   }
 
   @Override
-  public boolean hasParameter(String name) {
+  protected boolean hasParameter(String name) {
     return this.context.has(name);
   }
 
   @Override
-  public Object getParameterValue(String name) {
+  protected  Object getParameterValue(String name) {
     return this.context.get(name);
   }
 
   @Override
-  public void bind(String name, Object obj) throws DynamicExpressionException {
+  protected  void bind(String name, Object obj) throws DynamicExpressionException {
     throw new UnsupportedOperationException("Binding is not supported in plain objects.");
   }
 
   @Override
-  public Object unbind(String name) {
+  protected  Object unbind(String name) {
     throw new UnsupportedOperationException("Unbinding is not supported in plain objects.");
   }
 
