@@ -14,7 +14,9 @@ public class SetSentence<P extends AbstractSentence<?, ?>> extends AbstractSente
     super.setMe(this);
   }
 
+  @SuppressWarnings("unchecked")
   public IfSentence<SetSentence<P>> if_(String test) {
+    @SuppressWarnings("rawtypes")
     IfSentence<SetSentence<P>> s = new IfSentence(this.factory, this, test);
     return s;
   }

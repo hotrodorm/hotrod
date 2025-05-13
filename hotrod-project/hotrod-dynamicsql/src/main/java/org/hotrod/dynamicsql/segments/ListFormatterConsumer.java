@@ -1,12 +1,12 @@
-package org.hotrod.dynamicsql.assembler;
+package org.hotrod.dynamicsql.segments;
 
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.hotrod.dynamicsql.assembler.ListProcessor;
 import org.hotrod.dynamicsql.parameters.ParameterInstance;
-import org.hotrod.dynamicsql.segments.StaticSegmentConsumer;
 
 public class ListFormatterConsumer implements StaticSegmentConsumer, AutoCloseable {
 

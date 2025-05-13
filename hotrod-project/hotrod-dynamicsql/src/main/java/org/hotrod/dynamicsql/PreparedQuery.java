@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.hotrod.dynamicsql.parameters.ParameterInstance;
 import org.hotrod.dynamicsql.parameters.ParameterNullableInstance;
-import org.hotrod.dynamicsql.parameters.VariableInstance;
 
 public abstract class PreparedQuery {
 

@@ -50,7 +50,9 @@ public class TrimSentence<P extends AbstractSentence<?, ?>> extends AbstractSent
     this.removePrefixes = removePrefixes;
   }
 
+  @SuppressWarnings("unchecked")
   public IfSentence<TrimSentence<P>> if_(String test) {
+    @SuppressWarnings("rawtypes")
     IfSentence<TrimSentence<P>> s = new IfSentence(this.factory, this, test);
     return s;
   }

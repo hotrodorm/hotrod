@@ -25,7 +25,9 @@ public class WhereSentence<P extends AbstractSentence<?, ?>> extends AbstractSen
     this.separator = separator;
   }
 
+  @SuppressWarnings("unchecked")
   public IfSentence<WhereSentence<P>> if_(String test) {
+    @SuppressWarnings("rawtypes")
     IfSentence<WhereSentence<P>> s = new IfSentence(this.factory, this, test);
     return s;
   }

@@ -51,39 +51,53 @@ public abstract class Sentence<M extends Sentence<?, ?>, P> extends AbstractSent
     return this.me;
   }
 
+  @SuppressWarnings("unchecked")
   public IfSentence<M> if_(String test) {
+    @SuppressWarnings("rawtypes")
     IfSentence<M> s = new IfSentence(this.factory, this, test);
     return s;
   }
 
+  @SuppressWarnings("unchecked")
   public ChooseSentence<M> choose() {
+    @SuppressWarnings("rawtypes")
     ChooseSentence<M> s = new ChooseSentence(this.factory, this);
     return s;
   }
 
+  @SuppressWarnings("unchecked")
   public WhereSentence<M> where(String separator) {
+    @SuppressWarnings("rawtypes")
     WhereSentence<M> s = new WhereSentence(this.factory, this, separator);
     return s;
   }
 
+  @SuppressWarnings("unchecked")
   public SetSentence<M> set() {
+    @SuppressWarnings("rawtypes")
     SetSentence<M> s = new SetSentence(this.factory, this);
     return s;
   }
 
+  @SuppressWarnings("unchecked")
   public TrimSentence<M> trim(String header, String separator, String tail) {
+    @SuppressWarnings("rawtypes")
     TrimSentence<M> s = new TrimSentence(this.factory, this, header, separator, tail);
     return s;
   }
 
+  @SuppressWarnings("unchecked")
   public TrimSentence<M> trim(String header, String separator, String tail, String headerPrefix, String headerSuffix,
       String separatorPrefix, String separatorSuffix, String tailPrefix, String tailSuffix, String... removePrefixes) {
+    @SuppressWarnings("rawtypes")
     TrimSentence<M> s = new TrimSentence(this.factory, this, header, separator, tail, headerPrefix, headerSuffix,
         separatorPrefix, separatorSuffix, tailPrefix, tailSuffix, removePrefixes);
     return s;
   }
 
+  @SuppressWarnings("unchecked")
   public ForEachSentence<M> foreach(String item, String collection, String open, String separator, String close) {
+    @SuppressWarnings("rawtypes")
     ForEachSentence<M> s = new ForEachSentence(this.factory, this, item, collection, open, separator, close);
     return s;
   }

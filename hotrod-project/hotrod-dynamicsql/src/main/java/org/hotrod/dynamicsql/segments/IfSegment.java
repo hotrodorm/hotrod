@@ -10,7 +10,7 @@ import org.hotrod.dynamicsql.Parameters;
 public class IfSegment extends ControlSegment {
 
   private String test;
-  private List< QuerySegment> segments;
+  private List<QuerySegment> segments;
   private DynamicExpressionFactory factory;
 
   private DynamicExpression testExpression;
@@ -18,7 +18,8 @@ public class IfSegment extends ControlSegment {
   public IfSegment(String test, List<QuerySegment> segments, DynamicExpressionFactory factory) {
     this.test = test;
     this.segments = segments;
-    this.testExpression = factory.expression(this.test);
+    this.factory = factory;
+    this.testExpression = this.factory.expression(this.test);
   }
 
   @Override

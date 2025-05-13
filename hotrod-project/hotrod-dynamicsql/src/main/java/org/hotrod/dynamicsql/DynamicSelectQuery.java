@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
 import org.hotrod.data.Row;
 import org.hotrod.data.RowReader;
@@ -21,8 +20,7 @@ public class DynamicSelectQuery extends DynamicQuery {
     super(segments);
   }
 
-  public <T> PreparedSelectQuery<T> prepare(Parameters context, RowReader<T> rr)
-      throws DynamicExpressionException {
+  public <T> PreparedSelectQuery<T> prepare(Parameters context, RowReader<T> rr) throws DynamicExpressionException {
     SimpleStaticSegmentConsumer sc = new SimpleStaticSegmentConsumer();
     for (QuerySegment s : this.segments) {
       s.prepare(sc, context, 0);
@@ -72,8 +70,8 @@ public class DynamicSelectQuery extends DynamicQuery {
     });
   }
 
-  public <A, B, C> PreparedSelectQuery<Tuple3<A, B, C>> prepare(Parameters context, Class<A> a, Class<B> b,
-      Class<C> c) throws DynamicExpressionException {
+  public <A, B, C> PreparedSelectQuery<Tuple3<A, B, C>> prepare(Parameters context, Class<A> a, Class<B> b, Class<C> c)
+      throws DynamicExpressionException {
     SimpleStaticSegmentConsumer sc = new SimpleStaticSegmentConsumer();
     for (QuerySegment s : this.segments) {
       s.prepare(sc, context, 0);
@@ -113,8 +111,8 @@ public class DynamicSelectQuery extends DynamicQuery {
     });
   }
 
-  public <A, B, C, D, E> PreparedSelectQuery<Tuple5<A, B, C, D, E>> prepare(Parameters context, Class<A> a,
-      Class<B> b, Class<C> c, Class<D> d, Class<E> e) throws DynamicExpressionException {
+  public <A, B, C, D, E> PreparedSelectQuery<Tuple5<A, B, C, D, E>> prepare(Parameters context, Class<A> a, Class<B> b,
+      Class<C> c, Class<D> d, Class<E> e) throws DynamicExpressionException {
     SimpleStaticSegmentConsumer sc = new SimpleStaticSegmentConsumer();
     for (QuerySegment s : this.segments) {
       s.prepare(sc, context, 0);

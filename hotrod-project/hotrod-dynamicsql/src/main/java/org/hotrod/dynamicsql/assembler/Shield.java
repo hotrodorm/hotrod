@@ -18,16 +18,4 @@ public class Shield {
     parent.otherwise = otherwise;
   }
 
-//  public static List<QuerySegment> getSegments(MainSentence sentence) {
-//    return sentence.segments;
-//  }
-//
-//  public static List<QuerySegment> getSegments(NestedSentence sentence) {
-//    return sentence.segments;
-//  }
-//
-//  public static List<IfSegment> getSegments(IfSequence sentence) {
-//    return sentence.segments;
-//  }
-
 }

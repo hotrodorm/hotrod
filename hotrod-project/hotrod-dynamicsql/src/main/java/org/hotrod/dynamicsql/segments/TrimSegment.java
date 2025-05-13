@@ -7,7 +7,6 @@ import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.Parameters;
 import org.hotrod.dynamicsql.assembler.ClauseFormatter;
-import org.hotrod.dynamicsql.assembler.ListFormatterConsumer;
 import org.hotrod.dynamicsql.assembler.ListProcessor;
 
 public class TrimSegment extends DynamicListSegment {
