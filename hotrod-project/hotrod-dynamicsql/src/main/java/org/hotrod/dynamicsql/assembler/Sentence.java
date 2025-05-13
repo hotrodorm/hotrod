@@ -1,149 +1,125 @@
 package org.hotrod.dynamicsql.assembler;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
-import org.hotrod.dynamicsql.DynamicInsertQuery;
-import org.hotrod.dynamicsql.DynamicModificationQuery;
-import org.hotrod.dynamicsql.DynamicSelectQuery;
-import org.hotrod.dynamicsql.insert.PrimaryKeyRetrievalMode;
-import org.hotrod.dynamicsql.segments.BindSegment;
-import org.hotrod.dynamicsql.segments.ForEachSegment;
-import org.hotrod.dynamicsql.segments.IfSegment;
 import org.hotrod.dynamicsql.segments.ParameterInjectionSegment;
 import org.hotrod.dynamicsql.segments.ParameterNotNullableSegment;
 import org.hotrod.dynamicsql.segments.ParameterNullableSegment;
-import org.hotrod.dynamicsql.segments.QuerySegment;
-import org.hotrod.dynamicsql.segments.SettersSegment;
 import org.hotrod.dynamicsql.segments.StaticContentSegment;
-import org.hotrod.dynamicsql.segments.TrimSegment;
 import org.hotrod.dynamicsql.segments.VariableSegment;
-import org.hotrod.dynamicsql.segments.WhereSegment;
 
-public class Sentence {
+//public class IfSentence<P extends Sentence<?, ?>> extends Sentence<IfSentence<P>, P> {
 
-  DynamicExpressionFactory factory;
-  List<QuerySegment> segments = new ArrayList<>();
+public abstract class Sentence<M extends Sentence<?, ?>, P> extends AbstractSentence<M, P> {
 
-  public Sentence(DynamicExpressionFactory factory) {
-    this.factory = factory;
+  public Sentence(DynamicExpressionFactory factory, M me, P parent) {
+    super(factory, me, parent);
   }
 
   // Segments
 
-  public Sentence literal(String text) {
+  public M literal(String text) {
     this.segments.add(new StaticContentSegment(text));
-    return this;
+    return this.me;
   }
 
-  public Sentence literaln() {
+  public M literaln() {
     return this.literal("\n");
   }
 
-  public Sentence literaln(String text) {
-    return this.literal(text).literaln();
+  public M literaln(String text) {
+    return this.literal(text + "\n");
   }
 
-  public Sentence parameter(String name) {
+  public M parameter(String name) {
     this.segments.add(new ParameterNotNullableSegment(this.factory, name));
-    return this;
+    return this.me;
   }
 
-  public Sentence parameterNullable(String name, int sqlType) {
+  public M parameterNullable(String name, int sqlType) {
     this.segments.add(new ParameterNullableSegment(this.factory, name, sqlType));
-    return this;
+    return this.me;
   }
 
-  public Sentence parameterInjection(String name) {
+  public M parameterInjection(String name) {
     this.segments.add(new ParameterInjectionSegment(this.factory, name));
-    return this;
+    return this.me;
   }
 
-  public Sentence variable(String name) {
+  public M variable(String name) {
     this.segments.add(new VariableSegment(this.factory, name));
-    return this;
+    return this.me;
   }
 
-  public Sentence if_(String test, Sentence sentence) {
-    this.segments.add(new IfSegment(test, sentence, this.factory));
-    return this;
-  }
-
-  public Sentence set(IfSentence ifSentence) {
-    this.segments.add(new SettersSegment(ifSentence, this.factory));
-    return this;
-  }
-
-  public Sentence set(IfSentence ifSentence, String headerPrefix, String headerSuffix, String separatorPrefix,
-      String separatorSuffix, String tailPrefix, String tailSuffix, String... removePrefixes) {
-    this.segments.add(new SettersSegment(ifSentence, this.factory, headerPrefix, headerSuffix, separatorPrefix,
-        separatorSuffix, tailPrefix, tailSuffix, removePrefixes));
-    return this;
-  }
-
-  public Sentence where(String separator, IfSentence ifSentence) {
-    this.segments.add(new WhereSegment(separator, ifSentence, this.factory));
-    return this;
-  }
-
-  public Sentence where(String separator, IfSentence ifSentence, String headerPrefix, String headerSuffix,
-      String separatorPrefix, String separatorSuffix, String tailPrefix, String tailSuffix, String... removePrefixes) {
-    this.segments.add(new WhereSegment(separator, ifSentence, this.factory, headerPrefix, headerSuffix, separatorPrefix,
-        separatorSuffix, tailPrefix, tailSuffix, removePrefixes));
-    return this;
-  }
-
-  public ChooseAssembler choose() {
-    return new ChooseAssembler(this);
-  }
-
-  public Sentence trim(String header, String separator, String tail, IfSentence ifSentence) {
-    this.segments.add(new TrimSegment(header, separator, tail, ifSentence, this.factory));
-    return this;
-  }
-
-  public Sentence trim(String header, String separator, String tail, IfSentence ifSentence, String headerPrefix,
-      String headerSuffix, String separatorPrefix, String separatorSuffix, String tailPrefix, String tailSuffix,
-      String... removePrefixes) {
-    this.segments.add(new TrimSegment(header, separator, tail, ifSentence, this.factory, headerPrefix, headerSuffix,
-        separatorPrefix, separatorSuffix, tailPrefix, tailSuffix, removePrefixes));
-    return this;
-  }
-
-  public Sentence foreach(String item, String collection, String open, String separator, String close,
-      Sentence content) {
-    this.segments.add(new ForEachSegment(item, collection, open, separator, close, content.segments, this.factory));
-    return this;
-  }
-
-  public Sentence bind(String name, String value) {
-    this.segments.add(new BindSegment(name, value, this.factory));
-    return this;
-  }
-
-  // end
-
-//  public SegmentList end() {
-//    return new SegmentList(this.segments);
+//  public T if_(String test, NestedSentence sentence) {
+//    this.segments.add(new IfSegment(test, sentence, this.factory));
+//    return me.cast(this);
 //  }
 
-  public DynamicModificationQuery endModificationQuery() {
-    return new DynamicModificationQuery(this.segments);
+  public IfSentence<M> if_(String test) {
+    IfSentence<M> s = new IfSentence(this.factory, this, test);
+    return s;
   }
 
-  public DynamicSelectQuery endSelectQuery() {
-    return new DynamicSelectQuery(this.segments);
+  public ChooseSentence<M> choose() {
+    ChooseSentence<M> s = new ChooseSentence(this.factory, this);
+    return s;
   }
 
-  public DynamicInsertQuery endInsertQuery(PrimaryKeyRetrievalMode primaryKeyRetrievalMode) {
-    return new DynamicInsertQuery(this.segments, primaryKeyRetrievalMode, null, null, null);
-  }
+//  public T if_(String test) {
+//    this.segments.add(new IfSegment(test, sentence, this.factory));
+//    return me.cast(this);
+//  }
 
-  public DynamicInsertQuery endInsertQuery(PrimaryKeyRetrievalMode primaryKeyRetrievalMode, String sequencePreFetchSQL,
-      String primaryKeyParameterName, String... generatedKeysNames) {
-    return new DynamicInsertQuery(this.segments, primaryKeyRetrievalMode, sequencePreFetchSQL, primaryKeyParameterName,
-        generatedKeysNames);
-  }
+//  public GenericSentence set(IfSequence ifSentence) {
+//    this.segments.add(new SettersSegment(ifSentence, this.factory));
+//    return this;
+//  }
+//
+//  public GenericSentence set(IfSequence ifSentence, String headerPrefix, String headerSuffix, String separatorPrefix,
+//      String separatorSuffix, String tailPrefix, String tailSuffix, String... removePrefixes) {
+//    this.segments.add(new SettersSegment(ifSentence, this.factory, headerPrefix, headerSuffix, separatorPrefix,
+//        separatorSuffix, tailPrefix, tailSuffix, removePrefixes));
+//    return this;
+//  }
+//
+//  public GenericSentence where(String separator, IfSequence ifSentence) {
+//    this.segments.add(new WhereSegment(separator, ifSentence, this.factory));
+//    return this;
+//  }
+//
+//  public GenericSentence where(String separator, IfSequence ifSentence, String headerPrefix, String headerSuffix,
+//      String separatorPrefix, String separatorSuffix, String tailPrefix, String tailSuffix, String... removePrefixes) {
+//    this.segments.add(new WhereSegment(separator, ifSentence, this.factory, headerPrefix, headerSuffix, separatorPrefix,
+//        separatorSuffix, tailPrefix, tailSuffix, removePrefixes));
+//    return this;
+//  }
+
+//  public ChooseSentence<T> choose() {
+//    return new ChooseSentence<T>(this);
+//  }
+
+//  public GenericSentence trim(String header, String separator, String tail, IfSequence ifSentence) {
+//    this.segments.add(new TrimSegment(header, separator, tail, ifSentence, this.factory));
+//    return this;
+//  }
+//
+//  public GenericSentence trim(String header, String separator, String tail, IfSequence ifSentence, String headerPrefix,
+//      String headerSuffix, String separatorPrefix, String separatorSuffix, String tailPrefix, String tailSuffix,
+//      String... removePrefixes) {
+//    this.segments.add(new TrimSegment(header, separator, tail, ifSentence, this.factory, headerPrefix, headerSuffix,
+//        separatorPrefix, separatorSuffix, tailPrefix, tailSuffix, removePrefixes));
+//    return this;
+//  }
+//
+//  public GenericSentence foreach(String item, String collection, String open, String separator, String close,
+//      GenericSentence content) {
+//    this.segments.add(new ForEachSegment(item, collection, open, separator, close, content.segments, this.factory));
+//    return this;
+//  }
+//
+//  public GenericSentence bind(String name, String value) {
+//    this.segments.add(new BindSegment(name, value, this.factory));
+//    return this;
+//  }
 
 }

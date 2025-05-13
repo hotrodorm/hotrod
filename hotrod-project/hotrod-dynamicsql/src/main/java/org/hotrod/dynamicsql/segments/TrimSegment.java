@@ -6,7 +6,7 @@ import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.Parameters;
 import org.hotrod.dynamicsql.assembler.ClauseFormatter;
-import org.hotrod.dynamicsql.assembler.IfSentence;
+import org.hotrod.dynamicsql.assembler.IfSequence;
 import org.hotrod.dynamicsql.assembler.ListFormatterConsumer;
 import org.hotrod.dynamicsql.assembler.ListProcessor;
 import org.hotrod.dynamicsql.assembler.Shield;
@@ -23,9 +23,9 @@ public class TrimSegment extends DynamicListSegment {
   private static final String DEFAULT_TAIL_PREFIX = "";
   private static final String DEFAULT_TAIL_SUFFIX = "";
 
-  private IfSentence ifSentence;
+  private IfSequence ifSentence;
 
-  public TrimSegment(String header, String separator, String tail, IfSentence ifSentence,
+  public TrimSegment(String header, String separator, String tail, IfSequence ifSentence,
       DynamicExpressionFactory factory) {
     super(new ListProcessor( //
         new ClauseFormatter(header, DEFAULT_HEADER_PREFIX, DEFAULT_HEADER_SUFFIX), //
@@ -36,7 +36,7 @@ public class TrimSegment extends DynamicListSegment {
     this.ifSentence = ifSentence;
   }
 
-  public TrimSegment(String header, String separator, String tail, IfSentence ifSentence,
+  public TrimSegment(String header, String separator, String tail, IfSequence ifSentence,
       DynamicExpressionFactory factory, String headerPrefix, String headerSuffix, String separatorPrefix,
       String separatorSuffix, String tailPrefix, String tailSuffix, String... removePrefixes) {
     super(new ListProcessor( //
@@ -52,10 +52,10 @@ public class TrimSegment extends DynamicListSegment {
   public boolean prepare(StaticSegmentConsumer sc, Parameters context, int loopNestingLevel)
       throws DynamicExpressionException {
     try (ListFormatterConsumer wc = new ListFormatterConsumer(sc, super.processor)) {
-      for (IfSegment s : Shield.getSegments(this.ifSentence)) {
-        wc.startNextEntry();
-        s.prepare(wc, context, loopNestingLevel);
-      }
+//      for (IfSegment s : Shield.getSegments(this.ifSentence)) {
+//        wc.startNextEntry();
+//        s.prepare(wc, context, loopNestingLevel);
+//      }
     }
     return true;
   }

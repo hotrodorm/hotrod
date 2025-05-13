@@ -10,10 +10,6 @@ public class OtherwiseSegment extends ControlSegment {
 
   private List<QuerySegment> segments;
 
-  public OtherwiseSegment(SegmentList segmentList, DynamicExpressionFactory factory) {
-    this.segments = segmentList.getSegments();
-  }
-
   public OtherwiseSegment(List<QuerySegment> segments, DynamicExpressionFactory factory) {
     this.segments = segments;
   }

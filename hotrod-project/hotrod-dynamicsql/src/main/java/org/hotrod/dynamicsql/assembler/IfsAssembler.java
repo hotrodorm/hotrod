@@ -17,8 +17,8 @@ public class IfsAssembler {
 
   // IF Segments
 
-  public IfsAssembler if_(String test, Sentence sentence) {
-    this.ifSegments.add(new IfSegment(test, sentence, this.factory));
+  public IfsAssembler if_(String test, NestedSentence sentence) {
+//    this.ifSegments.add(new IfSegment(test, sentence, this.factory));
     return this;
   }
 

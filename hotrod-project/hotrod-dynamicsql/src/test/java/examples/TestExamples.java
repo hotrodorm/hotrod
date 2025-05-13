@@ -6,7 +6,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 
 import org.hotrod.data.Cursor;
@@ -95,8 +94,7 @@ public class TestExamples {
       DynamicModificationQuery q = dyn //
           .literal("UPDATE employee SET salary = salary + ") //
           .parameter("salaryIncrease") //
-          .literal(" WHERE salary < ") //
-          .parameter("branch.dept[1].minSalary") //
+          .literal(" WHERE salary < ").parameter("branch.dept[1].minSalary") //
           .endModificationQuery();
 
       Parameters params = dyn.newParameters();
@@ -153,7 +151,7 @@ public class TestExamples {
       DynamicModificationQuery q = dyn //
           .literal("UPDATE employee SET salary = salary + ") //
           .parameter("salaryIncrease") //
-          .if_("!empty dept", dyn.literal(" WHERE dept_no = ").parameter("dept")) //
+          .if_("!empty dept").literal(" WHERE dept_no = ").parameter("dept").endif() //
           .endModificationQuery();
 
       Parameters params = dyn.newParameters();
@@ -216,7 +214,7 @@ public class TestExamples {
     }
   }
 
-  // Example 6. Selecting data: Row
+  // Example 6. Selecting data: Generic Row
 //  @Test
   public void example7() throws DynamicExpressionException, SQLException {
     try (Connection conn = getConnection()) {
@@ -330,7 +328,7 @@ public class TestExamples {
   }
 
   // Example X2. Selecting using a Cursor
-  @Test
+//  @Test
   public void exampleX2() throws DynamicExpressionException, SQLException, IOException {
     try (Connection conn = getConnection()) {
       DynamicSQL dyn = new DynamicSQL();
@@ -359,198 +357,219 @@ public class TestExamples {
   }
 
   // Example 9. Dynamic SQL: CHOOSE
-//  @Test
+  @Test
   public void example9() throws DynamicExpressionException, SQLException {
     try (Connection conn = getConnection()) {
       DynamicSQL dyn = new DynamicSQL();
 
-      DynamicSelectQuery q = dyn //
+//      DynamicSelectQuery q = //
+      dyn //
           .literal("SELECT *, salary * 1.31 as gross_salary FROM employee WHERE active = 'Y'") //
-          .choose() //
-          .when("ordering == 1", dyn.literal(" ORDER BY last_name")) //
-          .when("ordering == 2", dyn.literal(" ORDER BY hired_on DESC")) //
-          .otherwise(dyn.literal(" ORDER BY salary")) //
-          .endSelectQuery();
 
-      Parameters params = dyn.newParameters();
-      params.add("ordering", 2);
+          .choose()  // ChooseSentence<DynamicSQL>
+//          .endChoose()
+            .when("")  // WhenSentence<ChooseSentence<DynamicSQL>>
+              .literal("")
+              .choose()
+                .when("")  // WhenSentence<ChooseSentence<DynamicSQL>>
+                  .literal("")
+                .endWhen() //
+              .endChoose()
+              .literal("")
+            .endWhen()
+            .otherwise()
+              .literal("")
+            .endOtherwise()
+          .endChoose()
+;
+      
+//          .choose()
+//          .when("ordering == 1").literal(" ORDER BY last_name").endWhen() //
+//          .when("ordering == 2").literal(" ORDER BY hired_on DESC").endWhen() //
+//          .otherwise().literal(" ORDER BY salary").endOtherwise() //
+//          .endChoose() //
+//          .endChoose()
+//          .endSelectQuery();
 
-      PreparedSelectQuery<Row> p = q.prepare(params);
-      System.out.println("Dynamic Query:\n" + p.getPreview());
-      List<Row> rows = p.execute(conn);
-      for (Row r : rows) {
-        System.out.println(r);
-      }
+//      Parameters params = dyn.newParameters();
+//      params.add("ordering", 2);
+//
+//      PreparedSelectQuery<Row> p = q.prepare(params);
+//      System.out.println("Dynamic Query:\n" + p.getPreview());
+//      List<Row> rows = p.execute(conn);
+//      for (Row r : rows) {
+//        System.out.println(r);
+//      }
     } catch (RuntimeException e) {
       e.printStackTrace();
       throw e;
     }
   }
 
-  // Example 9. Dynamic SQL: FOREACH
-//  @Test
-  public void example10() throws DynamicExpressionException, SQLException {
-    try (Connection conn = getConnection()) {
-      DynamicSQL dyn = new DynamicSQL();
-
-      DynamicSelectQuery q = dyn //
-          .literal("SELECT * FROM employee WHERE id in ") //
-          .foreach("v", "ids", "(", ", ", ")", dyn.parameter("v")) //
-          .endSelectQuery();
-
-      Parameters params = dyn.newParameters();
-      params.add("ids", Arrays.asList(101, 104, 105));
-
-      PreparedSelectQuery<Row> p = q.prepare(params);
-      System.out.println("Dynamic Query:\n" + p.getPreview());
-      List<Row> rows = p.execute(conn);
-      for (Row r : rows) {
-        System.out.println(r);
-      }
-    } catch (RuntimeException e) {
-      e.printStackTrace();
-      throw e;
-    }
-  }
-
-  // Example 11. Dynamic SQL: BIND
-//  @Test
-  public void example11() throws DynamicExpressionException, SQLException {
-    try (Connection conn = getConnection()) {
-      DynamicSQL dyn = new DynamicSQL();
-
-      DynamicSelectQuery q = dyn //
-          .bind("pattern", "'%' + part + '%'") //
-          .literal("SELECT * FROM employee WHERE last_name like ") //
-          .variable("pattern") //
-          .endSelectQuery();
-
-      Parameters params = dyn.newParameters();
-      params.add("part", "mit");
-
-      PreparedSelectQuery<Row> p = q.prepare(params);
-      System.out.println("Dynamic Query:\n" + p.getPreview());
-      List<Row> rows = p.execute(conn);
-      for (Row r : rows) {
-        System.out.println(r);
-      }
-    } catch (RuntimeException e) {
-      e.printStackTrace();
-      throw e;
-    }
-  }
-
-  // Example 13. Dynamic SQL: TRIM
-//  @Test
-  public void example13() throws DynamicExpressionException, SQLException {
-    try (Connection conn = getConnection()) {
-      DynamicSQL dyn = new DynamicSQL();
-
-      DynamicSelectQuery q = dyn //
-          .literal("SELECT ") //
-          .trim("", ", ", "", //
-              dyn.ifs("getFirstName", dyn.literal("first_name")) //
-                  .if_("getLastName", dyn.literal("last_name")) //
-                  .if_("getHiredDate", dyn.literal("hired_on"))) //
-          .literal(" FROM employee") //
-          .endSelectQuery();
-
-      Parameters params = dyn.newParameters();
-      params.add("getFirstName", true);
-      params.add("getLastName", false);
-      params.add("getHiredDate", true);
-
-      PreparedSelectQuery<Row> p = q.prepare(params);
-      System.out.println("Dynamic Query:\n" + p.getPreview());
-      List<Row> rows = p.execute(conn);
-      for (Row r : rows) {
-        System.out.println(r);
-      }
-    } catch (RuntimeException e) {
-      e.printStackTrace();
-      throw e;
-    }
-  }
-
-  // Example 14. Dynamic SQL: WHERE
-
-  public class Filter {
-    public String first;
-    public String last;
-    public LocalDate hiredDate;
-  }
-
-//  @Test
-  public void example14() throws DynamicExpressionException, SQLException {
-    try (Connection conn = getConnection()) {
-      DynamicSQL dyn = new DynamicSQL();
-
-      DynamicSelectQuery q = dyn //
-          .literal("SELECT * FROM employee") //
-          .where("OR", dyn.ifs("f.first != null", dyn.literal("first_name = ").parameter("f.first")) //
-              .if_("f.last != null", dyn.literal("last_name = ").parameter("f.last")) //
-              .if_("f.hiredDate != null", dyn.literal("hired_on = ").parameter("f.hiredDate")) //
-          ).endSelectQuery();
-
-      Parameters params = dyn.newParameters();
-      Filter filter = new Filter();
-      filter.first = null;
-      filter.last = "Smith";
-      filter.hiredDate = LocalDate.of(2023, 12, 22);
-      params.add("f", filter);
-
-      PreparedSelectQuery<Row> p = q.prepare(params);
-      System.out.println("Dynamic Query:\n" + p.getPreview());
-      List<Row> rows = p.execute(conn);
-      for (Row r : rows) {
-        System.out.println(r);
-      }
-    } catch (RuntimeException e) {
-      e.printStackTrace();
-      throw e;
-    }
-  }
-
-  // Example 15. Dynamic SQL: SET
-
-  public class NewValues {
-    public String first;
-    public String last;
-    public LocalDate hiredDate;
-  }
-
-//  @Test
-  public void example15() throws DynamicExpressionException, SQLException {
-    try (Connection conn = getConnection()) {
-      DynamicSQL dyn = new DynamicSQL();
-
-      DynamicModificationQuery q = dyn //
-          .literal("UPDATE employee") //
-          .set(dyn.ifs("nv.first != null", dyn.literal("first_name = ").parameter("nv.first")) //
-              .if_("nv.last != null", dyn.literal("last_name = ").parameter("nv.last")) //
-              .if_("nv.hiredDate != null", dyn.literal("hired_on = ").parameter("nv.hiredDate")) //
-          ) //
-          .literal("WHERE id = ").parameter("id") //
-          .endModificationQuery();
-
-      Parameters params = dyn.newParameters();
-      params.add("id", 103);
-      NewValues newValues = new NewValues();
-      newValues.first = "Leila";
-      newValues.last = null;
-      newValues.hiredDate = LocalDate.of(2023, 12, 25);
-      params.add("nv", newValues);
-
-      PreparedModificationQuery p = q.prepare(params);
-      System.out.println("Dynamic Query:\n" + p.getPreview());
-      int count = p.execute(conn);
-      System.out.println("Updated rows: " + count);
-
-    } catch (RuntimeException e) {
-      e.printStackTrace();
-      throw e;
-    }
-  }
+//  // Example 9. Dynamic SQL: FOREACH
+////  @Test
+//  public void example10() throws DynamicExpressionException, SQLException {
+//    try (Connection conn = getConnection()) {
+//      DynamicSQL dyn = new DynamicSQL();
+//
+//      DynamicSelectQuery q = dyn //
+//          .literal("SELECT * FROM employee WHERE id in ") //
+//          .foreach("v", "ids", "(", ", ", ")", dyn.parameter("v")) //
+//          .endSelectQuery();
+//
+//      Parameters params = dyn.newParameters();
+//      params.add("ids", Arrays.asList(101, 104, 105));
+//
+//      PreparedSelectQuery<Row> p = q.prepare(params);
+//      System.out.println("Dynamic Query:\n" + p.getPreview());
+//      List<Row> rows = p.execute(conn);
+//      for (Row r : rows) {
+//        System.out.println(r);
+//      }
+//    } catch (RuntimeException e) {
+//      e.printStackTrace();
+//      throw e;
+//    }
+//  }
+//
+//  // Example 11. Dynamic SQL: BIND
+////  @Test
+//  public void example11() throws DynamicExpressionException, SQLException {
+//    try (Connection conn = getConnection()) {
+//      DynamicSQL dyn = new DynamicSQL();
+//
+//      DynamicSelectQuery q = dyn //
+//          .bind("pattern", "'%' + part + '%'") //
+//          .literal("SELECT * FROM employee WHERE last_name like ") //
+//          .variable("pattern") //
+//          .endSelectQuery();
+//
+//      Parameters params = dyn.newParameters();
+//      params.add("part", "mit");
+//
+//      PreparedSelectQuery<Row> p = q.prepare(params);
+//      System.out.println("Dynamic Query:\n" + p.getPreview());
+//      List<Row> rows = p.execute(conn);
+//      for (Row r : rows) {
+//        System.out.println(r);
+//      }
+//    } catch (RuntimeException e) {
+//      e.printStackTrace();
+//      throw e;
+//    }
+//  }
+//
+//  // Example 13. Dynamic SQL: TRIM
+////  @Test
+//  public void example13() throws DynamicExpressionException, SQLException {
+//    try (Connection conn = getConnection()) {
+//      DynamicSQL dyn = new DynamicSQL();
+//
+//      DynamicSelectQuery q = dyn //
+//          .literal("SELECT ") //
+//          .trim("", ", ", "", //
+//              dyn.ifs("getFirstName", dyn.literal("first_name")) //
+//                  .if_("getLastName", dyn.literal("last_name")) //
+//                  .if_("getHiredDate", dyn.literal("hired_on"))) //
+//          .literal(" FROM employee") //
+//          .endSelectQuery();
+//
+//      Parameters params = dyn.newParameters();
+//      params.add("getFirstName", true);
+//      params.add("getLastName", false);
+//      params.add("getHiredDate", true);
+//
+//      PreparedSelectQuery<Row> p = q.prepare(params);
+//      System.out.println("Dynamic Query:\n" + p.getPreview());
+//      List<Row> rows = p.execute(conn);
+//      for (Row r : rows) {
+//        System.out.println(r);
+//      }
+//    } catch (RuntimeException e) {
+//      e.printStackTrace();
+//      throw e;
+//    }
+//  }
+//
+//  // Example 14. Dynamic SQL: WHERE
+//
+//  public class Filter {
+//    public String first;
+//    public String last;
+//    public LocalDate hiredDate;
+//  }
+//
+////  @Test
+//  public void example14() throws DynamicExpressionException, SQLException {
+//    try (Connection conn = getConnection()) {
+//      DynamicSQL dyn = new DynamicSQL();
+//
+//      DynamicSelectQuery q = dyn //
+//          .literal("SELECT * FROM employee") //
+//          .where("OR", dyn.ifs("f.first != null", dyn.literal("first_name = ").parameter("f.first")) //
+//              .if_("f.last != null", dyn.literal("last_name = ").parameter("f.last")) //
+//              .if_("f.hiredDate != null", dyn.literal("hired_on = ").parameter("f.hiredDate")) //
+//          ).endSelectQuery();
+//
+//      Parameters params = dyn.newParameters();
+//      Filter filter = new Filter();
+//      filter.first = null;
+//      filter.last = "Smith";
+//      filter.hiredDate = LocalDate.of(2023, 12, 22);
+//      params.add("f", filter);
+//
+//      PreparedSelectQuery<Row> p = q.prepare(params);
+//      System.out.println("Dynamic Query:\n" + p.getPreview());
+//      List<Row> rows = p.execute(conn);
+//      for (Row r : rows) {
+//        System.out.println(r);
+//      }
+//    } catch (RuntimeException e) {
+//      e.printStackTrace();
+//      throw e;
+//    }
+//  }
+//
+//  // Example 15. Dynamic SQL: SET
+//
+//  public class NewValues {
+//    public String first;
+//    public String last;
+//    public LocalDate hiredDate;
+//  }
+//
+////  @Test
+//  public void example15() throws DynamicExpressionException, SQLException {
+//    try (Connection conn = getConnection()) {
+//      DynamicSQL dyn = new DynamicSQL();
+//
+//      DynamicModificationQuery q = dyn //
+//          .literal("UPDATE employee") //
+//          .set(dyn.ifs("nv.first != null", dyn.literal("first_name = ").parameter("nv.first")) //
+//              .if_("nv.last != null", dyn.literal("last_name = ").parameter("nv.last")) //
+//              .if_("nv.hiredDate != null", dyn.literal("hired_on = ").parameter("nv.hiredDate")) //
+//          ) //
+//          .literal("WHERE id = ").parameter("id") //
+//          .endModificationQuery();
+//
+//      Parameters params = dyn.newParameters();
+//      params.add("id", 103);
+//      NewValues newValues = new NewValues();
+//      newValues.first = "Leila";
+//      newValues.last = null;
+//      newValues.hiredDate = LocalDate.of(2023, 12, 25);
+//      params.add("nv", newValues);
+//
+//      PreparedModificationQuery p = q.prepare(params);
+//      System.out.println("Dynamic Query:\n" + p.getPreview());
+//      int count = p.execute(conn);
+//      System.out.println("Updated rows: " + count);
+//
+//    } catch (RuntimeException e) {
+//      e.printStackTrace();
+//      throw e;
+//    }
+//  }
 
   Connection getConnection() throws SQLException {
     return DriverManager.getConnection("jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1", "",
