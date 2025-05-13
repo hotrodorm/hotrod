@@ -81,13 +81,12 @@ public abstract class Sentence<M extends Sentence<?, ?>, P> extends AbstractSent
         separatorPrefix, separatorSuffix, tailPrefix, tailSuffix, removePrefixes);
     return s;
   }
-//
-//  public GenericSentence foreach(String item, String collection, String open, String separator, String close,
-//      GenericSentence content) {
-//    this.segments.add(new ForEachSegment(item, collection, open, separator, close, content.segments, this.factory));
-//    return this;
-//  }
-//
+
+  public ForEachSentence<M> foreach(String item, String collection, String open, String separator, String close) {
+    ForEachSentence<M> s = new ForEachSentence(this.factory, this, item, collection, open, separator, close);
+    return s;
+  }
+
 //  public GenericSentence bind(String name, String value) {
 //    this.segments.add(new BindSegment(name, value, this.factory));
 //    return this;

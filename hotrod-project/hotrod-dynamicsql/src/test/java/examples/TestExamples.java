@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 import org.hotrod.data.Cursor;
@@ -387,32 +388,34 @@ public class TestExamples {
     }
   }
 
-//  // Example 9. Dynamic SQL: FOREACH
-////  @Test
-//  public void example10() throws DynamicExpressionException, SQLException {
-//    try (Connection conn = getConnection()) {
-//      DynamicSQL dyn = new DynamicSQL();
-//
-//      DynamicSelectQuery q = dyn //
-//          .literal("SELECT * FROM employee WHERE id in ") //
-//          .foreach("v", "ids", "(", ", ", ")", dyn.parameter("v")) //
-//          .endSelectQuery();
-//
-//      Parameters params = dyn.newParameters();
-//      params.add("ids", Arrays.asList(101, 104, 105));
-//
-//      PreparedSelectQuery<Row> p = q.prepare(params);
-//      System.out.println("Dynamic Query:\n" + p.getPreview());
-//      List<Row> rows = p.execute(conn);
-//      for (Row r : rows) {
-//        System.out.println(r);
-//      }
-//    } catch (RuntimeException e) {
-//      e.printStackTrace();
-//      throw e;
-//    }
-//  }
-//
+  // Example 9. Dynamic SQL: FOREACH
+  @Test
+  public void example10() throws DynamicExpressionException, SQLException {
+    try (Connection conn = getConnection()) {
+      DynamicSQL dyn = new DynamicSQL();
+
+      DynamicSelectQuery q = dyn //
+          .literal("SELECT * FROM employee WHERE id in ") //
+          .foreach("v", "ids", "(", ", ", ")") //
+          .parameter("v") //
+          .endforeach() //
+          .endSelectQuery();
+
+      Parameters params = dyn.newParameters();
+      params.add("ids", Arrays.asList(101, 104, 105, 144));
+
+      PreparedSelectQuery<Row> p = q.prepare(params);
+      System.out.println("Dynamic Query:\n" + p.getPreview());
+      List<Row> rows = p.execute(conn);
+      for (Row r : rows) {
+        System.out.println(r);
+      }
+    } catch (RuntimeException e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
+
 //  // Example 11. Dynamic SQL: BIND
 ////  @Test
 //  public void example11() throws DynamicExpressionException, SQLException {
@@ -521,7 +524,7 @@ public class TestExamples {
     public LocalDate hiredDate;
   }
 
-  @Test
+//  @Test
   public void example15() throws DynamicExpressionException, SQLException {
     try (Connection conn = getConnection()) {
       DynamicSQL dyn = new DynamicSQL();
