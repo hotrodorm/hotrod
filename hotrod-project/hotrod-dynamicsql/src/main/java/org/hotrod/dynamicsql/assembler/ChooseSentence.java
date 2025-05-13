@@ -33,7 +33,7 @@ public class ChooseSentence<P extends AbstractSentence<?, ?>> extends AbstractSe
     return ces;
   }
 
-  public P endChoose() {
+  public P endchoose() {
     Shield.addSegment(this.parent, new ChooseSegment(this.whens, this.otherwise, this.factory));
     return this.parent;
   }

@@ -13,8 +13,8 @@ public class ChooseTailSentence<P extends ChooseSentence<?>, G extends AbstractS
     this.grandpa = grandpa;
   }
 
-  public G endChoose() {
-    this.parent.endChoose();
+  public G endchoose() {
+    this.parent.endchoose();
     return this.grandpa;
   }
 

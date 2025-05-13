@@ -1,6 +1,7 @@
 package org.hotrod.dynamicsql.assembler;
 
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
+import org.hotrod.dynamicsql.segments.BindSegment;
 import org.hotrod.dynamicsql.segments.ParameterInjectionSegment;
 import org.hotrod.dynamicsql.segments.ParameterNotNullableSegment;
 import org.hotrod.dynamicsql.segments.ParameterNullableSegment;
@@ -87,9 +88,10 @@ public abstract class Sentence<M extends Sentence<?, ?>, P> extends AbstractSent
     return s;
   }
 
-//  public GenericSentence bind(String name, String value) {
-//    this.segments.add(new BindSegment(name, value, this.factory));
-//    return this;
-//  }
+  public M bind(String name, String value) {
+    BindSegment s = new BindSegment(name, value, this.factory);
+    Shield.addSegment(this, s);
+    return this.me;
+  }
 
 }

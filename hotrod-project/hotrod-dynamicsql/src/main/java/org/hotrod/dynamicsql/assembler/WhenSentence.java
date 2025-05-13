@@ -13,7 +13,7 @@ public class WhenSentence<P extends ChooseSentence<?>> extends Sentence<WhenSent
     super.setMe(this);
   }
 
-  public P endWhen() {
+  public P endwhen() {
     Shield.addWhen(this.parent, new WhenSegment(this.test, super.segments, super.factory));
     return this.parent;
   }

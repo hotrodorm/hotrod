@@ -14,7 +14,7 @@ public class OtherwiseSentence<P extends ChooseSentence<?>, G extends AbstractSe
     this.grandpa = grandpa;
   }
 
-  public ChooseTailSentence<P, G> endOtherwise() {
+  public ChooseTailSentence<P, G> endotherwise() {
     Shield.addOtherwise(this.parent, new OtherwiseSegment(super.segments, super.factory));
     ChooseTailSentence<P, G> es = new ChooseTailSentence<P, G>(this.factory, this.parent, this.grandpa);
     return es;

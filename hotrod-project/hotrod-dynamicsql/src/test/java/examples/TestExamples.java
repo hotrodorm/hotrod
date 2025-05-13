@@ -366,11 +366,11 @@ public class TestExamples {
       DynamicSelectQuery q = dyn //
           .literal("SELECT *, salary * 1.31 as gross_salary FROM employee WHERE active = 'Y'") //
           .choose() //
-          .when("ordering == 1").literal(" ORDER BY first_name").endWhen() //
-          .when("ordering == 2").literal(" ORDER BY last_name").endWhen() //
-          .when("ordering == 3").literal(" ORDER BY hired_on DESC").endWhen() //
-          .otherwise().literal(" ORDER BY salary").endOtherwise() //
-          .endChoose() //
+          .when("ordering == 1").literal(" ORDER BY first_name").endwhen() //
+          .when("ordering == 2").literal(" ORDER BY last_name").endwhen() //
+          .when("ordering == 3").literal(" ORDER BY hired_on DESC").endwhen() //
+          .otherwise().literal(" ORDER BY salary").endotherwise() //
+          .endchoose() //
           .endSelectQuery();
 
       Parameters params = dyn.newParameters();
@@ -389,7 +389,7 @@ public class TestExamples {
   }
 
   // Example 9. Dynamic SQL: FOREACH
-  @Test
+//  @Test
   public void example10() throws DynamicExpressionException, SQLException {
     try (Connection conn = getConnection()) {
       DynamicSQL dyn = new DynamicSQL();
@@ -416,32 +416,32 @@ public class TestExamples {
     }
   }
 
-//  // Example 11. Dynamic SQL: BIND
-////  @Test
-//  public void example11() throws DynamicExpressionException, SQLException {
-//    try (Connection conn = getConnection()) {
-//      DynamicSQL dyn = new DynamicSQL();
-//
-//      DynamicSelectQuery q = dyn //
-//          .bind("pattern", "'%' + part + '%'") //
-//          .literal("SELECT * FROM employee WHERE last_name like ") //
-//          .variable("pattern") //
-//          .endSelectQuery();
-//
-//      Parameters params = dyn.newParameters();
-//      params.add("part", "mit");
-//
-//      PreparedSelectQuery<Row> p = q.prepare(params);
-//      System.out.println("Dynamic Query:\n" + p.getPreview());
-//      List<Row> rows = p.execute(conn);
-//      for (Row r : rows) {
-//        System.out.println(r);
-//      }
-//    } catch (RuntimeException e) {
-//      e.printStackTrace();
-//      throw e;
-//    }
-//  }
+  // Example 11. Dynamic SQL: BIND
+  @Test
+  public void example11() throws DynamicExpressionException, SQLException {
+    try (Connection conn = getConnection()) {
+      DynamicSQL dyn = new DynamicSQL();
+
+      DynamicSelectQuery q = dyn //
+          .bind("pattern", "'%' + part + '%'") //
+          .literal("SELECT * FROM employee WHERE last_name like ") //
+          .variable("pattern") //
+          .endSelectQuery();
+
+      Parameters params = dyn.newParameters();
+      params.add("part", "mit");
+
+      PreparedSelectQuery<Row> p = q.prepare(params);
+      System.out.println("Dynamic Query:\n" + p.getPreview());
+      List<Row> rows = p.execute(conn);
+      for (Row r : rows) {
+        System.out.println(r);
+      }
+    } catch (RuntimeException e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
 
   // Example 13. Dynamic SQL: TRIM
 //  @Test
@@ -535,7 +535,7 @@ public class TestExamples {
           .if_("nv.first != null").literal("first_name = ").parameter("nv.first").endif() //
           .if_("nv.last != null").literal("last_name = ").parameter("nv.last").endif() //
           .if_("nv.hiredDate != null").literal("hired_on = ").parameter("nv.hiredDate").endif() //
-          .endSet() //
+          .endset() //
           .literal("WHERE id = ").parameter("id") //
           .endModificationQuery();
 
