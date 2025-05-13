@@ -2,6 +2,7 @@ package org.hotrod.dynamicsql.assembler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.segments.ChooseSegment;
@@ -9,6 +10,9 @@ import org.hotrod.dynamicsql.segments.OtherwiseSegment;
 import org.hotrod.dynamicsql.segments.WhenSegment;
 
 public class ChooseSentence<P extends AbstractSentence<?, ?>> extends AbstractSentence<ChooseSentence<P>, P> {
+
+  @SuppressWarnings("unused")
+  private static final Logger log = Logger.getLogger(ChooseSentence.class.getName());
 
   List<WhenSegment> whens = new ArrayList<>();
   OtherwiseSegment otherwise = null;
@@ -23,8 +27,9 @@ public class ChooseSentence<P extends AbstractSentence<?, ?>> extends AbstractSe
     return ws;
   }
 
-  public OtherwiseSentence<ChooseSentence<P>> otherwise() {
-    OtherwiseSentence<ChooseSentence<P>> ces = new OtherwiseSentence<ChooseSentence<P>>(this.factory, this);
+  public OtherwiseSentence<ChooseSentence<P>, P> otherwise() {
+    OtherwiseSentence<ChooseSentence<P>, P> ces = new OtherwiseSentence<ChooseSentence<P>, P>(this.factory, this,
+        this.parent);
     return ces;
   }
 

@@ -3,16 +3,20 @@ package org.hotrod.dynamicsql.assembler;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.segments.OtherwiseSegment;
 
-public class OtherwiseSentence<P extends ChooseSentence<?>> extends Sentence<OtherwiseSentence<P>, P> {
+public class OtherwiseSentence<P extends ChooseSentence<?>, G extends AbstractSentence<?, ?>>
+    extends Sentence<OtherwiseSentence<P, G>, P> {
 
-  public OtherwiseSentence(DynamicExpressionFactory factory, P parent) {
+  private G grandpa;
+
+  public OtherwiseSentence(DynamicExpressionFactory factory, P parent, G grandpa) {
     super(factory, null, parent);
     super.setMe(this);
+    this.grandpa = grandpa;
   }
 
-  public ChooseEndSentence<P> endOtherwise() {
+  public ChooseEndSentence<P, G> endOtherwise() {
     Shield.addOtherwise(this.parent, new OtherwiseSegment(super.segments, super.factory));
-    ChooseEndSentence<P> es = new ChooseEndSentence<P>(this.factory, this.parent);
+    ChooseEndSentence<P, G> es = new ChooseEndSentence<P, G>(this.factory, this.parent, this.grandpa);
     return es;
   }
 

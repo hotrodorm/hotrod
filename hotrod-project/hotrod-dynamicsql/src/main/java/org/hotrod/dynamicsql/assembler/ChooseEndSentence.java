@@ -1,26 +1,21 @@
 package org.hotrod.dynamicsql.assembler;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
-import org.hotrod.dynamicsql.segments.ChooseSegment;
-import org.hotrod.dynamicsql.segments.OtherwiseSegment;
-import org.hotrod.dynamicsql.segments.WhenSegment;
 
-public class ChooseEndSentence<P extends ChooseSentence<?>> extends Sentence<ChooseEndSentence<P>, P> {
+public class ChooseEndSentence<P extends ChooseSentence<?>, G extends AbstractSentence<?, ?>>
+    extends Sentence<ChooseEndSentence<P, G>, P> {
 
-  private List<WhenSegment> whens = new ArrayList<>();
-  private OtherwiseSegment otherwise = null;
+  private G grandpa;
 
-  public ChooseEndSentence(DynamicExpressionFactory factory, P parent) {
+  public ChooseEndSentence(DynamicExpressionFactory factory, P parent, G grandpa) {
     super(factory, null, parent);
     super.setMe(this);
+    this.grandpa = grandpa;
   }
 
-  public P endChoose() {
-    Shield.addSegment(this.parent, new ChooseSegment(this.whens, this.otherwise, super.factory));
-    return this.parent;
+  public G endChoose() {
+    this.parent.endChoose();
+    return this.grandpa;
   }
 
 }

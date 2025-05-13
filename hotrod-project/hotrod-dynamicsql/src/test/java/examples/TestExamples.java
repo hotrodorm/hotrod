@@ -362,44 +362,25 @@ public class TestExamples {
     try (Connection conn = getConnection()) {
       DynamicSQL dyn = new DynamicSQL();
 
-//      DynamicSelectQuery q = //
-      dyn //
+      DynamicSelectQuery q = dyn //
           .literal("SELECT *, salary * 1.31 as gross_salary FROM employee WHERE active = 'Y'") //
+          .choose() //
+          .when("ordering == 1").literal(" ORDER BY first_name").endWhen() //
+          .when("ordering == 2").literal(" ORDER BY last_name").endWhen() //
+          .when("ordering == 3").literal(" ORDER BY hired_on DESC").endWhen() //
+          .otherwise().literal(" ORDER BY salary").endOtherwise() //
+          .endChoose() //
+          .endSelectQuery();
 
-          .choose()  // ChooseSentence<DynamicSQL>
-//          .endChoose()
-            .when("")  // WhenSentence<ChooseSentence<DynamicSQL>>
-              .literal("")
-              .choose()
-                .when("")  // WhenSentence<ChooseSentence<DynamicSQL>>
-                  .literal("")
-                .endWhen() //
-              .endChoose()
-              .literal("")
-            .endWhen()
-            .otherwise()
-              .literal("")
-            .endOtherwise()
-          .endChoose()
-;
-      
-//          .choose()
-//          .when("ordering == 1").literal(" ORDER BY last_name").endWhen() //
-//          .when("ordering == 2").literal(" ORDER BY hired_on DESC").endWhen() //
-//          .otherwise().literal(" ORDER BY salary").endOtherwise() //
-//          .endChoose() //
-//          .endChoose()
-//          .endSelectQuery();
+      Parameters params = dyn.newParameters();
+      params.add("ordering", 2);
 
-//      Parameters params = dyn.newParameters();
-//      params.add("ordering", 2);
-//
-//      PreparedSelectQuery<Row> p = q.prepare(params);
-//      System.out.println("Dynamic Query:\n" + p.getPreview());
-//      List<Row> rows = p.execute(conn);
-//      for (Row r : rows) {
-//        System.out.println(r);
-//      }
+      PreparedSelectQuery<Row> p = q.prepare(params);
+      System.out.println("Dynamic Query:\n" + p.getPreview());
+      List<Row> rows = p.execute(conn);
+      for (Row r : rows) {
+        System.out.println(r);
+      }
     } catch (RuntimeException e) {
       e.printStackTrace();
       throw e;
