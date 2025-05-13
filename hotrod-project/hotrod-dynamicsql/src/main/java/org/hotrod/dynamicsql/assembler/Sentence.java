@@ -50,11 +50,6 @@ public abstract class Sentence<M extends Sentence<?, ?>, P> extends AbstractSent
     return this.me;
   }
 
-//  public T if_(String test, NestedSentence sentence) {
-//    this.segments.add(new IfSegment(test, sentence, this.factory));
-//    return me.cast(this);
-//  }
-
   public IfSentence<M> if_(String test) {
     IfSentence<M> s = new IfSentence(this.factory, this, test);
     return s;
@@ -65,42 +60,27 @@ public abstract class Sentence<M extends Sentence<?, ?>, P> extends AbstractSent
     return s;
   }
 
-//  public GenericSentence set(IfSequence ifSentence) {
-//    this.segments.add(new SettersSegment(ifSentence, this.factory));
-//    return this;
-//  }
-//
-//  public GenericSentence set(IfSequence ifSentence, String headerPrefix, String headerSuffix, String separatorPrefix,
-//      String separatorSuffix, String tailPrefix, String tailSuffix, String... removePrefixes) {
-//    this.segments.add(new SettersSegment(ifSentence, this.factory, headerPrefix, headerSuffix, separatorPrefix,
-//        separatorSuffix, tailPrefix, tailSuffix, removePrefixes));
-//    return this;
-//  }
-//
-//  public GenericSentence where(String separator, IfSequence ifSentence) {
-//    this.segments.add(new WhereSegment(separator, ifSentence, this.factory));
-//    return this;
-//  }
-//
-//  public GenericSentence where(String separator, IfSequence ifSentence, String headerPrefix, String headerSuffix,
-//      String separatorPrefix, String separatorSuffix, String tailPrefix, String tailSuffix, String... removePrefixes) {
-//    this.segments.add(new WhereSegment(separator, ifSentence, this.factory, headerPrefix, headerSuffix, separatorPrefix,
-//        separatorSuffix, tailPrefix, tailSuffix, removePrefixes));
-//    return this;
-//  }
+  public WhereSentence<M> where(String separator) {
+    WhereSentence<M> s = new WhereSentence(this.factory, this, separator);
+    return s;
+  }
+
+  public SetSentence<M> set() {
+    SetSentence<M> s = new SetSentence(this.factory, this);
+    return s;
+  }
 
   public TrimSentence<M> trim(String header, String separator, String tail) {
     TrimSentence<M> s = new TrimSentence(this.factory, this, header, separator, tail);
     return s;
   }
 
-//  public GenericSentence trim(String header, String separator, String tail, IfSequence ifSentence, String headerPrefix,
-//      String headerSuffix, String separatorPrefix, String separatorSuffix, String tailPrefix, String tailSuffix,
-//      String... removePrefixes) {
-//    this.segments.add(new TrimSegment(header, separator, tail, ifSentence, this.factory, headerPrefix, headerSuffix,
-//        separatorPrefix, separatorSuffix, tailPrefix, tailSuffix, removePrefixes));
-//    return this;
-//  }
+  public TrimSentence<M> trim(String header, String separator, String tail, String headerPrefix, String headerSuffix,
+      String separatorPrefix, String separatorSuffix, String tailPrefix, String tailSuffix, String... removePrefixes) {
+    TrimSentence<M> s = new TrimSentence(this.factory, this, header, separator, tail, headerPrefix, headerSuffix,
+        separatorPrefix, separatorSuffix, tailPrefix, tailSuffix, removePrefixes);
+    return s;
+  }
 //
 //  public GenericSentence foreach(String item, String collection, String open, String separator, String close,
 //      GenericSentence content) {
