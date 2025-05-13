@@ -1,15 +1,14 @@
 package org.hotrod.dynamicsql.segments;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.Parameters;
 import org.hotrod.dynamicsql.assembler.ClauseFormatter;
-import org.hotrod.dynamicsql.assembler.IfSequence;
 import org.hotrod.dynamicsql.assembler.ListFormatterConsumer;
 import org.hotrod.dynamicsql.assembler.ListProcessor;
-import org.hotrod.dynamicsql.assembler.Shield;
 
 public class TrimSegment extends DynamicListSegment {
 
@@ -23,9 +22,9 @@ public class TrimSegment extends DynamicListSegment {
   private static final String DEFAULT_TAIL_PREFIX = "";
   private static final String DEFAULT_TAIL_SUFFIX = "";
 
-  private IfSequence ifSentence;
+  private List<IfSegment> segments;
 
-  public TrimSegment(String header, String separator, String tail, IfSequence ifSentence,
+  public TrimSegment(String header, String separator, String tail, List<IfSegment> segments,
       DynamicExpressionFactory factory) {
     super(new ListProcessor( //
         new ClauseFormatter(header, DEFAULT_HEADER_PREFIX, DEFAULT_HEADER_SUFFIX), //
@@ -33,10 +32,10 @@ public class TrimSegment extends DynamicListSegment {
         null, //
         new ClauseFormatter(tail, DEFAULT_TAIL_PREFIX, DEFAULT_TAIL_SUFFIX) //
     ));
-    this.ifSentence = ifSentence;
+    this.segments = segments;
   }
 
-  public TrimSegment(String header, String separator, String tail, IfSequence ifSentence,
+  public TrimSegment(String header, String separator, String tail, List<IfSegment> segments,
       DynamicExpressionFactory factory, String headerPrefix, String headerSuffix, String separatorPrefix,
       String separatorSuffix, String tailPrefix, String tailSuffix, String... removePrefixes) {
     super(new ListProcessor( //
@@ -45,17 +44,17 @@ public class TrimSegment extends DynamicListSegment {
         removePrefixes, //
         new ClauseFormatter(tail, tailPrefix, tailSuffix) //
     ));
-    this.ifSentence = ifSentence;
+    this.segments = segments;
   }
 
   @Override
   public boolean prepare(StaticSegmentConsumer sc, Parameters context, int loopNestingLevel)
       throws DynamicExpressionException {
     try (ListFormatterConsumer wc = new ListFormatterConsumer(sc, super.processor)) {
-//      for (IfSegment s : Shield.getSegments(this.ifSentence)) {
-//        wc.startNextEntry();
-//        s.prepare(wc, context, loopNestingLevel);
-//      }
+      for (IfSegment s : this.segments) {
+        wc.startNextEntry();
+        s.prepare(wc, context, loopNestingLevel);
+      }
     }
     return true;
   }

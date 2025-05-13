@@ -357,7 +357,7 @@ public class TestExamples {
   }
 
   // Example 9. Dynamic SQL: CHOOSE
-  @Test
+//  @Test
   public void example9() throws DynamicExpressionException, SQLException {
     try (Connection conn = getConnection()) {
       DynamicSQL dyn = new DynamicSQL();
@@ -439,39 +439,40 @@ public class TestExamples {
 //      throw e;
 //    }
 //  }
-//
-//  // Example 13. Dynamic SQL: TRIM
-////  @Test
-//  public void example13() throws DynamicExpressionException, SQLException {
-//    try (Connection conn = getConnection()) {
-//      DynamicSQL dyn = new DynamicSQL();
-//
-//      DynamicSelectQuery q = dyn //
-//          .literal("SELECT ") //
-//          .trim("", ", ", "", //
-//              dyn.ifs("getFirstName", dyn.literal("first_name")) //
-//                  .if_("getLastName", dyn.literal("last_name")) //
-//                  .if_("getHiredDate", dyn.literal("hired_on"))) //
-//          .literal(" FROM employee") //
-//          .endSelectQuery();
-//
-//      Parameters params = dyn.newParameters();
-//      params.add("getFirstName", true);
-//      params.add("getLastName", false);
-//      params.add("getHiredDate", true);
-//
-//      PreparedSelectQuery<Row> p = q.prepare(params);
-//      System.out.println("Dynamic Query:\n" + p.getPreview());
-//      List<Row> rows = p.execute(conn);
-//      for (Row r : rows) {
-//        System.out.println(r);
-//      }
-//    } catch (RuntimeException e) {
-//      e.printStackTrace();
-//      throw e;
-//    }
-//  }
-//
+
+  // Example 13. Dynamic SQL: TRIM
+  @Test
+  public void example13() throws DynamicExpressionException, SQLException {
+    try (Connection conn = getConnection()) {
+      DynamicSQL dyn = new DynamicSQL();
+
+      DynamicSelectQuery q = dyn //
+          .literal("SELECT ") //
+          .trim("", ", ", "") //
+          .if_("getFirstName").literal("first_name").endif() //
+          .if_("getLastName").literal("last_name").endif() //
+          .if_("getHiredDate").literal("hired_on").endif() //
+          .endtrim() //
+          .literal(" FROM employee") //
+          .endSelectQuery();
+
+      Parameters params = dyn.newParameters();
+      params.add("getFirstName", true);
+      params.add("getLastName", false);
+      params.add("getHiredDate", true);
+
+      PreparedSelectQuery<Row> p = q.prepare(params);
+      System.out.println("Dynamic Query:\n" + p.getPreview());
+      List<Row> rows = p.execute(conn);
+      for (Row r : rows) {
+        System.out.println(r);
+      }
+    } catch (RuntimeException e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
+
 //  // Example 14. Dynamic SQL: WHERE
 //
 //  public class Filter {

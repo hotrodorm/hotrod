@@ -65,11 +65,6 @@ public abstract class Sentence<M extends Sentence<?, ?>, P> extends AbstractSent
     return s;
   }
 
-//  public T if_(String test) {
-//    this.segments.add(new IfSegment(test, sentence, this.factory));
-//    return me.cast(this);
-//  }
-
 //  public GenericSentence set(IfSequence ifSentence) {
 //    this.segments.add(new SettersSegment(ifSentence, this.factory));
 //    return this;
@@ -94,15 +89,11 @@ public abstract class Sentence<M extends Sentence<?, ?>, P> extends AbstractSent
 //    return this;
 //  }
 
-//  public ChooseSentence<T> choose() {
-//    return new ChooseSentence<T>(this);
-//  }
+  public TrimSentence<M> trim(String header, String separator, String tail) {
+    TrimSentence<M> s = new TrimSentence(this.factory, this, header, separator, tail);
+    return s;
+  }
 
-//  public GenericSentence trim(String header, String separator, String tail, IfSequence ifSentence) {
-//    this.segments.add(new TrimSegment(header, separator, tail, ifSentence, this.factory));
-//    return this;
-//  }
-//
 //  public GenericSentence trim(String header, String separator, String tail, IfSequence ifSentence, String headerPrefix,
 //      String headerSuffix, String separatorPrefix, String separatorSuffix, String tailPrefix, String tailSuffix,
 //      String... removePrefixes) {
