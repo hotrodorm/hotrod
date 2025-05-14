@@ -2,8 +2,6 @@
 
 DynamicSQL can execute SQL queries that combine static and dynamic sections in them. The dynamic sections are automatically activated or deactivated according to the specified logic and according to the parameters that are provided at runtime.
 
-## Example
-
 The following example includes a dynamic query that updates a table:
 
 ```java
@@ -36,7 +34,7 @@ DynamicSQL queries can be defined once and reused many times with different para
   int count = p.execute(conn);
 ```
 
-Every execution can provide different parameters and the resulting query will include the WHERE section or not according to the specific values in each case.
+Every execution can provide different parameters and the resulting query will include the WHERE section or not depending on the specific parameter values.
 
 The query definition is thread-safe, so it can be used in a multi-threaded environment.
 
@@ -60,7 +58,7 @@ This shows:
 
 ## 3. Static Queries -- No Moving Parts
 
-The JDBC spec defines queries are of a static nature. That means, their structure is set when the SQL statement is defined. JDBC queries can be described as made up of two types of sections:
+The JDBC specification defines queries of a static nature. That means, their structure is set when the SQL statement is defined. Thus, JDBC queries can be described as made up of two types of sections:
 
 - SQL language parts
 - Parameter parts
@@ -68,10 +66,10 @@ The JDBC spec defines queries are of a static nature. That means, their structur
 For example, the query:
 
 ```sql
-   1    UPDATE employee SET salary = salary +
-   2    ?
-   3    WHERE hired_on <=
-   4    ?
+  1    UPDATE employee SET salary = salary +
+  2    ?
+  3    WHERE hired_on <=
+  4    ?
 ```
 
 Has four sections: lines #1 and #3 are SQL language parts, while lines #2 and #4 are parameter parts.
@@ -87,7 +85,7 @@ DynamicSQL implements these two types of sections using `.literal(String)` and `
       .endModificationQuery();
 ```
 
-We can now define the parameters, and run the query:
+We can now define the parameters and run the query:
 
 ```java
   Parameters params = dyn.newParameters();
@@ -100,7 +98,7 @@ We can now define the parameters, and run the query:
 
 So far so good. This is pretty much equivalent to any JDBC query you have seen before. The query does not have any *moving parts*. All sections are always included whenever we run the query, regardless of the values of the runtime parameters. These parameters are only applied to the query but **do not affect** the structure of it.
 
-## 4. Making it Dynamic
+## 4. Making It Dynamic
 
 Let's look at the initial example again:
 
@@ -117,7 +115,7 @@ Let's look at the initial example again:
   int count = p.execute(conn);
 ```
 
-The line `params.add("dept", 5);` defines the parameter value as 5. When **preparing** the query the `.if_()` clause will evaluate to true and the section inside will be included in the query. Thus, the effective query will be:
+The line `params.add("dept", 5);` defines the parameter value as 5. When **preparing** the query the `.if_()` clause will evaluate to true and any sections inside will be included in the query. Thus, the effective query will be:
 
 ```sql
   UPDATE employee SET salary = salary + 10 WHERE dept_no = ?
@@ -126,7 +124,7 @@ The line `params.add("dept", 5);` defines the parameter value as 5. When **prepa
     1. dept: 5 (java.lang.Integer)
 ```
 
-On the contrary, if the parameter `dept` set to null (or left unset), the effective query would not include the *if* section and will look like:
+On the contrary, if the parameter `dept` was set to null -- or left unset -- the effective query would not include the *if* section and will look like:
 
 ```sql
   UPDATE employee SET salary = salary + 10
@@ -135,11 +133,13 @@ On the contrary, if the parameter `dept` set to null (or left unset), the effect
     N/A
 ```
 
-Simple? Yes. The basic dynamic operator `.if_()` is one of the most used in DynamicSQL.
+The extra section is gone, and even the parameter is gone.
 
-How's the test expression `!empty dept` in the "if" operator evaluated to true or false? That's [Apache JEXL](https://commons.apache.org/proper/commons-jexl/) in action. See the JEXL documentation for the full syntax of the expressions.
+Simple? Yes. The basic dynamic operator `.if_()` is one of the most used in DynamicSQL and can be quite powerfull to add dynamic logic to queries.
 
-Now, when it comes to operators, this is the full list of dynamic operators implemented in DynamicSQL:
+But now, how's the test expression `!empty dept` in the *if* operator evaluated to true or false? That's [Apache JEXL](https://commons.apache.org/proper/commons-jexl/) in action. See the JEXL's documentation for the full syntax of the expressions.
+
+The full list of dynamic operators implemented in DynamicSQL is:
 
 | Operator | Description |
 | -- | -- |
