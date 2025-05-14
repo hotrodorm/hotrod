@@ -105,6 +105,33 @@ where balance >= 300
       WHERE id IN 
       <foreach item="id" collection="ids" open="(" separator=", " close=")">#{id}</foreach>
       AND ${filter}
+      
+      <if test="abc">
+        <if test="ghi">def</if>
+      </if>
+      <set>
+        <if test="t1">u1</if>
+        <if test="t2">u2</if>
+      </set>
+      <where>
+        <if test="x1">y1</if>
+        <if test="x2">y2</if>
+      </where>
+      <trim separator=" | ">
+        <if test="x1">y1</if>
+        <if test="x2">y2</if>
+      </trim>
+      <bind name="name1" value="value1" />
+      <choose>
+        <when test="a1">a1</when>
+        <when test="a2">a2</when>
+        <otherwise>a3</otherwise>
+      </choose>
+      <choose>
+        <when test="b1">b1</when>
+        <when test="b2">b2</when>
+      </choose>
+      
     </query>
     
     <select method="findBigAccounts" vo="BigAccount">

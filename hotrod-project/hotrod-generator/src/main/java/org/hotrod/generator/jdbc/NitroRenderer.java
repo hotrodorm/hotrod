@@ -192,16 +192,7 @@ public class NitroRenderer {
     log.fine("[" + level + "] render(choose)");
     w.println(indent(level) + ".choose()");
     render(t.getParts(), w, level + 1, p -> p instanceof WhenTag || p instanceof OtherwiseTag);
-
-    boolean otherwise = false;
-    for (DynamicSQLPart p : t.getParts()) {
-      if (p instanceof OtherwiseTag) {
-        otherwise = true;
-      }
-    }
-    if (!otherwise) {
-      w.println(indent(level) + ".endchoose()");
-    }
+    w.println(indent(level) + ".endchoose()");
   }
 
   private void render(WhenTag t, ClassWriter w, int level) throws ControlledException {
