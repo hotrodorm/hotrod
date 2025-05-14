@@ -11,7 +11,7 @@ The following example includes a dynamic query that updates a table:
     .endModificationQuery();
 ```
 
-In this example the assembled query is made up of an initial section that is optionally followed by a WHERE clause. The WHERE clause will only be included in the query is the parameter `dept` is added to the parameter list with any non-null value.
+In this example the assembled query is made up of an initial section that is optionally followed by a WHERE clause. The WHERE clause will only be included in the query if the parameter `dept` is added to the parameter list with any non-null value.
 
 ## 1. Reusable Queries
 
@@ -135,7 +135,7 @@ On the contrary, if the parameter `dept` was set to null -- or left unset -- the
 
 The extra section is gone, and even the parameter is gone.
 
-Simple? Yes. The basic dynamic operator `.if_()` is one of the most used in DynamicSQL and can be quite powerfull to add dynamic logic to queries.
+Simple? Yes. The basic dynamic operator `.if_()` is one of the most used in DynamicSQL and can be quite powerful to add dynamic logic to queries.
 
 But now, how's the test expression `!empty dept` in the *if* operator evaluated to true or false? That's [Apache JEXL](https://commons.apache.org/proper/commons-jexl/) in action. See the JEXL's documentation for the full syntax of the expressions.
 
@@ -228,11 +228,12 @@ The following example illustrates this for a case where the name of the table an
   List<Row> rows = p.execute(conn);
 ```
 
-When previewing the query, we can se that both injected parameters are added to the query while it's being assembled. Only the applied parameter becomes a JDBC parameter:
+When previewing the query, we can se that both *injected* parameters are concatenated to the query while it's being assembled. Only the *applied* parameter becomes an actual JDBC parameter:
 
 ```
   SELECT * FROM employee WHERE recorded < ? ORDER BY hired_on DESC
                 ~~~~~~~~                             ~~~~~~~~~~~~~
+                injected                             injected
 
   JDBC Parameters (1):
     1. maxDate: 2021-06-12 (java.time.LocalDate)
