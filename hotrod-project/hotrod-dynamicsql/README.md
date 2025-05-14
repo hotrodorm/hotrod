@@ -1,8 +1,6 @@
 # DynamicSQL
 
-DynamicSQL implements SQL queries with dynamic sections that can be activated or deactivated according to the parameters that are provided at runtime.
-
-The included dynamic operators use Apache JEXL boolean conditions to decide if they are included or not in the resulting query.
+DynamicSQL can execute SQL queries that combine static and dynamic sections in them. The dynamic sections are automatically activated or deactivated according to the specified logic and according to the parameters that are provided at runtime.
 
 ## Example
 
@@ -15,11 +13,11 @@ The following example includes a dynamic query that updates a table:
     .endModificationQuery();
 ```
 
-In this example the assembled query is made up of an initial section, that is optionally followed by a WHERE clause. The WHERE clause will only be included in the query is the parameter `dept` is added to the parameter list (with any non-null value).
+In this example the assembled query is made up of an initial section that is optionally followed by a WHERE clause. The WHERE clause will only be included in the query is the parameter `dept` is added to the parameter list with any non-null value.
 
 ## 1. Reusable Queries
 
-The query definition is thread-safe. It can be defined once and reused many times with different parameters. A more complete example could look like:
+DynamicSQL queries can be defined once and reused many times with different parameters. A typical example could look like:
 
 ```java
   // This can be defined once
@@ -38,7 +36,9 @@ The query definition is thread-safe. It can be defined once and reused many time
   int count = p.execute(conn);
 ```
 
-Every execution can provide different parameters, and the resulting query will include the WHERE section according to each parameter set.
+Every execution can provide different parameters and the resulting query will include the WHERE section or not according to the specific values in each case.
+
+The query definition is thread-safe, so it can be used in a multi-threaded environment.
 
 ## 2. Previewing Queries and JDBC Parameters
 
@@ -117,7 +117,7 @@ Let's look at the initial example again:
   int count = p.execute(conn);
 ```
 
-The line `params.add("dept", 5);` defines the parameter value as 5. In this case the `.if_()` clause will evaluate to true and the section inside will be included in the query. Thus, the effective query will be:
+The line `params.add("dept", 5);` defines the parameter value as 5. When **preparing** the query the `.if_()` clause will evaluate to true and the section inside will be included in the query. Thus, the effective query will be:
 
 ```sql
   UPDATE employee SET salary = salary + 10 WHERE dept_no = ?
@@ -165,14 +165,16 @@ For example, in the following query:
 
 ```java
   public class Department {
+    public Department(int minSalary) { this.minSalary = minSalary; }
     public int minSalary;
   }
-
+  
   public class Branch {
+    public Branch(int id, Department[] dept) { this.id = id; this.dept = dept; }
     public int id;
     public Department[] dept;
   }
-
+  
   DynamicModificationQuery q = dyn
       .literal("UPDATE employee SET salary = salary + ")
       .parameter("salaryIncrease")
@@ -181,18 +183,21 @@ For example, in the following query:
 
   Parameters params = dyn.newParameters();
   params.add("salaryIncrease", 20);
-  Branch b = new Branch();
-  b.id = 1001;
-  b.dept = new Department[3];
-  b.dept[1] = new Department();
-  b.dept[1].minSalary = 105;
+  Department[] depts = {new Department(90), new Department(105), new Department(101)};
+  Branch b = new Branch(1001, depts);
   params.add("branch", b);
 
   PreparedModificationQuery p = q.prepare(params);
   int count = p.execute(conn);
 ```
 
-Even though the parameter defined in the `Parameters` class is just `branch`, the parameter section accesses the value of `branch.dept[1].minSalary`: this expression traverses the object, gets the second element of the array property, and then the property `minSalary` of this element.
+Even though the parameter defined in the `Parameters` class is just `branch`, the parameter section accesses the value of:
+
+```
+  branch.dept[1].minSalary
+```
+
+This expression traverses the object, gets the second element of the array property, and then the property `minSalary` of this element.
 
 ## 6. Parameter Injection
 
@@ -200,7 +205,7 @@ JDBC imposes limits on which sections of a query can accept parameters. Typicall
 
 DynamicSQL allows the query to implement Parameter Injection. This is the ability to freely concatenate *SQL parts* in the query as parameters.
 
-**SECURITY NOTE**: SQL Injection opens the door for a security risk. There's a big difference between safely **applying** a parameter using `.parameter()` and directly **injecting** a String section into the query to be run using `.parameterInjection()`. Only inject fully controlled Strings that are coming from inside the application, and never from any external source, such as a web parameter, an API, or a configuration file.
+> **IMPORTANT NOTE ON SECURITY**<br/> SQL Injection opens the door for a security risk. There's a big difference between safely **applying** a parameter using `.parameter()` and directly **injecting** a String section into the query to be run using `.parameterInjection()`. Only inject fully controlled Strings that are coming from inside the application, and never from any external source, such as a web parameter, an API, or a configuration file.
 
 The following example illustrates this for a case where the name of the table and the name of the ordering criteria is only know at runtime and not at compilation time:
 
@@ -235,34 +240,246 @@ When previewing the query, we can se that both injected parameters are added to 
 
 If used properly, parameter injection can be very useful. Use with caution.
 
-## 7. Selecting Data -- Single column
+## 7. Selecting Data
 
-## 8. Selecting Data -- Tuples of two to six columns
+When SQL queries return data to the application, the returned data takes the form of a *result set*. The typical queries that return data are the SELECTs queries; however, there are other cases that do return data as well, such as queries using the RETURNING functionality and some INSERT queries with auto-generated keys.
 
-## 9. Selecting Data -- Generic Row
+### Degree
 
-## 10. Selecting Data -- Custom RowReader
+The result set can have zero, one, or many columns: this is known as the **degree** of the result set.
 
-## 11. Selecting Data -- Single Row
+When running a SELECT query DynamicSQL can retrieve the result set rows in different ways suitable for different cases, such as:
 
-## 12. Selecting Data -- Using a Cursor
+- Single-column result sets
+- Using tuples -- for two to six columns
+- Returning a generic `Row` solution -- a Map-like solution
+- Using fully customized logic to read the rows, by writing a row reader class
 
-## 13. Dynamic SQL -- Choose
+See the examples in this section for each case.
 
-## 14. Dynamic SQL -- ForEach
+### Cardinality
 
-## 15. Dynamic SQL -- Bind
+On the other hand, the result set can have zero, one, or many rows: this is known as the **cardinality** of the result set.
 
-## 16. Dynamic SQL -- Trim
+When it comes to the cardinality of the result set there are three options:
 
-## 17. Dynamic SQL -- Where
+- We can retrieve a `List<>` of elements. This is the default functionality and it will load the entire resultset in memory at once; this is typically useful for small result sets
+- If we know the query will return zero or one row at the most then we can skip the `List<>` and use the form for one row only
+- If we the query returns many rows we can choose to use a cursor to process the returned rows one by one and keep the memory usage low, instead of loading the entire result in memory at once
 
-## 18. Dynamic SQL -- Set
+We'll see that we can use `.execute()`, `executeOne()`, or `executeCursor()` to decide on how we want DynamicSQL to produce the result set for us.
 
-## 19. General Queries
+### Degree and Cardinality
+
+Any option that DynamicSQL offers to work with the degree of the result set can be fully combined with any option available to work with the cardinality. You can combine them all as needed.
+
+### 7.1 Selecting Data -- Single Column
+
+If the result set has a single column with a typical scalar type such as Integer, String, LocalDate, etc. we can use the short-hand `q.prepare(params, <class>)` to read it, as shown below:
+
+```java
+  DynamicSelectQuery q = dyn
+      .literal("SELECT first_name FROM employee WHERE active = 'Y'")
+      .endSelectQuery();
+
+  Parameters params = dyn.newParameters();
+  PreparedSelectQuery<String> p = q.prepare(params, String.class);
+  List<String> names = p.execute(conn);
+```
+
+This solution works well for typical types but may not work for exotic types such as record-type columns or data that requires conversion beyond a normal cast. Use a Generic Row or a Custom RowReader in these cases.
+
+### 7.2 Selecting Data -- Tuples of Two to Six Columns
+
+If the query returns two to six columns we can use tuples to read the result set using `q.prepare(params, <class>, .<class>...)` as shown below:
+
+```java
+  DynamicSelectQuery q = dyn //
+      .literal("SELECT first_name, hired_on, salary FROM employee WHERE active = 'Y'") //
+      .endSelectQuery();
+
+  Parameters params = dyn.newParameters();
+
+  PreparedSelectQuery<Tuple3<String, LocalDate, Integer>> p =
+    q.prepare(params, String.class, LocalDate.class, Integer.class);
+  List<Tuple3<String, LocalDate, Integer>> employees = p.execute(conn);
+```
+
+As well as in the previous case, this strategy works well for typical data types but not for exotic types.
+
+### 7.3 Selecting Data -- Generic Row
+
+If the result set has many columns you can use a Generic Row type to retrieve the result. The `Row` type works in a similar way as a `java.util.Map`; values are stored in the map using the column nanes as keys.
+
+The following example shows this case:
+
+```java
+  DynamicSelectQuery q = dyn
+      .literal("SELECT *, salary * 1.31 as gross_salary FROM employee WHERE active = 'Y'")
+      .endSelectQuery();
+
+  Parameters params = dyn.newParameters();
+
+  PreparedSelectQuery<Row> p = q.prepare(params);
+  List<Row> rows = p.execute(conn);
+```
+
+**Note**: When using this strategy we are not providing the specific data types for the columns we are reading from the database. In this case the JDBC driver will decide the Java type to read the data. In most cases the resulting data types are useful to the application. However, if they are not, then a Custom RowReader needs to be used. See next example.
+
+### 7.4 Selecting Data -- Custom RowReader
+
+To have full control on how the result set data is read from the database you can implement a Custom RowReader. This gives full control to the developer to read and massage the data as needed right when it's being read from the database.
+
+Though not necessary, this example considers defining a class to store the data retrieved by the query:
+
+```java
+  class MyEmployee {
+
+    private String firstName;
+    private LocalDate hired;
+    private Double grossSalary;
+
+    public MyEmployee(String firstName, LocalDate hired, Double grossSalary) {
+      this.firstName = firstName;
+      this.hired = hired;
+      this.grossSalary = grossSalary;
+    }
+
+    public final String getFirstName() {
+      return firstName;
+    }
+
+    public final LocalDate getHired() {
+      return hired;
+    }
+
+    public final Double getGrossSalary() {
+      return grossSalary;
+    }
+
+  }
+```
+
+Now the strategy that uses a custom RowReader can take the form:
+
+```java
+  DynamicSelectQuery q = dyn //
+      .literal("SELECT first_name, hired_on, salary * 1.31 as gross_salary FROM employee "
+        + "WHERE active = 'Y'") //
+      .endSelectQuery();
+
+  Parameters params = dyn.newParameters();
+
+  RowReader<MyEmployee> rr = new RowReader<MyEmployee>() {
+    @Override
+    public MyEmployee readRowFrom(ResultSet rs, Connection conn) throws SQLException {
+      String fn = rs.getString(1);
+      LocalDate ho = rs.getObject(2, LocalDate.class);
+      Double gs = rs.getDouble(3);
+      if (rs.wasNull())
+        gs = null;
+      return new MyEmployee(fn, ho, gs);
+    }
+  };
+
+  PreparedSelectQuery<MyEmployee> p = q.prepare(params, rr);
+  List<MyEmployee> rows = p.execute(conn);
+```
+
+As you can see there's a tradeoff in this case. On one side we have full control on how to read the data (using specific Java/JDBC types, using any conversion strategy, or even combining data); on the other there's more code to write, to test, and to actually *have* for a long time.
+
+### 7.5 Selecting Data -- Single Row
+
+If we know the query returns zero or one row only, then we can use the simple form:
+
+```java
+  DynamicSelectQuery q = dyn
+      .literal("SELECT * FROM employee WHERE id = ")
+      .parameter("id")
+      .endSelectQuery();
+
+  Parameters params = dyn.newParameters();
+  params.add("id", 104);
+
+  PreparedSelectQuery<Row> p = q.prepare(params);
+  Row row = p.executeOne(conn);
+```
+
+The last line of the example uses `executeOne()` and returns a single element rather than a `List<>` of elements. This can be combined with any row reader strategy described before.
+
+If the query returns no rows the result will be a null value.
+
+**Note**: If, for any reason, the query returns more than a single row an Exception will be thrown.
+
+### 7.6 Selecting Data -- Using a Cursor
+
+If we want to read the result set one row at a time we can use `executeCursor()` to retrieve the result, as in:
+
+```java
+  DynamicSelectQuery q = dyn //
+      .literal("SELECT * FROM employee WHERE last_name = ") //
+      .parameter("last") //
+      .literal(" ORDER BY hired_on DESC").endSelectQuery();
+
+  Parameters params = dyn.newParameters();
+  params.add("last", "Smith");
+
+  PreparedSelectQuery<Row> p = q.prepare(params);
+  try (Cursor<Row> rows = p.executeCursor(conn)) {
+    for (Row r : rows) {
+      // process 'r'
+    }
+  }
+```
+
+This strategy can enormously reduce the memory consumption of big queries. Only a few rows of the result set will be loaded in memory at any given time.
+
+To optimize the memory usage and data retrieval performance you can also specify the `fetchSize` for the cursor by using the method variation `.executeCursor(conn, fetchSize)`.
+
+This strategy can also be combined with any row reader strategy described before.
+
+#### Open Connection and Open Cursor
+
+The `Connection` object must remain open while reading the cursor. Keep this in mind if you plan to return the `Cursor<>` object to a caller; the caller must keep the database connection open while reading the cursor.
+
+The same can be said about the `Cursor`. Since this object implements `AutoCloseable` it can be easily used in a try-with-resources statement as shown in the example above. However, if the closing is managed separately -- maybe because the Cursor is returned to the caller -- appropriate care will need to be taken to make sure it's always closed and the internal resources are freed.
+
+#### PostgreSQL
+
+For cursors to be effective in PostgreSQL the query must always be executed inside a database transaction. If a transaction had not been initiated, the JDBC driver will automatically and silently materialize the whole result set in memory, defeating the purpose of the cursor altogether.
+
+## 8. Dynamic Operators
+
+The dynamic functionality of queries is implemented using the following seven operators:
+
+- If
+- Choose
+- For Each
+- Bind
+- Trim
+- Where
+- Set
+
+These operators can nest static SQL section as well as more nested dynamic operators -- any number of them, as needed. The Dynamic SQL API syntax checks the appropriate nesting and only allows the developer to write valid nesting structures. See below:
+
+### 8.1 Dynamic SQL -- If
+
+### 8.1 Dynamic SQL -- Choose
+
+### 8.2 Dynamic SQL -- ForEach
+
+### 8.3 Dynamic SQL -- Bind
+
+### 8.4 Dynamic SQL -- Trim
+
+### 8.5 Dynamic SQL -- Where
+
+### 8.6 Dynamic SQL -- Set
+
+## 9. General Purpose Queries
 
 update, delete, truncate, create, drop, set, unset, begin transaction, commit, etc.
 
-## 20. Inserting Data
+## 10. Inserting Data
 
 
