@@ -84,12 +84,19 @@ public class TestExamples {
   // Example 3: Applying parameters: bean syntax (JEXL)
 
   public class Department {
-    public Department(int minSalary) { this.minSalary = minSalary; }
+    public Department(int minSalary) {
+      this.minSalary = minSalary;
+    }
+
     public int minSalary;
   }
 
   public class Branch {
-    public Branch(int id, Department[] dept) { this.id = id; this.dept = dept; }
+    public Branch(int id, Department[] dept) {
+      this.id = id;
+      this.dept = dept;
+    }
+
     public int id;
     public Department[] dept;
   }
@@ -107,7 +114,7 @@ public class TestExamples {
 
       Parameters params = dyn.newParameters();
       params.add("salaryIncrease", 20);
-      Department[] depts = {new Department(90), new Department(105), new Department(101)};
+      Department[] depts = { new Department(90), new Department(105), new Department(101) };
       Branch b = new Branch(1001, depts);
       params.add("branch", b);
 
@@ -148,7 +155,7 @@ public class TestExamples {
   }
 
   // Example 4. Making it dynamic: Dynamic SQL IF
-//  @Test
+  @Test
   public void example4() throws DynamicExpressionException, SQLException {
     try (Connection conn = getConnection()) {
       DynamicSQL dyn = new DynamicSQL();
@@ -161,7 +168,7 @@ public class TestExamples {
 
       Parameters params = dyn.newParameters();
       params.add("salaryIncrease", 20);
-      params.add("dept", null); // updates 2 rows; if this line is commented out it updates all rows
+      params.add("dept", 5); // updates 2 rows; if this line is commented out it updates all rows
 
       PreparedModificationQuery p = q.prepare(params);
       System.out.println("Dynamic Query:\n" + p.getPreview());
@@ -363,18 +370,16 @@ public class TestExamples {
 
   // Example 8.1 DynamicSQL IF, nested
 //@Test
-public void example81() throws DynamicExpressionException, SQLException {
-  try (Connection conn = getConnection()) {
-    DynamicSQL dyn = new DynamicSQL();
+  public void example81() throws DynamicExpressionException, SQLException {
+    try (Connection conn = getConnection()) {
+      DynamicSQL dyn = new DynamicSQL();
 
-    DynamicSelectQuery q = dyn //
-        .literal("SELECT * FROM employee WHERE active = 'Y'") //
-        .if_("filter != null")
-          .if_("filter.firstName != null").literal(" AND first_name = ").parameter("filter.firstName").endif()
-          .if_("filter.lastName != null").literal(" AND last_name = ").parameter("filter.lastName").endif()
-          .if_("filter.firstSSN != null").literal(" AND last_ssn = ").parameter("filter.lastSSN").endif()
-        .endif()
-        .endSelectQuery();
+      DynamicSelectQuery q = dyn //
+          .literal("SELECT * FROM employee WHERE active = 'Y'") //
+          .if_("filter != null").if_("filter.firstName != null").literal(" AND first_name = ")
+          .parameter("filter.firstName").endif().if_("filter.lastName != null").literal(" AND last_name = ")
+          .parameter("filter.lastName").endif().if_("filter.firstSSN != null").literal(" AND last_ssn = ")
+          .parameter("filter.lastSSN").endif().endif().endSelectQuery();
 
       Parameters params = dyn.newParameters();
       Map<String, Object> filter = new HashMap<>();
@@ -385,15 +390,15 @@ public void example81() throws DynamicExpressionException, SQLException {
 
       PreparedSelectQuery<Row> p = q.prepare(params);
       System.out.println("Dynamic Query:\n" + p.getPreview());
-    List<Row> rows = p.execute(conn);
-    for (Row r : rows) {
-      System.out.println(r);
+      List<Row> rows = p.execute(conn);
+      for (Row r : rows) {
+        System.out.println(r);
+      }
+    } catch (RuntimeException e) {
+      e.printStackTrace();
+      throw e;
     }
-  } catch (RuntimeException e) {
-    e.printStackTrace();
-    throw e;
   }
-}
 
   // Example 9. Dynamic SQL: CHOOSE
 //  @Test
@@ -673,8 +678,8 @@ public void example81() throws DynamicExpressionException, SQLException {
   }
 
   Connection getConnection() throws SQLException {
-    return DriverManager.getConnection("jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './src/test/schema.sql';DB_CLOSE_DELAY=-1", "",
-        "");
+    return DriverManager
+        .getConnection("jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './src/test/schema.sql';DB_CLOSE_DELAY=-1", "", "");
   }
 
 }

@@ -27,7 +27,7 @@ public abstract class PreparedQuery {
     } else {
       StringBuilder p = new StringBuilder();
       p.append(this.sql);
-      p.append("\n=== JDBC Parameters (" + this.parameters.size() + ") ===\n");
+      p.append("\n\nJDBC Parameters (" + this.parameters.size() + "):\n");
       int pos = 1;
       for (ParameterInstance ps : this.parameters) {
 
@@ -42,11 +42,8 @@ public abstract class PreparedQuery {
           tostring = tostring.substring(0, MAX_DISPLAY_VALUE - 3) + "...";
         }
         String name = ps.getName();
-        p.append("" + pos++ + ". " + name + (jdbcType == null ? "" : " (" + Utl.coalesce(jdbcType, "OTHER") + ")")
+        p.append("  " + pos++ + ". " + name + (jdbcType == null ? "" : " (" + Utl.coalesce(jdbcType, "OTHER") + ")")
             + ": " + tostring + (value == null ? "" : " (" + value.getClass().getName() + ")") + "\n");
-      }
-      if (!this.parameters.isEmpty()) {
-        p.append("===========================\n");
       }
       return p.toString();
     }
