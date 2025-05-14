@@ -151,7 +151,7 @@ The full list of dynamic operators implemented in DynamicSQL is:
 | `.where()` | A trim section tailored to be used as a WHERE clause; each inner clause can potentially be include or excluded, and the where section joins them using and AND or OR operator |
 | `.set()` | A trim section tailored to be used as the SET clause of an UPDATE statement; each inner clause can potentially be include or excluded, and the set section joins them using commas |
 
-## 5. Applying Parameters Using Bean Syntax -- JEXL
+## 5. Applying Parameters Using JEXL Syntax
 
 The `.parameter()` section includes a String that is the name of the parameter. The parameters name is formally a JEXL expression that can use bean syntax to access data structures. This includes accessing:
 
@@ -210,13 +210,13 @@ DynamicSQL allows the query to implement Parameter Injection. This is the abilit
 The following example illustrates this for a case where the name of the table and the name of the ordering criteria is only know at runtime and not at compilation time:
 
 ```java
-  DynamicSelectQuery q = dyn //
-      .literal("SELECT * FROM ") //
-      .parameterInjection("table") //
+  DynamicSelectQuery q = dyn
+      .literal("SELECT * FROM ")
+      .parameterInjection("table")
       .literal(" WHERE recorded < ")
-      .parameter("maxDate") //
-      .literal(" ORDER BY ") //
-      .parameterInjection("ordering") //
+      .parameter("maxDate")
+      .literal(" ORDER BY ")
+      .parameterInjection("ordering")
       .endSelectQuery();
 
   Parameters params = dyn.newParameters();
@@ -228,7 +228,7 @@ The following example illustrates this for a case where the name of the table an
   List<Row> rows = p.execute(conn);
 ```
 
-When previewing the query, we can se that both *injected* parameters are concatenated to the query while it's being assembled. Only the *applied* parameter becomes an actual JDBC parameter:
+When previewing the query, we can se that both *injected* parameters are concatenated to the query while it's being prepared. Only the *applied* parameter becomes an actual JDBC parameter:
 
 ```
   SELECT * FROM employee WHERE recorded < ? ORDER BY hired_on DESC
@@ -239,13 +239,13 @@ When previewing the query, we can se that both *injected* parameters are concate
     1. maxDate: 2021-06-12 (java.time.LocalDate)
 ```
 
-If used properly, parameter injection can be very useful. Use with caution.
+If used properly parameter injection can be very useful. Use with caution.
 
 ## 7. Selecting Data
 
 When SQL queries return data to the application, the returned data takes the form of a *result set*. The typical queries that return data are the SELECTs queries; however, there are other cases that do return data as well, such as queries using the RETURNING functionality and some INSERT queries with auto-generated keys.
 
-### Degree
+### The Query Degree
 
 The result set can have zero, one, or many columns: this is known as the **degree** of the result set.
 
@@ -258,7 +258,7 @@ When running a SELECT query DynamicSQL can retrieve the result set rows in diffe
 
 See the examples in this section for each case.
 
-### Cardinality
+### The Query Cardinality
 
 On the other hand, the result set can have zero, one, or many rows: this is known as the **cardinality** of the result set.
 
@@ -295,8 +295,8 @@ This solution works well for typical types but may not work for exotic types suc
 If the query returns two to six columns we can use tuples to read the result set using `q.prepare(params, <class>, .<class>...)` as shown below:
 
 ```java
-  DynamicSelectQuery q = dyn //
-      .literal("SELECT first_name, hired_on, salary FROM employee WHERE active = 'Y'") //
+  DynamicSelectQuery q = dyn
+      .literal("SELECT first_name, hired_on, salary FROM employee WHERE active = 'Y'")
       .endSelectQuery();
 
   Parameters params = dyn.newParameters();
@@ -364,9 +364,9 @@ Though not necessary, this example considers defining a class to store the data 
 Now the strategy that uses a custom RowReader can take the form:
 
 ```java
-  DynamicSelectQuery q = dyn //
+  DynamicSelectQuery q = dyn
       .literal("SELECT first_name, hired_on, salary * 1.31 as gross_salary FROM employee "
-        + "WHERE active = 'Y'") //
+        + "WHERE active = 'Y'")
       .endSelectQuery();
 
   Parameters params = dyn.newParameters();
@@ -417,9 +417,9 @@ If the query returns no rows the result will be a null value.
 If we want to read the result set one row at a time we can use `executeCursor()` to retrieve the result, as in:
 
 ```java
-  DynamicSelectQuery q = dyn //
-      .literal("SELECT * FROM employee WHERE last_name = ") //
-      .parameter("last") //
+  DynamicSelectQuery q = dyn
+      .literal("SELECT * FROM employee WHERE last_name = ")
+      .parameter("last")
       .literal(" ORDER BY hired_on DESC").endSelectQuery();
 
   Parameters params = dyn.newParameters();
@@ -451,36 +451,258 @@ For cursors to be effective in PostgreSQL the query must always be executed insi
 
 ## 8. Dynamic Operators
 
-The dynamic functionality of queries is implemented using the following seven operators:
+The dynamic functionality of queries is implemented using the seven operators described in this section. They can include and exclude sections of the query based on the values of the runtime parameters.
 
-- If
-- Choose
-- For Each
-- Bind
-- Trim
-- Where
-- Set
+The dynamic operators can be nested. That is, they can include static SQL sections and dynamic sections -- any number of them, as needed. The Dynamic SQL API syntax checks the appropriate nesting and only allows the developer to write valid nesting structures.
 
-These operators can nest static SQL section as well as more nested dynamic operators -- any number of them, as needed. The Dynamic SQL API syntax checks the appropriate nesting and only allows the developer to write valid nesting structures. See below:
+### 8.1 DynamicSQL IF
 
-### 8.1 Dynamic SQL -- If
+The *if* operator is the simplest operator. It includes a `test` predicate. The nested content -- static SQL sections, parameters, and other DynamicSQL operators are only included if the test predicate evaluates to true at runtime.
 
-### 8.1 Dynamic SQL -- Choose
+The following example illustrates how an if operator works. It includes nesting if operators:
 
-### 8.2 Dynamic SQL -- ForEach
+```java
+  DynamicSelectQuery q = dyn
+      .literal("SELECT * FROM employee WHERE active = 'Y'")
+      .if_("f != null")
+        .if_("f.firstName != null").literal(" AND first_name = ").parameter("f.firstName").endif()
+        .if_("f.lastName != null").literal(" AND last_name = ").parameter("f.lastName").endif()
+        .if_("f.firstSSN != null").literal(" AND last_ssn = ").parameter("f.lastSSN").endif()
+      .endif()
+      .endSelectQuery();
 
-### 8.3 Dynamic SQL -- Bind
+  Parameters params = dyn.newParameters();
+  Map<String, Object> filter = new HashMap<>();
+  filter.put("firstName", null);
+  filter.put("lastName", "Andersson");
+  filter.put("lastSSN", null);
+  params.add("f", filter);
 
-### 8.4 Dynamic SQL -- Trim
+  PreparedSelectQuery<Row> p = q.prepare(params);
+  List<Row> rows = p.execute(conn);
+```
 
-### 8.5 Dynamic SQL -- Where
+The inner if operators will only be evaluated if the parent if evaluates to true; otherwise, they'll be fully ignored and excluded.
 
-### 8.6 Dynamic SQL -- Set
-
-## 9. General Purpose Queries
-
-update, delete, truncate, create, drop, set, unset, begin transaction, commit, etc.
-
-## 10. Inserting Data
+An if operator can nest static and dynamic sections in their body, including if operators or any other operator.
 
 
+### 8.1 DynamicSQL CHOOSE
+
+The choose operator picks the first nested "when" clause that evaluates to true and discard the rest. If none is select and an "otherwise" clause was included, then this one will be selected.
+
+The choose operator includes multiple `.when()` operators. These take the similar form if an `.if_()` operator; that is, they have a predicate and have nested sections.
+
+The following example includes a choose operator that implements four types of ordering for the query:
+
+```java
+  DynamicSelectQuery q = dyn //
+      .literal("SELECT *, salary * 1.31 as gross_salary FROM employee WHERE active = 'Y'")
+      .choose()
+        .when("ordering == 1").literal(" ORDER BY first_name").endwhen()
+        .when("ordering == 2").literal(" ORDER BY last_name").endwhen()
+        .when("ordering == 3").literal(" ORDER BY hired_on DESC").endwhen()
+        .otherwise().literal(" ORDER BY salary").endotherwise()
+      .endchoose()
+      .endSelectQuery();
+
+  Parameters params = dyn.newParameters();
+  params.add("ordering", 2);
+
+  PreparedSelectQuery<Row> p = q.prepare(params);
+  List<Row> rows = p.execute(conn);
+```
+
+A choose operator can nest static and dynamic sections in their body, including more choose operators or any other operator.
+
+### 8.2 DynamicSQL FOREACH
+
+The foreach operator iterates over a collection or array of items. In every iteration the current item is available for use as in the variable scope. All nested sections are included once per item.
+
+The following example makes it possible to use a list of values in a SQL IN predicate:
+
+```java
+  DynamicSelectQuery q = dyn
+      .literal("SELECT * FROM employee WHERE id in ")
+      .foreach("v", "searchedIds", "(", ", ", ")")
+        .parameter("v")
+      .endforeach()
+      .endSelectQuery();
+
+  Parameters params = dyn.newParameters();
+  List<Integer> searchedIds = Arrays.asList(101, 104, 105, 144);
+  params.add("searchedIds", searchedIds);
+
+  PreparedSelectQuery<Row> p = q.prepare(params);
+  List<Row> rows = p.execute(conn);
+```
+
+The foreach operator can also include delimiters to include at the beginning, as separator, and at the end in the form `.foreach(item, collection, open, separator, close)`. These parameters are:
+
+- `item`: the name of a variable that will hold the current item
+- `collection`: the JEXL expression that will produce an array or collection of items
+- `open`: the opening delimiter
+- `separator`: the separator to be included by for each between each interation
+- `close`: the closing delimiter
+
+In this example the body of the foreach operator includes a single section: `.parameter("v")`.
+
+Anyway, as well as any operator the body of this operator can include any DynamicSQL sections, including static sections, parameters, or any other operators in many nesting levels, as needed.
+
+### 8.3 DynamicSQL BIND
+
+The bind operator binds a variable in the parameter scope, so it can be used by other DynamicSQL operators in the rest of the query.
+
+```java
+  DynamicSelectQuery q = dyn
+      .bind("pattern", "'%' + part + '%'")
+      .literal("SELECT * FROM employee WHERE last_name like ")
+      .variable("pattern")
+      .endSelectQuery();
+
+  Parameters params = dyn.newParameters();
+  params.add("part", "mit");
+
+  PreparedSelectQuery<Row> p = q.prepare(params);
+  List<Row> rows = p.execute(conn);
+```
+
+In this example `pattern` is not a parameter provided by in the parameter context, but it's a variable defined inside the query. This variable is later *applied* in the query. Variables, as well as parameters, are not injected but applied.
+
+The bind operator does not have a body and, therefore, cannot nest other sections.
+
+### 8.4 DynamicSQL TRIM
+
+The trim operator includes multiple if operators. Each if operator is evaluated for inclusion and the included ones make it to the query, separated by the separator defined in the trim operator.
+
+The example below decides to include or exclude columns in the select list at runtime; the query has a variable degree.
+
+```java
+  DynamicSelectQuery q = dyn
+      .literal("SELECT ")
+      .trim("", ", ", "")
+        .if_("getFirstName").literal("first_name").endif()
+        .if_("getLastName").literal("last_name").endif()
+        .if_("getHiredDate").literal("hired_on").endif()
+      .endtrim()
+      .literal(" FROM employee")
+      .endSelectQuery();
+
+  Parameters params = dyn.newParameters();
+  params.add("getFirstName", true);
+  params.add("getLastName", false);
+  params.add("getHiredDate", true);
+
+  PreparedSelectQuery<Row> p = q.prepare(params);
+  List<Row> rows = p.execute(conn);
+```
+
+The columns are included according to the boolean parameters, and stitched together using commas (`,`) as defined in this `.trim()` operator.
+
+Trim has as simple form with few formatting parameters and an extended for fine-grained formatting. The short form includes:
+
+- `header`: The opening delimiter
+- `separator`: The separator to be included between selected sections
+- `tail`: The closing delimiter
+
+The extended form includes:
+
+- `header`: The opening delimiter
+- `separator`: The separator to be included between selected sections
+- `tail`: The closing delimiter
+- `headerPrefix`: The header prefix
+- `headerSuffix`: The header suffix
+- `separatorPrefix`: The separator prefix
+- `separatorSuffix`: The separator suffix
+- `tailPrefix`: The tail prefix
+- `tailSuffix`: The tail suffix
+- `removePrefixes`: A variable list of prefixes to remove from each section
+
+### 8.5 DynamicSQL WHERE
+
+A where operator is a tailored for of the trim operator that simplifies the writing of a dynamic WHERE clause.
+
+For example:
+
+```java
+  DynamicSelectQuery q = dyn
+      .literal("SELECT * FROM employee")
+      .where("OR")
+        .if_("f.first != null").literal("first_name = ").parameter("f.first").endif()
+        .if_("f.last != null").literal("last_name = ").parameter("f.last").endif()
+        .if_("f.hiredDate != null").literal("hired_on = ").parameter("f.hiredDate").endif()
+      .endwhere()
+      .endSelectQuery();
+
+  Parameters params = dyn.newParameters();
+  Filter filter = new Filter();
+  filter.first = null;
+  filter.last = "Smith";
+  filter.hiredDate = LocalDate.of(2023, 12, 22);
+  params.add("f", filter);
+
+  PreparedSelectQuery<Row> p = q.prepare(params);
+  List<Row> rows = p.execute(conn);
+```
+
+In this case the where operator will assemble any of those three if operators prepending `WHERE` and adding `OR` between them. If none of them is selected nothing will be added to the query, not even the `WHERE` section.
+
+### 8.6 DynamicSQL SET
+
+A set operator is a tailored for of the trim operator that simplifies the writing of a dynamic SET clause.
+
+For example:
+
+```java
+  DynamicModificationQuery q = dyn
+      .literal("UPDATE employee")
+      .set()
+        .if_("nv.first != null").literal("first_name = ").parameter("nv.first").endif()
+        .if_("nv.last != null").literal("last_name = ").parameter("nv.last").endif()
+        .if_("nv.hiredDate != null").literal("hired_on = ").parameter("nv.hiredDate").endif()
+      .endset()
+      .literal("WHERE id = ").parameter("id")
+      .endModificationQuery();
+
+  Parameters params = dyn.newParameters();
+  params.add("id", 103);
+  NewValues newValues = new NewValues();
+  newValues.first = "Leila";
+  newValues.last = null;
+  newValues.hiredDate = LocalDate.of(2023, 12, 25);
+  params.add("nv", newValues);
+
+  PreparedModificationQuery p = q.prepare(params);
+  int count = p.execute(conn);
+```
+
+In this case the set operator will assemble any of those three if operators prepending `SET` and adding `,` between them. If none of them is selected nothing will be added to the query, not even the `SET` section.
+
+## 9. UPDATE and DELETE Queries
+
+The UPDATE and DELETE queries are assembled like any other query and can be as static or dynamic as needed. As shown in the example above they are created using the `.endModificationQuery()` method.
+
+When executed they return an int value that represent the number of affected rows.
+
+## 10. General Purpose Queries
+
+General purpose queries include any query that can be run in the database. They can be as static or dynamic as needed.
+
+Typically the following queries fall into this category:
+
+- UPDATE
+- DELETE
+- TRUNCATE
+- CREATE
+- DROP
+- SET
+- BEGIN TRANSACTION
+- COMMIT
+- ROLLBACK
+- any other SQL query that doesn't return a result set
+
+Again, when executed these queries return an int value that represent the number of affected rows.
+
+## 11. Inserting Data
+
+TBD
