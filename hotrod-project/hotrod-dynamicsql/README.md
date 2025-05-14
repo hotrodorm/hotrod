@@ -205,7 +205,8 @@ JDBC imposes limits on which sections of a query can accept parameters. Typicall
 
 DynamicSQL allows the query to implement Parameter Injection. This is the ability to freely concatenate *SQL parts* in the query as parameters.
 
-> **IMPORTANT NOTE ON SECURITY**<br/> SQL Injection opens the door for a security risk. There's a big difference between safely **applying** a parameter using `.parameter()` and directly **injecting** a String section into the query to be run using `.parameterInjection()`. Only inject fully controlled Strings that are coming from inside the application, and never from any external source, such as a web parameter, an API, or a configuration file.
+> [!CAUTION]
+> **IMPORTANT NOTE ON SECURITY**: SQL Injection opens the door for a security risk. There's a big difference between safely **applying** a parameter using `.parameter()` and directly **injecting** a String section into the query to be run using `.parameterInjection()`. Only inject fully controlled Strings that are coming from inside the application, and never from any external source, such as a web parameter, an API, or a configuration file.
 
 The following example illustrates this for a case where the name of the table and the name of the ordering criteria is only know at runtime and not at compilation time:
 
