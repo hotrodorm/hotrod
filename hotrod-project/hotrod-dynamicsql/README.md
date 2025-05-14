@@ -304,6 +304,10 @@ If the query returns two to six columns we can use tuples to read the result set
   PreparedSelectQuery<Tuple3<String, LocalDate, Integer>> p =
     q.prepare(params, String.class, LocalDate.class, Integer.class);
   List<Tuple3<String, LocalDate, Integer>> employees = p.execute(conn);
+
+  for (Tuple3<String, LocalDate, Integer> r : employees) {
+    System.out.println("Name: " + r.getA() + " -- Hired: " + r.getB() + " -- Salary: " + r.getC());
+  }
 ```
 
 As well as in the previous case, this strategy works well for typical data types but not for exotic types.
@@ -316,14 +320,22 @@ The following example shows this case:
 
 ```java
   DynamicSelectQuery q = dyn
-      .literal("SELECT *, salary * 1.31 as gross_salary FROM employee WHERE active = 'Y'")
+      .literal("SELECT id, last_name, salary * 1.31 as \"gross\" FROM employee WHERE active = 'Y'")
       .endSelectQuery();
 
   Parameters params = dyn.newParameters();
 
   PreparedSelectQuery<Row> p = q.prepare(params);
   List<Row> rows = p.execute(conn);
+  for (Row r : rows) {
+    System.out.println("id=" + r.get("ID)" + ", last name=" + r.get("LAST_NAME")
+      + ", gross=" + r.get("gross"));
+  }
 ```
+
+Notice we retrieve values from the Row object using upper case column names. This depends on the specific letter case that each database defaults to.
+
+Also notice that in the case of the last column we explicitly defined the alias `gross`. This alias is enclosed in double quotes, that in this database means its name should be used as is, and therefore is not affected by the letter case.
 
 **Note**: When using this strategy we are not providing the specific data types for the columns we are reading from the database. In this case the JDBC driver will decide the Java type to read the data. In most cases the resulting data types are useful to the application. However, if they are not, then a Custom RowReader needs to be used. See next example.
 
