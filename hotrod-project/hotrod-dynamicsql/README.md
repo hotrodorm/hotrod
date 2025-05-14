@@ -13,7 +13,7 @@ The following example includes a dynamic query that updates a table:
 
 In this example the assembled query is made up of an initial section that is optionally followed by a WHERE clause. The WHERE clause will only be included in the query if the parameter `dept` is added to the parameter list with any non-null value.
 
-## 1. Reusable Queries
+## 1. DynamicSQL Queries Are Reusable
 
 DynamicSQL queries can be defined once and reused many times with different parameters. A typical example could look like:
 

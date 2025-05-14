@@ -7,7 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hotrod.data.Cursor;
 import org.hotrod.data.Row;
@@ -82,10 +84,12 @@ public class TestExamples {
   // Example 3: Applying parameters: bean syntax (JEXL)
 
   public class Department {
+    public Department(int minSalary) { this.minSalary = minSalary; }
     public int minSalary;
   }
 
   public class Branch {
+    public Branch(int id, Department[] dept) { this.id = id; this.dept = dept; }
     public int id;
     public Department[] dept;
   }
@@ -103,11 +107,8 @@ public class TestExamples {
 
       Parameters params = dyn.newParameters();
       params.add("salaryIncrease", 20);
-      Branch b = new Branch();
-      b.id = 1001;
-      b.dept = new Department[3];
-      b.dept[1] = new Department();
-      b.dept[1].minSalary = 105;
+      Department[] depts = {new Department(90), new Department(105), new Department(101)};
+      Branch b = new Branch(1001, depts);
       params.add("branch", b);
 
       PreparedModificationQuery p = q.prepare(params);
@@ -359,6 +360,40 @@ public class TestExamples {
       throw e;
     }
   }
+
+  // Example 8.1 DynamicSQL IF, nested
+@Test
+public void example81() throws DynamicExpressionException, SQLException {
+  try (Connection conn = getConnection()) {
+    DynamicSQL dyn = new DynamicSQL();
+
+    DynamicSelectQuery q = dyn //
+        .literal("SELECT * FROM employee WHERE active = 'Y'") //
+        .if_("filter != null")
+          .if_("filter.firstName != null").literal(" AND first_name = ").parameter("filter.firstName").endif()
+          .if_("filter.lastName != null").literal(" AND last_name = ").parameter("filter.lastName").endif()
+          .if_("filter.firstSSN != null").literal(" AND last_ssn = ").parameter("filter.lastSSN").endif()
+        .endif()
+        .endSelectQuery();
+
+      Parameters params = dyn.newParameters();
+      Map<String, Object> filter = new HashMap<>();
+      filter.put("firstName", null);
+      filter.put("lastName", "Andersson");
+      filter.put("lastSSN", null);
+      params.add("filter", filter);
+
+      PreparedSelectQuery<Row> p = q.prepare(params);
+      System.out.println("Dynamic Query:\n" + p.getPreview());
+    List<Row> rows = p.execute(conn);
+    for (Row r : rows) {
+      System.out.println(r);
+    }
+  } catch (RuntimeException e) {
+    e.printStackTrace();
+    throw e;
+  }
+}
 
   // Example 9. Dynamic SQL: CHOOSE
 //  @Test
