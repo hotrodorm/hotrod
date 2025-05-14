@@ -1,4 +1,4 @@
-# The LiveSQL Module
+# LiveSQL
 
 This is the LiveSQL Module of the [HotRod ORM](../README.md).
 

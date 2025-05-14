@@ -1,15 +1,29 @@
 # DynamicSQL
 
-This is the DynamicSQL Module of the [HotRod ORM](../README.md).
+DynamicSQL implements SQL queries with dynamic sections that can be activated or deactivated according to the parameters that are provided at runtime.
 
-DynamicSQL allows the developer to write SQL queries assembled from multiple sections that can be activated or deactivated according to the parameters that are provided at runtime.
+The included dynamic operators use Apache JEXL boolean conditions to decide if they are included or not in the resulting query.
 
 ## Example
 
-The following example includes a non-dynamic query that updates a table:
+The following example includes a dynamic query that updates a table:
+
+```java
+  Query q = dyn
+    .literal("UPDATE employee SET salary = salary + 10")
+    .if_("!empty dept").literal(" WHERE dept_no = ").parameter("dept").endif()
+    .endModificationQuery();
+```
+
+In this example the assembled query is made up of an initial section, that is optionally followed by a WHERE clause. The WHERE clause will only be included in the query is the parameter `dept` is added to the parameter list (with any non-null value).
+
+## 1. Reusable Queries
+
+The query definition is thread-safe. It can be defined once and reused many times with different parameters. A more complete example could look like:
 
 ```java
   // This can be defined once
+
   DynamicSQL dyn = new DynamicSQL();
   DynamicModificationQuery q = dyn
     .literal("UPDATE employee SET salary = salary + 10")
@@ -17,18 +31,16 @@ The following example includes a non-dynamic query that updates a table:
     .endModificationQuery();
 
   // This changes on every execution
+
   Parameters params = dyn.newParameters();
   params.add("dept", 5);
   PreparedModificationQuery p = q.prepare(params);
   int count = p.execute(conn);
 ```
 
-The assembled query is made up of an initial section -- optionally followed by a WHERE clause. The WHERE clause will only be included in the query is the parameter `dept` is added to the parameter list (with any non-null value).
+Every execution can provide different parameters, and the resulting query will include the WHERE section according to each parameter set.
 
-**Note**: The defined query is thread-safe so it can be defined once and reused many times with different parameters.
-
-
-## 1. Previewing Queries and JDBC Parameters
+## 2. Previewing Queries and JDBC Parameters
 
 Once the query is prepared -- as shown in the previous example -- the final query and its actual JDBC parameters can be viewed before being executed using `PreparedQuery.getPreview()` as in:
 
@@ -43,12 +55,12 @@ This shows:
   UPDATE employee SET salary = salary + 10 WHERE dept_no = ?
   
   JDBC Parameters (1):
-    1. dept: 55 (java.lang.Integer)
+    1. dept: 5 (java.lang.Integer)
 ```
 
-## 2. Static Queries
+## 3. Static Queries -- No Moving Parts
 
-Traditional JDBC queries are of a static nature. That means, their structure is set when the SQL statement is defined. JDBC queries can be described as made up of two types of sections:
+The JDBC spec defines queries are of a static nature. That means, their structure is set when the SQL statement is defined. JDBC queries can be described as made up of two types of sections:
 
 - SQL language parts
 - Parameter parts
@@ -75,7 +87,7 @@ DynamicSQL implements these two types of sections using `.literal(String)` and `
       .endModificationQuery();
 ```
 
-The, we can define the parameter values, and run the query, as in:
+We can now define the parameters, and run the query:
 
 ```java
   Parameters params = dyn.newParameters();
@@ -88,10 +100,9 @@ The, we can define the parameter values, and run the query, as in:
 
 So far so good. This is pretty much equivalent to any JDBC query you have seen before. The query does not have any *moving parts*. All sections are always included whenever we run the query, regardless of the values of the runtime parameters. These parameters are only applied to the query but **do not affect** the structure of it.
 
-## 3. Making it Dynamic
+## 4. Making it Dynamic
 
 Let's look at the initial example again:
-
 
 ```java
   DynamicModificationQuery q = dyn
@@ -109,8 +120,7 @@ Let's look at the initial example again:
 The line `params.add("dept", 5);` defines the parameter value as 5. In this case the `.if_()` clause will evaluate to true and the section inside will be included in the query. Thus, the effective query will be:
 
 ```sql
-  UPDATE employee SET salary = salary + 10
-  WHERE dept_no = ?
+  UPDATE employee SET salary = salary + 10 WHERE dept_no = ?
 
   JDBC Parameters (1):
     1. dept: 5 (java.lang.Integer)
@@ -125,27 +135,31 @@ On the contrary, if the parameter `dept` set to null (or left unset), the effect
     N/A
 ```
 
-Simple? Yes. The basic dynamic operator `.if_()` is one of the most used in DynamicSQL. The full list of dynamic operators is:
+Simple? Yes. The basic dynamic operator `.if_()` is one of the most used in DynamicSQL.
+
+How's the test expression `!empty dept` in the "if" operator evaluated to true or false? That's [Apache JEXL](https://commons.apache.org/proper/commons-jexl/) in action. See the JEXL documentation for the full syntax of the expressions.
+
+Now, when it comes to operators, this is the full list of dynamic operators implemented in DynamicSQL:
 
 | Operator | Description |
 | -- | -- |
 | `.if_()` | Conditionally include the inner sections (SQL and parameters) if the test condition evaluates to true |
-| `.choose()` | Include only the first section that evaluates to true while excluding the rest. If an `.otherwise()` section is included at the end, then include this one if all sections fail the test condition |
-| `.foreach()` | Iterate over an array or collection of elements. For every element found the inner sections are included once |
+| `.choose()` | Include only the first inner `.when()` section that evaluates to true and ignore the rest. If an `.otherwise()` section is included at the end, then include this one if all sections fail the test condition |
+| `.foreach()` | Iterate over an collection or array of elements. The inner sections are included multiple times, once per each element |
 | `.bind()` | Binds a variable in the parameter scope, so it can be used by other sections |
-| `.trim()` | A trim section includes multiple `.if_()` sections; trim will collect all inner sections that evaluate to true and use a defined separator to join them |
-| `.where` | A trim section tailored to be used as a WHERE clause; each inner clause can potentially be include or excluded, and the where section joins them using and AND or OR operator |
-| `.set` | A trim section tailored to be used as the SET clause of an UPDATE statement; each inner clause can potentially be include or excluded, and the set section joins them using commas |
+| `.trim()` | A trim section includes multiple `.if_()` sections; trim will collect all inner sections that evaluate to true and will join them with a defined separator |
+| `.where()` | A trim section tailored to be used as a WHERE clause; each inner clause can potentially be include or excluded, and the where section joins them using and AND or OR operator |
+| `.set()` | A trim section tailored to be used as the SET clause of an UPDATE statement; each inner clause can potentially be include or excluded, and the set section joins them using commas |
 
-## 4. Applying Parameters Using Bean Syntax -- JEXL
+## 5. Applying Parameters Using Bean Syntax -- JEXL
 
-The `.parameter()` section includes a String that is the name of the parameter. That's correct, but the string value is actually an expression that can use bean syntax to access more complex data structures. This includes accessing:
+The `.parameter()` section includes a String that is the name of the parameter. The parameters name is formally a JEXL expression that can use bean syntax to access data structures. This includes accessing:
 
 - Properties
 - Array elements
 - List elements
-- Maps
-- Any Java method available in the object, using the available parameters as needed
+- Maps keys and values
+- Any Java method available in the object, using the JEXL syntax
 
 For example, in the following query:
 
@@ -178,9 +192,9 @@ For example, in the following query:
   int count = p.execute(conn);
 ```
 
-Even though the parameter defined in the `Parameters` class is `branch`, the parameter section accesses the value of `branch.dept[1].minSalary`: that is, the array property `dept`, the second element of it, and a property `minSalary` of this element.
+Even though the parameter defined in the `Parameters` class is just `branch`, the parameter section accesses the value of `branch.dept[1].minSalary`: this expression traverses the object, gets the second element of the array property, and then the property `minSalary` of this element.
 
-## 5. Parameter Injection
+## 6. Parameter Injection
 
 JDBC imposes limits on which sections of a query can accept parameters. Typically they allow parameters in any place where a scalar value can be placed. They typically don't allow the query to parameterize the name of the table or other bedrock part of the query.
 
@@ -221,34 +235,34 @@ When previewing the query, we can se that both injected parameters are added to 
 
 If used properly, parameter injection can be very useful. Use with caution.
 
-## 6. Selecting Data -- Single column
+## 7. Selecting Data -- Single column
 
-## 7. Selecting Data -- Tuples of two to six columns
+## 8. Selecting Data -- Tuples of two to six columns
 
-## 8. Selecting Data -- Generic Row
+## 9. Selecting Data -- Generic Row
 
-## 9. Selecting Data -- Custom RowReader
+## 10. Selecting Data -- Custom RowReader
 
-## 10. Selecting Data -- Single Row
+## 11. Selecting Data -- Single Row
 
-## 11. Selecting Data -- Using a Cursor
+## 12. Selecting Data -- Using a Cursor
 
-## 12. Dynamic SQL -- Choose
+## 13. Dynamic SQL -- Choose
 
-## 13. Dynamic SQL -- ForEach
+## 14. Dynamic SQL -- ForEach
 
-## 14. Dynamic SQL -- Bind
+## 15. Dynamic SQL -- Bind
 
-## 15. Dynamic SQL -- Trim
+## 16. Dynamic SQL -- Trim
 
-## 16. Dynamic SQL -- Where
+## 17. Dynamic SQL -- Where
 
-## 17. Dynamic SQL -- Set
+## 18. Dynamic SQL -- Set
 
-## 18. General Queries
+## 19. General Queries
 
 update, delete, truncate, create, drop, set, unset, begin transaction, commit, etc.
 
-## 19. Inserting a Row
+## 20. Inserting Data
 
 
