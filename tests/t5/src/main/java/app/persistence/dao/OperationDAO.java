@@ -78,9 +78,9 @@ public class OperationDAO implements Serializable, ApplicationContextAware {
       .literal("\n      UPDATE account\n      SET active = true, balance = ")
       .parameterNullable("minBalance", Types.BIGINT)
       .literal("\n      WHERE id IN \n      ")
-      .foreach("id", "ids", "(", ", ", ")", dyn
+      .foreach("id", "ids", "(", ", ", ")")
         .variable("id")
-      )
+      .endforeach()
       .literal("\n      AND ")
       .parameterInjection("filter")
       .literal("\n    ")

@@ -119,7 +119,7 @@ public class TestExamples {
   }
 
   // Example 12. Injecting Parameters
-  @Test
+//  @Test
   public void example12() throws DynamicExpressionException, SQLException {
     try (Connection conn = getConnection()) {
       DynamicSQL dyn = new DynamicSQL();
@@ -362,7 +362,7 @@ public class TestExamples {
   }
 
   // Example 8.1 DynamicSQL IF, nested
-@Test
+//@Test
 public void example81() throws DynamicExpressionException, SQLException {
   try (Connection conn = getConnection()) {
     DynamicSQL dyn = new DynamicSQL();

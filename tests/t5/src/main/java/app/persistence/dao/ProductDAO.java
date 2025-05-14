@@ -151,11 +151,11 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
       .literaln("  type,")
       .literaln("  shipping")
       .literaln("FROM product")
-      .where("AND", dyn.ifs()
-        .if_("f.id != null", dyn.literal("id = ").parameter("f.id"))
-        .if_("f.type != null", dyn.literal("type = ").parameter("f.type"))
-        .if_("f.shipping != null", dyn.literal("shipping = ").parameter("f.shipping"))
-        .end())
+      .where("AND")
+        .if_("f.id != null").literal("id = ").parameter("f.id").endif()
+        .if_("f.type != null").literal("type = ").parameter("f.type").endif()
+        .if_("f.shipping != null").literal("shipping = ").parameter("f.shipping").endif()
+      .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
   }
@@ -215,14 +215,14 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
       .literaln("INSERT INTO product (")
-      .if_("m.id != null", dyn.literal("id,\n"))
-      .if_("m.type != null", dyn.literal("type,\n"))
-      .if_("m.shipping != null", dyn.literal("shipping\n"))
+      .if_("m.id != null").literal("id,\n").endif()
+      .if_("m.type != null").literal("type,\n").endif()
+      .if_("m.shipping != null").literal("shipping\n").endif()
       .literaln(")")
       .literaln("VALUES(")
-      .if_("m.id != null", dyn.parameter("m.id").literal(", "))
-      .if_("m.type != null", dyn.parameter("m.type").literal(", "))
-      .if_("m.shipping != null", dyn.parameter("m.shipping"))
+      .if_("m.id != null").parameter("m.id").literal(", ").endif()
+      .if_("m.type != null").parameter("m.type").literal(", ").endif()
+      .if_("m.shipping != null").parameter("m.shipping").endif()
       .literal(")")
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
@@ -246,16 +246,16 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   private void initializeUpdatebyexample() {
     this.updateByExample = dyn
       .literal("UPDATE product")
-      .set(dyn.ifs()
-        .if_("v.id != null", dyn.literal("id = ").parameter("v.id"))
-        .if_("v.type != null", dyn.literal("type = ").parameter("v.type"))
-        .if_("v.shipping != null", dyn.literal("shipping = ").parameter("v.shipping"))
-        .end())
-      .where("AND", dyn.ifs()
-        .if_("e.id != null", dyn.literal("id = ").parameter("e.id"))
-        .if_("e.type != null", dyn.literal("type = ").parameter("e.type"))
-        .if_("e.shipping != null", dyn.literal("shipping = ").parameter("e.shipping"))
-        .end())
+      .set()
+        .if_("v.id != null").literal("id = ").parameter("v.id").endif()
+        .if_("v.type != null").literal("type = ").parameter("v.type").endif()
+        .if_("v.shipping != null").literal("shipping = ").parameter("v.shipping").endif()
+      .endset()
+      .where("AND")
+        .if_("e.id != null").literal("id = ").parameter("e.id").endif()
+        .if_("e.type != null").literal("type = ").parameter("e.type").endif()
+        .if_("e.shipping != null").literal("shipping = ").parameter("e.shipping").endif()
+      .endwhere()
       .endModificationQuery();
   }
 
@@ -291,11 +291,11 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   private void initializeDeletebyexample() {
     this.deleteByExample = dyn
       .literal("DELETE FROM product")
-      .where("AND", dyn.ifs()
-        .if_("e.id != null", dyn.literal("id = ").parameter("e.id"))
-        .if_("e.type != null", dyn.literal("type = ").parameter("e.type"))
-        .if_("e.shipping != null", dyn.literal("shipping = ").parameter("e.shipping"))
-        .end())
+      .where("AND")
+        .if_("e.id != null").literal("id = ").parameter("e.id").endif()
+        .if_("e.type != null").literal("type = ").parameter("e.type").endif()
+        .if_("e.shipping != null").literal("shipping = ").parameter("e.shipping").endif()
+      .endwhere()
       .endModificationQuery();
   }
 

@@ -329,7 +329,7 @@ The following example shows this case:
   PreparedSelectQuery<Row> p = q.prepare(params);
   List<Row> rows = p.execute(conn);
   for (Row r : rows) {
-    System.out.println("id=" + r.get("ID)" + ", last name=" + r.get("LAST_NAME")
+    System.out.println("id=" + r.get("ID") + ", last name=" + r.get("LAST_NAME")
       + ", gross=" + r.get("gross"));
   }
 ```

@@ -169,30 +169,28 @@ public class NitroRenderer {
 
   private void render(IfTag t, ClassWriter w, int level) throws ControlledException {
     log.fine("[" + level + "] render(if) -- '" + t.getTest() + "'");
-    w.println(indent(level) + ".if_(" + renderString(t.getTest()) + ", dyn");
+    w.println(indent(level) + ".if_(" + renderString(t.getTest()) + ")");
     render(t.getParts(), w, level + 1, RENDER_ALL);
-    w.println(indent(level) + ")");
+    w.println(indent(level) + ".endif()");
   }
 
   private void render(WhereTag t, ClassWriter w, int level) throws ControlledException {
     log.fine("[" + level + "] render(where)");
-    w.println(indent(level) + ".where(\"AND\", dyn.ifs()");
+    w.println(indent(level) + ".where(\"AND\")");
     render(t.getParts(), w, level + 1, p -> p instanceof IfTag);
-    w.println(indent(level) + "  .end()");
-    w.println(indent(level) + ")");
+    w.println(indent(level) + ".endwhere()");
   }
 
   private void render(SetTag t, ClassWriter w, int level) throws ControlledException {
     log.fine("[" + level + "] render(set)");
-    w.println(indent(level) + ".set(dyn.ifs()");
+    w.println(indent(level) + ".set()");
     render(t.getParts(), w, level + 1, p -> p instanceof IfTag);
-    w.println(indent(level) + "  .end()");
-    w.println(indent(level) + ")");
+    w.println(indent(level) + ".endset()");
   }
 
   private void render(ChooseTag t, ClassWriter w, int level) throws ControlledException {
     log.fine("[" + level + "] render(choose)");
-    w.println(indent(level) + ".choose(dyn.choose()");
+    w.println(indent(level) + ".choose()");
     render(t.getParts(), w, level + 1, p -> p instanceof WhenTag || p instanceof OtherwiseTag);
 
     boolean otherwise = false;
@@ -202,26 +200,22 @@ public class NitroRenderer {
       }
     }
     if (!otherwise) {
-      w.println(indent(level) + "  .end()");
+      w.println(indent(level) + ".endchoose()");
     }
-
-    w.println(indent(level) + ")");
   }
 
   private void render(WhenTag t, ClassWriter w, int level) throws ControlledException {
     log.fine("[" + level + "] render(when)");
-    w.println(indent(level) + ".when(" + renderString(t.getTest()) + ", dyn");
+    w.println(indent(level) + ".when(" + renderString(t.getTest()) + ")");
     render(t.getParts(), w, level + 1, RENDER_ALL);
-    w.println(indent(level) + "  .end()");
-    w.println(indent(level) + ")");
+    w.println(indent(level) + ".endwhen()");
   }
 
   private void render(OtherwiseTag t, ClassWriter w, int level) throws ControlledException {
     log.fine("[" + level + "] render(otherwise)");
-    w.println(indent(level) + ".otherwise(dyn");
+    w.println(indent(level) + ".otherwise()");
     render(t.getParts(), w, level + 1, RENDER_ALL);
-    w.println(indent(level) + "  .end()");
-    w.println(indent(level) + ")");
+    w.println(indent(level) + ".endotherwise()");
   }
 
   private String renderString(String s) {
@@ -231,10 +225,9 @@ public class NitroRenderer {
   private void render(TrimTag t, ClassWriter w, int level) throws ControlledException {
     log.fine("[" + level + "] render(trim)");
     w.println(indent(level) + ".trim(" + renderString(t.getPrefix()) + ", " + renderString(t.getSeparator()) + ", "
-        + renderString(t.getSuffix()) + ", dyn.ifs()");
+        + renderString(t.getSuffix()) + ")");
     render(t.getParts(), w, level + 1, p -> p instanceof IfTag);
-    w.println(indent(level) + "  .end()");
-    w.println(indent(level) + ")");
+    w.println(indent(level) + ".endtrim()");
   }
 
   private void render(BindTag t, ClassWriter w, int level) throws ControlledException {
@@ -246,9 +239,9 @@ public class NitroRenderer {
     log.fine("[" + level + "] render(foreach)");
     w.println(indent(level) + ".foreach(" + renderString(t.getItem()) + ", " + renderString(t.getCollection()) + ", "
         + renderString(t.getOpen()) + ", " + renderString(t.getSeparator()) + ", " + renderString(t.getClose())
-        + ", dyn");
+        + ")");
     render(t.getParts(), w, level + 1, RENDER_ALL);
-    w.println(indent(level) + ")");
+    w.println(indent(level) + ".endforeach()");
   }
 
   private void render(ParameterisableTextPart t, ClassWriter w, int level) throws ControlledException {

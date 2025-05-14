@@ -152,11 +152,11 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
       .literaln("  invoice_id,")
       .literaln("  amount")
       .literaln("FROM payment")
-      .where("AND", dyn.ifs()
-        .if_("f.paymentDate != null", dyn.literal("payment_date = ").parameter("f.paymentDate"))
-        .if_("f.invoiceId != null", dyn.literal("invoice_id = ").parameter("f.invoiceId"))
-        .if_("f.amount != null", dyn.literal("amount = ").parameter("f.amount"))
-        .end())
+      .where("AND")
+        .if_("f.paymentDate != null").literal("payment_date = ").parameter("f.paymentDate").endif()
+        .if_("f.invoiceId != null").literal("invoice_id = ").parameter("f.invoiceId").endif()
+        .if_("f.amount != null").literal("amount = ").parameter("f.amount").endif()
+      .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
   }
@@ -216,14 +216,14 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
       .literaln("INSERT INTO payment (")
-      .if_("m.paymentDate != null", dyn.literal("payment_date,\n"))
-      .if_("m.invoiceId != null", dyn.literal("invoice_id,\n"))
-      .if_("m.amount != null", dyn.literal("amount\n"))
+      .if_("m.paymentDate != null").literal("payment_date,\n").endif()
+      .if_("m.invoiceId != null").literal("invoice_id,\n").endif()
+      .if_("m.amount != null").literal("amount\n").endif()
       .literaln(")")
       .literaln("VALUES(")
-      .if_("m.paymentDate != null", dyn.parameter("m.paymentDate").literal(", "))
-      .if_("m.invoiceId != null", dyn.parameter("m.invoiceId").literal(", "))
-      .if_("m.amount != null", dyn.parameter("m.amount"))
+      .if_("m.paymentDate != null").parameter("m.paymentDate").literal(", ").endif()
+      .if_("m.invoiceId != null").parameter("m.invoiceId").literal(", ").endif()
+      .if_("m.amount != null").parameter("m.amount").endif()
       .literal(")")
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
@@ -247,16 +247,16 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
   private void initializeUpdatebyexample() {
     this.updateByExample = dyn
       .literal("UPDATE payment")
-      .set(dyn.ifs()
-        .if_("v.paymentDate != null", dyn.literal("payment_date = ").parameter("v.paymentDate"))
-        .if_("v.invoiceId != null", dyn.literal("invoice_id = ").parameter("v.invoiceId"))
-        .if_("v.amount != null", dyn.literal("amount = ").parameter("v.amount"))
-        .end())
-      .where("AND", dyn.ifs()
-        .if_("e.paymentDate != null", dyn.literal("payment_date = ").parameter("e.paymentDate"))
-        .if_("e.invoiceId != null", dyn.literal("invoice_id = ").parameter("e.invoiceId"))
-        .if_("e.amount != null", dyn.literal("amount = ").parameter("e.amount"))
-        .end())
+      .set()
+        .if_("v.paymentDate != null").literal("payment_date = ").parameter("v.paymentDate").endif()
+        .if_("v.invoiceId != null").literal("invoice_id = ").parameter("v.invoiceId").endif()
+        .if_("v.amount != null").literal("amount = ").parameter("v.amount").endif()
+      .endset()
+      .where("AND")
+        .if_("e.paymentDate != null").literal("payment_date = ").parameter("e.paymentDate").endif()
+        .if_("e.invoiceId != null").literal("invoice_id = ").parameter("e.invoiceId").endif()
+        .if_("e.amount != null").literal("amount = ").parameter("e.amount").endif()
+      .endwhere()
       .endModificationQuery();
   }
 
@@ -292,11 +292,11 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
   private void initializeDeletebyexample() {
     this.deleteByExample = dyn
       .literal("DELETE FROM payment")
-      .where("AND", dyn.ifs()
-        .if_("e.paymentDate != null", dyn.literal("payment_date = ").parameter("e.paymentDate"))
-        .if_("e.invoiceId != null", dyn.literal("invoice_id = ").parameter("e.invoiceId"))
-        .if_("e.amount != null", dyn.literal("amount = ").parameter("e.amount"))
-        .end())
+      .where("AND")
+        .if_("e.paymentDate != null").literal("payment_date = ").parameter("e.paymentDate").endif()
+        .if_("e.invoiceId != null").literal("invoice_id = ").parameter("e.invoiceId").endif()
+        .if_("e.amount != null").literal("amount = ").parameter("e.amount").endif()
+      .endwhere()
       .endModificationQuery();
   }
 

@@ -73,13 +73,13 @@ public class Buscador implements Serializable, ApplicationContextAware {
       .literal("\n      ")
       .literal("\n\n      select *\n      from a\n      ")
       .literal("\n        ")
-      .if_("idArea != null", dyn
+      .if_("idArea != null")
         .literal("\n        left join b on b.aid = a.id\n          ")
-        .if_("idSector != null", dyn
+        .if_("idSector != null")
           .literal("\n            where b.val is not null\n          ")
-        )
+        .endif()
         .literal("\n        ")
-      )
+      .endif()
       .literal("\n      ")
       .literal("\n\n    ")
       .endSelectQuery();
