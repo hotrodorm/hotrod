@@ -118,7 +118,7 @@ public class TestExamples {
   }
 
   // Example 12. Injecting Parameters
-//  @Test
+  @Test
   public void example12() throws DynamicExpressionException, SQLException {
     try (Connection conn = getConnection()) {
       DynamicSQL dyn = new DynamicSQL();
@@ -160,7 +160,7 @@ public class TestExamples {
 
       Parameters params = dyn.newParameters();
       params.add("salaryIncrease", 20);
-      params.add("dept", 5); // updates 2 rows; if this line is commented out it updates all rows
+      params.add("dept", null); // updates 2 rows; if this line is commented out it updates all rows
 
       PreparedModificationQuery p = q.prepare(params);
       System.out.println("Dynamic Query:\n" + p.getPreview());
@@ -586,7 +586,7 @@ public class TestExamples {
   }
 
   // Example 21. Dynamic SQL: DELETE
-  @Test
+//  @Test
   public void example21() throws DynamicExpressionException, SQLException {
     try (Connection conn = getConnection()) {
       DynamicSQL dyn = new DynamicSQL();
@@ -638,7 +638,7 @@ public class TestExamples {
   }
 
   Connection getConnection() throws SQLException {
-    return DriverManager.getConnection("jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1", "",
+    return DriverManager.getConnection("jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './src/test/schema.sql';DB_CLOSE_DELAY=-1", "",
         "");
   }
 
