@@ -846,9 +846,9 @@ This solution will work well in the following databases:
 
 **Note**: Sybase ASE implements the ALWAYS variation and the query will crash if a primary key value is provided. However, the statement `SET IDENTITY_INSERT <table> ON` can be executed right before the INSERT to enable explicit primary key values.
 
-#### Oracle Variation
+#### Oracle's Variation
 
-There's a variation to this query that is used by the Oracle database. Oracle needs the name of the primary key column that is auto-generated. In this case, if the primary key column is `id` the last line of the query definition should take the form:
+There's a variation to this query that is used by the Oracle database. Oracle explicitly requires the name of the primary key column that is to be retrieved. In this case, if the primary key column is `id` the last line of the query definition should take the form:
 
 ```java
       .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET, null, null, "id");
