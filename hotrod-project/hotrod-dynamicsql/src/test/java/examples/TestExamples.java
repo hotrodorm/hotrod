@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -155,7 +156,7 @@ public class TestExamples {
   }
 
   // Example 4. Making it dynamic: Dynamic SQL IF
-  @Test
+//  @Test
   public void example4() throws DynamicExpressionException, SQLException {
     try (Connection conn = getConnection()) {
       DynamicSQL dyn = new DynamicSQL();
@@ -656,16 +657,16 @@ public class TestExamples {
       DynamicSQL dyn = new DynamicSQL();
 
       DynamicInsertQuery q = dyn //
-          .literal("insert into employee (id, first_name) values (") //
-          .parameter("id") //
+          .literal("insert into app_log (message, recorded_at) values (") //
+          .parameter("msg") //
           .literal(", ") //
-          .parameter("firstName") //
+          .parameter("ts") //
           .literal(")") //
           .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
 
       Parameters params = dyn.newParameters();
-      params.add("id", 201);
-      params.add("firstName", "Johnny");
+      params.add("msg", "This is normal log.");
+      params.add("ts", LocalDateTime.now());
 
       PreparedInsertQuery p = q.prepare(params);
       System.out.println("Dynamic Query:\n" + p.getPreview());
@@ -676,6 +677,61 @@ public class TestExamples {
       throw e;
     }
   }
+
+  // Example 30. Insert with identities
+//  @Test
+  public void example30() throws DynamicExpressionException, SQLException {
+    try (Connection conn = getConnection()) {
+      DynamicSQL dyn = new DynamicSQL();
+
+      DynamicInsertQuery q = dyn //
+          .literal("insert into employee (first_name, last_name) values (") //
+          .parameter("firstName") //
+          .literal(", ") //
+          .parameter("lastName") //
+          .literal(")") //
+          .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
+//        .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET, null, null, "id");
+
+      Parameters params = dyn.newParameters();
+      params.add("firstName", "Johnny");
+      params.add("lastName", "Doe");
+
+      PreparedInsertQuery p = q.prepare(params);
+      System.out.println("Dynamic Query:\n" + p.getPreview());
+      Long pk = p.execute(conn);
+      System.out.println("Inserted -- new id=" + pk);
+    } catch (RuntimeException e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
+
+  // Example 30. Insert with Sequences
+//@Test
+public void example31() throws DynamicExpressionException, SQLException {
+  try (Connection conn = getConnection()) {
+    DynamicSQL dyn = new DynamicSQL();
+
+    DynamicInsertQuery q = dyn //
+        .literal("insert into office (name) values (") //
+        .parameter("officeName") //
+        .literal(")") //
+        .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET);
+
+    Parameters params = dyn.newParameters();
+    params.add("officeName", "Downtown VIP");
+
+    PreparedInsertQuery p = q.prepare(params);
+    System.out.println("Dynamic Query:\n" + p.getPreview());
+    Long pk = p.execute(conn);
+    System.out.println("Inserted -- new id=" + pk);
+  } catch (RuntimeException e) {
+    e.printStackTrace();
+    throw e;
+  }
+}
+
 
   Connection getConnection() throws SQLException {
     return DriverManager
