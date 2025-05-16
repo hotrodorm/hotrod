@@ -2,7 +2,7 @@
 
 DynamicSQL can execute SQL queries that combine static and dynamic sections in them. The dynamic sections are automatically activated or deactivated according to the specified logic and according to the parameters that are provided at runtime.
 
-Even though it was developed in the scope of the HotRod ORM, DynamicSQL can be used by itself.
+Even though it was developed in the scope of the HotRod ORM, DynamicSQL can be used by separatedly.
 
 
 The following example includes a dynamic query that updates a table:
@@ -16,9 +16,9 @@ The following example includes a dynamic query that updates a table:
 
 In this example the assembled query is made up of an initial section that is optionally followed by a WHERE clause. The WHERE clause will only be included in the query if the parameter `dept` is added to the parameter list with any non-null value.
 
-## Using DynamicSQL
+## 1. Using DynamicSQL
 
-DynamicSQL is a dependency included in the HotRod ORM and is automatically available for use if you are using HotRod.
+DynamicSQL is a dependency included in the HotRod ORM that is automatically available for use if you are using HotRod.
 
 On the other hand, if you want to use DynamicSQL separatedly you can add the following Maven dependency to your project:
 
@@ -29,7 +29,7 @@ On the other hand, if you want to use DynamicSQL separatedly you can add the fol
   </dependency>
 ```
 
-## 1. DynamicSQL Queries Are Reusable
+## 2. DynamicSQL Queries Are Reusable
 
 DynamicSQL queries can be defined once and reused many times with different parameters. A typical example could look like:
 
@@ -54,7 +54,7 @@ Every execution can provide different parameters and the resulting query will in
 
 The query definition is thread-safe, so it can be used in a multi-threaded environment.
 
-## 2. Previewing Queries and JDBC Parameters
+## 3. Previewing Queries and JDBC Parameters
 
 Once the query is prepared -- as shown in the previous example -- the final query and its actual JDBC parameters can be viewed before being executed using `PreparedQuery.getPreview()` as in:
 
@@ -72,7 +72,7 @@ This shows:
     1. dept: 5 (java.lang.Integer)
 ```
 
-## 3. Static Queries -- No Moving Parts
+## 4. Static Queries -- No Moving Parts
 
 The JDBC specification defines queries of a static nature. That means, their structure is set when the SQL statement is defined. Thus, JDBC queries can be described as made up of two types of sections:
 
@@ -114,7 +114,7 @@ We can now define the parameters and run the query:
 
 So far so good. This is pretty much equivalent to any JDBC query you have seen before. The query does not have any *moving parts*. All sections are always included whenever we run the query, regardless of the values of the runtime parameters. These parameters are only applied to the query but **do not affect** the structure of it.
 
-## 4. Making It Dynamic
+## 5. Making It Dynamic
 
 Let's look at the initial example again:
 
@@ -167,7 +167,7 @@ The full list of dynamic operators implemented in DynamicSQL is:
 | `.where()` | A trim section tailored to be used as a WHERE clause; each inner clause can potentially be include or excluded, and the where section joins them using and AND or OR operator |
 | `.set()` | A trim section tailored to be used as the SET clause of an UPDATE statement; each inner clause can potentially be include or excluded, and the set section joins them using commas |
 
-## 5. Applying Parameters Using JEXL Syntax
+## 6. Applying Parameters Using JEXL Syntax
 
 The `.parameter()` section includes a String that is the name of the parameter. The parameters name is formally a JEXL expression that can use bean syntax to access data structures. This includes accessing:
 
@@ -215,7 +215,7 @@ Even though the parameter defined in the `Parameters` class is just `branch`, th
 
 This expression traverses the object, gets the second element of the array property, and then the property `minSalary` of this element.
 
-## 6. Parameter Injection
+## 7. Parameter Injection
 
 JDBC imposes limits on which sections of a query can accept parameters. Typically they allow parameters in any place where a scalar value can be placed. They typically don't allow the query to parameterize the name of the table or other bedrock part of the query.
 
@@ -258,7 +258,7 @@ When previewing the query, we can se that both *injected* parameters are concate
 
 If used properly parameter injection can be very useful. Use with caution.
 
-## 7. Selecting Data
+## 8. Selecting Data
 
 When SQL queries return data to the application, the returned data takes the form of a *result set*. The typical queries that return data are the SELECTs queries; however, there are other cases that do return data as well, such as queries using the RETURNING functionality and some INSERT queries with auto-generated keys.
 
@@ -291,7 +291,7 @@ We'll see that we can use `.execute()`, `executeOne()`, or `executeCursor()` to 
 
 Any option that DynamicSQL offers to work with the degree of the result set can be fully combined with any option available to work with the cardinality. You can combine them all as needed.
 
-### 7.1 Selecting Data -- Single Column
+### 8.1 Selecting Data -- Single Column
 
 If the result set has a single column with a typical scalar type such as Integer, String, LocalDate, etc. we can use the short-hand `q.prepare(params, <class>)` to read it, as shown below:
 
@@ -307,7 +307,7 @@ If the result set has a single column with a typical scalar type such as Integer
 
 This solution works well for typical types but may not work for exotic types such as record-type columns or data that requires conversion beyond a normal cast. Use a Generic Row or a Custom RowReader in these cases.
 
-### 7.2 Selecting Data -- Tuples of Two to Six Columns
+### 8.2 Selecting Data -- Tuples of Two to Six Columns
 
 If the query returns two to six columns we can use tuples to read the result set using `q.prepare(params, <class>, .<class>...)` as shown below:
 
@@ -329,7 +329,7 @@ If the query returns two to six columns we can use tuples to read the result set
 
 As well as in the previous case, this strategy works well for typical data types but not for exotic types.
 
-### 7.3 Selecting Data -- Generic Row
+### 8.3 Selecting Data -- Generic Row
 
 If the result set has many columns you can use a Generic Row type to retrieve the result. The `Row` type works in a similar way as a `java.util.Map`; values are stored in the map using the column nanes as keys.
 
@@ -356,7 +356,7 @@ Also notice that in the case of the last column we explicitly defined the alias 
 
 **Note**: When using this strategy we are not providing the specific data types for the columns we are reading from the database. In this case the JDBC driver will decide the Java type to read the data. In most cases the resulting data types are useful to the application. However, if they are not, then a Custom RowReader needs to be used. See next example.
 
-### 7.4 Selecting Data -- Custom RowReader
+### 8.4 Selecting Data -- Custom RowReader
 
 To have full control on how the result set data is read from the database you can implement a Custom RowReader. This gives full control to the developer to read and massage the data as needed right when it's being read from the database.
 
@@ -418,7 +418,7 @@ Now the strategy that uses a custom RowReader can take the form:
 
 As you can see there's a tradeoff in this case. On one side we have full control on how to read the data (using specific Java/JDBC types, using any conversion strategy, or even combining data); on the other there's more code to write, to test, and to actually *have* for a long time.
 
-### 7.5 Selecting Data -- Single Row
+### 8.5 Selecting Data -- Single Row
 
 If we know the query returns zero or one row only, then we can use the simple form:
 
@@ -441,7 +441,7 @@ If the query returns no rows the result will be a null value.
 
 **Note**: If, for any reason, the query returns more than a single row an Exception will be thrown.
 
-### 7.6 Selecting Data -- Using a Cursor
+### 8.6 Selecting Data -- Using a Cursor
 
 If we want to read the result set one row at a time we can use `executeCursor()` to retrieve the result, as in:
 
@@ -478,13 +478,13 @@ The same can be said about the `Cursor`. Since this object implements `AutoClose
 
 For cursors to be effective in PostgreSQL the query must always be executed inside a database transaction. If a transaction had not been initiated, the JDBC driver will automatically and silently materialize the whole result set in memory, defeating the purpose of the cursor altogether.
 
-## 8. Dynamic Operators
+## 9. Dynamic Operators
 
 The dynamic functionality of queries is implemented using the seven operators described in this section. They can include and exclude sections of the query based on the values of the runtime parameters.
 
 The dynamic operators can be nested. That is, they can include static SQL sections and dynamic sections -- any number of them, as needed. The Dynamic SQL API syntax checks the appropriate nesting and only allows the developer to write valid nesting structures.
 
-### 8.1 DynamicSQL IF
+### 9.1 DynamicSQL IF
 
 The *if* operator is the simplest operator. It includes a `test` predicate. The nested content -- static SQL sections, parameters, and other DynamicSQL operators are only included if the test predicate evaluates to true at runtime.
 
@@ -516,7 +516,7 @@ The inner if operators will only be evaluated if the parent if evaluates to true
 An if operator can nest static and dynamic sections in their body, including if operators or any other operator.
 
 
-### 8.1 DynamicSQL CHOOSE
+### 9.2 DynamicSQL CHOOSE
 
 The choose operator picks the first nested "when" clause that evaluates to true and discard the rest. If none is select and an "otherwise" clause was included, then this one will be selected.
 
@@ -544,7 +544,7 @@ The following example includes a choose operator that implements four types of o
 
 A choose operator can nest static and dynamic sections in their body, including more choose operators or any other operator.
 
-### 8.2 DynamicSQL FOREACH
+### 9.3 DynamicSQL FOREACH
 
 The foreach operator iterates over a collection or array of items. In every iteration the current item is available for use as in the variable scope. All nested sections are included once per item.
 
@@ -578,7 +578,7 @@ In this example the body of the foreach operator includes a single section: `.pa
 
 Anyway, as well as any operator the body of this operator can include any DynamicSQL sections, including static sections, parameters, or any other operators in many nesting levels, as needed.
 
-### 8.3 DynamicSQL BIND
+### 9.4 DynamicSQL BIND
 
 The bind operator binds a variable in the parameter scope, so it can be used by other DynamicSQL operators in the rest of the query.
 
@@ -600,7 +600,7 @@ In this example `pattern` is not a parameter provided by in the parameter contex
 
 The bind operator does not have a body and, therefore, cannot nest other sections.
 
-### 8.4 DynamicSQL TRIM
+### 9.5 DynamicSQL TRIM
 
 The trim operator includes multiple if operators. Each if operator is evaluated for inclusion and the included ones make it to the query, separated by the separator defined in the trim operator.
 
@@ -634,7 +634,7 @@ Trim uses the following parameters for formatting purposes:
 - `separator`: The separator to be included between selected sections
 - `tail`: The closing delimiter
 
-### 8.5 DynamicSQL WHERE
+### 9.6 DynamicSQL WHERE
 
 A where operator is a tailored trim operator that simplifies the writing of a dynamic WHERE clause.
 
@@ -663,7 +663,7 @@ For example:
 
 In this case the where operator will assemble any of those three if operators prepending `WHERE` and adding `OR` between them. If none of them is selected nothing will be added to the query, not even the `WHERE` section.
 
-### 8.6 DynamicSQL SET
+### 9.7 DynamicSQL SET
 
 A set operator is a tailored trim operator that simplifies the writing of a dynamic SET clause.
 
@@ -694,13 +694,13 @@ For example:
 
 In this case the set operator will assemble any of those three if operators prepending `SET` and adding `,` between them. If none of them is selected nothing will be added to the query, not even the `SET` section.
 
-## 9. UPDATE and DELETE Queries
+## 10. UPDATE and DELETE Queries
 
 The UPDATE and DELETE queries are assembled like any other query and can be as static or dynamic as needed. As shown in the example above they are created using the `.endModificationQuery()` method.
 
 When executed they return an int value that represent the number of affected rows.
 
-## 10. General Purpose Queries
+## 11. General Purpose Queries
 
 General purpose queries include any query that can be run in the database. They can be as static or dynamic as needed.
 
@@ -719,7 +719,7 @@ Typically the following queries fall into this category:
 
 Again, when executed these queries return an int value that represent the number of affected rows.
 
-## 11. Inserting Data
+## 12. Inserting Data
 
 DynamicSQL can execute typical INSERT queries in the trivial way.
 
@@ -735,7 +735,7 @@ The currently implemented DynamicSQL INSERT functionality has the following limi
 - Cannot retrieve other generated values, such as for omitted columns with DEFAULT constraints.
 - Has only be tested with Oracle, DB2 LUW, PostgreSQL, SQL Server, MySQL, MariaDB, Sybase ASE, H2, HyperSQL, and the Derby databases. It most likely can work with most databases out there, but it hasn't been formally tested with them.
 
-### 11.1 Inserting a Row Without Recovering Keys
+### 12.1 Inserting a Row Without Recovering Keys
 
 There are two sub cases for this case:
 
@@ -803,7 +803,7 @@ To insert a row in it we can do:
 
 Since there's no autogeneration feature defined in this table the application needs to provide the value for the primary key.
 
-### 11.2 Inserting a Row Using Recovering Identity Keys
+### 12.2 Inserting a Row Using Recovering Identity Keys
 
 Nowadays the most commoon auto-generation logic in use are IDENTITY keys. This feature indicates that a primary key -- and also for non primary keys as well in some databases -- can be auto-generated by the database engine itself when a row is inserted.
 
@@ -857,7 +857,7 @@ There's a variation to this query that is used by the Oracle database. Oracle ex
       .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET, null, null, "id");
 ```
 
-### 11.3 Inserting a Row Recovering Sequences Values
+### 12.3 Inserting a Row Recovering Sequences Values
 
 In some cases the generation of keys is done with sequences. In this case different databases offer different strategies to recover these newly generated keys.
 
