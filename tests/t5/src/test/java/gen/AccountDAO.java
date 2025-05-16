@@ -478,7 +478,7 @@ public class AccountDAO {
 
     DynamicModificationQuery d1 = assembler //
         .literal("DELETE FROM account") //
-        .trim("H", "S", "T", "\nh<", ">h", "\ns<", ">s", "\nt<", ">t")
+        .trim("H", "S", "T")
             .if_("true").literal("A").endif()
             .if_("true").literal("B").endif()
             .if_("true").literal("C").endif()
