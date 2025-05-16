@@ -612,30 +612,17 @@ The example below decides to include or exclude columns in the select list at ru
   List<Row> rows = p.execute(conn);
 ```
 
-The columns are included according to the boolean parameters, and stitched together using commas (`,`) as defined in this `.trim()` operator.
+In this example, the columns are included according to the provided boolean parameters, and stitched together using commas (`,`) as defined in this `.trim()` operator.
 
-Trim has as simple form with few formatting parameters and an extended for fine-grained formatting. The short form includes:
-
-- `header`: The opening delimiter
-- `separator`: The separator to be included between selected sections
-- `tail`: The closing delimiter
-
-The extended form includes:
+Trim uses the following parameters for formatting purposes:
 
 - `header`: The opening delimiter
 - `separator`: The separator to be included between selected sections
 - `tail`: The closing delimiter
-- `headerPrefix`: The header prefix
-- `headerSuffix`: The header suffix
-- `separatorPrefix`: The separator prefix
-- `separatorSuffix`: The separator suffix
-- `tailPrefix`: The tail prefix
-- `tailSuffix`: The tail suffix
-- `removePrefixes`: A variable list of prefixes to remove from each section
 
 ### 8.5 DynamicSQL WHERE
 
-A where operator is a tailored for of the trim operator that simplifies the writing of a dynamic WHERE clause.
+A where operator is a tailored trim operator that simplifies the writing of a dynamic WHERE clause.
 
 For example:
 
@@ -664,7 +651,7 @@ In this case the where operator will assemble any of those three if operators pr
 
 ### 8.6 DynamicSQL SET
 
-A set operator is a tailored for of the trim operator that simplifies the writing of a dynamic SET clause.
+A set operator is a tailored trim operator that simplifies the writing of a dynamic SET clause.
 
 For example:
 

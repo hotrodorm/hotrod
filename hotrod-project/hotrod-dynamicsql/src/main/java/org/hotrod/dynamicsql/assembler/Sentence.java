@@ -83,15 +83,6 @@ public abstract class Sentence<M extends Sentence<?, ?>, P> extends AbstractSent
   }
 
   @SuppressWarnings("unchecked")
-  public Trim<M> trim(String header, String separator, String tail, String headerPrefix, String headerSuffix,
-      String separatorPrefix, String separatorSuffix, String tailPrefix, String tailSuffix, String... removePrefixes) {
-    @SuppressWarnings("rawtypes")
-    Trim<M> s = new Trim(this.factory, this, header, separator, tail, headerPrefix, headerSuffix, separatorPrefix,
-        separatorSuffix, tailPrefix, tailSuffix, removePrefixes);
-    return s;
-  }
-
-  @SuppressWarnings("unchecked")
   public ForEach<M> foreach(String item, String collection, String open, String separator, String close) {
     @SuppressWarnings("rawtypes")
     ForEach<M> s = new ForEach(this.factory, this, item, collection, open, separator, close);
