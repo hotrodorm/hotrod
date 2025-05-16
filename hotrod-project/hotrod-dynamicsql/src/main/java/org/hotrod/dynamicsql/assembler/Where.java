@@ -7,17 +7,17 @@ import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.segments.IfSegment;
 import org.hotrod.dynamicsql.segments.WhereSegment;
 
-public class WhereSentence<P extends AbstractSentence<?, ?>> extends AbstractSentence<WhereSentence<P>, P> {
+public class Where<P extends AbstractSentence<?, ?>> extends AbstractSentence<Where<P>, P> {
 
   private String separator;
 
-  public WhereSentence(DynamicExpressionFactory factory, P parent, String separator) {
+  public Where(DynamicExpressionFactory factory, P parent, String separator) {
     super(factory, null, parent);
     super.setMe(this);
     this.separator = separator;
   }
 
-  public WhereSentence(DynamicExpressionFactory factory, P parent, String separator, String headerPrefix,
+  public Where(DynamicExpressionFactory factory, P parent, String separator, String headerPrefix,
       String headerSuffix, String separatorPrefix, String separatorSuffix, String tailPrefix, String tailSuffix,
       String... removePrefixes) {
     super(factory, null, parent);
@@ -26,9 +26,9 @@ public class WhereSentence<P extends AbstractSentence<?, ?>> extends AbstractSen
   }
 
   @SuppressWarnings("unchecked")
-  public IfSentence<WhereSentence<P>> if_(String test) {
+  public If<Where<P>> if_(String test) {
     @SuppressWarnings("rawtypes")
-    IfSentence<WhereSentence<P>> s = new IfSentence(this.factory, this, test);
+    If<Where<P>> s = new If(this.factory, this, test);
     return s;
   }
 

@@ -7,7 +7,7 @@ import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.segments.IfSegment;
 import org.hotrod.dynamicsql.segments.TrimSegment;
 
-public class TrimSentence<P extends AbstractSentence<?, ?>> extends AbstractSentence<TrimSentence<P>, P> {
+public class Trim<P extends AbstractSentence<?, ?>> extends AbstractSentence<Trim<P>, P> {
 
   private String header;
   private String separator;
@@ -22,7 +22,7 @@ public class TrimSentence<P extends AbstractSentence<?, ?>> extends AbstractSent
   private String tailSuffix;
   private String[] removePrefixes;
 
-  public TrimSentence(DynamicExpressionFactory factory, P parent, String header, String separator, String tail) {
+  public Trim(DynamicExpressionFactory factory, P parent, String header, String separator, String tail) {
     super(factory, null, parent);
     super.setMe(this);
     this.header = header;
@@ -31,7 +31,7 @@ public class TrimSentence<P extends AbstractSentence<?, ?>> extends AbstractSent
     this.extendedFormatting = false;
   }
 
-  public TrimSentence(DynamicExpressionFactory factory, P parent, String header, String separator, String tail,
+  public Trim(DynamicExpressionFactory factory, P parent, String header, String separator, String tail,
       String headerPrefix, String headerSuffix, String separatorPrefix, String separatorSuffix, String tailPrefix,
       String tailSuffix, String... removePrefixes) {
     super(factory, null, parent);
@@ -51,9 +51,9 @@ public class TrimSentence<P extends AbstractSentence<?, ?>> extends AbstractSent
   }
 
   @SuppressWarnings("unchecked")
-  public IfSentence<TrimSentence<P>> if_(String test) {
+  public If<Trim<P>> if_(String test) {
     @SuppressWarnings("rawtypes")
-    IfSentence<TrimSentence<P>> s = new IfSentence(this.factory, this, test);
+    If<Trim<P>> s = new If(this.factory, this, test);
     return s;
   }
 

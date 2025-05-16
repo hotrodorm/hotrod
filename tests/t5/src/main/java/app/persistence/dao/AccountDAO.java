@@ -296,7 +296,6 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .literal("  ").parameterNullable("m.version", Types.INTEGER)
       .literal(")")
       .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
-//    .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET, null, null, "id");
   }
 
   public void insert(Account model) throws DynamicExpressionException, SQLException {

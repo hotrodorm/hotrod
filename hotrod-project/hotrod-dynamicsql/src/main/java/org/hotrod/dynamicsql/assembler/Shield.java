@@ -10,11 +10,11 @@ public class Shield {
     parent.segments.add(segment);
   }
 
-  public static void addWhen(ChooseSentence<?> parent, WhenSegment when) {
+  public static void addWhen(Choose<?> parent, WhenSegment when) {
     parent.whens.add(when);
   }
 
-  public static void addOtherwise(ChooseSentence<?> parent, OtherwiseSegment otherwise) {
+  public static void addOtherwise(Choose<?> parent, OtherwiseSegment otherwise) {
     parent.otherwise = otherwise;
   }
 

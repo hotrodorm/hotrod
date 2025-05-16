@@ -3,11 +3,11 @@ package org.hotrod.dynamicsql.assembler;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.segments.WhenSegment;
 
-public class WhenSentence<P extends ChooseSentence<?>> extends Sentence<WhenSentence<P>, P> {
+public class When<P extends Choose<?>> extends Sentence<When<P>, P> {
 
   private String test;
 
-  public WhenSentence(DynamicExpressionFactory factory, P parent, String test) {
+  public When(DynamicExpressionFactory factory, P parent, String test) {
     super(factory, null, parent);
     this.test = test;
     super.setMe(this);

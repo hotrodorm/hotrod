@@ -7,17 +7,17 @@ import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.segments.IfSegment;
 import org.hotrod.dynamicsql.segments.SettersSegment;
 
-public class SetSentence<P extends AbstractSentence<?, ?>> extends AbstractSentence<SetSentence<P>, P> {
+public class Set<P extends AbstractSentence<?, ?>> extends AbstractSentence<Set<P>, P> {
 
-  public SetSentence(DynamicExpressionFactory factory, P parent) {
+  public Set(DynamicExpressionFactory factory, P parent) {
     super(factory, null, parent);
     super.setMe(this);
   }
 
   @SuppressWarnings("unchecked")
-  public IfSentence<SetSentence<P>> if_(String test) {
+  public If<Set<P>> if_(String test) {
     @SuppressWarnings("rawtypes")
-    IfSentence<SetSentence<P>> s = new IfSentence(this.factory, this, test);
+    If<Set<P>> s = new If(this.factory, this, test);
     return s;
   }
 

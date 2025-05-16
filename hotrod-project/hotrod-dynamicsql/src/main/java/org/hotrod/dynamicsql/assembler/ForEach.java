@@ -3,7 +3,7 @@ package org.hotrod.dynamicsql.assembler;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.segments.ForEachSegment;
 
-public class ForEachSentence<P extends AbstractSentence<?, ?>> extends Sentence<ForEachSentence<P>, P> {
+public class ForEach<P extends AbstractSentence<?, ?>> extends Sentence<ForEach<P>, P> {
 
   private String item;
   private String collection;
@@ -11,7 +11,7 @@ public class ForEachSentence<P extends AbstractSentence<?, ?>> extends Sentence<
   private String separator;
   private String close;
 
-  public ForEachSentence(DynamicExpressionFactory factory, P parent, String item, String collection, String open,
+  public ForEach(DynamicExpressionFactory factory, P parent, String item, String collection, String open,
       String separator, String close) {
     super(factory, null, parent);
     super.setMe(this);

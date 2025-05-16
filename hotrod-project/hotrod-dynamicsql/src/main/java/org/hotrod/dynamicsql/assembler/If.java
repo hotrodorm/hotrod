@@ -3,11 +3,11 @@ package org.hotrod.dynamicsql.assembler;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.segments.IfSegment;
 
-public class IfSentence<P extends AbstractSentence<?, ?>> extends Sentence<IfSentence<P>, P> {
+public class If<P extends AbstractSentence<?, ?>> extends Sentence<If<P>, P> {
 
   private String test;
 
-  public IfSentence(DynamicExpressionFactory factory, P parent, String test) {
+  public If(DynamicExpressionFactory factory, P parent, String test) {
     super(factory, null, parent);
     super.setMe(this);
     this.test = test;
