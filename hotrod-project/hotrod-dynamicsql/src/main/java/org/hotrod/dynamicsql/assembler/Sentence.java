@@ -8,15 +8,11 @@ import org.hotrod.dynamicsql.segments.ParameterNullableSegment;
 import org.hotrod.dynamicsql.segments.StaticContentSegment;
 import org.hotrod.dynamicsql.segments.VariableSegment;
 
-//public class IfSentence<P extends Sentence<?, ?>> extends Sentence<IfSentence<P>, P> {
-
 public abstract class Sentence<M extends Sentence<?, ?>, P> extends AbstractSentence<M, P> {
 
   public Sentence(DynamicExpressionFactory factory, M me, P parent) {
     super(factory, me, parent);
   }
-
-  // Segments
 
   public M literal(String text) {
     this.segments.add(new StaticContentSegment(text));
@@ -90,8 +86,8 @@ public abstract class Sentence<M extends Sentence<?, ?>, P> extends AbstractSent
   public Trim<M> trim(String header, String separator, String tail, String headerPrefix, String headerSuffix,
       String separatorPrefix, String separatorSuffix, String tailPrefix, String tailSuffix, String... removePrefixes) {
     @SuppressWarnings("rawtypes")
-    Trim<M> s = new Trim(this.factory, this, header, separator, tail, headerPrefix, headerSuffix,
-        separatorPrefix, separatorSuffix, tailPrefix, tailSuffix, removePrefixes);
+    Trim<M> s = new Trim(this.factory, this, header, separator, tail, headerPrefix, headerSuffix, separatorPrefix,
+        separatorSuffix, tailPrefix, tailSuffix, removePrefixes);
     return s;
   }
 

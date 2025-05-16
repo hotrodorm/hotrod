@@ -23,8 +23,7 @@ public class Set<P extends AbstractSentence<?, ?>> extends AbstractSentence<Set<
 
   public P endset() {
     List<IfSegment> ifSegments = this.segments.stream().map(s -> (IfSegment) s).collect(Collectors.toList());
-    SettersSegment w;
-    w = new SettersSegment(ifSegments, super.factory);
+    SettersSegment w = new SettersSegment(ifSegments, super.factory);
     Shield.addSegment(this.parent, w);
     return this.parent;
   }
