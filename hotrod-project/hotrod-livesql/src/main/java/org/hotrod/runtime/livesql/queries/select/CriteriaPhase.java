@@ -3,8 +3,8 @@ package org.hotrod.runtime.livesql.queries.select;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.hotrod.data.Cursor;
-import org.hotrod.data.RowReader;
+import org.hotrod.dynamicsql.Cursor;
+import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.QueryWriter;
 

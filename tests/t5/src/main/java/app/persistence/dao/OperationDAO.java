@@ -14,7 +14,6 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
-import org.hotrod.data.RowReader;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicModificationQuery;
 import org.hotrod.dynamicsql.DynamicSelectQuery;
@@ -22,6 +21,7 @@ import org.hotrod.dynamicsql.Parameters;
 import org.hotrod.dynamicsql.PreparedModificationQuery;
 import org.hotrod.dynamicsql.PreparedQuery;
 import org.hotrod.dynamicsql.PreparedSelectQuery;
+import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;

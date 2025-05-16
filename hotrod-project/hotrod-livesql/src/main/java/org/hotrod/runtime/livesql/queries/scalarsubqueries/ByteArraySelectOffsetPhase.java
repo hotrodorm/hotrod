@@ -1,6 +1,6 @@
 package org.hotrod.runtime.livesql.queries.scalarsubqueries;
 
-import org.hotrod.data.Row;
+import org.hotrod.dynamicsql.Row;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelectObject;
 
 public class ByteArraySelectOffsetPhase extends ByteArraySelectExpression {

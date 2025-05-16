@@ -7,8 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
 
-import org.hotrod.data.Cursor;
-import org.hotrod.data.RowReader;
+import org.hotrod.dynamicsql.Cursor;
+import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.hotrod.runtime.livesql.queries.LiveSQLPreparedQuery;
 

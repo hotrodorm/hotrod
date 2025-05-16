@@ -1,4 +1,4 @@
-package org.hotrod.data;
+package org.hotrod.dynamicsql;
 
 import java.util.Collection;
 import java.util.HashMap;

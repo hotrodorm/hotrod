@@ -10,10 +10,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.hotrod.data.Cursor;
-import org.hotrod.data.Row;
-import org.hotrod.data.RowReader;
-
 public class DynCursor<R> implements Cursor<R> {
 
   private Connection conn;

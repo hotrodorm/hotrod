@@ -1,6 +1,6 @@
 package org.hotrod.runtime.livesql.queries.select;
 
-import org.hotrod.data.RowReader;
+import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 
 public class CriteriaForUpdatePhase<T> extends CriteriaPhase<T> {

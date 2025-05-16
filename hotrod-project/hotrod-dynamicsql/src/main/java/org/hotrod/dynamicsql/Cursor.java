@@ -1,4 +1,4 @@
-package org.hotrod.data;
+package org.hotrod.dynamicsql;
 
 import java.io.Closeable;
 

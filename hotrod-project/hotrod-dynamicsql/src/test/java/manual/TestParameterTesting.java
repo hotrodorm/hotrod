@@ -1,21 +1,5 @@
 package manual;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.List;
-
-import org.hotrod.data.Row;
-import org.hotrod.dynamicsql.DynamicExpressionException;
-import org.hotrod.dynamicsql.DynamicSelectQuery;
-import org.hotrod.dynamicsql.Parameters;
-import org.hotrod.dynamicsql.PreparedSelectQuery;
-import org.hotrod.dynamicsql.assembler.DynamicSQL;
-import org.hotrod.dynamicsql.tuples.Tuple3;
-import org.junit.jupiter.api.Assertions;
-
 public class TestParameterTesting {
 
 ////  @Test

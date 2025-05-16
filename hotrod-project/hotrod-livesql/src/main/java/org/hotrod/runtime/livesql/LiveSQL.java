@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
-import org.hotrod.data.Row;
+import org.hotrod.dynamicsql.Row;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;

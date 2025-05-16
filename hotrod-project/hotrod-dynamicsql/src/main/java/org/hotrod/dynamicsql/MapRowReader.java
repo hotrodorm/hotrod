@@ -7,9 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hotrod.data.Row;
-import org.hotrod.data.RowReader;
-
 public class MapRowReader implements RowReader<Row> {
 
   private List<String> columns = null;

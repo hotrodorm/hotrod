@@ -5,8 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.hotrod.data.Row;
-import org.hotrod.data.RowReader;
 import org.hotrod.dynamicsql.segments.QuerySegment;
 import org.hotrod.dynamicsql.tuples.Tuple2;
 import org.hotrod.dynamicsql.tuples.Tuple3;

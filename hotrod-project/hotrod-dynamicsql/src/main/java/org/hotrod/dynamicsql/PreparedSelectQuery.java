@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.hotrod.data.Cursor;
-import org.hotrod.data.RowReader;
 import org.hotrod.dynamicsql.parameters.ParameterInstance;
 
 public class PreparedSelectQuery<R> extends PreparedQuery {

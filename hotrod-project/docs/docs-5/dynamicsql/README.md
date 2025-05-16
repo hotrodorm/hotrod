@@ -2,6 +2,8 @@
 
 DynamicSQL can execute SQL queries that combine static and dynamic sections in them. The dynamic sections are automatically activated or deactivated according to the specified logic and according to the parameters that are provided at runtime.
 
+Even though it was developed in the scope of the HotRod ORM, DynamicSQL can be used separatedly without the HotRod ORM in any Java application.
+
 The following example includes a dynamic query that updates a table:
 
 ```java

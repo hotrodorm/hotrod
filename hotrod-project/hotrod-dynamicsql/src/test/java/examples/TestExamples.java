@@ -12,9 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hotrod.data.Cursor;
-import org.hotrod.data.Row;
-import org.hotrod.data.RowReader;
+import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicInsertQuery;
 import org.hotrod.dynamicsql.DynamicModificationQuery;
@@ -22,11 +20,12 @@ import org.hotrod.dynamicsql.DynamicSelectQuery;
 import org.hotrod.dynamicsql.Parameters;
 import org.hotrod.dynamicsql.PreparedModificationQuery;
 import org.hotrod.dynamicsql.PreparedSelectQuery;
+import org.hotrod.dynamicsql.Row;
+import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.hotrod.dynamicsql.insert.PreparedInsertQuery;
 import org.hotrod.dynamicsql.insert.PrimaryKeyRetrievalMode;
 import org.hotrod.dynamicsql.tuples.Tuple3;
-import org.junit.jupiter.api.Test;
 
 public class TestExamples {
 
