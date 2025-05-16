@@ -18,9 +18,9 @@ In this example the assembled query is made up of an initial section that is opt
 
 ## Using DynamicSQL
 
-DynamicSQL is automatically included when you use the HotRod ORM.
+DynamicSQL is a dependency included in the HotRod ORM and is automatically available for use if you are using HotRod.
 
-If you want to DynamicSQL separatedly you can add the following dependency to your project:
+On the other hand, if you want to use DynamicSQL separatedly you can add the following Maven dependency to your project:
 
 ```xml
   <dependency>
