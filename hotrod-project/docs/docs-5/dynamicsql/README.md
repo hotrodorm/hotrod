@@ -957,7 +957,7 @@ The H2 and HyperSQL databases implement the same strategy:
       .literal("INSERT INTO office (id, name) VALUES (NEXT VALUE FOR seq_office, ")
       .parameter("officeName")
       .literal(")")
-      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_STANDARD_RESULTSET);
+      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET);
 
   Parameters params = dyn.newParameters();
   params.add("officeName", "Downtown Office");

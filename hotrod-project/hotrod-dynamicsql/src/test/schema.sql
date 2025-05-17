@@ -44,7 +44,7 @@ create table office (
   name varchar(100)
 );
 
-create sequence seq_office;
+create sequence seq_office start with 300;
 
 
 
