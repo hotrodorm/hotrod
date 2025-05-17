@@ -72,7 +72,7 @@ This shows:
     1. dept: 5 (java.lang.Integer)
 ```
 
-## 4. Static Queries -- No Moving Parts
+## 4. Static Queries &emdash; No Moving Parts
 
 The JDBC specification defines queries of a static nature. That means, their structure is set when the SQL statement is defined. Thus, JDBC queries can be described as made up of two types of sections:
 
@@ -331,7 +331,7 @@ As well as in the previous case, this strategy works well for typical data types
 
 ### 8.3 Selecting Data -- Generic Row
 
-If the result set has many columns you can use a Generic Row type to retrieve the result. The `Row` type works in a similar way as a `java.util.Map`; values are stored in the map using the column nanes as keys.
+If the result set has many columns you can use a Generic Row type to retrieve the result. The `Row` type works in a similar way as a `java.util.Map`; values are stored in the map using the column names as keys.
 
 The following example shows this case:
 
