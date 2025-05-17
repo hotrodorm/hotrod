@@ -56,7 +56,7 @@ The query definition is thread-safe, so it can be used in a multi-threaded envir
 
 ## 3. Previewing Queries and JDBC Parameters
 
-Once the query is prepared -- as shown in the previous example -- the final query and its actual JDBC parameters can be viewed before being executed using `PreparedQuery.getPreview()` as in:
+Once the query is prepared &mdash; as shown in the previous example &mdash; the final query and its actual JDBC parameters can be viewed before being executed using `PreparedQuery.getPreview()` as in:
 
 ```java
   PreparedModificationQuery p = q.prepare(params);
@@ -72,7 +72,7 @@ This shows:
     1. dept: 5 (java.lang.Integer)
 ```
 
-## 4. Static Queries &emdash; No Moving Parts
+## 4. Static Queries &mdash; No Moving Parts
 
 The JDBC specification defines queries of a static nature. That means, their structure is set when the SQL statement is defined. Thus, JDBC queries can be described as made up of two types of sections:
 
@@ -114,7 +114,7 @@ We can now define the parameters and run the query:
 
 So far so good. This is pretty much equivalent to any JDBC query you have seen before. The query does not have any *moving parts*. All sections are always included whenever we run the query, regardless of the values of the runtime parameters. These parameters are only applied to the query but **do not affect** the structure of it.
 
-## 5. Making It Dynamic
+## 5. Making It Dynamic &mdash; Hello Moving Parts!
 
 Let's look at the initial example again:
 
@@ -140,7 +140,7 @@ The line `params.add("dept", 5);` defines the parameter value as 5. When **prepa
     1. dept: 5 (java.lang.Integer)
 ```
 
-On the contrary, if the parameter `dept` was set to null -- or left unset -- the effective query would not include the *if* section and will look like:
+On the contrary, if the parameter `dept` was set to null &mdash; or left unset &mdash; the effective query would not include the *if* section and will look like:
 
 ```sql
   UPDATE employee SET salary = salary + 10
@@ -269,8 +269,8 @@ The result set can have zero, one, or many columns: this is known as the **degre
 When running a SELECT query DynamicSQL can retrieve the result set rows in different ways suitable for different cases, such as:
 
 - Single-column result sets
-- Using tuples -- for two to six columns
-- Returning a generic `Row` solution -- a Map-like solution
+- Using tuples &mdash; for two to six columns
+- Returning a generic `Row` solution &mdash; a Map-like solution
 - Using fully customized logic to read the rows, by writing a row reader class
 
 See the examples in this section for each case.
@@ -291,7 +291,7 @@ We'll see that we can use `.execute()`, `executeOne()`, or `executeCursor()` to 
 
 Any option that DynamicSQL offers to work with the degree of the result set can be fully combined with any option available to work with the cardinality. You can combine them all as needed.
 
-### 8.1 Selecting Data -- Single Column
+### 8.1 Selecting Data &mdash; Single Column
 
 If the result set has a single column with a typical scalar type such as Integer, String, LocalDate, etc. we can use the short-hand `q.prepare(params, <class>)` to read it, as shown below:
 
@@ -307,7 +307,7 @@ If the result set has a single column with a typical scalar type such as Integer
 
 This solution works well for typical types but may not work for exotic types such as record-type columns or data that requires conversion beyond a normal cast. Use a Generic Row or a Custom RowReader in these cases.
 
-### 8.2 Selecting Data -- Tuples of Two to Six Columns
+### 8.2 Selecting Data &mdash; Tuples of Two to Six Columns
 
 If the query returns two to six columns we can use tuples to read the result set using `q.prepare(params, <class>, .<class>...)` as shown below:
 
@@ -329,7 +329,7 @@ If the query returns two to six columns we can use tuples to read the result set
 
 As well as in the previous case, this strategy works well for typical data types but not for exotic types.
 
-### 8.3 Selecting Data -- Generic Row
+### 8.3 Selecting Data &mdash; Generic Row
 
 If the result set has many columns you can use a Generic Row type to retrieve the result. The `Row` type works in a similar way as a `java.util.Map`; values are stored in the map using the column names as keys.
 
@@ -356,7 +356,7 @@ Also notice that in the case of the last column we explicitly defined the alias 
 
 **Note**: When using this strategy we are not providing the specific data types for the columns we are reading from the database. In this case the JDBC driver will decide the Java type to read the data. In most cases the resulting data types are useful to the application. However, if they are not, then a Custom RowReader needs to be used. See next example.
 
-### 8.4 Selecting Data -- Custom RowReader
+### 8.4 Selecting Data &mdash; Custom RowReader
 
 To have full control on how the result set data is read from the database you can implement a Custom RowReader. This gives full control to the developer to read and massage the data as needed right when it's being read from the database.
 
@@ -418,7 +418,7 @@ Now the strategy that uses a custom RowReader can take the form:
 
 As you can see there's a tradeoff in this case. On one side we have full control on how to read the data (using specific Java/JDBC types, using any conversion strategy, or even combining data); on the other there's more code to write, to test, and to actually *have* for a long time.
 
-### 8.5 Selecting Data -- Single Row
+### 8.5 Selecting Data &mdash; Single Row
 
 If we know the query returns zero or one row only, then we can use the simple form:
 
@@ -441,7 +441,7 @@ If the query returns no rows the result will be a null value.
 
 **Note**: If, for any reason, the query returns more than a single row an Exception will be thrown.
 
-### 8.6 Selecting Data -- Using a Cursor
+### 8.6 Selecting Data &mdash; Using a Cursor
 
 If we want to read the result set one row at a time we can use `executeCursor()` to retrieve the result, as in:
 
@@ -472,7 +472,7 @@ This strategy can also be combined with any row reader strategy described before
 
 The `Connection` object must remain open while reading the cursor. Keep this in mind if you plan to return the `Cursor<>` object to a caller; the caller must keep the database connection open while reading the cursor.
 
-The same can be said about the `Cursor`. Since this object implements `AutoCloseable` it can be easily used in a try-with-resources statement as shown in the example above. However, if the closing is managed separately -- maybe because the Cursor is returned to the caller -- appropriate care will need to be taken to make sure it's always closed and the internal resources are freed.
+The same can be said about the `Cursor`. Since this object implements `AutoCloseable` it can be easily used in a try-with-resources statement as shown in the example above. However, if the closing is managed separately &mdash; maybe because the Cursor is returned to the caller &mdash; appropriate care will need to be taken to make sure it's always closed and the internal resources are freed.
 
 #### PostgreSQL
 
@@ -482,11 +482,11 @@ For cursors to be effective in PostgreSQL the query must always be executed insi
 
 The dynamic functionality of queries is implemented using the seven operators described in this section. They can include and exclude sections of the query based on the values of the runtime parameters.
 
-The dynamic operators can be nested. That is, they can include static SQL sections and dynamic sections -- any number of them, as needed. The Dynamic SQL API syntax checks the appropriate nesting and only allows the developer to write valid nesting structures.
+The dynamic operators can be nested. That is, they can include static SQL sections and dynamic sections &mdash; any number of them, as needed. The Dynamic SQL API syntax checks the appropriate nesting and only allows the developer to write valid nesting structures.
 
 ### 9.1 DynamicSQL IF
 
-The *if* operator is the simplest operator. It includes a `test` predicate. The nested content -- static SQL sections, parameters, and other DynamicSQL operators are only included if the test predicate evaluates to true at runtime.
+The *if* operator is the simplest operator. It includes a `test` predicate. The nested content &mdash; static SQL sections, parameters, and other DynamicSQL operators are only included if the test predicate evaluates to true at runtime.
 
 The following example illustrates how an if operator works. It includes nesting if operators:
 
@@ -729,7 +729,7 @@ However, if we want the query to recover the generated keys we'll need to tell D
 
 The currently implemented DynamicSQL INSERT functionality has the following limitations:
 
-- Can only retrieve a key for a single inserted row. If the query inserts multiple rows and -- therefore -- produces multiple generated keys they cannot be retrieved by DynamicSQL.
+- Can only retrieve a key for a single inserted row. If the query inserts multiple rows and &mdash; therefore &mdash; produces multiple generated keys they cannot be retrieved by DynamicSQL.
 - Can only retrieve keys of numeric type such as INT and BIGINT. It cannot retrieve UUID, TIMESTAMP, CHAR, or VARCHAR columns.
 - Can only retrieve a single key per row. This is typically enough since there's only one primary key in each table. However, some databases (e.g. PostgreSQL) can have multiple identities in a table.
 - Cannot retrieve other generated values, such as for omitted columns with DEFAULT constraints.
@@ -805,7 +805,7 @@ Since there's no autogeneration feature defined in this table the application ne
 
 ### 12.2 Inserting a Row Using Recovering Identity Keys
 
-Nowadays the most commoon auto-generation logic in use are IDENTITY keys. This feature indicates that a primary key -- and also for non primary keys as well in some databases -- can be auto-generated by the database engine itself when a row is inserted.
+Nowadays the most commoon auto-generation logic in use are IDENTITY keys. This feature indicates that a primary key &mdash; and also for non primary keys as well in some databases &mdash; can be auto-generated by the database engine itself when a row is inserted.
 
 There are two variations of auto-generated identity columns:
 
