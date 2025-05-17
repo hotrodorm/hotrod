@@ -18,7 +18,7 @@ In this example the assembled query is made up of an initial section that is opt
 
 ## 1. Using DynamicSQL
 
-DynamicSQL is a dependency included in the HotRod ORM that is automatically available for use if you are using HotRod.
+DynamicSQL is a dependency included in the HotRod ORM that is automatically available for use if you are using it.
 
 On the other hand, if you want to use DynamicSQL separatedly you can add the following Maven dependency to your project:
 
@@ -90,7 +90,7 @@ For example, the query:
 
 Has four sections: lines #1 and #3 are SQL language parts, while lines #2 and #4 are parameter parts.
 
-DynamicSQL implements these two types of sections using `.literal(String)` and `.parameter(String)`. The query shown above can be written using Dynamic SQL as:
+DynamicSQL implements these two types of sections using `.literal(String)` and `.parameter(String)` respectively. The query shown above can be written using Dynamic SQL as:
 
 ```java
   DynamicModificationQuery q = dyn
@@ -131,7 +131,7 @@ Let's look at the initial example again:
   int count = p.execute(conn);
 ```
 
-The line `params.add("dept", 5);` defines the parameter value as 5. When **preparing** the query the `.if_()` clause will evaluate to true and any sections inside will be included in the query. Thus, the effective query will be:
+The line `params.add("dept", 5);` defines the parameter value as 5. When *preparing* the query the `.if_()` clause's `test` predicate will evaluate to true and any sections inside will be included in the query. Thus, the effective query will be:
 
 ```sql
   UPDATE employee SET salary = salary + 10 WHERE dept_no = ?
