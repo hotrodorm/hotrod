@@ -486,7 +486,7 @@ The dynamic operators can be nested. That is, they can include static SQL sectio
 
 ### 9.1 DynamicSQL IF
 
-The *if* operator is the simplest operator. It includes a `test` predicate. The nested content &mdash; static SQL sections, parameters, and other DynamicSQL operators are only included if the test predicate evaluates to true at runtime.
+The *if* operator is the simplest operator. It includes a `test` predicate. The nested content &mdash; static SQL sections, parameters, and other DynamicSQL operators &mdash; is only included if the test predicate evaluates to true at runtime.
 
 The following example illustrates how an if operator works. It includes nesting if operators:
 
