@@ -462,9 +462,9 @@ If we want to read the result set one row at a time we can use `executeCursor()`
   }
 ```
 
-This strategy can enormously reduce the memory consumption of big queries. Only a few rows of the result set will be loaded in memory at any given time.
+This strategy can enormously reduce the memory consumption of our app when running big queries. Only a few rows of the result set will be loaded in memory at any given time.
 
-To optimize the memory usage and data retrieval performance you can also specify the `fetchSize` for the cursor by using the method variation `.executeCursor(conn, fetchSize)`.
+To further optimize the memory usage and data retrieval performance you can also specify the `fetchSize` for the cursor by using the method variation `.executeCursor(conn, fetchSize)`.
 
 This strategy can also be combined with any row reader strategy described before.
 
@@ -476,7 +476,7 @@ The same can be said about the `Cursor`. Since this object implements `AutoClose
 
 #### PostgreSQL
 
-For cursors to be effective in PostgreSQL the query must always be executed inside a database transaction. If a transaction had not been initiated, the JDBC driver will automatically and silently materialize the whole result set in memory, defeating the purpose of the cursor altogether.
+For cursors to be effective in PostgreSQL the query must be always executed inside a database transaction. If a transaction had not been initiated, the JDBC driver will automatically &mdash; and silently &mdash; materialize the whole result set in memory, defeating the purpose of the cursor altogether.
 
 ## 9. Dynamic Operators
 
