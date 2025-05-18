@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
@@ -363,7 +364,7 @@ public class DAO {
 
     int ordinal = 1;
     for (ColumnMetadata cm : this.metadata.getColumns()) {
-      this.writeReaderLogic(cm, ordinal);
+      this.writeReaderLogic(cm, ordinal, false);
       ordinal++;
     }
 
@@ -373,8 +374,6 @@ public class DAO {
     w.println();
     w.println("  };");
   }
-
-  // TODO: Just a marker
 
   public ExternalClass getBaselineClass() {
     return ExternalClass.of(this.model.getClassName() + "Baseline");
@@ -998,8 +997,6 @@ public class DAO {
     w.println("  }");
   }
 
-  // TODO: Just a marker
-
   private void writeDeleteByPK(boolean optimisticLocking) {
 
     KeyMetadata pk = this.metadata.getPK();
@@ -1046,7 +1043,6 @@ public class DAO {
 
       // Method
 
-      // TODO
       ExternalClass em = ExternalClass.of(this.model.getFullClassName());
 
       w.println();
@@ -1589,12 +1585,19 @@ public class DAO {
     JDBC_GETTERS.put("java.sql.Timestamp", JDBCGetter.obj("getTimestamp"));
   }
 
-  private void writeReaderLogic(ColumnMetadata cm, int ordinal) {
+  private void writeReaderLogic(ColumnMetadata cm, int ordinal, boolean discoverable) {
     w.println();
     String setter = cm.getId().getJavaSetter();
     String javaClass = cm.getType().getJavaClassName();
     ConverterTag ct = cm.getConverter();
     String cn = cm.getId().getCanonicalSQLName();
+
+    String colName = "\"" + SUtil.escapeJavaString(cm.getLabel()) + "\"";
+
+    if (discoverable) {
+      w.println("      if (this.present" + ordinal + ") {");
+    }
+    String indent = discoverable ? "  " : "";
 
     if (ct == null) { // No converter
       JDBCGetter g = JDBC_GETTERS.get(javaClass);
@@ -1602,16 +1605,19 @@ public class DAO {
       ExternalClass jc = ExternalClass.of(javaClass);
       if (g != null) {
         if (g.returnsPrimitiveType()) {
-          w.println("      ", jc, " " + var + " = rs." + g.getResultSetMethod() + "(" + ordinal + "); // " + cn);
-          w.println("      if (rs.wasNull()) " + var + " = null;");
-          w.println("      row." + setter + "(" + var + ");");
+          w.println(indent + "      ", jc,
+              " " + var + " = rs." + g.getResultSetMethod() + "(" + colName + "); // " + cn);
+          w.println(indent + "      if (rs.wasNull()) " + var + " = null;");
+          w.println(indent + "      row." + setter + "(" + var + ");");
         } else {
-          w.println("      ", jc, " " + var + " = rs." + g.getResultSetMethod() + "(" + ordinal + "); // " + cn);
-          w.println("      row." + setter + "(" + var + ");");
+          w.println(indent + "      ", jc,
+              " " + var + " = rs." + g.getResultSetMethod() + "(" + colName + "); // " + cn);
+          w.println(indent + "      row." + setter + "(" + var + ");");
         }
       } else {
-        w.println("      ", jc, " " + var + " = rs.getObject(" + ordinal + ", ", javaClass, ".class); // " + cn);
-        w.println("      row." + setter + "(" + var + ");");
+        w.println(indent + "      ", jc, " " + var + " = rs.getObject(" + colName + ", ", javaClass,
+            ".class); // " + cn);
+        w.println(indent + "      row." + setter + "(" + var + ");");
       }
     } else { // Converter specified
       String raw = "raw" + ordinal;
@@ -1624,22 +1630,27 @@ public class DAO {
       String property = this.converterProperties.get(ct.getName());
       if (g != null) {
         if (g.returnsPrimitiveType()) {
-          w.println("      ", rc, " " + raw + " = rs." + g.getResultSetMethod() + "(" + ordinal + "); // " + cn);
-          w.println("      if (rs.wasNull()) " + raw + " = null;");
-          w.println("      ", mc, " " + var + " = " + property + ".decode(" + raw + ", conn);");
-          w.println("      row." + setter + "(" + var + ");");
+          w.println(indent + "      ", rc,
+              " " + raw + " = rs." + g.getResultSetMethod() + "(" + colName + "); // " + cn);
+          w.println(indent + "      if (rs.wasNull()) " + raw + " = null;");
+          w.println(indent + "      ", mc, " " + var + " = " + property + ".decode(" + raw + ", conn);");
+          w.println(indent + "      row." + setter + "(" + var + ");");
         } else {
-          w.println("      ", rc, " " + raw + " = rs." + g.getResultSetMethod() + "(" + ordinal + "); // " + cn);
-          w.println("      ", mc, " " + var + " = " + property + ".decode(" + raw + ", conn);");
-          w.println("      row." + setter + "(" + var + ");");
+          w.println(indent + "      ", rc,
+              " " + raw + " = rs." + g.getResultSetMethod() + "(" + colName + "); // " + cn);
+          w.println(indent + "      ", mc, " " + var + " = " + property + ".decode(" + raw + ", conn);");
+          w.println(indent + "      row." + setter + "(" + var + ");");
         }
       } else {
-        w.println("      ", rc, " " + raw + " = rs.getObject(" + ordinal + ", ", rc, ".class); // " + cn);
-        w.println("      ", mc, " " + var + " = " + property + ".decode(" + raw + ", conn);");
-        w.println("      row." + setter + "(" + var + ");");
+        w.println(indent + "      ", rc, " " + raw + " = rs.getObject(" + colName + ", ", rc, ".class); // " + cn);
+        w.println(indent + "      ", mc, " " + var + " = " + property + ".decode(" + raw + ", conn);");
+        w.println(indent + "      row." + setter + "(" + var + ");");
       }
     }
 
+    if (discoverable) {
+      w.println("      }");
+    }
   }
 
   private void writeNitroQuery(QueryMethodTag q, int n) throws ControlledException {
@@ -1693,6 +1704,8 @@ public class DAO {
 
   }
 
+  // TODO: Just a marker
+
   private void writeNitroSelect(SelectMethodMetadata s, int sno) throws ControlledException {
 
     String queryName = "select" + sno;
@@ -1723,13 +1736,9 @@ public class DAO {
 
     // 2. Row Reader
 
-    String rowReaderName;
-    if (this.isExecutor()) {
-      rowReaderName = "rowReader" + sno;
-      this.writeNitroSelectRowReaderProperty(s, rowReaderName);
-    } else {
-      rowReaderName = "rowReader";
-    }
+    String rowReaderClass = "RowReader" + sno;
+    String rowReaderObject = "rowReader" + sno;
+    this.writeNitroSelectRowReaderProperty(s, rowReaderClass, rowReaderObject);
 
     // 3. Method
 
@@ -1751,8 +1760,9 @@ public class DAO {
       w.println("    context.add(\"" + p.getName() + "\", " + p.getName() + ");");
     }
 
+    w.println("    " + rowReaderClass + " rr = new " + rowReaderClass + "();");
     w.print("    ", PreparedSelectQuery.class, "<", rc, "> preparedQuery = ");
-    w.println("this." + queryName + ".prepare(context, this.", rowReaderName, ");");
+    w.println("this." + queryName + ".prepare(context, rr);");
 
     fragmentLogging();
 
@@ -1765,24 +1775,55 @@ public class DAO {
 
   }
 
-  private void writeNitroSelectRowReaderProperty(SelectMethodMetadata s, String rowReaderName) {
+  // TODO: Just a marker
+
+  private void writeNitroSelectRowReaderProperty(SelectMethodMetadata s, String rowReaderClass,
+      String rowReaderObject) {
     SelectMethodReturnType rt = s.getReturnType(this.classPackage);
     ExternalClass m = ExternalClass.of(rt.getBaseReturnVOFullClassName());
     rt.getSoloVO();
 
     w.println();
-    w.print("  private final ", RowReader.class, "<", m, "> " + rowReaderName + " = new ");
-    w.println(RowReader.class, "<", m, ">() {");
+    w.println("  public final class " + rowReaderClass + " implements ", RowReader.class, "<", m, "> {");
     w.println();
+
+    int ordinal = 1;
+    for (ColumnMetadata cm : s.getColumns()) {
+      w.println("    private boolean present" + ordinal + " = false;");
+      ordinal++;
+    }
+    w.println();
+
+    w.println("    @", Override.class);
+    w.println("    public void discoverColumns(ResultSet rs) throws SQLException {");
+    w.println("      ", ResultSetMetaData.class, " m = rs.getMetaData();");
+    ordinal = 1;
+    for (ColumnMetadata cm : s.getColumns()) {
+      w.println("      present" + ordinal + " = false;");
+      ordinal++;
+    }
+    w.println("      int n = m.getColumnCount();");
+    w.println("      for (int i = 1; i <= n; i++) {");
+    w.println("        String l = m.getColumnLabel(i);");
+    ordinal = 1;
+    for (ColumnMetadata cm : s.getColumns()) {
+      String label = SUtil.escapeJavaString(cm.getLabel());
+      w.println("        if (\"" + label + "\".equals(l)) present" + ordinal + " = true;");
+      ordinal++;
+    }
+    w.println("      }");
+    w.println("    }");
+    w.println();
+
     w.println("    @", Override.class);
     w.print("    public ", m, " readRowFrom(", ResultSet.class, " rs, ");
     w.print(Connection.class, " conn) ");
     w.println("throws ", SQLException.class, " {");
     w.println("      ", m, " row = applicationContext.getBean(", m, ".class);");
 
-    int ordinal = 1;
+    ordinal = 1;
     for (ColumnMetadata cm : s.getColumns()) {
-      this.writeReaderLogic(cm, ordinal);
+      this.writeReaderLogic(cm, ordinal, true);
       ordinal++;
     }
 

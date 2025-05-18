@@ -105,7 +105,7 @@ where balance >= 300
 
     <select method="findTAccounts" vo="TAccount">
       <parameter name="includeBalance" java-type="Boolean" />
-      select id, name<if test="includeBalance">, balance</if>
+      select id, name as xname, 7*3 as total<if test="includeBalance">, balance, type as xtype, 9 * 5 as subtotal</if>
       from account
       where balance >= 100
     </select> 

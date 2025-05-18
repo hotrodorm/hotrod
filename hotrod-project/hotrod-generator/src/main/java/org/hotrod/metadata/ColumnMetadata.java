@@ -453,7 +453,7 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
 
   @Override
   public String getLabel() {
-    return null;
+    return this.columnName;
   }
 
   public String getTypeName() {

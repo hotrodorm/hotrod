@@ -36,6 +36,7 @@ public class DynCursor<R> implements Cursor<R> {
       } else {
         this.rowReader = rowReader;
       }
+      this.rowReader.discoverColumns(this.rs);
 
     } catch (SQLException e) {
       try {
@@ -124,6 +125,11 @@ public class DynCursor<R> implements Cursor<R> {
       for (int i = 1; i <= columnCount; i++) {
         columns.add(rm.getColumnName(i));
       }
+    }
+
+    @Override
+    public void discoverColumns(ResultSet rs) throws SQLException {
+      // nothing to do; all columns designated
     }
 
     @SuppressWarnings("unchecked")

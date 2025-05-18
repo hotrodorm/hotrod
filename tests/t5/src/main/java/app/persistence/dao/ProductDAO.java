@@ -92,14 +92,14 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     public Product readRowFrom(ResultSet rs, Connection conn) throws SQLException {
       Product row = applicationContext.getBean(Product.class);
 
-      Integer col1 = rs.getInt(1); // ID
+      Integer col1 = rs.getInt("ID"); // ID
       if (rs.wasNull()) col1 = null;
       row.setId(col1);
 
-      String col2 = rs.getString(2); // TYPE
+      String col2 = rs.getString("TYPE"); // TYPE
       row.setType(col2);
 
-      Integer col3 = rs.getInt(3); // SHIPPING
+      Integer col3 = rs.getInt("SHIPPING"); // SHIPPING
       if (rs.wasNull()) col3 = null;
       row.setShipping(col3);
 

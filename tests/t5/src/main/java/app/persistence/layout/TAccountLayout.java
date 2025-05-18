@@ -13,8 +13,11 @@ public class TAccountLayout implements Serializable {
   // Expression properties
 
   protected Integer id = null;
-  protected String name = null;
+  protected String xname = null;
+  protected Integer total = null;
   protected Integer balance = null;
+  protected String xtype = null;
+  protected Integer subtotal = null;
 
   // getters & setters
 
@@ -26,12 +29,20 @@ public class TAccountLayout implements Serializable {
     this.id = id;
   }
 
-  public final String getName() {
-    return this.name;
+  public final String getXname() {
+    return this.xname;
   }
 
-  public final void setName(final java.lang.String name) {
-    this.name = name;
+  public final void setXname(final java.lang.String xname) {
+    this.xname = xname;
+  }
+
+  public final Integer getTotal() {
+    return this.total;
+  }
+
+  public final void setTotal(final java.lang.Integer total) {
+    this.total = total;
   }
 
   public final Integer getBalance() {
@@ -42,14 +53,33 @@ public class TAccountLayout implements Serializable {
     this.balance = balance;
   }
 
+  public final String getXtype() {
+    return this.xtype;
+  }
+
+  public final void setXtype(final java.lang.String xtype) {
+    this.xtype = xtype;
+  }
+
+  public final Integer getSubtotal() {
+    return this.subtotal;
+  }
+
+  public final void setSubtotal(final java.lang.Integer subtotal) {
+    this.subtotal = subtotal;
+  }
+
   // to string
 
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append(super.toString() + "\n");
     sb.append("- id=" + this.id + "\n");
-    sb.append("- name=" + this.name + "\n");
-    sb.append("- balance=" + this.balance);
+    sb.append("- xname=" + this.xname + "\n");
+    sb.append("- total=" + this.total + "\n");
+    sb.append("- balance=" + this.balance + "\n");
+    sb.append("- xtype=" + this.xtype + "\n");
+    sb.append("- subtotal=" + this.subtotal);
     return sb.toString();
   }
 
@@ -58,8 +88,11 @@ public class TAccountLayout implements Serializable {
   public JSONObject toJSONObject() {
     JSONObject obj = new JSONObject();
     obj.addProperty("id", this.id);
-    obj.addProperty("name", this.name);
+    obj.addProperty("xname", this.xname);
+    obj.addProperty("total", this.total);
     obj.addProperty("balance", this.balance);
+    obj.addProperty("xtype", this.xtype);
+    obj.addProperty("subtotal", this.subtotal);
     return obj;
   }
 

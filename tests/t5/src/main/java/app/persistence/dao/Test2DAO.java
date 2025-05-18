@@ -5,6 +5,7 @@ package app.persistence.dao;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
@@ -71,31 +72,82 @@ public class Test2DAO implements Serializable, ApplicationContextAware {
   private void initializeSelect0() {
     this.select0 = dyn
       .literal("\n      ")
-      .literal("\n      select id, name")
+      .literal("\n      select id, name as xname, 7*3 as total")
       .if_("includeBalance")
-        .literal(", balance")
+        .literal(", balance, type as xtype, 9 * 5 as subtotal")
       .endif()
       .literal("\n      from account\n      where balance >= 100\n    ")
       .endSelectQuery();
   }
 
 
-  private final RowReader<TAccount> rowReader0 = new RowReader<TAccount>() {
+  public final class RowReader0 implements RowReader<TAccount> {
+
+    private boolean present1 = false;
+    private boolean present2 = false;
+    private boolean present3 = false;
+    private boolean present4 = false;
+    private boolean present5 = false;
+    private boolean present6 = false;
+
+    @Override
+    public void discoverColumns(ResultSet rs) throws SQLException {
+      ResultSetMetaData m = rs.getMetaData();
+      present1 = false;
+      present2 = false;
+      present3 = false;
+      present4 = false;
+      present5 = false;
+      present6 = false;
+      int n = m.getColumnCount();
+      for (int i = 1; i <= n; i++) {
+        String l = m.getColumnLabel(i);
+        if ("ID".equals(l)) present1 = true;
+        if ("XNAME".equals(l)) present2 = true;
+        if ("TOTAL".equals(l)) present3 = true;
+        if ("BALANCE".equals(l)) present4 = true;
+        if ("XTYPE".equals(l)) present5 = true;
+        if ("SUBTOTAL".equals(l)) present6 = true;
+      }
+    }
 
     @Override
     public TAccount readRowFrom(ResultSet rs, Connection conn) throws SQLException {
       TAccount row = applicationContext.getBean(TAccount.class);
 
-      Integer col1 = rs.getInt(1); // ID
-      if (rs.wasNull()) col1 = null;
-      row.setId(col1);
+      if (this.present1) {
+        Integer col1 = rs.getInt("ID"); // ID
+        if (rs.wasNull()) col1 = null;
+        row.setId(col1);
+      }
 
-      String col2 = rs.getString(2); // NAME
-      row.setName(col2);
+      if (this.present2) {
+        String col2 = rs.getString("XNAME"); // XNAME
+        row.setXname(col2);
+      }
 
-      Integer col3 = rs.getInt(3); // BALANCE
-      if (rs.wasNull()) col3 = null;
-      row.setBalance(col3);
+      if (this.present3) {
+        Integer col3 = rs.getInt("TOTAL"); // TOTAL
+        if (rs.wasNull()) col3 = null;
+        row.setTotal(col3);
+      }
+
+      if (this.present4) {
+        Integer col4 = rs.getInt("BALANCE"); // BALANCE
+        if (rs.wasNull()) col4 = null;
+        row.setBalance(col4);
+      }
+
+      if (this.present5) {
+        String col5 = rs.getString("XTYPE"); // XTYPE
+        row.setXtype(col5);
+      }
+
+      if (this.present6) {
+        Integer col6 = rs.getInt("SUBTOTAL"); // SUBTOTAL
+        if (rs.wasNull()) col6 = null;
+        row.setSubtotal(col6);
+      }
 
       return row;
     }
@@ -104,7 +156,8 @@ public class Test2DAO implements Serializable, ApplicationContextAware {
   public List<TAccount> findTAccounts(Boolean includeBalance) throws DynamicExpressionException, SQLException {
     Parameters context = this.dyn.newParameters();
     context.add("includeBalance", includeBalance);
-    PreparedSelectQuery<TAccount> preparedQuery = this.select0.prepare(context, this.rowReader0);
+    RowReader0 rr = new RowReader0();
+    PreparedSelectQuery<TAccount> preparedQuery = this.select0.prepare(context, rr);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       List<TAccount> rows = preparedQuery.execute(conn);
@@ -123,26 +176,56 @@ public class Test2DAO implements Serializable, ApplicationContextAware {
   }
 
 
-  private final RowReader<BigAccount> rowReader1 = new RowReader<BigAccount>() {
+  public final class RowReader1 implements RowReader<BigAccount> {
+
+    private boolean present1 = false;
+    private boolean present2 = false;
+    private boolean present3 = false;
+    private boolean present4 = false;
+
+    @Override
+    public void discoverColumns(ResultSet rs) throws SQLException {
+      ResultSetMetaData m = rs.getMetaData();
+      present1 = false;
+      present2 = false;
+      present3 = false;
+      present4 = false;
+      int n = m.getColumnCount();
+      for (int i = 1; i <= n; i++) {
+        String l = m.getColumnLabel(i);
+        if ("ID".equals(l)) present1 = true;
+        if ("BALANCE".equals(l)) present2 = true;
+        if ("STATUS".equals(l)) present3 = true;
+        if ("SCORE".equals(l)) present4 = true;
+      }
+    }
 
     @Override
     public BigAccount readRowFrom(ResultSet rs, Connection conn) throws SQLException {
       BigAccount row = applicationContext.getBean(BigAccount.class);
 
-      Integer col1 = rs.getInt(1); // ID
-      if (rs.wasNull()) col1 = null;
-      row.setId(col1);
+      if (this.present1) {
+        Integer col1 = rs.getInt("ID"); // ID
+        if (rs.wasNull()) col1 = null;
+        row.setId(col1);
+      }
 
-      Integer col2 = rs.getInt(2); // BALANCE
-      if (rs.wasNull()) col2 = null;
-      row.setBalance(col2);
+      if (this.present2) {
+        Integer col2 = rs.getInt("BALANCE"); // BALANCE
+        if (rs.wasNull()) col2 = null;
+        row.setBalance(col2);
+      }
 
-      String col3 = rs.getString(3); // STATUS
-      row.setStatus(col3);
+      if (this.present3) {
+        String col3 = rs.getString("STATUS"); // STATUS
+        row.setStatus(col3);
+      }
 
-      Integer col4 = rs.getInt(4); // SCORE
-      if (rs.wasNull()) col4 = null;
-      row.setScore(col4);
+      if (this.present4) {
+        Integer col4 = rs.getInt("SCORE"); // SCORE
+        if (rs.wasNull()) col4 = null;
+        row.setScore(col4);
+      }
 
       return row;
     }
@@ -150,7 +233,8 @@ public class Test2DAO implements Serializable, ApplicationContextAware {
   };
   public List<BigAccount> findBigAccounts() throws DynamicExpressionException, SQLException {
     Parameters context = this.dyn.newParameters();
-    PreparedSelectQuery<BigAccount> preparedQuery = this.select1.prepare(context, this.rowReader1);
+    RowReader1 rr = new RowReader1();
+    PreparedSelectQuery<BigAccount> preparedQuery = this.select1.prepare(context, rr);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       List<BigAccount> rows = preparedQuery.execute(conn);

@@ -5,6 +5,7 @@ package app.persistence.dao;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.time.LocalDateTime;
@@ -94,28 +95,28 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     public Account readRowFrom(ResultSet rs, Connection conn) throws SQLException {
       Account row = applicationContext.getBean(Account.class);
 
-      Integer col1 = rs.getInt(1); // ID
+      Integer col1 = rs.getInt("ID"); // ID
       if (rs.wasNull()) col1 = null;
       row.setId(col1);
 
-      String col2 = rs.getString(2); // NAME
+      String col2 = rs.getString("NAME"); // NAME
       row.setName(col2);
 
-      String col3 = rs.getString(3); // TYPE
+      String col3 = rs.getString("TYPE"); // TYPE
       row.setType(col3);
 
-      Integer col4 = rs.getInt(4); // BALANCE
+      Integer col4 = rs.getInt("BALANCE"); // BALANCE
       if (rs.wasNull()) col4 = null;
       row.setBalance(col4);
 
-      Integer col5 = rs.getInt(5); // ACTIVE
+      Integer col5 = rs.getInt("ACTIVE"); // ACTIVE
       if (rs.wasNull()) col5 = null;
       row.setActive(col5);
 
-      LocalDateTime col6 = rs.getObject(6, java.time.LocalDateTime.class); // UPDATED_AT
+      LocalDateTime col6 = rs.getObject("UPDATED_AT", java.time.LocalDateTime.class); // UPDATED_AT
       row.setUpdatedAt(col6);
 
-      Integer col7 = rs.getInt(7); // VERSION
+      Integer col7 = rs.getInt("VERSION"); // VERSION
       if (rs.wasNull()) col7 = null;
       row.setVersion(col7);
 
@@ -592,9 +593,91 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .endSelectQuery();
   }
 
+
+  public final class RowReader0 implements RowReader<Account> {
+
+    private boolean present1 = false;
+    private boolean present2 = false;
+    private boolean present3 = false;
+    private boolean present4 = false;
+    private boolean present5 = false;
+    private boolean present6 = false;
+    private boolean present7 = false;
+
+    @Override
+    public void discoverColumns(ResultSet rs) throws SQLException {
+      ResultSetMetaData m = rs.getMetaData();
+      present1 = false;
+      present2 = false;
+      present3 = false;
+      present4 = false;
+      present5 = false;
+      present6 = false;
+      present7 = false;
+      int n = m.getColumnCount();
+      for (int i = 1; i <= n; i++) {
+        String l = m.getColumnLabel(i);
+        if ("ID".equals(l)) present1 = true;
+        if ("NAME".equals(l)) present2 = true;
+        if ("TYPE".equals(l)) present3 = true;
+        if ("BALANCE".equals(l)) present4 = true;
+        if ("ACTIVE".equals(l)) present5 = true;
+        if ("UPDATED_AT".equals(l)) present6 = true;
+        if ("VERSION".equals(l)) present7 = true;
+      }
+    }
+
+    @Override
+    public Account readRowFrom(ResultSet rs, Connection conn) throws SQLException {
+      Account row = applicationContext.getBean(Account.class);
+
+      if (this.present1) {
+        Integer col1 = rs.getInt("ID"); // ID
+        if (rs.wasNull()) col1 = null;
+        row.setId(col1);
+      }
+
+      if (this.present2) {
+        String col2 = rs.getString("NAME"); // NAME
+        row.setName(col2);
+      }
+
+      if (this.present3) {
+        String col3 = rs.getString("TYPE"); // TYPE
+        row.setType(col3);
+      }
+
+      if (this.present4) {
+        Integer col4 = rs.getInt("BALANCE"); // BALANCE
+        if (rs.wasNull()) col4 = null;
+        row.setBalance(col4);
+      }
+
+      if (this.present5) {
+        Integer col5 = rs.getInt("ACTIVE"); // ACTIVE
+        if (rs.wasNull()) col5 = null;
+        row.setActive(col5);
+      }
+
+      if (this.present6) {
+        LocalDateTime col6 = rs.getObject("UPDATED_AT", java.time.LocalDateTime.class); // UPDATED_AT
+        row.setUpdatedAt(col6);
+      }
+
+      if (this.present7) {
+        Integer col7 = rs.getInt("VERSION"); // VERSION
+        if (rs.wasNull()) col7 = null;
+        row.setVersion(col7);
+      }
+
+      return row;
+    }
+
+  };
   public List<Account> findBigAccounts() throws DynamicExpressionException, SQLException {
     Parameters context = this.dyn.newParameters();
-    PreparedSelectQuery<Account> preparedQuery = this.select0.prepare(context, this.rowReader);
+    RowReader0 rr = new RowReader0();
+    PreparedSelectQuery<Account> preparedQuery = this.select0.prepare(context, rr);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       List<Account> rows = preparedQuery.execute(conn);
