@@ -60,9 +60,11 @@ public class Test2DAO implements Serializable, ApplicationContextAware {
     this.applicationContext = applicationContext;
   }
 
+  @SuppressWarnings("unused")
   @Autowired
   private LiveSQL sql;
 
+  @SuppressWarnings("unused")
   private LiveSQLContext context;
 
   // NITRO SELECT: findTAccounts
@@ -79,7 +81,6 @@ public class Test2DAO implements Serializable, ApplicationContextAware {
       .literal("\n      from account\n      where balance >= 100\n    ")
       .endSelectQuery();
   }
-
 
   public final class RowReader0 implements RowReader<TAccount> {
 
@@ -174,7 +175,6 @@ public class Test2DAO implements Serializable, ApplicationContextAware {
       .literal("\nselect id, balance,\n  case when active then 'Active' else 'Inactive' end as status,\n  cast(case when type = 'CHK' then balance * 1.5 else balance * 1.2 end as int) as score\nfrom account\nwhere balance >= 200\n    ")
       .endSelectQuery();
   }
-
 
   public final class RowReader1 implements RowReader<BigAccount> {
 

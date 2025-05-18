@@ -10,6 +10,7 @@ import java.util.Set;
 public class DynamicReader {
 
   private ResultSet rs;
+  @SuppressWarnings("unused")
   private Connection conn;
   private Set<String> columnLabels;
 

@@ -326,10 +326,16 @@ public class DAO {
     w.println("  }");
     w.println();
 
+    if (this.isExecutor()) {
+      w.println("  @", SuppressWarnings.class, "(\"unused\")");
+    }
     w.println("  @", Const.AUTOWIRED);
     w.println("  private ", LiveSQL.class, " sql;");
     w.println();
 
+    if (this.isExecutor()) {
+      w.println("  @", SuppressWarnings.class, "(\"unused\")");
+    }
     w.println("  private ", LiveSQLContext.class, " context;");
 
   }
@@ -1732,13 +1738,12 @@ public class DAO {
 
     w.println("      .endSelectQuery();");
     w.println("  }");
-    w.println();
 
     // 2. Row Reader
 
     String rowReaderClass = "RowReader" + sno;
     String rowReaderObject = "rowReader" + sno;
-    this.writeNitroSelectRowReaderProperty(s, rowReaderClass, rowReaderObject);
+    this.writeNitroSelectRowReaderClass(s, rowReaderClass, rowReaderObject);
 
     // 3. Method
 
@@ -1777,8 +1782,8 @@ public class DAO {
 
   // TODO: Just a marker
 
-  private void writeNitroSelectRowReaderProperty(SelectMethodMetadata s, String rowReaderClass,
-      String rowReaderObject) {
+  @SuppressWarnings("unused")
+  private void writeNitroSelectRowReaderClass(SelectMethodMetadata s, String rowReaderClass, String rowReaderObject) {
     SelectMethodReturnType rt = s.getReturnType(this.classPackage);
     ExternalClass m = ExternalClass.of(rt.getBaseReturnVOFullClassName());
     rt.getSoloVO();

@@ -593,7 +593,6 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .endSelectQuery();
   }
 
-
   public final class RowReader0 implements RowReader<Account> {
 
     private boolean present1 = false;

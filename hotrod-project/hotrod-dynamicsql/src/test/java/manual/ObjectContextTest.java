@@ -20,6 +20,7 @@ public class ObjectContextTest {
 
     JexlExpression ex = JEXLDynamicExpression.JEXL_ENGINE.createExpression(myExpr);
 
+    @SuppressWarnings("unused")
     ObjectContext<MyWidget> ctx = new ObjectContext<>(JEXLDynamicExpression.JEXL_ENGINE, w);
     JEXLObjectParameterContext ctx2 = JEXLObjectParameterContext
         .of(new ObjectContext<>(JEXLDynamicExpression.JEXL_ENGINE, w));
