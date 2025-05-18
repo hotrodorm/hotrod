@@ -39,6 +39,11 @@ public class ParameterInjection implements SQLSegment {
   }
 
   @Override
+  public String renderSQLFoundation(ParameterRenderer parameterRenderer) {
+    return "";
+  }
+
+  @Override
   public String renderStatic(ParameterRenderer parameterRenderer) {
     return "${" + this.name + "}";
   }

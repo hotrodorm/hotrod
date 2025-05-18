@@ -1,6 +1,7 @@
 package org.hotrod.config;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -13,6 +14,8 @@ import org.hotrod.metadata.Metadata;
 
 @XmlRootElement(name = "not-a-tag")
 public class SequenceOfParts extends EnhancedSQLPart {
+
+  private static final Logger log = Logger.getLogger(SequenceOfParts.class.getName());
 
   private static final long serialVersionUID = 1L;
 
@@ -41,6 +44,15 @@ public class SequenceOfParts extends EnhancedSQLPart {
   public String renderSQLAngle(DatabaseAdapter adapter, ColumnsProvider cp) {
     // Nothing to do
     return null;
+  }
+
+  @Override
+  public String renderSQLFoundation(ParameterRenderer parameterRenderer) {
+    StringBuilder sb = new StringBuilder();
+    for (EnhancedSQLPart p : super.eparts) {
+      sb.append(p.renderSQLFoundation(parameterRenderer));
+    }
+    return sb.toString();
   }
 
   @Override

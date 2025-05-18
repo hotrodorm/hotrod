@@ -27,6 +27,11 @@ public class VerbatimTextPart implements SQLSegment {
   }
 
   @Override
+  public String renderSQLFoundation(ParameterRenderer parameterRenderer) {
+    return this.content;
+  }
+
+  @Override
   public String renderStatic(final ParameterRenderer parameterRenderer) {
     return this.content;
   }

@@ -305,6 +305,7 @@ public class Metadata {
         try {
           dm.gatherSelectsMetadataPhase1(this, cr, jdbcTag);
         } catch (InvalidConfigurationFileException e) {
+          e.printStackTrace();
           throw new ControlledException(e.getTag().getSourceLocation(), e.getMessage());
         }
       }

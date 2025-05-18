@@ -13,9 +13,10 @@ public class DynamicInsertQuery extends DynamicQuery {
   private String primaryKeyParameterName;
   private String[] generatedKeysNames;
 
-  public DynamicInsertQuery(List<QuerySegment> segments, PrimaryKeyRetrievalMode primaryKeyRetrievalMode,
-      String sequencePreFetchSQL, String primaryKeyParameterName, String[] generatedKeysNames) {
-    super(segments);
+  public DynamicInsertQuery(DynamicExpressionFactory factory, List<QuerySegment> segments,
+      PrimaryKeyRetrievalMode primaryKeyRetrievalMode, String sequencePreFetchSQL, String primaryKeyParameterName,
+      String[] generatedKeysNames) {
+    super(factory, segments);
     this.primaryKeyRetrievalMode = primaryKeyRetrievalMode;
     this.sequencePreFetchSQL = sequencePreFetchSQL;
     this.primaryKeyParameterName = primaryKeyParameterName;

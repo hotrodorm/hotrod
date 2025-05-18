@@ -1695,8 +1695,6 @@ public class DAO {
 
   private void writeNitroSelect(SelectMethodMetadata s, int sno) throws ControlledException {
 
-//    log.info("Nitro SELECT 1");
-
     String queryName = "select" + sno;
     String method = s.getMethod();
 
@@ -1715,6 +1713,7 @@ public class DAO {
     w.println("    this." + queryName + " = dyn");
 
     List<EnhancedSQLPart> parts = s.getParts();
+
     NitroRenderer r = new NitroRenderer();
     r.renderSelect(parts, w);
 

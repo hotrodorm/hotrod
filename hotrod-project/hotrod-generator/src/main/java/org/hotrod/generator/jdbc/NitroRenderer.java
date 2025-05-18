@@ -138,6 +138,30 @@ public class NitroRenderer {
       render((SequenceOfParts) p, w, level);
     } else if (p instanceof TextContent) {
       render((TextContent) p, w, level);
+    } else if (p instanceof LiteralTextPart) {
+      render((LiteralTextPart) p, w, level);
+    } else if (p instanceof IfTag) {
+      render((IfTag) p, w, level);
+    } else if (p instanceof WhereTag) {
+      render((WhereTag) p, w, level);
+    } else if (p instanceof SetTag) {
+      render((SetTag) p, w, level);
+    } else if (p instanceof ChooseTag) {
+      render((ChooseTag) p, w, level);
+    } else if (p instanceof WhenTag) {
+      render((WhenTag) p, w, level);
+    } else if (p instanceof OtherwiseTag) {
+      render((OtherwiseTag) p, w, level);
+    } else if (p instanceof TrimTag) {
+      render((TrimTag) p, w, level);
+    } else if (p instanceof BindTag) {
+      render((BindTag) p, w, level);
+    } else if (p instanceof ForEachTag) {
+      render((ForEachTag) p, w, level);
+    } else if (p instanceof ParameterisableTextPart) {
+      render((ParameterisableTextPart) p, w, level);
+    } else if (p instanceof CollectionOfPartsTag) {
+      render((CollectionOfPartsTag) p, w, level);
     } else {
       throw new ControlledException(
           "Could not render Nitro query: unrecognized Dynamic SQL part of type '" + p.getClass().getName() + "'");
@@ -229,8 +253,7 @@ public class NitroRenderer {
   private void render(ForEachTag t, ClassWriter w, int level) throws ControlledException {
     log.fine("[" + level + "] render(foreach)");
     w.println(indent(level) + ".foreach(" + renderString(t.getItem()) + ", " + renderString(t.getCollection()) + ", "
-        + renderString(t.getOpen()) + ", " + renderString(t.getSeparator()) + ", " + renderString(t.getClose())
-        + ")");
+        + renderString(t.getOpen()) + ", " + renderString(t.getSeparator()) + ", " + renderString(t.getClose()) + ")");
     render(t.getParts(), w, level + 1, RENDER_ALL);
     w.println(indent(level) + ".endforeach()");
   }

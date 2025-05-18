@@ -3,7 +3,6 @@ package org.hotrod.dynamicsql.insert;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
@@ -14,6 +13,7 @@ import org.hotrod.dynamicsql.parameters.ParameterInstance;
 
 public class PreparedInsertIdentityInlineKeyResultSetQuery extends InsertExecutor {
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(PreparedInsertIdentityInlineKeyResultSetQuery.class.getName());
 
   @Override
@@ -34,7 +34,6 @@ public class PreparedInsertIdentityInlineKeyResultSetQuery extends InsertExecuto
     super.applyParameters(parameters, ps);
     ps.executeUpdate();
     try (ResultSet rs = ps.getGeneratedKeys()) {
-      ResultSetMetaData rm = rs.getMetaData();
       if (rs.next()) {
         return rs.getLong(1);
       }

@@ -157,7 +157,7 @@
       <xsd:element name="parameter" type="parameter-type" minOccurs="0" maxOccurs="unbounded" />
       <xsd:element name="column" type="column-type" minOccurs="0" maxOccurs="unbounded" />
       <xsd:choice minOccurs="0" maxOccurs="unbounded">
-        <xsd:element name="complement" type="complement-type" />
+        <xsd:group ref="leading-dynamicsql-tag" minOccurs="0" maxOccurs="unbounded" />
         <xsd:element name="columns" type="columns-type" />
       </xsd:choice>
     </xsd:sequence>
@@ -277,6 +277,7 @@
       <xsd:element name="foreach" type="foreach-type" />
       <xsd:element name="bind" type="bind-type" />
       <xsd:element name="set" type="set-type" />
+      <xsd:element name="complement" type="complement-type" />
     </xsd:choice>
   </xsd:group>
 

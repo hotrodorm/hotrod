@@ -33,6 +33,11 @@ public class VariableOccurrence implements SQLSegment {
   // Rendering
 
   @Override
+  public String renderSQLFoundation(ParameterRenderer parameterRenderer) {
+    return "";
+  }
+
+  @Override
   public String renderStatic(final ParameterRenderer parameterRenderer) {
     return this.name;
   }

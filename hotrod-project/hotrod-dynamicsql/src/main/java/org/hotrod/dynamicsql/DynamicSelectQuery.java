@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.segments.QuerySegment;
 import org.hotrod.dynamicsql.tuples.Tuple2;
@@ -14,8 +15,11 @@ import org.hotrod.dynamicsql.tuples.Tuple6;
 
 public class DynamicSelectQuery extends DynamicQuery {
 
-  public DynamicSelectQuery(List<QuerySegment> segments) {
-    super(segments);
+  private static final Logger log = Logger.getLogger(DynamicSelectQuery.class.getName());
+
+  public DynamicSelectQuery(DynamicExpressionFactory factory, List<QuerySegment> segments) {
+    super(factory, segments);
+    log.fine("init");
   }
 
   public <T> PreparedSelectQuery<T> prepare(Parameters context, RowReader<T> rr) throws DynamicExpressionException {

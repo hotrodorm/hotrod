@@ -60,6 +60,11 @@ public class LiteralTextPart extends DynamicSQLPart implements SQLSegment {
   }
 
   @Override
+  public String renderSQLFoundation(ParameterRenderer parameterRenderer) {
+    return this.text;
+  }
+
+  @Override
   public String renderStatic(final ParameterRenderer parameterRenderer) {
     return this.text;
   }

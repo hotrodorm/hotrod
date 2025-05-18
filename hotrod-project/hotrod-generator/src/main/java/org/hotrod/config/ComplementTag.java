@@ -27,14 +27,13 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.metadata.Metadata;
 
+@Deprecated
 @XmlRootElement(name = "complement")
 public class ComplementTag extends EnhancedSQLPart {
 
-  private static final long serialVersionUID = 1L;
-
-  // Constants
-
   private static final Logger log = Logger.getLogger(ComplementTag.class.getName());
+
+  private static final long serialVersionUID = 1L;
 
   // Properties - Primitive content parsing by JAXB
 
@@ -99,6 +98,15 @@ public class ComplementTag extends EnhancedSQLPart {
   @Override
   public String renderSQLAngle(final DatabaseAdapter adapter, final ColumnsProvider cp) {
     return "";
+  }
+
+  @Override
+  public String renderSQLFoundation(ParameterRenderer parameterRenderer) {
+    StringBuilder sb = new StringBuilder();
+    for (DynamicSQLPart p : this.parts) {
+      sb.append(p.renderSQLFoundation(parameterRenderer));
+    }
+    return sb.toString();
   }
 
   @Override

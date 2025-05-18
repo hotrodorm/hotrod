@@ -89,12 +89,11 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
     log.fine("flat 1 -- this.conn=" + this.conn);
 
     ResultSetParameterRenderer pr = new ResultSetParameterRenderer();
-    String foundation = SQLUtil.cleanUpSQL(ctx.getTag().renderSQLSentence(pr));
+    String sql = ctx.getTag().renderSQLFoundation(pr);
+    String foundation = SQLUtil.cleanUpSQL(sql);
 
     List<ColumnMetadata> flatColumns = new ArrayList<ColumnMetadata>();
     ctx.setFlatColumnsMetadata(flatColumns);
-
-    log.fine("flat 2 -- method=" + sm.getMethod() + " sql=" + foundation);
 
     try (PreparedStatement ps = this.conn.prepareStatement(foundation)) {
 

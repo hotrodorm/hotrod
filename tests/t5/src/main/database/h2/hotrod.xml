@@ -52,14 +52,18 @@
  -->
 
   <table name="account">
+<!-- 
+   -->
+  
   <!--
     <optimistic-locking strategy="version-number" column="version" />
     <optimistic-locking strategy="timestamp" column="updated_at" />
     <optimistic-locking strategy="full-row-check" />
     <column name="id" sequence="seq1" />
- -->    
+
     <column name="type" converter="account_type_stored_as_char" />
     <column name="active" converter="boolean_stored_as_int" />
+ -->    
 <!-- 
     <query method="activateBigAccounts">
       <parameter name="minBalance" java-type="java.lang.Long" />
@@ -74,28 +78,40 @@
  -->
  
 <!-- ###  
+  -->
     <select method="findBigAccounts">
 select *
 from account
 where balance >= 300
     </select> 
-  -->
-  
-  </table>
 
+  </table>
+<!--   
+ -->
+ 
+<!--
   <fragment file="./reporting.xml" />
   <fragment file="./buscador.xml" />
+-->  
+  
 <!--
   <fragment file="./test2.xml" />
   <table name="branch">
     <column name="is_vip" converter="boolean_stored_as_int" />
   </table>
  -->
- 
-    <!-- ###
-  -->
-   <dao name="OperationDAO">
 
+   <dao name="Test2DAO">
+
+    <select method="findTAccounts" vo="TAccount">
+      <parameter name="includeBalance" java-type="Boolean" />
+      select id, name<if test="includeBalance">, balance</if>
+      from account
+      where balance >= 100
+    </select> 
+
+    <!-- ###
+   <dao name="OperationDAO">
     <query method="activateBigAccounts">
       <parameter name="minBalance" java-type="java.lang.Long" />
       <parameter name="ids" java-type="java.util.List" jdbc-type="NUMERIC" />
@@ -133,13 +149,13 @@ where balance >= 300
       </choose>
       
     </query>
-    
+-->
     <select method="findBigAccounts" vo="BigAccount">
 select id, balance,
   case when active then 'Active' else 'Inactive' end as status,
   cast(case when type = 'CHK' then balance * 1.5 else balance * 1.2 end as int) as score
 from account
-where balance >= 300
+where balance >= 200
     </select> 
        
   </dao>

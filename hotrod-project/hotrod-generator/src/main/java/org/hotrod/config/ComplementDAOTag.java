@@ -86,6 +86,11 @@ public class ComplementDAOTag extends DynamicSQLPart {
   }
 
   @Override
+  public String renderSQLFoundation(ParameterRenderer parameterRenderer) {
+    return "";
+  }
+
+  @Override
   public String renderStatic(final ParameterRenderer parameterRenderer) {
     return "";
   }

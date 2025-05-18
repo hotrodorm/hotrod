@@ -137,6 +137,16 @@ public class TextContent extends EnhancedSQLPart {
   // Rendering
 
   @Override
+  public String renderSQLFoundation(ParameterRenderer parameterRenderer) {
+    StringBuilder sb = new StringBuilder();
+    for (SQLSegment s : this.segments) {
+      sb.append(s.renderSQLFoundation(parameterRenderer));
+    }
+    String t = sb.toString();
+    return t;
+  }
+
+  @Override
   public String renderStatic(final ParameterRenderer parameterRenderer) {
     StringBuilder sb = new StringBuilder();
     for (SQLSegment s : this.segments) {

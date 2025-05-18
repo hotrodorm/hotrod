@@ -26,6 +26,7 @@ import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.hotrod.dynamicsql.insert.PreparedInsertQuery;
 import org.hotrod.dynamicsql.insert.PrimaryKeyRetrievalMode;
 import org.hotrod.dynamicsql.tuples.Tuple3;
+import org.junit.jupiter.api.Test;
 
 public class TestExamples {
 
@@ -707,30 +708,29 @@ public class TestExamples {
   }
 
   // Example 30. Insert with Sequences
-//@Test
-public void example31() throws DynamicExpressionException, SQLException {
-  try (Connection conn = getConnection()) {
-    DynamicSQL dyn = new DynamicSQL();
+  @Test
+  public void example31() throws DynamicExpressionException, SQLException {
+    try (Connection conn = getConnection()) {
+      DynamicSQL dyn = new DynamicSQL();
 
-    DynamicInsertQuery q = dyn //
-        .literal("insert into office (name) values (") //
-        .parameter("officeName") //
-        .literal(")") //
-        .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET);
+      DynamicInsertQuery q = dyn //
+          .literal("insert into office (id, name) values (NEXT VALUE FOR seq_office, ") //
+          .parameter("officeName") //
+          .literal(")") //
+          .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET);
 
-    Parameters params = dyn.newParameters();
-    params.add("officeName", "Downtown VIP");
+      Parameters params = dyn.newParameters();
+      params.add("officeName", "Downtown VIP");
 
-    PreparedInsertQuery p = q.prepare(params);
-    System.out.println("Dynamic Query:\n" + p.getPreview());
-    Long pk = p.execute(conn);
-    System.out.println("Inserted -- new id=" + pk);
-  } catch (RuntimeException e) {
-    e.printStackTrace();
-    throw e;
+      PreparedInsertQuery p = q.prepare(params);
+      System.out.println("Dynamic Query:\n" + p.getPreview());
+      Long pk = p.execute(conn);
+      System.out.println("Inserted -- new id=" + pk);
+    } catch (RuntimeException e) {
+      e.printStackTrace();
+      throw e;
+    }
   }
-}
-
 
   Connection getConnection() throws SQLException {
     return DriverManager

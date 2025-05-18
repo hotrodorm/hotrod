@@ -122,6 +122,11 @@ public class SQLParameter implements SQLSegment {
   // Rendering
 
   @Override
+  public String renderSQLFoundation(ParameterRenderer parameterRenderer) {
+    return "";
+  }
+
+  @Override
   public String renderStatic(final ParameterRenderer parameterRenderer) {
     String r = parameterRenderer.render(this);
     return r;

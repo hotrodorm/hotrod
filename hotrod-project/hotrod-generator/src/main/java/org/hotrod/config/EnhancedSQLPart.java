@@ -17,7 +17,6 @@ public abstract class EnhancedSQLPart extends AbstractConfigurationTag {
 
   private static final long serialVersionUID = 1L;
 
-  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(EnhancedSQLPart.class.getName());
 
   // Properties
@@ -30,6 +29,7 @@ public abstract class EnhancedSQLPart extends AbstractConfigurationTag {
 
   protected EnhancedSQLPart(final String tagName) {
     super(tagName);
+    log.fine("init");
   }
 
   // Validation
@@ -48,6 +48,8 @@ public abstract class EnhancedSQLPart extends AbstractConfigurationTag {
 
   @Deprecated
   public abstract String renderStatic(final ParameterRenderer parameterRenderer);
+
+  public abstract String renderSQLFoundation(ParameterRenderer parameterRenderer);
 
   @Deprecated
   public abstract void renderXML(final SQLFormatter formatter, final ParameterRenderer parameterRenderer);

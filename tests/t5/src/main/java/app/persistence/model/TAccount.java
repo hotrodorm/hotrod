@@ -1,14 +1,14 @@
-package app.persistence.model.buscador;
+package app.persistence.model;
 
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import app.persistence.layout.buscador.FindTareasPorFiltroLayout;
+import app.persistence.layout.TAccountLayout;
 
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class FindTareasPorFiltro extends FindTareasPorFiltroLayout {
+public class TAccount extends TAccountLayout {
 
   private static final long serialVersionUID = 1L;
 

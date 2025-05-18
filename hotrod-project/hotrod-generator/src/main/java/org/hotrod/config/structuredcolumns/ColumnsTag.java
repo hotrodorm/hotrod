@@ -10,7 +10,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.hotrod.config.DaosTag;
 import org.hotrod.config.EnhancedSQLPart;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
@@ -25,7 +24,6 @@ import org.hotrod.exceptions.InvalidSQLException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.generator.jdbc.DataSetLayout;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.StructuredColumnsMetadata;
@@ -136,6 +134,11 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   @Override
   public String renderSQLAngle(final DatabaseAdapter adapter, final ColumnsProvider cp) {
     return cp.renderColumns();
+  }
+
+  @Override
+  public String renderSQLFoundation(ParameterRenderer parameterRenderer) {
+    return "";
   }
 
   @Override

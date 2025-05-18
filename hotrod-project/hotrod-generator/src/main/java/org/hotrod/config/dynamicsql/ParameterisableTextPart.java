@@ -158,6 +158,16 @@ public class ParameterisableTextPart extends DynamicSQLPart {
   }
 
   @Override
+  public String renderSQLFoundation(ParameterRenderer parameterRenderer) {
+    StringBuilder sb = new StringBuilder();
+    for (SQLSegment s : this.segments) {
+      sb.append(s.renderSQLFoundation(parameterRenderer));
+    }
+    String sss = sb.toString();
+    return sss;
+  }
+
+  @Override
   public String renderXML(final ParameterRenderer parameterRenderer) {
     StringBuilder sb = new StringBuilder();
     for (SQLSegment s : this.segments) {

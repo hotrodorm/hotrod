@@ -14,7 +14,15 @@ import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.config.EnhancedSQLPart.SQLFormatter;
+import org.hotrod.config.dynamicsql.BindTag;
+import org.hotrod.config.dynamicsql.ChooseTag;
+import org.hotrod.config.dynamicsql.DynamicSQLPart;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
+import org.hotrod.config.dynamicsql.ForEachTag;
+import org.hotrod.config.dynamicsql.IfTag;
+import org.hotrod.config.dynamicsql.SetTag;
+import org.hotrod.config.dynamicsql.TrimTag;
+import org.hotrod.config.dynamicsql.WhereTag;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.config.structuredcolumns.ColumnsTag;
 import org.hotrod.database.DatabaseAdapter;
@@ -80,8 +88,16 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
   @XmlElementRefs({ //
       @XmlElementRef(type = ParameterTag.class), //
       @XmlElementRef(type = ColumnTag.class), //
-      @XmlElementRef(type = ComplementTag.class), //
-      @XmlElementRef(type = ColumnsTag.class) //
+      @XmlElementRef(type = ColumnsTag.class), //
+
+      @XmlElementRef(type = IfTag.class), //
+      @XmlElementRef(type = ChooseTag.class), //
+      @XmlElementRef(type = WhereTag.class), //
+      @XmlElementRef(type = TrimTag.class), //
+      @XmlElementRef(type = ForEachTag.class), //
+      @XmlElementRef(type = BindTag.class), //
+      @XmlElementRef(type = SetTag.class), //
+      @XmlElementRef(type = ComplementTag.class) //
   })
   private List<Object> content = new ArrayList<Object>();
 
@@ -164,12 +180,17 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
               this.parts.add(p);
             } catch (ClassCastException e4) {
               try {
-                ColumnsTag p = (ColumnsTag) obj; // columns
-                this.structuredColumns = p;
-                this.parts.add(p);
+                DynamicSQLPart dyn = (DynamicSQLPart) obj; // dynamicsql
+                this.parts.add(dyn);
               } catch (ClassCastException e5) {
-                throw new InvalidConfigurationFileException(this, "The body of the tag <" + super.getTagName()
-                    + "> has an invalid tag (of class '" + obj.getClass().getName() + "').");
+                try {
+                  ColumnsTag p = (ColumnsTag) obj; // columns
+                  this.structuredColumns = p;
+                  this.parts.add(p);
+                } catch (ClassCastException e6) {
+                  throw new InvalidConfigurationFileException(this, "The body of the tag <" + super.getTagName()
+                      + "> has an invalid tag (of class '" + obj.getClass().getName() + "').");
+                }
               }
             }
           }
@@ -367,6 +388,15 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
     SQLFormatter formatter = new SQLFormatter();
     formatter.add(literal);
     return formatter.toString();
+  }
+
+  public String renderSQLFoundation(final ParameterRenderer parameterRenderer) {
+    StringBuilder sb = new StringBuilder();
+    for (EnhancedSQLPart p : this.parts) {
+      String st = p.renderSQLFoundation(parameterRenderer);
+      sb.append(st);
+    }
+    return sb.toString();
   }
 
   public String renderSQLSentence(final ParameterRenderer parameterRenderer) {

@@ -13,15 +13,19 @@ import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlMixed;
 
 import org.hotrod.config.AbstractConfigurationTag;
+import org.hotrod.config.EnhancedSQLPart;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.JDBCTag;
 import org.hotrod.config.ParameterTag;
+import org.hotrod.config.structuredcolumns.ColumnsProvider;
+import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.metadata.Metadata;
 
-public abstract class DynamicSQLPart extends AbstractConfigurationTag {
+public abstract class DynamicSQLPart extends EnhancedSQLPart {
 
   private static final long serialVersionUID = 1L;
 
@@ -120,6 +124,61 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
 
   public void validateAgainstDatabase(final Generator generator) throws InvalidConfigurationFileException {
     // Nothing to do
+  }
+
+  @Override
+  public void validateAgainstDatabase(Metadata metadata) throws InvalidConfigurationFileException {
+    // Nothing to do
+  }
+
+  @Override
+  public String renderSQLAngle(final DatabaseAdapter adapter, final ColumnsProvider cp) {
+    return "";
+  }
+
+  @Override
+  public void validate(final JDBCTag jdbcTag, final HotRodConfigTag config,
+      final HotRodFragmentConfigTag fragmentConfig, final ParameterDefinitions parameters,
+      final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
+
+    this.parts = new ArrayList<DynamicSQLPart>();
+    for (Object obj : this.content) {
+      DynamicSQLPart p = null;
+      try {
+        String s = (String) obj; // literal content part
+        p = new ParameterisableTextPart(s, this, parameters);
+      } catch (ClassCastException e1) {
+        try {
+          p = (DynamicSQLPart) obj; // dynamic sql part
+          p.retrievePartsAndValidate(parameters);
+        } catch (ClassCastException e2) {
+          throw new InvalidConfigurationFileException(this, "Malformed content of the <" + this.getTagName()
+              + "> tag. Invalid inner tag of class " + obj.getClass().getName());
+        }
+      }
+      this.parts.add(p);
+    }
+
+  }
+
+  @Override
+  public String renderSQLFoundation(ParameterRenderer parameterRenderer) {
+    StringBuilder sb = new StringBuilder();
+    if (this.parts != null) {
+      for (DynamicSQLPart p : this.parts) {
+        sb.append(p.renderSQLFoundation(parameterRenderer));
+      }
+    }
+    return sb.toString();
+  }
+
+  @Override
+  public void renderXML(final SQLFormatter formatter, final ParameterRenderer parameterRenderer) {
+    StringBuilder sb = new StringBuilder();
+    for (DynamicSQLPart p : this.parts) {
+      sb.append(p.renderXML(parameterRenderer));
+    }
+    formatter.add(sb.toString());
   }
 
   // Getters
