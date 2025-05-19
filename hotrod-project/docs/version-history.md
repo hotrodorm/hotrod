@@ -32,6 +32,8 @@ This is a major release of the HotRod ORM that breaks compatibility with previou
     - Converted columns can now be used in LiveSQL syntax as any other column to write predicates with/without parameters.
     - Implemented missing function: COUNT(&lt;expression>).
     - LiveSQL cursors are now revamped.
+- Torcs:
+    - New Highest Frequency Queries Ranking implemented.
 
 ## 4.8.1:
 
