@@ -5,16 +5,40 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 ## 5.0.0 (unreleased):
 
 - Core:
+    - HotRod does not use MyBatis anymore and switched to plain JDBC instead. This greatly simplifies the use case for newer Java versions and other compatibility issues.
+    - Major upgrade to the configuration files with the goal of simplifying them.
+    - New cleaner persistence layer structure.
+    - Enhanced Type Solver to resolve types from live result sets.
+    - Dialects now default to java.time types instead of java.sql.
+    - Added SQL persistence logging available at DEBUG and TRACE levels.
     - Arquetype module is removed (unused).
     - Log4j fully removed from HotRod; the generator now uses JUL for simplicity.
     - New class generator produces cleaner classes, handles references, and sorted imports.
     - Packages are changed in the hotrod library. The "runtime" segment is now removed.
     - Removed old unused classes in the hotrod library.
-    - MyBatis generator remove in favor of the plan JDBC generator.
-    - Major refactoring of the configuration file when defining the new `<jdbc>` generator.
+
+- DynamicSQL:
+    - New DynamicSQL module!
+    - Can be used in HotRod or separately in Spring or even plain Java to run dynamic queries.
+    - Straightforward syntax promotes simplicity of use, even for complex dynamic rules.
+
+- CRUD:
+    - Three Optimistic Locking strategies are now available: Version column, Timestamp columns, and Full Row Check.
+    - Cursors are now revamped and fully tested.
+
+- Nitro:
+    - DynamicSQL tags can now be used outside the complement tag.
 
 - LiveSQL:
+    - Explicit types added to LiveSQL to overwrite rules.
+    - Converted columns can now be fully used in LiveSQL, including filtering and other SQL.
     - Implementing missing function: COUNT(&lt;expression>).
+    - LiveSQL cursors are now revamped and fully tested.
+
+## 4.8.1:
+
+- LiveSQL:
+    - Fixing FOR UPDATE with no concurrency settings.
 
 ## 4.8.0:
 
@@ -22,7 +46,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
     - Advanced Locking:
         - Locking mode FOR SHARE implemented, in addition to the existing FOR UPDATE mode, for databases that support them.
         - New locking concurrency options: NOWAIT, WAIT &lt;n>, and SKIP LOCKED, for databases that support them.
-- CRUD:  
+- CRUD:
     - The new locking mode and locking concurrency options are also available in CRUD selects.
 
 ## 4.7.1:
