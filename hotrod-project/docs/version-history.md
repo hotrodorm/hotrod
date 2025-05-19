@@ -4,36 +4,34 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 
 ## 5.0.0 (unreleased):
 
+This is a major release of the HotRod ORM that breaks compatibility with previous releases. Its main goals are to fully remove the need of the MyBatis library and to refactor the configuration files and persistence layer organization.
+
 - Core:
     - HotRod does not use MyBatis anymore and switched to plain JDBC instead. This greatly simplifies the use case for newer Java versions and other compatibility issues.
     - Major upgrade to the configuration files with the goal of simplifying them.
-    - New cleaner persistence layer structure.
-    - Enhanced Type Solver to resolve types from live result sets.
-    - Dialects now default to java.time types instead of java.sql.
-    - Added SQL persistence logging available at DEBUG and TRACE levels.
-    - Arquetype module is removed (unused).
-    - Log4j fully removed from HotRod; the generator now uses JUL for simplicity.
+    - Cleaner persistence layer structure.
+    - Enhanced Type Solver to resolve types from live queries in addition to table metadata.
+    - Date/Time data types now default to java.time types instead of java.sql.
+    - Log4j fully removed from HotRod in favor of JUL.
+    - Persistence logging is available at DEBUG and TRACE levels of the DAOs.
     - New class generator produces cleaner classes, handles references, and sorted imports.
-    - Packages are changed in the hotrod library. The "runtime" segment is now removed.
+    - Packages are changed in the hotrod library. The runtime segment is now removed.
     - Removed old unused classes in the hotrod library.
-
+    - The Arquetype module is removed.
 - DynamicSQL:
     - New DynamicSQL module!
     - Can be used in HotRod or separately in Spring or even plain Java to run dynamic queries.
     - Straightforward syntax promotes simplicity of use, even for complex dynamic rules.
-
 - CRUD:
-    - Three Optimistic Locking strategies are now available: Version column, Timestamp columns, and Full Row Check.
-    - Cursors are now revamped and fully tested.
-
+    - Two new Optimistic Locking strategies implemented: Timestamp columns, and Full Row Check.
+    - Cursors are now revamped.
 - Nitro:
-    - DynamicSQL tags can now be used outside the complement tag.
-
+    - All DynamicSQL tags in Nitro can now be used outside the complement tag.
 - LiveSQL:
-    - Explicit types added to LiveSQL to overwrite rules.
-    - Converted columns can now be fully used in LiveSQL, including filtering and other SQL.
+    - LiveSQL accepts explicit data types in the select list.
+    - Converted columns can now be used in LiveSQL syntax as any other column for data selection and in predicates.
     - Implementing missing function: COUNT(&lt;expression>).
-    - LiveSQL cursors are now revamped and fully tested.
+    - LiveSQL cursors are now revamped.
 
 ## 4.8.1:
 
