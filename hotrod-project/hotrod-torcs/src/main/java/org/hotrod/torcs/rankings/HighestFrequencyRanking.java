@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import org.hotrod.torcs.QueryExecution;
 
-public class HighestResponseTimeRanking extends Ranking {
+public class HighestFrequencyRanking extends Ranking {
 
   private static final int DEFAULT_SIZE = 10;
   private static final int MIN_SIZE = 1;
@@ -16,11 +16,11 @@ public class HighestResponseTimeRanking extends Ranking {
 
   private int size;
 
-  public HighestResponseTimeRanking() {
+  public HighestFrequencyRanking() {
     this.size = DEFAULT_SIZE;
   }
 
-  public HighestResponseTimeRanking(int size) {
+  public HighestFrequencyRanking(int size) {
     setSize(size);
   }
 
@@ -37,7 +37,7 @@ public class HighestResponseTimeRanking extends Ranking {
 
   @Override
   public String getTitle() {
-    return "Highest Response Time (max: " + this.size + ")";
+    return "Highest Frequency (max: " + this.size + ")";
   }
 
   @Override
@@ -53,36 +53,26 @@ public class HighestResponseTimeRanking extends Ranking {
     return "ds" + execution.dsr.getId() + ":" + execution.sql;
   }
 
-  private String getCacheId(final RankingEntry entry) {
-    return "ds" + entry.getDataSourceReference().getId() + ":" + entry.getSQL();
-  }
-
   @Override
   public synchronized void apply(final QueryExecution execution) {
+
+    System.out.println("execution=" + execution + " - execution.dsr=" + execution.dsr);
 
     RankingEntry entry = this.cacheByDSSQL.get(this.getCacheId(execution));
 
     if (entry != null) { // 1. It's already in the ranking
-//      System.out.println(">>> Entry already in the ranking.");
-
-      if (execution.getResponseTime() > entry.getMaxTime()) {
-        upgradePosition(entry, execution.getResponseTime());
-      }
+      upgradePosition(entry, entry.executions + 1);
       entry.apply(execution);
-
     } else { // 2. New query (not in the ranking)
-//      System.out.println(">>> Entry is new.");
-
       entry = new RankingEntry(execution);
       if (insert(entry)) {
         this.cacheByDSSQL.put(this.getCacheId(execution), entry);
       }
-
     }
 
   }
 
-  private void upgradePosition(final RankingEntry entry, final int newResponseTime) {
+  private void upgradePosition(final RankingEntry entry, final int newExecutions) {
 //    System.out.println("### Upgrading entry: " + entry);
     boolean searching = true;
 
@@ -93,7 +83,7 @@ public class HighestResponseTimeRanking extends Ranking {
 //      System.out
 //          .println("-- Walking (searching=" + searching + "): " + current.getSQL() + " -- maxTime=" + current.maxTime);
       if (searching) {
-        if (newResponseTime > current.maxTime) {
+        if (newExecutions > current.executions) {
 //          System.out.println("current.pos == 0: " + (current.pos == 0) + "  current == entry: " + (current == entry));
           if (current == entry) {
             return;
@@ -115,39 +105,11 @@ public class HighestResponseTimeRanking extends Ranking {
   }
 
   private boolean insert(final RankingEntry entry) {
-    if (this.sorted.isEmpty()) {
+    if (this.sorted.size() < this.size) {
       this.sorted.add(entry);
       return true;
-    } else {
-      boolean inserted = false;
-      ListIterator<RankingEntry> lit = this.sorted.listIterator();
-      while (lit.hasNext()) {
-        RankingEntry current = lit.next();
-        if (!inserted) {
-          if (entry.maxTime > current.maxTime) {
-            lit.previous();
-            lit.add(entry);
-            lit.next();
-            inserted = true;
-          }
-        }
-      }
-
-      if (inserted) { // remove excess element
-        if (this.sorted.size() > this.size) {
-          RankingEntry removed = this.sorted.remove(this.size);
-          this.cacheByDSSQL.remove(this.getCacheId(removed));
-        }
-      } else { // insert at the end
-        if (this.sorted.size() < this.size) {
-          this.sorted.add(entry);
-          inserted = true;
-        }
-      }
-
-      return inserted;
-
     }
+    return false;
   }
 
   @Override

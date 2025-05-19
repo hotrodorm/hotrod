@@ -69,12 +69,6 @@ public class InitialQueriesRanking extends Ranking {
     return this.cacheByDSSQL.values().stream().map(e -> e.clone()).collect(Collectors.toList());
   }
 
-  @Override
-  @Deprecated
-  public Collection<RankingEntry> getRanking() {
-    return this.getEntries();
-  }
-
   // Ranking entries by other orderings
 
   public Collection<RankingEntry> getRankingByHighestResponseTime() {

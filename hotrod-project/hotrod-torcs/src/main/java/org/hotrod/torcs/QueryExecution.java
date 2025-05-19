@@ -43,7 +43,7 @@ public class QueryExecution {
     this.wasLOBParameterDetected = false;
     this.lobTypeSetter = null;
 
-    for (IndexSetter s : indexSetters.values()) {
+    for (IndexSetter s : this.indexSetters.values()) {
 //      log.info(">>> setter: " + s.getClass().getSimpleName());
       if (s.isConsumableParameter()) {
         this.wasConsumableParameterDetected = true;
@@ -55,7 +55,7 @@ public class QueryExecution {
         this.lobTypeSetter = s.getClass().getSimpleName();
       }
     }
-    for (NameSetter s : nameSetters.values()) {
+    for (NameSetter s : this.nameSetters.values()) {
 //      log.info(">>> setter: " + s.getClass().getSimpleName());
       if (s.isConsumableParameter()) {
         this.wasConsumableParameterDetected = true;
