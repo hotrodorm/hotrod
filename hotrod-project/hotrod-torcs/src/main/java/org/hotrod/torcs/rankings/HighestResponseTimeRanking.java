@@ -10,7 +10,7 @@ import org.hotrod.torcs.QueryExecution;
 
 public class HighestResponseTimeRanking extends Ranking {
 
-  private static final int DEFAULT_SIZE = 10;
+  private static final int DEFAULT_SIZE = 30;
   private static final int MIN_SIZE = 1;
   private static final int MAX_SIZE = 1000;
 

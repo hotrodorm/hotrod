@@ -34,6 +34,7 @@ This is a major release of the HotRod ORM that breaks compatibility with previou
     - LiveSQL cursors are now revamped.
 - Torcs:
     - New Highest Frequency Queries Ranking implemented.
+    - Default rankings' size increased to 30 from the previous value of 10.
 
 ## 4.8.1:
 

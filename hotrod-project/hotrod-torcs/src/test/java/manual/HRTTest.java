@@ -14,7 +14,7 @@ import org.hotrod.torcs.rankings.HighestFrequencyRanking;
 
 public class HRTTest {
 
-  private static final int RANKING_SIZE = 10;
+  private static final int RANKING_SIZE = 30;
 
   public static void main(final String[] args) {
 
