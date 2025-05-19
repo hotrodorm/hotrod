@@ -8,10 +8,10 @@ This is a major release of the HotRod ORM that breaks compatibility with previou
 
 - Core:
     - HotRod does not use MyBatis anymore and switched to plain JDBC instead. This greatly simplifies the use of newer Java versions and streamlines the bootstrap configuration.
-    - Major refactoring of the configuration files with the goal of simplifying them.
+    - Major refactoring of the configuration to simplifying it.
     - Cleaner persistence layer organization with simpler packages clear separation of duties.
+    - Date/Time/Timestamp database column types now default to java.time classes instead of java.sql classes.
     - Enhanced Type Solver to resolve data types for live queries in addition to table's metadata.
-    - Date/Time/Timestamp database column types now read by default using java.time data types instead of java.sql data types.
     - Log4j fully removed from HotRod in favor of JUL.
     - Persistence logging is available at DEBUG and TRACE levels of the DAOs.
     - New class generator produces cleaner classes, handles references, and sorted imports.
@@ -41,9 +41,8 @@ This is a major release of the HotRod ORM that breaks compatibility with previou
 ## 4.8.0:
 
 - LiveSQL:
-    - Advanced Locking:
-        - Locking mode FOR SHARE implemented, in addition to the existing FOR UPDATE mode, for databases that support them.
-        - New locking concurrency options: NOWAIT, WAIT &lt;n>, and SKIP LOCKED, for databases that support them.
+    - Advanced Locking mode FOR SHARE implemented, in addition to the existing FOR UPDATE mode, for databases that support them.
+    - Locking concurrency options: NOWAIT, WAIT &lt;n>, and SKIP LOCKED, for databases that support them.
 - CRUD:
     - The new locking mode and locking concurrency options are also available in CRUD selects.
 
@@ -135,6 +134,7 @@ This is a major release of the HotRod ORM that breaks compatibility with previou
 ## 4.4.0
 
 - Torcs CTP:
+    - New module Torcs CTP!
     - Torcs CTP generates plans for [Check The Plan](https://checktheplan.com) visualization and analysis for the Oracle, DB2 LUW, PostgreSQL, and SQL Server databases.
 
 - Torcs:
@@ -158,6 +158,7 @@ This is a major release of the HotRod ORM that breaks compatibility with previou
 ## 4.3.0
 
 - Torcs:
+    - New module Torcs!
     - Gathers and consolidates statistical data of queries run by the application, with the aim of detecting slow running queries.
     - Three built-in rankings (highest response time, initial queries, latest queries).
     - Execution plans extraction for queries for all databases (except Derby).
