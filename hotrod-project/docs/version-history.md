@@ -7,11 +7,11 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 This is a major release of the HotRod ORM that breaks compatibility with previous releases. Its main goals are to fully remove the need of the MyBatis library and to refactor the configuration files and persistence layer organization.
 
 - Core:
-    - HotRod does not use MyBatis anymore and switched to plain JDBC instead. This greatly simplifies the use case for newer Java versions and other compatibility issues.
-    - Major upgrade to the configuration files with the goal of simplifying them.
-    - Cleaner persistence layer structure.
-    - Enhanced Type Solver to resolve types from live queries in addition to table metadata.
-    - Date/Time data types now default to java.time types instead of java.sql.
+    - HotRod does not use MyBatis anymore and switched to plain JDBC instead. This greatly simplifies the use of newer Java versions and streamlines the bootstrap configuration.
+    - Major refactoring of the configuration files with the goal of simplifying them.
+    - Cleaner persistence layer organization with simpler packages clear separation of duties.
+    - Enhanced Type Solver to resolve data types for live queries in addition to table's metadata.
+    - Date/Time/Timestamp database column types now read by default using java.time data types instead of java.sql data types.
     - Log4j fully removed from HotRod in favor of JUL.
     - Persistence logging is available at DEBUG and TRACE levels of the DAOs.
     - New class generator produces cleaner classes, handles references, and sorted imports.
@@ -26,11 +26,11 @@ This is a major release of the HotRod ORM that breaks compatibility with previou
     - Two new Optimistic Locking strategies implemented: Timestamp columns, and Full Row Check.
     - Cursors are now revamped.
 - Nitro:
-    - All DynamicSQL tags in Nitro can now be used outside the complement tag.
+    - All DynamicSQL tags in Nitro can now be placed outside the complement tag as well as inside it.
 - LiveSQL:
-    - LiveSQL accepts explicit data types in the select list.
-    - Converted columns can now be used in LiveSQL syntax as any other column for data selection and in predicates.
-    - Implementing missing function: COUNT(&lt;expression>).
+    - LiveSQL can now accept explicit data types in the select list using the type() method to override any type rules.
+    - Converted columns can now be used in LiveSQL syntax as any other column to write predicates with/without parameters.
+    - Implemented missing function: COUNT(&lt;expression>).
     - LiveSQL cursors are now revamped.
 
 ## 4.8.1:
