@@ -162,7 +162,7 @@ public class HotRodContext {
           throw new ControlledException("Could not load configuration file " + configFile + " - " + e.getMessage());
         }
       } else {
-        log.info("No config mode");
+        log.fine("No config mode");
         try {
           this.config = ConfigurationLoader.prepareNoConfig(baseDir, configFile, adapter, facetNames, currentCS);
           log.fine("Default configuration loaded.");

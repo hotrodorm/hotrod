@@ -65,13 +65,13 @@ The complete `pom.xml` file will look like:
     <dependency> <!-- Required. The main HotRod library -->
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod</artifactId>
-      <version>4.4.0</version>
+      <version>5.0.0</version>
     </dependency>
 
     <dependency> <!-- Required. HotRod's LiveSQL library -->
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
-      <version>4.4.0</version>
+      <version>5.0.0</version>
     </dependency>
 
     <dependency> <!-- Required. The generator uses MyBatis for database connectivity -->
@@ -108,7 +108,7 @@ The complete `pom.xml` file will look like:
       <plugin>
         <groupId>org.hotrodorm.hotrod</groupId>
         <artifactId>hotrod-maven-plugin</artifactId>
-        <version>4.4.0</version>
+        <version>5.0.0</version>
         <configuration>
           <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
           <jdbcurl>jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1</jdbcurl>
@@ -206,46 +206,41 @@ mvn hotrod:gen
 We see the code generation details:
 
 ```bash
-[INFO] Scanning for projects...
-[INFO] 
 [INFO] --------------------------< com.myapp:myapp >---------------------------
 [INFO] Building myapp 1.0.0-SNAPSHOT
 [INFO] --------------------------------[ jar ]---------------------------------
 [INFO] 
-[INFO] --- hotrod-maven-plugin:4.0.0 (default-cli) @ myapp ---
-[INFO] HotRod version 4.4.0 (build 20221102-152614) - Generate
+[INFO] --- hotrod-maven-plugin:5.0.0:gen (default-cli) @ myapp ---
+[INFO] HotRod Generator version 5.0.0 (build 20250520-023716) - Generate
 [INFO] Database URL: jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1
 [INFO] Database Name: H2 - version 2.1 (2.1.214 (2022-06-13))
 [INFO] JDBC Driver: H2 JDBC Driver - version 2.1 (2.1.214 (2022-06-13)) - implements JDBC Specification 4.2
-[INFO] Database Adapter: H2 Adapter
-[INFO] 
+[INFO] HotRod Adapter: H2 Adapter
+[INFO]  
 [INFO] Current Schema: PUBLIC
 [INFO]  
 [INFO] Discover enabled.
-[INFO] 
-[INFO] Generating all facets.
 [INFO]  
-[INFO] Table BRANCH included.
-[INFO] Table EMPLOYEE included.
-[INFO]  
-[INFO] Total of: 2 tables, 0 views, 0 enums, 0 DAOs, and 0 sequences -- including 0 select methods, and 0 query methods.
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  1.826 s
-[INFO] Finished at: 2022-11-02T11:54:34-04:00
+[INFO] Total time:  1.920 s
+[INFO] Finished at: 2025-05-19T22:37:56-04:00
 [INFO] ------------------------------------------------------------------------
 ```
 
 HotRod connected to the database schema, retrieved the table details, and produced the persistence code. It created the following files:
 
-* `src/main/java/app/daos/EmployeeVO.java`
-* `src/main/java/app/daos/primitives/EmployeeDAO.java`
-* `src/main/java/app/daos/primitives/Employee.java`
-* `src/main/resources/mappers/primitives-employee.xml`
+* `src/main/java/app/persistence/LayerConfiguration.java`
+* `src/main/java/app/persistence/dao/BranchDAO.java`
+* `src/main/java/app/persistence/dao/EmployeeDAO.java`
+* `src/main/java/app/persistence/layout/BranchLayout.java`
+* `src/main/java/app/persistence/layout/EmployeeLayout.java`
+* `src/main/java/app/persistence/model/Branch.java`
+* `src/main/java/app/persistence/model/Employee.java`
 
-Note that since the `EmployeeVO.java` is designed to include custom code, it's never 
-overwritten. The other files are always overwritten to keep them current with the latest database structure.
+Note that since model classes (`Branch.java` and `Employee.java`) are designed to include custom code, the are never 
+overwritten. The other generated classes are always overwritten to keep them up-to-date with the latest database structure.
 
 
 ## Part 3 &mdash; The Application
@@ -261,11 +256,13 @@ class `src/main/java/app/App.java` as:
 ```java
 package app;
 
+import java.sql.SQLException;
 import java.util.List;
 
+import org.hotrod.dynamicsql.DynamicExpressionException;
+import org.hotrod.dynamicsql.Row;
+import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.hotrod.runtime.livesql.LiveSQL;
-import org.hotrod.runtime.livesql.Row;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -275,21 +272,23 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import app.daos.EmployeeVO;
-import app.daos.primitives.BranchDAO;
-import app.daos.primitives.BranchDAO.BranchTable;
-import app.daos.primitives.EmployeeDAO;
-import app.daos.primitives.EmployeeDAO.EmployeeTable;
+import app.persistence.dao.BranchDAO;
+import app.persistence.dao.BranchDAO.BranchTable;
+import app.persistence.dao.EmployeeDAO;
+import app.persistence.dao.EmployeeDAO.EmployeeTable;
+import app.persistence.model.Employee;
 
 @Configuration
 @SpringBootApplication
-@ComponentScan
 @ComponentScan(basePackageClasses = LiveSQL.class)
-@MapperScan(basePackageClasses = LiveSQL.class)
+@ComponentScan(basePackageClasses = DynamicSQL.class)
 public class App {
 
   @Autowired
   private EmployeeDAO employeeDAO;
+
+  @Autowired
+  private BranchDAO branchDAO;
 
   @Autowired
   private LiveSQL sql;
@@ -308,8 +307,8 @@ public class App {
     };
   }
 
-  private void demoCRUD() {
-    EmployeeVO emp = this.employeeDAO.select(134081);
+  private void demoCRUD() throws DynamicExpressionException, SQLException {
+    Employee emp = this.employeeDAO.select(134081);
     System.out.println("Employee #123081's name: " + emp.getFirstName());
   }
 
@@ -317,16 +316,11 @@ public class App {
 
     System.out.println("Employees with last names that include smith from branches of type 2, 6, or 7:");
 
-    EmployeeTable e = EmployeeDAO.newTable("e");
-    BranchTable b = BranchDAO.newTable("b");
+    EmployeeTable e = this.employeeDAO.newTable("e");
+    BranchTable b = this.branchDAO.newTable("b");
 
-    List<Row> rows = this.sql
-      .select(e.star(), b.name.as("branchName"))
-      .from(e)
-      .join(b, b.id.eq(e.branchId))
-      .where(e.lastName.lower().like("%smith%").and(b.type.in(2, 6, 7)))
-      .orderBy(b.name, e.lastName.desc())
-      .execute();
+    List<Row> rows = this.sql.select(e.star(), b.name.as("branchName")).from(e).join(b, b.id.eq(e.branchId))
+        .where(e.lastName.lower().like("%smith%").and(b.type.in(2, 6, 7))).orderBy(b.name, e.lastName.desc()).execute();
 
     rows.stream().forEach(r -> System.out.println(r));
 
@@ -350,11 +344,6 @@ The LiveSQL code above executes the following query:
 The runtime properties are used when running the application. Create the file `application.properties` as:
 
 ```properties
-# General configuration of the app
-
-mybatis.mapper-locations=mappers/**/*.xml
-logging.level.root=INFO
-
 # Default datasource configuration
 
 spring.datasource.driver-class-name=org.h2.Driver

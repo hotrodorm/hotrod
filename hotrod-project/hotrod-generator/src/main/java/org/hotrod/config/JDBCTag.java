@@ -80,10 +80,9 @@ public class JDBCTag extends AbstractGeneratorTag {
   // No Config
 
   public static JDBCTag getNoConfigTag() {
-    log.info("no-config");
+    log.fine("no-config");
     JDBCTag t = new JDBCTag();
     t.baseDir = new File(DEFAULT_BASE_DIR);
-//    t.mainPackage = new ClassPackage("app.persistence");
     return t;
   }
 
