@@ -234,12 +234,8 @@ HotRod connected to the database schema, retrieved the table details, and produc
 | Class | Description |
 | -- | -- |
 | `src/main/java/app/persistence/LayerConfiguration.java` | The persistence layer configuration |
-| `src/main/java/app/persistence/dao/BranchDAO.java`<br/>
-`src/main/java/app/persistence/layout/BranchLayout.java`<br/>
-`/main/java/app/persistence/model/Branch.java` | The DAO, layout, and model classes for the BRANCH table |
-| `src/main/java/app/persistence/dao/EmployeeDAO.java`<br/>
-`src/main/java/app/persistence/layout/EmployeeLayout.java`<br/>
-`src/main/java/app/persistence/model/Employee.java` | The DAO, layout, and model classes for the EMPLOYEE table |
+| `src/main/java/app/persistence/dao/BranchDAO.java`<br/>`src/main/java/app/persistence/layout/BranchLayout.java`<br/>`src/main/java/app/persistence/model/Branch.java` | The DAO, layout, and model classes for the BRANCH table |
+| `src/main/java/app/persistence/dao/EmployeeDAO.java`<br/>`src/main/java/app/persistence/layout/EmployeeLayout.java`<br/>`src/main/java/app/persistence/model/Employee.java` | The DAO, layout, and model classes for the EMPLOYEE table |
 
 Note that since model classes (`Branch.java` and `Employee.java`) are designed to include custom
 code, the are never overwritten. The DAO and Layour classes, on the other hand, are overwritten
