@@ -1,4 +1,4 @@
-package org.hotrod.runtime.livesql.util;
+package org.hotrod.runtime.livesql;
 
 import org.hotrod.dynamicsql.DynamicExpressionFactoryConfig;
 import org.hotrod.dynamicsql.assembler.DynamicSQL;

@@ -16,6 +16,7 @@ import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import org.hotrod.dynamicsql.Row;
+import org.hotrod.runtime.livesql.autoconfig.OnLiveSQLMissingCondition;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.ComparableExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;
@@ -138,9 +139,11 @@ import org.hotrod.runtime.livesql.sysobjects.DualTable;
 import org.hotrod.runtime.livesql.sysobjects.SysDummy1Table;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
 @Component
+@Conditional(OnLiveSQLMissingCondition.class)
 public class LiveSQL {
 
   private static final Logger log = Logger.getLogger(LiveSQL.class.getName());
@@ -150,24 +153,25 @@ public class LiveSQL {
 
   // Properties
 
-  private LiveSQLContext context;
-
-  private LiveSQLDialect liveSQLDialect;
-  private DataSource dataSource;
-  private TypeSolver typeSolver;
-
-  @SuppressWarnings("unused")
   @Autowired
-  private LiveSQLConfiguration config;
+  @Qualifier("liveSQLDialect")
+  private LiveSQLDialect liveSQLDialect;
+  private LiveSQLContext context = null;
+  @Autowired
+  private DataSource dataSource;
+
+  private TypeSolver typeSolver;
 
   @Autowired
   private PersistenceLayerConfigFactory persistenceLayerConfigFactory;
 
   // Constructor
 
-  public LiveSQL(final @Qualifier("liveSQLDialect") LiveSQLDialect liveSQLDialect, final DataSource dataSource) {
+  LiveSQL() {
+  }
+
+  public LiveSQL(LiveSQLDialect liveSQLDialect, DataSource dataSource) {
     this.liveSQLDialect = liveSQLDialect;
-    this.context = null;
     this.dataSource = dataSource;
   }
 

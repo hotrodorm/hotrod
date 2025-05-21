@@ -27,7 +27,7 @@ In this part we create the Maven project, we lay out its structure, we and add a
 
 ### Set Up a Maven Project
 
-If you are using a plain text editor (such as Notepad) you can create an empty folder and add the files as described in the 
+If you are using a plain text editor (such as Notepad) you can create an empty folder and add the files as described in the
 steps below. Alternatively, you can use your favorite IDE to create a blank Maven project.
 
 The `pom.xml` will include:
@@ -62,25 +62,25 @@ The complete `pom.xml` file will look like:
       <version>2.3.4.RELEASE</version>
     </dependency>
 
-    <dependency> <!-- Required. The main HotRod library -->
+    <dependency> <!-- Instantiates the JDBC DataSources -->
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-jdbc</artifactId>
+      <version>2.3.4.RELEASE</version>
+    </dependency>
+
+    <dependency> <!-- The main HotRod library -->
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod</artifactId>
       <version>5.0.0</version>
     </dependency>
 
-    <dependency> <!-- Required. HotRod's LiveSQL library -->
+    <dependency> <!-- HotRod's LiveSQL library -->
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
       <version>5.0.0</version>
     </dependency>
 
-    <dependency> <!-- Required. The generator uses MyBatis for database connectivity -->
-      <groupId>org.mybatis.spring.boot</groupId>
-      <artifactId>mybatis-spring-boot-starter</artifactId>
-      <version>2.1.3</version>
-    </dependency>
-
-    <dependency> <!-- Your app needs the JDBC driver to connect to the database. Can be provided at runtime -->
+    <dependency> <!-- The JDBC driver to connect to the database; can be provided at runtime -->
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <version>2.1.214</version>
@@ -231,16 +231,18 @@ We see the code generation details:
 
 HotRod connected to the database schema, retrieved the table details, and produced the persistence code. It created the following files:
 
-* `src/main/java/app/persistence/LayerConfiguration.java`
-* `src/main/java/app/persistence/dao/BranchDAO.java`
-* `src/main/java/app/persistence/dao/EmployeeDAO.java`
-* `src/main/java/app/persistence/layout/BranchLayout.java`
-* `src/main/java/app/persistence/layout/EmployeeLayout.java`
-* `src/main/java/app/persistence/model/Branch.java`
-* `src/main/java/app/persistence/model/Employee.java`
+| Class | Description |
+| `src/main/java/app/persistence/LayerConfiguration.java` | The persistence layer configuration |
+| `src/main/java/app/persistence/dao/BranchDAO.java`<br/>
+`src/main/java/app/persistence/layout/BranchLayout.java`<br/>
+| `/main/java/app/persistence/model/Branch.java` | The DAO, layout, and model classes for the BRANCH table |
+| `src/main/java/app/persistence/dao/EmployeeDAO.java`<br/>
+`src/main/java/app/persistence/layout/EmployeeLayout.java`<br/>
+`src/main/java/app/persistence/model/Employee.java` | The DAO, layout, and model classes for the EMPLOYEE table |
 
 Note that since model classes (`Branch.java` and `Employee.java`) are designed to include custom code, the are never 
-overwritten. The other generated classes are always overwritten to keep them up-to-date with the latest database structure.
+overwritten. The DAO and Layour classes, on the other hand, are overwritten when when you re-generate the persistence layer
+to keep them up-to-date with the latest database structure.
 
 
 ## Part 3 &mdash; The Application
@@ -259,9 +261,10 @@ package app;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.Row;
-import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -269,7 +272,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import app.persistence.dao.BranchDAO;
@@ -278,11 +280,12 @@ import app.persistence.dao.EmployeeDAO;
 import app.persistence.dao.EmployeeDAO.EmployeeTable;
 import app.persistence.model.Employee;
 
-@Configuration
 @SpringBootApplication
-@ComponentScan(basePackageClasses = LiveSQL.class)
-@ComponentScan(basePackageClasses = DynamicSQL.class)
+@Configuration
 public class App {
+
+  @Autowired
+  private DataSource dataSource;
 
   @Autowired
   private EmployeeDAO employeeDAO;
@@ -319,10 +322,17 @@ public class App {
     EmployeeTable e = this.employeeDAO.newTable("e");
     BranchTable b = this.branchDAO.newTable("b");
 
-    List<Row> rows = this.sql.select(e.star(), b.name.as("branchName")).from(e).join(b, b.id.eq(e.branchId))
-        .where(e.lastName.lower().like("%smith%").and(b.type.in(2, 6, 7))).orderBy(b.name, e.lastName.desc()).execute();
+    List<Row> rows = this.sql
+        .select(e.star(), b.name.as("branchName"))
+        .from(e)
+        .join(b, b.id.eq(e.branchId))
+        .where(e.lastName.lower().like("%smith%").and(b.type.in(2, 6, 7)))
+        .orderBy(b.name, e.lastName.desc())
+        .execute();
 
-    rows.stream().forEach(r -> System.out.println(r));
+    for (Row r : rows) {
+      System.out.println(r);
+    }
 
   }
 
@@ -366,7 +376,7 @@ The Spring Boot application starts, connects to the database and runs both queri
 ```log
 [ Starting example ]
 Employee #123081's name: Alice
-Employees with last names that include smith from branches of type 1, 6, or 7:
+Employees with last names that include smith from branches of type 2, 6, or 7:
 {firstName=Steve, lastName=Locksmith, branchId=6, branchName=East Coast, id=609792}
 {firstName=Julia, lastName=Whitesmith, branchId=2, branchName=North, id=207121}
 {firstName=Anne, lastName=Smith, branchId=2, branchName=North, id=101457}
@@ -377,6 +387,8 @@ We can see:
 - The CRUD query `select id, name from employee where id = 123081` was run and returned 1 row.
 - The LiveSQL query returned 3 rows using the correct search criteria and ordering.
 
-That's it! You just generated the persistence code from the database and ran an app using it. Later on, when the
-database suffers changes (it will), you can just rerun the generation step to apply the changes of columns, tables,
-views, etc. to the persistence code automatically.
+That's it! You just generated the persistence code from the database and ran an app using it.
+
+Later on, when the database suffers changes &mdash; it will, believe me &mdash; you can just
+rerun the generation step to retrieve any changes of columns, tables, views, etc. and to apply
+them automatically to the persistence layer.

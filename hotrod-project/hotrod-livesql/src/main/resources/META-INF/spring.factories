@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.hotrod.runtime.livesql.autoconfig.LiveSQLAutoConfiguration

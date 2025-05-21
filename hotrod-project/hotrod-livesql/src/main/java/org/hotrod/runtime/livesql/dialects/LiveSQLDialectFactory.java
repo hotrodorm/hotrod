@@ -11,7 +11,7 @@ import org.hotrod.utils.SUtil;
 public class LiveSQLDialectFactory {
 
   public static LiveSQLDialect getLiveSQLDialect(final DataSource dataSource, final String liveSQLDialectName,
-      final String liveSQLDialectVDatabaseName, final String liveSQLDialectVersionString,
+      final String liveSQLDialectDatabaseName, final String liveSQLDialectVersionString,
       final String liveSQLDialectMajorVersion, final String liveSQLDialectMinorVersion) throws LiveSQLDialectException {
 
     if (dataSource == null && SUtil.isEmpty(liveSQLDialectName)) {
@@ -44,7 +44,7 @@ public class LiveSQLDialectFactory {
         }
 
         LiveSQLDialect sqlDialect = DesignatedLiveSQLDialect.resolveDesignatedDialect(liveSQLDialectName,
-            liveSQLDialectVDatabaseName, liveSQLDialectVersionString, majorVersion, minorVersion);
+            liveSQLDialectDatabaseName, liveSQLDialectVersionString, majorVersion, minorVersion);
         return sqlDialect;
       } else {
         try {

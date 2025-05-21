@@ -4,8 +4,10 @@ import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
+import org.hotrod.runtime.livesql.autoconfig.OnLiveSQLDialectMissingCondition;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration(proxyBeanMethods = false)
@@ -25,6 +27,7 @@ public class DialectConfiguration {
   private String liveSQLDialectMinorVersion;
 
   @Bean
+  @Conditional(OnLiveSQLDialectMissingCondition.class)
   public LiveSQLDialect liveSQLDialect(DataSource dataSource) throws Exception {
     LiveSQLDialect liveSQLDialect = LiveSQLDialectFactory.getLiveSQLDialect(dataSource, this.liveSQLDialectName,
         this.liveSQLDialectDatabaseName, this.liveSQLDialectVersionString, this.liveSQLDialectMajorVersion,

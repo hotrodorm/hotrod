@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.DynamicExpressionException;
-import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -14,17 +13,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import app.persistence.dao.Test2DAO;
 import app.persistence.model.TAccount;
 
-@Configuration
 @SpringBootApplication
-@ComponentScan(basePackageClasses = LiveSQL.class)
-@ComponentScan(basePackageClasses = DynamicSQL.class)
-//@ComponentScan(basePackageClasses = AccountDAO.class)
+@Configuration
 public class App {
 
   private static final Logger log = Logger.getLogger(App.class.getName());
@@ -155,7 +150,7 @@ public class App {
 //  }
 
   private void testNitro6() throws SQLException, DynamicExpressionException, IOException {
-    log.info("--- Test Accounts 1 ---");
+    log.info("--- Test Accounts 1 --- this.sql=" + this.sql);
     List<TAccount> tas = this.test2DAO.findTAccounts(false);
     log.info("--- Test Accounts 2 ---");
     for (TAccount ta : tas) {

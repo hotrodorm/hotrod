@@ -11,6 +11,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class LayerConfiguration implements LayerConfigInterface {
+  
+  public LayerConfiguration () {
+    System.out.println("$$$$$ LayerConfiguration! $$$$$$$");
+  }
 
   @Override
   public List<TypeRule> getTypeRules() {
