@@ -236,14 +236,14 @@ HotRod connected to the database schema, retrieved the table details, and produc
 | `src/main/java/app/persistence/LayerConfiguration.java` | The persistence layer configuration |
 | `src/main/java/app/persistence/dao/BranchDAO.java`<br/>
 `src/main/java/app/persistence/layout/BranchLayout.java`<br/>
-| `/main/java/app/persistence/model/Branch.java` | The DAO, layout, and model classes for the BRANCH table |
+`/main/java/app/persistence/model/Branch.java` | The DAO, layout, and model classes for the BRANCH table |
 | `src/main/java/app/persistence/dao/EmployeeDAO.java`<br/>
 `src/main/java/app/persistence/layout/EmployeeLayout.java`<br/>
 `src/main/java/app/persistence/model/Employee.java` | The DAO, layout, and model classes for the EMPLOYEE table |
 
-Note that since model classes (`Branch.java` and `Employee.java`) are designed to include custom code, the are never 
-overwritten. The DAO and Layour classes, on the other hand, are overwritten when when you re-generate the persistence layer
-to keep them up-to-date with the latest database structure.
+Note that since model classes (`Branch.java` and `Employee.java`) are designed to include custom
+code, the are never overwritten. The DAO and Layour classes, on the other hand, are overwritten
+when when you re-generate the persistence layer to keep them up-to-date with the latest database structure.
 
 
 ## Part 3 &mdash; The Application
