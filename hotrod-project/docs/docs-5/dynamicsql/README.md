@@ -525,7 +525,7 @@ The choose operator includes multiple `.when()` operators. These take the simila
 The following example includes a choose operator that implements four types of ordering for the query:
 
 ```java
-  DynamicSelectQuery q = dyn //
+  DynamicSelectQuery q = dyn
       .literal("SELECT *, salary * 1.31 as gross_salary FROM employee WHERE active = 'Y'")
       .choose()
         .when("ordering == 1").literal(" ORDER BY first_name").endwhen()
