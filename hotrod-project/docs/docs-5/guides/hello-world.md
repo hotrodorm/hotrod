@@ -232,6 +232,7 @@ We see the code generation details:
 HotRod connected to the database schema, retrieved the table details, and produced the persistence code. It created the following files:
 
 | Class | Description |
+| -- | -- |
 | `src/main/java/app/persistence/LayerConfiguration.java` | The persistence layer configuration |
 | `src/main/java/app/persistence/dao/BranchDAO.java`<br/>
 `src/main/java/app/persistence/layout/BranchLayout.java`<br/>
