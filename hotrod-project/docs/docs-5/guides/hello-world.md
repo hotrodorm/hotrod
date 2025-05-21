@@ -229,7 +229,7 @@ We see the code generation details:
 [INFO] ------------------------------------------------------------------------
 ```
 
-HotRod connected to the database schema, discover the tables in the schema, retrieved their details, and genrated the persistence layer. In sum, it created the following files:
+HotRod connected to the database schema, discovered the tables in the schema, retrieved their details, and genrated the persistence layer. In sum, it created the following files:
 
 | Class | Description |
 | -- | -- |
