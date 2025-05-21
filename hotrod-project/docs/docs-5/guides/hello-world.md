@@ -314,8 +314,13 @@ public class App {
     EmployeeTable e = this.employeeDAO.newTable("e");
     BranchTable b = this.branchDAO.newTable("b");
 
-    List<Row> rows = this.sql.select(e.star(), b.name.as("branchName")).from(e).join(b, b.id.eq(e.branchId))
-        .where(e.lastName.lower().like("%smith%").and(b.type.in(2, 6, 7))).orderBy(b.name, e.lastName.desc()).execute();
+    List<Row> rows = this.sql
+      .select(e.star(), b.name.as("branchName"))
+      .from(e)
+      .join(b, b.id.eq(e.branchId))
+      .where(e.lastName.lower().like("%smith%").and(b.type.in(2, 6, 7)))
+      .orderBy(b.name, e.lastName.desc())
+      .execute();
 
     for (Row r : rows) {
       System.out.println(r);
