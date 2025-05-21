@@ -258,8 +258,6 @@ package app;
 import java.sql.SQLException;
 import java.util.List;
 
-import javax.sql.DataSource;
-
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.runtime.livesql.LiveSQL;
@@ -280,9 +278,6 @@ import app.persistence.model.Employee;
 @SpringBootApplication
 @Configuration
 public class App {
-
-  @Autowired
-  private DataSource dataSource;
 
   @Autowired
   private EmployeeDAO employeeDAO;
@@ -319,13 +314,8 @@ public class App {
     EmployeeTable e = this.employeeDAO.newTable("e");
     BranchTable b = this.branchDAO.newTable("b");
 
-    List<Row> rows = this.sql
-        .select(e.star(), b.name.as("branchName"))
-        .from(e)
-        .join(b, b.id.eq(e.branchId))
-        .where(e.lastName.lower().like("%smith%").and(b.type.in(2, 6, 7)))
-        .orderBy(b.name, e.lastName.desc())
-        .execute();
+    List<Row> rows = this.sql.select(e.star(), b.name.as("branchName")).from(e).join(b, b.id.eq(e.branchId))
+        .where(e.lastName.lower().like("%smith%").and(b.type.in(2, 6, 7))).orderBy(b.name, e.lastName.desc()).execute();
 
     for (Row r : rows) {
       System.out.println(r);
