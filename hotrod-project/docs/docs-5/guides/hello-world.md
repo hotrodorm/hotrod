@@ -43,8 +43,8 @@ The complete `pom.xml` file will look like:
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.myapp</groupId>
-  <artifactId>myapp</artifactId>
+  <groupId>examples</groupId>
+  <artifactId>helloworld</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
