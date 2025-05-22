@@ -5,22 +5,19 @@ This is the Configuration File Reference of the [HotRod ORM](../README.md).
 
 ## Complete Structure of the Configuration File
 
-The configuration tags are shown below:
+The XLM configuration file includes the following tag structure:
 
 * [`<hotrod>`](tags/hotrod.md)
     * [`<generators>`](tags/generators.md)
-        * [`<mybatis-spring>`](tags/mybatis-spring.md)
+        * [`<jdbc>`](tags/jdbc.md)
+            * [`<dao>`](tags/jdbc-dao.md)
+            * [`<layout>`](tags/jdbc-layout.md)
+            * [`<model>`](tags/jdbc-model.md)
             * [`<discover>`](tags/discover.md)
                 * [`<current-schema>`](tags/current-schema.md)
                     * [`<exclude>`](tags/exclude.md)
                 * [`<schema>`](tags/schema.md)
                     * `<exclude>` *(see above)*
-            * [`<daos>`](tags/daos.md)
-            * [`<mappers>`](tags/mappers.md)
-            * [`<select-generation>`](tags/select-generation.md)
-            * [`<property>`](tags/property.md)
-        * `<mybatis>` *obsolete*
-        * `<spring-jdbc>` *obsolete*
     * [`<name-solver>`](tags/name-solver.md)
         * `<name>`
     * [`<type-solver>`](tags/type-solver.md)
@@ -29,7 +26,6 @@ The configuration tags are shown below:
     * [`<table>`](tags/table.md)
         * [`<column>`](tags/column.md)
         * [`<optimistic-locking>`](tags/optimistic-locking.md)
-        * [`<sequence>`](tags/sequence.md)
         * [`<query>`](tags/query.md)
             * [`<parameter>`](tags/parameter.md)
             * *SQL query*
@@ -38,19 +34,6 @@ The configuration tags are shown below:
             * `<parameter>`
             * *SQL query*
             * [`<column>`](tags/column.md)
-            * [`<columns>`](tags/columns.md)
-                * [`<vo>`](tags/vo.md)
-                   * [`<association>`](tags/association.md)
-                     * `<association>`
-                     * `<collection>`
-                     * `<expression>`
-                   * [`<collection>`](tags/collection.md)
-                        * `<association>`
-                        * `<collection>`
-                        * `<expression>`
-                   * [`<expression>`](tags/expression.md)
-                * `<association>`
-                * `<expression>`
             * Dynamic SQL: Any number of flat or nested `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
             * [`<complement>`](tags/complement.md)
                 * Dynamic SQL: Any number of flat or nested `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
@@ -58,11 +41,9 @@ The configuration tags are shown below:
         * `<non-persistent>`
     * [`<view>`](tags/view.md)
         * `<column>`
-        * `<sequence>`
         * `<query>`
         * `<select>`
     * [`<dao>`](tags/dao.md)
-        * `<sequence>`
         * `<query>`
         * `<select>`
     * [`<fragment>`](tags/fragment.md)
@@ -95,10 +76,9 @@ The configuration file can be broken into separate *fragments* to facilitate par
 segregate DAOs per groups (modules, development teams, etc.). Each fragment produces a separate Java package.
 
 
-## Database Metadata 
+## Database Metadata
 
-HotRod generates the persistence code by inspecting the metadata retrieved from a live existing database (a *sandbox* database) that 
-typically resides in the development environment.
+HotRod generates the persistence code by inspecting the metadata retrieved from a live existing database (a *sandbox* database) that typically resides in the development environment.
 
 Although database engines provide a copious amount of metadata for tables and other database objects, some
 external metadata is needed for the generation and need to be specified in this file. These extra details fall into the following categories:
