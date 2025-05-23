@@ -8,7 +8,7 @@ To include parameters in your query use the `<parameter>` tag.
 
 ## The `<parameter>` Tag
 
-You can add parameters using the `<parameter>` tag in the query definition as in:
+You can add parameters using the `<parameter>` tag in the query definition as shown below:
 
 ```xml
   <select method="findClientsActiveAccounts" vo="ActiveAccount">
@@ -22,10 +22,9 @@ You can add parameters using the `<parameter>` tag in the query definition as in
   </select>
 ```
 
-The `<parameter>` tag indicates that:
+In this example:
 
- - The query has two parameters (`clientId` and `type`) that will be used in the query
- and that will be included in the Java method in the DAO.
+ - The query has two parameters (`clientId` and `type`) that will be provided when calling the Java method in the DAO.
  - The parameter types in Java are `java.lang.Integer` and `java.lang.String` respectively.
 
 In short, the resulting Java method in the DAO will take the form:
@@ -37,9 +36,9 @@ In short, the resulting Java method in the DAO will take the form:
 Notice that:
 
 - The method name is defined in the `<select>` tag.
-- The return type is by default a `List<>` of the type specified in the `<select>` tag.
-- The method includes both parameters
-- Each parameter can also be applied multiple times in a query, although not shown in this example.
+- The return type is by default a `List<>` of the type specified in the `<select>` tag. It can also be a POJO or a cursor.
+- The method includes both parameters.
+- Although not shown in this example, each parameter can be used multiple times inside the query.
 
 
 ## Applying Parameters vs Injecting Parameters
@@ -52,31 +51,31 @@ using parameters that may make your application vulnerable to SQL Injection. It'
 syntax difference.
 
 > [!CAUTION]
-> **IMPORTANT NOTE ON SECURITY**: SQL Injection opens the door for a security risk. There's a big difference between safely **applying** a parameter using `.parameter()` and directly **injecting** a String section into the query to be run using `.parameterInjection()`. Only inject fully controlled Strings that are coming from inside the application, and never from any external source, such as a web parameter, an API, or a configuration file.
+> **IMPORTANT NOTE ON SECURITY**: SQL Injection opens the door for a security risk. There's a big difference between safely **applying** a parameter using `#{parameter}` and directly **injecting** a String section into the query to be run using `${parameter}`. Only inject fully controlled Strings that are coming from inside the application, and never from any external source, such as a web parameter, an API, or a configuration file.
 
 
 Nevertheless, depending on the specifics of a query, sometimes it's not possible to apply parameters but only to inject them as strings.
 Parameter injection should be avoided if possible; if unavoidable, it needs to be used with extreme care.
 
 
-## Location
+## Location of The Applied Parameters
 
-Applied parameters can typically placed in any place where a normal *scalar* value would be allowed
-in the query. This includes:
+**Applied parameters** are fully compliant JDBC parameters. They can typically placed in any place where a
+normal *scalar* value would be allowed in the query. This includes:
 
  - In the `SELECT` clause
  - In the `WHERE` clause
  - In subqueries
  - In any other place the specific JDBC driver and the database engine allows it.
  
-Injected parameters, on the other hand, are directly concatenated into the query and are not treated
+**Injected parameters**, on the other hand, are directly concatenated into the query and are not treated
 as JDBC parameters. Therefore, they can be placed anywhere in the query.
 
 
 ## The `<complement>` Tag
 
 The `<complement>` is used to remove complex dynamic sections of a SELECT query when the SQL 
-processor is in the process of discovering the resulting columns of it. General purpose queries &mdash; 
+processor is discovering the resulting columns of it. General purpose queries &mdash; 
 queries that do not return rows &mdash; do no require the use of the `<complement>` tag.
 
 Use `<complement> invalid SQL query section </complement>` to surround query sections that do
@@ -91,7 +90,7 @@ parameters this is a dummy String value.
 
 ## The JDBC Type
 
-In addition to its Java type HotRod mayneed to determine its JDBC type; usually the JDBC type of a parameter is inferred from the `java-type` 
+In addition to its Java type HotRod may need to determine its JDBC type; usually the JDBC type of a parameter is inferred from the `java-type` 
 attribute. It can also be explicitly indicated using the `jdbc-type` attribute in the &lt;parameter tag, as in:
 
 ```xml
@@ -145,7 +144,7 @@ during the code generation. The value can be as simple as `"123"` or maybe a mor
 during the code generation.
 
 Although this attribute is rarely used, it can come in handy in the case the developer needs to use a parameter in the `SELECT` clause that needs to be correctly
-typed when assemble the corresponding VO for the query, in the presence of uncommon or exotic parameter types if these types are not covered in the table below.
+typed when assembling the corresponding model class for the query, in the presence of uncommon or exotic parameter types if these types are not covered in the table below.
 
 Finally, note these values serve for analysis purposes of the SQL statement during code generation only; they
 are not present in the generated code, and are never used when running the application.
