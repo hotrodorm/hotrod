@@ -18,20 +18,17 @@ This is a major release of the HotRod ORM that breaks compatibility with previou
     - Packages are changed in the hotrod library. The runtime segment is now removed.
     - Removed old unused classes in the hotrod library.
     - The Arquetype module is removed.
-- DynamicSQL:
-    - New DynamicSQL module!
-    - Can be used in HotRod or separately in Spring or even plain Java to run dynamic queries.
-    - Straightforward syntax promotes simplicity of use, even for complex dynamic rules.
 - CRUD:
     - Two new Optimistic Locking strategies implemented: Timestamp columns, and Full Row Check.
-    - Cursors are now revamped.
+    - Cursor functionality rewritten.
 - Nitro:
+    - Parameter injection syntax changed to $INJECT{expression} from ${expression}.
     - All DynamicSQL tags in Nitro can now be placed outside the complement tag as well as inside it.
 - LiveSQL:
     - LiveSQL can now accept explicit data types in the select list using the type() method to override any type rules.
-    - Converted columns can now be used in LiveSQL syntax as any other column to write predicates with/without parameters.
+    - Converted columns can now be used in LiveSQL syntax as any other column to write predicates with or without parameters.
     - Implemented missing function: COUNT(&lt;expression>).
-    - LiveSQL cursors are now revamped.
+    - Improved LiveSQL cursors.
 - Torcs:
     - New Highest Frequency Queries Ranking implemented.
     - Default rankings' size increased to 30 from the previous value of 10.
