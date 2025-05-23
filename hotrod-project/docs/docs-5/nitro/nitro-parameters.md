@@ -41,23 +41,73 @@ Notice that:
 - Although not shown in this example, each parameter can be used multiple times inside the query.
 
 
+## Using JEXL Syntax
+
+Any applied or injected parameter taked the form of a JEXL expression. It can be as simple as the name of a parameter or a more
+complex JEXL expression that can use bean syntax to access data structures. This includes accessing:
+
+- Properties
+- Array elements
+- List elements
+- Maps keys and values
+- Any Java method available in the object, using the JEXL syntax
+
+For example, if the Java parameter `branch` defined below:
+
+```java
+  public class Department {
+    public Department(int minSalary) { this.minSalary = minSalary; }
+    public int minSalary;
+  }
+  
+  public class Branch {
+    public Branch(int id, Department[] dept) { this.id = id; this.dept = dept; }
+    public int id;
+    public Department[] dept;
+  }
+  
+  Department[] depts = {new Department(90), new Department(105), new Department(101)};
+  Branch branch = new Branch(1001, depts);
+```
+
+Is passed to the query:
+
+```xml
+  <query method="findClientsActiveAccounts" vo="ActiveAccount">
+    <parameter name="salaryIncrease" java-type="Integer" />
+    <parameter name="branch" java-type="com.app.Branch" />
+    UPDATE employee
+    SET salary = salary + #{salaryIncrease}
+    WHERE salary > #{branch.dept[1].minSalary}
+  </query>
+```
+    
+Even though the parameter is just `branch`, the query can fully accesses the value of:
+
+```
+  branch.dept[1].minSalary
+```
+
+This expression traverses the object, gets the second element of the array property, and then the property `minSalary` of this element.
+
+
 ## Applying Parameters vs Injecting Parameters
 
-Applying parameters is the safe way of using a parameter in a SQL query and is implemented using the `#{param}` sequence. 
+Applying parameters is the safe way of using a parameter in a SQL query and is implemented using the `#{expression}` sequence. 
 This is the recommended way of using parameters that is known as *prepared statements* in many programming languages.
 
 Injecting parameters &ndash; essentially concatenating parameters to the query as strings values &ndash; is an alternative way of
-using parameters that may make your application vulnerable to SQL Injection. It's implemented using the `$INJECT{param}` sequence.
+using parameters that may make your application vulnerable to SQL Injection. It's implemented using the `$INJECT{expression}` sequence.
 
 > [!CAUTION]
-> **IMPORTANT NOTE ON SECURITY**: SQL Injection opens the door for a security risk. There's a big difference between safely **applying** a parameter using `#{parameter}` and directly **injecting** a String section into the query to be run using `$INJECT{parameter}`. Only inject fully controlled Strings that are coming from inside the application, and never from any external source, such as a web parameter, an API, or a configuration file.
+> **IMPORTANT NOTE ON SECURITY**: SQL Injection opens the door for a security risk. There's a big difference between safely **applying** a parameter using `#{expression}` and directly **injecting** a String section into the query to be run using `$INJECT{expression}`. Only inject fully controlled Strings that are coming from inside the application, and never from any external source, such as a web parameter, an API, or a configuration file.
 
 
 Nevertheless, depending on the specifics of a query, sometimes it's not possible to apply parameters but only to inject them as strings.
 Parameter injection should be avoided if possible; if unavoidable, it needs to be used with extreme care.
 
 
-## Location of The Applied Parameters
+## Location of Applied and Injected Expressions
 
 **Applied parameters** are fully compliant JDBC parameters. They can typically placed in any place where a
 normal *scalar* value would be allowed in the query. This includes:
@@ -81,7 +131,7 @@ Use `<complement> invalid SQL query section </complement>` to surround query sec
 not produce valid SQL content sections. These typically correspond to the content of DynamicSQL sections
 that are meant to be fully processed at runtime.
 
-When it comes to parameter sections &mdash; `#{parameter}` and `$INJECT{parameter}` &mdash; they generally do not need to
+When it comes to expresison sections &mdash; `#{expression}` and `$INJECT{expression}` &mdash; they generally do not need to
 be enclosed in complement tags. During column discovery the generator replaces each parameter with 
 a [sample SQL value](#the-sample-sql-value) of the corresponding type. For applied parameters this sample
 value depends on the corresponding JDBC type of the parameter and the specific database engine; for injected
