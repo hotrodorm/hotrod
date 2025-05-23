@@ -10,7 +10,7 @@ public class Tokenizer {
 
   private static final Logger log = Logger.getLogger(Tokenizer.class.getName());
 
-  private static final String INJECTION_PREFIX = "${";
+  private static final String INJECTION_PREFIX = "$INJECT{";
   private static final String INJECTION_SUFFIX = "}";
 
   public enum TokenType {

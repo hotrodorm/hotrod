@@ -47,11 +47,10 @@ Applying parameters is the safe way of using a parameter in a SQL query and is i
 This is the recommended way of using parameters that is known as *prepared statements* in many programming languages.
 
 Injecting parameters &ndash; essentially concatenating parameters to the query as strings values &ndash; is an alternative way of
-using parameters that may make your application vulnerable to SQL Injection. It's implemented using the `${param}` sequence. Notice the small
-syntax difference.
+using parameters that may make your application vulnerable to SQL Injection. It's implemented using the `$INJECT{param}` sequence.
 
 > [!CAUTION]
-> **IMPORTANT NOTE ON SECURITY**: SQL Injection opens the door for a security risk. There's a big difference between safely **applying** a parameter using `#{parameter}` and directly **injecting** a String section into the query to be run using `${parameter}`. Only inject fully controlled Strings that are coming from inside the application, and never from any external source, such as a web parameter, an API, or a configuration file.
+> **IMPORTANT NOTE ON SECURITY**: SQL Injection opens the door for a security risk. There's a big difference between safely **applying** a parameter using `#{parameter}` and directly **injecting** a String section into the query to be run using `$INJECT{parameter}`. Only inject fully controlled Strings that are coming from inside the application, and never from any external source, such as a web parameter, an API, or a configuration file.
 
 
 Nevertheless, depending on the specifics of a query, sometimes it's not possible to apply parameters but only to inject them as strings.
@@ -82,7 +81,7 @@ Use `<complement> invalid SQL query section </complement>` to surround query sec
 not produce valid SQL content sections. These typically correspond to the content of DynamicSQL sections
 that are meant to be fully processed at runtime.
 
-When it comes to parameter sections &mdash; `#{parameter}` and `${parameter}` &mdash; they generally do not need to
+When it comes to parameter sections &mdash; `#{parameter}` and `$INJECT{parameter}` &mdash; they generally do not need to
 be enclosed in complement tags. During column discovery the generator replaces each parameter with 
 a [sample SQL value](#the-sample-sql-value) of the corresponding type. For applied parameters this sample
 value depends on the corresponding JDBC type of the parameter and the specific database engine; for injected

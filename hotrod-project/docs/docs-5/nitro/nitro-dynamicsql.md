@@ -1,10 +1,10 @@
 # DynamicSQL
 
-DynamicSQL can be used in all [Nitro](./README.md) queries to include or exclude fragments of the SQL query 
+DynamicSQL can be used in all [Nitro](./README.md) queries to include or exclude fragments of a SQL query 
 at runtime based on the parameter values. All Nitro queries &mdash; declared with `<select>` and `<query>`
 tags &mdash; can include DynamicSQL sections.
 
-A typical use of DynamicSQL is to include or exclude sections of a query based on parameter values. For example:
+For example, if a query needs to conditionally include one sections of it, DynamicSQL can do this as shown below::
 
 ```xml
   <select method="getVIPProviders" vo="ProviderVO">
@@ -18,14 +18,14 @@ A typical use of DynamicSQL is to include or exclude sections of a query based o
   </select> 
 ```
 
-In this case the segment `AND branch_id = #{branchId}` will be included only when the parameter `branchId` is not null.
+In this case the section `AND branch_id = #{branchId}` will be included only when the parameter `branchId` is not null.
 
 
 ## Parameters
 
-All Nitro queries can have parameters that can be directly applied or injected in the query and that can
-also be used to govern the DynamicSQL logic. From the application's perspective these parameters become
-parameters in the DAO method that executes the query.
+All Nitro queries can have parameters. These can be applied or injected directly in the query, can
+also be used to govern DynamicSQL, or both. From the application's perspective these parameters are
+presented as parameters in the DAO method that executes the query.
 
 For details on the definition and usage of parameters see [Nitro Parameters](./nitro-parameters.md).
 
