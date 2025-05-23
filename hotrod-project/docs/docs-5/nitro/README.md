@@ -1,13 +1,15 @@
 # The Nitro Module
 
-Nitro goes beyond the CRUD functionality and allows native and dynamic queries.
+Nitro goes beyond the CRUD functionality to provide native code and dynamic queries to be executed.
 
 The main features of Nitro queries are:
 
-- Reaching for High Performance: By using all native extensions of the SQL dialect that the database implements,
-a developer with knowledge of SQL optimization can create queries that can achieve high performance.
-- Dynamic SQL: Dynamic SQL allows queries to change their form by enabling, disabling, or rendering sections of the
-query based on runtime parameters. See [Dynamic SQL](nitro-dynamic-sql.md). 
+- Use available native extensions of the SQL dialect that the database implements, to gain access to
+advanced features
+- Use available native extensions of the SQL dialect that the database implements, to gain access to
+high performance queries.
+- Using DynamicSQL to define queries that change their form by enabling, disabling, or rendering sections of the
+query based on runtime parameters. See [DynamicSQL](./nitro-dynamicsql.md). 
 
 
 ## Example
