@@ -14,6 +14,15 @@ statements &mdash; but can actually run any valid SQL statement, including DML s
 procedures calls.
 
 
+## Parameters
+
+All Nitro queries can have parameters that can be directly applied or injected in the query and that can
+also be used to control the DynamicSQL logic. From the application's perspective these parameters become
+parameters in the DAO method that executes the query.
+
+For details on the definition and usage of parameters see [Nitro Parameters](./nitro-parameters.md).
+
+
 ## Examples
 
 A typical DML query could look like:

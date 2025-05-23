@@ -18,43 +18,31 @@ A typical use of Dynamic SQL is to include or exclude sections of a query based 
 
 In this case the segment `and branch_id = #{branchId}` will be included only when the parameter `branchId` is not null.
 
-Dynamic SQL can alter the SQL fragments by *applying* or *injecting* parameter values, by trimming sections 
-of them, or by replicating them with iterators.
 
-The design of the Dynamic SQL tags was influenced by the MyBatis framework
-(see [MyBatis Dynamic SQL](https://mybatis.org/mybatis-3/dynamic-sql.html)) but HotRod models it independently,
-so any generator or underlying JDBC technology can use it.
+## Parameters
 
+All Nitro queries can have parameters that can be directly applied or injected in the query and that can
+also be used to control the DynamicSQL logic. From the application's perspective these parameters become
+parameters in the DAO method that executes the query.
 
-## Applying Parameters vs Injecting Parameters
-
-Applying parameters is the safe way of using a parameter in a SQL query and is implemented using the `#{param}` sequence. 
-This is the recommended way of using parameters that is known as *prepared statements* in many programming languages.
-
-Injecting parameters &ndash; essentially concatenating parameters to the query as strings values &ndash; is an alternative way of
-using parameters that may be susceptible to SQL Injection. It's implemented using the `${param}` sequence. Notice the small
-syntax difference. 
-
-Depending on the specifics of a query, sometimes it's not possible to apply parameters but only to inject them as strings.
-Parameter injection should be avoided if possible; if unavoidable, it needs to be considered with extreme care to make sure
-the parameters are not coming unfiltered from an external source such as a browser or an externally exposed API.
+For details on the definition and usage of parameters see [Nitro Parameters](./nitro-parameters.md).
 
 
-## OGNL - The Ogonal Engine
+## The JEXL Expression Language
 
 Dynamic SQL decides to include or exclude SQL fragments based on boolean logic evaluated at runtime according to the supplied parameters. The 
-OGNL expression language is described at [the OGNL Engine](https://commons.apache.org/proper/commons-ognl/language-guide.html).
+JEXL expression language is described at [Apache JEXL](https://commons.apache.org/proper/commons-jexl/).
 
-For example, the following expressions are written in OGNL:
+For example, the following expressions are written in JEXL:
 
-- `name != null`
+- `!empty name` -- true if "name" is unset or set to null
+- `name != null` -- true if "name" is set to null
 - `phase == 'C' or amount > minAmount`
 - `orderDate != null ? status in (1, 3, 4) : status in (null, 2)`
 
-Typically they need to evaluate to a boolean value &ndash; either `true` or `false`&ndash; since they are commonly used to decide if a 
-query segment should be included or not in the resulting SQL statement. However, they can evaluate to any Java type, as needed: for 
-example, the `<bind>` tag can use any resulting type. In the examples above, the variables such as `name`, `phase`, `amount`, etc. 
-correspond to runtime parameters of the query, specified using `<parameter>` tags.
+When they are used as predicate conditions they need to evaluate to a boolean value &mdash; either `true` or `false`. They can, 
+however, evaluate to any Java type, as needed: for example, the `<bind>` tag can use any resulting type. In the examples above, the
+variables such as `name`, `phase`, `amount`, etc. correspond to runtime parameters of the query, specified using `<parameter>` tags.
 
 
 ## The `<if>` Tag

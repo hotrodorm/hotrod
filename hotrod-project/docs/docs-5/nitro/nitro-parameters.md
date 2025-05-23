@@ -1,65 +1,97 @@
 # Nitro Parameters
 
-Most likely your query will need parameters for its execution. You can add parameters using the `<parameter>` tag that takes the form:
+Most likely your query will need one or more parameters for its execution. These can be
+directly applied in the query, can be used to govern DynamicSQL sections, or both.
+
+To include parameters in your query use the `<parameter>` tag.
+
+
+## The `<parameter>` Tag
+
+You can add parameters using the `<parameter>` tag in the query definition as in:
 
 ```xml
-<parameter name="clientId" java-type="Integer" />
+  <select method="findClientsActiveAccounts" vo="ActiveAccount">
+    <parameter name="clientId" java-type="Integer" />
+    <parameter name="type" java-type="String" />
+    SELECT *
+    FROM account
+    WHERE id = #{clientId}
+      AND type = #{type}
+      AND active = 1 
+  </select>
 ```
 
-As in:
+The `<parameter>` tag indicates that:
 
-```xml
-<select method="findClientsActiveAccounts" vo="ActiveAccountVO">
-  <parameter name="clientId" java-type="Integer" />
-  select *
-  from account a
-  where a.id = #{clientId} and a.active = 1 
-</select>
-```
+ - The query has two parameters (`clientId` and `type`) that will be used in the query
+ and that will be included in the Java method in the DAO.
+ - The parameter types in Java are `java.lang.Integer` and `java.lang.String` respectively.
 
-The `<parameter>` tag above specifies:
-
- - There will be a Java parameter called `clientId` in the method.
- - This parameter will be of type `java.lang.Integer`.
- 
-The `<select>` tag can include multiple `<parameter>` tags, and each parameter can be applied multiple times in a query.
-
-The resulting Java method for the `<select>` tag above will be:
+In short, the resulting Java method in the DAO will take the form:
 
 ```java
-public List<ActiveAccountVO> findClientsActiveAccounts(Integer clientId) {
-  ...
-}
+  public List<ActiveAccount> findClientsActiveAccounts(Integer clientId, String type) { ... }
 ```
 
-For analysis purposes, during the code generation, HotRod replaces each parameter with a sample SQL value of the corresponding type. This 
-sample value depends on the corresponding JDBC type of the parameter and the specific database engine.
+Notice that:
+
+- The method name is defined in the `<select>` tag.
+- The return type is by default a `List<>` of the type specified in the `<select>` tag.
+- The method includes both parameters
+- Each parameter can also be applied multiple times in a query, although not shown in this example.
+
+
+## Applying Parameters vs Injecting Parameters
+
+Applying parameters is the safe way of using a parameter in a SQL query and is implemented using the `#{param}` sequence. 
+This is the recommended way of using parameters that is known as *prepared statements* in many programming languages.
+
+Injecting parameters &ndash; essentially concatenating parameters to the query as strings values &ndash; is an alternative way of
+using parameters that may make your application vulnerable to SQL Injection. It's implemented using the `${param}` sequence. Notice the small
+syntax difference.
+
+> [!CAUTION]
+> **IMPORTANT NOTE ON SECURITY**: SQL Injection opens the door for a security risk. There's a big difference between safely **applying** a parameter using `.parameter()` and directly **injecting** a String section into the query to be run using `.parameterInjection()`. Only inject fully controlled Strings that are coming from inside the application, and never from any external source, such as a web parameter, an API, or a configuration file.
+
+
+Nevertheless, depending on the specifics of a query, sometimes it's not possible to apply parameters but only to inject them as strings.
+Parameter injection should be avoided if possible; if unavoidable, it needs to be used with extreme care.
+
 
 ## Location
 
-Parameters can be used in any place of the SQL statement. This includes:
+Applied parameters can typically placed in any place where a normal *scalar* value would be allowed
+in the query. This includes:
 
- - In the `WHERE` clause
  - In the `SELECT` clause
+ - In the `WHERE` clause
  - In subqueries
- - In any other place the specific JDBC driver and the database engine allows it. Please note the engine usually limits the location of JDBC parameters.
+ - In any other place the specific JDBC driver and the database engine allows it.
+ 
+Injected parameters, on the other hand, are directly concatenated into the query and are not treated
+as JDBC parameters. Therefore, they can be placed anywhere in the query.
+
 
 ## The `<complement>` Tag
 
-The `<complement>` tag usage depends on the SQL processor used:
+The `<complement>` is used to remove complex dynamic sections of a SELECT query when the SQL 
+processor is in the process of discovering the resulting columns of it. General purpose queries &mdash; 
+queries that do not return rows &mdash; do no require the use of the `<complement>` tag.
 
- - When using the traditional `create-view` processor the `<complement>` tag is used to enclose sections of `WHERE` clauses with
-   parameters. It's also used to enclose Dynamic SQL tags.
- - When using the modern `result-set` processor there's no need to enclose parameters anymore. The `<complement>` tag is still used 
-   to enclose Dynamic SQL tags.
+Use `<complement> invalid SQL query section </complement>` to surround query sections that do
+not produce valid SQL content sections. These typically correspond to the content of DynamicSQL sections
+that are meant to be fully processed at runtime.
 
-To select a query processor see [Select Generation](../config/tags/select-generation.md) configuration.
-
-**Note**: Unlike `<select>` queries general purpose queries, that use the tag `<query>`, do no require the use of the `<complement>` tag, at all.
+When it comes to parameter sections &mdash; `#{parameter}` and `${parameter}` &mdash; they generally do not need to
+be enclosed in complement tags. During column discovery the generator replaces each parameter with 
+a [sample SQL value](#the-sample-sql-value) of the corresponding type. For applied parameters this sample
+value depends on the corresponding JDBC type of the parameter and the specific database engine; for injected
+parameters this is a dummy String value.
 
 ## The JDBC Type
 
-In addition to its Java type HotRod needs to determine the its JDBC type; usually the JDBC type of a parameter is inferred from the `java-type` 
+In addition to its Java type HotRod mayneed to determine its JDBC type; usually the JDBC type of a parameter is inferred from the `java-type` 
 attribute. It can also be explicitly indicated using the `jdbc-type` attribute in the &lt;parameter tag, as in:
 
 ```xml
@@ -100,20 +132,25 @@ used only for uncommon or exotic parameter types such as UUIDs, geometry types, 
 
 ## The Sample SQL Value
 
-When HotRod is analyzing the SQL statement it will replace each parameter with a sample value. This value is auto-generated according to
-the `jdbc-type` as discussed before or it can be directly specified using the `sample-sql-value` attribute in the &lt;parameter> 
-tag, as in:
+When HotRod is in the process of discovering the resulting columns of a SELECT query it will replace each parameter
+with a sample value. This value is auto-generated according to the `jdbc-type` as discussed before or it can be
+directly specified using the `sample-sql-value` attribute in the &lt;parameter> tag, as in:
 
     <parameter name="clientId" java-type="Integer" sample-sql-value="123" />
 
-The value in the `sample-sql-value` attribute is a database value, not a Java value. It will be added to the SQL statement and will be parsed and evaluated by the database engine used during the code generation. The value can be as simple as `"123"` or maybe a more complex value such as `"convert(timestamp, '2001-01-01 12:34:56')"`. In any case, it needs to evaluate to a valid database data type during the code generation.
+The value in the `sample-sql-value` attribute is a SQL text value, not a Java value. It will replace the parameter in
+the SELECT query with the aim of producing a valid SQL query. It may even be evaluated by the database engine used
+during the code generation. The value can be as simple as `"123"` or maybe a more complex value such as
+`"convert(timestamp, '2001-01-01 12:34:56')"`. In any case, it needs to evaluate to a valid database data type
+during the code generation.
 
-In any case, this attribute is rarely used; however, it can come in handy in the case the developer needs to use a parameter in the `SELECT` clause that needs to be correctly
+Although this attribute is rarely used, it can come in handy in the case the developer needs to use a parameter in the `SELECT` clause that needs to be correctly
 typed when assemble the corresponding VO for the query, in the presence of uncommon or exotic parameter types if these types are not covered in the table below.
 
-Finally, please note these value serve for analysis purposes of the SQL statement during code generation only, is not present in the generated code, and is never used when running the application.
+Finally, note these values serve for analysis purposes of the SQL statement during code generation only; they
+are not present in the generated code, and are never used when running the application.
 
-More often than not HotRod assigns the *SQL Sample Value* by default, according to the following table:
+If not specified, the generator assigns a default SQL Sample Value, according to the following table:
 
     Database   jdbc-type               Sample SQL Value                                            
     ---------- ----------------------- ------------------------------------------------- 

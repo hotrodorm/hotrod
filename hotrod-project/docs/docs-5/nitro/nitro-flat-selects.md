@@ -217,7 +217,16 @@ By using the `SELECTIVITY` clause the developer is informing the DB2 optimizer t
 
 Typically database engines support the most important definitions and clauses specified by the SQL Standard and purposedly neglect the more obscure ones; no database engine implements the SQL Standard in its entirety. On the flip side, engines implement enhanced *non-standard* features that can be very useful in specific scenarios. These extensions should not be seen as a deterioration of the SQL language, but as non-standard *enrichment* of its available features. These features that can be very useful for developers in the present, and some of them may become part of the SQL Standard in the future.
 
-Notwithstanding their benefits, the usage of SQL extensions can limit the possibilities of migrating to a different database engine should the application owner decide to pursue this avenue in the future. 
+Notwithstanding their benefits, the usage of SQL extensions can limit the possibilities of migrating to a different database engine should the application owner decide to pursue this avenue in the future.
+
+
+## Parameters
+
+All Nitro queries can have parameters that can be directly applied or injected in the query and that can
+also be used to control the DynamicSQL logic. From the application's perspective these parameters become
+parameters in the DAO method that executes the query.
+
+For details on the definition and usage of parameters see [Nitro Parameters](./nitro-parameters.md).
 
 
 ## Dynamic SQL
