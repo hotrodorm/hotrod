@@ -70,7 +70,7 @@ For example, if the Java parameter `branch` defined below:
   Branch branch = new Branch(1001, depts);
 ```
 
-Is passed to the query:
+Can be passed to the query:
 
 ```xml
   <query method="findClientsActiveAccounts" vo="ActiveAccount">
@@ -93,11 +93,11 @@ This expression traverses the object, gets the second element of the array prope
 
 ## Applying Parameters vs Injecting Parameters
 
-Applying parameters is the safe way of using a parameter in a SQL query and is implemented using the `#{expression}` sequence. 
+Applying parameters is the safe way of using a parameter in a SQL query and is implemented using the `#{expression}` syntax. 
 This is the recommended way of using parameters that is known as *prepared statements* in many programming languages.
 
 Injecting parameters &ndash; essentially concatenating parameters to the query as strings values &ndash; is an alternative way of
-using parameters that may make your application vulnerable to SQL Injection. It's implemented using the `$INJECT{expression}` sequence.
+using parameters that may make your application vulnerable to SQL Injection. It's implemented using the `$INJECT{expression}` syntax.
 
 > [!CAUTION]
 > **IMPORTANT NOTE ON SECURITY**: SQL Injection opens the door for a security risk. There's a big difference between safely **applying** a parameter using `#{expression}` and directly **injecting** a String section into the query to be run using `$INJECT{expression}`. Only inject fully controlled Strings that are coming from inside the application, and never from any external source, such as a web parameter, an API, or a configuration file.
