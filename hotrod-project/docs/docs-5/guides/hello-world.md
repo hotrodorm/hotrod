@@ -33,7 +33,7 @@ steps below. Alternatively, you can use your favorite IDE to create a blank Mave
 The `pom.xml` will include:
 - The Spring Boot Starter dependency and the Spring Boot Plugin.
 - The JDBC driver dependency according to your specific database.
-- The HotRod, HotRod LiveSQL, and MyBatis Libraries. 
+- The HotRod, HotRod LiveSQL, and MyBatis Libraries.
 - The HotRod Generator Plugin.
 
 The complete `pom.xml` file will look like:
@@ -160,8 +160,8 @@ In this part we create an in-memory table in H2 database and we generate the per
 Create the file `schema.sql` with the following SQL content:
 
 ```sql
-drop table if exists branch; 
-drop table if exists employee; 
+drop table if exists branch;
+drop table if exists employee;
 
 create table branch (
   id int primary key not null,
@@ -260,7 +260,7 @@ import java.util.List;
 
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.Row;
-import org.hotrod.runtime.livesql.LiveSQL;
+import org.hotrod.livesql.LiveSQL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
