@@ -35,7 +35,7 @@ This is a major release of the HotRod ORM that breaks compatibility with previou
 - Torcs:
     - New Highest Impact Queries Ranking implemented.
     - New Highest Frequency Queries Ranking implemented.
-    - Default rankings' size increased to 30 from the previous value of 10.
+    - Rankings' default size increased to 30.
 
 ## 4.8.1:
 
