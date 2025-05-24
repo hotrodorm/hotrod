@@ -19,8 +19,10 @@ This is a major release of the HotRod ORM that breaks compatibility with previou
     - Removed old unused classes in the hotrod library.
     - The Arquetype module is removed.
 - CRUD:
-    - Two new Optimistic Locking strategies implemented: Timestamp columns, and Full Row Check.
+    - New optimistic locking Timestamp strategy implemented.
+    - New optimistic locking Full Row Check implemented.
     - Cursor functionality rewritten.
+    - Navigation using foreign keys removed.
 - Nitro:
     - Parameter injection syntax changed to `$INJECT{expression}` instead `${expression}` to prevent unintentional SQL Injection.
     - All DynamicSQL tags in Nitro can now be placed outside the complement tag as well as inside it.
@@ -31,6 +33,7 @@ This is a major release of the HotRod ORM that breaks compatibility with previou
     - Implemented missing function: COUNT(&lt;expression>).
     - Improved LiveSQL cursors.
 - Torcs:
+    - New Highest Impact Queries Ranking implemented.
     - New Highest Frequency Queries Ranking implemented.
     - Default rankings' size increased to 30 from the previous value of 10.
 

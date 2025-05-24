@@ -25,9 +25,10 @@ It's aware of SQL queries run by your application and can rank them or just reco
 
 - Ranks queries using multiple criteria
 - Can find slow queries
+- Can find the most impactful queries
 - Can log query executions
 - Can provide execution plans for queries
-- Includes three built-in query observers for rank queries according to different criteria
+- Includes five built-in rankings that rank queries according to different criteria
 - Allows custom observers to gather query execution stats with custom logic
 - Is multi-data source aware, when using the same or different database engines
 - Can save rankings details to Excel (XLSX) format
@@ -143,10 +144,11 @@ Torcs comes with three built-in observers:
 
 | Observer | Default | Description |
 | -- | -- | -- |
-| HighestResponseTimeRanking | Registered &amp; active | Records the top 10 slowest queries (highest response time) in the application instance |
-| HighestFrequencyRanking | Not registered &amp; inactive | Records the top 10 queries by execution count |
-| InitialQueriesRanking | Not registered &amp; inactive | Records the first 10 queries run in the application instance and discard the next ones |
-| LatestQueriesRanking | Not Registered &amp; inactive | Records the last 10 queries in the application instance discarding earlier ones |
+| HighestResponseTimeRanking | Registered &amp; active | Records the top 30 slowest queries (highest response time) in the application instance |
+| HighestFrequencyRanking | Not registered &amp; inactive | Records the top 30 queries with the most executions |
+| HighestImpactRanking | Not registered &amp; inactive | Records the top 30 queries by impact. Impact is defined as the total elapsed time of all executions |
+| InitialQueriesRanking | Not registered &amp; inactive | Records the first 30 queries run in the application instance and discard the next ones |
+| LatestQueriesRanking | Not Registered &amp; inactive | Records the last 30 queries in the application instance discarding earlier ones |
 
 The application can register more observers for any other need. An observer must implement the `org.hotrod.torcs.QueryExecutionObserver` interface. For an example on how to implement a custom observer see [Registering A Custom Observer](#registering-a-custom-observer).
 
