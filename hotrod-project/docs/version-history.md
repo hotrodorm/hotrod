@@ -22,10 +22,10 @@ This is a major release of the HotRod ORM that breaks compatibility with previou
     - Two new Optimistic Locking strategies implemented: Timestamp columns, and Full Row Check.
     - Cursor functionality rewritten.
 - Nitro:
-    - Parameter injection syntax changed to `$INJECT{expression}` from `${expression}`.
+    - Parameter injection syntax changed to \$INJECT\{expression\} instead \$\{expression\} to prevent undesired SQL Injection.
     - All DynamicSQL tags in Nitro can now be placed outside the complement tag as well as inside it.
 - LiveSQL:
-    - LiveSQL can now accept explicit data types in the select list using the type() method to override any type rules.
+    - LiveSQL can designate explicit data types for columns in the select list using the type() method; this type overrides all other rules.
     - Converted columns can now be used in LiveSQL syntax as any other column to write predicates with or without parameters.
     - java.time Temporal classes are now supported in LiveSQL expressions and predicates.
     - Implemented missing function: COUNT(&lt;expression>).
