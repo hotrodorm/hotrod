@@ -22,7 +22,7 @@ This is a major release of the HotRod ORM that breaks compatibility with previou
     - Two new Optimistic Locking strategies implemented: Timestamp columns, and Full Row Check.
     - Cursor functionality rewritten.
 - Nitro:
-    - Parameter injection syntax changed to $INJECT{expression} from ${expression}.
+    - Parameter injection syntax changed to `$INJECT{expression}` from `${expression}`.
     - All DynamicSQL tags in Nitro can now be placed outside the complement tag as well as inside it.
 - LiveSQL:
     - LiveSQL can now accept explicit data types in the select list using the type() method to override any type rules.
