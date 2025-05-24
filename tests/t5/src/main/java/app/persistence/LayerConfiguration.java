@@ -3,10 +3,10 @@ package app.persistence;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hotrod.runtime.livesql.LayerConfigInterface;
-import org.hotrod.runtime.livesql.queries.typesolver.TypeHandler;
-import org.hotrod.runtime.livesql.queries.typesolver.TypeRule;
-import org.hotrod.runtime.livesql.queries.typesolver.TypeSource;
+import org.hotrod.livesql.LayerConfigInterface;
+import org.hotrod.livesql.queries.typesolver.TypeHandler;
+import org.hotrod.livesql.queries.typesolver.TypeRule;
+import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,0 +1,27 @@
+package org.hotrod.livesql.expressions.analytics;
+
+import java.util.Arrays;
+
+import org.hotrod.livesql.expressions.object.ObjectExpression;
+import org.hotrod.livesql.ordering.OrderingTerm;
+
+public class ObjectWindowFunctionPartitioningStage {
+
+  private ObjectWindowExpression function;
+
+  public ObjectWindowFunctionPartitioningStage(final ObjectWindowExpression function) {
+    this.function = function;
+  }
+
+  // Next stages
+
+  public ObjectWindowFunctionOrderingStage orderBy(final OrderingTerm... orderingTerm) {
+    this.function.setOrderBy(Arrays.asList(orderingTerm));
+    return new ObjectWindowFunctionOrderingStage(this.function);
+  }
+
+  public ObjectExpression end() {
+    return this.function;
+  }
+
+}

@@ -1,0 +1,16 @@
+package org.hotrod.livesql.expressions.analytics;
+
+import org.hotrod.livesql.expressions.ComparableExpression;
+import org.hotrod.livesql.expressions.numbers.NumberFunction;
+
+public class DenseRank extends NumberFunction implements AnalyticFunction {
+
+  public DenseRank(final ComparableExpression expression) {
+    super("dense_rank(#{})", expression);
+  }
+
+  public NumberWindowFunctionOverStage over() {
+    return new NumberWindowFunctionOverStage(new NumberWindowExpression(this));
+  }
+
+}

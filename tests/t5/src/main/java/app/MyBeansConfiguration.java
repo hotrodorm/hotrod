@@ -2,9 +2,9 @@ package app;
 
 import javax.sql.DataSource;
 
-import org.hotrod.runtime.livesql.LiveSQL;
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialectFactory;
+import org.hotrod.livesql.LiveSQL;
+import org.hotrod.livesql.dialects.LiveSQLDialect;
+import org.hotrod.livesql.dialects.LiveSQLDialectFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
