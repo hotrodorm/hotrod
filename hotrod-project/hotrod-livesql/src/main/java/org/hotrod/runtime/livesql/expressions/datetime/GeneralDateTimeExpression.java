@@ -1,5 +1,6 @@
 package org.hotrod.runtime.livesql.expressions.datetime;
 
+import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -37,6 +38,10 @@ public abstract class GeneralDateTimeExpression extends ComparableExpression {
     return new DateTimeCoalesce(this, new DateTimeConstant(a));
   }
 
+  public DateTimeExpression coalesce(final Temporal a) {
+    return new DateTimeCoalesce(this, new DateTimeConstant(a));
+  }
+
   // NullIf
 
   public DateTimeExpression nullIf(final GeneralDateTimeExpression a) {
@@ -44,6 +49,10 @@ public abstract class GeneralDateTimeExpression extends ComparableExpression {
   }
 
   public DateTimeExpression nullIf(final Date a) {
+    return new DateTimeNullIf(this, new DateTimeConstant(a));
+  }
+
+  public DateTimeExpression nullIf(final Temporal a) {
     return new DateTimeNullIf(this, new DateTimeConstant(a));
   }
 
@@ -69,7 +78,11 @@ public abstract class GeneralDateTimeExpression extends ComparableExpression {
     return new Equal(this, e);
   }
 
-  public Predicate eq(final Object value) {
+  public Predicate eq(final Date value) {
+    return new Equal(this, BoxUtil.box(value));
+  }
+
+  public Predicate eq(final Temporal value) {
     return new Equal(this, BoxUtil.box(value));
   }
 
@@ -79,7 +92,11 @@ public abstract class GeneralDateTimeExpression extends ComparableExpression {
     return new NotEqual(this, e);
   }
 
-  public Predicate ne(final Object value) {
+  public Predicate ne(final Date value) {
+    return new NotEqual(this, BoxUtil.box(value));
+  }
+
+  public Predicate ne(final Temporal value) {
     return new NotEqual(this, BoxUtil.box(value));
   }
 
@@ -89,7 +106,11 @@ public abstract class GeneralDateTimeExpression extends ComparableExpression {
     return new GreaterThan(this, e);
   }
 
-  public Predicate gt(final Object value) {
+  public Predicate gt(final Date value) {
+    return new GreaterThan(this, BoxUtil.box(value));
+  }
+
+  public Predicate gt(final Temporal value) {
     return new GreaterThan(this, BoxUtil.box(value));
   }
 
@@ -99,7 +120,11 @@ public abstract class GeneralDateTimeExpression extends ComparableExpression {
     return new GreaterThanOrEqualTo(this, e);
   }
 
-  public Predicate ge(final Object value) {
+  public Predicate ge(final Date value) {
+    return new GreaterThanOrEqualTo(this, BoxUtil.box(value));
+  }
+
+  public Predicate ge(final Temporal value) {
     return new GreaterThanOrEqualTo(this, BoxUtil.box(value));
   }
 
@@ -109,7 +134,11 @@ public abstract class GeneralDateTimeExpression extends ComparableExpression {
     return new LessThan(this, e);
   }
 
-  public Predicate lt(final Object value) {
+  public Predicate lt(final Date value) {
+    return new LessThan(this, BoxUtil.box(value));
+  }
+
+  public Predicate lt(final Temporal value) {
     return new LessThan(this, BoxUtil.box(value));
   }
 
@@ -119,7 +148,11 @@ public abstract class GeneralDateTimeExpression extends ComparableExpression {
     return new LessThanOrEqualTo(this, e);
   }
 
-  public Predicate le(final Object value) {
+  public Predicate le(final Date value) {
+    return new LessThanOrEqualTo(this, BoxUtil.box(value));
+  }
+
+  public Predicate le(final Temporal value) {
     return new LessThanOrEqualTo(this, BoxUtil.box(value));
   }
 
@@ -129,15 +162,35 @@ public abstract class GeneralDateTimeExpression extends ComparableExpression {
     return new Between(this, from, to);
   }
 
-  public Predicate between(final GeneralDateTimeExpression from, final Object to) {
+  public Predicate between(final GeneralDateTimeExpression from, final Date to) {
     return new Between(this, from, BoxUtil.box(to));
   }
 
-  public Predicate between(final Object from, final GeneralDateTimeExpression to) {
+  public Predicate between(final GeneralDateTimeExpression from, final Temporal to) {
+    return new Between(this, from, BoxUtil.box(to));
+  }
+
+  public Predicate between(final Date from, final GeneralDateTimeExpression to) {
     return new Between(this, BoxUtil.box(from), to);
   }
 
-  public Predicate between(final Object from, final Object to) {
+  public Predicate between(final Temporal from, final GeneralDateTimeExpression to) {
+    return new Between(this, BoxUtil.box(from), to);
+  }
+
+  public Predicate between(final Date from, final Date to) {
+    return new Between(this, BoxUtil.box(from), BoxUtil.box(to));
+  }
+
+  public Predicate between(final Date from, final Temporal to) {
+    return new Between(this, BoxUtil.box(from), BoxUtil.box(to));
+  }
+
+  public Predicate between(final Temporal from, final Date to) {
+    return new Between(this, BoxUtil.box(from), BoxUtil.box(to));
+  }
+
+  public Predicate between(final Temporal from, final Temporal to) {
     return new Between(this, BoxUtil.box(from), BoxUtil.box(to));
   }
 
@@ -151,11 +204,31 @@ public abstract class GeneralDateTimeExpression extends ComparableExpression {
     return new NotBetween<GeneralDateTimeExpression>(this, from, BoxUtil.box(to));
   }
 
+  public Predicate notBetween(final GeneralDateTimeExpression from, final Temporal to) {
+    return new NotBetween<GeneralDateTimeExpression>(this, from, BoxUtil.box(to));
+  }
+
   public Predicate notBetween(final Date from, final GeneralDateTimeExpression to) {
     return new NotBetween<GeneralDateTimeExpression>(this, BoxUtil.box(from), to);
   }
 
+  public Predicate notBetween(final Temporal from, final GeneralDateTimeExpression to) {
+    return new NotBetween<GeneralDateTimeExpression>(this, BoxUtil.box(from), to);
+  }
+
   public Predicate notBetween(final Date from, Date to) {
+    return new NotBetween<GeneralDateTimeExpression>(this, BoxUtil.box(from), BoxUtil.box(to));
+  }
+
+  public Predicate notBetween(final Date from, Temporal to) {
+    return new NotBetween<GeneralDateTimeExpression>(this, BoxUtil.box(from), BoxUtil.box(to));
+  }
+
+  public Predicate notBetween(final Temporal from, Date to) {
+    return new NotBetween<GeneralDateTimeExpression>(this, BoxUtil.box(from), BoxUtil.box(to));
+  }
+
+  public Predicate notBetween(final Temporal from, Temporal to) {
     return new NotBetween<GeneralDateTimeExpression>(this, BoxUtil.box(from), BoxUtil.box(to));
   }
 
@@ -170,6 +243,11 @@ public abstract class GeneralDateTimeExpression extends ComparableExpression {
         Stream.of(values).map(v -> BoxUtil.box(v)).collect(Collectors.toList()));
   }
 
+  public final Predicate in(final Temporal... values) {
+    return new InList<GeneralDateTimeExpression>(this,
+        Stream.of(values).map(v -> BoxUtil.box(v)).collect(Collectors.toList()));
+  }
+
   public final Predicate notIn(final GeneralDateTimeExpression... values) {
     return new NotInList<GeneralDateTimeExpression>(this, Arrays.asList(values));
   }
@@ -179,6 +257,9 @@ public abstract class GeneralDateTimeExpression extends ComparableExpression {
         Stream.of(values).map(v -> BoxUtil.box(v)).collect(Collectors.toList()));
   }
 
-  // TODO: END -- implement in subclasses
+  public final Predicate notIn(final Temporal... values) {
+    return new NotInList<GeneralDateTimeExpression>(this,
+        Stream.of(values).map(v -> BoxUtil.box(v)).collect(Collectors.toList()));
+  }
 
 }

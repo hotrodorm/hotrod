@@ -1,5 +1,6 @@
 package org.hotrod.runtime.livesql.util;
 
+import java.time.temporal.Temporal;
 import java.util.Date;
 
 import org.hotrod.runtime.livesql.expressions.binary.ByteArrayConstant;
@@ -20,6 +21,10 @@ public class BoxUtil {
   }
 
   public static DateTimeConstant box(final Date value) {
+    return new DateTimeConstant(value);
+  }
+
+  public static DateTimeConstant box(final Temporal value) {
     return new DateTimeConstant(value);
   }
 
