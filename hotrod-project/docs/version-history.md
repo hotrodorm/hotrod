@@ -10,7 +10,7 @@ This is a major release of the HotRod ORM that breaks compatibility with previou
     - HotRod does not use MyBatis anymore and switched to plain JDBC instead. This greatly simplifies the use of newer Java versions and streamlines the bootstrap configuration.
     - Major refactoring of the configuration to simplifying it.
     - Cleaner persistence layer organization with simpler packages clear separation of duties.
-    - Date/Time/Timestamp database column types now default to java.time classes instead of java.sql classes.
+    - DATE, TIME, and TIMESTAMP database column types now default to java.time classes instead of java.sql classes.
     - Enhanced Type Solver to resolve data types for live queries in addition to table's metadata.
     - Log4j fully removed from HotRod in favor of JUL.
     - Persistence logging is available at DEBUG and TRACE levels of the DAOs.
@@ -27,6 +27,7 @@ This is a major release of the HotRod ORM that breaks compatibility with previou
 - LiveSQL:
     - LiveSQL can now accept explicit data types in the select list using the type() method to override any type rules.
     - Converted columns can now be used in LiveSQL syntax as any other column to write predicates with or without parameters.
+    - java.time Temporal classes are now supported in LiveSQL expressions and predicates.
     - Implemented missing function: COUNT(&lt;expression>).
     - Improved LiveSQL cursors.
 - Torcs:
