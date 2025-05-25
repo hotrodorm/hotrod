@@ -1,151 +1,284 @@
 # DynamicSQL
 
-DynamicSQL can be used in all [Nitro](./README.md) queries to include or exclude fragments of a SQL query 
-at runtime based on the parameter values. All Nitro queries &mdash; declared with `<select>` and `<query>`
-tags &mdash; can include DynamicSQL sections.
+DynamicSQL can be used in all [Nitro](./README.md) queries to execute SQL queries that combine static and dynamic sections in them. The dynamic sections are automatically activated or deactivated according to the specified logic and according to the parameters that are provided at runtime.
 
-For example, if a query needs to conditionally include one sections of it, DynamicSQL can do this as shown below::
+All Nitro queries &mdash; declared with `<select>` and `<query>` tags &mdash; can include DynamicSQL sections.
+
+The following example includes a dynamic query that updates a table:
 
 ```xml
-  <select method="getVIPProviders" vo="ProviderVO">
-    <parameter name="branchId" java-type="Long" />
-      SELECT *
-      FROM providers
-      WHERE type = 'VIP
-      <if test="branchId != null">
-        AND branch_id = #{branchId}
-      </if>
-  </select> 
+<select method="getVIPProviders" vo="Provider">
+  <parameter name="branchId" java-type="Integer" />
+    SELECT *
+    FROM providers
+    WHERE type = 'VIP
+    <if test="branchId != null">
+      AND branch_id = #{branchId}
+    </if>
+</select>
 ```
 
 In this case the section `AND branch_id = #{branchId}` will be included only when the parameter `branchId` is not null.
 
 
-## Parameters
+## 1. Previewing Queries and JDBC Parameters
 
-All Nitro queries can have parameters. These can be applied or injected directly in the query, can
-also be used to govern DynamicSQL, or both. From the application's perspective these parameters are
-presented as parameters in the DAO method that executes the query.
+Since the query structure may change in every execution sometimes is useful to find out exactly how the nitro query is assembled prior to being executed.
 
-For details on the definition and usage of parameters see [Nitro Parameters](./nitro-parameters.md).
+To do this you can enable logging in the DAO class that includes the query method. For example, if the DAO class that includes this Nitro query was `app.persistence.dao.ReportingDAO` and if we provided the parameter value `125` for the branchId we could enable logging in the `application.properties` file by adding:
 
-
-## The JEXL Expression Language
-
-DynamicSQL includes or excludes query sections based on boolean logic implemented in JEXL syntax that is
-evaluated at runtime. The JEXL expression language is described at [Apache JEXL](https://commons.apache.org/proper/commons-jexl/).
-
-For example, the following expressions are written in JEXL:
-
-- `!empty name`
-- `name != null`
-- `phase == 'C' or amount > minAmount`
-- `orderDate != null ? status in (1, 3, 4) : status in (null, 2)`
-
-When they are used as predicate conditions they need to evaluate to a boolean value &mdash; either `true` or `false`. They can, 
-however, evaluate to any Java type, as needed: for example, the `<bind>` tag can use any resulting type. In the examples above, the
-variables such as `name`, `phase`, `amount`, etc. correspond to runtime parameters of the query, specified using `<parameter>` tags.
-
-
-## The `<if>` Tag
-
-The `<if>` tag includes the inner SQL segment depending on the value `test` condition evaluated at runtime. If it evaluates to `true` the inner segment is included; otherwise it's ignored.
-
-For example:
-
-```xml
-  <select method="searchPendingOrders" vo="OrderVO">
-    <parameter name="minPrice" java-type="Double" />
-    SELECT *
-    FROM orders
-    WHERE status = 'PENDING'
-    <if test="minPrice != null">AND order_price >= #{minPrice}</if>
-  </select> 
+```properties
+logging.level.app.persistence.dao.ReportingDAO=DEBUG
 ```
 
-The above query searches for pending orders. If the supplied parameter `minPrice` is not null, the query adds the extra condition `AND order_price >= #{minPrice}` to the search predicate that, otherwise, won't be included.
+The DEBUG level will log the actual query being executed. For example, the query above could be logged as:
+
+```
+  SELECT *
+  FROM providers
+  WHERE type = 'VIP
+    AND branch_id = ?
+```
+
+Enabling the TRACE level will log the query being executed and also the JDBC parameters being applied to it. In this case the query above could be logged as:
+
+```
+  SELECT *
+  FROM providers
+  WHERE type = 'VIP
+    AND branch_id = ?
+
+  JDBC Parameters (1):
+    1. branchId: 123 (java.lang.Integer)
+```
 
 
-## The `<choose>`, `<when>`, and `<otherwise>` Tags
+## 2. Defining Parameters
 
-The `<choose>` tag is a variation of the `<if>` tag that allows multiple exclusive conditions to be evaluated sequentially. Each fragment is enclosed in a `<when>` tag that includes a condition. The first `<when>` tag with a matching condition is selected and its SQL fragment is added to the SQL statement. The remaining fragments are not evaluated. If no `<when>` tag is selected, the `<otherwise>` segment is selected, if present.
+Nitro queries can have parameters that can be used in the query, can be used to govern DynamicSQL, or both.
 
-**Note**: The `<choose>` tag cannot directly include SQL content, but only `<when>` and `<otherwise>` tags.
+To define a query parameter use the `<parameter>` tag. See [Nitro Parameters](./nitro-parameters.md) for details.
 
-For example:
+Since Nitro queries are defined inside DAOs, the are exposed as methods of these DAOs. Each method includes the list of parameters defined with `<parameter>` tags.
+
+
+## 3. Using Parameters
+
+When using parameters in the queries these are referenced using JEXL syntax. This syntax allows the access of simple parameters and also complex ones, such as arrays, beans, lists, collections, etc. Again, see [Nitro Parameters](./nitro-parameters.md) for details.
+
+
+## 4. DynamicSQL
+
+Dynamic SQL includes the following tags:
+
+
+| Operator | Description |
+| -- | -- |
+| `<if>` | Conditionally include the inner content if the test condition evaluates to true |
+| `<choose>` | Include only the first `<when>` content that evaluates to true and ignore the rest. If an `<otherwise>` tag is included at the end, then include this one if all `<when>` tags failed the test condition |
+| `<foreach>` | Iterate over an collection or array of elements. The inner content is included &mdash; and reevaluated &mdash; once per each element |
+| `<bind>` | Binds a variable in the parameter scope, so it can be used by other tags or content. Once a variable is bound in a scope, it cannot be rebinded in that scope |
+| `<trim>` | A trim section includes multiple `<if>` tags; trim will collect all inner content that evaluated to true and will join them with a defined separator |
+| `<where>` | A variation of the trim tag tailored to be used as a WHERE clause; each inner `<if>` can potentially be include or excluded, and this tags joins them using and AND or OR operators |
+| `<set>` | A variation o f the trim tag tailored to be used as the SET clause of an UPDATE statement; each inner `<if>` can potentially be include or excluded, and the set section joins them using commas |
+
+
+### 4.1 The `<if>` Tag
+
+The IF tag is one of the simplest operators. It includes a `test` predicate and the nested content can include SQL sections, parameters inclusion, and other DynamicSQL operators. The content is only included if the test predicate evaluates to true at runtime.
+
+The following example illustrates how an IF tag works. In this example, the main IF tag includes nested IF tags:
 
 ```xml
-  <select method="searchPendingOrders" vo="OrderVO">
-    <parameter name="searchType" java-type="String" />
-    <parameter name="minPrice" java-type="Double" />
-    <parameter name="orderDate" java-type="java.util.Date" />
-    SELECT *
-    FROM orders
-    WHERE status = 'PENDING'
+<select method="searchEmployees" vo="Employee">
+  <parameter name="f" java-type="app.data.EmployeeFilter" />
+  SELECT * FROM employee WHERE active = 'Y'
+  <if test="f != null">
+    <if test="f.firstName != null"> AND first_name = #{f.firstName}</if>
+    <if test="f.lastName != null"> AND last_name = #{f.lastName}</if>
+    <if test="f.firstSSN != null"> AND last_ssn = #{f.lastSSN}</if>
+  </if>
+</select>
+```
+
+The inner IF tags will only be evaluated if the parent IF evaluates to true; otherwise, they'll be fully ignored and excluded.
+
+An IF tag can nest static SQL, parameters, and other DynamicSQL tags.
+
+
+### 4.2 The `<choose>` Tag
+
+
+The CHOOSE tag picks the first nested WHEN tag that evaluates to true and discard the rest. If none is selected and an OTHERWISE tag is declared, then this one will be selected.
+
+The WHEN tag takes a similar form of the IF tag; that is, it has `test` predicate and has nested content.
+
+There can be only one OTHERWISE tag and is declared after the WHEN tags. It's simpler since it doesn't have attributes, but only content.
+
+**Note**: The CHOOSE tag cannot directly include SQL content, but only WHEN and OTHERWISE tags.
+
+The WHEN and OTHERWISE tag can nest static SQL, parameters, and other DynamicSQL tags.
+
+The following example includes a choose operator that implements four types of ordering for the query:
+
+
+```xml
+  <select method="listEmployees" vo="Employee">
+    <parameter name="ordering" java-type="Integer" />
+    SELECT *, salary * 1.31 as gross_salary FROM employee WHERE active = 'Y'
     <choose>
-      <when test="type == 'PRICE'">AND order_price >= #{minPrice}</when>
-      <when test="type == 'DATE'">AND order_date = #{orderDate}</when>
-      <otherwise>AND channel = 'ONLINE'</otherwise>
+      <when test="ordering == 1"> ORDER BY first_name</when>
+      <when test="ordering == 2"> ORDER BY last_name</when>
+      <when test="ordering == 3"> ORDER BY hired_on DESC</when>
+      <otherwise> ORDER BY salary</otherwise>
     </choose>
-  </select> 
+  </select>
 ```
 
-The above query searches for pending orders. If the `type` parameter has the value `PRICE` it uses the `minPrice` parameter to search for orders; otherwise, if 
-the `type` parameter has the value `DATE` it uses the `orderDate` parameter to search for orders; if none of these options are selected, then it defaults to searching by `channel = 'ONLINE'`.
+### 4.3 The `<foreach>` Tag
 
+The FOREACH tag iterates over a collection or array of items. In every iteration the current item is available for use in the variable scope. The nested content is included and reevaluared once per each item.
 
-## The `<where>` Tag
+The following example makes it possible to use a list of values in a SQL IN predicate:
 
-The `<where>` tag encloses multiple `<if>` inner tags. If at least one of them is included it does two things:
-
-- It prepends the whole section with a `WHERE` clause.
-- It removes any `AND` or `OR` from the first selected inner fragment.
-
-**Note**: The `<where>` tag cannot directly include SQL content, but only `<if>` tags.
-
-For example:
 
 ```xml
-  <select method="searchInvoices" vo="InvoiceVO">
-    <parameter name="branchId" java-type="Integer" />
-    <parameter name="clientId" java-type="Integer" />
-    <parameter name="minAmount" java-type="Double" />
-    SELECT *
-    FROM invoice
-    <where>
-      <if test="branchID != null">AND branch_id = #{branchId}</when>
-      <if test="clientID != null">AND client_id = #{clientId}</when>
-      <if test="minAmount != null">AND amount >= #{minAmount}</when>
-    </where>
-  </select> 
+<select method="findEmployees" vo="EmployeeVO">
+  <parameter name="ids" java-type="java.lang.Integer[]" jdbc-type="NUMERIC" />
+  SELECT * FROM employee WHERE id IN
+  <foreach item="id" collection="ids" open="(" separator=", " close=")">
+    #{id}
+  </foreach>
+</select>
 ```
 
-If the caller supplies the values (branchId = `301`, clientId = `null`, minAmount = `20`) the query will be assembled as:
+The FOREACH tag defines delimiters to include at the beginning, as separators, and at the end of the content. These parameters are:
+
+- `item`: the name of a variable that will hold the current item
+- `collection`: the JEXL expression that will produce an array or collection of items
+- `open`: the opening delimiter
+- `separator`: the separator to be included by for each between each interation
+- `close`: the closing delimiter
+
+In this example the body of the foreach operator includes a single section: `#{id}`. As well as any DynamicSQL tag the body of this operator can include any DynamicSQL tags, SQL sections, or parameters in many nesting levels, as needed.
+
+In the example above, if the array of Integers included 341, 570, and 115, the query would be logged as:
 
 ```sql
-  SELECT *
-  FROM invoice
-  WHERE branch_id = 301
-    AND amount >= 20
+  SELECT * FROM employee WHERE id IN (?, ?, ?)
+
+  JDBC Parameters (3):
+    1. id#0: 341 (java.lang.Integer)
+    2. id#1: 570 (java.lang.Integer)
+    3. id#2: 115 (java.lang.Integer)
 ```
 
-Notice:
-- The `WHERE` clause was included, since at least one inner tag was included.
-- The `AND` in `AND branch_id = 301` was removed, since this is the first included tag.
-- The `AND` in `AND amount >= 20` was not removed, since this is not the first included tag.
+**Note**: The FOREACH tag can render long queries when the array or collection includes many values. Keep in mind that there could be a performance penalty in the database when filtering by many values. Also, some database engines and JDBC drivers may place a limit in the size of the SQL statement; most databases will accept a 10000-character long SQL query, but may reject 50000-character long one.
+
+
+### 4.4 The `<bind>` Tag
+
+The BIND tag binds a variable in the parameter scope, so it can be used by other content in the rest of the query.
+
+
+```xml
+<select method="findClientsByPartialName" vo="Client">
+  <parameter name="partialName" java-type="String" />
+  <bind name="pattern" value="'%' || partialName || '%'" />
+  SELECT *
+  FROM client
+  WHERE name LIKE #{pattern}
+</select>
+```
+
+In this example `pattern` is not a parameter provided by in the parameter context, but it's a variable defined inside the query. This variable is later used in the query. Variables, as well as parameters, can be applied or injected in the query.
+
+The bind operator does not have a body and, therefore, cannot nest other sections.
+
+
+
+### 4.5 The `<trim>` Tag
+
+The TRIM tag includes multiple IF tags. Each IF tag is evaluated for inclusion and the included ones make it to the query. The TRIM tag joins them with the defined separator.
+
+The example below decides to include or exclude columns in the select list at runtime:
+
+```xml
+  <select method="getEmployeeData" vo="EmployeeData">
+    <parameter name="fn" java-type="Boolean" />
+    <parameter name="ln" java-type="Boolean" />
+    <parameter name="hd" java-type="Boolean" />
+    SELECT
+    <trim separator=", ">
+      <if test="fn != null">first_name</if>
+      <if test="ln != null">last_name</if>
+      <if test="hd != null">hired_on</if>
+    </trim>
+    FROM employee
+  </select>
+```
+
+In this example, the columns are included according to the provided boolean parameters, and stitched together using commas (`,`).
+
+Trim uses the following parameters for formatting purposes:
+
+- The `prefix` to prepend when at least one inner fragment is included.
+- The `suffix` to append when at least one inner fragment is included.
+- The `prefixOverrides` indicates the prefixes to remove from the first selected inner fragment; the list is separated by the `|` (pipe) character.
+- The `suffixOverrides` indicates the suffixes to remove from the last selected inner fragment; the list is separated by the `|` (pipe) character.
+
+**Note**: The `<TRIM>` tag cannot directly include SQL content, but only `<if>` tags.
+
+Therefore:
+
+- A `<trim prefix='WHERE' prefixOverrifes="AND|OR">` tag is equivalent to a `<where>` tag.
+- A `<trim prefix='SET' prefixOverrifes=",">` tag is equivalent to a `<set>` tag.
+
+
+### 4.6 The `<where>` Tag
+
+A WHRE tag is a tailored TRIM tag that simplifies the writing of dynamic WHERE clauses.
+
+For example:
+
+```xml
+  <select method="getEmployeeData" vo="EmployeeData">
+    <parameter name="fn" java-type="Boolean" />
+    <parameter name="ln" java-type="Boolean" />
+    <parameter name="hd" java-type="Boolean" />
+    SELECT * FROM employee
+    <where>
+      <if test="f.first != null">OR first_name = #{f.first}</if>
+      <if test="f.last != null">OR last_name = #{f.last}</if>
+      <if test="f.hiredDate != null">OR hired_on = #{f.hiredDate}</if>
+    </trim>
+  </select>
+```
+
+In this case the WHERE tag assembles any of these three IF tags prepending `WHERE` to the whole section and adding `OR` between them. If none of them is selected nothing will be added to the query, not even the `WHERE` section.
+
+If the supplied parameters are (firstName = `Anne`, lastName = `null`, hiredDate = `2025-03-15`) the query will be assembled as:
+
+```sql
+  SELECT * FROM employee
+  WHERE first_name = ?
+     OR hired_date = '2025-03-15'
+
+  JDBC Parameters (2):
+    1. first: Anne (java.lang.String)
+    2. hiredDate: 2025-3-15 (java.time.LocalDate)
+```
+
+Notice that:
+- The `WHERE` clause was included, since at least one inner IF tag was included.
+- The `OR` in `OR first_name = ?` was removed, since this is the first included tag.
+- The `OR` in `OR hired_on = ?` was not removed, since this is not the first included tag.
 - The second inner tag was not included, since its condition was not met.
 
 
-## The `<set>` Tag
+### 4.7 The `<set>` Tag
 
-The `<set>` tag has a very similar functionality as the `<where>` tag but it's tailored for `UPDATE` SQL statements.
-
-If at least one of the inner fragments is included it does two things:
-
-- It prepends the whole section with a `SET` clause.
-- It removes any `,` from the first selected inner fragment.
-
-**Note**: The `<set>` tag cannot directly include SQL content, but only `<if>` tags.
+A SET tag is a tailored TRIM tag that simplifies the writing of dynamic SET clauses.
 
 For example:
 
@@ -158,16 +291,20 @@ For example:
       <if test="newStatus != null">, invoice_status = #{newStatus}</when>
       <if test="dueDate != null">, invoice_due_date = #{dueDate}</when>
     </set>
-    WHERE total_amount_due > amount_paid      
+    WHERE total_amount_due > amount_paid
   </query>
 ```
+In this case the SET tag will assemble any if tag prepending `SET`. It will remove the `,` if present in the fist included content. If none of them is selected nothing will be added to the query, not even the `SET` section.
 
-If the caller supplies the values (newStatus = `null`, dueDate = `2020-12-01`) the query will be assembled as:
+In this example, if the supplied parameters are (newStatus = `null`, dueDate = `2020-12-01`) the query will be assembled as:
 
 ```sql
   UPDATE invoice
-  SET invoice_due_date = '2020-12-01'
-  WHERE total_amount_due > amount_paid      
+  SET invoice_due_date = ?
+  WHERE total_amount_due > amount_paid
+
+  JDBC Parameters (1):
+    1. dueDate: 2020-12-01 (java.time.LocalDate)
 ```
 
 Notice that:
@@ -176,91 +313,5 @@ Notice that:
 - The first inner tag was not included, since its condition was not met.
 
 
-## The `<trim>` Tag
-
-The `<trim>` tag is a generic form of the `<where>` and `<set>` tags. The developer can use the generic form to specify:
-
-- The `prefix` to prepend to the whole fragment, when at least one inner fragment is included.
-- The `suffix` to append to the whole fragment, when at least one inner fragment is included.
-- The `prefixOverrides` indicates the prefixes to remove from the first selected inner fragment; the list is separated by the `|` (pipe) character.
-- The `suffixOverrides` indicates the suffixes to remove from the last selected inner fragment; the list is separated by the `|` (pipe) character.
-
-**Note**: The `<TRIM>` tag cannot directly include SQL content, but only `<if>` tags.
-
-Therefore:
-
-- A `<trim prefix='WHERE' prefixOverrifes="AND|OR">` tag is equivalent to a `<where>` tag.
-- A `<trim prefix='SET' prefixOverrifes=",">` tag is equivalent to a `<set>` tag.
-
-
-## The `<foreach>` Tag
-
-The `<foreach>` tag iterates over a collection or array and includes the inner SQL fragment once for each element.
-
-For example:
-
-```xml
-<select method="findEmployees" vo="EmployeeVO">
-  <parameter name="ids" java-type="java.util.List&lt;Integer>" jdbc-type="NUMERIC" />
-  <parameter name="names" java-type="java.util.List&lt;String>" jdbc-type="VARCHAR" />
-  SELECT *
-  FROM employee
-    <complement>
-    WHERE branch_id IN
-    <foreach item="id" collection="ids" open="(" separator=", " close=")">
-      #{id}
-    </foreach>
-    OR name IN
-    <foreach item="name" collection="names" open="(" separator=", " close=")">
-      #{name}
-    </foreach>
-    </complement>
-</select>
-```
-
-Depending on the specific parameters the query will change. If the first list has three values and the second one two, the query will be assembled as:
-
-```sql
-SELECT *
-FROM employee
-WHERE branch_id IN (?, ?, ?)
-  OR name IN (?, ?)
-```
-
-The parameters that will be *applied* to the query could in this case be:
-
-```
-101 (Integer), 102 (Integer), 200 (Integer), Alice (String), Steve (String)
-```
-
-These parameter values can be displayed by enabling the DEBUG level in the logging of the query.
-
-Finally, there's of course a performance penalty when using large collections or arrays. Also, in the case of large collections or arrays,
-some database engines and JDBC drivers may place a limit in the size of the SQL statement. Most database engines will accept 
-1000-character long SQL statements, but may reject 30000-character long SQL statements.
-
-
-## The `<bind>` Tag
-
-The `<bind>` tag allows the developer to set temporary variables in the DynamicSQL scope that can help the writing of complex expressions.
-
-For example:
-
-```xml
-<select method="findClientsByPartialName" vo="ClientVO">
-  <parameter name="partialName" java-type="String" />
-  <bind name="namePattern" value="'%' || partialName || '%'" />
-  SELECT *
-  FROM client
-  WHERE name LIKE #{namePattern}
-</select> 
-```
-
-If the supplied parameters at runtime are (partialName = `"smith"`) the query will be assembled as:
-
-```sql
-select * from client
-where name like '%smith%'
-```
 
 

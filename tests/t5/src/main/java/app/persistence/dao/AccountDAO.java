@@ -521,7 +521,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   }
 
-  // Database class org.hotrod.runtime.livesql.metadata.Table metadata
+  // Database class org.hotrod.livesql.metadata.Table metadata
 
   public AccountTable newTable() {
     return new AccountTable();
@@ -701,9 +701,9 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   private void logQuery(PreparedQuery preparedQuery) {
     if (log.isLoggable(Level.FINER)) {
-      log.finer("SQL: " + preparedQuery.getPreview(true));
+      log.finer("SQL:\n" + preparedQuery.getPreview(true));
     } else if (log.isLoggable(Level.FINE)) {
-      log.fine("SQL: " + preparedQuery.getPreview());
+      log.fine("SQL:\n" + preparedQuery.getPreview());
     }
   }
 

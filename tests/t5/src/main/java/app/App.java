@@ -150,13 +150,10 @@ public class App {
 //  }
 
   private void testNitro6() throws SQLException, DynamicExpressionException, IOException {
-    log.info("--- Test Accounts 1 --- this.sql=" + this.sql);
     List<TAccount> tas = this.test2DAO.findTAccounts(false);
-    log.info("--- Test Accounts 2 ---");
     for (TAccount ta : tas) {
       System.out.println("ta=" + ta);
     }
-    log.info("--- Test Accounts 3 ---");
   }
 
 //  private void testConverter6() throws SQLException, DynamicExpressionException, IOException {

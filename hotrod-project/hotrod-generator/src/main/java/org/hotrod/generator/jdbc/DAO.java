@@ -1510,9 +1510,9 @@ public class DAO {
     w.println();
     w.println("  private void logQuery(", PreparedQuery.class, " preparedQuery) {");
     w.println("    if (log.isLoggable(", Level.class, ".FINER)) {");
-    w.println("      log.finer(\"SQL: \" + preparedQuery.getPreview(true));");
+    w.println("      log.finer(\"SQL:\\n\" + preparedQuery.getPreview(true));");
     w.println("    } else if (log.isLoggable(", Level.class, ".FINE)) {");
-    w.println("      log.fine(\"SQL: \" + preparedQuery.getPreview());");
+    w.println("      log.fine(\"SQL:\\n\" + preparedQuery.getPreview());");
     w.println("    }");
     w.println("  }");
     w.println();

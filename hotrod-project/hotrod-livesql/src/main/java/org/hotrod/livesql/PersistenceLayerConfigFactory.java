@@ -27,7 +27,7 @@ public class PersistenceLayerConfigFactory implements ApplicationContextAware {
 
   @PostConstruct
   private void initialize() {
-    log.info("POST-CONSTRUCT");
+    log.fine("POST-CONSTRUCT");
     computeValidLayerConfigs();
   }
 
@@ -35,7 +35,7 @@ public class PersistenceLayerConfigFactory implements ApplicationContextAware {
   private LayerConfigInterface defaultConfig;
 
   private void computeValidLayerConfigs() {
-    log.info("POST-CONSTRUCT 2");
+    log.fine("POST-CONSTRUCT 2");
     Map<String, LayerConfigInterface> allConfigBeans = applicationContext
         .getBeansOfType(LayerConfigInterface.class);
     this.configs = new HashMap<>();
@@ -50,7 +50,7 @@ public class PersistenceLayerConfigFactory implements ApplicationContextAware {
   }
 
   public List<TypeRule> getCustomRules(final String layerQualifier) {
-    log.info("POST-CONSTRUCT 3");
+    log.fine  ("POST-CONSTRUCT 3");
     if (layerQualifier == null) {
 
       if (this.configs.size() > 1) {

@@ -11,7 +11,7 @@ This is a major release of the HotRod ORM that breaks compatibility with previou
     - Major refactoring of the configuration to simplifying it.
     - Cleaner persistence layer organization with simpler packages clear separation of duties.
     - DATE, TIME, and TIMESTAMP database column types now default to java.time classes instead of java.sql classes.
-    - Enhanced Type Solver to resolve data types for live queries in addition to table's metadata.
+    - Enhanced Type Solver now resolves data types for live queries.
     - Log4j fully removed from HotRod in favor of JUL.
     - Persistence logging is available at DEBUG and TRACE levels of the DAOs.
     - New class generator produces cleaner classes, handles references, and sorted imports.
