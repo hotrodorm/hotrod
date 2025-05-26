@@ -1,11 +1,11 @@
 # The Nitro Module
 
-Nitro goes beyond the CRUD functionality to allow the use native SQL code and dynamic queries to be executed.
+Nitro queries allows native SQL code and adds DynamicSQL functionality in queries.
 
-Nitro queries can:
+Nitro queries are useful to:
 
-- Use native SQL features to gain access to advanced database features.
-- Use native SQL features to implement high performance queries.
+- Include a preexistent query in the persistent layer, as is.
+- Use native SQL features to gain access to advanced database features, and to implement high performance queries.
 - Use DynamicSQL to define queries that change their form at runtime by enabling, disabling, or rendering sections of the
 query according to parameters values. See [DynamicSQL](./nitro-dynamicsql.md). 
 
@@ -15,7 +15,7 @@ query according to parameters values. See [DynamicSQL](./nitro-dynamicsql.md).
 The following query uses native DB2 features and Dynamic SQL:
 
 ```xml
-<select method="findActiveAccountsWithClient" vo="AccountClientVO">
+<select method="findActiveAccountsWithClient" vo="AccountClient">
   <parameter name="regionId" java-type="Integer" />
   SELECT a.*, c.name, c.type as "client_type"
   FROM account a
@@ -36,6 +36,8 @@ that allows the developer to tune query performance.
 There are two types of Nitro queries. They both can include Native and DynamicSQL functionality:
 
 - [General Purpose Queries](nitro-general-purpose.md) &mdash; Queries that return no data.
-- [Flat Selects](nitro-flat-selects.md) &mdash; SELECT queries that return a result set of rows.
+- [Selects](nitro-selects.md) &mdash; SELECT queries that return a result set of rows.
 
+## Parameters
 
+To add parameters to the queries, including the use of JEXL syntax see [Parameters](./nitro-parameters.md).

@@ -31,6 +31,7 @@ import org.hotrod.config.ParameterTag;
 import org.hotrod.config.QueryMethodTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart;
 import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicInsertQuery;
 import org.hotrod.dynamicsql.DynamicModificationQuery;
@@ -1750,7 +1751,18 @@ public class DAO {
     SelectMethodReturnType rt = s.getReturnType(this.classPackage);
     ExternalClass rc = ExternalClass.of(rt.getBaseReturnVOFullClassName());
 
-    w.print("  public ", List.class, "<", rc, "> " + method + "(");
+    switch (rt.getMode()) {
+    case CURSOR:
+      w.print("  public ", Cursor.class, "<", rc, "> " + method + "(");
+      break;
+    case SINGLE_ROW:
+      w.print("  public ", rc, " " + method + "(");
+      break;
+    default:
+      w.print("  public ", List.class, "<", rc, "> " + method + "(");
+      break;
+    }
+
     Separator sep = new Separator(", ");
     for (SelectParameterMetadata sp : s.getParameters()) {
       ParameterTag p = sp.getParameter();
@@ -1772,8 +1784,22 @@ public class DAO {
     fragmentLogging();
 
     w.println("    try (", Connection.class, " conn = this.dataSource.getConnection()) {");
-    w.println("      ", List.class, "<", rc, "> rows = preparedQuery.execute(conn);");
-    w.println("      return rows;");
+
+    switch (rt.getMode()) {
+    case CURSOR:
+      w.println("      ", Cursor.class, "<", rc, "> cursor = preparedQuery.executeCursor(conn);");
+      w.println("      return cursor;");
+      break;
+    case SINGLE_ROW:
+      w.println("      ", rc, " row = preparedQuery.executeOne(conn);");
+      w.println("      return row;");
+      break;
+    default:
+      w.println("      ", List.class, "<", rc, "> rows = preparedQuery.execute(conn);");
+      w.println("      return rows;");
+      break;
+    }
+
     w.println("    }");
 
     w.println("  }");

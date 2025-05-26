@@ -51,7 +51,11 @@
   delete(Account filter);                  // by example  
  -->
 
+  <table name="b" />
+  <table name="c" />
+
   <table name="account">
+  
 <!-- 
    -->
   
@@ -103,7 +107,7 @@ where balance >= 300
 
    <dao name="Test2DAO">
 
-    <select method="findTAccounts" vo="TAccount">
+    <select method="findTAccounts" vo="TAccount" mode="list">
       <parameter name="includeBalance" java-type="Boolean" />
       select id, name as xname, 7*3 as total<if test="includeBalance">, balance, type as xtype, 9 * 5 as subtotal</if>
       from account

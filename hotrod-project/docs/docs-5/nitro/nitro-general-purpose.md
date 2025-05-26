@@ -4,24 +4,12 @@ A General Purpose query does not return a result set and is implemented using `<
 only return may be an optional count of affected rows.
 
 Typically these correspond to `UPDATE`, `DELETE` SQL statements, but can actually include any valid 
-SQL statement in the specific database such as `INSERT`, `CREATE`, `ALTER`, etc.
+SQL statement in the specific database such as `INSERT`, `CREATE`, `ALTER`, etc. including DML 
+statements and stored procedures calls.
 
-A `<query>` will be modeled as a DAO method and, therefore, must be included in a `<table>`, `<view>`, or `<dao>` 
-tag. See [Configuration File Structure](../config/configuration-file-structure.md) for details.
-
-They are commonly used to perform changes in the database &mdash; by running tailored `UPDATE` or `DELETE` 
-statements &mdash; but can actually run any valid SQL statement, including DML statements and stored 
-procedures calls.
-
-
-## Parameters
-
-All Nitro queries can have parameters that can be directly applied or injected in the query and that can
-also be used to control the DynamicSQL logic. From the application's perspective these parameters become
-parameters in the DAO method that executes the query.
-
-For details on the definition and usage of parameters see [Nitro Parameters](./nitro-parameters.md).
-
+General purpose queries can be included in the definition of tables (`<table>`), views (`<view>`), 
+and general DAO (`<dao>`) tags. See
+[Configuration File Structure](../config/configuration-file-structure.md) for details.
 
 ## Examples
 
@@ -52,85 +40,34 @@ public int prepareDailyTransactions() { ... }
 ```
 
 
-## Parameters
+## Features
 
-General purpose queries can be parameterized by using the `<parameter>` tag.
+Nitro General Purpose queries can have parameters, use Native SQL, and use DynamicSQL.
 
-**Note**: General queries do no require the use of the traditional `<complement>` tag.
+### 1. Parameters
 
-For example:
+All Nitro queries can have parameters that can be directly applied or injected in the query and that can
+also be used to control the DynamicSQL logic. From the application's perspective these parameters become
+parameters in the DAO method that executes the query.
 
-```xml
-<query method="closeClientsPaidInvoices">
-  <parameter name="clientId" java-type="Integer" />
-  update invoice
-  set outstanding = 0
-  where amount_paid >= amount_receivable
-    and client_id = #{clientId}
-</query>
-```
-
-The above query return the number of updated rows and produces the following Java method:
-
-```java
-public int closeClientsPaidInvoices(Integer clientId) { ... }
-```
-
-See [Query Parameters](nitro-parameters.md) for more details on parameters.
+For details on the definition and usage of parameters see [Nitro Parameters](./nitro-parameters.md).
 
 
-## Value Object Modeling
+### 2. The `<complement>` Tag
 
-HotRod models VOs using two classes to allow the developer to add custom behavior to the value
-objects while allowing automatic structure updates at the same time. See 
-[Value Object Modeling](../crud/value-object-modeling.md) for details.
+Unlike SELECT queries, general purpose queries do not need a column discovery phase and, therefore, do not need
+the use of the `<complement>` tag.
 
 
-## Native SQL
+### 3. Native SQL
 
 All native SQL statements are supported to take full advantage of the database dialect features.
 
 
-## Dynamic SQL
+### 4. Dynamic SQL
 
-General purpose queries can be enhanced with [Dynamic SQL](nitro-dynamic-sql.md). Dynamic SQL allows the query to include or
+General purpose queries can be enhanced with [Dynamic SQL](./nitro-dynamicsql.md). Dynamic SQL allows the query to include or
 exclude fragments of the SQL statement at runtime, based on the values of the supplied parameters.
-
-For example:
-
-```xml
-<query method="removeDraftArticles">
-  <parameter name="authorId" java-type="Integer" />
-  delete from article
-  where status = 'draft'
-  <where>
-    <if test="authorId != null">and author_id = #{authorId}</if>
-  </where>
-</query>
-```
- 
-The above query return the number of deleted rows and produces the following Java method:
-
-```java
-public int removeDraftArticles(Integer authorId) { ... }
-```
-
-Now, the actually executed SQL statement takes different shape depending on the runtime parameter(s):
-
-- If the value of the `authorId` is null the SQL statement will be run as:
-
-```sql
-delete from article
-where status = 'draft'
-```
-
-- Otherwise, If the value of the `authorId` is not null, the SQL statement will be run as:
-
-```sql
-delete from article
-where status = 'draft'
-  and author_id = #{authorId}
-```
 
 
 

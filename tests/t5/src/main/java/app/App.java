@@ -153,7 +153,8 @@ public class App {
     List<TAccount> tas = this.test2DAO.findTAccounts(false);
     for (TAccount ta : tas) {
       System.out.println("ta=" + ta);
-    }
+      
+   }
   }
 
 //  private void testConverter6() throws SQLException, DynamicExpressionException, IOException {

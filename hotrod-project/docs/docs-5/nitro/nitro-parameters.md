@@ -8,7 +8,11 @@ To include parameters in your query use the `<parameter>` tag.
 
 ## The `<parameter>` Tag
 
-You can add parameters using the `<parameter>` tag in the query definition as shown below:
+A `<parameter>` tag defines a parameter that will be received by the query. A query can
+define zero, one, or more parameters. The parameters can be plain values or complex
+objects with properties, arrays, or any combination of them.
+
+The example shown below includes two parameter definitions:
 
 ```xml
   <select method="findClientsActiveAccounts" vo="ActiveAccount">
@@ -41,10 +45,16 @@ Notice that:
 - Although not shown in this example, each parameter can be used multiple times inside the query.
 
 
-## Using JEXL Syntax
+## Using Parameters with JEXL Syntax
 
-Any applied or injected parameter taked the form of a JEXL expression. It can be as simple as the name of a parameter or a more
-complex JEXL expression that can use bean syntax to access data structures. This includes accessing:
+Each parameter can be used in the query definition zero, one, or more times.
+
+A parameter can be applied as is, directly to the query using the simple form `#{minBalance}`.
+
+If the parameters is a complex object, maybe an array, a list, an object with properties, or
+any combination of the above, then a JEXL expression can be used to specify the exact value to
+use from this object. A JEXL expression uses bean syntax to access data structures. This includes
+accessing:
 
 - Properties
 - Array elements
@@ -121,21 +131,11 @@ normal *scalar* value would be allowed in the query. This includes:
 as JDBC parameters. Therefore, they can be placed anywhere in the query.
 
 
-## The `<complement>` Tag
+## Rendering Parameters in SELECT queries
 
-The `<complement>` is used to remove complex dynamic sections of a SELECT query when the SQL 
-processor is discovering the resulting columns of it. General purpose queries &mdash; 
-queries that do not return rows &mdash; do no require the use of the `<complement>` tag.
-
-Use `<complement> invalid SQL query section </complement>` to surround query sections that do
-not produce valid SQL content sections. These typically correspond to the content of DynamicSQL sections
-that are meant to be fully processed at runtime.
-
-When it comes to expresison sections &mdash; `#{expression}` and `$INJECT{expression}` &mdash; they generally do not need to
-be enclosed in complement tags. During column discovery the generator replaces each parameter with 
-a [sample SQL value](#the-sample-sql-value) of the corresponding type. For applied parameters this sample
-value depends on the corresponding JDBC type of the parameter and the specific database engine; for injected
-parameters this is a dummy String value.
+During column discovery the generator replaces each parameter with a [sample SQL value](#the-sample-sql-value)
+of the corresponding type. For applied parameters this sample value depends on the corresponding JDBC type of
+the parameter and the specific database engine; for injected parameters this is a dummy String value.
 
 ## The JDBC Type
 
