@@ -1,7 +1,7 @@
 # Hello CRUD!
 
 This example sets up a Spring Boot project with Maven and H2 in-memory database to show the entire set up needed to run
-any CRUD functionality. In this case this demonstrates the case of selecting a row by primary key using the CRUD module.
+a simple CRUD functionality. This demonstrates the case of selecting a row by primary key using the CRUD module.
 
 For more CRUD examples using SELECT see:
 
@@ -51,6 +51,7 @@ src/main/resources         # All resources, including the generated mappers
 application.properties     # The runtime properties
 ```
 
+**Note**: For compatibility purposes, this example uses the basic Java 8 and Spring Boot 2.x engine. In Consider that HotRod can be used with any modern Java version and any modern with Spring Boot as well.
 
 ## Part 1 &mdash; Setting Up the Project
 
@@ -64,8 +65,8 @@ steps below. Alternatively, you can use your favorite IDE to create a blank Mave
 The `pom.xml` will include:
 - The Spring Boot Starter dependency and the Spring Boot Plugin.
 - The JDBC driver dependency according to your specific database.
-- The HotRod, HotRod LiveSQL, and MyBatis Libraries. 
-- The HotRod Generator Plugin.
+- The HotRod library.
+- The HotRod Generator plugin.
 
 The complete `pom.xml` file will look like:
 
@@ -74,8 +75,8 @@ The complete `pom.xml` file will look like:
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.myapp</groupId>
-  <artifactId>myapp</artifactId>
+  <groupId>examples</groupId>
+  <artifactId>hellocrud</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
@@ -87,31 +88,25 @@ The complete `pom.xml` file will look like:
 
   <dependencies>
 
-    <dependency> <!-- You can use Spring Boot, plain Spring, or other -->
+    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
       <version>2.3.4.RELEASE</version>
-    </dependency>  
-
-    <dependency> <!-- Required. The main HotRod library -->
-      <groupId>org.hotrodorm.hotrod</groupId>
-      <artifactId>hotrod</artifactId>
-      <version>4.4.0</version>
     </dependency>
 
-    <dependency> <!-- Required. HotRod's LiveSQL library -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-jdbc</artifactId>
+      <version>2.3.4.RELEASE</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
-      <version>4.4.0</version>
+      <version>5.0.0</version>
     </dependency>
 
-    <dependency> <!-- Required. The generator uses MyBatis for database connectivity -->
-      <groupId>org.mybatis.spring.boot</groupId>
-      <artifactId>mybatis-spring-boot-starter</artifactId>
-      <version>2.1.3</version>
-    </dependency>    
-
-    <dependency> <!-- Your app needs the JDBC driver to connect to the database. Can be provided at runtime -->
+    <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <version>2.1.214</version>
@@ -139,7 +134,7 @@ The complete `pom.xml` file will look like:
       <plugin>
         <groupId>org.hotrodorm.hotrod</groupId>
         <artifactId>hotrod-maven-plugin</artifactId>
-        <version>4.4.0</version>
+        <version>5.0.0</version>
         <configuration>
           <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
           <jdbcurl>jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1</jdbcurl>
@@ -191,8 +186,8 @@ In this part we create an in-memory table in H2 database and we generate the per
 Create the file `schema.sql` with the following SQL content:
 
 ```sql
-drop table if exists branch; 
-drop table if exists employee; 
+drop table if exists branch;
+drop table if exists employee;
 
 create table branch (
   id int primary key not null,
@@ -239,13 +234,13 @@ We see the code generation details:
 
 ```bash
 [INFO] Scanning for projects...
-[INFO] 
+[INFO]
 [INFO] --------------------------< com.myapp:myapp >---------------------------
-[INFO] Building myapp 1.0.0-SNAPSHOT
+[INFO] Building hellocrud 1.0.0-SNAPSHOT
 [INFO] --------------------------------[ jar ]---------------------------------
 [INFO] 
-[INFO] --- hotrod-maven-plugin:4.0.0 (default-cli) @ myapp ---
-[INFO] HotRod version 4.4.0 (build 20221102-152614) - Generate
+[INFO] --- hotrod-maven-plugin:5.0.0 (default-cli) @ myapp ---
+[INFO] HotRod version 5.0.0 (build 20221102-152614) - Generate
 [INFO] Database URL: jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1
 [INFO] Database Name: H2 - version 2.1 (2.1.214 (2022-06-13))
 [INFO] JDBC Driver: H2 JDBC Driver - version 2.1 (2.1.214 (2022-06-13)) - implements JDBC Specification 4.2
@@ -277,7 +272,7 @@ In this part we write a simple app that uses the CRUD and LiveSQL functionalitie
 
 ### A Simple Spring Boot Application
 
-Let's write a simple application that performs two searches in the table. Create the application 
+Let's write a simple application that performs two searches in the table. Create the application
 class `src/main/java/app/App.java` as:
 
 ```java
@@ -340,13 +335,6 @@ public class App {
 The runtime properties are used when running the application. Create the file `application.properties` as:
 
 ```properties
-# General configuration of the app
-
-mybatis.mapper-locations=mappers/**/*.xml
-logging.level.root=INFO
-
-# Default datasource configuration
-
 spring.datasource.driver-class-name=org.h2.Driver
 spring.datasource.url=jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1
 spring.datasource.username=sa
