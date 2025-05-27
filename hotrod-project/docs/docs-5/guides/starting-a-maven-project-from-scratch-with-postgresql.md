@@ -78,6 +78,12 @@ With these additions the complete `pom.xml` file will look like:
     </dependency>
 
     <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-jdbc</artifactId>
+      <version>${springboot.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
       <version>42.2.5</version>
@@ -187,15 +193,7 @@ your choosing and with any name) and add:
 <hotrod>
 
   <generators>
-
-    <jdbc base-dir="src/main/java"
-          package="app.persistence"
-          qualifier="">
-      <dao    prefix="" suffix="DAO"    base-dir="" subpackage="dao" />
-      <layout prefix="" suffix="Layout" base-dir="" subpackage="layout" />
-      <model  prefix="" suffix=""       base-dir="" subpackage="model" />
-    </jdbc>
-
+    <jdbc base-dir="src/main/java" package="app.persistence" />
   </generators>
 
   <table name="employee" />
@@ -241,7 +239,9 @@ centralized teams where all developers use the same sandbox database, then this 
 
 Now, let's use HotRod to generate the persistence code. Type:
 
-`mvn hotrod:gen`
+```bash
+mvn hotrod:gen
+```
 
 HotRod will connect to the database schema, will retrieve the table details, and will produce the code. It will create or update the following files:
 
@@ -258,33 +258,28 @@ At this point all the persistence code is ready to be used.
 
 ### A Simple Spring Boot Application
 
-Let's write a simple application that perform two searches in the table we created before. Create the application 
-class `src/main/java/app/App.java` as:
+Let's write a simple application that perform two searches in the table we created before. Create the application class `src/main/java/app/App.java` as:
 
 ```java
 package app;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
-import org.hotrod.runtime.livesql.LiveSQL;
-import org.hotrod.runtime.livesql.Row;
-import org.mybatis.spring.annotation.MapperScan;
+import org.hotrod.dynamicsql.DynamicExpressionException;
+import org.hotrod.dynamicsql.Row;
+import org.hotrod.livesql.LiveSQL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
-import com.myapp.daos.primitives.EmployeeDAO;
-import com.myapp.daos.primitives.EmployeeDAO.EmployeeTable;
-import com.myapp.daos.primitives.EmployeeVO;
-import com.myapp.daos.EmployeeImpl;
+import app.persistence.dao.EmployeeDAO;
+import app.persistence.dao.EmployeeDAO.EmployeeTable;
+import app.persistence.model.Employee;
 
 @SpringBootApplication
 @Configuration
@@ -309,26 +304,22 @@ public class App {
     };
   }
 
-  private void searching() {
+  private void searching() throws DynamicExpressionException, SQLException {
 
     // Use CRUD to search for employee #123
 
     Integer id = 123;
-    EmployeeVO vo = this.employeeDAO.selectByPK(id);
+    Employee vo = this.employeeDAO.select(id);
     System.out.println("Employee #" + id + " Name: " + vo.getName());
 
     // Use LiveSQL to search for employees whose name starts with 'A'
 
-    EmployeeTable e = EmployeeDAO.newTable();
+    EmployeeTable e = this.employeeDAO.newTable();
 
-    List<Row> rows = this.sql
-      .select()
-      .from(e)
-      .where(e.name.like("A%"))
-      .execute();
+    List<Row> rows = this.sql.select().from(e).where(e.name.like("A%")).execute();
 
     System.out.println("Employees with names that start with 'A':");
-    for (Row r: rows) {
+    for (Row r : rows) {
       System.out.println(r);
     }
 
