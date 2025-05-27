@@ -43,12 +43,10 @@ The Maven Plugin implements four Maven goals.
 | Maven Goal | Description |
 |---|---|
 | `gen` | Generates persistence code |
-| `purge` | Drops any dangling temporary view that could have resulted from a previous HotRod crash |
 | `export-columns-txt` | Dumps all the details of columns of a database schema to a TXT file |
 | `export-columns-xlsx` | Dumps all the details of columns of a database schema to a XLSX file |
 
-Each command, its parameters, and extra configuration is described in [`gen`](goal-gen.md), [`purge`](goal-purge.md),
-[`export-columns-txt`](goal-export-columns-txt.md), and [`export-columns-xlsx`](goal-export-columns-xlsx.md).
+Each command, its parameters, and extra configuration is described in [`gen`](goal-gen.md), [`export-columns-txt`](goal-export-columns-txt.md), and [`export-columns-xlsx`](goal-export-columns-xlsx.md).
 
 The standard Maven way of executing a goal is with the form `<plugin-name>`:`<goal-name>`. For example, to run the `gen` goal you can type:
 
@@ -231,24 +229,6 @@ The configuration is fully (or partially) defined in the `pom.xml` and some valu
 
 In this case the JDBC URL, username, and password are excluded from the `pom.xml` file. The `display` property is included in both; the value `summary`
 from the properties file will be used, since it supersedes the `pom.xml` file.
-
-## Maven Arquetype
-
-The HotRod Maven Arquetype is a simple way of automating a Maven Spring Boot project creation.
-
-A single well-crafted command line can produce a fully running project with several features that includes:
-- Full Maven structure.
-- Fully configured HotRod for the database of your choice.
-- Configurable versions of HotRod and other libraries.
-- Database populated by Debbie (optional).
-- Database monitored by Sentinel (optional).
-- A REST service.
-- OpenAPI generation in JSON format for an API Gateway.
-- OpenAPI generation in YAML format for an API Gateway.
-- Runnable basic application with example code.
-
-For details see  [Maven Arquetype](maven-arquetype.md).
-
 
 
 
