@@ -1,6 +1,6 @@
 ## Nitro Selects
 
-A Nitro Select executes a SQL `SELECT` statement and models the resulting result set rows as
+A Nitro SELECT query executes a SQL `SELECT` statement and models the resulting result set rows as
 objects with properties.
 
 The names of the properties are automatically generated based on the resulting column names. The
@@ -15,7 +15,7 @@ The following query returns rows with values from two tables that are joined. A 
 created to gather the values of the rows:
 
 ```xml
-<dao name="WebQueriesDAO">
+<dao name="AccountingDAO">
 
   <select method="findActiveAccountsWithClient" vo="AccountClient">
     <parameter name="clientId" java-type="Integer" />
@@ -31,7 +31,7 @@ created to gather the values of the rows:
 
 In this example we can see:
 
- - A new `WebQueriesDAO` class will be generated.
+ - A new `AccountingDAO` class will be generated.
  - The DAO includes the method `findActiveAccountsWithClient()` to execute this query.
  - A new Model class `AccountClient` is generated for this query.
  - A new Layout class `AccountClientLayout` is generated for this query.
@@ -61,7 +61,7 @@ Additionally, the DAO class that will expose the specified method could look lik
 
 ```java
 @Component
-public class WebQueriesDAO implements Serializable, ApplicationContextAware {
+public class AccountingDAO implements Serializable, ApplicationContextAware {
 
   public List<AccountClient> findActiveAccountsWithClient() {
     ...
@@ -90,7 +90,14 @@ parameters in the DAO method that executes the query.
 For details on the definition and usage of parameters see [Nitro Parameters](./nitro-parameters.md).
 
 
-## Property Names
+## Value Object Modeling
+
+HotRod models VOs using two classes to allow the developer to add custom behavior to the value
+objects while allowing automatic structure updates at the same time. See 
+[Value Object Modeling](../crud/value-object-modeling.md) for details.
+
+
+### Property Names
 
 The resulting value object will include one property for each column of the result set. The property names are automatically produced by HotRod, but can also be affected by the global [Name Solver](../config/tags/name-solver.md), or by a `<column>` tag added to the query. They are processed in order:
 
@@ -99,7 +106,7 @@ The resulting value object will include one property for each column of the resu
 3. Finally, HotRod produces a property name based on the original or modified column name.
 
 
-## Property Types
+### Property Types
 
 The resulting value object will include one property for each column of the result set. The property types are automatically produced by HotRod based on the specifics of each database. Nevertheless, they can be affected by the global [Type Solver](../config/tags/type-solver.md), or by a `<column>` tag added to the query. They are processed in order:
 
@@ -198,13 +205,6 @@ public Employee getHighestPayedEmployee() {
   ...
 }
 ```
-
-
-## Value Object Modeling
-
-HotRod models VOs using two classes to allow the developer to add custom behavior to the value
-objects while allowing automatic structure updates at the same time. See 
-[Value Object Modeling](../crud/value-object-modeling.md) for details.
 
   
 ## Native SQL
