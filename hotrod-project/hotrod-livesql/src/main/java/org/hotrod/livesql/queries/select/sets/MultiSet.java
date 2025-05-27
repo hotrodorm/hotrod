@@ -97,9 +97,9 @@ public abstract class MultiSet<T> {
       final RowReader<T> rowReader) {
 
     if (context.getLogger().isLoggable(Level.FINER)) {
-      context.getLogger().finer("SQL: " + q.getPreview(false));
+      context.getLogger().finest("SQL: " + q.getPreview(true));
     } else if (context.getLogger().isLoggable(Level.FINE)) {
-      context.getLogger().fine("SQL: " + q.getPreview(true));
+      context.getLogger().fine("SQL: " + q.getPreview(false));
     }
 
     List<T> rows = new ArrayList<>();

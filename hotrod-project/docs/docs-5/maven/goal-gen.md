@@ -1,6 +1,6 @@
-# Generating the Persistence Code with HotRod
+# Generating the Persistence Layer
 
-The `gen` goal of hotRod encompasses the main functionality of this ORM.
+The `gen` goal generates or updates the persistence layer.
 
 To use this goal a few prerequisites need to be ready:
 - A sandbox database with the latest database structure changes needs to be ready and accessible.
@@ -18,8 +18,6 @@ This Maven goal will inspect the database, and will generate the persistence cod
 
 The guide to [Set up a Maven project with Spring Boot](../hello-world/creating-a-new-project.md) describes all the steps
 to set up a project manually, using a text editor and Maven.
-
-It's also possible to automate the project creation with a [Maven Arquetype](./maven-arquetype.md).
 
 See [The HotRod Configuration](../config/configuration-file-structure.md) file for a comprehensive reference on the configuration details.
 

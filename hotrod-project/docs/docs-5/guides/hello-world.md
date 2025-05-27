@@ -68,13 +68,7 @@ The complete `pom.xml` file will look like:
       <version>2.3.4.RELEASE</version>
     </dependency>
 
-    <dependency> <!-- The main HotRod library -->
-      <groupId>org.hotrodorm.hotrod</groupId>
-      <artifactId>hotrod</artifactId>
-      <version>5.0.0</version>
-    </dependency>
-
-    <dependency> <!-- HotRod's LiveSQL library -->
+    <dependency> <!-- HotRod -->
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
       <version>5.0.0</version>

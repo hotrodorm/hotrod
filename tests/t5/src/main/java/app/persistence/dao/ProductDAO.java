@@ -408,7 +408,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   private void logQuery(PreparedQuery preparedQuery) {
     if (log.isLoggable(Level.FINER)) {
-      log.finer("SQL:\n" + preparedQuery.getPreview(true));
+      log.finest("SQL:\n" + preparedQuery.getPreview(true));
     } else if (log.isLoggable(Level.FINE)) {
       log.fine("SQL:\n" + preparedQuery.getPreview());
     }

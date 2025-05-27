@@ -2,11 +2,10 @@
 
 This is Maven Integration details for the [HotRod ORM](../README.md).
 
-First, HotRod is available as a dependency at the official Maven repository and its mirrors.
+HotRod is available as a dependency at the official Maven repository and its mirrors.
 
 In order to generate persistence code from Maven, HotRod includes a Maven plugin that implements several Maven goals with the main aim to generate persistence code. The main goal is `gen`, while other supporting Maven goals assist complex generation logic, such as sophisticated type solving or name solving.
 
-Finally, HotRod includes a Maven Arquetype that can create a full running Spring Boot project in one command line.
 
 ## Maven Dependencies
 
@@ -14,31 +13,22 @@ All HotRod modules can be found as dependencies in the Maven Central Repository 
 
 For details on the libraries to use see [Libraries](../config/libraries.md).
 
-A Spring or Spring Boot project needs to declare two main libraries and a third one for MyBatis support. The typical dependency declaration in a `pom.xml` file  takes the form:
+A Spring or Spring Boot project needs to declare the hotrod dependency as:
 
 ```xml
-<dependency>
-  <groupId>org.hotrodorm.hotrod</groupId>
-  <artifactId>hotrod</artifactId>
-  <version>3.4.7</version>
-</dependency>
-
-<dependency>
-  <groupId>org.hotrodorm.hotrod</groupId>
-  <artifactId>hotrod-livesql</artifactId>
-  <version>3.4.7</version>
-</dependency>
-
-<dependency>
-  <groupId>org.mybatis.spring.boot</groupId>
-  <artifactId>mybatis-spring-boot-starter</artifactId>
-  <version>2.1.3</version>
-</dependency>  
+  <dependency>
+    <groupId>org.hotrodorm.hotrod</groupId>
+    <artifactId>hotrod-livesql</artifactId>
+    <version>5.0.0</version>
+  </dependency>
 ```
+
+This dependency will provide all functionality at runtime. To generate the persistence layer
+use the Maven Plugin as shown below.
 
 ## Maven Plugin
 
-The Maven Plugin implements four Maven goals.
+The Maven Plugin implements the following functionality:
 
 | Maven Goal | Description |
 |---|---|
@@ -95,7 +85,6 @@ explicitly defined. The full list of parameters is:
 |---|---|---|
 | `localproperties` | Defines an external properties file that will be read to load these properties | All |
 | `configfile` | Specifies the HotRod Main configuration file location. This is the main configuration file that lays out all the details of the generation such as packages, folders, naming conventions, and converters are defined, as well as the full list tables and Nitro queries | All |
-| `generator` | The generator to use. Currently only one generator is supported: `MyBatis-Spring`  | `gen`, `purge` |
 | `jdbcdriverclass` | The JDBC driver class name. See [JDBC Drivers](../config/jdbc-drivers-examples.md) for examples | All |
 | `jdbcurl` | The JDBC connection URL | All |
 | `jdbcusername` | The JDBC connection username | All |
@@ -127,7 +116,6 @@ All configuration is done in the `pom.xml` file. The `<localproperties>` tag is 
       <version>3.4.7</version>
       <configuration>
         <configfile>src/main/database/hotrod.xml</configfile>
-        <generator>MyBatis-Spring</generator>
         <jdbcdriverclass></jdbcdriverclass>
         <jdbcdriverclass>org.postgresql.Driver</jdbcdriverclass>
         <jdbcurl>jdbc:postgresql://192.168.56.214:5432/mydatabase</jdbcurl>
@@ -176,7 +164,6 @@ All configuration is done in the properties file. Only the `<localproperties>` t
 
     ```properties
     configfile=./hotrod.xml
-    generator=MyBatis-Spring
     jdbcdriverclass=org.postgresql.Driver
     jdbcurl=jdbc:postgresql://192.168.56.214:5432/mydatabase
     jdbcusername=myusername
@@ -200,7 +187,6 @@ The configuration is fully (or partially) defined in the `pom.xml` and some valu
       <version>3.4.7</version>
       <configuration>
         <configfile>src/main/database/hotrod.xml</configfile>
-        <generator>MyBatis-Spring</generator>
         <jdbcdriverclass></jdbcdriverclass>
         <jdbcdriverclass>org.postgresql.Driver</jdbcdriverclass>
         <jdbccatalog></jdbccatalog>

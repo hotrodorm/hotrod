@@ -10,7 +10,7 @@ public class CLayout implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  // VO Properties (table columns)
+  // Layout Properties (table columns)
 
   protected Integer id = null;
   protected String name = null;
