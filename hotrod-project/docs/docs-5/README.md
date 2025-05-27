@@ -188,11 +188,12 @@ These guides focus on specific features and show examples enabling and using the
 
 These guides are the following:
 
+- [Starting a Spring Boot Project from Scratch using PostgreSQL](./guides/starting-a-maven-project-from-scratch-with-postgresql.md)
+- [Previewing LiveSQL](./livesql/previewing-livesql.md)
+- [Enabling SQL Logging](./guides/enabling-sql-logging.md)
 - [Schema Discovery](./guides/schema-discovery.md)
 - [Using Multiple DataSources](./guides/using-multiple-datasources.md)
 - [Custom Column Types](./guides/mapping-column-types.md)
 - [Custom Table and Column Names](./guides/mapping-table-and-column-names.md)
 - [Extending LiveSQL Functions](./livesql/extending-livesql-functions.md)
-- [Previewing LiveSQL](./livesql/previewing-livesql.md)
-- [Enabling SQL Logging](./guides/enabling-sql-logging.md)
 
