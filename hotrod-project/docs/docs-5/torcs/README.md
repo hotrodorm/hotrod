@@ -145,8 +145,8 @@ Torcs comes with three built-in observers:
 | Observer | Default | Description |
 | -- | -- | -- |
 | HighestResponseTimeRanking | Registered &amp; active | Records the top 30 slowest queries (highest response time) in the application instance |
-| HighestFrequencyRanking | Not registered &amp; inactive | Records the top 30 queries with the most executions |
 | HighestImpactRanking | Not registered &amp; inactive | Records the top 30 queries by impact. Impact is defined as the total elapsed time of all executions |
+| HighestFrequencyRanking | Not registered &amp; inactive | Records the top 30 queries with the most executions |
 | InitialQueriesRanking | Not registered &amp; inactive | Records the first 30 queries run in the application instance and discard the next ones |
 | LatestQueriesRanking | Not Registered &amp; inactive | Records the last 30 queries in the application instance discarding earlier ones |
 

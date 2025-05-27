@@ -9,7 +9,7 @@ statements and stored procedures calls.
 
 General purpose queries can be included in the definition of tables (`<table>`), views (`<view>`), 
 and general DAO (`<dao>`) tags. See
-[Configuration File Structure](../config/configuration-file-structure.md) for details.
+[Configuration File Structure](../config/README.md) for details.
 
 ## Examples
 

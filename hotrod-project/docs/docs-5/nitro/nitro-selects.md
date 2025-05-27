@@ -90,9 +90,9 @@ are added to the DAO method that executes the query.
 For details on the definition and usage of parameters see [Nitro Parameters](./nitro-parameters.md).
 
 
-### 2. Value Object Modeling
+### 2. Database Row Modeling
 
-HotRod models the rows coming from SELECT queries using two classes: a Layout class and a Model class. See [Value Object Modeling](../crud/value-object-modeling.md) for details.
+HotRod models the rows coming from SELECT queries using two classes: a Layout class and a Model class. See [Database Row Modeling](../crud/database-row-modeling.md) for details.
 
 
 ### 3. Property Names
