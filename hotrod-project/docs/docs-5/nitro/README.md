@@ -1,4 +1,4 @@
-# The Nitro Module
+# Nitro Queries
 
 Nitro queries allows native SQL code and adds DynamicSQL functionality in queries.
 
