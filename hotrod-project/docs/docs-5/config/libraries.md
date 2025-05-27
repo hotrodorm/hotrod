@@ -4,32 +4,19 @@ HotRod uses a different set of libraries at runtime and when generating the pers
 
 ## At Runtime
 
-HotRod requires the following libraries at runtime:
+HotRod has a single dependency at runtime:
 
-- The `hotrod-<version>.jar` library of the specific version you want to use.
-- A `hotrod-livesql-<version>.jar` library for the LiveSQL functionality.
-- A MyBatis library `mybatis-spring-boot-starter-<version>.jar` that implements the underlying layer of persistence.
+```xml
+  <dependency>
+    <groupId>org.hotrodorm.hotrod</groupId>
+    <artifactId>hotrod-livesql</artifactId>
+    <version>5.0.0</version>
+  </dependency>
+```
 
-### The HotRod Library
-
-This library includes all infrastructure for the CRUD functionality. It's required to run HotRod.
-
-### The LiveSQL Library
-
-This library includes all functionality for the LiveSQL functionality. It's required to run HotRod.
-
-### The MyBatis Library
-
-Currently, the only supported Generator is for MyBatis persistence. Therefore, this library is also required.
+The `hotrod-livesql-<version>.jar` library includes all classes nneded to develop and run the functionality of the persistence layer. all functionality for the LiveSQL functionality. It's required to run HotRod.
 
 ## Generating Persistence Code
 
-When generating the persistence code only one library is required. This comes packaged in the corresponding plugin, so 
-its details are embedded there. See:
+When generating the persistence code Maven uses the HotRod Maven Plugin. See [Maven Integration](../maven/README.md) for details and [Hello World](../guides/hello-world.md) for a simple example.
 
-- [Maven Integration](../maven/maven.md#maven-plugin).
-- `Eclipse Integration`.
-
-## Version Features 
-
-For a list of version changes and added features see [Version History](../version-history.md).

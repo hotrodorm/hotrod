@@ -1,8 +1,7 @@
 # The `<generators>` Tag
 
-This tag can include one or more generators. At the time of this writing only one generator remains active: the MyBatis-Spring generator. Other
-generators have been deprecated.
+This tag can only include the JDBC generator.
 
 Must include:
 
-- A `<mybatis-spring>` tag to configure the Mybatis-Spring generator.
+- A `<jdbc>` tag to configure the JDBC persistence layer generator.

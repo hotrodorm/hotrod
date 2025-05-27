@@ -3,7 +3,7 @@
 HotRod includes a mechanism to discover tables and views in schemas of the database. These discovered tables and views 
 are added to the persistent layer automatically.
 
-Discovery is enabled by adding the `<discover>` tag inside the `<mybatis-spring>` tag.
+Discovery is enabled by adding the `<discover>` tag inside the `<jdbc>` tag.
 
 Discovery is mutually exclusive with facets. If you want to use discovery you cannot define facets, and vice versa.
 
@@ -26,9 +26,7 @@ Discovery is disabled by default. The configuration declares a table, a view, an
 <hotrod>
 
   <generators>
-    <mybatis-spring>
-      <daos package="app.persistence" />
-    </mybatis-spring>
+    <jdbc/>
   </generators>
 
   <table name="client" />
@@ -54,12 +52,9 @@ the persistence layer.
 <hotrod>
 
   <generators>
-    <mybatis-spring>
-
+    <jdbc>
       <discover />
-
-      <daos package="app.persistence" />
-    </mybatis-spring>
+    </jdbc>
   </generators>
 
 </hotrod>
@@ -74,14 +69,13 @@ An empty `<discover/>` tag includes the current schema by default. In this case,
 <hotrod>
 
   <generators>
-    <mybatis-spring>
+    <jdbc>
 
       <discover>
         <current-schema />
       </discover>
 
-      <daos package="app.persistence" />
-    </mybatis-spring>
+    </jdbc>
   </generators>
 
 </hotrod>
@@ -96,12 +90,11 @@ Discovery is enabled. The configuration declares a table, a view, and a DAO.
 <hotrod>
 
   <generators>
-    <mybatis-spring>
+    <jdbc>
 
       <discover />
 
-      <daos package="app.persistence" />
-    </mybatis-spring>
+    </jdbc>
   </generators>
 
   <table name="client_tab" sequence="seq_client" />
@@ -129,7 +122,7 @@ There are also declared tables, views, and DAOs:
 <hotrod>
 
   <generators>
-    <mybatis-spring>
+    <jdbc>
 
       <discover>
         <current-schema />
@@ -137,8 +130,7 @@ There are also declared tables, views, and DAOs:
         <schema name="payments" />
       </discover>
 
-      <daos package="app.persistence" />
-    </mybatis-spring>
+    </jdbc>
   </generators>
 
   <table name="client_tab" sequence="seq_client" />
@@ -173,7 +165,7 @@ The configuration specifies tables and views that we want to exclude from the di
 <hotrod>
 
   <generators>
-    <mybatis-spring>
+    <jdbc>
 
       <discover>
         <current-schema>
@@ -185,8 +177,7 @@ The configuration specifies tables and views that we want to exclude from the di
         </schema>
       </discover>
 
-      <daos package="app.persistence" />
-    </mybatis-spring>
+    </jdbc>
   </generators>
 
   <table name="client_tab" sequence="seq_client" />
@@ -214,7 +205,7 @@ be included by adding the `catalog` attribute when necessary.
 <hotrod>
 
   <generators>
-    <mybatis-spring>
+    <jdbc>
 
       <discover>
         <schema name="reporting" />
@@ -226,8 +217,7 @@ be included by adding the `catalog` attribute when necessary.
         </schema>
       </discover>
 
-      <daos package="app.persistence" />
-    </mybatis-spring>
+    </jdbc>
   </generators>
 
   <table catalog="master" schema="accounting" name="client_tab" sequence="seq_client" />
@@ -255,7 +245,7 @@ be discovered by using the `catalog` attribute. Catalogs are typìcally knowns a
 <hotrod>
 
   <generators>
-    <mybatis-spring>
+    <jdbc>
 
       <discover>
         <schema catalog="marketing" />
@@ -267,8 +257,7 @@ be discovered by using the `catalog` attribute. Catalogs are typìcally knowns a
         </schema>
       </discover>
 
-      <daos package="app.persistence" />
-    </mybatis-spring>
+    </jdbc>
   </generators>
 
 </hotrod>
@@ -284,8 +273,8 @@ All tables and views &ndash; either discovered or declared &ndash; are available
 ## See also
 
 For details see:
+
 - The [`Configuration File Reference`](../config/README.md)
-- The [`<mybatis-spring>`](../config/tags/mybatis-spring.md) tag
 - The [`<exclude>`](../config/tags/exclude.md) tag
 
 
