@@ -209,7 +209,7 @@ create table employee (
   first_name varchar(20) not null,
   last_name varchar(20) not null,
   hired_at_branch_id int references branch (id),
-  currently_branch_id int references branch (id)
+  currently_at_branch_id int references branch (id)
 );
 
 insert into employee (id, first_name, last_name, hired_at_branch_id, currently_at_branch_id) values
@@ -278,38 +278,26 @@ class `src/main/java/app/App.java` as:
 ```java
 package app;
 
-import java.util.List;
+import java.sql.SQLException;
 
-import org.hotrod.runtime.livesql.LiveSQL;
-import org.hotrod.runtime.livesql.Row;
-import org.mybatis.spring.annotation.MapperScan;
+import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import app.daos.EmployeeVO;
-import app.daos.primitives.BranchDAO;
-import app.daos.primitives.BranchDAO.BranchTable;
-import app.daos.primitives.EmployeeDAO;
-import app.daos.primitives.EmployeeDAO.EmployeeTable;
+import app.persistence.dao.EmployeeDAO;
+import app.persistence.model.Employee;
 
-@Configuration
 @SpringBootApplication
-@ComponentScan
-@ComponentScan(basePackageClasses = LiveSQL.class)
-@MapperScan(basePackageClasses = LiveSQL.class)
+@Configuration
 public class App {
 
   @Autowired
   private EmployeeDAO employeeDAO;
-
-  @Autowired
-  private LiveSQL sql;
 
   public static void main(String[] args) {
     SpringApplication.run(App.class, args);
@@ -322,8 +310,8 @@ public class App {
     };
   }
 
-  private void selectByPK() {
-    EmployeeVO emp = this.employeeDAO.select(134081);
+  private void selectByPK() throws DynamicExpressionException, SQLException {
+    Employee emp = this.employeeDAO.select(134081);
     System.out.println("Employee #123081's name: " + emp.getFirstName());
   }
 
