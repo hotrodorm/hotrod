@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<hotrod>
+
+  <generators>
+    <jdbc package="app.persistence1" qualifier="database1" />
+  </generators>
+
+  <table name="account" />
+
+</hotrod>
