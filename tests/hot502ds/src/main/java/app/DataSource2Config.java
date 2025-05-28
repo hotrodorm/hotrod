@@ -7,7 +7,6 @@ import javax.sql.DataSource;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.dialects.LiveSQLDialectFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -27,7 +26,7 @@ public class DataSource2Config {
   }
 
   @Bean
-  public DataSource dataSource2(@Qualifier("dataSource2Properties") DataSourceProperties dataSource2Properties) {
+  public DataSource dataSource2(DataSourceProperties dataSource2Properties) {
     DataSource ds = dataSource2Properties.initializeDataSourceBuilder().build();
     log.info("ds2 (" + System.identityHashCode(ds) + "): " + dataSource2Properties.getUrl());
     return ds;
@@ -45,7 +44,7 @@ public class DataSource2Config {
   private String liveSQLDialectMinorVersion;
 
   @Bean
-  public LiveSQLDialect liveSQLDialect2(@Qualifier("dataSource2") DataSource dataSource2) throws Exception {
+  public LiveSQLDialect liveSQLDialect2(DataSource dataSource2) throws Exception {
     log.info("lsd2");
     LiveSQLDialect liveSQLDialect = LiveSQLDialectFactory.getLiveSQLDialect(dataSource2, this.liveSQLDialectName,
         this.liveSQLDialectVDatabaseName, this.liveSQLDialectVersionString, this.liveSQLDialectMajorVersion,
