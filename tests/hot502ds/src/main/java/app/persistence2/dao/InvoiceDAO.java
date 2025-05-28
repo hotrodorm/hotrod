@@ -63,17 +63,21 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   private static final Logger log = Logger.getLogger(InvoiceDAO.class.getName());
 
   @Autowired
+  @Qualifier("dataSource2")
+  private DataSource dataSource;
+
+  @Autowired
   @Qualifier("liveSQLDialect2")
   private LiveSQLDialect liveSQLDialect;
+
+  @Autowired
+  @Qualifier("liveSQL2")
+  private LiveSQL sql;
 
   @Autowired
   private DynamicSQLBean dynamicSQLBean;
 
   private DynamicSQL dyn;
-
-  @Autowired
-  @Qualifier("dataSource2")
-  private DataSource dataSource;
 
   private ApplicationContext applicationContext;
 
@@ -81,10 +85,6 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
   }
-
-  @Autowired
-  @Qualifier("liveSQL2")
-  private LiveSQL sql;
 
   private LiveSQLContext context;
 

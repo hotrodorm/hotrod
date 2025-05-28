@@ -16,38 +16,32 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 
 import app.persistence1.dao.AccountDAO;
 import app.persistence1.dao.AccountDAO.AccountTable;
 import app.persistence1.model.Account;
 import app.persistence2.dao.InvoiceDAO;
+import app.persistence2.dao.InvoiceDAO.InvoiceTable;
 import app.persistence2.model.Invoice;
 
 @Configuration
 @SpringBootApplication
-@ComponentScan
 public class App {
 
   @Autowired
-  @Lazy
   private AccountDAO accountDAO;
 
   @Autowired
-  @Lazy
   private InvoiceDAO invoiceDAO;
 
   @Autowired
-  @Lazy
   @Qualifier("liveSQL1") // bean name defined in DataSourceConfig1.java
   private LiveSQL sql1;
 
-//  @Autowired
-//  @Lazy
-//  @Qualifier("database2") // bean name defined in DataSourceConfig2.java
-//  private LiveSQL sql2;
+  @Autowired
+  @Qualifier("liveSQL2") // bean name defined in DataSourceConfig2.java
+  private LiveSQL sql2;
 
   public static void main(String[] args) {
     SpringApplication.run(App.class, args);
@@ -99,15 +93,15 @@ public class App {
       }
     }
 
-//    // Use LiveSQL to search in datasource #2
-//    {
-//      InvoiceTable i = this.invoiceDAO.newTable();
-//      List<Row> rows = this.sql2.select().from(i).where(i.amount.ge(300)).execute();
-//      System.out.println("Invoices for more than $300:");
-//      for (Row r : rows) {
-//        System.out.println(r);
-//      }
-//    }
+    // Use LiveSQL to search in datasource #2
+    {
+      InvoiceTable i = this.invoiceDAO.newTable();
+      List<Row> rows = this.sql2.select().from(i).where(i.amount.ge(300)).execute();
+      System.out.println("Invoices for more than $300:");
+      for (Row r : rows) {
+        System.out.println(r);
+      }
+    }
 
   }
 

@@ -63,17 +63,21 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   private static final Logger log = Logger.getLogger(AccountDAO.class.getName());
 
   @Autowired
+  @Qualifier("dataSource1")
+  private DataSource dataSource;
+
+  @Autowired
   @Qualifier("liveSQLDialect1")
   private LiveSQLDialect liveSQLDialect;
+
+  @Autowired
+  @Qualifier("liveSQL1")
+  private LiveSQL sql;
 
   @Autowired
   private DynamicSQLBean dynamicSQLBean;
 
   private DynamicSQL dyn;
-
-  @Autowired
-  @Qualifier("dataSource1")
-  private DataSource dataSource;
 
   private ApplicationContext applicationContext;
 
@@ -81,10 +85,6 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
   }
-
-  @Autowired
-  @Qualifier("liveSQL1")
-  private LiveSQL sql;
 
   private LiveSQLContext context;
 
