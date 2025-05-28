@@ -51,13 +51,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import app.persistence2.model.Invoice;
 
 @Component
-@Lazy
 public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
   private static final long serialVersionUID = 1L;

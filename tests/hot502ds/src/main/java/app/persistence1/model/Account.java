@@ -15,7 +15,7 @@ public class Account extends AccountLayout {
   private static final long serialVersionUID = 1L;
 
   @SuppressWarnings("unused")
-//  @Autowired
+  @Autowired
   private AccountDAO accountDAO;
 
   // Add custom code below.

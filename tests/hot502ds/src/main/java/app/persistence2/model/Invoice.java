@@ -15,7 +15,7 @@ public class Invoice extends InvoiceLayout {
   private static final long serialVersionUID = 1L;
 
   @SuppressWarnings("unused")
-//  @Autowired
+  @Autowired
   private InvoiceDAO invoiceDAO;
 
   // Add custom code below.
