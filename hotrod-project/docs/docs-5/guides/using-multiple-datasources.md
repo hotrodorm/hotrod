@@ -220,7 +220,6 @@ Tell HotRod how you want the generation to work for each database. Create the fi
 `first.xml` for the first database:
 
 ```xml
-<?xml version="1.0"?>
 <hotrod>
 
   <generators>
@@ -235,7 +234,6 @@ Tell HotRod how you want the generation to work for each database. Create the fi
 Then, create the file `second.xml` for the second database:
 
 ```xml
-<?xml version="1.0"?>
 <hotrod>
 
   <generators>
@@ -377,7 +375,7 @@ public class App {
 }
 ```
 
-Using two or more datasources require to configure multiple beans of the same class. The following two classes do this job for each database.
+When using multiple datasources we need to configure multiple dataSource beans and multiple LiveSQL brans. The following two classes do this job for each database.
 
 Add the class `src/main/java/app/DataSource1Config.java`:
 
@@ -489,10 +487,19 @@ public class DataSource2Config {
 }
 ```
 
+**Note**: In the beans configured for both datasources, the properties `datasource1.livesqldialect.*` and `datasource2.livesqldialect.*` can be used to designate different dialect for each database. They are shown here for demonstration purposes only. Leave empty unless you know how to use custom dialects.
 
 ### Prepare the Runtime Properties File
 
-The runtime properties provide details of each database for the running the application. Create the file `application.properties` as:
+The runtime properties provide details of each database for the running the application.
+
+In this example we:
+
+- Disable the auto-instantiation of the default Spring dataSource.
+- Disable the auto-instantiation of the default HotRod beans for single data sources.
+- Configure both data sources.
+
+Create the file `application.properties` as:
 
 ```properties
 # General configuration of the app
