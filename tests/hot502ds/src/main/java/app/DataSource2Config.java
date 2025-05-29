@@ -4,7 +4,7 @@ import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
-import org.hotrod.livesql.LayerConfigInterface;
+import org.hotrod.livesql.LayerConfiguration;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.dialects.LiveSQLDialectFactory;
@@ -44,7 +44,7 @@ public class DataSource2Config {
   private String liveSQLDialectMinorVersion;
 
   @Bean
-  public LiveSQL liveSQL2(DataSource dataSource2, LayerConfigInterface layerConfiguration2) throws Exception {
+  public LiveSQL liveSQL2(DataSource dataSource2, LayerConfiguration layerConfiguration2) throws Exception {
     log.info("LiveSQL2 -- init -- ds:" + dataSource2);
     LiveSQLDialect liveSQLDialect = LiveSQLDialectFactory.getLiveSQLDialect(dataSource2, this.liveSQLDialectName,
         this.liveSQLDialectVDatabaseName, this.liveSQLDialectVersionString, this.liveSQLDialectMajorVersion,

@@ -3,14 +3,14 @@ package app.persistence;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hotrod.livesql.LayerConfigInterface;
+import org.hotrod.livesql.LayerConfiguration;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.queries.typesolver.TypeRule;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LayerConfiguration implements LayerConfigInterface {
+public class CurrentLayerConfiguration implements LayerConfiguration {
 
   @Override
   public List<TypeRule> getTypeRules() {
