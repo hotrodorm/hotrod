@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
+import org.hotrod.livesql.LayerConfigInterface;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.dialects.LiveSQLDialectFactory;
@@ -12,7 +13,6 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 
 @Configuration(proxyBeanMethods = false)
 public class DataSource1Config {
@@ -44,20 +44,12 @@ public class DataSource1Config {
   private String liveSQLDialectMinorVersion;
 
   @Bean
-  public LiveSQLDialect liveSQLDialect1(DataSource dataSource1) throws Exception {
-    log.info("lsd1");
+  public LiveSQL liveSQL1(DataSource dataSource1, LayerConfigInterface layerConfiguration1) throws Exception {
+    log.info("LiveSQL1 -- init -- ds:" + dataSource1);
     LiveSQLDialect liveSQLDialect = LiveSQLDialectFactory.getLiveSQLDialect(dataSource1, this.liveSQLDialectName,
         this.liveSQLDialectVDatabaseName, this.liveSQLDialectVersionString, this.liveSQLDialectMajorVersion,
         this.liveSQLDialectMinorVersion);
-    log.info("lsd1 - done");
-    return liveSQLDialect;
-  }
-
-  @Bean
-  @Lazy
-  public LiveSQL liveSQL1(LiveSQLDialect liveSQLDialect1, DataSource dataSource1) throws Exception {
-    log.info("LiveSQL1 -- init -- ds:" + dataSource1);
-    LiveSQL ls = new LiveSQL(liveSQLDialect1, dataSource1, "layerConfiguration1");
+    LiveSQL ls = new LiveSQL(liveSQLDialect, dataSource1, "layerConfiguration1", layerConfiguration1);
     log.info("LiveSQL1 -- done");
     return ls;
   }

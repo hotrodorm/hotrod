@@ -28,7 +28,7 @@ import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.hotrod.dynamicsql.insert.PreparedInsertQuery;
 import org.hotrod.dynamicsql.insert.PrimaryKeyRetrievalMode;
 import org.hotrod.interfaces.OrderBy;
-import org.hotrod.livesql.DynamicSQLBean;
+import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
@@ -67,15 +67,8 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   private DataSource dataSource;
 
   @Autowired
-  @Qualifier("liveSQLDialect1")
-  private LiveSQLDialect liveSQLDialect;
-
-  @Autowired
   @Qualifier("liveSQL1")
   private LiveSQL sql;
-
-  @Autowired
-  private DynamicSQLBean dynamicSQLBean;
 
   private DynamicSQL dyn;
 
@@ -441,9 +434,9 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   @PostConstruct
   public void initializeContext() {
-    this.context = new LiveSQLContext(this.liveSQLDialect, this.dataSource, new TypeSolver(null, this.liveSQLDialect),
-        log);
-    this.dyn = this.dynamicSQLBean.getDynamicSQL();
+    LiveSQLDialect liveSQLDialect = LShield.getLiveSQLDialect(this.sql);
+    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, new TypeSolver(null, liveSQLDialect), log);
+    this.dyn = new DynamicSQL();
     this.initializeSelectbyprimarykey();
     this.initializeSelectbyexample();
     this.initializeInsert();
