@@ -41,13 +41,13 @@ public class JDBCTag extends AbstractGeneratorTag {
   private static final String DEFAULT_BASE_DIR = "src/main/java";
   private static final String DEFAULT_LAYER_PACKAGE = "app.persistence";
 
-  private static final Pattern QUALIFIER_PATTERN = Pattern.compile("^[a-zA-Z0-9_]+$");
+  private static final Pattern QUALIFIER_PATTERN = Pattern.compile("^[0-9]+$");
 
   // Properties
 
   private String sBaseDir = null;
   private String sPackage = null;
-  private String qualifier = null;
+  private String qualifierSuffix = null;
 
   private File baseDir;
   private ClassPackage layerPackage;
@@ -98,9 +98,9 @@ public class JDBCTag extends AbstractGeneratorTag {
     this.sPackage = sPackage;
   }
 
-  @XmlAttribute(name = "qualifier")
-  public void setSQualifier(final String qualifier) {
-    this.qualifier = qualifier;
+  @XmlAttribute(name = "qualifier-suffix")
+  public void setSQualifier(final String qualifierSuffix) {
+    this.qualifierSuffix = qualifierSuffix;
   }
 
   @XmlElement(name = "discover")
@@ -190,16 +190,16 @@ public class JDBCTag extends AbstractGeneratorTag {
       }
     }
 
-    // qualifier
+    // qualifier-suffix
 
-    if (this.qualifier != null) {
-      if (SUtil.isEmpty(this.qualifier)) {
-        throw new InvalidConfigurationFileException(this, "When specified, the qualifier cannot be empty.");
+    if (this.qualifierSuffix != null) {
+      if (SUtil.isEmpty(this.qualifierSuffix)) {
+        throw new InvalidConfigurationFileException(this, "When specified, the qualifier-suffix cannot be empty.");
       }
-      Matcher m = QUALIFIER_PATTERN.matcher(this.qualifier);
+      Matcher m = QUALIFIER_PATTERN.matcher(this.qualifierSuffix);
       if (!m.matches()) {
         throw new InvalidConfigurationFileException(this,
-            "When specified, the qualifier must be an alphanumeric value (underscores are permitted).");
+            "When specified, the qualifier-suffix must be an numeric value.");
       }
     }
 
@@ -246,8 +246,8 @@ public class JDBCTag extends AbstractGeneratorTag {
 
   // Getters
 
-  public String getQualifier() {
-    return qualifier;
+  public String getQualifierSuffix() {
+    return qualifierSuffix;
   }
 
   public File getBaseDir() {

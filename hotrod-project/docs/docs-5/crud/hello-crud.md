@@ -51,7 +51,7 @@ src/main/resources         # All resources, including the generated mappers
 application.properties     # The runtime properties
 ```
 
-**Note**: For compatibility purposes, this example uses the basic Java 8 and Spring Boot 2.x engine. In Consider that HotRod can be used with any modern Java version and any modern with Spring Boot as well.
+**Note**: For compatibility purposes, this example uses the basic Java 8 and Spring Boot 2.x engine. Consider using a more modern Java version and any modern with Spring Boot as well.
 
 ## Part 1 &mdash; Setting Up the Project
 

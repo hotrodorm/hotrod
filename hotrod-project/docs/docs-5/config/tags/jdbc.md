@@ -22,20 +22,29 @@ This tag includes the following attribute:
 | -- | -- | -- |
 | `base-dir` | Specifies the base dir for all generated classes| `src/main/java` |
 | `package`  | Specifies the base package for all generated classes | `app.persistence` |
-| `qualifier` | Specifies the Spring qualifier to use in this persistence layer, to reference HotRod beans (such as LiveSQL beans) in case the application uses multiple data sources | *No Qualifier* |
+| `qualifier-suffix` | Specifies the Spring qualifier suffix to use in this persistence layer, to reference beans (such as LiveSQL beans) in case the application uses multiple data sources. Don't specify it, or see [Using Multiple DataSources](../../guides/using-multiple-datasources.md) | *none* |
 
 ## Default Configuration
 
-If the `<jdbc>` tag is not specified &mdash; either due to the no-configuration mode in use or the intentional exclusion of it &mdash; the default configuration that is adopted corresponds to:
+If the `<jdbc>` tag is not specified &mdash; either due to the no-configuration mode in use or the intentional exclusion of it &mdash; the default configuration that would be used could correspond to:
 
 ```xml
   <jdbc base-dir="src/main/java"
         package="app.persistence"
-        qualifier="">
+        qualifier-suffix="">
     <dao    prefix="" suffix="DAO"    base-dir="" subpackage="dao" />
     <layout prefix="" suffix="Layout" base-dir="" subpackage="layout" />
     <model  prefix="" suffix=""       base-dir="" subpackage="model" />
   </jdbc>
 ```
 
+The example above is not valid and is artificially verbose for clarification purposes only. The configuration validtor checks that &mdash; when specified &mdash; attributes cannot be empty strings. The real configuration can be used as:
 
+```xml
+  <jdbc base-dir="src/main/java"
+        package="app.persistence">
+    <dao    subpackage="dao"    suffix="DAO"    />
+    <layout subpackage="layout" suffix="Layout" />
+    <model  subpackage="model" />
+  </jdbc>
+```

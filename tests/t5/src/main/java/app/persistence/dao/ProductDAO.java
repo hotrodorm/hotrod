@@ -28,7 +28,7 @@ import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.hotrod.dynamicsql.insert.PreparedInsertQuery;
 import org.hotrod.dynamicsql.insert.PrimaryKeyRetrievalMode;
 import org.hotrod.interfaces.OrderBy;
-import org.hotrod.livesql.DynamicSQLBean;
+import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
@@ -62,15 +62,12 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   private static final Logger log = Logger.getLogger(ProductDAO.class.getName());
 
   @Autowired
-  private LiveSQLDialect liveSQLDialect;
+  private DataSource dataSource;
 
   @Autowired
-  private DynamicSQLBean dynamicSQLBean;
+  private LiveSQL sql;
 
   private DynamicSQL dyn;
-
-  @Autowired
-  private DataSource dataSource;
 
   private ApplicationContext applicationContext;
 
@@ -78,9 +75,6 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
   }
-
-  @Autowired
-  private LiveSQL sql;
 
   private LiveSQLContext context;
 
@@ -397,8 +391,9 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   @PostConstruct
   public void initializeContext() {
-    this.context = new LiveSQLContext(this.liveSQLDialect, this.dataSource, new TypeSolver(null, this.liveSQLDialect), log);
-    this.dyn = this.dynamicSQLBean.getDynamicSQL();
+    LiveSQLDialect liveSQLDialect = LShield.getLiveSQLDialect(this.sql);
+    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, new TypeSolver(null, liveSQLDialect), log);
+    this.dyn = new DynamicSQL();
     this.initializeSelectbyexample();
     this.initializeInsert();
     this.initializeInsertbyexample();

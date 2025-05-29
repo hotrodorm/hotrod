@@ -14,6 +14,7 @@ public class LayerConfiguration2 implements LayerConfiguration {
   public List<TypeRule> getTypeRules() {
     List<TypeRule> rules = new ArrayList<>();
 
+
     return rules;
   }
 

@@ -90,16 +90,14 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
       Invoice row = applicationContext.getBean(Invoice.class);
 
       Integer col1 = rs.getInt("ID"); // ID
-      if (rs.wasNull())
-        col1 = null;
+      if (rs.wasNull()) col1 = null;
       row.setId(col1);
 
       String col2 = rs.getString("CLIENT"); // CLIENT
       row.setClient(col2);
 
       Integer col3 = rs.getInt("AMOUNT"); // AMOUNT
-      if (rs.wasNull())
-        col3 = null;
+      if (rs.wasNull()) col3 = null;
       row.setAmount(col3);
 
       return row;
@@ -142,13 +140,18 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   private DynamicSelectQuery selectByPrimaryKey;
 
   private void initializeSelectbyprimarykey() {
-    this.selectByPrimaryKey = dyn.literaln("SELECT").literaln("  id,").literaln("  client,").literaln("  amount")
-        .literaln("FROM invoice").literaln("WHERE " + "id = ").parameter("f.id").endSelectQuery();
+    this.selectByPrimaryKey = dyn
+      .literaln("SELECT")
+      .literaln("  id,")
+      .literaln("  client,")
+      .literaln("  amount")
+      .literaln("FROM invoice")
+      .literaln("WHERE " + "id = ").parameter("f.id")
+      .endSelectQuery();
   }
 
   public Invoice select(Integer id) throws DynamicExpressionException, SQLException {
-    if (id == null)
-      return null;
+    if (id == null) return null;
     Invoice filter = new Invoice();
     filter.setId(id);
     Parameters context = this.dyn.newParameters();
@@ -157,10 +160,8 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       List<Invoice> rows = preparedQuery.execute(conn);
-      if (rows.size() == 0)
-        return null;
-      if (rows.size() == 1)
-        return rows.get(0);
+      if (rows.size() == 0) return null;
+      if (rows.size() == 1) return rows.get(0);
       throw new RuntimeException("A single row at most was expected but received " + rows.size() + " rows.");
     }
   }
@@ -170,14 +171,22 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   private DynamicSelectQuery selectByExample;
 
   private void initializeSelectbyexample() {
-    this.selectByExample = dyn.literaln("SELECT").literaln("  id,").literaln("  client,").literaln("  amount")
-        .literaln("FROM invoice").where("AND").if_("f.id != null").literal("id = ").parameter("f.id").endif()
-        .if_("f.client != null").literal("client = ").parameter("f.client").endif().if_("f.amount != null")
-        .literal("amount = ").parameter("f.amount").endif().endwhere().parameterInjection("ordering").endSelectQuery();
+    this.selectByExample = dyn
+      .literaln("SELECT")
+      .literaln("  id,")
+      .literaln("  client,")
+      .literaln("  amount")
+      .literaln("FROM invoice")
+      .where("AND")
+        .if_("f.id != null").literal("id = ").parameter("f.id").endif()
+        .if_("f.client != null").literal("client = ").parameter("f.client").endif()
+        .if_("f.amount != null").literal("amount = ").parameter("f.amount").endif()
+      .endwhere()
+      .parameterInjection("ordering")
+      .endSelectQuery();
   }
 
-  public List<Invoice> select(Invoice filter, InvoiceOrderBy... orderBies)
-      throws DynamicExpressionException, SQLException {
+  public List<Invoice> select(Invoice filter, InvoiceOrderBy... orderBies) throws DynamicExpressionException, SQLException {
     Parameters context = this.dyn.newParameters();
     context.add("f", filter);
     String ordering = SQLUtil.render(orderBies);
@@ -201,10 +210,18 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   private DynamicInsertQuery insert;
 
   private void initializeInsert() {
-    this.insert = dyn.literaln("INSERT INTO invoice (").literaln("  id,").literaln("  client,").literaln("  amount")
-        .literaln(")").literaln("VALUES(").literal("  ").parameterNullable("m.id", Types.INTEGER).literaln(",")
-        .literal("  ").parameterNullable("m.client", Types.VARCHAR).literaln(",").literal("  ")
-        .parameterNullable("m.amount", Types.INTEGER).literal(")").endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
+    this.insert = dyn
+      .literaln("INSERT INTO invoice (")
+      .literaln("  id,")
+      .literaln("  client,")
+      .literaln("  amount")
+      .literaln(")")
+      .literaln("VALUES(")
+      .literal("  ").parameterNullable("m.id", Types.INTEGER).literaln(",")
+      .literal("  ").parameterNullable("m.client", Types.VARCHAR).literaln(",")
+      .literal("  ").parameterNullable("m.amount", Types.INTEGER)
+      .literal(")")
+      .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
   public void insert(Invoice model) throws DynamicExpressionException, SQLException {
@@ -222,11 +239,18 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   private DynamicInsertQuery insertByExample;
 
   private void initializeInsertbyexample() {
-    this.insertByExample = dyn.literaln("INSERT INTO invoice (").if_("m.id != null").literal("id,\n").endif()
-        .if_("m.client != null").literal("client,\n").endif().if_("m.amount != null").literal("amount\n").endif()
-        .literaln(")").literaln("VALUES(").if_("m.id != null").parameter("m.id").literal(", ").endif()
-        .if_("m.client != null").parameter("m.client").literal(", ").endif().if_("m.amount != null")
-        .parameter("m.amount").endif().literal(")").endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
+    this.insertByExample = dyn
+      .literaln("INSERT INTO invoice (")
+      .if_("m.id != null").literal("id,\n").endif()
+      .if_("m.client != null").literal("client,\n").endif()
+      .if_("m.amount != null").literal("amount\n").endif()
+      .literaln(")")
+      .literaln("VALUES(")
+      .if_("m.id != null").parameter("m.id").literal(", ").endif()
+      .if_("m.client != null").parameter("m.client").literal(", ").endif()
+      .if_("m.amount != null").parameter("m.amount").endif()
+      .literal(")")
+      .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
   public void insertByExample(Invoice model) throws DynamicExpressionException, SQLException {
@@ -244,16 +268,18 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   private DynamicModificationQuery updateByPK;
 
   private void initializeUpdatebypk() {
-    this.updateByPK = dyn.literaln("UPDATE invoice").literaln("SET").literal("  id = ")
-        .parameterNullable("m.id", Types.INTEGER).literaln(",").literal("  client = ")
-        .parameterNullable("m.client", Types.VARCHAR).literaln(",").literal("  amount = ")
-        .parameterNullable("m.amount", Types.INTEGER).literaln("WHERE " + "id = ").parameter("m.id")
-        .endModificationQuery();
+    this.updateByPK = dyn
+      .literaln("UPDATE invoice")
+      .literaln("SET")
+      .literal("  id = ").parameterNullable("m.id", Types.INTEGER).literaln(",")
+      .literal("  client = ").parameterNullable("m.client", Types.VARCHAR).literaln(",")
+      .literal("  amount = ").parameterNullable("m.amount", Types.INTEGER)
+      .literaln("WHERE " + "id = ").parameter("m.id")
+    .endModificationQuery();
   }
 
   public int update(Invoice model) throws DynamicExpressionException, SQLException {
-    if (model.getId() == null)
-      return 0;
+    if (model.getId() == null) return 0;
     Parameters context = this.dyn.newParameters();
     context.add("m", model);
     PreparedModificationQuery preparedQuery = this.updateByPK.prepare(context);
@@ -269,11 +295,19 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   private DynamicModificationQuery updateByExample;
 
   private void initializeUpdatebyexample() {
-    this.updateByExample = dyn.literal("UPDATE invoice").set().if_("v.id != null").literal("id = ").parameter("v.id")
-        .endif().if_("v.client != null").literal("client = ").parameter("v.client").endif().if_("v.amount != null")
-        .literal("amount = ").parameter("v.amount").endif().endset().where("AND").if_("e.id != null").literal("id = ")
-        .parameter("e.id").endif().if_("e.client != null").literal("client = ").parameter("e.client").endif()
-        .if_("e.amount != null").literal("amount = ").parameter("e.amount").endif().endwhere().endModificationQuery();
+    this.updateByExample = dyn
+      .literal("UPDATE invoice")
+      .set()
+        .if_("v.id != null").literal("id = ").parameter("v.id").endif()
+        .if_("v.client != null").literal("client = ").parameter("v.client").endif()
+        .if_("v.amount != null").literal("amount = ").parameter("v.amount").endif()
+      .endset()
+      .where("AND")
+        .if_("e.id != null").literal("id = ").parameter("e.id").endif()
+        .if_("e.client != null").literal("client = ").parameter("e.client").endif()
+        .if_("e.amount != null").literal("amount = ").parameter("e.amount").endif()
+      .endwhere()
+      .endModificationQuery();
   }
 
   public int update(Invoice example, Invoice values) throws DynamicExpressionException, SQLException {
@@ -293,12 +327,9 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   public UpdateSetCompletePhase update(final Invoice values, final InvoiceTable tableOrView,
       final GeneralBooleanExpression predicate) {
     List<Setter> setters = new ArrayList<>();
-    if (values.getId() != null)
-      setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
-    if (values.getClient() != null)
-      setters.add(new Setter(tableOrView.client, sql.val(values.getClient())));
-    if (values.getAmount() != null)
-      setters.add(new Setter(tableOrView.amount, sql.val(values.getAmount())));
+    if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
+    if (values.getClient() != null) setters.add(new Setter(tableOrView.client, sql.val(values.getClient())));
+    if (values.getAmount() != null) setters.add(new Setter(tableOrView.amount, sql.val(values.getAmount())));
     return new UpdateSetCompletePhase(this.context, tableOrView, setters, predicate);
   }
 
@@ -307,13 +338,14 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   private DynamicModificationQuery deleteByPK;
 
   private void initializeDeletebypk() {
-    this.deleteByPK = dyn.literaln("DELETE FROM invoice").literaln("WHERE " + "id = ").parameter("f.id")
-        .endModificationQuery();
+    this.deleteByPK = dyn
+      .literaln("DELETE FROM invoice")
+      .literaln("WHERE " + "id = ").parameter("f.id")
+      .endModificationQuery();
   }
 
   public int delete(Integer id) throws DynamicExpressionException, SQLException {
-    if (id == null)
-      return 0;
+    if (id == null) return 0;
     Invoice filter = new Invoice();
     filter.setId(id);
     Parameters context = this.dyn.newParameters();
@@ -331,9 +363,14 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   private DynamicModificationQuery deleteByExample;
 
   private void initializeDeletebyexample() {
-    this.deleteByExample = dyn.literal("DELETE FROM invoice").where("AND").if_("e.id != null").literal("id = ")
-        .parameter("e.id").endif().if_("e.client != null").literal("client = ").parameter("e.client").endif()
-        .if_("e.amount != null").literal("amount = ").parameter("e.amount").endif().endwhere().endModificationQuery();
+    this.deleteByExample = dyn
+      .literal("DELETE FROM invoice")
+      .where("AND")
+        .if_("e.id != null").literal("id = ").parameter("e.id").endif()
+        .if_("e.client != null").literal("client = ").parameter("e.client").endif()
+        .if_("e.amount != null").literal("amount = ").parameter("e.amount").endif()
+      .endwhere()
+      .endModificationQuery();
   }
 
   public int delete(Invoice example) throws DynamicExpressionException, SQLException {
@@ -357,7 +394,11 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
   public enum InvoiceOrderBy implements OrderBy {
 
-    ID("id", true), ID$DESC("id", false), CLIENT("client", true), CLIENT$DESC("client", false), AMOUNT("amount", true),
+    ID("id", true),
+    ID$DESC("id", false),
+    CLIENT("client", true),
+    CLIENT$DESC("client", false),
+    AMOUNT("amount", true),
     AMOUNT$DESC("amount", false);
 
     private String sqlColumnName;
@@ -392,12 +433,12 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public final NumberEntityColumn id = new NumberEntityColumn(this, "ID", "id", "INTEGER", 32, 0,
-        TypeHandler.forClass(Integer.class, TypeSource.ENTITY_COLUMN));
-    public final StringEntityColumn client = new StringEntityColumn(this, "CLIENT", "client", "CHARACTER VARYING", 50,
-        0, TypeHandler.forClass(String.class, TypeSource.ENTITY_COLUMN));
-    public final NumberEntityColumn amount = new NumberEntityColumn(this, "AMOUNT", "amount", "INTEGER", 32, 0,
-        TypeHandler.forClass(Integer.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn id = new NumberEntityColumn(this,
+      "ID", "id", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.ENTITY_COLUMN));
+    public final StringEntityColumn client = new StringEntityColumn(this,
+      "CLIENT", "client", "CHARACTER VARYING", 50, 0, TypeHandler.forClass(String.class, TypeSource.ENTITY_COLUMN));
+    public final NumberEntityColumn amount = new NumberEntityColumn(this,
+      "AMOUNT", "amount", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.ENTITY_COLUMN));
 
     // Getters
 

@@ -53,7 +53,7 @@ import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.identifiers.Id;
 import org.hotrod.interfaces.OrderBy;
-import org.hotrod.livesql.DynamicSQLBean;
+import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
@@ -97,6 +97,9 @@ import org.nocrala.tools.database.tartarus.core.JdbcColumn.AutogenerationType;
 public class DAO {
 
   private static final Logger log = Logger.getLogger(DAO.class.getName());
+
+  private static final String DATASOURCE_QUALIFIER_PREFIX = "dataSource";
+  private static final String LIVESQL_QUALIFIER_PREFIX = "liveSQL";
 
   // Properties
 
@@ -209,13 +212,6 @@ public class DAO {
       writeSelect(true); // by example
       writeSelectByCriteria();
 
-//      if (this.isTable()) {
-//        if (this.generator.isClassicFKNavigationEnabled() || this.isClassicFKNavigationEnabled()) {
-//          log.fine("FK navigation");
-//          writeSelectParentByFK();
-//          writeSelectChildrenByFK();
-//        }
-//
       writeInsert(false); // INSERT standard
       writeInsert(true); // INSERT by example
 
@@ -237,10 +233,6 @@ public class DAO {
 //
 //      if (this.isView()) {
 //      }
-//
-//      if (this.isTable() || this.isView()) {
-//        writeDeleteByCriteria();
-//      }
 
 //      writeEnumTypeHandlers();
 //
@@ -248,11 +240,6 @@ public class DAO {
 
       writeMetadata();
 
-      //
-//      if (this.getBundle().getParent() != null) {
-//        writeAOPAspect();
-//      }
-//
     }
 
 //    if (this.tag != null) {
@@ -300,21 +287,35 @@ public class DAO {
     // Spring properties
 
     w.println("  @", Const.AUTOWIRED);
-    if (!SUtil.isEmpty(this.jdbcTag.getQualifier())) {
-      w.println("  @", Const.QUALIFIER, "(\"" + this.jdbcTag.getQualifier() + "\")");
+    if (this.jdbcTag.getQualifierSuffix() != null) {
+      w.println("  @", Const.QUALIFIER,
+          "(\"" + DATASOURCE_QUALIFIER_PREFIX + this.jdbcTag.getQualifierSuffix() + "\")");
     }
-    w.println("  private ", LiveSQLDialect.class, " liveSQLDialect;");
+    w.println("  private ", DataSource.class, " dataSource;");
     w.println();
 
+    if (this.isExecutor()) {
+      w.println("  @", SuppressWarnings.class, "(\"unused\")");
+    }
     w.println("  @", Const.AUTOWIRED);
-    w.println("  private ", DynamicSQLBean.class, " dynamicSQLBean;");
+    if (this.jdbcTag.getQualifierSuffix() != null) {
+      w.println("  @", Const.QUALIFIER, "(\"" + LIVESQL_QUALIFIER_PREFIX + this.jdbcTag.getQualifierSuffix() + "\")");
+    }
+    w.println("  private ", LiveSQL.class, " sql;");
     w.println();
+
+//    w.println("  @", Const.AUTOWIRED);
+//    if (!SUtil.isEmpty(this.jdbcTag.getQualifier())) {
+//      w.println("  @", Const.QUALIFIER, "(\"" + this.jdbcTag.getQualifier() + "\")");
+//    }
+//    w.println("  private ", LiveSQLDialect.class, " liveSQLDialect;");
+//    w.println();
+
+//    w.println("  @", Const.AUTOWIRED);
+//    w.println("  private ", DynamicSQLBean.class, " dynamicSQLBean;");
+//    w.println();
 
     w.println("  private ", DynamicSQL.class, " dyn;");
-    w.println();
-
-    w.println("  @", Const.AUTOWIRED);
-    w.println("  private ", DataSource.class, " dataSource;");
     w.println();
 
     w.println("  private ", Const.APPLICATION_CONTEXT, " applicationContext;");
@@ -330,13 +331,6 @@ public class DAO {
     if (this.isExecutor()) {
       w.println("  @", SuppressWarnings.class, "(\"unused\")");
     }
-    w.println("  @", Const.AUTOWIRED);
-    w.println("  private ", LiveSQL.class, " sql;");
-    w.println();
-
-    if (this.isExecutor()) {
-      w.println("  @", SuppressWarnings.class, "(\"unused\")");
-    }
     w.println("  private ", LiveSQLContext.class, " context;");
 
   }
@@ -345,9 +339,10 @@ public class DAO {
     w.println();
     w.println("  @", Const.POST_CONSTRUCT);
     w.println("  public void initializeContext() {");
-    w.println("    this.context = new ", LiveSQLContext.class, "(this.liveSQLDialect, this.dataSource, new ",
-        TypeSolver.class, "(null, this.liveSQLDialect), log);");
-    w.println("    this.dyn = this.dynamicSQLBean.getDynamicSQL();");
+    w.println("    ", LiveSQLDialect.class, " liveSQLDialect = ", LShield.class, ".getLiveSQLDialect(this.sql);");
+    w.println("    this.context = new ", LiveSQLContext.class, "(liveSQLDialect, this.dataSource, new ",
+        TypeSolver.class, "(null, liveSQLDialect), log);");
+    w.println("    this.dyn = new ", DynamicSQL.class, "();");
     for (String ini : this.initializersInPostConstruct) {
       w.println("    this." + ini + "();");
     }

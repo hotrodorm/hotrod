@@ -21,7 +21,7 @@ import org.hotrod.dynamicsql.PreparedQuery;
 import org.hotrod.dynamicsql.PreparedSelectQuery;
 import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.dynamicsql.assembler.DynamicSQL;
-import org.hotrod.livesql.DynamicSQLBean;
+import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.queries.LiveSQLContext;
@@ -43,15 +43,13 @@ public class Test2DAO implements Serializable, ApplicationContextAware {
   private static final Logger log = Logger.getLogger(Test2DAO.class.getName());
 
   @Autowired
-  private LiveSQLDialect liveSQLDialect;
+  private DataSource dataSource;
 
+  @SuppressWarnings("unused")
   @Autowired
-  private DynamicSQLBean dynamicSQLBean;
+  private LiveSQL sql;
 
   private DynamicSQL dyn;
-
-  @Autowired
-  private DataSource dataSource;
 
   private ApplicationContext applicationContext;
 
@@ -59,10 +57,6 @@ public class Test2DAO implements Serializable, ApplicationContextAware {
   public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
   }
-
-  @SuppressWarnings("unused")
-  @Autowired
-  private LiveSQL sql;
 
   @SuppressWarnings("unused")
   private LiveSQLContext context;
@@ -244,8 +238,9 @@ public class Test2DAO implements Serializable, ApplicationContextAware {
 
   @PostConstruct
   public void initializeContext() {
-    this.context = new LiveSQLContext(this.liveSQLDialect, this.dataSource, new TypeSolver(null, this.liveSQLDialect), log);
-    this.dyn = this.dynamicSQLBean.getDynamicSQL();
+    LiveSQLDialect liveSQLDialect = LShield.getLiveSQLDialect(this.sql);
+    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, new TypeSolver(null, liveSQLDialect), log);
+    this.dyn = new DynamicSQL();
     this.initializeSelect0();
     this.initializeSelect1();
   }

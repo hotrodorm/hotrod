@@ -13,7 +13,7 @@ import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
-import org.hotrod.livesql.LayerConfigInterface;
+import org.hotrod.livesql.LayerConfiguration;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.queries.typesolver.TypeRule;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
@@ -26,11 +26,13 @@ public class LayerConfigWriter {
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(LayerConfigWriter.class.getName());
 
-  private static final String CLASS_NAME = "LayerConfiguration";
+  private static final String SINGLE_LAYER_CLASS_NAME = "MainLayerConfiguration";
+  private static final String MULTI_LAYER_CLASS_NAME_PREFIX = "LayerConfiguration";
 
   private JDBCTag jdbcTag;
   private TypeSolverTag typeSolver;
 
+  private String className;
   private ClassWriter w;
 
   public LayerConfigWriter(final JDBCTag jdbcTag, final TypeSolverTag typeSolver) {
@@ -38,11 +40,13 @@ public class LayerConfigWriter {
     this.typeSolver = typeSolver;
   }
 
-  public void generate(final FileGenerator fileGenerator, final JDBCGenerator mg)
+  public void generate(final FileGenerator fileGenerator, final JDBCGenerator mg, final String qualifierSuffix)
       throws UncontrolledException, ControlledException {
 
     File dir = this.jdbcTag.getLayerPackageDir();
-    File f = new File(dir, CLASS_NAME + ".java");
+    this.className = qualifierSuffix == null ? SINGLE_LAYER_CLASS_NAME
+        : MULTI_LAYER_CLASS_NAME_PREFIX + qualifierSuffix;
+    File f = new File(dir, className + ".java");
 
     try (TextWriter tw = fileGenerator.createWriter(f)) {
 
@@ -62,7 +66,7 @@ public class LayerConfigWriter {
 
   private void writeHeader() throws IOException {
     w.println("@", Const.COMPONENT);
-    w.println("public class " + CLASS_NAME + " implements ", LayerConfigInterface.class, " {");
+    w.println("public class " + this.className + " implements ", LayerConfiguration.class, " {");
     w.println();
     w.println("  @", Override.class);
     w.println("  public ", List.class, "<", TypeRule.class, "> getTypeRules() {");
@@ -75,8 +79,8 @@ public class LayerConfigWriter {
     int n = 1;
     for (TypeSolverWhenTag when : this.typeSolver.getWhens()) {
       if (!SUtil.isEmpty(when.getTestResultSet())) {
-        w.print("    rules.add(", TypeRule.class,
-            ".of(\"" + SUtil.escapeJavaString(when.getTestResultSet()) + "\", ", TypeHandler.class);
+        w.print("    rules.add(", TypeRule.class, ".of(\"" + SUtil.escapeJavaString(when.getTestResultSet()) + "\", ",
+            TypeHandler.class);
         w.println(".forClass(", ExternalClass.of(when.getJavaType()), ".class, ", TypeSource.class,
             ".LIVESQL_RULES), " + n + "));");
       }

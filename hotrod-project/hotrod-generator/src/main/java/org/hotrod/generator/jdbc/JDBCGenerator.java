@@ -276,7 +276,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
       vo.generate(fileGenerator);
     }
 
-    this.layerConfigWriter.generate(fileGenerator, this);
+    this.layerConfigWriter.generate(fileGenerator, this, this.jdbcTag.getQualifierSuffix());
 
   }
 

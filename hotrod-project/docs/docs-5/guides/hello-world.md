@@ -375,6 +375,6 @@ We can see:
 
 That's it! You just generated the persistence code from the database and ran an app using it.
 
-Later on, when the database suffers changes &mdash; it will, believe me &mdash; you can just
-rerun the generation step to retrieve any changes of columns, tables, views, etc. and to apply
+Later on, when the database suffers changes &mdash; it will &mdash; you can just
+rerun the generation step `mvn hotrod:gen` to retrieve the latest changes to columns, tables, views, etc. and to apply
 them automatically to the persistence layer.

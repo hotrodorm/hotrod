@@ -16,7 +16,6 @@ import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import org.hotrod.dynamicsql.Row;
-import org.hotrod.livesql.autoconfig.OnLiveSQLMissingCondition;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Expression;
@@ -137,13 +136,7 @@ import org.hotrod.livesql.queries.typesolver.TypeRule;
 import org.hotrod.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.livesql.sysobjects.DualTable;
 import org.hotrod.livesql.sysobjects.SysDummy1Table;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Conditional;
-import org.springframework.stereotype.Component;
 
-@Component
-@Conditional(OnLiveSQLMissingCondition.class)
 public class LiveSQL {
 
   private static final Logger log = Logger.getLogger(LiveSQL.class.getName());
@@ -153,33 +146,42 @@ public class LiveSQL {
 
   // Properties
 
-  @Autowired
-  @Qualifier("liveSQLDialect")
-  private LiveSQLDialect liveSQLDialect;
   private LiveSQLContext context = null;
-  @Autowired
   private DataSource dataSource;
+  private LiveSQLDialect liveSQLDialect;
 
   private TypeSolver typeSolver;
+  @SuppressWarnings("unused")
+  private String qualifier = null;
 
-  @Autowired
-  private PersistenceLayerConfigFactory persistenceLayerConfigFactory;
+  private LayerConfiguration layerConfiguration;
 
   // Constructor
 
-  LiveSQL() {
-  }
-
-  public LiveSQL(LiveSQLDialect liveSQLDialect, DataSource dataSource) {
+  public LiveSQL(LiveSQLDialect liveSQLDialect, DataSource dataSource, String qualifier,
+      LayerConfiguration layerConfiguration) {
+    log.info("Initializing LiveSQL for qualifier: " + (qualifier == null ? "(main)" : qualifier));
     this.liveSQLDialect = liveSQLDialect;
     this.dataSource = dataSource;
+    this.qualifier = qualifier;
+    this.layerConfiguration = layerConfiguration;
   }
 
   @PostConstruct
   private void initialize() {
-    List<TypeRule> customRules = persistenceLayerConfigFactory.getCustomRules(null);
-    this.typeSolver = new TypeSolver(customRules, this.liveSQLDialect);
+    List<TypeRule> layerRules = this.layerConfiguration.getTypeRules();
+    this.typeSolver = new TypeSolver(layerRules, this.liveSQLDialect);
     this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, this.typeSolver, log);
+  }
+
+  // Shielded methods
+
+  DataSource getDataSource() {
+    return dataSource;
+  }
+
+  LiveSQLDialect getLiveSQLDialect() {
+    return liveSQLDialect;
   }
 
   // Select

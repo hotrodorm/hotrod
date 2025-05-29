@@ -2,7 +2,7 @@
 <hotrod>
 
   <generators>
-    <jdbc package="app.persistence1" qualifier="database1" />
+    <jdbc package="app.persistence1" qualifier-suffix="1" />
   </generators>
 
   <table name="account" />
