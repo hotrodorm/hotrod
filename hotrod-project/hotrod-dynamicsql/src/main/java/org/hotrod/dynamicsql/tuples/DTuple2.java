@@ -1,6 +1,6 @@
 package org.hotrod.dynamicsql.tuples;
 
-public class Tuple2<A, B> {
+public class DTuple2<A, B> {
 
   protected A a;
   protected B b;

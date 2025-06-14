@@ -1,6 +1,6 @@
 package org.hotrod.dynamicsql.tuples;
 
-public class Tuple4<A, B, C, D> extends Tuple3<A, B, C> {
+public class DTuple4<A, B, C, D> extends DTuple3<A, B, C> {
 
   protected D d;
 

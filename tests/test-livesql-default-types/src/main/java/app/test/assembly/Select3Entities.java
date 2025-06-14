@@ -16,7 +16,7 @@ public class Select3Entities<A, B, C> {
     this.c = c;
   }
 
-  public List<Tuple3<A, B, C>> execute() {
+  public List<XTuple3<A, B, C>> execute() {
     return null;
   }
 

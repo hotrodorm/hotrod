@@ -2,15 +2,27 @@ package app.test.assembly;
 
 import java.util.Map;
 
-public class Tuple1<A> {
+public class XTuple3<A, B, C> {
   private A a;
+  private B b;
+  private C c;
 
-  protected Tuple1(A a) {
+  public XTuple3(A a, B b, C z) {
     this.a = a;
+    this.b = b;
+    this.c = z;
   }
 
   public A get1() {
     return a;
+  }
+
+  public B get2() {
+    return b;
+  }
+
+  public C get3() {
+    return c;
   }
 
   public <T> T get(Class<T> t) {

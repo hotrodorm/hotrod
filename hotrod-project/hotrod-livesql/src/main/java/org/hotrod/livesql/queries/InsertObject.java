@@ -12,7 +12,7 @@ import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.select.SelectObject;
 
-public class InsertObject implements QueryObject {
+public class InsertObject {
 
   private TableOrView into;
   private List<EntityColumn> columns;

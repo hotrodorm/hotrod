@@ -12,7 +12,7 @@ public class Select1Entities<A> {
     this.a = a;
   }
 
-  public List<Tuple1<A>> execute() {
+  public List<XTuple1<A>> execute() {
     return null;
   }
 

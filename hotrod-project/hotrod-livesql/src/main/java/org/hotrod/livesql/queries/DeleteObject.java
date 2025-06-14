@@ -8,7 +8,7 @@ import org.hotrod.livesql.expressions.Helper;
 import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.livesql.metadata.TableOrView;
 
-public class DeleteObject implements QueryObject {
+public class DeleteObject {
 
   private TableOrView from;
   private GeneralBooleanExpression wherePredicate;

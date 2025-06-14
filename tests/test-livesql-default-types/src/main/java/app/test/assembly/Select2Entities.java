@@ -14,7 +14,7 @@ public class Select2Entities<A, B> {
     this.b = b;
   }
 
-  public List<Tuple2<A, B>> execute() {
+  public List<XTuple2<A, B>> execute() {
     return null;
   }
 

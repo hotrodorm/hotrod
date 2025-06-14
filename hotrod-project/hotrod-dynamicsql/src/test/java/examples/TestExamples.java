@@ -25,7 +25,7 @@ import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.hotrod.dynamicsql.insert.PreparedInsertQuery;
 import org.hotrod.dynamicsql.insert.PrimaryKeyRetrievalMode;
-import org.hotrod.dynamicsql.tuples.Tuple3;
+import org.hotrod.dynamicsql.tuples.DTuple3;
 import org.junit.jupiter.api.Test;
 
 public class TestExamples {
@@ -214,11 +214,11 @@ public class TestExamples {
 
       Parameters params = dyn.newParameters();
 
-      PreparedSelectQuery<Tuple3<String, LocalDate, Integer>> p = q.prepare(params, String.class, LocalDate.class,
+      PreparedSelectQuery<DTuple3<String, LocalDate, Integer>> p = q.prepare(params, String.class, LocalDate.class,
           Integer.class);
       System.out.println("Dynamic Query:\n" + p.getPreview());
-      List<Tuple3<String, LocalDate, Integer>> names = p.execute(conn);
-      for (Tuple3<String, LocalDate, Integer> r : names) {
+      List<DTuple3<String, LocalDate, Integer>> names = p.execute(conn);
+      for (DTuple3<String, LocalDate, Integer> r : names) {
         System.out.println("Name: " + r.getA() + " -- Hired: " + r.getB() + " -- Salary: " + r.getC());
       }
     } catch (RuntimeException e) {

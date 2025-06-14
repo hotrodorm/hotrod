@@ -2,11 +2,11 @@ package app.test.assembly;
 
 import java.util.Map;
 
-public class Tuple2<A, B> {
+public class XTuple2<A, B> {
   private A a;
   private B b;
 
-  protected Tuple2(A a, B b) {
+  protected XTuple2(A a, B b) {
     this.a = a;
     this.b = b;
   }

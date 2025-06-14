@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import app.test.assembly.SQL;
-import app.test.assembly.Tuple1;
-import app.test.assembly.Tuple2;
-import app.test.assembly.Tuple3;
+import app.test.assembly.XTuple1;
+import app.test.assembly.XTuple2;
+import app.test.assembly.XTuple3;
 import app.test.domain.AutoDAO;
 import app.test.domain.AutoTable;
 import app.test.domain.AutoVO;
@@ -34,9 +34,9 @@ public class Test1 {
 
     // Una entidad
 
-    List<Tuple1<AutoVO>> rows = sql.select().from(t).entities().execute();
+    List<XTuple1<AutoVO>> rows = sql.select().from(t).entities().execute();
 
-    for (Tuple1<AutoVO> r : rows) {
+    for (XTuple1<AutoVO> r : rows) {
       AutoVO auto = r.get(AutoVO.class);
       // UnboundColumns unboundCols = r.getUnboundColumns();
       Map<String, Object> unboundCols = r.getUnboundColumns();
@@ -44,9 +44,9 @@ public class Test1 {
 
     // Dos entidades
 
-    List<Tuple2<AutoVO, BusVO>> rows2 = sql.select().from(t).join(u).entities().execute();
+    List<XTuple2<AutoVO, BusVO>> rows2 = sql.select().from(t).join(u).entities().execute();
 
-    for (Tuple2<AutoVO, BusVO> r : rows2) {
+    for (XTuple2<AutoVO, BusVO> r : rows2) {
       AutoVO auto = r.get(AutoVO.class);
       BusVO bus = r.get(BusVO.class);
       // UnboundColumns unboundCols = r.getUnboundColumns();
@@ -55,9 +55,9 @@ public class Test1 {
 
     // Tres entidades
 
-    List<Tuple3<AutoVO, BusVO, CarVO>> rows3 = sql.select().from(t).join(u).join(v).entities().execute();
+    List<XTuple3<AutoVO, BusVO, CarVO>> rows3 = sql.select().from(t).join(u).join(v).entities().execute();
 
-    for (Tuple3<AutoVO, BusVO, CarVO> r : rows3) {
+    for (XTuple3<AutoVO, BusVO, CarVO> r : rows3) {
       AutoVO auto = r.get(AutoVO.class);
       BusVO bus = r.get(BusVO.class);
       CarVO car = r.get(CarVO.class);

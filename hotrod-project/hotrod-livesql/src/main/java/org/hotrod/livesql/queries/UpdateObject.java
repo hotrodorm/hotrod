@@ -16,7 +16,7 @@ import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.MDHelper;
 import org.hotrod.livesql.metadata.TableOrView;
 
-public class UpdateObject implements QueryObject {
+public class UpdateObject {
 
   private static final Logger log = Logger.getLogger(UpdateObject.class.getName());
 

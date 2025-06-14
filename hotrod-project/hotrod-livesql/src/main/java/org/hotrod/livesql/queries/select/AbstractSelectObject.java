@@ -32,7 +32,6 @@ import org.hotrod.livesql.ordering.OHelper;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
-import org.hotrod.livesql.queries.QueryObject;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.ctes.RecursiveCTE;
@@ -42,7 +41,7 @@ import org.hotrod.utils.SUtil;
 import org.hotrod.utils.Separator;
 import org.springframework.util.ReflectionUtils;
 
-public abstract class AbstractSelectObject<T> extends MultiSet<T> implements QueryObject {
+public abstract class AbstractSelectObject<T> extends MultiSet<T> {
 
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(AbstractSelectObject.class.getName());
