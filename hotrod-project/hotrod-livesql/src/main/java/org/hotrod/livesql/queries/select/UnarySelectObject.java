@@ -35,16 +35,16 @@ import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.ctes.RecursiveCTE;
-import org.hotrod.livesql.queries.select.sets.MultiSet;
+import org.hotrod.livesql.queries.select.sets.SingleSelectObject;
 import org.hotrod.livesql.util.IdUtil;
 import org.hotrod.utils.SUtil;
 import org.hotrod.utils.Separator;
 import org.springframework.util.ReflectionUtils;
 
-public abstract class AbstractSelectObject<T> extends MultiSet<T> {
+public class UnarySelectObject<T> extends SingleSelectObject<T> {
 
   @SuppressWarnings("unused")
-  private static final Logger log = Logger.getLogger(AbstractSelectObject.class.getName());
+  private static final Logger log = Logger.getLogger(UnarySelectObject.class.getName());
 
   private List<CTE> ctes = new ArrayList<>();
   private boolean distinct;
@@ -59,6 +59,11 @@ public abstract class AbstractSelectObject<T> extends MultiSet<T> {
   private Integer offset = null;
   private Integer limit = null;
 
+  private boolean doNotAliasColumns;
+  private List<ResultSetColumn> resultSetColumns = new ArrayList<>();
+
+  private List<Expression> queryColumns;
+
   public enum LockingMode {
     FOR_UPDATE, FOR_SHARE
   };
@@ -71,14 +76,26 @@ public abstract class AbstractSelectObject<T> extends MultiSet<T> {
   private LockingConcurrency lockingConcurrency = null;
   private Number waitTime = null;
 
-  protected AbstractSelectObject(final List<CTE> ctes, final boolean distinct) {
+  public UnarySelectObject(final List<CTE> ctes, final boolean distinct, final boolean doNotAliasColumns) {
     super();
     this.setCTEs(ctes);
     this.distinct = distinct;
     this.distinctOn = null;
+    this.doNotAliasColumns = doNotAliasColumns;
   }
 
-  protected AbstractSelectObject(final List<CTE> ctes, final Expression[] distinctOn) {
+  public UnarySelectObject(final List<CTE> ctes, final boolean distinct, final boolean doNotAliasColumns,
+      final List<ResultSetColumn> resultSetColumns) {
+    super();
+    this.setCTEs(ctes);
+    this.distinct = distinct;
+    this.distinctOn = null;
+    this.doNotAliasColumns = doNotAliasColumns;
+    this.resultSetColumns = resultSetColumns;
+  }
+
+  public UnarySelectObject(final List<CTE> ctes, final Expression[] distinctOn, final boolean doNotAliasColumns,
+      final List<ResultSetColumn> resultSetColumns) {
     super();
     this.setCTEs(ctes);
     this.distinct = false;
@@ -92,14 +109,130 @@ public abstract class AbstractSelectObject<T> extends MultiSet<T> {
       }
     }
     this.distinctOn = Arrays.asList(distinctOn);
+
+    this.doNotAliasColumns = doNotAliasColumns;
+    this.resultSetColumns = resultSetColumns;
   }
 
   public void setDistinctOn(final List<Expression> expressions) {
     this.distinctOn = expressions;
   }
 
-  protected abstract void writeColumns(final QueryWriter w, final TableExpression baseTableExpression,
-      final List<Join> joins);
+  public void setResultSetColumns(final List<ResultSetColumn> resultSetColumns) {
+    this.resultSetColumns = resultSetColumns;
+  }
+
+  // Rendering
+
+  private boolean columnsAssembled = false;
+
+  public boolean areColumnsAssembled() {
+    return columnsAssembled;
+  }
+
+  @Override
+  public List<Expression> assembleColumnsOf(final TableExpression te) {
+
+    log.info("resultSetColumns.size()=" + resultSetColumns.size());
+
+    boolean isListingColumns = this.resultSetColumns != null && !this.resultSetColumns.isEmpty();
+
+    if (this.baseTableExpression != null) {
+      this.baseTableExpression.assembleColumns();
+    }
+
+    if (this.joins != null) {
+      this.joins.forEach(j -> j.getTableExpression().assembleColumns());
+    }
+
+    if (isListingColumns) {
+
+      // sql.val(3).mult(7) -- Expression N/A
+      // a.id -- Column te.id
+      // x.num("amount") -- SubqueryXXXColumn te.amount
+
+      // sql.val(3).mult(7).as("multi") -- Expression te.multi
+      // a.id.as("bid") -- Column te.bid
+      // x.num("amount").as("total") -- SubqueryXXXColumn te.total
+
+      populateQueryColumns(this.resultSetColumns);
+
+    } else { // columns not listed
+
+      List<ResultSetColumn> filledIn = new ArrayList<>();
+      filledIn.add(this.baseTableExpression.star());
+      for (Join j : this.joins) {
+        filledIn.add(j.getTableExpression().star());
+      }
+
+      populateQueryColumns(filledIn);
+
+    }
+
+    this.columnsAssembled = true;
+    return this.queryColumns;
+
+  }
+
+  private void populateQueryColumns(final List<ResultSetColumn> rsColumns) {
+    this.queryColumns = new ArrayList<>();
+    for (ResultSetColumn rsc : rsColumns) {
+      Expression expr = Helper.getExpression(rsc);
+      if (expr != null) {
+//        Helper.captureTypeHandler(expr);
+//        log.info("---------- expr@" + System.identityHashCode(expr) + ": " + expr);
+        this.queryColumns.add(expr);
+      } else {
+        for (Expression exp : Helper.unwrap(rsc)) {
+//          Helper.captureTypeHandler(exp);
+//          log.info("---------- expr@" + System.identityHashCode(exp) + ": " + exp);
+          this.queryColumns.add(exp);
+        }
+      }
+    }
+  }
+
+  @Override
+  public Expression findColumnWithName(final String name) {
+    for (Expression c : this.queryColumns) {
+      if (name.equals(Helper.getReferenceName(c))) {
+        // Only Entity columns, AliasedExpressions and SubqueryTTTColumns return names.
+        return c;
+      }
+    }
+    return null;
+  }
+
+  protected void writeColumns(final QueryWriter w, final TableExpression baseTableExpression, final List<Join> joins) {
+    Separator sep = new Separator();
+    for (Expression expr : this.queryColumns) {
+
+      w.write(sep.render());
+      w.write("\n  ");
+      Helper.renderTo(expr, w);
+
+//      Add alias?
+//
+//          Select Type           EntityCol  AliasedExpr  SubqueryCol  Other
+//          --------------------  ---------  -----------  -----------  -----
+//          Scalar SELECT         No         Yes          --           No
+//          Criteria SELECT       No         Yes          --           No
+//          Other/Main SELECT     Yes        Yes          Yes          No
+
+      if (!this.doNotAliasColumns) { // other than scalar selects or criteria selects
+        String property = Helper.getProperty(expr);
+        if (property != null) {
+          w.write(" as " + w.getSQLDialect().canonicalToNatural(property));
+        }
+      }
+
+    }
+  }
+
+  @Override
+  public void flatten() {
+    // Nothing to do. It's already a single level
+  }
 
   // Setters
 

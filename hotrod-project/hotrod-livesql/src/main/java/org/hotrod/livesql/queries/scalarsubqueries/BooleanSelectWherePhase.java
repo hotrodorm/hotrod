@@ -4,13 +4,13 @@ import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.livesql.ordering.OrderingTerm;
-import org.hotrod.livesql.queries.select.AbstractSelectObject;
+import org.hotrod.livesql.queries.select.UnarySelectObject;
 
 public class BooleanSelectWherePhase extends BooleanSelectExpression {
 
   // Constructors
 
-  BooleanSelectWherePhase(final AbstractSelectObject<Row> select, final GeneralBooleanExpression predicate) {
+  BooleanSelectWherePhase(final UnarySelectObject<Row> select, final GeneralBooleanExpression predicate) {
     super(select);
     this.select.setWhereCondition(predicate);
   }

@@ -1,13 +1,13 @@
 package org.hotrod.livesql.queries.scalarsubqueries;
 
 import org.hotrod.dynamicsql.Row;
-import org.hotrod.livesql.queries.select.AbstractSelectObject;
+import org.hotrod.livesql.queries.select.UnarySelectObject;
 
 public class DateTimeSelectOffsetPhase extends DateTimeSelectExpression {
 
   // Constructor
 
-  DateTimeSelectOffsetPhase(final AbstractSelectObject<Row> select, final int offset) {
+  DateTimeSelectOffsetPhase(final UnarySelectObject<Row> select, final int offset) {
     super(select);
     this.select.setOffset(offset);
   }

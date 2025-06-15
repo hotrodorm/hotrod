@@ -5,17 +5,17 @@ import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.select.AbstractSelectObject;
+import org.hotrod.livesql.queries.select.UnarySelectObject;
 
 public class NumberSelectExpression extends NumberExpression {
 
   // Properties
 
-  protected AbstractSelectObject<Row> select;
+  protected UnarySelectObject<Row> select;
 
   // Constructor
 
-  public NumberSelectExpression(final AbstractSelectObject<Row> select) {
+  public NumberSelectExpression(final UnarySelectObject<Row> select) {
     super(Expression.PRECEDENCE_PARENTHESIS);
 
     if (select == null) {

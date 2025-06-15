@@ -10,14 +10,14 @@ import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Helper;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.TableOrView;
-import org.hotrod.livesql.queries.select.SelectObject;
+import org.hotrod.livesql.queries.select.UnarySelectObject;
 
 public class InsertObject {
 
   private TableOrView into;
   private List<EntityColumn> columns;
   private List<ComparableExpression> values;
-  private SelectObject<?> select;
+  private UnarySelectObject<?> select;
 
   InsertObject() {
     super();
@@ -35,7 +35,7 @@ public class InsertObject {
     this.values = values;
   }
 
-  void setSelect(final SelectObject<?> select) {
+  void setSelect(final UnarySelectObject<?> select) {
     this.select = select;
   }
 

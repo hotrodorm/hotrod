@@ -8,16 +8,16 @@ import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.select.AbstractSelectObject.AliasGenerator;
-import org.hotrod.livesql.queries.select.AbstractSelectObject.TableReferences;
+import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
+import org.hotrod.livesql.queries.select.UnarySelectObject.TableReferences;
 import org.hotrod.livesql.queries.select.TableExpression;
-import org.hotrod.livesql.queries.select.sets.MultiSet;
+import org.hotrod.livesql.queries.select.sets.SingleSelectObject;
 
-public class TuplesSelect<T> extends MultiSet<T> {
+public class CompositeSelectObject<T> extends SingleSelectObject<T> {
 
   private TuplesMetadata metadata;
 
-  public TuplesSelect(TuplesMetadata metadata) {
+  public CompositeSelectObject(TuplesMetadata metadata) {
     this.metadata = metadata;
   }
 

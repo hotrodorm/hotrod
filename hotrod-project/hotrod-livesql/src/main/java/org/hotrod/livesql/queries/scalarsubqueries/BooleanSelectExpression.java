@@ -5,17 +5,17 @@ import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.predicates.Predicate;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.select.AbstractSelectObject;
+import org.hotrod.livesql.queries.select.UnarySelectObject;
 
 public class BooleanSelectExpression extends Predicate {
 
   // Properties
 
-  protected AbstractSelectObject<Row> select;
+  protected UnarySelectObject<Row> select;
 
   // Constructor
 
-  public BooleanSelectExpression(final AbstractSelectObject<Row> select) {
+  public BooleanSelectExpression(final UnarySelectObject<Row> select) {
     super(Expression.PRECEDENCE_PARENTHESIS);
 
     if (select == null) {

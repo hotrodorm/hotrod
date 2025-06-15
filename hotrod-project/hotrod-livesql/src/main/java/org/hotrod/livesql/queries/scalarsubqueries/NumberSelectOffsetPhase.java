@@ -1,13 +1,13 @@
 package org.hotrod.livesql.queries.scalarsubqueries;
 
 import org.hotrod.dynamicsql.Row;
-import org.hotrod.livesql.queries.select.AbstractSelectObject;
+import org.hotrod.livesql.queries.select.UnarySelectObject;
 
 public class NumberSelectOffsetPhase extends NumberSelectExpression {
 
   // Constructor
 
-  NumberSelectOffsetPhase(final AbstractSelectObject<Row> select, final int offset) {
+  NumberSelectOffsetPhase(final UnarySelectObject<Row> select, final int offset) {
     super(select);
     this.select.setOffset(offset);
   }

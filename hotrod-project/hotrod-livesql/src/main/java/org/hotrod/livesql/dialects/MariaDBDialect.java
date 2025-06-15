@@ -21,9 +21,9 @@ import org.hotrod.livesql.queries.select.NaturalLeftOuterJoin;
 import org.hotrod.livesql.queries.select.NaturalRightOuterJoin;
 import org.hotrod.livesql.queries.select.RightOuterJoin;
 import org.hotrod.livesql.queries.select.SHelper;
+import org.hotrod.livesql.queries.select.UnarySelectObject.LockingConcurrency;
+import org.hotrod.livesql.queries.select.UnarySelectObject.LockingMode;
 import org.hotrod.livesql.queries.select.UnionJoin;
-import org.hotrod.livesql.queries.select.AbstractSelectObject.LockingConcurrency;
-import org.hotrod.livesql.queries.select.AbstractSelectObject.LockingMode;
 
 public class MariaDBDialect extends LiveSQLDialect {
 

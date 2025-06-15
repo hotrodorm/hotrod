@@ -5,8 +5,7 @@ import org.hotrod.livesql.queries.LiveSQLContext;
 
 public class CriteriaOrderByPhase<T> extends CriteriaPhase<T> {
 
-  public CriteriaOrderByPhase(final LiveSQLContext context, final AbstractSelectObject<T> select,
-      RowReader<T> rowReader) {
+  public CriteriaOrderByPhase(final LiveSQLContext context, final UnarySelectObject<T> select, RowReader<T> rowReader) {
     super(context, select, rowReader);
   }
 

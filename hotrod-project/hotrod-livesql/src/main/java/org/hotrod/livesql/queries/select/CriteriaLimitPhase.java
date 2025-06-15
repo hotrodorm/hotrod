@@ -5,8 +5,7 @@ import org.hotrod.livesql.queries.LiveSQLContext;
 
 public class CriteriaLimitPhase<T> extends CriteriaPhase<T> {
 
-  public CriteriaLimitPhase(final LiveSQLContext context, final AbstractSelectObject<T> select,
-      RowReader<T> rowReader) {
+  public CriteriaLimitPhase(final LiveSQLContext context, final UnarySelectObject<T> select, RowReader<T> rowReader) {
     super(context, select, rowReader);
   }
 

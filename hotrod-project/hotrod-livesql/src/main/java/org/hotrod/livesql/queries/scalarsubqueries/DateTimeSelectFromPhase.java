@@ -7,7 +7,6 @@ import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.ordering.OrderingTerm;
-import org.hotrod.livesql.queries.select.AbstractSelectObject;
 import org.hotrod.livesql.queries.select.CrossJoin;
 import org.hotrod.livesql.queries.select.FullOuterJoin;
 import org.hotrod.livesql.queries.select.InnerJoin;
@@ -19,6 +18,7 @@ import org.hotrod.livesql.queries.select.NaturalInnerJoin;
 import org.hotrod.livesql.queries.select.NaturalLeftOuterJoin;
 import org.hotrod.livesql.queries.select.NaturalRightOuterJoin;
 import org.hotrod.livesql.queries.select.RightOuterJoin;
+import org.hotrod.livesql.queries.select.UnarySelectObject;
 import org.hotrod.livesql.queries.select.TableExpression;
 import org.hotrod.livesql.queries.select.UnionJoin;
 import org.hotrod.livesql.queries.subqueries.Subquery;
@@ -27,7 +27,7 @@ public class DateTimeSelectFromPhase extends DateTimeSelectExpression {
 
   // Constructor
 
-  DateTimeSelectFromPhase(final AbstractSelectObject<Row> select, final TableExpression t) {
+  DateTimeSelectFromPhase(final UnarySelectObject<Row> select, final TableExpression t) {
     super(select);
     this.select.setBaseTableExpression(t);
   }
@@ -44,7 +44,8 @@ public class DateTimeSelectFromPhase extends DateTimeSelectExpression {
     return this;
   }
 
-  public DateTimeSelectFromPhase leftJoin(final TableExpression tableViewOrSubquery, final GeneralBooleanExpression on) {
+  public DateTimeSelectFromPhase leftJoin(final TableExpression tableViewOrSubquery,
+      final GeneralBooleanExpression on) {
     this.select.addJoin(new LeftOuterJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -54,7 +55,8 @@ public class DateTimeSelectFromPhase extends DateTimeSelectExpression {
     return this;
   }
 
-  public DateTimeSelectFromPhase rightJoin(final TableExpression tableViewOrSubquery, final GeneralBooleanExpression on) {
+  public DateTimeSelectFromPhase rightJoin(final TableExpression tableViewOrSubquery,
+      final GeneralBooleanExpression on) {
     this.select.addJoin(new RightOuterJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -64,7 +66,8 @@ public class DateTimeSelectFromPhase extends DateTimeSelectExpression {
     return this;
   }
 
-  public DateTimeSelectFromPhase fullJoin(final TableExpression tableViewOrSubquery, final GeneralBooleanExpression on) {
+  public DateTimeSelectFromPhase fullJoin(final TableExpression tableViewOrSubquery,
+      final GeneralBooleanExpression on) {
     this.select.addJoin(new FullOuterJoin(tableViewOrSubquery, on));
     return this;
   }

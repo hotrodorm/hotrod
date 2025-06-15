@@ -3,13 +3,13 @@ package org.hotrod.livesql.queries.scalarsubqueries;
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.livesql.ordering.OrderingTerm;
-import org.hotrod.livesql.queries.select.AbstractSelectObject;
+import org.hotrod.livesql.queries.select.UnarySelectObject;
 
 public class BooleanSelectHavingPhase extends BooleanSelectExpression {
 
   // Constructor
 
-  BooleanSelectHavingPhase(final AbstractSelectObject<Row> select, final GeneralBooleanExpression predicate) {
+  BooleanSelectHavingPhase(final UnarySelectObject<Row> select, final GeneralBooleanExpression predicate) {
     super(select);
     if (predicate != null) {
       this.select.setHavingCondition(predicate);

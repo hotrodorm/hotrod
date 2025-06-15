@@ -16,10 +16,10 @@ import org.hotrod.livesql.ordering.OHelper;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.select.SelectObject;
+import org.hotrod.livesql.queries.select.UnarySelectObject;
+import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
+import org.hotrod.livesql.queries.select.UnarySelectObject.TableReferences;
 import org.hotrod.livesql.queries.select.TableExpression;
-import org.hotrod.livesql.queries.select.AbstractSelectObject.AliasGenerator;
-import org.hotrod.livesql.queries.select.AbstractSelectObject.TableReferences;
 import org.hotrod.livesql.util.IdUtil;
 
 /**
@@ -42,7 +42,7 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
   private boolean forceParenthesis;
   private MultiSet<T> first;
   private List<SetOperatorTerm<T>> combined;
-  private SelectObject<T> lastSelect; // TODO: Remove?
+  private UnarySelectObject<T> lastSelect; // TODO: Remove?
 
   private List<CombinedOrderingTerm> orderingTerms = null;
   private Integer offset = null;
@@ -64,7 +64,7 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
     first.setParent(this);
   }
 
-  public CombinedSelectObject(final SelectObject<T> first) {
+  public CombinedSelectObject(final UnarySelectObject<T> first) {
     this.forceParenthesis = false;
     this.first = first;
     this.combined = new ArrayList<>();
@@ -78,7 +78,7 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
     multiset.setParent(this);
   }
 
-  public void add(final SetOperator operator, final SelectObject<T> select) {
+  public void add(final SetOperator operator, final UnarySelectObject<T> select) {
     SetOperatorTerm<T> term = new SetOperatorTerm<>(operator, select);
     this.combined.add(term);
     this.lastSelect = select;
@@ -162,7 +162,7 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
       w.enterLevel();
     }
 
-    // Sub-queries
+    // Single Selects
 
     this.first.renderTo(w, false);
 
@@ -291,7 +291,7 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
 
   // Combining
 
-  public final SelectObject<T> getLastSelect() {
+  public final UnarySelectObject<T> getLastSelect() {
     return this.lastSelect;
   }
 

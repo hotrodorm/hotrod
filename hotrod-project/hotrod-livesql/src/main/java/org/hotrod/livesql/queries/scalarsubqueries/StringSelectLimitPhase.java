@@ -1,13 +1,13 @@
 package org.hotrod.livesql.queries.scalarsubqueries;
 
 import org.hotrod.dynamicsql.Row;
-import org.hotrod.livesql.queries.select.AbstractSelectObject;
+import org.hotrod.livesql.queries.select.UnarySelectObject;
 
 public class StringSelectLimitPhase extends StringSelectExpression {
 
   // Constructor
 
-  StringSelectLimitPhase(final AbstractSelectObject<Row> select, final int limit) {
+  StringSelectLimitPhase(final UnarySelectObject<Row> select, final int limit) {
     super(select);
     this.select.setLimit(limit);
   }

@@ -24,7 +24,7 @@ public class SelectColumnsPhase<R> extends IndividualSelectPhase<R> {
       }
     }
     MultiSet<R> m = this.combined.getLastSelect();
-    SelectObject<R> s = (SelectObject<R>) m;
+    UnarySelectObject<R> s = (UnarySelectObject<R>) m;
     s.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
   }
 

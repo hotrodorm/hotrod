@@ -19,7 +19,7 @@ public class PGSelectColumnsPhase<R> extends AbstractSelectPhase<R> {
       final ResultSetColumn... resultSetColumns) {
     super(context, ctes, distinct, false);
     MultiSet<R> m = this.combined.getLastSelect();
-    SelectObject<R> s = (SelectObject<R>) m;
+    UnarySelectObject<R> s = (UnarySelectObject<R>) m;
     s.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
   }
 

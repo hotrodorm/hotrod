@@ -1,13 +1,13 @@
 package org.hotrod.livesql.queries.scalarsubqueries;
 
 import org.hotrod.dynamicsql.Row;
-import org.hotrod.livesql.queries.select.AbstractSelectObject;
+import org.hotrod.livesql.queries.select.UnarySelectObject;
 
 public class StringSelectOffsetPhase extends StringSelectExpression {
 
   // Constructor
 
-  StringSelectOffsetPhase(final AbstractSelectObject<Row> select, final int offset) {
+  StringSelectOffsetPhase(final UnarySelectObject<Row> select, final int offset) {
     super(select);
     this.select.setOffset(offset);
   }

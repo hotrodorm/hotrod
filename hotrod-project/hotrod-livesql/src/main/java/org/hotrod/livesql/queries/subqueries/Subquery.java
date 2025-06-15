@@ -15,9 +15,9 @@ import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.SHelper;
 import org.hotrod.livesql.queries.select.Select;
+import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
+import org.hotrod.livesql.queries.select.UnarySelectObject.TableReferences;
 import org.hotrod.livesql.queries.select.TableExpression;
-import org.hotrod.livesql.queries.select.AbstractSelectObject.AliasGenerator;
-import org.hotrod.livesql.queries.select.AbstractSelectObject.TableReferences;
 import org.hotrod.livesql.queries.select.sets.CombinedSelectObject;
 import org.hotrod.livesql.queries.select.sets.MHelper;
 import org.hotrod.utils.SUtil;
@@ -119,9 +119,7 @@ public class Subquery extends TableExpression {
   private void logEmergingColumns(List<Expression> ec) {
     log.info("$$$$$$ Columns (" + ec.size() + "):");
     for (Expression c : ec) {
-      log.info("$$$$$$ @"
-          + System.identityHashCode(c)
-          + " * " + c);
+      log.info("$$$$$$ @" + System.identityHashCode(c) + " * " + c);
     }
   }
 

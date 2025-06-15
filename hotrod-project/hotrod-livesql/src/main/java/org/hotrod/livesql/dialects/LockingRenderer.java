@@ -1,7 +1,7 @@
 package org.hotrod.livesql.dialects;
 
-import org.hotrod.livesql.queries.select.AbstractSelectObject.LockingConcurrency;
-import org.hotrod.livesql.queries.select.AbstractSelectObject.LockingMode;
+import org.hotrod.livesql.queries.select.UnarySelectObject.LockingConcurrency;
+import org.hotrod.livesql.queries.select.UnarySelectObject.LockingMode;
 
 public interface LockingRenderer {
 

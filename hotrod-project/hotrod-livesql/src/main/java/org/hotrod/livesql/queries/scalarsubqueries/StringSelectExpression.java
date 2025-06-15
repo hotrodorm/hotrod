@@ -5,17 +5,17 @@ import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.strings.StringExpression;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.select.AbstractSelectObject;
+import org.hotrod.livesql.queries.select.UnarySelectObject;
 
 public class StringSelectExpression extends StringExpression {
 
   // Properties
 
-  protected AbstractSelectObject<Row> select;
+  protected UnarySelectObject<Row> select;
 
   // Constructor
 
-  public StringSelectExpression(final AbstractSelectObject<Row> select) {
+  public StringSelectExpression(final UnarySelectObject<Row> select) {
     super(Expression.PRECEDENCE_PARENTHESIS);
 
     if (select == null) {

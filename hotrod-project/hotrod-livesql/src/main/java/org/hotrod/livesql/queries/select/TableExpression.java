@@ -6,8 +6,8 @@ import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.WrappingColumn;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.select.AbstractSelectObject.AliasGenerator;
-import org.hotrod.livesql.queries.select.AbstractSelectObject.TableReferences;
+import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
+import org.hotrod.livesql.queries.select.UnarySelectObject.TableReferences;
 
 public abstract class TableExpression {
 
@@ -18,7 +18,7 @@ public abstract class TableExpression {
   protected abstract List<Expression> assembleColumns();
 
   protected abstract void renderTo(QueryWriter w);
-  
+
   protected abstract WrappingColumn star();
 
 }

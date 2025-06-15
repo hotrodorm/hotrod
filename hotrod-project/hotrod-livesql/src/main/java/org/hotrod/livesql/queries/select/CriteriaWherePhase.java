@@ -12,7 +12,7 @@ public class CriteriaWherePhase<T> extends CriteriaPhase<T> {
 
   public CriteriaWherePhase(final LiveSQLContext context, final TableOrView baseTable,
       final GeneralBooleanExpression whereCondition, RowReader<T> rowReader) {
-    super(context, new SelectObject<T>(null, false, true), rowReader);
+    super(context, new UnarySelectObject<T>(null, false, true), rowReader);
     super.select.setBaseTableExpression(baseTable);
     super.select.setWhereCondition(whereCondition);
   }

@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.expressions.object.GeneralObjectExpression;
 import org.hotrod.livesql.queries.ctes.CTE;
-import org.hotrod.livesql.queries.select.SelectObject;
+import org.hotrod.livesql.queries.select.UnarySelectObject;
 import org.hotrod.livesql.queries.select.TableExpression;
 
 public class ObjectSelectColumnsPhase extends ObjectSelectExpression {
@@ -15,7 +15,7 @@ public class ObjectSelectColumnsPhase extends ObjectSelectExpression {
   // Constructor
 
   public ObjectSelectColumnsPhase(final List<CTE> ctes, final boolean distinct, final GeneralObjectExpression expression) {
-    super(new SelectObject<Row>(ctes, distinct, true, Arrays.asList(expression).stream().collect(Collectors.toList())));
+    super(new UnarySelectObject<Row>(ctes, distinct, true, Arrays.asList(expression).stream().collect(Collectors.toList())));
   }
 
   // Next stages
