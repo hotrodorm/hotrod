@@ -12,6 +12,7 @@ import org.hotrod.livesql.expressions.Helper;
 import org.hotrod.livesql.expressions.ResultSetColumn;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.queries.LiveSQLContext;
+import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.Join;
 import org.hotrod.livesql.queries.select.SHelper;
@@ -21,11 +22,11 @@ import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
 import org.hotrod.livesql.queries.select.sets.SingleSelectObject;
 import org.hotrod.utils.Separator;
 
-public class CompositeSelectObject<T> extends SingleSelectObject<T> {
+public class TuplesSelectObject<T> extends SingleSelectObject<T> {
 
-  private static final Logger log = Logger.getLogger(CompositeSelectObject.class.getName());
+  private static final Logger log = Logger.getLogger(TuplesSelectObject.class.getName());
 
-  public CompositeSelectObject(List<ResultSetColumn> resultSetColumns, TuplesMetadata metadata) {
+  public TuplesSelectObject(List<ResultSetColumn> resultSetColumns, TuplesMetadata metadata) {
     super(metadata.getCtes(), metadata.isDistinct());
     this.resultSetColumns = resultSetColumns;
     this.baseTableExpression = metadata.getFrom();
@@ -72,10 +73,16 @@ public class CompositeSelectObject<T> extends SingleSelectObject<T> {
 //    return null;
 //  }
 
+  public TuplesRowReader<T> getRowReader() {
+    return new TuplesRowReader<>(this.baseTableExpression, this.joins);
+  }
+
   @Override
   public List<T> execute(LiveSQLContext context) {
-    // TODO Auto-generated method stub
-    return null;
+    LiveSQLPreparedQuery q = this.prepareQuery(context);
+    TuplesRowReader<T> rowReader = getRowReader();
+    return executeLiveSQL(context, q, false, rowReader);
+
   }
 
   @Override

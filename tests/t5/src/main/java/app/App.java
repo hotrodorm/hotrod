@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.DynamicExpressionException;
+import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.LiveSQL;
+import org.hotrod.livesql.queries.select.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -52,12 +54,12 @@ public class App {
     return args -> {
       log.info("[ Starting... ]");
 //      test();
-//      testLiveSQL();
+      testLiveSQL();
 //      testLiveSQLCursor();
 //      testConverter5();
 //      testConverter6();
 //      testOptimisticLocking();
-      testNitro6();
+//      testNitro6();
       log.info("[ Ending ]");
     };
   }
@@ -153,8 +155,8 @@ public class App {
     List<TAccount> tas = this.test2DAO.findTAccounts(false);
     for (TAccount ta : tas) {
       System.out.println("ta=" + ta);
-      
-   }
+
+    }
   }
 
 //  private void testConverter6() throws SQLException, DynamicExpressionException, IOException {
@@ -242,48 +244,50 @@ public class App {
 //    }
 //
 //  }
-//
-//  private void testLiveSQL() throws SQLException, DynamicExpressionException {
-//
+
+  private void testLiveSQL() throws SQLException, DynamicExpressionException {
+
 //    Account ax = this.accountDAO.select(123);
 //    System.out.println(">> Account 123: " + ax);
+
+//    AccountTable a = this.accountDAO.newTable();
+//    List<Account> accounts = this.accountDAO.select(a, a.balance.gt(500)).execute();
+//    System.out.println(">> Accounts:");
+//    accounts.forEach(r -> System.out.println(r));
+
+    Select<Row> s = this.sql.select(sql.val(7).mult(3).as("answer"));
+    System.out.println("Query:" + s.getPreview());
+    Row row = s.executeOne();
+    System.out.println("Row=" + row);
+
+//    System.out.println("Will UPDATE by criteria.");
+//    AccountTable a = this.accountDAO.newTable();
+//    Account updateValues = new Account();
+//    updateValues.setBalance(777);
+//    int count = this.accountDAO.update(updateValues, a, a.balance.lt(150)).execute();
+//    System.out.println("UPDATE by criteria complete: count=" + count);
 //
-////    AccountTable a = this.accountDAO.newTable();
-////    List<Account> accounts = this.accountDAO.select(a, a.balance.gt(500)).execute();
-////    System.out.println(">> Accounts:");
-////    accounts.forEach(r -> System.out.println(r));
-//
-////    Row row = this.sql.select(sql.val(7).mult(3).as("answer")).executeOne();
-////    System.out.println("Row=" + row);
-//
-////    System.out.println("Will UPDATE by criteria.");
-////    AccountTable a = this.accountDAO.newTable();
-////    Account updateValues = new Account();
-////    updateValues.setBalance(777);
-////    int count = this.accountDAO.update(updateValues, a, a.balance.lt(150)).execute();
-////    System.out.println("UPDATE by criteria complete: count=" + count);
-////
-////    List<Account> accounts = this.accountDAO.select(a, sql.TRUE).execute();
-////    accounts.forEach(r -> System.out.println("r=" + r));
-//
-////    System.out.println("Will select by criteria." );
-////    AccountTable a = this.accountDAO.newTable();
-////    List<Account> accounts = this.accountDAO.select(a, a.type.eq("CHK")).orderBy(a.balance.desc()).execute();
-////    for (Account r : accounts) {
-////      System.out.println("account=" + r);
-////    }
-////    System.out.println("Select by criteria complete." );
-//
-////    System.out.println("Will DELETE by criteria.");
-////    AccountTable a = this.accountDAO.newTable();
-////    int count = this.accountDAO.delete(a, a.type.eq("SAV")).execute();
-////    System.out.println("DELETE by criteria complete: count=" + count);
-//
-////    List<Row> rows = this.sql.select().from(a).execute();
-////    for (Row r : rows) {
-////      System.out.println("Row=" + r);
-////    }
-//  }
+//    List<Account> accounts = this.accountDAO.select(a, sql.TRUE).execute();
+//    accounts.forEach(r -> System.out.println("r=" + r));
+
+//    System.out.println("Will select by criteria." );
+//    AccountTable a = this.accountDAO.newTable();
+//    List<Account> accounts = this.accountDAO.select(a, a.type.eq("CHK")).orderBy(a.balance.desc()).execute();
+//    for (Account r : accounts) {
+//      System.out.println("account=" + r);
+//    }
+//    System.out.println("Select by criteria complete." );
+
+//    System.out.println("Will DELETE by criteria.");
+//    AccountTable a = this.accountDAO.newTable();
+//    int count = this.accountDAO.delete(a, a.type.eq("SAV")).execute();
+//    System.out.println("DELETE by criteria complete: count=" + count);
+
+//    List<Row> rows = this.sql.select().from(a).execute();
+//    for (Row r : rows) {
+//      System.out.println("Row=" + r);
+//    }
+  }
 
   private void test() throws SQLException, DynamicExpressionException {
 
