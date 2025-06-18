@@ -7,9 +7,9 @@ import java.util.logging.Logger;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
-import org.hotrod.livesql.queries.select.UnarySelectObject.TableReferences;
 import org.hotrod.livesql.queries.select.TableExpression;
+import org.hotrod.livesql.queries.select.TableReferences;
+import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
 
 public abstract class TableOrView extends TableExpression {
 

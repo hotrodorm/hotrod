@@ -7,7 +7,7 @@ import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.metadata.WrappingColumn;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
-public class SysDummy1Table extends Table {
+public class SysDummy1Table extends Table<String> {
 
   // Properties
 
@@ -23,7 +23,8 @@ public class SysDummy1Table extends Table {
   // Initialization
 
   private void initialize() {
-    this.ibmreqd = new StringEntityColumn(this, "IBMREQD", "ibmreqd", "VARCHAR", 1, 0, TypeHandler.STRING_ENTITY_COLUMN);
+    this.ibmreqd = new StringEntityColumn(this, "IBMREQD", "ibmreqd", "VARCHAR", 1, 0,
+        TypeHandler.STRING_ENTITY_COLUMN);
     super.add(this.ibmreqd);
   }
 

@@ -11,8 +11,8 @@ import org.hotrod.livesql.expressions.Helper;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.SHelper;
 import org.hotrod.livesql.queries.select.Select;
+import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
-import org.hotrod.livesql.queries.select.UnarySelectObject.TableReferences;
 import org.hotrod.livesql.queries.select.sets.MHelper;
 
 public class RecursiveCTE extends CTE {

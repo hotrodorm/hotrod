@@ -7,7 +7,7 @@ import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.metadata.WrappingColumn;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
-public class DualTable extends Table {
+public class DualTable extends Table<String> {
 
   // Properties
 

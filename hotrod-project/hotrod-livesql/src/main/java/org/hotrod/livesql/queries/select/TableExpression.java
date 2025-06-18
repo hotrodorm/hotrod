@@ -7,7 +7,6 @@ import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.WrappingColumn;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
-import org.hotrod.livesql.queries.select.UnarySelectObject.TableReferences;
 
 public abstract class TableExpression {
 

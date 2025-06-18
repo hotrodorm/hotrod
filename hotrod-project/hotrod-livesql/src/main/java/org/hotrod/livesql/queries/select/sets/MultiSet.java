@@ -16,9 +16,9 @@ import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
-import org.hotrod.livesql.queries.select.UnarySelectObject.TableReferences;
 import org.hotrod.livesql.queries.select.TableExpression;
+import org.hotrod.livesql.queries.select.TableReferences;
+import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
 
 public abstract class MultiSet<T> {
 
@@ -41,7 +41,7 @@ public abstract class MultiSet<T> {
 
   public abstract List<Expression> assembleColumnsOf(TableExpression te);
 
-  public abstract Expression findColumnWithName(final String name);
+//  public abstract Expression findColumnWithName(final String name);
 
   public abstract void renderTo(QueryWriter w, boolean inline);
 

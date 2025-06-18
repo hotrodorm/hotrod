@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.hotrod.livesql.expressions.analytics.WindowableFunction;
 import org.hotrod.livesql.queries.QueryWriter;
+import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
-import org.hotrod.livesql.queries.select.UnarySelectObject.TableReferences;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
 public class Helper {

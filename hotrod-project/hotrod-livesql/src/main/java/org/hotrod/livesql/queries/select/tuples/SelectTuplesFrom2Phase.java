@@ -6,11 +6,21 @@ import java.util.List;
 import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
+import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.ordering.OrderingTerm;
+import org.hotrod.livesql.queries.select.CrossJoin;
+import org.hotrod.livesql.queries.select.FullOuterJoin;
+import org.hotrod.livesql.queries.select.InnerJoin;
+import org.hotrod.livesql.queries.select.LeftOuterJoin;
 import org.hotrod.livesql.queries.select.LockableSelectLimitPhase;
 import org.hotrod.livesql.queries.select.LockableSelectOffsetPhase;
 import org.hotrod.livesql.queries.select.LockableSelectOrderByPhase;
+import org.hotrod.livesql.queries.select.NaturalFullOuterJoin;
+import org.hotrod.livesql.queries.select.NaturalInnerJoin;
+import org.hotrod.livesql.queries.select.NaturalLeftOuterJoin;
+import org.hotrod.livesql.queries.select.NaturalRightOuterJoin;
+import org.hotrod.livesql.queries.select.RightOuterJoin;
 import org.hotrod.livesql.queries.select.SHelper;
 import org.hotrod.livesql.queries.select.SelectGroupByPhase;
 import org.hotrod.livesql.queries.select.SelectWherePhase;
@@ -24,57 +34,124 @@ public class SelectTuplesFrom2Phase<A, B> {
     this.metadata = metadata;
   }
 
-  public <T extends Table<C>, C> SelectTuplesFrom3Phase<A, B, C> join(T t) {
-    this.metadata.add(t);
+  // joins
+
+  public <T extends Table<C>, C> SelectTuplesFrom3Phase<A, B, C> join(T t, final GeneralBooleanExpression on) {
+    this.metadata.join(new InnerJoin(t, on));
+    return new SelectTuplesFrom3Phase<A, B, C>(this.metadata);
+  }
+
+  public <T extends Table<C>, C> SelectTuplesFrom3Phase<A, B, C> join(T t, final EntityColumn... using) {
+    this.metadata.join(new InnerJoin(t, using));
+    return new SelectTuplesFrom3Phase<A, B, C>(this.metadata);
+  }
+
+  public <T extends Table<C>, C> SelectTuplesFrom3Phase<A, B, C> leftJoin(T t, final GeneralBooleanExpression on) {
+    this.metadata.join(new LeftOuterJoin(t, on));
+    return new SelectTuplesFrom3Phase<A, B, C>(this.metadata);
+  }
+
+  public <T extends Table<C>, C> SelectTuplesFrom3Phase<A, B, C> leftJoin(T t, final EntityColumn... using) {
+    this.metadata.join(new LeftOuterJoin(t, using));
+    return new SelectTuplesFrom3Phase<A, B, C>(this.metadata);
+  }
+
+  public <T extends Table<C>, C> SelectTuplesFrom3Phase<A, B, C> rightJoin(T t, final GeneralBooleanExpression on) {
+    this.metadata.join(new RightOuterJoin(t, on));
+    return new SelectTuplesFrom3Phase<A, B, C>(this.metadata);
+  }
+
+  public <T extends Table<C>, C> SelectTuplesFrom3Phase<A, B, C> rightJoin(T t, final EntityColumn... using) {
+    this.metadata.join(new RightOuterJoin(t, using));
+    return new SelectTuplesFrom3Phase<A, B, C>(this.metadata);
+  }
+
+  public <T extends Table<C>, C> SelectTuplesFrom3Phase<A, B, C> fullJoin(T t, final GeneralBooleanExpression on) {
+    this.metadata.join(new FullOuterJoin(t, on));
+    return new SelectTuplesFrom3Phase<A, B, C>(this.metadata);
+  }
+
+  public <T extends Table<C>, C> SelectTuplesFrom3Phase<A, B, C> fullJoin(T t, final EntityColumn... using) {
+    this.metadata.join(new FullOuterJoin(t, using));
+    return new SelectTuplesFrom3Phase<A, B, C>(this.metadata);
+  }
+
+  public <T extends Table<C>, C> SelectTuplesFrom3Phase<A, B, C> crossJoin(T t) {
+    this.metadata.join(new CrossJoin(t));
+    return new SelectTuplesFrom3Phase<A, B, C>(this.metadata);
+  }
+
+  public <T extends Table<C>, C> SelectTuplesFrom3Phase<A, B, C> naturalJoin(T t) {
+    this.metadata.join(new NaturalInnerJoin(t));
+    return new SelectTuplesFrom3Phase<A, B, C>(this.metadata);
+  }
+
+  public <T extends Table<C>, C> SelectTuplesFrom3Phase<A, B, C> naturalLeftJoin(T t) {
+    this.metadata.join(new NaturalLeftOuterJoin(t));
+    return new SelectTuplesFrom3Phase<A, B, C>(this.metadata);
+  }
+
+  public <T extends Table<C>, C> SelectTuplesFrom3Phase<A, B, C> naturalRightJoin(T t) {
+    this.metadata.join(new NaturalRightOuterJoin(t));
+    return new SelectTuplesFrom3Phase<A, B, C>(this.metadata);
+  }
+
+  public <T extends Table<C>, C> SelectTuplesFrom3Phase<A, B, C> naturalFullJoin(T t) {
+    this.metadata.join(new NaturalFullOuterJoin(t));
     return new SelectTuplesFrom3Phase<A, B, C>(this.metadata);
   }
 
   // next phases
-  
+
   public SelectWherePhase<Tuple2<A, B>> where(final GeneralBooleanExpression predicate) {
-    return SHelper.getSelectWherePhase(this.metadata.getContext(), new CompositeSelectObject<Tuple2<A, B>>(this.metadata),
-        predicate);
+    return SHelper.getSelectWherePhase(this.metadata.getContext(),
+        new CompositeSelectObject<Tuple2<A, B>>(null, this.metadata), predicate);
   }
 
   public SelectGroupByPhase<Tuple2<A, B>> groupBy(final ComparableExpression... columns) {
-    return SHelper.getSelectGroupByPhase(this.metadata.getContext(), new CompositeSelectObject<Tuple2<A, B>>(this.metadata),
-        columns);
+    return SHelper.getSelectGroupByPhase(this.metadata.getContext(),
+        new CompositeSelectObject<Tuple2<A, B>>(null, this.metadata), columns);
   }
 
   public LockableSelectOrderByPhase<Tuple2<A, B>> orderBy(final OrderingTerm... orderingTerms) {
-    return SHelper.getSelectOrderByPhase(this.metadata.getContext(), new CompositeSelectObject<Tuple2<A, B>>(this.metadata),
-        orderingTerms);
+    return SHelper.getSelectOrderByPhase(this.metadata.getContext(),
+        new CompositeSelectObject<Tuple2<A, B>>(null, this.metadata), orderingTerms);
   }
 
   public LockableSelectOffsetPhase<Tuple2<A, B>> offset(final int offset) {
-    return SHelper.getSelectOffsetPhase(this.metadata.getContext(), new CompositeSelectObject<Tuple2<A, B>>(this.metadata), offset);
+    return SHelper.getSelectOffsetPhase(this.metadata.getContext(),
+        new CompositeSelectObject<Tuple2<A, B>>(null, this.metadata), offset);
   }
 
   public LockableSelectLimitPhase<Tuple2<A, B>> limit(final int limit) {
-    return SHelper.getSelectLimitPhase(this.metadata.getContext(), new CompositeSelectObject<Tuple2<A, B>>(this.metadata), limit);
+    return SHelper.getSelectLimitPhase(this.metadata.getContext(),
+        new CompositeSelectObject<Tuple2<A, B>>(null, this.metadata), limit);
   }
 
   // execute
 
   public List<Tuple2<A, B>> execute() {
-    CombinedSelectObject<Tuple2<A, B>> combined = new CombinedSelectObject<>(new CompositeSelectObject<>(this.metadata));
+    CombinedSelectObject<Tuple2<A, B>> combined = new CombinedSelectObject<>(
+        new CompositeSelectObject<>(null, this.metadata));
     return combined.execute(this.metadata.getContext());
   }
 
   public Cursor<Tuple2<A, B>> executeCursor() throws SQLException {
-    CombinedSelectObject<Tuple2<A, B>> combined = new CombinedSelectObject<>(new CompositeSelectObject<>(this.metadata));
+    CombinedSelectObject<Tuple2<A, B>> combined = new CombinedSelectObject<>(
+        new CompositeSelectObject<>(null, this.metadata));
     return combined.executeCursor(this.metadata.getContext());
   }
 
   public Cursor<Tuple2<A, B>> executeCursor(int fetchSize) throws SQLException {
-    CombinedSelectObject<Tuple2<A, B>> combined = new CombinedSelectObject<>(new CompositeSelectObject<>(this.metadata));
+    CombinedSelectObject<Tuple2<A, B>> combined = new CombinedSelectObject<>(
+        new CompositeSelectObject<>(null, this.metadata));
     return combined.executeCursor(this.metadata.getContext(), fetchSize);
   }
 
   public Tuple2<A, B> executeOne() throws SQLException {
-    CombinedSelectObject<Tuple2<A, B>> combined = new CombinedSelectObject<>(new CompositeSelectObject<>(this.metadata));
+    CombinedSelectObject<Tuple2<A, B>> combined = new CombinedSelectObject<>(
+        new CompositeSelectObject<>(null, this.metadata));
     return combined.executeOne(this.metadata.getContext());
   }
-
 
 }

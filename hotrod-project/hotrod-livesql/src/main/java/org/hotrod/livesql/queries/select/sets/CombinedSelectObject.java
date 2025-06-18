@@ -16,10 +16,10 @@ import org.hotrod.livesql.ordering.OHelper;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.QueryWriter;
+import org.hotrod.livesql.queries.select.TableExpression;
+import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
-import org.hotrod.livesql.queries.select.UnarySelectObject.TableReferences;
-import org.hotrod.livesql.queries.select.TableExpression;
 import org.hotrod.livesql.util.IdUtil;
 
 /**
@@ -354,9 +354,9 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
     return sb.toString();
   }
 
-  @Override
-  public Expression findColumnWithName(String name) {
-    return this.first.findColumnWithName(name);
-  }
+//  @Override
+//  public Expression findColumnWithName(String name) {
+//    return this.first.findColumnWithName(name);
+//  }
 
 }

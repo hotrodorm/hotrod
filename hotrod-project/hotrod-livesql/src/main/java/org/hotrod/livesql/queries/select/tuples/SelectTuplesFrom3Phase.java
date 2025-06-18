@@ -26,49 +26,53 @@ public class SelectTuplesFrom3Phase<A, B, C> {
   // next phases
 
   public SelectWherePhase<Tuple3<A, B, C>> where(final GeneralBooleanExpression predicate) {
-    return SHelper.getSelectWherePhase(this.metadata.getContext(), new CompositeSelectObject<Tuple3<A, B, C>>(this.metadata),
-        predicate);
+    return SHelper.getSelectWherePhase(this.metadata.getContext(),
+        new CompositeSelectObject<Tuple3<A, B, C>>(null, this.metadata), predicate);
   }
 
   public SelectGroupByPhase<Tuple3<A, B, C>> groupBy(final ComparableExpression... columns) {
-    return SHelper.getSelectGroupByPhase(this.metadata.getContext(), new CompositeSelectObject<Tuple3<A, B, C>>(this.metadata),
-        columns);
+    return SHelper.getSelectGroupByPhase(this.metadata.getContext(),
+        new CompositeSelectObject<Tuple3<A, B, C>>(null, this.metadata), columns);
   }
 
   public LockableSelectOrderByPhase<Tuple3<A, B, C>> orderBy(final OrderingTerm... orderingTerms) {
-    return SHelper.getSelectOrderByPhase(this.metadata.getContext(), new CompositeSelectObject<Tuple3<A, B, C>>(this.metadata),
-        orderingTerms);
+    return SHelper.getSelectOrderByPhase(this.metadata.getContext(),
+        new CompositeSelectObject<Tuple3<A, B, C>>(null, this.metadata), orderingTerms);
   }
 
   public LockableSelectOffsetPhase<Tuple3<A, B, C>> offset(final int offset) {
-    return SHelper.getSelectOffsetPhase(this.metadata.getContext(), new CompositeSelectObject<Tuple3<A, B, C>>(this.metadata),
-        offset);
+    return SHelper.getSelectOffsetPhase(this.metadata.getContext(),
+        new CompositeSelectObject<Tuple3<A, B, C>>(null, this.metadata), offset);
   }
 
   public LockableSelectLimitPhase<Tuple3<A, B, C>> limit(final int limit) {
-    return SHelper.getSelectLimitPhase(this.metadata.getContext(), new CompositeSelectObject<Tuple3<A, B, C>>(this.metadata),
-        limit);
+    return SHelper.getSelectLimitPhase(this.metadata.getContext(),
+        new CompositeSelectObject<Tuple3<A, B, C>>(null, this.metadata), limit);
   }
 
   // execute
 
   public List<Tuple3<A, B, C>> execute() {
-    CombinedSelectObject<Tuple3<A, B, C>> combined = new CombinedSelectObject<>(new CompositeSelectObject<>(this.metadata));
+    CombinedSelectObject<Tuple3<A, B, C>> combined = new CombinedSelectObject<>(
+        new CompositeSelectObject<>(null, this.metadata));
     return combined.execute(this.metadata.getContext());
   }
 
   public Cursor<Tuple3<A, B, C>> executeCursor() throws SQLException {
-    CombinedSelectObject<Tuple3<A, B, C>> combined = new CombinedSelectObject<>(new CompositeSelectObject<>(this.metadata));
+    CombinedSelectObject<Tuple3<A, B, C>> combined = new CombinedSelectObject<>(
+        new CompositeSelectObject<>(null, this.metadata));
     return combined.executeCursor(this.metadata.getContext());
   }
 
   public Cursor<Tuple3<A, B, C>> executeCursor(int fetchSize) throws SQLException {
-    CombinedSelectObject<Tuple3<A, B, C>> combined = new CombinedSelectObject<>(new CompositeSelectObject<>(this.metadata));
+    CombinedSelectObject<Tuple3<A, B, C>> combined = new CombinedSelectObject<>(
+        new CompositeSelectObject<>(null, this.metadata));
     return combined.executeCursor(this.metadata.getContext(), fetchSize);
   }
 
   public Tuple3<A, B, C> executeOne() throws SQLException {
-    CombinedSelectObject<Tuple3<A, B, C>> combined = new CombinedSelectObject<>(new CompositeSelectObject<>(this.metadata));
+    CombinedSelectObject<Tuple3<A, B, C>> combined = new CombinedSelectObject<>(
+        new CompositeSelectObject<>(null, this.metadata));
     return combined.executeOne(this.metadata.getContext());
   }
 

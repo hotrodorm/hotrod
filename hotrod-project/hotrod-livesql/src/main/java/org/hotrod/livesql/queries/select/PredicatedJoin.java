@@ -31,7 +31,7 @@ public abstract class PredicatedJoin extends Join {
     this.using = Arrays.asList(using);
   }
 
-  GeneralBooleanExpression getJoinPredicate() {
+  public GeneralBooleanExpression getJoinPredicate() {
     return this.predicate;
   }
 

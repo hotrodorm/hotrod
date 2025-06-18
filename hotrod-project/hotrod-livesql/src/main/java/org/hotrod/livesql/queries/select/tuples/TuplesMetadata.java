@@ -7,6 +7,7 @@ import org.hotrod.livesql.expressions.ResultSetColumn;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.ctes.CTE;
+import org.hotrod.livesql.queries.select.Join;
 
 public class TuplesMetadata {
 
@@ -15,7 +16,8 @@ public class TuplesMetadata {
   private boolean distinct;
   private List<ResultSetColumn> resultSetColumns;
 
-  private List<Table<?>> tables;
+  private Table<?> from;
+  private List<Join> joins;
 
   public TuplesMetadata(LiveSQLContext context, List<CTE> ctes, boolean distinct,
       List<ResultSetColumn> resultSetColumns) {
@@ -23,11 +25,16 @@ public class TuplesMetadata {
     this.ctes = ctes;
     this.distinct = distinct;
     this.resultSetColumns = resultSetColumns;
-    this.tables = new ArrayList<>();
+    this.from = null;
+    this.joins = new ArrayList<>();
   }
 
-  public void add(Table<?> t) {
-    this.tables.add(t);
+  public void from(Table<?> t) {
+    this.from = t;
+  }
+
+  public void join(Join j) {
+    this.joins.add(j);
   }
 
   public final LiveSQLContext getContext() {
@@ -46,8 +53,12 @@ public class TuplesMetadata {
     return resultSetColumns;
   }
 
-  public final List<Table<?>> getTables() {
-    return tables;
+  public final Table<?> getFrom() {
+    return from;
+  }
+
+  public final List<Join> getJoins() {
+    return joins;
   }
 
 }
