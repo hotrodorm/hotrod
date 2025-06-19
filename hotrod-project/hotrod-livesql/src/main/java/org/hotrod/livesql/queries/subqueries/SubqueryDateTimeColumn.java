@@ -20,6 +20,11 @@ public class SubqueryDateTimeColumn extends DateTimeExpression implements Subque
   }
 
   @Override
+  protected String getReferenceName() {
+    return this.referencedColumnName;
+  }
+
+  @Override
   public final String getProperty() {
     return this.referencedColumnName;
   }

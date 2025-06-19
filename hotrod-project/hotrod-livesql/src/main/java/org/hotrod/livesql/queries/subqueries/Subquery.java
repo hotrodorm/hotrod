@@ -13,7 +13,7 @@ import org.hotrod.livesql.expressions.predicates.BooleanExpression;
 import org.hotrod.livesql.expressions.strings.StringExpression;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.select.SHelper;
+import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.select.Select;
 import org.hotrod.livesql.queries.select.TableExpression;
 import org.hotrod.livesql.queries.select.TableReferences;
@@ -54,7 +54,7 @@ public class Subquery extends TableExpression {
       throw new LiveSQLException("Subquery select query cannot be null", null);
     }
 
-    this.select = SHelper.getCombinedSelect(es);
+    this.select = SShield.getCombinedSelect(es);
   }
 
   // Getters

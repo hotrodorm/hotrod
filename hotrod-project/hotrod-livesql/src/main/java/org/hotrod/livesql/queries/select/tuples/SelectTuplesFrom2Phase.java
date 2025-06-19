@@ -21,7 +21,7 @@ import org.hotrod.livesql.queries.select.NaturalInnerJoin;
 import org.hotrod.livesql.queries.select.NaturalLeftOuterJoin;
 import org.hotrod.livesql.queries.select.NaturalRightOuterJoin;
 import org.hotrod.livesql.queries.select.RightOuterJoin;
-import org.hotrod.livesql.queries.select.SHelper;
+import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.select.SelectGroupByPhase;
 import org.hotrod.livesql.queries.select.SelectWherePhase;
 import org.hotrod.livesql.queries.select.sets.CombinedSelectObject;
@@ -104,27 +104,27 @@ public class SelectTuplesFrom2Phase<A, B> {
   // next phases
 
   public SelectWherePhase<Tuple2<A, B>> where(final GeneralBooleanExpression predicate) {
-    return SHelper.getSelectWherePhase(this.metadata.getContext(),
+    return SShield.getSelectWherePhase(this.metadata.getContext(),
         new TuplesSelectObject<Tuple2<A, B>>(null, this.metadata), predicate);
   }
 
   public SelectGroupByPhase<Tuple2<A, B>> groupBy(final ComparableExpression... columns) {
-    return SHelper.getSelectGroupByPhase(this.metadata.getContext(),
+    return SShield.getSelectGroupByPhase(this.metadata.getContext(),
         new TuplesSelectObject<Tuple2<A, B>>(null, this.metadata), columns);
   }
 
   public LockableSelectOrderByPhase<Tuple2<A, B>> orderBy(final OrderingTerm... orderingTerms) {
-    return SHelper.getSelectOrderByPhase(this.metadata.getContext(),
+    return SShield.getSelectOrderByPhase(this.metadata.getContext(),
         new TuplesSelectObject<Tuple2<A, B>>(null, this.metadata), orderingTerms);
   }
 
   public LockableSelectOffsetPhase<Tuple2<A, B>> offset(final int offset) {
-    return SHelper.getSelectOffsetPhase(this.metadata.getContext(),
+    return SShield.getSelectOffsetPhase(this.metadata.getContext(),
         new TuplesSelectObject<Tuple2<A, B>>(null, this.metadata), offset);
   }
 
   public LockableSelectLimitPhase<Tuple2<A, B>> limit(final int limit) {
-    return SHelper.getSelectLimitPhase(this.metadata.getContext(),
+    return SShield.getSelectLimitPhase(this.metadata.getContext(),
         new TuplesSelectObject<Tuple2<A, B>>(null, this.metadata), limit);
   }
 

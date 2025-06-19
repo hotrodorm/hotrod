@@ -122,6 +122,12 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
 
   }
 
+  @Override
+  public RowReader<T> getRowReader() {
+    // No default Row Reader for the combined query
+    return null;
+  }
+
   // Rendering
 
   public void renderTo(final QueryWriter w) {
@@ -309,7 +315,10 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
   @Override
   public List<T> execute(final LiveSQLContext context) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    return executeLiveSQL(context, q, false);
+    log.info("PREPARED: " + q.getPreview(false));
+    RowReader<T> rowReader = this.first.getRowReader();
+    log.info("ROWREADER: " + rowReader);
+    return executeLiveSQL(context, q, false, rowReader);
   }
 
   @Override

@@ -20,7 +20,7 @@ import org.hotrod.livesql.queries.select.NaturalInnerJoin;
 import org.hotrod.livesql.queries.select.NaturalLeftOuterJoin;
 import org.hotrod.livesql.queries.select.NaturalRightOuterJoin;
 import org.hotrod.livesql.queries.select.RightOuterJoin;
-import org.hotrod.livesql.queries.select.SHelper;
+import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.select.UnarySelectObject.LockingConcurrency;
 import org.hotrod.livesql.queries.select.UnarySelectObject.LockingMode;
 import org.hotrod.livesql.queries.select.UnionJoin;
@@ -400,7 +400,7 @@ public class MariaDBDialect extends LiveSQLDialect {
       sb.append(this.canonicalToNatural(tov.getCatalog()));
       sb.append(".");
     }
-    sb.append(this.canonicalToNatural(SHelper.getName(tov)));
+    sb.append(this.canonicalToNatural(SShield.getName(tov)));
     return sb.toString();
   }
 

@@ -525,7 +525,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     return new AccountTable(alias);
   }
 
-  public static class AccountTable extends Table {
+  public static class AccountTable extends Table<Account> {
 
     // Properties
 
@@ -553,12 +553,12 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     AccountTable() {
-      super(null, null, Name.of("ACCOUNT", false), "Table", null);
+      super(null, null, Name.of("ACCOUNT", false), "Table", null, Account.class);
       initialize();
     }
 
     AccountTable(final String alias) {
-      super(null, null, Name.of("ACCOUNT", false), "Table", alias);
+      super(null, null, Name.of("ACCOUNT", false), "Table", alias, Account.class);
       initialize();
     }
 

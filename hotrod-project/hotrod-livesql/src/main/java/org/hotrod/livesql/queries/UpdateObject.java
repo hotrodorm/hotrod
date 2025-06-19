@@ -13,7 +13,7 @@ import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Helper;
 import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
-import org.hotrod.livesql.metadata.MDHelper;
+import org.hotrod.livesql.metadata.MDShield;
 import org.hotrod.livesql.metadata.TableOrView;
 
 public class UpdateObject {
@@ -80,7 +80,7 @@ public class UpdateObject {
 
     UpdateRenderer ur = context.getLiveSQLDialect().getUpdateRenderer();
     if (ur.removeMainTableAlias()) {
-      MDHelper.removeAlias(this.tableOrView);
+      MDShield.removeAlias(this.tableOrView);
     }
 
     String renderedAlias = this.tableOrView.getAlias() == null ? null

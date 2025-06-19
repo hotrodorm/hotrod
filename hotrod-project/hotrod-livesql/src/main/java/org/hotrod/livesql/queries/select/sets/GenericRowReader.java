@@ -35,6 +35,7 @@ public class GenericRowReader<T> implements RowReader<T> {
     int ordinal = 1;
     for (Entry<String, Expression> et : this.queryColumns.entrySet()) {
       Expression expr = et.getValue();
+//      log.info(">> EXPR:" + expr + " th=" + Helper.getTypeHandler(expr));
       if (Helper.getTypeHandler(expr) == null) {
         ResultSetColumnMetadata cm = ResultSetColumnMetadata.of(rm, ordinal);
         try {
@@ -58,6 +59,7 @@ public class GenericRowReader<T> implements RowReader<T> {
     for (Expression qc : queryColumns.values()) {
       Object value;
       String alias = Helper.getReferenceName(qc);
+      log.info("COLUMN -- alias=" + alias + " qc=" + qc);
       TypeHandler<?, ?> th = Helper.getTypeHandler(qc);
       if (th == null) { // No typeHandler: use the JDBC default value
         value = rs.getObject(i);
@@ -102,7 +104,7 @@ public class GenericRowReader<T> implements RowReader<T> {
       int i = n++;
       String alias = Helper.getReferenceName(qc);
       TypeHandler<?, ?> th = Helper.getTypeHandler(qc);
-      log.info("- column #" + i + " '" + alias + "': " + th);
+      log.info("- column #" + i + " " + alias + ": " + th);
     }
   }
 

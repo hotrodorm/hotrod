@@ -1151,8 +1151,8 @@ public class DAO {
     Id name = this.metadata.getId().getObject();
 
     ExternalClass pc = ExternalClass.of(type);
-//    log.info(">>> this.metadataClassName=" + this.metadataClassName);
     ExternalClass ec = ExternalClass.of(this.metadataClassName);
+    ExternalClass em = ExternalClass.of(this.model.getFullClassName());
 
     w.println();
     w.println("  // Database " + type + " metadata");
@@ -1165,7 +1165,8 @@ public class DAO {
     w.println("    return new ", ec, "(alias);");
     w.println("  }");
     w.println();
-    w.println("  public static class ", ec, " extends ", pc, " {");
+    w.print("  public static class ", ec);
+    w.println(" extends ", pc, "<", em, "> {");
 
     w.println();
     w.println("    // Properties");
@@ -1271,7 +1272,7 @@ public class DAO {
     }
     w.print(", ");
     w.print(nm, ".of(\"" + JUtils.escapeJavaString(name.getCanonicalSQLName()) + "\", " + name.isQuoted() + ")");
-    w.println(", \"" + typeName + "\", null);");
+    w.println(", \"" + typeName + "\", null, ", em, ".class);");
     w.println("      initialize();");
     w.println("    }");
     w.println();
@@ -1291,7 +1292,7 @@ public class DAO {
     }
     w.print(", ");
     w.print(nm, ".of(\"" + JUtils.escapeJavaString(name.getCanonicalSQLName()) + "\", " + name.isQuoted() + ")");
-    w.println(", \"" + typeName + "\", alias);");
+    w.println(", \"" + typeName + "\", alias, ", em, ".class);");
     w.println("      initialize();");
     w.println("    }");
     w.println();

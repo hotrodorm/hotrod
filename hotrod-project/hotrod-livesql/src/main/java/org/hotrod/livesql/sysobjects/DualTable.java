@@ -16,7 +16,7 @@ public class DualTable extends Table<String> {
   // Constructors
 
   public DualTable() {
-    super(null, null, Name.of("DUAL", false), "Table", null);
+    super(null, null, Name.of("DUAL", false), "Table", null, String.class);
     initialize();
   }
 

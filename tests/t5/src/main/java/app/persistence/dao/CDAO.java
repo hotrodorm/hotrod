@@ -426,7 +426,7 @@ public class CDAO implements Serializable, ApplicationContextAware {
     return new CTable(alias);
   }
 
-  public static class CTable extends Table {
+  public static class CTable extends Table<C> {
 
     // Properties
 
@@ -446,12 +446,12 @@ public class CDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     CTable() {
-      super(null, null, Name.of("C", false), "Table", null);
+      super(null, null, Name.of("C", false), "Table", null, C.class);
       initialize();
     }
 
     CTable(final String alias) {
-      super(null, null, Name.of("C", false), "Table", alias);
+      super(null, null, Name.of("C", false), "Table", alias, C.class);
       initialize();
     }
 

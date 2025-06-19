@@ -9,7 +9,7 @@ import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Helper;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.select.SHelper;
+import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.select.Select;
 import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
@@ -58,8 +58,8 @@ public class RecursiveCTE extends CTE {
   @Override
   protected void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
     if (!tableReferences.visited(this)) {
-      SHelper.getCombinedSelect(this.anchorTerm).validateTableReferences(tableReferences, ag);
-      SHelper.getCombinedSelect(this.recursiveTerm).validateTableReferences(tableReferences, ag);
+      SShield.getCombinedSelect(this.anchorTerm).validateTableReferences(tableReferences, ag);
+      SShield.getCombinedSelect(this.recursiveTerm).validateTableReferences(tableReferences, ag);
     }
   }
 
@@ -83,7 +83,7 @@ public class RecursiveCTE extends CTE {
       } else { // implicit column names from the anchor term
         w.write(" (");
         boolean first = true;
-        List<Expression> cols = MHelper.assembleColumnsOf(SHelper.getCombinedSelect(this.anchorTerm), null);
+        List<Expression> cols = MHelper.assembleColumnsOf(SShield.getCombinedSelect(this.anchorTerm), null);
         for (Expression rc : cols) {
           if (first) {
             first = false;
@@ -98,13 +98,13 @@ public class RecursiveCTE extends CTE {
 
     w.enterLevel();
     w.write(" as (\n");
-    SHelper.getCombinedSelect(this.anchorTerm).renderTo(w);
+    SShield.getCombinedSelect(this.anchorTerm).renderTo(w);
     w.exitLevel();
     w.write("\n");
     w.write(this.unionAll ? "UNION ALL" : "UNION");
     w.write("\n");
     w.enterLevel();
-    SHelper.getCombinedSelect(this.recursiveTerm).renderTo(w);
+    SShield.getCombinedSelect(this.recursiveTerm).renderTo(w);
     w.exitLevel();
     w.write("\n");
     w.write(")");

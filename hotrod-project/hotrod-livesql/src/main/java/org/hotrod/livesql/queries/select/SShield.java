@@ -11,7 +11,7 @@ import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
 import org.hotrod.livesql.queries.select.sets.CombinedSelectObject;
 import org.hotrod.livesql.queries.select.sets.SingleSelectObject;
 
-public class SHelper {
+public class SShield {
 
   public static void validateTableReferences(TableExpression te, TableReferences tableReferences, AliasGenerator ag) {
     te.validateTableReferences(tableReferences, ag);
@@ -31,6 +31,10 @@ public class SHelper {
 
   public static WrappingColumn star(TableExpression t) {
     return t.star();
+  }
+
+  public static TableExpression getTableExpression(Join j) {
+    return j.getTableExpression();
   }
 
   public static WrappingColumn star(Join j) {

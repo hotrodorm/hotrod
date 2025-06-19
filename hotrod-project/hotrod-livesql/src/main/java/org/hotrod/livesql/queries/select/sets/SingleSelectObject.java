@@ -20,7 +20,7 @@ import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.select.Join;
 import org.hotrod.livesql.queries.select.PredicatedJoin;
-import org.hotrod.livesql.queries.select.SHelper;
+import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.select.TableExpression;
 import org.hotrod.livesql.queries.select.UnarySelectObject.LockingConcurrency;
 import org.hotrod.livesql.queries.select.UnarySelectObject.LockingMode;
@@ -60,7 +60,7 @@ public abstract class SingleSelectObject<T> extends MultiSet<T> {
     return columnsAssembled;
   }
 
-  protected void populateQueryColumns(final List<ResultSetColumn> rsColumns) {
+  protected void resolveQueryColumns(final List<ResultSetColumn> rsColumns) {
     this.queryColumns = new ArrayList<>();
     for (ResultSetColumn rsc : rsColumns) {
       Expression expr = Helper.getExpression(rsc);
@@ -151,7 +151,7 @@ public abstract class SingleSelectObject<T> extends MultiSet<T> {
 
     // CTEs
 
-    if (!this.ctes.isEmpty()) {
+    if (this.ctes != null && !this.ctes.isEmpty()) {
       boolean hasRecursiveCTEs = this.ctes.stream().map(c -> c.isRecursive()).reduce(false, (a, b) -> a | b);
       w.write(liveSQLDialect.getWithRenderer().render(hasRecursiveCTEs));
       w.write("\n");
@@ -215,7 +215,7 @@ public abstract class SingleSelectObject<T> extends MultiSet<T> {
     } else {
 
       w.write("\nFROM ");
-      SHelper.renderTo(this.baseTableExpression, w);
+      SShield.renderTo(this.baseTableExpression, w);
 
       // Inline locking
 
@@ -234,7 +234,7 @@ public abstract class SingleSelectObject<T> extends MultiSet<T> {
 
       for (Join j : this.joins) {
         w.write("\n" + joinRenderer.renderJoinKeywords(j) + " ");
-        SHelper.renderTo(j, w);
+        SShield.renderTo(j, w);
 
         try {
           PredicatedJoin pj = (PredicatedJoin) j;

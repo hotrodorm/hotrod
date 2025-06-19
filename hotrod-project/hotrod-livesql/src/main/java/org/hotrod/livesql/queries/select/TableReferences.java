@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.hotrod.livesql.exceptions.InvalidLiveSQLStatementException;
-import org.hotrod.livesql.metadata.MDHelper;
+import org.hotrod.livesql.metadata.MDShield;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.utils.SUtil;
@@ -21,7 +21,7 @@ public class TableReferences {
   public void register(final String alias, final TableOrView tableOrView) {
     if (this.tableReferences.contains(tableOrView)) {
       throw new InvalidLiveSQLStatementException(
-          "An instance of the " + tableOrView.getType() + " " + MDHelper.renderUnescapedName(tableOrView)
+          "An instance of the " + tableOrView.getType() + " " + MDShield.renderUnescapedName(tableOrView)
               + (alias == null ? " (with no alias)" : " (with alias '" + alias + "')")
               + " is used multiple times in the Live SQL statement (in the FROM clause, JOIN clause, or a subquery). "
               + "If you need to include the same " + tableOrView.getType()

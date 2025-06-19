@@ -20,6 +20,11 @@ public class SubqueryBooleanColumn extends Predicate implements SubqueryColumn {
   }
 
   @Override
+  protected String getReferenceName() {
+    return this.referencedColumnName;
+  }
+
+  @Override
   public final String getProperty() {
     return this.referencedColumnName;
   }

@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.select.SHelper;
+import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.select.Select;
 import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
@@ -102,11 +102,11 @@ public abstract class Expression extends ResultSetColumn {
   // Shielded getters
 
   protected String getReferenceName() {
-    return null; // Only Entity columns, AliasedExpressions and SubqueryTTTColumns return names.
+    return null; // Only Entity columns, AliasedExpressions, and SubqueryColumns return names.
   }
 
   protected String getProperty() {
-    return null; // Only Entity columns and SubqueryTTTColumns return names.
+    return null; // Only Entity columns and SubqueryColumns return names.
   }
 
   // ResultSetColumn
@@ -151,7 +151,7 @@ public abstract class Expression extends ResultSetColumn {
   }
 
   protected void register(final Select<?> subquery) {
-    this.subqueries.add(SHelper.getCombinedSelect(subquery));
+    this.subqueries.add(SShield.getCombinedSelect(subquery));
   }
 
   protected void register(final TableOrView tableOrView) {
@@ -172,7 +172,7 @@ public abstract class Expression extends ResultSetColumn {
       if (t == null) {
         throw new LiveSQLException("Table referenced in query cannot be null.", null);
       }
-      SHelper.validateTableReferences(t, tableReferences, ag);
+      SShield.validateTableReferences(t, tableReferences, ag);
     }
   }
 

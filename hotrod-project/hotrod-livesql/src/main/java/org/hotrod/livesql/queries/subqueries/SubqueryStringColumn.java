@@ -25,6 +25,11 @@ public class SubqueryStringColumn extends StringExpression implements SubqueryCo
   }
 
   @Override
+  protected String getReferenceName() {
+    return this.referencedColumnName;
+  }
+
+  @Override
   public final String getProperty() {
     return this.referencedColumnName;
   }

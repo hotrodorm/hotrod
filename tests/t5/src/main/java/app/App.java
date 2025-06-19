@@ -8,7 +8,8 @@ import java.util.logging.Logger;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.LiveSQL;
-import org.hotrod.livesql.queries.select.Select;
+import org.hotrod.livesql.queries.select.tuples.Tuple2;
+import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -17,7 +18,13 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import app.persistence.dao.AccountDAO;
+import app.persistence.dao.AccountDAO.AccountTable;
+import app.persistence.dao.ProductDAO;
+import app.persistence.dao.ProductDAO.ProductTable;
 import app.persistence.dao.Test2DAO;
+import app.persistence.model.Account;
+import app.persistence.model.Product;
 import app.persistence.model.TAccount;
 
 @SpringBootApplication
@@ -30,8 +37,11 @@ public class App {
 //    JULCustomFormatter.initialize(Level.FINER);
   }
 
-//  @Autowired
-//  private AccountDAO accountDAO;
+  @Autowired
+  private AccountDAO accountDAO;
+
+  @Autowired
+  private ProductDAO productDAO;
 
 //  @Autowired
 //  private ADAO aDAO;
@@ -54,7 +64,9 @@ public class App {
     return args -> {
       log.info("[ Starting... ]");
 //      test();
-      testLiveSQL();
+//      testLiveSQL();
+      testLiveSQLUnary();
+//      testLiveSQLTuples();
 //      testLiveSQLCursor();
 //      testConverter5();
 //      testConverter6();
@@ -245,6 +257,46 @@ public class App {
 //
 //  }
 
+  private void testLiveSQLUnary() throws SQLException, DynamicExpressionException {
+
+    AccountTable a = this.accountDAO.newTable();
+    AccountTable a2 = this.accountDAO.newTable();
+
+    Subquery x = sql.subquery("x", sql.select(sql.val(100).mult(1.1).as("cost"), a2.balance).from(a2).limit(1));
+
+    List<Row> rows = sql.select( //
+
+        sql.val(3).mult(7).as("m1"), //
+        a.id, //
+        x.num("cost"), //
+        x.num("balance"), //
+        //
+        sql.val(3).mult(7).as("multi"), //
+        a.id.as("bid"), //
+        x.num("cost").as("total") //
+
+    ) //
+        .from(a) //
+        .crossJoin(x) //
+        .execute();
+
+    for (Row r : rows) {
+      System.out.println("r=" + r);
+    }
+
+  }
+
+  private void testLiveSQLTuples() throws SQLException, DynamicExpressionException {
+    AccountTable a = this.accountDAO.newTable();
+    ProductTable p = this.productDAO.newTable();
+
+    List<Tuple2<Account, Product>> rows = this.sql.selectTuples().from(a).crossJoin(p).execute();
+    for (Tuple2<Account, Product> r : rows) {
+      System.out.println("- Account: " + r.getA());
+      System.out.println("- Product: " + r.getB());
+    }
+  }
+
   private void testLiveSQL() throws SQLException, DynamicExpressionException {
 
 //    Account ax = this.accountDAO.select(123);
@@ -255,10 +307,10 @@ public class App {
 //    System.out.println(">> Accounts:");
 //    accounts.forEach(r -> System.out.println(r));
 
-    Select<Row> s = this.sql.select(sql.val(7).mult(3).as("answer"));
-    System.out.println("Query:" + s.getPreview());
-    Row row = s.executeOne();
-    System.out.println("Row=" + row);
+//    Select<Row> s = this.sql.select(sql.val(7).mult(3).as("answer"));
+//    System.out.println("Query:" + s.getPreview());
+//    Row row = s.executeOne();
+//    System.out.println("Row=" + row);
 
 //    System.out.println("Will UPDATE by criteria.");
 //    AccountTable a = this.accountDAO.newTable();

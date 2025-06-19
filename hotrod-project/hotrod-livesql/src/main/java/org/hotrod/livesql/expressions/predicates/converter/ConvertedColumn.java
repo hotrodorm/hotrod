@@ -6,7 +6,7 @@ import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.SortableExpression;
 import org.hotrod.livesql.expressions.predicates.Predicate;
 import org.hotrod.livesql.metadata.EntityColumn;
-import org.hotrod.livesql.metadata.MDHelper;
+import org.hotrod.livesql.metadata.MDShield;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.QueryWriter;
@@ -91,7 +91,7 @@ public class ConvertedColumn<R, D> extends EquatableExpression implements Entity
 
   @Override
   public Name getObjectName() {
-    return MDHelper.getName(this.objectInstance);
+    return MDShield.getName(this.objectInstance);
   }
 
   @Override

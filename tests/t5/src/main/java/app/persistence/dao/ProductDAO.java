@@ -349,7 +349,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     return new ProductTable(alias);
   }
 
-  public static class ProductTable extends Table {
+  public static class ProductTable extends Table<Product> {
 
     // Properties
 
@@ -369,12 +369,12 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     ProductTable() {
-      super(null, null, Name.of("PRODUCT", false), "Table", null);
+      super(null, null, Name.of("PRODUCT", false), "Table", null, Product.class);
       initialize();
     }
 
     ProductTable(final String alias) {
-      super(null, null, Name.of("PRODUCT", false), "Table", alias);
+      super(null, null, Name.of("PRODUCT", false), "Table", alias, Product.class);
       initialize();
     }
 

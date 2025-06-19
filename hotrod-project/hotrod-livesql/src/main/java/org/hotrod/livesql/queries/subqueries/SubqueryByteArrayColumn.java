@@ -20,6 +20,11 @@ public class SubqueryByteArrayColumn extends ByteArrayExpression implements Subq
   }
 
   @Override
+  protected String getReferenceName() {
+    return this.referencedColumnName;
+  }
+
+  @Override
   public final String getProperty() {
     return this.referencedColumnName;
   }

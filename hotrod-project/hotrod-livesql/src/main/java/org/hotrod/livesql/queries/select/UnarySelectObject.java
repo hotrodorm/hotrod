@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -13,10 +12,6 @@ import java.util.stream.Collectors;
 
 import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.dynamicsql.RowReader;
-import org.hotrod.livesql.dialects.JoinRenderer;
-import org.hotrod.livesql.dialects.LiveSQLDialect;
-import org.hotrod.livesql.dialects.LockingRenderer;
-import org.hotrod.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.ComparableExpression;
@@ -24,10 +19,9 @@ import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Helper;
 import org.hotrod.livesql.expressions.ResultSetColumn;
 import org.hotrod.livesql.metadata.EntityColumn;
-import org.hotrod.livesql.metadata.MDHelper;
+import org.hotrod.livesql.metadata.MDShield;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.TableOrView;
-import org.hotrod.livesql.ordering.OHelper;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
@@ -35,7 +29,6 @@ import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.select.sets.SingleSelectObject;
 import org.hotrod.livesql.util.IdUtil;
-import org.hotrod.utils.SUtil;
 import org.hotrod.utils.Separator;
 import org.springframework.util.ReflectionUtils;
 
@@ -120,7 +113,7 @@ public class UnarySelectObject<T> extends SingleSelectObject<T> {
       // a.id.as("bid") -- Column te.bid
       // x.num("amount").as("total") -- SubqueryXXXColumn te.total
 
-      populateQueryColumns(this.resultSetColumns);
+      resolveQueryColumns(this.resultSetColumns);
 
     } else { // columns not listed
 
@@ -130,7 +123,7 @@ public class UnarySelectObject<T> extends SingleSelectObject<T> {
         filledIn.add(j.getTableExpression().star());
       }
 
-      populateQueryColumns(filledIn);
+      resolveQueryColumns(filledIn);
 
     }
 
@@ -179,6 +172,12 @@ public class UnarySelectObject<T> extends SingleSelectObject<T> {
   @Override
   public void flatten() {
     // Nothing to do. It's already a single level
+  }
+
+  @Override
+  public RowReader<T> getRowReader() {
+    // No default RowReader for the Unary SELECT
+    return null;
   }
 
   // Setters
@@ -277,7 +276,7 @@ public class UnarySelectObject<T> extends SingleSelectObject<T> {
 
       if (alias.getName().isEmpty()) {
         throw new InvalidLiveSQLStatementException("Empty alias found for " + tov.getType().toLowerCase() + " "
-            + MDHelper.renderUnescapedName(tov) + ". Any specified alias for a table or view must be non-empty. "
+            + MDShield.renderUnescapedName(tov) + ". Any specified alias for a table or view must be non-empty. "
             + "Use any combination of alphanumeric characters as an alias. "
             + "Usually aliases are very short, commonly a single letter.");
       }

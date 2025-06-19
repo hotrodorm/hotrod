@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.livesql.expressions.ResultSetColumn;
+import org.hotrod.livesql.metadata.MDShield;
 import org.hotrod.livesql.metadata.Table;
+import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.select.Join;
+import org.hotrod.livesql.queries.select.SShield;
 
 public class TuplesMetadata {
 
@@ -29,12 +32,13 @@ public class TuplesMetadata {
     this.joins = new ArrayList<>();
   }
 
-  public void from(Table<?> t) {
+  public <C> void from(Table<?> t) {
     this.from = t;
   }
 
   public void join(Join j) {
     this.joins.add(j);
+    TableOrView<?> tv = (TableOrView<?>) SShield.getTableExpression(j);
   }
 
   public final LiveSQLContext getContext() {

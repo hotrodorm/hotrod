@@ -11,7 +11,7 @@ import org.hotrod.livesql.queries.select.TableExpression;
 import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
 
-public abstract class TableOrView extends TableExpression {
+public abstract class TableOrView<M> extends TableExpression {
 
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(TableOrView.class.getName());
@@ -25,7 +25,10 @@ public abstract class TableOrView extends TableExpression {
   private String designatedAlias;
   protected List<Expression> columns;
 
-  TableOrView(final Name catalog, final Name schema, final Name name, final String type, final String alias) {
+  Class<?> modelClass;
+
+  TableOrView(final Name catalog, final Name schema, final Name name, final String type, final String alias,
+      final Class<?> modelClass) {
     this.catalog = catalog;
     this.schema = schema;
     this.name = name;
@@ -34,6 +37,8 @@ public abstract class TableOrView extends TableExpression {
     this.alias = alias;
     this.designatedAlias = null;
     this.columns = new ArrayList<>();
+
+    this.modelClass = modelClass;
   }
 
   protected Name getAliasName() {

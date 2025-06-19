@@ -88,6 +88,8 @@ public abstract class MultiSet<T> {
 
   public abstract void flatten();
 
+  public abstract RowReader<T> getRowReader();
+
   protected List<T> executeLiveSQL(final LiveSQLContext context, final LiveSQLPreparedQuery q,
       final boolean singleRow) {
     return this.executeLiveSQL(context, q, singleRow, null);
@@ -123,8 +125,10 @@ public abstract class MultiSet<T> {
               : new GenericRowReader<>(context, q, rs);
 
           int count = 0;
+          log.info(">> will start reading result set.");
           while (rs.next()) {
             count++;
+            log.info(">> ResultSet row #" + count);
             if (singleRow && count > 1) {
               throw new LiveSQLException("A single row at most was expected by this query but received at least two");
             }
@@ -137,6 +141,8 @@ public abstract class MultiSet<T> {
       }
 
     } catch (SQLException e) {
+      log.log(Level.SEVERE, "error");
+      e.printStackTrace();
       throw new RuntimeException(e);
     }
 

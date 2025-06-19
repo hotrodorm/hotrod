@@ -16,7 +16,7 @@ public class SysDummy1Table extends Table<String> {
   // Constructors
 
   public SysDummy1Table() {
-    super(null, Name.of("SYSIBM", false), Name.of("SYSDUMMY1", false), "Table", null);
+    super(null, Name.of("SYSIBM", false), Name.of("SYSDUMMY1", false), "Table", null, String.class);
     initialize();
   }
 

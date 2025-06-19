@@ -426,7 +426,7 @@ public class BDAO implements Serializable, ApplicationContextAware {
     return new BTable(alias);
   }
 
-  public static class BTable extends Table {
+  public static class BTable extends Table<B> {
 
     // Properties
 
@@ -446,12 +446,12 @@ public class BDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     BTable() {
-      super(null, null, Name.of("B", false), "Table", null);
+      super(null, null, Name.of("B", false), "Table", null, B.class);
       initialize();
     }
 
     BTable(final String alias) {
-      super(null, null, Name.of("B", false), "Table", alias);
+      super(null, null, Name.of("B", false), "Table", alias, B.class);
       initialize();
     }
 

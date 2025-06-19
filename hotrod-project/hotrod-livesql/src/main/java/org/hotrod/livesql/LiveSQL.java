@@ -126,10 +126,11 @@ import org.hotrod.livesql.queries.scalarsubqueries.StringSelectColumnsPhase;
 import org.hotrod.livesql.queries.select.EnclosedSelectPhase;
 import org.hotrod.livesql.queries.select.NonLockableSelectColumnsPhase;
 import org.hotrod.livesql.queries.select.NonLockableSelectDistinctOnPhase;
-import org.hotrod.livesql.queries.select.SHelper;
+import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.select.Select;
 import org.hotrod.livesql.queries.select.SelectCTEPhase;
 import org.hotrod.livesql.queries.select.SelectColumnsPhase;
+import org.hotrod.livesql.queries.select.tuples.SelectTuplesColumnsPhase;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.queries.subqueries.SubqueryColumnsPhase;
 import org.hotrod.livesql.queries.typesolver.TypeRule;
@@ -141,8 +142,8 @@ public class LiveSQL {
 
   private static final Logger log = Logger.getLogger(LiveSQL.class.getName());
 
-  public final Table DUAL = new DualTable();
-  public final Table SYSDUMMY1 = new SysDummy1Table();
+  public final Table<?> DUAL = new DualTable();
+  public final Table<?> SYSDUMMY1 = new SysDummy1Table();
 
   // Properties
 
@@ -204,6 +205,16 @@ public class LiveSQL {
 
   public NonLockableSelectDistinctOnPhase<Row> selectDistinctOn(final Expression... expressions) {
     return new NonLockableSelectDistinctOnPhase<Row>(this.context, null, expressions);
+  }
+
+  // Tuples
+
+  public SelectTuplesColumnsPhase selectTuples() {
+    return new SelectTuplesColumnsPhase(this.context, null, false);
+  }
+
+  public SelectTuplesColumnsPhase selectTuples(final ResultSetColumn... resultSetColumns) {
+    return new SelectTuplesColumnsPhase(this.context, null, false, resultSetColumns);
   }
 
   // Subqueries
@@ -303,7 +314,7 @@ public class LiveSQL {
   // Enclosing queries
 
   public <R> EnclosedSelectPhase<R> enclose(final Select<R> select) {
-    return new EnclosedSelectPhase<>(this.context, SHelper.getCombinedSelect(select));
+    return new EnclosedSelectPhase<>(this.context, SShield.getCombinedSelect(select));
   }
 
   // Aggregation expressions, that are NOT window functions

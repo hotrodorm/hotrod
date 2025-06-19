@@ -20,6 +20,11 @@ public class SubqueryObjectColumn extends ObjectExpression implements SubqueryCo
   }
 
   @Override
+  protected String getReferenceName() {
+    return this.referencedColumnName;
+  }
+
+  @Override
   public final String getProperty() {
     return this.referencedColumnName;
   }

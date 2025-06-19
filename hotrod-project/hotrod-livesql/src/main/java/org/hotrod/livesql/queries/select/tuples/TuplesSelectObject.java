@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.dynamicsql.RowReader;
@@ -11,11 +12,14 @@ import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Helper;
 import org.hotrod.livesql.expressions.ResultSetColumn;
 import org.hotrod.livesql.metadata.EntityColumn;
+import org.hotrod.livesql.metadata.MDShield;
+import org.hotrod.livesql.metadata.TableOrView;
+import org.hotrod.livesql.metadata.WrappingColumn;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.Join;
-import org.hotrod.livesql.queries.select.SHelper;
+import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.select.TableExpression;
 import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
@@ -26,40 +30,55 @@ public class TuplesSelectObject<T> extends SingleSelectObject<T> {
 
   private static final Logger log = Logger.getLogger(TuplesSelectObject.class.getName());
 
+  private LiveSQLContext context;
+
   public TuplesSelectObject(List<ResultSetColumn> resultSetColumns, TuplesMetadata metadata) {
     super(metadata.getCtes(), metadata.isDistinct());
     this.resultSetColumns = resultSetColumns;
     this.baseTableExpression = metadata.getFrom();
     this.joins = metadata.getJoins();
+    this.context = metadata.getContext();
   }
 
   @Override
   public void validateTableReferences(TableReferences tableReferences, AliasGenerator ag) {
-    SHelper.validateTableReferences(this.baseTableExpression, tableReferences, ag);
+    SShield.validateTableReferences(this.baseTableExpression, tableReferences, ag);
     for (Join j : this.joins) {
-      SHelper.validateTableReferences(j, tableReferences, ag);
+      SShield.validateTableReferences(j, tableReferences, ag);
     }
   }
 
   @Override
   public List<Expression> assembleColumnsOf(TableExpression te) {
 
-    log.info("resultSetColumns.size()=" + resultSetColumns.size());
+    log.info("resultSetColumns.size()=" + (resultSetColumns == null ? "null" : resultSetColumns.size()));
 
     boolean isListingColumns = this.resultSetColumns != null && !this.resultSetColumns.isEmpty();
 
     if (isListingColumns) {
 
-      populateQueryColumns(this.resultSetColumns);
+      resolveQueryColumns(this.resultSetColumns);
 
     } else { // columns not listed
 
+//    TupleMetadata m = new TupleMetadata(t, MDHelper.getModeClass(t));
+//    this.tuplesMetadata.add(m);
+
+      // Tuples:
+      // - List: Model:
+      // - - List: alias, getter, setter
+      // - unbound:
+      // - - alias, getter
+
       List<ResultSetColumn> filledIn = new ArrayList<>();
-      filledIn.add(SHelper.star(this.baseTableExpression));
+
+      addTableColumns((TableOrView<?>) this.baseTableExpression, filledIn);
       for (Join j : this.joins) {
-        filledIn.add(SHelper.star(j));
+        addTableColumns((TableOrView<?>) SShield.getTableExpression(j), filledIn);
+        filledIn.add(SShield.star(j));
       }
-      populateQueryColumns(filledIn);
+
+      resolveQueryColumns(filledIn);
 
     }
 
@@ -67,18 +86,32 @@ public class TuplesSelectObject<T> extends SingleSelectObject<T> {
     return this.queryColumns;
   }
 
-//  @Override
-//  public Expression findColumnWithName(String name) {
-//    // TODO Auto-generated method stub
-//    return null;
-//  }
+  private void addTableColumns(TableOrView<?> te, List<ResultSetColumn> filledIn) {
+    log.info("Adding te: " + te.getAlias());
+    WrappingColumn wrapped = SShield.star(te);
+    List<Expression> unwrapped = MDShield.unwrap(wrapped);
+    for (Expression expr : unwrapped) {
+      String property = Helper.getProperty(expr);
+      String calias = this.context.getLiveSQLDialect().canonicalToNatural(te.getAlias() + ":" + property);
+      log.info(" + " + calias);
+      Expression aliased = expr.as(calias);
+      filledIn.add(aliased);
+    }
+  }
 
+  @Override
   public TuplesRowReader<T> getRowReader() {
-    return new TuplesRowReader<>(this.baseTableExpression, this.joins);
+    List<TableOrView<?>> allTables = new ArrayList<>();
+    allTables.add((TableOrView<?>) this.baseTableExpression);
+    List<TableOrView<?>> joined = this.joins.stream().map(j -> (TableOrView<?>) SShield.getTableExpression(j))
+        .collect(Collectors.toList());
+    allTables.addAll(joined);
+    return new TuplesRowReader<>(this.resultSetColumns, allTables);
   }
 
   @Override
   public List<T> execute(LiveSQLContext context) {
+    log.info("--- execute TUPLES");
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     TuplesRowReader<T> rowReader = getRowReader();
     return executeLiveSQL(context, q, false, rowReader);
