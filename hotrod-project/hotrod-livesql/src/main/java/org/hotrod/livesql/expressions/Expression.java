@@ -146,7 +146,8 @@ public abstract class Expression extends ResultSetColumn {
   // Getters
 
   protected TypeHandler getTypeHandler() {
-//    log.info("get type(): " + System.identityHashCode(this));
+    log.info(
+        "TYPEHANDLER " + this + " (" + this.getProperty() + "/" + this.getReferenceName() + "): " + this.typeHandler);
     return typeHandler;
   }
 

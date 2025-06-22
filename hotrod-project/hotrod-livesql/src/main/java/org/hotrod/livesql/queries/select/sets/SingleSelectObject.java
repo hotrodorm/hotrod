@@ -64,13 +64,14 @@ public abstract class SingleSelectObject<T> extends MultiSet<T> {
   }
 
   protected void expandQueryColumns() {
-    log.info("=== 2. UNWRAP QUERY COLUMNS ===");
+    log.info("=== 2. EXPAND QUERY COLUMNS (AS/IF NEEDED) " + SShield.getName(this.baseTableExpression) + " ===");
     this.expandedQueryColumns = new ArrayList<>();
     Expression raised = null;
     for (ResultSetColumn rsc : this.resultSetColumns) {
+      log.info(">> rsc=" + rsc);
       raised = Helper.getExpressionOn(rsc);
       // raised is always null for wrapping columns
-      log.info(">> rsc=" + rsc + " raised=" + raised);
+      log.info("  >> raised=" + raised);
       if (raised != null) {
 //        Helper.captureTypeHandler(expr);
 //        log.info("---------- expr@" + System.identityHashCode(expr) + ": " + expr);

@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.subqueries.Subquery;
+import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
 public class AliasedExpression extends Expression {
 
@@ -27,14 +28,25 @@ public class AliasedExpression extends Expression {
 
   // TypeHandler setter
 
+  @Override
+  protected Expression getEmergingExpression() {
+    return this.referencedExpression.getEmergingExpression().as(this.alias);
+  }
+
   public TypedExpression type(final Class<?> type) {
     return new TypedExpression(this, type);
   }
 
+  @Override
+  protected TypeHandler getTypeHandler() {
+    return this.referencedExpression.getTypeHandler();
+  }
+
   // Rendering
 
+  @Override
   protected String getReferenceName() {
-    log.info("############### this.alias=" + this.alias);
+//    log.info("############### this.alias=" + this.alias);
     return this.alias;
   }
 
@@ -45,10 +57,12 @@ public class AliasedExpression extends Expression {
     w.write(w.getSQLDialect().canonicalToNatural(this.alias));
   }
 
+  @Override
   protected List<Expression> expand() {
     return referencedExpression.expand();
   }
 
+  @Override
   protected String render() {
     return "'" + this.alias + "' for " + this.referencedExpression.toString();
   }

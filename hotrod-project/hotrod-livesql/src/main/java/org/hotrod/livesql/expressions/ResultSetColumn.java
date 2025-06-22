@@ -35,6 +35,7 @@ import java.util.List;
 
 public abstract class ResultSetColumn {
 
+  // Only AliasedExpression, TypedExpression, and SubqueryColumns override this method.
   protected abstract Expression getEmergingExpression();
 
   protected abstract List<Expression> expand();

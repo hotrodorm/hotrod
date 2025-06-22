@@ -16,6 +16,12 @@ public class TypedExpression extends Expression {
     this.expr = expr;
   }
 
+  @Override
+  protected Expression getEmergingExpression() {
+    return this.expr.getEmergingExpression();
+  }
+
+  @Override
   protected String getReferenceName() {
     return this.expr.getReferenceName();
   }
@@ -25,6 +31,7 @@ public class TypedExpression extends Expression {
     this.expr.renderTo(w);
   }
 
+  @Override
   protected List<Expression> expand() {
     return expr.expand();
   }

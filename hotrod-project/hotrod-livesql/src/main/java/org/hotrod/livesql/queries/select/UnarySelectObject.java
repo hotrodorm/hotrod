@@ -104,11 +104,14 @@ public class UnarySelectObject<T> extends SingleSelectObject<T> {
     }
 
     if (this.resultSetColumns == null || this.resultSetColumns.isEmpty()) {
+      log.info("== Adding all columns...");
       this.resultSetColumns = new ArrayList<>();
       this.resultSetColumns.add(this.baseTableExpression.star());
       for (Join j : this.joins) {
         this.resultSetColumns.add(j.getTableExpression().star());
       }
+    } else {
+      log.info("== Columns were specified (" + this.resultSetColumns.size() + ")");
     }
 
     // sql.val(3).mult(7) -- Expression N/A

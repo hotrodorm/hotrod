@@ -41,22 +41,33 @@ public class SubqueryNumberColumn extends NumberExpression implements SubqueryCo
 
   @Override
   protected Expression getEmergingExpression() {
-    this.column = this.subquery.findColumnByName(this.referencedColumnName);
+    String colName = this.referencedColumnName;
+    log.info("%% Searching for column '" + colName + "' in '" + this.subquery.getName() + "'...");
+    this.column = this.subquery.findColumnByName(colName);
     if (this.column == null) {
       throw new RuntimeException(
-          "Could not find column '" + this.referencedColumnName + "' in subquery '" + this.subquery.getName() + "'");
+          "Could not find column '" + colName + "' in subquery '" + this.subquery.getName() + "'");
     }
+    log.info(this.subquery.getName() + "." + colName + " -> " + this.column + " ("
+        + System.identityHashCode(this.column) + ")");
     return this;
   }
 
   @Override
   protected TypeHandler getTypeHandler() {
+    log.info(">>>> getTypeHandler() >>>> '" + this.subquery.getName() + "' ref=" + referencedColumnName + " "
+        + System.identityHashCode(this) + " -- this.column(" + Helper.getProperty(this.column) + "/"
+        + Helper.getReferenceName(this.column) + ")=" + this.column + " (" + System.identityHashCode(this.column)
+        + ")");
+//    log.info(">>>>>>>>>>>>>>>>>>>>>>> '" + referencedColumnName + "' TH=" + Helper.getTypeHandler(this.column));
+
     try {
       EntityColumn ec = (EntityColumn) this.column;
       return Helper.getTypeHandler(this.column);
     } catch (ClassCastException e) {
       return super.typeHandler;
     }
+
   }
 
   // Rendering

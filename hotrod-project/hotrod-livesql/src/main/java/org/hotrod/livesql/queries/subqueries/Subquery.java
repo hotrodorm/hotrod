@@ -116,16 +116,15 @@ public class Subquery extends TableExpression {
     List<Expression> raw = MHelper.assembleColumnsOf(this.select, this);
     this.expandedColumns = new ArrayList<>();
     for (Expression r : raw) {
-      log.info("!!!! getProperty=" + Helper.getProperty(r) + " getReferenceName=" + Helper.getReferenceName(r));
-//   String alias=   Helper.getProperty(r);
-//      this.expandedColumns.add(Helper.asSubqueryExpression(r, this, alias));      
+      log.info("- " + this.getName() + ": getProperty=" + Helper.getProperty(r) + " getReferenceName="
+          + Helper.getReferenceName(r) + " r=" + r);
     }
     this.expandedColumns = raw.stream().map(r -> Helper.asSubqueryExpression(r, this, Helper.getReferenceName(r)))
         .collect(Collectors.toList());
 
     this.columnsByName = this.expandedColumns.stream()
         .collect(Collectors.toMap(c -> Helper.getReferenceName(c), c -> c));
-    this.columnsByName.keySet().stream().forEach(c -> System.out.println("*** column=" + c));
+//    this.columnsByName.keySet().stream().forEach(c -> log.info("*** column=" + c));
     logEmergingColumns(this.expandedColumns);
   }
 

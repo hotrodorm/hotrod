@@ -262,11 +262,13 @@ public class App {
     AccountTable a = this.accountDAO.newTable();
     AccountTable a2 = this.accountDAO.newTable();
 
-    Subquery x = sql.subquery("x", sql.select(sql.val(100).mult(1.1).as("cost"), a.balance).from(a).limit(1));
+//    Subquery x = sql.subquery("x", sql.select(sql.val(100).mult(1.1).as("cost"), a.balance).from(a).limit(1));
+    Subquery x = sql.subquery("x", sql.select(a.balance.as("balx")).from(a).limit(1));
+    Subquery y = sql.subquery("y", sql.select(x.num("balx").as("baly")).from(x).limit(1));
 
-    List<Row> rows = sql.select(x.star()) //
+    List<Row> rows = sql.select(y.num("baly").as("balm")) //
 //    List<Row> rows = sql.select(x.num("cost"), x.num("balance")) //
-        .from(x) //
+        .from(y) //
         .execute();
 
 //    Subquery x = sql.subquery("x", sql.select(sql.val(100).mult(1.1).as("cost"), a2.balance).from(a2).limit(1));
