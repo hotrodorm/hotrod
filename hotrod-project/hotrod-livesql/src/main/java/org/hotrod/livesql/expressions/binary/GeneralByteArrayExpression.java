@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.hotrod.livesql.expressions.ComparableExpression;
+import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.predicates.Between;
 import org.hotrod.livesql.expressions.predicates.Equal;
 import org.hotrod.livesql.expressions.predicates.GreaterThan;
@@ -16,12 +17,19 @@ import org.hotrod.livesql.expressions.predicates.NotBetween;
 import org.hotrod.livesql.expressions.predicates.NotEqual;
 import org.hotrod.livesql.expressions.predicates.NotInList;
 import org.hotrod.livesql.expressions.predicates.Predicate;
+import org.hotrod.livesql.queries.subqueries.Subquery;
+import org.hotrod.livesql.queries.subqueries.SubqueryByteArrayColumn;
 import org.hotrod.livesql.util.BoxUtil;
 
 public abstract class GeneralByteArrayExpression extends ComparableExpression {
 
   protected GeneralByteArrayExpression(final int precedence) {
     super(precedence);
+  }
+
+  @Override
+  protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
+    return new SubqueryByteArrayColumn(subquery, alias);
   }
 
   // Coalesce

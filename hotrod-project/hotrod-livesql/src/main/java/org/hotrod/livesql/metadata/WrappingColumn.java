@@ -7,6 +7,11 @@ import org.hotrod.livesql.expressions.ResultSetColumn;
 
 public abstract class WrappingColumn extends ResultSetColumn {
 
-  protected abstract List<Expression> unwrap();
+  protected abstract List<Expression> expand();
+
+  protected Expression getEmergingExpression() {
+    // Wrapping columns cannot emerge
+    return null;
+  }
 
 }

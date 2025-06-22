@@ -6,6 +6,7 @@ import org.hotrod.livesql.expressions.analytics.WindowableFunction;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
+import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
 public class Helper {
@@ -37,12 +38,16 @@ public class Helper {
     }
   }
 
-  public static Expression getExpression(final ResultSetColumn wc) {
-    return wc.getExpression();
+  public static Expression getExpressionOn(final ResultSetColumn rsc) {
+    return rsc.getEmergingExpression();
   }
 
-  public static List<Expression> unwrap(final ResultSetColumn wc) {
-    return wc.unwrap();
+  public static Expression asSubqueryExpression(final Expression e, final Subquery subquery, final String alias) {
+    return e.asSubqueryExpression(subquery, alias);
+  }
+
+  public static List<Expression> expand(final ResultSetColumn rsc) {
+    return rsc.expand();
   }
 
   public static String getReferenceName(final Expression expr) {

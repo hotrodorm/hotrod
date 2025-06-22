@@ -1,13 +1,19 @@
 package org.hotrod.livesql.queries.subqueries;
 
+import java.util.logging.Logger;
+
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Helper;
-import org.hotrod.livesql.expressions.datetime.DateTimeExpression;
+import org.hotrod.livesql.expressions.strings.StringExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.queries.QueryWriter;
+import org.hotrod.livesql.queries.select.TableExpression;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
-public class SubqueryDateTimeColumn extends DateTimeExpression implements SubqueryColumn {
+public class SubqueryNullColumn extends StringExpression implements SubqueryColumn {
+
+  @SuppressWarnings("unused")
+  private static final Logger log = Logger.getLogger(SubqueryNullColumn.class.getName());
 
   // Properties
 
@@ -18,7 +24,7 @@ public class SubqueryDateTimeColumn extends DateTimeExpression implements Subque
 
   // Constructor
 
-  public SubqueryDateTimeColumn(final Subquery subquery, final String referencedColumnName) {
+  public SubqueryNullColumn(final Subquery subquery, final String referencedColumnName) {
     super(Expression.PRECEDENCE_COLUMN);
     this.subquery = subquery;
     this.referencedColumnName = referencedColumnName;
@@ -44,6 +50,7 @@ public class SubqueryDateTimeColumn extends DateTimeExpression implements Subque
     return this;
   }
 
+  @SuppressWarnings("rawtypes")
   @Override
   protected TypeHandler getTypeHandler() {
     try {

@@ -10,6 +10,7 @@ import org.hotrod.livesql.metadata.MDShield;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.QueryWriter;
+import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
 public class ConvertedColumn<R, D> extends EquatableExpression implements EntityColumn {

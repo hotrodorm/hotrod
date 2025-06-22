@@ -33,8 +33,8 @@ public class AliasedEntityColumn extends Expression {
     w.write(w.getSQLDialect().canonicalToNatural(this.alias));
   }
 
-  protected List<Expression> unwrap() {
-    return referencedExpression.unwrap();
+  protected List<Expression> expand() {
+    return referencedExpression.expand();
   }
 
   protected String render() {

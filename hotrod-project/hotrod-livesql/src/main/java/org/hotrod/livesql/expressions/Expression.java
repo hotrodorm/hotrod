@@ -12,12 +12,12 @@ import org.hotrod.livesql.queries.select.Select;
 import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
 import org.hotrod.livesql.queries.select.sets.CombinedSelectObject;
+import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.utils.SUtil;
 
 public abstract class Expression extends ResultSetColumn {
 
-  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(Expression.class.getName());
 
   protected static final int PRECEDENCE_LITERAL = 1;
@@ -69,7 +69,7 @@ public abstract class Expression extends ResultSetColumn {
    */
 
   private int precedence;
-  private TypeHandler typeHandler;
+  protected TypeHandler typeHandler;
 
   protected void setPrecedence(final int precedence) {
     this.precedence = precedence;
@@ -88,6 +88,12 @@ public abstract class Expression extends ResultSetColumn {
     this.subqueries = expr.subqueries;
     this.tablesOrViews = expr.tablesOrViews;
     this.typeHandler = expr.typeHandler;
+  }
+
+//  protected abstract Expression asSubqueryExpression(final Subquery subquery);
+  protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
+    log.info("Expr: " + this);
+    throw new UnsupportedOperationException();
   }
 
   // Aliasing
@@ -115,7 +121,11 @@ public abstract class Expression extends ResultSetColumn {
     return this;
   }
 
-  protected List<Expression> unwrap() {
+  protected Expression getEmergingExpression() {
+    return this;
+  }
+
+  protected List<Expression> expand() {
     return null;
   }
 

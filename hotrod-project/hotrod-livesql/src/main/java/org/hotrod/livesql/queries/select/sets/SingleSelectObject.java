@@ -3,6 +3,7 @@ package org.hotrod.livesql.queries.select.sets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.hotrod.livesql.dialects.JoinRenderer;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
@@ -29,7 +30,9 @@ import org.hotrod.utils.Separator;
 
 public abstract class SingleSelectObject<T> extends MultiSet<T> {
 
-  protected List<Expression> queryColumns = null;
+  private static final Logger log = Logger.getLogger(SingleSelectObject.class.getName());
+
+  protected List<Expression> expandedQueryColumns = null;
   protected boolean columnsAssembled = false;
   protected List<ResultSetColumn> resultSetColumns = new ArrayList<>();
 
@@ -60,19 +63,25 @@ public abstract class SingleSelectObject<T> extends MultiSet<T> {
     return columnsAssembled;
   }
 
-  protected void resolveQueryColumns(final List<ResultSetColumn> rsColumns) {
-    this.queryColumns = new ArrayList<>();
-    for (ResultSetColumn rsc : rsColumns) {
-      Expression expr = Helper.getExpression(rsc);
-      if (expr != null) {
+  protected void expandQueryColumns() {
+    log.info("=== 2. UNWRAP QUERY COLUMNS ===");
+    this.expandedQueryColumns = new ArrayList<>();
+    Expression raised = null;
+    for (ResultSetColumn rsc : this.resultSetColumns) {
+      raised = Helper.getExpressionOn(rsc);
+      // raised is always null for wrapping columns
+      log.info(">> rsc=" + rsc + " raised=" + raised);
+      if (raised != null) {
 //        Helper.captureTypeHandler(expr);
 //        log.info("---------- expr@" + System.identityHashCode(expr) + ": " + expr);
-        this.queryColumns.add(expr);
+        this.expandedQueryColumns.add(raised);
       } else {
-        for (Expression exp : Helper.unwrap(rsc)) {
+        for (Expression exp : Helper.expand(rsc)) {
+          raised = Helper.getExpressionOn(exp);
 //          Helper.captureTypeHandler(exp);
 //          log.info("---------- expr@" + System.identityHashCode(exp) + ": " + exp);
-          this.queryColumns.add(exp);
+          log.info(">>>> rsc=" + rsc + " raised=" + raised);
+          this.expandedQueryColumns.add(raised);
         }
       }
     }
@@ -142,6 +151,7 @@ public abstract class SingleSelectObject<T> extends MultiSet<T> {
 
   @Override
   public void renderTo(final QueryWriter w, final boolean inline) {
+    log.info("=== 3. RENDER TO ===");
 
     if (inline) {
       w.write("\n");

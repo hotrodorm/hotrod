@@ -61,9 +61,8 @@ public abstract class TableOrView<M> extends TableExpression {
   // Validation
 
   @Override
-  protected List<Expression> assembleColumns() {
-//    this.columns.forEach(c -> c.setNamespace(getAliasName()));
-    return this.columns;
+  protected void assembleColumns() {
+    // Tables and views have already all their assembled columns; nothing to do
   }
 
   @Override

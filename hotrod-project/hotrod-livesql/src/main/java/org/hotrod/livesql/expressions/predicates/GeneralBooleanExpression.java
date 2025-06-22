@@ -5,12 +5,20 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.hotrod.livesql.expressions.ComparableExpression;
+import org.hotrod.livesql.expressions.Expression;
+import org.hotrod.livesql.queries.subqueries.Subquery;
+import org.hotrod.livesql.queries.subqueries.SubqueryBooleanColumn;
 import org.hotrod.livesql.util.BoxUtil;
 
 public abstract class GeneralBooleanExpression extends ComparableExpression {
 
   protected GeneralBooleanExpression(final int precedence) {
     super(precedence);
+  }
+
+  @Override
+  protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
+    return new SubqueryBooleanColumn(subquery, alias);
   }
 
   // Coalesce
@@ -156,7 +164,8 @@ public abstract class GeneralBooleanExpression extends ComparableExpression {
   }
 
   public final Predicate in(final Boolean... values) {
-    return new InList<GeneralBooleanExpression>(this, Stream.of(values).map(v -> BoxUtil.box(v)).collect(Collectors.toList()));
+    return new InList<GeneralBooleanExpression>(this,
+        Stream.of(values).map(v -> BoxUtil.box(v)).collect(Collectors.toList()));
   }
 
   public final Predicate notIn(final GeneralBooleanExpression... values) {
@@ -164,7 +173,8 @@ public abstract class GeneralBooleanExpression extends ComparableExpression {
   }
 
   public final Predicate notIn(final Boolean... values) {
-    return new NotInList<GeneralBooleanExpression>(this, Stream.of(values).map(v -> BoxUtil.box(v)).collect(Collectors.toList()));
+    return new NotInList<GeneralBooleanExpression>(this,
+        Stream.of(values).map(v -> BoxUtil.box(v)).collect(Collectors.toList()));
   }
 
 }

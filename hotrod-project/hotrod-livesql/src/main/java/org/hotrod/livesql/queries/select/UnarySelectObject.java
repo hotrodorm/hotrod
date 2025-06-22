@@ -28,6 +28,7 @@ import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.select.sets.SingleSelectObject;
+import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.util.IdUtil;
 import org.hotrod.utils.Separator;
 import org.springframework.util.ReflectionUtils;
@@ -89,11 +90,10 @@ public class UnarySelectObject<T> extends SingleSelectObject<T> {
   // Rendering
 
   @Override
-  public List<Expression> assembleColumnsOf(final TableExpression te) {
-
-    log.info("resultSetColumns.size()=" + resultSetColumns.size());
-
-    boolean isListingColumns = this.resultSetColumns != null && !this.resultSetColumns.isEmpty();
+  public List<Expression> assembleColumnsOf(final Subquery te) {
+    String froms = this.baseTableExpression.getName().getName() + ":"
+        + this.joins.stream().map(j -> j.getTableExpression().getName().getName()).collect(Collectors.joining(", "));
+    log.info("=== 1. ASSEMBLE COLUMNS === " + froms);
 
     if (this.baseTableExpression != null) {
       this.baseTableExpression.assembleColumns();
@@ -103,32 +103,27 @@ public class UnarySelectObject<T> extends SingleSelectObject<T> {
       this.joins.forEach(j -> j.getTableExpression().assembleColumns());
     }
 
-    if (isListingColumns) {
-
-      // sql.val(3).mult(7) -- Expression N/A
-      // a.id -- Column te.id
-      // x.num("amount") -- SubqueryXXXColumn te.amount
-
-      // sql.val(3).mult(7).as("multi") -- Expression te.multi
-      // a.id.as("bid") -- Column te.bid
-      // x.num("amount").as("total") -- SubqueryXXXColumn te.total
-
-      resolveQueryColumns(this.resultSetColumns);
-
-    } else { // columns not listed
-
-      List<ResultSetColumn> filledIn = new ArrayList<>();
-      filledIn.add(this.baseTableExpression.star());
+    if (this.resultSetColumns == null || this.resultSetColumns.isEmpty()) {
+      this.resultSetColumns = new ArrayList<>();
+      this.resultSetColumns.add(this.baseTableExpression.star());
       for (Join j : this.joins) {
-        filledIn.add(j.getTableExpression().star());
+        this.resultSetColumns.add(j.getTableExpression().star());
       }
-
-      resolveQueryColumns(filledIn);
-
     }
 
+    // sql.val(3).mult(7) -- Expression N/A
+    // a.id -- Column te.id
+    // x.num("amount") -- SubqueryXXXColumn te.amount
+
+    // sql.val(3).mult(7).as("multi") -- Expression te.multi
+    // a.id.as("bid") -- Column te.bid
+    // x.num("amount").as("total") -- SubqueryXXXColumn te.total
+
+    super.expandQueryColumns();
+
     this.columnsAssembled = true;
-    return this.queryColumns;
+    log.info("=== 1. END ASSEMBLE COLUMNS === " + froms);
+    return this.expandedQueryColumns;
 
   }
 
@@ -144,8 +139,9 @@ public class UnarySelectObject<T> extends SingleSelectObject<T> {
 //  }
 
   protected void writeColumns(final QueryWriter w, final TableExpression baseTableExpression, final List<Join> joins) {
+    log.info("=== 4. WRITE COLUMNS ===");
     Separator sep = new Separator();
-    for (Expression expr : this.queryColumns) {
+    for (Expression expr : this.expandedQueryColumns) {
 
       w.write(sep.render());
       w.write("\n  ");
@@ -176,6 +172,7 @@ public class UnarySelectObject<T> extends SingleSelectObject<T> {
 
   @Override
   public RowReader<T> getRowReader() {
+    log.info("=== GET ROW READER ===");
     // No default RowReader for the Unary SELECT
     return null;
   }
@@ -194,6 +191,7 @@ public class UnarySelectObject<T> extends SingleSelectObject<T> {
 
   @Override
   public List<T> execute(final LiveSQLContext context) {
+    log.info("=== EXECUTE ===");
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     return executeLiveSQL(context, q, false);
   }

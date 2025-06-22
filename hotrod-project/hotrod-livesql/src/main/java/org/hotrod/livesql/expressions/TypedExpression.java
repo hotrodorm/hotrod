@@ -25,8 +25,8 @@ public class TypedExpression extends Expression {
     this.expr.renderTo(w);
   }
 
-  protected List<Expression> unwrap() {
-    return expr.unwrap();
+  protected List<Expression> expand() {
+    return expr.expand();
   }
 
 }

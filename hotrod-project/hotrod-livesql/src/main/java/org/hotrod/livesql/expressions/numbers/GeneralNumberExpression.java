@@ -1,10 +1,12 @@
 package org.hotrod.livesql.expressions.numbers;
 
 import java.util.Arrays;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.hotrod.livesql.expressions.ComparableExpression;
+import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.predicates.Between;
 import org.hotrod.livesql.expressions.predicates.Equal;
 import org.hotrod.livesql.expressions.predicates.GreaterThan;
@@ -16,6 +18,8 @@ import org.hotrod.livesql.expressions.predicates.NotBetween;
 import org.hotrod.livesql.expressions.predicates.NotEqual;
 import org.hotrod.livesql.expressions.predicates.NotInList;
 import org.hotrod.livesql.expressions.predicates.Predicate;
+import org.hotrod.livesql.queries.subqueries.Subquery;
+import org.hotrod.livesql.queries.subqueries.SubqueryNumberColumn;
 import org.hotrod.livesql.util.BoxUtil;
 
 /*
@@ -45,8 +49,16 @@ Straight
  */
 public abstract class GeneralNumberExpression extends ComparableExpression {
 
+  private static final Logger log = Logger.getLogger(GeneralNumberExpression.class.getName());
+
   protected GeneralNumberExpression(final int precedence) {
     super(precedence);
+  }
+
+  @Override
+  protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
+    log.info("@@@@@@@@@@@@@ alias=" + alias);
+    return new SubqueryNumberColumn(subquery, alias);
   }
 
   // Coalesce

@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * <pre>
- *                ResultSetColumn (unwrap)
+ *                ResultSetColumn (expand)
  *               /               \
  *              /                 \
  *  WrappingColumn                Expression (as)   {I} OrderingTerm
@@ -14,10 +14,10 @@ import java.util.List;
  *  |  ColumnList           TypedExpression    \       /          
  *  |    |  |                                   \     /
  *  |    |  ColumnsSubset                 ExistenceExpression (isNull,isNotNull)
+ *  |    |                                         |
  *  |    ColumnsAliased                            |
- *  |                                              |
- *  AllSubqueryColumns                   SortableExpression (asc/desc)
- *                                                 |
+ *  |                                    SortableExpression (asc/desc)
+ *  AllSubqueryColumns                             |
  *                                                 |
  *                                       EquatableExpression (=All,=Any,<>All,<>Any,in,not in)
  *                                                 |   \
@@ -35,8 +35,8 @@ import java.util.List;
 
 public abstract class ResultSetColumn {
 
-  protected abstract Expression getExpression();
+  protected abstract Expression getEmergingExpression();
 
-  protected abstract List<Expression> unwrap();
+  protected abstract List<Expression> expand();
 
 }

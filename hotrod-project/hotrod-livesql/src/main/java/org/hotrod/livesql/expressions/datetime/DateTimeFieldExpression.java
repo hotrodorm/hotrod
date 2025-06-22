@@ -3,6 +3,7 @@ package org.hotrod.livesql.expressions.datetime;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.queries.QueryWriter;
+import org.hotrod.livesql.queries.subqueries.Subquery;
 
 public class DateTimeFieldExpression extends ComparableExpression {
 
@@ -32,6 +33,12 @@ public class DateTimeFieldExpression extends ComparableExpression {
     WEEK, //
     DOW, //
     MILLISECOND;
+  }
+
+  @Override
+  protected Expression asSubqueryExpression(Subquery subquery, final String alias) {
+    // Nothing to do
+    return null;
   }
 
 }

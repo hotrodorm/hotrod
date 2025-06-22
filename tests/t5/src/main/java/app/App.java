@@ -262,23 +262,30 @@ public class App {
     AccountTable a = this.accountDAO.newTable();
     AccountTable a2 = this.accountDAO.newTable();
 
-    Subquery x = sql.subquery("x", sql.select(sql.val(100).mult(1.1).as("cost"), a2.balance).from(a2).limit(1));
+    Subquery x = sql.subquery("x", sql.select(sql.val(100).mult(1.1).as("cost"), a.balance).from(a).limit(1));
 
-    List<Row> rows = sql.select( //
-
-        sql.val(3).mult(7).as("m1"), //
-        a.id, //
-        x.num("cost"), //
-        x.num("balance"), //
-        //
-        sql.val(3).mult(7).as("multi"), //
-        a.id.as("bid"), //
-        x.num("cost").as("total") //
-
-    ) //
-        .from(a) //
-        .crossJoin(x) //
+    List<Row> rows = sql.select(x.star()) //
+//    List<Row> rows = sql.select(x.num("cost"), x.num("balance")) //
+        .from(x) //
         .execute();
+
+//    Subquery x = sql.subquery("x", sql.select(sql.val(100).mult(1.1).as("cost"), a2.balance).from(a2).limit(1));
+//
+//    List<Row> rows = sql.select( //
+//
+//        sql.val(3).mult(7).as("m1"), //
+//        a.id, //
+//        x.num("cost"), //
+//        x.num("balance"), //
+//        //
+//        sql.val(3).mult(7).as("multi"), //
+//        a.id.as("bid"), //
+//        x.num("cost").as("total") //
+//
+//    ) //
+//        .from(a) //
+//        .crossJoin(x) //
+//        .execute();
 
     for (Row r : rows) {
       System.out.println("r=" + r);

@@ -16,7 +16,7 @@ public class MDShield {
   }
 
   public static List<Expression> unwrap(WrappingColumn wc) {
-    return wc.unwrap();
+    return wc.expand();
   }
 
   public static Name getName(TableOrView<?> objectInstance) {

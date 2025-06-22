@@ -16,10 +16,10 @@ import org.hotrod.livesql.ordering.OHelper;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.select.TableExpression;
 import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
+import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.util.IdUtil;
 
 /**
@@ -302,7 +302,7 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
   }
 
   @Override
-  public List<Expression> assembleColumnsOf(final TableExpression te) {
+  public List<Expression> assembleColumnsOf(final Subquery te) {
     List<Expression> cols = this.first.assembleColumnsOf(te);
     for (SetOperatorTerm<T> o : this.combined) {
       o.getMultiset().assembleColumnsOf(te);
@@ -315,7 +315,7 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
   @Override
   public List<T> execute(final LiveSQLContext context) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    log.info("PREPARED: " + q.getPreview(false));
+    log.info("PREPARED:\n" + q.getPreview(false));
     RowReader<T> rowReader = this.first.getRowReader();
     log.info("ROWREADER: " + rowReader);
     return executeLiveSQL(context, q, false, rowReader);

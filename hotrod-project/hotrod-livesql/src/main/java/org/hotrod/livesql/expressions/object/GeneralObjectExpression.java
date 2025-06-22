@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.hotrod.livesql.expressions.ComparableExpression;
+import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.predicates.Between;
 import org.hotrod.livesql.expressions.predicates.Equal;
 import org.hotrod.livesql.expressions.predicates.GreaterThan;
@@ -16,12 +17,19 @@ import org.hotrod.livesql.expressions.predicates.NotBetween;
 import org.hotrod.livesql.expressions.predicates.NotEqual;
 import org.hotrod.livesql.expressions.predicates.NotInList;
 import org.hotrod.livesql.expressions.predicates.Predicate;
+import org.hotrod.livesql.queries.subqueries.Subquery;
+import org.hotrod.livesql.queries.subqueries.SubqueryObjectColumn;
 import org.hotrod.livesql.util.BoxUtil;
 
 public abstract class GeneralObjectExpression extends ComparableExpression {
 
   protected GeneralObjectExpression(final int precedence) {
     super(precedence);
+  }
+
+  @Override
+  protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
+    return new SubqueryObjectColumn(subquery, alias);
   }
 
   // Coalesce
@@ -149,7 +157,8 @@ public abstract class GeneralObjectExpression extends ComparableExpression {
   }
 
   public final Predicate in(final Object... values) {
-    return new InList<GeneralObjectExpression>(this, Stream.of(values).map(v -> BoxUtil.box(v)).collect(Collectors.toList()));
+    return new InList<GeneralObjectExpression>(this,
+        Stream.of(values).map(v -> BoxUtil.box(v)).collect(Collectors.toList()));
   }
 
   public final Predicate notIn(final GeneralObjectExpression... values) {

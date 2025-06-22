@@ -4,11 +4,11 @@ import org.hotrod.livesql.expressions.TypedExpression;
 
 public abstract class ObjectExpression extends GeneralObjectExpression {
 
-  // TypeHandler setter
-
   protected ObjectExpression(int precedence) {
     super(precedence);
   }
+
+  // TypeHandler setter
 
   public TypedExpression type(final Class<?> type) {
     return new TypedExpression(this, type);

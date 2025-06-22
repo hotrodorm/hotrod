@@ -1,10 +1,14 @@
 package org.hotrod.livesql.queries.subqueries;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
+import org.hotrod.livesql.expressions.Helper;
 import org.hotrod.livesql.expressions.binary.ByteArrayExpression;
 import org.hotrod.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.livesql.expressions.numbers.NumberExpression;
@@ -31,6 +35,7 @@ public class Subquery extends TableExpression {
   private CombinedSelectObject<?> select;
 
   private List<Expression> expandedColumns = null;
+  private Map<String, Expression> columnsByName = null;
 
   protected Subquery(final String naturalName, final String[] columns) {
     if (SUtil.isEmpty(naturalName)) {
@@ -107,12 +112,21 @@ public class Subquery extends TableExpression {
   }
 
   @Override
-  protected List<Expression> assembleColumns() {
-//    log.info(">>> Subquery '" + this.name + "': assembleColumns() -- ");
-    List<Expression> cols = MHelper.assembleColumnsOf(this.select, this);
-//    logEmergingColumns(cols);
-//    log.info(">>> Subquery '" + this.name + "': done");
-    return cols;
+  protected void assembleColumns() {
+    List<Expression> raw = MHelper.assembleColumnsOf(this.select, this);
+    this.expandedColumns = new ArrayList<>();
+    for (Expression r : raw) {
+      log.info("!!!! getProperty=" + Helper.getProperty(r) + " getReferenceName=" + Helper.getReferenceName(r));
+//   String alias=   Helper.getProperty(r);
+//      this.expandedColumns.add(Helper.asSubqueryExpression(r, this, alias));      
+    }
+    this.expandedColumns = raw.stream().map(r -> Helper.asSubqueryExpression(r, this, Helper.getReferenceName(r)))
+        .collect(Collectors.toList());
+
+    this.columnsByName = this.expandedColumns.stream()
+        .collect(Collectors.toMap(c -> Helper.getReferenceName(c), c -> c));
+    this.columnsByName.keySet().stream().forEach(c -> System.out.println("*** column=" + c));
+    logEmergingColumns(this.expandedColumns);
   }
 
   @SuppressWarnings("unused")
@@ -124,7 +138,12 @@ public class Subquery extends TableExpression {
   }
 
   List<Expression> getExpandedColumns() {
+    log.info("-- expandedColumns(" + expandedColumns.size() + ")");
     return expandedColumns;
+  }
+
+  Expression findColumnByName(final String property) {
+    return this.columnsByName.get(property);
   }
 
   // Rendering

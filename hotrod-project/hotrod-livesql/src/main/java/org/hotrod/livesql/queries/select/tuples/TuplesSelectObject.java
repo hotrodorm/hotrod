@@ -24,6 +24,7 @@ import org.hotrod.livesql.queries.select.TableExpression;
 import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
 import org.hotrod.livesql.queries.select.sets.SingleSelectObject;
+import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.utils.Separator;
 
 public class TuplesSelectObject<T> extends SingleSelectObject<T> {
@@ -49,7 +50,7 @@ public class TuplesSelectObject<T> extends SingleSelectObject<T> {
   }
 
   @Override
-  public List<Expression> assembleColumnsOf(TableExpression te) {
+  public List<Expression> assembleColumnsOf(Subquery te) {
 
     log.info("resultSetColumns.size()=" + (resultSetColumns == null ? "null" : resultSetColumns.size()));
 
@@ -57,7 +58,7 @@ public class TuplesSelectObject<T> extends SingleSelectObject<T> {
 
     if (isListingColumns) {
 
-      resolveQueryColumns(this.resultSetColumns);
+      expandQueryColumns();
 
     } else { // columns not listed
 
@@ -70,20 +71,20 @@ public class TuplesSelectObject<T> extends SingleSelectObject<T> {
       // - unbound:
       // - - alias, getter
 
-      List<ResultSetColumn> filledIn = new ArrayList<>();
+      this.resultSetColumns = new ArrayList<>();
 
-      addTableColumns((TableOrView<?>) this.baseTableExpression, filledIn);
+      addTableColumns((TableOrView<?>) this.baseTableExpression, this.resultSetColumns);
       for (Join j : this.joins) {
-        addTableColumns((TableOrView<?>) SShield.getTableExpression(j), filledIn);
-        filledIn.add(SShield.star(j));
+        addTableColumns((TableOrView<?>) SShield.getTableExpression(j), this.resultSetColumns);
+        this.resultSetColumns.add(SShield.star(j));
       }
 
-      resolveQueryColumns(filledIn);
+      expandQueryColumns();
 
     }
 
     this.columnsAssembled = true;
-    return this.queryColumns;
+    return this.expandedQueryColumns;
   }
 
   private void addTableColumns(TableOrView<?> te, List<ResultSetColumn> filledIn) {
@@ -156,7 +157,7 @@ public class TuplesSelectObject<T> extends SingleSelectObject<T> {
 
   protected void writeColumns(final QueryWriter w, final TableExpression baseTableExpression, final List<Join> joins) {
     Separator sep = new Separator();
-    for (Expression expr : this.queryColumns) {
+    for (Expression expr : this.expandedQueryColumns) {
 
       w.write(sep.render());
       w.write("\n  ");
