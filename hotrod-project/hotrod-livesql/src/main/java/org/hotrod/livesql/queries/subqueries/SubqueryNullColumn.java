@@ -3,7 +3,7 @@ package org.hotrod.livesql.queries.subqueries;
 import java.util.logging.Logger;
 
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.Helper;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.strings.StringExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.queries.QueryWriter;
@@ -55,7 +55,7 @@ public class SubqueryNullColumn extends StringExpression implements SubqueryColu
   protected TypeHandler getTypeHandler() {
     try {
       EntityColumn ec = (EntityColumn) this.column;
-      return Helper.getTypeHandler(this.column);
+      return Shield.getTypeHandler(this.column);
     } catch (ClassCastException e) {
       return super.typeHandler;
     }

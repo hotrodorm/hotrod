@@ -63,6 +63,7 @@ public abstract class TableOrView<M> extends TableExpression {
   @Override
   protected void assembleColumns() {
     // Tables and views have already all their assembled columns; nothing to do
+    log.info("ASSEMBLING COLUMNS for: " + this.name);
   }
 
   @Override

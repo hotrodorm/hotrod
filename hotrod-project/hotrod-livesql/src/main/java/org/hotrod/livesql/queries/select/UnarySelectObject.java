@@ -16,7 +16,7 @@ import org.hotrod.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.Helper;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.ResultSetColumn;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.MDShield;
@@ -91,12 +91,12 @@ public class UnarySelectObject<T> extends SingleSelectObject<T> {
 
   @Override
   public List<Expression> assembleColumnsOf(final Subquery te) {
-    String froms = this.baseTableExpression.getName().getName() + ":"
+    String froms = this.from.getName().getName() + ":"
         + this.joins.stream().map(j -> j.getTableExpression().getName().getName()).collect(Collectors.joining(", "));
     log.info("=== 1. ASSEMBLE COLUMNS === " + froms);
 
-    if (this.baseTableExpression != null) {
-      this.baseTableExpression.assembleColumns();
+    if (this.from != null) {
+      this.from.assembleColumns();
     }
 
     if (this.joins != null) {
@@ -104,15 +104,17 @@ public class UnarySelectObject<T> extends SingleSelectObject<T> {
     }
 
     if (this.resultSetColumns == null || this.resultSetColumns.isEmpty()) {
-      log.info("== Adding all columns...");
+//      log.info("== Adding all columns...");
       this.resultSetColumns = new ArrayList<>();
-      this.resultSetColumns.add(this.baseTableExpression.star());
+      this.resultSetColumns.add(this.from.star());
       for (Join j : this.joins) {
         this.resultSetColumns.add(j.getTableExpression().star());
       }
     } else {
-      log.info("== Columns were specified (" + this.resultSetColumns.size() + ")");
+//      log.info("== Columns were specified (" + this.resultSetColumns.size() + ")");
     }
+
+    log.info("=== 1.3");
 
     // sql.val(3).mult(7) -- Expression N/A
     // a.id -- Column te.id
@@ -123,6 +125,10 @@ public class UnarySelectObject<T> extends SingleSelectObject<T> {
     // x.num("amount").as("total") -- SubqueryXXXColumn te.total
 
     super.expandQueryColumns();
+
+//    for (Expression col : this.expandedQueryColumns) {
+//      log.info("   --  expanded col: " + col);
+//    }
 
     this.columnsAssembled = true;
     log.info("=== 1. END ASSEMBLE COLUMNS === " + froms);
@@ -142,13 +148,13 @@ public class UnarySelectObject<T> extends SingleSelectObject<T> {
 //  }
 
   protected void writeColumns(final QueryWriter w, final TableExpression baseTableExpression, final List<Join> joins) {
-    log.info("=== 4. WRITE COLUMNS ===");
+//    log.info("=== 4. WRITE COLUMNS ===");
     Separator sep = new Separator();
     for (Expression expr : this.expandedQueryColumns) {
 
       w.write(sep.render());
       w.write("\n  ");
-      Helper.renderTo(expr, w);
+      Shield.renderTo(expr, w);
 
 //      Add alias?
 //
@@ -159,7 +165,7 @@ public class UnarySelectObject<T> extends SingleSelectObject<T> {
 //          Other/Main SELECT     Yes        Yes          Yes          No
 
       if (!this.doNotAliasColumns) { // other than scalar selects or criteria selects
-        String property = Helper.getProperty(expr);
+        String property = Shield.getProperty(expr);
         if (property != null) {
           w.write(" as " + w.getSQLDialect().canonicalToNatural(property));
         }
@@ -175,7 +181,7 @@ public class UnarySelectObject<T> extends SingleSelectObject<T> {
 
   @Override
   public RowReader<T> getRowReader() {
-    log.info("=== GET ROW READER ===");
+//    log.info("=== GET ROW READER ===");
     // No default RowReader for the Unary SELECT
     return null;
   }
@@ -194,7 +200,7 @@ public class UnarySelectObject<T> extends SingleSelectObject<T> {
 
   @Override
   public List<T> execute(final LiveSQLContext context) {
-    log.info("=== EXECUTE ===");
+//    log.info("=== EXECUTE ===");
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     return executeLiveSQL(context, q, false);
   }
@@ -232,8 +238,8 @@ public class UnarySelectObject<T> extends SingleSelectObject<T> {
 
   @Override
   public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-    if (this.baseTableExpression != null) {
-      this.baseTableExpression.validateTableReferences(tableReferences, ag);
+    if (this.from != null) {
+      this.from.validateTableReferences(tableReferences, ag);
     }
     if (this.joins != null) {
       for (Join j : this.joins) {
@@ -241,17 +247,17 @@ public class UnarySelectObject<T> extends SingleSelectObject<T> {
       }
     }
     if (this.wherePredicate != null) {
-      Helper.validateTableReferences(this.wherePredicate, tableReferences, ag);
+      Shield.validateTableReferences(this.wherePredicate, tableReferences, ag);
 //      this.wherePredicate.validateTableReferences(tableReferences, ag);
     }
     if (this.groupBy != null) {
       for (ComparableExpression e : this.groupBy) {
-        Helper.validateTableReferences(e, tableReferences, ag);
+        Shield.validateTableReferences(e, tableReferences, ag);
 //        e.validateTableReferences(tableReferences, ag);
       }
     }
     if (this.havingPredicate != null) {
-      Helper.validateTableReferences(this.havingPredicate, tableReferences, ag);
+      Shield.validateTableReferences(this.havingPredicate, tableReferences, ag);
 //      this.havingPredicate.validateTableReferences(tableReferences, ag);
     }
     if (this.orderingTerms != null) {

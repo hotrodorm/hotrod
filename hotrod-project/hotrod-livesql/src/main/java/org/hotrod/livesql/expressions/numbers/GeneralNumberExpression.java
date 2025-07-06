@@ -18,8 +18,9 @@ import org.hotrod.livesql.expressions.predicates.NotBetween;
 import org.hotrod.livesql.expressions.predicates.NotEqual;
 import org.hotrod.livesql.expressions.predicates.NotInList;
 import org.hotrod.livesql.expressions.predicates.Predicate;
+import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.subqueries.Subquery;
-import org.hotrod.livesql.queries.subqueries.SubqueryNumberColumn;
+import org.hotrod.livesql.queries.subqueries.SubqueryNumberRefColumn;
 import org.hotrod.livesql.util.BoxUtil;
 
 /*
@@ -57,8 +58,8 @@ public abstract class GeneralNumberExpression extends ComparableExpression {
 
   @Override
   protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
-//    log.info("@@@@@@@@@@@@@ alias=" + alias);
-    return new SubqueryNumberColumn(subquery, alias);
+    log.info("@@@  asSubqueryExpression " + SShield.getName(subquery) + "." + alias);
+    return new SubqueryNumberRefColumn(subquery, alias);
   }
 
   // Coalesce

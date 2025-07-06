@@ -16,7 +16,7 @@ public class AccountLayout implements Serializable {
   protected Integer id = null;
   protected String name = null;
   protected String type = null;
-  protected Integer balance = null;
+  protected Double balance = null;
   protected Integer active = null;
   protected LocalDateTime updatedAt = null;
   protected Integer version = null;
@@ -47,11 +47,11 @@ public class AccountLayout implements Serializable {
     this.type = type;
   }
 
-  public Integer getBalance() {
+  public Double getBalance() {
     return this.balance;
   }
 
-  public void setBalance(final Integer balance) {
+  public void setBalance(final Double balance) {
     this.balance = balance;
   }
 

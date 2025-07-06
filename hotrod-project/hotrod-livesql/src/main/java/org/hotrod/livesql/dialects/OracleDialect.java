@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.hotrod.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.livesql.exceptions.UnsupportedLiveSQLFeatureException;
-import org.hotrod.livesql.expressions.Helper;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.datetime.GeneralDateTimeExpression;
 import org.hotrod.livesql.expressions.numbers.GeneralNumberExpression;
 import org.hotrod.livesql.expressions.strings.GeneralStringExpression;
@@ -361,10 +361,10 @@ public class OracleDialect extends LiveSQLDialect {
           throw new UnsupportedLiveSQLFeatureException("In Oracle GROUP_CONCAT() requires ordering columns");
         }
         w.write("listagg(");
-        Helper.renderTo(value, w);
+        Shield.renderTo(value, w);
         if (separator != null) {
           w.write(", ");
-          Helper.renderTo(separator, w);
+          Shield.renderTo(separator, w);
         }
         w.write(")");
         w.write(" withing group (ORDER BY ");
@@ -381,9 +381,9 @@ public class OracleDialect extends LiveSQLDialect {
       @Override
       public void remainder(final QueryWriter w, final GeneralNumberExpression a, final GeneralNumberExpression b) {
         w.write("mod(");
-        Helper.renderTo(a, w);
+        Shield.renderTo(a, w);
         w.write(", ");
-        Helper.renderTo(b, w);
+        Shield.renderTo(b, w);
         w.write(")");
       }
 
@@ -395,7 +395,7 @@ public class OracleDialect extends LiveSQLDialect {
         Separator sep = new Separator(" || ");
         for (GeneralStringExpression s : strings) {
           w.write(sep.render());
-          Helper.renderTo(s, w);
+          Shield.renderTo(s, w);
         }
         w.write(")");
       }
@@ -430,14 +430,14 @@ public class OracleDialect extends LiveSQLDialect {
       @Override
       public void date(final QueryWriter w, final GeneralDateTimeExpression datetime) {
         w.write("trunc(");
-        Helper.renderTo(datetime, w);
+        Shield.renderTo(datetime, w);
         w.write(")");
       }
 
       @Override
       public void time(final QueryWriter w, final GeneralDateTimeExpression datetime) {
         w.write("to_char(");
-        Helper.renderTo(datetime, w);
+        Shield.renderTo(datetime, w);
         w.write(", 'HH24:MI:SS')");
       }
 
@@ -445,9 +445,9 @@ public class OracleDialect extends LiveSQLDialect {
       public void dateTime(final QueryWriter w, final GeneralDateTimeExpression date,
           final GeneralDateTimeExpression time) {
         w.write("to_date(to_char(");
-        Helper.renderTo(date, w);
+        Shield.renderTo(date, w);
         w.write(", 'yyyymmdd') || ' ' || ");
-        Helper.renderTo(time, w);
+        Shield.renderTo(time, w);
         w.write(", 'yyyymmdd hh24:mi:ss')");
       }
 

@@ -1,6 +1,7 @@
 package org.hotrod.livesql.queries.subqueries;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -8,7 +9,7 @@ import java.util.stream.Collectors;
 
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.Helper;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.binary.ByteArrayExpression;
 import org.hotrod.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.livesql.expressions.numbers.NumberExpression;
@@ -23,7 +24,8 @@ import org.hotrod.livesql.queries.select.TableExpression;
 import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
 import org.hotrod.livesql.queries.select.sets.CombinedSelectObject;
-import org.hotrod.livesql.queries.select.sets.MHelper;
+import org.hotrod.livesql.queries.select.sets.MShield;
+import org.hotrod.livesql.util.ToString;
 import org.hotrod.utils.SUtil;
 
 public class Subquery extends TableExpression {
@@ -34,7 +36,7 @@ public class Subquery extends TableExpression {
   protected String[] columns;
   private CombinedSelectObject<?> select;
 
-  private List<Expression> expandedColumns = null;
+  private List<Expression> resolvedColumns = null;
   private Map<String, Expression> columnsByName = null;
 
   protected Subquery(final String naturalName, final String[] columns) {
@@ -76,7 +78,7 @@ public class Subquery extends TableExpression {
   // Subquery column reference
 
   public NumberExpression num(final String name) {
-    return new SubqueryNumberColumn(this, name);
+    return new SubqueryNumberRefColumn(this, name);
   }
 
   public StringExpression str(final String name) {
@@ -113,32 +115,32 @@ public class Subquery extends TableExpression {
 
   @Override
   protected void assembleColumns() {
-    List<Expression> raw = MHelper.assembleColumnsOf(this.select, this);
-    this.expandedColumns = new ArrayList<>();
+    log.info("ASSEMBLING COLUMNS FOR SUBQUERY: " + this.getName());
+
+    List<Expression> raw = MShield.assembleColumnsOf(this.select, this);
+    // raw: has expanded all columns at this point.
+
+    this.resolvedColumns = new ArrayList<>();
     for (Expression r : raw) {
-      log.info("- " + this.getName() + ": getProperty=" + Helper.getProperty(r) + " getReferenceName="
-          + Helper.getReferenceName(r) + " r=" + r);
+      log.info("- raw: " + this.getName() + "." + Shield.getReferenceName(r) + " r=" + r);
+//      log.info("- raw: " + this.getName() + ".?" + " r=" + r);
     }
-    this.expandedColumns = raw.stream().map(r -> Helper.asSubqueryExpression(r, this, Helper.getReferenceName(r)))
+    this.resolvedColumns = raw.stream().map(r -> Shield.asSubqueryExpression(r, this, Shield.getReferenceName(r)))
         .collect(Collectors.toList());
 
-    this.columnsByName = this.expandedColumns.stream()
-        .collect(Collectors.toMap(c -> Helper.getReferenceName(c), c -> c));
-//    this.columnsByName.keySet().stream().forEach(c -> log.info("*** column=" + c));
-    logEmergingColumns(this.expandedColumns);
-  }
-
-  @SuppressWarnings("unused")
-  private void logEmergingColumns(List<Expression> ec) {
-    log.info("$$$$$$ Columns (" + ec.size() + "):");
-    for (Expression c : ec) {
-      log.info("$$$$$$ @" + System.identityHashCode(c) + " * " + c);
+    this.columnsByName = this.resolvedColumns.stream()
+        .collect(Collectors.toMap(c -> Shield.getReferenceName(c), c -> c));
+    for (Expression c : this.resolvedColumns) {
+      log.info("$ RESOLVED - " + this.getName() + "." + Shield.getReferenceName(c) + ": " + c);
+//      log.info("           --> " + Shield.getTypeHandler(c));
     }
+    log.info("-- ASSEMBLING DONE FOR Subquery '" + this.name + "'");
+    log.info("");
   }
 
-  List<Expression> getExpandedColumns() {
-    log.info("-- expandedColumns(" + expandedColumns.size() + ")");
-    return expandedColumns;
+  List<Expression> getResolvedColumns() {
+    log.info("-- resolvedColumns(" + resolvedColumns.size() + ")");
+    return resolvedColumns;
   }
 
   Expression findColumnByName(final String property) {
@@ -159,6 +161,20 @@ public class Subquery extends TableExpression {
     if (this.columns != null && this.columns.length > 0) {
       w.write(w.getSQLDialect().getTableExpressionRenderer().renderNamedColumns(this.columns));
     }
+  }
+
+  public void log(ToString t) {
+    t.printObject(this, "FROM " + this.name);
+    t.printProperty("columns",
+        this.columns == null ? null : Arrays.stream(this.columns).collect(Collectors.joining(", ")));
+    if (this.resolvedColumns != null) {
+      for (Expression expr : this.resolvedColumns) {
+        t.printProperty("col", expr);
+      }
+    }
+    t.indent();
+    this.select.log(t);
+    t.unindent();
   }
 
 }

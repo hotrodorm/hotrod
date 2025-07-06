@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import org.hotrod.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.livesql.exceptions.UnsupportedLiveSQLFeatureException;
-import org.hotrod.livesql.expressions.Helper;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.datetime.DateTimeFieldExpression;
 import org.hotrod.livesql.expressions.datetime.GeneralDateTimeExpression;
 import org.hotrod.livesql.expressions.numbers.GeneralNumberExpression;
@@ -260,7 +260,7 @@ public class SybaseASEDialect extends LiveSQLDialect {
         Separator sep = new Separator(" || ");
         for (GeneralStringExpression s : strings) {
           w.write(sep.render());
-          Helper.renderTo(s, w);
+          Shield.renderTo(s, w);
         }
         w.write(")");
       }
@@ -327,9 +327,9 @@ public class SybaseASEDialect extends LiveSQLDialect {
       public void extract(final QueryWriter w, final GeneralDateTimeExpression datetime,
           final DateTimeFieldExpression field) {
         w.write("datepart(");
-        Helper.renderTo(field, w);
+        Shield.renderTo(field, w);
         w.write(", ");
-        Helper.renderTo(datetime, w);
+        Shield.renderTo(datetime, w);
         w.write(")");
       }
 

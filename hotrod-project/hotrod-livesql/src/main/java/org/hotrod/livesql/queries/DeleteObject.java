@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import org.hotrod.livesql.expressions.Helper;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.livesql.metadata.TableOrView;
 
@@ -64,7 +64,7 @@ public class DeleteObject {
         + (renderedAlias != null ? (" " + renderedAlias) : ""));
     if (this.wherePredicate != null) {
       w.write("\nWHERE ");
-      Helper.renderTo(this.wherePredicate, w);
+      Shield.renderTo(this.wherePredicate, w);
     }
     LiveSQLPreparedQuery pq = w.getPreparedQuery(null);
     return pq;

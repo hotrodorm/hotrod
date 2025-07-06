@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import org.hotrod.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.livesql.exceptions.UnsupportedLiveSQLFeatureException;
-import org.hotrod.livesql.expressions.Helper;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.numbers.GeneralNumberExpression;
 import org.hotrod.livesql.expressions.strings.GeneralStringExpression;
 import org.hotrod.livesql.ordering.OHelper;
@@ -304,10 +304,10 @@ public class DB2Dialect extends LiveSQLDialect {
               "DB2 does not support DISTINCT on the GROUP_CONCAT() function (listagg())");
         }
         w.write("listagg(");
-        Helper.renderTo(value, w);
+        Shield.renderTo(value, w);
         if (separator != null) {
           w.write(", ");
-          Helper.renderTo(separator, w);
+          Shield.renderTo(separator, w);
         }
         w.write(")");
         if (ordering != null && !ordering.isEmpty()) {

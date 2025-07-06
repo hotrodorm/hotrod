@@ -1,11 +1,19 @@
 package org.hotrod.livesql.metadata;
 
+import java.util.logging.Logger;
+
 import org.hotrod.livesql.expressions.Expression;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.numbers.GeneralNumberExpression;
 import org.hotrod.livesql.queries.QueryWriter;
+import org.hotrod.livesql.queries.subqueries.QShield;
+import org.hotrod.livesql.queries.subqueries.Subquery;
+import org.hotrod.livesql.queries.subqueries.SubqueryNumberRefColumn;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
 public class NumberEntityColumn extends GeneralNumberExpression implements EntityColumn {
+
+  private static final Logger log = Logger.getLogger(NumberEntityColumn.class.getName());
 
   // Properties
 
@@ -30,6 +38,15 @@ public class NumberEntityColumn extends GeneralNumberExpression implements Entit
     this.columnSize = columnSize;
     this.decimalDigits = decimalDigits;
     super.setTypeHandler(handler);
+  }
+
+  @Override
+  protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
+    SubqueryNumberRefColumn c = new SubqueryNumberRefColumn(subquery, alias);
+    QShield.setColumn(c, this);
+    Shield.setTypeHandler(c, this.typeHandler);
+    log.info("Setting typeHandler: " + this.typeHandler);
+    return c;
   }
 
   // Rendering

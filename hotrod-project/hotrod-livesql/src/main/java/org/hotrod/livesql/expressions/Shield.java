@@ -1,6 +1,7 @@
 package org.hotrod.livesql.expressions;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.hotrod.livesql.expressions.analytics.WindowableFunction;
 import org.hotrod.livesql.queries.QueryWriter;
@@ -9,7 +10,9 @@ import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
-public class Helper {
+public class Shield {
+
+  private static final Logger log = Logger.getLogger(Shield.class.getName());
 
   @SuppressWarnings("unchecked")
   public static <R, D> TypeHandler<R, D> getTypeHandler(final Expression expr) {
@@ -38,8 +41,8 @@ public class Helper {
     }
   }
 
-  public static Expression getExpressionOn(final ResultSetColumn rsc) {
-    return rsc.getEmergingExpression();
+  public static Expression getEmergingExpression(final Expression expr) {
+    return expr.getEmergingExpression();
   }
 
   public static Expression asSubqueryExpression(final Expression e, final Subquery subquery, final String alias) {
@@ -58,8 +61,8 @@ public class Helper {
     return expr.getProperty();
   }
 
-//  public static void captureTypeHandler(final Expression expr) {
-//    expr.captureTypeHandler();
-//  }
+  public static String render(final Expression expr) {
+    return expr.render();
+  }
 
 }

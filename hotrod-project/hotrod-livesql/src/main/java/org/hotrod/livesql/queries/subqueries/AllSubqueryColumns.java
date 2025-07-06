@@ -17,7 +17,7 @@ public class AllSubqueryColumns extends WrappingColumn {
 
   @Override
   protected List<Expression> expand() {
-    return this.subquery.getExpandedColumns();
+    return this.subquery.getResolvedColumns();
   }
 
 }

@@ -8,7 +8,7 @@ import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.Helper;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.queries.SQLParameterWriter.QueryParameter;
 import org.hotrod.livesql.queries.SQLParameterWriter.RenderedParameter;
 import org.hotrod.utils.SUtil;
@@ -85,7 +85,7 @@ public class QueryWriter {
 
   public void write(final ComparableExpression expression) {
     if (expression != null) {
-      Helper.renderTo(expression, this);
+      Shield.renderTo(expression, this);
     }
   }
 
@@ -104,7 +104,7 @@ public class QueryWriter {
       queryColumns = new LinkedHashMap<>();
       int ordinal = 1;
       for (Expression c : columns) {
-        String name = SUtil.coalesce(Helper.getReferenceName(c), Helper.getProperty(c));
+        String name = SUtil.coalesce(Shield.getReferenceName(c), Shield.getProperty(c));
         if (name == null) {
           throw new LiveSQLException("Column #" + ordinal + " of the SELECT query does not have a name. "
               + "Please apply the .as() method to this expression to assign a name to it.");

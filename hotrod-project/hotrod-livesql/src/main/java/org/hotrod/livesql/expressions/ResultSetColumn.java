@@ -2,6 +2,8 @@ package org.hotrod.livesql.expressions;
 
 import java.util.List;
 
+import org.hotrod.livesql.util.ToString;
+
 /**
  * <pre>
  *                ResultSetColumn (expand)
@@ -35,9 +37,8 @@ import java.util.List;
 
 public abstract class ResultSetColumn {
 
-  // Only AliasedExpression, TypedExpression, and SubqueryColumns override this method.
-  protected abstract Expression getEmergingExpression();
-
   protected abstract List<Expression> expand();
+
+  public abstract void log(ToString t);
 
 }

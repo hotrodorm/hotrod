@@ -55,6 +55,7 @@
   <table name="c" />
 
   <table name="account">
+    <column name="balance" java-type="Double" />
   
 <!-- 
    -->

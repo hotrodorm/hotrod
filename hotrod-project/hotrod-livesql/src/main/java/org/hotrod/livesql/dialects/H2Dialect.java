@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import org.hotrod.livesql.exceptions.UnsupportedLiveSQLFeatureException;
-import org.hotrod.livesql.expressions.Helper;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.datetime.GeneralDateTimeExpression;
 import org.hotrod.livesql.expressions.numbers.GeneralNumberExpression;
 import org.hotrod.livesql.queries.QueryWriter;
@@ -390,14 +390,14 @@ public class H2Dialect extends LiveSQLDialect {
       @Override
       public void date(final QueryWriter w, final GeneralDateTimeExpression datetime) {
         w.write("cast(");
-        Helper.renderTo(datetime, w);
+        Shield.renderTo(datetime, w);
         w.write(" as date)");
       }
 
       @Override
       public void time(final QueryWriter w, final GeneralDateTimeExpression datetime) {
         w.write("cast(");
-        Helper.renderTo(datetime, w);
+        Shield.renderTo(datetime, w);
         w.write(" as time)");
       }
 
@@ -405,9 +405,9 @@ public class H2Dialect extends LiveSQLDialect {
       public void dateTime(final QueryWriter w, final GeneralDateTimeExpression date,
           final GeneralDateTimeExpression time) {
         w.write("(");
-        Helper.renderTo(date, w);
+        Shield.renderTo(date, w);
         w.write(" + ");
-        Helper.renderTo(time, w);
+        Shield.renderTo(time, w);
         w.write(")");
       }
 

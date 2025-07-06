@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import org.hotrod.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.livesql.exceptions.UnsupportedLiveSQLFeatureException;
-import org.hotrod.livesql.expressions.Helper;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.datetime.DateTimeFieldExpression;
 import org.hotrod.livesql.expressions.datetime.GeneralDateTimeExpression;
 import org.hotrod.livesql.expressions.numbers.GeneralNumberExpression;
@@ -226,9 +226,9 @@ public class DerbyDialect extends LiveSQLDialect {
       @Override
       public void power(final QueryWriter w, final GeneralNumberExpression x, final GeneralNumberExpression exponent) {
         w.write("exp(");
-        Helper.renderTo(exponent, w);
+        Shield.renderTo(exponent, w);
         w.write(" * ln(");
-        Helper.renderTo(x, w);
+        Shield.renderTo(x, w);
         w.write("))");
       }
 
@@ -263,7 +263,7 @@ public class DerbyDialect extends LiveSQLDialect {
         Separator sep = new Separator(" || ");
         for (GeneralStringExpression s : strings) {
           w.write(sep.render());
-          Helper.renderTo(s, w);
+          Shield.renderTo(s, w);
         }
         w.write(")");
       }

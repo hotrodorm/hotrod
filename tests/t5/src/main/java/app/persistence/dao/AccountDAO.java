@@ -38,6 +38,7 @@ import org.hotrod.livesql.metadata.AllColumns;
 import org.hotrod.livesql.metadata.DateTimeEntityColumn;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.NumberEntityColumn;
+import org.hotrod.livesql.metadata.ObjectEntityColumn;
 import org.hotrod.livesql.metadata.StringEntityColumn;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.DeleteWherePhase;
@@ -99,8 +100,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       String col3 = rs.getString("TYPE"); // TYPE
       row.setType(col3);
 
-      Integer col4 = rs.getInt("BALANCE"); // BALANCE
-      if (rs.wasNull()) col4 = null;
+      Double col4 = rs.getObject("BALANCE", Double.class); // BALANCE
       row.setBalance(col4);
 
       Integer col5 = rs.getInt("ACTIVE"); // ACTIVE
@@ -126,7 +126,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     private Integer id;
     private String name;
     private String type;
-    private Integer balance;
+    private Double balance;
     private Integer active;
     private LocalDateTime updatedAt;
     private Integer version;
@@ -143,7 +143,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       return this.type;
     }
 
-    public Integer getBalance() {
+    public Double getBalance() {
       return this.balance;
     }
 
@@ -535,8 +535,8 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       "NAME", "name", "CHARACTER VARYING", 20, 0, TypeHandler.forClass(String.class, TypeSource.ENTITY_COLUMN));
     public final StringEntityColumn type = new StringEntityColumn(this,
       "TYPE", "type", "CHARACTER VARYING", 3, 0, TypeHandler.forClass(String.class, TypeSource.ENTITY_COLUMN));
-    public final NumberEntityColumn balance = new NumberEntityColumn(this,
-      "BALANCE", "balance", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.ENTITY_COLUMN));
+    public final ObjectEntityColumn balance = new ObjectEntityColumn(this,
+      "BALANCE", "balance", "INTEGER", 32, 0, TypeHandler.forClass(Double.class, TypeSource.ENTITY_COLUMN));
     public final NumberEntityColumn active = new NumberEntityColumn(this,
       "ACTIVE", "active", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.ENTITY_COLUMN));
     public final DateTimeEntityColumn updatedAt = new DateTimeEntityColumn(this,
@@ -641,7 +641,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       }
 
       if (this.present4) {
-        Integer col4 = rs.getInt("BALANCE"); // BALANCE
+        Double col4 = rs.getDouble("BALANCE"); // BALANCE
         if (rs.wasNull()) col4 = null;
         row.setBalance(col4);
       }

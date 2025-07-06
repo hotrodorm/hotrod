@@ -15,7 +15,7 @@ import org.hotrod.dynamicsql.Row;
 import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.Helper;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.typesolver.ResultSetColumnMetadata;
@@ -36,11 +36,11 @@ public class GenericRowReader<T> implements RowReader<T> {
     for (Entry<String, Expression> et : this.queryColumns.entrySet()) {
       Expression expr = et.getValue();
 //      log.info(">> EXPR:" + expr + " th=" + Helper.getTypeHandler(expr));
-      if (Helper.getTypeHandler(expr) == null) {
+      if (Shield.getTypeHandler(expr) == null) {
         ResultSetColumnMetadata cm = ResultSetColumnMetadata.of(rm, ordinal);
         try {
           TypeHandler<?, ?> th = context.getTypeSolver().resolve(cm);
-          Helper.setTypeHandler(expr, th);
+          Shield.setTypeHandler(expr, th);
         } catch (CouldNotResolveResultSetDataTypeException e) {
           throw new LiveSQLException(
               "Could not determine the application type for the column '" + et.getKey() + "' in the query", e);
@@ -58,9 +58,9 @@ public class GenericRowReader<T> implements RowReader<T> {
     int i = 1;
     for (Expression qc : queryColumns.values()) {
       Object value;
-      String alias = Helper.getReferenceName(qc);
+      String alias = Shield.getReferenceName(qc);
       log.info("COLUMN -- alias=" + alias + " qc=" + qc);
-      TypeHandler<?, ?> th = Helper.getTypeHandler(qc);
+      TypeHandler<?, ?> th = Shield.getTypeHandler(qc);
       if (th == null) { // No typeHandler: use the JDBC default value
         value = rs.getObject(i);
       } else if (th.getConverter() == null) { // TypeHandler with no converter: use the defined class
@@ -102,8 +102,8 @@ public class GenericRowReader<T> implements RowReader<T> {
     n = 1;
     for (Expression qc : this.queryColumns.values()) {
       int i = n++;
-      String alias = Helper.getReferenceName(qc);
-      TypeHandler<?, ?> th = Helper.getTypeHandler(qc);
+      String alias = Shield.getReferenceName(qc);
+      TypeHandler<?, ?> th = Shield.getTypeHandler(qc);
       log.info("- column #" + i + " " + alias + ": " + th);
     }
   }

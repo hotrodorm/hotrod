@@ -19,6 +19,7 @@ import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
 import org.hotrod.livesql.queries.subqueries.Subquery;
+import org.hotrod.livesql.util.ToString;
 
 public abstract class MultiSet<T> {
 
@@ -80,8 +81,19 @@ public abstract class MultiSet<T> {
     // Render
 
     QueryWriter w = new QueryWriter(context);
+
+    log.info("");
+    ToString t = new ToString();
+    this.log(t);
+
     List<Expression> columns = this.assembleColumnsOf(null);
     renderTo(w, false);
+
+    log.info("");
+    t = new ToString();
+    this.log(t);
+    log.info("");
+
     return w.getPreparedQuery(columns);
 
   }
@@ -166,5 +178,7 @@ public abstract class MultiSet<T> {
       return rows.get(0);
     }
   }
+
+  public abstract void log(ToString t);
 
 }

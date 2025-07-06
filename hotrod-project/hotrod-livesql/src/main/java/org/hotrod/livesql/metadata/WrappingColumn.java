@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.ResultSetColumn;
+import org.hotrod.livesql.util.ToString;
 
 public abstract class WrappingColumn extends ResultSetColumn {
 
@@ -12,6 +13,10 @@ public abstract class WrappingColumn extends ResultSetColumn {
   protected Expression getEmergingExpression() {
     // Wrapping columns cannot emerge
     return null;
+  }
+
+  public void log(ToString t) {
+    t.printObject(this, this.getClass().getName());
   }
 
 }

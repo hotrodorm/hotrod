@@ -7,13 +7,13 @@ import java.util.stream.Collectors;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.Helper;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.select.Select;
 import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
-import org.hotrod.livesql.queries.select.sets.MHelper;
+import org.hotrod.livesql.queries.select.sets.MShield;
 
 public class RecursiveCTE extends CTE {
 
@@ -83,14 +83,14 @@ public class RecursiveCTE extends CTE {
       } else { // implicit column names from the anchor term
         w.write(" (");
         boolean first = true;
-        List<Expression> cols = MHelper.assembleColumnsOf(SShield.getCombinedSelect(this.anchorTerm), null);
+        List<Expression> cols = MShield.assembleColumnsOf(SShield.getCombinedSelect(this.anchorTerm), null);
         for (Expression rc : cols) {
           if (first) {
             first = false;
           } else {
             w.write(", ");
           }
-          Helper.renderTo(rc, w);
+          Shield.renderTo(rc, w);
         }
         w.write(")");
       }

@@ -1,7 +1,7 @@
 package org.hotrod.livesql.ordering;
 
 import org.hotrod.livesql.exceptions.InvalidLiveSQLStatementException;
-import org.hotrod.livesql.expressions.Helper;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.SortableExpression;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.utils.SUtil;
@@ -77,7 +77,7 @@ public class OrderByProperties {
     // expression, alias, or ordinal
 
     if (this.expression != null) {
-      Helper.renderTo(this.expression, w);
+      Shield.renderTo(this.expression, w);
     } else if (this.alias != null) {
       w.write(w.getSQLDialect().canonicalToNatural(this.alias));
     } else {

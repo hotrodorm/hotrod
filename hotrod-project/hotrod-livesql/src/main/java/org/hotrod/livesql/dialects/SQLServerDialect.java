@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import org.hotrod.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.livesql.exceptions.UnsupportedLiveSQLFeatureException;
-import org.hotrod.livesql.expressions.Helper;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.datetime.DateTimeFieldExpression;
 import org.hotrod.livesql.expressions.datetime.GeneralDateTimeExpression;
 import org.hotrod.livesql.expressions.numbers.GeneralNumberExpression;
@@ -303,9 +303,9 @@ public class SQLServerDialect extends LiveSQLDialect {
               "SQL Server requires the separator to be specified on the GROUP_CONCAT() function (string_agg())");
         }
         w.write("string_agg(");
-        Helper.renderTo(value, w);
+        Shield.renderTo(value, w);
         w.write(", ");
-        Helper.renderTo(separator, w);
+        Shield.renderTo(separator, w);
         w.write(")");
         if (ordering != null && !ordering.isEmpty()) {
           w.write(" within group (ORDER BY ");
@@ -395,14 +395,14 @@ public class SQLServerDialect extends LiveSQLDialect {
       @Override
       public void date(final QueryWriter w, final GeneralDateTimeExpression datetime) {
         w.write("convert(date, ");
-        Helper.renderTo(datetime, w);
+        Shield.renderTo(datetime, w);
         w.write(")");
       }
 
       @Override
       public void time(final QueryWriter w, final GeneralDateTimeExpression datetime) {
         w.write("convert(time, ");
-        Helper.renderTo(datetime, w);
+        Shield.renderTo(datetime, w);
         w.write(")");
       }
 
@@ -410,9 +410,9 @@ public class SQLServerDialect extends LiveSQLDialect {
       public void dateTime(final QueryWriter w, final GeneralDateTimeExpression date,
           final GeneralDateTimeExpression time) {
         w.write("(");
-        Helper.renderTo(date, w);
+        Shield.renderTo(date, w);
         w.write(" + ");
-        Helper.renderTo(time, w);
+        Shield.renderTo(time, w);
         w.write(")");
       }
 
@@ -420,9 +420,9 @@ public class SQLServerDialect extends LiveSQLDialect {
       public void extract(final QueryWriter w, final GeneralDateTimeExpression datetime,
           final DateTimeFieldExpression field) {
         w.write("datepart(");
-        Helper.renderTo(field, w);
+        Shield.renderTo(field, w);
         w.write(", ");
-        Helper.renderTo(datetime, w);
+        Shield.renderTo(datetime, w);
         w.write(")");
       }
 

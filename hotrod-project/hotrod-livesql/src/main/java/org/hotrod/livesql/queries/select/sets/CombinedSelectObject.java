@@ -21,6 +21,7 @@ import org.hotrod.livesql.queries.select.UnarySelectObject;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.util.IdUtil;
+import org.hotrod.livesql.util.ToString;
 
 /**
  * <pre>
@@ -363,9 +364,12 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
     return sb.toString();
   }
 
-//  @Override
-//  public Expression findColumnWithName(String name) {
-//    return this.first.findColumnWithName(name);
-//  }
+  @Override
+  public void log(ToString t) {
+    t.printObject(this, "combined");
+    t.indent();
+    this.first.log(t);
+    t.unindent();
+  }
 
 }

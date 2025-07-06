@@ -6,7 +6,7 @@ import java.util.List;
 import org.hotrod.livesql.exceptions.InvalidLiveSQLClauseException;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.Helper;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.utils.Separator;
 
@@ -29,7 +29,7 @@ public class TupleExpression extends ComparableExpression {
     Separator s = new Separator();
     this.expressions.forEach(e -> {
       w.write(s.render());
-      Helper.renderTo(e, w);
+      Shield.renderTo(e, w);
     });
     w.write(")");
   }

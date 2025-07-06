@@ -1,7 +1,7 @@
 package org.hotrod.livesql.queries.subqueries;
 
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.Helper;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.queries.QueryWriter;
@@ -48,7 +48,7 @@ public class SubqueryDateTimeColumn extends DateTimeExpression implements Subque
   protected TypeHandler getTypeHandler() {
     try {
       EntityColumn ec = (EntityColumn) this.column;
-      return Helper.getTypeHandler(this.column);
+      return Shield.getTypeHandler(this.column);
     } catch (ClassCastException e) {
       return super.typeHandler;
     }

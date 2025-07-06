@@ -3,7 +3,7 @@ package org.hotrod.livesql.expressions.analytics;
 import java.util.List;
 
 import org.hotrod.livesql.expressions.ComparableExpression;
-import org.hotrod.livesql.expressions.Helper;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.ordering.OHelper;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.QueryWriter;
@@ -169,7 +169,7 @@ public class WindowExpression {
       Separator sep = new Separator();
       for (ComparableExpression expr : this.partitionBy) {
         w.write(sep.render());
-        Helper.renderTo(expr, w);
+        Shield.renderTo(expr, w);
       }
     }
 

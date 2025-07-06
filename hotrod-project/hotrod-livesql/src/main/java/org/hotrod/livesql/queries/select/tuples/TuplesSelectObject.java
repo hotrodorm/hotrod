@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.Helper;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.ResultSetColumn;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.MDShield;
@@ -36,14 +36,14 @@ public class TuplesSelectObject<T> extends SingleSelectObject<T> {
   public TuplesSelectObject(List<ResultSetColumn> resultSetColumns, TuplesMetadata metadata) {
     super(metadata.getCtes(), metadata.isDistinct());
     this.resultSetColumns = resultSetColumns;
-    this.baseTableExpression = metadata.getFrom();
+    this.from = metadata.getFrom();
     this.joins = metadata.getJoins();
     this.context = metadata.getContext();
   }
 
   @Override
   public void validateTableReferences(TableReferences tableReferences, AliasGenerator ag) {
-    SShield.validateTableReferences(this.baseTableExpression, tableReferences, ag);
+    SShield.validateTableReferences(this.from, tableReferences, ag);
     for (Join j : this.joins) {
       SShield.validateTableReferences(j, tableReferences, ag);
     }
@@ -73,7 +73,7 @@ public class TuplesSelectObject<T> extends SingleSelectObject<T> {
 
       this.resultSetColumns = new ArrayList<>();
 
-      addTableColumns((TableOrView<?>) this.baseTableExpression, this.resultSetColumns);
+      addTableColumns((TableOrView<?>) this.from, this.resultSetColumns);
       for (Join j : this.joins) {
         addTableColumns((TableOrView<?>) SShield.getTableExpression(j), this.resultSetColumns);
         this.resultSetColumns.add(SShield.star(j));
@@ -92,7 +92,7 @@ public class TuplesSelectObject<T> extends SingleSelectObject<T> {
     WrappingColumn wrapped = SShield.star(te);
     List<Expression> unwrapped = MDShield.unwrap(wrapped);
     for (Expression expr : unwrapped) {
-      String property = Helper.getProperty(expr);
+      String property = Shield.getProperty(expr);
       String calias = this.context.getLiveSQLDialect().canonicalToNatural(te.getAlias() + ":" + property);
       log.info(" + " + calias);
       Expression aliased = expr.as(calias);
@@ -103,7 +103,7 @@ public class TuplesSelectObject<T> extends SingleSelectObject<T> {
   @Override
   public TuplesRowReader<T> getRowReader() {
     List<TableOrView<?>> allTables = new ArrayList<>();
-    allTables.add((TableOrView<?>) this.baseTableExpression);
+    allTables.add((TableOrView<?>) this.from);
     List<TableOrView<?>> joined = this.joins.stream().map(j -> (TableOrView<?>) SShield.getTableExpression(j))
         .collect(Collectors.toList());
     allTables.addAll(joined);
@@ -161,19 +161,19 @@ public class TuplesSelectObject<T> extends SingleSelectObject<T> {
 
       w.write(sep.render());
       w.write("\n  ");
-      Helper.renderTo(expr, w);
+      Shield.renderTo(expr, w);
 
       try {
         EntityColumn entityColumn = (EntityColumn) expr;
 
         // It's a column from a table
         String alias = entityColumn.getObjectInstance().getAlias();
-        String property = Helper.getProperty(expr);
+        String property = Shield.getProperty(expr);
         w.write(" as " + w.getSQLDialect().canonicalToNatural(alias + ":" + property));
 
       } catch (ClassCastException e) {
         // It's a free expression
-        String property = Helper.getProperty(expr);
+        String property = Shield.getProperty(expr);
         if (property != null) {
           w.write(" as " + w.getSQLDialect().canonicalToNatural(property));
         }

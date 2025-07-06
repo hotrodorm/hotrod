@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.Helper;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.analytics.WindowExpression.FrameBound;
 import org.hotrod.livesql.expressions.analytics.WindowExpression.FrameExclusion;
 import org.hotrod.livesql.expressions.analytics.WindowExpression.FrameUnit;
@@ -57,7 +57,7 @@ public class NumberWindowExpression extends NumberExpression {
 
   @Override
   protected void renderTo(final QueryWriter w) {
-    Helper.renderTo(this.windowableFunction, w);
+    Shield.renderTo(this.windowableFunction, w);
     this.windowExpression.renderTo(w);
   }
 

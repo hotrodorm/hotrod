@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 import org.hotrod.livesql.dialects.UpdateRenderer;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.Helper;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.MDShield;
@@ -102,13 +102,13 @@ public class UpdateObject {
       Assignment s = this.setters.get(i);
       w.write(w.getSQLDialect().canonicalToNatural(s.getColumn().getCanonicalName()));
       w.write(" = ");
-      Helper.renderTo(s.getExpression(), w);
+      Shield.renderTo(s.getExpression(), w);
       w.write("\n");
     }
 
     if (this.wherePredicate != null) {
       w.write("WHERE ");
-      Helper.renderTo(this.wherePredicate, w);
+      Shield.renderTo(this.wherePredicate, w);
     }
     LiveSQLPreparedQuery pq = w.getPreparedQuery(null);
     return pq;

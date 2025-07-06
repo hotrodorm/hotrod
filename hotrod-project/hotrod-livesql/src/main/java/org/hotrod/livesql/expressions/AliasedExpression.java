@@ -26,12 +26,13 @@ public class AliasedExpression extends Expression {
     return this.referencedExpression.asSubqueryExpression(subquery, alias);
   }
 
-  // TypeHandler setter
-
   @Override
   protected Expression getEmergingExpression() {
+    log.info("referencedExpression=" + this.referencedExpression.getClass().getName());
     return this.referencedExpression.getEmergingExpression().as(this.alias);
   }
+
+  // TypeHandler setter
 
   public TypedExpression type(final Class<?> type) {
     return new TypedExpression(this, type);
@@ -65,6 +66,12 @@ public class AliasedExpression extends Expression {
   @Override
   protected String render() {
     return "'" + this.alias + "' for " + this.referencedExpression.toString();
+  }
+
+  public String toString() {
+    return "'" + this.alias + "' for @" + String.format("%08x", System.identityHashCode(this.referencedExpression))
+        + " " + this.referencedExpression.toString();
+
   }
 
 }

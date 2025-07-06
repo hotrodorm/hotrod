@@ -1,7 +1,7 @@
 package org.hotrod.livesql.expressions.strings.postgresql;
 
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.Helper;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.livesql.expressions.strings.GeneralStringExpression;
 import org.hotrod.livesql.queries.QueryWriter;
@@ -19,7 +19,7 @@ public class Ascii extends NumberExpression {
   @Override
   protected void renderTo(final QueryWriter w) {
     w.write("ascii(");
-    Helper.renderTo(this.string, w);
+    Shield.renderTo(this.string, w);
     w.write(")");
   }
 

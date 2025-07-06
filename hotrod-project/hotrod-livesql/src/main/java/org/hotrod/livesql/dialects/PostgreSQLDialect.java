@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import org.hotrod.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.Helper;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.datetime.GeneralDateTimeExpression;
 import org.hotrod.livesql.expressions.numbers.GeneralNumberExpression;
 import org.hotrod.livesql.expressions.strings.GeneralStringExpression;
@@ -71,7 +71,7 @@ public class PostgreSQLDialect extends LiveSQLDialect {
           } else {
             w.write(", ");
           }
-          Helper.renderTo(e, w);
+          Shield.renderTo(e, w);
         }
         w.write(")");
       }
@@ -323,9 +323,9 @@ public class PostgreSQLDialect extends LiveSQLDialect {
               "PostgreSQL requires the separator to be specified on the GROUP_CONCAT() function (string_agg())");
         }
         w.write("string_agg(");
-        Helper.renderTo(value, w);
+        Shield.renderTo(value, w);
         w.write(", ");
-        Helper.renderTo(separator, w);
+        Shield.renderTo(separator, w);
         if (ordering != null && !ordering.isEmpty()) {
           w.write(" ORDER BY ");
           Separator sep = new Separator();
@@ -380,13 +380,13 @@ public class PostgreSQLDialect extends LiveSQLDialect {
 
       @Override
       public void date(final QueryWriter w, final GeneralDateTimeExpression datetime) {
-        Helper.renderTo(datetime, w);
+        Shield.renderTo(datetime, w);
         w.write("::date");
       }
 
       @Override
       public void time(final QueryWriter w, final GeneralDateTimeExpression datetime) {
-        Helper.renderTo(datetime, w);
+        Shield.renderTo(datetime, w);
         w.write("::time");
       }
 
@@ -394,9 +394,9 @@ public class PostgreSQLDialect extends LiveSQLDialect {
       public void dateTime(final QueryWriter w, final GeneralDateTimeExpression date,
           final GeneralDateTimeExpression time) {
         w.write("(");
-        Helper.renderTo(date, w);
+        Shield.renderTo(date, w);
         w.write(" + ");
-        Helper.renderTo(time, w);
+        Shield.renderTo(time, w);
         w.write(")");
       }
 

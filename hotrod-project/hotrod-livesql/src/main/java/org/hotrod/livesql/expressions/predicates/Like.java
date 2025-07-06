@@ -1,7 +1,7 @@
 package org.hotrod.livesql.expressions.predicates;
 
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.Helper;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.strings.GeneralStringExpression;
 import org.hotrod.livesql.queries.QueryWriter;
 
@@ -24,7 +24,7 @@ public class Like extends BinaryPredicate {
     super.renderTo(w);
     if (this.escape != null) {
       w.write(" escape '");
-      Helper.renderTo(this.escape, w);
+      Shield.renderTo(this.escape, w);
       w.write("'");
     }
   }

@@ -14,6 +14,7 @@ import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
 import org.hotrod.livesql.queries.select.sets.CombinedSelectObject;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
+import org.hotrod.livesql.util.ToString;
 import org.hotrod.utils.SUtil;
 
 public abstract class Expression extends ResultSetColumn {
@@ -146,8 +147,8 @@ public abstract class Expression extends ResultSetColumn {
   // Getters
 
   protected TypeHandler getTypeHandler() {
-    log.info(
-        "TYPEHANDLER " + this + " (" + this.getProperty() + "/" + this.getReferenceName() + "): " + this.typeHandler);
+//    log.info(
+//        "TYPEHANDLER " + this + " (" + this.getProperty() + "/" + this.getReferenceName() + "): " + this.typeHandler);
     return typeHandler;
   }
 
@@ -204,6 +205,11 @@ public abstract class Expression extends ResultSetColumn {
 
   protected String render() {
     return this.getClass().getSimpleName() + "@" + System.identityHashCode(this) + ": typeHandler=" + this.typeHandler;
+  }
+
+  public void log(ToString t) {
+    t.printObject(this, "expr");
+    t.printProperty("typeHandler", this.typeHandler);
   }
 
 }

@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.Helper;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.select.UnarySelectObject;
@@ -77,7 +77,7 @@ public class InsertObject {
       for (int i = 0; i < this.columns.size(); i++) {
         EntityColumn c = this.columns.get(i);
         Expression expr = (Expression) c;
-        Helper.renderTo(expr, w);
+        Shield.renderTo(expr, w);
         if (i < this.columns.size() - 1) {
           w.write(", ");
         }
@@ -90,7 +90,7 @@ public class InsertObject {
       w.write("\nVALUES (");
       for (int i = 0; i < this.values.size(); i++) {
         ComparableExpression e = this.values.get(i);
-        Helper.renderTo(e, w);
+        Shield.renderTo(e, w);
         if (i < this.values.size() - 1) {
           w.write(", ");
         }

@@ -1,0 +1,96 @@
+
+SELECT
+  x."balance" as "balm"
+FROM (
+  SELECT
+    a.balance as "balance"
+  FROM account a
+  LIMIT 1
+) x
+
++ UnarySelectObject -> SingleSelectObject -> MultiSet
+  + List<ResultSetColumn> resultSetColumns
+  + List<Expression> expandedQueryColumns
+  + Subquery "x" -> TableExpression (FROM)
+    + CombinedSelectObject -> MultiSet
+      + UnarySelectObject -> SingleSelectObject -> MultiSet
+        + List<ResultSetColumn> resultSetColumns
+        + List<Expression> expandedQueryColumns
+        + AccountTable -> Table (FROM)
+    + List<Expression> resolvedColumns
+      + SubqueryNumberRefColumn -> NumberExpression -> GeneralNumberExpression
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SELECT
+  y."baly" as "balm" -- SubqueryNumberRefColumn
+FROM (
+  SELECT
+    x."balance" as "baly" -- SubqueryNumberRefColumn
+  FROM (
+    SELECT
+      a.balance as "balance" -- NumberEntityColumn
+    FROM account a
+    LIMIT 1
+  ) x
+  LIMIT 1
+) y
+
+
+2025-07-03 16:18:45.273  INFO 26093 --- [           main] o.h.l.queries.select.UnarySelectObject   : === 1. ASSEMBLE COLUMNS === y:
+
+2025-07-03 16:18:45.273  INFO 26093 --- [           main] o.h.livesql.queries.subqueries.Subquery  : ASSEMBLING COLUMNS FOR SUBQUERY: y
+2025-07-03 16:18:45.273  INFO 26093 --- [           main] o.h.l.queries.select.UnarySelectObject   : === 1. ASSEMBLE COLUMNS === x:
+
+
+
+2025-07-03 16:18:45.273  INFO 26093 --- [           main] o.h.livesql.queries.subqueries.Subquery  : ASSEMBLING COLUMNS FOR SUBQUERY: x
+2025-07-03 16:18:45.273  INFO 26093 --- [           main] o.h.l.queries.select.UnarySelectObject   : === 1. ASSEMBLE COLUMNS === ACCOUNT:
+2025-07-03 16:18:45.273  INFO 26093 --- [           main] org.hotrod.livesql.metadata.TableOrView  : ASSEMBLING COLUMNS for: ACCOUNT
+
+2025-07-03 16:18:45.274  INFO 26093 --- [           main] o.h.livesql.queries.subqueries.Subquery  : - raw: x.balance r=NumberEntityColumn@431939256: typeHandler=class java.lang.Integer, source: ENTITY_COLUMN
+
+2025-07-03 16:18:45.275  INFO 26093 --- [           main] o.h.livesql.queries.subqueries.Subquery  : $ RESOLVED - x.balance: org.hotrod.livesql.queries.subqueries.SubqueryNumberRefColumn@4684240f
+2025-07-03 16:18:45.275  INFO 26093 --- [           main] o.h.livesql.queries.subqueries.Subquery  : -- ASSEMBLING DONE FOR Subquery 'x'
+2025-07-03 16:18:45.275  INFO 26093 --- [           main] o.h.livesql.queries.subqueries.Subquery  : 
+
+
+
+2025-07-03 16:18:45.275  INFO 26093 --- [           main] o.h.l.q.s.SubqueryNumberRefColumn        : *** getEmergingExpression: x.balance
+2025-07-03 16:18:45.275  INFO 26093 --- [           main] o.h.l.q.s.SubqueryNumberRefColumn        : *** getEmergingExpression: x.balance
+2025-07-03 16:18:45.275  INFO 26093 --- [           main] o.h.l.q.s.SubqueryNumberRefColumn        : *** getEmergingExpression: x.balance
+2025-07-03 16:18:45.275  INFO 26093 --- [           main] o.h.livesql.queries.subqueries.Subquery  : - raw: y.baly r='baly' for org.hotrod.livesql.queries.subqueries.SubqueryNumberRefColumn@32120956
+2025-07-03 16:18:45.275  INFO 26093 --- [           main] o.h.livesql.queries.subqueries.Subquery  : $ RESOLVED - y.baly: org.hotrod.livesql.queries.subqueries.SubqueryNumberRefColumn@6975fb1c
+2025-07-03 16:18:45.275  INFO 26093 --- [           main] o.h.livesql.queries.subqueries.Subquery  : -- ASSEMBLING DONE FOR Subquery 'y'
+2025-07-03 16:18:45.276  INFO 26093 --- [           main] o.h.livesql.queries.subqueries.Subquery  : 
+
+2025-07-03 16:18:45.276  INFO 26093 --- [           main] o.h.l.q.s.SubqueryNumberRefColumn        : *** getEmergingExpression: y.baly
+2025-07-03 16:18:45.276  INFO 26093 --- [           main] o.h.l.q.s.SubqueryNumberRefColumn        : *** getEmergingExpression: y.baly
+2025-07-03 16:18:45.276  INFO 26093 --- [           main] o.h.l.q.s.SubqueryNumberRefColumn        : *** getEmergingExpression: y.baly
+2025-07-03 16:18:45.276  INFO 26093 --- [           main] o.h.l.q.s.SubqueryNumberRefColumn        : *** getEmergingExpression: y.baly
+2025-07-03 16:18:45.276  INFO 26093 --- [           main] o.h.l.q.s.SubqueryNumberRefColumn        : *** getEmergingExpression: y.baly
+2025-07-03 16:18:45.278  INFO 26093 --- [           main] org.hotrod.livesql.queries.QueryWriter   : >>> this.paramWriter.getParameters().size()=0
+
+
+

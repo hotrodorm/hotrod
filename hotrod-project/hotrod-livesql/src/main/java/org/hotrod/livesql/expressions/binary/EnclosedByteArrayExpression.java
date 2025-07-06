@@ -2,7 +2,7 @@ package org.hotrod.livesql.expressions.binary;
 
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.Helper;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.queries.QueryWriter;
 
 public class EnclosedByteArrayExpression extends ByteArrayExpression {
@@ -26,7 +26,7 @@ public class EnclosedByteArrayExpression extends ByteArrayExpression {
   @Override
   protected void renderTo(final QueryWriter w) {
     w.write("(");
-    Helper.renderTo(this.expr, w);
+    Shield.renderTo(this.expr, w);
     w.write(")");
   }
 

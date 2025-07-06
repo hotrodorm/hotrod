@@ -11,10 +11,11 @@ import org.hotrod.livesql.dialects.LockingRenderer;
 import org.hotrod.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.Helper;
 import org.hotrod.livesql.expressions.ResultSetColumn;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
+import org.hotrod.livesql.metadata.WrappingColumn;
 import org.hotrod.livesql.ordering.OHelper;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.QueryWriter;
@@ -25,6 +26,7 @@ import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.select.TableExpression;
 import org.hotrod.livesql.queries.select.UnarySelectObject.LockingConcurrency;
 import org.hotrod.livesql.queries.select.UnarySelectObject.LockingMode;
+import org.hotrod.livesql.util.ToString;
 import org.hotrod.utils.SUtil;
 import org.hotrod.utils.Separator;
 
@@ -32,15 +34,15 @@ public abstract class SingleSelectObject<T> extends MultiSet<T> {
 
   private static final Logger log = Logger.getLogger(SingleSelectObject.class.getName());
 
+  protected List<ResultSetColumn> resultSetColumns = new ArrayList<>();
   protected List<Expression> expandedQueryColumns = null;
   protected boolean columnsAssembled = false;
-  protected List<ResultSetColumn> resultSetColumns = new ArrayList<>();
 
   protected List<CTE> ctes = new ArrayList<>();
   protected boolean distinct;
   protected List<Expression> distinctOn = null;
 
-  protected TableExpression baseTableExpression = null;
+  protected TableExpression from = null;
   protected List<Join> joins = null;
 
   protected GeneralBooleanExpression wherePredicate = null;
@@ -64,36 +66,55 @@ public abstract class SingleSelectObject<T> extends MultiSet<T> {
   }
 
   protected void expandQueryColumns() {
-    log.info("=== 2. EXPAND QUERY COLUMNS (AS/IF NEEDED) " + SShield.getName(this.baseTableExpression) + " ===");
+    log.info("=== 2. EXPAND QUERY COLUMNS (AS/IF NEEDED) from " + SShield.getName(this.from) + " ===");
     this.expandedQueryColumns = new ArrayList<>();
-    Expression raised = null;
     for (ResultSetColumn rsc : this.resultSetColumns) {
-      log.info(">> rsc=" + rsc);
-      raised = Helper.getExpressionOn(rsc);
-      // raised is always null for wrapping columns
-      log.info("  >> raised=" + raised);
-      if (raised != null) {
-//        Helper.captureTypeHandler(expr);
-//        log.info("---------- expr@" + System.identityHashCode(expr) + ": " + expr);
-        this.expandedQueryColumns.add(raised);
-      } else {
-        for (Expression exp : Helper.expand(rsc)) {
-          raised = Helper.getExpressionOn(exp);
-//          Helper.captureTypeHandler(exp);
-//          log.info("---------- expr@" + System.identityHashCode(exp) + ": " + exp);
-          log.info(">>>> rsc=" + rsc + " raised=" + raised);
-          this.expandedQueryColumns.add(raised);
+      log.info("=== 2.1 rsc=" + rsc);
+
+      try {
+        // Single column
+        Expression single = (Expression) rsc;
+        log.info("=== 2.2 single" + (single == null ? "" : " [" + single.getClass().getName() + "] ") + "=" + single);
+        Expression emerging = Shield.getEmergingExpression(single); // emerging is always null for wrapping columns
+        log.info("=== 2.2 A emerging=" + emerging);
+        if (emerging != null) {
+          Shield.setTypeHandler(single, Shield.getTypeHandler(emerging));
+        }
+        this.expandedQueryColumns.add(single);
+
+      } catch (ClassCastException cce) {
+        // Wrapping column
+        log.info("=== 2.3");
+        WrappingColumn wrapping = (WrappingColumn) rsc;
+        for (Expression exp : Shield.expand(wrapping)) {
+          log.info("=== 2.4");
+          Expression em = Shield.getEmergingExpression(exp);
+          this.expandedQueryColumns.add(em);
         }
       }
+
+//      log.info("=== 2.4 rsc=" + rsc);
+//      Expression raised = Shield.getEmergingExpression(rsc); // raised is always null for wrapping columns
+//
+//      log.info("=== 2.4.1 raised=" + raised);
+//      if (raised != null) {
+//        this.expandedQueryColumns.add(raised);
+//      } else {
+//        for (Expression exp : Shield.expand(rsc)) {
+//          raised = Shield.getEmergingExpression(exp);
+//          this.expandedQueryColumns.add(raised);
+//        }
+//      }
     }
+    log.info("=== 2.10 EXPAND DONE from " + SShield.getName(this.from) + " ===");
   }
 
   public void setResultSetColumns(final List<ResultSetColumn> resultSetColumns) {
     this.resultSetColumns = resultSetColumns;
   }
 
-  public void setBaseTableExpression(final TableExpression baseTableExpression) {
-    this.baseTableExpression = baseTableExpression;
+  public void setBaseTableExpression(final TableExpression from) {
+    this.from = from;
     this.joins = new ArrayList<Join>();
   }
 
@@ -152,7 +173,7 @@ public abstract class SingleSelectObject<T> extends MultiSet<T> {
 
   @Override
   public void renderTo(final QueryWriter w, final boolean inline) {
-    log.info("=== 3. RENDER TO ===");
+//    log.info("=== 3. RENDER TO ===");
 
     if (inline) {
       w.write("\n");
@@ -214,11 +235,11 @@ public abstract class SingleSelectObject<T> extends MultiSet<T> {
 
     // query columns
 
-    this.writeColumns(w, this.baseTableExpression, this.joins);
+    this.writeColumns(w, this.from, this.joins);
 
     // base table
 
-    if (this.baseTableExpression == null) {
+    if (this.from == null) {
 
       String rwt = liveSQLDialect.getFromRenderer().renderFromWithoutATable();
       w.write(SUtil.isEmpty(rwt) ? "" : ("\n" + rwt));
@@ -226,7 +247,7 @@ public abstract class SingleSelectObject<T> extends MultiSet<T> {
     } else {
 
       w.write("\nFROM ");
-      SShield.renderTo(this.baseTableExpression, w);
+      SShield.renderTo(this.from, w);
 
       // Inline locking
 
@@ -251,7 +272,7 @@ public abstract class SingleSelectObject<T> extends MultiSet<T> {
           PredicatedJoin pj = (PredicatedJoin) j;
           if (pj.getJoinPredicate() != null) { // on
             w.write(" ON ");
-            Helper.renderTo(pj.getJoinPredicate(), w);
+            Shield.renderTo(pj.getJoinPredicate(), w);
           } else { // using
             w.write(" USING (");
             Separator sep = new Separator();
@@ -271,7 +292,7 @@ public abstract class SingleSelectObject<T> extends MultiSet<T> {
 
       if (this.wherePredicate != null) {
         w.write("\nWHERE ");
-        Helper.renderTo(this.wherePredicate, w);
+        Shield.renderTo(this.wherePredicate, w);
       }
 
       // group by
@@ -285,7 +306,7 @@ public abstract class SingleSelectObject<T> extends MultiSet<T> {
           } else {
             w.write(", ");
           }
-          Helper.renderTo(expr, w);
+          Shield.renderTo(expr, w);
         }
       }
 
@@ -293,7 +314,7 @@ public abstract class SingleSelectObject<T> extends MultiSet<T> {
 
       if (this.havingPredicate != null) {
         w.write("\nHAVING ");
-        Helper.renderTo(this.havingPredicate, w);
+        Shield.renderTo(this.havingPredicate, w);
       }
 
     }
@@ -375,6 +396,40 @@ public abstract class SingleSelectObject<T> extends MultiSet<T> {
 
   GeneralBooleanExpression getHavingCondition() {
     return havingPredicate;
+  }
+
+  // log
+
+  @Override
+  public void log(ToString t) {
+    t.printObject(this, this.getClass().getName());
+    int col = 0;
+    if (this.resultSetColumns != null) {
+      for (ResultSetColumn r : this.resultSetColumns) {
+        t.indent();
+        t.prompt("rsc - " + r.toString() + " // ");
+        r.log(t);
+        t.unindent();
+      }
+    }
+    if (this.expandedQueryColumns != null) {
+      for (Expression expr : this.expandedQueryColumns) {
+        t.indent();
+        t.prompt("expr");
+        expr.log(t);
+        t.unindent();
+      }
+    }
+    t.indent();
+    this.from.log(t);
+    for (Join j : this.joins) {
+      TableExpression te = SShield.getTableExpression(j);
+      t.indent();
+      te.log(t);
+      t.unindent();
+    }
+    t.unindent();
+
   }
 
 }

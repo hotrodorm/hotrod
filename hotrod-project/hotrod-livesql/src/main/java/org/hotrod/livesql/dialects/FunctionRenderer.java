@@ -3,7 +3,7 @@ package org.hotrod.livesql.dialects;
 import java.util.List;
 
 import org.hotrod.livesql.expressions.ComparableExpression;
-import org.hotrod.livesql.expressions.Helper;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.datetime.DateTimeFieldExpression;
 import org.hotrod.livesql.expressions.datetime.GeneralDateTimeExpression;
 import org.hotrod.livesql.expressions.numbers.GeneralNumberExpression;
@@ -34,7 +34,7 @@ public abstract class FunctionRenderer {
     if (distinct) {
       w.write("distinct ");
     }
-    Helper.renderTo(value, w);
+    Shield.renderTo(value, w);
     if (ordering != null) {
       w.write("ORDER BY ");
       Separator sep = new Separator();
@@ -45,7 +45,7 @@ public abstract class FunctionRenderer {
     }
     if (separator != null) {
       w.write("separator ");
-      Helper.renderTo(separator, w);
+      Shield.renderTo(separator, w);
     }
     w.write(")");
   }
@@ -164,9 +164,9 @@ public abstract class FunctionRenderer {
 
   public void extract(final QueryWriter w, final GeneralDateTimeExpression datetime, final DateTimeFieldExpression field) {
     w.write("extract(");
-    Helper.renderTo(field, w);
+    Shield.renderTo(field, w);
     w.write(" from ");
-    Helper.renderTo(datetime, w);
+    Shield.renderTo(datetime, w);
     w.write(")");
   }
 
@@ -178,7 +178,7 @@ public abstract class FunctionRenderer {
     Separator sep = new Separator();
     for (ComparableExpression expr : expressions) {
       w.write(sep.render());
-      Helper.renderTo(expr, w);
+      Shield.renderTo(expr, w);
     }
     w.write(")");
   }
@@ -194,7 +194,7 @@ public abstract class FunctionRenderer {
     Separator sep = new Separator(separator);
     for (ComparableExpression expr : x) {
       w.write(sep.render());
-      Helper.renderTo(expr, w);
+      Shield.renderTo(expr, w);
     }
     w.write(")");
   }
