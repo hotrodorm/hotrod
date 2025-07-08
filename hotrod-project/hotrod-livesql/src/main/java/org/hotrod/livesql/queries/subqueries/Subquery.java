@@ -163,7 +163,8 @@ public class Subquery extends TableExpression {
     }
   }
 
-  public void log(ToString t) {
+  @Override
+  protected final void log(ToString t) {
     t.printObject(this, "FROM " + this.name);
     t.printProperty("columns",
         this.columns == null ? null : Arrays.stream(this.columns).collect(Collectors.joining(", ")));

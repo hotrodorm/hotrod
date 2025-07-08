@@ -18,6 +18,6 @@ public abstract class TableExpression {
 
   protected abstract WrappingColumn star();
 
-  public abstract void log(ToString t);
+  protected abstract void log(ToString t);
 
 }

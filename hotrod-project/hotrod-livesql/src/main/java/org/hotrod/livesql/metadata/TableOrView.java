@@ -10,6 +10,7 @@ import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.TableExpression;
 import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
+import org.hotrod.livesql.util.ToString;
 
 public abstract class TableOrView<M> extends TableExpression {
 
@@ -118,6 +119,12 @@ public abstract class TableOrView<M> extends TableExpression {
     sb.append(this.name);
     return sb.toString();
   }
+  
+  @Override
+  protected final void log(ToString t) {
+    t.printObject(this, this.getName() + "(" + this.getAlias() + ")");
+  }
+
 
   // --- Indexable methods (hashCode & equals) ---
   // DO NOT implement these methods, since the code relies on the default

@@ -408,7 +408,7 @@ public abstract class SingleSelectObject<T> extends MultiSet<T> {
       for (ResultSetColumn r : this.resultSetColumns) {
         t.indent();
         t.prompt("rsc - " + r.toString() + " // ");
-        r.log(t);
+        Shield.log(r, t);
         t.unindent();
       }
     }
@@ -416,19 +416,19 @@ public abstract class SingleSelectObject<T> extends MultiSet<T> {
       for (Expression expr : this.expandedQueryColumns) {
         t.indent();
         t.prompt("expr");
-        expr.log(t);
+        Shield.log(expr, t);
         t.unindent();
       }
     }
     t.indent();
     if (this.from != null) {
-      this.from.log(t);
+      SShield.log(this.from, t);
     }
     if (this.joins != null) {
       for (Join j : this.joins) {
         TableExpression te = SShield.getTableExpression(j);
         t.indent();
-        te.log(t);
+        SShield.log(te, t);
         t.unindent();
       }
     }

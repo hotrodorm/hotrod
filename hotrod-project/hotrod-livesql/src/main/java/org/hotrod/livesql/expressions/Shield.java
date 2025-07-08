@@ -9,6 +9,7 @@ import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
+import org.hotrod.livesql.util.ToString;
 
 public class Shield {
 
@@ -63,6 +64,10 @@ public class Shield {
 
   public static String render(final Expression expr) {
     return expr.render();
+  }
+
+  public static void log(ResultSetColumn expr, ToString t) {
+    expr.log(t);
   }
 
 }

@@ -198,7 +198,7 @@ public abstract class Expression extends ResultSetColumn {
     return this.getClass().getSimpleName() + "@" + System.identityHashCode(this) + ": typeHandler=" + this.typeHandler;
   }
 
-  public void log(ToString t) {
+  protected void log(ToString t) {
     t.printObject(this, "expr");
     t.printProperty("typeHandler", this.typeHandler);
   }

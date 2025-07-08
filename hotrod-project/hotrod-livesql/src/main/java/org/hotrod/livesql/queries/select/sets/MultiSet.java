@@ -179,6 +179,6 @@ public abstract class MultiSet<T> {
     }
   }
 
-  public abstract void log(ToString t);
+  protected abstract void log(ToString t);
 
 }

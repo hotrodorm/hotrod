@@ -10,6 +10,7 @@ import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
 import org.hotrod.livesql.queries.select.sets.CombinedSelectObject;
 import org.hotrod.livesql.queries.select.sets.SingleSelectObject;
+import org.hotrod.livesql.util.ToString;
 
 public class SShield {
 
@@ -77,6 +78,10 @@ public class SShield {
 
   public static void renderTo(Join j, QueryWriter w) {
     j.getTableExpression().renderTo(w);
+  }
+
+  public static void log(TableExpression te, ToString t) {
+    te.log(t);
   }
 
 }

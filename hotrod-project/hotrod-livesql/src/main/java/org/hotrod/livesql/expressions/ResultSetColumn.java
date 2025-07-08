@@ -39,6 +39,6 @@ public abstract class ResultSetColumn {
 
   protected abstract List<Expression> expand();
 
-  public abstract void log(ToString t);
+  protected abstract void log(ToString t);
 
 }

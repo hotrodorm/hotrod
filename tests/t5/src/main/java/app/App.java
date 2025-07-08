@@ -281,7 +281,8 @@ public class App {
 
     Subquery y = sql.subquery("y",
         sql.select(x.num("balx").as("baly"), x.str("name"), x.dt("updatedAt")).from(x).limit(1));
-    List<Row> rows = sql.select(y.num("baly").as("balm"), y.str("name").as("namy"), y.dt("updatedAt").as("updated"), sql.literal(123).mult(3).as("total").type(BigDecimal.class)) //
+    List<Row> rows = sql.select(y.num("baly").as("balm"), y.str("name").as("namy"), y.dt("updatedAt").as("updated"),
+        sql.literal(123).mult(3).as("total").type(BigDecimal.class)) //
 //  List<Row> rows = sql.select(x.num("cost"), x.num("balance")) //
         .from(y) //
         .execute();
