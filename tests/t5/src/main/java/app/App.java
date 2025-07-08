@@ -274,10 +274,14 @@ public class App {
 
 //  Subquery x = sql.subquery("x", sql.select(a.star().filter(c->c.getProperty().equals("balance") ||c.getProperty().equals("name"))).from(a).limit(1));
 //    Subquery x = sql.subquery("x", sql.select(a.star().filter(c->c.getProperty().equals("balance") )).from(a).limit(1));
-    Subquery x = sql.subquery("x", sql.select(a.balance.as("balx"), a.active).from(a).limit(1));
-    List<Row> rows = sql.select() //
+
+//    Subquery x = sql.subquery("x", sql.select(a.id, a.name, a.updatedAt).from(a).limit(1));
+    Subquery x = sql.subquery("x", sql.select(a.balance.as("balx")).from(a).limit(1));
+
+    Subquery y = sql.subquery("y", sql.select(x.num("balx").as("baly")).from(x).limit(1));
+    List<Row> rows = sql.select(y.num("baly").as("balm")) //
 //  List<Row> rows = sql.select(x.num("cost"), x.num("balance")) //
-        .from(x) //
+        .from(y) //
         .execute();
 
 //    Subquery x = sql.subquery("x", sql.select(sql.val(100).mult(1.1).as("cost"), a2.balance).from(a2).limit(1));

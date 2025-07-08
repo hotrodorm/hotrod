@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.queries.subqueries.Subquery;
-import org.hotrod.livesql.queries.subqueries.SubqueryBooleanColumn;
+import org.hotrod.livesql.queries.subqueries.SubqueryBooleanRefColumn;
 import org.hotrod.livesql.util.BoxUtil;
 
 public abstract class GeneralBooleanExpression extends ComparableExpression {
@@ -18,7 +18,7 @@ public abstract class GeneralBooleanExpression extends ComparableExpression {
 
   @Override
   protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
-    return new SubqueryBooleanColumn(subquery, alias);
+    return new SubqueryBooleanRefColumn(subquery, alias);
   }
 
   // Coalesce

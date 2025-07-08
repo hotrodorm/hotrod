@@ -3,13 +3,16 @@ package org.hotrod.livesql.metadata;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.object.GeneralObjectExpression;
 import org.hotrod.livesql.queries.QueryWriter;
+import org.hotrod.livesql.queries.subqueries.QShield;
+import org.hotrod.livesql.queries.subqueries.Subquery;
+import org.hotrod.livesql.queries.subqueries.SubqueryObjectRefColumn;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
 public class ObjectEntityColumn extends GeneralObjectExpression implements EntityColumn {
 
   // Properties
 
-  private TableOrView objectInstance;
+  private TableOrView<?> objectInstance;
 
   private String name;
   private String type;
@@ -20,7 +23,7 @@ public class ObjectEntityColumn extends GeneralObjectExpression implements Entit
 
   // Constructor
 
-  public ObjectEntityColumn(final TableOrView objectInstance, final String name, final String property,
+  public ObjectEntityColumn(final TableOrView<?> objectInstance, final String name, final String property,
       final String type, final Integer columnSize, final Integer decimalDigits, final TypeHandler handler) {
     super(Expression.PRECEDENCE_COLUMN);
     this.objectInstance = objectInstance;
@@ -30,6 +33,13 @@ public class ObjectEntityColumn extends GeneralObjectExpression implements Entit
     this.columnSize = columnSize;
     this.decimalDigits = decimalDigits;
     super.setTypeHandler(handler);
+  }
+
+  @Override
+  protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
+    SubqueryObjectRefColumn c = new SubqueryObjectRefColumn(subquery, alias);
+    QShield.setColumn(c, this);
+    return c;
   }
 
   // Rendering

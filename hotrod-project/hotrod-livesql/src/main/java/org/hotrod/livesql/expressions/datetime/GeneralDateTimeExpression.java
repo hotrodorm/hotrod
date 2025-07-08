@@ -22,7 +22,7 @@ import org.hotrod.livesql.expressions.predicates.NotEqual;
 import org.hotrod.livesql.expressions.predicates.NotInList;
 import org.hotrod.livesql.expressions.predicates.Predicate;
 import org.hotrod.livesql.queries.subqueries.Subquery;
-import org.hotrod.livesql.queries.subqueries.SubqueryDateTimeColumn;
+import org.hotrod.livesql.queries.subqueries.SubqueryDateTimeRefColumn;
 import org.hotrod.livesql.util.BoxUtil;
 
 public abstract class GeneralDateTimeExpression extends ComparableExpression {
@@ -33,7 +33,7 @@ public abstract class GeneralDateTimeExpression extends ComparableExpression {
 
   @Override
   protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
-    return new SubqueryDateTimeColumn(subquery, alias);
+    return new SubqueryDateTimeRefColumn(subquery, alias);
   }
 
   // Coalesce

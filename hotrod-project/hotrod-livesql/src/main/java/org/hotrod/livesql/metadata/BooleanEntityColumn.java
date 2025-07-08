@@ -3,13 +3,16 @@ package org.hotrod.livesql.metadata;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.livesql.queries.QueryWriter;
+import org.hotrod.livesql.queries.subqueries.QShield;
+import org.hotrod.livesql.queries.subqueries.Subquery;
+import org.hotrod.livesql.queries.subqueries.SubqueryBooleanRefColumn;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
 public class BooleanEntityColumn extends GeneralBooleanExpression implements EntityColumn {
 
   // Properties
 
-  private TableOrView objectInstance;
+  private TableOrView<?> objectInstance;
   private String name;
   private String type;
   private Integer columnSize;
@@ -18,7 +21,7 @@ public class BooleanEntityColumn extends GeneralBooleanExpression implements Ent
 
   // Constructor
 
-  public BooleanEntityColumn(final TableOrView objectInstance, final String name, final String property,
+  public BooleanEntityColumn(final TableOrView<?> objectInstance, final String name, final String property,
       final String type, final Integer columnSize, final Integer decimalDigits, final TypeHandler handler) {
     super(Expression.PRECEDENCE_COLUMN);
     this.objectInstance = objectInstance;
@@ -28,6 +31,13 @@ public class BooleanEntityColumn extends GeneralBooleanExpression implements Ent
     this.columnSize = columnSize;
     this.decimalDigits = decimalDigits;
     super.setTypeHandler(handler);
+  }
+
+  @Override
+  protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
+    SubqueryBooleanRefColumn c = new SubqueryBooleanRefColumn(subquery, alias);
+    QShield.setColumn(c, this);
+    return c;
   }
 
   // Rendering

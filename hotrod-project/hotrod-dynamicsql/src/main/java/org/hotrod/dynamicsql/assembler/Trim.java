@@ -67,7 +67,7 @@ public class Trim<P extends AbstractSentence<?, ?>> extends AbstractSentence<Tri
           this.headerSuffix, this.separatorPrefix, this.separatorSuffix, this.tailPrefix, this.tailSuffix,
           this.removePrefixes);
     }
-    Shield.addSegment(this.parent, s);
+    DynShield.addSegment(this.parent, s);
     return this.parent;
   }
 

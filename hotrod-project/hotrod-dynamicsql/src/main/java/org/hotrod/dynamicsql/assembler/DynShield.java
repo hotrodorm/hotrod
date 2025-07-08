@@ -4,7 +4,7 @@ import org.hotrod.dynamicsql.segments.OtherwiseSegment;
 import org.hotrod.dynamicsql.segments.QuerySegment;
 import org.hotrod.dynamicsql.segments.WhenSegment;
 
-public class Shield {
+public class DynShield {
 
   public static void addSegment(AbstractSentence<?, ?> parent, QuerySegment segment) {
     parent.segments.add(segment);

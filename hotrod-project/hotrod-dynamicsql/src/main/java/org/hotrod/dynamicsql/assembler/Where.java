@@ -35,7 +35,7 @@ public class Where<P extends AbstractSentence<?, ?>> extends AbstractSentence<Wh
   public P endwhere() {
     List<IfSegment> ifSegments = this.segments.stream().map(s -> (IfSegment) s).collect(Collectors.toList());
     WhereSegment s = new WhereSegment(this.separator, ifSegments, super.factory);
-    Shield.addSegment(this.parent, s);
+    DynShield.addSegment(this.parent, s);
     return this.parent;
   }
 

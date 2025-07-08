@@ -18,7 +18,7 @@ import org.hotrod.livesql.expressions.predicates.NotEqual;
 import org.hotrod.livesql.expressions.predicates.NotInList;
 import org.hotrod.livesql.expressions.predicates.Predicate;
 import org.hotrod.livesql.queries.subqueries.Subquery;
-import org.hotrod.livesql.queries.subqueries.SubqueryByteArrayColumn;
+import org.hotrod.livesql.queries.subqueries.SubqueryByteArrayRefColumn;
 import org.hotrod.livesql.util.BoxUtil;
 
 public abstract class GeneralByteArrayExpression extends ComparableExpression {
@@ -29,7 +29,7 @@ public abstract class GeneralByteArrayExpression extends ComparableExpression {
 
   @Override
   protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
-    return new SubqueryByteArrayColumn(subquery, alias);
+    return new SubqueryByteArrayRefColumn(subquery, alias);
   }
 
   // Coalesce

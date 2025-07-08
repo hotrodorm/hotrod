@@ -15,7 +15,7 @@ public class Otherwise<P extends Choose<?>, G extends AbstractSentence<?, ?>>
   }
 
   public ChooseTail<P, G> endotherwise() {
-    Shield.addOtherwise(this.parent, new OtherwiseSegment(super.segments, super.factory));
+    DynShield.addOtherwise(this.parent, new OtherwiseSegment(super.segments, super.factory));
     ChooseTail<P, G> es = new ChooseTail<P, G>(this.factory, this.parent, this.grandpa);
     return es;
   }

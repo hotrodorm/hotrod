@@ -3,13 +3,16 @@ package org.hotrod.livesql.metadata;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.datetime.GeneralDateTimeExpression;
 import org.hotrod.livesql.queries.QueryWriter;
+import org.hotrod.livesql.queries.subqueries.QShield;
+import org.hotrod.livesql.queries.subqueries.Subquery;
+import org.hotrod.livesql.queries.subqueries.SubqueryDateTimeRefColumn;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
 public class DateTimeEntityColumn extends GeneralDateTimeExpression implements EntityColumn {
 
   // Properties
 
-  private TableOrView objectInstance;
+  private TableOrView<?> objectInstance;
 
   private String name;
   private String type;
@@ -20,7 +23,7 @@ public class DateTimeEntityColumn extends GeneralDateTimeExpression implements E
 
   // Constructor
 
-  public DateTimeEntityColumn(final TableOrView objectInstance, final String name, final String property,
+  public DateTimeEntityColumn(final TableOrView<?> objectInstance, final String name, final String property,
       final String type, final Integer columnSize, final Integer decimalDigits, final TypeHandler handler) {
     super(Expression.PRECEDENCE_COLUMN);
     this.objectInstance = objectInstance;
@@ -30,6 +33,13 @@ public class DateTimeEntityColumn extends GeneralDateTimeExpression implements E
     this.columnSize = columnSize;
     this.decimalDigits = decimalDigits;
     this.setTypeHandler(handler);
+  }
+
+  @Override
+  protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
+    SubqueryDateTimeRefColumn c = new SubqueryDateTimeRefColumn(subquery, alias);
+    QShield.setColumn(c, this);
+    return c;
   }
 
   // Rendering

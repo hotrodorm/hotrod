@@ -26,7 +26,7 @@ import org.hotrod.livesql.expressions.predicates.NotLike;
 import org.hotrod.livesql.expressions.predicates.Predicate;
 import org.hotrod.livesql.expressions.strings.postgresql.Ascii;
 import org.hotrod.livesql.queries.subqueries.Subquery;
-import org.hotrod.livesql.queries.subqueries.SubqueryStringColumn;
+import org.hotrod.livesql.queries.subqueries.SubqueryStringRefColumn;
 import org.hotrod.livesql.util.BoxUtil;
 
 public abstract class GeneralStringExpression extends ComparableExpression {
@@ -37,7 +37,7 @@ public abstract class GeneralStringExpression extends ComparableExpression {
 
   @Override
   protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
-    return new SubqueryStringColumn(subquery, alias);
+    return new SubqueryStringRefColumn(subquery, alias);
   }
 
   // Coalesce

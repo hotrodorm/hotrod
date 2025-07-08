@@ -14,7 +14,7 @@ public class When<P extends Choose<?>> extends Sentence<When<P>, P> {
   }
 
   public P endwhen() {
-    Shield.addWhen(this.parent, new WhenSegment(this.test, super.segments, super.factory));
+    DynShield.addWhen(this.parent, new WhenSegment(this.test, super.segments, super.factory));
     return this.parent;
   }
 

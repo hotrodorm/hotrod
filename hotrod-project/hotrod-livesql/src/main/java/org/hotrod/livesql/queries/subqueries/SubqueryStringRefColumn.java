@@ -5,15 +5,13 @@ import java.util.logging.Logger;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.strings.StringExpression;
-import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.select.TableExpression;
-import org.hotrod.livesql.queries.typesolver.TypeHandler;
+import org.hotrod.livesql.util.OUtil;
 
-public class SubqueryStringColumn extends StringExpression implements SubqueryColumn {
+public class SubqueryStringRefColumn extends StringExpression implements SubqueryColumn {
 
   @SuppressWarnings("unused")
-  private static final Logger log = Logger.getLogger(SubqueryStringColumn.class.getName());
+  private static final Logger log = Logger.getLogger(SubqueryStringRefColumn.class.getName());
 
   // Properties
 
@@ -24,10 +22,14 @@ public class SubqueryStringColumn extends StringExpression implements SubqueryCo
 
   // Constructor
 
-  public SubqueryStringColumn(final Subquery subquery, final String referencedColumnName) {
+  public SubqueryStringRefColumn(final Subquery subquery, final String referencedColumnName) {
     super(Expression.PRECEDENCE_COLUMN);
     this.subquery = subquery;
     this.referencedColumnName = referencedColumnName;
+  }
+
+  protected void setColumn(Expression column) {
+    this.column = column;
   }
 
   @Override
@@ -42,23 +44,21 @@ public class SubqueryStringColumn extends StringExpression implements SubqueryCo
 
   @Override
   protected Expression getEmergingExpression() {
-    this.column = this.subquery.findColumnByName(this.referencedColumnName);
-    if (this.column == null) {
-      throw new RuntimeException(
-          "Could not find column '" + this.referencedColumnName + "' in subquery '" + this.subquery.getName() + "'");
-    }
-    return this;
-  }
+    log.info("*** getEmergingExpression for '" + this.referencedColumnName + "' on Subquery" + OUtil.hc(this.subquery)
+        + " - this.column=" + this.column);
 
-  @SuppressWarnings("rawtypes")
-  @Override
-  protected TypeHandler getTypeHandler() {
-    try {
-      EntityColumn ec = (EntityColumn) this.column;
-      return Shield.getTypeHandler(this.column);
-    } catch (ClassCastException e) {
-      return super.typeHandler;
+    if (this.column == null) {
+      String colName = this.referencedColumnName;
+      this.column = this.subquery.findColumnByName(colName);
+      log.info("%% column " + this.subquery.getName() + "." + colName + "=" + this.column);
+      if (this.column == null) {
+        throw new RuntimeException(
+            "Could not find column '" + colName + "' in subquery '" + this.subquery.getName() + "'");
+      }
     }
+
+    this.typeHandler = Shield.getTypeHandler(this.column);
+    return this;
   }
 
   // Rendering
@@ -73,6 +73,11 @@ public class SubqueryStringColumn extends StringExpression implements SubqueryCo
   protected String render() {
     return this.subquery.getName().toString() + ":" + this.referencedColumnName + " typeHandler="
         + super.getTypeHandler();
+  }
+
+  public String toString() {
+    return this.subquery.getName().toString() + ":" + this.referencedColumnName + " - column: "
+        + (this.column == null ? "null" : this.column.getClass().getName()) + " - typeHandler: " + this.typeHandler;
   }
 
 }

@@ -34,7 +34,7 @@ public class Choose<P extends AbstractSentence<?, ?>> extends AbstractSentence<C
   }
 
   public P endchoose() {
-    Shield.addSegment(this.parent, new ChooseSegment(this.whens, this.otherwise, this.factory));
+    DynShield.addSegment(this.parent, new ChooseSegment(this.whens, this.otherwise, this.factory));
     return this.parent;
   }
 

@@ -82,23 +82,23 @@ public class Subquery extends TableExpression {
   }
 
   public StringExpression str(final String name) {
-    return new SubqueryStringColumn(this, name);
+    return new SubqueryStringRefColumn(this, name);
   }
 
   public DateTimeExpression dt(final String name) {
-    return new SubqueryDateTimeColumn(this, name);
+    return new SubqueryDateTimeRefColumn(this, name);
   }
 
   public BooleanExpression bool(final String name) {
-    return new SubqueryBooleanColumn(this, name);
+    return new SubqueryBooleanRefColumn(this, name);
   }
 
   public ByteArrayExpression bin(final String name) {
-    return new SubqueryByteArrayColumn(this, name);
+    return new SubqueryByteArrayRefColumn(this, name);
   }
 
   public ObjectExpression obj(final String name) {
-    return new SubqueryObjectColumn(this, name);
+    return new SubqueryObjectRefColumn(this, name);
   }
 
   public AllSubqueryColumns star() {

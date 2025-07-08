@@ -14,7 +14,7 @@ public class If<P extends AbstractSentence<?, ?>> extends Sentence<If<P>, P> {
   }
 
   public P endif() {
-    Shield.addSegment(this.parent, new IfSegment(this.test, super.segments, super.factory));
+    DynShield.addSegment(this.parent, new IfSegment(this.test, super.segments, super.factory));
     return this.parent;
   }
 

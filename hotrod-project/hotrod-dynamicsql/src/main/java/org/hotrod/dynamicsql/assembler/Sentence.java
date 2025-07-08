@@ -91,7 +91,7 @@ public abstract class Sentence<M extends Sentence<?, ?>, P> extends AbstractSent
 
   public M bind(String name, String value) {
     BindSegment s = new BindSegment(name, value, this.factory);
-    Shield.addSegment(this, s);
+    DynShield.addSegment(this, s);
     return this.me;
   }
 

@@ -23,7 +23,7 @@ public class ForEach<P extends AbstractSentence<?, ?>> extends Sentence<ForEach<
   }
 
   public P endforeach() {
-    Shield.addSegment(this.parent, new ForEachSegment(this.item, this.collection, this.open, this.separator, this.close,
+    DynShield.addSegment(this.parent, new ForEachSegment(this.item, this.collection, this.open, this.separator, this.close,
         super.segments, super.factory));
     return this.parent;
   }

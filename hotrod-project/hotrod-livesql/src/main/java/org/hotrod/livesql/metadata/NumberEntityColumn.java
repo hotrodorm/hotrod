@@ -3,7 +3,6 @@ package org.hotrod.livesql.metadata;
 import java.util.logging.Logger;
 
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.numbers.GeneralNumberExpression;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.subqueries.QShield;
@@ -17,7 +16,7 @@ public class NumberEntityColumn extends GeneralNumberExpression implements Entit
 
   // Properties
 
-  private TableOrView objectInstance;
+  private TableOrView<?> objectInstance;
 
   private String name;
   private String type;
@@ -28,7 +27,7 @@ public class NumberEntityColumn extends GeneralNumberExpression implements Entit
 
   // Constructor
 
-  public NumberEntityColumn(final TableOrView objectInstance, final String name, final String property,
+  public NumberEntityColumn(final TableOrView<?> objectInstance, final String name, final String property,
       final String type, final Integer columnSize, final Integer decimalDigits, final TypeHandler handler) {
     super(Expression.PRECEDENCE_COLUMN);
     this.objectInstance = objectInstance;
@@ -44,8 +43,7 @@ public class NumberEntityColumn extends GeneralNumberExpression implements Entit
   protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
     SubqueryNumberRefColumn c = new SubqueryNumberRefColumn(subquery, alias);
     QShield.setColumn(c, this);
-    Shield.setTypeHandler(c, this.typeHandler);
-    log.info("Setting typeHandler: " + this.typeHandler);
+//    Shield.setTypeHandler(c, this.typeHandler);
     return c;
   }
 

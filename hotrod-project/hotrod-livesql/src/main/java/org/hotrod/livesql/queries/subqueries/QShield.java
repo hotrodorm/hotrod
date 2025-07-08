@@ -12,5 +12,25 @@ public class QShield {
   public static void setColumn(SubqueryNumberRefColumn sc, Expression column) {
     sc.setColumn(column);
   }
-  
+
+  public static void setColumn(SubqueryStringRefColumn sc, Expression column) {
+    sc.setColumn(column);
+  }
+
+  public static void setColumn(SubqueryDateTimeRefColumn sc, Expression column) {
+    sc.setColumn(column);
+  }
+
+  public static void setColumn(SubqueryBooleanRefColumn sc, Expression column) {
+    sc.setColumn(column);
+  }
+
+  public static void setColumn(SubqueryByteArrayRefColumn sc, Expression column) {
+    sc.setColumn(column);
+  }
+
+  public static void setColumn(SubqueryObjectRefColumn sc, Expression column) {
+    sc.setColumn(column);
+  }
+
 }
