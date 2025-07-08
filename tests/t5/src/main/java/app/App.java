@@ -280,13 +280,13 @@ public class App {
     Subquery x = sql.subquery("x", sql.select(a.balance.as("balx"), a.name, a.updatedAt).from(a).limit(1));
 
     Subquery y = sql.subquery("y", sql.select().from(x).limit(1));
-//    List<Row> rows = sql.select(y.star(), sql.literal(123).mult(3).as("total")) //
-////  List<Row> rows = sql.select(x.num("cost"), x.num("balance")) //
-//        .from(y) //
-//        .execute();
+    List<Row> rows = sql.select(y.star(), sql.literal(123).mult(3).as("total").type(BigDecimal.class)) //
+//  List<Row> rows = sql.select(x.num("cost"), x.num("balance")) //
+        .from(y) //
+        .execute();
 
-    List<Row> rows = sql.select(sql.literal(123).mult(3).as("total")).execute();
-//    List<Row> rows = sql.select(sql.literal(123).mult(3).as("total").type(BigDecimal.class)).execute();
+//    List<Row> rows = sql.select(sql.literal(123).mult(3).as("total")).execute();
+//    List<Row> rows = sql.select(sql.literal(123).mult(3).as("total")).execute();
 
 //    Subquery x = sql.subquery("x", sql.select(sql.val(100).mult(1.1).as("cost"), a2.balance).from(a2).limit(1));
 //

@@ -13,7 +13,7 @@ public class TypedExpression extends Expression {
   public TypedExpression(Expression expr, Class<?> type) {
     super(expr);
     TypeHandler<?, ?> th = TypeHandler.forClass(type, TypeSource.RUNTIME_DESIGNATED);
-    super.setTypeHandler(th);
+    Shield.setTypeHandler(expr, th);
     this.typeHandler = th;
     this.expr = expr;
   }
