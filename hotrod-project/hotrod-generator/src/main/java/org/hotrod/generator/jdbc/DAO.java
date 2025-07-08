@@ -1316,12 +1316,12 @@ public class DAO {
   }
 
   private Class<?> toLiveSQLType(final String javaType) {
-    if ("java.lang.Byte".equals(javaType) //
-        || "java.lang.Short".equals(javaType) //
-        || "java.lang.Integer".equals(javaType) //
-        || "java.lang.Long".equals(javaType) //
-        || "java.lang.Float".equals(javaType) //
-        || "java.lang.Double".equals(javaType) //
+    if ("java.lang.Byte".equals(javaType) || "Byte".equals(javaType) //
+        || "java.lang.Short".equals(javaType) || "Short".equals(javaType)//
+        || "java.lang.Integer".equals(javaType) || "Integer".equals(javaType) ////
+        || "java.lang.Long".equals(javaType) || "Long".equals(javaType) //
+        || "java.lang.Float".equals(javaType) || "Float".equals(javaType) //
+        || "java.lang.Double".equals(javaType) || "Double".equals(javaType) //
         || "java.math.BigInteger".equals(javaType) //
         || "java.math.BigDecimal".equals(javaType) //
     ) {
@@ -1333,8 +1333,8 @@ public class DAO {
         || "java.sql.Timestamp".equals(javaType) //
         || "java.sql.Time".equals(javaType) //
         || "java.time.LocalDateTime".equals(javaType) //
-        || "java.sql.LocalDate".equals(javaType) //
-        || "java.sql.LocalTime".equals(javaType) //
+        || "java.time.LocalDate".equals(javaType) //
+        || "java.time.LocalTime".equals(javaType) //
         || "java.time.ZonedDateTime".equals(javaType) //
         || "java.time.OffsetDateTime".equals(javaType) //
         || "java.time.OffsetTime".equals(javaType) //
@@ -1581,6 +1581,7 @@ public class DAO {
     JDBC_GETTERS.put("java.lang.Float", JDBCGetter.prim("getFloat"));
     JDBC_GETTERS.put("java.lang.Integer", JDBCGetter.prim("getInt"));
     JDBC_GETTERS.put("java.lang.Long", JDBCGetter.prim("getLong"));
+    JDBC_GETTERS.put("java.lang.Boolean", JDBCGetter.prim("getBoolean"));
     JDBC_GETTERS.put("java.lang.Short", JDBCGetter.prim("getShort"));
     JDBC_GETTERS.put("java.sql.SQLXML", JDBCGetter.obj("getSQLXML"));
     JDBC_GETTERS.put("java.lang.String", JDBCGetter.obj("getString"));
@@ -1594,6 +1595,7 @@ public class DAO {
     String javaClass = cm.getType().getJavaClassName();
     ConverterTag ct = cm.getConverter();
     String cn = cm.getId().getCanonicalSQLName();
+    log.info("-- " + cn + ": javaClass=" + javaClass);
 
     String colName = "\"" + SUtil.escapeJavaString(cm.getLabel()) + "\"";
 
@@ -1604,6 +1606,7 @@ public class DAO {
 
     if (ct == null) { // No converter
       JDBCGetter g = JDBC_GETTERS.get(javaClass);
+      log.info("- g=" + g + " method=" + (g == null ? "null" : g.getResultSetMethod()));
       String var = "col" + ordinal;
       ExternalClass jc = ExternalClass.of(javaClass);
       if (g != null) {

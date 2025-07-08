@@ -49,14 +49,17 @@
   deleteOL(Account baseline);              // Full row check
 
   delete(Account filter);                  // by example  
- -->
 
   <table name="b" />
   <table name="c" />
+ -->
+
 
   <table name="account">
     <column name="balance" java-type="Double" />
-  
+    <column name="active" converter="boolean_stored_as_int" />
+  </table>
+    
 <!-- 
    -->
   
@@ -84,6 +87,7 @@
  
 <!-- ###  
   -->
+<!--   
     <select method="findBigAccounts">
 select *
 from account
@@ -91,7 +95,6 @@ where balance >= 300
     </select> 
 
   </table>
-<!--   
  -->
  
 <!--
@@ -106,6 +109,7 @@ where balance >= 300
   </table>
  -->
 
+<!-- 
    <dao name="Test2DAO">
 
     <select method="findTAccounts" vo="TAccount" mode="list">
@@ -114,7 +118,7 @@ where balance >= 300
       from account
       where balance >= 100
     </select> 
-
+ -->
     <!-- ###
    <dao name="OperationDAO">
     <query method="activateBigAccounts">
@@ -155,6 +159,7 @@ where balance >= 300
       
     </query>
 -->
+<!-- 
     <select method="findBigAccounts" vo="BigAccount">
 select id, balance,
   case when active then 'Active' else 'Inactive' end as status,
@@ -164,5 +169,5 @@ where balance >= 200
     </select> 
        
   </dao>
- 
+  -->
 </hotrod>

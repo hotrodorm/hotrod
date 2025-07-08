@@ -1,6 +1,5 @@
 package app;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Logger;
@@ -22,10 +21,8 @@ import app.persistence.dao.AccountDAO;
 import app.persistence.dao.AccountDAO.AccountTable;
 import app.persistence.dao.ProductDAO;
 import app.persistence.dao.ProductDAO.ProductTable;
-import app.persistence.dao.Test2DAO;
 import app.persistence.model.Account;
 import app.persistence.model.Product;
-import app.persistence.model.TAccount;
 
 @SpringBootApplication
 @Configuration
@@ -49,8 +46,8 @@ public class App {
 //  @Autowired
 //  private ReportingDAO reportingDAO;
 
-  @Autowired
-  private Test2DAO test2DAO;
+//  @Autowired
+//  private Test2DAO test2DAO;
 
   @Autowired
   private LiveSQL sql;
@@ -163,13 +160,13 @@ public class App {
 //    System.out.println("Deleted b.");
 //  }
 
-  private void testNitro6() throws SQLException, DynamicExpressionException, IOException {
-    List<TAccount> tas = this.test2DAO.findTAccounts(false);
-    for (TAccount ta : tas) {
-      System.out.println("ta=" + ta);
-
-    }
-  }
+//  private void testNitro6() throws SQLException, DynamicExpressionException, IOException {
+//    List<TAccount> tas = this.test2DAO.findTAccounts(false);
+//    for (TAccount ta : tas) {
+//      System.out.println("ta=" + ta);
+//
+//    }
+//  }
 
 //  private void testConverter6() throws SQLException, DynamicExpressionException, IOException {
 //
@@ -277,8 +274,8 @@ public class App {
 
 //  Subquery x = sql.subquery("x", sql.select(a.star().filter(c->c.getProperty().equals("balance") ||c.getProperty().equals("name"))).from(a).limit(1));
 //    Subquery x = sql.subquery("x", sql.select(a.star().filter(c->c.getProperty().equals("balance") )).from(a).limit(1));
-    Subquery x = sql.subquery("x", sql.select(a.balance.as("balx"), sql.literal(123).as("val1")).from(a).limit(1));
-    List<Row> rows = sql.select(x.num("balx").as("balm")) //
+    Subquery x = sql.subquery("x", sql.select(a.balance.as("balx"), a.active).from(a).limit(1));
+    List<Row> rows = sql.select() //
 //  List<Row> rows = sql.select(x.num("cost"), x.num("balance")) //
         .from(x) //
         .execute();

@@ -1,5 +1,7 @@
 package org.hotrod.config;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -124,6 +126,17 @@ public class ColumnTag extends AbstractConfigurationTag {
 
   // Behavior
 
+  private static Map<String, String> TYPE_SYNONYMS = new HashMap<>();
+  static {
+    TYPE_SYNONYMS.put("Byte", "java.lang.Byte");
+    TYPE_SYNONYMS.put("Short", "java.lang.Short");
+    TYPE_SYNONYMS.put("Integer", "java.lang.Integer");
+    TYPE_SYNONYMS.put("Long", "java.lang.Long");
+    TYPE_SYNONYMS.put("Float", "java.lang.Float");
+    TYPE_SYNONYMS.put("Double", "java.lang.Double");
+    TYPE_SYNONYMS.put("Boolean", "java.lang.Boolean");
+  }
+
   public void validate(final HotRodConfigTag config, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 
@@ -159,6 +172,10 @@ public class ColumnTag extends AbstractConfigurationTag {
         throw new InvalidConfigurationFileException(this,
             "Attribute 'java-type' of tag <" + super.getTagName() + "> cannot be empty. " + "When specified, "
                 + "this attribute must specify a full java class name for the database column.");
+      }
+      String fullType = TYPE_SYNONYMS.get(this.javaType);
+      if (fullType != null) {
+        this.javaType = fullType;
       }
     }
 

@@ -5,7 +5,6 @@ package app.persistence.dao;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.time.LocalDateTime;
@@ -34,11 +33,11 @@ import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.predicates.converter.ConvertedColumn;
 import org.hotrod.livesql.metadata.AllColumns;
 import org.hotrod.livesql.metadata.DateTimeEntityColumn;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.NumberEntityColumn;
-import org.hotrod.livesql.metadata.ObjectEntityColumn;
 import org.hotrod.livesql.metadata.StringEntityColumn;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.DeleteWherePhase;
@@ -56,6 +55,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import app.IntegerBooleanConverter;
 import app.persistence.model.Account;
 
 @Component
@@ -82,6 +82,10 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   private LiveSQLContext context;
 
+  // CONVERTERS
+
+  private final IntegerBooleanConverter converter0 = new IntegerBooleanConverter();
+
   // ROW READER
 
   private final RowReader<Account> rowReader = new RowReader<Account>() {
@@ -100,11 +104,13 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       String col3 = rs.getString("TYPE"); // TYPE
       row.setType(col3);
 
-      Double col4 = rs.getObject("BALANCE", Double.class); // BALANCE
+      Double col4 = rs.getDouble("BALANCE"); // BALANCE
+      if (rs.wasNull()) col4 = null;
       row.setBalance(col4);
 
-      Integer col5 = rs.getInt("ACTIVE"); // ACTIVE
-      if (rs.wasNull()) col5 = null;
+      Integer raw5 = rs.getInt("ACTIVE"); // ACTIVE
+      if (rs.wasNull()) raw5 = null;
+      Boolean col5 = converter0.decode(raw5, conn);
       row.setActive(col5);
 
       LocalDateTime col6 = rs.getObject("UPDATED_AT", java.time.LocalDateTime.class); // UPDATED_AT
@@ -127,7 +133,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     private String name;
     private String type;
     private Double balance;
-    private Integer active;
+    private Boolean active;
     private LocalDateTime updatedAt;
     private Integer version;
 
@@ -147,7 +153,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       return this.balance;
     }
 
-    public Integer getActive() {
+    public Boolean getActive() {
       return this.active;
     }
 
@@ -535,10 +541,10 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       "NAME", "name", "CHARACTER VARYING", 20, 0, TypeHandler.forClass(String.class, TypeSource.ENTITY_COLUMN));
     public final StringEntityColumn type = new StringEntityColumn(this,
       "TYPE", "type", "CHARACTER VARYING", 3, 0, TypeHandler.forClass(String.class, TypeSource.ENTITY_COLUMN));
-    public final ObjectEntityColumn balance = new ObjectEntityColumn(this,
+    public final NumberEntityColumn balance = new NumberEntityColumn(this,
       "BALANCE", "balance", "INTEGER", 32, 0, TypeHandler.forClass(Double.class, TypeSource.ENTITY_COLUMN));
-    public final NumberEntityColumn active = new NumberEntityColumn(this,
-      "ACTIVE", "active", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.ENTITY_COLUMN));
+    private final TypeHandler<Integer, Boolean> th0 = TypeHandler.forConverter(new IntegerBooleanConverter(), TypeSource.ENTITY_COLUMN);
+    public final ConvertedColumn<Integer, Boolean> active = new ConvertedColumn<Integer, Boolean>(this, "ACTIVE", "active", "INTEGER", 32, 0, th0, th0.getConverter());
     public final DateTimeEntityColumn updatedAt = new DateTimeEntityColumn(this,
       "UPDATED_AT", "updatedAt", "TIMESTAMP", 26, 6, TypeHandler.forClass(LocalDateTime.class, TypeSource.ENTITY_COLUMN));
     public final NumberEntityColumn version = new NumberEntityColumn(this,
@@ -577,107 +583,6 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   }
 
-  // NITRO SELECT: findBigAccounts
-
-  private DynamicSelectQuery select0;
-
-  private void initializeSelect0() {
-    this.select0 = dyn
-      .literal("\nselect *\nfrom account\nwhere balance >= 300\n    ")
-      .endSelectQuery();
-  }
-
-  public final class RowReader0 implements RowReader<Account> {
-
-    private boolean present1 = false;
-    private boolean present2 = false;
-    private boolean present3 = false;
-    private boolean present4 = false;
-    private boolean present5 = false;
-    private boolean present6 = false;
-    private boolean present7 = false;
-
-    @Override
-    public void discoverColumns(ResultSet rs) throws SQLException {
-      ResultSetMetaData m = rs.getMetaData();
-      present1 = false;
-      present2 = false;
-      present3 = false;
-      present4 = false;
-      present5 = false;
-      present6 = false;
-      present7 = false;
-      int n = m.getColumnCount();
-      for (int i = 1; i <= n; i++) {
-        String l = m.getColumnLabel(i);
-        if ("ID".equals(l)) present1 = true;
-        if ("NAME".equals(l)) present2 = true;
-        if ("TYPE".equals(l)) present3 = true;
-        if ("BALANCE".equals(l)) present4 = true;
-        if ("ACTIVE".equals(l)) present5 = true;
-        if ("UPDATED_AT".equals(l)) present6 = true;
-        if ("VERSION".equals(l)) present7 = true;
-      }
-    }
-
-    @Override
-    public Account readRowFrom(ResultSet rs, Connection conn) throws SQLException {
-      Account row = applicationContext.getBean(Account.class);
-
-      if (this.present1) {
-        Integer col1 = rs.getInt("ID"); // ID
-        if (rs.wasNull()) col1 = null;
-        row.setId(col1);
-      }
-
-      if (this.present2) {
-        String col2 = rs.getString("NAME"); // NAME
-        row.setName(col2);
-      }
-
-      if (this.present3) {
-        String col3 = rs.getString("TYPE"); // TYPE
-        row.setType(col3);
-      }
-
-      if (this.present4) {
-        Double col4 = rs.getDouble("BALANCE"); // BALANCE
-        if (rs.wasNull()) col4 = null;
-        row.setBalance(col4);
-      }
-
-      if (this.present5) {
-        Integer col5 = rs.getInt("ACTIVE"); // ACTIVE
-        if (rs.wasNull()) col5 = null;
-        row.setActive(col5);
-      }
-
-      if (this.present6) {
-        LocalDateTime col6 = rs.getObject("UPDATED_AT", java.time.LocalDateTime.class); // UPDATED_AT
-        row.setUpdatedAt(col6);
-      }
-
-      if (this.present7) {
-        Integer col7 = rs.getInt("VERSION"); // VERSION
-        if (rs.wasNull()) col7 = null;
-        row.setVersion(col7);
-      }
-
-      return row;
-    }
-
-  };
-  public List<Account> findBigAccounts() throws DynamicExpressionException, SQLException {
-    Parameters context = this.dyn.newParameters();
-    RowReader0 rr = new RowReader0();
-    PreparedSelectQuery<Account> preparedQuery = this.select0.prepare(context, rr);
-    logQuery(preparedQuery);
-    try (Connection conn = this.dataSource.getConnection()) {
-      List<Account> rows = preparedQuery.execute(conn);
-      return rows;
-    }
-  }
-
   @PostConstruct
   public void initializeContext() {
     LiveSQLDialect liveSQLDialect = LShield.getLiveSQLDialect(this.sql);
@@ -691,7 +596,6 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     this.initializeUpdatebyexample();
     this.initializeDeletebypk();
     this.initializeDeletebyexample();
-    this.initializeSelect0();
   }
 
   private void logQuery(PreparedQuery preparedQuery) {
