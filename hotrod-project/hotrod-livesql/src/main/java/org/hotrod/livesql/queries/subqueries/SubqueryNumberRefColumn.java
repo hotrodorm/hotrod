@@ -32,10 +32,6 @@ public class SubqueryNumberRefColumn extends NumberExpression implements Subquer
     }
   }
 
-  protected void setColumn(Expression column) {
-    this.column = column;
-  }
-
   @Override
   protected String getReferenceName() {
     return this.referencedColumnName;

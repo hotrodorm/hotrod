@@ -32,10 +32,6 @@ public class SubqueryBooleanRefColumn extends Predicate implements SubqueryColum
     }
   }
 
-  protected void setColumn(Expression column) {
-    this.column = column;
-  }
-
   @Override
   protected String getReferenceName() {
     return this.referencedColumnName;

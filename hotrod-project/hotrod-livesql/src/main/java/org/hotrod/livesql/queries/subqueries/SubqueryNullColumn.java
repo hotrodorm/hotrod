@@ -7,7 +7,6 @@ import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.strings.StringExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.select.TableExpression;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
 public class SubqueryNullColumn extends StringExpression implements SubqueryColumn {

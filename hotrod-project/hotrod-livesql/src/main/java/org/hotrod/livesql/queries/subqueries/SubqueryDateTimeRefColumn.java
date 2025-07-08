@@ -33,10 +33,6 @@ public class SubqueryDateTimeRefColumn extends DateTimeExpression implements Sub
     }
   }
 
-  protected void setColumn(Expression column) {
-    this.column = column;
-  }
-
   @Override
   protected String getReferenceName() {
     return this.referencedColumnName;

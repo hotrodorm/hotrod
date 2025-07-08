@@ -33,10 +33,6 @@ public class SubqueryByteArrayRefColumn extends ByteArrayExpression implements S
     }
   }
 
-  protected void setColumn(Expression column) {
-    this.column = column;
-  }
-
   @Override
   protected String getReferenceName() {
     return this.referencedColumnName;
