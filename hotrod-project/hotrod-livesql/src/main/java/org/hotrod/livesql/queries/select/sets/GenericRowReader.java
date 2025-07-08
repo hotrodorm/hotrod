@@ -21,6 +21,7 @@ import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.typesolver.ResultSetColumnMetadata;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.queries.typesolver.TypeRule.CouldNotResolveResultSetDataTypeException;
+import org.hotrod.livesql.util.OUtil;
 
 public class GenericRowReader<T> implements RowReader<T> {
 
@@ -35,11 +36,12 @@ public class GenericRowReader<T> implements RowReader<T> {
     int ordinal = 1;
     for (Entry<String, Expression> et : this.queryColumns.entrySet()) {
       Expression expr = et.getValue();
-//      log.info(">> EXPR:" + expr + " th=" + Helper.getTypeHandler(expr));
+      log.info(">> EXPR: " + expr + " expr@" + OUtil.hc(expr) + " th=" + Shield.getTypeHandler(expr));
       if (Shield.getTypeHandler(expr) == null) {
         ResultSetColumnMetadata cm = ResultSetColumnMetadata.of(rm, ordinal);
         try {
           TypeHandler<?, ?> th = context.getTypeSolver().resolve(cm);
+          log.info(">>   --> resolved expr@" + OUtil.hc(expr) + " <- th=" + th);
           Shield.setTypeHandler(expr, th);
         } catch (CouldNotResolveResultSetDataTypeException e) {
           throw new LiveSQLException(
@@ -56,11 +58,11 @@ public class GenericRowReader<T> implements RowReader<T> {
   public T readRowFrom(ResultSet rs, Connection conn) throws SQLException {
     Row r = new Row();
     int i = 1;
-    for (Expression qc : queryColumns.values()) {
+    for (Expression expr : queryColumns.values()) {
       Object value;
-      String alias = Shield.getReferenceName(qc);
-      log.info("COLUMN -- alias=" + alias + " qc=" + qc);
-      TypeHandler<?, ?> th = Shield.getTypeHandler(qc);
+      String alias = Shield.getReferenceName(expr);
+      TypeHandler<?, ?> th = Shield.getTypeHandler(expr);
+      log.info("COLUMN -- alias=" + alias + " qc=" + expr + " expr@" + OUtil.hc(expr) + " <- th=" + th);
       if (th == null) { // No typeHandler: use the JDBC default value
         value = rs.getObject(i);
       } else if (th.getConverter() == null) { // TypeHandler with no converter: use the defined class
@@ -104,7 +106,7 @@ public class GenericRowReader<T> implements RowReader<T> {
       int i = n++;
       String alias = Shield.getReferenceName(qc);
       TypeHandler<?, ?> th = Shield.getTypeHandler(qc);
-      log.info("- column #" + i + " " + alias + ": " + th);
+      log.info("### column #" + i + " " + alias + ": " + th);
     }
   }
 

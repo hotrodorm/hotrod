@@ -39,6 +39,11 @@ public class AliasedExpression extends Expression {
   }
 
   @Override
+  protected void setTypeHandler(TypeHandler typeHandler) {
+    this.referencedExpression.setTypeHandler(typeHandler);
+  }
+
+  @Override
   protected TypeHandler getTypeHandler() {
     return this.referencedExpression.getTypeHandler();
   }

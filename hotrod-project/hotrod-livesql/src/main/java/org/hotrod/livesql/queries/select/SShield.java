@@ -22,7 +22,7 @@ public class SShield {
   }
 
   public static Name getName(TableExpression te) {
-    return te.getName();
+    return te == null ? Name.parse("N/A") : te.getName();
   }
 
   public static <R> CombinedSelectObject<R> getCombinedSelect(Select<R> select) {

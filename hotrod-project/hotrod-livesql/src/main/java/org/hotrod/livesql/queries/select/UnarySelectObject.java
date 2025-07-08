@@ -91,8 +91,9 @@ public class UnarySelectObject<T> extends SingleSelectObject<T> {
 
   @Override
   public List<Expression> assembleColumnsOf(final Subquery te) {
-    String froms = this.from.getName().getName() + ":"
-        + this.joins.stream().map(j -> j.getTableExpression().getName().getName()).collect(Collectors.joining(", "));
+    String froms = this.from == null ? "N/A"
+        : (this.from.getName().getName() + ":" + this.joins.stream()
+            .map(j -> j.getTableExpression().getName().getName()).collect(Collectors.joining(", ")));
     log.info("=== 1. ASSEMBLE COLUMNS === " + froms);
 
     if (this.from != null) {

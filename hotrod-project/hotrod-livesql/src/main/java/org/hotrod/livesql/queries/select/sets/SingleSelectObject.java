@@ -421,12 +421,16 @@ public abstract class SingleSelectObject<T> extends MultiSet<T> {
       }
     }
     t.indent();
-    this.from.log(t);
-    for (Join j : this.joins) {
-      TableExpression te = SShield.getTableExpression(j);
-      t.indent();
-      te.log(t);
-      t.unindent();
+    if (this.from != null) {
+      this.from.log(t);
+    }
+    if (this.joins != null) {
+      for (Join j : this.joins) {
+        TableExpression te = SShield.getTableExpression(j);
+        t.indent();
+        te.log(t);
+        t.unindent();
+      }
     }
     t.unindent();
 

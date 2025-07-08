@@ -72,9 +72,10 @@ public class TypeHandler<R, D> {
   }
 
   protected String render() {
-    return (this.converter == null ? "" + this.javaClass
-        : "[" + this.rawClass + " -> " + this.converter.getClass() + " -> " + this.javaClass + "]") + ", source: "
-        + this.typeSource + (this.ruleNumber == null ? "" : ":" + this.ruleNumber);
+    return "{"
+        + (this.converter == null ? "" + this.javaClass
+            : "[" + this.rawClass + " -> " + this.converter.getClass() + " -> " + this.javaClass + "]")
+        + ", source: " + this.typeSource + (this.ruleNumber == null ? "" : ":" + this.ruleNumber) + "}";
   }
 
   public String toString() {
