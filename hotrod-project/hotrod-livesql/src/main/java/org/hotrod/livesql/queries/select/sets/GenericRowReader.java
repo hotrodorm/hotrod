@@ -36,8 +36,9 @@ public class GenericRowReader<T> implements RowReader<T> {
     int ordinal = 1;
     for (Entry<String, Expression> et : this.queryColumns.entrySet()) {
       Expression expr = et.getValue();
-      log.info(">> EXPR: " + expr + " expr@" + OUtil.hc(expr) + " th=" + Shield.getTypeHandler(expr));
-      if (Shield.getTypeHandler(expr) == null) {
+      TypeHandler<Object, Object> cth = Shield.getTypeHandler(expr);
+      log.info(">> EXPR: " + expr + " expr@" + OUtil.hc(expr) + " th=" + cth);
+      if (cth == null) {
         ResultSetColumnMetadata cm = ResultSetColumnMetadata.of(rm, ordinal);
         try {
           TypeHandler<?, ?> th = context.getTypeSolver().resolve(cm);

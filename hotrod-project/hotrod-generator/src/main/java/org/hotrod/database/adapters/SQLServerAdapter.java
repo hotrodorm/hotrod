@@ -17,6 +17,7 @@ import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.identifiers.ObjectId;
+import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
@@ -67,103 +68,108 @@ public class SQLServerAdapter extends DatabaseAdapter {
 
     case Types.DECIMAL: // DECIMAL, MONEY, SMALLMONEY
       if ((m.getScale() != null) && (m.getScale().intValue() != 0)) {
-        return new PropertyType(BigDecimal.class, m, false);
+        return new PropertyType(BigDecimal.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       } else if (m.getPrecision() <= 2) {
-        return new PropertyType(Byte.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
+        return new PropertyType(Byte.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
+            TypeSource.GENERATION_DIALECT_RULE);
       } else if (m.getPrecision() <= 4) {
-        return new PropertyType(Short.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
+        return new PropertyType(Short.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
+            TypeSource.GENERATION_DIALECT_RULE);
       } else if (m.getPrecision() <= 9) {
-        return new PropertyType(Integer.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
+        return new PropertyType(Integer.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
+            TypeSource.GENERATION_DIALECT_RULE);
       } else if (m.getPrecision() <= 18) {
-        return new PropertyType(Long.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
+        return new PropertyType(Long.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
+            TypeSource.GENERATION_DIALECT_RULE);
       } else {
-        return new PropertyType(BigInteger.class, m, false);
+        return new PropertyType(BigInteger.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       }
 
     case Types.BIT:
-      return new PropertyType(Byte.class, m, false);
+      return new PropertyType(Byte.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
     case Types.TINYINT:
-      return new PropertyType(Byte.class, m, false, ValueRange.BYTE_RANGE);
+      return new PropertyType(Byte.class, m, false, ValueRange.BYTE_RANGE, TypeSource.GENERATION_DIALECT_RULE);
     case Types.SMALLINT:
-      return new PropertyType(Short.class, m, false, ValueRange.SHORT_RANGE);
+      return new PropertyType(Short.class, m, false, ValueRange.SHORT_RANGE, TypeSource.GENERATION_DIALECT_RULE);
     case Types.INTEGER:
-      return new PropertyType(Integer.class, m, false, ValueRange.INTEGER_RANGE);
+      return new PropertyType(Integer.class, m, false, ValueRange.INTEGER_RANGE, TypeSource.GENERATION_DIALECT_RULE);
     case Types.BIGINT:
-      return new PropertyType(Long.class, m, false, ValueRange.LONG_RANGE);
+      return new PropertyType(Long.class, m, false, ValueRange.LONG_RANGE, TypeSource.GENERATION_DIALECT_RULE);
 
     case Types.REAL:
-      return new PropertyType(Float.class, m, false);
+      return new PropertyType(Float.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
     case Types.DOUBLE:
-      return new PropertyType(Double.class, m, false);
+      return new PropertyType(Double.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
 
     // Char types
 
     case Types.CHAR: // CHAR, UNIQUEIDENTIFIER
-      return new PropertyType(String.class, m, false);
+      return new PropertyType(String.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
     case Types.VARCHAR:
-      return new PropertyType(String.class, m, false);
+      return new PropertyType(String.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
     case Types.NCHAR:
-      return new PropertyType(String.class, m, false);
+      return new PropertyType(String.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
     case Types.NVARCHAR:
       isLOB = m.getPrecision() >= MAX_VARCHAR_LENGTH;
-      return new PropertyType(String.class, m, isLOB);
+      return new PropertyType(String.class, m, isLOB, TypeSource.GENERATION_DIALECT_RULE);
     case Types.LONGVARCHAR: // TEXT
       isLOB = m.getPrecision() >= MAX_VARCHAR_LENGTH;
-      return new PropertyType(String.class, m, isLOB);
+      return new PropertyType(String.class, m, isLOB, TypeSource.GENERATION_DIALECT_RULE);
     case Types.LONGNVARCHAR: // NTEXT, XML
       // return new PropertyType(String.class, m); // LONGNVARCHAR is not
       // supported by MyBatis.
       isLOB = m.getPrecision() >= MAX_VARCHAR_LENGTH;
-      return new PropertyType(String.class, JDBCType.VARCHAR, isLOB);
+      return new PropertyType(String.class, JDBCType.VARCHAR, isLOB, TypeSource.GENERATION_DIALECT_RULE);
 
     // Date/Time types
 
     case Types.DATE:
-      return new PropertyType(java.time.LocalDate.class, m, false);
+      return new PropertyType(java.time.LocalDate.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
     case Types.TIME:
-      return new PropertyType(java.time.LocalTime.class, m, false);
+      return new PropertyType(java.time.LocalTime.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
     case Types.TIMESTAMP: // DATETIME, DATETIME2, SMALLDATETIME
-      return new PropertyType(java.time.LocalDateTime.class, m, false);
+      return new PropertyType(java.time.LocalDateTime.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
     case -155: // DATETIMEOFFSET
       // Invalid JDBC type (-155) reported by the SQL Server JDBC Driver.
-      return new PropertyType(java.time.OffsetDateTime.class, JDBCType.TIMESTAMP, false);
+      return new PropertyType(java.time.OffsetDateTime.class, JDBCType.TIMESTAMP, false,
+          TypeSource.GENERATION_DIALECT_RULE);
 
     // Binary types
 
     case Types.BINARY:
       if ("timestamp".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(Object.class, m, false);
+        return new PropertyType(Object.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       } else {
-        return new PropertyType("byte[]", m, false);
+        return new PropertyType("byte[]", m, false, TypeSource.GENERATION_DIALECT_RULE);
       }
     case Types.VARBINARY: // VARBINARY, HIERARCHYID, GEOGRAPHY, GEOMETRY
       if ("hierarchyid".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType("byte[]", m, false);
+        return new PropertyType("byte[]", m, false, TypeSource.GENERATION_DIALECT_RULE);
       } else if ("geometry".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType("byte[]", m, false);
+        return new PropertyType("byte[]", m, false, TypeSource.GENERATION_DIALECT_RULE);
       } else if ("geography".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType("byte[]", m, false);
+        return new PropertyType("byte[]", m, false, TypeSource.GENERATION_DIALECT_RULE);
       } else {
         isLOB = m.getPrecision() >= MAX_VARCHAR_LENGTH;
-        return new PropertyType("byte[]", m, isLOB);
+        return new PropertyType("byte[]", m, isLOB, TypeSource.GENERATION_DIALECT_RULE);
       }
     case Types.LONGVARBINARY:
-      return new PropertyType("byte[]", m, true);
+      return new PropertyType("byte[]", m, true, TypeSource.GENERATION_DIALECT_RULE);
 
     // Other types
 
     case Types.OTHER:
       if ("DECFLOAT".equals(m.getTypeName())) {
-        return new PropertyType(BigDecimal.class, m, false);
+        return new PropertyType(BigDecimal.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       } else if ("XML".equals(m.getTypeName())) {
-        return new PropertyType(Object.class, m, false);
+        return new PropertyType(Object.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       } else {
-        return new PropertyType(Object.class, m, false);
+        return new PropertyType(Object.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       }
 
     case -150: // SQL_VARIANT
       // Invalid JDBC type (-150) reported by the SQL Server JDBC Driver.
-      return new PropertyType(Object.class, JDBCType.OTHER, false);
+      return new PropertyType(Object.class, JDBCType.OTHER, false, TypeSource.GENERATION_DIALECT_RULE);
 
     default: // Unrecognized type
       return produceType(Object.class, m, false);

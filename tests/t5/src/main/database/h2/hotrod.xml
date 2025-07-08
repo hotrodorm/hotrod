@@ -15,7 +15,7 @@
   <!-- 
     <when test-resultset="scale > 0" java-type="java.math.BigDecimal" />
   -->
-    <when test-resultset="precision &lt; 2" java-type="Byte" />
+    <when test-resultset="precision &lt; 20" java-type="Long" />
     <when test-resultset="scale > 0" java-type="Short" />
   </type-solver>
 

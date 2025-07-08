@@ -16,6 +16,7 @@ import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.identifiers.ObjectId;
+import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
@@ -63,18 +64,22 @@ public class PostgreSQLAdapter extends DatabaseAdapter {
     case java.sql.Types.NUMERIC:
       if ("numeric".equalsIgnoreCase(m.getTypeName())) {
         if (m.getScale() == null || m.getScale() != 0) {
-          return new PropertyType(BigDecimal.class, m, false);
+          return new PropertyType(BigDecimal.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
         } else {
           if (m.getPrecision() <= 2) {
-            return new PropertyType(Byte.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
+            return new PropertyType(Byte.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
+                TypeSource.GENERATION_DIALECT_RULE);
           } else if (m.getPrecision() <= 4) {
-            return new PropertyType(Short.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
+            return new PropertyType(Short.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
+                TypeSource.GENERATION_DIALECT_RULE);
           } else if (m.getPrecision() <= 9) {
-            return new PropertyType(Integer.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
+            return new PropertyType(Integer.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
+                TypeSource.GENERATION_DIALECT_RULE);
           } else if (m.getPrecision() <= 18) {
-            return new PropertyType(Long.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
+            return new PropertyType(Long.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
+                TypeSource.GENERATION_DIALECT_RULE);
           } else {
-            return new PropertyType(BigInteger.class, m, false);
+            return new PropertyType(BigInteger.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
           }
         }
       }
@@ -82,37 +87,37 @@ public class PostgreSQLAdapter extends DatabaseAdapter {
 
     case java.sql.Types.SMALLINT:
       if ("int2".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(Short.class, m, false, ValueRange.SHORT_RANGE);
+        return new PropertyType(Short.class, m, false, ValueRange.SHORT_RANGE, TypeSource.GENERATION_DIALECT_RULE);
       }
       break;
 
     case java.sql.Types.INTEGER:
       if ("int4".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(Integer.class, m, false, ValueRange.INTEGER_RANGE);
+        return new PropertyType(Integer.class, m, false, ValueRange.INTEGER_RANGE, TypeSource.GENERATION_DIALECT_RULE);
       } else if ("serial".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(Integer.class, m, false);
+        return new PropertyType(Integer.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       }
       break;
 
     case java.sql.Types.BIGINT:
       if ("int8".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(Long.class, m, false, ValueRange.LONG_RANGE);
+        return new PropertyType(Long.class, m, false, ValueRange.LONG_RANGE, TypeSource.GENERATION_DIALECT_RULE);
       } else if ("bigserial".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(Long.class, m, false);
+        return new PropertyType(Long.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       }
       break;
 
     case java.sql.Types.REAL:
       if ("float4".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(Float.class, m, false);
+        return new PropertyType(Float.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       }
       break;
 
     case java.sql.Types.DOUBLE:
       if ("float8".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(Double.class, m, false);
+        return new PropertyType(Double.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       } else if ("money".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(java.math.BigDecimal.class, m, false);
+        return new PropertyType(java.math.BigDecimal.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       }
       break;
 
@@ -120,40 +125,40 @@ public class PostgreSQLAdapter extends DatabaseAdapter {
 
     case java.sql.Types.CHAR:
       if ("bpchar".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(String.class, m, false);
+        return new PropertyType(String.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       }
       break;
 
     case java.sql.Types.VARCHAR:
       if ("varchar".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(String.class, m, false);
+        return new PropertyType(String.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       } else if ("text".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(String.class, m, true);
+        return new PropertyType(String.class, m, true, TypeSource.GENERATION_DIALECT_RULE);
       } else { // enum: Type Name is the enum name
-        return new PropertyType(String.class, m, false);
+        return new PropertyType(String.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       }
 
       // Date/Time Types
 
     case java.sql.Types.DATE:
       if ("date".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(java.time.LocalDate.class, m, false);
+        return new PropertyType(java.time.LocalDate.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       }
       break;
 
     case java.sql.Types.TIME:
       if ("time".equals(m.getTypeName())) {
-        return new PropertyType(java.time.LocalTime.class, m, false);
+        return new PropertyType(java.time.LocalTime.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       } else if ("timetz".equals(m.getTypeName())) {
-        return new PropertyType(java.time.OffsetTime.class, m, false);
+        return new PropertyType(java.time.OffsetTime.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       }
       break;
 
     case java.sql.Types.TIMESTAMP:
       if ("timestamp".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(java.time.LocalDateTime.class, m, false);
+        return new PropertyType(java.time.LocalDateTime.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       } else if ("timestamptz".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(java.time.ZonedDateTime.class, m, false);
+        return new PropertyType(java.time.ZonedDateTime.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       }
       break;
 
@@ -161,7 +166,7 @@ public class PostgreSQLAdapter extends DatabaseAdapter {
 
     case java.sql.Types.BINARY:
       if ("bytea".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType("byte[]", m, true);
+        return new PropertyType("byte[]", m, true, TypeSource.GENERATION_DIALECT_RULE);
       }
       break;
 
@@ -169,34 +174,34 @@ public class PostgreSQLAdapter extends DatabaseAdapter {
 
     case java.sql.Types.BIT:
       if ("bool".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(Boolean.class, m, false);
+        return new PropertyType(Boolean.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       } else if ("bit".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(java.lang.Object.class, m, false);
+        return new PropertyType(java.lang.Object.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       }
       break;
 
     // Other Types
 
     case java.sql.Types.STRUCT:
-      return new PropertyType(Object.class, m, false);
+      return new PropertyType(Object.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
 
     case java.sql.Types.ARRAY:
-      return new PropertyType(Object.class, m, false);
+      return new PropertyType(Object.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
 
     case java.sql.Types.OTHER:
       if ("varbit".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType("byte[]", m, false);
+        return new PropertyType("byte[]", m, false, TypeSource.GENERATION_DIALECT_RULE);
       } else if ("uuid".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(Object.class, m, false);
+        return new PropertyType(Object.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       } else {
-        return new PropertyType(Object.class, m, false);
+        return new PropertyType(Object.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       }
 
     }
 
     // Unrecognized type
 
-    return new PropertyType(Object.class, m, false);
+    return new PropertyType(Object.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
 
   }
 

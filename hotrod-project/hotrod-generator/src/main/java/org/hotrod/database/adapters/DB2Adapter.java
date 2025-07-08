@@ -15,6 +15,7 @@ import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.identifiers.ObjectId;
+import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
@@ -59,64 +60,68 @@ public class DB2Adapter extends DatabaseAdapter {
 
     case Types.DECIMAL:
       if ((m.getScale() != null) && (m.getScale().intValue() != 0)) {
-        return new PropertyType(BigDecimal.class, m, false);
+        return new PropertyType(BigDecimal.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       } else if (m.getPrecision() <= 2) {
-        return new PropertyType(Byte.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
+        return new PropertyType(Byte.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
+            TypeSource.GENERATION_DIALECT_RULE);
       } else if (m.getPrecision() <= 4) {
-        return new PropertyType(Short.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
+        return new PropertyType(Short.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
+            TypeSource.GENERATION_DIALECT_RULE);
       } else if (m.getPrecision() <= 9) {
-        return new PropertyType(Integer.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
+        return new PropertyType(Integer.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
+            TypeSource.GENERATION_DIALECT_RULE);
       } else if (m.getPrecision() <= 18) {
-        return new PropertyType(Long.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
+        return new PropertyType(Long.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
+            TypeSource.GENERATION_DIALECT_RULE);
       } else {
-        return new PropertyType(BigInteger.class, m, false);
+        return new PropertyType(BigInteger.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       }
 
     case Types.SMALLINT:
-      return new PropertyType(Short.class, m, false, ValueRange.SHORT_RANGE);
+      return new PropertyType(Short.class, m, false, ValueRange.SHORT_RANGE, TypeSource.GENERATION_DIALECT_RULE);
     case Types.INTEGER:
-      return new PropertyType(Integer.class, m, false, ValueRange.INTEGER_RANGE);
+      return new PropertyType(Integer.class, m, false, ValueRange.INTEGER_RANGE, TypeSource.GENERATION_DIALECT_RULE);
     case Types.BIGINT:
-      return new PropertyType(Long.class, m, false, ValueRange.LONG_RANGE);
+      return new PropertyType(Long.class, m, false, ValueRange.LONG_RANGE, TypeSource.GENERATION_DIALECT_RULE);
 
     case Types.REAL:
-      return new PropertyType(Float.class, m, false);
+      return new PropertyType(Float.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
     case Types.DOUBLE:
-      return new PropertyType(Double.class, m, false);
+      return new PropertyType(Double.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
 
     case Types.CHAR:
-      return new PropertyType(String.class, m, false);
+      return new PropertyType(String.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
     case Types.VARCHAR:
-      return new PropertyType(String.class, m, false);
+      return new PropertyType(String.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
     case Types.LONGVARCHAR:
-      return new PropertyType(String.class, m, false);
+      return new PropertyType(String.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
 
     case Types.CLOB:
-      return new PropertyType(String.class, m, true);
+      return new PropertyType(String.class, m, true, TypeSource.GENERATION_DIALECT_RULE);
 
     case Types.DATE:
-      return new PropertyType(java.time.LocalDate.class, m, false);
+      return new PropertyType(java.time.LocalDate.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
     case Types.TIME:
-      return new PropertyType(java.time.LocalTime.class, m, false);
+      return new PropertyType(java.time.LocalTime.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
     case Types.TIMESTAMP:
-      return new PropertyType(java.time.LocalDateTime.class, m, false);
+      return new PropertyType(java.time.LocalDateTime.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
 
     case Types.LONGVARBINARY:
-      return new PropertyType("byte[]", m, false);
+      return new PropertyType("byte[]", m, false, TypeSource.GENERATION_DIALECT_RULE);
     case Types.VARBINARY:
-      return new PropertyType("byte[]", m, false);
+      return new PropertyType("byte[]", m, false, TypeSource.GENERATION_DIALECT_RULE);
     case Types.BINARY:
-      return new PropertyType("byte[]", m, false);
+      return new PropertyType("byte[]", m, false, TypeSource.GENERATION_DIALECT_RULE);
     case Types.BLOB:
-      return new PropertyType("byte[]", m, true);
+      return new PropertyType("byte[]", m, true, TypeSource.GENERATION_DIALECT_RULE);
 
     case Types.OTHER:
       if ("DECFLOAT".equals(m.getTypeName())) {
-        return new PropertyType(BigDecimal.class, m, false);
+        return new PropertyType(BigDecimal.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       } else if ("XML".equals(m.getTypeName())) {
-        return new PropertyType(Object.class, m, false);
+        return new PropertyType(Object.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       } else {
-        return new PropertyType(Object.class, m, false);
+        return new PropertyType(Object.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       }
 
     default: // Unrecognized type

@@ -1,6 +1,7 @@
 package org.hotrod.livesql.queries.typesolver;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.hotrod.livesql.dialects.LiveSQLDialect;
@@ -21,6 +22,10 @@ public class TypeSolver {
 
   public TypeHandler<?, ?> resolve(final ResultSetColumnMetadata cm) throws CouldNotResolveResultSetDataTypeException {
 
+    if (log.isLoggable(Level.INFO)) {
+      log.info("* " + cm);
+    }
+
     // 1. Try the layer rules from the type-solver tag.
 
     if (this.layerRules != null) {
@@ -36,7 +41,7 @@ public class TypeSolver {
 
     Class<?> c = this.dialect.resolveColumnType(cm);
     if (c != null) {
-      return TypeHandler.forClass(c, TypeSource.DIALECT_RULES);
+      return TypeHandler.forClass(c, TypeSource.RUNTIME_DIALECT_RULE);
     }
 
     // 3. Use the class proposed by the JDBC driver, if available
@@ -49,7 +54,7 @@ public class TypeSolver {
     }
 
     try {
-      return TypeHandler.forClass(Class.forName(className), TypeSource.JDBC_DRIVER);
+      return TypeHandler.forClass(Class.forName(className), TypeSource.RUNTIME_JDBC_DRIVER);
     } catch (ClassNotFoundException e) {
       throw new CouldNotResolveResultSetDataTypeException(cm,
           "The class '" + className + "' proposed by the JDBC driver to read the column cannot be found.");

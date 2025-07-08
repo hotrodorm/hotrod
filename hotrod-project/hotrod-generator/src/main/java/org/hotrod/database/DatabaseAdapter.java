@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.identifiers.ObjectId;
+import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
@@ -185,7 +186,7 @@ public abstract class DatabaseAdapter implements Serializable {
   public abstract UnescapedSQLCase getUnescapedSQLCase();
 
   public abstract String provideSampleValueFor(JDBCType jdbcType);
-  
+
   public abstract String currentTimestampSQLExpression();
 
   public abstract void setCurrentCatalogSchema(final Connection conn, final String catalog, final String schema)
@@ -211,7 +212,7 @@ public abstract class DatabaseAdapter implements Serializable {
     if (jdbcType == null) {
       throw new UnresolvableDataTypeException(m);
     }
-    return new PropertyType(c.getName(), jdbcType, isLOB);
+    return new PropertyType(c.getName(), jdbcType, isLOB, TypeSource.GENERATION_DIALECT_RULE);
   }
 
   // Classes

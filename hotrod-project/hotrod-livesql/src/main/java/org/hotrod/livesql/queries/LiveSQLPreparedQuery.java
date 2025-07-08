@@ -4,7 +4,7 @@ import java.util.LinkedHashMap;
 
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
-import org.hotrod.livesql.queries.typesolver.THelper;
+import org.hotrod.livesql.queries.typesolver.TShield;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.utils.CUtil;
 import org.hotrod.utils.HexaUtils;
@@ -88,7 +88,7 @@ public class LiveSQLPreparedQuery {
         for (String name : queryColumns.keySet()) {
           Expression expr = queryColumns.get(name);
           TypeHandler<?, ?> th = Shield.getTypeHandler(expr);
-          sb.append(" * " + name + ": " + (th != null ? THelper.render(th)
+          sb.append(" * " + name + ": " + (th != null ? TShield.render(th)
               : "(type to be determined by query metadata or by <type-solver> rules)") + "\n");
         }
       }

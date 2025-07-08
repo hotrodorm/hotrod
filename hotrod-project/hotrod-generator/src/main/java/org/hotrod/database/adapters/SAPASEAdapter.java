@@ -15,6 +15,7 @@ import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.identifiers.ObjectId;
+import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
@@ -61,22 +62,22 @@ public class SAPASEAdapter extends DatabaseAdapter {
     case Types.DECIMAL:
 
       if (m.getTypeName().equalsIgnoreCase("money") || m.getTypeName().equalsIgnoreCase("smallmoney")) {
-        return new PropertyType(BigDecimal.class, m, false);
+        return new PropertyType(BigDecimal.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       } else if ((m.getScale() != null) && (m.getScale().intValue() != 0)) {
-        return new PropertyType(BigDecimal.class, m, false);
+        return new PropertyType(BigDecimal.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
       } else {
         if (m.getPrecision() == null) {
-          return new PropertyType(BigDecimal.class, m, false);
+          return new PropertyType(BigDecimal.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
         } else if (m.getPrecision() <= 2) {
-          return new PropertyType(Byte.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
+          return new PropertyType(Byte.class, m, false, ValueRange.getSignedRange(m.getPrecision()), TypeSource.GENERATION_DIALECT_RULE);
         } else if (m.getPrecision() <= 4) {
-          return new PropertyType(Short.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
+          return new PropertyType(Short.class, m, false, ValueRange.getSignedRange(m.getPrecision()), TypeSource.GENERATION_DIALECT_RULE);
         } else if (m.getPrecision() <= 9) {
-          return new PropertyType(Integer.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
+          return new PropertyType(Integer.class, m, false, ValueRange.getSignedRange(m.getPrecision()), TypeSource.GENERATION_DIALECT_RULE);
         } else if (m.getPrecision() <= 18) {
-          return new PropertyType(Long.class, m, false, ValueRange.getSignedRange(m.getPrecision()));
+          return new PropertyType(Long.class, m, false, ValueRange.getSignedRange(m.getPrecision()), TypeSource.GENERATION_DIALECT_RULE);
         } else {
-          return new PropertyType(BigInteger.class, m, false);
+          return new PropertyType(BigInteger.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
         }
 
       }
@@ -84,74 +85,74 @@ public class SAPASEAdapter extends DatabaseAdapter {
       // Integer types
 
     case Types.TINYINT:
-      return new PropertyType(Byte.class, m, false, ValueRange.BYTE_RANGE);
+      return new PropertyType(Byte.class, m, false, ValueRange.BYTE_RANGE, TypeSource.GENERATION_DIALECT_RULE);
 
     case Types.SMALLINT:
       return m.getTypeName().startsWith("unsigned") ? //
-          new PropertyType(Integer.class, m, false, ValueRange.INTEGER_RANGE) : //
-          new PropertyType(Short.class, m, false, ValueRange.SHORT_RANGE);
+          new PropertyType(Integer.class, m, false, ValueRange.INTEGER_RANGE, TypeSource.GENERATION_DIALECT_RULE) : //
+          new PropertyType(Short.class, m, false, ValueRange.SHORT_RANGE, TypeSource.GENERATION_DIALECT_RULE);
 
     case Types.INTEGER:
       return m.getTypeName().startsWith("unsigned") ? //
-          new PropertyType(Long.class, m, false, ValueRange.LONG_RANGE) : //
-          new PropertyType(Integer.class, m, false, ValueRange.INTEGER_RANGE);
+          new PropertyType(Long.class, m, false, ValueRange.LONG_RANGE, TypeSource.GENERATION_DIALECT_RULE) : //
+          new PropertyType(Integer.class, m, false, ValueRange.INTEGER_RANGE, TypeSource.GENERATION_DIALECT_RULE);
 
     case Types.BIGINT:
       return m.getTypeName().startsWith("unsigned") ? //
-          new PropertyType(BigInteger.class, m, false) : //
-          new PropertyType(Long.class, m, false, ValueRange.LONG_RANGE);
+          new PropertyType(BigInteger.class, m, false, TypeSource.GENERATION_DIALECT_RULE) : //
+          new PropertyType(Long.class, m, false, ValueRange.LONG_RANGE, TypeSource.GENERATION_DIALECT_RULE);
 
     // Floating point types
 
     case Types.REAL: // FLOAT, REAL, DOUBLE PRECISION
     case Types.DOUBLE:
-      return new PropertyType(Double.class, m, false);
+      return new PropertyType(Double.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
 
     // Character types
 
     case Types.CHAR:
-      return new PropertyType(String.class, m, false);
+      return new PropertyType(String.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
 
     case Types.VARCHAR:
-      return new PropertyType(String.class, m, false);
+      return new PropertyType(String.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
 
     case Types.LONGVARCHAR:
-      return new PropertyType(String.class, m, true);
+      return new PropertyType(String.class, m, true, TypeSource.GENERATION_DIALECT_RULE);
 
     // Bit type
 
     case Types.BIT:
-      return new PropertyType(Byte.class, m, false);
+      return new PropertyType(Byte.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
 
     // Date/Time types
 
     case Types.DATE:
-      return new PropertyType(java.time.LocalDate.class, m, false);
+      return new PropertyType(java.time.LocalDate.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
 
     case Types.TIMESTAMP:
-      return new PropertyType(java.time.LocalDateTime.class, m, false);
+      return new PropertyType(java.time.LocalDateTime.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
 
     case 10: // BIGTIME
       // Invalid JDBC type (10) reported by the SAP ASE JDBC Driver.
-      return new PropertyType(java.time.LocalTime.class, JDBCType.TIMESTAMP, false);
+      return new PropertyType(java.time.LocalTime.class, JDBCType.TIMESTAMP, false, TypeSource.GENERATION_DIALECT_RULE);
 
     case 11: // BIGDATETIME
       // Invalid JDBC type (11) reported by the SAP ASE JDBC Driver.
-      return new PropertyType(java.time.LocalDateTime.class, JDBCType.TIMESTAMP, false);
+      return new PropertyType(java.time.LocalDateTime.class, JDBCType.TIMESTAMP, false, TypeSource.GENERATION_DIALECT_RULE);
 
     case Types.TIME:
-      return new PropertyType(java.time.LocalTime.class, m, false);
+      return new PropertyType(java.time.LocalTime.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
 
     // LOB types
 
     case Types.BINARY: // BINARY
-      return new PropertyType("byte[]", m, false);
+      return new PropertyType("byte[]", m, false, TypeSource.GENERATION_DIALECT_RULE);
 
     case Types.VARBINARY: // VARBINARY
-      return new PropertyType("byte[]", m, false);
+      return new PropertyType("byte[]", m, false, TypeSource.GENERATION_DIALECT_RULE);
 
     case Types.LONGVARBINARY: // IMAGE
-      return new PropertyType("byte[]", m, true);
+      return new PropertyType("byte[]", m, true, TypeSource.GENERATION_DIALECT_RULE);
 
     // If not found.
 

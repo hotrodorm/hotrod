@@ -1,5 +1,6 @@
 package app;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Logger;
@@ -285,6 +286,7 @@ public class App {
 //        .execute();
 
     List<Row> rows = sql.select(sql.literal(123).mult(3).as("total")).execute();
+//    List<Row> rows = sql.select(sql.literal(123).mult(3).as("total").type(BigDecimal.class)).execute();
 
 //    Subquery x = sql.subquery("x", sql.select(sql.val(100).mult(1.1).as("cost"), a2.balance).from(a2).limit(1));
 //

@@ -354,11 +354,11 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     // Properties
 
     public final NumberEntityColumn id = new NumberEntityColumn(this,
-      "ID", "id", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.ENTITY_COLUMN));
+      "ID", "id", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.GENERATION_DIALECT_RULE));
     public final StringEntityColumn type = new StringEntityColumn(this,
-      "TYPE", "type", "CHARACTER VARYING", 6, 0, TypeHandler.forClass(String.class, TypeSource.ENTITY_COLUMN));
+      "TYPE", "type", "CHARACTER VARYING", 6, 0, TypeHandler.forClass(String.class, TypeSource.GENERATION_DIALECT_RULE));
     public final NumberEntityColumn shipping = new NumberEntityColumn(this,
-      "SHIPPING", "shipping", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.ENTITY_COLUMN));
+      "SHIPPING", "shipping", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.GENERATION_DIALECT_RULE));
 
     // Getters
 

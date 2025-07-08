@@ -12,7 +12,9 @@ public class TypedExpression extends Expression {
 
   public TypedExpression(Expression expr, Class<?> type) {
     super(expr);
-    super.setTypeHandler(TypeHandler.forClass(type, TypeSource.DESIGNATED_IN_LIVESQL));
+    TypeHandler<?, ?> th = TypeHandler.forClass(type, TypeSource.RUNTIME_DESIGNATED);
+    super.setTypeHandler(th);
+    this.typeHandler = th;
     this.expr = expr;
   }
 

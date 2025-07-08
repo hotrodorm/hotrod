@@ -11,7 +11,7 @@ public class TypeHandler<R, D> {
   private static final Logger log = Logger.getLogger(TypeHandler.class.getName());
 
   public static final TypeHandler<String, String> STRING_ENTITY_COLUMN = TypeHandler.forClass(String.class,
-      TypeSource.ENTITY_COLUMN);
+      TypeSource.RUNTIME_DIALECT_RULE);
 
   private Class<D> javaClass;
   private Class<R> rawClass;

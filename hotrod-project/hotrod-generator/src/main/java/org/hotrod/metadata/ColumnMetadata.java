@@ -17,6 +17,7 @@ import org.hotrod.exceptions.CouldNotResolveNameException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.identifiers.Id;
 import org.hotrod.identifiers.ObjectId;
+import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.typesolver.DriverColumnMetaData;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.JDBCTypes;
@@ -164,7 +165,7 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
       String javaType = columnTag.getJavaType() != null ? columnTag.getJavaType()
           : columnTag.getConverterTag().getDomainClass();
 
-      return new PropertyType(javaType, jdbcType, columnTag.isLOB(), range);
+      return new PropertyType(javaType, jdbcType, columnTag.isLOB(), range, TypeSource.GENERATION_DESIGNATED);
 
     } else {
 

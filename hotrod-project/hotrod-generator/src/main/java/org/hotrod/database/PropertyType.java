@@ -3,6 +3,7 @@ package org.hotrod.database;
 import java.io.Serializable;
 import java.util.logging.Logger;
 
+import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.ColumnUtils;
@@ -18,6 +19,7 @@ public class PropertyType implements Serializable {
   private String javaClassName;
   private JDBCType jdbcType;
   private boolean isLOB;
+  private TypeSource typeSource;
 
   public static class ValueRange implements Serializable {
 
@@ -76,66 +78,69 @@ public class PropertyType implements Serializable {
 
   /* Internal type for a serial column */
   public PropertyType(final Class<?> javaClass, final ColumnMetadata m, final boolean isLOB,
-      final ValueRange valueRange) throws UnresolvableDataTypeException {
+      final ValueRange valueRange, final TypeSource typeSource) throws UnresolvableDataTypeException {
     JDBCType t = JDBCTypes.codeToType(m.getDataType());
     // log.info("a) code=" + m.getDataType() + " type=" + t);
     if (t == null) {
       throw new UnresolvableDataTypeException(m);
     }
-    initialize(javaClass.getName(), t, isLOB, valueRange);
+    initialize(javaClass.getName(), t, isLOB, valueRange, typeSource);
   }
 
   /* Internal type for a non-serial column */
-  public PropertyType(final Class<?> javaClass, final ColumnMetadata m, final boolean isLOB)
-      throws UnresolvableDataTypeException {
+  public PropertyType(final Class<?> javaClass, final ColumnMetadata m, final boolean isLOB,
+      final TypeSource typeSource) throws UnresolvableDataTypeException {
     JDBCType t = JDBCTypes.codeToType(m.getDataType());
     // log.info("b) code=" + m.getDataType() + " type=" + t);
     if (t == null) {
       throw new UnresolvableDataTypeException(m);
     }
-    initialize(javaClass.getName(), t, isLOB, null);
+    initialize(javaClass.getName(), t, isLOB, null, typeSource);
   }
 
   /*
    * Internal type for a non-serial column with non-standard JDBC type reported by
    * the JDBC driver
    */
-  public PropertyType(final Class<?> javaClass, final JDBCType jdbcType, final boolean isLOB) {
-    initialize(javaClass.getName(), jdbcType, isLOB, null);
+  public PropertyType(final Class<?> javaClass, final JDBCType jdbcType, final boolean isLOB,
+      final TypeSource typeSource) {
+    initialize(javaClass.getName(), jdbcType, isLOB, null, typeSource);
   }
 
   // For custom data types and select parameters
 
   /* Custom type for a non-serial column with unspecified JDBC type */
-  public PropertyType(final String javaClassName, final ColumnMetadata m, final boolean isLOB)
-      throws UnresolvableDataTypeException {
+  public PropertyType(final String javaClassName, final ColumnMetadata m, final boolean isLOB,
+      final TypeSource typeSource) throws UnresolvableDataTypeException {
     JDBCType t = JDBCTypes.codeToType(m.getDataType());
     // log.info("c) code=" + m.getDataType() + " type=" + t);
     if (t == null) {
       throw new UnresolvableDataTypeException(m);
     }
-    initialize(javaClassName, t, isLOB, null);
+    initialize(javaClassName, t, isLOB, null, typeSource);
   }
 
   /* Custom type for a non-serial column with specified JDBC type */
-  public PropertyType(final String javaClassName, final JDBCType jdbcType, final boolean isLOB) {
-    initialize(javaClassName, jdbcType, isLOB, null);
+  public PropertyType(final String javaClassName, final JDBCType jdbcType, final boolean isLOB,
+      final TypeSource typeSource) {
+    initialize(javaClassName, jdbcType, isLOB, null, typeSource);
   }
 
   /* Custom type for a serial column */
   public PropertyType(final String javaClassName, final JDBCType jdbcType, final boolean isLOB,
-      final ValueRange valueRange) {
-    initialize(javaClassName, jdbcType, isLOB, valueRange);
+      final ValueRange valueRange, final TypeSource typeSource) {
+    initialize(javaClassName, jdbcType, isLOB, valueRange, typeSource);
   }
 
   // Initialize
 
   private void initialize(final String javaClassName, final JDBCType jdbcType, final boolean isLOB,
-      final ValueRange valueRange) {
+      final ValueRange valueRange, TypeSource typeSource) {
     this.javaClassName = javaClassName;
     this.jdbcType = jdbcType;
     this.isLOB = isLOB;
     this.valueRange = valueRange;
+    this.typeSource = typeSource;
   }
 
   // ToString
@@ -227,6 +232,10 @@ public class PropertyType implements Serializable {
 
   public ValueRange getValueRange() {
     return valueRange;
+  }
+
+  public final TypeSource getTypeSource() {
+    return typeSource;
   }
 
 }

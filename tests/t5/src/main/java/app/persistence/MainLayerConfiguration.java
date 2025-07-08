@@ -16,8 +16,8 @@ public class MainLayerConfiguration implements LayerConfiguration {
   public List<TypeRule> getTypeRules() {
     List<TypeRule> rules = new ArrayList<>();
 
-    rules.add(TypeRule.of("precision < 2", TypeHandler.forClass(Byte.class, TypeSource.LIVESQL_RULES), 1));
-    rules.add(TypeRule.of("scale > 0", TypeHandler.forClass(Short.class, TypeSource.LIVESQL_RULES), 2));
+    rules.add(TypeRule.of("precision < 20", TypeHandler.forClass(Long.class, TypeSource.GENERATION_LAYER_RULE), 1));
+    rules.add(TypeRule.of("scale > 0", TypeHandler.forClass(Short.class, TypeSource.GENERATION_LAYER_RULE), 2));
 
     return rules;
   }

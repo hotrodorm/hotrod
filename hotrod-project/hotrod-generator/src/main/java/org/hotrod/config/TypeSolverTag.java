@@ -14,6 +14,7 @@ import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.DynamicExpressionFactoryConfig;
 import org.hotrod.dynamicsql.Parameters;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.JDBCTypes;
@@ -98,7 +99,7 @@ public class TypeSolverTag extends AbstractConfigurationTag {
               jdbcTypeOnWrite = (c != null ? JDBCTypes.codeToType(c.getDataType()) : resultSetType);
             }
             log.fine("## 5 RULE MATCHES: w.getJavaType()=" + w.getJavaType() + " jdbcTypeOnWrite=" + jdbcTypeOnWrite);
-            return new PropertyType(w.getJavaType(), jdbcTypeOnWrite, false);
+            return new PropertyType(w.getJavaType(), jdbcTypeOnWrite, false, TypeSource.GENERATION_LAYER_RULE);
           }
         } catch (ClassCastException e) {
           throw new UnresolvableDataTypeException(cm, "Could not evaluate <when> tag's test expression '" + w.getTest()
