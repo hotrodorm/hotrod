@@ -29,7 +29,7 @@ public abstract class GeneralObjectExpression extends ComparableExpression {
 
   @Override
   protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
-    return new SubqueryObjectRefColumn(subquery, alias);
+    return new SubqueryObjectRefColumn(subquery, alias, this);
   }
 
   // Coalesce

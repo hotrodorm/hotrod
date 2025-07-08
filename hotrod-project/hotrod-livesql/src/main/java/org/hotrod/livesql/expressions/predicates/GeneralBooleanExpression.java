@@ -18,7 +18,7 @@ public abstract class GeneralBooleanExpression extends ComparableExpression {
 
   @Override
   protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
-    return new SubqueryBooleanRefColumn(subquery, alias);
+    return new SubqueryBooleanRefColumn(subquery, alias, this);
   }
 
   // Coalesce

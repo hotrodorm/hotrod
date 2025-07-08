@@ -3,7 +3,6 @@ package org.hotrod.livesql.metadata;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.object.GeneralObjectExpression;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.subqueries.QShield;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.queries.subqueries.SubqueryObjectRefColumn;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
@@ -37,8 +36,7 @@ public class ObjectEntityColumn extends GeneralObjectExpression implements Entit
 
   @Override
   protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
-    SubqueryObjectRefColumn c = new SubqueryObjectRefColumn(subquery, alias);
-    QShield.setColumn(c, this);
+    SubqueryObjectRefColumn c = new SubqueryObjectRefColumn(subquery, alias, this);
     return c;
   }
 

@@ -29,7 +29,7 @@ public abstract class GeneralByteArrayExpression extends ComparableExpression {
 
   @Override
   protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
-    return new SubqueryByteArrayRefColumn(subquery, alias);
+    return new SubqueryByteArrayRefColumn(subquery, alias, this);
   }
 
   // Coalesce

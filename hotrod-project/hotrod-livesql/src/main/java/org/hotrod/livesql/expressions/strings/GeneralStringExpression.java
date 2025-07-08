@@ -37,7 +37,7 @@ public abstract class GeneralStringExpression extends ComparableExpression {
 
   @Override
   protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
-    return new SubqueryStringRefColumn(subquery, alias);
+    return new SubqueryStringRefColumn(subquery, alias, this);
   }
 
   // Coalesce

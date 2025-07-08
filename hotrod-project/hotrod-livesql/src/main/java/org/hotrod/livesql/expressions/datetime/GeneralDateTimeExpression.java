@@ -33,7 +33,7 @@ public abstract class GeneralDateTimeExpression extends ComparableExpression {
 
   @Override
   protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
-    return new SubqueryDateTimeRefColumn(subquery, alias);
+    return new SubqueryDateTimeRefColumn(subquery, alias, this);
   }
 
   // Coalesce

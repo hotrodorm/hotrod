@@ -3,6 +3,7 @@ package org.hotrod.livesql.metadata;
 import java.util.logging.Logger;
 
 import org.hotrod.livesql.expressions.Expression;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.numbers.GeneralNumberExpression;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.subqueries.QShield;
@@ -41,9 +42,7 @@ public class NumberEntityColumn extends GeneralNumberExpression implements Entit
 
   @Override
   protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
-    SubqueryNumberRefColumn c = new SubqueryNumberRefColumn(subquery, alias);
-    QShield.setColumn(c, this);
-//    Shield.setTypeHandler(c, this.typeHandler);
+    SubqueryNumberRefColumn c = new SubqueryNumberRefColumn(subquery, alias, this);
     return c;
   }
 

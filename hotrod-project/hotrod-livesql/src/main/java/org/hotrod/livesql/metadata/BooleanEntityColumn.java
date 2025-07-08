@@ -3,7 +3,6 @@ package org.hotrod.livesql.metadata;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.subqueries.QShield;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.queries.subqueries.SubqueryBooleanRefColumn;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
@@ -35,8 +34,7 @@ public class BooleanEntityColumn extends GeneralBooleanExpression implements Ent
 
   @Override
   protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
-    SubqueryBooleanRefColumn c = new SubqueryBooleanRefColumn(subquery, alias);
-    QShield.setColumn(c, this);
+    SubqueryBooleanRefColumn c = new SubqueryBooleanRefColumn(subquery, alias, this);
     return c;
   }
 

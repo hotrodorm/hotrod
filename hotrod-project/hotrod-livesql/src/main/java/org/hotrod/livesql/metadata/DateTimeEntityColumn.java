@@ -37,8 +37,7 @@ public class DateTimeEntityColumn extends GeneralDateTimeExpression implements E
 
   @Override
   protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
-    SubqueryDateTimeRefColumn c = new SubqueryDateTimeRefColumn(subquery, alias);
-    QShield.setColumn(c, this);
+    SubqueryDateTimeRefColumn c = new SubqueryDateTimeRefColumn(subquery, alias, this);
     return c;
   }
 

@@ -22,10 +22,15 @@ public class SubqueryDateTimeRefColumn extends DateTimeExpression implements Sub
 
   // Constructor
 
-  public SubqueryDateTimeRefColumn(final Subquery subquery, final String referencedColumnName) {
+  public SubqueryDateTimeRefColumn(final Subquery subquery, final String referencedColumnName,
+      final Expression column) {
     super(Expression.PRECEDENCE_COLUMN);
     this.subquery = subquery;
     this.referencedColumnName = referencedColumnName;
+    this.column = column;
+    if (this.column != null) {
+      this.setTypeHandler(Shield.getTypeHandler(this.column));
+    }
   }
 
   protected void setColumn(Expression column) {

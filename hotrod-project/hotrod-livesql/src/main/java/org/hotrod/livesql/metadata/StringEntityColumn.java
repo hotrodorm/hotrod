@@ -3,7 +3,6 @@ package org.hotrod.livesql.metadata;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.strings.GeneralStringExpression;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.subqueries.QShield;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.queries.subqueries.SubqueryStringRefColumn;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
@@ -37,8 +36,7 @@ public class StringEntityColumn extends GeneralStringExpression implements Entit
 
   @Override
   protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
-    SubqueryStringRefColumn c = new SubqueryStringRefColumn(subquery, alias);
-    QShield.setColumn(c, this);
+    SubqueryStringRefColumn c = new SubqueryStringRefColumn(subquery, alias, this);
     return c;
   }
 

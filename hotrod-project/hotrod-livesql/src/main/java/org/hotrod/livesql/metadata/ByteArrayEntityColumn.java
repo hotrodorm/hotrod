@@ -37,8 +37,7 @@ public class ByteArrayEntityColumn extends GeneralByteArrayExpression implements
 
   @Override
   protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
-    SubqueryByteArrayRefColumn c = new SubqueryByteArrayRefColumn(subquery, alias);
-    QShield.setColumn(c, this);
+    SubqueryByteArrayRefColumn c = new SubqueryByteArrayRefColumn(subquery, alias, this);
     return c;
   }
 
