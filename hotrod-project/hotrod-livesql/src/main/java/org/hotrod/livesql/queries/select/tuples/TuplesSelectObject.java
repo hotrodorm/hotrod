@@ -8,9 +8,10 @@ import java.util.stream.Collectors;
 
 import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.dynamicsql.RowReader;
+import org.hotrod.livesql.expressions.AliasedExpression;
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.ResultSetColumn;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.MDShield;
 import org.hotrod.livesql.metadata.TableOrView;
@@ -95,7 +96,7 @@ public class TuplesSelectObject<T> extends SingleSelectObject<T> {
       String property = Shield.getProperty(expr);
       String calias = this.context.getLiveSQLDialect().canonicalToNatural(te.getAlias() + ":" + property);
       log.info(" + " + calias);
-      Expression aliased = expr.as(calias);
+      Expression aliased = new AliasedExpression(expr, calias);
       filledIn.add(aliased);
     }
   }

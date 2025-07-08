@@ -279,8 +279,9 @@ public class App {
 //    Subquery x = sql.subquery("x", sql.select(a.id, a.name, a.updatedAt).from(a).limit(1));
     Subquery x = sql.subquery("x", sql.select(a.balance.as("balx"), a.name, a.updatedAt).from(a).limit(1));
 
-    Subquery y = sql.subquery("y", sql.select().from(x).limit(1));
-    List<Row> rows = sql.select(y.star(), sql.literal(123).mult(3).as("total").type(BigDecimal.class)) //
+    Subquery y = sql.subquery("y",
+        sql.select(x.num("balx").as("baly"), x.str("name"), x.dt("updatedAt")).from(x).limit(1));
+    List<Row> rows = sql.select(y.num("baly").as("balm"), y.str("name").as("namy"), y.dt("updatedAt").as("updated"), sql.literal(123).mult(3).as("total").type(BigDecimal.class)) //
 //  List<Row> rows = sql.select(x.num("cost"), x.num("balance")) //
         .from(y) //
         .execute();

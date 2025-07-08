@@ -29,7 +29,8 @@ public class AliasedExpression extends Expression {
   @Override
   protected Expression getEmergingExpression() {
     log.info("referencedExpression=" + this.referencedExpression.getClass().getName());
-    return this.referencedExpression.getEmergingExpression().as(this.alias);
+    Expression ee = this.referencedExpression.getEmergingExpression();
+    return new AliasedExpression(ee, this.alias);
   }
 
   // TypeHandler setter
