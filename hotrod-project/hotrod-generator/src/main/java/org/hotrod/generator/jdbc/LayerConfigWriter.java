@@ -82,7 +82,7 @@ public class LayerConfigWriter {
         w.print("    rules.add(", TypeRule.class, ".of(\"" + SUtil.escapeJavaString(when.getTestResultSet()) + "\", ",
             TypeHandler.class);
         w.println(".forClass(", ExternalClass.of(when.getJavaType()), ".class, ", TypeSource.class,
-            "." + TypeSource.GENERATION_LAYER_RULE.name() + "), " + n + "));");
+            "." + TypeSource.STATIC_LAYER_RULE.name() + "), " + n + "));");
       }
       n++;
     }

@@ -65,73 +65,73 @@ public class HyperSQLAdapter extends DatabaseAdapter {
     case java.sql.Types.DECIMAL:
     case java.sql.Types.NUMERIC:
       if (m.getScale() != null && m.getScale() != 0) {
-        return new PropertyType(BigDecimal.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
+        return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE);
       } else {
         if (m.getPrecision() <= 2) {
           return new PropertyType(Byte.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
-              TypeSource.GENERATION_DIALECT_RULE);
+              TypeSource.STATIC_DIALECT_RULE);
         } else if (m.getPrecision() <= 4) {
           return new PropertyType(Short.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
-              TypeSource.GENERATION_DIALECT_RULE);
+              TypeSource.STATIC_DIALECT_RULE);
         } else if (m.getPrecision() <= 9) {
           return new PropertyType(Integer.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
-              TypeSource.GENERATION_DIALECT_RULE);
+              TypeSource.STATIC_DIALECT_RULE);
         } else if (m.getPrecision() <= 18) {
           return new PropertyType(Long.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
-              TypeSource.GENERATION_DIALECT_RULE);
+              TypeSource.STATIC_DIALECT_RULE);
         } else {
-          return new PropertyType(BigInteger.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
+          return new PropertyType(BigInteger.class, m, false, TypeSource.STATIC_DIALECT_RULE);
         }
       }
 
     case java.sql.Types.TINYINT:
-      return new PropertyType(Byte.class, m, false, ValueRange.BYTE_RANGE, TypeSource.GENERATION_DIALECT_RULE);
+      return new PropertyType(Byte.class, m, false, ValueRange.BYTE_RANGE, TypeSource.STATIC_DIALECT_RULE);
 
     case java.sql.Types.SMALLINT:
-      return new PropertyType(Short.class, m, false, ValueRange.SHORT_RANGE, TypeSource.GENERATION_DIALECT_RULE);
+      return new PropertyType(Short.class, m, false, ValueRange.SHORT_RANGE, TypeSource.STATIC_DIALECT_RULE);
 
     case java.sql.Types.INTEGER:
-      return new PropertyType(Integer.class, m, false, ValueRange.INTEGER_RANGE, TypeSource.GENERATION_DIALECT_RULE);
+      return new PropertyType(Integer.class, m, false, ValueRange.INTEGER_RANGE, TypeSource.STATIC_DIALECT_RULE);
 
     case java.sql.Types.BIGINT:
-      return new PropertyType(Long.class, m, false, ValueRange.LONG_RANGE, TypeSource.GENERATION_DIALECT_RULE);
+      return new PropertyType(Long.class, m, false, ValueRange.LONG_RANGE, TypeSource.STATIC_DIALECT_RULE);
 
     case java.sql.Types.FLOAT: // float is never reported
     case java.sql.Types.DOUBLE:
-      return new PropertyType(Double.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
+      return new PropertyType(Double.class, m, false, TypeSource.STATIC_DIALECT_RULE);
 
     // Character types
 
     case java.sql.Types.CHAR:
-      return new PropertyType(String.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
+      return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE);
 
     case java.sql.Types.VARCHAR:
       if (m.getTypeName() != null && m.getTypeName().toUpperCase().startsWith("INTERVAL")) {
-        return new PropertyType(Object.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
+        return new PropertyType(Object.class, m, false, TypeSource.STATIC_DIALECT_RULE);
       } else {
         boolean isLOB = m.getPrecision() >= MAX_VARCHAR_LENGTH;
-        return new PropertyType(String.class, m, isLOB, TypeSource.GENERATION_DIALECT_RULE);
+        return new PropertyType(String.class, m, isLOB, TypeSource.STATIC_DIALECT_RULE);
       }
 
       // Date/Time types
 
     case java.sql.Types.DATE:
-      return new PropertyType(java.time.LocalDate.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
+      return new PropertyType(java.time.LocalDate.class, m, false, TypeSource.STATIC_DIALECT_RULE);
     case java.sql.Types.TIME:
-      return new PropertyType(java.time.LocalTime.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
+      return new PropertyType(java.time.LocalTime.class, m, false, TypeSource.STATIC_DIALECT_RULE);
     case java.sql.Types.TIMESTAMP:
-      return new PropertyType(java.time.LocalDateTime.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
+      return new PropertyType(java.time.LocalDateTime.class, m, false, TypeSource.STATIC_DIALECT_RULE);
 
     case java.sql.Types.BOOLEAN:
-      return new PropertyType(Boolean.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
+      return new PropertyType(Boolean.class, m, false, TypeSource.STATIC_DIALECT_RULE);
 
     case java.sql.Types.BLOB:
     case java.sql.Types.BINARY:
     case java.sql.Types.VARBINARY:
-      return new PropertyType("byte[]", m, true, TypeSource.GENERATION_DIALECT_RULE);
+      return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE);
 
     case java.sql.Types.CLOB:
-      return new PropertyType(String.class, m, true, TypeSource.GENERATION_DIALECT_RULE);
+      return new PropertyType(String.class, m, true, TypeSource.STATIC_DIALECT_RULE);
 
     case java.sql.Types.OTHER:
       return produceType(Object.class, m, false);

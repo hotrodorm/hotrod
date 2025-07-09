@@ -212,7 +212,7 @@ public abstract class DatabaseAdapter implements Serializable {
     if (jdbcType == null) {
       throw new UnresolvableDataTypeException(m);
     }
-    return new PropertyType(c.getName(), jdbcType, isLOB, TypeSource.GENERATION_DIALECT_RULE);
+    return new PropertyType(c.getName(), jdbcType, isLOB, TypeSource.STATIC_DIALECT_RULE);
   }
 
   // Classes

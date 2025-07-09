@@ -165,7 +165,7 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
       String javaType = columnTag.getJavaType() != null ? columnTag.getJavaType()
           : columnTag.getConverterTag().getDomainClass();
 
-      return new PropertyType(javaType, jdbcType, columnTag.isLOB(), range, TypeSource.GENERATION_DESIGNATED);
+      return new PropertyType(javaType, jdbcType, columnTag.isLOB(), range, TypeSource.STATIC_DESIGNATED);
 
     } else {
 

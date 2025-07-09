@@ -314,16 +314,16 @@ public class App {
 
   }
 
-  private void testLiveSQLTuples() throws SQLException, DynamicExpressionException {
-    AccountTable a = this.accountDAO.newTable();
-    ProductTable p = this.productDAO.newTable();
-
-    List<Tuple2<Account, Product>> rows = this.sql.selectTuples().from(a).crossJoin(p).execute();
-    for (Tuple2<Account, Product> r : rows) {
-      System.out.println("- Account: " + r.getA());
-      System.out.println("- Product: " + r.getB());
-    }
-  }
+//  private void testLiveSQLTuples() throws SQLException, DynamicExpressionException {
+//    AccountTable a = this.accountDAO.newTable();
+//    ProductTable p = this.productDAO.newTable();
+//
+//    List<Tuple2<Account, Product>> rows = this.sql.selectTuples().from(a).crossJoin(p).execute();
+//    for (Tuple2<Account, Product> r : rows) {
+//      System.out.println("- Account: " + r.getA());
+//      System.out.println("- Product: " + r.getB());
+//    }
+//  }
 
   private void testLiveSQL() throws SQLException, DynamicExpressionException {
 

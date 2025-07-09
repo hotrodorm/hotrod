@@ -63,45 +63,45 @@ public class ApacheDerbyAdapter extends DatabaseAdapter {
     case java.sql.Types.NUMERIC:
     case java.sql.Types.DECIMAL:
       if (m.getScale() != null && m.getScale() != 0) {
-        return new PropertyType(BigDecimal.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
+        return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE);
       } else {
         if (m.getPrecision() <= 2) {
           return new PropertyType(Byte.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
-              TypeSource.GENERATION_DIALECT_RULE);
+              TypeSource.STATIC_DIALECT_RULE);
         } else if (m.getPrecision() <= 4) {
           return new PropertyType(Short.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
-              TypeSource.GENERATION_DIALECT_RULE);
+              TypeSource.STATIC_DIALECT_RULE);
         } else if (m.getPrecision() <= 9) {
           return new PropertyType(Integer.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
-              TypeSource.GENERATION_DIALECT_RULE);
+              TypeSource.STATIC_DIALECT_RULE);
         } else if (m.getPrecision() <= 18) {
           return new PropertyType(Long.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
-              TypeSource.GENERATION_DIALECT_RULE);
+              TypeSource.STATIC_DIALECT_RULE);
         } else {
-          return new PropertyType(BigInteger.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
+          return new PropertyType(BigInteger.class, m, false, TypeSource.STATIC_DIALECT_RULE);
         }
       }
 
     case java.sql.Types.SMALLINT:
-      return new PropertyType(Short.class, m, false, ValueRange.SHORT_RANGE, TypeSource.GENERATION_DIALECT_RULE);
+      return new PropertyType(Short.class, m, false, ValueRange.SHORT_RANGE, TypeSource.STATIC_DIALECT_RULE);
 
     case java.sql.Types.INTEGER:
-      return new PropertyType(Integer.class, m, false, ValueRange.INTEGER_RANGE, TypeSource.GENERATION_DIALECT_RULE);
+      return new PropertyType(Integer.class, m, false, ValueRange.INTEGER_RANGE, TypeSource.STATIC_DIALECT_RULE);
 
     case java.sql.Types.BIGINT:
-      return new PropertyType(Long.class, m, false, ValueRange.LONG_RANGE, TypeSource.GENERATION_DIALECT_RULE);
+      return new PropertyType(Long.class, m, false, ValueRange.LONG_RANGE, TypeSource.STATIC_DIALECT_RULE);
 
     case java.sql.Types.DOUBLE:
-      return new PropertyType(Double.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
+      return new PropertyType(Double.class, m, false, TypeSource.STATIC_DIALECT_RULE);
 
     case java.sql.Types.REAL:
-      return new PropertyType(Float.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
+      return new PropertyType(Float.class, m, false, TypeSource.STATIC_DIALECT_RULE);
 
     case java.sql.Types.FLOAT:
       if (m.getScale() != null && m.getScale() <= 23) {
-        return new PropertyType(Float.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
+        return new PropertyType(Float.class, m, false, TypeSource.STATIC_DIALECT_RULE);
       } else {
-        return new PropertyType(Double.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
+        return new PropertyType(Double.class, m, false, TypeSource.STATIC_DIALECT_RULE);
       }
 
       // Character types
@@ -110,16 +110,16 @@ public class ApacheDerbyAdapter extends DatabaseAdapter {
     case java.sql.Types.VARCHAR:
     case java.sql.Types.LONGVARCHAR:
     case java.sql.Types.CLOB:
-      return new PropertyType(String.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
+      return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE);
 
     // Date/Time types
 
     case java.sql.Types.DATE:
-      return new PropertyType(java.time.LocalDate.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
+      return new PropertyType(java.time.LocalDate.class, m, false, TypeSource.STATIC_DIALECT_RULE);
     case java.sql.Types.TIME:
-      return new PropertyType(java.time.LocalTime.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
+      return new PropertyType(java.time.LocalTime.class, m, false, TypeSource.STATIC_DIALECT_RULE);
     case java.sql.Types.TIMESTAMP:
-      return new PropertyType(java.time.LocalDateTime.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
+      return new PropertyType(java.time.LocalDateTime.class, m, false, TypeSource.STATIC_DIALECT_RULE);
 
     // Binary
 
@@ -127,17 +127,17 @@ public class ApacheDerbyAdapter extends DatabaseAdapter {
     case java.sql.Types.VARBINARY: // varchar (n) for bit data
     case java.sql.Types.LONGVARBINARY: // long carchar for bit data
     case java.sql.Types.BINARY: // char(n) for bit data
-      return new PropertyType("byte[]", m, false, TypeSource.GENERATION_DIALECT_RULE);
+      return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE);
 
     // Boolean
 
     case java.sql.Types.BOOLEAN:
-      return new PropertyType(Boolean.class, m, false, TypeSource.GENERATION_DIALECT_RULE);
+      return new PropertyType(Boolean.class, m, false, TypeSource.STATIC_DIALECT_RULE);
 
     // Other
 
     case java.sql.Types.SQLXML: // xml
-      return new PropertyType("java.lang.Object", m, false, TypeSource.GENERATION_DIALECT_RULE);
+      return new PropertyType("java.lang.Object", m, false, TypeSource.STATIC_DIALECT_RULE);
 
     default: // Unrecognized type
       return produceType(Object.class, m, false);

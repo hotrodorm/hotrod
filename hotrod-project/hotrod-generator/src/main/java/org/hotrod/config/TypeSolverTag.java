@@ -99,7 +99,7 @@ public class TypeSolverTag extends AbstractConfigurationTag {
               jdbcTypeOnWrite = (c != null ? JDBCTypes.codeToType(c.getDataType()) : resultSetType);
             }
             log.fine("## 5 RULE MATCHES: w.getJavaType()=" + w.getJavaType() + " jdbcTypeOnWrite=" + jdbcTypeOnWrite);
-            return new PropertyType(w.getJavaType(), jdbcTypeOnWrite, false, TypeSource.GENERATION_LAYER_RULE);
+            return new PropertyType(w.getJavaType(), jdbcTypeOnWrite, false, TypeSource.STATIC_LAYER_RULE);
           }
         } catch (ClassCastException e) {
           throw new UnresolvableDataTypeException(cm, "Could not evaluate <when> tag's test expression '" + w.getTest()

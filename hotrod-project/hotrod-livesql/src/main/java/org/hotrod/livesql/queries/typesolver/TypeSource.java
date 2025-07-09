@@ -2,9 +2,9 @@ package org.hotrod.livesql.queries.typesolver;
 
 public enum TypeSource {
 
-  GENERATION_DESIGNATED, // Designated at Generation Time, using <column java-type="" /> or <column converter="" />
-  GENERATION_LAYER_RULE, // Resolved at Generation Time, by a Layer Rule, using <type-solver>/<gen>
-  GENERATION_DIALECT_RULE, // Resolved at Generation Time, by a Static Dialect Default Rule
+  STATIC_DESIGNATED, // Designated at Generation Time, using <column java-type="" /> or <column converter="" />
+  STATIC_LAYER_RULE, // Resolved at Generation Time, by a Layer Rule, using <type-solver>/<gen>
+  STATIC_DIALECT_RULE, // Resolved at Generation Time, by a Static Dialect Default Rule
 
   RUNTIME_DESIGNATED, // Designated in LiveSQL using .type(class)
   RUNTIME_LAYER_RULE, // Resolved at runtime by a Runtime Layer Rule, using <type-solver>/<runtime>

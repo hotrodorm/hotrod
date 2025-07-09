@@ -1227,7 +1227,7 @@ public class DAO {
 
         w.print("    private final ", TypeHandler.class, "<", rawClass, ", ");
         w.print(domainClass, "> th" + thId + " = ", TypeHandler.class, ".forConverter(new ", converterClass);
-        w.println("(), TypeSource." + TypeSource.GENERATION_DESIGNATED + ");");
+        w.println("(), TypeSource." + TypeSource.STATIC_DESIGNATED + ");");
 
         w.print("    public final ", ConvertedColumn.class, "<", rawClass, ", ");
         w.print(domainClass, "> " + memberName + " = new ", ConvertedColumn.class);
