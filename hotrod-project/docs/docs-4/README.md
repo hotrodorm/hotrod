@@ -1,11 +1,11 @@
-# HotRod ORM
+# HotRod 4 ORM
 
 HotRod 4 is an open source ORM for Spring and Spring Boot geared toward high performance persistence for relational databases.
 
 The persistence layer provides ready-to-use CRUD and LiveSQL functionalities to quickly start prototyping an application for
-any of the world-class [supported databases](./hotrod-project/docs/docs-4/config/supported-databases.md).
+any of the world-class [supported databases](./config/supported-databases.md).
 
-See [What's New](./hotrod-project/docs/docs-4/whats-new.md) in HotRod 4, [Version History](./hotrod-project/docs/version-history.md), and the [Roadmap](./hotrod-project/docs/roadmap.md). For documentation on the previous version see [HotRod 3 Documentation](./hotrod-project/docs/docs-3.4/README.md).
+See [What's New](./whats-new.md) in HotRod 4, [Version History](../version-history.md), and the [Roadmap](../roadmap.md). For documentation on the previous version see [HotRod 3 Documentation](../docs-3/README.md).
 
 
 ## LiveSQL
@@ -162,7 +162,7 @@ Graph queries assemble the rows and columns of SELECT queries into trees of obje
 
 Returns a list where each element is a composite object `InvoiceWithLines` as shown below:
 
-![Graph Query Result - Nitro](hotrod-project/docs/docs-4/nitro/images/graph-query-vos.png)
+![Graph Query Result - Nitro](./nitro/images/graph-query-vos.png)
 
 In combination with the `.toJSON()` methods, this strategy can produce JSON objects for entire
 branches of database data with a few lines of code. The query is available for your application
@@ -177,7 +177,7 @@ Dynamic SQL and Native SQL.
 
 ## Hello World
 
-See HotRod in action with the [Hello World Example](./hotrod-project/docs/docs-4/guides/hello-world.md). It's an example that shows the simplicity of using HotRod.
+See HotRod in action with the [Hello World Example](./guides/hello-world.md). It's an example that shows the simplicity of using HotRod.
 
 
 ## Modules
@@ -187,17 +187,17 @@ out-of-the-box functionality available in CRUD and LiveSQL to advanced querying 
 
 These modules are:
 
-- [CRUD](./hotrod-project/docs/docs-4/crud/README.md) &mdash; Quick and simple persistence for rapid prototyping
-- [LiveSQL](./hotrod-project/docs/docs-4/livesql/README.md) &mdash; Flexible querying from Java
-- [Nitro](./hotrod-project/docs/docs-4/nitro/README.md) &mdash; All the power of [Dynamic SQL](./hotrod-project/docs/docs-4/nitro/nitro-dynamic-sql.md) combined with [Graph Queries](./hotrod-project/docs/docs-4/nitro/nitro-graph-selects.md) and Native SQL when you need it
-- [Torcs](./hotrod-project/docs/docs-4/torcs/README.md) &mdash; Detect slow queries at runtime and analyze them
-- [Torcs CTP](./hotrod-project/docs/docs-4/torcs-ctp/README.md) &mdash; Generate execution plans of slow queries and visualize them in *Check The Plan*
+- [CRUD](./crud/README.md) &mdash; Quick and simple persistence for rapid prototyping
+- [LiveSQL](./livesql/README.md) &mdash; Flexible querying from Java
+- [Nitro](./nitro/README.md) &mdash; All the power of [Dynamic SQL](./nitro/nitro-dynamic-sql.md) combined with [Graph Queries](./nitro/nitro-graph-selects.md) and Native SQL when you need it
+- [Torcs](./torcs/README.md) &mdash; Detect slow queries at runtime and analyze them
+- [Torcs CTP](./torcs-ctp/README.md) &mdash; Generate execution plans of slow queries and visualize them in *Check The Plan*
 
 ## Examples
 
-See [Hello CRUD!](./hotrod-project/docs/docs-4/crud/hello-crud.md) for the out-of-the-box functionality and its basic setup and to run other CRUD examples.
+See [Hello CRUD!](./crud/hello-crud.md) for the out-of-the-box functionality and its basic setup and to run other CRUD examples.
 
-See [Hello Graph Queries](./hotrod-project/docs/docs-4/guides/hello-nitro-graph.md) that shows
+See [Hello Graph Queries](./guides/hello-nitro-graph.md) that shows
 a Nitro Graph Query in action.
 
 <!--
@@ -216,11 +216,11 @@ Even though prototyping with simple functionality works out of the box, more adv
 
 The reference details how to activate all features, and how to use them.
 
-- [Configuration File Reference](./hotrod-project/docs/docs-4/config/README.md)
-- [Cheat Sheet](./hotrod-project/docs/docs-4/cheat-sheet.md)
-- [Libraries](./hotrod-project/docs/docs-4/config/libraries.md)
-- [Maven Integration](./hotrod-project/docs/docs-4/maven/README.md)
-- [Supported Databases and Default Data Types](./hotrod-project/docs/docs-4/config/supported-databases.md)
+- [Configuration File Reference](./config/README.md)
+- [Cheat Sheet](./cheat-sheet.md)
+- [Libraries](./config/libraries.md)
+- [Maven Integration](./maven/README.md)
+- [Supported Databases and Default Data Types](./config/supported-databases.md)
 
 
 ## Guides
@@ -229,15 +229,15 @@ These guides focus on specific features and show examples enabling and using the
 
 These guides are the following:
 
-- [Schema Discovery](./hotrod-project/docs/docs-4/guides/schema-discovery.md)
-- [Using Multiple DataSources](./hotrod-project/docs/docs-4/guides/using-multiple-datasources.md)
-- [Custom Column Types](./hotrod-project/docs/docs-4/guides/mapping-column-types.md)
-- [Custom Table and Column Names](./hotrod-project/docs/docs-4/guides/mapping-table-and-column-names.md)
-- [Extending LiveSQL Functions](./hotrod-project/docs/docs-4/livesql/extending-livesql-functions.md)
-- [Previewing LiveSQL](./hotrod-project/docs/docs-4/livesql/previewing-livesql.md)
-- [Starting a Spring Boot Project from Scratch using PostgreSQL](./hotrod-project/docs/docs-4/guides/starting-a-maven-project-from-scratch-with-postgresql.md)
-- [Automate Project Creation with One Command](./hotrod-project/docs/docs-4/maven/maven-arquetype.md)
-- [Enabling SQL Logging](./hotrod-project/docs/docs-4/guides/enabling-sql-logging.md)
+- [Schema Discovery](./guides/schema-discovery.md)
+- [Using Multiple DataSources](./guides/using-multiple-datasources.md)
+- [Custom Column Types](./guides/mapping-column-types.md)
+- [Custom Table and Column Names](./guides/mapping-table-and-column-names.md)
+- [Extending LiveSQL Functions](./livesql/extending-livesql-functions.md)
+- [Previewing LiveSQL](./livesql/previewing-livesql.md)
+- [Starting a Spring Boot Project from Scratch using PostgreSQL](./guides/starting-a-maven-project-from-scratch-with-postgresql.md)
+- [Automate Project Creation with One Command](./maven/maven-arquetype.md)
+- [Enabling SQL Logging](./guides/enabling-sql-logging.md)
 
 
 ## Features Overview

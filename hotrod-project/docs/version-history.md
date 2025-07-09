@@ -2,7 +2,12 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
-## 5.0.0 (unreleased):
+## 5.0.1:
+
+- Core:
+    - Adding compatibility with new Maven Central Publishing API.
+
+## 5.0.0:
 
 This is a major release of the HotRod ORM that breaks compatibility with previous releases. Its main goals are to fully remove the need of the MyBatis library and to refactor the configuration files and persistence layer organization.
 

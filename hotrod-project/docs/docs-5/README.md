@@ -1,15 +1,15 @@
-# HotRod ORM
+# HotRod 5 ORM
 
 HotRod 5 is an open source ORM for Spring and Spring Boot geared toward high performance persistence for relational databases.
 
 The persistence layer provides ready-to-use CRUD and LiveSQL functionalities to quickly start prototyping an application for
 any of the world-class [supported databases](./config/supported-databases.md).
 
-See [What's New](./whats-new.md) in HotRod 5 and the [Version History](../version-history.md). For documentation on the previous versions see [HotRod 4 Documentation](../docs-4/README.md) and [HotRod 3 Documentation](../docs-3.4/README.md).
+See [What's New](./whats-new.md) in HotRod 5 and the [Version History](../version-history.md). For documentation on the previous versions see [HotRod 4 Documentation](../docs-4/README.md) and [HotRod 3 Documentation](../docs-3/README.md).
 
 ## LiveSQL
 
-LiveSQL can run SELECT, UPDATE, DELETE, and INSERT queries from the most basic syntax to advanced queries. The syntax can include parentheses, complex predicates, subqueries, CTEs, arithmetic operators, functions, as well as standard SQL constructs such as ordering limiting, aggregation, window functions, union, for update (locking), etc.
+LiveSQL can run SELECT, UPDATE, DELETE, and INSERT queries from the most basic syntax to advanced queries. The syntax can include complex predicates, subqueries, CTEs, arithmetic operators, functions, as well as standard SQL constructs such as ordering limiting, aggregation, window functions, union, for update (locking), etc.
 
 A basic select with a simple condition can look like:
 
@@ -83,7 +83,7 @@ List<Row> rows = sql
 
 ## The Simplicity of CRUD
 
-Additionally, the out-of-the-box CRUD methods available in the DAOs can access rows by primary keys, foreign keys, or by example. SELECT, UPDATE, INSERT, and DELETE methods are automatically included in the CRUD persistence layer.
+Additionally, the out-of-the-box CRUD methods available in the DAOs can access rows by primary keys or by example. SELECT, UPDATE, INSERT, and DELETE methods are automatically included in the CRUD persistence layer.
 
 For example, to find an employee by primary key:
 
@@ -104,7 +104,7 @@ To update the status of an invoice:
 
 Nitro queries enhance SQL capabilities with:
 
-- Dynamic SQL
+- [Dynamic SQL](./nitro/nitro-dynamicsql.md)
 - Native SQL
 
 Nitro can be used to gain access to all the features of a database, as well as to squeeze performance from it by tweaking queries. Any or all of these features can be combined into any SELECT, UPDATE, INSERT, or DELETE, or in any other valid database query (TRUNCATE, CREATE, ALTER, DROP, etc.).
