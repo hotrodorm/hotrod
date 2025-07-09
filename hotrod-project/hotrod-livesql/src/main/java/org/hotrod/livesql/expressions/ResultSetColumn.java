@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.hotrod.livesql.util.ToString;
 
-/**
+/*
  * <pre>
  *                ResultSetColumn (expand)
  *               /               \
