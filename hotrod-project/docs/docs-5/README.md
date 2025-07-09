@@ -5,6 +5,7 @@ HotRod 5 is an open source ORM for Spring and Spring Boot geared toward high per
 The persistence layer provides ready-to-use CRUD and LiveSQL functionalities to quickly start prototyping an application for
 any of the world-class [supported databases](./config/supported-databases.md).
 
+See [What's New](./whats-new.md) in HotRod 5 and the [Version History](../version-history.md). For documentation on the previous versions see [HotRod 4 Documentation](../docs-4/README.md) and [HotRod 3 Documentation](../docs-3.4/README.md).
 
 ## LiveSQL
 
@@ -135,7 +136,7 @@ Nitro makes this query available in Java as:
 
 ## Torcs
 
-Torcs discover slow queries at runtime by providing rankings by impact, slowest response time, high frequency, and others. The visibility that Torcs offers about the actual running application can provide critical information to understand the bottlenecks of the application that need to be addressed.
+Torcs discovers slow queries at runtime by providing rankings by impact, slowest response time, high frequency, and others. The visibility that Torcs offers about the actual running application can provide critical information to understand the bottlenecks of the application that need to be addressed.
 
 
 ## Hello World

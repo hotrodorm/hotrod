@@ -1,243 +1,80 @@
 # What's New in HotRod 5
 
-## 1. The DISTINCT ON Clause
+This is a major release of the HotRod ORM that includes much needed refactorings and upgrades.
 
-LiveSQL implements PostgreSQL's DISTINCT ON clause. Even though this clause is only implemented
-by PostgreSQL it was chosen for implementation, since it can produce very simple and efficient queries.
+As a side effect this release breaks compatibility with previous releases. Consider that an upgrade from a previous version will require multiple changes to the source code of your application.
 
+## What's New in HotRod 5.0
 
-## What's New in HotRod 4.5
+### 1. Easy Compatibility From Java 8 to Java 24
 
-### 1. LiveSQL Pessimistic Locking
+The MyBatis dependency was removed in favor of an internal persistence technology to run in any modern Java version. The HotRod library dependency is now much simplified, requiring a single library declaration.
 
-The SELECT ... FOR UPDATE locking feature was implemented in the LiveSQL syntax.
+The new internal persistence technology is fully compatible with all Java versions from Java 8 to Java 24.
 
-### 2. LiveSQL executeOne()
+### 2. Simplified Configuration File
 
-This convenience method was added to return single rows or VOs when it's known that the queries
-will return one row at the most.
+The configuration file supports new defaults that are simpler to use with minimal or even no configuration.
 
-### 3. Graph Queries
+Also, many option were simplified and better default values were defined.
 
-Composite graph objects now include convenient JSON rendering that include all subelements at once.
+### 3. Simplified Persistence Layer
 
+The persistence layer is now reorganized into separate packages to clearly visualize the separation of duties. The following classes are now located by default in separate packages:
 
+- DAOs for CRUD tables and view, as well as extra DAOs for non-entity queries
+- Layout classes that represent the structure of tables and views in the CRUD layer.
+- Model classes that add behavior to the CRUD objects.
 
-## What's New in HotRod 4.4
+An extra LayerConfiguration stores the runtime rules for the Runtime Type Solver.
 
-### 1. Torcs CTP
 
-[Torcs CTP](./torcs-ctp/README.md) generates execution plans for visualization and analysis in the
-[Check The Plan](https://checktheplan.com) web site, for the Oracle, DB2 LUW, PostgreSQL, and SQL Server databases.
+### 4. Using java.time By Default
 
-### 2. LiveSQL Optimistic Locking
+This was long overdue. The java.time classes are now resolved by default for DATE, TIME, TIMESTAMP columns. This is valid for the static and runtime type solvers. All database dialects have been updated to default to java.time instead of java.sql now. LiveSQL implement table columns with these types and can use these types in predicates as well.
 
-The INSERT, UPDATE, and DELETE statements of LiveSQL now return the number of inserted, updated, and deleted rows respectively, to support Optimistic Locking.
+Old java.sql classes can still be used by explicitly designating them.
 
+### 5. Simplified Logging
 
-## What's New in HotRod 4.3
+Logging of the queries used by the CRUD methods and other DAOs is now available at the DEBUG and TRACE levels of the corresponding DAOs. The logging shows the full rendered query, optionally with its parameters.
 
-Version 4.3 adds the Torcs module to observe query executions at runtime and detect and analize slow ones.
+This logging is enabled by the normal logging framework specified at the DAO class or method level.
 
-### 1. Torcs
+### 6. New Optimistic Locking Strategies
 
-[Torcs](./torcs/README.md) inspects SQL query executions and records ranking(s) of query execution, that become available to the application. The ranking provides a sorted list of queries, with statistics, and also offer the ability to retrieve execution plans, should the application request it.
+The CRUD module now implements the Timestamp and Full Row Check strategies, in addition to the existing Version Number strategy. These new options can come in handy, especially when the affected tables cannot accept more columns.
 
-Torcs also generates execution plans for each database in multiple formats available in each database.
+### 7. Cursors Revamped
 
-### 2. LiveSQL
+The Cursor functionality was fully rewritten for CRUD, Nitro, and LiveSQL for higher performance, and to function correctly in a variety of scenarios.
 
-LiveSQL MySQL and MariaDB rendering has been fixed for non-default schema tables and views.
+### 8. Improved Nitro Queries
 
+DynamicSQL tags in Nitro can now be placed outside the complement tag as well as inside it. This allows the creation of highly dynamic queries that include tables and result set columns conditionally at runtime.
 
-## What's New in HotRod 4.2
+The Nitro injection syntax was changed to `$INJECT{expression}` instead `${expression}` to prevent unintentional SQL Injection.
 
-Version 4.2 adds SQL set operators (UNION, INTERSECT, EXCEPT) and literal values to the LiveSQL syntax.
+**Note**: Nitro Graph Queries are not implemented in HotRod 5.0.
 
-### 1. Set Operators
+### 9. LiveSQL Runtime Type Solver
 
-The [set operators](./livesql/syntax/set-operators.md) UNION [ALL], INTERSECT [ALL], EXCEPT [ALL], and combinations of them are now included in the LiveSQL syntax. This implementation also includes nesting set operators using parenthesis, managing default and explicit precedence. Finally, it also includes set ordering, offsets, and limiting.
+HotRod 5 implements a new Type Solver to read LiveSQL's SELECT query columns. Since these columns are defined at runtime the Static Type Solver could not resolve their data types correctly in HotRod 4.
 
-### 2. Literal Scalars
+The Runtime Type Solver can use designated types, rule-based types (runtime JEXL), dialect-based types, and static-rule types (static JEXL), in this order of precedence. This makes it possible to read table columns with their correct data type, including defined converters.
 
-[Literal scalar values](./livesql/syntax/literals.md) can now be included in the query using `sql.literal()`. Literals are easier to read in the SQL
-clause and can provide information to the database optimizer to do its job
-better.
 
+### 10. Previewing LiveSQL
 
-## What's New in HotRod 4.1
+LiveSQL preview now shows SQL, expanded parameters details, and data types to read each column.
 
-HotRod 4.1 add subqueries to LiveSQL and adds a few extra enhancements to the LiveSQL syntax.
+- The SQL code includes the exact resolved query that is executed in the database.
+- The parameters are fully expanded to show all instances of each parameter.
+- The data types for the resulting columns provide all details to understand the rule that was applied to determine the data type for a column.
 
-### 1. Subqueries
+### 11. Enhanced Rankings in Torcs
 
-[Subqueries](./livesql/syntax/subqueries.md) include Scalar Subqueries, Table Expressions, Common Table Expressions (plain and recursive CTEs), Lateral Joins, in addition to IN/NOT IN, EXISTS/NOT EXISTS, and asymmetric operators. The extra syntax allows the developer to write complex SQL queries to adress more sophisticated data scenarios, without resorting to Nitro queries. Since writing LiveSQL code is faster than writing Nitro queries, this enhancement can significantly speed up development for queries of mid-level complexity.
+Torcs now includes the Highest Impact Queries Ranking that is tailored to ranks queries by combining the accumulated response times. This is probably one of the most important metrics when it comes to optimization and this ranking may become the default one in future versions.
 
-### 2. POJO vs Bean VOs
-
-By default, LiveSQL instantiate VOs as Spring beans. Now it's possible to instantiate them as POJOs instead, with the use of a system property. On the one hand, POJOs do not participate in the Spring context (to manage transactions for example), but on the other hand, they are faster than beans.
-
-### 3. Other
-
-LiveSQL changes:
-
-- The `.asc()` method is not needed anymore when writing an ordering term. It's now assumed by default.
-- Explicit parentheses added for expressions using `sql.enclose()`.
-- All scalar values (including integer numbers and strings) are now parameterized to help database engines with query caching and optimization.
-
-
-## What's New in HotRod 4.0
-
-HotRod 4.0 includes several major features as well as a many of minor improvements.
-
-## 1. General Functionality
-
-This functionality affects all the modules.
-
-### 1.1 Schema Discovery
-
-Schema discovery can find tables and views in one or more schemas of the database
-and generate the persistence layer for them automatically. It's enabled in No Config
-mode and scans the current schema. Alternatively, it can be enabled in the configuration
-to specify a list of schemas to scan. Rules can be defined with
-a Name Solver and Type Solver to tailor the name generation of classes and
-the type and names of properties in the persistence layer. See
-[Schema Discovery](guides/schema-discovery.md) for details.
-
-### 1.2 No Config Mode
-
-The main configuration file can be omitted for rapid prototyping. In this mode, a minimal
-setup of the Maven plugin produces a full persistence layer in no time. Also in this mode, HotRod 
-generates the persistence layer by
-scanning the current database schema. Sensible defaults are defined for all configuration
-parameters for a standard persistence layer. See the [Hello World](guides/hello-world.md)
-example to see it in action.
-
-### 1.3 Support for Multiple Datasources
-
-Support for multiple datasources was added. These datasources may belong to the same
-database engine or to different ones. Each datasource generates a separated persistence
-layer that is used seamlessly by all the HotRod modules, including CRUD, LiveSQL, and Nitro,
-as well as all Spring features such as transaction management, AOP, etc. 
-See [Using Multiple Datasources](guides/using-multiple-datasources.md)
-for details.
-
-### 1.4 Aurora/PostgreSQL and Aurora/MySQL Databases
-
-These two new databases are now supported with all PostgreSQL and MySQL features.
-HotRod recognizes them as such, and generates the persistence layer accordingly.
-
-### 1.5 VOs Are Now Spring Beans
-
-All VOs are retrieved as Spring Beans. This means they can use the Spring context
-to handle Spring calls, autowiring, initiate/manage transactions, AOP, etc.
-
-### 1.6 Enhanced Converters
-
-Converters were enhanced and to receive the database `Connection`. This allows them
-to manage special/exotic database types when sending them to and receiving them from
-the database.
-
-### 1.7 Configuration Default Settings
-
-Sensible values were defined for all settings of the HotRod configuration file.
-When a configuration setting is not specified a well-defined default behavior is included.
-This feature goes hand in hand with the No Config mode.
-
-
-## 2. LiveSQL
-
-### 2.1 The SQL Wildcard *
-
-The SQL wildcard (`*`) is now supported with the `star()` method. Apart from the traditional
-functionality defined in the SQL Standard, this method is enhanced with filtering and aliasing.
-Filtering decides which columns to keep using a lambda function.
-Aliasing renames columns as needed also using another lambda function. See
-[The SQL Wildcard](livesql/syntax/select-list.md#the-sql-wildcard) and, for aliasing in particular,
-[Aliasing Wildcard Columns](livesql/syntax/select-list.md#aliasing-wildcard-columns).
-
-### 2.2 INSERT, UPDATE, and DELETE
-
-Core versions of these SQL Statements are now implemented to handle typical cases, to make full 
-use the LiveSQL features such as usage of complex predicates when selecting data and complex
-expressions when updating data. Simple subqueries are allowed in these expressions as well.
-
-### 2.3 Queries without a FROM Clause
-
-LiveSQL now automatically adds a FROM clause for databases that do not support queries without
-it. Depending on the database the `DUAL` or `SYSDUMMY1` tables are used for this purpose behind
-the scenes. These tables can also be used explicitly when desired. See
-[Selecting Without a FROM Clause](livesql/syntax/selecting-without-a-from-clause.md).
-
-### 2.4 LiveSQL Returns List&lt;Row> and Cursor&lt;Row>
-
-To improve readability, LiveSQL changed the return type of the SELECT clauses and now returns
-`List<Row>` and `Cursor<Row>` instead of `List<Map<String, Object>>` and `Cursor<Map<String, Object>>`.
-This change has minimal side effects since `Row` subclasses `Map<String, Object>`.
-
-### 2.5 Row Parser Implemented
-
-The Row Parser funnctionality is available in the DAOs to reassemble one or more VOs from
-a SELECT data row. Support for prefixes and suffixes is designed to be used in conjunction
-with column aliasing to handle multiple VOs resulting from joined tables and views. See
-[Aliasing Wildcard Columns](livesql/syntax/select-list.md#aliasing-wildcard-columns).
-
-
-## 3. CRUD Module
-
-### 3.1 DAO Methods Renamed
-
-Most `select()` method variations are now named `select()`. This also applies to `update` and `delete`.
-The variations are differentiated by different kind of parameters such as scalar values (for keys),
-VOs (for `byExample`) and predicates for criteria searching.
-
-### 3.2 Classic FK Navigation Enable By Default
-
-Classic Foreign Key Navigation is now enabled by default and the `<classic-fk-navigation>` tag can 
-be omitted now. In practice, all DAO methods to select related VOs using foreign keys are now included
-by default in the DAOs and can be used out of the box.
-
-### 3.3 DAOs Implement Interfaces
-
-Java DAOs classes can be configured to implement predefined Java interfaces and take advantage
-of extra Java functionality with them.
-
-### 3.4 Simpler VOs
-
-The `propertiesChangeLog` is now removed from VOs to facilitate quick Spring prototyping. Alhough
-this extra property was useful in all `byExample()` functionality it was interfering with the JSON
-renderer and parser. At the same the change log was largely rendered obsolete by the LiveSQL's
-predicates that cover all these searched and other much more complex ones.
-
-
-## 4. Nitro
-
-### 4.1 Entity SELECTs Return Entity VOs
-
-All `<select>` tags defined in entities (`<table>` and `<view>` tags) return VOs of the entity only.
-the `vo` attribute is not accepted anymore in entity selects. On the other hand, `<select>` tags
-outside entities (in `<dao>` tags) are fully free to return any type of VO.
-
-### 4.2 Result Set Generation
-
-Long overdue, Nitro now defaults to `result-set` generation. The `<select-generation>` tag can be 
-omitted by default. The `create-view` Nitro strategy was key at the time when JDBC drivers were poorly
-implemented but this is not the case anymore in all supported databases.
-
-
-## 5. Minor Changes and Bug Fixes
-
-Version 4 includes many minor changes and bug fixes are included. The following ones are worth mentioning:
-
-- Configuration property `generator` removed.
-- Reusing JDBC connection when using result-set processor.
-- Converters fixed in `<dao>` tags.
-- DTD declarations are now removed from config files.
-- Converter's `java-intermediate-type` attribute renamed as `java-raw-type`.
-- `primitives` subfolder removed in the location of mappers.
-- Deprecated tag `<mybatis-configuration-template>` removed.
-- LiveSQL's Oracle `.remainder()` function was fixed.
-- The `<foreach>` tag bug is fixed and supports standard parameters now.
-
-
+The New Highest Frequency Queries Ranking implemented to detect extremely frequent queries, even if they are fast.
 

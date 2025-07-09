@@ -7,12 +7,10 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 This is a major release of the HotRod ORM that breaks compatibility with previous releases. Its main goals are to fully remove the need of the MyBatis library and to refactor the configuration files and persistence layer organization.
 
 - Core:
-    - HotRod does not use MyBatis anymore and switched to plain JDBC instead. This greatly simplifies the use of newer Java versions and streamlines the bootstrap configuration.
-    - Major refactoring of the configuration to simplifying it.
-    - Cleaner persistence layer organization with simpler packages clear separation of duties.
+    - HotRod does not use MyBatis anymore and switched to plain JDBC instead. This greatly simplifies the use of newer Java versions and streamlines the bootstrap configuration. HotRod has been tested from Java 8 up to Java 24.
+    - Major improvement of the configuration file with the aim of simplifying it.
+    - Major improvement in the persistence layer organization with simpler packages clear separation of duties.
     - DATE, TIME, and TIMESTAMP database column types now default to java.time classes instead of java.sql classes.
-    - Enhanced Type Solver now resolves data types for live queries.
-    - Log4j fully removed from HotRod in favor of JUL.
     - Persistence logging is available at DEBUG and TRACE levels of the DAOs.
     - New class generator produces cleaner classes, handles references, and sorted imports.
     - Packages are changed in the hotrod library. The runtime segment is now removed.
@@ -23,18 +21,22 @@ This is a major release of the HotRod ORM that breaks compatibility with previou
     - New optimistic locking Full Row Check implemented.
     - Cursor functionality rewritten.
     - Navigation using foreign keys removed.
+- Generator:
+    - Log4j fully removed from HotRod in favor of JUL. This was the last module using log4j.
 - Nitro:
     - Parameter injection syntax changed to `$INJECT{expression}` instead `${expression}` to prevent unintentional SQL Injection.
     - All DynamicSQL tags in Nitro can now be placed outside the complement tag as well as inside it.
 - LiveSQL:
     - LiveSQL can designate explicit data types for columns in the select list using the type() method; this type overrides all other rules.
+    - The new Runtime Type Solver that combines static, designated, rule-based, and dialect-based type solving, to read LiveSQL query columns with the expected data types, including table columns, converters, and types resolved at runtime using JEXL rules.
     - Converted columns can now be used in LiveSQL syntax as any other column to write predicates with or without parameters.
     - java.time Temporal classes are now supported in LiveSQL expressions and predicates.
     - Implemented missing function: COUNT(&lt;expression>).
-    - Improved LiveSQL cursors.
+    - Improved performance in LiveSQL cursors.
+    - Enhanced LiveSQL preview shows SQL, expanded parameters details, and data types to read each column.
 - Torcs:
-    - New Highest Impact Queries Ranking implemented.
-    - New Highest Frequency Queries Ranking implemented.
+    - New Highest Impact Queries Ranking implemented. This ranking ranks queries by combining the accumulated response times; may become the default one in future versions.
+    - New Highest Frequency Queries Ranking implemented to detect fast, but extremely frequent query surges.
     - Rankings' default size increased to 30.
 
 ## 4.8.1:
