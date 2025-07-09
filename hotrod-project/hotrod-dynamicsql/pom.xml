@@ -5,14 +5,15 @@
   <artifactId>hotrod-dynamicsql</artifactId>
   <packaging>jar</packaging>
 
+  <name>hotrod-dynamicsql</name>
+  <description>HotRod is an ORM for Java, Spring and SpringBoot.</description>
+  <url>https://github.com/hotrodorm/hotrod</url>
+
   <parent>
     <groupId>org.hotrodorm.hotrod</groupId>
     <artifactId>hotrod-project</artifactId>
     <version>5.0.1-SNAPSHOT</version>
   </parent>
-
-  <properties>
-  </properties>
 
   <dependencies>
 
