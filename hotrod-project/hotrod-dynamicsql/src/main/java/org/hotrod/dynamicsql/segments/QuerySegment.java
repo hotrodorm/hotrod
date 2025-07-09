@@ -19,12 +19,12 @@ import org.hotrod.dynamicsql.Parameters;
                          SetSegment
                            WhenSegment
                        ContentSegment
-    .literal()           StaticContentSegment          --> String
+    .literal()           StaticContentSegment          --* String
                          DynamicContentSegment
-    .parameter()           ParameterNotNullableSegment --> ParameterNotNullableInstance
-    .parameterNullable()   ParameterNullableSegment    --> ParameterNullableInstance
-    .parameterInjection()  ParameterInjectionSegment   --> String
-    .variable()            VariableSegment             --> VariableInstance
+    .parameter()           ParameterNotNullableSegment --* ParameterNotNullableInstance
+    .parameterNullable()   ParameterNullableSegment    --* ParameterNullableInstance
+    .parameterInjection()  ParameterInjectionSegment   --* String
+    .variable()            VariableSegment             --* VariableInstance
     
                 ParameterInstance
                   ParameterNotNullableInstance
