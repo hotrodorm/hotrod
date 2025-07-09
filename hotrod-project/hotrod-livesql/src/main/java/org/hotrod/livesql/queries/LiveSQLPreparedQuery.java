@@ -6,6 +6,7 @@ import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.queries.typesolver.TShield;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
+import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.utils.CUtil;
 import org.hotrod.utils.HexaUtils;
 
@@ -49,9 +50,9 @@ public class LiveSQLPreparedQuery {
     } else {
 
       StringBuilder sb = new StringBuilder();
-      sb.append("--- SQL ----------\n");
+      sb.append("--- SQL -------------\n");
       sb.append(this.sql);
-      sb.append("\n--- Parameters ---\n");
+      sb.append("\n--- Parameters ------\n");
       for (String name : this.parameters.keySet()) {
         Object value = this.parameters.get(name);
         Integer length = null;
@@ -88,12 +89,13 @@ public class LiveSQLPreparedQuery {
         for (String name : queryColumns.keySet()) {
           Expression expr = queryColumns.get(name);
           TypeHandler<?, ?> th = Shield.getTypeHandler(expr);
-          sb.append(" * " + name + ": " + (th != null ? TShield.render(th)
-              : "(type to be determined by query metadata or by <type-solver> rules)") + "\n");
+          sb.append(" * " + name + ": "
+              + (th != null ? TShield.render(th) : "class N/A, source: " + TypeSource.RUNTIME_JDBC_DRIVER.name())
+              + "\n");
         }
       }
 
-      sb.append("------------------\n");
+      sb.append("---------------------");
       return sb.toString();
     }
 

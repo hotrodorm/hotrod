@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.LiveSQL;
-import org.hotrod.livesql.queries.select.tuples.Tuple2;
+import org.hotrod.livesql.queries.select.Select;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -21,9 +21,6 @@ import org.springframework.context.annotation.Configuration;
 import app.persistence.dao.AccountDAO;
 import app.persistence.dao.AccountDAO.AccountTable;
 import app.persistence.dao.ProductDAO;
-import app.persistence.dao.ProductDAO.ProductTable;
-import app.persistence.model.Account;
-import app.persistence.model.Product;
 
 @SpringBootApplication
 @Configuration
@@ -281,11 +278,12 @@ public class App {
 
     Subquery y = sql.subquery("y",
         sql.select(x.num("balx").as("baly"), x.str("name"), x.dt("updatedAt")).from(x).limit(1));
-    List<Row> rows = sql.select(y.num("baly").as("balm"), y.str("name").as("namy"), y.dt("updatedAt").as("updated"),
-        sql.literal(123).mult(3).as("total").type(BigDecimal.class)) //
+    Select<Row> q = sql.select(y.num("baly").as("balm"), y.str("name").as("namy"), y.dt("updatedAt").as("updated"),
+        sql.literal(123).mult(3).as("total")) //
 //  List<Row> rows = sql.select(x.num("cost"), x.num("balance")) //
-        .from(y) //
-        .execute();
+        .from(y);
+//    System.out.println("=== QUERY ===\n" + q.getPreview(true));
+    List<Row> rows = q.execute();
 
 //    List<Row> rows = sql.select(sql.literal(123).mult(3).as("total")).execute();
 //    List<Row> rows = sql.select(sql.literal(123).mult(3).as("total")).execute();

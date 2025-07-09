@@ -58,7 +58,7 @@ public abstract class GeneralNumberExpression extends ComparableExpression {
 
   @Override
   protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
-    log.info("@@@  asSubqueryExpression " + SShield.getName(subquery) + "." + alias);
+//    log.info("@@@  asSubqueryExpression " + SShield.getName(subquery) + "." + alias);
     return new SubqueryNumberRefColumn(subquery, alias, this);
   }
 

@@ -316,9 +316,9 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
   @Override
   public List<T> execute(final LiveSQLContext context) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    log.info("PREPARED:\n" + q.getPreview(false));
+//    log.info("PREPARED:\n" + q.getPreview(false));
     RowReader<T> rowReader = this.first.getRowReader();
-    log.info("ROWREADER: " + rowReader);
+//    log.info("ROWREADER: " + rowReader);
     return executeLiveSQL(context, q, false, rowReader);
   }
 
@@ -365,7 +365,7 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
   }
 
   @Override
-  public void log(ToString t) {
+  protected void log(ToString t) {
     t.printObject(this, "combined");
     t.indent();
     this.first.log(t);

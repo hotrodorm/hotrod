@@ -82,17 +82,17 @@ public abstract class MultiSet<T> {
 
     QueryWriter w = new QueryWriter(context);
 
-    log.info("");
-    ToString t = new ToString();
-    this.log(t);
+//    log.info("");
+//    ToString t = new ToString();
+//    this.log(t);
 
     List<Expression> columns = this.assembleColumnsOf(null);
     renderTo(w, false);
 
-    log.info("");
-    t = new ToString();
-    this.log(t);
-    log.info("");
+//    log.info("");
+//    t = new ToString();
+//    this.log(t);
+//    log.info("");
 
     return w.getPreparedQuery(columns);
 
@@ -137,10 +137,10 @@ public abstract class MultiSet<T> {
               : new GenericRowReader<>(context, q, rs);
 
           int count = 0;
-          log.info(">> will start reading result set.");
+//          log.info(">> will start reading result set.");
           while (rs.next()) {
             count++;
-            log.info(">> ResultSet row #" + count);
+//            log.info(">> ResultSet row #" + count);
             if (singleRow && count > 1) {
               throw new LiveSQLException("A single row at most was expected by this query but received at least two");
             }

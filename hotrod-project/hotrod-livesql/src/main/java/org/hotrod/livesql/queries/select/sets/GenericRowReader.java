@@ -37,12 +37,12 @@ public class GenericRowReader<T> implements RowReader<T> {
     for (Entry<String, Expression> et : this.queryColumns.entrySet()) {
       Expression expr = et.getValue();
       TypeHandler<Object, Object> cth = Shield.getTypeHandler(expr);
-      log.info(">> EXPR: " + expr + " expr@" + OUtil.hc(expr) + " th=" + cth);
+//      log.info(">> EXPR: " + expr + " expr@" + OUtil.hc(expr) + " th=" + cth);
       if (cth == null) {
         ResultSetColumnMetadata cm = ResultSetColumnMetadata.of(rm, ordinal);
         try {
           TypeHandler<?, ?> th = context.getTypeSolver().resolve(cm);
-          log.info(">>   --> resolved expr@" + OUtil.hc(expr) + " <- th=" + th);
+//          log.info(">>   --> resolved expr@" + OUtil.hc(expr) + " <- th=" + th);
           Shield.setTypeHandler(expr, th);
         } catch (CouldNotResolveResultSetDataTypeException e) {
           throw new LiveSQLException(
@@ -51,7 +51,7 @@ public class GenericRowReader<T> implements RowReader<T> {
       }
       ordinal++;
     }
-    logQueryColumns();
+//    logQueryColumns();
   }
 
   @SuppressWarnings("unchecked")
@@ -63,7 +63,7 @@ public class GenericRowReader<T> implements RowReader<T> {
       Object value;
       String alias = Shield.getReferenceName(expr);
       TypeHandler<?, ?> th = Shield.getTypeHandler(expr);
-      log.info("COLUMN -- alias=" + alias + " qc=" + expr + " expr@" + OUtil.hc(expr) + " <- th=" + th);
+//      log.info("COLUMN -- alias=" + alias + " qc=" + expr + " expr@" + OUtil.hc(expr) + " <- th=" + th);
       if (th == null) { // No typeHandler: use the JDBC default value
         value = rs.getObject(i);
       } else if (th.getConverter() == null) { // TypeHandler with no converter: use the defined class

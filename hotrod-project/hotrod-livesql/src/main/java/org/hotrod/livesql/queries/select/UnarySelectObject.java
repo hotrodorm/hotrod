@@ -91,10 +91,10 @@ public class UnarySelectObject<T> extends SingleSelectObject<T> {
 
   @Override
   public List<Expression> assembleColumnsOf(final Subquery te) {
-    String froms = this.from == null ? "N/A"
-        : (this.from.getName().getName() + ":" + this.joins.stream()
-            .map(j -> j.getTableExpression().getName().getName()).collect(Collectors.joining(", ")));
-    log.info("=== 1. ASSEMBLE COLUMNS === " + froms);
+//    String froms = this.from == null ? "N/A"
+//        : (this.from.getName().getName() + ":" + this.joins.stream()
+//            .map(j -> j.getTableExpression().getName().getName()).collect(Collectors.joining(", ")));
+//    log.info("=== 1. ASSEMBLE COLUMNS === " + froms);
 
     if (this.from != null) {
       this.from.assembleColumns();
@@ -115,7 +115,7 @@ public class UnarySelectObject<T> extends SingleSelectObject<T> {
 //      log.info("== Columns were specified (" + this.resultSetColumns.size() + ")");
     }
 
-    log.info("=== 1.3");
+//    log.info("=== 1.3");
 
     // sql.val(3).mult(7) -- Expression N/A
     // a.id -- Column te.id
@@ -132,7 +132,7 @@ public class UnarySelectObject<T> extends SingleSelectObject<T> {
 //    }
 
     this.columnsAssembled = true;
-    log.info("=== 1. END ASSEMBLE COLUMNS === " + froms);
+//    log.info("=== 1. END ASSEMBLE COLUMNS === " + froms);
     return this.expandedQueryColumns;
 
   }

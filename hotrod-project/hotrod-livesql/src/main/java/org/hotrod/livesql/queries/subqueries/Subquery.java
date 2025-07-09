@@ -115,31 +115,29 @@ public class Subquery extends TableExpression {
 
   @Override
   protected void assembleColumns() {
-    log.info("ASSEMBLING COLUMNS FOR SUBQUERY: " + this.getName());
+//    log.info("ASSEMBLING COLUMNS FOR SUBQUERY: " + this.getName());
 
     List<Expression> raw = MShield.assembleColumnsOf(this.select, this);
     // raw: has expanded all columns at this point.
 
     this.resolvedColumns = new ArrayList<>();
-    for (Expression r : raw) {
-      log.info("- raw: " + this.getName() + "." + Shield.getReferenceName(r) + " r=" + r);
-//      log.info("- raw: " + this.getName() + ".?" + " r=" + r);
-    }
+//    for (Expression r : raw) {
+//      log.info("- raw: " + this.getName() + "." + Shield.getReferenceName(r) + " r=" + r);
+//    }
     this.resolvedColumns = raw.stream().map(r -> Shield.asSubqueryExpression(r, this, Shield.getReferenceName(r)))
         .collect(Collectors.toList());
 
     this.columnsByName = this.resolvedColumns.stream()
         .collect(Collectors.toMap(c -> Shield.getReferenceName(c), c -> c));
-    for (Expression c : this.resolvedColumns) {
-      log.info("$ RESOLVED - " + this.getName() + "." + Shield.getReferenceName(c) + ": " + c);
-//      log.info("           --> " + Shield.getTypeHandler(c));
-    }
-    log.info("-- ASSEMBLING DONE FOR Subquery '" + this.name + "'");
-    log.info("");
+//    for (Expression c : this.resolvedColumns) {
+//      log.info("$ RESOLVED - " + this.getName() + "." + Shield.getReferenceName(c) + ": " + c);
+//    }
+//    log.info("-- ASSEMBLING DONE FOR Subquery '" + this.name + "'");
+//    log.info("");
   }
 
   List<Expression> getResolvedColumns() {
-    log.info("-- resolvedColumns(" + resolvedColumns.size() + ")");
+//    log.info("-- resolvedColumns(" + resolvedColumns.size() + ")");
     return resolvedColumns;
   }
 
@@ -174,7 +172,7 @@ public class Subquery extends TableExpression {
       }
     }
     t.indent();
-    this.select.log(t);
+    MShield.log(this.select, t);
     t.unindent();
   }
 

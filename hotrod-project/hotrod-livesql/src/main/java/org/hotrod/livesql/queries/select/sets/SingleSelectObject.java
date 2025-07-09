@@ -66,17 +66,17 @@ public abstract class SingleSelectObject<T> extends MultiSet<T> {
   }
 
   protected void expandQueryColumns() {
-    log.info("=== 2. EXPAND QUERY COLUMNS (AS/IF NEEDED) from " + SShield.getName(this.from) + " ===");
+//    log.info("=== 2. EXPAND QUERY COLUMNS (AS/IF NEEDED) from " + SShield.getName(this.from) + " ===");
     this.expandedQueryColumns = new ArrayList<>();
     for (ResultSetColumn rsc : this.resultSetColumns) {
-      log.info("=== 2.1 rsc=" + rsc);
+//      log.info("=== 2.1 rsc=" + rsc);
 
       try {
         // Single column
         Expression single = (Expression) rsc;
-        log.info("=== 2.2 single" + (single == null ? "" : " [" + single.getClass().getName() + "] ") + "=" + single);
+//        log.info("=== 2.2 single" + (single == null ? "" : " [" + single.getClass().getName() + "] ") + "=" + single);
         Expression emerging = Shield.getEmergingExpression(single); // emerging is always null for wrapping columns
-        log.info("=== 2.2 A emerging=" + emerging);
+//        log.info("=== 2.2 A emerging=" + emerging);
         if (emerging != null) {
           Shield.setTypeHandler(single, Shield.getTypeHandler(emerging));
         }
@@ -84,10 +84,10 @@ public abstract class SingleSelectObject<T> extends MultiSet<T> {
 
       } catch (ClassCastException cce) {
         // Wrapping column
-        log.info("=== 2.3");
+//        log.info("=== 2.3");
         WrappingColumn wrapping = (WrappingColumn) rsc;
         for (Expression exp : Shield.expand(wrapping)) {
-          log.info("=== 2.4");
+//          log.info("=== 2.4");
           Expression em = Shield.getEmergingExpression(exp);
           this.expandedQueryColumns.add(em);
         }
@@ -106,7 +106,7 @@ public abstract class SingleSelectObject<T> extends MultiSet<T> {
 //        }
 //      }
     }
-    log.info("=== 2.10 EXPAND DONE from " + SShield.getName(this.from) + " ===");
+//    log.info("=== 2.10 EXPAND DONE from " + SShield.getName(this.from) + " ===");
   }
 
   public void setResultSetColumns(final List<ResultSetColumn> resultSetColumns) {
@@ -401,9 +401,8 @@ public abstract class SingleSelectObject<T> extends MultiSet<T> {
   // log
 
   @Override
-  public void log(ToString t) {
+  protected void log(ToString t) {
     t.printObject(this, this.getClass().getName());
-    int col = 0;
     if (this.resultSetColumns != null) {
       for (ResultSetColumn r : this.resultSetColumns) {
         t.indent();

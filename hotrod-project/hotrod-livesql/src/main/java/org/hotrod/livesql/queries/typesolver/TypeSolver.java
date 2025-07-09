@@ -1,7 +1,6 @@
 package org.hotrod.livesql.queries.typesolver;
 
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.hotrod.livesql.dialects.LiveSQLDialect;
@@ -22,9 +21,9 @@ public class TypeSolver {
 
   public TypeHandler<?, ?> resolve(final ResultSetColumnMetadata cm) throws CouldNotResolveResultSetDataTypeException {
 
-    if (log.isLoggable(Level.INFO)) {
-      log.info("* " + cm);
-    }
+//    if (log.isLoggable(Level.FINE)) {
+//      log.info("* " + cm);
+//    }
 
     // 1. Try the layer rules from the type-solver tag.
 

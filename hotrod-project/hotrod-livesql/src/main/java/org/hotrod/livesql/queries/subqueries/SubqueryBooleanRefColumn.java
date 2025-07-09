@@ -44,13 +44,13 @@ public class SubqueryBooleanRefColumn extends Predicate implements SubqueryColum
 
   @Override
   protected Expression getEmergingExpression() {
-    log.info("*** getEmergingExpression for '" + this.referencedColumnName + "' on Subquery" + OUtil.hc(this.subquery)
-        + " - this.column=" + this.column);
+//    log.info("*** getEmergingExpression for '" + this.referencedColumnName + "' on Subquery" + OUtil.hc(this.subquery)
+//        + " - this.column=" + this.column);
 
     if (this.column == null) {
       String colName = this.referencedColumnName;
       this.column = this.subquery.findColumnByName(colName);
-      log.info("%% column " + this.subquery.getName() + "." + colName + "=" + this.column);
+//      log.info("%% column " + this.subquery.getName() + "." + colName + "=" + this.column);
       if (this.column == null) {
         throw new RuntimeException(
             "Could not find column '" + colName + "' in subquery '" + this.subquery.getName() + "'");

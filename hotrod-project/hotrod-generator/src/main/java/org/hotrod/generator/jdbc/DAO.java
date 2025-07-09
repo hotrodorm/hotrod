@@ -1598,7 +1598,7 @@ public class DAO {
     String javaClass = cm.getType().getJavaClassName();
     ConverterTag ct = cm.getConverter();
     String cn = cm.getId().getCanonicalSQLName();
-    log.info("-- " + cn + ": javaClass=" + javaClass);
+//    log.info("-- " + cn + ": javaClass=" + javaClass);
 
     String colName = "\"" + SUtil.escapeJavaString(cm.getLabel()) + "\"";
 
@@ -1609,7 +1609,7 @@ public class DAO {
 
     if (ct == null) { // No converter
       JDBCGetter g = JDBC_GETTERS.get(javaClass);
-      log.info("- g=" + g + " method=" + (g == null ? "null" : g.getResultSetMethod()));
+//      log.info("- g=" + g + " method=" + (g == null ? "null" : g.getResultSetMethod()));
       String var = "col" + ordinal;
       ExternalClass jc = ExternalClass.of(javaClass);
       if (g != null) {
