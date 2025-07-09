@@ -1624,8 +1624,7 @@ public class DAO {
           w.println(indent + "      row." + setter + "(" + var + ");");
         }
       } else {
-        w.println(indent + "      ", jc, " " + var + " = rs.getObject(" + colName + ", ", javaClass,
-            ".class); // " + cn);
+        w.println(indent + "      ", jc, " " + var + " = rs.getObject(" + colName + ", ", jc, ".class); // " + cn);
         w.println(indent + "      row." + setter + "(" + var + ");");
       }
     } else { // Converter specified

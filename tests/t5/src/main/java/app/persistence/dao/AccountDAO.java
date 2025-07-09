@@ -113,7 +113,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       Boolean col5 = converter0.decode(raw5, conn);
       row.setActive(col5);
 
-      LocalDateTime col6 = rs.getObject("UPDATED_AT", java.time.LocalDateTime.class); // UPDATED_AT
+      LocalDateTime col6 = rs.getObject("UPDATED_AT", LocalDateTime.class); // UPDATED_AT
       row.setUpdatedAt(col6);
 
       Integer col7 = rs.getInt("VERSION"); // VERSION
