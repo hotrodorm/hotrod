@@ -11,7 +11,7 @@ For details see the complete [HotRod 5 Documentation](./hotrod-project/docs/docs
 
 ## LiveSQL -- At a Glance
 
-LiveSQL allows you to write and run queries directly from your Java application. The Java syntax allows only valid SQL clauses to be applied used when writing the queries.
+LiveSQL allows you to write and run queries directly from your Java application. The Java syntax verifies that only valid SQL clauses are used when writing the queries.
 
 LiveSQL can run SELECT, UPDATE, DELETE, and INSERT queries from the most basic syntax to advanced queries. The syntax can include complex predicates, subqueries, CTEs, arithmetic operators, functions, as well as standard SQL constructs such as ordering limiting, aggregation, window functions, union, for update (locking), etc.
 
