@@ -82,7 +82,7 @@ The Nitro injection syntax was changed to `$INJECT{expression}` instead `${expre
 
 ### 11. Cursors Revamped
 
-The Cursor functionality was rewritten from scratch for CRUD, Nitro, and LiveSQL. It has been written for high performance in mind, and has been tested in a variety of scenarios.
+The Cursor functionality was rewritten from scratch for CRUD, Nitro, and LiveSQL. It has been tested in a variety of scenarios.
 
 ### 12. Enhanced Logging
 
