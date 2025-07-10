@@ -12,7 +12,7 @@ A new fully independent persistence layer was developed to replace the MyBatis d
 
 The new internal persistence technology is fully compatible with all Java versions from 8 to 24, with Spring 4.x, 5.x, and 6.x, and with Spring Boot 2.x and 3.x.
 
-Unlike MyBatis this new persistence technology can resolve data types at runtime in addition to static ones resolved during the generation of the persistence layer. This critical for LiveSQL's to produce predictable column types.
+Unlike MyBatis this new persistence technology can resolve data types at runtime in addition to static ones resolved during the generation of the persistence layer. This critical for LiveSQL so it can produce predictable column types.
 
 ### 2. Simplified HotRod Dependency
 
@@ -72,23 +72,23 @@ This was long overdue. The java.time classes are now resolved by default for DAT
 
 Old java.sql classes can still be used by explicitly designating them.
 
-### 10. Enhanced Logging
-
-Logging of the queries used by the CRUD methods and other DAOs is now available at the DEBUG and TRACE levels of the corresponding DAOs. The logging always includes the SQL query to be executed. Based on the logging level it also includes the parameters and the runtime column types.
-
-This logging is enabled by the normal logging framework specified at the DAO class or method level.
-
-### 11. Cursors Revamped
-
-The Cursor functionality was fully rewritten for CRUD, Nitro, and LiveSQL for higher performance, and to function correctly in a variety of scenarios.
-
-### 12. Improved Nitro Queries
+### 10. Improved Nitro Queries
 
 DynamicSQL tags in Nitro can now be placed outside the complement tag as well as inside it. This allows the creation of highly dynamic queries that include tables and result set columns conditionally at runtime.
 
 The Nitro injection syntax was changed to `$INJECT{expression}` instead `${expression}` to prevent unintentional SQL Injection.
 
 **Note**: Nitro Graph Queries are yet not implemented in HotRod 5.0.
+
+### 11. Cursors Revamped
+
+The Cursor functionality was rewritten from scratch for CRUD, Nitro, and LiveSQL. It has been written for high performance in mind, and has been tested in a variety of scenarios.
+
+### 12. Enhanced Logging
+
+Logging of the queries used by the CRUD methods and other DAOs is now available at the DEBUG and TRACE levels of the corresponding DAOs. The logging always includes the SQL query to be executed. Based on the logging level it also includes the parameters and the runtime column types.
+
+This logging is enabled by the normal logging framework specified at the DAO class or method level.
 
 ### 13. Previewing LiveSQL
 
