@@ -119,9 +119,9 @@ For example, the ranking by highest response time starts automatically when Torc
 
 | Rank | Execs | Errors | Avg Time (ms) | Observed Time (ms) | Impact (ms) | Data Source | SQL |
 | :--: | ----:| ---:| --------:| ------------:| -----------:| :--: | :-- |
-| 1 | 4    |   0 |       47 | 38-55      | 188         | 0 | SELECT amount FROM invoice WHERE client_id = ?<br/>ORDER BY created_at |
-| 2 | 12   |   0 |        6 | 4-10        | 87          | 0 | SELECT status FROM client WHERE id = ? |
-| 3 | 5    |   1 |        8 | 7-9         | 42         | 0 | SELECT name FROM branch WHERE id = ? |
+| #1 | 4    |   0 |       47 | 38-55      | 188         | #0 | SELECT amount FROM invoice WHERE client_id = ?<br/>ORDER BY created_at |
+| #2 | 12   |   0 |        6 | 4-10        | 87         | #0 | SELECT status FROM client WHERE id = ? |
+| #3 | 5    |   1 |        8 | 7-9         | 42         | #0 | SELECT name FROM branch WHERE id = ? |
 
 The following rankings are built-in in Torcs and can be activated programmatically:
 
