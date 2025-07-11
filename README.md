@@ -9,7 +9,7 @@ See [What's New](./hotrod-project/docs/docs-5/whats-new.md) in HotRod 5 and the 
 
 For details see the complete [HotRod 5 Documentation](./hotrod-project/docs/docs-5/README.md). For documentation on the previous versions see [HotRod 4 Documentation](./hotrod-project/docs/docs-4/README.md) and [HotRod 3 Documentation](./hotrod-project/docs/docs-3/README.md).
 
-## LiveSQL -- At a Glance
+## LiveSQL &mdash; At a Glance
 
 LiveSQL allows you to write and run queries directly from your Java application. The Java syntax verifies that only valid SQL clauses are used when writing the queries.
 
@@ -58,7 +58,7 @@ List<Row> rows = sql
 ```
 
 
-## CRUD -- At a Glance
+## CRUD &mdash; At a Glance
 
 The out-of-the-box CRUD methods available in the DAOs can access rows by primary keys or by example. SELECT, UPDATE, INSERT, and DELETE methods are automatically included in the CRUD persistence layer.
 
@@ -77,7 +77,7 @@ To update the status of an invoice:
 ```
 
 
-## Nitro -- At a Glance
+## Nitro &mdash; At a Glance
 
 Nitro queries enhance SQL capabilities with:
 
@@ -111,19 +111,25 @@ Nitro makes this query available in Java as:
   List<Vehicle> searchVehicles(String brandName, Integer minYear, Integer ordering)
 ```
 
-## Torcs -- At a Glance
+## Torcs &mdash; At a Glance
 
 Torcs discovers slow queries at runtime by providing rankings by impact, slowest response time, high frequency, and others. The visibility that Torcs offers about the actual running application can provide critical information to understand the bottlenecks of the application that need to be addressed.
 
 The default ranking (by highest response time) starts automatically when Torcs is added to the application and can provide a ranking of queries like:
 
-| Rank | Execs | Errors | Avg Time (ms) | Elapsed (ms) | Impact (ms) | DS | SQL |
+| Rank | Execs | Errors | Avg Time (ms) | Observed Time (ms) | Impact (ms) | Data Source | SQL |
 | :--: | ----:| ---:| --------:| ------------:| -----------:| :-- | :-- |
-| 1 | 4    |   0 |       47 | 38-55      | 188         | ds0 | SELECT amount FROM invoice WHERE client_id = ?<br/>ORDER BY created_at |
-| 2 | 12   |   0 |        6 | 4-10        | 87          | ds0 | SELECT status FROM client WHERE id = ? |
-| 3 | 5    |   1 |        8 | 7-9         | 42         | ds0 | SELECT name FROM branch WHERE id = ? |
+| 1 | 4    |   0 |       47 | 38-55      | 188         | 0 | SELECT amount FROM invoice WHERE client_id = ?<br/>ORDER BY created_at |
+| 2 | 12   |   0 |        6 | 4-10        | 87          | 0 | SELECT status FROM client WHERE id = ? |
+| 3 | 5    |   1 |        8 | 7-9         | 42         | 0 | SELECT name FROM branch WHERE id = ? |
 
-Other built-in rankings with different tracking criteria can be activated programmatically.
+The following rankings are built-in in Torcs and can be activated programmatically:
+
+- Highest Response Time (active by default)
+- Highest Impact Queries
+- Highest Frequency Queries
+- Initial Queries
+- Latest Queries
 
 Torcs can also retrieve execution plans programmatically in a variety of formats for specific queries that require attention.
 
