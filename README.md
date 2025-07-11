@@ -125,9 +125,9 @@ The default ranking (by highest response time) starts automatically when Torcs i
 
 The following rankings are built-in in Torcs and can be activated programmatically:
 
-- Highest Response Time (active by default)
-- Highest Impact Queries
-- Highest Frequency Queries
+- By Highest Response Time (active by default)
+- By Highest Impact
+- By Highest Frequency
 - Initial Queries
 - Latest Queries
 
