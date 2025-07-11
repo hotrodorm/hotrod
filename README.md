@@ -115,7 +115,17 @@ Nitro makes this query available in Java as:
 
 Torcs discovers slow queries at runtime by providing rankings by impact, slowest response time, high frequency, and others. The visibility that Torcs offers about the actual running application can provide critical information to understand the bottlenecks of the application that need to be addressed.
 
-Torcs retrieves execution plans in a variety of formats.
+The default ranking (by highest response time) starts automatically when Torcs is included in the application and can provide a ranking of queries like:
+
+| Rank | Execs | Errors | Avg Time (ms) | Elapsed (ms) | Impact (ms) | DS | SQL |
+| :--: | ----:| ---:| --------:| ------------:| -----------:| :-- | :-- |
+| 1 | 4    |   0 |       47 | 38-55      | 188         | ds0 | SELECT amount FROM invoice WHERE client_id = ?<br/>ORDER BY created_at |
+| 2 | 12   |   0 |        6 | 4-10        | 87          | ds0 | SELECT status FROM client WHERE id = ? |
+| 3 | 5    |   1 |        8 | 7-9         | 42         | ds0 | SELECT name FROM branch WHERE id = ? |
+
+Other rankings with different tracking criteria can be activated programmatically.
+
+Torcs can also retrieve execution plans programmatically in a variety of formats, for specific queries that require attention.
 
 
 ## Hello World
