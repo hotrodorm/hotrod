@@ -123,9 +123,9 @@ The default ranking (by highest response time) starts automatically when Torcs i
 | 2 | 12   |   0 |        6 | 4-10        | 87          | ds0 | SELECT status FROM client WHERE id = ? |
 | 3 | 5    |   1 |        8 | 7-9         | 42         | ds0 | SELECT name FROM branch WHERE id = ? |
 
-Other rankings with different tracking criteria can be activated programmatically.
+Other built-in rankings with different tracking criteria can be activated programmatically.
 
-Torcs can also retrieve execution plans programmatically in a variety of formats, for specific queries that require attention.
+Torcs can also retrieve execution plans programmatically in a variety of formats for specific queries that require attention.
 
 
 ## Hello World
