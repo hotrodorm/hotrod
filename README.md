@@ -78,13 +78,13 @@ To find an employee by primary key:
   Employee emp = this.employeeDAO.select(134081);
 ```
 
-CRUD can use complex predicates to find all employees on departments 101 and 120, hired after January 15, 2024, with last names that end with 'MITH'
+CRUD can use complex predicates to find all employees on departments 101 and 120, hired after January 15, 2024, with last names that end with 'SMITH'
 
 ```java
   List<Employee> emps = this.employeeDAO.select(e, 
       e.deptId.in(101, 120)
       .and(e.hiredDate.gt(LocalDate.of(2025, 1, 15)))
-      .and(e.lastName.like('%MITH'))
+      .and(e.lastName.upper().like('%SMITH'))
     .execute();
 ```
 
