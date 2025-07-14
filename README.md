@@ -60,15 +60,35 @@ List<Row> rows = sql
 
 ## CRUD &mdash; At a Glance
 
-The out-of-the-box CRUD methods available in the DAOs can access rows by primary keys or by example. SELECT, UPDATE, INSERT, and DELETE methods are automatically included in the CRUD persistence layer.
+CRUD can access rows by primary keys or by example to execute SELECT, UPDATE, INSERT, and DELETE queries on the tables and view of the schema(s).
 
-For example, to find an employee by primary key:
+For example, to insert a payment CRUD can do:
+
+```java
+  Payment p = new Payment();
+  p.setClientId(1205);
+  p.setPaidAt(LocalDateTime.now());
+  p.setAmount(100.00);
+  Long id = this.paymentDAO.insert(p);
+```
+
+To find an employee by primary key CRUD can do:
 
 ```java
   Employee emp = this.employeeDAO.select(134081);
 ```
 
-To update the status of an invoice:
+CRUD can use complex predicates to find all employees on departments 101 and 120, hired after January 15, 2024, with last names that end with 'MITH'
+
+```java
+  List<Employee> emps = this.employeeDAO.select(e, 
+      e.deptId.in(101, 120)
+      .and(e.hiredDate.gt(LocalDate.of(2025, 1, 15)))
+      .and(e.lastName.like('%MITH'))
+    .execute();
+```
+
+Updating the status of an invoice is trivial:
 
 ```java
   Invoice inv = this.invoiceDAO.select(5470);
