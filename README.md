@@ -62,7 +62,7 @@ List<Row> rows = sql
 
 CRUD can access rows by primary keys or by example to execute SELECT, UPDATE, INSERT, and DELETE queries on the tables and view of the schema(s).
 
-For example, to insert a payment CRUD can do:
+Inserting a payment while retrieving the new primary key can be done as:
 
 ```java
   Payment p = new Payment();
@@ -72,7 +72,7 @@ For example, to insert a payment CRUD can do:
   Long id = this.paymentDAO.insert(p);
 ```
 
-To find an employee by primary key CRUD can do:
+To find an employee by primary key:
 
 ```java
   Employee emp = this.employeeDAO.select(134081);
@@ -88,7 +88,7 @@ CRUD can use complex predicates to find all employees on departments 101 and 120
     .execute();
 ```
 
-Updating the status of an invoice is trivial:
+Updating the status of an invoice is also simple:
 
 ```java
   Invoice inv = this.invoiceDAO.select(5470);
