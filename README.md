@@ -13,7 +13,7 @@ For documentation on the previous versions see [HotRod 4 Documentation](./hotrod
 
 ## LiveSQL &mdash; At a Glance
 
-LiveSQL allows you to write and run queries directly from your Java application. The Java syntax verifies that only valid SQL clauses are used when writing the queries.
+LiveSQL allows you to write and run queries directly from your application code. LiveSQL's inline syntax only allow valid SQL clauses and expressions.
 
 LiveSQL can run SELECT, UPDATE, DELETE, and INSERT queries from the most basic syntax to advanced queries. The syntax can include complex predicates, subqueries, CTEs, arithmetic operators, functions, as well as standard SQL constructs such as ordering limiting, aggregation, window functions, union, for update (locking), etc.
 
@@ -103,7 +103,7 @@ Updating the status of an invoice is also simple:
 
 Nitro excels when the application requires complex, non-trivial queries that go beyond the scope of LiveSQL and CRUD, or for queries that benefit from:
 
-- [Dynamic SQL](./hotrod-project/docs/docs-5/nitro/nitro-dynamicsql.md) logic to assemble queries based on runtime parameters
+- [Dynamic SQL](./hotrod-project/docs/docs-5/nitro/nitro-dynamicsql.md) logic to dynamically assemble queries based on runtime parameters
 - Native SQL extensions available in the specific database
 
 Nitro can be used to gain access to all the features of a database, as well as to squeeze performance from it by tweaking queries. All these features can be combined into any SELECT, UPDATE, INSERT, or DELETE, or in any other valid database query (TRUNCATE, CREATE, ALTER, DROP, etc.).
@@ -127,7 +127,7 @@ The following query uses Dynamic SQL to assemble the query dynamically and to ap
 </select>
 ```
 
-Nitro makes this query available in Java as:
+Nitro makes this query available in your application as:
 
 ```java
   List<Vehicle> searchVehicles(String brandName, Integer minYear, Integer ordering)
