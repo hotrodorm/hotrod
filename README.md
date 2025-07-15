@@ -101,28 +101,28 @@ Updating the status of an invoice is also simple:
 
 ## Nitro &mdash; At a Glance
 
-Nitro is tailored for non-trivial queries or queries that benefit from:
+Nitro excels when the application requires complex, non-trivial queries that go beyond the scope of LiveSQL and CRUD, or for queries that benefit from:
 
 - [Dynamic SQL](./hotrod-project/docs/docs-5/nitro/nitro-dynamicsql.md) logic to assemble queries based on runtime parameters
 - Native SQL extensions available in the specific database
 
-Nitro can be used to gain access to all the features of a database, as well as to squeeze performance from it by tweaking queries. Any or all of these features can be combined into any SELECT, UPDATE, INSERT, or DELETE, or in any other valid database query (TRUNCATE, CREATE, ALTER, DROP, etc.).
+Nitro can be used to gain access to all the features of a database, as well as to squeeze performance from it by tweaking queries. All these features can be combined into any SELECT, UPDATE, INSERT, or DELETE, or in any other valid database query (TRUNCATE, CREATE, ALTER, DROP, etc.).
 
-The following query uses Dynamic SQL to assemble the query dynamically and to *apply* parameter values to it. It also uses a piece of Native SQL (an optimizer hint):
+The following query uses Dynamic SQL to assemble the query dynamically and to apply parameter values to it. It also uses a piece of Native SQL (an optimizer hint):
 
 ```xml
 <select method="searchVehicles" vo="Vehicle">
   <parameter name="brandName" java-type="String" />
   <parameter name="minYear" java-type="Integer" />
   <parameter name="ordering" java-type="Integer" />
-  select /*+ FIRST_ROWS(10) */ *
-  from vehicle
+  SELECT /*+ FIRST_ROWS(10) */ *
+  FROM vehicle
   where brand like = '%' || #{brandName} || '%'
-    <if test="minYear != null">and year >= #{minYear}</if>
+    <if test="minYear != null">AND year >= #{minYear}</if>
   <choose>
-    <if test="ordering == 1">order by price</if>
-    <if test="ordering == 2">order by price DESC</if>
-    <if test="ordering == 3">order by avg_reviews DESC</if>
+    <if test="ordering == 1">ORDER BY price</if>
+    <if test="ordering == 2">ORDER BY price DESC</if>
+    <if test="ordering == 3">ORDER BY avg_reviews DESC</if>
   </choose>
 </select>
 ```
