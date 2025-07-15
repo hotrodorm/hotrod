@@ -2,7 +2,7 @@
 
 HotRod 5 is an open source ORM for Spring and Spring Boot geared toward high performance persistence for relational databases.
 
-The persistence layer provides ready-to-use CRUD and LiveSQL functionalities to quickly start prototyping an application for
+The auto-generated persistence layer provides ready-to-use LiveSQL and CRUD capabilities to quickly start prototyping an application for
 any of the [supported databases](./hotrod-project/docs/docs-5/config/supported-databases.md).
 
 See [What's New](./hotrod-project/docs/docs-5/whats-new.md) in HotRod 5, [version history](./hotrod-project/docs/version-history.md),
@@ -101,10 +101,10 @@ Updating the status of an invoice is also simple:
 
 ## Nitro &mdash; At a Glance
 
-Nitro queries enhance SQL capabilities with:
+Nitro is tailored for non-trivial queries or queries that benefit from:
 
-- [Dynamic SQL](./hotrod-project/docs/docs-5/nitro/nitro-dynamicsql.md)
-- Native SQL
+- [Dynamic SQL](./hotrod-project/docs/docs-5/nitro/nitro-dynamicsql.md) logic to assemble queries based on runtime parameters
+- Native SQL extensions available in the specific database
 
 Nitro can be used to gain access to all the features of a database, as well as to squeeze performance from it by tweaking queries. Any or all of these features can be combined into any SELECT, UPDATE, INSERT, or DELETE, or in any other valid database query (TRUNCATE, CREATE, ALTER, DROP, etc.).
 
