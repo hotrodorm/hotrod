@@ -40,7 +40,7 @@ public class RowCursor<T> implements Cursor<T> {
       this.rs = ps.executeQuery();
 
       if (rowReader == null) {
-        this.rowReader = new GenericRowReader<>(context, q, rs);
+        this.rowReader = new UnaryRowReader<>(context, q, rs);
       } else {
         this.rowReader = rowReader;
       }

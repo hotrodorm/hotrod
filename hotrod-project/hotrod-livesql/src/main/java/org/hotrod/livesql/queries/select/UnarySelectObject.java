@@ -27,13 +27,13 @@ import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.ctes.CTE;
-import org.hotrod.livesql.queries.select.sets.SingleSelectObject;
+import org.hotrod.livesql.queries.select.sets.BaseSelectObject;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.util.IdUtil;
 import org.hotrod.utils.Separator;
 import org.springframework.util.ReflectionUtils;
 
-public class UnarySelectObject<T> extends SingleSelectObject<T> {
+public class UnarySelectObject<T> extends BaseSelectObject<T> {
 
   private static final Logger log = Logger.getLogger(UnarySelectObject.class.getName());
 

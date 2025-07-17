@@ -9,7 +9,7 @@ import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
 import org.hotrod.livesql.queries.select.sets.CombinedSelectObject;
-import org.hotrod.livesql.queries.select.sets.SingleSelectObject;
+import org.hotrod.livesql.queries.select.sets.BaseSelectObject;
 import org.hotrod.livesql.util.ToString;
 
 public class SShield {
@@ -43,31 +43,31 @@ public class SShield {
   }
 
   public static <R> SelectWherePhase<R> getSelectWherePhase(final LiveSQLContext context,
-      final SingleSelectObject<R> select, final GeneralBooleanExpression predicate) {
+      final BaseSelectObject<R> select, final GeneralBooleanExpression predicate) {
     CombinedSelectObject<R> combined = new CombinedSelectObject<R>(select);
     return new SelectWherePhase<R>(context, combined, predicate);
   }
 
   public static <R> SelectGroupByPhase<R> getSelectGroupByPhase(final LiveSQLContext context,
-      final SingleSelectObject<R> select, final ComparableExpression... expressions) {
+      final BaseSelectObject<R> select, final ComparableExpression... expressions) {
     CombinedSelectObject<R> combined = new CombinedSelectObject<R>(select);
     return new SelectGroupByPhase<R>(context, combined, expressions);
   }
 
   public static <R> LockableSelectOrderByPhase<R> getSelectOrderByPhase(final LiveSQLContext context,
-      final SingleSelectObject<R> select, final OrderingTerm... orderingTerms) {
+      final BaseSelectObject<R> select, final OrderingTerm... orderingTerms) {
     CombinedSelectObject<R> combined = new CombinedSelectObject<R>(select);
     return new LockableSelectOrderByPhase<R>(context, combined, orderingTerms);
   }
 
   public static <R> LockableSelectOffsetPhase<R> getSelectOffsetPhase(final LiveSQLContext context,
-      final SingleSelectObject<R> select, final int offset) {
+      final BaseSelectObject<R> select, final int offset) {
     CombinedSelectObject<R> combined = new CombinedSelectObject<R>(select);
     return new LockableSelectOffsetPhase<R>(context, combined, offset);
   }
 
   public static <R> LockableSelectLimitPhase<R> getSelectLimitPhase(final LiveSQLContext context,
-      final SingleSelectObject<R> select, final int limit) {
+      final BaseSelectObject<R> select, final int limit) {
     CombinedSelectObject<R> combined = new CombinedSelectObject<R>(select);
     return new LockableSelectLimitPhase<R>(context, combined, limit);
   }

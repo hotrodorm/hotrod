@@ -1,6 +1,5 @@
 package app;
 
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Logger;
@@ -8,7 +7,9 @@ import java.util.logging.Logger;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.LiveSQL;
+import org.hotrod.livesql.queries.select.LockableSelectLimitPhase;
 import org.hotrod.livesql.queries.select.Select;
+import org.hotrod.livesql.queries.select.tuples.Tuple2;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -21,6 +22,9 @@ import org.springframework.context.annotation.Configuration;
 import app.persistence.dao.AccountDAO;
 import app.persistence.dao.AccountDAO.AccountTable;
 import app.persistence.dao.ProductDAO;
+import app.persistence.dao.ProductDAO.ProductTable;
+import app.persistence.model.Account;
+import app.persistence.model.Product;
 
 @SpringBootApplication
 @Configuration
@@ -60,8 +64,8 @@ public class App {
       log.info("[ Starting... ]");
 //      test();
 //      testLiveSQL();
-      testLiveSQLUnary();
-//      testLiveSQLTuples();
+//      testLiveSQLUnary();
+      testLiveSQLTuples();
 //      testLiveSQLCursor();
 //      testConverter5();
 //      testConverter6();
@@ -312,16 +316,21 @@ public class App {
 
   }
 
-//  private void testLiveSQLTuples() throws SQLException, DynamicExpressionException {
-//    AccountTable a = this.accountDAO.newTable();
-//    ProductTable p = this.productDAO.newTable();
-//
-//    List<Tuple2<Account, Product>> rows = this.sql.selectTuples().from(a).crossJoin(p).execute();
-//    for (Tuple2<Account, Product> r : rows) {
-//      System.out.println("- Account: " + r.getA());
-//      System.out.println("- Product: " + r.getB());
-//    }
-//  }
+  private void testLiveSQLTuples() throws SQLException, DynamicExpressionException {
+
+    AccountTable a = this.accountDAO.newTable();
+    ProductTable p = this.productDAO.newTable();
+
+    LockableSelectLimitPhase<Tuple2<Account, Product>> q = this.sql.selectTuples().from(a).crossJoin(p).limit(1);
+    List<Tuple2<Account, Product>> rows = q.execute();
+    int n = 1;
+    for (Tuple2<Account, Product> r : rows) {
+      System.out.println("Row #" + n++ + ":");
+      System.out.println("- Account: " + r.getA());
+      System.out.println("- Product: " + r.getB());
+    }
+
+  }
 
   private void testLiveSQL() throws SQLException, DynamicExpressionException {
 

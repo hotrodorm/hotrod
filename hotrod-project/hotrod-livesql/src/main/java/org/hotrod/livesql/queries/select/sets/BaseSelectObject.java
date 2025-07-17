@@ -30,9 +30,9 @@ import org.hotrod.livesql.util.ToString;
 import org.hotrod.utils.SUtil;
 import org.hotrod.utils.Separator;
 
-public abstract class SingleSelectObject<T> extends MultiSet<T> {
+public abstract class BaseSelectObject<T> extends MultiSet<T> {
 
-  private static final Logger log = Logger.getLogger(SingleSelectObject.class.getName());
+  private static final Logger log = Logger.getLogger(BaseSelectObject.class.getName());
 
   protected List<ResultSetColumn> resultSetColumns = new ArrayList<>();
   protected List<Expression> expandedQueryColumns = null;
@@ -56,7 +56,7 @@ public abstract class SingleSelectObject<T> extends MultiSet<T> {
   protected LockingConcurrency lockingConcurrency = null;
   protected Number waitTime = null;
 
-  public SingleSelectObject(List<CTE> ctes, boolean distinct) {
+  public BaseSelectObject(List<CTE> ctes, boolean distinct) {
     this.ctes = ctes;
     this.distinct = distinct;
   }

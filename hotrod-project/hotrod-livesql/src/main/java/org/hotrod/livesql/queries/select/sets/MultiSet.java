@@ -134,7 +134,7 @@ public abstract class MultiSet<T> {
         try (ResultSet rs = ps.executeQuery()) {
 
           final RowReader<T> effectiveRowReader = rowReader != null ? rowReader
-              : new GenericRowReader<>(context, q, rs);
+              : new UnaryRowReader<>(context, q, rs);
 
           int count = 0;
 //          log.info(">> will start reading result set.");

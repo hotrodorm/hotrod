@@ -24,11 +24,11 @@ import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.select.TableExpression;
 import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
-import org.hotrod.livesql.queries.select.sets.SingleSelectObject;
+import org.hotrod.livesql.queries.select.sets.BaseSelectObject;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.utils.Separator;
 
-public class TuplesSelectObject<T> extends SingleSelectObject<T> {
+public class TuplesSelectObject<T> extends BaseSelectObject<T> {
 
   private static final Logger log = Logger.getLogger(TuplesSelectObject.class.getName());
 

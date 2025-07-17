@@ -209,13 +209,13 @@ public class LiveSQL {
 
   // Tuples
 
-//  public SelectTuplesColumnsPhase selectTuples() {
-//    return new SelectTuplesColumnsPhase(this.context, null, false);
-//  }
-//
-//  public SelectTuplesColumnsPhase selectTuples(final ResultSetColumn... resultSetColumns) {
-//    return new SelectTuplesColumnsPhase(this.context, null, false, resultSetColumns);
-//  }
+  public SelectTuplesColumnsPhase selectTuples() {
+    return new SelectTuplesColumnsPhase(this.context, null, false);
+  }
+
+  public SelectTuplesColumnsPhase selectTuples(final ResultSetColumn... resultSetColumns) {
+    return new SelectTuplesColumnsPhase(this.context, null, false, resultSetColumns);
+  }
 
   // Subqueries
 
