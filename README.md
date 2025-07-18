@@ -2,21 +2,14 @@
 
 HotRod 5 is an open source ORM for Spring and Spring Boot geared toward high performance persistence for relational databases.
 
-<<<<<<< HEAD
-The persistence layer provides ready-to-use CRUD and LiveSQL functionalities to quickly start prototyping an application for
-=======
 The auto-generated persistence layer provides ready-to-use LiveSQL and CRUD capabilities to quickly start prototyping an application for
->>>>>>> refs/heads/5.x
 any of the [supported databases](./hotrod-project/docs/docs-5/config/supported-databases.md).
 
 See [What's New](./hotrod-project/docs/docs-5/whats-new.md) in HotRod 5, [version history](./hotrod-project/docs/version-history.md),
 and the [HotRod 5 Documentation](./hotrod-project/docs/docs-5/README.md).
 
 For documentation on the previous versions see [HotRod 4 Documentation](./hotrod-project/docs/docs-4/README.md) and [HotRod 3 Documentation](./hotrod-project/docs/docs-3/README.md).
-<<<<<<< HEAD
-=======
 
->>>>>>> refs/heads/5.x
 
 ## LiveSQL &mdash; At a Glance
 
@@ -171,4 +164,5 @@ See HotRod in action with the [Hello World Example](./hotrod-project/docs/docs-5
 ## Documentation
 
 For more details see the complete [HotRod 5 Documentation](./hotrod-project/docs/docs-5/README.md).
+
 
