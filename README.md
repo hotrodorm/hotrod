@@ -2,17 +2,25 @@
 
 HotRod 5 is an open source ORM for Spring and Spring Boot geared toward high performance persistence for relational databases.
 
+<<<<<<< HEAD
 The persistence layer provides ready-to-use CRUD and LiveSQL functionalities to quickly start prototyping an application for
+=======
+The auto-generated persistence layer provides ready-to-use LiveSQL and CRUD capabilities to quickly start prototyping an application for
+>>>>>>> refs/heads/5.x
 any of the [supported databases](./hotrod-project/docs/docs-5/config/supported-databases.md).
 
 See [What's New](./hotrod-project/docs/docs-5/whats-new.md) in HotRod 5, [version history](./hotrod-project/docs/version-history.md),
 and the [HotRod 5 Documentation](./hotrod-project/docs/docs-5/README.md).
 
 For documentation on the previous versions see [HotRod 4 Documentation](./hotrod-project/docs/docs-4/README.md) and [HotRod 3 Documentation](./hotrod-project/docs/docs-3/README.md).
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/heads/5.x
 
 ## LiveSQL &mdash; At a Glance
 
-LiveSQL allows you to write and run queries directly from your Java application. The Java syntax verifies that only valid SQL clauses are used when writing the queries.
+LiveSQL allows you to write and run queries directly from your application code. LiveSQL's inline syntax only allow valid SQL clauses and expressions.
 
 LiveSQL can run SELECT, UPDATE, DELETE, and INSERT queries from the most basic syntax to advanced queries. The syntax can include complex predicates, subqueries, CTEs, arithmetic operators, functions, as well as standard SQL constructs such as ordering limiting, aggregation, window functions, union, for update (locking), etc.
 
@@ -61,15 +69,35 @@ List<Row> rows = sql
 
 ## CRUD &mdash; At a Glance
 
-The out-of-the-box CRUD methods available in the DAOs can access rows by primary keys or by example. SELECT, UPDATE, INSERT, and DELETE methods are automatically included in the CRUD persistence layer.
+CRUD can access rows by primary keys or by example to execute SELECT, UPDATE, INSERT, and DELETE queries on the tables and view of the schema(s).
 
-For example, to find an employee by primary key:
+Inserting a payment while retrieving the new primary key can be done as:
+
+```java
+  Payment p = new Payment();
+  p.setClientId(1205);
+  p.setPaidAt(LocalDateTime.now());
+  p.setAmount(100.00);
+  Long id = this.paymentDAO.insert(p);
+```
+
+To find an employee by primary key:
 
 ```java
   Employee emp = this.employeeDAO.select(134081);
 ```
 
-To update the status of an invoice:
+CRUD can use complex predicates to find all employees on departments 101 and 120, hired after January 15, 2024, with last names that end with 'SMITH':
+
+```java
+  List<Employee> emps = this.employeeDAO.select(e, 
+      e.deptId.in(101, 120)
+      .and(e.hiredDate.gt(LocalDate.of(2025, 1, 15)))
+      .and(e.lastName.upper().like('%SMITH'))
+    .execute();
+```
+
+Updating the status of an invoice is also simple:
 
 ```java
   Invoice inv = this.invoiceDAO.select(5470);
@@ -80,33 +108,33 @@ To update the status of an invoice:
 
 ## Nitro &mdash; At a Glance
 
-Nitro queries enhance SQL capabilities with:
+Nitro excels when the application requires complex, non-trivial queries that go beyond the scope of LiveSQL and CRUD, or for queries that benefit from:
 
-- [Dynamic SQL](./hotrod-project/docs/docs-5/nitro/nitro-dynamicsql.md)
-- Native SQL
+- [Dynamic SQL](./hotrod-project/docs/docs-5/nitro/nitro-dynamicsql.md) logic to dynamically assemble queries based on runtime parameters
+- Native SQL extensions available in the specific database
 
-Nitro can be used to gain access to all the features of a database, as well as to squeeze performance from it by tweaking queries. Any or all of these features can be combined into any SELECT, UPDATE, INSERT, or DELETE, or in any other valid database query (TRUNCATE, CREATE, ALTER, DROP, etc.).
+Nitro can be used to gain access to all the features of a database, as well as to squeeze performance from it by tweaking queries. All these features can be combined into any SELECT, UPDATE, INSERT, or DELETE, or in any other valid database query (TRUNCATE, CREATE, ALTER, DROP, etc.).
 
-The following query uses Dynamic SQL to assemble the query dynamically and to *apply* parameter values to it. It also uses a piece of Native SQL (an optimizer hint):
+The following query uses Dynamic SQL to assemble the query dynamically and to apply parameter values to it. It also uses a piece of Native SQL (an optimizer hint):
 
 ```xml
 <select method="searchVehicles" vo="Vehicle">
   <parameter name="brandName" java-type="String" />
   <parameter name="minYear" java-type="Integer" />
   <parameter name="ordering" java-type="Integer" />
-  select /*+ FIRST_ROWS(10) */ *
-  from vehicle
+  SELECT /*+ FIRST_ROWS(10) */ *
+  FROM vehicle
   where brand like = '%' || #{brandName} || '%'
-    <if test="minYear != null">and year >= #{minYear}</if>
+    <if test="minYear != null">AND year >= #{minYear}</if>
   <choose>
-    <if test="ordering == 1">order by price</if>
-    <if test="ordering == 2">order by price DESC</if>
-    <if test="ordering == 3">order by avg_reviews DESC</if>
+    <if test="ordering == 1">ORDER BY price</if>
+    <if test="ordering == 2">ORDER BY price DESC</if>
+    <if test="ordering == 3">ORDER BY avg_reviews DESC</if>
   </choose>
 </select>
 ```
 
-Nitro makes this query available in Java as:
+Nitro makes this query available in your application as:
 
 ```java
   List<Vehicle> searchVehicles(String brandName, Integer minYear, Integer ordering)
