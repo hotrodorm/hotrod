@@ -8,7 +8,7 @@ import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.analytics.WindowExpression.FrameBound;
 import org.hotrod.livesql.expressions.analytics.WindowExpression.FrameExclusion;
 import org.hotrod.livesql.expressions.analytics.WindowExpression.FrameUnit;
-import org.hotrod.livesql.expressions.predicates.Predicate;
+import org.hotrod.livesql.expressions.bool.Predicate;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.QueryWriter;
 

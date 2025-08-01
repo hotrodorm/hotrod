@@ -8,19 +8,19 @@ import java.util.stream.Stream;
 
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Expression;
+import org.hotrod.livesql.expressions.bool.Between;
+import org.hotrod.livesql.expressions.bool.Equal;
+import org.hotrod.livesql.expressions.bool.GreaterThan;
+import org.hotrod.livesql.expressions.bool.GreaterThanOrEqualTo;
+import org.hotrod.livesql.expressions.bool.InList;
+import org.hotrod.livesql.expressions.bool.LessThan;
+import org.hotrod.livesql.expressions.bool.LessThanOrEqualTo;
+import org.hotrod.livesql.expressions.bool.NotBetween;
+import org.hotrod.livesql.expressions.bool.NotEqual;
+import org.hotrod.livesql.expressions.bool.NotInList;
+import org.hotrod.livesql.expressions.bool.Predicate;
 import org.hotrod.livesql.expressions.datetime.DateTimeFieldExpression.DateTimeField;
-import org.hotrod.livesql.expressions.numbers.NumberExpression;
-import org.hotrod.livesql.expressions.predicates.Between;
-import org.hotrod.livesql.expressions.predicates.Equal;
-import org.hotrod.livesql.expressions.predicates.GreaterThan;
-import org.hotrod.livesql.expressions.predicates.GreaterThanOrEqualTo;
-import org.hotrod.livesql.expressions.predicates.InList;
-import org.hotrod.livesql.expressions.predicates.LessThan;
-import org.hotrod.livesql.expressions.predicates.LessThanOrEqualTo;
-import org.hotrod.livesql.expressions.predicates.NotBetween;
-import org.hotrod.livesql.expressions.predicates.NotEqual;
-import org.hotrod.livesql.expressions.predicates.NotInList;
-import org.hotrod.livesql.expressions.predicates.Predicate;
+import org.hotrod.livesql.expressions.numeric.NumericExpression;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.queries.subqueries.SubqueryDateTimeRefColumn;
 import org.hotrod.livesql.util.BoxUtil;
@@ -74,7 +74,7 @@ public abstract class GeneralDateTimeExpression extends ComparableExpression {
     return new org.hotrod.livesql.expressions.datetime.Time(this);
   }
 
-  public NumberExpression extract(final DateTimeField field) {
+  public NumericExpression extract(final DateTimeField field) {
     return new Extract(this, new DateTimeFieldExpression(field));
   }
 

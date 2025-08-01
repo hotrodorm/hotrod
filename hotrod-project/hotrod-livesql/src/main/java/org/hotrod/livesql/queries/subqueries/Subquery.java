@@ -10,12 +10,12 @@ import java.util.stream.Collectors;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
-import org.hotrod.livesql.expressions.binary.ByteArrayExpression;
+import org.hotrod.livesql.expressions.binary.BinaryExpression;
+import org.hotrod.livesql.expressions.bool.BooleanExpression;
+import org.hotrod.livesql.expressions.character.CharExpression;
 import org.hotrod.livesql.expressions.datetime.DateTimeExpression;
-import org.hotrod.livesql.expressions.numbers.NumberExpression;
+import org.hotrod.livesql.expressions.numeric.NumericExpression;
 import org.hotrod.livesql.expressions.object.ObjectExpression;
-import org.hotrod.livesql.expressions.predicates.BooleanExpression;
-import org.hotrod.livesql.expressions.strings.StringExpression;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.SShield;
@@ -77,12 +77,12 @@ public class Subquery extends TableExpression {
 
   // Subquery column reference
 
-  public NumberExpression num(final String name) {
-    return new SubqueryNumberRefColumn(this, name, null);
+  public NumericExpression num(final String name) {
+    return new SubqueryNumericRefColumn(this, name, null);
   }
 
-  public StringExpression str(final String name) {
-    return new SubqueryStringRefColumn(this, name, null);
+  public CharExpression str(final String name) {
+    return new SubqueryCharRefColumn(this, name, null);
   }
 
   public DateTimeExpression dt(final String name) {
@@ -93,8 +93,8 @@ public class Subquery extends TableExpression {
     return new SubqueryBooleanRefColumn(this, name, null);
   }
 
-  public ByteArrayExpression bin(final String name) {
-    return new SubqueryByteArrayRefColumn(this, name, null);
+  public BinaryExpression bin(final String name) {
+    return new SubqueryBinaryRefColumn(this, name, null);
   }
 
   public ObjectExpression obj(final String name) {

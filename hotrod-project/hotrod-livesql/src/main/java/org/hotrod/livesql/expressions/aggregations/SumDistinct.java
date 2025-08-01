@@ -1,11 +1,11 @@
 package org.hotrod.livesql.expressions.aggregations;
 
-import org.hotrod.livesql.expressions.numbers.GeneralNumberExpression;
-import org.hotrod.livesql.expressions.numbers.NumberFunction;
+import org.hotrod.livesql.expressions.numeric.GeneralNumericExpression;
+import org.hotrod.livesql.expressions.numeric.NumericFunction;
 
-public class SumDistinct extends NumberFunction implements NonWindowableAggregationFunction {
+public class SumDistinct extends NumericFunction implements NonWindowableAggregationFunction {
 
-  public SumDistinct(final GeneralNumberExpression expression) {
+  public SumDistinct(final GeneralNumericExpression expression) {
     super("sum(distinct #{})", expression);
   }
 

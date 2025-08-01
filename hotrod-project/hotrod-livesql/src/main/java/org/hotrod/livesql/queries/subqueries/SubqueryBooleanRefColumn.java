@@ -4,7 +4,7 @@ import java.util.logging.Logger;
 
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
-import org.hotrod.livesql.expressions.predicates.Predicate;
+import org.hotrod.livesql.expressions.bool.Predicate;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.util.OUtil;
 

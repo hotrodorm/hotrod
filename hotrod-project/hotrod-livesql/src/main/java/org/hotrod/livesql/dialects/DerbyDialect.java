@@ -9,10 +9,10 @@ import java.util.stream.Collectors;
 import org.hotrod.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.livesql.expressions.Shield;
+import org.hotrod.livesql.expressions.character.GeneralCharExpression;
 import org.hotrod.livesql.expressions.datetime.DateTimeFieldExpression;
 import org.hotrod.livesql.expressions.datetime.GeneralDateTimeExpression;
-import org.hotrod.livesql.expressions.numbers.GeneralNumberExpression;
-import org.hotrod.livesql.expressions.strings.GeneralStringExpression;
+import org.hotrod.livesql.expressions.numeric.GeneralNumericExpression;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.CrossJoin;
@@ -216,15 +216,15 @@ public class DerbyDialect extends LiveSQLDialect {
       // General purpose functions
 
       @Override
-      public void groupConcat(final QueryWriter w, final boolean distinct, final GeneralStringExpression value,
-          final List<OrderingTerm> ordering, final GeneralStringExpression separator) {
+      public void groupConcat(final QueryWriter w, final boolean distinct, final GeneralCharExpression value,
+          final List<OrderingTerm> ordering, final GeneralCharExpression separator) {
         throw new UnsupportedLiveSQLFeatureException("GROUP_CONCAT() is not supported in Derby database");
       }
 
       // Arithmetic functions
 
       @Override
-      public void power(final QueryWriter w, final GeneralNumberExpression x, final GeneralNumberExpression exponent) {
+      public void power(final QueryWriter w, final GeneralNumericExpression x, final GeneralNumericExpression exponent) {
         w.write("exp(");
         Shield.renderTo(exponent, w);
         w.write(" * ln(");
@@ -233,7 +233,7 @@ public class DerbyDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void logarithm(final QueryWriter w, final GeneralNumberExpression x, final GeneralNumberExpression base) {
+      public void logarithm(final QueryWriter w, final GeneralNumericExpression x, final GeneralNumericExpression base) {
         if (base == null) {
           this.write(w, "ln", x);
         } else {
@@ -246,22 +246,22 @@ public class DerbyDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void round(final QueryWriter w, final GeneralNumberExpression x, final GeneralNumberExpression places) {
+      public void round(final QueryWriter w, final GeneralNumericExpression x, final GeneralNumericExpression places) {
         throw new UnsupportedLiveSQLFeatureException("ROUND() is not supported in Derby database");
       }
 
       @Override
-      public void trunc(final QueryWriter w, final GeneralNumberExpression x, final GeneralNumberExpression places) {
+      public void trunc(final QueryWriter w, final GeneralNumericExpression x, final GeneralNumericExpression places) {
         throw new UnsupportedLiveSQLFeatureException("TRUNC() is not supported in Derby database");
       }
 
       // String functions
 
       @Override
-      public void concat(final QueryWriter w, final List<GeneralStringExpression> strings) {
+      public void concat(final QueryWriter w, final List<GeneralCharExpression> strings) {
         w.write("(");
         Separator sep = new Separator(" || ");
-        for (GeneralStringExpression s : strings) {
+        for (GeneralCharExpression s : strings) {
           w.write(sep.render());
           Shield.renderTo(s, w);
         }

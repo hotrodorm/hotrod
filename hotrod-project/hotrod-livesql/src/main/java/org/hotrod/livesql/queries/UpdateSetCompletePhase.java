@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.TableOrView;
 

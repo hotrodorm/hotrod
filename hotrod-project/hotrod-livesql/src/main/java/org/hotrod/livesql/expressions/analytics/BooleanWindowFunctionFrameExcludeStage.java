@@ -1,6 +1,6 @@
 package org.hotrod.livesql.expressions.analytics;
 
-import org.hotrod.livesql.expressions.predicates.BooleanExpression;
+import org.hotrod.livesql.expressions.bool.BooleanExpression;
 
 public class BooleanWindowFunctionFrameExcludeStage {
 

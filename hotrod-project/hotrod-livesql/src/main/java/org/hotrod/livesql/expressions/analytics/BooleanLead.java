@@ -1,8 +1,8 @@
 package org.hotrod.livesql.expressions.analytics;
 
-import org.hotrod.livesql.expressions.numbers.GeneralNumberExpression;
-import org.hotrod.livesql.expressions.predicates.BooleanFunction;
-import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.BooleanFunction;
+import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.numeric.GeneralNumericExpression;
 
 public class BooleanLead extends BooleanFunction implements PositionalAnalyticFunction {
 
@@ -10,11 +10,11 @@ public class BooleanLead extends BooleanFunction implements PositionalAnalyticFu
     super("lead(#{})", expression);
   }
 
-  public BooleanLead(final GeneralBooleanExpression expression, final GeneralNumberExpression offset) {
+  public BooleanLead(final GeneralBooleanExpression expression, final GeneralNumericExpression offset) {
     super("lead(#{}, #{})", expression, offset);
   }
 
-  public BooleanLead(final GeneralBooleanExpression expression, final GeneralNumberExpression offset, final GeneralBooleanExpression defaultValue) {
+  public BooleanLead(final GeneralBooleanExpression expression, final GeneralNumericExpression offset, final GeneralBooleanExpression defaultValue) {
     super("lead(#{}, #{}, #{})", expression, offset, defaultValue);
   }
 

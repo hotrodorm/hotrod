@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.livesql.expressions.ComparableExpression;
-import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.ordering.OrderingTerm;

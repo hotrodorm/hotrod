@@ -1,8 +1,8 @@
 package org.hotrod.livesql.expressions.caseclause;
 
+import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
 import org.hotrod.livesql.expressions.object.GeneralObjectExpression;
 import org.hotrod.livesql.expressions.object.ObjectExpression;
-import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.livesql.util.BoxUtil;
 
 public class ObjectCaseWhenStage {

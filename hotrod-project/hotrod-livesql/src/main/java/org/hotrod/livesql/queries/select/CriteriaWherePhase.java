@@ -3,7 +3,7 @@ package org.hotrod.livesql.queries.select;
 import java.util.Arrays;
 
 import org.hotrod.dynamicsql.RowReader;
-import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.LiveSQLContext;

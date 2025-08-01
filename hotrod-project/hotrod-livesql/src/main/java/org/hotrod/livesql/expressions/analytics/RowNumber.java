@@ -1,15 +1,15 @@
 package org.hotrod.livesql.expressions.analytics;
 
-import org.hotrod.livesql.expressions.numbers.NumberFunction;
+import org.hotrod.livesql.expressions.numeric.NumericFunction;
 
-public class RowNumber extends NumberFunction implements AnalyticFunction {
+public class RowNumber extends NumericFunction implements AnalyticFunction {
 
   public RowNumber() {
     super("row_number()");
   }
 
-  public NumberWindowFunctionOverStage over() {
-    return new NumberWindowFunctionOverStage(new NumberWindowExpression(this));
+  public NumericWindowFunctionOverStage over() {
+    return new NumericWindowFunctionOverStage(new NumericWindowExpression(this));
   }
 
 }

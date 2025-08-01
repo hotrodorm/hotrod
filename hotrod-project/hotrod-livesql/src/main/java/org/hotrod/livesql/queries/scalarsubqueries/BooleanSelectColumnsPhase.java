@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.hotrod.dynamicsql.Row;
-import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.select.UnarySelectObject;
 import org.hotrod.livesql.queries.select.TableExpression;

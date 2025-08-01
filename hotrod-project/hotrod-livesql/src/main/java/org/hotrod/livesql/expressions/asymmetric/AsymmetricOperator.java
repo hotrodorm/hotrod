@@ -2,7 +2,7 @@ package org.hotrod.livesql.expressions.asymmetric;
 
 import org.hotrod.livesql.expressions.EquatableExpression;
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.predicates.Predicate;
+import org.hotrod.livesql.expressions.bool.Predicate;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.select.Select;

@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.hotrod.livesql.exceptions.InvalidLiveSQLClauseException;
-import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 
 public abstract class PredicatedJoin extends Join {

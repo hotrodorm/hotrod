@@ -32,13 +32,13 @@ import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
-import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
-import org.hotrod.livesql.expressions.predicates.converter.ConvertedColumn;
+import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.converter.ConvertedColumn;
 import org.hotrod.livesql.metadata.AllColumns;
+import org.hotrod.livesql.metadata.CharEntityColumn;
 import org.hotrod.livesql.metadata.DateTimeEntityColumn;
 import org.hotrod.livesql.metadata.Name;
-import org.hotrod.livesql.metadata.NumberEntityColumn;
-import org.hotrod.livesql.metadata.StringEntityColumn;
+import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
@@ -535,19 +535,19 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public final NumberEntityColumn id = new NumberEntityColumn(this,
+    public final NumericEntityColumn id = new NumericEntityColumn(this,
       "ID", "id", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
-    public final StringEntityColumn name = new StringEntityColumn(this,
+    public final CharEntityColumn name = new CharEntityColumn(this,
       "NAME", "name", "CHARACTER VARYING", 20, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE));
-    public final StringEntityColumn type = new StringEntityColumn(this,
+    public final CharEntityColumn type = new CharEntityColumn(this,
       "TYPE", "type", "CHARACTER VARYING", 3, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE));
-    public final NumberEntityColumn balance = new NumberEntityColumn(this,
+    public final NumericEntityColumn balance = new NumericEntityColumn(this,
       "BALANCE", "balance", "INTEGER", 32, 0, TypeHandler.forClass(Double.class, TypeSource.STATIC_DESIGNATED));
     private final TypeHandler<Integer, Boolean> th0 = TypeHandler.forConverter(new IntegerBooleanConverter(), TypeSource.STATIC_DESIGNATED);
     public final ConvertedColumn<Integer, Boolean> active = new ConvertedColumn<Integer, Boolean>(this, "ACTIVE", "active", "INTEGER", 32, 0, th0, th0.getConverter());
     public final DateTimeEntityColumn updatedAt = new DateTimeEntityColumn(this,
       "UPDATED_AT", "updatedAt", "TIMESTAMP", 26, 6, TypeHandler.forClass(LocalDateTime.class, TypeSource.STATIC_DIALECT_RULE));
-    public final NumberEntityColumn version = new NumberEntityColumn(this,
+    public final NumericEntityColumn version = new NumericEntityColumn(this,
       "VERSION", "version", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
 
     // Getters

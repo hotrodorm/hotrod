@@ -1,9 +1,9 @@
 package org.hotrod.livesql.expressions.datetime;
 
-import org.hotrod.livesql.expressions.numbers.BuiltInNumberFunction;
+import org.hotrod.livesql.expressions.numeric.BuiltInNumericFunction;
 import org.hotrod.livesql.queries.QueryWriter;
 
-public class Extract extends BuiltInNumberFunction {
+public class Extract extends BuiltInNumericFunction {
 
   private GeneralDateTimeExpression datetime;
   private DateTimeFieldExpression field;

@@ -1,6 +1,6 @@
 package org.hotrod.livesql.expressions.analytics;
 
-import org.hotrod.livesql.expressions.numbers.GeneralNumberExpression;
+import org.hotrod.livesql.expressions.numeric.GeneralNumericExpression;
 import org.hotrod.livesql.expressions.object.GeneralObjectExpression;
 import org.hotrod.livesql.expressions.object.ObjectFunction;
 
@@ -10,11 +10,11 @@ public class ObjectLag extends ObjectFunction implements PositionalAnalyticFunct
     super("lag(#{})", expression);
   }
 
-  public ObjectLag(final GeneralObjectExpression expression, final GeneralNumberExpression offset) {
+  public ObjectLag(final GeneralObjectExpression expression, final GeneralNumericExpression offset) {
     super("lag(#{}, #{})", expression, offset);
   }
 
-  public ObjectLag(final GeneralObjectExpression expression, final GeneralNumberExpression offset,
+  public ObjectLag(final GeneralObjectExpression expression, final GeneralNumericExpression offset,
       final GeneralObjectExpression defaultValue) {
     super("lag(#{}, #{}, #{})", expression, offset, defaultValue);
   }

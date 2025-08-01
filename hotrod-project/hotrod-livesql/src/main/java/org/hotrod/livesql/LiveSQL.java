@@ -25,8 +25,8 @@ import org.hotrod.livesql.expressions.aggregations.Avg;
 import org.hotrod.livesql.expressions.aggregations.AvgDistinct;
 import org.hotrod.livesql.expressions.aggregations.BooleanMax;
 import org.hotrod.livesql.expressions.aggregations.BooleanMin;
-import org.hotrod.livesql.expressions.aggregations.ByteArrayMax;
-import org.hotrod.livesql.expressions.aggregations.ByteArrayMin;
+import org.hotrod.livesql.expressions.aggregations.BinaryMax;
+import org.hotrod.livesql.expressions.aggregations.BinaryMin;
 import org.hotrod.livesql.expressions.aggregations.CountDistinct;
 import org.hotrod.livesql.expressions.aggregations.CountRows;
 import org.hotrod.livesql.expressions.aggregations.CountValues;
@@ -34,40 +34,53 @@ import org.hotrod.livesql.expressions.aggregations.DateTimeMax;
 import org.hotrod.livesql.expressions.aggregations.DateTimeMin;
 import org.hotrod.livesql.expressions.aggregations.GroupConcat;
 import org.hotrod.livesql.expressions.aggregations.GroupConcatDistinct;
-import org.hotrod.livesql.expressions.aggregations.NumberMax;
-import org.hotrod.livesql.expressions.aggregations.NumberMin;
+import org.hotrod.livesql.expressions.aggregations.NumericMax;
+import org.hotrod.livesql.expressions.aggregations.NumericMin;
 import org.hotrod.livesql.expressions.aggregations.ObjectMax;
 import org.hotrod.livesql.expressions.aggregations.ObjectMin;
-import org.hotrod.livesql.expressions.aggregations.StringMax;
-import org.hotrod.livesql.expressions.aggregations.StringMin;
+import org.hotrod.livesql.expressions.aggregations.CharMax;
+import org.hotrod.livesql.expressions.aggregations.CharMin;
 import org.hotrod.livesql.expressions.aggregations.Sum;
 import org.hotrod.livesql.expressions.aggregations.SumDistinct;
 import org.hotrod.livesql.expressions.analytics.BooleanLag;
 import org.hotrod.livesql.expressions.analytics.BooleanLead;
-import org.hotrod.livesql.expressions.analytics.ByteArrayLag;
-import org.hotrod.livesql.expressions.analytics.ByteArrayLead;
+import org.hotrod.livesql.expressions.analytics.BinaryLag;
+import org.hotrod.livesql.expressions.analytics.BinaryLead;
 import org.hotrod.livesql.expressions.analytics.DateTimeLag;
 import org.hotrod.livesql.expressions.analytics.DateTimeLead;
 import org.hotrod.livesql.expressions.analytics.DenseRank;
 import org.hotrod.livesql.expressions.analytics.NTile;
-import org.hotrod.livesql.expressions.analytics.NumberLag;
-import org.hotrod.livesql.expressions.analytics.NumberLead;
+import org.hotrod.livesql.expressions.analytics.NumericLag;
+import org.hotrod.livesql.expressions.analytics.NumericLead;
 import org.hotrod.livesql.expressions.analytics.ObjectLag;
 import org.hotrod.livesql.expressions.analytics.ObjectLead;
 import org.hotrod.livesql.expressions.analytics.Rank;
 import org.hotrod.livesql.expressions.analytics.RowNumber;
-import org.hotrod.livesql.expressions.analytics.StringLag;
-import org.hotrod.livesql.expressions.analytics.StringLead;
-import org.hotrod.livesql.expressions.binary.ByteArrayConstant;
-import org.hotrod.livesql.expressions.binary.ByteArrayExpression;
-import org.hotrod.livesql.expressions.binary.EnclosedByteArrayExpression;
-import org.hotrod.livesql.expressions.binary.GeneralByteArrayExpression;
+import org.hotrod.livesql.expressions.analytics.CharLag;
+import org.hotrod.livesql.expressions.analytics.CharLead;
+import org.hotrod.livesql.expressions.binary.BinaryConstant;
+import org.hotrod.livesql.expressions.binary.BinaryExpression;
+import org.hotrod.livesql.expressions.binary.EnclosedBinaryExpression;
+import org.hotrod.livesql.expressions.binary.GeneralBinaryExpression;
+import org.hotrod.livesql.expressions.bool.BooleanConstant;
+import org.hotrod.livesql.expressions.bool.BooleanLiteral;
+import org.hotrod.livesql.expressions.bool.EnclosedBooleanExpression;
+import org.hotrod.livesql.expressions.bool.Exists;
+import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.Not;
+import org.hotrod.livesql.expressions.bool.NotExists;
+import org.hotrod.livesql.expressions.bool.Predicate;
 import org.hotrod.livesql.expressions.caseclause.BooleanCaseWhenStage;
-import org.hotrod.livesql.expressions.caseclause.ByteArrayCaseWhenStage;
+import org.hotrod.livesql.expressions.caseclause.BinaryCaseWhenStage;
 import org.hotrod.livesql.expressions.caseclause.DateTimeCaseWhenStage;
-import org.hotrod.livesql.expressions.caseclause.NumberCaseWhenStage;
+import org.hotrod.livesql.expressions.caseclause.NumericCaseWhenStage;
 import org.hotrod.livesql.expressions.caseclause.ObjectCaseWhenStage;
-import org.hotrod.livesql.expressions.caseclause.StringCaseWhenStage;
+import org.hotrod.livesql.expressions.caseclause.CharCaseWhenStage;
+import org.hotrod.livesql.expressions.character.EnclosedCharExpression;
+import org.hotrod.livesql.expressions.character.GeneralCharExpression;
+import org.hotrod.livesql.expressions.character.CharConstant;
+import org.hotrod.livesql.expressions.character.CharExpression;
+import org.hotrod.livesql.expressions.character.CharLiteral;
 import org.hotrod.livesql.expressions.datetime.CurrentDate;
 import org.hotrod.livesql.expressions.datetime.CurrentDateTime;
 import org.hotrod.livesql.expressions.datetime.CurrentTime;
@@ -82,29 +95,16 @@ import org.hotrod.livesql.expressions.datetime.literals.LocalTimestampLiteral;
 import org.hotrod.livesql.expressions.datetime.literals.OffsetTimeLiteral;
 import org.hotrod.livesql.expressions.datetime.literals.OffsetTimestampLiteral;
 import org.hotrod.livesql.expressions.general.TupleExpression;
-import org.hotrod.livesql.expressions.numbers.DecimalLiteral;
-import org.hotrod.livesql.expressions.numbers.EnclosedNumberExpression;
-import org.hotrod.livesql.expressions.numbers.GeneralNumberExpression;
-import org.hotrod.livesql.expressions.numbers.IntegerLiteral;
-import org.hotrod.livesql.expressions.numbers.NumberConstant;
-import org.hotrod.livesql.expressions.numbers.NumberExpression;
+import org.hotrod.livesql.expressions.numeric.DecimalLiteral;
+import org.hotrod.livesql.expressions.numeric.EnclosedNumericExpression;
+import org.hotrod.livesql.expressions.numeric.GeneralNumericExpression;
+import org.hotrod.livesql.expressions.numeric.IntegerLiteral;
+import org.hotrod.livesql.expressions.numeric.NumericConstant;
+import org.hotrod.livesql.expressions.numeric.NumericExpression;
 import org.hotrod.livesql.expressions.object.EnclosedObjectExpression;
 import org.hotrod.livesql.expressions.object.GeneralObjectExpression;
 import org.hotrod.livesql.expressions.object.ObjectConstant;
 import org.hotrod.livesql.expressions.object.ObjectExpression;
-import org.hotrod.livesql.expressions.predicates.BooleanConstant;
-import org.hotrod.livesql.expressions.predicates.BooleanLiteral;
-import org.hotrod.livesql.expressions.predicates.EnclosedBooleanExpression;
-import org.hotrod.livesql.expressions.predicates.Exists;
-import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
-import org.hotrod.livesql.expressions.predicates.Not;
-import org.hotrod.livesql.expressions.predicates.NotExists;
-import org.hotrod.livesql.expressions.predicates.Predicate;
-import org.hotrod.livesql.expressions.strings.EnclosedStringExpression;
-import org.hotrod.livesql.expressions.strings.GeneralStringExpression;
-import org.hotrod.livesql.expressions.strings.StringConstant;
-import org.hotrod.livesql.expressions.strings.StringExpression;
-import org.hotrod.livesql.expressions.strings.StringLiteral;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.ordering.AliasOrderingTerm;
@@ -118,11 +118,11 @@ import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.ctes.CTEHeaderPhase;
 import org.hotrod.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.livesql.queries.scalarsubqueries.BooleanSelectColumnsPhase;
-import org.hotrod.livesql.queries.scalarsubqueries.ByteArraySelectColumnsPhase;
+import org.hotrod.livesql.queries.scalarsubqueries.BinarySelectColumnsPhase;
 import org.hotrod.livesql.queries.scalarsubqueries.DateTimeSelectColumnsPhase;
-import org.hotrod.livesql.queries.scalarsubqueries.NumberSelectColumnsPhase;
+import org.hotrod.livesql.queries.scalarsubqueries.NumericSelectColumnsPhase;
 import org.hotrod.livesql.queries.scalarsubqueries.ObjectSelectColumnsPhase;
-import org.hotrod.livesql.queries.scalarsubqueries.StringSelectColumnsPhase;
+import org.hotrod.livesql.queries.scalarsubqueries.CharSelectColumnsPhase;
 import org.hotrod.livesql.queries.select.EnclosedSelectPhase;
 import org.hotrod.livesql.queries.select.NonLockableSelectColumnsPhase;
 import org.hotrod.livesql.queries.select.NonLockableSelectDistinctOnPhase;
@@ -229,12 +229,12 @@ public class LiveSQL {
 
   // Scalar subqueries
 
-  public NumberSelectColumnsPhase selectScalar(final GeneralNumberExpression expression) {
-    return new NumberSelectColumnsPhase(null, false, expression);
+  public NumericSelectColumnsPhase selectScalar(final GeneralNumericExpression expression) {
+    return new NumericSelectColumnsPhase(null, false, expression);
   }
 
-  public StringSelectColumnsPhase selectScalar(final GeneralStringExpression expression) {
-    return new StringSelectColumnsPhase(null, false, expression);
+  public CharSelectColumnsPhase selectScalar(final GeneralCharExpression expression) {
+    return new CharSelectColumnsPhase(null, false, expression);
   }
 
   public BooleanSelectColumnsPhase selectScalar(final GeneralBooleanExpression expression) {
@@ -245,8 +245,8 @@ public class LiveSQL {
     return new DateTimeSelectColumnsPhase(null, false, expression);
   }
 
-  public ByteArraySelectColumnsPhase selectScalar(final GeneralByteArrayExpression expression) {
-    return new ByteArraySelectColumnsPhase(null, false, expression);
+  public BinarySelectColumnsPhase selectScalar(final GeneralBinaryExpression expression) {
+    return new BinarySelectColumnsPhase(null, false, expression);
   }
 
   public ObjectSelectColumnsPhase selectScalar(final GeneralObjectExpression expression) {
@@ -331,58 +331,58 @@ public class LiveSQL {
     return new CountDistinct(expression);
   }
 
-  public SumDistinct sumDistinct(final GeneralNumberExpression expression) {
+  public SumDistinct sumDistinct(final GeneralNumericExpression expression) {
     return new SumDistinct(expression);
   }
 
-  public AvgDistinct avgDistinct(final GeneralNumberExpression expression) {
+  public AvgDistinct avgDistinct(final GeneralNumericExpression expression) {
     return new AvgDistinct(expression);
   }
 
-  public GroupConcatDistinct groupConcatDistinct(final GeneralStringExpression expression) {
+  public GroupConcatDistinct groupConcatDistinct(final GeneralCharExpression expression) {
     return new GroupConcatDistinct(expression, null, null);
   }
 
-  public GroupConcatDistinct groupConcatDistinct(final GeneralStringExpression expression, final String separator) {
+  public GroupConcatDistinct groupConcatDistinct(final GeneralCharExpression expression, final String separator) {
     return new GroupConcatDistinct(expression, null, val(separator));
   }
 
-  public GroupConcatDistinct groupConcatDistinct(final GeneralStringExpression expression, final String separator,
+  public GroupConcatDistinct groupConcatDistinct(final GeneralCharExpression expression, final String separator,
       final OrderingTerm... order) {
     return new GroupConcatDistinct(expression, Arrays.asList(order), val(separator));
   }
 
   // Aggregation expressions, that ALSO are window functions
 
-  public Sum sum(final GeneralNumberExpression expression) {
+  public Sum sum(final GeneralNumericExpression expression) {
     return new Sum(expression);
   }
 
-  public Avg avg(final GeneralNumberExpression expression) {
+  public Avg avg(final GeneralNumericExpression expression) {
     return new Avg(expression);
   }
 
-  public GroupConcat groupConcat(final GeneralStringExpression expression) {
+  public GroupConcat groupConcat(final GeneralCharExpression expression) {
     return new GroupConcat(expression, null, null);
   }
 
-  public GroupConcat groupConcat(final GeneralStringExpression expression, final String separator) {
+  public GroupConcat groupConcat(final GeneralCharExpression expression, final String separator) {
     return new GroupConcat(expression, null, val(separator));
   }
 
-  public GroupConcat groupConcat(final GeneralStringExpression expression, final String separator,
+  public GroupConcat groupConcat(final GeneralCharExpression expression, final String separator,
       final OrderingTerm... order) {
     return new GroupConcat(expression, Arrays.asList(order), val(separator));
   }
 
   // Max -- Aggregation expressions, that ALSO are window functions
 
-  public NumberMax max(final GeneralNumberExpression expression) {
-    return new NumberMax(expression);
+  public NumericMax max(final GeneralNumericExpression expression) {
+    return new NumericMax(expression);
   }
 
-  public StringMax max(final GeneralStringExpression expression) {
-    return new StringMax(expression);
+  public CharMax max(final GeneralCharExpression expression) {
+    return new CharMax(expression);
   }
 
   public DateTimeMax max(final GeneralDateTimeExpression expression) {
@@ -393,8 +393,8 @@ public class LiveSQL {
     return new BooleanMax(expression);
   }
 
-  public ByteArrayMax max(final GeneralByteArrayExpression expression) {
-    return new ByteArrayMax(expression);
+  public BinaryMax max(final GeneralBinaryExpression expression) {
+    return new BinaryMax(expression);
   }
 
   public ObjectMax max(final GeneralObjectExpression expression) {
@@ -403,12 +403,12 @@ public class LiveSQL {
 
   // Min -- Aggregation expressions, that ALSO are window functions
 
-  public NumberMin min(final GeneralNumberExpression expression) {
-    return new NumberMin(expression);
+  public NumericMin min(final GeneralNumericExpression expression) {
+    return new NumericMin(expression);
   }
 
-  public StringMin min(final GeneralStringExpression expression) {
-    return new StringMin(expression);
+  public CharMin min(final GeneralCharExpression expression) {
+    return new CharMin(expression);
   }
 
   public DateTimeMin min(final GeneralDateTimeExpression expression) {
@@ -419,8 +419,8 @@ public class LiveSQL {
     return new BooleanMin(expression);
   }
 
-  public ByteArrayMin min(final GeneralByteArrayExpression expression) {
-    return new ByteArrayMin(expression);
+  public BinaryMin min(final GeneralBinaryExpression expression) {
+    return new BinaryMin(expression);
   }
 
   public ObjectMin min(final GeneralObjectExpression expression) {
@@ -449,68 +449,68 @@ public class LiveSQL {
 
   // === Lead Number ===
 
-  public NumberLead lead(final GeneralNumberExpression expression) {
-    return new NumberLead(expression);
+  public NumericLead lead(final GeneralNumericExpression expression) {
+    return new NumericLead(expression);
   }
 
-  public NumberLead lead(final GeneralNumberExpression expression, final Number offset) {
-    return new NumberLead(expression, val(offset));
+  public NumericLead lead(final GeneralNumericExpression expression, final Number offset) {
+    return new NumericLead(expression, val(offset));
   }
 
-  public NumberLead lead(final GeneralNumberExpression expression, final GeneralNumberExpression offset) {
-    return new NumberLead(expression, offset);
+  public NumericLead lead(final GeneralNumericExpression expression, final GeneralNumericExpression offset) {
+    return new NumericLead(expression, offset);
   }
 
-  public NumberLead lead(final GeneralNumberExpression expression, final Number offset, final Number defaultValue) {
-    return new NumberLead(expression, val(offset), val(defaultValue));
+  public NumericLead lead(final GeneralNumericExpression expression, final Number offset, final Number defaultValue) {
+    return new NumericLead(expression, val(offset), val(defaultValue));
   }
 
-  public NumberLead lead(final GeneralNumberExpression expression, final GeneralNumberExpression offset,
+  public NumericLead lead(final GeneralNumericExpression expression, final GeneralNumericExpression offset,
       final Number defaultValue) {
-    return new NumberLead(expression, offset, val(defaultValue));
+    return new NumericLead(expression, offset, val(defaultValue));
   }
 
-  public NumberLead lead(final GeneralNumberExpression expression, final Number offset,
-      final GeneralNumberExpression defaultValue) {
-    return new NumberLead(expression, val(offset), defaultValue);
+  public NumericLead lead(final GeneralNumericExpression expression, final Number offset,
+      final GeneralNumericExpression defaultValue) {
+    return new NumericLead(expression, val(offset), defaultValue);
   }
 
-  public NumberLead lead(final GeneralNumberExpression expression, final GeneralNumberExpression offset,
-      final GeneralNumberExpression defaultValue) {
-    return new NumberLead(expression, offset, defaultValue);
+  public NumericLead lead(final GeneralNumericExpression expression, final GeneralNumericExpression offset,
+      final GeneralNumericExpression defaultValue) {
+    return new NumericLead(expression, offset, defaultValue);
   }
 
   // === Lead String ===
 
-  public StringLead lead(final GeneralStringExpression expression) {
-    return new StringLead(expression);
+  public CharLead lead(final GeneralCharExpression expression) {
+    return new CharLead(expression);
   }
 
-  public StringLead lead(final GeneralStringExpression expression, final Number offset) {
-    return new StringLead(expression, val(offset));
+  public CharLead lead(final GeneralCharExpression expression, final Number offset) {
+    return new CharLead(expression, val(offset));
   }
 
-  public StringLead lead(final GeneralStringExpression expression, final GeneralNumberExpression offset) {
-    return new StringLead(expression, offset);
+  public CharLead lead(final GeneralCharExpression expression, final GeneralNumericExpression offset) {
+    return new CharLead(expression, offset);
   }
 
-  public StringLead lead(final GeneralStringExpression expression, final Number offset, final String defaultValue) {
-    return new StringLead(expression, val(offset), val(defaultValue));
+  public CharLead lead(final GeneralCharExpression expression, final Number offset, final String defaultValue) {
+    return new CharLead(expression, val(offset), val(defaultValue));
   }
 
-  public StringLead lead(final GeneralStringExpression expression, final GeneralNumberExpression offset,
+  public CharLead lead(final GeneralCharExpression expression, final GeneralNumericExpression offset,
       final String defaultValue) {
-    return new StringLead(expression, offset, val(defaultValue));
+    return new CharLead(expression, offset, val(defaultValue));
   }
 
-  public StringLead lead(final GeneralStringExpression expression, final Number offset,
-      final GeneralStringExpression defaultValue) {
-    return new StringLead(expression, val(offset), defaultValue);
+  public CharLead lead(final GeneralCharExpression expression, final Number offset,
+      final GeneralCharExpression defaultValue) {
+    return new CharLead(expression, val(offset), defaultValue);
   }
 
-  public StringLead lead(final GeneralStringExpression expression, final GeneralNumberExpression offset,
-      final GeneralStringExpression defaultValue) {
-    return new StringLead(expression, offset, defaultValue);
+  public CharLead lead(final GeneralCharExpression expression, final GeneralNumericExpression offset,
+      final GeneralCharExpression defaultValue) {
+    return new CharLead(expression, offset, defaultValue);
   }
 
   // === Lead DateTime ===
@@ -523,7 +523,7 @@ public class LiveSQL {
     return new DateTimeLead(expression, val(offset));
   }
 
-  public DateTimeLead lead(final GeneralDateTimeExpression expression, final GeneralNumberExpression offset) {
+  public DateTimeLead lead(final GeneralDateTimeExpression expression, final GeneralNumericExpression offset) {
     return new DateTimeLead(expression, offset);
   }
 
@@ -531,7 +531,7 @@ public class LiveSQL {
     return new DateTimeLead(expression, val(offset), val(defaultValue));
   }
 
-  public DateTimeLead lead(final GeneralDateTimeExpression expression, final GeneralNumberExpression offset,
+  public DateTimeLead lead(final GeneralDateTimeExpression expression, final GeneralNumericExpression offset,
       final Date defaultValue) {
     return new DateTimeLead(expression, offset, val(defaultValue));
   }
@@ -541,7 +541,7 @@ public class LiveSQL {
     return new DateTimeLead(expression, val(offset), defaultValue);
   }
 
-  public DateTimeLead lead(final GeneralDateTimeExpression expression, final GeneralNumberExpression offset,
+  public DateTimeLead lead(final GeneralDateTimeExpression expression, final GeneralNumericExpression offset,
       final GeneralDateTimeExpression defaultValue) {
     return new DateTimeLead(expression, offset, defaultValue);
   }
@@ -556,7 +556,7 @@ public class LiveSQL {
     return new BooleanLead(expression, val(offset));
   }
 
-  public BooleanLead lead(final GeneralBooleanExpression expression, final GeneralNumberExpression offset) {
+  public BooleanLead lead(final GeneralBooleanExpression expression, final GeneralNumericExpression offset) {
     return new BooleanLead(expression, offset);
   }
 
@@ -564,7 +564,7 @@ public class LiveSQL {
     return new BooleanLead(expression, val(offset), val(defaultValue));
   }
 
-  public BooleanLead lead(final GeneralBooleanExpression expression, final GeneralNumberExpression offset,
+  public BooleanLead lead(final GeneralBooleanExpression expression, final GeneralNumericExpression offset,
       final Boolean defaultValue) {
     return new BooleanLead(expression, offset, val(defaultValue));
   }
@@ -574,43 +574,43 @@ public class LiveSQL {
     return new BooleanLead(expression, val(offset), defaultValue);
   }
 
-  public BooleanLead lead(final GeneralBooleanExpression expression, final GeneralNumberExpression offset,
+  public BooleanLead lead(final GeneralBooleanExpression expression, final GeneralNumericExpression offset,
       final GeneralBooleanExpression defaultValue) {
     return new BooleanLead(expression, offset, defaultValue);
   }
 
   // === Lead ByteArray ===
 
-  public ByteArrayLead lead(final GeneralByteArrayExpression expression) {
-    return new ByteArrayLead(expression);
+  public BinaryLead lead(final GeneralBinaryExpression expression) {
+    return new BinaryLead(expression);
   }
 
-  public ByteArrayLead lead(final GeneralByteArrayExpression expression, final Number offset) {
-    return new ByteArrayLead(expression, val(offset));
+  public BinaryLead lead(final GeneralBinaryExpression expression, final Number offset) {
+    return new BinaryLead(expression, val(offset));
   }
 
-  public ByteArrayLead lead(final GeneralByteArrayExpression expression, final GeneralNumberExpression offset) {
-    return new ByteArrayLead(expression, offset);
+  public BinaryLead lead(final GeneralBinaryExpression expression, final GeneralNumericExpression offset) {
+    return new BinaryLead(expression, offset);
   }
 
-  public ByteArrayLead lead(final GeneralByteArrayExpression expression, final Number offset,
+  public BinaryLead lead(final GeneralBinaryExpression expression, final Number offset,
       final byte[] defaultValue) {
-    return new ByteArrayLead(expression, val(offset), val(defaultValue));
+    return new BinaryLead(expression, val(offset), val(defaultValue));
   }
 
-  public ByteArrayLead lead(final GeneralByteArrayExpression expression, final GeneralNumberExpression offset,
+  public BinaryLead lead(final GeneralBinaryExpression expression, final GeneralNumericExpression offset,
       final byte[] defaultValue) {
-    return new ByteArrayLead(expression, offset, val(defaultValue));
+    return new BinaryLead(expression, offset, val(defaultValue));
   }
 
-  public ByteArrayLead lead(final GeneralByteArrayExpression expression, final Number offset,
-      final GeneralByteArrayExpression defaultValue) {
-    return new ByteArrayLead(expression, val(offset), defaultValue);
+  public BinaryLead lead(final GeneralBinaryExpression expression, final Number offset,
+      final GeneralBinaryExpression defaultValue) {
+    return new BinaryLead(expression, val(offset), defaultValue);
   }
 
-  public ByteArrayLead lead(final GeneralByteArrayExpression expression, final GeneralNumberExpression offset,
-      final GeneralByteArrayExpression defaultValue) {
-    return new ByteArrayLead(expression, offset, defaultValue);
+  public BinaryLead lead(final GeneralBinaryExpression expression, final GeneralNumericExpression offset,
+      final GeneralBinaryExpression defaultValue) {
+    return new BinaryLead(expression, offset, defaultValue);
   }
 
   // === Lead Object ===
@@ -623,7 +623,7 @@ public class LiveSQL {
     return new ObjectLead(expression, val(offset));
   }
 
-  public ObjectLead lead(final GeneralObjectExpression expression, final GeneralNumberExpression offset) {
+  public ObjectLead lead(final GeneralObjectExpression expression, final GeneralNumericExpression offset) {
     return new ObjectLead(expression, offset);
   }
 
@@ -631,7 +631,7 @@ public class LiveSQL {
     return new ObjectLead(expression, val(offset), val(defaultValue));
   }
 
-  public ObjectLead lead(final GeneralObjectExpression expression, final GeneralNumberExpression offset,
+  public ObjectLead lead(final GeneralObjectExpression expression, final GeneralNumericExpression offset,
       final Object defaultValue) {
     return new ObjectLead(expression, offset, val(defaultValue));
   }
@@ -641,75 +641,75 @@ public class LiveSQL {
     return new ObjectLead(expression, val(offset), defaultValue);
   }
 
-  public ObjectLead lead(final GeneralObjectExpression expression, final GeneralNumberExpression offset,
+  public ObjectLead lead(final GeneralObjectExpression expression, final GeneralNumericExpression offset,
       final GeneralObjectExpression defaultValue) {
     return new ObjectLead(expression, offset, defaultValue);
   }
 
   // === Lag Number ===
 
-  public NumberLag lag(final GeneralNumberExpression expression) {
-    return new NumberLag(expression);
+  public NumericLag lag(final GeneralNumericExpression expression) {
+    return new NumericLag(expression);
   }
 
-  public NumberLag lag(final GeneralNumberExpression expression, final Number offset) {
-    return new NumberLag(expression, val(offset));
+  public NumericLag lag(final GeneralNumericExpression expression, final Number offset) {
+    return new NumericLag(expression, val(offset));
   }
 
-  public NumberLag lag(final GeneralNumberExpression expression, final GeneralNumberExpression offset) {
-    return new NumberLag(expression, offset);
+  public NumericLag lag(final GeneralNumericExpression expression, final GeneralNumericExpression offset) {
+    return new NumericLag(expression, offset);
   }
 
-  public NumberLag lag(final GeneralNumberExpression expression, final Number offset, final Number defaultValue) {
-    return new NumberLag(expression, val(offset), val(defaultValue));
+  public NumericLag lag(final GeneralNumericExpression expression, final Number offset, final Number defaultValue) {
+    return new NumericLag(expression, val(offset), val(defaultValue));
   }
 
-  public NumberLag lag(final GeneralNumberExpression expression, final GeneralNumberExpression offset,
+  public NumericLag lag(final GeneralNumericExpression expression, final GeneralNumericExpression offset,
       final Number defaultValue) {
-    return new NumberLag(expression, offset, val(defaultValue));
+    return new NumericLag(expression, offset, val(defaultValue));
   }
 
-  public NumberLag lag(final GeneralNumberExpression expression, final Number offset,
-      final GeneralNumberExpression defaultValue) {
-    return new NumberLag(expression, val(offset), defaultValue);
+  public NumericLag lag(final GeneralNumericExpression expression, final Number offset,
+      final GeneralNumericExpression defaultValue) {
+    return new NumericLag(expression, val(offset), defaultValue);
   }
 
-  public NumberLag lag(final GeneralNumberExpression expression, final GeneralNumberExpression offset,
-      final GeneralNumberExpression defaultValue) {
-    return new NumberLag(expression, offset, defaultValue);
+  public NumericLag lag(final GeneralNumericExpression expression, final GeneralNumericExpression offset,
+      final GeneralNumericExpression defaultValue) {
+    return new NumericLag(expression, offset, defaultValue);
   }
 
   // === Lag String ===
 
-  public StringLag lag(final GeneralStringExpression expression) {
-    return new StringLag(expression);
+  public CharLag lag(final GeneralCharExpression expression) {
+    return new CharLag(expression);
   }
 
-  public StringLag lag(final GeneralStringExpression expression, final Number offset) {
-    return new StringLag(expression, val(offset));
+  public CharLag lag(final GeneralCharExpression expression, final Number offset) {
+    return new CharLag(expression, val(offset));
   }
 
-  public StringLag lag(final GeneralStringExpression expression, final GeneralNumberExpression offset) {
-    return new StringLag(expression, offset);
+  public CharLag lag(final GeneralCharExpression expression, final GeneralNumericExpression offset) {
+    return new CharLag(expression, offset);
   }
 
-  public StringLag lag(final GeneralStringExpression expression, final Number offset, final String defaultValue) {
-    return new StringLag(expression, val(offset), val(defaultValue));
+  public CharLag lag(final GeneralCharExpression expression, final Number offset, final String defaultValue) {
+    return new CharLag(expression, val(offset), val(defaultValue));
   }
 
-  public StringLag lag(final GeneralStringExpression expression, final GeneralNumberExpression offset,
+  public CharLag lag(final GeneralCharExpression expression, final GeneralNumericExpression offset,
       final String defaultValue) {
-    return new StringLag(expression, offset, val(defaultValue));
+    return new CharLag(expression, offset, val(defaultValue));
   }
 
-  public StringLag lag(final GeneralStringExpression expression, final Number offset,
-      final GeneralStringExpression defaultValue) {
-    return new StringLag(expression, val(offset), defaultValue);
+  public CharLag lag(final GeneralCharExpression expression, final Number offset,
+      final GeneralCharExpression defaultValue) {
+    return new CharLag(expression, val(offset), defaultValue);
   }
 
-  public StringLag lag(final GeneralStringExpression expression, final GeneralNumberExpression offset,
-      final GeneralStringExpression defaultValue) {
-    return new StringLag(expression, offset, defaultValue);
+  public CharLag lag(final GeneralCharExpression expression, final GeneralNumericExpression offset,
+      final GeneralCharExpression defaultValue) {
+    return new CharLag(expression, offset, defaultValue);
   }
 
   // === Lag DateTime ===
@@ -722,7 +722,7 @@ public class LiveSQL {
     return new DateTimeLag(expression, val(offset));
   }
 
-  public DateTimeLag lag(final GeneralDateTimeExpression expression, final GeneralNumberExpression offset) {
+  public DateTimeLag lag(final GeneralDateTimeExpression expression, final GeneralNumericExpression offset) {
     return new DateTimeLag(expression, offset);
   }
 
@@ -730,7 +730,7 @@ public class LiveSQL {
     return new DateTimeLag(expression, val(offset), val(defaultValue));
   }
 
-  public DateTimeLag lag(final GeneralDateTimeExpression expression, final GeneralNumberExpression offset,
+  public DateTimeLag lag(final GeneralDateTimeExpression expression, final GeneralNumericExpression offset,
       final Date defaultValue) {
     return new DateTimeLag(expression, offset, val(defaultValue));
   }
@@ -740,7 +740,7 @@ public class LiveSQL {
     return new DateTimeLag(expression, val(offset), defaultValue);
   }
 
-  public DateTimeLag lag(final GeneralDateTimeExpression expression, final GeneralNumberExpression offset,
+  public DateTimeLag lag(final GeneralDateTimeExpression expression, final GeneralNumericExpression offset,
       final GeneralDateTimeExpression defaultValue) {
     return new DateTimeLag(expression, offset, defaultValue);
   }
@@ -755,7 +755,7 @@ public class LiveSQL {
     return new BooleanLag(expression, val(offset));
   }
 
-  public BooleanLag lag(final GeneralBooleanExpression expression, final GeneralNumberExpression offset) {
+  public BooleanLag lag(final GeneralBooleanExpression expression, final GeneralNumericExpression offset) {
     return new BooleanLag(expression, offset, null);
   }
 
@@ -763,7 +763,7 @@ public class LiveSQL {
     return new BooleanLag(expression, val(offset), val(defaultValue));
   }
 
-  public BooleanLag lag(final GeneralBooleanExpression expression, final GeneralNumberExpression offset,
+  public BooleanLag lag(final GeneralBooleanExpression expression, final GeneralNumericExpression offset,
       final Boolean defaultValue) {
     return new BooleanLag(expression, offset, val(defaultValue));
   }
@@ -773,42 +773,42 @@ public class LiveSQL {
     return new BooleanLag(expression, val(offset), defaultValue);
   }
 
-  public BooleanLag lag(final GeneralBooleanExpression expression, final GeneralNumberExpression offset,
+  public BooleanLag lag(final GeneralBooleanExpression expression, final GeneralNumericExpression offset,
       final GeneralBooleanExpression defaultValue) {
     return new BooleanLag(expression, offset, defaultValue);
   }
 
   // === Lag ByteArray ===
 
-  public ByteArrayLag lag(final GeneralByteArrayExpression expression) {
-    return new ByteArrayLag(expression);
+  public BinaryLag lag(final GeneralBinaryExpression expression) {
+    return new BinaryLag(expression);
   }
 
-  public ByteArrayLag lag(final GeneralByteArrayExpression expression, final Number offset) {
-    return new ByteArrayLag(expression, val(offset));
+  public BinaryLag lag(final GeneralBinaryExpression expression, final Number offset) {
+    return new BinaryLag(expression, val(offset));
   }
 
-  public ByteArrayLag lag(final GeneralByteArrayExpression expression, final GeneralNumberExpression offset) {
-    return new ByteArrayLag(expression, offset);
+  public BinaryLag lag(final GeneralBinaryExpression expression, final GeneralNumericExpression offset) {
+    return new BinaryLag(expression, offset);
   }
 
-  public ByteArrayLag lag(final GeneralByteArrayExpression expression, final Number offset, final byte[] defaultValue) {
-    return new ByteArrayLag(expression, val(offset), val(defaultValue));
+  public BinaryLag lag(final GeneralBinaryExpression expression, final Number offset, final byte[] defaultValue) {
+    return new BinaryLag(expression, val(offset), val(defaultValue));
   }
 
-  public ByteArrayLag lag(final GeneralByteArrayExpression expression, final GeneralNumberExpression offset,
+  public BinaryLag lag(final GeneralBinaryExpression expression, final GeneralNumericExpression offset,
       final byte[] defaultValue) {
-    return new ByteArrayLag(expression, offset, val(defaultValue));
+    return new BinaryLag(expression, offset, val(defaultValue));
   }
 
-  public ByteArrayLag lag(final GeneralByteArrayExpression expression, final Number offset,
-      final GeneralByteArrayExpression defaultValue) {
-    return new ByteArrayLag(expression, val(offset), defaultValue);
+  public BinaryLag lag(final GeneralBinaryExpression expression, final Number offset,
+      final GeneralBinaryExpression defaultValue) {
+    return new BinaryLag(expression, val(offset), defaultValue);
   }
 
-  public ByteArrayLag lag(final GeneralByteArrayExpression expression, final GeneralNumberExpression offset,
-      final GeneralByteArrayExpression defaultValue) {
-    return new ByteArrayLag(expression, offset, defaultValue);
+  public BinaryLag lag(final GeneralBinaryExpression expression, final GeneralNumericExpression offset,
+      final GeneralBinaryExpression defaultValue) {
+    return new BinaryLag(expression, offset, defaultValue);
   }
 
   // === Lag Object ===
@@ -821,7 +821,7 @@ public class LiveSQL {
     return new ObjectLag(expression, val(offset));
   }
 
-  public ObjectLag lag(final GeneralObjectExpression expression, final GeneralNumberExpression offset) {
+  public ObjectLag lag(final GeneralObjectExpression expression, final GeneralNumericExpression offset) {
     return new ObjectLag(expression, offset);
   }
 
@@ -829,7 +829,7 @@ public class LiveSQL {
     return new ObjectLag(expression, val(offset), val(defaultValue));
   }
 
-  public ObjectLag lag(final GeneralObjectExpression expression, final GeneralNumberExpression offset,
+  public ObjectLag lag(final GeneralObjectExpression expression, final GeneralNumericExpression offset,
       final Object defaultValue) {
     return new ObjectLag(expression, offset, val(defaultValue));
   }
@@ -839,27 +839,27 @@ public class LiveSQL {
     return new ObjectLag(expression, val(offset), defaultValue);
   }
 
-  public ObjectLag lag(final GeneralObjectExpression expression, final GeneralNumberExpression offset,
+  public ObjectLag lag(final GeneralObjectExpression expression, final GeneralNumericExpression offset,
       final GeneralObjectExpression defaultValue) {
     return new ObjectLag(expression, offset, defaultValue);
   }
 
   // Case
 
-  public NumberCaseWhenStage caseWhen(final GeneralBooleanExpression predicate, final Number value) {
-    return new NumberCaseWhenStage(predicate, val(value));
+  public NumericCaseWhenStage caseWhen(final GeneralBooleanExpression predicate, final Number value) {
+    return new NumericCaseWhenStage(predicate, val(value));
   }
 
-  public NumberCaseWhenStage caseWhen(final GeneralBooleanExpression predicate, final GeneralNumberExpression value) {
-    return new NumberCaseWhenStage(predicate, value);
+  public NumericCaseWhenStage caseWhen(final GeneralBooleanExpression predicate, final GeneralNumericExpression value) {
+    return new NumericCaseWhenStage(predicate, value);
   }
 
-  public StringCaseWhenStage caseWhen(final GeneralBooleanExpression predicate, final String value) {
-    return new StringCaseWhenStage(predicate, val(value));
+  public CharCaseWhenStage caseWhen(final GeneralBooleanExpression predicate, final String value) {
+    return new CharCaseWhenStage(predicate, val(value));
   }
 
-  public StringCaseWhenStage caseWhen(final GeneralBooleanExpression predicate, final GeneralStringExpression value) {
-    return new StringCaseWhenStage(predicate, value);
+  public CharCaseWhenStage caseWhen(final GeneralBooleanExpression predicate, final GeneralCharExpression value) {
+    return new CharCaseWhenStage(predicate, value);
   }
 
   public DateTimeCaseWhenStage caseWhen(final GeneralBooleanExpression predicate, final Date value) {
@@ -879,13 +879,13 @@ public class LiveSQL {
     return new BooleanCaseWhenStage(predicate, value);
   }
 
-  public ByteArrayCaseWhenStage caseWhen(final GeneralBooleanExpression predicate, final byte[] value) {
-    return new ByteArrayCaseWhenStage(predicate, val(value));
+  public BinaryCaseWhenStage caseWhen(final GeneralBooleanExpression predicate, final byte[] value) {
+    return new BinaryCaseWhenStage(predicate, val(value));
   }
 
-  public ByteArrayCaseWhenStage caseWhen(final GeneralBooleanExpression predicate,
-      final GeneralByteArrayExpression value) {
-    return new ByteArrayCaseWhenStage(predicate, value);
+  public BinaryCaseWhenStage caseWhen(final GeneralBooleanExpression predicate,
+      final GeneralBinaryExpression value) {
+    return new BinaryCaseWhenStage(predicate, value);
   }
 
   public ObjectCaseWhenStage caseWhen(final GeneralBooleanExpression predicate, final Object value) {
@@ -916,16 +916,16 @@ public class LiveSQL {
 
   // Boxing of scalar values
 
-  public StringConstant val(final String value) {
-    return new StringConstant(value);
+  public CharConstant val(final String value) {
+    return new CharConstant(value);
   }
 
-  public StringConstant val(final Character value) {
-    return new StringConstant("" + value);
+  public CharConstant val(final Character value) {
+    return new CharConstant("" + value);
   }
 
-  public NumberConstant val(final Number value) {
-    return new NumberConstant(value);
+  public NumericConstant val(final Number value) {
+    return new NumericConstant(value);
   }
 
   public DateTimeConstant val(final Date value) {
@@ -936,8 +936,8 @@ public class LiveSQL {
     return new BooleanConstant(value);
   }
 
-  public ByteArrayConstant val(final byte[] value) {
-    return new ByteArrayConstant(value);
+  public BinaryConstant val(final byte[] value) {
+    return new BinaryConstant(value);
   }
 
   public ObjectConstant val(final Object value) {
@@ -973,8 +973,8 @@ public class LiveSQL {
 
   // Literals (String)
 
-  public StringLiteral literal(final String value) {
-    return new StringLiteral(value);
+  public CharLiteral literal(final String value) {
+    return new CharLiteral(value);
   }
 
   // Literals (DateTime)
@@ -1006,12 +1006,12 @@ public class LiveSQL {
 
   // Parenthesis
 
-  public StringExpression enclose(final GeneralStringExpression value) {
-    return new EnclosedStringExpression(value);
+  public CharExpression enclose(final GeneralCharExpression value) {
+    return new EnclosedCharExpression(value);
   }
 
-  public NumberExpression enclose(final GeneralNumberExpression value) {
-    return new EnclosedNumberExpression(value);
+  public NumericExpression enclose(final GeneralNumericExpression value) {
+    return new EnclosedNumericExpression(value);
   }
 
   public DateTimeExpression enclose(final GeneralDateTimeExpression value) {
@@ -1022,8 +1022,8 @@ public class LiveSQL {
     return new EnclosedBooleanExpression(value);
   }
 
-  public ByteArrayExpression enclose(final GeneralByteArrayExpression value) {
-    return new EnclosedByteArrayExpression(value);
+  public BinaryExpression enclose(final GeneralBinaryExpression value) {
+    return new EnclosedBinaryExpression(value);
   }
 
   public ObjectExpression enclose(final GeneralObjectExpression value) {

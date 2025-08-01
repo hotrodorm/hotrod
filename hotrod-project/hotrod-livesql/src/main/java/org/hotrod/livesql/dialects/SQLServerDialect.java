@@ -9,11 +9,11 @@ import java.util.stream.Collectors;
 import org.hotrod.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.livesql.expressions.Shield;
+import org.hotrod.livesql.expressions.character.GeneralCharExpression;
 import org.hotrod.livesql.expressions.datetime.DateTimeFieldExpression;
 import org.hotrod.livesql.expressions.datetime.GeneralDateTimeExpression;
-import org.hotrod.livesql.expressions.numbers.GeneralNumberExpression;
-import org.hotrod.livesql.expressions.numbers.NumberConstant;
-import org.hotrod.livesql.expressions.strings.GeneralStringExpression;
+import org.hotrod.livesql.expressions.numeric.GeneralNumericExpression;
+import org.hotrod.livesql.expressions.numeric.NumericConstant;
 import org.hotrod.livesql.ordering.OHelper;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.QueryWriter;
@@ -288,8 +288,8 @@ public class SQLServerDialect extends LiveSQLDialect {
       // 14.0 for SQL Server 2017.
 
       @Override
-      public void groupConcat(final QueryWriter w, final boolean distinct, final GeneralStringExpression value,
-          final List<OrderingTerm> ordering, final GeneralStringExpression separator) {
+      public void groupConcat(final QueryWriter w, final boolean distinct, final GeneralCharExpression value,
+          final List<OrderingTerm> ordering, final GeneralCharExpression separator) {
         if (versionIsAtLeast(14)) { // (SQL Server 2017)
           throw new UnsupportedLiveSQLFeatureException("This SQL Server version (" + renderVersion()
               + ") does not support the GROUP_CONCAT() function (string_agg()). It's available since version 14.0 (SQL Server 2017)");
@@ -321,7 +321,7 @@ public class SQLServerDialect extends LiveSQLDialect {
       // Arithmetic functions
 
       @Override
-      public void logarithm(final QueryWriter w, final GeneralNumberExpression x, final GeneralNumberExpression base) {
+      public void logarithm(final QueryWriter w, final GeneralNumericExpression x, final GeneralNumericExpression base) {
         if (base == null) {
           this.write(w, "log", x);
         } else {
@@ -330,7 +330,7 @@ public class SQLServerDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void round(final QueryWriter w, final GeneralNumberExpression x, final GeneralNumberExpression places) {
+      public void round(final QueryWriter w, final GeneralNumericExpression x, final GeneralNumericExpression places) {
         if (places == null) {
           throw new UnsupportedLiveSQLFeatureException(
               "SQL Server requires the number of decimal places to be specified on the ROUND() function");
@@ -339,25 +339,25 @@ public class SQLServerDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void trunc(final QueryWriter w, final GeneralNumberExpression x, final GeneralNumberExpression places) {
+      public void trunc(final QueryWriter w, final GeneralNumericExpression x, final GeneralNumericExpression places) {
         if (places == null) {
           throw new UnsupportedLiveSQLFeatureException(
               "SQL Server requires the number of decimal places to be specified on the TRUNC() function (round())");
         }
 
-        this.write(w, "round", x, places, new NumberConstant(1));
+        this.write(w, "round", x, places, new NumericConstant(1));
       }
 
       // String functions
 
       @Override
-      public void length(final QueryWriter w, final GeneralStringExpression string) {
+      public void length(final QueryWriter w, final GeneralCharExpression string) {
         this.write(w, "len", string);
       }
 
       @Override
-      public void locate(final QueryWriter w, final GeneralStringExpression substring,
-          final GeneralStringExpression string, final GeneralNumberExpression from) {
+      public void locate(final QueryWriter w, final GeneralCharExpression substring,
+          final GeneralCharExpression string, final GeneralNumericExpression from) {
         if (from == null) {
           this.write(w, "charindex", substring, string);
         } else {
@@ -366,8 +366,8 @@ public class SQLServerDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void substr(final QueryWriter w, final GeneralStringExpression string, final GeneralNumberExpression from,
-          final GeneralNumberExpression length) {
+      public void substr(final QueryWriter w, final GeneralCharExpression string, final GeneralNumericExpression from,
+          final GeneralNumericExpression length) {
         if (length == null) {
           throw new UnsupportedLiveSQLFeatureException(
               "SQL Server requires the length parameter to be be specified on the SUBSTR() function");

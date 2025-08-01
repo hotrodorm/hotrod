@@ -11,7 +11,7 @@ import org.hotrod.livesql.dialects.UpdateRenderer;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
-import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.MDShield;
 import org.hotrod.livesql.metadata.TableOrView;

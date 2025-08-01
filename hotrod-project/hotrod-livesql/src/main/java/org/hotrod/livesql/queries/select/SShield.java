@@ -1,7 +1,7 @@
 package org.hotrod.livesql.queries.select;
 
 import org.hotrod.livesql.expressions.ComparableExpression;
-import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.WrappingColumn;
 import org.hotrod.livesql.ordering.OrderingTerm;

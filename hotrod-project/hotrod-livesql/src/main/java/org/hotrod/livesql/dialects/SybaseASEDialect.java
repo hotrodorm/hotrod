@@ -9,10 +9,10 @@ import java.util.stream.Collectors;
 import org.hotrod.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.livesql.expressions.Shield;
+import org.hotrod.livesql.expressions.character.GeneralCharExpression;
 import org.hotrod.livesql.expressions.datetime.DateTimeFieldExpression;
 import org.hotrod.livesql.expressions.datetime.GeneralDateTimeExpression;
-import org.hotrod.livesql.expressions.numbers.GeneralNumberExpression;
-import org.hotrod.livesql.expressions.strings.GeneralStringExpression;
+import org.hotrod.livesql.expressions.numeric.GeneralNumericExpression;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.CrossJoin;
@@ -218,15 +218,15 @@ public class SybaseASEDialect extends LiveSQLDialect {
       // General purpose functions
 
       @Override
-      public void groupConcat(final QueryWriter w, final boolean distinct, final GeneralStringExpression value,
-          final List<OrderingTerm> ordering, final GeneralStringExpression separator) {
+      public void groupConcat(final QueryWriter w, final boolean distinct, final GeneralCharExpression value,
+          final List<OrderingTerm> ordering, final GeneralCharExpression separator) {
         throw new UnsupportedLiveSQLFeatureException("GROUP_CONCAT() is not supported in Sybase ASE");
       }
 
       // Arithmetic functions
 
       @Override
-      public void logarithm(final QueryWriter w, final GeneralNumberExpression x, final GeneralNumberExpression base) {
+      public void logarithm(final QueryWriter w, final GeneralNumericExpression x, final GeneralNumericExpression base) {
         if (base == null) {
           this.write(w, "log", x);
         } else {
@@ -239,7 +239,7 @@ public class SybaseASEDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void round(final QueryWriter w, final GeneralNumberExpression x, final GeneralNumberExpression places) {
+      public void round(final QueryWriter w, final GeneralNumericExpression x, final GeneralNumericExpression places) {
         if (places == null) {
           throw new UnsupportedLiveSQLFeatureException(
               "Sybase ASE requires the number of decimal places to be specified on the ROUND() function");
@@ -248,17 +248,17 @@ public class SybaseASEDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void trunc(final QueryWriter w, final GeneralNumberExpression x, final GeneralNumberExpression places) {
+      public void trunc(final QueryWriter w, final GeneralNumericExpression x, final GeneralNumericExpression places) {
         throw new UnsupportedLiveSQLFeatureException("Sybase ASE does not support the TRUNC()function");
       }
 
       // String functions
 
       @Override
-      public void concat(final QueryWriter w, final List<GeneralStringExpression> strings) {
+      public void concat(final QueryWriter w, final List<GeneralCharExpression> strings) {
         w.write("(");
         Separator sep = new Separator(" || ");
-        for (GeneralStringExpression s : strings) {
+        for (GeneralCharExpression s : strings) {
           w.write(sep.render());
           Shield.renderTo(s, w);
         }
@@ -266,13 +266,13 @@ public class SybaseASEDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void length(final QueryWriter w, final GeneralStringExpression string) {
+      public void length(final QueryWriter w, final GeneralCharExpression string) {
         this.write(w, "char_length", string);
       }
 
       @Override
-      public void locate(final QueryWriter w, final GeneralStringExpression substring,
-          final GeneralStringExpression string, final GeneralNumberExpression from) {
+      public void locate(final QueryWriter w, final GeneralCharExpression substring,
+          final GeneralCharExpression string, final GeneralNumericExpression from) {
         if (from == null) {
           this.write(w, "charindex", substring, string);
         } else {
@@ -281,8 +281,8 @@ public class SybaseASEDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void substr(final QueryWriter w, final GeneralStringExpression string, final GeneralNumberExpression from,
-          final GeneralNumberExpression length) {
+      public void substr(final QueryWriter w, final GeneralCharExpression string, final GeneralNumericExpression from,
+          final GeneralNumericExpression length) {
         if (length == null) {
           throw new UnsupportedLiveSQLFeatureException(
               "Sybase ASE requires the length parameter to be be specified on the SUBSTR() function");

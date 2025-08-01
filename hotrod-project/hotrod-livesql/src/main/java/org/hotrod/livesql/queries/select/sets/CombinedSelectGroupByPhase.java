@@ -3,7 +3,7 @@ package org.hotrod.livesql.queries.select.sets;
 import java.util.Arrays;
 
 import org.hotrod.livesql.expressions.ComparableExpression;
-import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
 import org.hotrod.livesql.queries.LiveSQLContext;
 
 public class CombinedSelectGroupByPhase<R> extends CombinedSelectPhase<R> {

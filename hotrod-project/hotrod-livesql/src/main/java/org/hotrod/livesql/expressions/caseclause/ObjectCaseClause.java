@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.livesql.expressions.Expression;
+import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
 import org.hotrod.livesql.expressions.object.GeneralObjectExpression;
 import org.hotrod.livesql.expressions.object.ObjectExpression;
-import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.livesql.queries.QueryWriter;
 
 /**

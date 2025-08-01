@@ -1,7 +1,7 @@
 package org.hotrod.livesql.metadata;
 
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.queries.subqueries.SubqueryBooleanRefColumn;

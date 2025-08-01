@@ -1,7 +1,7 @@
 package org.hotrod.livesql.expressions.caseclause;
 
-import org.hotrod.livesql.expressions.predicates.BooleanExpression;
-import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.BooleanExpression;
+import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
 import org.hotrod.livesql.util.BoxUtil;
 
 public class BooleanCaseWhenStage {

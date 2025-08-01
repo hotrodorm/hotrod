@@ -321,14 +321,19 @@ public class App {
     AccountTable a = this.accountDAO.newTable();
     ProductTable p = this.productDAO.newTable();
 
-    LockableSelectLimitPhase<Tuple2<Account, Product>> q = this.sql.selectTuples().from(a).crossJoin(p).limit(1);
-    List<Tuple2<Account, Product>> rows = q.execute();
-    int n = 1;
-    for (Tuple2<Account, Product> r : rows) {
-      System.out.println("Row #" + n++ + ":");
-      System.out.println("- Account: " + r.getA());
-      System.out.println("- Product: " + r.getB());
-    }
+    Select<Row> q = this.sql.select(a.star(), p.shipping, p.type.as("ptype")).from(a).crossJoin(p).limit(2);
+    System.out.print(q.getPreview(true));
+
+    q.execute().forEach(r -> System.out.println("r=" + r));
+
+//    LockableSelectLimitPhase<Tuple2<Account, Product>> q = this.sql.selectTuples().from(a).crossJoin(p).limit(1);
+//    List<Tuple2<Account, Product>> rows = q.execute();
+//    int n = 1;
+//    for (Tuple2<Account, Product> r : rows) {
+//      System.out.println("Row #" + n++ + ":");
+//      System.out.println("- Account: " + r.getA());
+//      System.out.println("- Product: " + r.getB());
+//    }
 
   }
 

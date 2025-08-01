@@ -1,19 +1,19 @@
 package org.hotrod.livesql.expressions.aggregations;
 
-import org.hotrod.livesql.expressions.analytics.NumberWindowExpression;
-import org.hotrod.livesql.expressions.analytics.NumberWindowFunctionOverStage;
+import org.hotrod.livesql.expressions.analytics.NumericWindowExpression;
+import org.hotrod.livesql.expressions.analytics.NumericWindowFunctionOverStage;
 import org.hotrod.livesql.expressions.analytics.WindowableAggregationFunction;
-import org.hotrod.livesql.expressions.numbers.GeneralNumberExpression;
-import org.hotrod.livesql.expressions.numbers.NumberFunction;
+import org.hotrod.livesql.expressions.numeric.GeneralNumericExpression;
+import org.hotrod.livesql.expressions.numeric.NumericFunction;
 
-public class Avg extends NumberFunction implements WindowableAggregationFunction {
+public class Avg extends NumericFunction implements WindowableAggregationFunction {
 
-  public Avg(final GeneralNumberExpression expression) {
+  public Avg(final GeneralNumericExpression expression) {
     super("avg(#{})", expression);
   }
 
-  public NumberWindowFunctionOverStage over() {
-    return new NumberWindowFunctionOverStage(new NumberWindowExpression(this));
+  public NumericWindowFunctionOverStage over() {
+    return new NumericWindowFunctionOverStage(new NumericWindowExpression(this));
   }
 
 }

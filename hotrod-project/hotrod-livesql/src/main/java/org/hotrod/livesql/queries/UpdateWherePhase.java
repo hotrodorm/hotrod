@@ -1,6 +1,6 @@
 package org.hotrod.livesql.queries;
 
-import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
 
 public class UpdateWherePhase implements DMLQuery {
 

@@ -56,16 +56,16 @@ import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
-import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
-import org.hotrod.livesql.expressions.predicates.converter.ConvertedColumn;
+import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.converter.ConvertedColumn;
 import org.hotrod.livesql.metadata.AllColumns;
 import org.hotrod.livesql.metadata.BooleanEntityColumn;
-import org.hotrod.livesql.metadata.ByteArrayEntityColumn;
+import org.hotrod.livesql.metadata.BinaryEntityColumn;
 import org.hotrod.livesql.metadata.DateTimeEntityColumn;
 import org.hotrod.livesql.metadata.Name;
-import org.hotrod.livesql.metadata.NumberEntityColumn;
+import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.ObjectEntityColumn;
-import org.hotrod.livesql.metadata.StringEntityColumn;
+import org.hotrod.livesql.metadata.CharEntityColumn;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
@@ -1328,9 +1328,9 @@ public class DAO {
         || "java.math.BigInteger".equals(javaType) //
         || "java.math.BigDecimal".equals(javaType) //
     ) {
-      return NumberEntityColumn.class;
+      return NumericEntityColumn.class;
     } else if ("java.lang.String".equals(javaType)) {
-      return StringEntityColumn.class;
+      return CharEntityColumn.class;
     } else if ("java.util.Date".equals(javaType) //
         || "java.sql.Date".equals(javaType) //
         || "java.sql.Timestamp".equals(javaType) //
@@ -1347,7 +1347,7 @@ public class DAO {
     } else if ("java.lang.Boolean".equals(javaType)) {
       return BooleanEntityColumn.class;
     } else if ("byte[]".equals(javaType)) {
-      return ByteArrayEntityColumn.class;
+      return BinaryEntityColumn.class;
     }
 
     return ObjectEntityColumn.class;

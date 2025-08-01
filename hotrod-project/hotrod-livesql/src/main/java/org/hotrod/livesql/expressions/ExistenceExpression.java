@@ -1,8 +1,8 @@
 package org.hotrod.livesql.expressions;
 
-import org.hotrod.livesql.expressions.predicates.IsNotNull;
-import org.hotrod.livesql.expressions.predicates.IsNull;
-import org.hotrod.livesql.expressions.predicates.Predicate;
+import org.hotrod.livesql.expressions.bool.IsNotNull;
+import org.hotrod.livesql.expressions.bool.IsNull;
+import org.hotrod.livesql.expressions.bool.Predicate;
 import org.hotrod.livesql.ordering.OrderingTerm;
 
 public abstract class ExistenceExpression extends UnaliasedExpression implements OrderingTerm {

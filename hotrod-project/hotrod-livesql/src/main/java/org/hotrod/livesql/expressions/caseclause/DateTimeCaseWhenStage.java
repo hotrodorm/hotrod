@@ -2,9 +2,9 @@ package org.hotrod.livesql.expressions.caseclause;
 
 import java.util.Date;
 
+import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
 import org.hotrod.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.livesql.expressions.datetime.GeneralDateTimeExpression;
-import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
 import org.hotrod.livesql.util.BoxUtil;
 
 public class DateTimeCaseWhenStage {

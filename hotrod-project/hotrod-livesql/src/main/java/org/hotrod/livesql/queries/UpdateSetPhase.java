@@ -2,18 +2,18 @@ package org.hotrod.livesql.queries;
 
 import java.util.Date;
 
-import org.hotrod.livesql.expressions.binary.GeneralByteArrayExpression;
+import org.hotrod.livesql.expressions.binary.GeneralBinaryExpression;
+import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.character.GeneralCharExpression;
 import org.hotrod.livesql.expressions.datetime.GeneralDateTimeExpression;
-import org.hotrod.livesql.expressions.numbers.GeneralNumberExpression;
+import org.hotrod.livesql.expressions.numeric.GeneralNumericExpression;
 import org.hotrod.livesql.expressions.object.GeneralObjectExpression;
-import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
-import org.hotrod.livesql.expressions.strings.GeneralStringExpression;
 import org.hotrod.livesql.metadata.BooleanEntityColumn;
-import org.hotrod.livesql.metadata.ByteArrayEntityColumn;
+import org.hotrod.livesql.metadata.BinaryEntityColumn;
 import org.hotrod.livesql.metadata.DateTimeEntityColumn;
-import org.hotrod.livesql.metadata.NumberEntityColumn;
+import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.ObjectEntityColumn;
-import org.hotrod.livesql.metadata.StringEntityColumn;
+import org.hotrod.livesql.metadata.CharEntityColumn;
 import org.hotrod.livesql.util.BoxUtil;
 
 public class UpdateSetPhase implements DMLQuery {
@@ -32,22 +32,22 @@ public class UpdateSetPhase implements DMLQuery {
 
   // Current phase
 
-  public UpdateSetPhase set(final NumberEntityColumn column, final GeneralNumberExpression expression) {
+  public UpdateSetPhase set(final NumericEntityColumn column, final GeneralNumericExpression expression) {
     this.update.addSetter(column, expression);
     return new UpdateSetPhase(this.context, this.update);
   }
 
-  public UpdateSetPhase set(final NumberEntityColumn column, final Number n) {
+  public UpdateSetPhase set(final NumericEntityColumn column, final Number n) {
     this.update.addSetter(column, BoxUtil.box(n));
     return new UpdateSetPhase(this.context, this.update);
   }
 
-  public UpdateSetPhase set(final StringEntityColumn column, final GeneralStringExpression expression) {
+  public UpdateSetPhase set(final CharEntityColumn column, final GeneralCharExpression expression) {
     this.update.addSetter(column, expression);
     return new UpdateSetPhase(this.context, this.update);
   }
 
-  public UpdateSetPhase set(final StringEntityColumn column, final String s) {
+  public UpdateSetPhase set(final CharEntityColumn column, final String s) {
     this.update.addSetter(column, BoxUtil.box(s));
     return new UpdateSetPhase(this.context, this.update);
   }
@@ -72,12 +72,12 @@ public class UpdateSetPhase implements DMLQuery {
     return new UpdateSetPhase(this.context, this.update);
   }
 
-  public UpdateSetPhase set(final ByteArrayEntityColumn column, final GeneralByteArrayExpression expression) {
+  public UpdateSetPhase set(final BinaryEntityColumn column, final GeneralBinaryExpression expression) {
     this.update.addSetter(column, expression);
     return new UpdateSetPhase(this.context, this.update);
   }
 
-  public UpdateSetPhase set(final ByteArrayEntityColumn column, final byte[] a) {
+  public UpdateSetPhase set(final BinaryEntityColumn column, final byte[] a) {
     this.update.addSetter(column, BoxUtil.box(a));
     return new UpdateSetPhase(this.context, this.update);
   }

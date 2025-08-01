@@ -9,7 +9,7 @@ import org.hotrod.livesql.expressions.asymmetric.LeAll;
 import org.hotrod.livesql.expressions.asymmetric.LeAny;
 import org.hotrod.livesql.expressions.asymmetric.LtAll;
 import org.hotrod.livesql.expressions.asymmetric.LtAny;
-import org.hotrod.livesql.expressions.predicates.Predicate;
+import org.hotrod.livesql.expressions.bool.Predicate;
 import org.hotrod.livesql.queries.select.Select;
 
 public abstract class ComparableExpression extends EquatableExpression {

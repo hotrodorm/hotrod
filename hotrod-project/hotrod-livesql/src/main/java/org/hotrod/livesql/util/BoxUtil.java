@@ -3,21 +3,21 @@ package org.hotrod.livesql.util;
 import java.time.temporal.Temporal;
 import java.util.Date;
 
-import org.hotrod.livesql.expressions.binary.ByteArrayConstant;
+import org.hotrod.livesql.expressions.binary.BinaryConstant;
+import org.hotrod.livesql.expressions.bool.BooleanConstant;
+import org.hotrod.livesql.expressions.character.CharConstant;
 import org.hotrod.livesql.expressions.datetime.DateTimeConstant;
-import org.hotrod.livesql.expressions.numbers.NumberConstant;
+import org.hotrod.livesql.expressions.numeric.NumericConstant;
 import org.hotrod.livesql.expressions.object.ObjectConstant;
-import org.hotrod.livesql.expressions.predicates.BooleanConstant;
-import org.hotrod.livesql.expressions.strings.StringConstant;
 
 public class BoxUtil {
 
-  public static NumberConstant box(final Number value) {
-    return new NumberConstant(value);
+  public static NumericConstant box(final Number value) {
+    return new NumericConstant(value);
   }
 
-  public static StringConstant box(final String value) {
-    return new StringConstant(value);
+  public static CharConstant box(final String value) {
+    return new CharConstant(value);
   }
 
   public static DateTimeConstant box(final Date value) {
@@ -32,8 +32,8 @@ public class BoxUtil {
     return new BooleanConstant(value);
   }
 
-  public static ByteArrayConstant box(final byte[] value) {
-    return new ByteArrayConstant(value);
+  public static BinaryConstant box(final byte[] value) {
+    return new BinaryConstant(value);
   }
 
   public static ObjectConstant box(final Object value) {

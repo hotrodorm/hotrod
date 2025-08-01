@@ -2,7 +2,7 @@ package org.hotrod.livesql.expressions.analytics;
 
 import java.util.Arrays;
 
-import org.hotrod.livesql.expressions.predicates.BooleanExpression;
+import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.ordering.OrderingTerm;
 
 public class BooleanWindowFunctionPartitioningStage {

@@ -3,7 +3,7 @@ package org.hotrod.livesql.queries.scalarsubqueries;
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.predicates.Predicate;
+import org.hotrod.livesql.expressions.bool.Predicate;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.UnarySelectObject;
 

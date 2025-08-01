@@ -1,0 +1,34 @@
+package org.hotrod.livesql.expressions.character;
+
+import org.hotrod.livesql.expressions.Expression;
+import org.hotrod.livesql.queries.QueryWriter;
+import org.hotrod.livesql.queries.SQLParameterWriter.RenderedParameter;
+
+public class CharConstant extends CharExpression {
+
+  // Properties
+
+  private String value;
+  private boolean parameterize;
+
+  // Constructor
+
+  public CharConstant(final String value) {
+    super(Expression.PRECEDENCE_LITERAL);
+    this.parameterize = true;
+    this.value = value;
+  }
+
+  // Rendering
+
+  @Override
+  protected void renderTo(final QueryWriter w) {
+    if (this.parameterize) {
+      RenderedParameter p = w.registerParameter(this.value);
+      w.write(p.getPlaceholder());
+    } else {
+      w.write("'" + this.value + "'");
+    }
+  }
+
+}

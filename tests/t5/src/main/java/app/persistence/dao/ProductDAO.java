@@ -31,11 +31,11 @@ import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
-import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
 import org.hotrod.livesql.metadata.AllColumns;
+import org.hotrod.livesql.metadata.CharEntityColumn;
 import org.hotrod.livesql.metadata.Name;
-import org.hotrod.livesql.metadata.NumberEntityColumn;
-import org.hotrod.livesql.metadata.StringEntityColumn;
+import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
@@ -353,11 +353,11 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public final NumberEntityColumn id = new NumberEntityColumn(this,
+    public final NumericEntityColumn id = new NumericEntityColumn(this,
       "ID", "id", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
-    public final StringEntityColumn type = new StringEntityColumn(this,
+    public final CharEntityColumn type = new CharEntityColumn(this,
       "TYPE", "type", "CHARACTER VARYING", 6, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE));
-    public final NumberEntityColumn shipping = new NumberEntityColumn(this,
+    public final NumericEntityColumn shipping = new NumericEntityColumn(this,
       "SHIPPING", "shipping", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
 
     // Getters

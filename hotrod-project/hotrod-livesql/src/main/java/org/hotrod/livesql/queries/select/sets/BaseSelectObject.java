@@ -13,7 +13,7 @@ import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.ResultSetColumn;
 import org.hotrod.livesql.expressions.Shield;
-import org.hotrod.livesql.expressions.predicates.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.WrappingColumn;
 import org.hotrod.livesql.ordering.OHelper;

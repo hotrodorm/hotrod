@@ -2,22 +2,22 @@ package org.hotrod.livesql.expressions;
 
 import java.util.stream.Stream;
 
-import org.hotrod.livesql.expressions.binary.ByteArrayFunction;
+import org.hotrod.livesql.expressions.binary.BinaryFunction;
+import org.hotrod.livesql.expressions.bool.BooleanFunction;
+import org.hotrod.livesql.expressions.character.CharFunction;
 import org.hotrod.livesql.expressions.datetime.DateTimeFunction;
-import org.hotrod.livesql.expressions.numbers.NumberFunction;
+import org.hotrod.livesql.expressions.numeric.NumericFunction;
 import org.hotrod.livesql.expressions.object.ObjectFunction;
-import org.hotrod.livesql.expressions.predicates.BooleanFunction;
-import org.hotrod.livesql.expressions.strings.StringFunction;
 
 public class Function {
 
-  public static NumberFunction returnsNumber(final String pattern, final ComparableExpression... parameters) {
-    return new NumberFunction(pattern, parameters) {
+  public static NumericFunction returnsNumber(final String pattern, final ComparableExpression... parameters) {
+    return new NumericFunction(pattern, parameters) {
     };
   }
 
-  public static StringFunction returnsString(final String pattern, final ComparableExpression... parameters) {
-    return new StringFunction(pattern, parameters) {
+  public static CharFunction returnsString(final String pattern, final ComparableExpression... parameters) {
+    return new CharFunction(pattern, parameters) {
     };
   }
 
@@ -31,8 +31,8 @@ public class Function {
     };
   }
 
-  public static ByteArrayFunction returnsByteArray(final String pattern, final ComparableExpression... parameters) {
-    return new ByteArrayFunction(pattern, parameters) {
+  public static BinaryFunction returnsByteArray(final String pattern, final ComparableExpression... parameters) {
+    return new BinaryFunction(pattern, parameters) {
     };
   }
 
