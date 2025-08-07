@@ -66,7 +66,7 @@ public class DeleteObject {
       w.write("\nWHERE ");
       Shield.renderTo(this.wherePredicate, w);
     }
-    LiveSQLPreparedQuery pq = w.getPreparedQuery(null);
+    LiveSQLPreparedQuery pq = w.getPreparedQuery(null, false);
     return pq;
   }
 

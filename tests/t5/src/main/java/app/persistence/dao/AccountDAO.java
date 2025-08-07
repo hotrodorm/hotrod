@@ -56,6 +56,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import app.IntegerBooleanConverter;
+import app.persistence.layout.AccountLayout;
 import app.persistence.model.Account;
 
 @Component
@@ -559,12 +560,12 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     AccountTable() {
-      super(null, null, Name.of("ACCOUNT", false), "Table", null, Account.class);
+      super(null, null, Name.of("ACCOUNT", false), "Table", null, AccountLayout.class, Account.class);
       initialize();
     }
 
     AccountTable(final String alias) {
-      super(null, null, Name.of("ACCOUNT", false), "Table", alias, Account.class);
+      super(null, null, Name.of("ACCOUNT", false), "Table", alias, AccountLayout.class, Account.class);
       initialize();
     }
 

@@ -34,9 +34,9 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
 
   private LiveSQLContext context;
 
-  public TuplesSelectObject(List<ResultSetColumn> resultSetColumns, TuplesMetadata metadata) {
+  public TuplesSelectObject(TuplesMetadata metadata) {
     super(metadata.getCtes(), metadata.isDistinct());
-    this.resultSetColumns = resultSetColumns;
+    this.resultSetColumns = metadata.getResultSetColumns();
     this.from = metadata.getFrom();
     this.joins = metadata.getJoins();
     this.context = metadata.getContext();
@@ -48,6 +48,11 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
     for (Join j : this.joins) {
       SShield.validateTableReferences(j, tableReferences, ag);
     }
+  }
+
+  @Override
+  public boolean enforceUniqueColumnNames() {
+    return false;
   }
 
   @Override
@@ -108,7 +113,7 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
     List<TableOrView<?>> joined = this.joins.stream().map(j -> (TableOrView<?>) SShield.getTableExpression(j))
         .collect(Collectors.toList());
     allTables.addAll(joined);
-    return new TuplesRowReader<>(this.resultSetColumns, allTables);
+    return new TuplesRowReader<>(this.expandedQueryColumns, allTables);
   }
 
   @Override

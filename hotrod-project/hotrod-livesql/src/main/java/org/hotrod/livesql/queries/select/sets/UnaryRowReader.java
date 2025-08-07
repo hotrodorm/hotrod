@@ -1,7 +1,5 @@
 package org.hotrod.livesql.queries.select.sets;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -10,7 +8,6 @@ import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 
-import org.hotrod.converter.TypeConverter;
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.livesql.exceptions.LiveSQLException;
@@ -21,7 +18,7 @@ import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.typesolver.ResultSetColumnMetadata;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.queries.typesolver.TypeRule.CouldNotResolveResultSetDataTypeException;
-import org.hotrod.livesql.util.OUtil;
+import org.hotrod.livesql.util.ColumnReader;
 
 public class UnaryRowReader<T> implements RowReader<T> {
 
@@ -58,47 +55,37 @@ public class UnaryRowReader<T> implements RowReader<T> {
   @Override
   public T readRowFrom(ResultSet rs, Connection conn) throws SQLException {
     Row r = new Row();
-    int i = 1;
+    int ordinal = 1;
     for (Expression expr : queryColumns.values()) {
-      Object value;
       String alias = Shield.getReferenceName(expr);
       TypeHandler<?, ?> th = Shield.getTypeHandler(expr);
-//      log.info("COLUMN -- alias=" + alias + " qc=" + expr + " expr@" + OUtil.hc(expr) + " <- th=" + th);
-      if (th == null) { // No typeHandler: use the JDBC default value
-        value = rs.getObject(i);
-      } else if (th.getConverter() == null) { // TypeHandler with no converter: use the defined class
-        value = rs.getObject(i, th.getJavaClass());
-      } else { // TypeHandler with converter: read as defined class and apply converter
-        Object raw = rs.getObject(i, th.getRawClass());
-        TypeConverter<?, ?> converter = th.getConverter();
-        value = this.decode(raw, converter, conn);
-      }
+      Object value = ColumnReader.read(rs, ordinal, th, conn);
       r.put(alias, value);
-      i++;
+      ordinal++;
     }
     return (T) r;
   }
 
-  private Object decode(final Object raw, final TypeConverter<?, ?> converter, final Connection conn) {
-
-    Method m;
-    try {
-      m = TypeConverter.class.getMethod("decode", Object.class, Connection.class);
-    } catch (NoSuchMethodException | SecurityException e) {
-      throw new RuntimeException("Could not use converter", e);
-    }
-
-    Object value;
-    try {
-      value = m.invoke(converter, raw, conn);
-    } catch (InvocationTargetException e) {
-      throw new RuntimeException("Converter's decode() method threw an exception", e);
-    } catch (IllegalAccessException | IllegalArgumentException e) {
-      throw new RuntimeException("Could not invoke converter's decode() method", e);
-    }
-
-    return value;
-  }
+//  private Object decode(final Object raw, final TypeConverter<?, ?> converter, final Connection conn) {
+//
+//    Method m;
+//    try {
+//      m = TypeConverter.class.getMethod("decode", Object.class, Connection.class);
+//    } catch (NoSuchMethodException | SecurityException e) {
+//      throw new RuntimeException("Could not use converter", e);
+//    }
+//
+//    Object value;
+//    try {
+//      value = m.invoke(converter, raw, conn);
+//    } catch (InvocationTargetException e) {
+//      throw new RuntimeException("Converter's decode() method threw an exception", e);
+//    } catch (IllegalAccessException | IllegalArgumentException e) {
+//      throw new RuntimeException("Could not invoke converter's decode() method", e);
+//    }
+//
+//    return value;
+//  }
 
   private void logQueryColumns() {
     int n;

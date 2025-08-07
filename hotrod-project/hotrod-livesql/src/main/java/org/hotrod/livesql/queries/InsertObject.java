@@ -104,7 +104,7 @@ public class InsertObject {
 
     }
 
-    LiveSQLPreparedQuery pq = w.getPreparedQuery(null);
+    LiveSQLPreparedQuery pq = w.getPreparedQuery(null, false);
     return pq;
   }
 

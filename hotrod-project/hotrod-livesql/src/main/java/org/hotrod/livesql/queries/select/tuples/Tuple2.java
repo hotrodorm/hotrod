@@ -8,6 +8,9 @@ public class Tuple2<A, B> {
   private B b;
   private Map<String, Object> unbound;
 
+  public Tuple2() {
+  }
+
   public Tuple2(A a, B b, Map<String, Object> unbound) {
     this.a = a;
     this.b = b;

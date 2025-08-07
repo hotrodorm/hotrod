@@ -42,6 +42,8 @@ public abstract class MultiSet<T> {
 
   public abstract List<Expression> assembleColumnsOf(Subquery subquery);
 
+  public abstract boolean enforceUniqueColumnNames();
+
 //  public abstract Expression findColumnWithName(final String name);
 
   public abstract void renderTo(QueryWriter w, boolean inline);
@@ -94,7 +96,7 @@ public abstract class MultiSet<T> {
 //    this.log(t);
 //    log.info("");
 
-    return w.getPreparedQuery(columns);
+    return w.getPreparedQuery(columns, this.enforceUniqueColumnNames());
 
   }
 
@@ -133,8 +135,7 @@ public abstract class MultiSet<T> {
 
         try (ResultSet rs = ps.executeQuery()) {
 
-          final RowReader<T> effectiveRowReader = rowReader != null ? rowReader
-              : new UnaryRowReader<>(context, q, rs);
+          final RowReader<T> effectiveRowReader = rowReader != null ? rowReader : new UnaryRowReader<>(context, q, rs);
 
           int count = 0;
 //          log.info(">> will start reading result set.");

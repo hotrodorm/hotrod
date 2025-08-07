@@ -16,8 +16,8 @@ import org.hotrod.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.ResultSetColumn;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.MDShield;
 import org.hotrod.livesql.metadata.Name;
@@ -88,6 +88,11 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
   }
 
   // Rendering
+
+  @Override
+  public boolean enforceUniqueColumnNames() {
+    return true;
+  }
 
   @Override
   public List<Expression> assembleColumnsOf(final Subquery te) {

@@ -1,117 +1,279 @@
 package org.hotrod.livesql.queries.select.tuples;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.RowReader;
-import org.hotrod.livesql.expressions.ResultSetColumn;
+import org.hotrod.livesql.expressions.Expression;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.MDShield;
 import org.hotrod.livesql.metadata.TableOrView;
+import org.hotrod.livesql.queries.typesolver.TypeHandler;
+import org.hotrod.livesql.util.ColumnReader;
+import org.hotrod.livesql.util.OUtil;
 
 public class TuplesRowReader<T> implements RowReader<T> {
 
   private static final Logger log = Logger.getLogger(TuplesRowReader.class.getName());
 
-  // Tuples:
-  // - List: Model:
-  // - - List: alias, getter, setter
-  // - unbound:
-  // - - alias, getter
+  private Map<TableOrView<?>, ModelInstance> modelInstances = new HashMap<>();
+  private List<UnboundColumnRetriever> unboundColumnRetrievers = new ArrayList<>();
 
-  private List<ModelClass> modelClasses;
-  private List<UnboundColumn> unboundColumns;
+  private static class ModelInstance {
 
-  private static class ModelClass {
+    private String tupleProperty;
+    private Class<?> layoutClass;
+    private Class<?> modelClass;
+    private Map<String, ModelColumnRetriever> columnRetrievers;
 
-    private String alias;
-    private Class<?> c;
-    private List<ModelColumn> columns;
+    public ModelInstance(String tupleProperty, Class<?> layoutClass, Class<?> modelClass) {
+      this.tupleProperty = tupleProperty;
+      this.layoutClass = layoutClass;
+      this.modelClass = modelClass;
+      this.columnRetrievers = new HashMap<>();
+    }
 
-    public ModelClass(String alias, Class<?> c, List<ModelColumn> columns) {
-      super();
-      this.alias = alias;
-      this.c = c;
-      this.columns = columns;
+    public final String getTupleProperty() {
+      return tupleProperty;
+    }
+
+    public final Class<?> getLayoutClass() {
+      return layoutClass;
+    }
+
+    public final Class<?> getModelClass() {
+      return modelClass;
+    }
+
+    public void addColumnRetriever(String property, ModelColumnRetriever r) {
+      this.columnRetrievers.put(property, r);
+    }
+
+    public final Map<String, ModelColumnRetriever> getColumnRetrievers() {
+      return columnRetrievers;
     }
 
   }
 
-  private static class ModelColumn {
+  private static class ModelColumnRetriever {
 
-    private String sqlName;
+    private int ordinal;
+    private TypeHandler<?, ?> th;
     private Field field;
 
-    public ModelColumn(String sqlName, Field field) {
-      this.sqlName = sqlName;
+    public ModelColumnRetriever(int ordinal, TypeHandler<?, ?> th, Field field) {
+      this.ordinal = ordinal;
+      this.th = th;
       this.field = field;
     }
 
+    public void read(Object modelObject, ResultSet rs, Connection conn)
+        throws SQLException, IllegalArgumentException, IllegalAccessException {
+      Object modelValue = ColumnReader.read(rs, this.ordinal, this.th, conn);
+      this.field.set(modelObject, modelValue);
+    }
+
   }
 
-  private static class UnboundColumn {
+  private static class UnboundColumnRetriever {
+
+    private int ordinal;
+    private TypeHandler<?, ?> th;
     private String name;
-//    private Getter getter;
+
+    public UnboundColumnRetriever(int ordinal, TypeHandler<?, ?> th, String name) {
+      super();
+      this.ordinal = ordinal;
+      this.th = th;
+      this.name = name;
+    }
+
+    public void read(Map<String, Object> unboundColumns, ResultSet rs, Connection conn)
+        throws SQLException, IllegalArgumentException, IllegalAccessException {
+      Object value = ColumnReader.read(rs, this.ordinal, this.th, conn);
+      unboundColumns.put(this.name, value);
+    }
+
   }
 
-  public TuplesRowReader(final List<ResultSetColumn> resultSetColumns, final List<TableOrView<?>> tuples) {
+  public TuplesRowReader(final List<Expression> columns, final List<TableOrView<?>> tuples) {
 
-    this.modelClasses = new ArrayList<>();
+//    Set<String> usedNS = new HashSet<>();
+//    int ord = 1;
+//    for (Expression c : columns) {
+//      try {
+//        EntityColumn ec = (EntityColumn) c;
+//        // It's an entity column; nothing to do
+//      } catch (ClassCastException e) {
+//        String prop = Shield.getReferenceName(c);
+//        if (prop == null) {
+//          throw new LiveSQLException("Column #" + ord
+//              + " does not declare an explicit alias; columns that do not belong to specific tuples must be aliased using .alias(\"name\")");
+//        }
+//        int colon = prop.indexOf(':');
+//        if (colon != -1) {
+//          usedNS.add(prop.substring(0, colon));
+//        }
+//      }
+//      ord++;
+//    }
+//
+//    log.info("$$$ [" + columns.size() + "] usedNS=" + usedNS);
+//    NSSequence seq = NSUtil.sequence();
+
+    char tupleProperty = 'a';
     for (TableOrView<?> t : tuples) {
-      log.info("$$ t: " + System.identityHashCode(t));
+      Class<?> layoutClass = MDShield.getLayoutClass(t);
       Class<?> modelClass = MDShield.getModelClass(t);
-      Field[] fields = modelClass.getDeclaredFields();
-      List<ModelColumn> modelColumns = new ArrayList<>();
-      for (Field f : fields) {
-        String sqlName = t.getAlias() + ":" + f.getName();
-        f.setAccessible(true);
-        ModelColumn mc = new ModelColumn(sqlName, f);
-        modelColumns.add(mc);
-      }
-      this.modelClasses.add(new ModelClass(t.getAlias(), modelClass, modelColumns));
+      log.info("+ " + layoutClass.getName() + " <- " + modelClass.getName() + " t=" + OUtil.hc(t));
+      this.modelInstances.put(t, new ModelInstance("" + tupleProperty, layoutClass, modelClass));
+      tupleProperty++;
     }
 
     // Columns
 
-    for (ResultSetColumn c : resultSetColumns) {
+    int ordinal = 1;
+    for (Expression c : columns) {
       log.info("$$ c=" + c);
-//      EntityColumn ec = (EntityColumn) c;
-//      AliasedExpression ae = (AliasedExpression) c;
+      EntityColumn ec;
+      ModelInstance mi;
+      try {
+        ec = (EntityColumn) c;
+        // Could be an entity column from the main model instances, or from a subquery
+        mi = this.modelInstances.get(ec.getObjectInstance());
+        // It's an entity column from the main model instances
+      } catch (ClassCastException e) {
+        ec = null;
+        mi = null;
+      }
+
+      TypeHandler<?, ?> th = Shield.getTypeHandler(c);
+      if (mi == null) { // An unbound column
+
+        String name = Shield.getReferenceName(c);
+        UnboundColumnRetriever r = new UnboundColumnRetriever(ordinal, th, name);
+        this.unboundColumnRetrievers.add(r);
+
+      } else { // A model instance column
+
+        Class<?> layout = mi.getLayoutClass();
+        String property = ec.getProperty();
+        Field field;
+        try {
+//          Field[] fields = layout.getFields();
+//          log.info("### Class " + layout.getName() + " [" + fields.length + "]");
+//          for (Field f : fields) {
+//            log.info("### f=" + f.getName());
+//          }
+          field = layout.getDeclaredField(property);
+        } catch (NoSuchFieldException | SecurityException e) {
+          e.printStackTrace();
+          throw new RuntimeException("Could not find field '" + property + "' in model class '" + layout.getName()
+              + "': " + e.getClass().getName());
+        }
+        field.setAccessible(true);
+        ModelColumnRetriever r = new ModelColumnRetriever(ordinal, th, field);
+        mi.addColumnRetriever(property, r);
+
+      }
+
+      ordinal++;
     }
-//    TableOrView<?> tv = e.getObjectInstance();
 
   }
 
+//  private String findAliasNotIn(Set<String> usedNS, NSSequence seq) {
+//    String alias;
+//    while (usedNS.contains((alias = seq.next()))) {
+//    }
+//    return alias;
+//  }
+
+  @SuppressWarnings("unchecked")
   @Override
   public T readRowFrom(ResultSet rs, Connection conn) throws SQLException {
-    ResultSetMetaData rm = rs.getMetaData();
-    int cols = rm.getColumnCount();
-    log.info("=== Tuples Result Set (" + cols + " columns) ===");
-    for (int i = 1; i <= cols; i++) {
-      String name = rm.getColumnName(i);
-      log.info("@ col #" + i + ": " + name);
+    Class<?> tc = TupleClassFactory.getTuplesClass(this.modelInstances.size());
+    Object to;
+    try {
+      to = tc.getConstructor().newInstance();
+    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+        | NoSuchMethodException | SecurityException e) {
+      throw new SQLException("Could not read tuple; could not instantiate tuple", e);
     }
 
-//    if (this.joins.size() == 2) {
-//      for (TableOrView<?> tv : joins) {
-//        Type[] types = TableOrView.class.getGenericInterfaces();
-//        log.info("tv: " + tv + " -- types=" + types.length);
-//        for (Type tp : types) {
-//          log.info(">> type: " + tp);
-//        }
-//      }
-//
-////      Tuple2<Integer, String> row = new Tuple2<Integer, String>(null, null, null);
-////      return (T) row;
-//    }
+    for (ModelInstance mi : this.modelInstances.values()) {
 
-    return null;
+      // 1. Instantiate the model object
+
+      Object modelObject;
+      try {
+        modelObject = mi.getModelClass().getConstructor().newInstance();
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+          | NoSuchMethodException | SecurityException e) {
+        throw new SQLException("Could not read tuple; could not instantiate model class", e);
+      }
+
+      // 2. Set the model object to the tuple
+
+      Field tf;
+      try {
+        tf = tc.getDeclaredField(mi.getTupleProperty());
+      } catch (NoSuchFieldException | SecurityException e) {
+        throw new SQLException("Could not read tuple; could not find tuple field", e);
+      }
+      tf.setAccessible(true);
+      try {
+        tf.set(to, modelObject);
+      } catch (IllegalArgumentException | IllegalAccessException e) {
+        throw new SQLException("Could not read tuple; could not set tuple field", e);
+      }
+
+      // 3. Read all columns in this model object
+
+      for (ModelColumnRetriever r : mi.getColumnRetrievers().values()) {
+        try {
+          r.read(modelObject, rs, conn);
+        } catch (IllegalAccessException | IllegalArgumentException e) {
+          throw new SQLException("Could not read tuple column", e);
+        }
+      }
+
+    }
+
+    // 4. Set the unbound columns
+
+    Map<String, Object> unboundColumns = new HashMap<>();
+    Field tf;
+    try {
+      tf = tc.getDeclaredField("unbound");
+    } catch (NoSuchFieldException | SecurityException e) {
+      throw new SQLException("Could not read tuple; could not find unbound property", e);
+    }
+    tf.setAccessible(true);
+    try {
+      tf.set(to, unboundColumns);
+    } catch (IllegalArgumentException | IllegalAccessException e) {
+      throw new SQLException("Could not read tuple; could not set unbound field", e);
+    }
+
+    for (UnboundColumnRetriever r : this.unboundColumnRetrievers) {
+      try {
+        r.read(unboundColumns, rs, conn);
+      } catch (IllegalArgumentException | IllegalAccessException e) {
+        throw new SQLException("Could not read unbound columns", e);
+      }
+    }
+
+    return (T) to;
   }
 
 }

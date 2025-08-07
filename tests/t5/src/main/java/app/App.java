@@ -7,8 +7,8 @@ import java.util.logging.Logger;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.LiveSQL;
-import org.hotrod.livesql.queries.select.LockableSelectLimitPhase;
 import org.hotrod.livesql.queries.select.Select;
+import org.hotrod.livesql.queries.select.tuples.SelectTuplesFrom2Phase;
 import org.hotrod.livesql.queries.select.tuples.Tuple2;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -319,21 +319,27 @@ public class App {
   private void testLiveSQLTuples() throws SQLException, DynamicExpressionException {
 
     AccountTable a = this.accountDAO.newTable();
-    ProductTable p = this.productDAO.newTable();
+    ProductTable p = this.productDAO.newTable("p");
 
-    Select<Row> q = this.sql.select(a.star(), p.shipping, p.type.as("ptype")).from(a).crossJoin(p).limit(2);
-    System.out.print(q.getPreview(true));
+//    Select<Row> q = this.sql.select(a.star(), p.shipping, p.type.as("ptype")).from(a).crossJoin(p).limit(2);
+//    System.out.print(q.getPreview(true));
+//    q.execute().forEach(r -> System.out.println("r=" + r));
 
-    q.execute().forEach(r -> System.out.println("r=" + r));
-
-//    LockableSelectLimitPhase<Tuple2<Account, Product>> q = this.sql.selectTuples().from(a).crossJoin(p).limit(1);
-//    List<Tuple2<Account, Product>> rows = q.execute();
-//    int n = 1;
-//    for (Tuple2<Account, Product> r : rows) {
-//      System.out.println("Row #" + n++ + ":");
-//      System.out.println("- Account: " + r.getA());
-//      System.out.println("- Product: " + r.getB());
-//    }
+    SelectTuplesFrom2Phase<Account, Product> q = this.sql.selectTuples(a.id, p.id, a.balance.mult(2).as("bal2")) //
+        .from(a) //
+        .crossJoin(p) //
+//        .limit(1) //
+    ;
+    List<Tuple2<Account, Product>> rows = q.execute();
+    int n = 1;
+    for (Tuple2<Account, Product> r : rows) {
+      System.out.println("Row #" + n++ + ":");
+      System.out.println("* Account: " + r.getA());
+      System.out.println("* Product: " + r.getB());
+      for (String prop : r.getUnbound().keySet()) {
+        System.out.println("* unbound '" + prop + "': " + r.getUnbound().get(prop));
+      }
+    }
 
   }
 

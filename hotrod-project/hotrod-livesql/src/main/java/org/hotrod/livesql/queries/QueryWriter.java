@@ -93,7 +93,7 @@ public class QueryWriter {
     return this.context.getLiveSQLDialect();
   }
 
-  public LiveSQLPreparedQuery getPreparedQuery(final List<Expression> columns) {
+  public LiveSQLPreparedQuery getPreparedQuery(final List<Expression> columns, boolean enforceColumnUniqueNames) {
     LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 //    log.info(">>> this.paramWriter.getParameters().size()=" + this.paramWriter.getParameters().size());
     for (QueryParameter p : this.paramWriter.getParameters()) {

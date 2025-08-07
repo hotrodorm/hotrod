@@ -59,13 +59,13 @@ import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
 import org.hotrod.livesql.expressions.bool.converter.ConvertedColumn;
 import org.hotrod.livesql.metadata.AllColumns;
-import org.hotrod.livesql.metadata.BooleanEntityColumn;
 import org.hotrod.livesql.metadata.BinaryEntityColumn;
+import org.hotrod.livesql.metadata.BooleanEntityColumn;
+import org.hotrod.livesql.metadata.CharEntityColumn;
 import org.hotrod.livesql.metadata.DateTimeEntityColumn;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.ObjectEntityColumn;
-import org.hotrod.livesql.metadata.CharEntityColumn;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
@@ -117,7 +117,7 @@ public class DAO {
   private ClassPackage classPackage;
 
   @SuppressWarnings("unused")
-  private Layout entity = null;
+  private Layout layout = null;
   private Model model = null;
 
   private String metadataClassName;
@@ -129,7 +129,7 @@ public class DAO {
   // Constructors
 
   public DAO(final AbstractDAOTag tag, final DataSetMetadata metadata, final JDBCGenerator generator,
-      final DAOType type, final JDBCTag myBatisTag, final DatabaseAdapter adapter, final Layout entity,
+      final DAOType type, final JDBCTag myBatisTag, final DatabaseAdapter adapter, final Layout layout,
       final Model model) {
     super();
     this.tag = tag;
@@ -142,7 +142,7 @@ public class DAO {
     this.jdbcTag = myBatisTag;
     this.adapter = adapter;
 
-    this.entity = entity;
+    this.layout = layout;
     this.model = model;
 
     this.fragmentConfig = metadata.getFragmentConfig();
@@ -1152,6 +1152,7 @@ public class DAO {
 
     ExternalClass pc = ExternalClass.of(type);
     ExternalClass ec = ExternalClass.of(this.metadataClassName);
+    ExternalClass el = ExternalClass.of(this.layout.getFullClassName());
     ExternalClass em = ExternalClass.of(this.model.getFullClassName());
 
     w.println();
@@ -1275,7 +1276,7 @@ public class DAO {
     }
     w.print(", ");
     w.print(nm, ".of(\"" + JUtils.escapeJavaString(name.getCanonicalSQLName()) + "\", " + name.isQuoted() + ")");
-    w.println(", \"" + typeName + "\", null, ", em, ".class);");
+    w.println(", \"" + typeName + "\", null, ", el, ".class, ", em, ".class);");
     w.println("      initialize();");
     w.println("    }");
     w.println();
@@ -1295,7 +1296,7 @@ public class DAO {
     }
     w.print(", ");
     w.print(nm, ".of(\"" + JUtils.escapeJavaString(name.getCanonicalSQLName()) + "\", " + name.isQuoted() + ")");
-    w.println(", \"" + typeName + "\", alias, ", em, ".class);");
+    w.println(", \"" + typeName + "\", alias, ", el, ".class, ", em, ".class);");
     w.println("      initialize();");
     w.println("    }");
     w.println();

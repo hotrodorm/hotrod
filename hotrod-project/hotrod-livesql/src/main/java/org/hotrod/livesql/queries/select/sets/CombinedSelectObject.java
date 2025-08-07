@@ -303,6 +303,11 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
   }
 
   @Override
+  public boolean enforceUniqueColumnNames() {
+    return this.first.enforceUniqueColumnNames();
+  }
+
+  @Override
   public List<Expression> assembleColumnsOf(final Subquery te) {
     List<Expression> cols = this.first.assembleColumnsOf(te);
     for (SetOperatorTerm<T> o : this.combined) {
@@ -316,9 +321,9 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
   @Override
   public List<T> execute(final LiveSQLContext context) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-//    log.info("PREPARED:\n" + q.getPreview(false));
+    log.info("PREPARED:\n" + q.getPreview(false));
     RowReader<T> rowReader = this.first.getRowReader();
-//    log.info("ROWREADER: " + rowReader);
+    log.info("ROWREADER: " + rowReader);
     return executeLiveSQL(context, q, false, rowReader);
   }
 

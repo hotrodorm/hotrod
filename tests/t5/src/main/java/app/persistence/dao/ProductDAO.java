@@ -52,6 +52,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import app.persistence.layout.ProductLayout;
 import app.persistence.model.Product;
 
 @Component
@@ -369,12 +370,12 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     ProductTable() {
-      super(null, null, Name.of("PRODUCT", false), "Table", null, Product.class);
+      super(null, null, Name.of("PRODUCT", false), "Table", null, ProductLayout.class, Product.class);
       initialize();
     }
 
     ProductTable(final String alias) {
-      super(null, null, Name.of("PRODUCT", false), "Table", alias, Product.class);
+      super(null, null, Name.of("PRODUCT", false), "Table", alias, ProductLayout.class, Product.class);
       initialize();
     }
 

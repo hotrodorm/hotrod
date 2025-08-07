@@ -27,6 +27,10 @@ public class MDShield {
     objectInstance.renderTo(w);
   }
 
+  public static Class<?> getLayoutClass(TableOrView<?> tv) {
+    return tv.layoutClass;
+  }
+
   public static Class<?> getModelClass(TableOrView<?> tv) {
     return tv.modelClass;
   }

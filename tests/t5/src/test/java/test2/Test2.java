@@ -23,7 +23,7 @@ public class Test2 {
   public static class MyAccount extends Table<Acc> {
 
     public MyAccount(Name catalog, Name schema, Name name, String type, String alias) {
-      super(catalog, schema, name, type, alias, Acc.class);
+      super(catalog, schema, name, type, alias, Acc.class, Acc.class);
     }
 
     @Override

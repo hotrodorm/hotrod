@@ -26,10 +26,11 @@ public abstract class TableOrView<M> extends TableExpression {
   private String designatedAlias;
   protected List<Expression> columns;
 
+  Class<?> layoutClass;
   Class<?> modelClass;
 
   TableOrView(final Name catalog, final Name schema, final Name name, final String type, final String alias,
-      final Class<?> modelClass) {
+      final Class<?> layoutClass, final Class<?> modelClass) {
     this.catalog = catalog;
     this.schema = schema;
     this.name = name;
@@ -39,6 +40,7 @@ public abstract class TableOrView<M> extends TableExpression {
     this.designatedAlias = null;
     this.columns = new ArrayList<>();
 
+    this.layoutClass = layoutClass;
     this.modelClass = modelClass;
   }
 
@@ -119,12 +121,11 @@ public abstract class TableOrView<M> extends TableExpression {
     sb.append(this.name);
     return sb.toString();
   }
-  
+
   @Override
   protected final void log(ToString t) {
     t.printObject(this, this.getName() + "(" + this.getAlias() + ")");
   }
-
 
   // --- Indexable methods (hashCode & equals) ---
   // DO NOT implement these methods, since the code relies on the default

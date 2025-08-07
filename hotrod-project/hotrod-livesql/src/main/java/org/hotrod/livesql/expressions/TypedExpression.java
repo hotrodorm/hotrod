@@ -29,6 +29,11 @@ public class TypedExpression extends Expression {
   }
 
   @Override
+  protected String getProperty() {
+    return this.expr.getProperty();
+  }
+
+  @Override
   protected void renderTo(QueryWriter w) {
     this.expr.renderTo(w);
   }
