@@ -105,7 +105,7 @@ create table product (
 );
 
 insert into product (id, type, shipping) values
-  (50, 'ECO', 1),
+--  (50, 'ECO', 1),
   (51, 'VIP', 2);
 
 create table branch (
@@ -164,8 +164,8 @@ create table account (
 );
 
 insert into account (id, name, type, balance, active, version) values
-  (123, '1010', 'CHK', 100, true, 1),
-  (456, '2055', 'SAV', 200, true, 1),
+--  (123, '1010', 'CHK', 100, true, 1),
+--  (456, '2055', 'SAV', 200, true, 1),
 --  (789, '2056', 'SAV', 300, false, 1),
 --  (111, '1072', 'CHK', 500, false, 1),
 --  (112, '1073', 'CHK', 410, false, 1),

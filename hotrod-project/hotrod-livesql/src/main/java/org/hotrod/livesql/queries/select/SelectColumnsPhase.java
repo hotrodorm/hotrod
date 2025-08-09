@@ -10,6 +10,7 @@ import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.select.sets.IndividualSelectPhase;
 import org.hotrod.livesql.queries.select.sets.MultiSet;
+import org.hotrod.livesql.queries.select.tuples.SelectTuplesColumnsPhase;
 
 public class SelectColumnsPhase<R> extends IndividualSelectPhase<R> {
 
@@ -26,6 +27,15 @@ public class SelectColumnsPhase<R> extends IndividualSelectPhase<R> {
     MultiSet<R> m = this.combined.getLastSelect();
     UnarySelectObject<R> s = (UnarySelectObject<R>) m;
     s.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
+  }
+
+  // Conversion to tuples query
+
+  public SelectTuplesColumnsPhase tuples() {
+    UnarySelectObject<R> select = super.combined.getLastSelect();
+    List<ResultSetColumn> cols = select.getResultSetColumns();
+    ResultSetColumn[] colsa = cols == null ? null : cols.toArray(new ResultSetColumn[0]);
+    return new SelectTuplesColumnsPhase(this.context, select.getCTEs(), select.getDistinct(), colsa);
   }
 
   // Next phases

@@ -23,10 +23,12 @@ import org.hotrod.livesql.expressions.NullLiteral;
 import org.hotrod.livesql.expressions.ResultSetColumn;
 import org.hotrod.livesql.expressions.aggregations.Avg;
 import org.hotrod.livesql.expressions.aggregations.AvgDistinct;
-import org.hotrod.livesql.expressions.aggregations.BooleanMax;
-import org.hotrod.livesql.expressions.aggregations.BooleanMin;
 import org.hotrod.livesql.expressions.aggregations.BinaryMax;
 import org.hotrod.livesql.expressions.aggregations.BinaryMin;
+import org.hotrod.livesql.expressions.aggregations.BooleanMax;
+import org.hotrod.livesql.expressions.aggregations.BooleanMin;
+import org.hotrod.livesql.expressions.aggregations.CharMax;
+import org.hotrod.livesql.expressions.aggregations.CharMin;
 import org.hotrod.livesql.expressions.aggregations.CountDistinct;
 import org.hotrod.livesql.expressions.aggregations.CountRows;
 import org.hotrod.livesql.expressions.aggregations.CountValues;
@@ -38,14 +40,14 @@ import org.hotrod.livesql.expressions.aggregations.NumericMax;
 import org.hotrod.livesql.expressions.aggregations.NumericMin;
 import org.hotrod.livesql.expressions.aggregations.ObjectMax;
 import org.hotrod.livesql.expressions.aggregations.ObjectMin;
-import org.hotrod.livesql.expressions.aggregations.CharMax;
-import org.hotrod.livesql.expressions.aggregations.CharMin;
 import org.hotrod.livesql.expressions.aggregations.Sum;
 import org.hotrod.livesql.expressions.aggregations.SumDistinct;
-import org.hotrod.livesql.expressions.analytics.BooleanLag;
-import org.hotrod.livesql.expressions.analytics.BooleanLead;
 import org.hotrod.livesql.expressions.analytics.BinaryLag;
 import org.hotrod.livesql.expressions.analytics.BinaryLead;
+import org.hotrod.livesql.expressions.analytics.BooleanLag;
+import org.hotrod.livesql.expressions.analytics.BooleanLead;
+import org.hotrod.livesql.expressions.analytics.CharLag;
+import org.hotrod.livesql.expressions.analytics.CharLead;
 import org.hotrod.livesql.expressions.analytics.DateTimeLag;
 import org.hotrod.livesql.expressions.analytics.DateTimeLead;
 import org.hotrod.livesql.expressions.analytics.DenseRank;
@@ -56,8 +58,6 @@ import org.hotrod.livesql.expressions.analytics.ObjectLag;
 import org.hotrod.livesql.expressions.analytics.ObjectLead;
 import org.hotrod.livesql.expressions.analytics.Rank;
 import org.hotrod.livesql.expressions.analytics.RowNumber;
-import org.hotrod.livesql.expressions.analytics.CharLag;
-import org.hotrod.livesql.expressions.analytics.CharLead;
 import org.hotrod.livesql.expressions.binary.BinaryConstant;
 import org.hotrod.livesql.expressions.binary.BinaryExpression;
 import org.hotrod.livesql.expressions.binary.EnclosedBinaryExpression;
@@ -70,17 +70,17 @@ import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
 import org.hotrod.livesql.expressions.bool.Not;
 import org.hotrod.livesql.expressions.bool.NotExists;
 import org.hotrod.livesql.expressions.bool.Predicate;
-import org.hotrod.livesql.expressions.caseclause.BooleanCaseWhenStage;
 import org.hotrod.livesql.expressions.caseclause.BinaryCaseWhenStage;
+import org.hotrod.livesql.expressions.caseclause.BooleanCaseWhenStage;
+import org.hotrod.livesql.expressions.caseclause.CharCaseWhenStage;
 import org.hotrod.livesql.expressions.caseclause.DateTimeCaseWhenStage;
 import org.hotrod.livesql.expressions.caseclause.NumericCaseWhenStage;
 import org.hotrod.livesql.expressions.caseclause.ObjectCaseWhenStage;
-import org.hotrod.livesql.expressions.caseclause.CharCaseWhenStage;
-import org.hotrod.livesql.expressions.character.EnclosedCharExpression;
-import org.hotrod.livesql.expressions.character.GeneralCharExpression;
 import org.hotrod.livesql.expressions.character.CharConstant;
 import org.hotrod.livesql.expressions.character.CharExpression;
 import org.hotrod.livesql.expressions.character.CharLiteral;
+import org.hotrod.livesql.expressions.character.EnclosedCharExpression;
+import org.hotrod.livesql.expressions.character.GeneralCharExpression;
 import org.hotrod.livesql.expressions.datetime.CurrentDate;
 import org.hotrod.livesql.expressions.datetime.CurrentDateTime;
 import org.hotrod.livesql.expressions.datetime.CurrentTime;
@@ -117,12 +117,12 @@ import org.hotrod.livesql.queries.UpdateTablePhase;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.ctes.CTEHeaderPhase;
 import org.hotrod.livesql.queries.ctes.RecursiveCTE;
-import org.hotrod.livesql.queries.scalarsubqueries.BooleanSelectColumnsPhase;
 import org.hotrod.livesql.queries.scalarsubqueries.BinarySelectColumnsPhase;
+import org.hotrod.livesql.queries.scalarsubqueries.BooleanSelectColumnsPhase;
+import org.hotrod.livesql.queries.scalarsubqueries.CharSelectColumnsPhase;
 import org.hotrod.livesql.queries.scalarsubqueries.DateTimeSelectColumnsPhase;
 import org.hotrod.livesql.queries.scalarsubqueries.NumericSelectColumnsPhase;
 import org.hotrod.livesql.queries.scalarsubqueries.ObjectSelectColumnsPhase;
-import org.hotrod.livesql.queries.scalarsubqueries.CharSelectColumnsPhase;
 import org.hotrod.livesql.queries.select.EnclosedSelectPhase;
 import org.hotrod.livesql.queries.select.NonLockableSelectColumnsPhase;
 import org.hotrod.livesql.queries.select.NonLockableSelectDistinctOnPhase;
@@ -130,7 +130,6 @@ import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.select.Select;
 import org.hotrod.livesql.queries.select.SelectCTEPhase;
 import org.hotrod.livesql.queries.select.SelectColumnsPhase;
-import org.hotrod.livesql.queries.select.tuples.SelectTuplesColumnsPhase;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.queries.subqueries.SubqueryColumnsPhase;
 import org.hotrod.livesql.queries.typesolver.TypeRule;
@@ -205,16 +204,6 @@ public class LiveSQL {
 
   public NonLockableSelectDistinctOnPhase<Row> selectDistinctOn(final Expression... expressions) {
     return new NonLockableSelectDistinctOnPhase<Row>(this.context, null, expressions);
-  }
-
-  // Tuples
-
-  public SelectTuplesColumnsPhase selectTuples() {
-    return new SelectTuplesColumnsPhase(this.context, null, false);
-  }
-
-  public SelectTuplesColumnsPhase selectTuples(final ResultSetColumn... resultSetColumns) {
-    return new SelectTuplesColumnsPhase(this.context, null, false, resultSetColumns);
   }
 
   // Subqueries
@@ -593,8 +582,7 @@ public class LiveSQL {
     return new BinaryLead(expression, offset);
   }
 
-  public BinaryLead lead(final GeneralBinaryExpression expression, final Number offset,
-      final byte[] defaultValue) {
+  public BinaryLead lead(final GeneralBinaryExpression expression, final Number offset, final byte[] defaultValue) {
     return new BinaryLead(expression, val(offset), val(defaultValue));
   }
 
@@ -883,8 +871,7 @@ public class LiveSQL {
     return new BinaryCaseWhenStage(predicate, val(value));
   }
 
-  public BinaryCaseWhenStage caseWhen(final GeneralBooleanExpression predicate,
-      final GeneralBinaryExpression value) {
+  public BinaryCaseWhenStage caseWhen(final GeneralBooleanExpression predicate, final GeneralBinaryExpression value) {
     return new BinaryCaseWhenStage(predicate, value);
   }
 

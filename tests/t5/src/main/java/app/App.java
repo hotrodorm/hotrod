@@ -325,7 +325,8 @@ public class App {
 //    System.out.print(q.getPreview(true));
 //    q.execute().forEach(r -> System.out.println("r=" + r));
 
-    SelectTuplesFrom2Phase<Account, Product> q = this.sql.selectTuples(a.star(), p.star(), a.balance.mult(2).as("bal2")) //
+    SelectTuplesFrom2Phase<Account, Product> q = this.sql.select(a.star(), p.star(), a.balance.mult(2).as("bal2")) //
+        .tuples() //
         .from(a) //
         .crossJoin(p) //
 //        .limit(1) //
@@ -334,10 +335,10 @@ public class App {
     int n = 1;
     for (Tuple2<Account, Product> r : rows) {
       System.out.println("Row #" + n++ + ":");
-      System.out.println("* Account: " + r.getA());
-      System.out.println("* Product: " + r.getB());
+      System.out.println("** Account: " + r.getA());
+      System.out.println("** Product: " + r.getB());
       for (String prop : r.getUnbound().keySet()) {
-        System.out.println("* unbound '" + prop + "': " + r.getUnbound().get(prop));
+        System.out.println("** unbound '" + prop + "': " + r.getUnbound().get(prop));
       }
     }
 

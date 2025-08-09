@@ -61,6 +61,18 @@ public abstract class BaseSelectObject<T> extends MultiSet<T> {
     this.distinct = distinct;
   }
 
+  public final List<CTE> getCTEs() {
+    return ctes;
+  }
+
+  public final boolean getDistinct() {
+    return distinct;
+  }
+
+  public final List<ResultSetColumn> getResultSetColumns() {
+    return resultSetColumns;
+  }
+
   public boolean areColumnsAssembled() {
     return columnsAssembled;
   }
