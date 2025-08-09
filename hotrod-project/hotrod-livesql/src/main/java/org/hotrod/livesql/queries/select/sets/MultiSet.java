@@ -42,7 +42,7 @@ public abstract class MultiSet<T> {
 
   public abstract List<Expression> assembleColumnsOf(Subquery subquery);
 
-  public abstract boolean enforceUniqueColumnNames();
+  public abstract boolean excludeTuplesFromUniqueNames();
 
 //  public abstract Expression findColumnWithName(final String name);
 
@@ -96,7 +96,8 @@ public abstract class MultiSet<T> {
 //    this.log(t);
 //    log.info("");
 
-    return w.getPreparedQuery(columns, this.enforceUniqueColumnNames());
+    log.info(">> this=" + this.getClass().getName());
+    return w.getPreparedQuery(columns, this.excludeTuplesFromUniqueNames());
 
   }
 

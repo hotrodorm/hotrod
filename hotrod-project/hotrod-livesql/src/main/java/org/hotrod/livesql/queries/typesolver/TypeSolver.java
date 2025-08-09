@@ -53,7 +53,7 @@ public class TypeSolver {
     }
 
     try {
-      return TypeHandler.forClass(Class.forName(className), TypeSource.RUNTIME_JDBC_DRIVER);
+      return TypeHandler.forClass(Class.forName(className), TypeSource.RUNTIME_JDBC_DRIVER_DEFAULT);
     } catch (ClassNotFoundException e) {
       throw new CouldNotResolveResultSetDataTypeException(cm,
           "The class '" + className + "' proposed by the JDBC driver to read the column cannot be found.");

@@ -1,6 +1,7 @@
 package org.hotrod.livesql.queries;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
@@ -14,10 +15,10 @@ public class LiveSQLPreparedQuery {
 
   private String sql;
   private LinkedHashMap<String, Object> parameters;
-  private LinkedHashMap<String, Expression> queryColumns;
+  private List<Expression> queryColumns;
 
   public LiveSQLPreparedQuery(final String sql, final LinkedHashMap<String, Object> parameters,
-      final LinkedHashMap<String, Expression> queryColumns) {
+      final List<Expression> queryColumns) {
     this.sql = sql;
     this.parameters = parameters;
     this.queryColumns = queryColumns;
@@ -28,11 +29,11 @@ public class LiveSQLPreparedQuery {
   }
 
   public LinkedHashMap<String, Object> getParameters() {
-    return parameters;
+    return this.parameters;
   }
 
-  public LinkedHashMap<String, Expression> getQueryColumns() {
-    return queryColumns;
+  public List<Expression> getQueryColumns() {
+    return this.queryColumns;
   }
 
   public LinkedHashMap<String, Object> getConsolidatedParameters() {
@@ -84,13 +85,13 @@ public class LiveSQLPreparedQuery {
 
       }
 
-      if (queryColumns != null) {
+      if (this.queryColumns != null) {
         sb.append("--- Query Columns ---\n");
-        for (String name : queryColumns.keySet()) {
-          Expression expr = queryColumns.get(name);
+        for (Expression expr : this.queryColumns) {
+          String name = Shield.getReferenceName(expr);
           TypeHandler<?, ?> th = Shield.getTypeHandler(expr);
           sb.append(" * " + name + ": "
-              + (th != null ? TShield.render(th) : "class N/A, source: " + TypeSource.RUNTIME_JDBC_DRIVER.name())
+              + (th != null ? TShield.render(th) : "class N/A, source: " + TypeSource.RUNTIME_JDBC_DRIVER_DEFAULT.name())
               + "\n");
         }
       }

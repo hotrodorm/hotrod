@@ -21,7 +21,7 @@ public class BooleanEntityColumn extends GeneralBooleanExpression implements Ent
   // Constructor
 
   public BooleanEntityColumn(final TableOrView<?> objectInstance, final String name, final String property,
-      final String type, final Integer columnSize, final Integer decimalDigits, final TypeHandler handler) {
+      final String type, final Integer columnSize, final Integer decimalDigits, final TypeHandler<?, ?> handler) {
     super(Expression.PRECEDENCE_COLUMN);
     this.objectInstance = objectInstance;
     this.name = name;
@@ -57,12 +57,17 @@ public class BooleanEntityColumn extends GeneralBooleanExpression implements Ent
     return this.property;
   }
 
+  @Override
+  protected boolean isEntityColumn() {
+    return true;
+  }
+
   public String getCanonicalName() {
     return this.name;
   }
 
   @Override
-  public final TableOrView getObjectInstance() {
+  public final TableOrView<?> getObjectInstance() {
     return objectInstance;
   }
 

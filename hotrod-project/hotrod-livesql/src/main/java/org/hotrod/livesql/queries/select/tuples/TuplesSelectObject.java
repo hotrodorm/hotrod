@@ -51,8 +51,8 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
   }
 
   @Override
-  public boolean enforceUniqueColumnNames() {
-    return false;
+  public boolean excludeTuplesFromUniqueNames() {
+    return true;
   }
 
   @Override

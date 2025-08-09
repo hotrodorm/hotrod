@@ -1,7 +1,9 @@
 package org.hotrod.livesql.queries;
 
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.hotrod.livesql.dialects.LiveSQLDialect;
@@ -11,7 +13,6 @@ import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.queries.SQLParameterWriter.QueryParameter;
 import org.hotrod.livesql.queries.SQLParameterWriter.RenderedParameter;
-import org.hotrod.utils.SUtil;
 
 public class QueryWriter {
 
@@ -93,69 +94,39 @@ public class QueryWriter {
     return this.context.getLiveSQLDialect();
   }
 
-  public LiveSQLPreparedQuery getPreparedQuery(final List<Expression> columns, boolean enforceColumnUniqueNames) {
+  public LiveSQLPreparedQuery getPreparedQuery(final List<Expression> columns, boolean excludeTuplesFromUniqueNames) {
     LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 //    log.info(">>> this.paramWriter.getParameters().size()=" + this.paramWriter.getParameters().size());
+    log.info("excludeTuplesFromUniqueNames=" + excludeTuplesFromUniqueNames);
     for (QueryParameter p : this.paramWriter.getParameters()) {
       params.put(p.getName(), p.getValue());
     }
-    LinkedHashMap<String, Expression> queryColumns = null;
+    Set<String> uniqueNames = null;
     if (columns != null) {
-      queryColumns = new LinkedHashMap<>();
+      uniqueNames = new HashSet<>();
       int ordinal = 1;
       for (Expression c : columns) {
-        String name = SUtil.coalesce(Shield.getReferenceName(c), Shield.getProperty(c));
-        if (name == null) {
-          throw new LiveSQLException("Column #" + ordinal + " of the SELECT query does not have a name. "
-              + "Please apply the .as() method to this expression to assign a name to it.");
+        String name = Shield.getReferenceName(c);
+        if (excludeTuplesFromUniqueNames && Shield.isEntityColumn(c)) {
+          // Exclude from name uniqueness check
+          log.info(">> excluding: " + name);
+        } else {
+          log.info(">> including: " + name);
+          if (name == null) {
+            throw new LiveSQLException("Column #" + ordinal + " of the SELECT query does not have a name. "
+                + "Please apply the .as() method to this expression to assign a name to it.");
+          }
+          if (uniqueNames.contains(name)) {
+            throw new LiveSQLException("There are multiple query columns with the same name '" + name
+                + "' in the main SELECT list of this query. "
+                + "Please change this list or use aliases to ensure all resulting column names are different.");
+          }
+          uniqueNames.add(name);
         }
-        if (queryColumns.containsKey(name)) {
-          throw new LiveSQLException("There are multiple query columns with the same name '" + name
-              + "' in the main SELECT list of this query. "
-              + "Please change this list or use aliases to ensure all resulting column names are different.");
-        }
-        queryColumns.put(name, c);
         ordinal++;
       }
     }
-//    log.info("queryColumns[" + (queryColumns == null ? "null" : queryColumns.size()) + "]");
-    return new LiveSQLPreparedQuery(this.sb.toString(), params, queryColumns);
+    return new LiveSQLPreparedQuery(this.sb.toString(), params, columns);
   }
-
-  // Prepared Query
-
-//  public static class LiveSQLPreparedQuery {
-//
-//    private String sql;
-//    private LinkedHashMap<String, Object> parameters;
-//    private LinkedHashMap<String, Expression> queryColumns;
-//
-//    public LiveSQLPreparedQuery(final String sql, final LinkedHashMap<String, Object> parameters,
-//        final LinkedHashMap<String, Expression> queryColumns) {
-//      this.sql = sql;
-//      this.parameters = parameters;
-//      this.queryColumns = queryColumns;
-//    }
-//
-//    public String getSQL() {
-//      return sql;
-//    }
-//
-//    public LinkedHashMap<String, Object> getParameters() {
-//      return parameters;
-//    }
-//
-//    public LinkedHashMap<String, Expression> getQueryColumns() {
-//      return queryColumns;
-//    }
-//
-//    public LinkedHashMap<String, Object> getConsolidatedParameters() {
-//      LinkedHashMap<String, Object> c = new LinkedHashMap<String, Object>();
-//      c.putAll(this.parameters);
-//      c.put("sql", this.sql);
-//      return c;
-//    }
-//
-//  }
 
 }

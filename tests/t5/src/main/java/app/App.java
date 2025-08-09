@@ -325,7 +325,7 @@ public class App {
 //    System.out.print(q.getPreview(true));
 //    q.execute().forEach(r -> System.out.println("r=" + r));
 
-    SelectTuplesFrom2Phase<Account, Product> q = this.sql.selectTuples(a.id, p.id, a.balance.mult(2).as("bal2")) //
+    SelectTuplesFrom2Phase<Account, Product> q = this.sql.selectTuples(a.star(), p.star(), a.balance.mult(2).as("bal2")) //
         .from(a) //
         .crossJoin(p) //
 //        .limit(1) //

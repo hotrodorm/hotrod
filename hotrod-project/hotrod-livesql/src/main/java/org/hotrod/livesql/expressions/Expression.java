@@ -107,6 +107,10 @@ public abstract class Expression extends ResultSetColumn {
     return null; // Only Entity columns and SubqueryColumns return names.
   }
 
+  protected boolean isEntityColumn() {
+    return false; // Only Entity columns return true.
+  }
+
   // ResultSetColumn
 
   protected Expression getExpression() {

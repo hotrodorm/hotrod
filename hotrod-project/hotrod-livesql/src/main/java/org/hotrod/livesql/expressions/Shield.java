@@ -58,6 +58,10 @@ public class Shield {
     return expr.getReferenceName();
   }
 
+  public static boolean isEntityColumn(final Expression expr) {
+    return expr.isEntityColumn();
+  }
+
   public static String getProperty(final Expression expr) {
     return expr.getProperty();
   }

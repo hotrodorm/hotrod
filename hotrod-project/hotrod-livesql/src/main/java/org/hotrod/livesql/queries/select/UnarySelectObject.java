@@ -90,7 +90,7 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
   // Rendering
 
   @Override
-  public boolean enforceUniqueColumnNames() {
+  public boolean excludeTuplesFromUniqueNames() {
     return true;
   }
 

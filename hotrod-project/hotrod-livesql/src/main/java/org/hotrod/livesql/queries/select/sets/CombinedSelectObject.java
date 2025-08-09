@@ -303,8 +303,9 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
   }
 
   @Override
-  public boolean enforceUniqueColumnNames() {
-    return this.first.enforceUniqueColumnNames();
+  public boolean excludeTuplesFromUniqueNames() {
+    log.info(">> first=" + this.first.getClass().getName());
+    return this.first.excludeTuplesFromUniqueNames();
   }
 
   @Override

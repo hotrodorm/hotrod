@@ -4,8 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.LinkedHashMap;
-import java.util.Map.Entry;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.Row;
@@ -24,16 +23,16 @@ public class UnaryRowReader<T> implements RowReader<T> {
 
   private static final Logger log = Logger.getLogger(UnaryRowReader.class.getName());
 
-  private LinkedHashMap<String, Expression> queryColumns;
+  private List<Expression> queryColumns;
 
   public UnaryRowReader(final LiveSQLContext context, final LiveSQLPreparedQuery q, final ResultSet rs)
       throws SQLException {
     this.queryColumns = q.getQueryColumns();
     ResultSetMetaData rm = rs.getMetaData();
     int ordinal = 1;
-    for (Entry<String, Expression> et : this.queryColumns.entrySet()) {
-      Expression expr = et.getValue();
+    for (Expression expr : this.queryColumns) {
       TypeHandler<Object, Object> cth = Shield.getTypeHandler(expr);
+      String name = Shield.getReferenceName(expr);
 //      log.info(">> EXPR: " + expr + " expr@" + OUtil.hc(expr) + " th=" + cth);
       if (cth == null) {
         ResultSetColumnMetadata cm = ResultSetColumnMetadata.of(rm, ordinal);
@@ -43,7 +42,7 @@ public class UnaryRowReader<T> implements RowReader<T> {
           Shield.setTypeHandler(expr, th);
         } catch (CouldNotResolveResultSetDataTypeException e) {
           throw new LiveSQLException(
-              "Could not determine the application type for the column '" + et.getKey() + "' in the query", e);
+              "Could not determine the application type for the column '" + name + "' in the query", e);
         }
       }
       ordinal++;
@@ -56,7 +55,7 @@ public class UnaryRowReader<T> implements RowReader<T> {
   public T readRowFrom(ResultSet rs, Connection conn) throws SQLException {
     Row r = new Row();
     int ordinal = 1;
-    for (Expression expr : queryColumns.values()) {
+    for (Expression expr : queryColumns) {
       String alias = Shield.getReferenceName(expr);
       TypeHandler<?, ?> th = Shield.getTypeHandler(expr);
       Object value = ColumnReader.read(rs, ordinal, th, conn);
@@ -90,7 +89,7 @@ public class UnaryRowReader<T> implements RowReader<T> {
   private void logQueryColumns() {
     int n;
     n = 1;
-    for (Expression qc : this.queryColumns.values()) {
+    for (Expression qc : this.queryColumns) {
       int i = n++;
       String alias = Shield.getReferenceName(qc);
       TypeHandler<?, ?> th = Shield.getTypeHandler(qc);

@@ -3,16 +3,15 @@ package org.hotrod.livesql.metadata;
 import java.util.logging.Logger;
 
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.numeric.GeneralNumericExpression;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.subqueries.QShield;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.queries.subqueries.SubqueryNumericRefColumn;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
 public class NumericEntityColumn extends GeneralNumericExpression implements EntityColumn {
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(NumericEntityColumn.class.getName());
 
   // Properties
@@ -29,7 +28,7 @@ public class NumericEntityColumn extends GeneralNumericExpression implements Ent
   // Constructor
 
   public NumericEntityColumn(final TableOrView<?> objectInstance, final String name, final String property,
-      final String type, final Integer columnSize, final Integer decimalDigits, final TypeHandler handler) {
+      final String type, final Integer columnSize, final Integer decimalDigits, final TypeHandler<?, ?> handler) {
     super(Expression.PRECEDENCE_COLUMN);
     this.objectInstance = objectInstance;
     this.name = name;
@@ -65,12 +64,17 @@ public class NumericEntityColumn extends GeneralNumericExpression implements Ent
     return this.property;
   }
 
+  @Override
+  protected boolean isEntityColumn() {
+    return true;
+  }
+
   public String getCanonicalName() {
     return this.name;
   }
 
   @Override
-  public final TableOrView getObjectInstance() {
+  public final TableOrView<?> getObjectInstance() {
     return objectInstance;
   }
 
