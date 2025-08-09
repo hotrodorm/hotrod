@@ -337,7 +337,7 @@ public class App {
 
     SelectTuplesFrom2Phase<Account, Product> q = this.sql.select( //
         a.star(), p.shipping, a.balance.mult(2).as("bal2") //
-        , x.dt("mca") // 7
+        , x.dt("mca"), y.dt("mca").as("mca2") // 7
     ) //
         .tuples() //
         .from(x) //

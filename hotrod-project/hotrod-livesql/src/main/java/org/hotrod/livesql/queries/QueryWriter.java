@@ -117,9 +117,17 @@ public class QueryWriter {
                 + "Please apply the .as() method to this expression to assign a name to it.");
           }
           if (uniqueNames.contains(name)) {
-            throw new LiveSQLException("There are multiple query columns with the same name '" + name
-                + "' in the main SELECT list of this query. "
-                + "Please change this list or use aliases to ensure all resulting column names are different.");
+            if (excludeTuplesFromUniqueNames) {
+              throw new LiveSQLException("There are multiple unbound query columns with the same name '" + name
+                  + "' in the main SELECT list of this query. "
+                  + "Please use aliases in the unbound columns to ensure ther names are all different. "
+                  + "Note: The name uniqueness is not required for columns that belong to tuples, "
+                  + "but only for unbound columns.");
+            } else {
+              throw new LiveSQLException("There are multiple query columns with the same name '" + name
+                  + "' in the main SELECT list of this query. "
+                  + "Please change this list or use aliases to ensure all resulting column names are different.");
+            }
           }
           uniqueNames.add(name);
         }
