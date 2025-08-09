@@ -11,11 +11,11 @@ import org.hotrod.livesql.dialects.LockingRenderer;
 import org.hotrod.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.ResultSetColumn;
+import org.hotrod.livesql.expressions.SQLExpression;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
-import org.hotrod.livesql.metadata.WrappingColumn;
+import org.hotrod.livesql.metadata.MetaExpression;
 import org.hotrod.livesql.ordering.OHelper;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.QueryWriter;
@@ -35,7 +35,7 @@ public abstract class BaseSelectObject<T> extends MultiSet<T> {
 
   private static final Logger log = Logger.getLogger(BaseSelectObject.class.getName());
 
-  protected List<ResultSetColumn> resultSetColumns = new ArrayList<>();
+  protected List<SQLExpression> resultSetColumns = new ArrayList<>();
   protected List<Expression> expandedQueryColumns = null;
   protected boolean columnsAssembled = false;
 
@@ -70,7 +70,7 @@ public abstract class BaseSelectObject<T> extends MultiSet<T> {
     return distinct;
   }
 
-  public final List<ResultSetColumn> getResultSetColumns() {
+  public final List<SQLExpression> getResultSetColumns() {
     return resultSetColumns;
   }
 
@@ -82,7 +82,7 @@ public abstract class BaseSelectObject<T> extends MultiSet<T> {
     log.info("=== 2. EXPAND QUERY COLUMNS (AS/IF NEEDED) from " + SShield.getName(this.from) + " @" + OUtil.hc(this)
         + " ===");
     this.expandedQueryColumns = new ArrayList<>();
-    for (ResultSetColumn rsc : this.resultSetColumns) {
+    for (SQLExpression rsc : this.resultSetColumns) {
       log.info("=== 2.1 rsc=" + rsc);
 
       try {
@@ -99,7 +99,7 @@ public abstract class BaseSelectObject<T> extends MultiSet<T> {
       } catch (ClassCastException cce) {
         // Wrapping column
 //        log.info("=== 2.3");
-        WrappingColumn wrapping = (WrappingColumn) rsc;
+        MetaExpression wrapping = (MetaExpression) rsc;
         for (Expression exp : Shield.expand(wrapping)) {
 //          log.info("=== 2.4");
           Expression em = Shield.getEmergingExpression(exp);
@@ -125,7 +125,7 @@ public abstract class BaseSelectObject<T> extends MultiSet<T> {
 //    log.info("=== 2.10 EXPAND DONE from " + SShield.getName(this.from) + " ===");
   }
 
-  public void setResultSetColumns(final List<ResultSetColumn> resultSetColumns) {
+  public void setResultSetColumns(final List<SQLExpression> resultSetColumns) {
     this.resultSetColumns = resultSetColumns;
   }
 
@@ -420,7 +420,7 @@ public abstract class BaseSelectObject<T> extends MultiSet<T> {
   protected void log(ToString t) {
     t.printObject(this, this.getClass().getName());
     if (this.resultSetColumns != null) {
-      for (ResultSetColumn r : this.resultSetColumns) {
+      for (SQLExpression r : this.resultSetColumns) {
         t.indent();
         t.prompt("rsc - " + r.toString() + " // ");
         Shield.log(r, t);

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.livesql.expressions.ComparableExpression;
-import org.hotrod.livesql.expressions.ResultSetColumn;
+import org.hotrod.livesql.expressions.SQLExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.springframework.util.ReflectionUtils;
 
@@ -31,7 +31,7 @@ public class ReflectionUtil {
     }
   }
 
-  public static List<ResultSetColumn> getResultSetColumnsField(final Object cs, final String colName)
+  public static List<SQLExpression> getResultSetColumnsField(final Object cs, final String colName)
       throws IllegalArgumentException, IllegalAccessException {
     try {
       Field cf = ReflectionUtils.findField(cs.getClass(), colName);
@@ -40,7 +40,7 @@ public class ReflectionUtil {
         cf.setAccessible(true);
         Object object = cf.get(cs);
         @SuppressWarnings("unchecked")
-        List<ResultSetColumn> columns = (List<ResultSetColumn>) object;
+        List<SQLExpression> columns = (List<SQLExpression>) object;
         return columns;
       } else {
         return new ArrayList<>();

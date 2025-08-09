@@ -9,12 +9,12 @@ import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.livesql.expressions.AliasedExpression;
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.ResultSetColumn;
+import org.hotrod.livesql.expressions.SQLExpression;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.MDShield;
 import org.hotrod.livesql.metadata.TableOrView;
-import org.hotrod.livesql.metadata.WrappingColumn;
+import org.hotrod.livesql.metadata.MetaExpression;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.QueryWriter;
@@ -100,9 +100,9 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
     return this.expandedQueryColumns;
   }
 
-  private void addTableColumns(TableOrView<?> te, List<ResultSetColumn> filledIn) {
+  private void addTableColumns(TableOrView<?> te, List<SQLExpression> filledIn) {
     log.info("Adding te: " + te.getAlias());
-    WrappingColumn wrapped = SShield.star(te);
+    MetaExpression wrapped = SShield.star(te);
     List<Expression> unwrapped = MDShield.unwrap(wrapped);
     for (Expression expr : unwrapped) {
       String property = Shield.getProperty(expr);

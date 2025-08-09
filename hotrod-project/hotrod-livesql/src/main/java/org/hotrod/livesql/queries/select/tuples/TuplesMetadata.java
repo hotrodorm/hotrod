@@ -3,7 +3,7 @@ package org.hotrod.livesql.queries.select.tuples;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hotrod.livesql.expressions.ResultSetColumn;
+import org.hotrod.livesql.expressions.SQLExpression;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.select.Join;
@@ -14,13 +14,13 @@ public class TuplesMetadata {
   private LiveSQLContext context;
   private List<CTE> ctes;
   private boolean distinct;
-  private List<ResultSetColumn> resultSetColumns;
+  private List<SQLExpression> resultSetColumns;
 
   private TableExpression from;
   private List<Join> joins;
 
   public TuplesMetadata(LiveSQLContext context, List<CTE> ctes, boolean distinct,
-      List<ResultSetColumn> resultSetColumns) {
+      List<SQLExpression> resultSetColumns) {
     this.context = context;
     this.ctes = ctes;
     this.distinct = distinct;
@@ -49,7 +49,7 @@ public class TuplesMetadata {
     return distinct;
   }
 
-  public final List<ResultSetColumn> getResultSetColumns() {
+  public final List<SQLExpression> getResultSetColumns() {
     return resultSetColumns;
   }
 

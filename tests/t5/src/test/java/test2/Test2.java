@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.Table;
-import org.hotrod.livesql.metadata.WrappingColumn;
+import org.hotrod.livesql.metadata.MetaExpression;
 
 public class Test2 {
 
@@ -27,7 +27,7 @@ public class Test2 {
     }
 
     @Override
-    protected WrappingColumn star() {
+    protected MetaExpression star() {
       return null;
     }
 

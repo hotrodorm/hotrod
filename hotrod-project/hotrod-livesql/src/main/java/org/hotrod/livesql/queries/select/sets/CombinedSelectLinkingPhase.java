@@ -1,6 +1,6 @@
 package org.hotrod.livesql.queries.select.sets;
 
-import org.hotrod.livesql.expressions.ResultSetColumn;
+import org.hotrod.livesql.expressions.SQLExpression;
 import org.hotrod.livesql.queries.LiveSQLContext;
 
 public class CombinedSelectLinkingPhase<R> {
@@ -27,16 +27,16 @@ public class CombinedSelectLinkingPhase<R> {
     return preparePhase(true);
   }
 
-  public CombinedSelectColumnsPhase<R> select(final ResultSetColumn... resultSetColumns) {
+  public CombinedSelectColumnsPhase<R> select(final SQLExpression... resultSetColumns) {
     return preparePhase(false, resultSetColumns);
   }
 
-  public CombinedSelectColumnsPhase<R> selectDistinct(final ResultSetColumn... resultSetColumns) {
+  public CombinedSelectColumnsPhase<R> selectDistinct(final SQLExpression... resultSetColumns) {
     return preparePhase(true, resultSetColumns);
   }
 
   private CombinedSelectColumnsPhase<R> preparePhase(final boolean distinct,
-      final ResultSetColumn... resultSetColumns) {
+      final SQLExpression... resultSetColumns) {
 //    System.out.println("- pre: " + this.combined.toString());
     CombinedSelectObject<R> newCS = this.combined.prepareCombinationWith(this.op);
     CombinedSelectColumnsPhase<R> ph = new CombinedSelectColumnsPhase<>(this.context, null, distinct, newCS,

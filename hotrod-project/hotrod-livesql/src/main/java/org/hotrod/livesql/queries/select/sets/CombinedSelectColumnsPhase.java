@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.hotrod.livesql.expressions.ResultSetColumn;
+import org.hotrod.livesql.expressions.SQLExpression;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.select.TableExpression;
@@ -14,7 +14,7 @@ public class CombinedSelectColumnsPhase<R> extends CombinedSelectPhase<R> {
   // Constructor
 
   public CombinedSelectColumnsPhase(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct,
-      final CombinedSelectObject<R> combined, final ResultSetColumn... resultSetColumns) {
+      final CombinedSelectObject<R> combined, final SQLExpression... resultSetColumns) {
     super(context, ctes, distinct, false);
     this.getLastSelect().setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
   }

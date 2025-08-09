@@ -20,7 +20,7 @@ import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.NullLiteral;
-import org.hotrod.livesql.expressions.ResultSetColumn;
+import org.hotrod.livesql.expressions.SQLExpression;
 import org.hotrod.livesql.expressions.aggregations.Avg;
 import org.hotrod.livesql.expressions.aggregations.AvgDistinct;
 import org.hotrod.livesql.expressions.aggregations.BinaryMax;
@@ -194,11 +194,11 @@ public class LiveSQL {
     return new NonLockableSelectColumnsPhase<Row>(this.context, null, true);
   }
 
-  public SelectColumnsPhase<Row> select(final ResultSetColumn... resultSetColumns) {
+  public SelectColumnsPhase<Row> select(final SQLExpression... resultSetColumns) {
     return new SelectColumnsPhase<Row>(this.context, null, false, resultSetColumns);
   }
 
-  public NonLockableSelectColumnsPhase<Row> selectDistinct(final ResultSetColumn... resultSetColumns) {
+  public NonLockableSelectColumnsPhase<Row> selectDistinct(final SQLExpression... resultSetColumns) {
     return new NonLockableSelectColumnsPhase<Row>(this.context, null, true, resultSetColumns);
   }
 

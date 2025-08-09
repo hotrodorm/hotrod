@@ -6,10 +6,10 @@ import org.hotrod.livesql.util.ToString;
 
 /*
  * <pre>
- *                ResultSetColumn (expand)
+ *               SQLExpression (expand)
  *               /               \
  *              /                 \
- *  WrappingColumn                Expression                      {I} OrderingTerm
+ *  MetaExpression                Expression                      {I} OrderingTerm
  *  |  |  |                      /       |  \                           /      \
  *  |  |  AllColumns   AliasedExpression |   \                         /     OrderingExpression ()
  *  |  |                                 |  UnaliasedExpression (as)  /
@@ -35,7 +35,7 @@ import org.hotrod.livesql.util.ToString;
  * </pre>
  */
 
-public abstract class ResultSetColumn {
+public abstract class SQLExpression {
 
   protected abstract List<Expression> expand();
 

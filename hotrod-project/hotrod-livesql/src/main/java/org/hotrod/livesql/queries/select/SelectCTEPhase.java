@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.hotrod.livesql.Available;
 import org.hotrod.livesql.dialects.Const;
-import org.hotrod.livesql.expressions.ResultSetColumn;
+import org.hotrod.livesql.expressions.SQLExpression;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.ctes.CTE;
 
@@ -33,16 +33,16 @@ public class SelectCTEPhase<R> {
     return new SelectColumnsPhase<R>(this.context, this.ctes, true);
   }
 
-  public SelectColumnsPhase<R> select(final ResultSetColumn... resultSetColumns) {
+  public SelectColumnsPhase<R> select(final SQLExpression... resultSetColumns) {
     return new SelectColumnsPhase<R>(this.context, this.ctes, false, resultSetColumns);
   }
 
-  public SelectColumnsPhase<R> selectDistinct(final ResultSetColumn... resultSetColumns) {
+  public SelectColumnsPhase<R> selectDistinct(final SQLExpression... resultSetColumns) {
     return new SelectColumnsPhase<R>(this.context, this.ctes, true, resultSetColumns);
   }
 
   @Available(engine = Const.POSTGRESQL, since = Const.PG15)
-  public PGSelectColumnsPhase<R> selectDistinctOn(final ResultSetColumn... resultSetColumns) {
+  public PGSelectColumnsPhase<R> selectDistinctOn(final SQLExpression... resultSetColumns) {
     return new PGSelectColumnsPhase<R>(this.context, this.ctes, true, resultSetColumns);
   }
 

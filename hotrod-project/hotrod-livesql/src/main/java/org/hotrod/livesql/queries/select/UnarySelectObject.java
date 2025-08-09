@@ -16,7 +16,7 @@ import org.hotrod.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.ResultSetColumn;
+import org.hotrod.livesql.expressions.SQLExpression;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.MDShield;
@@ -55,7 +55,7 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
   }
 
   public UnarySelectObject(final List<CTE> ctes, final boolean distinct, final boolean doNotAliasColumns,
-      final List<ResultSetColumn> resultSetColumns) {
+      final List<SQLExpression> resultSetColumns) {
     super(ctes, distinct);
     this.distinctOn = null;
     this.doNotAliasColumns = doNotAliasColumns;
@@ -63,7 +63,7 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
   }
 
   public UnarySelectObject(final List<CTE> ctes, final Expression[] distinctOn, final boolean doNotAliasColumns,
-      final List<ResultSetColumn> resultSetColumns) {
+      final List<SQLExpression> resultSetColumns) {
     super(ctes, false);
 
     if (distinctOn == null || distinctOn.length == 0) {
@@ -84,7 +84,7 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
     this.distinctOn = expressions;
   }
 
-  public void setResultSetColumns(final List<ResultSetColumn> resultSetColumns) {
+  public void setResultSetColumns(final List<SQLExpression> resultSetColumns) {
     this.resultSetColumns = resultSetColumns;
   }
 
@@ -321,7 +321,7 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
 
   }
 
-  protected List<ResultSetColumn> getColumnsField(final Object cs, final String colName)
+  protected List<SQLExpression> getColumnsField(final Object cs, final String colName)
       throws IllegalArgumentException, IllegalAccessException {
     try {
       Field cf = ReflectionUtils.findField(cs.getClass(), colName);
@@ -330,7 +330,7 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
         Object object = cf.get(cs);
         @SuppressWarnings("unchecked")
         List<EntityColumn> columns = (List<EntityColumn>) object;
-        return columns.stream().map(c -> (ResultSetColumn) c).collect(Collectors.toList());
+        return columns.stream().map(c -> (SQLExpression) c).collect(Collectors.toList());
       } else {
         return new ArrayList<>();
       }

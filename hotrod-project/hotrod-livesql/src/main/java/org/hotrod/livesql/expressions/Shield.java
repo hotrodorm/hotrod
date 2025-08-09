@@ -50,7 +50,7 @@ public class Shield {
     return e.asSubqueryExpression(subquery, alias);
   }
 
-  public static List<Expression> expand(final ResultSetColumn rsc) {
+  public static List<Expression> expand(final SQLExpression rsc) {
     return rsc.expand();
   }
 
@@ -70,7 +70,7 @@ public class Shield {
     return expr.render();
   }
 
-  public static void log(ResultSetColumn expr, ToString t) {
+  public static void log(SQLExpression expr, ToString t) {
     expr.log(t);
   }
 

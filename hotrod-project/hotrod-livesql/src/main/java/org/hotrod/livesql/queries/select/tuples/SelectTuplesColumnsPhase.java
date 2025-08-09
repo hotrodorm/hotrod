@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.hotrod.livesql.exceptions.LiveSQLException;
-import org.hotrod.livesql.expressions.ResultSetColumn;
+import org.hotrod.livesql.expressions.SQLExpression;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.ctes.CTE;
@@ -16,13 +16,13 @@ public class SelectTuplesColumnsPhase {
   private TuplesMetadata metadata;
 
   public SelectTuplesColumnsPhase(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct,
-      final ResultSetColumn... resultSetColumns) {
-    for (ResultSetColumn c : resultSetColumns) {
+      final SQLExpression... resultSetColumns) {
+    for (SQLExpression c : resultSetColumns) {
       if (c == null) {
         throw new LiveSQLException("A select column cannot be null.");
       }
     }
-    List<ResultSetColumn> cols = Arrays.asList(resultSetColumns).stream().collect(Collectors.toList());
+    List<SQLExpression> cols = Arrays.asList(resultSetColumns).stream().collect(Collectors.toList());
     this.metadata = new TuplesMetadata(context, ctes, distinct, cols);
   }
 

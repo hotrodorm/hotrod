@@ -17,7 +17,7 @@ import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.util.ToString;
 import org.hotrod.utils.SUtil;
 
-public abstract class Expression extends ResultSetColumn {
+public abstract class Expression extends SQLExpression {
 
   private static final Logger log = Logger.getLogger(Expression.class.getName());
 

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.hotrod.livesql.exceptions.LiveSQLException;
-import org.hotrod.livesql.expressions.ResultSetColumn;
+import org.hotrod.livesql.expressions.SQLExpression;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.select.sets.IndividualSelectPhase;
@@ -17,9 +17,9 @@ public class SelectColumnsPhase<R> extends IndividualSelectPhase<R> {
   // Constructor
 
   public SelectColumnsPhase(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct,
-      final ResultSetColumn... resultSetColumns) {
+      final SQLExpression... resultSetColumns) {
     super(context, ctes, distinct, false);
-    for (ResultSetColumn c : resultSetColumns) {
+    for (SQLExpression c : resultSetColumns) {
       if (c == null) {
         throw new LiveSQLException("Select column cannot be null.");
       }
@@ -33,8 +33,8 @@ public class SelectColumnsPhase<R> extends IndividualSelectPhase<R> {
 
   public SelectTuplesColumnsPhase tuples() {
     UnarySelectObject<R> select = super.combined.getLastSelect();
-    List<ResultSetColumn> cols = select.getResultSetColumns();
-    ResultSetColumn[] colsa = cols == null ? null : cols.toArray(new ResultSetColumn[0]);
+    List<SQLExpression> cols = select.getResultSetColumns();
+    SQLExpression[] colsa = cols == null ? null : cols.toArray(new SQLExpression[0]);
     return new SelectTuplesColumnsPhase(this.context, select.getCTEs(), select.getDistinct(), colsa);
   }
 

@@ -3,7 +3,7 @@ package org.hotrod.livesql.queries.select;
 import java.util.List;
 
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.ResultSetColumn;
+import org.hotrod.livesql.expressions.SQLExpression;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.ctes.CTE;
 
@@ -24,7 +24,7 @@ public class NonLockableSelectDistinctOnPhase<R> {
 
   // Next phases
 
-  public NonLockableSelectColumnsPhase<R> columns(final ResultSetColumn... resultSetColumns) {
+  public NonLockableSelectColumnsPhase<R> columns(final SQLExpression... resultSetColumns) {
     return new NonLockableSelectColumnsPhase<R>(this.context, ctes, distinctOn, resultSetColumns);
   }
 

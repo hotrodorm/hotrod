@@ -3,7 +3,7 @@ package org.hotrod.livesql.queries.select;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
 import org.hotrod.livesql.metadata.Name;
-import org.hotrod.livesql.metadata.WrappingColumn;
+import org.hotrod.livesql.metadata.MetaExpression;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.QueryWriter;
@@ -30,7 +30,7 @@ public class SShield {
     return select.getCombinedSelect();
   }
 
-  public static WrappingColumn star(TableExpression t) {
+  public static MetaExpression star(TableExpression t) {
     return t.star();
   }
 
@@ -38,7 +38,7 @@ public class SShield {
     return j.getTableExpression();
   }
 
-  public static WrappingColumn star(Join j) {
+  public static MetaExpression star(Join j) {
     return j.getTableExpression().star();
   }
 

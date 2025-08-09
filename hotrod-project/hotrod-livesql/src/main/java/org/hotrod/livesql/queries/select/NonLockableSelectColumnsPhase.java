@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.ResultSetColumn;
+import org.hotrod.livesql.expressions.SQLExpression;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.select.sets.IndividualSelectPhase;
@@ -17,9 +17,9 @@ public class NonLockableSelectColumnsPhase<R> extends IndividualSelectPhase<R> {
   // Constructor
 
   public NonLockableSelectColumnsPhase(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct,
-      final ResultSetColumn... resultSetColumns) {
+      final SQLExpression... resultSetColumns) {
     super(context, ctes, distinct, false);
-    for (ResultSetColumn c : resultSetColumns) {
+    for (SQLExpression c : resultSetColumns) {
       if (c == null) {
         throw new LiveSQLException("Select columns cannot be null.");
       }
@@ -30,9 +30,9 @@ public class NonLockableSelectColumnsPhase<R> extends IndividualSelectPhase<R> {
   }
 
   public NonLockableSelectColumnsPhase(final LiveSQLContext context, final List<CTE> ctes,
-      final Expression[] distinctOn, final ResultSetColumn... resultSetColumns) {
+      final Expression[] distinctOn, final SQLExpression... resultSetColumns) {
     super(context, ctes, distinctOn, false);
-    for (ResultSetColumn c : resultSetColumns) {
+    for (SQLExpression c : resultSetColumns) {
       if (c == null) {
         throw new LiveSQLException("Select columns cannot be null.");
       }
