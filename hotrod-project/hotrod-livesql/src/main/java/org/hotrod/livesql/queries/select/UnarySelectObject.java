@@ -30,6 +30,7 @@ import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.select.sets.BaseSelectObject;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.util.IdUtil;
+import org.hotrod.livesql.util.OUtil;
 import org.hotrod.utils.Separator;
 import org.springframework.util.ReflectionUtils;
 
@@ -156,6 +157,7 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
   protected void writeColumns(final QueryWriter w, final TableExpression baseTableExpression, final List<Join> joins) {
 //    log.info("=== 4. WRITE COLUMNS ===");
     Separator sep = new Separator();
+    log.info(">2 this@" + OUtil.hc(this) + ".expandedQueryColumns=" + this.expandedQueryColumns);
     for (Expression expr : this.expandedQueryColumns) {
 
       w.write(sep.render());

@@ -4,7 +4,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.dynamicsql.RowReader;
@@ -62,9 +61,17 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
 
     boolean isListingColumns = this.resultSetColumns != null && !this.resultSetColumns.isEmpty();
 
+    if (this.from != null) {
+      SShield.assembleColumns(this.from);
+    }
+
+    if (this.joins != null) {
+      this.joins.forEach(j -> SShield.assembleColumns(j));
+    }
+
     if (isListingColumns) {
 
-      expandQueryColumns();
+      super.expandQueryColumns();
 
     } else { // columns not listed
 
@@ -85,7 +92,7 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
         this.resultSetColumns.add(SShield.star(j));
       }
 
-      expandQueryColumns();
+      super.expandQueryColumns();
 
     }
 
@@ -109,10 +116,26 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
   @Override
   public TuplesRowReader<T> getRowReader() {
     List<TableOrView<?>> allTables = new ArrayList<>();
-    allTables.add((TableOrView<?>) this.from);
-    List<TableOrView<?>> joined = this.joins.stream().map(j -> (TableOrView<?>) SShield.getTableExpression(j))
-        .collect(Collectors.toList());
-    allTables.addAll(joined);
+
+    try {
+      TableOrView<?> tv = (TableOrView<?>) this.from;
+      allTables.add(tv);
+    } catch (ClassCastException e) {
+      // Ignore other table expressions
+    }
+
+    for (Join j : this.joins) {
+      TableExpression te = SShield.getTableExpression(j);
+      try {
+        TableOrView<?> tv = (TableOrView<?>) te;
+        allTables.add(tv);
+      } catch (ClassCastException e) {
+        // Ignore other table expressions
+      }
+    }
+//    List<TableOrView<?>> joined = this.joins.stream().map(j -> (TableOrView<?>) SShield.getTableExpression(j))
+//        .collect(Collectors.toList());
+//    allTables.addAll(joined);
     return new TuplesRowReader<>(this.expandedQueryColumns, allTables);
   }
 

@@ -21,6 +21,8 @@ import org.springframework.context.annotation.Configuration;
 
 import app.persistence.dao.AccountDAO;
 import app.persistence.dao.AccountDAO.AccountTable;
+import app.persistence.dao.BranchDAO;
+import app.persistence.dao.BranchDAO.BranchTable;
 import app.persistence.dao.ProductDAO;
 import app.persistence.dao.ProductDAO.ProductTable;
 import app.persistence.model.Account;
@@ -41,6 +43,9 @@ public class App {
 
   @Autowired
   private ProductDAO productDAO;
+
+  @Autowired
+  private BranchDAO branchDAO;
 
 //  @Autowired
 //  private ADAO aDAO;
@@ -320,14 +325,23 @@ public class App {
 
     AccountTable a = this.accountDAO.newTable();
     ProductTable p = this.productDAO.newTable("p");
+    BranchTable b1 = this.branchDAO.newTable();
+    BranchTable b2 = this.branchDAO.newTable();
 
 //    Select<Row> q = this.sql.select(a.star(), p.shipping, p.type.as("ptype")).from(a).crossJoin(p).limit(2);
 //    System.out.print(q.getPreview(true));
 //    q.execute().forEach(r -> System.out.println("r=" + r));
 
-    SelectTuplesFrom2Phase<Account, Product> q = this.sql.select(a.star(), p.star(), a.balance.mult(2).as("bal2")) //
+    Subquery x = sql.subquery("x", sql.select(sql.max(b1.createdAt).as("mca")).from(b1));
+    Subquery y = sql.subquery("y", sql.select(sql.max(b2.createdAt).as("mca")).from(b2));
+
+    SelectTuplesFrom2Phase<Account, Product> q = this.sql.select( //
+        a.star(), p.shipping, a.balance.mult(2).as("bal2") //
+        , x.dt("mca") // 7
+    ) //
         .tuples() //
-        .from(a) //
+        .from(x) //
+        .crossJoin(y).crossJoin(a) //
         .crossJoin(p) //
 //        .limit(1) //
     ;

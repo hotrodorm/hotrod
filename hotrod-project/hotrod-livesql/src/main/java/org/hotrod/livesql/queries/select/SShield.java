@@ -8,8 +8,8 @@ import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
-import org.hotrod.livesql.queries.select.sets.CombinedSelectObject;
 import org.hotrod.livesql.queries.select.sets.BaseSelectObject;
+import org.hotrod.livesql.queries.select.sets.CombinedSelectObject;
 import org.hotrod.livesql.util.ToString;
 
 public class SShield {
@@ -40,6 +40,14 @@ public class SShield {
 
   public static WrappingColumn star(Join j) {
     return j.getTableExpression().star();
+  }
+
+  public static void assembleColumns(TableExpression te) {
+    te.assembleColumns();
+  }
+
+  public static void assembleColumns(Join j) {
+    j.getTableExpression().assembleColumns();
   }
 
   public static <R> SelectWherePhase<R> getSelectWherePhase(final LiveSQLContext context,

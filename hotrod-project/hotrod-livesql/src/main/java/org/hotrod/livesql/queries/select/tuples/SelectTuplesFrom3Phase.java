@@ -27,27 +27,27 @@ public class SelectTuplesFrom3Phase<A, B, C> {
 
   public SelectWherePhase<Tuple3<A, B, C>> where(final GeneralBooleanExpression predicate) {
     return SShield.getSelectWherePhase(this.metadata.getContext(),
-        new TuplesSelectObject<Tuple3<A, B, C>>(this.metadata), predicate);
+        new TuplesSelectObject<>(this.metadata), predicate);
   }
 
   public SelectGroupByPhase<Tuple3<A, B, C>> groupBy(final ComparableExpression... columns) {
     return SShield.getSelectGroupByPhase(this.metadata.getContext(),
-        new TuplesSelectObject<Tuple3<A, B, C>>(this.metadata), columns);
+        new TuplesSelectObject<>(this.metadata), columns);
   }
 
   public LockableSelectOrderByPhase<Tuple3<A, B, C>> orderBy(final OrderingTerm... orderingTerms) {
     return SShield.getSelectOrderByPhase(this.metadata.getContext(),
-        new TuplesSelectObject<Tuple3<A, B, C>>(this.metadata), orderingTerms);
+        new TuplesSelectObject<>(this.metadata), orderingTerms);
   }
 
   public LockableSelectOffsetPhase<Tuple3<A, B, C>> offset(final int offset) {
     return SShield.getSelectOffsetPhase(this.metadata.getContext(),
-        new TuplesSelectObject<Tuple3<A, B, C>>(this.metadata), offset);
+        new TuplesSelectObject<>(this.metadata), offset);
   }
 
   public LockableSelectLimitPhase<Tuple3<A, B, C>> limit(final int limit) {
     return SShield.getSelectLimitPhase(this.metadata.getContext(),
-        new TuplesSelectObject<Tuple3<A, B, C>>(this.metadata), limit);
+        new TuplesSelectObject<>(this.metadata), limit);
   }
 
   // execute

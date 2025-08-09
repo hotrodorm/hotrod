@@ -171,6 +171,8 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
 
     // Single Selects
 
+    log.info("first=" + this.first + " rest=" + this.combined.size());
+
     this.first.renderTo(w, false);
 
     for (SetOperatorTerm<T> t : this.combined) {

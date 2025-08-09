@@ -27,6 +27,8 @@
 
   <table name="product" />
 
+  <table name="branch" />
+
 <!--
   <table name="chars" />
   <table name="numbers" />

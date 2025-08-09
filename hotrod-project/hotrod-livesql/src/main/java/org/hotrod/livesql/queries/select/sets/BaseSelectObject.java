@@ -26,6 +26,7 @@ import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.select.TableExpression;
 import org.hotrod.livesql.queries.select.UnarySelectObject.LockingConcurrency;
 import org.hotrod.livesql.queries.select.UnarySelectObject.LockingMode;
+import org.hotrod.livesql.util.OUtil;
 import org.hotrod.livesql.util.ToString;
 import org.hotrod.utils.SUtil;
 import org.hotrod.utils.Separator;
@@ -78,10 +79,11 @@ public abstract class BaseSelectObject<T> extends MultiSet<T> {
   }
 
   protected void expandQueryColumns() {
-//    log.info("=== 2. EXPAND QUERY COLUMNS (AS/IF NEEDED) from " + SShield.getName(this.from) + " ===");
+    log.info("=== 2. EXPAND QUERY COLUMNS (AS/IF NEEDED) from " + SShield.getName(this.from) + " @" + OUtil.hc(this)
+        + " ===");
     this.expandedQueryColumns = new ArrayList<>();
     for (ResultSetColumn rsc : this.resultSetColumns) {
-//      log.info("=== 2.1 rsc=" + rsc);
+      log.info("=== 2.1 rsc=" + rsc);
 
       try {
         // Single column
@@ -118,6 +120,8 @@ public abstract class BaseSelectObject<T> extends MultiSet<T> {
 //        }
 //      }
     }
+    log.info(">1 this@" + OUtil.hc(this) + ".expandedQueryColumns=" + this.expandedQueryColumns);
+
 //    log.info("=== 2.10 EXPAND DONE from " + SShield.getName(this.from) + " ===");
   }
 
