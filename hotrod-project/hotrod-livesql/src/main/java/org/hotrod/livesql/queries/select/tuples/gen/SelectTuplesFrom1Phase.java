@@ -1,4 +1,4 @@
-package org.hotrod.livesql.queries.select.tuples;
+package org.hotrod.livesql.queries.select.tuples.gen;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -25,13 +25,15 @@ import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.select.SelectGroupByPhase;
 import org.hotrod.livesql.queries.select.SelectWherePhase;
 import org.hotrod.livesql.queries.select.sets.CombinedSelectObject;
+import org.hotrod.livesql.queries.select.tuples.TuplesMetadata;
+import org.hotrod.livesql.queries.select.tuples.TuplesSelectObject;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 
 public class SelectTuplesFrom1Phase<A> {
 
   private TuplesMetadata metadata;
 
-  SelectTuplesFrom1Phase(final TuplesMetadata metadata) {
+  public SelectTuplesFrom1Phase(final TuplesMetadata metadata) {
     this.metadata = metadata;
   }
 

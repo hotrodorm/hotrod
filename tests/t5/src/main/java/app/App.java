@@ -9,7 +9,7 @@ import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.select.Select;
-import org.hotrod.livesql.queries.select.tuples.Tuple1;
+import org.hotrod.livesql.queries.select.tuples.gen.Tuple1;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;

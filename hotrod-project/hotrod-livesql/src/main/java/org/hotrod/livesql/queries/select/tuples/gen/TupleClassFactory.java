@@ -1,4 +1,4 @@
-package org.hotrod.livesql.queries.select.tuples;
+package org.hotrod.livesql.queries.select.tuples.gen;
 
 public class TupleClassFactory {
 

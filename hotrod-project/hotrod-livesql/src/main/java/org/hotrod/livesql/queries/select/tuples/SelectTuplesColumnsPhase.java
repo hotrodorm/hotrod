@@ -8,6 +8,7 @@ import org.hotrod.livesql.expressions.SQLExpression;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.ctes.CTE;
+import org.hotrod.livesql.queries.select.tuples.gen.SelectTuplesFrom1Phase;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 
 public class SelectTuplesColumnsPhase {

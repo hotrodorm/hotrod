@@ -12,6 +12,7 @@ import org.hotrod.livesql.queries.select.NaturalInnerJoin;
 import org.hotrod.livesql.queries.select.NaturalLeftOuterJoin;
 import org.hotrod.livesql.queries.select.NaturalRightOuterJoin;
 import org.hotrod.livesql.queries.select.RightOuterJoin;
+import org.hotrod.livesql.queries.select.tuples.gen.SelectTuplesFrom1Phase;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 
 public class SelectTuplesFrom0Phase {

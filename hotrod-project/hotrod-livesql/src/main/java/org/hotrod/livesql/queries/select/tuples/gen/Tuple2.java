@@ -1,19 +1,18 @@
-package org.hotrod.livesql.queries.select.tuples;
+package org.hotrod.livesql.queries.select.tuples.gen;
 
 import java.util.Map;
 
-public class Tuple3<A, B, C> {
+public class Tuple2<A, B> {
 
   private A a;
   private B b;
-  private C c;
   private Map<String, Object> unbound;
 
   @SuppressWarnings("unused")
-  private Tuple3() {
+  private Tuple2() {
   }
 
-  public Tuple3(A a, B b, C c, Map<String, Object> unbound) {
+  public Tuple2(A a, B b, Map<String, Object> unbound) {
     this.a = a;
     this.b = b;
     this.unbound = unbound;
@@ -25,10 +24,6 @@ public class Tuple3<A, B, C> {
 
   public final B getB() {
     return b;
-  }
-
-  public final C getC() {
-    return c;
   }
 
   public final Map<String, Object> getUnbound() {

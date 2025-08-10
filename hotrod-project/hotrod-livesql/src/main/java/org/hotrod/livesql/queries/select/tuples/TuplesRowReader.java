@@ -18,6 +18,7 @@ import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.MDShield;
 import org.hotrod.livesql.metadata.TableOrView;
+import org.hotrod.livesql.queries.select.tuples.gen.TupleClassFactory;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.util.ColumnReader;
 import org.hotrod.livesql.util.OUtil;
