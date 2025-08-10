@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.livesql.expressions.Expression;
+import org.hotrod.livesql.expressions.binary.BinarySyntaxExpression;
 import org.hotrod.livesql.expressions.binary.BinaryExpression;
-import org.hotrod.livesql.expressions.binary.GeneralBinaryExpression;
-import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.queries.QueryWriter;
 
 /**
@@ -25,12 +25,12 @@ import org.hotrod.livesql.queries.QueryWriter;
  * @author valarcon
  *
  */
-public class BinaryCaseClause extends BinaryExpression {
+public class BinaryCaseClause extends BinarySyntaxExpression {
 
   private List<CaseWhen> whens;
-  private GeneralBinaryExpression elseValue;
+  private BinaryExpression elseValue;
 
-  public BinaryCaseClause(final GeneralBooleanExpression predicate, final GeneralBinaryExpression value) {
+  public BinaryCaseClause(final BooleanExpression predicate, final BinaryExpression value) {
     super(Expression.PRECEDENCE_CASE);
     this.whens = new ArrayList<CaseWhen>();
     this.whens.add(new CaseWhen(predicate, value));
@@ -39,13 +39,13 @@ public class BinaryCaseClause extends BinaryExpression {
     super.register(value);
   }
 
-  void addWhen(final GeneralBooleanExpression predicate, final GeneralBinaryExpression value) {
+  void addWhen(final BooleanExpression predicate, final BinaryExpression value) {
     this.whens.add(new CaseWhen(predicate, value));
     super.register(predicate);
     super.register(value);
   }
 
-  void setElse(final GeneralBinaryExpression value) {
+  void setElse(final BinaryExpression value) {
     this.elseValue = value;
     super.register(value);
   }
@@ -54,21 +54,21 @@ public class BinaryCaseClause extends BinaryExpression {
 
   private static class CaseWhen {
 
-    private GeneralBooleanExpression predicate;
-    private GeneralBinaryExpression value;
+    private BooleanExpression predicate;
+    private BinaryExpression value;
 
-    public CaseWhen(final GeneralBooleanExpression predicate, final GeneralBinaryExpression value) {
+    public CaseWhen(final BooleanExpression predicate, final BinaryExpression value) {
       this.predicate = predicate;
       this.value = value;
     }
 
     // Getters
 
-    GeneralBooleanExpression getPredicate() {
+    BooleanExpression getPredicate() {
       return predicate;
     }
 
-    GeneralBinaryExpression getValue() {
+    BinaryExpression getValue() {
       return value;
     }
 

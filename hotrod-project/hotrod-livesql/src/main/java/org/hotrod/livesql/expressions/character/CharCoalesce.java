@@ -6,11 +6,11 @@ import java.util.List;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.queries.QueryWriter;
 
-public class CharCoalesce extends CharExpression {
+public class CharCoalesce extends CharSyntaxExpression {
 
-  private List<GeneralCharExpression> expressions;
+  private List<CharExpression> expressions;
 
-  public CharCoalesce(final GeneralCharExpression... values) {
+  public CharCoalesce(final CharExpression... values) {
     super(Expression.PRECEDENCE_FUNCTION);
     this.expressions = Arrays.asList(values);
     this.expressions.forEach(e -> super.register(e));

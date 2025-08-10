@@ -1,7 +1,7 @@
 package org.hotrod.livesql.expressions.analytics;
 
 import org.hotrod.livesql.expressions.analytics.WindowExpression.FrameUnit;
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
+import org.hotrod.livesql.expressions.bool.BooleanSyntaxExpression;
 
 public class BooleanWindowFunctionOrderingStage {
 
@@ -23,7 +23,7 @@ public class BooleanWindowFunctionOrderingStage {
     return new BooleanWindowFunctionFrameUnitStage(this.function);
   }
 
-  public BooleanExpression end() {
+  public BooleanSyntaxExpression end() {
     return this.function;
   }
 

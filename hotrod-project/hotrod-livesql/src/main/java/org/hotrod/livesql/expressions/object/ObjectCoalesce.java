@@ -6,11 +6,11 @@ import java.util.List;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.queries.QueryWriter;
 
-public class ObjectCoalesce extends ObjectExpression {
+public class ObjectCoalesce extends ObjectSyntaxExpression {
 
-  private List<GeneralObjectExpression> expressions;
+  private List<ObjectExpression> expressions;
 
-  public ObjectCoalesce(final GeneralObjectExpression... values) {
+  public ObjectCoalesce(final ObjectExpression... values) {
     super(Expression.PRECEDENCE_FUNCTION);
     this.expressions = Arrays.asList(values);
     this.expressions.forEach(e -> super.register(e));

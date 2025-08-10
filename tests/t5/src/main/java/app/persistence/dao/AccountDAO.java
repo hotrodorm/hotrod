@@ -32,7 +32,7 @@ import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
-import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.expressions.bool.converter.ConvertedColumn;
 import org.hotrod.livesql.metadata.AllColumns;
 import org.hotrod.livesql.metadata.CharEntityColumn;
@@ -258,7 +258,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   // SELECT BY CRITERIA
 
-  public CriteriaWherePhase<Account> select(final AccountTable from, final GeneralBooleanExpression predicate) {
+  public CriteriaWherePhase<Account> select(final AccountTable from, final BooleanExpression predicate) {
     return new CriteriaWherePhase<Account>(this.context, from, predicate, this.rowReader);
   }
 
@@ -412,7 +412,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   // UPDATE BY CRITERIA
 
   public UpdateSetCompletePhase update(final Account values, final AccountTable tableOrView,
-      final GeneralBooleanExpression predicate) {
+      final BooleanExpression predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
     if (values.getName() != null) setters.add(new Setter(tableOrView.name, sql.val(values.getName())));
@@ -481,7 +481,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   // DELETE BY CRITERIA
 
-  public DeleteWherePhase delete(final AccountTable from, final GeneralBooleanExpression predicate) {
+  public DeleteWherePhase delete(final AccountTable from, final BooleanExpression predicate) {
     return new DeleteWherePhase(this.context, from, predicate);
   }
 

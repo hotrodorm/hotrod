@@ -4,9 +4,9 @@ import org.hotrod.livesql.queries.QueryWriter;
 
 public class Trim extends BuiltInCharFunction {
 
-  private GeneralCharExpression string;
+  private CharExpression string;
 
-  public Trim(final GeneralCharExpression string) {
+  public Trim(final CharExpression string) {
     super();
     this.string = string;
     super.register(this.string);

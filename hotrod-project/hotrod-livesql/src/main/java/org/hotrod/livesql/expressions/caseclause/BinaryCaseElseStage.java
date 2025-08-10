@@ -1,6 +1,6 @@
 package org.hotrod.livesql.expressions.caseclause;
 
-import org.hotrod.livesql.expressions.binary.BinaryExpression;
+import org.hotrod.livesql.expressions.binary.BinarySyntaxExpression;
 
 public class BinaryCaseElseStage {
 
@@ -10,7 +10,7 @@ public class BinaryCaseElseStage {
     this.clause = clause;
   }
 
-  public BinaryExpression end() {
+  public BinarySyntaxExpression end() {
     return this.clause;
   }
 

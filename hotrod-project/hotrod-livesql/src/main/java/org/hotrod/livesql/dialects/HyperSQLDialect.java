@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 
 import org.hotrod.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.livesql.expressions.Shield;
-import org.hotrod.livesql.expressions.character.GeneralCharExpression;
-import org.hotrod.livesql.expressions.datetime.GeneralDateTimeExpression;
-import org.hotrod.livesql.expressions.numeric.GeneralNumericExpression;
+import org.hotrod.livesql.expressions.character.CharExpression;
+import org.hotrod.livesql.expressions.datetime.DateTimeExpression;
+import org.hotrod.livesql.expressions.numeric.NumericExpression;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.CrossJoin;
 import org.hotrod.livesql.queries.select.FullOuterJoin;
@@ -209,7 +209,7 @@ public class HyperSQLDialect extends LiveSQLDialect {
       // Arithmetic functions
 
       @Override
-      public void logarithm(final QueryWriter w, final GeneralNumericExpression x, final GeneralNumericExpression base) {
+      public void logarithm(final QueryWriter w, final NumericExpression x, final NumericExpression base) {
         if (base == null) {
           this.write(w, "ln", x);
         } else {
@@ -222,7 +222,7 @@ public class HyperSQLDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void round(final QueryWriter w, final GeneralNumericExpression x, final GeneralNumericExpression places) {
+      public void round(final QueryWriter w, final NumericExpression x, final NumericExpression places) {
         if (places == null) {
           throw new UnsupportedLiveSQLFeatureException(
               "HyperSQL requires the number of decimal places to be specified when using the ROUND() function");
@@ -233,8 +233,8 @@ public class HyperSQLDialect extends LiveSQLDialect {
       // String functions
 
       @Override
-      public void substr(final QueryWriter w, final GeneralCharExpression string, final GeneralNumericExpression from,
-          final GeneralNumericExpression length) {
+      public void substr(final QueryWriter w, final CharExpression string, final NumericExpression from,
+          final NumericExpression length) {
         if (length == null) {
           throw new UnsupportedLiveSQLFeatureException(
               "HyperSQL requires the length to be specified when using the SUBSTR() function");
@@ -261,14 +261,14 @@ public class HyperSQLDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void date(final QueryWriter w, final GeneralDateTimeExpression datetime) {
+      public void date(final QueryWriter w, final DateTimeExpression datetime) {
         w.write("cast(");
         Shield.renderTo(datetime, w);
         w.write(" as date)");
       }
 
       @Override
-      public void time(final QueryWriter w, final GeneralDateTimeExpression datetime) {
+      public void time(final QueryWriter w, final DateTimeExpression datetime) {
         w.write("cast(");
         Shield.renderTo(datetime, w);
         w.write(" as time)");

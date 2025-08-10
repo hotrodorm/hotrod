@@ -1,6 +1,6 @@
 package org.hotrod.livesql.expressions.caseclause;
 
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
+import org.hotrod.livesql.expressions.bool.BooleanSyntaxExpression;
 
 public class BooleanCaseElseStage {
 
@@ -10,7 +10,7 @@ public class BooleanCaseElseStage {
     this.clause = clause;
   }
 
-  public BooleanExpression end() {
+  public BooleanSyntaxExpression end() {
     return this.clause;
   }
 

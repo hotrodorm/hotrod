@@ -78,27 +78,27 @@ public class Subquery extends TableExpression {
   // Subquery column reference
 
   public NumericExpression num(final String name) {
-    return new SubqueryNumericRefColumn(this, name, null);
+    return new NumericSubqueryExpression(this, name, null);
   }
 
   public CharExpression str(final String name) {
-    return new SubqueryCharRefColumn(this, name, null);
+    return new CharSubqueryExpression(this, name, null);
   }
 
   public DateTimeExpression dt(final String name) {
-    return new SubqueryDateTimeRefColumn(this, name, null);
+    return new DateTimeSubqueryExpression(this, name, null);
   }
 
   public BooleanExpression bool(final String name) {
-    return new SubqueryBooleanRefColumn(this, name, null);
+    return new BooleanSubqueryExpression(this, name, null);
   }
 
   public BinaryExpression bin(final String name) {
-    return new SubqueryBinaryRefColumn(this, name, null);
+    return new BinarySubqueryExpression(this, name, null);
   }
 
   public ObjectExpression obj(final String name) {
-    return new SubqueryObjectRefColumn(this, name, null);
+    return new ObjectSubqueryExpression(this, name, null);
   }
 
   public AllSubqueryColumns star() {

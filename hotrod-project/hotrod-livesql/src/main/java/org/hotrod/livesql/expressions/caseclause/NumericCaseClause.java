@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
-import org.hotrod.livesql.expressions.numeric.GeneralNumericExpression;
+import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.expressions.numeric.NumericExpression;
+import org.hotrod.livesql.expressions.numeric.NumericSyntaxExpression;
 import org.hotrod.livesql.queries.QueryWriter;
 
 /**
@@ -25,12 +25,12 @@ import org.hotrod.livesql.queries.QueryWriter;
  * @author valarcon
  *
  */
-public class NumericCaseClause extends NumericExpression {
+public class NumericCaseClause extends NumericSyntaxExpression {
 
   private List<CaseWhen> whens;
-  private GeneralNumericExpression elseValue;
+  private NumericExpression elseValue;
 
-  public NumericCaseClause(final GeneralBooleanExpression predicate, final GeneralNumericExpression value) {
+  public NumericCaseClause(final BooleanExpression predicate, final NumericExpression value) {
     super(Expression.PRECEDENCE_CASE);
     this.whens = new ArrayList<CaseWhen>();
     this.whens.add(new CaseWhen(predicate, value));
@@ -39,13 +39,13 @@ public class NumericCaseClause extends NumericExpression {
     super.register(value);
   }
 
-  void addWhen(final GeneralBooleanExpression predicate, final GeneralNumericExpression value) {
+  void addWhen(final BooleanExpression predicate, final NumericExpression value) {
     this.whens.add(new CaseWhen(predicate, value));
     super.register(predicate);
     super.register(value);
   }
 
-  void setElse(final GeneralNumericExpression value) {
+  void setElse(final NumericExpression value) {
     this.elseValue = value;
     super.register(value);
   }
@@ -54,21 +54,21 @@ public class NumericCaseClause extends NumericExpression {
 
   private static class CaseWhen {
 
-    private GeneralBooleanExpression predicate;
-    private GeneralNumericExpression value;
+    private BooleanExpression predicate;
+    private NumericExpression value;
 
-    public CaseWhen(final GeneralBooleanExpression predicate, final GeneralNumericExpression value) {
+    public CaseWhen(final BooleanExpression predicate, final NumericExpression value) {
       this.predicate = predicate;
       this.value = value;
     }
 
     // Getters
 
-    GeneralBooleanExpression getPredicate() {
+    BooleanExpression getPredicate() {
       return predicate;
     }
 
-    GeneralNumericExpression getValue() {
+    NumericExpression getValue() {
       return value;
     }
 

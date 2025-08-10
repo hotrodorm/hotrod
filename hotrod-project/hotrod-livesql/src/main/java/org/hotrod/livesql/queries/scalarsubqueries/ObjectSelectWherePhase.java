@@ -2,7 +2,7 @@ package org.hotrod.livesql.queries.scalarsubqueries;
 
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.expressions.ComparableExpression;
-import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.select.UnarySelectObject;
 
@@ -10,7 +10,7 @@ public class ObjectSelectWherePhase extends ObjectSelectExpression {
 
   // Constructors
 
-  ObjectSelectWherePhase(final UnarySelectObject<Row> select, final GeneralBooleanExpression predicate) {
+  ObjectSelectWherePhase(final UnarySelectObject<Row> select, final BooleanExpression predicate) {
     super(select);
     this.select.setWhereCondition(predicate);
   }

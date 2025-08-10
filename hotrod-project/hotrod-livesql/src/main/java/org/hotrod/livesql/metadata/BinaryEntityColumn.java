@@ -1,13 +1,13 @@
 package org.hotrod.livesql.metadata;
 
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.binary.GeneralBinaryExpression;
+import org.hotrod.livesql.expressions.binary.BinaryExpression;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.subqueries.Subquery;
-import org.hotrod.livesql.queries.subqueries.SubqueryBinaryRefColumn;
+import org.hotrod.livesql.queries.subqueries.BinarySubqueryExpression;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
-public class BinaryEntityColumn extends GeneralBinaryExpression implements EntityColumn {
+public class BinaryEntityColumn extends BinaryExpression implements EntityColumn {
 
   // Properties
 
@@ -36,7 +36,7 @@ public class BinaryEntityColumn extends GeneralBinaryExpression implements Entit
 
   @Override
   protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
-    SubqueryBinaryRefColumn c = new SubqueryBinaryRefColumn(subquery, alias, this);
+    BinarySubqueryExpression c = new BinarySubqueryExpression(subquery, alias, this);
     return c;
   }
 

@@ -5,15 +5,15 @@ import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.queries.QueryWriter;
 
-public class EnclosedObjectExpression extends ObjectExpression {
+public class EnclosedObjectExpression extends ObjectSyntaxExpression {
 
   // Properties
 
-  private GeneralObjectExpression expr;
+  private ObjectExpression expr;
 
   // Constructor
 
-  public EnclosedObjectExpression(final GeneralObjectExpression expr) {
+  public EnclosedObjectExpression(final ObjectExpression expr) {
     super(Expression.PRECEDENCE_PARENTHESIS);
     if (expr == null) {
       throw new LiveSQLException("Enclosed expression cannot be null");

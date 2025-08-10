@@ -4,14 +4,13 @@ import java.util.logging.Logger;
 
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
-import org.hotrod.livesql.expressions.numeric.NumericExpression;
+import org.hotrod.livesql.expressions.bool.BooleanSyntaxExpression;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.util.OUtil;
 
-public class SubqueryNumericRefColumn extends NumericExpression implements SubqueryColumn {
+public class BooleanSubqueryExpression extends BooleanSyntaxExpression implements SubqueryExpression {
 
   @SuppressWarnings("unused")
-  private static final Logger log = Logger.getLogger(SubqueryNumericRefColumn.class.getName());
+  private static final Logger log = Logger.getLogger(BooleanSubqueryExpression.class.getName());
 
   // Properties
 
@@ -22,7 +21,8 @@ public class SubqueryNumericRefColumn extends NumericExpression implements Subqu
 
   // Constructor
 
-  public SubqueryNumericRefColumn(final Subquery subquery, final String referencedColumnName, final Expression column) {
+  public BooleanSubqueryExpression(final Subquery subquery, final String referencedColumnName,
+      final Expression column) {
     super(Expression.PRECEDENCE_COLUMN);
     this.subquery = subquery;
     this.referencedColumnName = referencedColumnName;

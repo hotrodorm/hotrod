@@ -11,7 +11,7 @@ import org.hotrod.livesql.dialects.UpdateRenderer;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
-import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.MDShield;
 import org.hotrod.livesql.metadata.TableOrView;
@@ -22,7 +22,7 @@ public class UpdateObject {
 
   private TableOrView tableOrView;
   private List<Assignment> setters = new ArrayList<>();
-  private GeneralBooleanExpression wherePredicate;
+  private BooleanExpression wherePredicate;
 
   UpdateObject() {
     super();
@@ -37,7 +37,7 @@ public class UpdateObject {
     this.setters.add(new Assignment(c, e));
   }
 
-  void setWherePredicate(final GeneralBooleanExpression predicate) {
+  void setWherePredicate(final BooleanExpression predicate) {
     this.wherePredicate = predicate;
   }
 

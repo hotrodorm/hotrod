@@ -1,6 +1,6 @@
 package org.hotrod.livesql.expressions.analytics;
 
-import org.hotrod.livesql.expressions.character.CharExpression;
+import org.hotrod.livesql.expressions.character.CharSyntaxExpression;
 
 public class CharWindowFunctionFrameExcludeStage {
 
@@ -12,7 +12,7 @@ public class CharWindowFunctionFrameExcludeStage {
 
   // Next stages
 
-  public CharExpression end() {
+  public CharSyntaxExpression end() {
     return this.function;
   }
 

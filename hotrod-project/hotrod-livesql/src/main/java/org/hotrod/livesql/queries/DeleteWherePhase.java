@@ -1,6 +1,6 @@
 package org.hotrod.livesql.queries;
 
-import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.metadata.TableOrView;
 
 public class DeleteWherePhase implements DMLQuery {
@@ -13,14 +13,14 @@ public class DeleteWherePhase implements DMLQuery {
   // Constructor
 
   public DeleteWherePhase(final LiveSQLContext context, final DeleteObject delete,
-      final GeneralBooleanExpression predicate) {
+      final BooleanExpression predicate) {
     this.context = context;
     this.delete = delete;
     this.delete.setWherePredicate(predicate);
   }
 
   public DeleteWherePhase(final LiveSQLContext context, final TableOrView from,
-      final GeneralBooleanExpression predicate) {
+      final BooleanExpression predicate) {
     this.context = context;
     this.delete = new DeleteObject();
     this.delete.setFrom(from);

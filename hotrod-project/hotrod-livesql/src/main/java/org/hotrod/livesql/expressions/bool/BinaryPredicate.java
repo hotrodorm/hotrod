@@ -3,7 +3,7 @@ package org.hotrod.livesql.expressions.bool;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.queries.QueryWriter;
 
-public abstract class BinaryPredicate extends Predicate {
+public abstract class BinaryPredicate extends BooleanSyntaxExpression {
 
   private ComparableExpression left;
   private String operator;

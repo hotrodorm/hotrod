@@ -7,7 +7,7 @@ import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.utils.Separator;
 
-public class InList<T extends ComparableExpression> extends Predicate {
+public class InList<T extends ComparableExpression> extends BooleanSyntaxExpression {
 
   private T value;
   private List<T> expressions;

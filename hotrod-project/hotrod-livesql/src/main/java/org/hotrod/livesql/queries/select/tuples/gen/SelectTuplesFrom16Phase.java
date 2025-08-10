@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.livesql.expressions.ComparableExpression;
-import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.ordering.OrderingTerm;
@@ -39,7 +39,7 @@ public class SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O
 
   // joining TableOrView
 
-  public <TV extends TableOrView<Q>, Q> SelectTuplesFrom17Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> join(TV t, final GeneralBooleanExpression on) {
+  public <TV extends TableOrView<Q>, Q> SelectTuplesFrom17Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> join(TV t, final BooleanExpression on) {
     this.metadata.join(new InnerJoin(t, on));
     return new SelectTuplesFrom17Phase<>(this.metadata);
   }
@@ -50,7 +50,7 @@ public class SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O
   }
 
   public <TV extends TableOrView<Q>, Q> SelectTuplesFrom17Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> leftJoin(TV t,
-      final GeneralBooleanExpression on) {
+      final BooleanExpression on) {
     this.metadata.join(new LeftOuterJoin(t, on));
     return new SelectTuplesFrom17Phase<>(this.metadata);
   }
@@ -61,7 +61,7 @@ public class SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O
   }
 
   public <TV extends TableOrView<Q>, Q> SelectTuplesFrom17Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> rightJoin(TV t,
-      final GeneralBooleanExpression on) {
+      final BooleanExpression on) {
     this.metadata.join(new RightOuterJoin(t, on));
     return new SelectTuplesFrom17Phase<>(this.metadata);
   }
@@ -72,7 +72,7 @@ public class SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O
   }
 
   public <TV extends TableOrView<Q>, Q> SelectTuplesFrom17Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> fullJoin(TV t,
-      final GeneralBooleanExpression on) {
+      final BooleanExpression on) {
     this.metadata.join(new FullOuterJoin(t, on));
     return new SelectTuplesFrom17Phase<>(this.metadata);
   }
@@ -109,7 +109,7 @@ public class SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O
 
   // joining Subquery
 
-  public SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> join(Subquery t, final GeneralBooleanExpression on) {
+  public SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> join(Subquery t, final BooleanExpression on) {
     this.metadata.join(new InnerJoin(t, on));
     return this;
   }
@@ -119,7 +119,7 @@ public class SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O
     return this;
   }
 
-  public SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> leftJoin(Subquery t, final GeneralBooleanExpression on) {
+  public SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> leftJoin(Subquery t, final BooleanExpression on) {
     this.metadata.join(new LeftOuterJoin(t, on));
     return this;
   }
@@ -129,7 +129,7 @@ public class SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O
     return this;
   }
 
-  public SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> rightJoin(Subquery t, final GeneralBooleanExpression on) {
+  public SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> rightJoin(Subquery t, final BooleanExpression on) {
     this.metadata.join(new RightOuterJoin(t, on));
     return this;
   }
@@ -139,7 +139,7 @@ public class SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O
     return this;
   }
 
-  public SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> fullJoin(Subquery t, final GeneralBooleanExpression on) {
+  public SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> fullJoin(Subquery t, final BooleanExpression on) {
     this.metadata.join(new FullOuterJoin(t, on));
     return this;
   }
@@ -176,7 +176,7 @@ public class SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O
 
   // next phases
 
-  public SelectWherePhase<Tuple16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>> where(final GeneralBooleanExpression predicate) {
+  public SelectWherePhase<Tuple16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>> where(final BooleanExpression predicate) {
     return SShield.getSelectWherePhase(this.metadata.getContext(), new TuplesSelectObject<>(this.metadata), predicate);
   }
 

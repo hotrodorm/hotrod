@@ -1,21 +1,21 @@
 package org.hotrod.livesql.expressions.analytics;
 
 import org.hotrod.livesql.expressions.datetime.DateTimeFunction;
-import org.hotrod.livesql.expressions.datetime.GeneralDateTimeExpression;
-import org.hotrod.livesql.expressions.numeric.GeneralNumericExpression;
+import org.hotrod.livesql.expressions.datetime.DateTimeExpression;
+import org.hotrod.livesql.expressions.numeric.NumericExpression;
 
 public class DateTimeLag extends DateTimeFunction implements PositionalAnalyticFunction {
 
-  public DateTimeLag(final GeneralDateTimeExpression expression) {
+  public DateTimeLag(final DateTimeExpression expression) {
     super("lag(#{})", expression);
   }
 
-  public DateTimeLag(final GeneralDateTimeExpression expression, final GeneralNumericExpression offset) {
+  public DateTimeLag(final DateTimeExpression expression, final NumericExpression offset) {
     super("lag(#{}, #{})", expression, offset);
   }
 
-  public DateTimeLag(final GeneralDateTimeExpression expression, final GeneralNumericExpression offset,
-      final GeneralDateTimeExpression defaultValue) {
+  public DateTimeLag(final DateTimeExpression expression, final NumericExpression offset,
+      final DateTimeExpression defaultValue) {
     super("lag(#{}, #{}, #{})", expression, offset, defaultValue);
   }
 

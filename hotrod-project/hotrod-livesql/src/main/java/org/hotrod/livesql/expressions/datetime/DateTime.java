@@ -4,10 +4,10 @@ import org.hotrod.livesql.queries.QueryWriter;
 
 public class DateTime extends BuiltInDateTimeFunction {
 
-  private GeneralDateTimeExpression date;
-  private GeneralDateTimeExpression time;
+  private DateTimeExpression date;
+  private DateTimeExpression time;
 
-  public DateTime(final GeneralDateTimeExpression date, final GeneralDateTimeExpression time) {
+  public DateTime(final DateTimeExpression date, final DateTimeExpression time) {
     super();
     this.date = date;
     this.time = time;

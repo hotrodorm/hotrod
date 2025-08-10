@@ -1,7 +1,7 @@
 package org.hotrod.livesql.expressions.analytics;
 
 import org.hotrod.livesql.expressions.analytics.WindowExpression.FrameUnit;
-import org.hotrod.livesql.expressions.numeric.NumericExpression;
+import org.hotrod.livesql.expressions.numeric.NumericSyntaxExpression;
 
 public class NumericWindowFunctionOrderingStage {
 
@@ -28,7 +28,7 @@ public class NumericWindowFunctionOrderingStage {
     return new NumericWindowFunctionFrameUnitStage(this.function);
   }
 
-  public NumericExpression end() {
+  public NumericSyntaxExpression end() {
     return this.function;
   }
 

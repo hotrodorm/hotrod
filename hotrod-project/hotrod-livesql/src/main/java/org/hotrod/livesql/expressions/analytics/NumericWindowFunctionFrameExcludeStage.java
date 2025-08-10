@@ -1,6 +1,6 @@
 package org.hotrod.livesql.expressions.analytics;
 
-import org.hotrod.livesql.expressions.numeric.NumericExpression;
+import org.hotrod.livesql.expressions.numeric.NumericSyntaxExpression;
 
 public class NumericWindowFunctionFrameExcludeStage {
 
@@ -12,7 +12,7 @@ public class NumericWindowFunctionFrameExcludeStage {
 
   // Next stages
 
-  public NumericExpression end() {
+  public NumericSyntaxExpression end() {
     return this.function;
   }
 

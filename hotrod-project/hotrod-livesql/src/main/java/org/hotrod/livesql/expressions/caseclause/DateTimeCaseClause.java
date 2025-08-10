@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.BooleanExpression;
+import org.hotrod.livesql.expressions.datetime.DateTimeSyntaxExpression;
 import org.hotrod.livesql.expressions.datetime.DateTimeExpression;
-import org.hotrod.livesql.expressions.datetime.GeneralDateTimeExpression;
 import org.hotrod.livesql.queries.QueryWriter;
 
 /**
@@ -25,12 +25,12 @@ import org.hotrod.livesql.queries.QueryWriter;
  * @author valarcon
  *
  */
-public class DateTimeCaseClause extends DateTimeExpression {
+public class DateTimeCaseClause extends DateTimeSyntaxExpression {
 
   private List<CaseWhen> whens;
-  private GeneralDateTimeExpression elseValue;
+  private DateTimeExpression elseValue;
 
-  public DateTimeCaseClause(final GeneralBooleanExpression predicate, final GeneralDateTimeExpression value) {
+  public DateTimeCaseClause(final BooleanExpression predicate, final DateTimeExpression value) {
     super(Expression.PRECEDENCE_CASE);
     this.whens = new ArrayList<CaseWhen>();
     this.whens.add(new CaseWhen(predicate, value));
@@ -39,13 +39,13 @@ public class DateTimeCaseClause extends DateTimeExpression {
     super.register(value);
   }
 
-  void addWhen(final GeneralBooleanExpression predicate, final GeneralDateTimeExpression value) {
+  void addWhen(final BooleanExpression predicate, final DateTimeExpression value) {
     this.whens.add(new CaseWhen(predicate, value));
     super.register(predicate);
     super.register(value);
   }
 
-  void setElse(final GeneralDateTimeExpression value) {
+  void setElse(final DateTimeExpression value) {
     this.elseValue = value;
     super.register(value);
   }
@@ -54,21 +54,21 @@ public class DateTimeCaseClause extends DateTimeExpression {
 
   private static class CaseWhen {
 
-    private GeneralBooleanExpression predicate;
-    private GeneralDateTimeExpression value;
+    private BooleanExpression predicate;
+    private DateTimeExpression value;
 
-    public CaseWhen(final GeneralBooleanExpression predicate, final GeneralDateTimeExpression value) {
+    public CaseWhen(final BooleanExpression predicate, final DateTimeExpression value) {
       this.predicate = predicate;
       this.value = value;
     }
 
     // Getters
 
-    GeneralBooleanExpression getPredicate() {
+    BooleanExpression getPredicate() {
       return predicate;
     }
 
-    GeneralDateTimeExpression getValue() {
+    DateTimeExpression getValue() {
       return value;
     }
 

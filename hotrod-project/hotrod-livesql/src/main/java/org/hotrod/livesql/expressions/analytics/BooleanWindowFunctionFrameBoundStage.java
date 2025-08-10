@@ -1,7 +1,7 @@
 package org.hotrod.livesql.expressions.analytics;
 
 import org.hotrod.livesql.expressions.analytics.WindowExpression.FrameExclusion;
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
+import org.hotrod.livesql.expressions.bool.BooleanSyntaxExpression;
 
 public class BooleanWindowFunctionFrameBoundStage {
 
@@ -33,7 +33,7 @@ public class BooleanWindowFunctionFrameBoundStage {
     return new BooleanWindowFunctionFrameExcludeStage(this.function);
   }
 
-  public BooleanExpression end() {
+  public BooleanSyntaxExpression end() {
     return this.function;
   }
 

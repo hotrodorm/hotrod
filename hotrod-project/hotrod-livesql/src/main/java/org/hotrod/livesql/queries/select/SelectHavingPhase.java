@@ -1,6 +1,6 @@
 package org.hotrod.livesql.queries.select;
 
-import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.select.sets.CombinedSelectObject;
@@ -10,7 +10,7 @@ public class SelectHavingPhase<R> extends IndividualSelectPhase<R> {
 
   // Constructor
 
-  SelectHavingPhase(final LiveSQLContext context, final CombinedSelectObject<R> combined, final GeneralBooleanExpression predicate) {
+  SelectHavingPhase(final LiveSQLContext context, final CombinedSelectObject<R> combined, final BooleanExpression predicate) {
     super(context, combined);
     if (predicate != null) {
       this.getLastSelect().setHavingCondition(predicate);

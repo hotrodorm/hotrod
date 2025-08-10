@@ -4,7 +4,7 @@ import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.queries.QueryWriter;
 
-public class Between extends Predicate {
+public class Between extends BooleanSyntaxExpression {
 
   private ComparableExpression value;
   private ComparableExpression from;

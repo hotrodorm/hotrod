@@ -4,7 +4,7 @@ import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.Available;
 import org.hotrod.livesql.dialects.Const;
 import org.hotrod.livesql.expressions.ComparableExpression;
-import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.select.CrossJoin;
@@ -34,7 +34,7 @@ public class DateTimeSelectFromPhase extends DateTimeSelectExpression {
 
   // This stage
 
-  public DateTimeSelectFromPhase join(final TableExpression tableViewOrSubquery, final GeneralBooleanExpression on) {
+  public DateTimeSelectFromPhase join(final TableExpression tableViewOrSubquery, final BooleanExpression on) {
     this.select.addJoin(new InnerJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -45,7 +45,7 @@ public class DateTimeSelectFromPhase extends DateTimeSelectExpression {
   }
 
   public DateTimeSelectFromPhase leftJoin(final TableExpression tableViewOrSubquery,
-      final GeneralBooleanExpression on) {
+      final BooleanExpression on) {
     this.select.addJoin(new LeftOuterJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -56,7 +56,7 @@ public class DateTimeSelectFromPhase extends DateTimeSelectExpression {
   }
 
   public DateTimeSelectFromPhase rightJoin(final TableExpression tableViewOrSubquery,
-      final GeneralBooleanExpression on) {
+      final BooleanExpression on) {
     this.select.addJoin(new RightOuterJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -67,7 +67,7 @@ public class DateTimeSelectFromPhase extends DateTimeSelectExpression {
   }
 
   public DateTimeSelectFromPhase fullJoin(final TableExpression tableViewOrSubquery,
-      final GeneralBooleanExpression on) {
+      final BooleanExpression on) {
     this.select.addJoin(new FullOuterJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -127,7 +127,7 @@ public class DateTimeSelectFromPhase extends DateTimeSelectExpression {
 
   // Next stages
 
-  public DateTimeSelectWherePhase where(final GeneralBooleanExpression predicate) {
+  public DateTimeSelectWherePhase where(final BooleanExpression predicate) {
     return new DateTimeSelectWherePhase(this.select, predicate);
   }
 

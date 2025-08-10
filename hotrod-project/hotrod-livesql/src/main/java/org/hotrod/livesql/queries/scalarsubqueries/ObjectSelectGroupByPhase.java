@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.expressions.ComparableExpression;
-import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.select.UnarySelectObject;
 
@@ -19,7 +19,7 @@ public class ObjectSelectGroupByPhase extends ObjectSelectExpression {
 
   // Next stages
 
-  public ObjectSelectHavingPhase having(final GeneralBooleanExpression predicate) {
+  public ObjectSelectHavingPhase having(final BooleanExpression predicate) {
     return new ObjectSelectHavingPhase(this.select, predicate);
   }
 

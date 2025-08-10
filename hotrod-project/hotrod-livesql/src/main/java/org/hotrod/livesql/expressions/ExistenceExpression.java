@@ -1,8 +1,8 @@
 package org.hotrod.livesql.expressions;
 
+import org.hotrod.livesql.expressions.bool.BooleanSyntaxExpression;
 import org.hotrod.livesql.expressions.bool.IsNotNull;
 import org.hotrod.livesql.expressions.bool.IsNull;
-import org.hotrod.livesql.expressions.bool.Predicate;
 import org.hotrod.livesql.ordering.OrderingTerm;
 
 public abstract class ExistenceExpression extends UnaliasedExpression implements OrderingTerm {
@@ -13,11 +13,11 @@ public abstract class ExistenceExpression extends UnaliasedExpression implements
 
   // Is Null and Is Not Null
 
-  public Predicate isNotNull() {
+  public BooleanSyntaxExpression isNotNull() {
     return new IsNotNull(this);
   }
 
-  public Predicate isNull() {
+  public BooleanSyntaxExpression isNull() {
     return new IsNull(this);
   }
 

@@ -21,16 +21,37 @@ import org.hotrod.livesql.util.ToString;
  *  |                                         SortableExpression (asc/desc)
  *  AllSubqueryColumns                                  |
  *                                                      |
- *                                            EquatableExpression (=All,=Any,<>All,<>Any,in,not in)
+ *                                            EquatableExpression (=All,=Any,<>All,<>Any,in,notIn)
  *                                                      |   \
- *                                                      |  ConvertedColumn (coalesce,=,in,<>,not in,nullif)
+ *                                                      |  ConvertedColumn (coalesce,=,in,<>,notIn,nullIf)
  *                                                      |
  *                                            ComparableExpression (<All,>All,<=All,>=All,<Any,>Any,<=Any,>=Any)
- *                                                    /    \
- *                                                   /      \
- *                                   {I} Column     /        \    {I} SubqueryColumn
- *                                           \     /          \        /
- *                                          TTTColumn        SubqueryTTTColumn
+ *                                                |
+ *                                                +- NumericExpression
+ *                                                |  +- NumericEntityColumn   -> {I} EntityColumn 
+ *                                                |  +- NumericSyntaxExpression
+ *                                                |     +- NumericSubqueryExpression -> {I} SubqueryExpression
+ *                                                +- CharExpression
+ *                                                |  +- CharEntityColumn      -> {I} EntityColumn
+ *                                                |  +- CharSyntaxExpression
+ *                                                |     +- CharSubqueryExpression -> {I} SubqueryExpression
+ *                                                +- DateTimeExpression
+ *                                                |  +- DateTimeEntityColumn  -> {I} EntityColumn
+ *                                                |  +- DateTimeSyntaxExpression
+ *                                                |     +- DateTimeSubqueryExpression -> {I} SubqueryExpression
+ *                                                +- BooleanExpression
+ *                                                |  +- BooleanEntityColumn   -> {I} EntityColumn
+ *                                                |  +- BooleanSyntaxExpression
+ *                                                |     +- BooleanSubqueryExpression -> {I} SubqueryExpression
+ *                                                +- BinaryExpression
+ *                                                |  +- BinaryEntityColumn    -> {I} EntityColumn
+ *                                                |  +- BinarySyntaxExpression
+ *                                                |     +- BinarySubqueryExpression -> {I} SubqueryExpression
+ *                                                +- ObjectExpression
+ *                                                   +- ObjectEntityColumn    -> {I} EntityColumn
+ *                                                   +- ObjectSyntaxExpression
+ *                                                      +- ObjectSubqueryExpression -> {I} SubqueryExpression
+ *                                          
  * 
  * </pre>
  */

@@ -1,33 +1,33 @@
 package org.hotrod.livesql.expressions.caseclause;
 
-import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
-import org.hotrod.livesql.expressions.object.GeneralObjectExpression;
+import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.expressions.object.ObjectExpression;
+import org.hotrod.livesql.expressions.object.ObjectSyntaxExpression;
 import org.hotrod.livesql.util.BoxUtil;
 
 public class ObjectCaseWhenStage {
 
   private ObjectCaseClause clause;
 
-  public ObjectCaseWhenStage(final GeneralBooleanExpression predicate, final GeneralObjectExpression value) {
+  public ObjectCaseWhenStage(final BooleanExpression predicate, final ObjectExpression value) {
     this.clause = new ObjectCaseClause(predicate, value);
   }
 
   // Same stage
 
-  public ObjectCaseWhenStage when(final GeneralBooleanExpression predicate, final GeneralObjectExpression value) {
+  public ObjectCaseWhenStage when(final BooleanExpression predicate, final ObjectExpression value) {
     this.clause.addWhen(predicate, value);
     return this;
   }
 
-  public ObjectCaseWhenStage when(final GeneralBooleanExpression predicate, final Object value) {
+  public ObjectCaseWhenStage when(final BooleanExpression predicate, final Object value) {
     this.clause.addWhen(predicate, BoxUtil.box(value));
     return this;
   }
 
   // Next stages
 
-  public ObjectCaseElseStage elseValue(final GeneralObjectExpression value) {
+  public ObjectCaseElseStage elseValue(final ObjectExpression value) {
     this.clause.setElse(value);
     return new ObjectCaseElseStage(this.clause);
   }
@@ -39,7 +39,7 @@ public class ObjectCaseWhenStage {
 
   // Finishes the clause
 
-  public ObjectExpression end() {
+  public ObjectSyntaxExpression end() {
     return this.clause;
   }
 

@@ -3,11 +3,11 @@ package org.hotrod.livesql.expressions.bool;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.queries.QueryWriter;
 
-public class Not extends Predicate {
+public class Not extends BooleanSyntaxExpression {
 
-  private GeneralBooleanExpression a;
+  private BooleanExpression a;
 
-  public Not(final GeneralBooleanExpression a) {
+  public Not(final BooleanExpression a) {
     super(Expression.PRECEDENCE_NOT);
     this.a = a;
     super.register(this.a);

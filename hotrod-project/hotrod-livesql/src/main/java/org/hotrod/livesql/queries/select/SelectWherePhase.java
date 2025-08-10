@@ -1,7 +1,7 @@
 package org.hotrod.livesql.queries.select;
 
 import org.hotrod.livesql.expressions.ComparableExpression;
-import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.select.sets.CombinedSelectObject;
@@ -11,7 +11,7 @@ public class SelectWherePhase<R> extends LockableSelectPhase<R> {
 
   // Constructors
 
-  SelectWherePhase(final LiveSQLContext context, final CombinedSelectObject<R> combined, final GeneralBooleanExpression predicate) {
+  SelectWherePhase(final LiveSQLContext context, final CombinedSelectObject<R> combined, final BooleanExpression predicate) {
     super(context, combined);
     this.getLastSelect().setWhereCondition(predicate);
   }

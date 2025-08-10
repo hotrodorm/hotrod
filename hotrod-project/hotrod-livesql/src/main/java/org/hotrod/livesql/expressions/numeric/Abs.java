@@ -4,9 +4,9 @@ import org.hotrod.livesql.queries.QueryWriter;
 
 public class Abs extends BuiltInNumericFunction {
 
-  private GeneralNumericExpression value;
+  private NumericExpression value;
 
-  public Abs(final GeneralNumericExpression value) {
+  public Abs(final NumericExpression value) {
     super();
     this.value = value;
     super.register(this.value);

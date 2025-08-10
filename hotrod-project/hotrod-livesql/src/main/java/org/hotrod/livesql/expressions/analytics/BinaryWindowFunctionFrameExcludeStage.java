@@ -1,6 +1,6 @@
 package org.hotrod.livesql.expressions.analytics;
 
-import org.hotrod.livesql.expressions.binary.BinaryExpression;
+import org.hotrod.livesql.expressions.binary.BinarySyntaxExpression;
 
 public class BinaryWindowFunctionFrameExcludeStage {
 
@@ -12,7 +12,7 @@ public class BinaryWindowFunctionFrameExcludeStage {
 
   // Next stages
 
-  public BinaryExpression end() {
+  public BinarySyntaxExpression end() {
     return this.function;
   }
 

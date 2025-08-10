@@ -2,34 +2,34 @@ package org.hotrod.livesql.expressions.caseclause;
 
 import java.util.Date;
 
-import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.BooleanExpression;
+import org.hotrod.livesql.expressions.datetime.DateTimeSyntaxExpression;
 import org.hotrod.livesql.expressions.datetime.DateTimeExpression;
-import org.hotrod.livesql.expressions.datetime.GeneralDateTimeExpression;
 import org.hotrod.livesql.util.BoxUtil;
 
 public class DateTimeCaseWhenStage {
 
   private DateTimeCaseClause clause;
 
-  public DateTimeCaseWhenStage(final GeneralBooleanExpression predicate, final GeneralDateTimeExpression value) {
+  public DateTimeCaseWhenStage(final BooleanExpression predicate, final DateTimeExpression value) {
     this.clause = new DateTimeCaseClause(predicate, value);
   }
 
   // Same stage
 
-  public DateTimeCaseWhenStage when(final GeneralBooleanExpression predicate, final GeneralDateTimeExpression value) {
+  public DateTimeCaseWhenStage when(final BooleanExpression predicate, final DateTimeExpression value) {
     this.clause.addWhen(predicate, value);
     return this;
   }
 
-  public DateTimeCaseWhenStage when(final GeneralBooleanExpression predicate, final Date value) {
+  public DateTimeCaseWhenStage when(final BooleanExpression predicate, final Date value) {
     this.clause.addWhen(predicate, BoxUtil.box(value));
     return this;
   }
 
   // Next stages
 
-  public DateTimeCaseElseStage elseValue(final GeneralDateTimeExpression value) {
+  public DateTimeCaseElseStage elseValue(final DateTimeExpression value) {
     this.clause.setElse(value);
     return new DateTimeCaseElseStage(this.clause);
   }
@@ -41,7 +41,7 @@ public class DateTimeCaseWhenStage {
 
   // Finishes the clause
 
-  public DateTimeExpression end() {
+  public DateTimeSyntaxExpression end() {
     return this.clause;
   }
 

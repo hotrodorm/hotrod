@@ -32,7 +32,7 @@ import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
-import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.metadata.AllColumns;
 import org.hotrod.livesql.metadata.CharEntityColumn;
 import org.hotrod.livesql.metadata.DateTimeEntityColumn;
@@ -213,7 +213,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   // SELECT BY CRITERIA
 
-  public CriteriaWherePhase<Branch> select(final BranchTable from, final GeneralBooleanExpression predicate) {
+  public CriteriaWherePhase<Branch> select(final BranchTable from, final BooleanExpression predicate) {
     return new CriteriaWherePhase<Branch>(this.context, from, predicate, this.rowReader);
   }
 
@@ -346,7 +346,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
   // UPDATE BY CRITERIA
 
   public UpdateSetCompletePhase update(final Branch values, final BranchTable tableOrView,
-      final GeneralBooleanExpression predicate) {
+      final BooleanExpression predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
     if (values.getRegion() != null) setters.add(new Setter(tableOrView.region, sql.val(values.getRegion())));
@@ -409,7 +409,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   // DELETE BY CRITERIA
 
-  public DeleteWherePhase delete(final BranchTable from, final GeneralBooleanExpression predicate) {
+  public DeleteWherePhase delete(final BranchTable from, final BooleanExpression predicate) {
     return new DeleteWherePhase(this.context, from, predicate);
   }
 

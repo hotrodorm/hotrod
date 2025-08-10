@@ -4,14 +4,13 @@ import java.util.logging.Logger;
 
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
-import org.hotrod.livesql.expressions.datetime.DateTimeExpression;
+import org.hotrod.livesql.expressions.object.ObjectSyntaxExpression;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.util.OUtil;
 
-public class SubqueryDateTimeRefColumn extends DateTimeExpression implements SubqueryColumn {
+public class ObjectSubqueryExpression extends ObjectSyntaxExpression implements SubqueryExpression {
 
   @SuppressWarnings("unused")
-  private static final Logger log = Logger.getLogger(SubqueryDateTimeRefColumn.class.getName());
+  private static final Logger log = Logger.getLogger(ObjectSubqueryExpression.class.getName());
 
   // Properties
 
@@ -22,8 +21,7 @@ public class SubqueryDateTimeRefColumn extends DateTimeExpression implements Sub
 
   // Constructor
 
-  public SubqueryDateTimeRefColumn(final Subquery subquery, final String referencedColumnName,
-      final Expression column) {
+  public ObjectSubqueryExpression(final Subquery subquery, final String referencedColumnName, final Expression column) {
     super(Expression.PRECEDENCE_COLUMN);
     this.subquery = subquery;
     this.referencedColumnName = referencedColumnName;

@@ -3,12 +3,12 @@ package org.hotrod.livesql.expressions.aggregations;
 import org.hotrod.livesql.expressions.analytics.ObjectWindowExpression;
 import org.hotrod.livesql.expressions.analytics.ObjectWindowFunctionOverStage;
 import org.hotrod.livesql.expressions.analytics.WindowableAggregationFunction;
-import org.hotrod.livesql.expressions.object.GeneralObjectExpression;
+import org.hotrod.livesql.expressions.object.ObjectExpression;
 import org.hotrod.livesql.expressions.object.ObjectFunction;
 
 public class ObjectMin extends ObjectFunction implements WindowableAggregationFunction {
 
-  public ObjectMin(final GeneralObjectExpression expression) {
+  public ObjectMin(final ObjectExpression expression) {
     super("min(#{})", expression);
   }
 

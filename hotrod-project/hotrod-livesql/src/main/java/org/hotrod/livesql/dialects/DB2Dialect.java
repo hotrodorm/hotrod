@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 import org.hotrod.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.livesql.expressions.Shield;
-import org.hotrod.livesql.expressions.character.GeneralCharExpression;
-import org.hotrod.livesql.expressions.numeric.GeneralNumericExpression;
+import org.hotrod.livesql.expressions.character.CharExpression;
+import org.hotrod.livesql.expressions.numeric.NumericExpression;
 import org.hotrod.livesql.ordering.OHelper;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.QueryWriter;
@@ -297,8 +297,8 @@ public class DB2Dialect extends LiveSQLDialect {
       // General purpose functions
 
       @Override
-      public void groupConcat(final QueryWriter w, final boolean distinct, final GeneralCharExpression value,
-          final List<OrderingTerm> ordering, final GeneralCharExpression separator) {
+      public void groupConcat(final QueryWriter w, final boolean distinct, final CharExpression value,
+          final List<OrderingTerm> ordering, final CharExpression separator) {
         if (distinct) {
           throw new UnsupportedLiveSQLFeatureException(
               "DB2 does not support DISTINCT on the GROUP_CONCAT() function (listagg())");
@@ -324,7 +324,7 @@ public class DB2Dialect extends LiveSQLDialect {
       // Arithmetic functions
 
       @Override
-      public void logarithm(final QueryWriter w, final GeneralNumericExpression x, final GeneralNumericExpression base) {
+      public void logarithm(final QueryWriter w, final NumericExpression x, final NumericExpression base) {
         if (base == null) {
           this.write(w, "ln", x);
         } else {

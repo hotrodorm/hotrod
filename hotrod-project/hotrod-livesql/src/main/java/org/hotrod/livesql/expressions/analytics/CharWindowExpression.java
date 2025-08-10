@@ -8,11 +8,11 @@ import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.analytics.WindowExpression.FrameBound;
 import org.hotrod.livesql.expressions.analytics.WindowExpression.FrameExclusion;
 import org.hotrod.livesql.expressions.analytics.WindowExpression.FrameUnit;
-import org.hotrod.livesql.expressions.character.CharExpression;
+import org.hotrod.livesql.expressions.character.CharSyntaxExpression;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.QueryWriter;
 
-public class CharWindowExpression extends CharExpression {
+public class CharWindowExpression extends CharSyntaxExpression {
 
   // Properties
 

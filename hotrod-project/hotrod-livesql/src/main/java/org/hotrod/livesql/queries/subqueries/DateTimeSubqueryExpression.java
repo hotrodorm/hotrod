@@ -4,14 +4,13 @@ import java.util.logging.Logger;
 
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
-import org.hotrod.livesql.expressions.bool.Predicate;
+import org.hotrod.livesql.expressions.datetime.DateTimeSyntaxExpression;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.util.OUtil;
 
-public class SubqueryBooleanRefColumn extends Predicate implements SubqueryColumn {
+public class DateTimeSubqueryExpression extends DateTimeSyntaxExpression implements SubqueryExpression {
 
   @SuppressWarnings("unused")
-  private static final Logger log = Logger.getLogger(SubqueryBooleanRefColumn.class.getName());
+  private static final Logger log = Logger.getLogger(DateTimeSubqueryExpression.class.getName());
 
   // Properties
 
@@ -22,7 +21,8 @@ public class SubqueryBooleanRefColumn extends Predicate implements SubqueryColum
 
   // Constructor
 
-  public SubqueryBooleanRefColumn(final Subquery subquery, final String referencedColumnName, final Expression column) {
+  public DateTimeSubqueryExpression(final Subquery subquery, final String referencedColumnName,
+      final Expression column) {
     super(Expression.PRECEDENCE_COLUMN);
     this.subquery = subquery;
     this.referencedColumnName = referencedColumnName;

@@ -1,6 +1,6 @@
 package org.hotrod.livesql.expressions.caseclause;
 
-import org.hotrod.livesql.expressions.character.CharExpression;
+import org.hotrod.livesql.expressions.character.CharSyntaxExpression;
 
 public class CharCaseElseStage {
 
@@ -10,7 +10,7 @@ public class CharCaseElseStage {
     this.clause = clause;
   }
 
-  public CharExpression end() {
+  public CharSyntaxExpression end() {
     return this.clause;
   }
 

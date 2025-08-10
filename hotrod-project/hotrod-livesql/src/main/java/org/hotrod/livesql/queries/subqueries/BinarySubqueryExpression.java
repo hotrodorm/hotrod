@@ -4,14 +4,13 @@ import java.util.logging.Logger;
 
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
-import org.hotrod.livesql.expressions.object.ObjectExpression;
+import org.hotrod.livesql.expressions.binary.BinarySyntaxExpression;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.util.OUtil;
 
-public class SubqueryObjectRefColumn extends ObjectExpression implements SubqueryColumn {
+public class BinarySubqueryExpression extends BinarySyntaxExpression implements SubqueryExpression {
 
   @SuppressWarnings("unused")
-  private static final Logger log = Logger.getLogger(SubqueryObjectRefColumn.class.getName());
+  private static final Logger log = Logger.getLogger(BinarySubqueryExpression.class.getName());
 
   // Properties
 
@@ -22,7 +21,8 @@ public class SubqueryObjectRefColumn extends ObjectExpression implements Subquer
 
   // Constructor
 
-  public SubqueryObjectRefColumn(final Subquery subquery, final String referencedColumnName, final Expression column) {
+  public BinarySubqueryExpression(final Subquery subquery, final String referencedColumnName,
+      final Expression column) {
     super(Expression.PRECEDENCE_COLUMN);
     this.subquery = subquery;
     this.referencedColumnName = referencedColumnName;

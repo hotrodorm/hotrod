@@ -4,10 +4,10 @@ import org.hotrod.livesql.queries.QueryWriter;
 
 public class Round extends BuiltInNumericFunction {
 
-  private GeneralNumericExpression value;
-  private GeneralNumericExpression places;
+  private NumericExpression value;
+  private NumericExpression places;
 
-  public Round(final GeneralNumericExpression value, final GeneralNumericExpression places) {
+  public Round(final NumericExpression value, final NumericExpression places) {
     super();
     this.value = value;
     this.places = places;

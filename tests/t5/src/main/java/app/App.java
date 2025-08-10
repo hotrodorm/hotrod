@@ -395,29 +395,30 @@ public class App {
     AccountTable a3 = this.accountDAO.newTable();
     AccountTable a4 = this.accountDAO.newTable();
 
-    Select<Tuple5<Account, Account, Account, Account, Account>> q = this.sql.with(x, y).select(a.star(), a1.balance) //
-        .tuples() //
-        .from(a) //
-        .crossJoin(x) //
-        .crossJoin(y) //
-        .crossJoin(a1) //
-        .crossJoin(a2) //
-        .crossJoin(a3) //
-        .crossJoin(a4) //
-        .limit(1) //
-//        .where(a.id.eq(112)) //
-    ;
-
-    List<Tuple5<Account, Account, Account, Account, Account>> rows = q.execute();
-    int n = 1;
-    for (Tuple5<Account, Account, Account, Account, Account> r : rows) {
-      System.out.println("Row #" + n++ + ":");
-      System.out.println("** Account A: " + r.getA());
-      System.out.println("** Account A1: " + r.getB());
-      for (String prop : r.getUnbound().keySet()) {
-        System.out.println("** unbound '" + prop + "': " + r.getUnbound().get(prop));
-      }
-    }
+//    Select<Tuple5<Account, Account, Account, Account, Account>> q = this.sql.with(x, y).select(a.star(), a1.balance) //
+//        .tuples() //
+//        .from(a) //
+//        .crossJoin(x) //
+//        .crossJoin(y) //
+//        .crossJoin(a1) //
+//        .crossJoin(a2) //
+//        .crossJoin(a3) //
+//        .crossJoin(a4) //
+//        .where(a.id.gt(1))
+//        .limit(1) //
+////        .where(a.id.eq(112)) //
+//    ;
+//
+//    List<Tuple5<Account, Account, Account, Account, Account>> rows = q.execute();
+//    int n = 1;
+//    for (Tuple5<Account, Account, Account, Account, Account> r : rows) {
+//      System.out.println("Row #" + n++ + ":");
+//      System.out.println("** Account A: " + r.getA());
+//      System.out.println("** Account A1: " + r.getB());
+//      for (String prop : r.getUnbound().keySet()) {
+//        System.out.println("** unbound '" + prop + "': " + r.getUnbound().get(prop));
+//      }
+//    }
 
   }
 

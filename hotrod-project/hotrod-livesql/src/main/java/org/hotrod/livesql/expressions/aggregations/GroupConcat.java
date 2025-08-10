@@ -5,19 +5,19 @@ import java.util.List;
 import org.hotrod.livesql.expressions.analytics.CharWindowExpression;
 import org.hotrod.livesql.expressions.analytics.CharWindowFunctionOverStage;
 import org.hotrod.livesql.expressions.analytics.WindowableAggregationFunction;
-import org.hotrod.livesql.expressions.character.GeneralCharExpression;
+import org.hotrod.livesql.expressions.character.CharExpression;
 import org.hotrod.livesql.expressions.character.CharFunction;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.QueryWriter;
 
 public class GroupConcat extends CharFunction implements WindowableAggregationFunction {
 
-  private GeneralCharExpression expression;
+  private CharExpression expression;
   private List<OrderingTerm> ordering;
-  private GeneralCharExpression separator;
+  private CharExpression separator;
 
-  public GroupConcat(final GeneralCharExpression expression, final List<OrderingTerm> ordering,
-      final GeneralCharExpression separator) {
+  public GroupConcat(final CharExpression expression, final List<OrderingTerm> ordering,
+      final CharExpression separator) {
     super("<custom-rendering>");
     this.ordering = ordering;
     this.expression = expression;

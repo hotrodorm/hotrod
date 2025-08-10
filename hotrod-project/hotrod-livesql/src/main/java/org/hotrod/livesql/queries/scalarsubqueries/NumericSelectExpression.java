@@ -3,11 +3,11 @@ package org.hotrod.livesql.queries.scalarsubqueries;
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.numeric.NumericExpression;
+import org.hotrod.livesql.expressions.numeric.NumericSyntaxExpression;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.UnarySelectObject;
 
-public class NumericSelectExpression extends NumericExpression {
+public class NumericSelectExpression extends NumericSyntaxExpression {
 
   // Properties
 

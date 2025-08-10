@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 import org.hotrod.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.livesql.exceptions.UnsupportedLiveSQLFeatureException;
-import org.hotrod.livesql.expressions.numeric.GeneralNumericExpression;
+import org.hotrod.livesql.expressions.numeric.NumericExpression;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.CrossJoin;
@@ -277,7 +277,7 @@ public class MariaDBDialect extends LiveSQLDialect {
       // Arithmetic functions
 
       @Override
-      public void trunc(final QueryWriter w, final GeneralNumericExpression x, final GeneralNumericExpression places) {
+      public void trunc(final QueryWriter w, final NumericExpression x, final NumericExpression places) {
         if (places == null) {
           this.write(w, "truncate", x);
         } else {

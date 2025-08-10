@@ -5,10 +5,10 @@ import org.hotrod.livesql.queries.QueryWriter;
 
 public class Extract extends BuiltInNumericFunction {
 
-  private GeneralDateTimeExpression datetime;
+  private DateTimeExpression datetime;
   private DateTimeFieldExpression field;
 
-  public Extract(final GeneralDateTimeExpression datetime, final DateTimeFieldExpression field) {
+  public Extract(final DateTimeExpression datetime, final DateTimeFieldExpression field) {
     super();
     this.datetime = datetime;
     this.field = field;

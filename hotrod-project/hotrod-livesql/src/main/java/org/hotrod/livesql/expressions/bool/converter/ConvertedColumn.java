@@ -4,13 +4,12 @@ import org.hotrod.converter.TypeConverter;
 import org.hotrod.livesql.expressions.EquatableExpression;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.SortableExpression;
-import org.hotrod.livesql.expressions.bool.Predicate;
+import org.hotrod.livesql.expressions.bool.BooleanSyntaxExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.MDShield;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
 public class ConvertedColumn<R, D> extends EquatableExpression implements EntityColumn {
@@ -38,21 +37,21 @@ public class ConvertedColumn<R, D> extends EquatableExpression implements Entity
     super.setTypeHandler(handler);
   }
 
-  public Predicate eq(final D d) {
+  public BooleanSyntaxExpression eq(final D d) {
     return new ConvertedEqual<R, D>(this, this.converter, d);
   }
 
-  public Predicate ne(final D d) {
+  public BooleanSyntaxExpression ne(final D d) {
     return new ConvertedNotEqual<R, D>(this, this.converter, d);
   }
 
   @SuppressWarnings("unchecked")
-  public Predicate in(final D... d) {
+  public BooleanSyntaxExpression in(final D... d) {
     return new ConvertedIn<R, D>(this, this.converter, d);
   }
 
   @SuppressWarnings("unchecked")
-  public Predicate notIn(final D... d) {
+  public BooleanSyntaxExpression notIn(final D... d) {
     return new ConvertedNotIn<R, D>(this, this.converter, d);
   }
 

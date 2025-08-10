@@ -3,11 +3,11 @@ package org.hotrod.livesql.queries.scalarsubqueries;
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.bool.Predicate;
+import org.hotrod.livesql.expressions.bool.BooleanSyntaxExpression;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.UnarySelectObject;
 
-public class BooleanSelectExpression extends Predicate {
+public class BooleanSelectExpression extends BooleanSyntaxExpression {
 
   // Properties
 

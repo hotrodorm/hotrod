@@ -7,16 +7,16 @@ import org.hotrod.livesql.queries.QueryWriter;
 
 public class Concat extends BuiltInCharFunction {
 
-  private List<GeneralCharExpression> strings;
+  private List<CharExpression> strings;
 
-  public Concat(final List<GeneralCharExpression> strings) {
+  public Concat(final List<CharExpression> strings) {
     super();
     this.strings = strings;
     this.strings.forEach(e -> super.register(e));
   }
 
   @SafeVarargs
-  public Concat(final GeneralCharExpression... a) {
+  public Concat(final CharExpression... a) {
     super();
     this.strings = Arrays.asList(a);
   }

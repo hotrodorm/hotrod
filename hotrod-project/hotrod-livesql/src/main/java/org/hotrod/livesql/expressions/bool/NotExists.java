@@ -6,7 +6,7 @@ import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.select.Select;
 
-public class NotExists extends Predicate {
+public class NotExists extends BooleanSyntaxExpression {
 
   private Select<?> subquery;
 

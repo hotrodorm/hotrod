@@ -1,13 +1,13 @@
 package org.hotrod.livesql.metadata;
 
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.queries.QueryWriter;
+import org.hotrod.livesql.queries.subqueries.BooleanSubqueryExpression;
 import org.hotrod.livesql.queries.subqueries.Subquery;
-import org.hotrod.livesql.queries.subqueries.SubqueryBooleanRefColumn;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
-public class BooleanEntityColumn extends GeneralBooleanExpression implements EntityColumn {
+public class BooleanEntityColumn extends BooleanExpression implements EntityColumn {
 
   // Properties
 
@@ -34,7 +34,7 @@ public class BooleanEntityColumn extends GeneralBooleanExpression implements Ent
 
   @Override
   protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
-    SubqueryBooleanRefColumn c = new SubqueryBooleanRefColumn(subquery, alias, this);
+    BooleanSubqueryExpression c = new BooleanSubqueryExpression(subquery, alias, this);
     return c;
   }
 

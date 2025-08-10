@@ -4,11 +4,11 @@ import org.hotrod.livesql.expressions.analytics.BooleanWindowExpression;
 import org.hotrod.livesql.expressions.analytics.BooleanWindowFunctionOverStage;
 import org.hotrod.livesql.expressions.analytics.WindowableAggregationFunction;
 import org.hotrod.livesql.expressions.bool.BooleanFunction;
-import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.BooleanExpression;
 
 public class BooleanMin extends BooleanFunction implements WindowableAggregationFunction {
 
-  public BooleanMin(final GeneralBooleanExpression expression) {
+  public BooleanMin(final BooleanExpression expression) {
     super("min(#{})", expression);
   }
 

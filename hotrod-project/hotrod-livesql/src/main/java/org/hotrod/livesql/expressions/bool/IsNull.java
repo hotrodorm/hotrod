@@ -3,7 +3,7 @@ package org.hotrod.livesql.expressions.bool;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.queries.QueryWriter;
 
-public class IsNull extends Predicate {
+public class IsNull extends BooleanSyntaxExpression {
 
   private Expression a;
 

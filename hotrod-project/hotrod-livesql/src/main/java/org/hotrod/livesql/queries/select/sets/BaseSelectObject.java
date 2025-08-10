@@ -13,7 +13,7 @@ import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.SQLExpression;
 import org.hotrod.livesql.expressions.Shield;
-import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.MetaExpression;
 import org.hotrod.livesql.ordering.OHelper;
@@ -46,9 +46,9 @@ public abstract class BaseSelectObject<T> extends MultiSet<T> {
   protected TableExpression from = null;
   protected List<Join> joins = null;
 
-  protected GeneralBooleanExpression wherePredicate = null;
+  protected BooleanExpression wherePredicate = null;
   protected List<ComparableExpression> groupBy = null;
-  protected GeneralBooleanExpression havingPredicate = null;
+  protected BooleanExpression havingPredicate = null;
   protected List<OrderingTerm> orderingTerms = null;
   protected Integer offset = null;
   protected Integer limit = null;
@@ -138,7 +138,7 @@ public abstract class BaseSelectObject<T> extends MultiSet<T> {
     this.joins.add(join);
   }
 
-  public void setWhereCondition(final GeneralBooleanExpression whereCondition) {
+  public void setWhereCondition(final BooleanExpression whereCondition) {
     this.wherePredicate = whereCondition;
   }
 
@@ -146,7 +146,7 @@ public abstract class BaseSelectObject<T> extends MultiSet<T> {
     this.groupBy = groupBy;
   }
 
-  public void setHavingCondition(final GeneralBooleanExpression havingCondition) {
+  public void setHavingCondition(final BooleanExpression havingCondition) {
     this.havingPredicate = havingCondition;
   }
 
@@ -406,11 +406,11 @@ public abstract class BaseSelectObject<T> extends MultiSet<T> {
 
   // Getters
 
-  GeneralBooleanExpression getWhereCondition() {
+  BooleanExpression getWhereCondition() {
     return wherePredicate;
   }
 
-  GeneralBooleanExpression getHavingCondition() {
+  BooleanExpression getHavingCondition() {
     return havingPredicate;
   }
 

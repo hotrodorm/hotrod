@@ -1,7 +1,7 @@
 package org.hotrod.livesql.expressions.analytics;
 
 import org.hotrod.livesql.expressions.analytics.WindowExpression.FrameUnit;
-import org.hotrod.livesql.expressions.binary.BinaryExpression;
+import org.hotrod.livesql.expressions.binary.BinarySyntaxExpression;
 
 public class BinaryWindowFunctionOrderingStage {
 
@@ -23,7 +23,7 @@ public class BinaryWindowFunctionOrderingStage {
     return new BinaryWindowFunctionFrameUnitStage(this.function);
   }
 
-  public BinaryExpression end() {
+  public BinarySyntaxExpression end() {
     return this.function;
   }
 

@@ -4,9 +4,9 @@ import org.hotrod.livesql.queries.QueryWriter;
 
 public class Signum extends BuiltInNumericFunction {
 
-  private GeneralNumericExpression value;
+  private NumericExpression value;
 
-  public Signum(final GeneralNumericExpression value) {
+  public Signum(final NumericExpression value) {
     super();
     this.value = value;
     super.register(this.value);

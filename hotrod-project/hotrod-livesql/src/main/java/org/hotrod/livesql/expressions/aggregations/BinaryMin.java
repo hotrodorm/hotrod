@@ -4,11 +4,11 @@ import org.hotrod.livesql.expressions.analytics.BinaryWindowExpression;
 import org.hotrod.livesql.expressions.analytics.BinaryWindowFunctionOverStage;
 import org.hotrod.livesql.expressions.analytics.WindowableAggregationFunction;
 import org.hotrod.livesql.expressions.binary.BinaryFunction;
-import org.hotrod.livesql.expressions.binary.GeneralBinaryExpression;
+import org.hotrod.livesql.expressions.binary.BinaryExpression;
 
 public class BinaryMin extends BinaryFunction implements WindowableAggregationFunction {
 
-  public BinaryMin(final GeneralBinaryExpression expression) {
+  public BinaryMin(final BinaryExpression expression) {
     super("min(#{})", expression);
   }
 

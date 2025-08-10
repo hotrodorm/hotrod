@@ -4,10 +4,10 @@ import org.hotrod.livesql.queries.QueryWriter;
 
 public class Log extends BuiltInNumericFunction {
 
-  private GeneralNumericExpression value;
-  private GeneralNumericExpression base;
+  private NumericExpression value;
+  private NumericExpression base;
 
-  public Log(final GeneralNumericExpression value, final GeneralNumericExpression base) {
+  public Log(final NumericExpression value, final NumericExpression base) {
     super();
     this.value = value;
     this.base = base;

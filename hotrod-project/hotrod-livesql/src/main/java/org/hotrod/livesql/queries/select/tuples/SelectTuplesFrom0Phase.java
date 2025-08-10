@@ -1,6 +1,6 @@
 package org.hotrod.livesql.queries.select.tuples;
 
-import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.select.CrossJoin;
@@ -25,7 +25,7 @@ public class SelectTuplesFrom0Phase {
 
   // joining TableOrView
 
-  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> join(T t, final GeneralBooleanExpression on) {
+  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> join(T t, final BooleanExpression on) {
     this.metadata.join(new InnerJoin(t, on));
     return new SelectTuplesFrom1Phase<>(this.metadata);
   }
@@ -35,7 +35,7 @@ public class SelectTuplesFrom0Phase {
     return new SelectTuplesFrom1Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> leftJoin(T t, final GeneralBooleanExpression on) {
+  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> leftJoin(T t, final BooleanExpression on) {
     this.metadata.join(new LeftOuterJoin(t, on));
     return new SelectTuplesFrom1Phase<>(this.metadata);
   }
@@ -45,7 +45,7 @@ public class SelectTuplesFrom0Phase {
     return new SelectTuplesFrom1Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> rightJoin(T t, final GeneralBooleanExpression on) {
+  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> rightJoin(T t, final BooleanExpression on) {
     this.metadata.join(new RightOuterJoin(t, on));
     return new SelectTuplesFrom1Phase<>(this.metadata);
   }
@@ -55,7 +55,7 @@ public class SelectTuplesFrom0Phase {
     return new SelectTuplesFrom1Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> fullJoin(T t, final GeneralBooleanExpression on) {
+  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> fullJoin(T t, final BooleanExpression on) {
     this.metadata.join(new FullOuterJoin(t, on));
     return new SelectTuplesFrom1Phase<>(this.metadata);
   }
@@ -92,7 +92,7 @@ public class SelectTuplesFrom0Phase {
 
   // joining Subquery
 
-  public SelectTuplesFrom0Phase join(Subquery t, final GeneralBooleanExpression on) {
+  public SelectTuplesFrom0Phase join(Subquery t, final BooleanExpression on) {
     this.metadata.join(new InnerJoin(t, on));
     return this;
   }
@@ -102,7 +102,7 @@ public class SelectTuplesFrom0Phase {
     return this;
   }
 
-  public SelectTuplesFrom0Phase leftJoin(Subquery t, final GeneralBooleanExpression on) {
+  public SelectTuplesFrom0Phase leftJoin(Subquery t, final BooleanExpression on) {
     this.metadata.join(new LeftOuterJoin(t, on));
     return this;
   }
@@ -112,7 +112,7 @@ public class SelectTuplesFrom0Phase {
     return this;
   }
 
-  public SelectTuplesFrom0Phase rightJoin(Subquery t, final GeneralBooleanExpression on) {
+  public SelectTuplesFrom0Phase rightJoin(Subquery t, final BooleanExpression on) {
     this.metadata.join(new RightOuterJoin(t, on));
     return this;
   }
@@ -122,7 +122,7 @@ public class SelectTuplesFrom0Phase {
     return this;
   }
 
-  public SelectTuplesFrom0Phase fullJoin(Subquery t, final GeneralBooleanExpression on) {
+  public SelectTuplesFrom0Phase fullJoin(Subquery t, final BooleanExpression on) {
     this.metadata.join(new FullOuterJoin(t, on));
     return this;
   }

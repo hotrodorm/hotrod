@@ -7,7 +7,7 @@ import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.rendering.FunctionTemplate;
 import org.hotrod.livesql.queries.QueryWriter;
 
-public abstract class NumericFunction extends NumericExpression {
+public abstract class NumericFunction extends NumericSyntaxExpression {
 
   private FunctionTemplate template;
 

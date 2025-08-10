@@ -3,12 +3,12 @@ package org.hotrod.livesql.queries;
 import java.util.Date;
 
 import org.hotrod.livesql.expressions.NullLiteral;
-import org.hotrod.livesql.expressions.binary.GeneralBinaryExpression;
-import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
-import org.hotrod.livesql.expressions.character.GeneralCharExpression;
-import org.hotrod.livesql.expressions.datetime.GeneralDateTimeExpression;
-import org.hotrod.livesql.expressions.numeric.GeneralNumericExpression;
-import org.hotrod.livesql.expressions.object.GeneralObjectExpression;
+import org.hotrod.livesql.expressions.binary.BinaryExpression;
+import org.hotrod.livesql.expressions.bool.BooleanExpression;
+import org.hotrod.livesql.expressions.character.CharExpression;
+import org.hotrod.livesql.expressions.datetime.DateTimeExpression;
+import org.hotrod.livesql.expressions.numeric.NumericExpression;
+import org.hotrod.livesql.expressions.object.ObjectExpression;
 import org.hotrod.livesql.metadata.BooleanEntityColumn;
 import org.hotrod.livesql.metadata.BinaryEntityColumn;
 import org.hotrod.livesql.metadata.DateTimeEntityColumn;
@@ -35,7 +35,7 @@ public class UpdateTablePhase {
 
   // Next stages
 
-  public UpdateSetPhase set(final NumericEntityColumn column, final GeneralNumericExpression expression) {
+  public UpdateSetPhase set(final NumericEntityColumn column, final NumericExpression expression) {
     this.update.addSetter(column, expression);
     return new UpdateSetPhase(this.context, this.update);
   }
@@ -50,7 +50,7 @@ public class UpdateTablePhase {
     return new UpdateSetPhase(this.context, this.update);
   }
 
-  public UpdateSetPhase set(final CharEntityColumn column, final GeneralCharExpression expression) {
+  public UpdateSetPhase set(final CharEntityColumn column, final CharExpression expression) {
     this.update.addSetter(column, expression);
     return new UpdateSetPhase(this.context, this.update);
   }
@@ -65,7 +65,7 @@ public class UpdateTablePhase {
     return new UpdateSetPhase(this.context, this.update);
   }
 
-  public UpdateSetPhase set(final DateTimeEntityColumn column, final GeneralDateTimeExpression expression) {
+  public UpdateSetPhase set(final DateTimeEntityColumn column, final DateTimeExpression expression) {
     this.update.addSetter(column, expression);
     return new UpdateSetPhase(this.context, this.update);
   }
@@ -80,7 +80,7 @@ public class UpdateTablePhase {
     return new UpdateSetPhase(this.context, this.update);
   }
 
-  public UpdateSetPhase set(final BooleanEntityColumn column, final GeneralBooleanExpression expression) {
+  public UpdateSetPhase set(final BooleanEntityColumn column, final BooleanExpression expression) {
     this.update.addSetter(column, expression);
     return new UpdateSetPhase(this.context, this.update);
   }
@@ -95,7 +95,7 @@ public class UpdateTablePhase {
     return new UpdateSetPhase(this.context, this.update);
   }
 
-  public UpdateSetPhase set(final BinaryEntityColumn column, final GeneralBinaryExpression expression) {
+  public UpdateSetPhase set(final BinaryEntityColumn column, final BinaryExpression expression) {
     this.update.addSetter(column, expression);
     return new UpdateSetPhase(this.context, this.update);
   }
@@ -110,7 +110,7 @@ public class UpdateTablePhase {
     return new UpdateSetPhase(this.context, this.update);
   }
 
-  public UpdateSetPhase set(final ObjectEntityColumn column, final GeneralObjectExpression expression) {
+  public UpdateSetPhase set(final ObjectEntityColumn column, final ObjectExpression expression) {
     this.update.addSetter(column, expression);
     return new UpdateSetPhase(this.context, this.update);
   }

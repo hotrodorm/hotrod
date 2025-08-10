@@ -6,11 +6,11 @@ import java.util.List;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.queries.QueryWriter;
 
-public class NumericCoalesce extends NumericExpression {
+public class NumericCoalesce extends NumericSyntaxExpression {
 
-  private List<GeneralNumericExpression> expressions;
+  private List<NumericExpression> expressions;
 
-  public NumericCoalesce(final GeneralNumericExpression... values) {
+  public NumericCoalesce(final NumericExpression... values) {
     super(Expression.PRECEDENCE_FUNCTION);
     this.expressions = Arrays.asList(values);
     this.expressions.forEach(e -> super.register(e));

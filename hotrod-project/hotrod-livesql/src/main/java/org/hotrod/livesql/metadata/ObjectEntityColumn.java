@@ -1,13 +1,13 @@
 package org.hotrod.livesql.metadata;
 
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.object.GeneralObjectExpression;
+import org.hotrod.livesql.expressions.object.ObjectExpression;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.subqueries.Subquery;
-import org.hotrod.livesql.queries.subqueries.SubqueryObjectRefColumn;
+import org.hotrod.livesql.queries.subqueries.ObjectSubqueryExpression;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
-public class ObjectEntityColumn extends GeneralObjectExpression implements EntityColumn {
+public class ObjectEntityColumn extends ObjectExpression implements EntityColumn {
 
   // Properties
 
@@ -36,7 +36,7 @@ public class ObjectEntityColumn extends GeneralObjectExpression implements Entit
 
   @Override
   protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
-    SubqueryObjectRefColumn c = new SubqueryObjectRefColumn(subquery, alias, this);
+    ObjectSubqueryExpression c = new ObjectSubqueryExpression(subquery, alias, this);
     return c;
   }
 

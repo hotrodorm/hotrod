@@ -3,7 +3,7 @@ package org.hotrod.livesql.expressions.analytics;
 import java.util.Arrays;
 
 import org.hotrod.livesql.expressions.ComparableExpression;
-import org.hotrod.livesql.expressions.character.CharExpression;
+import org.hotrod.livesql.expressions.character.CharSyntaxExpression;
 import org.hotrod.livesql.ordering.OrderingTerm;
 
 public class CharWindowFunctionOverStage {
@@ -26,7 +26,7 @@ public class CharWindowFunctionOverStage {
     return new CharWindowFunctionOrderingStage(this.function);
   }
 
-  public CharExpression end() {
+  public CharSyntaxExpression end() {
     return this.function;
   }
 

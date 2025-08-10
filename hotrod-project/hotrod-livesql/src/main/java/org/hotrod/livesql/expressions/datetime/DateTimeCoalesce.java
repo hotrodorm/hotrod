@@ -6,11 +6,11 @@ import java.util.List;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.queries.QueryWriter;
 
-public class DateTimeCoalesce extends DateTimeExpression {
+public class DateTimeCoalesce extends DateTimeSyntaxExpression {
 
-  private List<GeneralDateTimeExpression> expressions;
+  private List<DateTimeExpression> expressions;
 
-  public DateTimeCoalesce(final GeneralDateTimeExpression... values) {
+  public DateTimeCoalesce(final DateTimeExpression... values) {
     super(Expression.PRECEDENCE_FUNCTION);
     this.expressions = Arrays.asList(values);
     this.expressions.forEach(e -> super.register(e));

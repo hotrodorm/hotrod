@@ -7,7 +7,7 @@ import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.rendering.FunctionTemplate;
 import org.hotrod.livesql.queries.QueryWriter;
 
-public abstract class BinaryFunction extends BinaryExpression {
+public abstract class BinaryFunction extends BinarySyntaxExpression {
 
   private FunctionTemplate template;
 

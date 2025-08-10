@@ -1,6 +1,6 @@
 package org.hotrod.livesql.expressions.caseclause;
 
-import org.hotrod.livesql.expressions.object.ObjectExpression;
+import org.hotrod.livesql.expressions.object.ObjectSyntaxExpression;
 
 public class ObjectCaseElseStage {
 
@@ -10,7 +10,7 @@ public class ObjectCaseElseStage {
     this.clause = clause;
   }
 
-  public ObjectExpression end() {
+  public ObjectSyntaxExpression end() {
     return this.clause;
   }
 

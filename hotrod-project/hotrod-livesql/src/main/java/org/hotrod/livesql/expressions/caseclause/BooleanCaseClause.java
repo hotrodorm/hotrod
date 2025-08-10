@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
-import org.hotrod.livesql.expressions.bool.Predicate;
+import org.hotrod.livesql.expressions.bool.BooleanExpression;
+import org.hotrod.livesql.expressions.bool.BooleanSyntaxExpression;
 import org.hotrod.livesql.queries.QueryWriter;
 
 /**
@@ -24,12 +24,12 @@ import org.hotrod.livesql.queries.QueryWriter;
  * @author valarcon
  *
  */
-public class BooleanCaseClause extends Predicate {
+public class BooleanCaseClause extends BooleanSyntaxExpression {
 
   private List<CaseWhen> whens;
-  private GeneralBooleanExpression elseValue;
+  private BooleanExpression elseValue;
 
-  public BooleanCaseClause(final GeneralBooleanExpression predicate, final GeneralBooleanExpression value) {
+  public BooleanCaseClause(final BooleanExpression predicate, final BooleanExpression value) {
     super(Expression.PRECEDENCE_CASE);
     this.whens = new ArrayList<CaseWhen>();
     this.whens.add(new CaseWhen(predicate, value));
@@ -38,13 +38,13 @@ public class BooleanCaseClause extends Predicate {
     super.register(value);
   }
 
-  void addWhen(final GeneralBooleanExpression predicate, final GeneralBooleanExpression value) {
+  void addWhen(final BooleanExpression predicate, final BooleanExpression value) {
     this.whens.add(new CaseWhen(predicate, value));
     super.register(predicate);
     super.register(value);
   }
 
-  void setElse(final GeneralBooleanExpression value) {
+  void setElse(final BooleanExpression value) {
     this.elseValue = value;
     super.register(value);
   }
@@ -53,21 +53,21 @@ public class BooleanCaseClause extends Predicate {
 
   private static class CaseWhen {
 
-    private GeneralBooleanExpression predicate;
-    private GeneralBooleanExpression value;
+    private BooleanExpression predicate;
+    private BooleanExpression value;
 
-    public CaseWhen(final GeneralBooleanExpression predicate, final GeneralBooleanExpression value) {
+    public CaseWhen(final BooleanExpression predicate, final BooleanExpression value) {
       this.predicate = predicate;
       this.value = value;
     }
 
     // Getters
 
-    GeneralBooleanExpression getPredicate() {
+    BooleanExpression getPredicate() {
       return predicate;
     }
 
-    GeneralBooleanExpression getValue() {
+    BooleanExpression getValue() {
       return value;
     }
 

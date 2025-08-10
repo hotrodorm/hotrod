@@ -3,13 +3,13 @@ package org.hotrod.livesql.metadata;
 import java.util.logging.Logger;
 
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.numeric.GeneralNumericExpression;
+import org.hotrod.livesql.expressions.numeric.NumericExpression;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.subqueries.Subquery;
-import org.hotrod.livesql.queries.subqueries.SubqueryNumericRefColumn;
+import org.hotrod.livesql.queries.subqueries.NumericSubqueryExpression;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
-public class NumericEntityColumn extends GeneralNumericExpression implements EntityColumn {
+public class NumericEntityColumn extends NumericExpression implements EntityColumn {
 
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(NumericEntityColumn.class.getName());
@@ -41,7 +41,7 @@ public class NumericEntityColumn extends GeneralNumericExpression implements Ent
 
   @Override
   protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
-    SubqueryNumericRefColumn c = new SubqueryNumericRefColumn(subquery, alias, this);
+    NumericSubqueryExpression c = new NumericSubqueryExpression(subquery, alias, this);
     return c;
   }
 

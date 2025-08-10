@@ -1,20 +1,20 @@
 package org.hotrod.livesql.expressions.analytics;
 
-import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.expressions.character.CharFunction;
-import org.hotrod.livesql.expressions.numeric.GeneralNumericExpression;
+import org.hotrod.livesql.expressions.numeric.NumericExpression;
 
 public class BooleanLag extends CharFunction implements PositionalAnalyticFunction {
 
-  public BooleanLag(final GeneralBooleanExpression expression) {
+  public BooleanLag(final BooleanExpression expression) {
     super("lag(#{})", expression);
   }
 
-  public BooleanLag(final GeneralBooleanExpression expression, final GeneralNumericExpression offset) {
+  public BooleanLag(final BooleanExpression expression, final NumericExpression offset) {
     super("lag(#{}, #{})", expression, offset);
   }
 
-  public BooleanLag(final GeneralBooleanExpression expression, final GeneralNumericExpression offset, final GeneralBooleanExpression defaultValue) {
+  public BooleanLag(final BooleanExpression expression, final NumericExpression offset, final BooleanExpression defaultValue) {
     super("lag(#{}, #{}, #{})", expression, offset, defaultValue);
   }
 

@@ -1,7 +1,7 @@
 package org.hotrod.livesql.expressions.analytics;
 
 import org.hotrod.livesql.expressions.analytics.WindowExpression.FrameExclusion;
-import org.hotrod.livesql.expressions.character.CharExpression;
+import org.hotrod.livesql.expressions.character.CharSyntaxExpression;
 
 public class CharWindowFunctionFrameBoundStage {
 
@@ -33,7 +33,7 @@ public class CharWindowFunctionFrameBoundStage {
     return new CharWindowFunctionFrameExcludeStage(this.function);
   }
 
-  public CharExpression end() {
+  public CharSyntaxExpression end() {
     return this.function;
   }
 

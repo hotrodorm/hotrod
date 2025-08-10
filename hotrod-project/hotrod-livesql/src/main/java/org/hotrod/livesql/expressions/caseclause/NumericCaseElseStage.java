@@ -1,6 +1,6 @@
 package org.hotrod.livesql.expressions.caseclause;
 
-import org.hotrod.livesql.expressions.numeric.NumericExpression;
+import org.hotrod.livesql.expressions.numeric.NumericSyntaxExpression;
 
 public class NumericCaseElseStage {
 
@@ -10,7 +10,7 @@ public class NumericCaseElseStage {
     this.clause = clause;
   }
 
-  public NumericExpression end() {
+  public NumericSyntaxExpression end() {
     return this.clause;
   }
 

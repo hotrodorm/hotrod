@@ -3,12 +3,12 @@ package org.hotrod.livesql.expressions.numeric;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.queries.QueryWriter;
 
-public class NumericNullIf extends NumericExpression {
+public class NumericNullIf extends NumericSyntaxExpression {
 
-  private GeneralNumericExpression a;
-  private GeneralNumericExpression b;
+  private NumericExpression a;
+  private NumericExpression b;
 
-  public NumericNullIf(final GeneralNumericExpression a, final GeneralNumericExpression b) {
+  public NumericNullIf(final NumericExpression a, final NumericExpression b) {
     super(Expression.PRECEDENCE_FUNCTION);
     this.a = a;
     this.b = b;

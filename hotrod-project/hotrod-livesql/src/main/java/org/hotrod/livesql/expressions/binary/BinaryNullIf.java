@@ -3,12 +3,12 @@ package org.hotrod.livesql.expressions.binary;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.queries.QueryWriter;
 
-public class BinaryNullIf extends BinaryExpression {
+public class BinaryNullIf extends BinarySyntaxExpression {
 
-  private GeneralBinaryExpression a;
-  private GeneralBinaryExpression b;
+  private BinaryExpression a;
+  private BinaryExpression b;
 
-  public BinaryNullIf(final GeneralBinaryExpression a, final GeneralBinaryExpression b) {
+  public BinaryNullIf(final BinaryExpression a, final BinaryExpression b) {
     super(Expression.PRECEDENCE_FUNCTION);
     this.a = a;
     this.b = b;

@@ -1,13 +1,13 @@
 package org.hotrod.livesql.metadata;
 
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.character.GeneralCharExpression;
+import org.hotrod.livesql.expressions.character.CharExpression;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.subqueries.Subquery;
-import org.hotrod.livesql.queries.subqueries.SubqueryCharRefColumn;
+import org.hotrod.livesql.queries.subqueries.CharSubqueryExpression;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
-public class CharEntityColumn extends GeneralCharExpression implements EntityColumn {
+public class CharEntityColumn extends CharExpression implements EntityColumn {
 
   // Properties
 
@@ -36,7 +36,7 @@ public class CharEntityColumn extends GeneralCharExpression implements EntityCol
 
   @Override
   protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
-    SubqueryCharRefColumn c = new SubqueryCharRefColumn(subquery, alias, this);
+    CharSubqueryExpression c = new CharSubqueryExpression(subquery, alias, this);
     return c;
   }
 

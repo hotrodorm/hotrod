@@ -1,13 +1,13 @@
 package org.hotrod.livesql.metadata;
 
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.datetime.GeneralDateTimeExpression;
+import org.hotrod.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.subqueries.Subquery;
-import org.hotrod.livesql.queries.subqueries.SubqueryDateTimeRefColumn;
+import org.hotrod.livesql.queries.subqueries.DateTimeSubqueryExpression;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
-public class DateTimeEntityColumn extends GeneralDateTimeExpression implements EntityColumn {
+public class DateTimeEntityColumn extends DateTimeExpression implements EntityColumn {
 
   // Properties
 
@@ -36,7 +36,7 @@ public class DateTimeEntityColumn extends GeneralDateTimeExpression implements E
 
   @Override
   protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
-    SubqueryDateTimeRefColumn c = new SubqueryDateTimeRefColumn(subquery, alias, this);
+    DateTimeSubqueryExpression c = new DateTimeSubqueryExpression(subquery, alias, this);
     return c;
   }
 

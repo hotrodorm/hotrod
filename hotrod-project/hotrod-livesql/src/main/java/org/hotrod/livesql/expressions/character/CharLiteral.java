@@ -7,7 +7,7 @@ import org.hotrod.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.queries.QueryWriter;
 
-public class CharLiteral extends CharExpression {
+public class CharLiteral extends CharSyntaxExpression {
 
   private static final String RULE = "Formally, a LiveSQL String literal must be a non-null value "
       + "and can only include ASCII chars between <space> and tilde (~).";

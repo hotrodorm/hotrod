@@ -3,7 +3,7 @@ package org.hotrod.livesql.expressions.analytics;
 import java.util.Arrays;
 
 import org.hotrod.livesql.expressions.ComparableExpression;
-import org.hotrod.livesql.expressions.datetime.DateTimeExpression;
+import org.hotrod.livesql.expressions.datetime.DateTimeSyntaxExpression;
 import org.hotrod.livesql.ordering.OrderingTerm;
 
 public class DateTimeWindowFunctionOverStage {
@@ -26,7 +26,7 @@ public class DateTimeWindowFunctionOverStage {
     return new DateTimeWindowFunctionOrderingStage(this.function);
   }
 
-  public DateTimeExpression end() {
+  public DateTimeSyntaxExpression end() {
     return this.function;
   }
 

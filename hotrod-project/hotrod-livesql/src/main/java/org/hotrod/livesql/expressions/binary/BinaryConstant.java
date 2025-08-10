@@ -4,7 +4,7 @@ import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.SQLParameterWriter.RenderedParameter;
 
-public class BinaryConstant extends BinaryExpression {
+public class BinaryConstant extends BinarySyntaxExpression {
 
   // Properties
 

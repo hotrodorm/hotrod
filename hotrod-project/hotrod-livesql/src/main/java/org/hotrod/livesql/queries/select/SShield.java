@@ -1,7 +1,7 @@
 package org.hotrod.livesql.queries.select;
 
 import org.hotrod.livesql.expressions.ComparableExpression;
-import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.MetaExpression;
 import org.hotrod.livesql.ordering.OrderingTerm;
@@ -51,7 +51,7 @@ public class SShield {
   }
 
   public static <R> SelectWherePhase<R> getSelectWherePhase(final LiveSQLContext context,
-      final BaseSelectObject<R> select, final GeneralBooleanExpression predicate) {
+      final BaseSelectObject<R> select, final BooleanExpression predicate) {
     CombinedSelectObject<R> combined = new CombinedSelectObject<R>(select);
     return new SelectWherePhase<R>(context, combined, predicate);
   }

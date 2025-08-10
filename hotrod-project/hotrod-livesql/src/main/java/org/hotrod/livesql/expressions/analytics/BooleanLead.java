@@ -1,20 +1,20 @@
 package org.hotrod.livesql.expressions.analytics;
 
 import org.hotrod.livesql.expressions.bool.BooleanFunction;
-import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
-import org.hotrod.livesql.expressions.numeric.GeneralNumericExpression;
+import org.hotrod.livesql.expressions.bool.BooleanExpression;
+import org.hotrod.livesql.expressions.numeric.NumericExpression;
 
 public class BooleanLead extends BooleanFunction implements PositionalAnalyticFunction {
 
-  public BooleanLead(final GeneralBooleanExpression expression) {
+  public BooleanLead(final BooleanExpression expression) {
     super("lead(#{})", expression);
   }
 
-  public BooleanLead(final GeneralBooleanExpression expression, final GeneralNumericExpression offset) {
+  public BooleanLead(final BooleanExpression expression, final NumericExpression offset) {
     super("lead(#{}, #{})", expression, offset);
   }
 
-  public BooleanLead(final GeneralBooleanExpression expression, final GeneralNumericExpression offset, final GeneralBooleanExpression defaultValue) {
+  public BooleanLead(final BooleanExpression expression, final NumericExpression offset, final BooleanExpression defaultValue) {
     super("lead(#{}, #{}, #{})", expression, offset, defaultValue);
   }
 

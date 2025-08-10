@@ -1,7 +1,7 @@
 package org.hotrod.livesql.expressions.analytics;
 
 import org.hotrod.livesql.expressions.analytics.WindowExpression.FrameUnit;
-import org.hotrod.livesql.expressions.datetime.DateTimeExpression;
+import org.hotrod.livesql.expressions.datetime.DateTimeSyntaxExpression;
 
 public class DateTimeWindowFunctionOrderingStage {
 
@@ -25,7 +25,7 @@ public class DateTimeWindowFunctionOrderingStage {
     return new DateTimeWindowFunctionFrameUnitStage(this.function);
   }
 
-  public DateTimeExpression end() {
+  public DateTimeSyntaxExpression end() {
     return this.function;
   }
 

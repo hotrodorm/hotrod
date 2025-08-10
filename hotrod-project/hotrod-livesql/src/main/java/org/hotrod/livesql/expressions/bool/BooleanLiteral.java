@@ -3,7 +3,7 @@ package org.hotrod.livesql.expressions.bool;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.queries.QueryWriter;
 
-public class BooleanLiteral extends Predicate {
+public class BooleanLiteral extends BooleanSyntaxExpression {
 
   protected static final BooleanLiteral FALSE = new BooleanLiteral(false);
   protected static final BooleanLiteral TRUE = new BooleanLiteral(true);

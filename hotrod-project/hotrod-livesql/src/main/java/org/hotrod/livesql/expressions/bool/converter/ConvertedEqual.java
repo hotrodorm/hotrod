@@ -5,11 +5,11 @@ import java.util.logging.Logger;
 
 import org.hotrod.converter.TypeConverter;
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.bool.Predicate;
+import org.hotrod.livesql.expressions.bool.BooleanSyntaxExpression;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.SQLParameterWriter.RenderedParameter;
 
-public class ConvertedEqual<R, D> extends Predicate {
+public class ConvertedEqual<R, D> extends BooleanSyntaxExpression {
 
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(ConvertedEqual.class.getName());
