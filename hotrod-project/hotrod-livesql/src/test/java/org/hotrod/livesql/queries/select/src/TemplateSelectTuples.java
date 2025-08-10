@@ -1,0 +1,220 @@
+package org.hotrod.livesql.queries.select.tuples;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import org.hotrod.dynamicsql.Cursor;
+import org.hotrod.livesql.expressions.ComparableExpression;
+import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
+import org.hotrod.livesql.metadata.EntityColumn;
+import org.hotrod.livesql.metadata.TableOrView;
+import org.hotrod.livesql.ordering.OrderingTerm;
+import org.hotrod.livesql.queries.select.CrossJoin;
+import org.hotrod.livesql.queries.select.FullOuterJoin;
+import org.hotrod.livesql.queries.select.InnerJoin;
+import org.hotrod.livesql.queries.select.LeftOuterJoin;
+import org.hotrod.livesql.queries.select.LockableSelectLimitPhase;
+import org.hotrod.livesql.queries.select.LockableSelectOffsetPhase;
+import org.hotrod.livesql.queries.select.LockableSelectOrderByPhase;
+import org.hotrod.livesql.queries.select.NaturalFullOuterJoin;
+import org.hotrod.livesql.queries.select.NaturalInnerJoin;
+import org.hotrod.livesql.queries.select.NaturalLeftOuterJoin;
+import org.hotrod.livesql.queries.select.NaturalRightOuterJoin;
+import org.hotrod.livesql.queries.select.RightOuterJoin;
+import org.hotrod.livesql.queries.select.SShield;
+import org.hotrod.livesql.queries.select.SelectGroupByPhase;
+import org.hotrod.livesql.queries.select.SelectWherePhase;
+import org.hotrod.livesql.queries.select.sets.CombinedSelectObject;
+import org.hotrod.livesql.queries.subqueries.Subquery;
+
+public class @@classc@@ {
+
+  private TuplesMetadata metadata;
+
+  @@classp@@(final TuplesMetadata metadata) {
+    this.metadata = metadata;
+  }
+
+  // joining TableOrView
+
+  public @@t@@ @@classn@@ join(T t, final GeneralBooleanExpression on) {
+    this.metadata.join(new InnerJoin(t, on));
+    return new @@classnNew@@(this.metadata);
+  }
+
+  public @@t@@ @@classn@@ join(T t, final EntityColumn... using) {
+    this.metadata.join(new InnerJoin(t, using));
+    return new @@classnNew@@(this.metadata);
+  }
+
+  public @@t@@ @@classn@@ leftJoin(T t,
+      final GeneralBooleanExpression on) {
+    this.metadata.join(new LeftOuterJoin(t, on));
+    return new @@classnNew@@(this.metadata);
+  }
+
+  public @@t@@ @@classn@@ leftJoin(T t, final EntityColumn... using) {
+    this.metadata.join(new LeftOuterJoin(t, using));
+    return new @@classnNew@@(this.metadata);
+  }
+
+  public @@t@@ @@classn@@ rightJoin(T t,
+      final GeneralBooleanExpression on) {
+    this.metadata.join(new RightOuterJoin(t, on));
+    return new @@classnNew@@(this.metadata);
+  }
+
+  public @@t@@ @@classn@@ rightJoin(T t, final EntityColumn... using) {
+    this.metadata.join(new RightOuterJoin(t, using));
+    return new @@classnNew@@(this.metadata);
+  }
+
+  public @@t@@ @@classn@@ fullJoin(T t,
+      final GeneralBooleanExpression on) {
+    this.metadata.join(new FullOuterJoin(t, on));
+    return new @@classnNew@@(this.metadata);
+  }
+
+  public @@t@@ @@classn@@ fullJoin(T t, final EntityColumn... using) {
+    this.metadata.join(new FullOuterJoin(t, using));
+    return new @@classnNew@@(this.metadata);
+  }
+
+  public @@t@@ @@classn@@ crossJoin(T t) {
+    this.metadata.join(new CrossJoin(t));
+    return new @@classnNew@@(this.metadata);
+  }
+
+  public @@t@@ @@classn@@ naturalJoin(T t) {
+    this.metadata.join(new NaturalInnerJoin(t));
+    return new @@classnNew@@(this.metadata);
+  }
+
+  public @@t@@ @@classn@@ naturalLeftJoin(T t) {
+    this.metadata.join(new NaturalLeftOuterJoin(t));
+    return new @@classnNew@@(this.metadata);
+  }
+
+  public @@t@@ @@classn@@ naturalRightJoin(T t) {
+    this.metadata.join(new NaturalRightOuterJoin(t));
+    return new @@classnNew@@(this.metadata);
+  }
+
+  public @@t@@ @@classn@@ naturalFullJoin(T t) {
+    this.metadata.join(new NaturalFullOuterJoin(t));
+    return new @@classnNew@@(this.metadata);
+  }
+
+  // joining Subquery
+
+  public @@classc@@ join(Subquery t, final GeneralBooleanExpression on) {
+    this.metadata.join(new InnerJoin(t, on));
+    return this;
+  }
+
+  public @@classc@@ join(Subquery t, final EntityColumn... using) {
+    this.metadata.join(new InnerJoin(t, using));
+    return this;
+  }
+
+  public @@classc@@ leftJoin(Subquery t, final GeneralBooleanExpression on) {
+    this.metadata.join(new LeftOuterJoin(t, on));
+    return this;
+  }
+
+  public @@classc@@ leftJoin(Subquery t, final EntityColumn... using) {
+    this.metadata.join(new LeftOuterJoin(t, using));
+    return this;
+  }
+
+  public @@classc@@ rightJoin(Subquery t, final GeneralBooleanExpression on) {
+    this.metadata.join(new RightOuterJoin(t, on));
+    return this;
+  }
+
+  public @@classc@@ rightJoin(Subquery t, final EntityColumn... using) {
+    this.metadata.join(new RightOuterJoin(t, using));
+    return this;
+  }
+
+  public @@classc@@ fullJoin(Subquery t, final GeneralBooleanExpression on) {
+    this.metadata.join(new FullOuterJoin(t, on));
+    return this;
+  }
+
+  public @@classc@@ fullJoin(Subquery t, final EntityColumn... using) {
+    this.metadata.join(new FullOuterJoin(t, using));
+    return this;
+  }
+
+  public @@classc@@ crossJoin(Subquery t) {
+    this.metadata.join(new CrossJoin(t));
+    return this;
+  }
+
+  public @@classc@@ naturalJoin(Subquery t) {
+    this.metadata.join(new NaturalInnerJoin(t));
+    return this;
+  }
+
+  public @@classc@@ naturalLeftJoin(Subquery t) {
+    this.metadata.join(new NaturalLeftOuterJoin(t));
+    return this;
+  }
+
+  public @@classc@@ naturalRightJoin(Subquery t) {
+    this.metadata.join(new NaturalRightOuterJoin(t));
+    return this;
+  }
+
+  public @@classc@@ naturalFullJoin(Subquery t) {
+    this.metadata.join(new NaturalFullOuterJoin(t));
+    return this;
+  }
+
+  // next phases
+
+  public SelectWherePhase<@@tupleClassc@@> where(final GeneralBooleanExpression predicate) {
+    return SShield.getSelectWherePhase(this.metadata.getContext(), new TuplesSelectObject<>(this.metadata), predicate);
+  }
+
+  public SelectGroupByPhase<@@tupleClassc@@> groupBy(final ComparableExpression... columns) {
+    return SShield.getSelectGroupByPhase(this.metadata.getContext(), new TuplesSelectObject<>(this.metadata), columns);
+  }
+
+  public LockableSelectOrderByPhase<@@tupleClassc@@> orderBy(final OrderingTerm... orderingTerms) {
+    return SShield.getSelectOrderByPhase(this.metadata.getContext(), new TuplesSelectObject<>(this.metadata),
+        orderingTerms);
+  }
+
+  public LockableSelectOffsetPhase<@@tupleClassc@@> offset(final int offset) {
+    return SShield.getSelectOffsetPhase(this.metadata.getContext(), new TuplesSelectObject<>(this.metadata), offset);
+  }
+
+  public LockableSelectLimitPhase<@@tupleClassc@@> limit(final int limit) {
+    return SShield.getSelectLimitPhase(this.metadata.getContext(), new TuplesSelectObject<>(this.metadata), limit);
+  }
+
+  // execute
+
+  public List<@@tupleClassc@@> execute() {
+    CombinedSelectObject<@@tupleClassc@@> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
+    return combined.execute(this.metadata.getContext());
+  }
+
+  public Cursor<@@tupleClassc@@> executeCursor() throws SQLException {
+    CombinedSelectObject<@@tupleClassc@@> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
+    return combined.executeCursor(this.metadata.getContext());
+  }
+
+  public Cursor<@@tupleClassc@@> executeCursor(int fetchSize) throws SQLException {
+    CombinedSelectObject<@@tupleClassc@@> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
+    return combined.executeCursor(this.metadata.getContext(), fetchSize);
+  }
+
+  public @@tupleClassc@@ executeOne() throws SQLException {
+    CombinedSelectObject<@@tupleClassc@@> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
+    return combined.executeOne(this.metadata.getContext());
+  }
+
+}
