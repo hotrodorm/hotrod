@@ -39,67 +39,70 @@ public class SelectTuplesFrom1Phase<A> {
 
   // joining TableOrView
 
-  public <T extends TableOrView<B>, B> SelectTuplesFrom2Phase<A, B> join(T t, final GeneralBooleanExpression on) {
+  public <TV extends TableOrView<B>, B> SelectTuplesFrom2Phase<A, B> join(TV t, final GeneralBooleanExpression on) {
     this.metadata.join(new InnerJoin(t, on));
     return new SelectTuplesFrom2Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<B>, B> SelectTuplesFrom2Phase<A, B> join(T t, final EntityColumn... using) {
+  public <TV extends TableOrView<B>, B> SelectTuplesFrom2Phase<A, B> join(TV t, final EntityColumn... using) {
     this.metadata.join(new InnerJoin(t, using));
     return new SelectTuplesFrom2Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<B>, B> SelectTuplesFrom2Phase<A, B> leftJoin(T t, final GeneralBooleanExpression on) {
+  public <TV extends TableOrView<B>, B> SelectTuplesFrom2Phase<A, B> leftJoin(TV t,
+      final GeneralBooleanExpression on) {
     this.metadata.join(new LeftOuterJoin(t, on));
     return new SelectTuplesFrom2Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<B>, B> SelectTuplesFrom2Phase<A, B> leftJoin(T t, final EntityColumn... using) {
+  public <TV extends TableOrView<B>, B> SelectTuplesFrom2Phase<A, B> leftJoin(TV t, final EntityColumn... using) {
     this.metadata.join(new LeftOuterJoin(t, using));
     return new SelectTuplesFrom2Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<B>, B> SelectTuplesFrom2Phase<A, B> rightJoin(T t, final GeneralBooleanExpression on) {
+  public <TV extends TableOrView<B>, B> SelectTuplesFrom2Phase<A, B> rightJoin(TV t,
+      final GeneralBooleanExpression on) {
     this.metadata.join(new RightOuterJoin(t, on));
     return new SelectTuplesFrom2Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<B>, B> SelectTuplesFrom2Phase<A, B> rightJoin(T t, final EntityColumn... using) {
+  public <TV extends TableOrView<B>, B> SelectTuplesFrom2Phase<A, B> rightJoin(TV t, final EntityColumn... using) {
     this.metadata.join(new RightOuterJoin(t, using));
     return new SelectTuplesFrom2Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<B>, B> SelectTuplesFrom2Phase<A, B> fullJoin(T t, final GeneralBooleanExpression on) {
+  public <TV extends TableOrView<B>, B> SelectTuplesFrom2Phase<A, B> fullJoin(TV t,
+      final GeneralBooleanExpression on) {
     this.metadata.join(new FullOuterJoin(t, on));
     return new SelectTuplesFrom2Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<B>, B> SelectTuplesFrom2Phase<A, B> fullJoin(T t, final EntityColumn... using) {
+  public <TV extends TableOrView<B>, B> SelectTuplesFrom2Phase<A, B> fullJoin(TV t, final EntityColumn... using) {
     this.metadata.join(new FullOuterJoin(t, using));
     return new SelectTuplesFrom2Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<B>, B> SelectTuplesFrom2Phase<A, B> crossJoin(T t) {
+  public <TV extends TableOrView<B>, B> SelectTuplesFrom2Phase<A, B> crossJoin(TV t) {
     this.metadata.join(new CrossJoin(t));
     return new SelectTuplesFrom2Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<B>, B> SelectTuplesFrom2Phase<A, B> naturalJoin(T t) {
+  public <TV extends TableOrView<B>, B> SelectTuplesFrom2Phase<A, B> naturalJoin(TV t) {
     this.metadata.join(new NaturalInnerJoin(t));
     return new SelectTuplesFrom2Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<B>, B> SelectTuplesFrom2Phase<A, B> naturalLeftJoin(T t) {
+  public <TV extends TableOrView<B>, B> SelectTuplesFrom2Phase<A, B> naturalLeftJoin(TV t) {
     this.metadata.join(new NaturalLeftOuterJoin(t));
     return new SelectTuplesFrom2Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<B>, B> SelectTuplesFrom2Phase<A, B> naturalRightJoin(T t) {
+  public <TV extends TableOrView<B>, B> SelectTuplesFrom2Phase<A, B> naturalRightJoin(TV t) {
     this.metadata.join(new NaturalRightOuterJoin(t));
     return new SelectTuplesFrom2Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<B>, B> SelectTuplesFrom2Phase<A, B> naturalFullJoin(T t) {
+  public <TV extends TableOrView<B>, B> SelectTuplesFrom2Phase<A, B> naturalFullJoin(TV t) {
     this.metadata.join(new NaturalFullOuterJoin(t));
     return new SelectTuplesFrom2Phase<>(this.metadata);
   }

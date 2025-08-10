@@ -13,7 +13,7 @@ import org.hotrod.utils.SUtil;
 
 public class Gen {
 
-  private static String SRC_DIR = "src/test/java/org/hotrod/livesql/queries/select/src";
+  private static String SRC_DIR = "src/test/templates";
   private static String DEST_DIR = "src/test/java/org/hotrod/livesql/queries/select/tuples";
   private static int MAX_SIZE = 26;
 
@@ -26,8 +26,8 @@ public class Gen {
   }
 
   private static void genSelectTuples() throws IOException {
-    String template = SUtil.loadFileAsString(new File(SRC_DIR + "/TemplateSelectTuples.java"));
-    String templateLast = SUtil.loadFileAsString(new File(SRC_DIR + "/TemplateLastSelectTuples.java"));
+    String template = SUtil.loadFileAsString(new File(SRC_DIR + "/TemplateSelectTuples.java.template"));
+    String templateLast = SUtil.loadFileAsString(new File(SRC_DIR + "/TemplateLastSelectTuples.java.template"));
     for (int i = 1; i <= MAX_SIZE; i++) {
       String tuplesc = stream(i).collect(Collectors.joining(", "));
       String tuplesn = stream(i + 1).collect(Collectors.joining(", "));
@@ -39,7 +39,8 @@ public class Gen {
       String classcNew = "SelectTuplesFrom" + i + "Phase<>";
       String classnNew = "SelectTuplesFrom" + (i + 1) + "Phase<>";
       String tupleClassc = "Tuple" + i + "<" + tuplesc + ">";
-      String t = "<T extends TableOrView<" + c + ">, " + c + ">";
+//      String t = "<T extends TableOrView<" + c + ">, " + c + ">";
+      String t = "<TV extends TableOrView<" + c + ">, " + c + ">";
 
       String temp = i < MAX_SIZE ? template : templateLast;
       String ready = temp //

@@ -10,6 +10,7 @@ import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.select.Select;
 import org.hotrod.livesql.queries.select.tuples.gen.Tuple1;
+import org.hotrod.livesql.queries.select.tuples.gen.Tuple5;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -389,18 +390,30 @@ public class App {
     CTE x = sql.cte("x", sql.select(sql.max(b1.createdAt).as("mca")).from(b1));
     CTE y = sql.cte("y", sql.select(sql.max(b2.createdAt).as("mca")).from(b2));
 
-    Select<Tuple1<Account>> q = this.sql.with(x, y).select(a.star()) //
+    AccountTable a1 = this.accountDAO.newTable();
+    AccountTable a2 = this.accountDAO.newTable();
+    AccountTable a3 = this.accountDAO.newTable();
+    AccountTable a4 = this.accountDAO.newTable();
+
+    Select<Tuple5<Account, Account, Account, Account, Account>> q = this.sql.with(x, y).select(a.star(), a1.balance) //
         .tuples() //
         .from(a) //
         .crossJoin(x) //
         .crossJoin(y) //
-        .where(a.id.eq(112));
+        .crossJoin(a1) //
+        .crossJoin(a2) //
+        .crossJoin(a3) //
+        .crossJoin(a4) //
+        .limit(1) //
+//        .where(a.id.eq(112)) //
+    ;
 
-    List<Tuple1<Account>> rows = q.execute();
+    List<Tuple5<Account, Account, Account, Account, Account>> rows = q.execute();
     int n = 1;
-    for (Tuple1<Account> r : rows) {
+    for (Tuple5<Account, Account, Account, Account, Account> r : rows) {
       System.out.println("Row #" + n++ + ":");
-      System.out.println("** Account: " + r.getA());
+      System.out.println("** Account A: " + r.getA());
+      System.out.println("** Account A1: " + r.getB());
       for (String prop : r.getUnbound().keySet()) {
         System.out.println("** unbound '" + prop + "': " + r.getUnbound().get(prop));
       }

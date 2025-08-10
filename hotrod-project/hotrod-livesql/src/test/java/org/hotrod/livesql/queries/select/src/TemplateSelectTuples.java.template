@@ -37,70 +37,70 @@ public class @@classc@@ {
 
   // joining TableOrView
 
-  public @@t@@ @@classn@@ join(T t, final GeneralBooleanExpression on) {
+  public @@t@@ @@classn@@ join(TV t, final GeneralBooleanExpression on) {
     this.metadata.join(new InnerJoin(t, on));
     return new @@classnNew@@(this.metadata);
   }
 
-  public @@t@@ @@classn@@ join(T t, final EntityColumn... using) {
+  public @@t@@ @@classn@@ join(TV t, final EntityColumn... using) {
     this.metadata.join(new InnerJoin(t, using));
     return new @@classnNew@@(this.metadata);
   }
 
-  public @@t@@ @@classn@@ leftJoin(T t,
+  public @@t@@ @@classn@@ leftJoin(TV t,
       final GeneralBooleanExpression on) {
     this.metadata.join(new LeftOuterJoin(t, on));
     return new @@classnNew@@(this.metadata);
   }
 
-  public @@t@@ @@classn@@ leftJoin(T t, final EntityColumn... using) {
+  public @@t@@ @@classn@@ leftJoin(TV t, final EntityColumn... using) {
     this.metadata.join(new LeftOuterJoin(t, using));
     return new @@classnNew@@(this.metadata);
   }
 
-  public @@t@@ @@classn@@ rightJoin(T t,
+  public @@t@@ @@classn@@ rightJoin(TV t,
       final GeneralBooleanExpression on) {
     this.metadata.join(new RightOuterJoin(t, on));
     return new @@classnNew@@(this.metadata);
   }
 
-  public @@t@@ @@classn@@ rightJoin(T t, final EntityColumn... using) {
+  public @@t@@ @@classn@@ rightJoin(TV t, final EntityColumn... using) {
     this.metadata.join(new RightOuterJoin(t, using));
     return new @@classnNew@@(this.metadata);
   }
 
-  public @@t@@ @@classn@@ fullJoin(T t,
+  public @@t@@ @@classn@@ fullJoin(TV t,
       final GeneralBooleanExpression on) {
     this.metadata.join(new FullOuterJoin(t, on));
     return new @@classnNew@@(this.metadata);
   }
 
-  public @@t@@ @@classn@@ fullJoin(T t, final EntityColumn... using) {
+  public @@t@@ @@classn@@ fullJoin(TV t, final EntityColumn... using) {
     this.metadata.join(new FullOuterJoin(t, using));
     return new @@classnNew@@(this.metadata);
   }
 
-  public @@t@@ @@classn@@ crossJoin(T t) {
+  public @@t@@ @@classn@@ crossJoin(TV t) {
     this.metadata.join(new CrossJoin(t));
     return new @@classnNew@@(this.metadata);
   }
 
-  public @@t@@ @@classn@@ naturalJoin(T t) {
+  public @@t@@ @@classn@@ naturalJoin(TV t) {
     this.metadata.join(new NaturalInnerJoin(t));
     return new @@classnNew@@(this.metadata);
   }
 
-  public @@t@@ @@classn@@ naturalLeftJoin(T t) {
+  public @@t@@ @@classn@@ naturalLeftJoin(TV t) {
     this.metadata.join(new NaturalLeftOuterJoin(t));
     return new @@classnNew@@(this.metadata);
   }
 
-  public @@t@@ @@classn@@ naturalRightJoin(T t) {
+  public @@t@@ @@classn@@ naturalRightJoin(TV t) {
     this.metadata.join(new NaturalRightOuterJoin(t));
     return new @@classnNew@@(this.metadata);
   }
 
-  public @@t@@ @@classn@@ naturalFullJoin(T t) {
+  public @@t@@ @@classn@@ naturalFullJoin(TV t) {
     this.metadata.join(new NaturalFullOuterJoin(t));
     return new @@classnNew@@(this.metadata);
   }
