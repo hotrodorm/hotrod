@@ -96,7 +96,7 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
   }
 
   @Override
-  public List<Expression> assembleColumnsOf(final Subquery te) {
+  public List<Expression> assembleColumns() {
 //    String froms = this.from == null ? "N/A"
 //        : (this.from.getName().getName() + ":" + this.joins.stream()
 //            .map(j -> j.getTableExpression().getName().getName()).collect(Collectors.joining(", ")));

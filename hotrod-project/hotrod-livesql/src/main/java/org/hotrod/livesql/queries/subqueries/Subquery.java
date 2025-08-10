@@ -117,7 +117,7 @@ public class Subquery extends TableExpression {
   protected void assembleColumns() {
 //    log.info("ASSEMBLING COLUMNS FOR SUBQUERY: " + this.getName());
 
-    List<Expression> raw = MShield.assembleColumnsOf(this.select, this);
+    List<Expression> raw = MShield.assembleColumns(this.select);
     // raw: has expanded all columns at this point.
 
     this.resolvedColumns = new ArrayList<>();

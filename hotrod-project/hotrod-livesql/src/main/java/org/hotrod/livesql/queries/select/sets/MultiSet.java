@@ -18,7 +18,6 @@ import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
-import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.util.ToString;
 
 public abstract class MultiSet<T> {
@@ -40,7 +39,7 @@ public abstract class MultiSet<T> {
 
   // Rendering
 
-  public abstract List<Expression> assembleColumnsOf(Subquery subquery);
+  public abstract List<Expression> assembleColumns();
 
   public abstract boolean excludeTuplesFromUniqueNames();
 
@@ -88,7 +87,7 @@ public abstract class MultiSet<T> {
 //    ToString t = new ToString();
 //    this.log(t);
 
-    List<Expression> columns = this.assembleColumnsOf(null);
+    List<Expression> columns = this.assembleColumns();
     renderTo(w, false);
 
 //    log.info("");

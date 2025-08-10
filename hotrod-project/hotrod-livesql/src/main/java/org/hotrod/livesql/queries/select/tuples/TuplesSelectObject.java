@@ -13,8 +13,8 @@ import org.hotrod.livesql.expressions.SQLExpression;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.MDShield;
-import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.metadata.MetaExpression;
+import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.QueryWriter;
@@ -24,7 +24,6 @@ import org.hotrod.livesql.queries.select.TableExpression;
 import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
 import org.hotrod.livesql.queries.select.sets.BaseSelectObject;
-import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.utils.Separator;
 
 public class TuplesSelectObject<T> extends BaseSelectObject<T> {
@@ -55,7 +54,7 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
   }
 
   @Override
-  public List<Expression> assembleColumnsOf(Subquery te) {
+  public List<Expression> assembleColumns() {
 
     log.info("resultSetColumns.size()=" + (resultSetColumns == null ? "null" : resultSetColumns.size()));
 

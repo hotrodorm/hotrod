@@ -83,7 +83,7 @@ public class RecursiveCTE extends CTE {
       } else { // implicit column names from the anchor term
         w.write(" (");
         boolean first = true;
-        List<Expression> cols = MShield.assembleColumnsOf(SShield.getCombinedSelect(this.anchorTerm), null);
+        List<Expression> cols = MShield.assembleColumns(SShield.getCombinedSelect(this.anchorTerm));
         for (Expression rc : cols) {
           if (first) {
             first = false;
