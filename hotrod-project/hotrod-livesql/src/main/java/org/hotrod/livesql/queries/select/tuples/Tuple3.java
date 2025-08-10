@@ -9,6 +9,10 @@ public class Tuple3<A, B, C> {
   private C c;
   private Map<String, Object> unbound;
 
+  @SuppressWarnings("unused")
+  private Tuple3() {
+  }
+
   public Tuple3(A a, B b, C c, Map<String, Object> unbound) {
     this.a = a;
     this.b = b;

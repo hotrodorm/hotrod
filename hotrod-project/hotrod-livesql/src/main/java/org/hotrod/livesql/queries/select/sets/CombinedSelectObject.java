@@ -42,7 +42,7 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
   private boolean forceParenthesis;
   private MultiSet<T> first;
   private List<SetOperatorTerm<T>> combined;
-  private UnarySelectObject<T> lastSelect; // TODO: Remove?
+  private BaseSelectObject<T> lastSelect; // TODO: Remove?
 
   private List<CombinedOrderingTerm> orderingTerms = null;
   private Integer offset = null;
@@ -64,7 +64,7 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
     first.setParent(this);
   }
 
-  public CombinedSelectObject(final UnarySelectObject<T> first) {
+  public CombinedSelectObject(final BaseSelectObject<T> first) {
     this.forceParenthesis = false;
     this.first = first;
     this.combined = new ArrayList<>();
@@ -299,7 +299,7 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
 
   // Combining
 
-  public final UnarySelectObject<T> getLastSelect() {
+  public final BaseSelectObject<T> getLastSelect() {
     return this.lastSelect;
   }
 

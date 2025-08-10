@@ -2,7 +2,6 @@ package org.hotrod.livesql.queries.select.tuples;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.SQLExpression;
@@ -22,7 +21,7 @@ public class SelectTuplesColumnsPhase {
         throw new LiveSQLException("A select column cannot be null.");
       }
     }
-    List<SQLExpression> cols = Arrays.asList(resultSetColumns).stream().collect(Collectors.toList());
+    List<SQLExpression> cols = Arrays.asList(resultSetColumns);
     this.metadata = new TuplesMetadata(context, ctes, distinct, cols);
   }
 

@@ -1,5 +1,6 @@
 package org.hotrod.livesql.queries.select.tuples;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
@@ -204,7 +205,9 @@ public class TuplesRowReader<T> implements RowReader<T> {
     Class<?> tc = TupleClassFactory.getTuplesClass(this.modelInstances.size());
     Object to;
     try {
-      to = tc.getConstructor().newInstance();
+      Constructor<?> c = tc.getDeclaredConstructor();
+      c.setAccessible(true);
+      to = c.newInstance();
     } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
         | NoSuchMethodException | SecurityException e) {
       throw new SQLException("Could not read tuple; could not instantiate tuple", e);

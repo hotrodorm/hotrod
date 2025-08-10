@@ -8,8 +8,7 @@ import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.queries.select.Select;
-import org.hotrod.livesql.queries.select.tuples.SelectTuplesFrom2Phase;
-import org.hotrod.livesql.queries.select.tuples.Tuple2;
+import org.hotrod.livesql.queries.select.tuples.Tuple1;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -26,7 +25,6 @@ import app.persistence.dao.BranchDAO.BranchTable;
 import app.persistence.dao.ProductDAO;
 import app.persistence.dao.ProductDAO.ProductTable;
 import app.persistence.model.Account;
-import app.persistence.model.Product;
 
 @SpringBootApplication
 @Configuration
@@ -335,24 +333,53 @@ public class App {
     Subquery x = sql.subquery("x", sql.select(sql.max(b1.createdAt).as("mca")).from(b1));
     Subquery y = sql.subquery("y", sql.select(sql.max(b2.createdAt).as("mca")).from(b2));
 
-    SelectTuplesFrom2Phase<Account, Product> q = this.sql.select( //
-        a.star(), p.shipping, a.balance.mult(2).as("bal2") //
-        , p.id //
-        , p.type.as("ptype") //
-        , x.dt("mca"), y.dt("mca").as("mca2") // 7
-    ) //
+//    SelectTuplesFrom2Phase<Account, Product> q = this.sql.select( //
+//        a.star(), p.shipping, a.balance.mult(2).as("bal2") //
+//        , p.id //
+//        , p.type.as("ptype") //
+//        , x.dt("mca"), y.dt("mca").as("mca2") // 7
+//    ) //
+//        .tuples() //
+//        .from(x) //
+//        .crossJoin(y) //
+//        .crossJoin(a) //
+//        .crossJoin(p) //
+//    ;
+
+//    Select<Tuple2<Account, Product>> q = this.sql.select( //
+//        a.star(), p.shipping, a.balance.mult(2).as("bal2") //
+//        , p.id //
+//        , p.type.as("ptype") //
+//        , x.dt("mca"), y.dt("mca").as("mca2") // 7
+//    ) //
+//        .tuples() //
+//        .from(x) //
+//        .crossJoin(y) //
+//        .crossJoin(a) //
+//        .crossJoin(p) //
+//        .limit(1);
+//
+//    List<Tuple2<Account, Product>> rows = q.execute();
+//    int n = 1;
+//    for (Tuple2<Account, Product> r : rows) {
+//      System.out.println("Row #" + n++ + ":");
+//      System.out.println("** Account: " + r.getA());
+//      System.out.println("** Product: " + r.getB());
+//      for (String prop : r.getUnbound().keySet()) {
+//        System.out.println("** unbound '" + prop + "': " + r.getUnbound().get(prop));
+//      }
+//    }
+
+    Select<Tuple1<Account>> q = this.sql.select(a.star()) //
         .tuples() //
-        .from(x) //
-        .crossJoin(y).crossJoin(a) //
-        .crossJoin(p) //
-//        .limit(1) //
-    ;
-    List<Tuple2<Account, Product>> rows = q.execute();
+        .from(a) //
+        .where(a.id.eq(112));
+
+    List<Tuple1<Account>> rows = q.execute();
     int n = 1;
-    for (Tuple2<Account, Product> r : rows) {
+    for (Tuple1<Account> r : rows) {
       System.out.println("Row #" + n++ + ":");
       System.out.println("** Account: " + r.getA());
-      System.out.println("** Product: " + r.getB());
       for (String prop : r.getUnbound().keySet()) {
         System.out.println("** unbound '" + prop + "': " + r.getUnbound().get(prop));
       }

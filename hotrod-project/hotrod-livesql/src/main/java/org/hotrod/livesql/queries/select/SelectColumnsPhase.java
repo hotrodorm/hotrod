@@ -8,6 +8,7 @@ import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.SQLExpression;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.ctes.CTE;
+import org.hotrod.livesql.queries.select.sets.BaseSelectObject;
 import org.hotrod.livesql.queries.select.sets.IndividualSelectPhase;
 import org.hotrod.livesql.queries.select.sets.MultiSet;
 import org.hotrod.livesql.queries.select.tuples.SelectTuplesColumnsPhase;
@@ -32,7 +33,7 @@ public class SelectColumnsPhase<R> extends IndividualSelectPhase<R> {
   // Conversion to tuples query
 
   public SelectTuplesColumnsPhase tuples() {
-    UnarySelectObject<R> select = super.combined.getLastSelect();
+    BaseSelectObject<R> select = super.combined.getLastSelect();
     List<SQLExpression> cols = select.getResultSetColumns();
     SQLExpression[] colsa = cols == null ? null : cols.toArray(new SQLExpression[0]);
     return new SelectTuplesColumnsPhase(this.context, select.getCTEs(), select.getDistinct(), colsa);

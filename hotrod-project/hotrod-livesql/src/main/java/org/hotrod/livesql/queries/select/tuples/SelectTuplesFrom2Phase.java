@@ -175,7 +175,6 @@ public class SelectTuplesFrom2Phase<A, B> {
   // next phases
 
   public SelectWherePhase<Tuple2<A, B>> where(final GeneralBooleanExpression predicate) {
-
     return SShield.getSelectWherePhase(this.metadata.getContext(), new TuplesSelectObject<>(this.metadata), predicate);
   }
 
