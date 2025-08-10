@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.LiveSQL;
+import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.select.Select;
 import org.hotrod.livesql.queries.select.tuples.Tuple1;
 import org.hotrod.livesql.queries.subqueries.Subquery;
@@ -330,8 +331,8 @@ public class App {
 //    System.out.print(q.getPreview(true));
 //    q.execute().forEach(r -> System.out.println("r=" + r));
 
-    Subquery x = sql.subquery("x", sql.select(sql.max(b1.createdAt).as("mca")).from(b1));
-    Subquery y = sql.subquery("y", sql.select(sql.max(b2.createdAt).as("mca")).from(b2));
+//    Subquery x = sql.subquery("x", sql.select(sql.max(b1.createdAt).as("mca")).from(b1));
+//    Subquery y = sql.subquery("y", sql.select(sql.max(b2.createdAt).as("mca")).from(b2));
 
 //    SelectTuplesFrom2Phase<Account, Product> q = this.sql.select( //
 //        a.star(), p.shipping, a.balance.mult(2).as("bal2") //
@@ -370,9 +371,29 @@ public class App {
 //      }
 //    }
 
-    Select<Tuple1<Account>> q = this.sql.select(a.star()) //
+//    Select<Tuple1<Account>> q = this.sql.select(a.star()) //
+//        .tuples() //
+//        .from(a) //
+//        .where(a.id.eq(112));
+//
+//    List<Tuple1<Account>> rows = q.execute();
+//    int n = 1;
+//    for (Tuple1<Account> r : rows) {
+//      System.out.println("Row #" + n++ + ":");
+//      System.out.println("** Account: " + r.getA());
+//      for (String prop : r.getUnbound().keySet()) {
+//        System.out.println("** unbound '" + prop + "': " + r.getUnbound().get(prop));
+//      }
+//    }
+
+    CTE x = sql.cte("x", sql.select(sql.max(b1.createdAt).as("mca")).from(b1));
+    CTE y = sql.cte("y", sql.select(sql.max(b2.createdAt).as("mca")).from(b2));
+
+    Select<Tuple1<Account>> q = this.sql.with(x, y).select(a.star()) //
         .tuples() //
         .from(a) //
+        .crossJoin(x) //
+        .crossJoin(y) //
         .where(a.id.eq(112));
 
     List<Tuple1<Account>> rows = q.execute();

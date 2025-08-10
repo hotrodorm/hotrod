@@ -18,6 +18,7 @@ import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.QueryWriter;
+import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.select.Join;
 import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.select.TableExpression;
@@ -59,6 +60,10 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
     log.info("resultSetColumns.size()=" + (resultSetColumns == null ? "null" : resultSetColumns.size()));
 
     boolean isListingColumns = this.resultSetColumns != null && !this.resultSetColumns.isEmpty();
+
+    for (CTE cte : this.getCTEs()) {
+      SShield.assembleColumns(cte);
+    }
 
     if (this.from != null) {
       SShield.assembleColumns(this.from);
