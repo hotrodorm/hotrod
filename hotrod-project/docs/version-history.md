@@ -2,6 +2,23 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
+## 5.0.4:
+
+- LiveSQL:
+    - Refactoring expression class tree.
+    - Improving error messages.
+
+## 5.0.3:
+
+- LiveSQL:
+    - Refactoring Expression subtypes.
+
+## 5.0.2:
+
+- Core:
+    - Fixing runtime layer rules.
+    - Fixing generated class names in DAOs.
+
 ## 5.0.1:
 
 - Core:
