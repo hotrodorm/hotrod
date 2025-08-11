@@ -2,7 +2,7 @@
 
 This is a major release of the HotRod ORM that includes much needed refactorings and upgrades.
 
-As a side effect, this release breaks compatibility with previous releases. Consider that an upgrade from a previous version will require multiple changes to the source code of your application. Thourough testing of your converted application is recommended.
+As a side effect, this release breaks compatibility with previous releases. Consider that an upgrade from a previous version will require multiple changes to the source code of your application. Thorough testing of your converted application is highly recommended.
 
 ## What's New in HotRod 5.0
 
