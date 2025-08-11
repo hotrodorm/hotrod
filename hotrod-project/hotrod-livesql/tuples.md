@@ -289,7 +289,7 @@ Produces rows with the form:
 
 ## Example 8 -- Select Using Cursors
 
-The code:
+The code looks remarkably similar to using a list. However, it implements streaming of rows:
 
 ```java
 AccountTable a = this.accountDAO.newTable();
@@ -317,7 +317,9 @@ Produces rows with the form:
 - version=1
 ```
 
-## Example 9 -- Select a Single Row
+It's also possible to specify the desired fetch size using the variation `.executeCursor(<desired-fetch-size>)`. The desired fetch size is only an indication to the driver; this one, in turn, can ignore or adjust this value without notice.
+
+## Example 9 -- Selecting a Single Row
 
 The code:
 
@@ -332,7 +334,7 @@ Account account = row.getA();
 System.out.println("=== Account: " + account);
 ```
 
-Produces rows with the form:
+Produces a row with the form:
 
 ```txt
 === Account: app.persistence.model.Account@6d672bd4
@@ -345,3 +347,4 @@ Produces rows with the form:
 - version=1
 ```
 
+If no rows are found then it produces a null. If more than a single row is found the method throws an exception.
