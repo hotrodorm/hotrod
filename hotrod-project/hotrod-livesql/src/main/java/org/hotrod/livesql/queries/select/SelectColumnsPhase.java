@@ -30,14 +30,14 @@ public class SelectColumnsPhase<R> extends IndividualSelectPhase<R> {
     s.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
   }
 
-//  // Switching to tuples query
-//
-//  public SelectTuplesColumnsPhase tuples() {
-//    BaseSelectObject<R> select = super.combined.getLastSelect();
-//    List<SQLExpression> cols = select.getSQLExpressions();
-//    SQLExpression[] colsa = cols == null ? null : cols.toArray(new SQLExpression[0]);
-//    return new SelectTuplesColumnsPhase(this.context, select.getCTEs(), select.getDistinct(), colsa);
-//  }
+  // Switching to tuples query
+
+  public SelectTuplesColumnsPhase tuples() {
+    BaseSelectObject<R> select = super.combined.getLastSelect();
+    List<SQLExpression> cols = select.getSQLExpressions();
+    SQLExpression[] colsa = cols == null ? null : cols.toArray(new SQLExpression[0]);
+    return new SelectTuplesColumnsPhase(this.context, select.getCTEs(), select.getDistinct(), colsa);
+  }
 
   // Next phases
 
