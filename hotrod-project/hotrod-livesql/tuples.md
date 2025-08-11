@@ -99,7 +99,7 @@ List<Tuple1<Account>> rows = this.sql
       a.id, // in tuple
       a.balance, // in tuple
       a.balance.mult(1.22).as("score"), // outside the tuple -- unbound
-      a.name.as("altName") // outside the tuple -- unbound
+      a.name.as("accountNumber") // outside the tuple -- unbound
     )
     .tuples()
     .from(a)
@@ -126,7 +126,7 @@ Produces rows with the form:
 - updatedAt=null
 - version=null
 *** Unbound 'score': 500
-*** Unbound 'altName': 1072
+*** Unbound 'accountNumber': 1072
 ```
 
 ## Example 4 -- Joins
