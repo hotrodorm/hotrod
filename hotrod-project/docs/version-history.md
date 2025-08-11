@@ -11,7 +11,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 ## 5.0.3:
 
 - LiveSQL:
-    - Refactoring Expression subtypes.
+    - Refactoring expression subtypes.
 
 ## 5.0.2:
 
