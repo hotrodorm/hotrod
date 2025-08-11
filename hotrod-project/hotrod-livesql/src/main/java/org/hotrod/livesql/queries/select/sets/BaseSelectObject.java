@@ -35,7 +35,7 @@ public abstract class BaseSelectObject<T> extends MultiSet<T> {
 
   private static final Logger log = Logger.getLogger(BaseSelectObject.class.getName());
 
-  protected List<SQLExpression> resultSetColumns = new ArrayList<>();
+  protected List<SQLExpression> sqlExpressions = new ArrayList<>();
   protected List<Expression> expandedQueryColumns = null;
   protected boolean columnsAssembled = false;
 
@@ -70,8 +70,8 @@ public abstract class BaseSelectObject<T> extends MultiSet<T> {
     return distinct;
   }
 
-  public final List<SQLExpression> getResultSetColumns() {
-    return resultSetColumns;
+  public final List<SQLExpression> getSQLExpressions() {
+    return sqlExpressions;
   }
 
   public boolean areColumnsAssembled() {
@@ -79,11 +79,11 @@ public abstract class BaseSelectObject<T> extends MultiSet<T> {
   }
 
   protected void expandQueryColumns() {
-    log.info("=== 2. EXPAND QUERY COLUMNS (AS/IF NEEDED) from " + SShield.getName(this.from) + " @" + OUtil.hc(this)
-        + " ===");
+//    log.info("=== 2. EXPAND QUERY COLUMNS (AS/IF NEEDED) from " + SShield.getName(this.from) + " @" + OUtil.hc(this)
+//        + " ===");
     this.expandedQueryColumns = new ArrayList<>();
-    for (SQLExpression rsc : this.resultSetColumns) {
-      log.info("=== 2.1 rsc=" + rsc);
+    for (SQLExpression rsc : this.sqlExpressions) {
+//      log.info("=== 2.1 rsc=" + rsc);
 
       try {
         // Single column
@@ -120,13 +120,13 @@ public abstract class BaseSelectObject<T> extends MultiSet<T> {
 //        }
 //      }
     }
-    log.info(">1 this@" + OUtil.hc(this) + ".expandedQueryColumns=" + this.expandedQueryColumns);
+//    log.info(">1 this@" + OUtil.hc(this) + ".expandedQueryColumns=" + this.expandedQueryColumns);
 
 //    log.info("=== 2.10 EXPAND DONE from " + SShield.getName(this.from) + " ===");
   }
 
   public void setResultSetColumns(final List<SQLExpression> resultSetColumns) {
-    this.resultSetColumns = resultSetColumns;
+    this.sqlExpressions = resultSetColumns;
   }
 
   public void setBaseTableExpression(final TableExpression from) {
@@ -419,8 +419,8 @@ public abstract class BaseSelectObject<T> extends MultiSet<T> {
   @Override
   protected void log(ToString t) {
     t.printObject(this, this.getClass().getName());
-    if (this.resultSetColumns != null) {
-      for (SQLExpression r : this.resultSetColumns) {
+    if (this.sqlExpressions != null) {
+      for (SQLExpression r : this.sqlExpressions) {
         t.indent();
         t.prompt("rsc - " + r.toString() + " // ");
         Shield.log(r, t);

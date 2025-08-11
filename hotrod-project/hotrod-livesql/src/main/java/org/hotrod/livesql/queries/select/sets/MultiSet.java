@@ -22,7 +22,6 @@ import org.hotrod.livesql.util.ToString;
 
 public abstract class MultiSet<T> {
 
-  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(MultiSet.class.getName());
 
   private CombinedSelectObject<T> parent;
@@ -95,7 +94,7 @@ public abstract class MultiSet<T> {
 //    this.log(t);
 //    log.info("");
 
-    log.info(">> this=" + this.getClass().getName());
+//    log.info(">> this=" + this.getClass().getName());
     return w.getPreparedQuery(columns, this.excludeTuplesFromUniqueNames());
 
   }

@@ -423,7 +423,7 @@ public class App {
       System.out.println("r=" + r);
     }
 
-//    List<Tuple1<Account>> rows = this.sql.select(a1.star()).tuples().from(a1).limit(1).execute();
+//    List<Tuple1<Account>> rows = this.sql.select().tuples().from(a1).limit(1).execute();
 //    for (Tuple1<Account> r : rows) {
 //      System.out.println("** Account" + r.getA());
 //      for (String prop : r.getUnbound().keySet()) {
@@ -431,10 +431,11 @@ public class App {
 //      }
 //    }
 
-//    List<Tuple2<Account, Account>> rows = this.sql.select(a1.id, a2.id).tuples().from(a1).crossJoin(a2).limit(1)
-//        .execute();
+//    List<Tuple2<Account, Account>> rows = this.sql.select(a1.id, a2.id).tuples().from(a1).crossJoin(a2)
+//        .where(a1.id.ne(a2.id)).limit(1).execute();
 //    for (Tuple2<Account, Account> r : rows) {
-//      System.out.println("** Account" + r.getA());
+//      System.out.println("** Account Left: " + r.getA());
+//      System.out.println("** Account Right: " + r.getB());
 //      for (String prop : r.getUnbound().keySet()) {
 //        System.out.println("** unbound '" + prop + "': " + r.getUnbound().get(prop));
 //      }

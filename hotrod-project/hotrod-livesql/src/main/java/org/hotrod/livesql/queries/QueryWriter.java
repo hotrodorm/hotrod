@@ -97,7 +97,7 @@ public class QueryWriter {
   public LiveSQLPreparedQuery getPreparedQuery(final List<Expression> columns, boolean excludeTuplesFromUniqueNames) {
     LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 //    log.info(">>> this.paramWriter.getParameters().size()=" + this.paramWriter.getParameters().size());
-    log.info("excludeTuplesFromUniqueNames=" + excludeTuplesFromUniqueNames);
+//    log.info("excludeTuplesFromUniqueNames=" + excludeTuplesFromUniqueNames);
     for (QueryParameter p : this.paramWriter.getParameters()) {
       params.put(p.getName(), p.getValue());
     }
@@ -109,9 +109,9 @@ public class QueryWriter {
         String name = Shield.getReferenceName(c);
         if (excludeTuplesFromUniqueNames && Shield.isEntityColumn(c)) {
           // Exclude from name uniqueness check
-          log.info(">> excluding: " + name);
+//          log.info(">> excluding: " + name);
         } else {
-          log.info(">> including: " + name);
+//          log.info(">> including: " + name);
           if (name == null) {
             throw new LiveSQLException("Column #" + ordinal + " of the SELECT query does not have a name. "
                 + "Please apply the .as() method to this expression to assign a name to it.");

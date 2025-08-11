@@ -28,14 +28,13 @@ import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.select.sets.BaseSelectObject;
-import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.util.IdUtil;
-import org.hotrod.livesql.util.OUtil;
 import org.hotrod.utils.Separator;
 import org.springframework.util.ReflectionUtils;
 
 public class UnarySelectObject<T> extends BaseSelectObject<T> {
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(UnarySelectObject.class.getName());
 
   private boolean doNotAliasColumns;
@@ -59,7 +58,7 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
     super(ctes, distinct);
     this.distinctOn = null;
     this.doNotAliasColumns = doNotAliasColumns;
-    this.resultSetColumns = resultSetColumns;
+    this.sqlExpressions = resultSetColumns;
   }
 
   public UnarySelectObject(final List<CTE> ctes, final Expression[] distinctOn, final boolean doNotAliasColumns,
@@ -77,7 +76,7 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
     this.distinctOn = Arrays.asList(distinctOn);
 
     this.doNotAliasColumns = doNotAliasColumns;
-    this.resultSetColumns = resultSetColumns;
+    this.sqlExpressions = resultSetColumns;
   }
 
   public void setDistinctOn(final List<Expression> expressions) {
@@ -85,7 +84,7 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
   }
 
   public void setResultSetColumns(final List<SQLExpression> resultSetColumns) {
-    this.resultSetColumns = resultSetColumns;
+    this.sqlExpressions = resultSetColumns;
   }
 
   // Rendering
@@ -110,12 +109,12 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
       this.joins.forEach(j -> j.getTableExpression().assembleColumns());
     }
 
-    if (this.resultSetColumns == null || this.resultSetColumns.isEmpty()) {
+    if (this.sqlExpressions == null || this.sqlExpressions.isEmpty()) {
 //      log.info("== Adding all columns...");
-      this.resultSetColumns = new ArrayList<>();
-      this.resultSetColumns.add(this.from.star());
+      this.sqlExpressions = new ArrayList<>();
+      this.sqlExpressions.add(this.from.star());
       for (Join j : this.joins) {
-        this.resultSetColumns.add(j.getTableExpression().star());
+        this.sqlExpressions.add(j.getTableExpression().star());
       }
     } else {
 //      log.info("== Columns were specified (" + this.resultSetColumns.size() + ")");
@@ -157,7 +156,7 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
   protected void writeColumns(final QueryWriter w, final TableExpression baseTableExpression, final List<Join> joins) {
 //    log.info("=== 4. WRITE COLUMNS ===");
     Separator sep = new Separator();
-    log.info(">2 this@" + OUtil.hc(this) + ".expandedQueryColumns=" + this.expandedQueryColumns);
+//    log.info(">2 this@" + OUtil.hc(this) + ".expandedQueryColumns=" + this.expandedQueryColumns);
     for (Expression expr : this.expandedQueryColumns) {
 
       w.write(sep.render());

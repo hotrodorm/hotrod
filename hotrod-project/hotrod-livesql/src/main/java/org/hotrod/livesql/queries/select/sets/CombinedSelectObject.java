@@ -170,7 +170,7 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
 
     // Single Selects
 
-    log.info("first=" + this.first + " rest=" + this.combined.size());
+//    log.info("first=" + this.first + " rest=" + this.combined.size());
 
     this.first.renderTo(w, false);
 
@@ -305,7 +305,7 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
 
   @Override
   public boolean excludeTuplesFromUniqueNames() {
-    log.info(">> first=" + this.first.getClass().getName());
+//    log.info(">> first=" + this.first.getClass().getName());
     return this.first.excludeTuplesFromUniqueNames();
   }
 
@@ -323,9 +323,9 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
   @Override
   public List<T> execute(final LiveSQLContext context) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    log.info("PREPARED:\n" + q.getPreview(false));
+//    log.info("PREPARED:\n" + q.getPreview(false));
     RowReader<T> rowReader = this.first.getRowReader();
-    log.info("ROWREADER: " + rowReader);
+//    log.info("ROWREADER: " + rowReader);
     return executeLiveSQL(context, q, false, rowReader);
   }
 

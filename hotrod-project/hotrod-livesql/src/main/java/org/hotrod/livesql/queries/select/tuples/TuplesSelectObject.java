@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.dynamicsql.RowReader;
-import org.hotrod.livesql.expressions.AliasedExpression;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.SQLExpression;
 import org.hotrod.livesql.expressions.Shield;
@@ -31,11 +30,12 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
 
   private static final Logger log = Logger.getLogger(TuplesSelectObject.class.getName());
 
+  @SuppressWarnings("unused")
   private LiveSQLContext context;
 
   public TuplesSelectObject(TuplesMetadata metadata) {
     super(metadata.getCtes(), metadata.isDistinct());
-    this.resultSetColumns = metadata.getResultSetColumns();
+    this.sqlExpressions = metadata.getResultSetColumns();
     this.from = metadata.getFrom();
     this.joins = metadata.getJoins();
     this.context = metadata.getContext();
@@ -57,9 +57,9 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
   @Override
   public List<Expression> assembleColumns() {
 
-    log.info("resultSetColumns.size()=" + (resultSetColumns == null ? "null" : resultSetColumns.size()));
+    log.info("resultSetColumns.size()=" + (sqlExpressions == null ? "null" : sqlExpressions.size()));
 
-    boolean isListingColumns = this.resultSetColumns != null && !this.resultSetColumns.isEmpty();
+    boolean isListingColumns = this.sqlExpressions != null && !this.sqlExpressions.isEmpty();
 
     if (this.getCTEs() != null) {
       for (CTE cte : this.getCTEs()) {
@@ -90,12 +90,12 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
       // - unbound:
       // - - alias, getter
 
-      this.resultSetColumns = new ArrayList<>();
+      this.sqlExpressions = new ArrayList<>();
 
-      addTableColumns((TableOrView<?>) this.from, this.resultSetColumns);
+      addTableColumns(this.from, this.sqlExpressions);
       for (Join j : this.joins) {
-        addTableColumns((TableOrView<?>) SShield.getTableExpression(j), this.resultSetColumns);
-        this.resultSetColumns.add(SShield.star(j));
+        addTableColumns(SShield.getTableExpression(j), this.sqlExpressions);
+//        this.sqlExpressions.add(SShield.star(j));
       }
 
       super.expandQueryColumns();
@@ -106,16 +106,16 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
     return this.expandedQueryColumns;
   }
 
-  private void addTableColumns(TableOrView<?> te, List<SQLExpression> filledIn) {
-    log.info("Adding te: " + te.getAlias());
+  private void addTableColumns(TableExpression te, List<SQLExpression> filledIn) {
+//    log.info("Adding te: " + te.getAlias());
     MetaExpression wrapped = SShield.star(te);
     List<Expression> unwrapped = MDShield.unwrap(wrapped);
     for (Expression expr : unwrapped) {
       String property = Shield.getProperty(expr);
-      String calias = this.context.getLiveSQLDialect().canonicalToNatural(te.getAlias() + ":" + property);
-      log.info(" + " + calias);
-      Expression aliased = new AliasedExpression(expr, calias);
-      filledIn.add(aliased);
+//      String calias = this.context.getLiveSQLDialect().canonicalToNatural(te.getAlias() + ":" + property);
+//      log.info(" + " + calias);
+//      Expression aliased = new AliasedExpression(expr, calias);
+      filledIn.add(expr);
     }
   }
 
