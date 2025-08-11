@@ -6,7 +6,7 @@ This quick walkthrough document shows the functionality of the new feature of se
 
 The resulting model objects use the correct data types, converters, etc.
 
-The code:
+The following query:
 
 ```java
 AccountTable a = this.accountDAO.newTable();
@@ -38,9 +38,14 @@ Produces rows with the form:
 
 ## Example 2 -- Filtering Columns
 
-A subset of model object columns can be populated to avoid the overhead of heavy column types (blobs, clobs, long varchar, etc).
+A subset of the model object columns can be populated, instead of the full set (default). This can help  to avoid the overhead of heavy column types (blobs, clobs, long varchar, etc).
 
-The code:
+The subset can be defined by:
+
+- Explicitly naming the columns (e.g `a.id`)
+- Defining a rule to include columns (eg `a.star().filter(c -> c.getType().equals("TIMESTAMP"))`)
+
+The following query:
 
 ```java
 AccountTable a = this.accountDAO.newTable();
@@ -49,7 +54,7 @@ List<Tuple1<Account>> rows = this.sql
     .select(
       a.id,
       a.balance,
-      a.star().filter(c -> c.getType().equals("timestamp"))
+      a.star().filter(c -> c.getType().equals("TIMESTAMP"))
     )
     .tuples()
     .from(a)
@@ -64,13 +69,13 @@ for (Tuple1<Account> r : rows) {
 Produces rows with the form:
 
 ```txt
-=== Account: app.persistence.model.Account@6418e39e
+=== Account: app.persistence.model.Account@3635099
 - id=111
 - name=null
 - type=null
 - balance=500.0
 - active=null
-- updatedAt=null
+- updatedAt=2025-08-11T14:24:04.933058
 - version=null
 ```
 
@@ -80,7 +85,7 @@ Direct table or view columns are retrieved in the corresponding tuples.
 
 Other general SQL expressions, table or view columns renamed, or columns used in expressions become non-tuple columns, aka "unbound columns".
 
-The code:
+The following query:
 
 ```java
 AccountTable a = this.accountDAO.newTable();
@@ -122,7 +127,7 @@ Produces rows with the form:
 
 ## Example 4 -- Joining Tables and Views
 
-The code:
+The following query:
 
 ```java
 BranchTable b = this.branchDAO.newTable();
@@ -159,7 +164,7 @@ Produces rows with the form:
 
 ## Example 5 -- Self Joins
 
-The code:
+The following query:
 
 ```java
 BranchTable b = this.branchDAO.newTable();
@@ -198,7 +203,7 @@ Produces rows with the form:
 
 ## Example 6 -- Joining Multiple Tables and Views (up to 26)
 
-The code:
+The following query:
 
 ```java
 EmployeeTable e = this.employeeDAO.newTable();
@@ -244,7 +249,7 @@ Produces rows with the form:
 
 ## Example 7 -- Joining Subqueries and CTEs
 
-The code:
+The following query:
 
 ```java
 BranchTable br = this.branchDAO.newTable();
@@ -289,7 +294,7 @@ Produces rows with the form:
 
 ## Example 8 -- Select Using Cursors
 
-The code looks remarkably similar to using a list. However, it implements streaming of rows:
+The following code looks remarkably similar to using a list. However, it implements streaming of rows:
 
 ```java
 AccountTable a = this.accountDAO.newTable();
@@ -321,7 +326,7 @@ It's also possible to specify the desired fetch size using the variation `.execu
 
 ## Example 9 -- Selecting a Single Row
 
-The code:
+The following query:
 
 ```java
 AccountTable a = this.accountDAO.newTable();

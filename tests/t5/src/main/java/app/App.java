@@ -456,13 +456,13 @@ public class App {
 
   private void tuplesExamples() throws SQLException, DynamicExpressionException {
 //    tuplesExample1();
-//    tuplesExample2();
+    tuplesExample2();
 //    tuplesExample3();
 //    tuplesExample4();
 //    tuplesExample5();
 //    tuplesExample6();
 //    tuplesExample7();
-    tuplesExample8();
+//    tuplesExample8();
 //    tuplesExample9();
   }
 
@@ -501,7 +501,7 @@ public class App {
     List<Tuple1<Account>> rows = this.sql.select( //
         a.id, //
         a.balance, //
-        a.star().filter(c -> c.getType().equals("timestamp")) //
+        a.star().filter(c -> c.getType().equals("TIMESTAMP")) //
     ) //
         .tuples() //
         .from(a) //
@@ -512,14 +512,15 @@ public class App {
       System.out.println("=== Account: " + account);
     }
 
-//    === Account: app.persistence.model.Account@6418e39e
+//    === Account: app.persistence.model.Account@3635099
 //        - id=111
 //        - name=null
 //        - type=null
 //        - balance=500.0
 //        - active=null
-//        - updatedAt=null
+//        - updatedAt=2025-08-11T14:24:04.933058
 //        - version=null
+
 
   }
 
@@ -724,7 +725,7 @@ public class App {
 //        - active=false
 //        - updatedAt=2025-08-11T13:40:27.216758
 //        - version=1
-    
+
   }
 
   private void tuplesExample9() throws SQLException, DynamicExpressionException {

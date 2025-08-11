@@ -320,18 +320,18 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
 
   // MultiSet execution
 
-//  @Override
-//  public List<T> execute(final LiveSQLContext context) {
-//    LiveSQLPreparedQuery q = this.prepareQuery(context);
-//    RowReader<T> rowReader = this.first.getRowReader();
-//    return executeLiveSQL(context, q, false, rowReader);
-//  }
-//
-//  @Override
-//  public List<T> execute(final LiveSQLContext context, final RowReader<T> rowReader) {
-//    LiveSQLPreparedQuery q = this.prepareQuery(context);
-//    return super.executeLiveSQL(context, q, false, rowReader);
-//  }
+  @Override
+  public List<T> execute(final LiveSQLContext context) {
+    LiveSQLPreparedQuery q = this.prepareQuery(context);
+    RowReader<T> rowReader = this.first.getRowReader();
+    return executeLiveSQL(context, q, rowReader);
+  }
+
+  @Override
+  public List<T> execute(final LiveSQLContext context, final RowReader<T> rowReader) {
+    LiveSQLPreparedQuery q = this.prepareQuery(context);
+    return super.executeLiveSQL(context, q, rowReader);
+  }
 
   @Override
   public T executeOne(final LiveSQLContext context) {
@@ -379,16 +379,6 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
     t.indent();
     this.first.log(t);
     t.unindent();
-  }
-
-  @Override
-  public List<T> execute(LiveSQLContext context) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public List<T> execute(LiveSQLContext context, RowReader<T> rowReader) {
-    throw new UnsupportedOperationException();
   }
 
 }
