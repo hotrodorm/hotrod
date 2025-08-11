@@ -457,13 +457,13 @@ public class App {
   private void tuplesExamples() throws SQLException, DynamicExpressionException {
 //    tuplesExample1();
 //    tuplesExample2();
-//    tuplesExample3();
+    tuplesExample3();
 //    tuplesExample4();
 //    tuplesExample5();
 //    tuplesExample6();
 //    tuplesExample7();
 //    tuplesExample8();
-    tuplesExample9();
+//    tuplesExample9();
   }
 
   private void tuplesExample1() throws SQLException, DynamicExpressionException {
@@ -546,7 +546,7 @@ public class App {
       }
     }
 
-//    === Account: app.persistence.model.Account@472d0f4
+//    === Account: app.persistence.model.Account@25a94b55
 //        - id=111
 //        - name=null
 //        - type=null
@@ -555,6 +555,7 @@ public class App {
 //        - updatedAt=null
 //        - version=null
 //        *** Unbound 'score': 500
+//        *** Unbound 'altName': 1072
 
   }
 

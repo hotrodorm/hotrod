@@ -108,7 +108,7 @@ for (Tuple1<Account> r : rows) {
 Produces rows with the form:
 
 ```txt
-=== Account: app.persistence.model.Account@472d0f4
+=== Account: app.persistence.model.Account@25a94b55
 - id=111
 - name=null
 - type=null
@@ -117,6 +117,7 @@ Produces rows with the form:
 - updatedAt=null
 - version=null
 *** Unbound 'score': 500
+*** Unbound 'altName': 1072
 ```
 
 ## Example 4 -- Joining Tables and Views
