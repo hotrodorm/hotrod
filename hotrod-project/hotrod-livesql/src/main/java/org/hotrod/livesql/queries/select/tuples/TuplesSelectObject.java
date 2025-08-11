@@ -150,7 +150,7 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
     log.info("--- execute TUPLES");
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     TuplesRowReader<T> rowReader = getRowReader();
-    return executeLiveSQL(context, q, false, rowReader);
+    return executeLiveSQL(context, q, rowReader);
 
   }
 

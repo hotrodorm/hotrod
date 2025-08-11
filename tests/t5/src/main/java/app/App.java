@@ -457,12 +457,12 @@ public class App {
   private void tuplesExamples() throws SQLException, DynamicExpressionException {
 //    tuplesExample1();
 //    tuplesExample2();
-    tuplesExample3();
+//    tuplesExample3();
 //    tuplesExample4();
 //    tuplesExample5();
 //    tuplesExample6();
 //    tuplesExample7();
-//    tuplesExample8();
+    tuplesExample8();
 //    tuplesExample9();
   }
 
@@ -716,15 +716,15 @@ public class App {
       System.out.println("=== Account: " + account);
     }
 
-//    === Account: app.persistence.model.Account@5eb5da12
-//    - id=111
-//    - name=1072
-//    - type=CHK
-//    - balance=500.0
-//    - active=false
-//    - updatedAt=2025-08-11T11:37:07.597668
-//    - version=1
-
+//    === Account: app.persistence.model.Account@25a94b55
+//        - id=111
+//        - name=1072
+//        - type=CHK
+//        - balance=500.0
+//        - active=false
+//        - updatedAt=2025-08-11T13:40:27.216758
+//        - version=1
+    
   }
 
   private void tuplesExample9() throws SQLException, DynamicExpressionException {
@@ -740,14 +740,14 @@ public class App {
     Account account = row.getA();
     System.out.println("=== Account: " + account);
 
-//    === Account: app.persistence.model.Account@5eb5da12
-//    - id=111
-//    - name=1072
-//    - type=CHK
-//    - balance=500.0
-//    - active=false
-//    - updatedAt=2025-08-11T11:37:07.597668
-//    - version=1
+//    === Account: app.persistence.model.Account@6d672bd4
+//        - id=111
+//        - name=1072
+//        - type=CHK
+//        - balance=500.0
+//        - active=false
+//        - updatedAt=2025-08-11T13:22:43.222488
+//        - version=1
 
   }
 

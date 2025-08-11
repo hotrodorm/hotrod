@@ -320,44 +320,46 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
 
   // MultiSet execution
 
-  @Override
-  public List<T> execute(final LiveSQLContext context) {
-    LiveSQLPreparedQuery q = this.prepareQuery(context);
-//    log.info("PREPARED:\n" + q.getPreview(false));
-    RowReader<T> rowReader = this.first.getRowReader();
-//    log.info("ROWREADER: " + rowReader);
-    return executeLiveSQL(context, q, false, rowReader);
-  }
+//  @Override
+//  public List<T> execute(final LiveSQLContext context) {
+//    LiveSQLPreparedQuery q = this.prepareQuery(context);
+//    RowReader<T> rowReader = this.first.getRowReader();
+//    return executeLiveSQL(context, q, false, rowReader);
+//  }
+//
+//  @Override
+//  public List<T> execute(final LiveSQLContext context, final RowReader<T> rowReader) {
+//    LiveSQLPreparedQuery q = this.prepareQuery(context);
+//    return super.executeLiveSQL(context, q, false, rowReader);
+//  }
 
   @Override
-  public List<T> execute(final LiveSQLContext context, final RowReader<T> rowReader) {
+  public T executeOne(final LiveSQLContext context) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    return executeLiveSQL(context, q, false, rowReader);
+    RowReader<T> rowReader = this.first.getRowReader();
+    T row = super.executeLiveSQLOne(context, q, rowReader);
+    return row;
   }
 
   @Override
   public Cursor<T> executeCursor(final LiveSQLContext context) throws SQLException {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    return executeLiveSQLCursor(context, q);
+    RowReader<T> rowReader = this.first.getRowReader();
+    return super.executeLiveSQLCursor(context, q, rowReader, null);
   }
 
   @Override
   public Cursor<T> executeCursor(final LiveSQLContext context, Integer fetchSize) throws SQLException {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    return executeLiveSQLCursor(context, q, null, fetchSize);
+    RowReader<T> rowReader = this.first.getRowReader();
+    return super.executeLiveSQLCursor(context, q, rowReader, fetchSize);
   }
 
   @Override
   public Cursor<T> executeCursor(final LiveSQLContext context, final RowReader<T> rowReader, final Integer fetchSize)
       throws SQLException {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    return executeLiveSQLCursor(context, q, rowReader, fetchSize);
-  }
-
-  @Override
-  public T executeOne(final LiveSQLContext context) {
-    LiveSQLPreparedQuery q = this.prepareQuery(context);
-    return executeLiveSQLOne(context, q);
+    return super.executeLiveSQLCursor(context, q, rowReader, fetchSize);
   }
 
   public final String toString() {
@@ -377,6 +379,16 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
     t.indent();
     this.first.log(t);
     t.unindent();
+  }
+
+  @Override
+  public List<T> execute(LiveSQLContext context) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public List<T> execute(LiveSQLContext context, RowReader<T> rowReader) {
+    throw new UnsupportedOperationException();
   }
 
 }

@@ -289,8 +289,59 @@ Produces rows with the form:
 
 ## Example 8 -- Select Using Cursors
 
-TBD
+The code:
+
+```java
+AccountTable a = this.accountDAO.newTable();
+
+Cursor<Tuple1<Account>> rows = this.sql.select().tuples() //
+    .from(a) //
+    .where(a.balance.ge(500)) //
+    .executeCursor();
+for (Tuple1<Account> r : rows) {
+  Account account = r.getA();
+  System.out.println("=== Account: " + account);
+}
+```
+
+Produces rows with the form:
+
+```txt
+=== Account: app.persistence.model.Account@25a94b55
+- id=111
+- name=1072
+- type=CHK
+- balance=500.0
+- active=false
+- updatedAt=2025-08-11T13:40:27.216758
+- version=1
+```
 
 ## Example 9 -- Select a Single Row
 
-TBD
+The code:
+
+```java
+AccountTable a = this.accountDAO.newTable();
+
+Tuple1<Account> row = this.sql.select().tuples() //
+    .from(a) //
+    .where(a.balance.ge(500)) //
+    .executeOne();
+Account account = row.getA();
+System.out.println("=== Account: " + account);
+```
+
+Produces rows with the form:
+
+```txt
+=== Account: app.persistence.model.Account@6d672bd4
+- id=111
+- name=1072
+- type=CHK
+- balance=500.0
+- active=false
+- updatedAt=2025-08-11T13:22:43.222488
+- version=1
+```
+

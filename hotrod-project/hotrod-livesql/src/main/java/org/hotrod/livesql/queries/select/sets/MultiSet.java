@@ -104,18 +104,8 @@ public abstract class MultiSet<T> {
   public abstract RowReader<T> getRowReader();
 
   protected List<T> executeLiveSQL(final LiveSQLContext context, final LiveSQLPreparedQuery q,
-      final boolean singleRow) {
-    return this.executeLiveSQL(context, q, singleRow, null);
-  }
-
-  protected List<T> executeLiveSQL(final LiveSQLContext context, final LiveSQLPreparedQuery q, final boolean singleRow,
       final RowReader<T> rowReader) {
-
-    if (context.getLogger().isLoggable(Level.FINER)) {
-      context.getLogger().finest("SQL: " + q.getPreview(true));
-    } else if (context.getLogger().isLoggable(Level.FINE)) {
-      context.getLogger().fine("SQL: " + q.getPreview(false));
-    }
+    logExecution(context, q);
 
     List<T> rows = new ArrayList<>();
     try (Connection conn = context.getDataSource().getConnection()) {
@@ -136,14 +126,7 @@ public abstract class MultiSet<T> {
 
           final RowReader<T> effectiveRowReader = rowReader != null ? rowReader : new UnaryRowReader<>(context, q, rs);
 
-          int count = 0;
-//          log.info(">> will start reading result set.");
           while (rs.next()) {
-            count++;
-//            log.info(">> ResultSet row #" + count);
-            if (singleRow && count > 1) {
-              throw new LiveSQLException("A single row at most was expected by this query but received at least two");
-            }
             T row = effectiveRowReader.readRowFrom(rs, conn);
             rows.add(row);
           }
@@ -153,11 +136,52 @@ public abstract class MultiSet<T> {
       }
 
     } catch (SQLException e) {
-      log.log(Level.SEVERE, "error");
-      e.printStackTrace();
+      log.log(Level.SEVERE, e.getMessage());
       throw new RuntimeException(e);
     }
 
+  }
+
+  protected T executeLiveSQLOne(final LiveSQLContext context, final LiveSQLPreparedQuery q,
+      final RowReader<T> rowReader) {
+    logExecution(context, q);
+
+    try (Connection conn = context.getDataSource().getConnection()) {
+
+      try (PreparedStatement ps = conn.prepareStatement(q.getSQL())) {
+
+        // 1. Apply parameters
+
+        int n = 1;
+        for (Object obj : q.getParameters().values()) {
+          int i = n++;
+          ps.setObject(i, obj);
+        }
+
+        // 2. Run the query
+
+        try (ResultSet rs = ps.executeQuery()) {
+
+          final RowReader<T> effectiveRowReader = rowReader != null ? rowReader : new UnaryRowReader<>(context, q, rs);
+          T row = null;
+
+          int count = 0;
+          while (rs.next()) {
+            count++;
+            if (count > 1) {
+              throw new LiveSQLException("A single row at most was expected by this query but received at least two");
+            }
+            row = effectiveRowReader.readRowFrom(rs, conn);
+          }
+          return row;
+        }
+
+      }
+
+    } catch (SQLException e) {
+      log.log(Level.SEVERE, e.getMessage());
+      throw new RuntimeException(e);
+    }
   }
 
   protected Cursor<T> executeLiveSQLCursor(final LiveSQLContext context, final LiveSQLPreparedQuery q)
@@ -170,15 +194,14 @@ public abstract class MultiSet<T> {
     return new RowCursor<>(context, q, rowReader, fetchSize);
   }
 
-  protected T executeLiveSQLOne(final LiveSQLContext context, final LiveSQLPreparedQuery q) {
-    List<T> rows = executeLiveSQL(context, q, true);
-    if (rows.isEmpty()) {
-      return null;
-    } else {
-      return rows.get(0);
+  protected abstract void log(ToString t);
+
+  void logExecution(final LiveSQLContext context, final LiveSQLPreparedQuery q) {
+    if (context.getLogger().isLoggable(Level.FINER)) {
+      context.getLogger().finest("SQL: " + q.getPreview(true));
+    } else if (context.getLogger().isLoggable(Level.FINE)) {
+      context.getLogger().fine("SQL: " + q.getPreview(false));
     }
   }
-
-  protected abstract void log(ToString t);
 
 }
