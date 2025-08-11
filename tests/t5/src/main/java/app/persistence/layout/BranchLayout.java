@@ -16,6 +16,7 @@ public class BranchLayout implements Serializable {
   protected Integer id = null;
   protected String region = null;
   protected Integer isVip = null;
+  protected Integer parentBranchId = null;
   protected LocalDateTime createdAt = null;
 
   // getters & setters
@@ -44,6 +45,14 @@ public class BranchLayout implements Serializable {
     this.isVip = isVip;
   }
 
+  public Integer getParentBranchId() {
+    return this.parentBranchId;
+  }
+
+  public void setParentBranchId(final Integer parentBranchId) {
+    this.parentBranchId = parentBranchId;
+  }
+
   public LocalDateTime getCreatedAt() {
     return this.createdAt;
   }
@@ -60,6 +69,7 @@ public class BranchLayout implements Serializable {
     sb.append("- id=" + this.id + "\n");
     sb.append("- region=" + this.region + "\n");
     sb.append("- isVip=" + this.isVip + "\n");
+    sb.append("- parentBranchId=" + this.parentBranchId + "\n");
     sb.append("- createdAt=" + this.createdAt);
     return sb.toString();
   }
@@ -71,6 +81,7 @@ public class BranchLayout implements Serializable {
     obj.addProperty("id", this.id);
     obj.addProperty("region", this.region);
     obj.addProperty("isVip", this.isVip);
+    obj.addProperty("parentBranchId", this.parentBranchId);
     obj.addProperty("createdAt", this.createdAt);
     return obj;
   }

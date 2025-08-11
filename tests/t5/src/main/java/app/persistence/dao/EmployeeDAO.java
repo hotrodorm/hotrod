@@ -7,7 +7,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -35,7 +34,6 @@ import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.metadata.AllColumns;
 import org.hotrod.livesql.metadata.CharEntityColumn;
-import org.hotrod.livesql.metadata.DateTimeEntityColumn;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.Table;
@@ -54,15 +52,15 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import app.persistence.layout.BranchLayout;
-import app.persistence.model.Branch;
+import app.persistence.layout.EmployeeLayout;
+import app.persistence.model.Employee;
 
 @Component
-public class BranchDAO implements Serializable, ApplicationContextAware {
+public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = Logger.getLogger(BranchDAO.class.getName());
+  private static final Logger log = Logger.getLogger(EmployeeDAO.class.getName());
 
   @Autowired
   private DataSource dataSource;
@@ -83,29 +81,22 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   // ROW READER
 
-  private final RowReader<Branch> rowReader = new RowReader<Branch>() {
+  private final RowReader<Employee> rowReader = new RowReader<Employee>() {
 
     @Override
-    public Branch readRowFrom(ResultSet rs, Connection conn) throws SQLException {
-      Branch row = applicationContext.getBean(Branch.class);
+    public Employee readRowFrom(ResultSet rs, Connection conn) throws SQLException {
+      Employee row = applicationContext.getBean(Employee.class);
 
       Integer col1 = rs.getInt("ID"); // ID
       if (rs.wasNull()) col1 = null;
       row.setId(col1);
 
-      String col2 = rs.getString("REGION"); // REGION
-      row.setRegion(col2);
+      String col2 = rs.getString("NAME"); // NAME
+      row.setName(col2);
 
-      Integer col3 = rs.getInt("IS_VIP"); // IS_VIP
+      Integer col3 = rs.getInt("BRANCH_ID"); // BRANCH_ID
       if (rs.wasNull()) col3 = null;
-      row.setIsVip(col3);
-
-      Integer col4 = rs.getInt("PARENT_BRANCH_ID"); // PARENT_BRANCH_ID
-      if (rs.wasNull()) col4 = null;
-      row.setParentBranchId(col4);
-
-      LocalDateTime col5 = rs.getObject("CREATED_AT", LocalDateTime.class); // CREATED_AT
-      row.setCreatedAt(col5);
+      row.setBranchId(col3);
 
       return row;
     }
@@ -114,43 +105,31 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   // BASELINE
 
-  public class BranchBaseline {
+  public class EmployeeBaseline {
 
     private Integer id;
-    private String region;
-    private Integer isVip;
-    private Integer parentBranchId;
-    private LocalDateTime createdAt;
+    private String name;
+    private Integer branchId;
 
     public Integer getId() {
       return this.id;
     }
 
-    public String getRegion() {
-      return this.region;
+    public String getName() {
+      return this.name;
     }
 
-    public Integer getIsVip() {
-      return this.isVip;
-    }
-
-    public Integer getParentBranchId() {
-      return this.parentBranchId;
-    }
-
-    public LocalDateTime getCreatedAt() {
-      return this.createdAt;
+    public Integer getBranchId() {
+      return this.branchId;
     }
 
   }
 
-  public BranchBaseline baseline(Branch model) {
-    BranchBaseline b = new BranchBaseline();
+  public EmployeeBaseline baseline(Employee model) {
+    EmployeeBaseline b = new EmployeeBaseline();
     b.id = model.getId();
-    b.region = model.getRegion();
-    b.isVip = model.getIsVip();
-    b.parentBranchId = model.getParentBranchId();
-    b.createdAt = model.getCreatedAt();
+    b.name = model.getName();
+    b.branchId = model.getBranchId();
     return b;
   };
 
@@ -162,25 +141,23 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     this.selectByPrimaryKey = dyn
       .literaln("SELECT")
       .literaln("  id,")
-      .literaln("  region,")
-      .literaln("  is_vip,")
-      .literaln("  parent_branch_id,")
-      .literaln("  created_at")
-      .literaln("FROM branch")
+      .literaln("  name,")
+      .literaln("  branch_id")
+      .literaln("FROM employee")
       .literaln("WHERE " + "id = ").parameter("f.id")
       .endSelectQuery();
   }
 
-  public Branch select(Integer id) throws DynamicExpressionException, SQLException {
+  public Employee select(Integer id) throws DynamicExpressionException, SQLException {
     if (id == null) return null;
-    Branch filter = new Branch();
+    Employee filter = new Employee();
     filter.setId(id);
     Parameters context = this.dyn.newParameters();
     context.add("f", filter);
-    PreparedSelectQuery<Branch> preparedQuery = this.selectByPrimaryKey.prepare(context, this.rowReader);
+    PreparedSelectQuery<Employee> preparedQuery = this.selectByPrimaryKey.prepare(context, this.rowReader);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
-      List<Branch> rows = preparedQuery.execute(conn);
+      List<Employee> rows = preparedQuery.execute(conn);
       if (rows.size() == 0) return null;
       if (rows.size() == 1) return rows.get(0);
       throw new RuntimeException("A single row at most was expected but received " + rows.size() + " rows.");
@@ -195,39 +172,35 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     this.selectByExample = dyn
       .literaln("SELECT")
       .literaln("  id,")
-      .literaln("  region,")
-      .literaln("  is_vip,")
-      .literaln("  parent_branch_id,")
-      .literaln("  created_at")
-      .literaln("FROM branch")
+      .literaln("  name,")
+      .literaln("  branch_id")
+      .literaln("FROM employee")
       .where("AND")
         .if_("f.id != null").literal("id = ").parameter("f.id").endif()
-        .if_("f.region != null").literal("region = ").parameter("f.region").endif()
-        .if_("f.isVip != null").literal("is_vip = ").parameter("f.isVip").endif()
-        .if_("f.parentBranchId != null").literal("parent_branch_id = ").parameter("f.parentBranchId").endif()
-        .if_("f.createdAt != null").literal("created_at = ").parameter("f.createdAt").endif()
+        .if_("f.name != null").literal("name = ").parameter("f.name").endif()
+        .if_("f.branchId != null").literal("branch_id = ").parameter("f.branchId").endif()
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
   }
 
-  public List<Branch> select(Branch filter, BranchOrderBy... orderBies) throws DynamicExpressionException, SQLException {
+  public List<Employee> select(Employee filter, EmployeeOrderBy... orderBies) throws DynamicExpressionException, SQLException {
     Parameters context = this.dyn.newParameters();
     context.add("f", filter);
     String ordering = SQLUtil.render(orderBies);
     context.add("ordering", ordering);
-    PreparedSelectQuery<Branch> preparedQuery = this.selectByExample.prepare(context, this.rowReader);
+    PreparedSelectQuery<Employee> preparedQuery = this.selectByExample.prepare(context, this.rowReader);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
-      List<Branch> rows = preparedQuery.execute(conn);
+      List<Employee> rows = preparedQuery.execute(conn);
       return rows;
     }
   }
 
   // SELECT BY CRITERIA
 
-  public CriteriaWherePhase<Branch> select(final BranchTable from, final BooleanExpression predicate) {
-    return new CriteriaWherePhase<Branch>(this.context, from, predicate, this.rowReader);
+  public CriteriaWherePhase<Employee> select(final EmployeeTable from, final BooleanExpression predicate) {
+    return new CriteriaWherePhase<Employee>(this.context, from, predicate, this.rowReader);
   }
 
   // INSERT
@@ -236,31 +209,26 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsert() {
     this.insert = dyn
-      .literaln("INSERT INTO branch (")
-      .if_("m.id != null").literal("id,\n").endif()
-      .literaln("  region,")
-      .literaln("  is_vip,")
-      .literaln("  parent_branch_id,")
-      .literaln("  created_at")
+      .literaln("INSERT INTO employee (")
+      .literaln("  id,")
+      .literaln("  name,")
+      .literaln("  branch_id")
       .literaln(")")
       .literaln("VALUES(")
-      .if_("m.id != null").parameter("m.id").literal(", ").endif()
-      .literal("  ").parameterNullable("m.region", Types.VARCHAR).literaln(",")
-      .literal("  ").parameterNullable("m.isVip", Types.INTEGER).literaln(",")
-      .literal("  ").parameterNullable("m.parentBranchId", Types.INTEGER).literaln(",")
-      .literal("  ").parameterNullable("m.createdAt", Types.TIMESTAMP)
+      .literal("  ").parameterNullable("m.id", Types.INTEGER).literaln(",")
+      .literal("  ").parameterNullable("m.name", Types.VARCHAR).literaln(",")
+      .literal("  ").parameterNullable("m.branchId", Types.INTEGER)
       .literal(")")
-      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
+      .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public void insert(Branch model) throws DynamicExpressionException, SQLException {
+  public void insert(Employee model) throws DynamicExpressionException, SQLException {
     Parameters context = this.dyn.newParameters();
     context.add("m", model);
     PreparedInsertQuery preparedQuery = this.insert.prepare(context);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
-      Long pk = preparedQuery.execute(conn);
-      model.setId((pk == null) ? null : Integer.valueOf(pk.intValue()));
+      preparedQuery.execute(conn);
     }
   }
 
@@ -270,31 +238,26 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
-      .literaln("INSERT INTO branch (")
+      .literaln("INSERT INTO employee (")
       .if_("m.id != null").literal("id,\n").endif()
-      .if_("m.region != null").literal("region,\n").endif()
-      .if_("m.isVip != null").literal("is_vip,\n").endif()
-      .if_("m.parentBranchId != null").literal("parent_branch_id,\n").endif()
-      .if_("m.createdAt != null").literal("created_at\n").endif()
+      .if_("m.name != null").literal("name,\n").endif()
+      .if_("m.branchId != null").literal("branch_id\n").endif()
       .literaln(")")
       .literaln("VALUES(")
       .if_("m.id != null").parameter("m.id").literal(", ").endif()
-      .if_("m.region != null").parameter("m.region").literal(", ").endif()
-      .if_("m.isVip != null").parameter("m.isVip").literal(", ").endif()
-      .if_("m.parentBranchId != null").parameter("m.parentBranchId").literal(", ").endif()
-      .if_("m.createdAt != null").parameter("m.createdAt").endif()
+      .if_("m.name != null").parameter("m.name").literal(", ").endif()
+      .if_("m.branchId != null").parameter("m.branchId").endif()
       .literal(")")
-      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
+      .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public void insertByExample(Branch model) throws DynamicExpressionException, SQLException {
+  public void insertByExample(Employee model) throws DynamicExpressionException, SQLException {
     Parameters context = this.dyn.newParameters();
     context.add("m", model);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(context);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
-      Long pk = preparedQuery.execute(conn);
-      model.setId((pk == null) ? null : Integer.valueOf(pk.intValue()));
+      preparedQuery.execute(conn);
     }
   }
 
@@ -304,18 +267,16 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   private void initializeUpdatebypk() {
     this.updateByPK = dyn
-      .literaln("UPDATE branch")
+      .literaln("UPDATE employee")
       .literaln("SET")
       .literal("  id = ").parameterNullable("m.id", Types.INTEGER).literaln(",")
-      .literal("  region = ").parameterNullable("m.region", Types.VARCHAR).literaln(",")
-      .literal("  is_vip = ").parameterNullable("m.isVip", Types.INTEGER).literaln(",")
-      .literal("  parent_branch_id = ").parameterNullable("m.parentBranchId", Types.INTEGER).literaln(",")
-      .literal("  created_at = ").parameterNullable("m.createdAt", Types.TIMESTAMP)
+      .literal("  name = ").parameterNullable("m.name", Types.VARCHAR).literaln(",")
+      .literal("  branch_id = ").parameterNullable("m.branchId", Types.INTEGER)
       .literaln("WHERE " + "id = ").parameter("m.id")
     .endModificationQuery();
   }
 
-  public int update(Branch model) throws DynamicExpressionException, SQLException {
+  public int update(Employee model) throws DynamicExpressionException, SQLException {
     if (model.getId() == null) return 0;
     Parameters context = this.dyn.newParameters();
     context.add("m", model);
@@ -333,25 +294,21 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   private void initializeUpdatebyexample() {
     this.updateByExample = dyn
-      .literal("UPDATE branch")
+      .literal("UPDATE employee")
       .set()
         .if_("v.id != null").literal("id = ").parameter("v.id").endif()
-        .if_("v.region != null").literal("region = ").parameter("v.region").endif()
-        .if_("v.isVip != null").literal("is_vip = ").parameter("v.isVip").endif()
-        .if_("v.parentBranchId != null").literal("parent_branch_id = ").parameter("v.parentBranchId").endif()
-        .if_("v.createdAt != null").literal("created_at = ").parameter("v.createdAt").endif()
+        .if_("v.name != null").literal("name = ").parameter("v.name").endif()
+        .if_("v.branchId != null").literal("branch_id = ").parameter("v.branchId").endif()
       .endset()
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
-        .if_("e.region != null").literal("region = ").parameter("e.region").endif()
-        .if_("e.isVip != null").literal("is_vip = ").parameter("e.isVip").endif()
-        .if_("e.parentBranchId != null").literal("parent_branch_id = ").parameter("e.parentBranchId").endif()
-        .if_("e.createdAt != null").literal("created_at = ").parameter("e.createdAt").endif()
+        .if_("e.name != null").literal("name = ").parameter("e.name").endif()
+        .if_("e.branchId != null").literal("branch_id = ").parameter("e.branchId").endif()
       .endwhere()
       .endModificationQuery();
   }
 
-  public int update(Branch example, Branch values) throws DynamicExpressionException, SQLException {
+  public int update(Employee example, Employee values) throws DynamicExpressionException, SQLException {
     Parameters context = this.dyn.newParameters();
     context.add("e", example);
     context.add("v", values);
@@ -365,14 +322,12 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateSetCompletePhase update(final Branch values, final BranchTable tableOrView,
+  public UpdateSetCompletePhase update(final Employee values, final EmployeeTable tableOrView,
       final BooleanExpression predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
-    if (values.getRegion() != null) setters.add(new Setter(tableOrView.region, sql.val(values.getRegion())));
-    if (values.getIsVip() != null) setters.add(new Setter(tableOrView.isVip, sql.val(values.getIsVip())));
-    if (values.getParentBranchId() != null) setters.add(new Setter(tableOrView.parentBranchId, sql.val(values.getParentBranchId())));
-    if (values.getCreatedAt() != null) setters.add(new Setter(tableOrView.createdAt, sql.val(values.getCreatedAt())));
+    if (values.getName() != null) setters.add(new Setter(tableOrView.name, sql.val(values.getName())));
+    if (values.getBranchId() != null) setters.add(new Setter(tableOrView.branchId, sql.val(values.getBranchId())));
     return new UpdateSetCompletePhase(this.context, tableOrView, setters, predicate);
   }
 
@@ -382,14 +337,14 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   private void initializeDeletebypk() {
     this.deleteByPK = dyn
-      .literaln("DELETE FROM branch")
+      .literaln("DELETE FROM employee")
       .literaln("WHERE " + "id = ").parameter("f.id")
       .endModificationQuery();
   }
 
   public int delete(Integer id) throws DynamicExpressionException, SQLException {
     if (id == null) return 0;
-    Branch filter = new Branch();
+    Employee filter = new Employee();
     filter.setId(id);
     Parameters context = this.dyn.newParameters();
     context.add("f", filter);
@@ -407,18 +362,16 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   private void initializeDeletebyexample() {
     this.deleteByExample = dyn
-      .literal("DELETE FROM branch")
+      .literal("DELETE FROM employee")
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
-        .if_("e.region != null").literal("region = ").parameter("e.region").endif()
-        .if_("e.isVip != null").literal("is_vip = ").parameter("e.isVip").endif()
-        .if_("e.parentBranchId != null").literal("parent_branch_id = ").parameter("e.parentBranchId").endif()
-        .if_("e.createdAt != null").literal("created_at = ").parameter("e.createdAt").endif()
+        .if_("e.name != null").literal("name = ").parameter("e.name").endif()
+        .if_("e.branchId != null").literal("branch_id = ").parameter("e.branchId").endif()
       .endwhere()
       .endModificationQuery();
   }
 
-  public int delete(Branch example) throws DynamicExpressionException, SQLException {
+  public int delete(Employee example) throws DynamicExpressionException, SQLException {
     Parameters context = this.dyn.newParameters();
     context.add("e", example);
     PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(context);
@@ -431,29 +384,25 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   // DELETE BY CRITERIA
 
-  public DeleteWherePhase delete(final BranchTable from, final BooleanExpression predicate) {
+  public DeleteWherePhase delete(final EmployeeTable from, final BooleanExpression predicate) {
     return new DeleteWherePhase(this.context, from, predicate);
   }
 
   // ORDER BY
 
-  public enum BranchOrderBy implements OrderBy {
+  public enum EmployeeOrderBy implements OrderBy {
 
     ID("id", true),
     ID$DESC("id", false),
-    REGION("region", true),
-    REGION$DESC("region", false),
-    IS_VIP("is_vip", true),
-    IS_VIP$DESC("is_vip", false),
-    PARENT_BRANCH_ID("parent_branch_id", true),
-    PARENT_BRANCH_ID$DESC("parent_branch_id", false),
-    CREATED_AT("created_at", true),
-    CREATED_AT$DESC("created_at", false);
+    NAME("name", true),
+    NAME$DESC("name", false),
+    BRANCH_ID("branch_id", true),
+    BRANCH_ID$DESC("branch_id", false);
 
     private String sqlColumnName;
     private boolean ascending;
 
-    private BranchOrderBy(String sqlColumnName, boolean ascending) {
+    private EmployeeOrderBy(String sqlColumnName, boolean ascending) {
       this.sqlColumnName = sqlColumnName;
       this.ascending = ascending;
     }
@@ -470,44 +419,40 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   // Database class org.hotrod.livesql.metadata.Table metadata
 
-  public BranchTable newTable() {
-    return new BranchTable();
+  public EmployeeTable newTable() {
+    return new EmployeeTable();
   }
 
-  public BranchTable newTable(final String alias) {
-    return new BranchTable(alias);
+  public EmployeeTable newTable(final String alias) {
+    return new EmployeeTable(alias);
   }
 
-  public static class BranchTable extends Table<Branch> {
+  public static class EmployeeTable extends Table<Employee> {
 
     // Properties
 
     public final NumericEntityColumn id = new NumericEntityColumn(this,
       "ID", "id", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
-    public final CharEntityColumn region = new CharEntityColumn(this,
-      "REGION", "region", "CHARACTER VARYING", 10, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE));
-    public final NumericEntityColumn isVip = new NumericEntityColumn(this,
-      "IS_VIP", "isVip", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
-    public final NumericEntityColumn parentBranchId = new NumericEntityColumn(this,
-      "PARENT_BRANCH_ID", "parentBranchId", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
-    public final DateTimeEntityColumn createdAt = new DateTimeEntityColumn(this,
-      "CREATED_AT", "createdAt", "TIMESTAMP", 26, 6, TypeHandler.forClass(LocalDateTime.class, TypeSource.STATIC_DIALECT_RULE));
+    public final CharEntityColumn name = new CharEntityColumn(this,
+      "NAME", "name", "CHARACTER VARYING", 50, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE));
+    public final NumericEntityColumn branchId = new NumericEntityColumn(this,
+      "BRANCH_ID", "branchId", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this.id, this.region, this.isVip, this.parentBranchId, this.createdAt);
+      return new AllColumns(this.id, this.name, this.branchId);
     }
 
     // Constructors
 
-    BranchTable() {
-      super(null, null, Name.of("BRANCH", false), "Table", null, BranchLayout.class, Branch.class);
+    EmployeeTable() {
+      super(null, null, Name.of("EMPLOYEE", false), "Table", null, EmployeeLayout.class, Employee.class);
       initialize();
     }
 
-    BranchTable(final String alias) {
-      super(null, null, Name.of("BRANCH", false), "Table", alias, BranchLayout.class, Branch.class);
+    EmployeeTable(final String alias) {
+      super(null, null, Name.of("EMPLOYEE", false), "Table", alias, EmployeeLayout.class, Employee.class);
       initialize();
     }
 
@@ -516,10 +461,8 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     private void initialize() {
       super.columns = new ArrayList<>();
       super.columns.add(this.id);
-      super.columns.add(this.region);
-      super.columns.add(this.isVip);
-      super.columns.add(this.parentBranchId);
-      super.columns.add(this.createdAt);
+      super.columns.add(this.name);
+      super.columns.add(this.branchId);
     }
 
   }

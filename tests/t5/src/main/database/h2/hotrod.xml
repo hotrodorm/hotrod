@@ -26,8 +26,8 @@
     class="app.AccountTypeConverter" />
 
   <table name="product" />
-
   <table name="branch" />
+  <table name="employee" />
 
 <!--
   <table name="chars" />
