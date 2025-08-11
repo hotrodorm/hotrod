@@ -38,6 +38,8 @@ Produces rows with the form:
 - version=1
 ```
 
+**Note**: Tuples can be used to SELECT from tables and views.
+
 ## Example 2 -- Filtering Columns
 
 A subset of the model object columns can be populated, instead of the full set (default). This can help  to avoid the overhead of heavy column types (blobs, clobs, long varchar, etc).
@@ -127,7 +129,7 @@ Produces rows with the form:
 *** Unbound 'altName': 1072
 ```
 
-## Example 4 -- Joining Tables and Views
+## Example 4 -- Joins
 
 The following query:
 
@@ -203,7 +205,9 @@ Produces rows with the form:
 - createdAt=2024-01-01T12:34:56
 ```
 
-## Example 6 -- Joining Multiple Tables and Views (up to 26)
+## Example 6 -- Joining Multiple Tables and Views
+
+A tuples join can join up to 26 tables and views.
 
 The following query:
 
