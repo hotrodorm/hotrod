@@ -1,13 +1,19 @@
 # Feature Preview -- Tuples in LiveSQL
 
+This quick walkthrough document shows the functionality of the new feature of selecting tuples for table and view objects.
+
 ## Example 1 -- Equivalent to Select by Criteria
 
-The resulting model objects use the correct data types, converters, etc. The code:
+The resulting model objects use the correct data types, converters, etc.
+
+The code:
 
 ```java
 AccountTable a = this.accountDAO.newTable();
 
-List<Tuple1<Account>> rows = this.sql.select().tuples()
+List<Tuple1<Account>> rows = this.sql
+    .select()
+    .tuples() // this clause enables tuples
     .from(a)
     .where(a.balance.ge(500))
     .execute();
@@ -39,11 +45,12 @@ The code:
 ```java
 AccountTable a = this.accountDAO.newTable();
 
-List<Tuple1<Account>> rows = this.sql.select(
-    a.id,
-    a.balance,
-    a.star().filter(c -> c.getType().equals("timestamp"))
-)
+List<Tuple1<Account>> rows = this.sql
+    .select(
+      a.id,
+      a.balance,
+      a.star().filter(c -> c.getType().equals("timestamp"))
+    )
     .tuples()
     .from(a)
     .where(a.balance.ge(500))
@@ -71,19 +78,21 @@ Produces rows with the form:
 
 Direct table or view columns are retrieved in the corresponding tuples.
 
-Other expression -- including table or view columns renamed or used in expressions become non-tuple columns, aka "unbound columns".
+Other general SQL expressions, table or view columns renamed, or columns used in expressions become non-tuple columns, aka "unbound columns".
 
 The code:
 
 ```java
 AccountTable a = this.accountDAO.newTable();
 
-List<Tuple1<Account>> rows = this.sql.select(
-    a.id, // tuple
-    a.balance, // tuple
-    a.balance.mult(1.22).as("score"), // non-tuple
-    a.name.as("altName") // non-tuple
-).tuples()
+List<Tuple1<Account>> rows = this.sql
+    .select(
+      a.id, // tuple
+      a.balance, // tuple
+      a.balance.mult(1.22).as("score"), // non-tuple
+      a.name.as("altName") // non-tuple
+    )
+    .tuples()
     .from(a)
     .where(a.balance.ge(500))
     .execute();
@@ -118,7 +127,9 @@ The code:
 BranchTable b = this.branchDAO.newTable();
 EmployeeTable e = this.employeeDAO.newTable();
 
-List<Tuple2<Employee, Branch>> rows = this.sql.select().tuples()
+List<Tuple2<Employee, Branch>> rows = this.sql
+    .select()
+    .tuples()
     .from(e)
     .join(b, b.id.eq(e.branchId)).where(e.name.like("%Anne%"))
     .execute();
@@ -153,7 +164,9 @@ The code:
 BranchTable b = this.branchDAO.newTable();
 BranchTable p = this.branchDAO.newTable();
 
-List<Tuple2<Branch, Branch>> rows = this.sql.select().tuples()
+List<Tuple2<Branch, Branch>> rows = this.sql
+    .select()
+    .tuples()
     .from(b)
     .join(p, p.id.eq(b.parentBranchId))
     .where(b.region.eq("NE")).execute();
@@ -191,7 +204,9 @@ EmployeeTable e = this.employeeDAO.newTable();
 BranchTable b = this.branchDAO.newTable();
 BranchTable p = this.branchDAO.newTable();
 
-List<Tuple3<Employee, Branch, Branch>> rows = this.sql.select().tuples()
+List<Tuple3<Employee, Branch, Branch>> rows = this.sql
+    .select()
+    .tuples()
     .from(e).join(b, e.branchId.eq(b.id))
     .join(p, p.id.eq(b.parentBranchId))
     .execute();
@@ -238,7 +253,10 @@ EmployeeTable e = this.employeeDAO.newTable();
 Subquery x = sql.subquery("x", sql.select(sql.currentDate().as("currentDate")));
 BranchTable b = this.branchDAO.newTable();
 
-List<Tuple2<Employee, Branch>> rows = this.sql.with(y).select().tuples()
+List<Tuple2<Employee, Branch>> rows = this.sql
+    .with(y)
+    .select()
+    .tuples()
     .from(e)
     .crossJoin(x)
     .crossJoin(y)
