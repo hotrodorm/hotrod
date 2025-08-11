@@ -83,11 +83,11 @@ Produces rows with the form:
 - version=null
 ```
 
-## Example 3 -- Tuple and Non-tuple Columns
+## Example 3 -- Tuples and Unbound Columns
 
-Direct table or view columns are retrieved in the corresponding tuples.
+The columns that belong to the tables and views are automatically populated in the corresponding tuples.
 
-Other general SQL expressions, table or view columns renamed, or columns used in expressions become non-tuple columns, aka "unbound columns".
+Other SQL expressions, such as renamed table or view columns, general SQL expressions, functions, or columns used in expressions become unbound columns.
 
 The following query:
 
@@ -96,10 +96,10 @@ AccountTable a = this.accountDAO.newTable();
 
 List<Tuple1<Account>> rows = this.sql
     .select(
-      a.id, // tuple
-      a.balance, // tuple
-      a.balance.mult(1.22).as("score"), // non-tuple
-      a.name.as("altName") // non-tuple
+      a.id, // in tuple
+      a.balance, // in tuple
+      a.balance.mult(1.22).as("score"), // outside the tuple -- unbound
+      a.name.as("altName") // outside the tuple -- unbound
     )
     .tuples()
     .from(a)
