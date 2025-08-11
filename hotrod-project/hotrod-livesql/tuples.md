@@ -4,9 +4,11 @@ This quick walkthrough document shows the functionality of the new feature of se
 
 ## Example 1 -- Equivalent to Select by Criteria
 
-The resulting model objects use the correct data types, converters, etc.
+In addition of covering all forms of the Select By Criteria queries, this form can also implement semi-joins, anti-joins, with CTEs and/or subqueries. As shown in Example #2, it has the ability to retrieve a subset of the columns of the table (or view).
 
-The following query:
+The clause `.tuples()` enables the tuples form of queries.
+
+The resulting model objects use the correct data types, converters, etc. The following query:
 
 ```java
 AccountTable a = this.accountDAO.newTable();
