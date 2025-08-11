@@ -194,12 +194,12 @@ public class LiveSQL {
     return new NonLockableSelectColumnsPhase<Row>(this.context, null, true);
   }
 
-  public SelectColumnsPhase<Row> select(final SQLExpression... resultSetColumns) {
-    return new SelectColumnsPhase<Row>(this.context, null, false, resultSetColumns);
+  public SelectColumnsPhase<Row> select(final SQLExpression... sqlExpressions) {
+    return new SelectColumnsPhase<Row>(this.context, null, false, sqlExpressions);
   }
 
-  public NonLockableSelectColumnsPhase<Row> selectDistinct(final SQLExpression... resultSetColumns) {
-    return new NonLockableSelectColumnsPhase<Row>(this.context, null, true, resultSetColumns);
+  public NonLockableSelectColumnsPhase<Row> selectDistinct(final SQLExpression... sqlExpressions) {
+    return new NonLockableSelectColumnsPhase<Row>(this.context, null, true, sqlExpressions);
   }
 
   public NonLockableSelectDistinctOnPhase<Row> selectDistinctOn(final Expression... expressions) {
@@ -262,19 +262,19 @@ public class LiveSQL {
 
   // Insert
 
-  public InsertIntoPhase insert(final TableOrView into) {
+  public InsertIntoPhase insert(final TableOrView<?> into) {
     return new InsertIntoPhase(this.context, into);
   }
 
   // Update
 
-  public UpdateTablePhase update(final TableOrView tableOrView) {
+  public UpdateTablePhase update(final TableOrView<?> tableOrView) {
     return new UpdateTablePhase(this.context, tableOrView);
   }
 
   // Delete
 
-  public DeleteFromPhase delete(final TableOrView from) {
+  public DeleteFromPhase delete(final TableOrView<?> from) {
     return new DeleteFromPhase(this.context, from);
   }
 
@@ -359,8 +359,7 @@ public class LiveSQL {
     return new GroupConcat(expression, null, val(separator));
   }
 
-  public GroupConcat groupConcat(final CharExpression expression, final String separator,
-      final OrderingTerm... order) {
+  public GroupConcat groupConcat(final CharExpression expression, final String separator, final OrderingTerm... order) {
     return new GroupConcat(expression, Arrays.asList(order), val(separator));
   }
 
@@ -487,13 +486,11 @@ public class LiveSQL {
     return new CharLead(expression, val(offset), val(defaultValue));
   }
 
-  public CharLead lead(final CharExpression expression, final NumericExpression offset,
-      final String defaultValue) {
+  public CharLead lead(final CharExpression expression, final NumericExpression offset, final String defaultValue) {
     return new CharLead(expression, offset, val(defaultValue));
   }
 
-  public CharLead lead(final CharExpression expression, final Number offset,
-      final CharExpression defaultValue) {
+  public CharLead lead(final CharExpression expression, final Number offset, final CharExpression defaultValue) {
     return new CharLead(expression, val(offset), defaultValue);
   }
 
@@ -586,13 +583,11 @@ public class LiveSQL {
     return new BinaryLead(expression, val(offset), val(defaultValue));
   }
 
-  public BinaryLead lead(final BinaryExpression expression, final NumericExpression offset,
-      final byte[] defaultValue) {
+  public BinaryLead lead(final BinaryExpression expression, final NumericExpression offset, final byte[] defaultValue) {
     return new BinaryLead(expression, offset, val(defaultValue));
   }
 
-  public BinaryLead lead(final BinaryExpression expression, final Number offset,
-      final BinaryExpression defaultValue) {
+  public BinaryLead lead(final BinaryExpression expression, final Number offset, final BinaryExpression defaultValue) {
     return new BinaryLead(expression, val(offset), defaultValue);
   }
 
@@ -619,13 +614,11 @@ public class LiveSQL {
     return new ObjectLead(expression, val(offset), val(defaultValue));
   }
 
-  public ObjectLead lead(final ObjectExpression expression, final NumericExpression offset,
-      final Object defaultValue) {
+  public ObjectLead lead(final ObjectExpression expression, final NumericExpression offset, final Object defaultValue) {
     return new ObjectLead(expression, offset, val(defaultValue));
   }
 
-  public ObjectLead lead(final ObjectExpression expression, final Number offset,
-      final ObjectExpression defaultValue) {
+  public ObjectLead lead(final ObjectExpression expression, final Number offset, final ObjectExpression defaultValue) {
     return new ObjectLead(expression, val(offset), defaultValue);
   }
 
@@ -652,13 +645,11 @@ public class LiveSQL {
     return new NumericLag(expression, val(offset), val(defaultValue));
   }
 
-  public NumericLag lag(final NumericExpression expression, final NumericExpression offset,
-      final Number defaultValue) {
+  public NumericLag lag(final NumericExpression expression, final NumericExpression offset, final Number defaultValue) {
     return new NumericLag(expression, offset, val(defaultValue));
   }
 
-  public NumericLag lag(final NumericExpression expression, final Number offset,
-      final NumericExpression defaultValue) {
+  public NumericLag lag(final NumericExpression expression, final Number offset, final NumericExpression defaultValue) {
     return new NumericLag(expression, val(offset), defaultValue);
   }
 
@@ -685,13 +676,11 @@ public class LiveSQL {
     return new CharLag(expression, val(offset), val(defaultValue));
   }
 
-  public CharLag lag(final CharExpression expression, final NumericExpression offset,
-      final String defaultValue) {
+  public CharLag lag(final CharExpression expression, final NumericExpression offset, final String defaultValue) {
     return new CharLag(expression, offset, val(defaultValue));
   }
 
-  public CharLag lag(final CharExpression expression, final Number offset,
-      final CharExpression defaultValue) {
+  public CharLag lag(final CharExpression expression, final Number offset, final CharExpression defaultValue) {
     return new CharLag(expression, val(offset), defaultValue);
   }
 
@@ -718,8 +707,7 @@ public class LiveSQL {
     return new DateTimeLag(expression, val(offset), val(defaultValue));
   }
 
-  public DateTimeLag lag(final DateTimeExpression expression, final NumericExpression offset,
-      final Date defaultValue) {
+  public DateTimeLag lag(final DateTimeExpression expression, final NumericExpression offset, final Date defaultValue) {
     return new DateTimeLag(expression, offset, val(defaultValue));
   }
 
@@ -756,8 +744,7 @@ public class LiveSQL {
     return new BooleanLag(expression, offset, val(defaultValue));
   }
 
-  public BooleanLag lag(final BooleanExpression expression, final Number offset,
-      final BooleanExpression defaultValue) {
+  public BooleanLag lag(final BooleanExpression expression, final Number offset, final BooleanExpression defaultValue) {
     return new BooleanLag(expression, val(offset), defaultValue);
   }
 
@@ -784,13 +771,11 @@ public class LiveSQL {
     return new BinaryLag(expression, val(offset), val(defaultValue));
   }
 
-  public BinaryLag lag(final BinaryExpression expression, final NumericExpression offset,
-      final byte[] defaultValue) {
+  public BinaryLag lag(final BinaryExpression expression, final NumericExpression offset, final byte[] defaultValue) {
     return new BinaryLag(expression, offset, val(defaultValue));
   }
 
-  public BinaryLag lag(final BinaryExpression expression, final Number offset,
-      final BinaryExpression defaultValue) {
+  public BinaryLag lag(final BinaryExpression expression, final Number offset, final BinaryExpression defaultValue) {
     return new BinaryLag(expression, val(offset), defaultValue);
   }
 
@@ -817,13 +802,11 @@ public class LiveSQL {
     return new ObjectLag(expression, val(offset), val(defaultValue));
   }
 
-  public ObjectLag lag(final ObjectExpression expression, final NumericExpression offset,
-      final Object defaultValue) {
+  public ObjectLag lag(final ObjectExpression expression, final NumericExpression offset, final Object defaultValue) {
     return new ObjectLag(expression, offset, val(defaultValue));
   }
 
-  public ObjectLag lag(final ObjectExpression expression, final Number offset,
-      final ObjectExpression defaultValue) {
+  public ObjectLag lag(final ObjectExpression expression, final Number offset, final ObjectExpression defaultValue) {
     return new ObjectLag(expression, val(offset), defaultValue);
   }
 
@@ -854,8 +837,7 @@ public class LiveSQL {
     return new DateTimeCaseWhenStage(predicate, val(value));
   }
 
-  public DateTimeCaseWhenStage caseWhen(final BooleanExpression predicate,
-      final DateTimeExpression value) {
+  public DateTimeCaseWhenStage caseWhen(final BooleanExpression predicate, final DateTimeExpression value) {
     return new DateTimeCaseWhenStage(predicate, value);
   }
 

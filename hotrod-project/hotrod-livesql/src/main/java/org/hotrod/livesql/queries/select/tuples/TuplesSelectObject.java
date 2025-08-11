@@ -61,8 +61,10 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
 
     boolean isListingColumns = this.resultSetColumns != null && !this.resultSetColumns.isEmpty();
 
-    for (CTE cte : this.getCTEs()) {
-      SShield.assembleColumns(cte);
+    if (this.getCTEs() != null) {
+      for (CTE cte : this.getCTEs()) {
+        SShield.assembleColumns(cte);
+      }
     }
 
     if (this.from != null) {

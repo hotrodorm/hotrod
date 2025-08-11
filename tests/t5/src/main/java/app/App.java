@@ -9,8 +9,7 @@ import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.select.Select;
-import org.hotrod.livesql.queries.select.tuples.gen.Tuple1;
-import org.hotrod.livesql.queries.select.tuples.gen.Tuple5;
+import org.hotrod.livesql.queries.select.tuples.gen.Tuple2;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -404,10 +403,9 @@ public class App {
 //        .crossJoin(a2) //
 //        .crossJoin(a3) //
 //        .crossJoin(a4) //
-//        .where(a.id.gt(1))
-//        .limit(1) //
+////        .where(a.id.gt(1)).limit(1) //
 ////        .where(a.id.eq(112)) //
-//    ;
+//        .limit(1);
 //
 //    List<Tuple5<Account, Account, Account, Account, Account>> rows = q.execute();
 //    int n = 1;
@@ -415,6 +413,28 @@ public class App {
 //      System.out.println("Row #" + n++ + ":");
 //      System.out.println("** Account A: " + r.getA());
 //      System.out.println("** Account A1: " + r.getB());
+//      for (String prop : r.getUnbound().keySet()) {
+//        System.out.println("** unbound '" + prop + "': " + r.getUnbound().get(prop));
+//      }
+//    }
+
+    List<Row> rows = this.sql.select().from(a1).limit(1).execute();
+    for (Row r : rows) {
+      System.out.println("r=" + r);
+    }
+
+//    List<Tuple1<Account>> rows = this.sql.select(a1.star()).tuples().from(a1).limit(1).execute();
+//    for (Tuple1<Account> r : rows) {
+//      System.out.println("** Account" + r.getA());
+//      for (String prop : r.getUnbound().keySet()) {
+//        System.out.println("** unbound '" + prop + "': " + r.getUnbound().get(prop));
+//      }
+//    }
+
+//    List<Tuple2<Account, Account>> rows = this.sql.select(a1.id, a2.id).tuples().from(a1).crossJoin(a2).limit(1)
+//        .execute();
+//    for (Tuple2<Account, Account> r : rows) {
+//      System.out.println("** Account" + r.getA());
 //      for (String prop : r.getUnbound().keySet()) {
 //        System.out.println("** unbound '" + prop + "': " + r.getUnbound().get(prop));
 //      }
