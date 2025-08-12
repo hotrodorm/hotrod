@@ -135,7 +135,7 @@ Produces rows with the form:
 
 ## Example 4 &mdash; Joins
 
-Joining tables and views increase the tuple cardinality. For example, joining two tables produces a `Tuple2` while joining three tables produces a `Tuple3` and so on. All join types are supported including inner joins, outer joins, lateral joins, using explicit predicates, with USING, and natural joins.`
+Joining tables and views increase the tuple cardinality. For example, joining two tables produces a `Tuple2` while joining three tables produces a `Tuple3`, and so on. All join types are supported including inner joins, outer joins, lateral joins, self joins, joining subqueries and CTEs, using explicit join predicates, declaring columns with USING, and natural joins.
 
 The following query:
 
