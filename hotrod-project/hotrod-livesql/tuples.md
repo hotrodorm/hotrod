@@ -276,8 +276,8 @@ List<Tuple2<Employee, Branch>> rows = this.sql
     .select()
     .tuples()
     .from(e)
-    .crossJoin(x)
-    .crossJoin(y)
+    .crossJoin(x) // Subqueries do not increase the cardinality of the tuple
+    .crossJoin(y) // CTEs do not increase the cardinality of the tuple
     .join(b, b.id.eq(e.branchId).and(b.region.eq(y.str("minRegion"))))
     .execute();
 
@@ -286,22 +286,27 @@ for (Tuple2<Employee, Branch> r : rows) {
   Branch branch = r.getB();
   System.out.println("=== Employee: " + employee);
   System.out.println("=== Branch: " + branch);
+  for (String prop : r.getUnbound().keySet()) {
+    System.out.println("*** Unbound '" + prop + "': " + r.getUnbound().get(prop));
+  }
 }
 ```
 
 Produces rows with the form:
 
 ```txt
-=== Employee: app.persistence.model.Employee@cfd1075
+=== Employee: app.persistence.model.Employee@21de60a7
 - id=32
 - name=Jeanne
 - branchId=104
-=== Branch: app.persistence.model.Branch@45117dd
+=== Branch: app.persistence.model.Branch@73894c5a
 - id=104
 - region=E
 - isVip=0
 - parentBranchId=null
 - createdAt=2024-01-04T12:34:56
+*** Unbound 'currentDate': 2025-08-12
+*** Unbound 'minRegion': E
 ```
 
 ## Example 8 &mdash; Selecting Using Cursors
