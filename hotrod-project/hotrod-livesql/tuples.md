@@ -186,7 +186,8 @@ List<Tuple2<Branch, Branch>> rows = this.sql
     .tuples()
     .from(b)
     .join(p, p.id.eq(b.parentBranchId))
-    .where(b.region.eq("NE")).execute();
+    .where(b.region.eq("NE"))
+    .execute();
 for (Tuple2<Branch, Branch> r : rows) {
   Branch branch = r.getA();
   Branch parentBranch = r.getB();
