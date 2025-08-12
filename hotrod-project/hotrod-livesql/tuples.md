@@ -102,12 +102,12 @@ List<Tuple1<Account>> rows = this.sql
     .select(
       a.id, // in the tuple
       a.balance, // in the tuple
-      a.balance.mult(1.22).as("score"), // outside the tuple -- unbound
-      a.name.as("accountNumber") // outside the tuple -- unbound
+      a.name.as("accountNumber"), // outside the tuple -- unbound
+      a.balance.plus(150).as("score") // outside the tuple -- unbound
     )
     .tuples()
     .from(a)
-    .where(a.balance.ge(500))
+    .where(a.balance.ge(460))
     .execute();
 for (Tuple1<Account> r : rows) {
   Account account = r.getA();
@@ -121,16 +121,17 @@ for (Tuple1<Account> r : rows) {
 Produces rows with the form:
 
 ```txt
-=== Account: app.persistence.model.Account@25a94b55
+=== Account: app.persistence.model.Account@1946384
 - id=111
 - name=null
 - type=null
 - balance=500.0
 - active=null
+- clientPhoto=null
 - updatedAt=null
 - version=null
-*** Unbound 'score': 500
 *** Unbound 'accountNumber': 1072
+*** Unbound 'score': 650
 ```
 
 ## Example 4 &mdash; Joins

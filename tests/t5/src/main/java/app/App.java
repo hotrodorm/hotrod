@@ -457,13 +457,13 @@ public class App {
   private void tuplesExamples() throws SQLException, DynamicExpressionException {
 //    tuplesExample1();
 //    tuplesExample2();
-//    tuplesExample3();
+    tuplesExample3();
 //    tuplesExample4();
 //    tuplesExample5();
 //    tuplesExample6();
 //    tuplesExample7();
 //    tuplesExample8();
-    tuplesExample9();
+//    tuplesExample9();
   }
 
   private void tuplesExample1() throws SQLException, DynamicExpressionException {
@@ -537,11 +537,11 @@ public class App {
     List<Tuple1<Account>> rows = this.sql.select( //
         a.id, // tuple
         a.balance, // tuple
-        a.balance.mult(1.22).as("score"), // non-tuple
-        a.name.as("altName") // non-tuple
+        a.name.as("accountNumber"), // non-tuple
+        a.balance.plus(150).as("score") // non-tuple
     ).tuples() //
         .from(a) //
-        .where(a.balance.ge(500)) //
+        .where(a.balance.ge(460)) //
         .execute();
     for (Tuple1<Account> r : rows) {
       Account account = r.getA();
@@ -551,16 +551,17 @@ public class App {
       }
     }
 
-//    === Account: app.persistence.model.Account@25a94b55
+//    === Account: app.persistence.model.Account@1946384
 //        - id=111
 //        - name=null
 //        - type=null
 //        - balance=500.0
 //        - active=null
+//        - clientPhoto=null
 //        - updatedAt=null
 //        - version=null
-//        *** Unbound 'score': 500
-//        *** Unbound 'altName': 1072
+//        *** Unbound 'score': 650
+//        *** Unbound 'accountNumber': 1072
 
   }
 
@@ -746,9 +747,7 @@ public class App {
     Tuple1<Account> row = this.sql.select().tuples() //
         .from(a) //
         .where(a.balance.ge(450)) //
-        .orderBy(a.updatedAt.desc())
-        .limit(1)
-        .executeOne();
+        .orderBy(a.updatedAt.desc()).limit(1).executeOne();
     Account account = row.getA();
     System.out.println("=== Account: " + account);
 
@@ -761,7 +760,6 @@ public class App {
 //        - clientPhoto=[B@4dcbae55
 //        - updatedAt=2025-08-12T11:57:51.662793
 //        - version=1
-
 
   }
 
