@@ -21,10 +21,10 @@ import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.select.tuples.gen.TupleClassFactory;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.util.ColumnReader;
-import org.hotrod.livesql.util.OUtil;
 
 public class TuplesRowReader<T> implements RowReader<T> {
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(TuplesRowReader.class.getName());
 
   private Map<TableOrView<?>, ModelInstance> modelInstances = new HashMap<>();
@@ -136,7 +136,7 @@ public class TuplesRowReader<T> implements RowReader<T> {
     for (TableOrView<?> t : tuples) {
       Class<?> layoutClass = MDShield.getLayoutClass(t);
       Class<?> modelClass = MDShield.getModelClass(t);
-      log.info("+ " + layoutClass.getName() + " <- " + modelClass.getName() + " t=" + OUtil.hc(t));
+//      log.info("+ " + layoutClass.getName() + " <- " + modelClass.getName() + " t=" + OUtil.hc(t));
       this.modelInstances.put(t, new ModelInstance("" + tupleProperty, layoutClass, modelClass));
       tupleProperty++;
     }
@@ -145,7 +145,7 @@ public class TuplesRowReader<T> implements RowReader<T> {
 
     int ordinal = 1;
     for (Expression c : columns) {
-      log.info("$$ c=" + c);
+//      log.info("$$ c=" + c);
       EntityColumn ec;
       ModelInstance mi;
       try {

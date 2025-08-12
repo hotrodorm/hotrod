@@ -180,7 +180,7 @@ create table account (
 insert into account (id, name, type, balance, active, version, client_photo) values
   (123, '1010', 'CHK', 100, true, 1, file_read('data/photo1.png')),
   (456, '2055', 'SAV', 200, true, 1, null),
-  (789, '2056', 'SAV', 300, false, 1, file_read('data/photo2.png')),
+  (789, '2056', 'SAV', 300, false, 1, X'6abc12af'),
   (111, '1072', 'CHK', 500, false, 1, file_read('data/photo3.png')),
   (112, '1073', 'CHK', 410, false, 1, null),
   (115, '1075', 'INV', 120, true, 1, null),
