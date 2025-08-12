@@ -353,11 +353,11 @@ The following query:
 ```java
 AccountTable a = this.accountDAO.newTable();
 
-Tuple1<Account> row = this.sql
-    .select()
-    .tuples()
-    .from(a)
-    .where(a.balance.ge(500))
+Tuple1<Account> row = this.sql.select().tuples() //
+    .from(a) //
+    .where(a.balance.ge(450)) //
+    .orderBy(a.updatedAt.desc())
+    .limit(1)
     .executeOne();
 Account account = row.getA();
 System.out.println("=== Account: " + account);
@@ -366,14 +366,20 @@ System.out.println("=== Account: " + account);
 Produces a row with the form:
 
 ```txt
-=== Account: app.persistence.model.Account@6d672bd4
+=== Account: app.persistence.model.Account@526e8108
 - id=111
 - name=1072
 - type=CHK
 - balance=500.0
 - active=false
-- updatedAt=2025-08-11T13:22:43.222488
+- clientPhoto=[B@4dcbae55
+- updatedAt=2025-08-12T11:57:51.662793
 - version=1
 ```
 
 If no rows are found then it produces a null. If more than a single row is found the method throws an exception.
+
+**Note**: Make sure the query returns one row at the most &ndash; in this example by the use of `.limit(1)` &ndash; to prevent the query to throw an exception.
+
+
+

@@ -456,14 +456,14 @@ public class App {
 
   private void tuplesExamples() throws SQLException, DynamicExpressionException {
 //    tuplesExample1();
-    tuplesExample2();
+//    tuplesExample2();
 //    tuplesExample3();
 //    tuplesExample4();
 //    tuplesExample5();
 //    tuplesExample6();
 //    tuplesExample7();
 //    tuplesExample8();
-//    tuplesExample9();
+    tuplesExample9();
   }
 
   private void tuplesExample1() throws SQLException, DynamicExpressionException {
@@ -525,7 +525,6 @@ public class App {
 //        - clientPhoto=null
 //        - updatedAt=2025-08-12T10:12:04.273448
 //        - version=1
-
 
   }
 
@@ -692,18 +691,23 @@ public class App {
       Branch branch = r.getB();
       System.out.println("=== Employee: " + employee);
       System.out.println("=== Branch: " + branch);
+      for (String prop : r.getUnbound().keySet()) {
+        System.out.println("*** Unbound '" + prop + "': " + r.getUnbound().get(prop));
+      }
     }
 
-//    === Employee: app.persistence.model.Employee@cfd1075
+//    === Employee: app.persistence.model.Employee@21de60a7
 //        - id=32
 //        - name=Jeanne
 //        - branchId=104
-//    === Branch: app.persistence.model.Branch@45117dd
+//        === Branch: app.persistence.model.Branch@73894c5a
 //        - id=104
 //        - region=E
 //        - isVip=0
 //        - parentBranchId=null
 //        - createdAt=2024-01-04T12:34:56
+//        *** Unbound 'currentDate': 2025-08-12
+//        *** Unbound 'minRegion': E
 
   }
 
@@ -741,19 +745,23 @@ public class App {
 
     Tuple1<Account> row = this.sql.select().tuples() //
         .from(a) //
-        .where(a.balance.ge(500)) //
+        .where(a.balance.ge(450)) //
+        .orderBy(a.updatedAt.desc())
+        .limit(1)
         .executeOne();
     Account account = row.getA();
     System.out.println("=== Account: " + account);
 
-//    === Account: app.persistence.model.Account@6d672bd4
+//    === Account: app.persistence.model.Account@526e8108
 //        - id=111
 //        - name=1072
 //        - type=CHK
 //        - balance=500.0
 //        - active=false
-//        - updatedAt=2025-08-11T13:22:43.222488
+//        - clientPhoto=[B@4dcbae55
+//        - updatedAt=2025-08-12T11:57:51.662793
 //        - version=1
+
 
   }
 
