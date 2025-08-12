@@ -1,14 +1,15 @@
 # Feature Preview -- Tuples in LiveSQL
 
-This quick walkthrough document shows the functionality of the new feature of selecting tuples for table and view objects.
+This is a feature preview for the Tuples functionality targeted for HotRod 5.1. This new feature can
+selectg tuples for tables and views by themselves or while using joins.
+
+The clause `.tuples()` enables the tuples form of queries.
 
 ## Example 1 -- Equivalent to Select by Criteria
 
 In addition of covering all forms of the Select By Criteria queries, this form can also implement semi-joins, anti-joins, with CTEs and/or subqueries. As shown in Example #2, it has the ability to retrieve a subset of the columns of the table (or view).
 
-The clause `.tuples()` enables the tuples form of queries.
-
-The resulting model objects use the correct data types, converters, etc. The following query:
+The resulting model objects use the appropriate data types, converters, etc. The following query:
 
 ```java
 AccountTable a = this.accountDAO.newTable();
@@ -219,7 +220,8 @@ BranchTable p = this.branchDAO.newTable();
 List<Tuple3<Employee, Branch, Branch>> rows = this.sql
     .select()
     .tuples()
-    .from(e).join(b, e.branchId.eq(b.id))
+    .from(e)
+    .join(b, e.branchId.eq(b.id))
     .join(p, p.id.eq(b.parentBranchId))
     .execute();
 for (Tuple3<Employee, Branch, Branch> r : rows) {
@@ -298,7 +300,7 @@ Produces rows with the form:
 - createdAt=2024-01-04T12:34:56
 ```
 
-## Example 8 -- Select Using Cursors
+## Example 8 -- Selecting Using Cursors
 
 The following code looks remarkably similar to using a list. However, it implements streaming of rows:
 
