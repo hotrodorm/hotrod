@@ -1,11 +1,12 @@
 # Feature Preview -- Tuples in LiveSQL
 
-This is a feature preview for the Tuples functionality targeted for HotRod 5.1. This new feature can
-selectg tuples for tables and views by themselves or while using joins.
+This is a feature preview for the Tuples functionality targeted for HotRod 5.1. This new feature enhances LiveSQL's SELECT statement by selecting tuples (model objects) for tables and views used in SELECT queries.
+
+This functionality also implements retrieving separate model objects when the query joins multiple tables and/or views.
 
 The clause `.tuples()` enables the tuples form of queries.
 
-## Example 1 -- Equivalent to Select by Criteria
+## Example 1 &mdash; Equivalent to Select by Criteria
 
 In addition of covering all forms of the Select By Criteria queries, this form can also implement semi-joins, anti-joins, with CTEs and/or subqueries. As shown in Example #2, it has the ability to retrieve a subset of the columns of the table (or view).
 
@@ -41,7 +42,7 @@ Produces rows with the form:
 
 **Note**: Tuples can be used to SELECT from tables and views.
 
-## Example 2 -- Filtering Columns
+## Example 2 &mdash; Filtering Columns
 
 A subset of the model object columns can be populated, instead of the full set (default). This can help  to avoid the overhead of heavy column types (blobs, clobs, long varchar, etc).
 
@@ -84,7 +85,7 @@ Produces rows with the form:
 - version=null
 ```
 
-## Example 3 -- Tuples and Unbound Columns
+## Example 3 &mdash; Tuples and Unbound Columns
 
 The columns that belong to the tables and views are automatically populated in the corresponding tuples.
 
@@ -130,7 +131,7 @@ Produces rows with the form:
 *** Unbound 'accountNumber': 1072
 ```
 
-## Example 4 -- Joins
+## Example 4 &mdash; Joins
 
 The following query:
 
@@ -167,7 +168,7 @@ Produces rows with the form:
 - createdAt=2024-01-01T12:34:56
 ```
 
-## Example 5 -- Self Joins
+## Example 5 &mdash; Self Joins
 
 The following query:
 
@@ -206,7 +207,7 @@ Produces rows with the form:
 - createdAt=2024-01-01T12:34:56
 ```
 
-## Example 6 -- Joining Multiple Tables and Views
+## Example 6 &mdash; Joining Multiple Tables and Views
 
 A tuples join can join up to 26 tables and views.
 
@@ -255,7 +256,7 @@ Produces rows with the form:
 - createdAt=2024-01-02T12:34:56
 ```
 
-## Example 7 -- Joining Subqueries and CTEs
+## Example 7 &mdash; Joining Subqueries and CTEs
 
 The following query:
 
@@ -300,16 +301,18 @@ Produces rows with the form:
 - createdAt=2024-01-04T12:34:56
 ```
 
-## Example 8 -- Selecting Using Cursors
+## Example 8 &mdash; Selecting Using Cursors
 
 The following code looks remarkably similar to using a list. However, it implements streaming of rows:
 
 ```java
 AccountTable a = this.accountDAO.newTable();
 
-Cursor<Tuple1<Account>> rows = this.sql.select().tuples() //
-    .from(a) //
-    .where(a.balance.ge(500)) //
+Cursor<Tuple1<Account>> rows = this.sql
+    .select()
+    .tuples()
+    .from(a)
+    .where(a.balance.ge(500))
     .executeCursor();
 for (Tuple1<Account> r : rows) {
   Account account = r.getA();
@@ -332,16 +335,18 @@ Produces rows with the form:
 
 It's also possible to specify the desired fetch size using the variation `.executeCursor(<desired-fetch-size>)`. The desired fetch size is only an indication to the driver; this one, in turn, can ignore or adjust this value without notice.
 
-## Example 9 -- Selecting a Single Row
+## Example 9 &mdash; Selecting a Single Row
 
 The following query:
 
 ```java
 AccountTable a = this.accountDAO.newTable();
 
-Tuple1<Account> row = this.sql.select().tuples() //
-    .from(a) //
-    .where(a.balance.ge(500)) //
+Tuple1<Account> row = this.sql
+    .select()
+    .tuples()
+    .from(a)
+    .where(a.balance.ge(500))
     .executeOne();
 Account account = row.getA();
 System.out.println("=== Account: " + account);
