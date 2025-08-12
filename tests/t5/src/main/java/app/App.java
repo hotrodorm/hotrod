@@ -501,7 +501,11 @@ public class App {
     List<Tuple1<Account>> rows = this.sql.select( //
         a.id, //
         a.balance, //
-        a.star().filter(c -> c.getType().equals("TIMESTAMP")) //
+        a.star().filter(c -> !c.getType().equals("BINARY LARGE OBJECT")) //
+//        a.star().filter(c -> {
+//          System.out.println(c.getProperty() + ":" + c.getType());
+//          return c.getType().equals("TIMESTAMP");
+//        }) //
     ) //
         .tuples() //
         .from(a) //
@@ -512,14 +516,15 @@ public class App {
       System.out.println("=== Account: " + account);
     }
 
-//    === Account: app.persistence.model.Account@3635099
+//    === Account: app.persistence.model.Account@307e4c44
 //        - id=111
-//        - name=null
-//        - type=null
+//        - name=1072
+//        - type=CHK
 //        - balance=500.0
-//        - active=null
-//        - updatedAt=2025-08-11T14:24:04.933058
-//        - version=null
+//        - active=false
+//        - clientPhoto=null
+//        - updatedAt=2025-08-12T10:12:04.273448
+//        - version=1
 
 
   }

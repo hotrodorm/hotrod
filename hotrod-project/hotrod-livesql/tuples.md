@@ -49,7 +49,8 @@ A subset of the model object columns can be populated, instead of the full set (
 The subset can be defined by:
 
 - Explicitly naming the columns (e.g `a.id`)
-- Defining a rule to include columns (eg `a.star().filter(c -> c.getType().equals("TIMESTAMP"))`)
+- Defining a custom rule to include or exclude columns. For example, to include all columns except the columns of type BLOB the following rule could be used:
+ `a.star().filter(c -> !c.getType().equals("BINARY LARGE OBJECT"))`
 
 The following query:
 
@@ -60,7 +61,7 @@ List<Tuple1<Account>> rows = this.sql
     .select(
       a.id,
       a.balance,
-      a.star().filter(c -> c.getType().equals("TIMESTAMP"))
+      a.star().filter(c -> !c.getType().equals("BINARY LARGE OBJECT"))
     )
     .tuples()
     .from(a)
@@ -75,14 +76,15 @@ for (Tuple1<Account> r : rows) {
 Produces rows with the form:
 
 ```txt
-=== Account: app.persistence.model.Account@3635099
+=== Account: app.persistence.model.Account@307e4c44
 - id=111
-- name=null
-- type=null
+- name=1072
+- type=CHK
 - balance=500.0
-- active=null
-- updatedAt=2025-08-11T14:24:04.933058
-- version=null
+- active=false
+- clientPhoto=null
+- updatedAt=2025-08-12T10:12:04.273448
+- version=1
 ```
 
 ## Example 3 &mdash; Tuples and Unbound Columns
@@ -98,8 +100,8 @@ AccountTable a = this.accountDAO.newTable();
 
 List<Tuple1<Account>> rows = this.sql
     .select(
-      a.id, // in tuple
-      a.balance, // in tuple
+      a.id, // in the tuple
+      a.balance, // in the tuple
       a.balance.mult(1.22).as("score"), // outside the tuple -- unbound
       a.name.as("accountNumber") // outside the tuple -- unbound
     )
@@ -143,7 +145,8 @@ List<Tuple2<Employee, Branch>> rows = this.sql
     .select()
     .tuples()
     .from(e)
-    .join(b, b.id.eq(e.branchId)).where(e.name.like("%Anne%"))
+    .join(b, b.id.eq(e.branchId))
+    .where(e.name.like("%Anne%"))
     .execute();
 for (Tuple2<Employee, Branch> r : rows) {
   Employee account = r.getA();
