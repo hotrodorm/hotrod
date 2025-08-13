@@ -102,8 +102,8 @@ List<Tuple1<Account>> rows = this.sql
     .select(
       a.id, // in the tuple
       a.balance, // in the tuple
-      a.name.as("accountNumber"), // outside the tuple -- unbound
-      a.balance.plus(150).as("score") // outside the tuple -- unbound
+      a.name.as("accountNumber"), // does not belong to any tuple -- unbound
+      a.balance.plus(150).as("score") // does not belong to any tuple -- unbound
     )
     .tuples()
     .from(a)
@@ -266,12 +266,12 @@ Produces rows with the form:
 
 ## Example 7 &mdash; Semi Joins
 
-A semi join joins a tables or views in the query but does not retrieve any of the data from it. If a table is joined but not retrieved (e.g. an anti-join or a plain semi-join) LiveSQL can declare it
-as such and the semi-joined table is excluded from the tuple.
+A semi join joins a table or view in a query but does not retrieve any of the data from it. This is the case of an anti-join or a plain semi-join; when LiveSQL declares it
+as such the semi-joined table is excluded from the resulting tuple.
 
-To do this LiveSQL includes joining methods that prepend the word "semi" to them, as in `.semiLeftJoin()`.
+To do this LiveSQL includes extra joining methods that prepend the word "semi" to them, as in `.semiLeftJoin()`. This variation is implemented for all types of joins, including inner joins, outer joins, lateral joins, self joins, using explicit join predicates, declaring columns with USING, and natural joins.
 
-The following query uses an anti-join to retrieve all branches that do not have any sub-branches. While the table `p` is joined it's not included in the retrieved tuple:
+The following query uses an anti-join to retrieve all "leaf" branches; that is, branches that do not have any sub-branches. While the table `p` is joined in the query for the purpose of eliminating rows its data is not included in the retrieved tuple:
 
 ```java
 EmployeeTable e = this.employeeDAO.newTable();
@@ -305,7 +305,7 @@ Produces rows with the form:
 - id=104
 - region=E
 - isVip=0
-- parentBranchId=null
+- parentBranchId=102
 - createdAt=2024-01-04T12:34:56
 ```
 
