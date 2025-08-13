@@ -172,18 +172,19 @@ create table account (
   type varchar(3) default 'PEN' check (type in ('SAV', 'CHK', 'PEN', 'INV')),
   balance int not null,
   active int not null,
+  client_photo blob,
   updated_at timestamp not null default CURRENT_TIMESTAMP
   ,version int not null
 );
 
-insert into account (id, name, type, balance, active, version) values
-  (123, '1010', 'CHK', 100, true, 1),
-  (456, '2055', 'SAV', 200, true, 1),
-  (789, '2056', 'SAV', 300, false, 1),
-  (111, '1072', 'CHK', 500, false, 1),
-  (112, '1073', 'CHK', 410, false, 1),
-  (115, '1075', 'INV', 120, true, 1),
-  (113, '5172', 'CHK', 50, false, 1);
+insert into account (id, name, type, balance, active, version, client_photo) values
+  (123, '1010', 'CHK', 100, true, 1, file_read('data/photo1.png')),
+  (456, '2055', 'SAV', 200, true, 1, null),
+  (789, '2056', 'SAV', 300, false, 1, X'6abc12af'),
+  (111, '1072', 'CHK', 500, false, 1, file_read('data/photo3.png')),
+  (112, '1073', 'CHK', 410, false, 1, null),
+  (115, '1075', 'INV', 120, true, 1, null),
+  (113, '5172', 'CHK', 50, false, 1, file_read('data/photo4.png'));
 
 create sequence seq_account start with 1000;
 

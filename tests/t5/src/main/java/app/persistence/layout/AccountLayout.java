@@ -18,6 +18,7 @@ public class AccountLayout implements Serializable {
   protected String type = null;
   protected Double balance = null;
   protected Boolean active = null;
+  protected byte[] clientPhoto = null;
   protected LocalDateTime updatedAt = null;
   protected Integer version = null;
 
@@ -63,6 +64,14 @@ public class AccountLayout implements Serializable {
     this.active = active;
   }
 
+  public byte[] getClientPhoto() {
+    return this.clientPhoto;
+  }
+
+  public void setClientPhoto(final byte[] clientPhoto) {
+    this.clientPhoto = clientPhoto;
+  }
+
   public LocalDateTime getUpdatedAt() {
     return this.updatedAt;
   }
@@ -89,6 +98,7 @@ public class AccountLayout implements Serializable {
     sb.append("- type=" + this.type + "\n");
     sb.append("- balance=" + this.balance + "\n");
     sb.append("- active=" + this.active + "\n");
+    sb.append("- clientPhoto=" + this.clientPhoto + "\n");
     sb.append("- updatedAt=" + this.updatedAt + "\n");
     sb.append("- version=" + this.version);
     return sb.toString();
@@ -103,6 +113,7 @@ public class AccountLayout implements Serializable {
     obj.addProperty("type", this.type);
     obj.addProperty("balance", this.balance);
     obj.addProperty("active", this.active);
+    obj.addProperty("clientPhoto", this.clientPhoto);
     obj.addProperty("updatedAt", this.updatedAt);
     obj.addProperty("version", this.version);
     return obj;

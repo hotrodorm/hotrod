@@ -49,7 +49,8 @@ A subset of the model object columns can be populated, instead of the full set (
 The subset can be defined by:
 
 - Explicitly naming the columns (e.g `a.id`)
-- Defining a rule to include columns (eg `a.star().filter(c -> c.getType().equals("TIMESTAMP"))`)
+- Defining a custom rule to include or exclude columns. For example, to include all columns except the columns of type BLOB the following rule could be used:
+ `a.star().filter(c -> !c.getType().equals("BINARY LARGE OBJECT"))`
 
 The following query:
 
@@ -60,7 +61,7 @@ List<Tuple1<Account>> rows = this.sql
     .select(
       a.id,
       a.balance,
-      a.star().filter(c -> c.getType().equals("TIMESTAMP"))
+      a.star().filter(c -> !c.getType().equals("BINARY LARGE OBJECT"))
     )
     .tuples()
     .from(a)
@@ -75,14 +76,15 @@ for (Tuple1<Account> r : rows) {
 Produces rows with the form:
 
 ```txt
-=== Account: app.persistence.model.Account@3635099
+=== Account: app.persistence.model.Account@307e4c44
 - id=111
-- name=null
-- type=null
+- name=1072
+- type=CHK
 - balance=500.0
-- active=null
-- updatedAt=2025-08-11T14:24:04.933058
-- version=null
+- active=false
+- clientPhoto=null
+- updatedAt=2025-08-12T10:12:04.273448
+- version=1
 ```
 
 ## Example 3 &mdash; Tuples and Unbound Columns
@@ -98,14 +100,14 @@ AccountTable a = this.accountDAO.newTable();
 
 List<Tuple1<Account>> rows = this.sql
     .select(
-      a.id, // in tuple
-      a.balance, // in tuple
-      a.balance.mult(1.22).as("score"), // outside the tuple -- unbound
-      a.name.as("accountNumber") // outside the tuple -- unbound
+      a.id, // in the tuple
+      a.balance, // in the tuple
+      a.name.as("accountNumber"), // outside the tuple -- unbound
+      a.balance.plus(150).as("score") // outside the tuple -- unbound
     )
     .tuples()
     .from(a)
-    .where(a.balance.ge(500))
+    .where(a.balance.ge(460))
     .execute();
 for (Tuple1<Account> r : rows) {
   Account account = r.getA();
@@ -119,19 +121,22 @@ for (Tuple1<Account> r : rows) {
 Produces rows with the form:
 
 ```txt
-=== Account: app.persistence.model.Account@25a94b55
+=== Account: app.persistence.model.Account@1946384
 - id=111
 - name=null
 - type=null
 - balance=500.0
 - active=null
+- clientPhoto=null
 - updatedAt=null
 - version=null
-*** Unbound 'score': 500
 *** Unbound 'accountNumber': 1072
+*** Unbound 'score': 650
 ```
 
 ## Example 4 &mdash; Joins
+
+Joining tables and views increase the tuple cardinality. For example, joining two tables produces a `Tuple2` while joining three tables produces a `Tuple3`, and so on. All join types are supported including inner joins, outer joins, lateral joins, self joins, joining subqueries and CTEs, using explicit join predicates, declaring columns with USING, and natural joins.
 
 The following query:
 
@@ -143,7 +148,8 @@ List<Tuple2<Employee, Branch>> rows = this.sql
     .select()
     .tuples()
     .from(e)
-    .join(b, b.id.eq(e.branchId)).where(e.name.like("%Anne%"))
+    .join(b, b.id.eq(e.branchId))
+    .where(e.name.like("%Anne%"))
     .execute();
 for (Tuple2<Employee, Branch> r : rows) {
   Employee account = r.getA();
@@ -181,7 +187,8 @@ List<Tuple2<Branch, Branch>> rows = this.sql
     .tuples()
     .from(b)
     .join(p, p.id.eq(b.parentBranchId))
-    .where(b.region.eq("NE")).execute();
+    .where(b.region.eq("NE"))
+    .execute();
 for (Tuple2<Branch, Branch> r : rows) {
   Branch branch = r.getA();
   Branch parentBranch = r.getB();
@@ -273,8 +280,8 @@ List<Tuple2<Employee, Branch>> rows = this.sql
     .select()
     .tuples()
     .from(e)
-    .crossJoin(x)
-    .crossJoin(y)
+    .crossJoin(x) // Subqueries do not increase the cardinality of the tuple
+    .crossJoin(y) // CTEs do not increase the cardinality of the tuple
     .join(b, b.id.eq(e.branchId).and(b.region.eq(y.str("minRegion"))))
     .execute();
 
@@ -283,22 +290,27 @@ for (Tuple2<Employee, Branch> r : rows) {
   Branch branch = r.getB();
   System.out.println("=== Employee: " + employee);
   System.out.println("=== Branch: " + branch);
+  for (String prop : r.getUnbound().keySet()) {
+    System.out.println("*** Unbound '" + prop + "': " + r.getUnbound().get(prop));
+  }
 }
 ```
 
 Produces rows with the form:
 
 ```txt
-=== Employee: app.persistence.model.Employee@cfd1075
+=== Employee: app.persistence.model.Employee@21de60a7
 - id=32
 - name=Jeanne
 - branchId=104
-=== Branch: app.persistence.model.Branch@45117dd
+=== Branch: app.persistence.model.Branch@73894c5a
 - id=104
 - region=E
 - isVip=0
 - parentBranchId=null
 - createdAt=2024-01-04T12:34:56
+*** Unbound 'currentDate': 2025-08-12
+*** Unbound 'minRegion': E
 ```
 
 ## Example 8 &mdash; Selecting Using Cursors
@@ -342,11 +354,11 @@ The following query:
 ```java
 AccountTable a = this.accountDAO.newTable();
 
-Tuple1<Account> row = this.sql
-    .select()
-    .tuples()
-    .from(a)
-    .where(a.balance.ge(500))
+Tuple1<Account> row = this.sql.select().tuples() //
+    .from(a) //
+    .where(a.balance.ge(450)) //
+    .orderBy(a.updatedAt.desc())
+    .limit(1)
     .executeOne();
 Account account = row.getA();
 System.out.println("=== Account: " + account);
@@ -355,14 +367,20 @@ System.out.println("=== Account: " + account);
 Produces a row with the form:
 
 ```txt
-=== Account: app.persistence.model.Account@6d672bd4
+=== Account: app.persistence.model.Account@526e8108
 - id=111
 - name=1072
 - type=CHK
 - balance=500.0
 - active=false
-- updatedAt=2025-08-11T13:22:43.222488
+- clientPhoto=[B@4dcbae55
+- updatedAt=2025-08-12T11:57:51.662793
 - version=1
 ```
 
 If no rows are found then it produces a null. If more than a single row is found the method throws an exception.
+
+**Note**: Make sure the query returns one row at the most &ndash; in this example by the use of `.limit(1)` &ndash; to prevent the query to throw an exception.
+
+
+

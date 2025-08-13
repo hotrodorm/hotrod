@@ -456,8 +456,8 @@ public class App {
 
   private void tuplesExamples() throws SQLException, DynamicExpressionException {
 //    tuplesExample1();
-    tuplesExample2();
-//    tuplesExample3();
+//    tuplesExample2();
+    tuplesExample3();
 //    tuplesExample4();
 //    tuplesExample5();
 //    tuplesExample6();
@@ -501,7 +501,11 @@ public class App {
     List<Tuple1<Account>> rows = this.sql.select( //
         a.id, //
         a.balance, //
-        a.star().filter(c -> c.getType().equals("TIMESTAMP")) //
+        a.star().filter(c -> !c.getType().equals("BINARY LARGE OBJECT")) //
+//        a.star().filter(c -> {
+//          System.out.println(c.getProperty() + ":" + c.getType());
+//          return c.getType().equals("TIMESTAMP");
+//        }) //
     ) //
         .tuples() //
         .from(a) //
@@ -512,15 +516,15 @@ public class App {
       System.out.println("=== Account: " + account);
     }
 
-//    === Account: app.persistence.model.Account@3635099
+//    === Account: app.persistence.model.Account@307e4c44
 //        - id=111
-//        - name=null
-//        - type=null
+//        - name=1072
+//        - type=CHK
 //        - balance=500.0
-//        - active=null
-//        - updatedAt=2025-08-11T14:24:04.933058
-//        - version=null
-
+//        - active=false
+//        - clientPhoto=null
+//        - updatedAt=2025-08-12T10:12:04.273448
+//        - version=1
 
   }
 
@@ -533,11 +537,11 @@ public class App {
     List<Tuple1<Account>> rows = this.sql.select( //
         a.id, // tuple
         a.balance, // tuple
-        a.balance.mult(1.22).as("score"), // non-tuple
-        a.name.as("altName") // non-tuple
+        a.name.as("accountNumber"), // non-tuple
+        a.balance.plus(150).as("score") // non-tuple
     ).tuples() //
         .from(a) //
-        .where(a.balance.ge(500)) //
+        .where(a.balance.ge(460)) //
         .execute();
     for (Tuple1<Account> r : rows) {
       Account account = r.getA();
@@ -547,16 +551,17 @@ public class App {
       }
     }
 
-//    === Account: app.persistence.model.Account@25a94b55
+//    === Account: app.persistence.model.Account@1946384
 //        - id=111
 //        - name=null
 //        - type=null
 //        - balance=500.0
 //        - active=null
+//        - clientPhoto=null
 //        - updatedAt=null
 //        - version=null
-//        *** Unbound 'score': 500
-//        *** Unbound 'altName': 1072
+//        *** Unbound 'score': 650
+//        *** Unbound 'accountNumber': 1072
 
   }
 
@@ -687,18 +692,23 @@ public class App {
       Branch branch = r.getB();
       System.out.println("=== Employee: " + employee);
       System.out.println("=== Branch: " + branch);
+      for (String prop : r.getUnbound().keySet()) {
+        System.out.println("*** Unbound '" + prop + "': " + r.getUnbound().get(prop));
+      }
     }
 
-//    === Employee: app.persistence.model.Employee@cfd1075
+//    === Employee: app.persistence.model.Employee@21de60a7
 //        - id=32
 //        - name=Jeanne
 //        - branchId=104
-//    === Branch: app.persistence.model.Branch@45117dd
+//        === Branch: app.persistence.model.Branch@73894c5a
 //        - id=104
 //        - region=E
 //        - isVip=0
 //        - parentBranchId=null
 //        - createdAt=2024-01-04T12:34:56
+//        *** Unbound 'currentDate': 2025-08-12
+//        *** Unbound 'minRegion': E
 
   }
 
@@ -736,18 +746,19 @@ public class App {
 
     Tuple1<Account> row = this.sql.select().tuples() //
         .from(a) //
-        .where(a.balance.ge(500)) //
-        .executeOne();
+        .where(a.balance.ge(450)) //
+        .orderBy(a.updatedAt.desc()).limit(1).executeOne();
     Account account = row.getA();
     System.out.println("=== Account: " + account);
 
-//    === Account: app.persistence.model.Account@6d672bd4
+//    === Account: app.persistence.model.Account@526e8108
 //        - id=111
 //        - name=1072
 //        - type=CHK
 //        - balance=500.0
 //        - active=false
-//        - updatedAt=2025-08-11T13:22:43.222488
+//        - clientPhoto=[B@4dcbae55
+//        - updatedAt=2025-08-12T11:57:51.662793
 //        - version=1
 
   }

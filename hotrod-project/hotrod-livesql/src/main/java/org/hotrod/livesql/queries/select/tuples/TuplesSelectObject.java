@@ -28,6 +28,7 @@ import org.hotrod.utils.Separator;
 
 public class TuplesSelectObject<T> extends BaseSelectObject<T> {
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(TuplesSelectObject.class.getName());
 
   @SuppressWarnings("unused")
@@ -57,7 +58,7 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
   @Override
   public List<Expression> assembleColumns() {
 
-    log.info("resultSetColumns.size()=" + (sqlExpressions == null ? "null" : sqlExpressions.size()));
+//    log.info("resultSetColumns.size()=" + (sqlExpressions == null ? "null" : sqlExpressions.size()));
 
     boolean isListingColumns = this.sqlExpressions != null && !this.sqlExpressions.isEmpty();
 
@@ -147,7 +148,7 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
 
   @Override
   public List<T> execute(LiveSQLContext context) {
-    log.info("--- execute TUPLES");
+//    log.info("--- execute TUPLES");
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     TuplesRowReader<T> rowReader = getRowReader();
     return executeLiveSQL(context, q, rowReader);
