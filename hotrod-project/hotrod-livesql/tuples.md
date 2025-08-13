@@ -281,9 +281,9 @@ BranchTable p = this.branchDAO.newTable();
 List<Tuple2<Employee, Branch>> rows = this.sql
     .select()
     .tuples()
-    .from(e)
-    .join(b, e.branchId.eq(b.id))
-    .semiLeftJoin(p, p.parentBranchId.eq(b.id))
+    .from(e)                                     // e is included in the tuple
+    .join(b, e.branchId.eq(b.id))                // b is included in the tuple
+    .semiLeftJoin(p, p.parentBranchId.eq(b.id))  // p is excluded from the tuple
     .where(p.id.isNull())
     .execute();
 for (Tuple2<Employee, Branch> r : rows) {
