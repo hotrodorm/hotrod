@@ -263,7 +263,53 @@ Produces rows with the form:
 - createdAt=2024-01-02T12:34:56
 ```
 
-## Example 7 &mdash; Joining Subqueries and CTEs
+
+## Example 7 &mdash; Semi Joins
+
+A semi join joins a tables or views in the query but does not retrieve any of the data from it. If a table is joined but not retrieved (e.g. an anti-join or a plain semi-join) LiveSQL can declare it
+as such and the semi-joined table is excluded from the tuple.
+
+To do this LiveSQL includes joining methods that prepend the word "semi" to them, as in `.semiLeftJoin()`.
+
+The following query uses an anti-join to retrieve all branches that do not have any sub-branches. While the table `p` is joined it's not included in the retrieved tuple:
+
+```java
+EmployeeTable e = this.employeeDAO.newTable();
+BranchTable b = this.branchDAO.newTable();
+BranchTable p = this.branchDAO.newTable();
+
+List<Tuple2<Employee, Branch>> rows = this.sql
+    .select()
+    .tuples()
+    .from(e)
+    .join(b, e.branchId.eq(b.id))
+    .semiLeftJoin(p, p.parentBranchId.eq(b.id))
+    .where(p.id.isNull())
+    .execute();
+for (Tuple2<Employee, Branch> r : rows) {
+  Employee employee = r.getA();
+  Branch branch = r.getB();
+  System.out.println("=== Employee: " + employee);
+  System.out.println("=== Branch: " + branch);
+}
+```
+
+Produces rows with the form:
+
+```txt
+=== Employee: app.persistence.model.Employee@2ec99035
+- id=32
+- name=Jeanne
+- branchId=104
+=== Branch: app.persistence.model.Branch@60743cdb
+- id=104
+- region=E
+- isVip=0
+- parentBranchId=null
+- createdAt=2024-01-04T12:34:56
+```
+
+## Example 8 &mdash; Joining Subqueries and CTEs
 
 The following query:
 
@@ -313,7 +359,7 @@ Produces rows with the form:
 *** Unbound 'minRegion': E
 ```
 
-## Example 8 &mdash; Selecting Using Cursors
+## Example 9 &mdash; Selecting Using Cursors
 
 The following code looks remarkably similar to using a list. However, it implements streaming of rows:
 
@@ -347,7 +393,7 @@ Produces rows with the form:
 
 It's also possible to specify the desired fetch size using the variation `.executeCursor(<desired-fetch-size>)`. The desired fetch size is only an indication to the driver; this one, in turn, can ignore or adjust this value without notice.
 
-## Example 9 &mdash; Selecting a Single Row
+## Example 10 &mdash; Selecting a Single Row
 
 The following query:
 

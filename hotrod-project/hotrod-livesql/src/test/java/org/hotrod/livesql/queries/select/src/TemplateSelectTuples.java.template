@@ -1,11 +1,11 @@
-package org.hotrod.livesql.queries.select.tuples;
+package org.hotrod.livesql.queries.select.tuples.gen;
 
 import java.sql.SQLException;
 import java.util.List;
 
 import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.livesql.expressions.ComparableExpression;
-import org.hotrod.livesql.expressions.bool.GeneralBooleanExpression;
+import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.ordering.OrderingTerm;
@@ -25,19 +25,21 @@ import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.select.SelectGroupByPhase;
 import org.hotrod.livesql.queries.select.SelectWherePhase;
 import org.hotrod.livesql.queries.select.sets.CombinedSelectObject;
+import org.hotrod.livesql.queries.select.tuples.TuplesMetadata;
+import org.hotrod.livesql.queries.select.tuples.TuplesSelectObject;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 
 public class @@classc@@ {
 
   private TuplesMetadata metadata;
 
-  @@classp@@(final TuplesMetadata metadata) {
+  public @@classp@@(final TuplesMetadata metadata) {
     this.metadata = metadata;
   }
 
   // joining TableOrView
 
-  public @@t@@ @@classn@@ join(TV t, final GeneralBooleanExpression on) {
+  public @@t@@ @@classn@@ join(TV t, final BooleanExpression on) {
     this.metadata.join(new InnerJoin(t, on));
     return new @@classnNew@@(this.metadata);
   }
@@ -48,7 +50,7 @@ public class @@classc@@ {
   }
 
   public @@t@@ @@classn@@ leftJoin(TV t,
-      final GeneralBooleanExpression on) {
+      final BooleanExpression on) {
     this.metadata.join(new LeftOuterJoin(t, on));
     return new @@classnNew@@(this.metadata);
   }
@@ -59,7 +61,7 @@ public class @@classc@@ {
   }
 
   public @@t@@ @@classn@@ rightJoin(TV t,
-      final GeneralBooleanExpression on) {
+      final BooleanExpression on) {
     this.metadata.join(new RightOuterJoin(t, on));
     return new @@classnNew@@(this.metadata);
   }
@@ -70,7 +72,7 @@ public class @@classc@@ {
   }
 
   public @@t@@ @@classn@@ fullJoin(TV t,
-      final GeneralBooleanExpression on) {
+      final BooleanExpression on) {
     this.metadata.join(new FullOuterJoin(t, on));
     return new @@classnNew@@(this.metadata);
   }
@@ -105,9 +107,76 @@ public class @@classc@@ {
     return new @@classnNew@@(this.metadata);
   }
 
+  // semi-joining TableOrView
+
+  public @@t@@ @@classc@@ semiJoin(TV t, final BooleanExpression on) {
+    this.metadata.join(new InnerJoin(t, on), false);
+    return new @@classcNew@@(this.metadata);
+  }
+
+  public @@t@@ @@classc@@ semiJoin(TV t, final EntityColumn... using) {
+    this.metadata.join(new InnerJoin(t, using), false);
+    return new @@classcNew@@(this.metadata);
+  }
+
+  public @@t@@ @@classc@@ semiLeftJoin(TV t, final BooleanExpression on) {
+    this.metadata.join(new LeftOuterJoin(t, on), false);
+    return new @@classcNew@@(this.metadata);
+  }
+
+  public @@t@@ @@classc@@ semiLeftJoin(TV t, final EntityColumn... using) {
+    this.metadata.join(new LeftOuterJoin(t, using), false);
+    return new @@classcNew@@(this.metadata);
+  }
+
+  public @@t@@ @@classc@@ semiRightJoin(TV t, final BooleanExpression on) {
+    this.metadata.join(new RightOuterJoin(t, on), false);
+    return new @@classcNew@@(this.metadata);
+  }
+
+  public @@t@@ @@classc@@ semiRightJoin(TV t, final EntityColumn... using) {
+    this.metadata.join(new RightOuterJoin(t, using), false);
+    return new @@classcNew@@(this.metadata);
+  }
+
+  public @@t@@ @@classc@@ semiFullJoin(TV t, final BooleanExpression on) {
+    this.metadata.join(new FullOuterJoin(t, on), false);
+    return new @@classcNew@@(this.metadata);
+  }
+
+  public @@t@@ @@classc@@ semiFullJoin(TV t, final EntityColumn... using) {
+    this.metadata.join(new FullOuterJoin(t, using), false);
+    return new @@classcNew@@(this.metadata);
+  }
+
+  public @@t@@ @@classc@@ semiCrossJoin(TV t) {
+    this.metadata.join(new CrossJoin(t), false);
+    return new @@classcNew@@(this.metadata);
+  }
+
+  public @@t@@ @@classc@@ semiNaturalJoin(TV t) {
+    this.metadata.join(new NaturalInnerJoin(t), false);
+    return new @@classcNew@@(this.metadata);
+  }
+
+  public @@t@@ @@classc@@ semiNaturalLeftJoin(TV t) {
+    this.metadata.join(new NaturalLeftOuterJoin(t), false);
+    return new @@classcNew@@(this.metadata);
+  }
+
+  public @@t@@ @@classc@@ semiNaturalRightJoin(TV t) {
+    this.metadata.join(new NaturalRightOuterJoin(t), false);
+    return new @@classcNew@@(this.metadata);
+  }
+
+  public @@t@@ @@classc@@ semiNaturalFullJoin(TV t) {
+    this.metadata.join(new NaturalFullOuterJoin(t), false);
+    return new @@classcNew@@(this.metadata);
+  }
+
   // joining Subquery
 
-  public @@classc@@ join(Subquery t, final GeneralBooleanExpression on) {
+  public @@classc@@ join(Subquery t, final BooleanExpression on) {
     this.metadata.join(new InnerJoin(t, on));
     return this;
   }
@@ -117,7 +186,7 @@ public class @@classc@@ {
     return this;
   }
 
-  public @@classc@@ leftJoin(Subquery t, final GeneralBooleanExpression on) {
+  public @@classc@@ leftJoin(Subquery t, final BooleanExpression on) {
     this.metadata.join(new LeftOuterJoin(t, on));
     return this;
   }
@@ -127,7 +196,7 @@ public class @@classc@@ {
     return this;
   }
 
-  public @@classc@@ rightJoin(Subquery t, final GeneralBooleanExpression on) {
+  public @@classc@@ rightJoin(Subquery t, final BooleanExpression on) {
     this.metadata.join(new RightOuterJoin(t, on));
     return this;
   }
@@ -137,7 +206,7 @@ public class @@classc@@ {
     return this;
   }
 
-  public @@classc@@ fullJoin(Subquery t, final GeneralBooleanExpression on) {
+  public @@classc@@ fullJoin(Subquery t, final BooleanExpression on) {
     this.metadata.join(new FullOuterJoin(t, on));
     return this;
   }
@@ -174,7 +243,7 @@ public class @@classc@@ {
 
   // next phases
 
-  public SelectWherePhase<@@tupleClassc@@> where(final GeneralBooleanExpression predicate) {
+  public SelectWherePhase<@@tupleClassc@@> where(final BooleanExpression predicate) {
     return SShield.getSelectWherePhase(this.metadata.getContext(), new TuplesSelectObject<>(this.metadata), predicate);
   }
 

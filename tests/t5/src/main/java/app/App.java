@@ -457,13 +457,15 @@ public class App {
   private void tuplesExamples() throws SQLException, DynamicExpressionException {
 //    tuplesExample1();
 //    tuplesExample2();
-    tuplesExample3();
+//    tuplesExample3();
 //    tuplesExample4();
 //    tuplesExample5();
 //    tuplesExample6();
+    tuplesExample7();
 //    tuplesExample7();
 //    tuplesExample8();
 //    tuplesExample9();
+//    tuplesExample10();
   }
 
   private void tuplesExample1() throws SQLException, DynamicExpressionException {
@@ -572,15 +574,24 @@ public class App {
     BranchTable b = this.branchDAO.newTable();
     EmployeeTable e = this.employeeDAO.newTable();
 
-    List<Tuple2<Employee, Branch>> rows = this.sql.select().tuples() //
+//    List<Tuple2<Employee, Branch>> rows = this.sql.select().tuples() //
+//        .from(e) //
+//        .join(b, b.id.eq(e.branchId)).where(e.name.like("%Anne%")) //
+//        .execute();
+//    for (Tuple2<Employee, Branch> r : rows) {
+//      Employee account = r.getA();
+//      Branch branch = r.getB();
+//      System.out.println("=== Employee: " + account);
+//      System.out.println("=== Branch: " + branch);
+//    }
+
+    List<Tuple1<Employee>> rows2 = this.sql.select().tuples() //
         .from(e) //
-        .join(b, b.id.eq(e.branchId)).where(e.name.like("%Anne%")) //
+        .semiJoin(b, b.id.eq(e.branchId)).where(e.name.like("%Anne%")) //
         .execute();
-    for (Tuple2<Employee, Branch> r : rows) {
+    for (Tuple1<Employee> r : rows2) {
       Employee account = r.getA();
-      Branch branch = r.getB();
       System.out.println("=== Employee: " + account);
-      System.out.println("=== Branch: " + branch);
     }
 
 //    === Employee: app.persistence.model.Employee@6adc5b9c
@@ -638,7 +649,8 @@ public class App {
     BranchTable p = this.branchDAO.newTable();
 
     List<Tuple3<Employee, Branch, Branch>> rows = this.sql.select().tuples() //
-        .from(e).join(b, e.branchId.eq(b.id)) //
+        .from(e) //
+        .join(b, e.branchId.eq(b.id)) //
         .join(p, p.id.eq(b.parentBranchId)) //
         .execute();
     for (Tuple3<Employee, Branch, Branch> r : rows) {
@@ -670,6 +682,41 @@ public class App {
   }
 
   private void tuplesExample7() throws SQLException, DynamicExpressionException {
+
+    EmployeeTable e = this.employeeDAO.newTable();
+    BranchTable b = this.branchDAO.newTable();
+    BranchTable p = this.branchDAO.newTable();
+
+    List<Tuple2<Employee, Branch>> rows = this.sql
+        .select()
+        .tuples()
+        .from(e)
+        .join(b, e.branchId.eq(b.id))
+        .semiLeftJoin(p, p.parentBranchId.eq(b.id))
+        .where(p.id.isNull())
+        .execute();
+    for (Tuple2<Employee, Branch> r : rows) {
+      Employee employee = r.getA();
+      Branch branch = r.getB();
+      System.out.println("=== Employee: " + employee);
+      System.out.println("=== Branch: " + branch);
+    }
+
+//    === Employee: app.persistence.model.Employee@2ec99035
+//        - id=32
+//        - name=Jeanne
+//        - branchId=104
+//        === Branch: app.persistence.model.Branch@60743cdb
+//        - id=104
+//        - region=E
+//        - isVip=0
+//        - parentBranchId=null
+//        - createdAt=2024-01-04T12:34:56
+
+
+  }
+
+  private void tuplesExample8() throws SQLException, DynamicExpressionException {
 
     // Joining subqueries and CTEs
 
@@ -712,7 +759,7 @@ public class App {
 
   }
 
-  private void tuplesExample8() throws SQLException, DynamicExpressionException {
+  private void tuplesExample9() throws SQLException, DynamicExpressionException {
 
     // Select Using Cursors
 
@@ -738,7 +785,7 @@ public class App {
 
   }
 
-  private void tuplesExample9() throws SQLException, DynamicExpressionException {
+  private void tuplesExample10() throws SQLException, DynamicExpressionException {
 
     // Select a Single Row
 

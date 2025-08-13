@@ -33,7 +33,7 @@ public class SelectTuplesFrom13Phase<A, B, C, D, E, F, G, H, I, J, K, L, M> {
 
   private TuplesMetadata metadata;
 
-  SelectTuplesFrom13Phase(final TuplesMetadata metadata) {
+  public SelectTuplesFrom13Phase(final TuplesMetadata metadata) {
     this.metadata = metadata;
   }
 
@@ -105,6 +105,73 @@ public class SelectTuplesFrom13Phase<A, B, C, D, E, F, G, H, I, J, K, L, M> {
   public <TV extends TableOrView<N>, N> SelectTuplesFrom14Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N> naturalFullJoin(TV t) {
     this.metadata.join(new NaturalFullOuterJoin(t));
     return new SelectTuplesFrom14Phase<>(this.metadata);
+  }
+
+  // semi-joining TableOrView
+
+  public <TV extends TableOrView<N>, N> SelectTuplesFrom13Phase<A, B, C, D, E, F, G, H, I, J, K, L, M> semiJoin(TV t, final BooleanExpression on) {
+    this.metadata.join(new InnerJoin(t, on), false);
+    return new SelectTuplesFrom13Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<N>, N> SelectTuplesFrom13Phase<A, B, C, D, E, F, G, H, I, J, K, L, M> semiJoin(TV t, final EntityColumn... using) {
+    this.metadata.join(new InnerJoin(t, using), false);
+    return new SelectTuplesFrom13Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<N>, N> SelectTuplesFrom13Phase<A, B, C, D, E, F, G, H, I, J, K, L, M> semiLeftJoin(TV t, final BooleanExpression on) {
+    this.metadata.join(new LeftOuterJoin(t, on), false);
+    return new SelectTuplesFrom13Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<N>, N> SelectTuplesFrom13Phase<A, B, C, D, E, F, G, H, I, J, K, L, M> semiLeftJoin(TV t, final EntityColumn... using) {
+    this.metadata.join(new LeftOuterJoin(t, using), false);
+    return new SelectTuplesFrom13Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<N>, N> SelectTuplesFrom13Phase<A, B, C, D, E, F, G, H, I, J, K, L, M> semiRightJoin(TV t, final BooleanExpression on) {
+    this.metadata.join(new RightOuterJoin(t, on), false);
+    return new SelectTuplesFrom13Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<N>, N> SelectTuplesFrom13Phase<A, B, C, D, E, F, G, H, I, J, K, L, M> semiRightJoin(TV t, final EntityColumn... using) {
+    this.metadata.join(new RightOuterJoin(t, using), false);
+    return new SelectTuplesFrom13Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<N>, N> SelectTuplesFrom13Phase<A, B, C, D, E, F, G, H, I, J, K, L, M> semiFullJoin(TV t, final BooleanExpression on) {
+    this.metadata.join(new FullOuterJoin(t, on), false);
+    return new SelectTuplesFrom13Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<N>, N> SelectTuplesFrom13Phase<A, B, C, D, E, F, G, H, I, J, K, L, M> semiFullJoin(TV t, final EntityColumn... using) {
+    this.metadata.join(new FullOuterJoin(t, using), false);
+    return new SelectTuplesFrom13Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<N>, N> SelectTuplesFrom13Phase<A, B, C, D, E, F, G, H, I, J, K, L, M> semiCrossJoin(TV t) {
+    this.metadata.join(new CrossJoin(t), false);
+    return new SelectTuplesFrom13Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<N>, N> SelectTuplesFrom13Phase<A, B, C, D, E, F, G, H, I, J, K, L, M> semiNaturalJoin(TV t) {
+    this.metadata.join(new NaturalInnerJoin(t), false);
+    return new SelectTuplesFrom13Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<N>, N> SelectTuplesFrom13Phase<A, B, C, D, E, F, G, H, I, J, K, L, M> semiNaturalLeftJoin(TV t) {
+    this.metadata.join(new NaturalLeftOuterJoin(t), false);
+    return new SelectTuplesFrom13Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<N>, N> SelectTuplesFrom13Phase<A, B, C, D, E, F, G, H, I, J, K, L, M> semiNaturalRightJoin(TV t) {
+    this.metadata.join(new NaturalRightOuterJoin(t), false);
+    return new SelectTuplesFrom13Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<N>, N> SelectTuplesFrom13Phase<A, B, C, D, E, F, G, H, I, J, K, L, M> semiNaturalFullJoin(TV t) {
+    this.metadata.join(new NaturalFullOuterJoin(t), false);
+    return new SelectTuplesFrom13Phase<>(this.metadata);
   }
 
   // joining Subquery

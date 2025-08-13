@@ -13,8 +13,8 @@ import org.hotrod.utils.SUtil;
 
 public class Gen {
 
-  private static String SRC_DIR = "src/test/templates";
-  private static String DEST_DIR = "src/test/java/org/hotrod/livesql/queries/select/tuples";
+  private static String SRC_DIR = "src/test/java/org/hotrod/livesql/queries/select/src";
+  private static String DEST_DIR = "src/main/java/org/hotrod/livesql/queries/select/tuples/gen";
   private static int MAX_SIZE = 26;
 
   public static void main(String[] args) throws IOException {
@@ -64,7 +64,7 @@ public class Gen {
       String className = "Tuple" + i;
       String name = DEST_DIR + "/" + className + ".java";
       try (BufferedWriter w = new BufferedWriter(new FileWriter(new File(name)))) {
-        w.write("package org.hotrod.livesql.queries.select.tuples;\n" + "\n" + "import java.util.Map;\n" + "\n"
+        w.write("package org.hotrod.livesql.queries.select.tuples.gen;\n" + "\n" + "import java.util.Map;\n" + "\n"
             + "public class ");
         w.write(className + "<" + stream(size).collect(Collectors.joining(", ")) + ">" + " {\n\n");
         stream(size).forEach(x -> write(w, "  private " + x + " " + x.toLowerCase() + ";\n"));
@@ -86,7 +86,7 @@ public class Gen {
   private static void genFactory() throws IOException {
     String name = DEST_DIR + "/TupleClassFactory.java";
     try (BufferedWriter w = new BufferedWriter(new FileWriter(new File(name)))) {
-      w.write("package org.hotrod.livesql.queries.select.tuples;\n" + "\n" + "public class TupleClassFactory {\n" + "\n"
+      w.write("package org.hotrod.livesql.queries.select.tuples.gen;\n" + "\n" + "public class TupleClassFactory {\n" + "\n"
           + "  public static Class<?> getTuplesClass(int modelInstancesCount) {\n"
           + "    switch (modelInstancesCount) {\n");
       IntStream.rangeClosed(1, MAX_SIZE)

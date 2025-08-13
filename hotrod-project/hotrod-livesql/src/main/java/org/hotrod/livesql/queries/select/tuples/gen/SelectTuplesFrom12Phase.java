@@ -33,7 +33,7 @@ public class SelectTuplesFrom12Phase<A, B, C, D, E, F, G, H, I, J, K, L> {
 
   private TuplesMetadata metadata;
 
-  SelectTuplesFrom12Phase(final TuplesMetadata metadata) {
+  public SelectTuplesFrom12Phase(final TuplesMetadata metadata) {
     this.metadata = metadata;
   }
 
@@ -105,6 +105,73 @@ public class SelectTuplesFrom12Phase<A, B, C, D, E, F, G, H, I, J, K, L> {
   public <TV extends TableOrView<M>, M> SelectTuplesFrom13Phase<A, B, C, D, E, F, G, H, I, J, K, L, M> naturalFullJoin(TV t) {
     this.metadata.join(new NaturalFullOuterJoin(t));
     return new SelectTuplesFrom13Phase<>(this.metadata);
+  }
+
+  // semi-joining TableOrView
+
+  public <TV extends TableOrView<M>, M> SelectTuplesFrom12Phase<A, B, C, D, E, F, G, H, I, J, K, L> semiJoin(TV t, final BooleanExpression on) {
+    this.metadata.join(new InnerJoin(t, on), false);
+    return new SelectTuplesFrom12Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<M>, M> SelectTuplesFrom12Phase<A, B, C, D, E, F, G, H, I, J, K, L> semiJoin(TV t, final EntityColumn... using) {
+    this.metadata.join(new InnerJoin(t, using), false);
+    return new SelectTuplesFrom12Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<M>, M> SelectTuplesFrom12Phase<A, B, C, D, E, F, G, H, I, J, K, L> semiLeftJoin(TV t, final BooleanExpression on) {
+    this.metadata.join(new LeftOuterJoin(t, on), false);
+    return new SelectTuplesFrom12Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<M>, M> SelectTuplesFrom12Phase<A, B, C, D, E, F, G, H, I, J, K, L> semiLeftJoin(TV t, final EntityColumn... using) {
+    this.metadata.join(new LeftOuterJoin(t, using), false);
+    return new SelectTuplesFrom12Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<M>, M> SelectTuplesFrom12Phase<A, B, C, D, E, F, G, H, I, J, K, L> semiRightJoin(TV t, final BooleanExpression on) {
+    this.metadata.join(new RightOuterJoin(t, on), false);
+    return new SelectTuplesFrom12Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<M>, M> SelectTuplesFrom12Phase<A, B, C, D, E, F, G, H, I, J, K, L> semiRightJoin(TV t, final EntityColumn... using) {
+    this.metadata.join(new RightOuterJoin(t, using), false);
+    return new SelectTuplesFrom12Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<M>, M> SelectTuplesFrom12Phase<A, B, C, D, E, F, G, H, I, J, K, L> semiFullJoin(TV t, final BooleanExpression on) {
+    this.metadata.join(new FullOuterJoin(t, on), false);
+    return new SelectTuplesFrom12Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<M>, M> SelectTuplesFrom12Phase<A, B, C, D, E, F, G, H, I, J, K, L> semiFullJoin(TV t, final EntityColumn... using) {
+    this.metadata.join(new FullOuterJoin(t, using), false);
+    return new SelectTuplesFrom12Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<M>, M> SelectTuplesFrom12Phase<A, B, C, D, E, F, G, H, I, J, K, L> semiCrossJoin(TV t) {
+    this.metadata.join(new CrossJoin(t), false);
+    return new SelectTuplesFrom12Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<M>, M> SelectTuplesFrom12Phase<A, B, C, D, E, F, G, H, I, J, K, L> semiNaturalJoin(TV t) {
+    this.metadata.join(new NaturalInnerJoin(t), false);
+    return new SelectTuplesFrom12Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<M>, M> SelectTuplesFrom12Phase<A, B, C, D, E, F, G, H, I, J, K, L> semiNaturalLeftJoin(TV t) {
+    this.metadata.join(new NaturalLeftOuterJoin(t), false);
+    return new SelectTuplesFrom12Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<M>, M> SelectTuplesFrom12Phase<A, B, C, D, E, F, G, H, I, J, K, L> semiNaturalRightJoin(TV t) {
+    this.metadata.join(new NaturalRightOuterJoin(t), false);
+    return new SelectTuplesFrom12Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<M>, M> SelectTuplesFrom12Phase<A, B, C, D, E, F, G, H, I, J, K, L> semiNaturalFullJoin(TV t) {
+    this.metadata.join(new NaturalFullOuterJoin(t), false);
+    return new SelectTuplesFrom12Phase<>(this.metadata);
   }
 
   // joining Subquery

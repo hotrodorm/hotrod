@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.dynamicsql.RowReader;
@@ -24,6 +25,7 @@ import org.hotrod.livesql.queries.select.TableExpression;
 import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
 import org.hotrod.livesql.queries.select.sets.BaseSelectObject;
+import org.hotrod.livesql.queries.select.tuples.TuplesMetadata.TuplesJoin;
 import org.hotrod.utils.Separator;
 
 public class TuplesSelectObject<T> extends BaseSelectObject<T> {
@@ -34,19 +36,25 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
   @SuppressWarnings("unused")
   private LiveSQLContext context;
 
+  private List<TuplesJoin> tuplesJoins;
+
   public TuplesSelectObject(TuplesMetadata metadata) {
     super(metadata.getCtes(), metadata.isDistinct());
     this.sqlExpressions = metadata.getResultSetColumns();
     this.from = metadata.getFrom();
-    this.joins = metadata.getJoins();
+    this.tuplesJoins = metadata.getJoins();
     this.context = metadata.getContext();
+
+    super.joins = this.tuplesJoins.stream() //
+        .map(tj -> tj.getJoin()) //
+        .collect(Collectors.toList());
   }
 
   @Override
   public void validateTableReferences(TableReferences tableReferences, AliasGenerator ag) {
     SShield.validateTableReferences(this.from, tableReferences, ag);
-    for (Join j : this.joins) {
-      SShield.validateTableReferences(j, tableReferences, ag);
+    for (TuplesJoin tj : this.tuplesJoins) {
+      SShield.validateTableReferences(tj.getJoin(), tableReferences, ag);
     }
   }
 
@@ -72,8 +80,11 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
       SShield.assembleColumns(this.from);
     }
 
-    if (this.joins != null) {
-      this.joins.forEach(j -> SShield.assembleColumns(j));
+    if (this.tuplesJoins != null) {
+      this.tuplesJoins.forEach(tj -> {
+        if (tj.includeInResultSet())
+          SShield.assembleColumns(tj.getJoin());
+      });
     }
 
     if (isListingColumns) {
@@ -82,21 +93,13 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
 
     } else { // columns not listed
 
-//    TupleMetadata m = new TupleMetadata(t, MDHelper.getModeClass(t));
-//    this.tuplesMetadata.add(m);
-
-      // Tuples:
-      // - List: Model:
-      // - - List: alias, getter, setter
-      // - unbound:
-      // - - alias, getter
-
       this.sqlExpressions = new ArrayList<>();
 
       addTableColumns(this.from, this.sqlExpressions);
-      for (Join j : this.joins) {
-        addTableColumns(SShield.getTableExpression(j), this.sqlExpressions);
-//        this.sqlExpressions.add(SShield.star(j));
+      for (TuplesJoin tj : this.tuplesJoins) {
+        if (tj.includeInResultSet()) {
+          addTableColumns(SShield.getTableExpression(tj.getJoin()), this.sqlExpressions);
+        }
       }
 
       super.expandQueryColumns();
@@ -108,14 +111,9 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
   }
 
   private void addTableColumns(TableExpression te, List<SQLExpression> filledIn) {
-//    log.info("Adding te: " + te.getAlias());
     MetaExpression wrapped = SShield.star(te);
     List<Expression> unwrapped = MDShield.unwrap(wrapped);
     for (Expression expr : unwrapped) {
-      String property = Shield.getProperty(expr);
-//      String calias = this.context.getLiveSQLDialect().canonicalToNatural(te.getAlias() + ":" + property);
-//      log.info(" + " + calias);
-//      Expression aliased = new AliasedExpression(expr, calias);
       filledIn.add(expr);
     }
   }
@@ -131,13 +129,15 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
       // Ignore other table expressions
     }
 
-    for (Join j : this.joins) {
-      TableExpression te = SShield.getTableExpression(j);
-      try {
-        TableOrView<?> tv = (TableOrView<?>) te;
-        allTables.add(tv);
-      } catch (ClassCastException e) {
-        // Ignore other table expressions
+    for (TuplesJoin tj : this.tuplesJoins) {
+      if (tj.includeInResultSet()) {
+        TableExpression te = SShield.getTableExpression(tj.getJoin());
+        try {
+          TableOrView<?> tv = (TableOrView<?>) te;
+          allTables.add(tv);
+        } catch (ClassCastException e) {
+          // Ignore other table expressions
+        }
       }
     }
 //    List<TableOrView<?>> joined = this.joins.stream().map(j -> (TableOrView<?>) SShield.getTableExpression(j))

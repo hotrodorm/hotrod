@@ -33,7 +33,7 @@ public class SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O
 
   private TuplesMetadata metadata;
 
-  SelectTuplesFrom16Phase(final TuplesMetadata metadata) {
+  public SelectTuplesFrom16Phase(final TuplesMetadata metadata) {
     this.metadata = metadata;
   }
 
@@ -105,6 +105,73 @@ public class SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O
   public <TV extends TableOrView<Q>, Q> SelectTuplesFrom17Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> naturalFullJoin(TV t) {
     this.metadata.join(new NaturalFullOuterJoin(t));
     return new SelectTuplesFrom17Phase<>(this.metadata);
+  }
+
+  // semi-joining TableOrView
+
+  public <TV extends TableOrView<Q>, Q> SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> semiJoin(TV t, final BooleanExpression on) {
+    this.metadata.join(new InnerJoin(t, on), false);
+    return new SelectTuplesFrom16Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<Q>, Q> SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> semiJoin(TV t, final EntityColumn... using) {
+    this.metadata.join(new InnerJoin(t, using), false);
+    return new SelectTuplesFrom16Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<Q>, Q> SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> semiLeftJoin(TV t, final BooleanExpression on) {
+    this.metadata.join(new LeftOuterJoin(t, on), false);
+    return new SelectTuplesFrom16Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<Q>, Q> SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> semiLeftJoin(TV t, final EntityColumn... using) {
+    this.metadata.join(new LeftOuterJoin(t, using), false);
+    return new SelectTuplesFrom16Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<Q>, Q> SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> semiRightJoin(TV t, final BooleanExpression on) {
+    this.metadata.join(new RightOuterJoin(t, on), false);
+    return new SelectTuplesFrom16Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<Q>, Q> SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> semiRightJoin(TV t, final EntityColumn... using) {
+    this.metadata.join(new RightOuterJoin(t, using), false);
+    return new SelectTuplesFrom16Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<Q>, Q> SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> semiFullJoin(TV t, final BooleanExpression on) {
+    this.metadata.join(new FullOuterJoin(t, on), false);
+    return new SelectTuplesFrom16Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<Q>, Q> SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> semiFullJoin(TV t, final EntityColumn... using) {
+    this.metadata.join(new FullOuterJoin(t, using), false);
+    return new SelectTuplesFrom16Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<Q>, Q> SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> semiCrossJoin(TV t) {
+    this.metadata.join(new CrossJoin(t), false);
+    return new SelectTuplesFrom16Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<Q>, Q> SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> semiNaturalJoin(TV t) {
+    this.metadata.join(new NaturalInnerJoin(t), false);
+    return new SelectTuplesFrom16Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<Q>, Q> SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> semiNaturalLeftJoin(TV t) {
+    this.metadata.join(new NaturalLeftOuterJoin(t), false);
+    return new SelectTuplesFrom16Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<Q>, Q> SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> semiNaturalRightJoin(TV t) {
+    this.metadata.join(new NaturalRightOuterJoin(t), false);
+    return new SelectTuplesFrom16Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<Q>, Q> SelectTuplesFrom16Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> semiNaturalFullJoin(TV t) {
+    this.metadata.join(new NaturalFullOuterJoin(t), false);
+    return new SelectTuplesFrom16Phase<>(this.metadata);
   }
 
   // joining Subquery

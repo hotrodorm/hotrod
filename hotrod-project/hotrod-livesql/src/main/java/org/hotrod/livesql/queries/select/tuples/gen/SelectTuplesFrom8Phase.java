@@ -33,7 +33,7 @@ public class SelectTuplesFrom8Phase<A, B, C, D, E, F, G, H> {
 
   private TuplesMetadata metadata;
 
-  SelectTuplesFrom8Phase(final TuplesMetadata metadata) {
+  public SelectTuplesFrom8Phase(final TuplesMetadata metadata) {
     this.metadata = metadata;
   }
 
@@ -105,6 +105,73 @@ public class SelectTuplesFrom8Phase<A, B, C, D, E, F, G, H> {
   public <TV extends TableOrView<I>, I> SelectTuplesFrom9Phase<A, B, C, D, E, F, G, H, I> naturalFullJoin(TV t) {
     this.metadata.join(new NaturalFullOuterJoin(t));
     return new SelectTuplesFrom9Phase<>(this.metadata);
+  }
+
+  // semi-joining TableOrView
+
+  public <TV extends TableOrView<I>, I> SelectTuplesFrom8Phase<A, B, C, D, E, F, G, H> semiJoin(TV t, final BooleanExpression on) {
+    this.metadata.join(new InnerJoin(t, on), false);
+    return new SelectTuplesFrom8Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<I>, I> SelectTuplesFrom8Phase<A, B, C, D, E, F, G, H> semiJoin(TV t, final EntityColumn... using) {
+    this.metadata.join(new InnerJoin(t, using), false);
+    return new SelectTuplesFrom8Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<I>, I> SelectTuplesFrom8Phase<A, B, C, D, E, F, G, H> semiLeftJoin(TV t, final BooleanExpression on) {
+    this.metadata.join(new LeftOuterJoin(t, on), false);
+    return new SelectTuplesFrom8Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<I>, I> SelectTuplesFrom8Phase<A, B, C, D, E, F, G, H> semiLeftJoin(TV t, final EntityColumn... using) {
+    this.metadata.join(new LeftOuterJoin(t, using), false);
+    return new SelectTuplesFrom8Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<I>, I> SelectTuplesFrom8Phase<A, B, C, D, E, F, G, H> semiRightJoin(TV t, final BooleanExpression on) {
+    this.metadata.join(new RightOuterJoin(t, on), false);
+    return new SelectTuplesFrom8Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<I>, I> SelectTuplesFrom8Phase<A, B, C, D, E, F, G, H> semiRightJoin(TV t, final EntityColumn... using) {
+    this.metadata.join(new RightOuterJoin(t, using), false);
+    return new SelectTuplesFrom8Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<I>, I> SelectTuplesFrom8Phase<A, B, C, D, E, F, G, H> semiFullJoin(TV t, final BooleanExpression on) {
+    this.metadata.join(new FullOuterJoin(t, on), false);
+    return new SelectTuplesFrom8Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<I>, I> SelectTuplesFrom8Phase<A, B, C, D, E, F, G, H> semiFullJoin(TV t, final EntityColumn... using) {
+    this.metadata.join(new FullOuterJoin(t, using), false);
+    return new SelectTuplesFrom8Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<I>, I> SelectTuplesFrom8Phase<A, B, C, D, E, F, G, H> semiCrossJoin(TV t) {
+    this.metadata.join(new CrossJoin(t), false);
+    return new SelectTuplesFrom8Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<I>, I> SelectTuplesFrom8Phase<A, B, C, D, E, F, G, H> semiNaturalJoin(TV t) {
+    this.metadata.join(new NaturalInnerJoin(t), false);
+    return new SelectTuplesFrom8Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<I>, I> SelectTuplesFrom8Phase<A, B, C, D, E, F, G, H> semiNaturalLeftJoin(TV t) {
+    this.metadata.join(new NaturalLeftOuterJoin(t), false);
+    return new SelectTuplesFrom8Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<I>, I> SelectTuplesFrom8Phase<A, B, C, D, E, F, G, H> semiNaturalRightJoin(TV t) {
+    this.metadata.join(new NaturalRightOuterJoin(t), false);
+    return new SelectTuplesFrom8Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<I>, I> SelectTuplesFrom8Phase<A, B, C, D, E, F, G, H> semiNaturalFullJoin(TV t) {
+    this.metadata.join(new NaturalFullOuterJoin(t), false);
+    return new SelectTuplesFrom8Phase<>(this.metadata);
   }
 
   // joining Subquery

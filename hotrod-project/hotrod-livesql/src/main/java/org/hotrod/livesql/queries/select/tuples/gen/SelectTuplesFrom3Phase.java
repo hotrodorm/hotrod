@@ -33,7 +33,7 @@ public class SelectTuplesFrom3Phase<A, B, C> {
 
   private TuplesMetadata metadata;
 
-  SelectTuplesFrom3Phase(final TuplesMetadata metadata) {
+  public SelectTuplesFrom3Phase(final TuplesMetadata metadata) {
     this.metadata = metadata;
   }
 
@@ -105,6 +105,73 @@ public class SelectTuplesFrom3Phase<A, B, C> {
   public <TV extends TableOrView<D>, D> SelectTuplesFrom4Phase<A, B, C, D> naturalFullJoin(TV t) {
     this.metadata.join(new NaturalFullOuterJoin(t));
     return new SelectTuplesFrom4Phase<>(this.metadata);
+  }
+
+  // semi-joining TableOrView
+
+  public <TV extends TableOrView<D>, D> SelectTuplesFrom3Phase<A, B, C> semiJoin(TV t, final BooleanExpression on) {
+    this.metadata.join(new InnerJoin(t, on), false);
+    return new SelectTuplesFrom3Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<D>, D> SelectTuplesFrom3Phase<A, B, C> semiJoin(TV t, final EntityColumn... using) {
+    this.metadata.join(new InnerJoin(t, using), false);
+    return new SelectTuplesFrom3Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<D>, D> SelectTuplesFrom3Phase<A, B, C> semiLeftJoin(TV t, final BooleanExpression on) {
+    this.metadata.join(new LeftOuterJoin(t, on), false);
+    return new SelectTuplesFrom3Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<D>, D> SelectTuplesFrom3Phase<A, B, C> semiLeftJoin(TV t, final EntityColumn... using) {
+    this.metadata.join(new LeftOuterJoin(t, using), false);
+    return new SelectTuplesFrom3Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<D>, D> SelectTuplesFrom3Phase<A, B, C> semiRightJoin(TV t, final BooleanExpression on) {
+    this.metadata.join(new RightOuterJoin(t, on), false);
+    return new SelectTuplesFrom3Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<D>, D> SelectTuplesFrom3Phase<A, B, C> semiRightJoin(TV t, final EntityColumn... using) {
+    this.metadata.join(new RightOuterJoin(t, using), false);
+    return new SelectTuplesFrom3Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<D>, D> SelectTuplesFrom3Phase<A, B, C> semiFullJoin(TV t, final BooleanExpression on) {
+    this.metadata.join(new FullOuterJoin(t, on), false);
+    return new SelectTuplesFrom3Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<D>, D> SelectTuplesFrom3Phase<A, B, C> semiFullJoin(TV t, final EntityColumn... using) {
+    this.metadata.join(new FullOuterJoin(t, using), false);
+    return new SelectTuplesFrom3Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<D>, D> SelectTuplesFrom3Phase<A, B, C> semiCrossJoin(TV t) {
+    this.metadata.join(new CrossJoin(t), false);
+    return new SelectTuplesFrom3Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<D>, D> SelectTuplesFrom3Phase<A, B, C> semiNaturalJoin(TV t) {
+    this.metadata.join(new NaturalInnerJoin(t), false);
+    return new SelectTuplesFrom3Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<D>, D> SelectTuplesFrom3Phase<A, B, C> semiNaturalLeftJoin(TV t) {
+    this.metadata.join(new NaturalLeftOuterJoin(t), false);
+    return new SelectTuplesFrom3Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<D>, D> SelectTuplesFrom3Phase<A, B, C> semiNaturalRightJoin(TV t) {
+    this.metadata.join(new NaturalRightOuterJoin(t), false);
+    return new SelectTuplesFrom3Phase<>(this.metadata);
+  }
+
+  public <TV extends TableOrView<D>, D> SelectTuplesFrom3Phase<A, B, C> semiNaturalFullJoin(TV t) {
+    this.metadata.join(new NaturalFullOuterJoin(t), false);
+    return new SelectTuplesFrom3Phase<>(this.metadata);
   }
 
   // joining Subquery

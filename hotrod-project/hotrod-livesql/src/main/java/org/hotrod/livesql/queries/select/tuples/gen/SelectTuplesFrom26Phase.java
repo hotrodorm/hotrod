@@ -33,7 +33,7 @@ public class SelectTuplesFrom26Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O
 
   private TuplesMetadata metadata;
 
-  SelectTuplesFrom26Phase(final TuplesMetadata metadata) {
+  public SelectTuplesFrom26Phase(final TuplesMetadata metadata) {
     this.metadata = metadata;
   }
 
