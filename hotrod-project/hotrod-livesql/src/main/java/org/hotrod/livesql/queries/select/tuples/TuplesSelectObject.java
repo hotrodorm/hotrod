@@ -200,15 +200,12 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
       Shield.renderTo(expr, w);
 
       try {
+        @SuppressWarnings("unused")
         EntityColumn entityColumn = (EntityColumn) expr;
-
-        // It's a column from a table
-        String alias = entityColumn.getObjectInstance().getAlias();
-        String property = Shield.getProperty(expr);
-        w.write(" as " + w.getSQLDialect().canonicalToNatural(alias + ":" + property));
+        // It's a column from a table; no need to alias it
 
       } catch (ClassCastException e) {
-        // It's a free expression
+        // It's a SQL expression; needs to include the alias
         String property = Shield.getProperty(expr);
         if (property != null) {
           w.write(" as " + w.getSQLDialect().canonicalToNatural(property));
