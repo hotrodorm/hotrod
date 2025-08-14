@@ -400,9 +400,11 @@ The following query:
 ```java
 AccountTable a = this.accountDAO.newTable();
 
-Tuple1<Account> row = this.sql.select().tuples() //
-    .from(a) //
-    .where(a.balance.ge(450)) //
+Tuple1<Account> row = this.sql
+    .select()
+    .tuples()
+    .from(a)
+    .where(a.balance.ge(450))
     .orderBy(a.updatedAt.desc())
     .limit(1)
     .executeOne();
@@ -426,7 +428,7 @@ Produces a row with the form:
 
 If no rows are found then it produces a null. If more than a single row is found the method throws an exception.
 
-**Note**: Make sure the query returns one row at the most &ndash; in this example by the use of `.limit(1)` &ndash; to prevent the query to throw an exception.
+**Note**: Make sure the query returns one row at the most &ndash; e.g. by the use of `.limit(1)` as in this example, or by other means &ndash; to prevent the query to throw an exception.
 
 
 
