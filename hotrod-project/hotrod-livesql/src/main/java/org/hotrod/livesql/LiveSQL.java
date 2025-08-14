@@ -130,6 +130,8 @@ import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.select.Select;
 import org.hotrod.livesql.queries.select.SelectCTEPhase;
 import org.hotrod.livesql.queries.select.SelectColumnsPhase;
+import org.hotrod.livesql.queries.select.tuples.NestedAssociation;
+import org.hotrod.livesql.queries.select.tuples.NestedCollection;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.queries.subqueries.SubqueryColumnsPhase;
 import org.hotrod.livesql.queries.typesolver.TypeRule;
@@ -258,6 +260,14 @@ public class LiveSQL {
 
   public SelectCTEPhase<Row> with(final CTE... ctes) {
     return new SelectCTEPhase<Row>(this.context, ctes);
+  }
+
+  public NestedCollection collection(String property, TableOrView<?> tableOrView, SQLExpression... sqlExpressions) {
+    return new NestedCollection(property, tableOrView, Arrays.asList(new SQLExpression[0]));
+  }
+
+  public NestedAssociation association(String property, TableOrView<?> tableOrView, SQLExpression... sqlExpressions) {
+    return new NestedAssociation(property, tableOrView, Arrays.asList(new SQLExpression[0]));
   }
 
   // Insert

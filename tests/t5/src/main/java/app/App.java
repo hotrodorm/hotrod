@@ -648,7 +648,9 @@ public class App {
     BranchTable b = this.branchDAO.newTable();
     BranchTable p = this.branchDAO.newTable();
 
-    List<Tuple3<Employee, Branch, Branch>> rows = this.sql.select().tuples() //
+    List<Tuple3<Employee, Branch, Branch>> rows = this.sql //
+        .select() //
+        .tuples() //
         .from(e) //
         .join(b, e.branchId.eq(b.id)) //
         .join(p, p.id.eq(b.parentBranchId)) //
@@ -681,6 +683,37 @@ public class App {
 
   }
 
+  private void tuplesExampleNested() throws SQLException, DynamicExpressionException {
+
+    // Joining multiple tables and views (up to 26)
+
+    EmployeeTable e = this.employeeDAO.newTable();
+    BranchTable b = this.branchDAO.newTable();
+    BranchTable p = this.branchDAO.newTable();
+    List<Tuple1<Employee>> rows = this.sql //
+        .select( //
+            e.star(), //
+            sql.collection("parentBranches", b), //
+            sql.collection("parentBranches", b, b.star()), //
+            sql.collection("parentBranches", b, sql.collection("employees", e)) //
+        ) //
+        .tuples() //
+        .from(e) //
+        .semiJoin(b, e.branchId.eq(b.id)) //
+        .semiJoin(p, p.id.eq(b.parentBranchId)) //
+        .execute();
+    for (Tuple1<Employee> r : rows) {
+      Employee employee = r.getA();
+//      Branch branch = r.getB();
+//      Branch parentBranch = r.getC();
+      System.out.println("=== Employee: " + employee);
+//      System.out.println("=== Branch: " + branch);
+//      System.out.println("=== Parent Branch: " + parentBranch);
+    }
+
+  }
+
+  
   private void tuplesExample7() throws SQLException, DynamicExpressionException {
 
     EmployeeTable e = this.employeeDAO.newTable();
