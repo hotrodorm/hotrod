@@ -17,7 +17,7 @@ List<Tuple1<Employee>> rows = this.sql
 
         b.association("currentBranch").columns(b.id, b.region),
         b.collection("parentBranches").over(e.name),
-        b.collection("parentBranches").over(e.name).columns(b.id, b.region)
+        b.collection("parentBranches").over(e.name).columns(b.id, b.region),
 
         b.collection("parentBranches").over(e.name).columns(b.id, b.region,
             p.association("parents"),
