@@ -37,3 +37,16 @@ for (Tuple1<Employee> r : rows) {
 }
 ```
 
+## Model
+
+```
+BranchLayout
+    ^
+    |
+BranchModel
+    ^
+    |
+BranchExtended (+ unbound)
+```
+
+
