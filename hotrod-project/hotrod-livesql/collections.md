@@ -11,6 +11,7 @@ BranchTable p = this.branchDAO.newTable();
 List<Tuple1<Employee>> rows = this.sql
     .select(
         e.star(),
+        e.star().filter(...),
 
         sql.collection("parentBranches").columns(b.createdAt, p.isVip),
         sql.collection("parentBranches").over(e.name).columns(b.createdAt, p.isVip),
