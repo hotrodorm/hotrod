@@ -30,6 +30,7 @@ List<Tuple1<Employee>> rows = this.sql
     .from(e)
     .semiJoin(b, e.branchId.eq(b.id))
     .semiJoin(p, p.id.eq(b.parentBranchId))
+    .orderBy(e.name, b.id)
     .execute();
 
 for (Tuple1<Employee> r : rows) {
