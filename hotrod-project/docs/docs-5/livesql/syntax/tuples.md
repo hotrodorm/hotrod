@@ -1,14 +1,14 @@
-# Feature Preview -- Tuples in LiveSQL
+# LiveSQL Tuples
 
-This is a feature preview for the Tuples functionality targeted for HotRod 5.1. This new feature enhances LiveSQL's SELECT statement by selecting tuples (model objects) for tables and views used in SELECT queries.
+LiveSQL Tuples select model objects for the tables and views used in a SELECT query. This can be particularly useful when a query joins multiple tables and view, and the application benefits from retrieving multiple separate objects for each retrieved row.
 
-This functionality also implements retrieving separate model objects when the query joins multiple tables and/or views.
+Tuples are available since HotRod 5.1.
 
 The clause `.tuples()` enables the tuples form of queries.
 
-## Example 1 &mdash; Equivalent to Select by Criteria
+## Example 1 &mdash; Enhanced Select by Criteria
 
-In addition of covering all forms of the Select By Criteria queries, this form can also implement semi-joins, anti-joins, with CTEs and/or subqueries. As shown in Example #2, it has the ability to retrieve a subset of the columns of the table (or view).
+Tuples implement an enhanced variation of the Select by Criteria, since it can also implement semi-joins, anti-joins, with CTEs and/or subqueries. Unlike the former, it also has the ability to retrieve a specific subset of columns only, as shown in example #2.
 
 The resulting model objects use the appropriate data types, converters, etc. The following query:
 
@@ -41,6 +41,7 @@ Produces rows with the form:
 ```
 
 **Note**: Tuples can be used to SELECT from tables and views.
+
 
 ## Example 2 &mdash; Filtering Columns
 

@@ -4,6 +4,13 @@ This is a major release of the HotRod ORM that includes much needed refactorings
 
 As a side effect, this release breaks compatibility with previous releases. Consider that an upgrade from a previous version will require multiple changes to the source code of your application. Thorough testing of your converted application is highly recommended.
 
+## What's New in HotRod 5.1
+
+### 1. LiveSQL Tuples
+
+LiveSQL [Tuples](./livesql/syntax/tuples.md) select model objects for the tables and views used in a SELECT query. This can be particularly useful when a query joins multiple tables and view, and the application benefits from retrieving multiple separate objects for each retrieved row.
+
+
 ## What's New in HotRod 5.0
 
 ### 1. Brand New Persistence Layer

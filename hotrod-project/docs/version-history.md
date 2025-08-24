@@ -2,6 +2,11 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
+## 5.1.0:
+
+- LiveSQL:
+    - Tuples. Tuples enhance SELECT queries so they retrieve joined tables as separate model objects.
+
 ## 5.0.4:
 
 - LiveSQL:

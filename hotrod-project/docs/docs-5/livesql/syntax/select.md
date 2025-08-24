@@ -46,6 +46,33 @@ The SELECT statement has several clauses that are described separately:
 - [The FOR UPDATE &amp; FOR SHARE Clauses](./pessimistic-locking.md)
 - [The UNION/INTERSECT/EXCEPT [ALL] Clauses](./set-operators.md)
 
+## Selecting Tuples
+
+LiveSQL can also select separate tuples for tables and views included in a SELECT query. For example, the following query retrieves multiple model objects per row, in addition to on-the-fly extra columns:
+
+```java
+BranchTable b = this.branchDAO.newTable();
+EmployeeTable e = this.employeeDAO.newTable();
+
+List<Tuple2<Employee, Branch>> rows = this.sql
+    .select(e.star(), b.star(),
+      sql.caseWhen(b.isVip().eq(1), "VIP Manager").elseValue("Manager").end().as("title")
+    )
+    .tuples() // here the magic starts
+    .from(e)
+    .join(b, b.id.eq(e.branchId))
+    .where(e.name.like("%Anne%"))
+    .execute();
+for (Tuple2<Employee, Branch> r : rows) {
+  Employee account = r.getA(); // Object models are separated
+  Branch branch = r.getB();
+  System.out.println("=== Employee: " + account);
+  System.out.println("=== Branch: " + branch);
+  for (String prop : r.getUnbound().keySet()) { // Extra columns are retrieved
+    System.out.println("*** Extra column '" + prop + "': " + r.getUnbound().get(prop));
+  }
+}
+```
 
 ## Subqueries
 
@@ -121,7 +148,7 @@ private void searching() {
 }
 ```
 
-**Important Note**: Cursors live only inside the database transaction. This means that as soon as the outermost
+**Important Note**: Cursors typically can only be accessed inside the database transaction. This means that as soon as the outermost
 Spring method annotated with `@Transactional` ends, the cursor is automatically closed and cannot be read
 anymore. You need to keep this in mind in case a method returns a `Cursor<Row>`, so it's always returned to
 an enclosing method within the boundaries of the database transaction.
