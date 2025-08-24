@@ -1,4 +1,4 @@
-# The Torcs Module
+# Torcs
 
 Torcs gathers and consolidates statistical data of queries run by the application, with the aims of detecting slow running queries and of shedding light into their overall impact in the application performance. It also helps finding the root causes of the queries' slowness by retrieving their execution plans.
 
@@ -8,11 +8,22 @@ Even though it's a part of HotRod, Torcs can be used separatedly without the Hot
 
 Torcs is not to be confused with the Torcs CTP module. The latter focuses on more comprehensive execution plans for middle tier to high end databases, that can be visualized and analized using Check The Plan (http://checktheplan.com) 's web site.
 
+## Example
+
+The ranking by highest response time starts automatically when Torcs is added to the application and can provide a ranking of queries like:
+
+| Rank | Execs | Errors | Avg Time (ms) | Observed Time (ms) | Impact (ms) | Data Source | SQL |
+| :--: | --:| --:| --:| --:| --:| :--: | :-- |
+| #1 | 4    |   0 |       47 | 38-55      | 188         | #0 | SELECT amount FROM invoice WHERE client_id = ? ORDER BY created_at |
+| #2 | 12   |   0 |        6 | 4-10        | 87         | #0 | SELECT status FROM client WHERE id = ? |
+| #3 | 5    |   1 |        8 | 7-9         | 42         | #0 | SELECT name FROM branch WHERE id = ? |
+
+
 ## Limitations
 
 Torcs does not aim to replace the official database statistical information produced by a DBA using the engine's sophisticated mechanisms. This information is much more comprehensive compared to what Torcs can provide. It must be noted, however, that some well-known and pricy monitoring tools in the market fail to provide useful insight data, especially when it comes to open source databases.
 
-Torcs can easily provide a wealth of information to a crafty developer who can start detecting slow queries, extracting live execution plans, and improving slow queries. All of this without the assistance of an expensive or elusive DBA.
+Torcs can easily provide a wealth of information to a crafty developer who can start detecting slow queries, extracting live execution plans, and improving slow queries. All of this without the assistance of an expensive &ndash; or elusive &ndash; DBA.
 
 Consider that Torcs is local to the application instance and only sees queries that are run by the application instance. It does not see queries executed by other application instances, queries executed by other entirely different applications, or queries executed by internal and/or scheduled database processes. While queries such as these can place a load into the database and slow it down, Torcs will be unaware of them.
 
@@ -23,7 +34,6 @@ by applications. Nevertheless, if your application or server is relying on this 
 
 It's aware of SQL queries run by your application and can rank them or just record them. In short, Torcs:
 
-- Ranks queries using multiple criteria
 - Can find slow queries
 - Can find the most impactful queries
 - Can log query executions
@@ -32,6 +42,7 @@ It's aware of SQL queries run by your application and can rank them or just reco
 - Allows custom observers to gather query execution stats with custom logic
 - Is multi-data source aware, when using the same or different database engines
 - Can save rankings details to Excel (XLSX) format
+
 
 ## Enabling Torcs
 
