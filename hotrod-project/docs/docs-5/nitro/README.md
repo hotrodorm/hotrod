@@ -1,13 +1,15 @@
-# Nitro Queries
+# Nitro
 
-Nitro queries allows native SQL code and adds DynamicSQL functionality in queries.
+Nitro brings DynamicSQL functionality to defined queries. These queries can also take full advantage
+of all native SQL extensions available in the database.
 
-Nitro queries are useful to:
+Nitro queries can be useful to:
 
-- Include a preexistent query in the persistent layer, as is.
 - Use native SQL features to gain access to advanced database features, and to implement high performance queries.
 - Use DynamicSQL to define queries that change their form at runtime by enabling, disabling, or rendering sections of the
-query according to parameters values. See [DynamicSQL](./nitro-dynamicsql.md). 
+query according to parameters values. See [DynamicSQL](./nitro-dynamicsql.md).
+- Expose long, complex, and tedious queries as simple methods in classes.
+- Use well-tested, pre-existent queries "as is" from your application.
 
 
 ## Example
@@ -35,8 +37,8 @@ that allows the developer to tune query performance.
 
 There are two types of Nitro queries. They both can include Native and DynamicSQL functionality:
 
-- [General Purpose Queries](nitro-general-purpose.md) &mdash; Queries that return no data.
-- [Selects](nitro-selects.md) &mdash; SELECT queries that return a result set of rows.
+- [Nitro General Purpose Queries](nitro-general-purpose.md) &mdash; Queries that return no data.
+- [Nitro Selects](nitro-selects.md) &mdash; SELECT queries that return a result set of rows.
 
 ## Parameters
 
