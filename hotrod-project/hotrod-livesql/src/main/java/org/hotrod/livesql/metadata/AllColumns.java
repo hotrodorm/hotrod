@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import org.hotrod.livesql.expressions.AliasedExpression;
 import org.hotrod.livesql.expressions.Expression;
 
-public class AllColumns extends MetaExpression {
+public class AllColumns extends SQLMetaExpression {
 
   private List<EntityColumn> columns;
 

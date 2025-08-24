@@ -15,7 +15,7 @@ import org.hotrod.livesql.expressions.SQLExpression;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
-import org.hotrod.livesql.metadata.MetaExpression;
+import org.hotrod.livesql.metadata.SQLMetaExpression;
 import org.hotrod.livesql.ordering.OHelper;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.QueryWriter;
@@ -99,7 +99,7 @@ public abstract class BaseSelectObject<T> extends MultiSet<T> {
       } catch (ClassCastException cce) {
         // Wrapping column
 //        log.info("=== 2.3");
-        MetaExpression wrapping = (MetaExpression) rsc;
+        SQLMetaExpression wrapping = (SQLMetaExpression) rsc;
         for (Expression exp : Shield.expand(wrapping)) {
 //          log.info("=== 2.4");
           Expression em = Shield.getEmergingExpression(exp);

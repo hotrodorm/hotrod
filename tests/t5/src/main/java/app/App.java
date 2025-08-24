@@ -683,35 +683,46 @@ public class App {
 
   }
 
-  private void tuplesExampleNested() throws SQLException, DynamicExpressionException {
-
-    // Joining multiple tables and views (up to 26)
-
-    EmployeeTable e = this.employeeDAO.newTable();
-    BranchTable b = this.branchDAO.newTable();
-    BranchTable p = this.branchDAO.newTable();
-    List<Tuple1<Employee>> rows = this.sql //
-        .select( //
-            e.star(), //
-            sql.collection("parentBranches", b), //
-            sql.collection("parentBranches", b, b.star()), //
-            sql.collection("parentBranches", b, sql.collection("employees", e)) //
-        ) //
-        .tuples() //
-        .from(e) //
-        .semiJoin(b, e.branchId.eq(b.id)) //
-        .semiJoin(p, p.id.eq(b.parentBranchId)) //
-        .execute();
-    for (Tuple1<Employee> r : rows) {
-      Employee employee = r.getA();
-//      Branch branch = r.getB();
-//      Branch parentBranch = r.getC();
-      System.out.println("=== Employee: " + employee);
-//      System.out.println("=== Branch: " + branch);
-//      System.out.println("=== Parent Branch: " + parentBranch);
-    }
-
-  }
+//  private void tuplesExampleNested() throws SQLException, DynamicExpressionException {
+//
+//    // Joining multiple tables and views (up to 26)
+//
+//    EmployeeTable e = this.employeeDAO.newTable();
+//    BranchTable b = this.branchDAO.newTable();
+//    BranchTable p = this.branchDAO.newTable();
+//
+//    List<Tuple1<Employee>> rows = this.sql //
+//        .select( //
+//            e.star(), //
+//            
+//            sql.collection("parentBranches").columns(b.createdAt, p.isVip), //
+//            sql.collection("parentBranches").over(e.name).columns(b.createdAt, p.isVip), //
+//
+//            b.association("currentBranch").columns(b.id, b.region), //
+//            b.collection("parentBranches").over(e.name), //
+//            b.collection("parentBranches").over(e.name).columns(b.id, b.region) //
+//
+//            b.collection("parentBranches").over(e.name).columns(b.id, b.region,
+//                p.association("parents"),
+//                sql.collection("items").over(b.id).columns(e.name.concat(p.region).as("code"))
+//                ) //
+//
+//            ) //
+//        .collections() //
+//        .from(e) //
+//        .semiJoin(b, e.branchId.eq(b.id)) //
+//        .semiJoin(p, p.id.eq(b.parentBranchId)) //
+//        .execute();
+//    for (Tuple1<Employee> r : rows) {
+//      Employee employee = r.getA();
+////      Branch branch = r.getB();
+////      Branch parentBranch = r.getC();
+//      System.out.println("=== Employee: " + employee);
+////      System.out.println("=== Branch: " + branch);
+////      System.out.println("=== Parent Branch: " + parentBranch);
+//    }
+//
+//  }
 
   
   private void tuplesExample7() throws SQLException, DynamicExpressionException {

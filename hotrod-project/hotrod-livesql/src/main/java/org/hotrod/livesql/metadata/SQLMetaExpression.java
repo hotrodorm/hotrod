@@ -6,7 +6,7 @@ import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.SQLExpression;
 import org.hotrod.livesql.util.ToString;
 
-public abstract class MetaExpression extends SQLExpression {
+public abstract class SQLMetaExpression extends SQLExpression {
 
   protected abstract List<Expression> expand();
 

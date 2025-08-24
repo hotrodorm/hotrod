@@ -4,7 +4,7 @@ import org.hotrod.livesql.metadata.AllColumns;
 import org.hotrod.livesql.metadata.CharEntityColumn;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.Table;
-import org.hotrod.livesql.metadata.MetaExpression;
+import org.hotrod.livesql.metadata.SQLMetaExpression;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
 public class SysDummy1Table extends Table<String> {
@@ -28,7 +28,7 @@ public class SysDummy1Table extends Table<String> {
   }
 
   @Override
-  protected MetaExpression star() {
+  protected SQLMetaExpression star() {
     return new AllColumns(this.ibmreqd);
   }
 

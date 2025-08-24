@@ -23,10 +23,10 @@ public class SelectTuplesFrom0Phase {
     this.metadata = metadata;
   }
 
-//  public SelectTuplesFrom1Phase<A> semiJoin(TableOrView<?> t, final BooleanExpression on) {
-//    this.metadata.join(new InnerJoin(t, on), false);
-//    return new SelectTuplesFrom1Phase<>(this.metadata);
-//  }
+  public <A> SelectTuplesFrom1Phase<A> semiJoin(TableOrView<A> t, final BooleanExpression on) {
+    this.metadata.join(new InnerJoin(t, on), false);
+    return new SelectTuplesFrom1Phase<>(this.metadata);
+  }
 
   // joining TableOrView
 

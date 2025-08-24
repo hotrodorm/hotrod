@@ -15,7 +15,7 @@ public class MDShield {
     return tov.renderUnescapedName();
   }
 
-  public static List<Expression> unwrap(MetaExpression wc) {
+  public static List<Expression> unwrap(SQLMetaExpression wc) {
     return wc.expand();
   }
 

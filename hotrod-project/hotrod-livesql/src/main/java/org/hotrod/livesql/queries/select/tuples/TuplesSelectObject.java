@@ -13,7 +13,7 @@ import org.hotrod.livesql.expressions.SQLExpression;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.MDShield;
-import org.hotrod.livesql.metadata.MetaExpression;
+import org.hotrod.livesql.metadata.SQLMetaExpression;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
@@ -111,7 +111,7 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
   }
 
   private void addTableColumns(TableExpression te, List<SQLExpression> filledIn) {
-    MetaExpression wrapped = SShield.star(te);
+    SQLMetaExpression wrapped = SShield.star(te);
     List<Expression> unwrapped = MDShield.unwrap(wrapped);
     for (Expression expr : unwrapped) {
       filledIn.add(expr);
