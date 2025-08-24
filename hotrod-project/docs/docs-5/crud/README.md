@@ -1,8 +1,6 @@
-# The CRUD Module
+# CRUD
 
-This is the CRUD Module of the [HotRod ORM](../README.md).
-
-The CRUD module models tables, views, and their columns as classes with properties.
+CRUD models schema tables and views as fully typed classes. They can be used in CRUD queries as well as in LiveSQL queries.
 
 Tables and views are modeled as Layout and Model classes and their columns are modeled as properties of these.
 

@@ -7,7 +7,7 @@ HotRod brings:
 - [CRUD](./hotrod-project/docs/docs-5/crud/README.md) &mdash; Quick and simple persistence for rapid prototyping
 - [LiveSQL](./hotrod-project/docs/docs-5/livesql/README.md) &mdash; Flexible SQL querying directly from your code
 - [Nitro](./hotrod-project/docs/docs-5/nitro/README.md) &mdash; All the power of [Dynamic SQL](./hotrod-project/docs/docs-5/nitro/nitro-dynamicsql.md) and Native SQL when you need it
-- [Torcs](./torcs/README.md) &mdash; Detect slow queries at runtime and analyze them
+- [Torcs](./hotrod-project/docs/docs-5/torcs/README.md) &mdash; Detect slow queries at runtime and analyze them
 
 All this functionality is available for any of the [supported databases](./hotrod-project/docs/docs-5/config/supported-databases.md).
 
