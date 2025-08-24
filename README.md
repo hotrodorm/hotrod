@@ -2,8 +2,14 @@
 
 HotRod 5 is an open source ORM for Spring and Spring Boot geared toward high performance persistence for relational databases.
 
-The persistence layer provides ready-to-use [LiveSQL](./hotrod-project/docs/docs-5/livesql/README.md) and [CRUD](./hotrod-project/docs/docs-5/crud/README.md) capabilities to quickly start prototyping an application for
-any of the [supported databases](./hotrod-project/docs/docs-5/config/supported-databases.md). For advanced usage [Nitro](./hotrod-project/docs/docs-5/nitro/README.md) combines Dynamic SQL and Native SQL to define performant and dynamic queries that can access all native database extensions.
+HotRod brings:
+
+- [CRUD](./hotrod-project/docs/docs-5/crud/README.md) &mdash; Quick and simple persistence for rapid prototyping
+- [LiveSQL](./hotrod-project/docs/docs-5/livesql/README.md) &mdash; Flexible SQL querying directly from your code
+- [Nitro](./hotrod-project/docs/docs-5/nitro/README.md) &mdash; All the power of [Dynamic SQL](./hotrod-project/docs/docs-5/nitro/nitro-dynamicsql.md) and Native SQL when you need it
+- [Torcs](./torcs/README.md) &mdash; Detect slow queries at runtime and analyze them
+
+All this functionality is available for any of the [supported databases](./hotrod-project/docs/docs-5/config/supported-databases.md).
 
 See [What's New](./hotrod-project/docs/docs-5/whats-new.md) in HotRod 5, [version history](./hotrod-project/docs/version-history.md),
 and the [HotRod 5 Documentation](./hotrod-project/docs/docs-5/README.md).
