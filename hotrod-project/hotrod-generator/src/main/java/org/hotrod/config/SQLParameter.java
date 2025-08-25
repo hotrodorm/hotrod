@@ -123,7 +123,7 @@ public class SQLParameter implements SQLSegment {
 
   @Override
   public String renderSQLFoundation(ParameterRenderer parameterRenderer) {
-    return "";
+    return parameterRenderer.render(this);
   }
 
   @Override
