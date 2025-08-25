@@ -103,6 +103,8 @@ where balance >= 300
   <fragment file="./reporting.xml" />
   <fragment file="./buscador.xml" />
 -->  
+
+  <fragment file="./test4.xml" />
   
 <!--
   <fragment file="./test2.xml" />
