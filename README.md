@@ -16,6 +16,8 @@ and the [HotRod 5 Documentation](./hotrod-project/docs/docs-5/README.md).
 
 For documentation on the previous versions see [HotRod 4 Documentation](./hotrod-project/docs/docs-4/README.md) and [HotRod 3 Documentation](./hotrod-project/docs/docs-3/README.md).
 
+See HotRod in action with the [Hello World Example](./hotrod-project/docs/docs-5/guides/hello-world.md).
+
 
 ## LiveSQL &mdash; At a Glance
 
@@ -133,7 +135,7 @@ The following query uses Dynamic SQL to assemble the query dynamically and to ap
 </select>
 ```
 
-Nitro makes this query available in your application as:
+Nitro makes this query available in your application as the method:
 
 ```java
   List<Vehicle> searchVehicles(String brandName, Integer minYear, Integer ordering)
@@ -160,15 +162,5 @@ The following rankings are built-in in Torcs and can be activated programmatical
 - Latest Queries
 
 Torcs can also retrieve execution plans programmatically in a variety of formats for specific queries that require attention.
-
-
-## Hello World
-
-See HotRod in action with the [Hello World Example](./hotrod-project/docs/docs-5/guides/hello-world.md). It's an example that shows the simplicity of using HotRod.
-
-
-## Documentation
-
-For more details see the complete [HotRod 5 Documentation](./hotrod-project/docs/docs-5/README.md).
 
 
