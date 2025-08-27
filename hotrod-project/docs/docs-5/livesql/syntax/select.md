@@ -74,6 +74,8 @@ for (Tuple2<Employee, Branch> r : rows) {
 }
 ```
 
+See [Tuples](./tuples.md) for details.
+
 ## Subqueries
 
 A SELECT can participate as a top clause or as a [subquery](./subqueries.md). As a top clause it returns rows 
