@@ -10,6 +10,7 @@ import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,6 +47,7 @@ import org.hotrod.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
+import org.hotrod.livesql.util.CastUtil;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.utils.SQLUtil;
 import org.springframework.beans.BeansException;
@@ -111,6 +113,28 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     }
 
   };
+
+  // PARSE ROW
+
+  public Branch parseRow(Map<String, Object> row) {
+    return parseRow(row, null, null);
+  }
+
+  public Branch parseRow(Map<String, Object> row, String prefix) {
+    return parseRow(row, prefix, null);
+  }
+
+  public Branch parseRow(Map<String, Object> row, String prefix, String suffix) {
+    Branch m = applicationContext.getBean(Branch.class);
+    String p = prefix == null ? "": prefix;
+    String s = suffix == null ? "": suffix;
+    m.setId(CastUtil.toInteger((Number) row.get(p + "id" + s)));
+    m.setRegion((String) row.get(p + "region" + s));
+    m.setIsVip(CastUtil.toInteger((Number) row.get(p + "isVip" + s)));
+    m.setParentBranchId(CastUtil.toInteger((Number) row.get(p + "parentBranchId" + s)));
+    m.setCreatedAt((LocalDateTime) row.get(p + "createdAt" + s));
+    return m;
+  }
 
   // BASELINE
 
@@ -561,6 +585,10 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     } else if (log.isLoggable(Level.FINE)) {
       log.fine("SQL:\n" + preparedQuery.getPreview());
     }
+  }
+
+  public DataSource getDataSource() {
+    return this.dataSource;
   }
 
 }

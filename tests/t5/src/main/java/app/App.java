@@ -1,5 +1,6 @@
 package app;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -78,7 +79,8 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       log.info("[ Starting... ]");
-      testPredicate();
+      testParseRow();
+//      testPredicate();
 //      testSequence();
 //      testInsert();
 //      test();
@@ -93,6 +95,28 @@ public class App {
 //      testNitro6();
       log.info("[ Ending ]");
     };
+  }
+
+  private void testParseRow() throws SQLException, DynamicExpressionException {
+    EmployeeTable e = this.employeeDAO.newTable();
+    BranchTable b = this.branchDAO.newTable();
+
+    List<Row> rows = this.sql.select( //
+        e.star().as(c -> "e:" + c.getProperty()), //
+        b.star().as(c -> "b:" + c.getProperty()), //
+        e.name.as("oldNmae") //
+    ) //
+        .from(e).crossJoin(b).limit(1).execute();
+
+    try (Connection conn = this.employeeDAO.getDataSource().getConnection()) {
+      for (Row row : rows) {
+        Employee emp = this.employeeDAO.parseRow(row, "e:", conn);
+        System.out.println("e=" + emp);
+        Branch bra = this.branchDAO.parseRow(row, "b:");
+        System.out.println("b=" + bra);
+      }
+    }
+
   }
 
   private void testPredicate() throws SQLException, DynamicExpressionException {

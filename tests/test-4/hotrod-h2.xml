@@ -10,11 +10,15 @@
     </mybatis-spring>
   </generators>
 
+  <converter name="boolean_stored_as_int" java-type="java.lang.Boolean" java-raw-type="java.lang.Integer"
+    class="app.IntegerBooleanConverter" />
+
 <!--
   <table name="branch" />
 -->
 
   <table name="employee">
+    <column name="vip" converter="boolean_stored_as_int" />
     <sequence name="employee_seq" method="getSequenceNextValue" />
   </table>
 

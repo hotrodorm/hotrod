@@ -197,4 +197,8 @@ public class Test4Finder implements Serializable, ApplicationContextAware {
     }
   }
 
+  public DataSource getDataSource() {
+    return this.dataSource;
+  }
+
 }

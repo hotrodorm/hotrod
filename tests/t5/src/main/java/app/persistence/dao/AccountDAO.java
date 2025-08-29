@@ -10,6 +10,7 @@ import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,6 +49,7 @@ import org.hotrod.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
+import org.hotrod.livesql.util.CastUtil;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.utils.SQLUtil;
 import org.springframework.beans.BeansException;
@@ -129,6 +131,31 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     }
 
   };
+
+  // PARSE ROW
+
+  public Account parseRow(Map<String, Object> row, Connection conn) throws SQLException {
+    return parseRow(row, null, null, conn);
+  }
+
+  public Account parseRow(Map<String, Object> row, String prefix, Connection conn) throws SQLException {
+    return parseRow(row, prefix, null, conn);
+  }
+
+  public Account parseRow(Map<String, Object> row, String prefix, String suffix, Connection conn) throws SQLException {
+    Account m = applicationContext.getBean(Account.class);
+    String p = prefix == null ? "": prefix;
+    String s = suffix == null ? "": suffix;
+    m.setId(CastUtil.toInteger((Number) row.get(p + "id" + s)));
+    m.setName((String) row.get(p + "name" + s));
+    m.setType((String) row.get(p + "type" + s));
+    m.setBalance(CastUtil.toDouble((Number) row.get(p + "balance" + s)));
+    m.setActive(new app.IntegerBooleanConverter().decode((Integer) row.get(p + "active" + s), conn));
+    m.setClientPhoto((byte[]) row.get(p + "clientPhoto" + s));
+    m.setUpdatedAt((LocalDateTime) row.get(p + "updatedAt" + s));
+    m.setVersion(CastUtil.toInteger((Number) row.get(p + "version" + s)));
+    return m;
+  }
 
   // BASELINE
 
@@ -651,6 +678,10 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     } else if (log.isLoggable(Level.FINE)) {
       log.fine("SQL:\n" + preparedQuery.getPreview());
     }
+  }
+
+  public DataSource getDataSource() {
+    return this.dataSource;
   }
 
 }

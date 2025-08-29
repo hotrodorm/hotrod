@@ -550,18 +550,15 @@ public class LiveSQL {
     return new BooleanLead(expression, val(offset), val(defaultValue));
   }
 
-  public BooleanLead lead(final Predicate expression, final NumericExpression offset,
-      final Boolean defaultValue) {
+  public BooleanLead lead(final Predicate expression, final NumericExpression offset, final Boolean defaultValue) {
     return new BooleanLead(expression, offset, val(defaultValue));
   }
 
-  public BooleanLead lead(final Predicate expression, final Number offset,
-      final Predicate defaultValue) {
+  public BooleanLead lead(final Predicate expression, final Number offset, final Predicate defaultValue) {
     return new BooleanLead(expression, val(offset), defaultValue);
   }
 
-  public BooleanLead lead(final Predicate expression, final NumericExpression offset,
-      final Predicate defaultValue) {
+  public BooleanLead lead(final Predicate expression, final NumericExpression offset, final Predicate defaultValue) {
     return new BooleanLead(expression, offset, defaultValue);
   }
 
@@ -739,8 +736,7 @@ public class LiveSQL {
     return new BooleanLag(expression, val(offset), val(defaultValue));
   }
 
-  public BooleanLag lag(final Predicate expression, final NumericExpression offset,
-      final Boolean defaultValue) {
+  public BooleanLag lag(final Predicate expression, final NumericExpression offset, final Boolean defaultValue) {
     return new BooleanLag(expression, offset, val(defaultValue));
   }
 
@@ -748,8 +744,7 @@ public class LiveSQL {
     return new BooleanLag(expression, val(offset), defaultValue);
   }
 
-  public BooleanLag lag(final Predicate expression, final NumericExpression offset,
-      final Predicate defaultValue) {
+  public BooleanLag lag(final Predicate expression, final NumericExpression offset, final Predicate defaultValue) {
     return new BooleanLag(expression, offset, defaultValue);
   }
 

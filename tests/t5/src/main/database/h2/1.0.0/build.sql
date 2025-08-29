@@ -130,7 +130,8 @@ insert into branch (id, region, is_vip, created_at, parent_branch_id) values
 create table employee (
   id int primary key not null,
   name varchar(50) not null,
-  branch_id int not null references branch (id)
+  branch_id int not null references branch (id),
+  vip int
 );
 
 insert into employee (id, name, branch_id) values

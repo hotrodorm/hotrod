@@ -28,6 +28,7 @@
   <table name="product" />
   <table name="branch" />
   <table name="employee">
+    <column name="vip" converter="boolean_stored_as_int" />
     <sequence name="employee_seq" method="getSequenceNextValue" />
     <sequence name="hired_seq" method="getHiredNextValue" />
   </table>

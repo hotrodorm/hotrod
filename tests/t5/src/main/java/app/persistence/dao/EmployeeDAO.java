@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,6 +32,7 @@ import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
+import org.hotrod.livesql.expressions.bool.converter.ConvertedColumn;
 import org.hotrod.livesql.metadata.AllColumns;
 import org.hotrod.livesql.metadata.CharEntityColumn;
 import org.hotrod.livesql.metadata.Name;
@@ -44,6 +46,7 @@ import org.hotrod.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
+import org.hotrod.livesql.util.CastUtil;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.utils.SQLUtil;
 import org.springframework.beans.BeansException;
@@ -52,6 +55,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import app.IntegerBooleanConverter;
 import app.persistence.layout.EmployeeLayout;
 import app.persistence.model.Employee;
 
@@ -79,6 +83,10 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   private LiveSQLContext context;
 
+  // CONVERTERS
+
+  private final IntegerBooleanConverter converter0 = new IntegerBooleanConverter();
+
   // ROW READER
 
   private final RowReader<Employee> rowReader = new RowReader<Employee>() {
@@ -98,10 +106,36 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       if (rs.wasNull()) col3 = null;
       row.setBranchId(col3);
 
+      Integer raw4 = rs.getInt("VIP"); // VIP
+      if (rs.wasNull()) raw4 = null;
+      Boolean col4 = converter0.decode(raw4, conn);
+      row.setVip(col4);
+
       return row;
     }
 
   };
+
+  // PARSE ROW
+
+  public Employee parseRow(Map<String, Object> row, Connection conn) throws SQLException {
+    return parseRow(row, null, null, conn);
+  }
+
+  public Employee parseRow(Map<String, Object> row, String prefix, Connection conn) throws SQLException {
+    return parseRow(row, prefix, null, conn);
+  }
+
+  public Employee parseRow(Map<String, Object> row, String prefix, String suffix, Connection conn) throws SQLException {
+    Employee m = applicationContext.getBean(Employee.class);
+    String p = prefix == null ? "": prefix;
+    String s = suffix == null ? "": suffix;
+    m.setId(CastUtil.toInteger((Number) row.get(p + "id" + s)));
+    m.setName((String) row.get(p + "name" + s));
+    m.setBranchId(CastUtil.toInteger((Number) row.get(p + "branchId" + s)));
+    m.setVip(new app.IntegerBooleanConverter().decode((Integer) row.get(p + "vip" + s), conn));
+    return m;
+  }
 
   // BASELINE
 
@@ -110,6 +144,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     private Integer id;
     private String name;
     private Integer branchId;
+    private Boolean vip;
 
     public Integer getId() {
       return this.id;
@@ -123,6 +158,10 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       return this.branchId;
     }
 
+    public Boolean getVip() {
+      return this.vip;
+    }
+
   }
 
   public EmployeeBaseline baseline(Employee model) {
@@ -130,6 +169,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     b.id = model.getId();
     b.name = model.getName();
     b.branchId = model.getBranchId();
+    b.vip = model.getVip();
     return b;
   };
 
@@ -140,6 +180,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     m.setId(layout.getId());
     m.setName(layout.getName());
     m.setBranchId(layout.getBranchId());
+    m.setVip(layout.getVip());
     return m;
   };
 
@@ -152,7 +193,8 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       .literaln("SELECT")
       .literaln("  id,")
       .literaln("  name,")
-      .literaln("  branch_id")
+      .literaln("  branch_id,")
+      .literaln("  vip")
       .literaln("FROM employee")
       .literaln("\nWHERE " + "id = ").parameter("f.id")
       .endSelectQuery();
@@ -183,12 +225,14 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       .literaln("SELECT")
       .literaln("  id,")
       .literaln("  name,")
-      .literaln("  branch_id")
+      .literaln("  branch_id,")
+      .literaln("  vip")
       .literaln("FROM employee")
       .where("AND")
         .if_("f.id != null").literal("id = ").parameter("f.id").endif()
         .if_("f.name != null").literal("name = ").parameter("f.name").endif()
         .if_("f.branchId != null").literal("branch_id = ").parameter("f.branchId").endif()
+        .if_("f.vip != null").literal("vip = ").parameter("f.vip").endif()
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
@@ -222,12 +266,14 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       .literaln("INSERT INTO employee (")
       .literaln("  id,")
       .literaln("  name,")
-      .literaln("  branch_id")
+      .literaln("  branch_id,")
+      .literaln("  vip")
       .literaln(")")
       .literaln("VALUES(")
       .literal("  ").parameterNullable("l.id", Types.INTEGER).literaln(",")
       .literal("  ").parameterNullable("l.name", Types.VARCHAR).literaln(",")
-      .literal("  ").parameterNullable("l.branchId", Types.INTEGER)
+      .literal("  ").parameterNullable("l.branchId", Types.INTEGER).literaln(",")
+      .literal("  ").parameterNullable("l.vip", Types.INTEGER)
       .literal(")")
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
@@ -253,12 +299,14 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       .literaln("INSERT INTO employee (")
       .if_("l.id != null").literal("id,\n").endif()
       .if_("l.name != null").literal("name,\n").endif()
-      .if_("l.branchId != null").literal("branch_id\n").endif()
+      .if_("l.branchId != null").literal("branch_id,\n").endif()
+      .if_("l.vip != null").literal("vip\n").endif()
       .literaln(")")
       .literaln("VALUES(")
       .if_("l.id != null").parameter("l.id").literal(", ").endif()
       .if_("l.name != null").parameter("l.name").literal(", ").endif()
-      .if_("l.branchId != null").parameter("l.branchId").endif()
+      .if_("l.branchId != null").parameter("l.branchId").literal(", ").endif()
+      .if_("l.vip != null").parameter("l.vip").endif()
       .literal(")")
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
@@ -285,7 +333,8 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       .literaln("SET")
       .literal("  id = ").parameterNullable("m.id", Types.INTEGER).literaln(",")
       .literal("  name = ").parameterNullable("m.name", Types.VARCHAR).literaln(",")
-      .literal("  branch_id = ").parameterNullable("m.branchId", Types.INTEGER)
+      .literal("  branch_id = ").parameterNullable("m.branchId", Types.INTEGER).literaln(",")
+      .literal("  vip = ").parameterNullable("m.vip", Types.INTEGER)
       .literaln("\nWHERE " + "id = ").parameter("m.id")
     .endModificationQuery();
   }
@@ -313,11 +362,13 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
         .if_("v.id != null").literal("id = ").parameter("v.id").endif()
         .if_("v.name != null").literal("name = ").parameter("v.name").endif()
         .if_("v.branchId != null").literal("branch_id = ").parameter("v.branchId").endif()
+        .if_("v.vip != null").literal("vip = ").parameter("v.vip").endif()
       .endset()
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
         .if_("e.name != null").literal("name = ").parameter("e.name").endif()
         .if_("e.branchId != null").literal("branch_id = ").parameter("e.branchId").endif()
+        .if_("e.vip != null").literal("vip = ").parameter("e.vip").endif()
       .endwhere()
       .endModificationQuery();
   }
@@ -342,6 +393,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
     if (values.getName() != null) setters.add(new Setter(tableOrView.name, sql.val(values.getName())));
     if (values.getBranchId() != null) setters.add(new Setter(tableOrView.branchId, sql.val(values.getBranchId())));
+    if (values.getVip() != null) setters.add(new Setter(tableOrView.vip, sql.val(values.getVip())));
     return new UpdateSetCompletePhase(this.context, tableOrView, setters, predicate);
   }
 
@@ -381,6 +433,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
         .if_("e.name != null").literal("name = ").parameter("e.name").endif()
         .if_("e.branchId != null").literal("branch_id = ").parameter("e.branchId").endif()
+        .if_("e.vip != null").literal("vip = ").parameter("e.vip").endif()
       .endwhere()
       .endModificationQuery();
   }
@@ -411,7 +464,9 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     NAME("name", true),
     NAME$DESC("name", false),
     BRANCH_ID("branch_id", true),
-    BRANCH_ID$DESC("branch_id", false);
+    BRANCH_ID$DESC("branch_id", false),
+    VIP("vip", true),
+    VIP$DESC("vip", false);
 
     private String sqlColumnName;
     private boolean ascending;
@@ -451,11 +506,13 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       "NAME", "name", "CHARACTER VARYING", 50, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE));
     public final NumericEntityColumn branchId = new NumericEntityColumn(this,
       "BRANCH_ID", "branchId", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
+    private final TypeHandler<Integer, Boolean> th0 = TypeHandler.forConverter(new IntegerBooleanConverter(), TypeSource.STATIC_DESIGNATED);
+    public final ConvertedColumn<Integer, Boolean> vip = new ConvertedColumn<Integer, Boolean>(this, "VIP", "vip", "INTEGER", 32, 0, th0, th0.getConverter());
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this.id, this.name, this.branchId);
+      return new AllColumns(this.id, this.name, this.branchId, this.vip);
     }
 
     // Constructors
@@ -477,6 +534,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       super.columns.add(this.id);
       super.columns.add(this.name);
       super.columns.add(this.branchId);
+      super.columns.add(this.vip);
     }
 
   }
@@ -553,6 +611,10 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     } else if (log.isLoggable(Level.FINE)) {
       log.fine("SQL:\n" + preparedQuery.getPreview());
     }
+  }
+
+  public DataSource getDataSource() {
+    return this.dataSource;
   }
 
 }

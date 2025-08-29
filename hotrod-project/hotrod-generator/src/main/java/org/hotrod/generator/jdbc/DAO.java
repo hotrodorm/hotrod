@@ -75,6 +75,7 @@ import org.hotrod.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
+import org.hotrod.livesql.util.CastUtil;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.EnumDataSetMetadata;
@@ -196,12 +197,12 @@ public class DAO {
     writeClassHeader();
 
     if (!this.isExecutor()) {
-//
-//      writeRowParser();
 
       writeConverterProperties();
 
       writeRowReaderProperty();
+
+      writeParseRow();
 
       writeBaseline();
 
@@ -383,6 +384,91 @@ public class DAO {
     w.println("    }");
     w.println();
     w.println("  };");
+  }
+
+  private void writeParseRow() {
+    ExternalClass m = ExternalClass.of(this.model.getFullClassName());
+
+    boolean hasConverters = false;
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      if (cm.getConverter() != null) {
+        hasConverters = true;
+      }
+    }
+
+    w.println();
+    w.println("  // PARSE ROW");
+    w.println();
+    if (hasConverters) {
+      w.print("  public ", m, " parseRow(", Map.class, "<String, Object> row, ");
+      w.println(Connection.class, " conn) throws ", SQLException.class, " {");
+      w.println("    return parseRow(row, null, null, conn);");
+    } else {
+      w.println("  public ", m, " parseRow(", Map.class, "<String, Object> row) {");
+      w.println("    return parseRow(row, null, null);");
+    }
+    w.println("  }");
+    w.println();
+
+    if (hasConverters) {
+      w.print("  public ", m, " parseRow(", Map.class, "<String, Object> row, String prefix, ");
+      w.println(Connection.class, " conn) throws ", SQLException.class, " {");
+      w.println("    return parseRow(row, prefix, null, conn);");
+    } else {
+      w.println("  public ", m, " parseRow(", Map.class, "<String, Object> row, String prefix) {");
+      w.println("    return parseRow(row, prefix, null);");
+    }
+
+    w.println("  }");
+    w.println();
+
+    if (hasConverters) {
+      w.print("  public ", m, " parseRow(", Map.class, "<String, Object> row, String prefix, String suffix, ");
+      w.println(Connection.class, " conn) throws ", SQLException.class, " {");
+    } else {
+      w.println("  public ", m, " parseRow(", Map.class, "<String, Object> row, String prefix, String suffix) {");
+    }
+    w.println("    ", m, " m = applicationContext.getBean(", m, ".class);");
+    w.println("    String p = prefix == null ? \"\": prefix;");
+    w.println("    String s = suffix == null ? \"\": suffix;");
+
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      String javaType = resolveType(cm);
+      String property = cm.getId().getJavaMemberName();
+
+      if (cm.getConverter() != null) {
+        ConverterTag ct = cm.getConverter();
+
+        ExternalClass rt = ExternalClass.of(ct.getRawClass());
+        w.println("    m." + cm.getId().getJavaSetter() + "(new " + ct.getConverterClass() + "().decode((", rt,
+            ") row.get(p + \"" + JUtils.escapeJavaString(property) + "\" + s), conn));");
+
+      } else if ("java.lang.Byte".equals(javaType) || //
+          "java.lang.Short".equals(javaType) || //
+          "java.lang.Integer".equals(javaType) || //
+          "java.lang.Long".equals(javaType) || //
+          "java.lang.Float".equals(javaType) || //
+          "java.lang.Double".equals(javaType) || //
+          "java.math.BigInteger".equals(javaType) || //
+          "java.math.BigDecimal".equals(javaType)) {
+        int idx = javaType.lastIndexOf(".");
+        String st = idx == -1 ? javaType : javaType.substring(idx + 1);
+
+        w.println("    m." + cm.getId().getJavaSetter() + "(", CastUtil.class, ".to" + st + "((", Number.class,
+            ") row.get(p + \"" + JUtils.escapeJavaString(property) + "\" + s)));");
+      } else if ("java.lang.Object".equals(javaType)) {
+        w.println("    m." + cm.getId().getJavaSetter() + "(row.get(p + \"" + JUtils.escapeJavaString(property)
+            + "\" + s));");
+      } else {
+        ExternalClass jt = ExternalClass.of(javaType);
+        w.println("    m." + cm.getId().getJavaSetter() + "((", jt,
+            ") row.get(p + \"" + JUtils.escapeJavaString(property) + "\" + s));");
+      }
+
+    }
+
+    w.println("    return m;");
+    w.println("  }");
   }
 
   public ExternalClass getBaselineClass() {
@@ -1543,6 +1629,10 @@ public class DAO {
     w.println("    } else if (log.isLoggable(", Level.class, ".FINE)) {");
     w.println("      log.fine(\"SQL:\\n\" + preparedQuery.getPreview());");
     w.println("    }");
+    w.println("  }");
+    w.println();
+    w.println("  public ", DataSource.class, " getDataSource() {");
+    w.println("    return this.dataSource;");
     w.println("  }");
     w.println();
     w.println("}");

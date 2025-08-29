@@ -16,6 +16,14 @@ import org.hotrod.runtime.interfaces.OrderBy;
 import app.daos.primitives.AbstractEmployeeVO;
 import app.daos.EmployeeVO;
 
+import java.sql.SQLException;
+import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.type.TypeHandler;
+import org.hotrod.runtime.converter.TypeConverter;
+
 import java.lang.Override;
 import java.util.Map;
 import java.util.ArrayList;
@@ -93,21 +101,22 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   // Row Parser
 
-  public app.daos.EmployeeVO parseRow(Map<String, Object> m) {
+  public app.daos.EmployeeVO parseRow(Map<String, Object> m) throws SQLException {
     return parseRow(m, null, null);
   }
 
-  public app.daos.EmployeeVO parseRow(Map<String, Object> m, String prefix) {
+  public app.daos.EmployeeVO parseRow(Map<String, Object> m, String prefix) throws SQLException {
     return parseRow(m, prefix, null);
   }
 
-  public app.daos.EmployeeVO parseRow(Map<String, Object> m, String prefix, String suffix) {
+  public app.daos.EmployeeVO parseRow(Map<String, Object> m, String prefix, String suffix) throws SQLException {
     app.daos.EmployeeVO mo = this.applicationContext.getBean(app.daos.EmployeeVO.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
     mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
     mo.setName((java.lang.String) m.get(p + "name" + s));
     mo.setBranchId(CastUtil.toInteger((Number) m.get(p + "branchId" + s)));
+    mo.setVip(new app.IntegerBooleanConverter().decode((java.lang.Integer) m.get(p + "vip" + s), this.sqlSession.getConnection()));
     return mo;
   }
 
@@ -160,6 +169,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     mo.setId(vo.getId());
     mo.setName(vo.getName());
     mo.setBranchId(vo.getBranchId());
+    mo.setVip(vo.getVip());
     return mo;
   }
 
@@ -195,6 +205,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     if (updateValues.getId() != null) values.put("\"ID\"", updateValues.getId());
     if (updateValues.getName() != null) values.put("\"NAME\"", updateValues.getName());
     if (updateValues.getBranchId() != null) values.put("\"BRANCH_ID\"", updateValues.getBranchId());
+    if (updateValues.getVip() != null) values.put("\"VIP\"", updateValues.getVip());
     return new UpdateSetCompletePhase(this.context, "mappers.employee.updateByCriteria", tableOrView,  predicate, values);
   }
 
@@ -226,7 +237,9 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("employee", "lower(\"NAME\"), \"NAME\"", false), //
     NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("employee", "lower(\"NAME\"), \"NAME\"", true), //
     BRANCH_ID("employee", "\"BRANCH_ID\"", true), //
-    BRANCH_ID$DESC("employee", "\"BRANCH_ID\"", false);
+    BRANCH_ID$DESC("employee", "\"BRANCH_ID\"", false), //
+    VIP("employee", "\"VIP\"", true), //
+    VIP$DESC("employee", "\"VIP\"", false);
 
     private EmployeeOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -270,11 +283,12 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     public final NumberColumn id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0, java.lang.Integer.class, null, null);
     public final StringColumn name = new StringColumn(this, "NAME", "name", "CHARACTER VARYING", 20, 0, java.lang.String.class, null, null);
     public final NumberColumn branchId = new NumberColumn(this, "BRANCH_ID", "branchId", "INTEGER", 32, 0, java.lang.Integer.class, null, null);
+    public final BooleanColumn vip = new BooleanColumn(this, "VIP", "vip", "INTEGER", 32, 0, java.lang.Boolean.class, java.lang.Integer.class, new app.IntegerBooleanConverter());
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this.id, this.name, this.branchId);
+      return new AllColumns(this.id, this.name, this.branchId, this.vip);
     }
 
     // Constructors
@@ -296,6 +310,53 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       super.columns.add(this.id);
       super.columns.add(this.name);
       super.columns.add(this.branchId);
+      super.columns.add(this.vip);
+    }
+
+  }
+
+  // TypeHandler for column VIP using Converter app.IntegerBooleanConverter.
+
+  public static class VipTypeHandler implements TypeHandler<java.lang.Boolean> {
+
+    private static final TypeConverter<java.lang.Integer, java.lang.Boolean> CONVERTER = new app.IntegerBooleanConverter();
+
+    @Override
+    public java.lang.Boolean getResult(final ResultSet rs, final String columnName) throws SQLException {
+      java.lang.Integer raw = rs.getInt(columnName);
+      if (rs.wasNull()) {
+        raw = null;
+      }
+      return CONVERTER.decode(raw, rs.getStatement().getConnection());
+    }
+
+    @Override
+    public java.lang.Boolean getResult(final ResultSet rs, final int columnIndex) throws SQLException {
+      java.lang.Integer raw = rs.getInt(columnIndex);
+      if (rs.wasNull()) {
+        raw = null;
+      }
+      return CONVERTER.decode(raw, rs.getStatement().getConnection());
+    }
+
+    @Override
+    public java.lang.Boolean getResult(final CallableStatement cs, final int columnIndex) throws SQLException {
+      java.lang.Integer raw = cs.getInt(columnIndex);
+      if (cs.wasNull()) {
+        raw = null;
+      }
+      return CONVERTER.decode(raw, cs.getConnection());
+    }
+
+    @Override
+    public void setParameter(final PreparedStatement ps, final int columnIndex, final java.lang.Boolean value, final JdbcType jdbcType)
+        throws SQLException {
+      java.lang.Integer raw = CONVERTER.encode(value, ps.getConnection());
+      if (raw == null) {
+        ps.setNull(columnIndex, jdbcType.TYPE_CODE);
+      } else {
+        ps.setInt(columnIndex, raw);
+      }
     }
 
   }

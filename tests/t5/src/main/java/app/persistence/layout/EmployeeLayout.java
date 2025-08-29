@@ -15,6 +15,7 @@ public class EmployeeLayout implements Serializable {
   protected Integer id = null;
   protected String name = null;
   protected Integer branchId = null;
+  protected Boolean vip = null;
 
   // getters & setters
 
@@ -42,6 +43,14 @@ public class EmployeeLayout implements Serializable {
     this.branchId = branchId;
   }
 
+  public Boolean getVip() {
+    return this.vip;
+  }
+
+  public void setVip(final Boolean vip) {
+    this.vip = vip;
+  }
+
   // to string
 
   public String toString() {
@@ -49,7 +58,8 @@ public class EmployeeLayout implements Serializable {
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- id=" + this.id + "\n");
     sb.append("- name=" + this.name + "\n");
-    sb.append("- branchId=" + this.branchId);
+    sb.append("- branchId=" + this.branchId + "\n");
+    sb.append("- vip=" + this.vip);
     return sb.toString();
   }
 
@@ -60,6 +70,7 @@ public class EmployeeLayout implements Serializable {
     obj.addProperty("id", this.id);
     obj.addProperty("name", this.name);
     obj.addProperty("branchId", this.branchId);
+    obj.addProperty("vip", this.vip);
     return obj;
   }
 
