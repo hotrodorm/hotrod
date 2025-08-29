@@ -27,7 +27,11 @@
 
   <table name="product" />
   <table name="branch" />
-  <table name="employee" />
+  <table name="employee">
+    <sequence name="employee_seq" method="getSequenceNextValue" />
+    <sequence name="hired_seq" method="getHiredNextValue" />
+  </table>
+
 
 <!--
   <table name="chars" />

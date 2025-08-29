@@ -133,6 +133,16 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     return b;
   };
 
+  // CLONE
+
+  public Product clone(ProductLayout layout) {
+    Product m = new Product();
+    m.setId(layout.getId());
+    m.setType(layout.getType());
+    m.setShipping(layout.getShipping());
+    return m;
+  };
+
   // SELECT BY PRIMARY KEY -- Not available since the table does not have a primary key.
 
   // SELECT BY EXAMPLE
@@ -186,21 +196,23 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
       .literaln("  shipping")
       .literaln(")")
       .literaln("VALUES(")
-      .literal("  ").parameterNullable("m.id", Types.INTEGER).literaln(",")
-      .literal("  ").parameterNullable("m.type", Types.VARCHAR).literaln(",")
-      .literal("  ").parameterNullable("m.shipping", Types.INTEGER)
+      .literal("  ").parameterNullable("l.id", Types.INTEGER).literaln(",")
+      .literal("  ").parameterNullable("l.type", Types.VARCHAR).literaln(",")
+      .literal("  ").parameterNullable("l.shipping", Types.INTEGER)
       .literal(")")
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public void insert(Product model) throws DynamicExpressionException, SQLException {
+  public Product insert(ProductLayout layout) throws DynamicExpressionException, SQLException {
     Parameters context = this.dyn.newParameters();
-    context.add("m", model);
+    context.add("l", layout);
     PreparedInsertQuery preparedQuery = this.insert.prepare(context);
     logQuery(preparedQuery);
+    Product model = this.clone(layout);
     try (Connection conn = this.dataSource.getConnection()) {
       preparedQuery.execute(conn);
     }
+    return model;
   }
 
   // INSERT BY EXAMPLE
@@ -210,26 +222,28 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
       .literaln("INSERT INTO product (")
-      .if_("m.id != null").literal("id,\n").endif()
-      .if_("m.type != null").literal("type,\n").endif()
-      .if_("m.shipping != null").literal("shipping\n").endif()
+      .if_("l.id != null").literal("id,\n").endif()
+      .if_("l.type != null").literal("type,\n").endif()
+      .if_("l.shipping != null").literal("shipping\n").endif()
       .literaln(")")
       .literaln("VALUES(")
-      .if_("m.id != null").parameter("m.id").literal(", ").endif()
-      .if_("m.type != null").parameter("m.type").literal(", ").endif()
-      .if_("m.shipping != null").parameter("m.shipping").endif()
+      .if_("l.id != null").parameter("l.id").literal(", ").endif()
+      .if_("l.type != null").parameter("l.type").literal(", ").endif()
+      .if_("l.shipping != null").parameter("l.shipping").endif()
       .literal(")")
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public void insertByExample(Product model) throws DynamicExpressionException, SQLException {
+  public Product insertByExample(ProductLayout layout) throws DynamicExpressionException, SQLException {
     Parameters context = this.dyn.newParameters();
-    context.add("m", model);
+    context.add("l", layout);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(context);
     logQuery(preparedQuery);
+    Product model = this.clone(layout);
     try (Connection conn = this.dataSource.getConnection()) {
       preparedQuery.execute(conn);
     }
+    return model;
   }
 
   // UPDATE BY PRIMARY KEY -- Not available since the table does not have a primary key.

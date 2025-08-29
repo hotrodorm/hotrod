@@ -3,6 +3,8 @@ drop table batch if exists;
 
 drop table if exists employee_vip;
 
+drop sequence if exists employee_seq;
+
 drop schema if exists schema2 cascade;
 create schema schema2;
 drop table if exists schema2.account;
@@ -37,6 +39,8 @@ insert into employee (id, name, branch_id) values (123, 'Alice', 102);
 insert into employee (id, name, branch_id) values (6097, 'Steve', 100);
 insert into employee (id, name, branch_id) values (599, 'Mary', 102);
 insert into employee (id, name, branch_id) values (6098, 'John', 103);
+
+create sequence employee_seq start with 123;
 
 create table employee_vip (
   id int primary key,

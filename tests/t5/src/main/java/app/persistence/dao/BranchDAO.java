@@ -154,6 +154,18 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     return b;
   };
 
+  // CLONE
+
+  public Branch clone(BranchLayout layout) {
+    Branch m = new Branch();
+    m.setId(layout.getId());
+    m.setRegion(layout.getRegion());
+    m.setIsVip(layout.getIsVip());
+    m.setParentBranchId(layout.getParentBranchId());
+    m.setCreatedAt(layout.getCreatedAt());
+    return m;
+  };
+
   // SELECT BY PRIMARY KEY
 
   private DynamicSelectQuery selectByPrimaryKey;
@@ -167,7 +179,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
       .literaln("  parent_branch_id,")
       .literaln("  created_at")
       .literaln("FROM branch")
-      .literaln("WHERE " + "id = ").parameter("f.id")
+      .literaln("\nWHERE " + "id = ").parameter("f.id")
       .endSelectQuery();
   }
 
@@ -237,31 +249,33 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
   private void initializeInsert() {
     this.insert = dyn
       .literaln("INSERT INTO branch (")
-      .if_("m.id != null").literal("id,\n").endif()
+      .if_("l.id != null").literal("id,\n").endif()
       .literaln("  region,")
       .literaln("  is_vip,")
       .literaln("  parent_branch_id,")
       .literaln("  created_at")
       .literaln(")")
       .literaln("VALUES(")
-      .if_("m.id != null").parameter("m.id").literal(", ").endif()
-      .literal("  ").parameterNullable("m.region", Types.VARCHAR).literaln(",")
-      .literal("  ").parameterNullable("m.isVip", Types.INTEGER).literaln(",")
-      .literal("  ").parameterNullable("m.parentBranchId", Types.INTEGER).literaln(",")
-      .literal("  ").parameterNullable("m.createdAt", Types.TIMESTAMP)
+      .if_("l.id != null").parameter("l.id").literal(", ").endif()
+      .literal("  ").parameterNullable("l.region", Types.VARCHAR).literaln(",")
+      .literal("  ").parameterNullable("l.isVip", Types.INTEGER).literaln(",")
+      .literal("  ").parameterNullable("l.parentBranchId", Types.INTEGER).literaln(",")
+      .literal("  ").parameterNullable("l.createdAt", Types.TIMESTAMP)
       .literal(")")
       .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
   }
 
-  public void insert(Branch model) throws DynamicExpressionException, SQLException {
+  public Branch insert(BranchLayout layout) throws DynamicExpressionException, SQLException {
     Parameters context = this.dyn.newParameters();
-    context.add("m", model);
+    context.add("l", layout);
     PreparedInsertQuery preparedQuery = this.insert.prepare(context);
     logQuery(preparedQuery);
+    Branch model = this.clone(layout);
     try (Connection conn = this.dataSource.getConnection()) {
       Long pk = preparedQuery.execute(conn);
       model.setId((pk == null) ? null : Integer.valueOf(pk.intValue()));
     }
+    return model;
   }
 
   // INSERT BY EXAMPLE
@@ -271,31 +285,33 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
       .literaln("INSERT INTO branch (")
-      .if_("m.id != null").literal("id,\n").endif()
-      .if_("m.region != null").literal("region,\n").endif()
-      .if_("m.isVip != null").literal("is_vip,\n").endif()
-      .if_("m.parentBranchId != null").literal("parent_branch_id,\n").endif()
-      .if_("m.createdAt != null").literal("created_at\n").endif()
+      .if_("l.id != null").literal("id,\n").endif()
+      .if_("l.region != null").literal("region,\n").endif()
+      .if_("l.isVip != null").literal("is_vip,\n").endif()
+      .if_("l.parentBranchId != null").literal("parent_branch_id,\n").endif()
+      .if_("l.createdAt != null").literal("created_at\n").endif()
       .literaln(")")
       .literaln("VALUES(")
-      .if_("m.id != null").parameter("m.id").literal(", ").endif()
-      .if_("m.region != null").parameter("m.region").literal(", ").endif()
-      .if_("m.isVip != null").parameter("m.isVip").literal(", ").endif()
-      .if_("m.parentBranchId != null").parameter("m.parentBranchId").literal(", ").endif()
-      .if_("m.createdAt != null").parameter("m.createdAt").endif()
+      .if_("l.id != null").parameter("l.id").literal(", ").endif()
+      .if_("l.region != null").parameter("l.region").literal(", ").endif()
+      .if_("l.isVip != null").parameter("l.isVip").literal(", ").endif()
+      .if_("l.parentBranchId != null").parameter("l.parentBranchId").literal(", ").endif()
+      .if_("l.createdAt != null").parameter("l.createdAt").endif()
       .literal(")")
       .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
   }
 
-  public void insertByExample(Branch model) throws DynamicExpressionException, SQLException {
+  public Branch insertByExample(BranchLayout layout) throws DynamicExpressionException, SQLException {
     Parameters context = this.dyn.newParameters();
-    context.add("m", model);
+    context.add("l", layout);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(context);
     logQuery(preparedQuery);
+    Branch model = this.clone(layout);
     try (Connection conn = this.dataSource.getConnection()) {
       Long pk = preparedQuery.execute(conn);
       model.setId((pk == null) ? null : Integer.valueOf(pk.intValue()));
     }
+    return model;
   }
 
   // UPDATE BY PRIMARY KEY
@@ -311,7 +327,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
       .literal("  is_vip = ").parameterNullable("m.isVip", Types.INTEGER).literaln(",")
       .literal("  parent_branch_id = ").parameterNullable("m.parentBranchId", Types.INTEGER).literaln(",")
       .literal("  created_at = ").parameterNullable("m.createdAt", Types.TIMESTAMP)
-      .literaln("WHERE " + "id = ").parameter("m.id")
+      .literaln("\nWHERE " + "id = ").parameter("m.id")
     .endModificationQuery();
   }
 
@@ -383,7 +399,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
   private void initializeDeletebypk() {
     this.deleteByPK = dyn
       .literaln("DELETE FROM branch")
-      .literaln("WHERE " + "id = ").parameter("f.id")
+      .literaln("\nWHERE " + "id = ").parameter("f.id")
       .endModificationQuery();
   }
 

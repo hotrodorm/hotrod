@@ -168,17 +168,17 @@ public class Id implements Comparable<Id> {
 
   public static Id fromJavaMember(final String javaMemberName) throws InvalidIdentifierException {
     if (javaMemberName == null || javaMemberName.isEmpty()) {
-      throw new InvalidIdentifierException("'javaMemberName' cannot be null or empty.");
+      throw new InvalidIdentifierException("cannot be null or empty.");
     }
     if (!javaMemberName.matches("[a-z_][A-Za-z0-9_]*")) {
       throw new InvalidIdentifierException(
-          "'javaMemberName' must start with a lower case letter or underscore, and continue with letters, digits, or underscores.");
+          "Must start with a lower case letter or underscore, and continue with letters, digits, or underscores.");
     }
     DatabaseAdapter adapter = null;
     String canonicalSQLName = null;
     List<NamePart> nameParts = splitJava(javaMemberName);
     if (nameParts == null || nameParts.isEmpty()) {
-      throw new InvalidIdentifierException("javaClassName must produce at least one part");
+      throw new InvalidIdentifierException("The name must produce at least one Java identifier part");
     }
     String javaClassName = assembleJavaClassName(nameParts);
     String javaConstantName = assembleJavaConstantName(nameParts);

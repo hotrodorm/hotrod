@@ -70,6 +70,8 @@ public class SequenceMethodTag extends AbstractMethodTag<SequenceMethodTag> {
 
     super.validate(jdbcTag, config, fragmentConfig);
 
+    log.fine(">>> VALIDATING SEQUENCE 2.");
+
     // name
 
     if (SUtil.isEmpty(this.name)) {

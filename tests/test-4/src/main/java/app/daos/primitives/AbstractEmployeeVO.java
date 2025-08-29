@@ -13,7 +13,7 @@ public class AbstractEmployeeVO implements Serializable {
 
   protected java.lang.Integer id = null;
   protected java.lang.String name = null;
-  protected java.lang.Integer salary = null;
+  protected java.lang.Integer branchId = null;
 
   // getters & setters
 
@@ -33,12 +33,12 @@ public class AbstractEmployeeVO implements Serializable {
     this.name = name;
   }
 
-  public java.lang.Integer getSalary() {
-    return this.salary;
+  public java.lang.Integer getBranchId() {
+    return this.branchId;
   }
 
-  public void setSalary(final java.lang.Integer salary) {
-    this.salary = salary;
+  public void setBranchId(final java.lang.Integer branchId) {
+    this.branchId = branchId;
   }
 
   // to string
@@ -48,18 +48,24 @@ public class AbstractEmployeeVO implements Serializable {
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- id=" + this.id + "\n");
     sb.append("- name=" + this.name + "\n");
-    sb.append("- salary=" + this.salary);
+    sb.append("- branchId=" + this.branchId);
     return sb.toString();
   }
 
-  // to JSON
+  // to JSON Object
 
-  public String toJSON() {
+  public JSONObject toJSONObject() {
     JSONObject obj = new JSONObject();
     obj.addProperty("id", this.id);
     obj.addProperty("name", this.name);
-    obj.addProperty("salary", this.salary);
-    return obj.render();
+    obj.addProperty("branchId", this.branchId);
+    return obj;
+  }
+
+  // to JSON String
+
+  public String toJSON() {
+    return toJSONObject().render();
   }
 
 }

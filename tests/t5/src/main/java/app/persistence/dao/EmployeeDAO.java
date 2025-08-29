@@ -133,6 +133,16 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     return b;
   };
 
+  // CLONE
+
+  public Employee clone(EmployeeLayout layout) {
+    Employee m = new Employee();
+    m.setId(layout.getId());
+    m.setName(layout.getName());
+    m.setBranchId(layout.getBranchId());
+    return m;
+  };
+
   // SELECT BY PRIMARY KEY
 
   private DynamicSelectQuery selectByPrimaryKey;
@@ -144,7 +154,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       .literaln("  name,")
       .literaln("  branch_id")
       .literaln("FROM employee")
-      .literaln("WHERE " + "id = ").parameter("f.id")
+      .literaln("\nWHERE " + "id = ").parameter("f.id")
       .endSelectQuery();
   }
 
@@ -215,21 +225,23 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       .literaln("  branch_id")
       .literaln(")")
       .literaln("VALUES(")
-      .literal("  ").parameterNullable("m.id", Types.INTEGER).literaln(",")
-      .literal("  ").parameterNullable("m.name", Types.VARCHAR).literaln(",")
-      .literal("  ").parameterNullable("m.branchId", Types.INTEGER)
+      .literal("  ").parameterNullable("l.id", Types.INTEGER).literaln(",")
+      .literal("  ").parameterNullable("l.name", Types.VARCHAR).literaln(",")
+      .literal("  ").parameterNullable("l.branchId", Types.INTEGER)
       .literal(")")
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public void insert(Employee model) throws DynamicExpressionException, SQLException {
+  public Employee insert(EmployeeLayout layout) throws DynamicExpressionException, SQLException {
     Parameters context = this.dyn.newParameters();
-    context.add("m", model);
+    context.add("l", layout);
     PreparedInsertQuery preparedQuery = this.insert.prepare(context);
     logQuery(preparedQuery);
+    Employee model = this.clone(layout);
     try (Connection conn = this.dataSource.getConnection()) {
       preparedQuery.execute(conn);
     }
+    return model;
   }
 
   // INSERT BY EXAMPLE
@@ -239,26 +251,28 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
       .literaln("INSERT INTO employee (")
-      .if_("m.id != null").literal("id,\n").endif()
-      .if_("m.name != null").literal("name,\n").endif()
-      .if_("m.branchId != null").literal("branch_id\n").endif()
+      .if_("l.id != null").literal("id,\n").endif()
+      .if_("l.name != null").literal("name,\n").endif()
+      .if_("l.branchId != null").literal("branch_id\n").endif()
       .literaln(")")
       .literaln("VALUES(")
-      .if_("m.id != null").parameter("m.id").literal(", ").endif()
-      .if_("m.name != null").parameter("m.name").literal(", ").endif()
-      .if_("m.branchId != null").parameter("m.branchId").endif()
+      .if_("l.id != null").parameter("l.id").literal(", ").endif()
+      .if_("l.name != null").parameter("l.name").literal(", ").endif()
+      .if_("l.branchId != null").parameter("l.branchId").endif()
       .literal(")")
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public void insertByExample(Employee model) throws DynamicExpressionException, SQLException {
+  public Employee insertByExample(EmployeeLayout layout) throws DynamicExpressionException, SQLException {
     Parameters context = this.dyn.newParameters();
-    context.add("m", model);
+    context.add("l", layout);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(context);
     logQuery(preparedQuery);
+    Employee model = this.clone(layout);
     try (Connection conn = this.dataSource.getConnection()) {
       preparedQuery.execute(conn);
     }
+    return model;
   }
 
   // UPDATE BY PRIMARY KEY
@@ -272,7 +286,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       .literal("  id = ").parameterNullable("m.id", Types.INTEGER).literaln(",")
       .literal("  name = ").parameterNullable("m.name", Types.VARCHAR).literaln(",")
       .literal("  branch_id = ").parameterNullable("m.branchId", Types.INTEGER)
-      .literaln("WHERE " + "id = ").parameter("m.id")
+      .literaln("\nWHERE " + "id = ").parameter("m.id")
     .endModificationQuery();
   }
 
@@ -338,7 +352,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   private void initializeDeletebypk() {
     this.deleteByPK = dyn
       .literaln("DELETE FROM employee")
-      .literaln("WHERE " + "id = ").parameter("f.id")
+      .literaln("\nWHERE " + "id = ").parameter("f.id")
       .endModificationQuery();
   }
 
@@ -467,6 +481,55 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   }
 
+  // SEQUENCE ROW READER
+
+  private final RowReader<Long> sequenceRowReader = new RowReader<Long>() {
+
+    @Override
+    public Long readRowFrom(ResultSet rs, Connection conn) throws SQLException {
+      Long col1 = rs.getLong(1);
+      if (rs.wasNull()) col1 = null;
+      return col1;
+    }
+
+  };
+
+  // SELECT SEQUENCE
+
+  private DynamicSelectQuery selectSequence0;
+
+  private void initializeSelectSequence0() {
+    this.selectSequence0 = dyn.literaln("SELECT NEXT VALUE FOR employee_seq").endSelectQuery();
+  }
+
+  public long getSequenceNextValue() throws SQLException, DynamicExpressionException {
+    Parameters context = this.dyn.newParameters();
+    PreparedSelectQuery<Long> preparedQuery = this.selectSequence0.prepare(context, this.sequenceRowReader);
+    logQuery(preparedQuery);
+    try (Connection conn = this.dataSource.getConnection()) {
+      long value = preparedQuery.executeOne(conn);
+      return value;
+    }
+  }
+
+  // SELECT SEQUENCE
+
+  private DynamicSelectQuery selectSequence1;
+
+  private void initializeSelectSequence1() {
+    this.selectSequence1 = dyn.literaln("SELECT NEXT VALUE FOR hired_seq").endSelectQuery();
+  }
+
+  public long getHiredNextValue() throws SQLException, DynamicExpressionException {
+    Parameters context = this.dyn.newParameters();
+    PreparedSelectQuery<Long> preparedQuery = this.selectSequence1.prepare(context, this.sequenceRowReader);
+    logQuery(preparedQuery);
+    try (Connection conn = this.dataSource.getConnection()) {
+      long value = preparedQuery.executeOne(conn);
+      return value;
+    }
+  }
+
   @PostConstruct
   public void initializeContext() {
     LiveSQLDialect liveSQLDialect = LShield.getLiveSQLDialect(this.sql);
@@ -480,6 +543,8 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     this.initializeUpdatebyexample();
     this.initializeDeletebypk();
     this.initializeDeletebyexample();
+    this.initializeSelectSequence0();
+    this.initializeSelectSequence1();
   }
 
   private void logQuery(PreparedQuery preparedQuery) {

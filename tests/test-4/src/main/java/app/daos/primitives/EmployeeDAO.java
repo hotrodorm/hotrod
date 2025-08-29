@@ -16,11 +16,19 @@ import org.hotrod.runtime.interfaces.OrderBy;
 import app.daos.primitives.AbstractEmployeeVO;
 import app.daos.EmployeeVO;
 
+import java.lang.Override;
 import java.util.Map;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.spring.SpringBeanObjectFactory;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.LiveSQLMapper;
+import org.hotrod.runtime.livesql.util.CastUtil;
+import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
+import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.NumberColumn;
 import org.hotrod.runtime.livesql.metadata.StringColumn;
 import org.hotrod.runtime.livesql.metadata.DateTimeColumn;
@@ -33,8 +41,10 @@ import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
 import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
+import org.hotrod.runtime.livesql.metadata.Name;
 import org.hotrod.runtime.livesql.metadata.View;
 
+import org.hotrod.runtime.livesql.queries.LiveSQLContext;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.BeansException;
 import org.springframework.context.annotation.Lazy;
@@ -54,11 +64,51 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   @Autowired
   private LiveSQLDialect liveSQLDialect;
 
+  @Autowired
+  private LiveSQLMapper liveSQLMapper;
+
+  @Autowired
+  private SpringBeanObjectFactory springBeanObjectFactory;
+
+  @Autowired
+  private DataSource dataSource;
+
   private ApplicationContext applicationContext;
 
   @Override
   public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
+    this.sqlSession.getConfiguration().setObjectFactory(this.springBeanObjectFactory);
+  }
+
+  private LiveSQLContext context;
+
+  @Value("${use.plain.jdbc:false}")
+  private boolean usePlainJDBC;
+
+  @PostConstruct
+  public void initializeContext() {
+    this.context = new LiveSQLContext(this.liveSQLDialect, this.sqlSession, this.liveSQLMapper, this.usePlainJDBC, this.dataSource);
+  }
+
+  // Row Parser
+
+  public app.daos.EmployeeVO parseRow(Map<String, Object> m) {
+    return parseRow(m, null, null);
+  }
+
+  public app.daos.EmployeeVO parseRow(Map<String, Object> m, String prefix) {
+    return parseRow(m, prefix, null);
+  }
+
+  public app.daos.EmployeeVO parseRow(Map<String, Object> m, String prefix, String suffix) {
+    app.daos.EmployeeVO mo = this.applicationContext.getBean(app.daos.EmployeeVO.class);
+    String p = prefix == null ? "": prefix;
+    String s = suffix == null ? "": suffix;
+    mo.setId(CastUtil.toInteger((Number) m.get(p + "id" + s)));
+    mo.setName((java.lang.String) m.get(p + "name" + s));
+    mo.setBranchId(CastUtil.toInteger((Number) m.get(p + "branchId" + s)));
+    return mo;
   }
 
   // select by primary key
@@ -68,7 +118,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       return null;
     app.daos.EmployeeVO vo = new app.daos.EmployeeVO();
     vo.setId(id);
-    return this.sqlSession.selectOne("app.daos.primitives.employee.selectByPK", vo);
+    return this.sqlSession.selectOne("mappers.employee.selectByPK", vo);
   }
 
   // select by unique indexes: no unique indexes found (besides the PK) -- skipped
@@ -79,22 +129,22 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       {
     DaoWithOrder<app.daos.primitives.AbstractEmployeeVO, EmployeeOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
-    return this.sqlSession.selectList("app.daos.primitives.employee.selectByExample", dwo);
+    return this.sqlSession.selectList("mappers.employee.selectByExample", dwo);
   }
 
   public Cursor<app.daos.EmployeeVO> selectCursor(final app.daos.primitives.AbstractEmployeeVO example, final EmployeeOrderBy... orderBies)
       {
     DaoWithOrder<app.daos.primitives.AbstractEmployeeVO, EmployeeOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
-    return new MyBatisCursor<app.daos.EmployeeVO>(this.sqlSession.selectCursor("app.daos.primitives.employee.selectByExample", dwo));
+    return new MyBatisCursor<app.daos.EmployeeVO>(this.sqlSession.selectCursor("mappers.employee.selectByExample", dwo));
   }
 
   // select by criteria
 
   public CriteriaWherePhase<app.daos.EmployeeVO> select(final EmployeeDAO.EmployeeTable from,
       final Predicate predicate) {
-    return new CriteriaWherePhase<app.daos.EmployeeVO>(from, this.liveSQLDialect, this.sqlSession,
-        predicate, "app.daos.primitives.employee.selectByCriteria");
+    return new CriteriaWherePhase<app.daos.EmployeeVO>(this.context, "mappers.employee.selectByCriteria",
+        from, predicate);
   }
 
   // select parent(s) by FKs: no imported keys found -- skipped
@@ -104,20 +154,20 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   // insert
 
   public app.daos.EmployeeVO insert(final app.daos.primitives.AbstractEmployeeVO vo) {
-    String id = "app.daos.primitives.employee.insert";
-    this.sqlSession.insert(id, vo);
-    app.daos.EmployeeVO mo = new app.daos.EmployeeVO();
+    String id = "mappers.employee.insert";
+    int rows = this.sqlSession.insert(id, vo);
+    app.daos.EmployeeVO mo = springBeanObjectFactory.create(app.daos.EmployeeVO.class);
     mo.setId(vo.getId());
     mo.setName(vo.getName());
-    mo.setSalary(vo.getSalary());
+    mo.setBranchId(vo.getBranchId());
     return mo;
   }
 
   // update by PK
 
   public int update(final app.daos.EmployeeVO vo) {
-    if (vo.id == null) return 0;
-    return this.sqlSession.update("app.daos.primitives.employee.updateByPK", vo);
+    if (vo.getId() == null) return 0;
+    return this.sqlSession.update("mappers.employee.updateByPK", vo);
   }
 
   // delete by PK
@@ -126,8 +176,8 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     if (id == null) return 0;
     app.daos.EmployeeVO vo = new app.daos.EmployeeVO();
     vo.setId(id);
-    if (vo.id == null) return 0;
-    return this.sqlSession.delete("app.daos.primitives.employee.deleteByPK", vo);
+    if (vo.getId() == null) return 0;
+    return this.sqlSession.delete("mappers.employee.deleteByPK", vo);
   }
 
   // update by example
@@ -135,64 +185,48 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   public int update(final app.daos.primitives.AbstractEmployeeVO example, final app.daos.primitives.AbstractEmployeeVO updateValues) {
     UpdateByExampleDao<app.daos.primitives.AbstractEmployeeVO> fvd = //
       new UpdateByExampleDao<app.daos.primitives.AbstractEmployeeVO>(example, updateValues);
-    return this.sqlSession.update("app.daos.primitives.employee.updateByExample", fvd);
+    return this.sqlSession.update("mappers.employee.updateByExample", fvd);
   }
 
   // update by criteria
 
-  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractEmployeeVO updateValues, final Predicate predicate) {
-    Map<String, Object> values = new HashMap<>();
-    if (updateValues.getId() != null) values.put("id", updateValues.getId());
-    if (updateValues.getName() != null) values.put("name", updateValues.getName());
-    if (updateValues.getSalary() != null) values.put("salary", updateValues.getSalary());
-    return new UpdateSetCompletePhase(EmployeeDAO.newTable(), this.liveSQLDialect, this.sqlSession,
-      "app.daos.primitives.employee.updateByCriteria", predicate, values);
-  }
-
   public UpdateSetCompletePhase update(final app.daos.primitives.AbstractEmployeeVO updateValues, final EmployeeDAO.EmployeeTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
-    if (updateValues.getId() != null) values.put("id", updateValues.getId());
-    if (updateValues.getName() != null) values.put("name", updateValues.getName());
-    if (updateValues.getSalary() != null) values.put("salary", updateValues.getSalary());
-    return new UpdateSetCompletePhase(tableOrView, this.liveSQLDialect, this.sqlSession,
-      "app.daos.primitives.employee.updateByCriteria", predicate, values);
+    if (updateValues.getId() != null) values.put("\"ID\"", updateValues.getId());
+    if (updateValues.getName() != null) values.put("\"NAME\"", updateValues.getName());
+    if (updateValues.getBranchId() != null) values.put("\"BRANCH_ID\"", updateValues.getBranchId());
+    return new UpdateSetCompletePhase(this.context, "mappers.employee.updateByCriteria", tableOrView,  predicate, values);
   }
 
 
   // delete by example
 
   public int delete(final app.daos.primitives.AbstractEmployeeVO example) {
-    return this.sqlSession.delete("app.daos.primitives.employee.deleteByExample", example);
+    return this.sqlSession.delete("mappers.employee.deleteByExample", example);
   }
 
   // delete by criteria
 
-  public DeleteWherePhase delete(final Predicate predicate) {
-    return new DeleteWherePhase(EmployeeDAO.newTable(), this.liveSQLDialect, this.sqlSession,
-      "app.daos.primitives.employee.deleteByCriteria", predicate);
-  }
-
   public DeleteWherePhase delete(final EmployeeDAO.EmployeeTable from, final Predicate predicate) {
-    return new DeleteWherePhase(from, this.liveSQLDialect, this.sqlSession,
-      "app.daos.primitives.employee.deleteByCriteria", predicate);
+    return new DeleteWherePhase(this.context, "mappers.employee.deleteByCriteria", from, predicate);
   }
 
   // DAO ordering
 
   public enum EmployeeOrderBy implements OrderBy {
 
-    ID("employee", "id", true), //
-    ID$DESC("employee", "id", false), //
-    NAME("employee", "name", true), //
-    NAME$DESC("employee", "name", false), //
-    NAME$CASEINSENSITIVE("employee", "lower(name)", true), //
-    NAME$CASEINSENSITIVE_STABLE_FORWARD("employee", "lower(name), name", true), //
-    NAME$CASEINSENSITIVE_STABLE_REVERSE("employee", "lower(name), name", false), //
-    NAME$DESC_CASEINSENSITIVE("employee", "lower(name)", false), //
-    NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("employee", "lower(name), name", false), //
-    NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("employee", "lower(name), name", true), //
-    SALARY("employee", "salary", true), //
-    SALARY$DESC("employee", "salary", false);
+    ID("employee", "\"ID\"", true), //
+    ID$DESC("employee", "\"ID\"", false), //
+    NAME("employee", "\"NAME\"", true), //
+    NAME$DESC("employee", "\"NAME\"", false), //
+    NAME$CASEINSENSITIVE("employee", "lower(\"NAME\")", true), //
+    NAME$CASEINSENSITIVE_STABLE_FORWARD("employee", "lower(\"NAME\"), \"NAME\"", true), //
+    NAME$CASEINSENSITIVE_STABLE_REVERSE("employee", "lower(\"NAME\"), \"NAME\"", false), //
+    NAME$DESC_CASEINSENSITIVE("employee", "lower(\"NAME\")", false), //
+    NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("employee", "lower(\"NAME\"), \"NAME\"", false), //
+    NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("employee", "lower(\"NAME\"), \"NAME\"", true), //
+    BRANCH_ID("employee", "\"BRANCH_ID\"", true), //
+    BRANCH_ID$DESC("employee", "\"BRANCH_ID\"", false);
 
     private EmployeeOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -233,36 +267,52 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
     // Properties
 
-    public NumberColumn id;
-    public StringColumn name;
-    public NumberColumn salary;
+    public final NumberColumn id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0, java.lang.Integer.class, null, null);
+    public final StringColumn name = new StringColumn(this, "NAME", "name", "CHARACTER VARYING", 20, 0, java.lang.String.class, null, null);
+    public final NumberColumn branchId = new NumberColumn(this, "BRANCH_ID", "branchId", "INTEGER", 32, 0, java.lang.Integer.class, null, null);
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this, this.id, this.name, this.salary);
+      return new AllColumns(this.id, this.name, this.branchId);
     }
 
     // Constructors
 
     EmployeeTable() {
-      super(null, null, "EMPLOYEE", "Table", null);
+      super(null, null, Name.of("EMPLOYEE", false), "Table", null);
       initialize();
     }
 
     EmployeeTable(final String alias) {
-      super(null, null, "EMPLOYEE", "Table", alias);
+      super(null, null, Name.of("EMPLOYEE", false), "Table", alias);
       initialize();
     }
 
     // Initialization
 
     private void initialize() {
-      this.id = new NumberColumn(this, "ID", "id", "NUMBER", 6, 0);
-      this.name = new StringColumn(this, "NAME", "name", "VARCHAR2", 20, null);
-      this.salary = new NumberColumn(this, "SALARY", "salary", "NUMBER", 8, 0);
+      super.columns = new ArrayList<>();
+      super.columns.add(this.id);
+      super.columns.add(this.name);
+      super.columns.add(this.branchId);
     }
 
+  }
+
+  // sequence employee_seq
+
+  /*
+  * The SQL statement for this method is:
+
+select next value for employee_seq
+
+  */
+
+
+  public long getSequenceNextValue() {
+    return (Long) sqlSession.selectOne(
+      "mappers.employee.selectSequenceGetSequenceNextValue");
   }
 
 }

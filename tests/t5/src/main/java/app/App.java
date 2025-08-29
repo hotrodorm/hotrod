@@ -1,6 +1,7 @@
 package app;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -76,11 +77,13 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       log.info("[ Starting... ]");
+      testSequence();
+//      testInsert();
 //      test();
 //      testLiveSQL();
 //      testLiveSQLUnary();
 //      testLiveSQLTuples();
-      tuplesExamples();
+//      tuplesExamples();
       // testLiveSQLCursor();
 //      testConverter5();
 //      testConverter6();
@@ -88,6 +91,52 @@ public class App {
 //      testNitro6();
       log.info("[ Ending ]");
     };
+  }
+
+  private void testSequence() throws SQLException, DynamicExpressionException {
+    long seq = this.employeeDAO.getSequenceNextValue();
+    System.out.println("--> seq=" + seq);
+    long hiredSeq = this.employeeDAO.getHiredNextValue();
+    System.out.println("--> hired_seq=" + hiredSeq);
+    seq = this.employeeDAO.getSequenceNextValue();
+    System.out.println("--> seq=" + seq);
+  }
+
+  private void testInsert() throws SQLException, DynamicExpressionException {
+    Branch a = new Branch();
+    a.setRegion("NNW");
+    a.setIsVip(1);
+    a.setParentBranchId(null);
+    a.setCreatedAt(LocalDateTime.now());
+    Branch b = this.branchDAO.insert(a);
+    System.out.println("--> b=" + b);
+
+    // Update by PK
+
+    b.setRegion("NNW01");
+    int count = this.branchDAO.update(b);
+    System.out.println("--> UPDATE count=" + count);
+
+    // Update by example
+
+    Branch example = new Branch();
+    example.setIsVip(1);
+    Branch values = new Branch();
+    values.setIsVip(1);
+    int c2 = this.branchDAO.update(example, values);
+    System.out.println("--> UPDATE2 count=" + c2);
+
+    // Update with predicate
+
+    BranchTable x = this.branchDAO.newTable();
+    int c3 = this.branchDAO.update(values, x, x.id.ge(100)).execute();
+    System.out.println("--> UPDATE3 count=" + c3);
+
+    // LiveSQL Update
+
+    int c4 = this.sql.update(x).set(x.isVip, 1).where(x.id.ge(100)).execute();
+    System.out.println("--> UPDATE4 count=" + c4);
+
   }
 
 //  private void testOptimisticLocking() throws SQLException, DynamicExpressionException {
@@ -724,21 +773,14 @@ public class App {
 //
 //  }
 
-  
   private void tuplesExample7() throws SQLException, DynamicExpressionException {
 
     EmployeeTable e = this.employeeDAO.newTable();
     BranchTable b = this.branchDAO.newTable();
     BranchTable p = this.branchDAO.newTable();
 
-    List<Tuple2<Employee, Branch>> rows = this.sql
-        .select()
-        .tuples()
-        .from(e)
-        .join(b, e.branchId.eq(b.id))
-        .semiLeftJoin(p, p.parentBranchId.eq(b.id))
-        .where(p.id.isNull())
-        .execute();
+    List<Tuple2<Employee, Branch>> rows = this.sql.select().tuples().from(e).join(b, e.branchId.eq(b.id))
+        .semiLeftJoin(p, p.parentBranchId.eq(b.id)).where(p.id.isNull()).execute();
     for (Tuple2<Employee, Branch> r : rows) {
       Employee employee = r.getA();
       Branch branch = r.getB();
@@ -756,7 +798,6 @@ public class App {
 //        - isVip=0
 //        - parentBranchId=null
 //        - createdAt=2024-01-04T12:34:56
-
 
   }
 

@@ -17,8 +17,6 @@ import org.springframework.context.annotation.Configuration;
 
 import app.daos.primitives.EmployeeDAO;
 import app.daos.primitives.EmployeeDAO.EmployeeTable;
-import app.daos.primitives.StockDAO;
-import app.daos.primitives.StockDAO.StockTable;
 
 @Configuration
 @SpringBootApplication
@@ -41,10 +39,15 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       System.out.println("[ Starting example ]");
-
-      searching();
+      sequence();
+//      searching();
       System.out.println("[ Example complete ]");
     };
+  }
+
+  private void sequence() {
+    long seq = this.employeeDAO.getSequenceNextValue();
+    System.out.println("seq=" + seq);
   }
 
   private void searching() {
@@ -165,11 +168,11 @@ public class App {
 
   }
 
-  private void searching2() {
-
-    StockTable s = StockDAO.newTable();
-    this.sql.insert(s).values(sql.val("FL-5077"), sql.val("TV"), sql.val(20));
-
-  }
+//  private void searching2() {
+//
+//    StockTable s = StockDAO.newTable();
+//    this.sql.insert(s).values(sql.val("FL-5077"), sql.val("TV"), sql.val(20));
+//
+//  }
 
 }

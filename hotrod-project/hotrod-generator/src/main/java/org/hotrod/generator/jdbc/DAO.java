@@ -29,6 +29,7 @@ import org.hotrod.config.JDBCTag;
 import org.hotrod.config.OptimisticLockingTag.OptimisticLockingStrategy;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.config.QueryMethodTag;
+import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.dynamicsql.Cursor;
@@ -204,6 +205,8 @@ public class DAO {
 
       writeBaseline();
 
+      writeClone();
+
       if (this.isTable()) {
         writeSelect(false); // by PK
 //        writeSelectByUI(mg);
@@ -245,10 +248,15 @@ public class DAO {
 //    if (this.tag != null) {
 
 //      log.fine("SQL NAME=" + this.metadata.getId().getCanonicalSQLName() + " this.tag=" + this.tag);
-//      for (SequenceMethodTag s : this.tag.getSequences()) {
-//        log.fine("s.getName()=" + s.getSequenceId().getRenderedSQLName());
-//        writeSelectSequence(s);
-//      }
+    if (!this.tag.getSequences().isEmpty()) {
+      writeSequenceRowReader();
+    }
+    int n = 0;
+    for (SequenceMethodTag s : this.tag.getSequences()) {
+      log.fine("s.getName()=" + s.getSequenceId().getRenderedSQLName());
+      writeSelectSequence(s, n);
+      n++;
+    }
 
     int i = 0;
     for (QueryMethodTag q : this.tag.getQueries()) {
@@ -422,6 +430,23 @@ public class DAO {
     w.println("  };");
   }
 
+  private void writeClone() {
+    ExternalClass m = ExternalClass.of(this.model.getFullClassName());
+    ExternalClass l = ExternalClass.of(this.layout.getFullClassName());
+
+    w.println();
+    w.println("  // CLONE");
+    w.println();
+    w.println("  public ", m, " clone(", l, " layout) {");
+    w.println("    ", m, " m = new ", m, "();");
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      String mem = cm.getId().getJavaMemberName();
+      w.println("    m." + cm.getId().getJavaSetter() + "(layout." + cm.getId().getJavaGetter() + "());");
+    }
+    w.println("    return m;");
+    w.println("  };");
+  }
+
   private void writeSelect(boolean byExample) {
 
     KeyMetadata pk = this.metadata.getPK();
@@ -579,7 +604,7 @@ public class DAO {
         if (ol != null && ol.getStrategy() == OptimisticLockingStrategy.TIMESTAMP && cm.isOLTimestampColumn()) {
           w.println("      .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
         } else {
-          w.println("      .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\").literal(\""
+          w.println("      .if_(\"l." + SUtil.escapeJavaString(memId) + " != null\").literal(\""
               + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\\n\").endif()");
         }
       } else {
@@ -602,7 +627,7 @@ public class DAO {
 
         // Conditionally include column
         if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
-          w.println("      .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\").literal(\""
+          w.println("      .if_(\"l." + SUtil.escapeJavaString(memId) + " != null\").literal(\""
               + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\\n\").endif()");
         }
 
@@ -630,7 +655,7 @@ public class DAO {
           w.println("      .literal(\"  " + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\")"
               + (n < coln ? ".literaln(\",\")" : ""));
         } else {
-          w.println("      .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\").parameter(\"m."
+          w.println("      .if_(\"l." + SUtil.escapeJavaString(memId) + " != null\").parameter(\"l."
               + SUtil.escapeJavaString(memId) + "\")" + (n < coln ? ".literal(\", \")" : "") + ".endif()");
         }
       } else {
@@ -641,13 +666,13 @@ public class DAO {
             w.println("      .literal(\"  " + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression())
                 + "\")" + (n < coln ? ".literaln(\",\")" : ""));
           } else {
-            w.println("      .literal(\"  \").parameterNullable(\"m." + SUtil.escapeJavaString(memId) + "\", ",
+            w.println("      .literal(\"  \").parameterNullable(\"l." + SUtil.escapeJavaString(memId) + "\", ",
                 Types.class, "." + jdbcType + ")" + (n < coln ? ".literaln(\",\")" : ""));
           }
         }
         if (cm.belongsToPK() && cm.getSequenceId() != null) {
           if (mechanics.getMode() == PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH) {
-            w.println("      .literal(\"  \").parameterNullable(\"m." + SUtil.escapeJavaString(memId) + "\", ",
+            w.println("      .literal(\"  \").parameterNullable(\"l." + SUtil.escapeJavaString(memId) + "\", ",
                 Types.class, "." + jdbcType + ")" + (n < coln ? ".literaln(\",\")" : ""));
           } else {
             String si = mechanics.getSequenceInlineSQL();
@@ -656,7 +681,7 @@ public class DAO {
           }
         }
         if (cm.belongsToPK() && cm.getSequenceId() == null && cm.getAutogenerationType() == null) {
-          w.println("      .literal(\"  \").parameterNullable(\"m." + SUtil.escapeJavaString(memId) + "\", ",
+          w.println("      .literal(\"  \").parameterNullable(\"l." + SUtil.escapeJavaString(memId) + "\", ",
               Types.class, "." + jdbcType + ")" + (n < coln ? ".literaln(\",\")" : ""));
         }
 
@@ -667,7 +692,7 @@ public class DAO {
 
         // Conditionally include column
         if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
-          w.println("      .if_(\"m." + SUtil.escapeJavaString(memId) + " != null\").parameter(\"m."
+          w.println("      .if_(\"l." + SUtil.escapeJavaString(memId) + " != null\").parameter(\"l."
               + SUtil.escapeJavaString(memId) + "\")" + (n < coln ? ".literal(\", \")" : "") + ".endif()");
         }
 
@@ -679,7 +704,7 @@ public class DAO {
 
     if (mechanics.getMode() == PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH) {
       w.print("      .endInsertQuery(", PrimaryKeyRetrievalMode.class,
-          "." + mechanics.getMode() + ", \"" + SUtil.escapeJavaString(mechanics.getSequencePreFetchSQL()) + "\", \"m." //
+          "." + mechanics.getMode() + ", \"" + SUtil.escapeJavaString(mechanics.getSequencePreFetchSQL()) + "\", \"l." //
               + SUtil.escapeJavaString(mechanics.getPrimaryKeyMemberName()) //
               + "\"");
     } else {
@@ -702,12 +727,13 @@ public class DAO {
     String methodName = byExample ? "insertByExample" : "insert";
 
     ExternalClass em = ExternalClass.of(this.model.getFullClassName());
+    ExternalClass el = ExternalClass.of(this.layout.getFullClassName());
     w.println();
-    w.print("  public void " + methodName + "(", em, " model");
+    w.print("  public ", em, " " + methodName + "(", el, " layout");
     w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
 
     w.println("    ", Parameters.class, " context = this.dyn.newParameters();");
-    w.println("    context.add(\"m\", model);");
+    w.println("    context.add(\"l\", layout);");
 
     if (ol != null) {
       switch (ol.getStrategy()) {
@@ -715,12 +741,12 @@ public class DAO {
         ColumnMetadata cm = ol.getColumnMetadata();
         String setter = cm.getId().getJavaSetter();
         String zero = renderNumericLiteral(0, cm.getType().getJavaClassName());
-        w.println("    model." + setter + "(" + zero + ");");
+        w.println("    layout." + setter + "(" + zero + ");");
         break;
       case TIMESTAMP:
         cm = ol.getColumnMetadata();
         setter = cm.getId().getJavaSetter();
-        w.println("    model." + setter + "(null);");
+        w.println("    layout." + setter + "(null);");
         break;
       default: // do not add setter
       }
@@ -729,6 +755,8 @@ public class DAO {
     w.println("    ", PreparedInsertQuery.class, " preparedQuery = this." + queryName + ".prepare(context);");
 
     fragmentLogging();
+
+    w.println("    ", em, " model = this.clone(layout);");
 
     w.println("    try (", Connection.class, " conn = this.dataSource.getConnection()) {");
     if (mechanics.getMode() == PrimaryKeyRetrievalMode.NO_RETRIEVAL) {
@@ -740,7 +768,7 @@ public class DAO {
       w.println("      model.setId(" + pkCast + ");");
     }
     w.println("    }");
-
+    w.println("    return model;");
     w.println("  }");
 
   }
@@ -1436,7 +1464,7 @@ public class DAO {
 
   private void fragmentWherePK(String ns) {
     KeyMetadata pk = this.metadata.getPK();
-    Separator sep = Separator.of("WHERE ", "  AND ");
+    Separator sep = Separator.of("\nWHERE ", "  AND ");
     for (ColumnMetadata cm : pk.getColumns()) {
       String memId = cm.getId().getJavaMemberName();
       String sqlId = cm.getId().getRenderedSQLName();
@@ -1446,7 +1474,7 @@ public class DAO {
   }
 
   private void fragmentWhereFullRow(String ns) {
-    Separator sep = Separator.of("WHERE ", "  AND ");
+    Separator sep = Separator.of("\nWHERE ", "  AND ");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String memId = cm.getId().getJavaMemberName();
       String sqlId = cm.getId().getRenderedSQLName();
@@ -1660,6 +1688,52 @@ public class DAO {
     if (discoverable) {
       w.println("      }");
     }
+  }
+
+  private void writeSequenceRowReader() throws IOException, SequencesNotSupportedException {
+    w.println();
+    w.println("  // SEQUENCE ROW READER");
+    w.println();
+    w.println("  private final RowReader<Long> sequenceRowReader = new RowReader<Long>() {");
+    w.println();
+    w.println("    @Override");
+    w.println("    public Long readRowFrom(ResultSet rs, Connection conn) throws SQLException {");
+    w.println("      Long col1 = rs.getLong(1);");
+    w.println("      if (rs.wasNull()) col1 = null;");
+    w.println("      return col1;");
+    w.println("    }");
+    w.println();
+    w.println("  };");
+  }
+
+  private void writeSelectSequence(final SequenceMethodTag tag, int n)
+      throws IOException, SequencesNotSupportedException {
+
+    String sql = this.adapter.renderSelectSequence(tag.getSequenceId());
+
+    String initializerMethod = "initializeSelectSequence" + n;
+    this.initializersInPostConstruct.add(initializerMethod);
+
+    w.println();
+    w.println("  // SELECT SEQUENCE");
+    w.println();
+    w.println("  private DynamicSelectQuery selectSequence" + n + ";");
+    w.println();
+    w.println("  private void " + initializerMethod + "() {");
+    w.println("    this.selectSequence" + n + " = dyn.literaln(\"" + sql + "\").endSelectQuery();");
+    w.println("  }");
+    w.println();
+    w.println("  public long " + tag.getMethod() + "() throws SQLException, DynamicExpressionException {");
+    w.println("    Parameters context = this.dyn.newParameters();");
+    w.println("    PreparedSelectQuery<Long> preparedQuery = " + "this.selectSequence" + n
+        + ".prepare(context, this.sequenceRowReader);");
+    w.println("    logQuery(preparedQuery);");
+    w.println("    try (Connection conn = this.dataSource.getConnection()) {");
+    w.println("      long value = preparedQuery.executeOne(conn);");
+    w.println("      return value;");
+    w.println("    }");
+    w.println("  }");
+
   }
 
   private void writeNitroQuery(QueryMethodTag q, int n) throws ControlledException {
