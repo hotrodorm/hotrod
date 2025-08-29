@@ -17,7 +17,6 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
-import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicInsertQuery;
 import org.hotrod.dynamicsql.DynamicModificationQuery;
 import org.hotrod.dynamicsql.DynamicSelectQuery;
@@ -29,6 +28,7 @@ import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.hotrod.dynamicsql.insert.PreparedInsertQuery;
 import org.hotrod.dynamicsql.insert.PrimaryKeyRetrievalMode;
+import org.hotrod.exceptions.PersistenceException;
 import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
@@ -207,7 +207,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
       .endSelectQuery();
   }
 
-  public Branch select(Integer id) throws DynamicExpressionException, SQLException {
+  public Branch select(Integer id) {
     if (id == null) return null;
     Branch filter = new Branch();
     filter.setId(id);
@@ -219,7 +219,9 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
       List<Branch> rows = preparedQuery.execute(conn);
       if (rows.size() == 0) return null;
       if (rows.size() == 1) return rows.get(0);
-      throw new RuntimeException("A single row at most was expected but received " + rows.size() + " rows.");
+      throw new PersistenceException("A single row at most was expected but received " + rows.size() + " rows.");
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
   }
 
@@ -247,7 +249,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
       .endSelectQuery();
   }
 
-  public List<Branch> select(Branch filter, BranchOrderBy... orderBies) throws DynamicExpressionException, SQLException {
+  public List<Branch> select(Branch filter, BranchOrderBy... orderBies) {
     Parameters context = this.dyn.newParameters();
     context.add("f", filter);
     String ordering = SQLUtil.render(orderBies);
@@ -257,6 +259,8 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     try (Connection conn = this.dataSource.getConnection()) {
       List<Branch> rows = preparedQuery.execute(conn);
       return rows;
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
   }
 
@@ -289,7 +293,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
       .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
   }
 
-  public Branch insert(BranchLayout layout) throws DynamicExpressionException, SQLException {
+  public Branch insert(BranchLayout layout) {
     Parameters context = this.dyn.newParameters();
     context.add("l", layout);
     PreparedInsertQuery preparedQuery = this.insert.prepare(context);
@@ -298,6 +302,8 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     try (Connection conn = this.dataSource.getConnection()) {
       Long pk = preparedQuery.execute(conn);
       model.setId((pk == null) ? null : Integer.valueOf(pk.intValue()));
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
     return model;
   }
@@ -325,7 +331,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
       .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
   }
 
-  public Branch insertByExample(BranchLayout layout) throws DynamicExpressionException, SQLException {
+  public Branch insertByExample(BranchLayout layout) {
     Parameters context = this.dyn.newParameters();
     context.add("l", layout);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(context);
@@ -334,6 +340,8 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     try (Connection conn = this.dataSource.getConnection()) {
       Long pk = preparedQuery.execute(conn);
       model.setId((pk == null) ? null : Integer.valueOf(pk.intValue()));
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
     return model;
   }
@@ -355,7 +363,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     .endModificationQuery();
   }
 
-  public int update(Branch model) throws DynamicExpressionException, SQLException {
+  public int update(Branch model) {
     if (model.getId() == null) return 0;
     Parameters context = this.dyn.newParameters();
     context.add("m", model);
@@ -364,6 +372,8 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     try (Connection conn = this.dataSource.getConnection()) {
       int count = preparedQuery.execute(conn);
       return count;
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
   }
 
@@ -391,7 +401,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
       .endModificationQuery();
   }
 
-  public int update(Branch example, Branch values) throws DynamicExpressionException, SQLException {
+  public int update(Branch example, Branch values) {
     Parameters context = this.dyn.newParameters();
     context.add("e", example);
     context.add("v", values);
@@ -400,6 +410,8 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     try (Connection conn = this.dataSource.getConnection()) {
       int count = preparedQuery.execute(conn);
       return count;
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
   }
 
@@ -427,7 +439,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
       .endModificationQuery();
   }
 
-  public int delete(Integer id) throws DynamicExpressionException, SQLException {
+  public int delete(Integer id) {
     if (id == null) return 0;
     Branch filter = new Branch();
     filter.setId(id);
@@ -438,6 +450,8 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     try (Connection conn = this.dataSource.getConnection()) {
       int count = preparedQuery.execute(conn);
       return count;
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
   }
 
@@ -458,7 +472,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
       .endModificationQuery();
   }
 
-  public int delete(Branch example) throws DynamicExpressionException, SQLException {
+  public int delete(Branch example) {
     Parameters context = this.dyn.newParameters();
     context.add("e", example);
     PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(context);
@@ -466,6 +480,8 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     try (Connection conn = this.dataSource.getConnection()) {
       int count = preparedQuery.execute(conn);
       return count;
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
   }
 

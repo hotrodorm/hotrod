@@ -10,9 +10,9 @@ DONE 4. [media] Tag <sequence> fue removido en la versión 5. El workaround de o
 
 DONE 5. [media] Restaurar el "Predicate" (marcado deprecado)
 
-6. [media] Restaurar "parseRow" (marcado deprecado)
+DONE 6. [media] Restaurar "parseRow" (marcado deprecado)
 
-7. [media] Operaciones de modificación lanzan Exception en lugar de RuntimeException, lo que, en procesos de migración, obliga a modificar código fuente. 
+DONE 7. [media] Operaciones de modificación lanzan Exception en lugar de RuntimeException, lo que, en procesos de migración, obliga a modificar código fuente. 
 
 8. [baja] No es posible configurar el generador, para obtener la misma estructura de 'packages' de las clases generadas, que aquellos generados por la
           versión 4. Ejemplo: "model" para las clases Model y "model.implementation" para las clases Layout.

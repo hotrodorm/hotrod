@@ -16,7 +16,6 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
-import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicInsertQuery;
 import org.hotrod.dynamicsql.DynamicModificationQuery;
 import org.hotrod.dynamicsql.DynamicSelectQuery;
@@ -28,6 +27,7 @@ import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.hotrod.dynamicsql.insert.PreparedInsertQuery;
 import org.hotrod.dynamicsql.insert.PrimaryKeyRetrievalMode;
+import org.hotrod.exceptions.PersistenceException;
 import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
@@ -187,7 +187,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
       .endSelectQuery();
   }
 
-  public List<Product> select(Product filter, ProductOrderBy... orderBies) throws DynamicExpressionException, SQLException {
+  public List<Product> select(Product filter, ProductOrderBy... orderBies) {
     Parameters context = this.dyn.newParameters();
     context.add("f", filter);
     String ordering = SQLUtil.render(orderBies);
@@ -197,6 +197,8 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     try (Connection conn = this.dataSource.getConnection()) {
       List<Product> rows = preparedQuery.execute(conn);
       return rows;
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
   }
 
@@ -225,7 +227,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public Product insert(ProductLayout layout) throws DynamicExpressionException, SQLException {
+  public Product insert(ProductLayout layout) {
     Parameters context = this.dyn.newParameters();
     context.add("l", layout);
     PreparedInsertQuery preparedQuery = this.insert.prepare(context);
@@ -233,6 +235,8 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     Product model = this.clone(layout);
     try (Connection conn = this.dataSource.getConnection()) {
       preparedQuery.execute(conn);
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
     return model;
   }
@@ -256,7 +260,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public Product insertByExample(ProductLayout layout) throws DynamicExpressionException, SQLException {
+  public Product insertByExample(ProductLayout layout) {
     Parameters context = this.dyn.newParameters();
     context.add("l", layout);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(context);
@@ -264,6 +268,8 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     Product model = this.clone(layout);
     try (Connection conn = this.dataSource.getConnection()) {
       preparedQuery.execute(conn);
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
     return model;
   }
@@ -290,7 +296,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
       .endModificationQuery();
   }
 
-  public int update(Product example, Product values) throws DynamicExpressionException, SQLException {
+  public int update(Product example, Product values) {
     Parameters context = this.dyn.newParameters();
     context.add("e", example);
     context.add("v", values);
@@ -299,6 +305,8 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     try (Connection conn = this.dataSource.getConnection()) {
       int count = preparedQuery.execute(conn);
       return count;
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
   }
 
@@ -330,7 +338,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
       .endModificationQuery();
   }
 
-  public int delete(Product example) throws DynamicExpressionException, SQLException {
+  public int delete(Product example) {
     Parameters context = this.dyn.newParameters();
     context.add("e", example);
     PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(context);
@@ -338,6 +346,8 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     try (Connection conn = this.dataSource.getConnection()) {
       int count = preparedQuery.execute(conn);
       return count;
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
   }
 

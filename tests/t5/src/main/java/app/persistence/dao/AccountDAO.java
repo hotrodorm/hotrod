@@ -17,7 +17,6 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
-import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicInsertQuery;
 import org.hotrod.dynamicsql.DynamicModificationQuery;
 import org.hotrod.dynamicsql.DynamicSelectQuery;
@@ -29,6 +28,7 @@ import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.hotrod.dynamicsql.insert.PreparedInsertQuery;
 import org.hotrod.dynamicsql.insert.PrimaryKeyRetrievalMode;
+import org.hotrod.exceptions.PersistenceException;
 import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
@@ -134,15 +134,15 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   // PARSE ROW
 
-  public Account parseRow(Map<String, Object> row, Connection conn) throws SQLException {
+  public Account parseRow(Map<String, Object> row, Connection conn) {
     return parseRow(row, null, null, conn);
   }
 
-  public Account parseRow(Map<String, Object> row, String prefix, Connection conn) throws SQLException {
+  public Account parseRow(Map<String, Object> row, String prefix, Connection conn) {
     return parseRow(row, prefix, null, conn);
   }
 
-  public Account parseRow(Map<String, Object> row, String prefix, String suffix, Connection conn) throws SQLException {
+  public Account parseRow(Map<String, Object> row, String prefix, String suffix, Connection conn) {
     Account m = applicationContext.getBean(Account.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
@@ -150,7 +150,11 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     m.setName((String) row.get(p + "name" + s));
     m.setType((String) row.get(p + "type" + s));
     m.setBalance(CastUtil.toDouble((Number) row.get(p + "balance" + s)));
-    m.setActive(new app.IntegerBooleanConverter().decode((Integer) row.get(p + "active" + s), conn));
+    try {
+      m.setActive(new app.IntegerBooleanConverter().decode((Integer) row.get(p + "active" + s), conn));
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
+    }
     m.setClientPhoto((byte[]) row.get(p + "clientPhoto" + s));
     m.setUpdatedAt((LocalDateTime) row.get(p + "updatedAt" + s));
     m.setVersion(CastUtil.toInteger((Number) row.get(p + "version" + s)));
@@ -252,7 +256,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .endSelectQuery();
   }
 
-  public Account select(Integer id) throws DynamicExpressionException, SQLException {
+  public Account select(Integer id) {
     if (id == null) return null;
     Account filter = new Account();
     filter.setId(id);
@@ -264,7 +268,9 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       List<Account> rows = preparedQuery.execute(conn);
       if (rows.size() == 0) return null;
       if (rows.size() == 1) return rows.get(0);
-      throw new RuntimeException("A single row at most was expected but received " + rows.size() + " rows.");
+      throw new PersistenceException("A single row at most was expected but received " + rows.size() + " rows.");
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
   }
 
@@ -298,7 +304,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .endSelectQuery();
   }
 
-  public List<Account> select(Account filter, AccountOrderBy... orderBies) throws DynamicExpressionException, SQLException {
+  public List<Account> select(Account filter, AccountOrderBy... orderBies) {
     Parameters context = this.dyn.newParameters();
     context.add("f", filter);
     String ordering = SQLUtil.render(orderBies);
@@ -308,6 +314,8 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     try (Connection conn = this.dataSource.getConnection()) {
       List<Account> rows = preparedQuery.execute(conn);
       return rows;
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
   }
 
@@ -346,7 +354,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
   }
 
-  public Account insert(AccountLayout layout) throws DynamicExpressionException, SQLException {
+  public Account insert(AccountLayout layout) {
     Parameters context = this.dyn.newParameters();
     context.add("l", layout);
     PreparedInsertQuery preparedQuery = this.insert.prepare(context);
@@ -355,6 +363,8 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     try (Connection conn = this.dataSource.getConnection()) {
       Long pk = preparedQuery.execute(conn);
       model.setId((pk == null) ? null : Integer.valueOf(pk.intValue()));
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
     return model;
   }
@@ -388,7 +398,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
   }
 
-  public Account insertByExample(AccountLayout layout) throws DynamicExpressionException, SQLException {
+  public Account insertByExample(AccountLayout layout) {
     Parameters context = this.dyn.newParameters();
     context.add("l", layout);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(context);
@@ -397,6 +407,8 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     try (Connection conn = this.dataSource.getConnection()) {
       Long pk = preparedQuery.execute(conn);
       model.setId((pk == null) ? null : Integer.valueOf(pk.intValue()));
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
     return model;
   }
@@ -421,7 +433,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     .endModificationQuery();
   }
 
-  public int update(Account model) throws DynamicExpressionException, SQLException {
+  public int update(Account model) {
     if (model.getId() == null) return 0;
     Parameters context = this.dyn.newParameters();
     context.add("m", model);
@@ -430,6 +442,8 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     try (Connection conn = this.dataSource.getConnection()) {
       int count = preparedQuery.execute(conn);
       return count;
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
   }
 
@@ -463,7 +477,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .endModificationQuery();
   }
 
-  public int update(Account example, Account values) throws DynamicExpressionException, SQLException {
+  public int update(Account example, Account values) {
     Parameters context = this.dyn.newParameters();
     context.add("e", example);
     context.add("v", values);
@@ -472,6 +486,8 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     try (Connection conn = this.dataSource.getConnection()) {
       int count = preparedQuery.execute(conn);
       return count;
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
   }
 
@@ -502,7 +518,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .endModificationQuery();
   }
 
-  public int delete(Integer id) throws DynamicExpressionException, SQLException {
+  public int delete(Integer id) {
     if (id == null) return 0;
     Account filter = new Account();
     filter.setId(id);
@@ -513,6 +529,8 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     try (Connection conn = this.dataSource.getConnection()) {
       int count = preparedQuery.execute(conn);
       return count;
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
   }
 
@@ -536,7 +554,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .endModificationQuery();
   }
 
-  public int delete(Account example) throws DynamicExpressionException, SQLException {
+  public int delete(Account example) {
     Parameters context = this.dyn.newParameters();
     context.add("e", example);
     PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(context);
@@ -544,6 +562,8 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     try (Connection conn = this.dataSource.getConnection()) {
       int count = preparedQuery.execute(conn);
       return count;
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
   }
 

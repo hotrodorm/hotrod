@@ -1,6 +1,6 @@
 package org.hotrod.dynamicsql;
 
-public class DynamicExpressionException extends Exception {
+public class DynamicExpressionException extends RuntimeException {
 
   private static final long serialVersionUID = 1L;
 

@@ -46,6 +46,7 @@ import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.hotrod.dynamicsql.insert.PreparedInsertQuery;
 import org.hotrod.dynamicsql.insert.PrimaryKeyRetrievalMode;
 import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.PersistenceException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.exceptions.StaleDataException;
 import org.hotrod.exceptions.UncontrolledException;
@@ -233,22 +234,14 @@ public class DAO {
         writeDeleteByCriteria();
       }
 
-//      }
-//
-//      if (this.isView()) {
-//      }
-
 //      writeEnumTypeHandlers();
-//
+
       writeOrderBy();
 
       writeMetadata();
 
     }
 
-//    if (this.tag != null) {
-
-//      log.fine("SQL NAME=" + this.metadata.getId().getCanonicalSQLName() + " this.tag=" + this.tag);
     if (!this.tag.getSequences().isEmpty()) {
       writeSequenceRowReader();
     }
@@ -261,7 +254,6 @@ public class DAO {
 
     int i = 0;
     for (QueryMethodTag q : this.tag.getQueries()) {
-//      log.info("q.getJavaMethodName()=" + q.getMethod());
       writeNitroQuery(q, i++);
     }
 
@@ -269,8 +261,6 @@ public class DAO {
     for (SelectMethodMetadata s : this.metadata.getSelectsMetadata()) {
       writeNitroSelect(s, i++);
     }
-
-//    }
 
     writePostConstruct();
 
@@ -401,7 +391,7 @@ public class DAO {
     w.println();
     if (hasConverters) {
       w.print("  public ", m, " parseRow(", Map.class, "<String, Object> row, ");
-      w.println(Connection.class, " conn) throws ", SQLException.class, " {");
+      w.println(Connection.class, " conn) {");
       w.println("    return parseRow(row, null, null, conn);");
     } else {
       w.println("  public ", m, " parseRow(", Map.class, "<String, Object> row) {");
@@ -412,7 +402,7 @@ public class DAO {
 
     if (hasConverters) {
       w.print("  public ", m, " parseRow(", Map.class, "<String, Object> row, String prefix, ");
-      w.println(Connection.class, " conn) throws ", SQLException.class, " {");
+      w.println(Connection.class, " conn) {");
       w.println("    return parseRow(row, prefix, null, conn);");
     } else {
       w.println("  public ", m, " parseRow(", Map.class, "<String, Object> row, String prefix) {");
@@ -424,7 +414,7 @@ public class DAO {
 
     if (hasConverters) {
       w.print("  public ", m, " parseRow(", Map.class, "<String, Object> row, String prefix, String suffix, ");
-      w.println(Connection.class, " conn) throws ", SQLException.class, " {");
+      w.println(Connection.class, " conn) {");
     } else {
       w.println("  public ", m, " parseRow(", Map.class, "<String, Object> row, String prefix, String suffix) {");
     }
@@ -440,8 +430,13 @@ public class DAO {
         ConverterTag ct = cm.getConverter();
 
         ExternalClass rt = ExternalClass.of(ct.getRawClass());
-        w.println("    m." + cm.getId().getJavaSetter() + "(new " + ct.getConverterClass() + "().decode((", rt,
+
+        w.println("    try {");
+        w.println("      m." + cm.getId().getJavaSetter() + "(new " + ct.getConverterClass() + "().decode((", rt,
             ") row.get(p + \"" + JUtils.escapeJavaString(property) + "\" + s), conn));");
+        w.println("    } catch (", SQLException.class, " e) {");
+        w.println("      throw new ", PersistenceException.class, "(e);");
+        w.println("    }");
 
       } else if ("java.lang.Byte".equals(javaType) || //
           "java.lang.Short".equals(javaType) || //
@@ -588,7 +583,7 @@ public class DAO {
         w.print("  public ", em, " select(");
         fragmentPKParameters(pk);
       }
-      w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
+      w.println(") {");
 
       if (!byExample) {
         for (ColumnMetadata cm : pk.getColumns()) {
@@ -816,7 +811,7 @@ public class DAO {
     ExternalClass el = ExternalClass.of(this.layout.getFullClassName());
     w.println();
     w.print("  public ", em, " " + methodName + "(", el, " layout");
-    w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
+    w.println(") {");
 
     w.println("    ", Parameters.class, " context = this.dyn.newParameters();");
     w.println("    context.add(\"l\", layout);");
@@ -853,6 +848,8 @@ public class DAO {
       w.println("      Long pk = preparedQuery.execute(conn);");
       w.println("      model.setId(" + pkCast + ");");
     }
+    w.println("    } catch (", SQLException.class, " e) {");
+    w.println("      throw new ", PersistenceException.class, "(e);");
     w.println("    }");
     w.println("    return model;");
     w.println("  }");
@@ -1026,7 +1023,7 @@ public class DAO {
       } else {
         w.print("  public int update(", em, " model");
       }
-      w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
+      w.println(") {");
 
       for (ColumnMetadata cm : pk.getColumns()) {
         String getter = cm.getId().getJavaGetter();
@@ -1076,7 +1073,7 @@ public class DAO {
     ExternalClass em = ExternalClass.of(this.model.getFullClassName());
     w.println();
     w.print("  public int update(", em, " example, ", em, " values");
-    w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
+    w.println(") {");
 
     w.println("    ", Parameters.class, " context = this.dyn.newParameters();");
     w.println("    context.add(\"e\", example);");
@@ -1165,7 +1162,7 @@ public class DAO {
       w.print("  public int delete(");
       if (optimisticLocking) {
         w.print(this.getBaselineClass(), " baseline");
-        w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
+        w.println(") {");
         for (ColumnMetadata cm : pk.getColumns()) {
           String getter = cm.getId().getJavaGetter();
           w.println("    if (baseline." + getter + "() == null) return 0;");
@@ -1179,7 +1176,7 @@ public class DAO {
         w.println("    context.add(\"b\", baseline);");
       } else {
         fragmentPKParameters(pk);
-        w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
+        w.println(") {");
         for (ColumnMetadata cm : pk.getColumns()) {
           String m = cm.getId().getJavaMemberName();
           w.println("    if (" + m + " == null) return 0;");
@@ -1231,7 +1228,7 @@ public class DAO {
     ExternalClass em = ExternalClass.of(this.model.getFullClassName());
     w.println();
     w.print("  public int delete(", em, " example");
-    w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
+    w.println(") {");
 
     w.println("    ", Parameters.class, " context = this.dyn.newParameters();");
     w.println("    context.add(\"e\", example);");
@@ -1603,6 +1600,8 @@ public class DAO {
       w.println("      }");
     }
     w.println("      return count;");
+    w.println("    } catch (", SQLException.class, " e) {");
+    w.println("      throw new ", PersistenceException.class, "(e);");
     w.println("    }");
   }
 
@@ -1613,11 +1612,13 @@ public class DAO {
     if (singleRow) {
       w.println("      if (rows.size() == 0) return null;");
       w.println("      if (rows.size() == 1) return rows.get(0);");
-      w.println(
-          "      throw new RuntimeException(\"A single row at most was expected but received \" + rows.size() + \" rows.\");");
+      w.println("      throw new ", PersistenceException.class,
+          "(\"A single row at most was expected but received \" + rows.size() + \" rows.\");");
     } else {
       w.println("      return rows;");
     }
+    w.println("    } catch (", SQLException.class, " e) {");
+    w.println("      throw new ", PersistenceException.class, "(e);");
     w.println("    }");
   }
 
@@ -1813,7 +1814,7 @@ public class DAO {
     w.println("    this.selectSequence" + n + " = dyn.literaln(\"" + sql + "\").endSelectQuery();");
     w.println("  }");
     w.println();
-    w.println("  public long " + tag.getMethod() + "() throws SQLException, DynamicExpressionException {");
+    w.println("  public long " + tag.getMethod() + "() {");
     w.println("    Parameters context = this.dyn.newParameters();");
     w.println("    PreparedSelectQuery<Long> preparedQuery = " + "this.selectSequence" + n
         + ".prepare(context, this.sequenceRowReader);");
@@ -1821,6 +1822,8 @@ public class DAO {
     w.println("    try (Connection conn = this.dataSource.getConnection()) {");
     w.println("      long value = preparedQuery.executeOne(conn);");
     w.println("      return value;");
+    w.println("    } catch (", SQLException.class, " e) {");
+    w.println("      throw new ", PersistenceException.class, "(e);");
     w.println("    }");
     w.println("  }");
 

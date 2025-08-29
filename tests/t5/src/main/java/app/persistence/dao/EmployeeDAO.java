@@ -16,7 +16,6 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
-import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicInsertQuery;
 import org.hotrod.dynamicsql.DynamicModificationQuery;
 import org.hotrod.dynamicsql.DynamicSelectQuery;
@@ -28,6 +27,7 @@ import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.hotrod.dynamicsql.insert.PreparedInsertQuery;
 import org.hotrod.dynamicsql.insert.PrimaryKeyRetrievalMode;
+import org.hotrod.exceptions.PersistenceException;
 import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
@@ -118,22 +118,26 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   // PARSE ROW
 
-  public Employee parseRow(Map<String, Object> row, Connection conn) throws SQLException {
+  public Employee parseRow(Map<String, Object> row, Connection conn) {
     return parseRow(row, null, null, conn);
   }
 
-  public Employee parseRow(Map<String, Object> row, String prefix, Connection conn) throws SQLException {
+  public Employee parseRow(Map<String, Object> row, String prefix, Connection conn) {
     return parseRow(row, prefix, null, conn);
   }
 
-  public Employee parseRow(Map<String, Object> row, String prefix, String suffix, Connection conn) throws SQLException {
+  public Employee parseRow(Map<String, Object> row, String prefix, String suffix, Connection conn) {
     Employee m = applicationContext.getBean(Employee.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
     m.setId(CastUtil.toInteger((Number) row.get(p + "id" + s)));
     m.setName((String) row.get(p + "name" + s));
     m.setBranchId(CastUtil.toInteger((Number) row.get(p + "branchId" + s)));
-    m.setVip(new app.IntegerBooleanConverter().decode((Integer) row.get(p + "vip" + s), conn));
+    try {
+      m.setVip(new app.IntegerBooleanConverter().decode((Integer) row.get(p + "vip" + s), conn));
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
+    }
     return m;
   }
 
@@ -200,7 +204,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       .endSelectQuery();
   }
 
-  public Employee select(Integer id) throws DynamicExpressionException, SQLException {
+  public Employee select(Integer id) {
     if (id == null) return null;
     Employee filter = new Employee();
     filter.setId(id);
@@ -212,7 +216,9 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       List<Employee> rows = preparedQuery.execute(conn);
       if (rows.size() == 0) return null;
       if (rows.size() == 1) return rows.get(0);
-      throw new RuntimeException("A single row at most was expected but received " + rows.size() + " rows.");
+      throw new PersistenceException("A single row at most was expected but received " + rows.size() + " rows.");
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
   }
 
@@ -238,7 +244,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       .endSelectQuery();
   }
 
-  public List<Employee> select(Employee filter, EmployeeOrderBy... orderBies) throws DynamicExpressionException, SQLException {
+  public List<Employee> select(Employee filter, EmployeeOrderBy... orderBies) {
     Parameters context = this.dyn.newParameters();
     context.add("f", filter);
     String ordering = SQLUtil.render(orderBies);
@@ -248,6 +254,8 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     try (Connection conn = this.dataSource.getConnection()) {
       List<Employee> rows = preparedQuery.execute(conn);
       return rows;
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
   }
 
@@ -278,7 +286,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public Employee insert(EmployeeLayout layout) throws DynamicExpressionException, SQLException {
+  public Employee insert(EmployeeLayout layout) {
     Parameters context = this.dyn.newParameters();
     context.add("l", layout);
     PreparedInsertQuery preparedQuery = this.insert.prepare(context);
@@ -286,6 +294,8 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     Employee model = this.clone(layout);
     try (Connection conn = this.dataSource.getConnection()) {
       preparedQuery.execute(conn);
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
     return model;
   }
@@ -311,7 +321,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public Employee insertByExample(EmployeeLayout layout) throws DynamicExpressionException, SQLException {
+  public Employee insertByExample(EmployeeLayout layout) {
     Parameters context = this.dyn.newParameters();
     context.add("l", layout);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(context);
@@ -319,6 +329,8 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     Employee model = this.clone(layout);
     try (Connection conn = this.dataSource.getConnection()) {
       preparedQuery.execute(conn);
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
     return model;
   }
@@ -339,7 +351,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     .endModificationQuery();
   }
 
-  public int update(Employee model) throws DynamicExpressionException, SQLException {
+  public int update(Employee model) {
     if (model.getId() == null) return 0;
     Parameters context = this.dyn.newParameters();
     context.add("m", model);
@@ -348,6 +360,8 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     try (Connection conn = this.dataSource.getConnection()) {
       int count = preparedQuery.execute(conn);
       return count;
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
   }
 
@@ -373,7 +387,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       .endModificationQuery();
   }
 
-  public int update(Employee example, Employee values) throws DynamicExpressionException, SQLException {
+  public int update(Employee example, Employee values) {
     Parameters context = this.dyn.newParameters();
     context.add("e", example);
     context.add("v", values);
@@ -382,6 +396,8 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     try (Connection conn = this.dataSource.getConnection()) {
       int count = preparedQuery.execute(conn);
       return count;
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
   }
 
@@ -408,7 +424,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       .endModificationQuery();
   }
 
-  public int delete(Integer id) throws DynamicExpressionException, SQLException {
+  public int delete(Integer id) {
     if (id == null) return 0;
     Employee filter = new Employee();
     filter.setId(id);
@@ -419,6 +435,8 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     try (Connection conn = this.dataSource.getConnection()) {
       int count = preparedQuery.execute(conn);
       return count;
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
   }
 
@@ -438,7 +456,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       .endModificationQuery();
   }
 
-  public int delete(Employee example) throws DynamicExpressionException, SQLException {
+  public int delete(Employee example) {
     Parameters context = this.dyn.newParameters();
     context.add("e", example);
     PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(context);
@@ -446,6 +464,8 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     try (Connection conn = this.dataSource.getConnection()) {
       int count = preparedQuery.execute(conn);
       return count;
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
   }
 
@@ -560,13 +580,15 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     this.selectSequence0 = dyn.literaln("SELECT NEXT VALUE FOR employee_seq").endSelectQuery();
   }
 
-  public long getSequenceNextValue() throws SQLException, DynamicExpressionException {
+  public long getSequenceNextValue() {
     Parameters context = this.dyn.newParameters();
     PreparedSelectQuery<Long> preparedQuery = this.selectSequence0.prepare(context, this.sequenceRowReader);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       long value = preparedQuery.executeOne(conn);
       return value;
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
   }
 
@@ -578,13 +600,15 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     this.selectSequence1 = dyn.literaln("SELECT NEXT VALUE FOR hired_seq").endSelectQuery();
   }
 
-  public long getHiredNextValue() throws SQLException, DynamicExpressionException {
+  public long getHiredNextValue() {
     Parameters context = this.dyn.newParameters();
     PreparedSelectQuery<Long> preparedQuery = this.selectSequence1.prepare(context, this.sequenceRowReader);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       long value = preparedQuery.executeOne(conn);
       return value;
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
   }
 
