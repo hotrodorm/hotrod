@@ -164,8 +164,7 @@ public abstract class BooleanExpression extends ComparableExpression {
   }
 
   public final BooleanSyntaxExpression in(final Boolean... values) {
-    return new InList<BooleanExpression>(this,
-        Stream.of(values).map(v -> BoxUtil.box(v)).collect(Collectors.toList()));
+    return new InList<BooleanExpression>(this, Stream.of(values).map(v -> BoxUtil.box(v)).collect(Collectors.toList()));
   }
 
   public final BooleanSyntaxExpression notIn(final BooleanExpression... values) {

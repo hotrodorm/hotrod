@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.expressions.bool.BooleanSyntaxExpression;
 import org.hotrod.livesql.queries.QueryWriter;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 /**
  * <pre>
@@ -27,9 +27,9 @@ import org.hotrod.livesql.queries.QueryWriter;
 public class BooleanCaseClause extends BooleanSyntaxExpression {
 
   private List<CaseWhen> whens;
-  private BooleanExpression elseValue;
+  private Predicate elseValue;
 
-  public BooleanCaseClause(final BooleanExpression predicate, final BooleanExpression value) {
+  public BooleanCaseClause(final Predicate predicate, final Predicate value) {
     super(Expression.PRECEDENCE_CASE);
     this.whens = new ArrayList<CaseWhen>();
     this.whens.add(new CaseWhen(predicate, value));
@@ -38,13 +38,13 @@ public class BooleanCaseClause extends BooleanSyntaxExpression {
     super.register(value);
   }
 
-  void addWhen(final BooleanExpression predicate, final BooleanExpression value) {
+  void addWhen(final Predicate predicate, final Predicate value) {
     this.whens.add(new CaseWhen(predicate, value));
     super.register(predicate);
     super.register(value);
   }
 
-  void setElse(final BooleanExpression value) {
+  void setElse(final Predicate value) {
     this.elseValue = value;
     super.register(value);
   }
@@ -53,21 +53,21 @@ public class BooleanCaseClause extends BooleanSyntaxExpression {
 
   private static class CaseWhen {
 
-    private BooleanExpression predicate;
-    private BooleanExpression value;
+    private Predicate predicate;
+    private Predicate value;
 
-    public CaseWhen(final BooleanExpression predicate, final BooleanExpression value) {
+    public CaseWhen(final Predicate predicate, final Predicate value) {
       this.predicate = predicate;
       this.value = value;
     }
 
     // Getters
 
-    BooleanExpression getPredicate() {
+    Predicate getPredicate() {
       return predicate;
     }
 
-    BooleanExpression getValue() {
+    Predicate getValue() {
       return value;
     }
 

@@ -187,6 +187,12 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
   }
 
   @Override
+  public T executeOne(LiveSQLContext context, RowReader<T> rowReader) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
   public void flatten() {
     // Nothing to do
   }

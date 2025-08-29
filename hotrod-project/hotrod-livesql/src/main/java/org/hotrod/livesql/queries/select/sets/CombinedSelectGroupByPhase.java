@@ -3,8 +3,8 @@ package org.hotrod.livesql.queries.select.sets;
 import java.util.Arrays;
 
 import org.hotrod.livesql.expressions.ComparableExpression;
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.queries.LiveSQLContext;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public class CombinedSelectGroupByPhase<R> extends CombinedSelectPhase<R> {
 
@@ -18,7 +18,7 @@ public class CombinedSelectGroupByPhase<R> extends CombinedSelectPhase<R> {
 
   // Next stages
 
-  public CombinedSelectHavingPhase<R> having(final BooleanExpression predicate) {
+  public CombinedSelectHavingPhase<R> having(final Predicate predicate) {
     return new CombinedSelectHavingPhase<R>(this.context, this.combined, predicate);
   }
 

@@ -63,7 +63,6 @@ import org.hotrod.livesql.expressions.binary.BinaryExpression;
 import org.hotrod.livesql.expressions.binary.BinarySyntaxExpression;
 import org.hotrod.livesql.expressions.binary.EnclosedBinaryExpression;
 import org.hotrod.livesql.expressions.bool.BooleanConstant;
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.expressions.bool.BooleanLiteral;
 import org.hotrod.livesql.expressions.bool.BooleanSyntaxExpression;
 import org.hotrod.livesql.expressions.bool.EnclosedBooleanExpression;
@@ -136,6 +135,7 @@ import org.hotrod.livesql.queries.typesolver.TypeRule;
 import org.hotrod.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.livesql.sysobjects.DualTable;
 import org.hotrod.livesql.sysobjects.SysDummy1Table;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public class LiveSQL {
 
@@ -226,7 +226,7 @@ public class LiveSQL {
     return new CharSelectColumnsPhase(null, false, expression);
   }
 
-  public BooleanSelectColumnsPhase selectScalar(final BooleanExpression expression) {
+  public BooleanSelectColumnsPhase selectScalar(final Predicate expression) {
     return new BooleanSelectColumnsPhase(null, false, expression);
   }
 
@@ -286,7 +286,7 @@ public class LiveSQL {
 
   // Predicates
 
-  public BooleanSyntaxExpression not(final BooleanExpression a) {
+  public BooleanSyntaxExpression not(final Predicate a) {
     return new Not(a);
   }
 
@@ -377,7 +377,7 @@ public class LiveSQL {
     return new DateTimeMax(expression);
   }
 
-  public BooleanMax max(final BooleanExpression expression) {
+  public BooleanMax max(final Predicate expression) {
     return new BooleanMax(expression);
   }
 
@@ -403,7 +403,7 @@ public class LiveSQL {
     return new DateTimeMin(expression);
   }
 
-  public BooleanMin min(final BooleanExpression expression) {
+  public BooleanMin min(final Predicate expression) {
     return new BooleanMin(expression);
   }
 
@@ -534,34 +534,34 @@ public class LiveSQL {
 
   // === Lead Boolean ===
 
-  public BooleanLead lead(final BooleanExpression expression) {
+  public BooleanLead lead(final Predicate expression) {
     return new BooleanLead(expression);
   }
 
-  public BooleanLead lead(final BooleanExpression expression, final Number offset) {
+  public BooleanLead lead(final Predicate expression, final Number offset) {
     return new BooleanLead(expression, val(offset));
   }
 
-  public BooleanLead lead(final BooleanExpression expression, final NumericExpression offset) {
+  public BooleanLead lead(final Predicate expression, final NumericExpression offset) {
     return new BooleanLead(expression, offset);
   }
 
-  public BooleanLead lead(final BooleanExpression expression, final Number offset, final Boolean defaultValue) {
+  public BooleanLead lead(final Predicate expression, final Number offset, final Boolean defaultValue) {
     return new BooleanLead(expression, val(offset), val(defaultValue));
   }
 
-  public BooleanLead lead(final BooleanExpression expression, final NumericExpression offset,
+  public BooleanLead lead(final Predicate expression, final NumericExpression offset,
       final Boolean defaultValue) {
     return new BooleanLead(expression, offset, val(defaultValue));
   }
 
-  public BooleanLead lead(final BooleanExpression expression, final Number offset,
-      final BooleanExpression defaultValue) {
+  public BooleanLead lead(final Predicate expression, final Number offset,
+      final Predicate defaultValue) {
     return new BooleanLead(expression, val(offset), defaultValue);
   }
 
-  public BooleanLead lead(final BooleanExpression expression, final NumericExpression offset,
-      final BooleanExpression defaultValue) {
+  public BooleanLead lead(final Predicate expression, final NumericExpression offset,
+      final Predicate defaultValue) {
     return new BooleanLead(expression, offset, defaultValue);
   }
 
@@ -723,33 +723,33 @@ public class LiveSQL {
 
   // === Lag Boolean ===
 
-  public BooleanLag lag(final BooleanExpression expression) {
+  public BooleanLag lag(final Predicate expression) {
     return new BooleanLag(expression);
   }
 
-  public BooleanLag lag(final BooleanExpression expression, final Number offset) {
+  public BooleanLag lag(final Predicate expression, final Number offset) {
     return new BooleanLag(expression, val(offset));
   }
 
-  public BooleanLag lag(final BooleanExpression expression, final NumericExpression offset) {
+  public BooleanLag lag(final Predicate expression, final NumericExpression offset) {
     return new BooleanLag(expression, offset, null);
   }
 
-  public BooleanLag lag(final BooleanExpression expression, final Number offset, final Boolean defaultValue) {
+  public BooleanLag lag(final Predicate expression, final Number offset, final Boolean defaultValue) {
     return new BooleanLag(expression, val(offset), val(defaultValue));
   }
 
-  public BooleanLag lag(final BooleanExpression expression, final NumericExpression offset,
+  public BooleanLag lag(final Predicate expression, final NumericExpression offset,
       final Boolean defaultValue) {
     return new BooleanLag(expression, offset, val(defaultValue));
   }
 
-  public BooleanLag lag(final BooleanExpression expression, final Number offset, final BooleanExpression defaultValue) {
+  public BooleanLag lag(final Predicate expression, final Number offset, final Predicate defaultValue) {
     return new BooleanLag(expression, val(offset), defaultValue);
   }
 
-  public BooleanLag lag(final BooleanExpression expression, final NumericExpression offset,
-      final BooleanExpression defaultValue) {
+  public BooleanLag lag(final Predicate expression, final NumericExpression offset,
+      final Predicate defaultValue) {
     return new BooleanLag(expression, offset, defaultValue);
   }
 
@@ -817,51 +817,51 @@ public class LiveSQL {
 
   // Case
 
-  public NumericCaseWhenStage caseWhen(final BooleanExpression predicate, final Number value) {
+  public NumericCaseWhenStage caseWhen(final Predicate predicate, final Number value) {
     return new NumericCaseWhenStage(predicate, val(value));
   }
 
-  public NumericCaseWhenStage caseWhen(final BooleanExpression predicate, final NumericExpression value) {
+  public NumericCaseWhenStage caseWhen(final Predicate predicate, final NumericExpression value) {
     return new NumericCaseWhenStage(predicate, value);
   }
 
-  public CharCaseWhenStage caseWhen(final BooleanExpression predicate, final String value) {
+  public CharCaseWhenStage caseWhen(final Predicate predicate, final String value) {
     return new CharCaseWhenStage(predicate, val(value));
   }
 
-  public CharCaseWhenStage caseWhen(final BooleanExpression predicate, final CharExpression value) {
+  public CharCaseWhenStage caseWhen(final Predicate predicate, final CharExpression value) {
     return new CharCaseWhenStage(predicate, value);
   }
 
-  public DateTimeCaseWhenStage caseWhen(final BooleanExpression predicate, final Date value) {
+  public DateTimeCaseWhenStage caseWhen(final Predicate predicate, final Date value) {
     return new DateTimeCaseWhenStage(predicate, val(value));
   }
 
-  public DateTimeCaseWhenStage caseWhen(final BooleanExpression predicate, final DateTimeExpression value) {
+  public DateTimeCaseWhenStage caseWhen(final Predicate predicate, final DateTimeExpression value) {
     return new DateTimeCaseWhenStage(predicate, value);
   }
 
-  public BooleanCaseWhenStage caseWhen(final BooleanExpression predicate, final Boolean value) {
+  public BooleanCaseWhenStage caseWhen(final Predicate predicate, final Boolean value) {
     return new BooleanCaseWhenStage(predicate, val(value));
   }
 
-  public BooleanCaseWhenStage caseWhen(final BooleanExpression predicate, final BooleanExpression value) {
+  public BooleanCaseWhenStage caseWhen(final Predicate predicate, final Predicate value) {
     return new BooleanCaseWhenStage(predicate, value);
   }
 
-  public BinaryCaseWhenStage caseWhen(final BooleanExpression predicate, final byte[] value) {
+  public BinaryCaseWhenStage caseWhen(final Predicate predicate, final byte[] value) {
     return new BinaryCaseWhenStage(predicate, val(value));
   }
 
-  public BinaryCaseWhenStage caseWhen(final BooleanExpression predicate, final BinaryExpression value) {
+  public BinaryCaseWhenStage caseWhen(final Predicate predicate, final BinaryExpression value) {
     return new BinaryCaseWhenStage(predicate, value);
   }
 
-  public ObjectCaseWhenStage caseWhen(final BooleanExpression predicate, final Object value) {
+  public ObjectCaseWhenStage caseWhen(final Predicate predicate, final Object value) {
     return new ObjectCaseWhenStage(predicate, val(value));
   }
 
-  public ObjectCaseWhenStage caseWhen(final BooleanExpression predicate, final ObjectExpression value) {
+  public ObjectCaseWhenStage caseWhen(final Predicate predicate, final ObjectExpression value) {
     return new ObjectCaseWhenStage(predicate, value);
   }
 
@@ -987,7 +987,7 @@ public class LiveSQL {
     return new EnclosedDateTimeExpression(value);
   }
 
-  public BooleanSyntaxExpression enclose(final BooleanExpression value) {
+  public BooleanSyntaxExpression enclose(final Predicate value) {
     return new EnclosedBooleanExpression(value);
   }
 

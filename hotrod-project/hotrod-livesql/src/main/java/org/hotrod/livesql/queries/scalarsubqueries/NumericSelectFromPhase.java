@@ -4,7 +4,6 @@ import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.Available;
 import org.hotrod.livesql.dialects.Const;
 import org.hotrod.livesql.expressions.ComparableExpression;
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.select.CrossJoin;
@@ -22,6 +21,7 @@ import org.hotrod.livesql.queries.select.UnarySelectObject;
 import org.hotrod.livesql.queries.select.TableExpression;
 import org.hotrod.livesql.queries.select.UnionJoin;
 import org.hotrod.livesql.queries.subqueries.Subquery;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public class NumericSelectFromPhase extends NumericSelectExpression {
 
@@ -34,7 +34,7 @@ public class NumericSelectFromPhase extends NumericSelectExpression {
 
   // This stage
 
-  public NumericSelectFromPhase join(final TableExpression tableViewOrSubquery, final BooleanExpression on) {
+  public NumericSelectFromPhase join(final TableExpression tableViewOrSubquery, final Predicate on) {
     this.select.addJoin(new InnerJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -44,7 +44,7 @@ public class NumericSelectFromPhase extends NumericSelectExpression {
     return this;
   }
 
-  public NumericSelectFromPhase leftJoin(final TableExpression tableViewOrSubquery, final BooleanExpression on) {
+  public NumericSelectFromPhase leftJoin(final TableExpression tableViewOrSubquery, final Predicate on) {
     this.select.addJoin(new LeftOuterJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -54,7 +54,7 @@ public class NumericSelectFromPhase extends NumericSelectExpression {
     return this;
   }
 
-  public NumericSelectFromPhase rightJoin(final TableExpression tableViewOrSubquery, final BooleanExpression on) {
+  public NumericSelectFromPhase rightJoin(final TableExpression tableViewOrSubquery, final Predicate on) {
     this.select.addJoin(new RightOuterJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -64,7 +64,7 @@ public class NumericSelectFromPhase extends NumericSelectExpression {
     return this;
   }
 
-  public NumericSelectFromPhase fullJoin(final TableExpression tableViewOrSubquery, final BooleanExpression on) {
+  public NumericSelectFromPhase fullJoin(final TableExpression tableViewOrSubquery, final Predicate on) {
     this.select.addJoin(new FullOuterJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -124,7 +124,7 @@ public class NumericSelectFromPhase extends NumericSelectExpression {
 
   // Next stages
 
-  public NumericSelectWherePhase where(final BooleanExpression predicate) {
+  public NumericSelectWherePhase where(final Predicate predicate) {
     return new NumericSelectWherePhase(this.select, predicate);
   }
 

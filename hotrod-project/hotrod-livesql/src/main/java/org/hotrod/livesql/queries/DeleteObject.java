@@ -5,13 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import org.hotrod.livesql.expressions.Shield;
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.metadata.TableOrView;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public class DeleteObject {
 
   private TableOrView from;
-  private BooleanExpression wherePredicate;
+  private Predicate wherePredicate;
 
   DeleteObject() {
     super();
@@ -21,7 +21,7 @@ public class DeleteObject {
     this.from = from;
   }
 
-  void setWherePredicate(final BooleanExpression predicate) {
+  void setWherePredicate(final Predicate predicate) {
     this.wherePredicate = predicate;
   }
 

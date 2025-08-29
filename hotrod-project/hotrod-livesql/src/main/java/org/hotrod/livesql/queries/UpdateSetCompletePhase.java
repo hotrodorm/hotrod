@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.TableOrView;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public class UpdateSetCompletePhase implements DMLQuery {
 
@@ -45,7 +45,7 @@ public class UpdateSetCompletePhase implements DMLQuery {
   }
 
   public UpdateSetCompletePhase(final LiveSQLContext context, final TableOrView tableOrView, final List<Setter> setters,
-      final BooleanExpression predicate) {
+      final Predicate predicate) {
     log.info("### setters = " + setters.size());
     this.context = context;
     this.update = new UpdateObject();
@@ -61,7 +61,7 @@ public class UpdateSetCompletePhase implements DMLQuery {
 
   // Next phases
 
-  public UpdateWherePhase where(final BooleanExpression predicate) {
+  public UpdateWherePhase where(final Predicate predicate) {
     return new UpdateWherePhase(this.context, this.update, predicate);
   }
 

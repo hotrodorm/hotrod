@@ -4,7 +4,6 @@ import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.Available;
 import org.hotrod.livesql.dialects.Const;
 import org.hotrod.livesql.expressions.ComparableExpression;
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.select.CrossJoin;
@@ -22,6 +21,7 @@ import org.hotrod.livesql.queries.select.UnarySelectObject;
 import org.hotrod.livesql.queries.select.TableExpression;
 import org.hotrod.livesql.queries.select.UnionJoin;
 import org.hotrod.livesql.queries.subqueries.Subquery;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public class BooleanSelectFromPhase extends BooleanSelectExpression {
 
@@ -34,7 +34,7 @@ public class BooleanSelectFromPhase extends BooleanSelectExpression {
 
   // This stage
 
-  public BooleanSelectFromPhase join(final TableExpression tableViewOrSubquery, final BooleanExpression on) {
+  public BooleanSelectFromPhase join(final TableExpression tableViewOrSubquery, final Predicate on) {
     this.select.addJoin(new InnerJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -44,7 +44,7 @@ public class BooleanSelectFromPhase extends BooleanSelectExpression {
     return this;
   }
 
-  public BooleanSelectFromPhase leftJoin(final TableExpression tableViewOrSubquery, final BooleanExpression on) {
+  public BooleanSelectFromPhase leftJoin(final TableExpression tableViewOrSubquery, final Predicate on) {
     this.select.addJoin(new LeftOuterJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -55,7 +55,7 @@ public class BooleanSelectFromPhase extends BooleanSelectExpression {
   }
 
   public BooleanSelectFromPhase rightJoin(final TableExpression tableViewOrSubquery,
-      final BooleanExpression on) {
+      final Predicate on) {
     this.select.addJoin(new RightOuterJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -65,7 +65,7 @@ public class BooleanSelectFromPhase extends BooleanSelectExpression {
     return this;
   }
 
-  public BooleanSelectFromPhase fullJoin(final TableExpression tableViewOrSubquery, final BooleanExpression on) {
+  public BooleanSelectFromPhase fullJoin(final TableExpression tableViewOrSubquery, final Predicate on) {
     this.select.addJoin(new FullOuterJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -125,7 +125,7 @@ public class BooleanSelectFromPhase extends BooleanSelectExpression {
 
   // Next stages
 
-  public BooleanSelectWherePhase where(final BooleanExpression predicate) {
+  public BooleanSelectWherePhase where(final Predicate predicate) {
     return new BooleanSelectWherePhase(this.select, predicate);
   }
 

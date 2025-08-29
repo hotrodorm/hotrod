@@ -4,9 +4,9 @@ import java.util.Arrays;
 
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.expressions.ComparableExpression;
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.select.UnarySelectObject;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public class NumericSelectGroupByPhase extends NumericSelectExpression {
 
@@ -19,7 +19,7 @@ public class NumericSelectGroupByPhase extends NumericSelectExpression {
 
   // Next stages
 
-  public NumericSelectHavingPhase having(final BooleanExpression predicate) {
+  public NumericSelectHavingPhase having(final Predicate predicate) {
     return new NumericSelectHavingPhase(this.select, predicate);
   }
 

@@ -5,10 +5,10 @@ DONE 2. [alta] Operaciones de "insert" reciben como parámetro un objeto-model e
 
 3. [alta] Operaciones de "update" retornan 'null' en lugar de un número que representa la cantidad de filas afectadas.
 
-4. [media] Tag <sequence> fue removido en la versión 5. El workaround de obtener un 'sequence' a través de un tag <select> obliga a modificar 
+DONE 4. [media] Tag <sequence> fue removido en la versión 5. El workaround de obtener un 'sequence' a través de un tag <select> obliga a modificar 
           el código fuente (para sacar una propiedad dentro del objeto generado en lugar del dato primitivo como retorno).
 
-5. [media] Restaurar el "Predicate" (marcado deprecado)
+DONE 5. [media] Restaurar el "Predicate" (marcado deprecado)
 
 6. [media] Restaurar "parseRow" (marcado deprecado)
 

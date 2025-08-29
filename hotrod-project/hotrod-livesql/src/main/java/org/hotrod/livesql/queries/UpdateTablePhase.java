@@ -4,7 +4,6 @@ import java.util.Date;
 
 import org.hotrod.livesql.expressions.NullLiteral;
 import org.hotrod.livesql.expressions.binary.BinaryExpression;
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.expressions.character.CharExpression;
 import org.hotrod.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.livesql.expressions.numeric.NumericExpression;
@@ -17,6 +16,7 @@ import org.hotrod.livesql.metadata.ObjectEntityColumn;
 import org.hotrod.livesql.metadata.CharEntityColumn;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.util.BoxUtil;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public class UpdateTablePhase {
 
@@ -80,7 +80,7 @@ public class UpdateTablePhase {
     return new UpdateSetPhase(this.context, this.update);
   }
 
-  public UpdateSetPhase set(final BooleanEntityColumn column, final BooleanExpression expression) {
+  public UpdateSetPhase set(final BooleanEntityColumn column, final Predicate expression) {
     this.update.addSetter(column, expression);
     return new UpdateSetPhase(this.context, this.update);
   }

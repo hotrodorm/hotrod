@@ -31,7 +31,6 @@ import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.metadata.AllColumns;
 import org.hotrod.livesql.metadata.CharEntityColumn;
 import org.hotrod.livesql.metadata.Name;
@@ -45,6 +44,7 @@ import org.hotrod.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.utils.SQLUtil;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -180,7 +180,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   // SELECT BY CRITERIA
 
-  public CriteriaWherePhase<Product> select(final ProductTable from, final BooleanExpression predicate) {
+  public CriteriaWherePhase<Product> select(final ProductTable from, final Predicate predicate) {
     return new CriteriaWherePhase<Product>(this.context, from, predicate, this.rowReader);
   }
 
@@ -283,7 +283,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   // UPDATE BY CRITERIA
 
   public UpdateSetCompletePhase update(final Product values, final ProductTable tableOrView,
-      final BooleanExpression predicate) {
+      final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
     if (values.getType() != null) setters.add(new Setter(tableOrView.type, sql.val(values.getType())));
@@ -321,7 +321,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   // DELETE BY CRITERIA
 
-  public DeleteWherePhase delete(final ProductTable from, final BooleanExpression predicate) {
+  public DeleteWherePhase delete(final ProductTable from, final Predicate predicate) {
     return new DeleteWherePhase(this.context, from, predicate);
   }
 

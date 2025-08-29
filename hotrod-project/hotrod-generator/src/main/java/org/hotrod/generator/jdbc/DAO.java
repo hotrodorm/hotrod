@@ -57,7 +57,6 @@ import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.expressions.bool.converter.ConvertedColumn;
 import org.hotrod.livesql.metadata.AllColumns;
 import org.hotrod.livesql.metadata.BinaryEntityColumn;
@@ -84,6 +83,7 @@ import org.hotrod.metadata.OptimisticLockingMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.SelectMethodReturnType;
 import org.hotrod.metadata.SelectParameterMetadata;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.AbstractClassWriter.ExternalClass;
 import org.hotrod.utils.ClassPackage;
@@ -542,7 +542,7 @@ public class DAO {
     w.println("  // SELECT BY CRITERIA");
     w.println();
     w.print("  public ", CriteriaWherePhase.class, "<", em, "> ");
-    w.println("select(final ", ec, " from, final ", BooleanExpression.class, " predicate) {");
+    w.println("select(final ", ec, " from, final ", Predicate.class, " predicate) {");
     w.println("    return new ", CriteriaWherePhase.class, "<", em,
         ">(this.context, from, predicate, this.rowReader);");
     w.println("  }");
@@ -1012,7 +1012,7 @@ public class DAO {
     w.println();
     w.print("  public ", UpdateSetCompletePhase.class, " update(final ", em, " values, ");
     w.println("final ", ec, " tableOrView,");
-    w.println("      final ", BooleanExpression.class, " predicate) {");
+    w.println("      final ", Predicate.class, " predicate) {");
     w.print("    ", List.class, "<", Setter.class, "> setters");
     w.println(" = new ", ArrayList.class, "<>();");
 
@@ -1164,7 +1164,7 @@ public class DAO {
     w.println("  // DELETE BY CRITERIA");
     w.println();
     w.print("  public ", DeleteWherePhase.class);
-    w.println(" delete(final ", ec, " from, final ", BooleanExpression.class, " predicate) {");
+    w.println(" delete(final ", ec, " from, final ", Predicate.class, " predicate) {");
     w.println("    return new ", DeleteWherePhase.class, "(this.context, from, predicate);");
     w.println("  }");
   }

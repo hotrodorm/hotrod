@@ -212,7 +212,8 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
 
   @Override
   public List<T> execute(LiveSQLContext context, RowReader<T> rowReader) {
-    throw new UnsupportedOperationException();
+    LiveSQLPreparedQuery q = this.prepareQuery(context);
+    return executeLiveSQL(context, q, rowReader);
   }
 
   @Override
@@ -237,6 +238,12 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
   @Override
   public T executeOne(final LiveSQLContext context) {
     throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public T executeOne(final LiveSQLContext context, RowReader<T> rowReader) {
+    LiveSQLPreparedQuery q = this.prepareQuery(context);
+    return executeLiveSQLOne(context, q, rowReader);
   }
 
   @Override

@@ -4,11 +4,11 @@ import org.hotrod.livesql.expressions.analytics.BooleanWindowExpression;
 import org.hotrod.livesql.expressions.analytics.BooleanWindowFunctionOverStage;
 import org.hotrod.livesql.expressions.analytics.WindowableAggregationFunction;
 import org.hotrod.livesql.expressions.bool.BooleanFunction;
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public class BooleanMax extends BooleanFunction implements WindowableAggregationFunction {
 
-  public BooleanMax(final BooleanExpression expression) {
+  public BooleanMax(final Predicate expression) {
     super("max(#{})", expression);
   }
 

@@ -4,15 +4,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.hotrod.livesql.exceptions.InvalidLiveSQLClauseException;
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public abstract class PredicatedJoin extends Join {
 
-  private BooleanExpression predicate;
+  private Predicate predicate;
   private List<EntityColumn> using;
 
-  public PredicatedJoin(final TableExpression tableExpression, final BooleanExpression predicate) {
+  public PredicatedJoin(final TableExpression tableExpression, final Predicate predicate) {
     super(tableExpression);
     if (predicate == null) {
       throw new InvalidLiveSQLClauseException("The join predicate cannot be null");
@@ -31,7 +31,7 @@ public abstract class PredicatedJoin extends Join {
     this.using = Arrays.asList(using);
   }
 
-  public BooleanExpression getJoinPredicate() {
+  public Predicate getJoinPredicate() {
     return this.predicate;
   }
 

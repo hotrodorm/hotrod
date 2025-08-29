@@ -4,7 +4,6 @@ import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.Available;
 import org.hotrod.livesql.dialects.Const;
 import org.hotrod.livesql.expressions.ComparableExpression;
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.select.CrossJoin;
@@ -22,6 +21,7 @@ import org.hotrod.livesql.queries.select.UnarySelectObject;
 import org.hotrod.livesql.queries.select.TableExpression;
 import org.hotrod.livesql.queries.select.UnionJoin;
 import org.hotrod.livesql.queries.subqueries.Subquery;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public class ObjectSelectFromPhase extends ObjectSelectExpression {
 
@@ -34,7 +34,7 @@ public class ObjectSelectFromPhase extends ObjectSelectExpression {
 
   // This stage
 
-  public ObjectSelectFromPhase join(final TableExpression tableViewOrSubquery, final BooleanExpression on) {
+  public ObjectSelectFromPhase join(final TableExpression tableViewOrSubquery, final Predicate on) {
     this.select.addJoin(new InnerJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -44,7 +44,7 @@ public class ObjectSelectFromPhase extends ObjectSelectExpression {
     return this;
   }
 
-  public ObjectSelectFromPhase leftJoin(final TableExpression tableViewOrSubquery, final BooleanExpression on) {
+  public ObjectSelectFromPhase leftJoin(final TableExpression tableViewOrSubquery, final Predicate on) {
     this.select.addJoin(new LeftOuterJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -54,7 +54,7 @@ public class ObjectSelectFromPhase extends ObjectSelectExpression {
     return this;
   }
 
-  public ObjectSelectFromPhase rightJoin(final TableExpression tableViewOrSubquery, final BooleanExpression on) {
+  public ObjectSelectFromPhase rightJoin(final TableExpression tableViewOrSubquery, final Predicate on) {
     this.select.addJoin(new RightOuterJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -64,7 +64,7 @@ public class ObjectSelectFromPhase extends ObjectSelectExpression {
     return this;
   }
 
-  public ObjectSelectFromPhase fullJoin(final TableExpression tableViewOrSubquery, final BooleanExpression on) {
+  public ObjectSelectFromPhase fullJoin(final TableExpression tableViewOrSubquery, final Predicate on) {
     this.select.addJoin(new FullOuterJoin(tableViewOrSubquery, on));
     return this;
   }
@@ -124,7 +124,7 @@ public class ObjectSelectFromPhase extends ObjectSelectExpression {
 
   // Next stages
 
-  public ObjectSelectWherePhase where(final BooleanExpression predicate) {
+  public ObjectSelectWherePhase where(final Predicate predicate) {
     return new ObjectSelectWherePhase(this.select, predicate);
   }
 
