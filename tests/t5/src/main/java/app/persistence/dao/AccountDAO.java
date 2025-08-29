@@ -32,7 +32,6 @@ import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.expressions.bool.converter.ConvertedColumn;
 import org.hotrod.livesql.metadata.AllColumns;
 import org.hotrod.livesql.metadata.BinaryEntityColumn;
@@ -49,6 +48,7 @@ import org.hotrod.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.utils.SQLUtil;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -286,7 +286,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   // SELECT BY CRITERIA
 
-  public CriteriaWherePhase<Account> select(final AccountTable from, final BooleanExpression predicate) {
+  public CriteriaWherePhase<Account> select(final AccountTable from, final Predicate predicate) {
     return new CriteriaWherePhase<Account>(this.context, from, predicate, this.rowReader);
   }
 
@@ -451,7 +451,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   // UPDATE BY CRITERIA
 
   public UpdateSetCompletePhase update(final Account values, final AccountTable tableOrView,
-      final BooleanExpression predicate) {
+      final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
     if (values.getName() != null) setters.add(new Setter(tableOrView.name, sql.val(values.getName())));
@@ -522,7 +522,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   // DELETE BY CRITERIA
 
-  public DeleteWherePhase delete(final AccountTable from, final BooleanExpression predicate) {
+  public DeleteWherePhase delete(final AccountTable from, final Predicate predicate) {
     return new DeleteWherePhase(this.context, from, predicate);
   }
 

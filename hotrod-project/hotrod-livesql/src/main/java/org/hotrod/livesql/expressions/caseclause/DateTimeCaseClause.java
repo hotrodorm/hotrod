@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.expressions.datetime.DateTimeSyntaxExpression;
 import org.hotrod.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.livesql.queries.QueryWriter;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 /**
  * <pre>
@@ -30,7 +30,7 @@ public class DateTimeCaseClause extends DateTimeSyntaxExpression {
   private List<CaseWhen> whens;
   private DateTimeExpression elseValue;
 
-  public DateTimeCaseClause(final BooleanExpression predicate, final DateTimeExpression value) {
+  public DateTimeCaseClause(final Predicate predicate, final DateTimeExpression value) {
     super(Expression.PRECEDENCE_CASE);
     this.whens = new ArrayList<CaseWhen>();
     this.whens.add(new CaseWhen(predicate, value));
@@ -39,7 +39,7 @@ public class DateTimeCaseClause extends DateTimeSyntaxExpression {
     super.register(value);
   }
 
-  void addWhen(final BooleanExpression predicate, final DateTimeExpression value) {
+  void addWhen(final Predicate predicate, final DateTimeExpression value) {
     this.whens.add(new CaseWhen(predicate, value));
     super.register(predicate);
     super.register(value);
@@ -54,17 +54,17 @@ public class DateTimeCaseClause extends DateTimeSyntaxExpression {
 
   private static class CaseWhen {
 
-    private BooleanExpression predicate;
+    private Predicate predicate;
     private DateTimeExpression value;
 
-    public CaseWhen(final BooleanExpression predicate, final DateTimeExpression value) {
+    public CaseWhen(final Predicate predicate, final DateTimeExpression value) {
       this.predicate = predicate;
       this.value = value;
     }
 
     // Getters
 
-    BooleanExpression getPredicate() {
+    Predicate getPredicate() {
       return predicate;
     }
 

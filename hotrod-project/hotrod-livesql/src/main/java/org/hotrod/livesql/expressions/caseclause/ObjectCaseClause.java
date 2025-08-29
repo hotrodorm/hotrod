@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.expressions.object.ObjectExpression;
 import org.hotrod.livesql.expressions.object.ObjectSyntaxExpression;
 import org.hotrod.livesql.queries.QueryWriter;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 /**
  * <pre>
@@ -30,7 +30,7 @@ public class ObjectCaseClause extends ObjectSyntaxExpression {
   private List<CaseWhen> whens;
   private ObjectExpression elseValue;
 
-  public ObjectCaseClause(final BooleanExpression predicate, final ObjectExpression value) {
+  public ObjectCaseClause(final Predicate predicate, final ObjectExpression value) {
     super(Expression.PRECEDENCE_CASE);
     this.whens = new ArrayList<CaseWhen>();
     this.whens.add(new CaseWhen(predicate, value));
@@ -39,7 +39,7 @@ public class ObjectCaseClause extends ObjectSyntaxExpression {
     super.register(value);
   }
 
-  void addWhen(final BooleanExpression predicate, final ObjectExpression value) {
+  void addWhen(final Predicate predicate, final ObjectExpression value) {
     this.whens.add(new CaseWhen(predicate, value));
     super.register(predicate);
     super.register(value);
@@ -54,17 +54,17 @@ public class ObjectCaseClause extends ObjectSyntaxExpression {
 
   private static class CaseWhen {
 
-    private BooleanExpression predicate;
+    private Predicate predicate;
     private ObjectExpression value;
 
-    public CaseWhen(final BooleanExpression predicate, final ObjectExpression value) {
+    public CaseWhen(final Predicate predicate, final ObjectExpression value) {
       this.predicate = predicate;
       this.value = value;
     }
 
     // Getters
 
-    BooleanExpression getPredicate() {
+    Predicate getPredicate() {
       return predicate;
     }
 

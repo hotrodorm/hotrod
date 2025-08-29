@@ -37,7 +37,7 @@ public abstract class CriteriaPhase<T> implements EntitySelect<T> {
   }
 
   public final T executeOne() {
-    return this.select.executeOne(this.context);
+    return this.select.executeOne(this.context, this.rowReader);
   }
 
   // rendering

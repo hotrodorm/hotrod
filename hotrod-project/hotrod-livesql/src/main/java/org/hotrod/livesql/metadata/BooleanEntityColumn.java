@@ -1,13 +1,13 @@
 package org.hotrod.livesql.metadata;
 
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.subqueries.BooleanSubqueryExpression;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
-public class BooleanEntityColumn extends BooleanExpression implements EntityColumn {
+public class BooleanEntityColumn extends Predicate implements EntityColumn {
 
   // Properties
 

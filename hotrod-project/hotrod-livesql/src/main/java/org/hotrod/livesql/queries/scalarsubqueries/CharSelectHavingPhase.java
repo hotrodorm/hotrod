@@ -1,15 +1,15 @@
 package org.hotrod.livesql.queries.scalarsubqueries;
 
 import org.hotrod.dynamicsql.Row;
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.select.UnarySelectObject;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public class CharSelectHavingPhase extends CharSelectExpression {
 
   // Constructor
 
-  CharSelectHavingPhase(final UnarySelectObject<Row> select, final BooleanExpression predicate) {
+  CharSelectHavingPhase(final UnarySelectObject<Row> select, final Predicate predicate) {
     super(select);
     if (predicate != null) {
       this.select.setHavingCondition(predicate);

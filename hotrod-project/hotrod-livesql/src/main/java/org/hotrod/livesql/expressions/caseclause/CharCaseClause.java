@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.expressions.character.CharExpression;
 import org.hotrod.livesql.expressions.character.CharSyntaxExpression;
 import org.hotrod.livesql.queries.QueryWriter;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 /**
  * <pre>
@@ -30,7 +30,7 @@ public class CharCaseClause extends CharSyntaxExpression {
   private List<CaseWhen> whens;
   private CharExpression elseValue;
 
-  public CharCaseClause(final BooleanExpression predicate, final CharExpression value) {
+  public CharCaseClause(final Predicate predicate, final CharExpression value) {
     super(Expression.PRECEDENCE_CASE);
     this.whens = new ArrayList<CaseWhen>();
     this.whens.add(new CaseWhen(predicate, value));
@@ -39,7 +39,7 @@ public class CharCaseClause extends CharSyntaxExpression {
     super.register(value);
   }
 
-  void addWhen(final BooleanExpression predicate, final CharExpression value) {
+  void addWhen(final Predicate predicate, final CharExpression value) {
     this.whens.add(new CaseWhen(predicate, value));
     super.register(predicate);
     super.register(value);
@@ -54,17 +54,17 @@ public class CharCaseClause extends CharSyntaxExpression {
 
   private static class CaseWhen {
 
-    private BooleanExpression predicate;
+    private Predicate predicate;
     private CharExpression value;
 
-    public CaseWhen(final BooleanExpression predicate, final CharExpression value) {
+    public CaseWhen(final Predicate predicate, final CharExpression value) {
       this.predicate = predicate;
       this.value = value;
     }
 
     // Getters
 
-    BooleanExpression getPredicate() {
+    Predicate getPredicate() {
       return predicate;
     }
 

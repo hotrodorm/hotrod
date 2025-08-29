@@ -3,7 +3,6 @@ package org.hotrod.livesql.queries;
 import java.util.Date;
 
 import org.hotrod.livesql.expressions.binary.BinaryExpression;
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.expressions.character.CharExpression;
 import org.hotrod.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.livesql.expressions.numeric.NumericExpression;
@@ -15,6 +14,7 @@ import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.ObjectEntityColumn;
 import org.hotrod.livesql.metadata.CharEntityColumn;
 import org.hotrod.livesql.util.BoxUtil;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public class UpdateSetPhase implements DMLQuery {
 
@@ -62,7 +62,7 @@ public class UpdateSetPhase implements DMLQuery {
     return new UpdateSetPhase(this.context, this.update);
   }
 
-  public UpdateSetPhase set(final BooleanEntityColumn column, final BooleanExpression expression) {
+  public UpdateSetPhase set(final BooleanEntityColumn column, final Predicate expression) {
     this.update.addSetter(column, expression);
     return new UpdateSetPhase(this.context, this.update);
   }
@@ -94,7 +94,7 @@ public class UpdateSetPhase implements DMLQuery {
 
   // Next phases
 
-  public UpdateWherePhase where(final BooleanExpression predicate) {
+  public UpdateWherePhase where(final Predicate predicate) {
     return new UpdateWherePhase(this.context, this.update, predicate);
   }
 

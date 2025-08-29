@@ -342,6 +342,13 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
   }
 
   @Override
+  public T executeOne(LiveSQLContext context, RowReader<T> rowReader) {
+    LiveSQLPreparedQuery q = this.prepareQuery(context);
+    T row = super.executeLiveSQLOne(context, q, rowReader);
+    return row;
+  }
+
+  @Override
   public Cursor<T> executeCursor(final LiveSQLContext context) throws SQLException {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     RowReader<T> rowReader = this.first.getRowReader();

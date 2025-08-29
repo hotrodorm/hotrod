@@ -61,6 +61,8 @@ public abstract class MultiSet<T> {
 
   public abstract T executeOne(final LiveSQLContext context);
 
+  public abstract T executeOne(final LiveSQLContext context, RowReader<T> rowReader);
+
   public String getPreview(final LiveSQLContext context, final boolean includeParameters) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     return q.getPreview(includeParameters);

@@ -13,7 +13,6 @@ import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.SQLExpression;
 import org.hotrod.livesql.expressions.Shield;
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.SQLMetaExpression;
 import org.hotrod.livesql.ordering.OHelper;
@@ -28,6 +27,7 @@ import org.hotrod.livesql.queries.select.UnarySelectObject.LockingConcurrency;
 import org.hotrod.livesql.queries.select.UnarySelectObject.LockingMode;
 import org.hotrod.livesql.util.OUtil;
 import org.hotrod.livesql.util.ToString;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.utils.SUtil;
 import org.hotrod.utils.Separator;
 
@@ -46,9 +46,9 @@ public abstract class BaseSelectObject<T> extends MultiSet<T> {
   protected TableExpression from = null;
   protected List<Join> joins = null;
 
-  protected BooleanExpression wherePredicate = null;
+  protected Predicate wherePredicate = null;
   protected List<ComparableExpression> groupBy = null;
-  protected BooleanExpression havingPredicate = null;
+  protected Predicate havingPredicate = null;
   protected List<OrderingTerm> orderingTerms = null;
   protected Integer offset = null;
   protected Integer limit = null;
@@ -138,7 +138,7 @@ public abstract class BaseSelectObject<T> extends MultiSet<T> {
     this.joins.add(join);
   }
 
-  public void setWhereCondition(final BooleanExpression whereCondition) {
+  public void setWhereCondition(final Predicate whereCondition) {
     this.wherePredicate = whereCondition;
   }
 
@@ -146,7 +146,7 @@ public abstract class BaseSelectObject<T> extends MultiSet<T> {
     this.groupBy = groupBy;
   }
 
-  public void setHavingCondition(final BooleanExpression havingCondition) {
+  public void setHavingCondition(final Predicate havingCondition) {
     this.havingPredicate = havingCondition;
   }
 
@@ -406,11 +406,11 @@ public abstract class BaseSelectObject<T> extends MultiSet<T> {
 
   // Getters
 
-  BooleanExpression getWhereCondition() {
+  Predicate getWhereCondition() {
     return wherePredicate;
   }
 
-  BooleanExpression getHavingCondition() {
+  Predicate getHavingCondition() {
     return havingPredicate;
   }
 

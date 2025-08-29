@@ -1,26 +1,26 @@
 package org.hotrod.livesql.expressions.caseclause;
 
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.expressions.object.ObjectExpression;
 import org.hotrod.livesql.expressions.object.ObjectSyntaxExpression;
 import org.hotrod.livesql.util.BoxUtil;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public class ObjectCaseWhenStage {
 
   private ObjectCaseClause clause;
 
-  public ObjectCaseWhenStage(final BooleanExpression predicate, final ObjectExpression value) {
+  public ObjectCaseWhenStage(final Predicate predicate, final ObjectExpression value) {
     this.clause = new ObjectCaseClause(predicate, value);
   }
 
   // Same stage
 
-  public ObjectCaseWhenStage when(final BooleanExpression predicate, final ObjectExpression value) {
+  public ObjectCaseWhenStage when(final Predicate predicate, final ObjectExpression value) {
     this.clause.addWhen(predicate, value);
     return this;
   }
 
-  public ObjectCaseWhenStage when(final BooleanExpression predicate, final Object value) {
+  public ObjectCaseWhenStage when(final Predicate predicate, final Object value) {
     this.clause.addWhen(predicate, BoxUtil.box(value));
     return this;
   }

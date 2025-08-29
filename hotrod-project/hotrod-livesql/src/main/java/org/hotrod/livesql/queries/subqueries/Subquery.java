@@ -11,7 +11,6 @@ import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.binary.BinaryExpression;
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.expressions.character.CharExpression;
 import org.hotrod.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.livesql.expressions.numeric.NumericExpression;
@@ -26,6 +25,7 @@ import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
 import org.hotrod.livesql.queries.select.sets.CombinedSelectObject;
 import org.hotrod.livesql.queries.select.sets.MShield;
 import org.hotrod.livesql.util.ToString;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.utils.SUtil;
 
 public class Subquery extends TableExpression {
@@ -89,7 +89,7 @@ public class Subquery extends TableExpression {
     return new DateTimeSubqueryExpression(this, name, null);
   }
 
-  public BooleanExpression bool(final String name) {
+  public Predicate bool(final String name) {
     return new BooleanSubqueryExpression(this, name, null);
   }
 

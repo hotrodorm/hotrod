@@ -6,8 +6,8 @@ import java.util.List;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.binary.BinarySyntaxExpression;
 import org.hotrod.livesql.expressions.binary.BinaryExpression;
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.queries.QueryWriter;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 /**
  * <pre>
@@ -30,7 +30,7 @@ public class BinaryCaseClause extends BinarySyntaxExpression {
   private List<CaseWhen> whens;
   private BinaryExpression elseValue;
 
-  public BinaryCaseClause(final BooleanExpression predicate, final BinaryExpression value) {
+  public BinaryCaseClause(final Predicate predicate, final BinaryExpression value) {
     super(Expression.PRECEDENCE_CASE);
     this.whens = new ArrayList<CaseWhen>();
     this.whens.add(new CaseWhen(predicate, value));
@@ -39,7 +39,7 @@ public class BinaryCaseClause extends BinarySyntaxExpression {
     super.register(value);
   }
 
-  void addWhen(final BooleanExpression predicate, final BinaryExpression value) {
+  void addWhen(final Predicate predicate, final BinaryExpression value) {
     this.whens.add(new CaseWhen(predicate, value));
     super.register(predicate);
     super.register(value);
@@ -54,17 +54,17 @@ public class BinaryCaseClause extends BinarySyntaxExpression {
 
   private static class CaseWhen {
 
-    private BooleanExpression predicate;
+    private Predicate predicate;
     private BinaryExpression value;
 
-    public CaseWhen(final BooleanExpression predicate, final BinaryExpression value) {
+    public CaseWhen(final Predicate predicate, final BinaryExpression value) {
       this.predicate = predicate;
       this.value = value;
     }
 
     // Getters
 
-    BooleanExpression getPredicate() {
+    Predicate getPredicate() {
       return predicate;
     }
 

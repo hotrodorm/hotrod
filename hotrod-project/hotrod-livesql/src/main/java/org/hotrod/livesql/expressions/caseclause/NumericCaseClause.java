@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.expressions.numeric.NumericExpression;
 import org.hotrod.livesql.expressions.numeric.NumericSyntaxExpression;
 import org.hotrod.livesql.queries.QueryWriter;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 /**
  * <pre>
@@ -30,7 +30,7 @@ public class NumericCaseClause extends NumericSyntaxExpression {
   private List<CaseWhen> whens;
   private NumericExpression elseValue;
 
-  public NumericCaseClause(final BooleanExpression predicate, final NumericExpression value) {
+  public NumericCaseClause(final Predicate predicate, final NumericExpression value) {
     super(Expression.PRECEDENCE_CASE);
     this.whens = new ArrayList<CaseWhen>();
     this.whens.add(new CaseWhen(predicate, value));
@@ -39,7 +39,7 @@ public class NumericCaseClause extends NumericSyntaxExpression {
     super.register(value);
   }
 
-  void addWhen(final BooleanExpression predicate, final NumericExpression value) {
+  void addWhen(final Predicate predicate, final NumericExpression value) {
     this.whens.add(new CaseWhen(predicate, value));
     super.register(predicate);
     super.register(value);
@@ -54,17 +54,17 @@ public class NumericCaseClause extends NumericSyntaxExpression {
 
   private static class CaseWhen {
 
-    private BooleanExpression predicate;
+    private Predicate predicate;
     private NumericExpression value;
 
-    public CaseWhen(final BooleanExpression predicate, final NumericExpression value) {
+    public CaseWhen(final Predicate predicate, final NumericExpression value) {
       this.predicate = predicate;
       this.value = value;
     }
 
     // Getters
 
-    BooleanExpression getPredicate() {
+    Predicate getPredicate() {
       return predicate;
     }
 

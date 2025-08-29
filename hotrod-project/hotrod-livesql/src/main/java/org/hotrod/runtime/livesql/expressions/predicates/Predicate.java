@@ -1,4 +1,4 @@
-package org.hotrod.livesql.expressions.bool;
+package org.hotrod.runtime.livesql.expressions.predicates;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -6,13 +6,29 @@ import java.util.stream.Stream;
 
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Expression;
+import org.hotrod.livesql.expressions.bool.And;
+import org.hotrod.livesql.expressions.bool.Between;
+import org.hotrod.livesql.expressions.bool.BooleanCoalesce;
+import org.hotrod.livesql.expressions.bool.BooleanNullIf;
+import org.hotrod.livesql.expressions.bool.BooleanSyntaxExpression;
+import org.hotrod.livesql.expressions.bool.Equal;
+import org.hotrod.livesql.expressions.bool.GreaterThan;
+import org.hotrod.livesql.expressions.bool.GreaterThanOrEqualTo;
+import org.hotrod.livesql.expressions.bool.InList;
+import org.hotrod.livesql.expressions.bool.LessThan;
+import org.hotrod.livesql.expressions.bool.LessThanOrEqualTo;
+import org.hotrod.livesql.expressions.bool.Not;
+import org.hotrod.livesql.expressions.bool.NotBetween;
+import org.hotrod.livesql.expressions.bool.NotEqual;
+import org.hotrod.livesql.expressions.bool.NotInList;
+import org.hotrod.livesql.expressions.bool.Or;
 import org.hotrod.livesql.queries.subqueries.BooleanSubqueryExpression;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.util.BoxUtil;
 
-public abstract class BooleanExpression extends ComparableExpression {
+public abstract class Predicate extends ComparableExpression {
 
-  protected BooleanExpression(final int precedence) {
+  protected Predicate(final int precedence) {
     super(precedence);
   }
 
@@ -23,7 +39,7 @@ public abstract class BooleanExpression extends ComparableExpression {
 
   // Coalesce
 
-  public BooleanSyntaxExpression coalesce(final BooleanExpression a) {
+  public BooleanSyntaxExpression coalesce(final Predicate a) {
     return new BooleanCoalesce(this, a);
   }
 
@@ -33,7 +49,7 @@ public abstract class BooleanExpression extends ComparableExpression {
 
   // NullIf
 
-  public BooleanSyntaxExpression nullIf(final BooleanExpression a) {
+  public BooleanSyntaxExpression nullIf(final Predicate a) {
     return new BooleanNullIf(this, a);
   }
 
@@ -43,19 +59,19 @@ public abstract class BooleanExpression extends ComparableExpression {
 
   // Predicate operators
 
-  public BooleanSyntaxExpression and(final BooleanExpression p) {
+  public BooleanSyntaxExpression and(final Predicate p) {
     return new And(this, p);
   }
 
-  public BooleanSyntaxExpression andNot(final BooleanExpression p) {
+  public BooleanSyntaxExpression andNot(final Predicate p) {
     return new And(this, new Not(p));
   }
 
-  public BooleanSyntaxExpression or(final BooleanExpression p) {
+  public BooleanSyntaxExpression or(final Predicate p) {
     return new Or(this, p);
   }
 
-  public BooleanSyntaxExpression orNot(final BooleanExpression p) {
+  public BooleanSyntaxExpression orNot(final Predicate p) {
     return new Or(this, new Not(p));
   }
 
@@ -63,7 +79,7 @@ public abstract class BooleanExpression extends ComparableExpression {
 
   // Equal
 
-  public BooleanSyntaxExpression eq(final BooleanExpression e) {
+  public BooleanSyntaxExpression eq(final Predicate e) {
     return new Equal(this, e);
   }
 
@@ -73,7 +89,7 @@ public abstract class BooleanExpression extends ComparableExpression {
 
   // Not Equal
 
-  public BooleanSyntaxExpression ne(final BooleanExpression e) {
+  public BooleanSyntaxExpression ne(final Predicate e) {
     return new NotEqual(this, e);
   }
 
@@ -83,7 +99,7 @@ public abstract class BooleanExpression extends ComparableExpression {
 
   // Greater Than
 
-  public BooleanSyntaxExpression gt(final BooleanExpression e) {
+  public BooleanSyntaxExpression gt(final Predicate e) {
     return new GreaterThan(this, e);
   }
 
@@ -93,7 +109,7 @@ public abstract class BooleanExpression extends ComparableExpression {
 
   // Greater Than or Equal To
 
-  public BooleanSyntaxExpression ge(final BooleanExpression e) {
+  public BooleanSyntaxExpression ge(final Predicate e) {
     return new GreaterThanOrEqualTo(this, e);
   }
 
@@ -103,7 +119,7 @@ public abstract class BooleanExpression extends ComparableExpression {
 
   // Less Than
 
-  public BooleanSyntaxExpression lt(final BooleanExpression e) {
+  public BooleanSyntaxExpression lt(final Predicate e) {
     return new LessThan(this, e);
   }
 
@@ -113,7 +129,7 @@ public abstract class BooleanExpression extends ComparableExpression {
 
   // Less Than or Equal To
 
-  public BooleanSyntaxExpression le(final BooleanExpression e) {
+  public BooleanSyntaxExpression le(final Predicate e) {
     return new LessThanOrEqualTo(this, e);
   }
 
@@ -123,15 +139,15 @@ public abstract class BooleanExpression extends ComparableExpression {
 
   // Between
 
-  public BooleanSyntaxExpression between(final BooleanExpression from, final BooleanExpression to) {
+  public BooleanSyntaxExpression between(final Predicate from, final Predicate to) {
     return new Between(this, from, to);
   }
 
-  public BooleanSyntaxExpression between(final BooleanExpression from, final Boolean to) {
+  public BooleanSyntaxExpression between(final Predicate from, final Boolean to) {
     return new Between(this, from, BoxUtil.box(to));
   }
 
-  public BooleanSyntaxExpression between(final Boolean from, final BooleanExpression to) {
+  public BooleanSyntaxExpression between(final Boolean from, final Predicate to) {
     return new Between(this, BoxUtil.box(from), to);
   }
 
@@ -141,39 +157,39 @@ public abstract class BooleanExpression extends ComparableExpression {
 
   // Not Between
 
-  public BooleanSyntaxExpression notBetween(final BooleanExpression from, final BooleanExpression to) {
-    return new NotBetween<BooleanExpression>(this, from, to);
+  public BooleanSyntaxExpression notBetween(final Predicate from, final Predicate to) {
+    return new NotBetween<Predicate>(this, from, to);
   }
 
-  public BooleanSyntaxExpression notBetween(final BooleanExpression from, final Boolean to) {
-    return new NotBetween<BooleanExpression>(this, from, BoxUtil.box(to));
+  public BooleanSyntaxExpression notBetween(final Predicate from, final Boolean to) {
+    return new NotBetween<Predicate>(this, from, BoxUtil.box(to));
   }
 
-  public BooleanSyntaxExpression notBetween(final Boolean from, final BooleanExpression to) {
-    return new NotBetween<BooleanExpression>(this, BoxUtil.box(from), to);
+  public BooleanSyntaxExpression notBetween(final Boolean from, final Predicate to) {
+    return new NotBetween<Predicate>(this, BoxUtil.box(from), to);
   }
 
   public BooleanSyntaxExpression notBetween(final Boolean from, Boolean to) {
-    return new NotBetween<BooleanExpression>(this, BoxUtil.box(from), BoxUtil.box(to));
+    return new NotBetween<Predicate>(this, BoxUtil.box(from), BoxUtil.box(to));
   }
 
   // In list
 
-  public final BooleanSyntaxExpression in(final BooleanExpression... values) {
-    return new InList<BooleanExpression>(this, Arrays.asList(values));
+  public final BooleanSyntaxExpression in(final Predicate... values) {
+    return new InList<Predicate>(this, Arrays.asList(values));
   }
 
   public final BooleanSyntaxExpression in(final Boolean... values) {
-    return new InList<BooleanExpression>(this,
+    return new InList<Predicate>(this,
         Stream.of(values).map(v -> BoxUtil.box(v)).collect(Collectors.toList()));
   }
 
-  public final BooleanSyntaxExpression notIn(final BooleanExpression... values) {
-    return new NotInList<BooleanExpression>(this, Arrays.asList(values));
+  public final BooleanSyntaxExpression notIn(final Predicate... values) {
+    return new NotInList<Predicate>(this, Arrays.asList(values));
   }
 
   public final BooleanSyntaxExpression notIn(final Boolean... values) {
-    return new NotInList<BooleanExpression>(this,
+    return new NotInList<Predicate>(this,
         Stream.of(values).map(v -> BoxUtil.box(v)).collect(Collectors.toList()));
   }
 

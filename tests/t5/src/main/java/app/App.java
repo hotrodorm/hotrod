@@ -15,6 +15,7 @@ import org.hotrod.livesql.queries.select.tuples.gen.Tuple1;
 import org.hotrod.livesql.queries.select.tuples.gen.Tuple2;
 import org.hotrod.livesql.queries.select.tuples.gen.Tuple3;
 import org.hotrod.livesql.queries.subqueries.Subquery;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -77,7 +78,8 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       log.info("[ Starting... ]");
-      testSequence();
+      testPredicate();
+//      testSequence();
 //      testInsert();
 //      test();
 //      testLiveSQL();
@@ -91,6 +93,27 @@ public class App {
 //      testNitro6();
       log.info("[ Ending ]");
     };
+  }
+
+  private void testPredicate() throws SQLException, DynamicExpressionException {
+    EmployeeTable t = this.employeeDAO.newTable();
+
+//    Predicate p = t.name.like("%nne%");
+//    List<Employee> es = this.employeeDAO.select(t, p).execute();
+//    for (Employee e : es) {
+//      System.out.println("--> e=" + e);
+//    }
+
+//    Predicate p2 = t.id.eq(30);
+//    Employee e2 = this.employeeDAO.select(t, p2).executeOne();
+//    System.out.println("--> e2=" + e2);
+
+    Predicate p = t.name.like("%nne%");
+    Cursor<Employee> es = this.employeeDAO.select(t, p).executeCursor();
+    for (Employee e : es) {
+      System.out.println("--> e=" + e);
+    }
+
   }
 
   private void testSequence() throws SQLException, DynamicExpressionException {
