@@ -62,17 +62,26 @@ The simplest solution is to use a different base `package` values for each one. 
 For example, if we want to use the default package for the first database and the package `app.persistence2` for the second database we need two HotRod XML files, one per database:
 
 1. In the first HotRod XML file we can use the default setting in the `<jdbc/>` tag:
-
-        <jdbc base-dir="src/main/java"
-              package="app.persistence"
-              qualifier="">
-          <dao    base-dir="" package="" subpackage="dao"    prefix="" suffix="DAO" />
-          <layout base-dir="" package="" subpackage="layout" prefix="" suffix="Layout" />
-          <model  base-dir="" package="" subpackage="model"  prefix="" suffix="" />
-        </jdbc>
-
+```xml
+    <jdbc base-dir="src/main/java"
+          package="app.persistence"
+          qualifier="">
+      <dao    base-dir="" package="" subpackage="dao"    prefix="" suffix="DAO" />
+      <layout base-dir="" package="" subpackage="layout" prefix="" suffix="Layout" />
+      <model  base-dir="" package="" subpackage="model"  prefix="" suffix="" />
+    </jdbc>
+```
 2. The second HotRod XML file can look like:
-
+```xml
+      <jdbc base-dir="src/main/java"
+            package="app.persistence"
+            qualifier="">
+        <dao    base-dir="" package="" subpackage="dao"    prefix="" suffix="DAO" />
+        <layout base-dir="" package="" subpackage="layout" prefix="" suffix="Layout" />
+        <model  base-dir="" package="" subpackage="model"  prefix="" suffix="" />
+      </jdbc>
+```
+3. Test
 ```xml
         <jdbc base-dir="src/main/java"
               package="app.persistence"
@@ -82,7 +91,6 @@ For example, if we want to use the default package for the first database and th
           <model  base-dir="" package="" subpackage="model"  prefix="" suffix="" />
         </jdbc>
 ```
-3. Test
 
 
 ## The Default Folder Structure
