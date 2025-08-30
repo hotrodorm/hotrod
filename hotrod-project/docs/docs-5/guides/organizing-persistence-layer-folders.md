@@ -63,16 +63,26 @@ For example, if we want to use the default package for the first database and th
 
 1. In the first HotRod XML file we can use the default setting in the `<jdbc/>` tag:
   ```xml
-    <jdbc base-dir="src/main/java"
-          package="app.persistence"
-          qualifier="">
-      <dao    base-dir="" package="" subpackage="dao"    prefix="" suffix="DAO" />
-      <layout base-dir="" package="" subpackage="layout" prefix="" suffix="Layout" />
-      <model  base-dir="" package="" subpackage="model"  prefix="" suffix="" />
-    </jdbc>
+<jdbc base-dir="src/main/java"
+      package="app.persistence"
+      qualifier="">
+  <dao    base-dir="" package="" subpackage="dao"    prefix="" suffix="DAO" />
+  <layout base-dir="" package="" subpackage="layout" prefix="" suffix="Layout" />
+  <model  base-dir="" package="" subpackage="model"  prefix="" suffix="" />
+</jdbc>
 ```
 2. The second HotRod XML file can look like:
     ```xml
+  <jdbc base-dir="src/main/java"
+        package="app.persistence"
+        qualifier="">
+    <dao    base-dir="" package="" subpackage="dao"    prefix="" suffix="DAO" />
+    <layout base-dir="" package="" subpackage="layout" prefix="" suffix="Layout" />
+    <model  base-dir="" package="" subpackage="model"  prefix="" suffix="" />
+  </jdbc>
+  ```
+3. Test
+      ```xml
       <jdbc base-dir="src/main/java"
             package="app.persistence"
             qualifier="">
@@ -80,16 +90,6 @@ For example, if we want to use the default package for the first database and th
         <layout base-dir="" package="" subpackage="layout" prefix="" suffix="Layout" />
         <model  base-dir="" package="" subpackage="model"  prefix="" suffix="" />
       </jdbc>
-```
-3. Test
-      ```xml
-        <jdbc base-dir="src/main/java"
-              package="app.persistence"
-              qualifier="">
-          <dao    base-dir="" package="" subpackage="dao"    prefix="" suffix="DAO" />
-          <layout base-dir="" package="" subpackage="layout" prefix="" suffix="Layout" />
-          <model  base-dir="" package="" subpackage="model"  prefix="" suffix="" />
-        </jdbc>
 ```
 
 
