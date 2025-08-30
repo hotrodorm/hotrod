@@ -31,11 +31,10 @@ If the `<jdbc>` tag is not specified &mdash; either due to the no-configuration 
 ```xml
   <jdbc base-dir="src/main/java"
         package="app.persistence"
-        qualifier-suffix="">
-    <dao    prefix="" suffix="DAO"    base-dir="" subpackage="dao" />
-    <layout prefix="" suffix="Layout" base-dir="" subpackage="layout" />
-    <model  prefix="" suffix=""       base-dir="" subpackage="model" />
-  </jdbc>
+        qualifier="">
+    <dao    base-dir="" subpackage="dao"    prefix="" suffix="DAO" />
+    <layout base-dir="" subpackage="layout" prefix="" suffix="Layout" />
+    <model  base-dir="" subpackage="model"  prefix="" suffix="" />
 ```
 
 The example above is not valid and is artificially verbose for clarification purposes only. The configuration validtor checks that &mdash; when specified &mdash; attributes cannot be empty strings. The real configuration can be used as:
