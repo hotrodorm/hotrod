@@ -43,11 +43,10 @@ An empty `<jdbc/>` tag is equivalent to:
 
 ```xml
   <jdbc base-dir="src/main/java"
-        package="app.persistence"
-        qualifier="">
-    <dao    base-dir="" package="" sub-package="dao"    prefix="" suffix="DAO" />
-    <layout base-dir="" package="" sub-package="layout" prefix="" suffix="Layout" />
-    <model  base-dir="" package="" sub-package="model"  prefix="" suffix="" />
+        package="app.persistence">
+    <dao    sub-package="dao"    prefix="" suffix="DAO" />
+    <layout sub-package="layout" prefix="" suffix="Layout" />
+    <model  sub-package="model"  prefix="" suffix="" />
   </jdbc>
 ```
 
@@ -69,9 +68,9 @@ For example, if we want to use the default package for the first database and th
     <jdbc base-dir="src/main/java"
           package="app.persistence"
           qualifier="Main">
-      <dao    base-dir="" package="" sub-package="dao"    prefix="" suffix="DAO" />
-      <layout base-dir="" package="" sub-package="layout" prefix="" suffix="Layout" />
-      <model  base-dir="" package="" sub-package="model"  prefix="" suffix="" />
+      <dao    sub-package="dao"    prefix="" suffix="DAO" />
+      <layout sub-package="layout" prefix="" suffix="Layout" />
+      <model  sub-package="model"  prefix="" suffix="" />
     </jdbc>
 ```
 - While the second HotRod XML file can define a different base package:
@@ -79,9 +78,9 @@ For example, if we want to use the default package for the first database and th
     <jdbc base-dir="src/main/java"
           package="app.persistence2"
           qualifier="Accounting">
-      <dao    base-dir="" package="" sub-package="dao"    prefix="" suffix="DAO" />
-      <layout base-dir="" package="" sub-package="layout" prefix="" suffix="Layout" />
-      <model  base-dir="" package="" sub-package="model"  prefix="" suffix="" />
+      <dao    sub-package="dao"    prefix="" suffix="DAO" />
+      <layout sub-package="layout" prefix="" suffix="Layout" />
+      <model  sub-package="model"  prefix="" suffix="" />
     </jdbc>
 ```
 
@@ -119,9 +118,9 @@ Alternatively, if we wanted the second persistence layer in the fully separated 
     <jdbc base-dir="src/database2/java"
           package="app.persistence"
           qualifier="Accounting">
-      <dao    base-dir="" package="" sub-package="dao"    prefix="" suffix="DAO" />
-      <layout base-dir="" package="" sub-package="layout" prefix="" suffix="Layout" />
-      <model  base-dir="" package="" sub-package="model"  prefix="" suffix="" />
+      <dao    sub-package="dao"    prefix="" suffix="DAO" />
+      <layout sub-package="layout" prefix="" suffix="Layout" />
+      <model  sub-package="model"  prefix="" suffix="" />
     </jdbc>
 ```
 
@@ -157,7 +156,7 @@ In this case the persistence layers will be places in separate base dirs, as in:
 
 ### The Qualifier
 
-When multiple databasesor or data sources are used in an application, there will be one `LiveSQL` and `LayerConfiguration` bean per layer. To distinguish them, you'll need to define a `qualifier` for each one, so your applications and beans can use the appropriate ones.
+When multiple databases or data sources are used in an application, there will be one `LiveSQL` and `LayerConfiguration` bean per layer. To distinguish them, you'll need to define a `qualifier` for each one, so your applications and beans can use the appropriate ones.
 
 In the example above, the first persistence layer defines the qualifier `Main`, while the second persistence layer uses the qualifier `Accounting`.
 
