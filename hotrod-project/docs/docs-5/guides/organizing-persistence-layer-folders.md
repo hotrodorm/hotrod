@@ -62,7 +62,7 @@ The simplest solution is to use a different base `package` values for each one. 
 For example, if we want to use the default package for the first database and the package `app.persistence2` for the second database we need two HotRod XML files, one per database:
 
 1. In the first HotRod XML file we can use the default setting in the `<jdbc/>` tag:
-```xml
+  ```xml
     <jdbc base-dir="src/main/java"
           package="app.persistence"
           qualifier="">
@@ -72,7 +72,7 @@ For example, if we want to use the default package for the first database and th
     </jdbc>
 ```
 2. The second HotRod XML file can look like:
-```xml
+    ```xml
       <jdbc base-dir="src/main/java"
             package="app.persistence"
             qualifier="">
@@ -82,7 +82,7 @@ For example, if we want to use the default package for the first database and th
       </jdbc>
 ```
 3. Test
-```xml
+      ```xml
         <jdbc base-dir="src/main/java"
               package="app.persistence"
               qualifier="">
