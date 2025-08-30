@@ -21,15 +21,13 @@ public class ClassPackage implements Serializable {
     this.names = names;
   }
 
-  public ClassPackage(final String pkg) throws InvalidPackageException {
+  public static ClassPackage parse(final String pkg) throws InvalidPackageException {
 
     log.fine("init");
 
     if (pkg == null) {
       throw new InvalidPackageException("Package cannot be empty.");
     }
-
-    this.pkg = pkg;
 
 // package Identifier {. Identifier} ;
 //    
@@ -45,19 +43,24 @@ public class ClassPackage implements Serializable {
 //  JavaLetterOrDigit:
 //    any Unicode character that is a "Java letter-or-digit": Character.isJavaIdentifierPart(int) returns true.    
 
-    this.names = pkg.split("\\.");
-
-    for (String name : this.names) {
-      if (!this.isIdentifier(name)) {
-        throw new InvalidPackageException("Invalid identifier '" + name + "' in the java package '" + this.pkg
+    String[] names;
+    if (pkg.isEmpty()) {
+      names = new String[0];
+    } else {
+      names = pkg.split("\\.");
+    }
+    for (String name : names) {
+      if (!isIdentifier(name)) {
+        throw new InvalidPackageException("Invalid identifier '" + name + "' in the java package '" + pkg
             + "'. A java package must be a sequence of identifiers separated by periods; "
             + "each identifier starts with a java letter and continues with java letters or digits. "
             + "See https://docs.oracle.com/javase/specs/jls/se16/html/jls-7.html#jls-7.4 for details.");
       }
     }
+    return new ClassPackage(pkg, names);
   }
 
-  private boolean isIdentifier(String name) {
+  private static boolean isIdentifier(String name) {
 //    log.info("name=" + name);
     if (name == null)
       return false;
@@ -92,17 +95,13 @@ public class ClassPackage implements Serializable {
     return this.pkg;
   }
 
-  public String getFullClassName(final String className) {
-    return this.pkg + "." + className;
-  }
-
-  public ClassPackage append(final String name) throws InvalidPackageException {
-    return new ClassPackage(this.pkg + "." + name);
+  public String getFullClassName(final String baseClassName) {
+    return this.pkg + "." + baseClassName;
   }
 
   public ClassPackage append(final ClassPackage p) {
     String[] allNames = AUtils.concat(this.names, p.names, new String[0]);
-    return new ClassPackage(this.pkg + "." + p.pkg, allNames);
+    return new ClassPackage((this.pkg.isEmpty() ? "" : this.pkg + ".") + p.pkg, allNames);
   }
 
   // toString

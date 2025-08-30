@@ -27,17 +27,18 @@ public class JDBCModelTag extends AbstractConfigurationTag {
   private static final String DEFAULT_SUFFIX = "";
   private static final String DEFAULT_SUBPACKAGE = "model";
 
-  private static final Pattern PREFIX_SUFFIX_PATTERN = Pattern.compile("^[A-Za-z0-9_]+$");
+  private static final Pattern PREFIX_SUFFIX_PATTERN = Pattern.compile("^[A-Za-z0-9_]*$");
 
   // Properties
 
+  private String sBaseDir = null;
+  private String sPackage = null;
+  private String sSubPackage = null;
   private String prefix = null;
   private String suffix = null;
-  private String sBaseDir = null;
-  private String sSubPackage = null;
 
   private File baseDir;
-  private ClassPackage itemPackage;
+  private ClassPackage computedPackage;
 
   // Constructor
 
@@ -47,6 +48,21 @@ public class JDBCModelTag extends AbstractConfigurationTag {
   }
 
   // JAXB Setters
+
+  @XmlAttribute(name = "base-dir")
+  public void setBaseDir(final String sBaseDir) {
+    this.sBaseDir = sBaseDir;
+  }
+
+  @XmlAttribute(name = "package")
+  public void setSPackage(final String sPackage) {
+    this.sPackage = sPackage;
+  }
+
+  @XmlAttribute(name = "sub-package")
+  public void setSSubPackage(final String sSubPackage) {
+    this.sSubPackage = sSubPackage;
+  }
 
   @XmlAttribute(name = "prefix")
   public void setPrefix(final String prefix) {
@@ -58,53 +74,21 @@ public class JDBCModelTag extends AbstractConfigurationTag {
     this.suffix = suffix;
   }
 
-  @XmlAttribute(name = "base-dir")
-  public void setBaseDir(final String sBaseDir) {
-    this.sBaseDir = sBaseDir;
-  }
-
-  @XmlAttribute(name = "subpackage")
-  public void setSSubPackage(final String sSubPackage) {
-    this.sSubPackage = sSubPackage;
-  }
-
   // Behavior
 
-  public void validate(final File currentDir, final File mainBaseDir, final ClassPackage mainPackage)
+  public void validate(final File currentDir, final File jdbcBaseDir, final ClassPackage jdbcPackage)
       throws InvalidConfigurationFileException {
-
-    // prefix
-
-    if (this.prefix == null) {
-      this.prefix = DEFAULT_PREFIX;
-    } else {
-      Matcher m = PREFIX_SUFFIX_PATTERN.matcher(this.prefix);
-      if (!m.matches()) {
-        throw new InvalidConfigurationFileException(this, "Invalid prefix value '" + this.prefix
-            + "'. When specified, it can only include one or more letters, digits, or underscores.");
-      }
-    }
-
-    // suffix
-
-    if (this.suffix == null) {
-      this.suffix = DEFAULT_SUFFIX;
-    } else {
-      Matcher m = PREFIX_SUFFIX_PATTERN.matcher(this.suffix);
-      if (!m.matches()) {
-        throw new InvalidConfigurationFileException(this, "Invalid prefix value '" + this.suffix
-            + "'. When specified, it can only include one or more letters, digits, or underscores.");
-      }
-    }
 
     // base-dir
 
     if (this.sBaseDir == null) {
-      this.baseDir = mainBaseDir;
+      this.baseDir = jdbcBaseDir;
     } else {
       if (SUtil.isEmpty(this.sBaseDir)) {
         throw new InvalidConfigurationFileException(this,
-            "Attribute 'base-dir' of the tag <" + super.getTagName() + "> cannot be empty.");
+            "Attribute 'base-dir' of the tag <" + super.getTagName()
+                + "> cannot be empty. Use '.' to indicate the project dir "
+                + "or leave unspecified to use the base.dir value of the <jdbc> tag.");
       }
       this.baseDir = new File(currentDir, this.sBaseDir);
       if (!this.baseDir.exists()) {
@@ -117,31 +101,68 @@ public class JDBCModelTag extends AbstractConfigurationTag {
       }
     }
 
+    // package
+
+    ClassPackage currPackage = jdbcPackage;
+    if (this.sPackage != null) {
+      try {
+        currPackage = ClassPackage.parse(this.sPackage);
+      } catch (InvalidPackageException e) {
+        throw new InvalidConfigurationFileException(this,
+            "Invalid package '" + this.sPackage + "'. in the attribute 'package' of the tag <" + super.getTagName()
+                + ">: when specified it must be a valid package: " + e.getMessage());
+      }
+    }
+
     // sub-package
 
     if (this.sSubPackage == null) {
       String ds = getDefaultSubPackage();
       if (ds == null) {
-        this.itemPackage = mainPackage;
+        this.computedPackage = currPackage;
       } else {
         ClassPackage sp = null;
         try {
-          sp = new ClassPackage(ds);
+          sp = ClassPackage.parse(ds);
         } catch (InvalidPackageException e) {
           throw new InvalidConfigurationFileException(this,
               "Invalid default subpackage '" + ds
-                  + "'. Please specify a subpackage on the attribute 'subpackage' of the tag <" + super.getTagName()
+                  + "'. Please specify a subpackage on the attribute 'sub-package' of the tag <" + super.getTagName()
                   + ">: " + e.getMessage());
         }
-        this.itemPackage = mainPackage.append(sp);
+        this.computedPackage = currPackage.append(sp);
       }
     } else {
       try {
-        ClassPackage sp = new ClassPackage(this.sSubPackage);
-        this.itemPackage = mainPackage.append(sp);
+        ClassPackage sp = ClassPackage.parse(this.sSubPackage);
+        this.computedPackage = currPackage.append(sp);
       } catch (InvalidPackageException e) {
-        throw new InvalidConfigurationFileException(this, "Invalid subpackage '" + this.sSubPackage
-            + "' on the attribute 'subpackage' of the tag <" + super.getTagName() + ">: " + e.getMessage());
+        throw new InvalidConfigurationFileException(this, "Invalid sub-package '" + this.sSubPackage
+            + "' on attribute 'sub-package' of the tag <" + super.getTagName() + ">: " + e.getMessage());
+      }
+    }
+
+    // prefix
+
+    if (this.prefix == null) {
+      this.prefix = DEFAULT_PREFIX;
+    } else {
+      Matcher m = PREFIX_SUFFIX_PATTERN.matcher(this.prefix);
+      if (!m.matches()) {
+        throw new InvalidConfigurationFileException(this, "Invalid prefix value '" + this.prefix
+            + "'. When specified, it can be blank or include letters, digits, or underscores.");
+      }
+    }
+
+    // suffix
+
+    if (this.suffix == null) {
+      this.suffix = DEFAULT_SUFFIX;
+    } else {
+      Matcher m = PREFIX_SUFFIX_PATTERN.matcher(this.suffix);
+      if (!m.matches()) {
+        throw new InvalidConfigurationFileException(this, "Invalid prefix value '" + this.suffix
+            + "'. When specified, it can only include one or more letters, digits, or underscores.");
       }
     }
 
@@ -163,9 +184,9 @@ public class JDBCModelTag extends AbstractConfigurationTag {
 
   public ClassPackage getPackage(final ClassPackage fragmentPackage) {
     if (fragmentPackage != null) {
-      return this.itemPackage.append(fragmentPackage);
+      return this.computedPackage.append(fragmentPackage);
     } else {
-      return this.itemPackage;
+      return this.computedPackage;
     }
   }
 

@@ -1,14 +1,13 @@
 <hotrod>
 
   <generators>
-    <jdbc>
+  <jdbc base-dir="src/main/java"
+        package="app.persistence"
+        >
+  </jdbc>
     <!--
-    <jdbc base-dir="" package="" qualifier="">
-       <dao prefix="" suffix="" base-dir="" subpackage="" />
-       <layout prefix="" suffix="" base-dir="" subpackage="" />
-       <model prefix="" suffix="" base-dir="" subpackage="" />
-        -->
-    </jdbc>
+    <jdbc>
+-->
   </generators>
 
   <type-solver>
@@ -107,9 +106,9 @@ where balance >= 300
 <!--
   <fragment file="./reporting.xml" />
   <fragment file="./buscador.xml" />
+  <fragment file="./test4.xml" />
 -->  
 
-  <fragment file="./test4.xml" />
   
 <!--
   <fragment file="./test2.xml" />

@@ -63,7 +63,7 @@
     </xsd:sequence>
     <xsd:attribute name="base-dir" type="xsd:string" />
     <xsd:attribute name="package" type="xsd:string" />
-    <xsd:attribute name="qualifier-suffix" type="xsd:string" />
+    <xsd:attribute name="qualifier" type="xsd:string" />
   </xsd:complexType>
 
   <xsd:complexType name="discover-type">
@@ -86,24 +86,27 @@
   </xsd:complexType>
 
   <xsd:complexType name="dao-config-type">
+    <xsd:attribute name="base-dir" type="xsd:string" />
+    <xsd:attribute name="package" type="xsd:string" />
+    <xsd:attribute name="sub-package" type="xsd:string" />
     <xsd:attribute name="prefix" type="xsd:string" />
     <xsd:attribute name="suffix" type="xsd:string" />
-    <xsd:attribute name="base-dir" type="xsd:string" />
-    <xsd:attribute name="subpackage" type="xsd:string" />
   </xsd:complexType>
 
   <xsd:complexType name="layout-config-type">
+    <xsd:attribute name="base-dir" type="xsd:string" />
+    <xsd:attribute name="package" type="xsd:string" />
+    <xsd:attribute name="sub-package" type="xsd:string" />
     <xsd:attribute name="prefix" type="xsd:string" />
     <xsd:attribute name="suffix" type="xsd:string" />
-    <xsd:attribute name="base-dir" type="xsd:string" />
-    <xsd:attribute name="subpackage" type="xsd:string" />
   </xsd:complexType>
 
   <xsd:complexType name="model-config-type">
+    <xsd:attribute name="base-dir" type="xsd:string" />
+    <xsd:attribute name="package" type="xsd:string" />
+    <xsd:attribute name="sub-package" type="xsd:string" />
     <xsd:attribute name="prefix" type="xsd:string" />
     <xsd:attribute name="suffix" type="xsd:string" />
-    <xsd:attribute name="base-dir" type="xsd:string" />
-    <xsd:attribute name="subpackage" type="xsd:string" />
   </xsd:complexType>
 
 <!-- 

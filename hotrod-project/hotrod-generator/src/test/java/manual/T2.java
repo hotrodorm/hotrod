@@ -16,7 +16,7 @@ public class T2 {
   public static void main(String[] args) throws InvalidPackageException, IOException {
 
     FileGenerator fileGenerator = new LocalFileGenerator();
-    ClassPackage cp = new ClassPackage("abc.def");
+    ClassPackage cp = ClassPackage.parse("abc.def");
     File mc = new File("VO1.java");
 
     try (TextWriter tw = fileGenerator.createWriter(mc)) {

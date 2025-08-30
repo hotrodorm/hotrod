@@ -27,7 +27,7 @@ public class LayerConfigWriter {
   private static final Logger log = Logger.getLogger(LayerConfigWriter.class.getName());
 
   private static final String SINGLE_LAYER_CLASS_NAME = "MainLayerConfiguration";
-  private static final String MULTI_LAYER_CLASS_NAME_PREFIX = "LayerConfiguration";
+  private static final String MULTI_LAYER_CLASS_NAME_PREFIX = "LayerConfiguration_";
 
   private JDBCTag jdbcTag;
   private TypeSolverTag typeSolver;
@@ -40,12 +40,11 @@ public class LayerConfigWriter {
     this.typeSolver = typeSolver;
   }
 
-  public void generate(final FileGenerator fileGenerator, final JDBCGenerator mg, final String qualifierSuffix)
+  public void generate(final FileGenerator fileGenerator, final JDBCGenerator mg, final String qualifier)
       throws UncontrolledException, ControlledException {
 
     File dir = this.jdbcTag.getLayerPackageDir();
-    this.className = qualifierSuffix == null ? SINGLE_LAYER_CLASS_NAME
-        : MULTI_LAYER_CLASS_NAME_PREFIX + qualifierSuffix;
+    this.className = qualifier == null ? SINGLE_LAYER_CLASS_NAME : MULTI_LAYER_CLASS_NAME_PREFIX + qualifier;
     File f = new File(dir, className + ".java");
 
     try (TextWriter tw = fileGenerator.createWriter(f)) {

@@ -101,8 +101,8 @@ public class DAO {
 
   private static final Logger log = Logger.getLogger(DAO.class.getName());
 
-  private static final String DATASOURCE_QUALIFIER_PREFIX = "dataSource";
-  private static final String LIVESQL_QUALIFIER_PREFIX = "liveSQL";
+//  private static final String DATASOURCE_QUALIFIER_PREFIX = "dataSource";
+//  private static final String LIVESQL_QUALIFIER_PREFIX = "liveSQL";
 
   // Properties
 
@@ -286,9 +286,8 @@ public class DAO {
     // Spring properties
 
     w.println("  @", Const.AUTOWIRED);
-    if (this.jdbcTag.getQualifierSuffix() != null) {
-      w.println("  @", Const.QUALIFIER,
-          "(\"" + DATASOURCE_QUALIFIER_PREFIX + this.jdbcTag.getQualifierSuffix() + "\")");
+    if (this.jdbcTag.getQualifier() != null) {
+      w.println("  @", Const.QUALIFIER, "(\"" + this.jdbcTag.getQualifier() + "\")");
     }
     w.println("  private ", DataSource.class, " dataSource;");
     w.println();
@@ -297,8 +296,8 @@ public class DAO {
       w.println("  @", SuppressWarnings.class, "(\"unused\")");
     }
     w.println("  @", Const.AUTOWIRED);
-    if (this.jdbcTag.getQualifierSuffix() != null) {
-      w.println("  @", Const.QUALIFIER, "(\"" + LIVESQL_QUALIFIER_PREFIX + this.jdbcTag.getQualifierSuffix() + "\")");
+    if (this.jdbcTag.getQualifier() != null) {
+      w.println("  @", Const.QUALIFIER, "(\"" + this.jdbcTag.getQualifier() + "\")");
     }
     w.println("  private ", LiveSQL.class, " sql;");
     w.println();

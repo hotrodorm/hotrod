@@ -61,7 +61,7 @@ public class HotRodFragmentConfigTag extends AbstractHotRodConfigTag {
       this.fragmentPackage = null;
     } else {
       try {
-        this.fragmentPackage = new ClassPackage(this.sPackage);
+        this.fragmentPackage = ClassPackage.parse(this.sPackage);
       } catch (InvalidPackageException e) {
         throw new InvalidConfigurationFileException(this, "Invalid package '" + this.sPackage
             + "' on attribute 'package' of tag <" + super.getTagName() + ">: " + e.getMessage());

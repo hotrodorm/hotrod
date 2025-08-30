@@ -41,13 +41,13 @@ public class JDBCTag extends AbstractGeneratorTag {
   private static final String DEFAULT_BASE_DIR = "src/main/java";
   private static final String DEFAULT_LAYER_PACKAGE = "app.persistence";
 
-  private static final Pattern QUALIFIER_PATTERN = Pattern.compile("^[0-9]+$");
+  private static final Pattern QUALIFIER_PATTERN = Pattern.compile("^[a-zA-Z][a-zA-Z0-9_]*$");
 
   // Properties
 
   private String sBaseDir = null;
   private String sPackage = null;
-  private String qualifierSuffix = null;
+  private String qualifier = null;
 
   private File baseDir;
   private ClassPackage layerPackage;
@@ -98,9 +98,9 @@ public class JDBCTag extends AbstractGeneratorTag {
     this.sPackage = sPackage;
   }
 
-  @XmlAttribute(name = "qualifier-suffix")
-  public void setSQualifier(final String qualifierSuffix) {
-    this.qualifierSuffix = qualifierSuffix;
+  @XmlAttribute(name = "qualifier")
+  public void setSQualifier(final String qualifier) {
+    this.qualifier = qualifier;
   }
 
   @XmlElement(name = "discover")
@@ -176,30 +176,30 @@ public class JDBCTag extends AbstractGeneratorTag {
 
     if (this.sPackage == null) {
       try {
-        this.layerPackage = new ClassPackage(DEFAULT_LAYER_PACKAGE);
+        this.layerPackage = ClassPackage.parse(DEFAULT_LAYER_PACKAGE);
       } catch (InvalidPackageException e) {
         throw new InvalidConfigurationFileException(this,
             "The default layer package '" + DEFAULT_LAYER_PACKAGE + "' is invalid");
       }
     } else {
       try {
-        this.layerPackage = new ClassPackage(this.sPackage);
+        this.layerPackage = ClassPackage.parse(this.sPackage);
       } catch (InvalidPackageException e) {
         throw new InvalidConfigurationFileException(this, "Invalid layer package '" + this.sPackage
             + "' on attribute 'package' of the tag <" + super.getTagName() + ">: " + e.getMessage());
       }
     }
 
-    // qualifier-suffix
+    // qualifier
 
-    if (this.qualifierSuffix != null) {
-      if (SUtil.isEmpty(this.qualifierSuffix)) {
-        throw new InvalidConfigurationFileException(this, "When specified, the qualifier-suffix cannot be empty.");
+    if (this.qualifier != null) {
+      if (SUtil.isEmpty(this.qualifier)) {
+        throw new InvalidConfigurationFileException(this, "When specified, the qualifier cannot be empty.");
       }
-      Matcher m = QUALIFIER_PATTERN.matcher(this.qualifierSuffix);
+      Matcher m = QUALIFIER_PATTERN.matcher(this.qualifier);
       if (!m.matches()) {
         throw new InvalidConfigurationFileException(this,
-            "When specified, the qualifier-suffix must be an numeric value.");
+            "When specified, the qualifier must be an alphanumeric value with underscores.");
       }
     }
 
@@ -246,8 +246,8 @@ public class JDBCTag extends AbstractGeneratorTag {
 
   // Getters
 
-  public String getQualifierSuffix() {
-    return qualifierSuffix;
+  public String getQualifier() {
+    return qualifier;
   }
 
   public File getBaseDir() {

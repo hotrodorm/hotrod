@@ -223,7 +223,7 @@ Tell HotRod how you want the generation to work for each database. Create the fi
 <hotrod>
 
   <generators>
-    <jdbc package="app.persistence1" qualifier-suffix="1" />
+    <jdbc package="app.persistence1" qualifier="accounting" />
   </generators>
 
   <table name="account" />
@@ -237,7 +237,7 @@ Then, create the file `second.xml` for the second database:
 <hotrod>
 
   <generators>
-    <jdbc package="app.persistence2" qualifier-suffix="2" />
+    <jdbc package="app.persistence2" qualifier="sales" />
   </generators>
 
   <table name="invoice" />
@@ -316,11 +316,11 @@ public class App {
   private InvoiceDAO invoiceDAO;
 
   @Autowired
-  @Qualifier("liveSQL1") // bean name defined in DataSourceConfig1.java
+  @Qualifier("accounting") // bean name defined in DataSourceConfig1.java
   private LiveSQL sql1;
 
   @Autowired
-  @Qualifier("liveSQL2") // bean name defined in DataSourceConfig2.java
+  @Qualifier("sales") // bean name defined in DataSourceConfig2.java
   private LiveSQL sql2;
 
   public static void main(String[] args) {
@@ -421,7 +421,7 @@ public class DataSource1Config {
   private String liveSQLDialectMinorVersion;
 
   @Bean
-  public LiveSQL liveSQL1(DataSource dataSource1, LayerConfiguration layerConfiguration1) throws Exception {
+  public LiveSQL accounting(DataSource dataSource1, LayerConfiguration layerConfiguration1) throws Exception {
     LiveSQLDialect liveSQLDialect = LiveSQLDialectFactory.getLiveSQLDialect(dataSource1, this.liveSQLDialectName,
         this.liveSQLDialectVDatabaseName, this.liveSQLDialectVersionString, this.liveSQLDialectMajorVersion,
         this.liveSQLDialectMinorVersion);
@@ -476,7 +476,7 @@ public class DataSource2Config {
   private String liveSQLDialectMinorVersion;
 
   @Bean
-  public LiveSQL liveSQL2(DataSource dataSource2, LayerConfiguration layerConfiguration2) throws Exception {
+  public LiveSQL sales(DataSource dataSource2, LayerConfiguration layerConfiguration2) throws Exception {
     LiveSQLDialect liveSQLDialect = LiveSQLDialectFactory.getLiveSQLDialect(dataSource2, this.liveSQLDialectName,
         this.liveSQLDialectVDatabaseName, this.liveSQLDialectVersionString, this.liveSQLDialectMajorVersion,
         this.liveSQLDialectMinorVersion);
