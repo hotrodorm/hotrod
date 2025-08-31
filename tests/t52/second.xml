@@ -1,0 +1,9 @@
+<hotrod>
+
+  <generators>
+    <jdbc package="app.persistence2" qualifier="sales" />
+  </generators>
+
+  <table name="invoice" />
+
+</hotrod>

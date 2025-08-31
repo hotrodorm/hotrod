@@ -1,8 +1,6 @@
 package app;
 
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -10,13 +8,9 @@ import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.LiveSQL;
-import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.select.Select;
 import org.hotrod.livesql.queries.select.tuples.gen.Tuple1;
-import org.hotrod.livesql.queries.select.tuples.gen.Tuple2;
-import org.hotrod.livesql.queries.select.tuples.gen.Tuple3;
 import org.hotrod.livesql.queries.subqueries.Subquery;
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -27,15 +21,7 @@ import org.springframework.context.annotation.Configuration;
 
 import app.persistence.dao.AccountDAO;
 import app.persistence.dao.AccountDAO.AccountTable;
-import app.persistence.dao.BranchDAO;
-import app.persistence.dao.BranchDAO.BranchTable;
-import app.persistence.dao.EmployeeDAO;
-import app.persistence.dao.EmployeeDAO.EmployeeTable;
-import app.persistence.dao.ProductDAO;
-import app.persistence.dao.ProductDAO.ProductTable;
 import app.persistence.model.Account;
-import app.persistence.model.Branch;
-import app.persistence.model.Employee;
 
 @SpringBootApplication
 @Configuration
@@ -50,14 +36,14 @@ public class App {
   @Autowired
   private AccountDAO accountDAO;
 
-  @Autowired
-  private ProductDAO productDAO;
-
-  @Autowired
-  private BranchDAO branchDAO;
-
-  @Autowired
-  private EmployeeDAO employeeDAO;
+//  @Autowired
+//  private ProductDAO productDAO;
+//
+//  @Autowired
+//  private BranchDAO branchDAO;
+//
+//  @Autowired
+//  private EmployeeDAO employeeDAO;
 
 //  @Autowired
 //  private ADAO aDAO;
@@ -79,7 +65,8 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       log.info("[ Starting... ]");
-      testParseRow();
+      testA();
+//      testParseRow();
 //      testPredicate();
 //      testSequence();
 //      testInsert();
@@ -97,94 +84,99 @@ public class App {
     };
   }
 
-  private void testParseRow() throws SQLException, DynamicExpressionException {
-    EmployeeTable e = this.employeeDAO.newTable();
-    BranchTable b = this.branchDAO.newTable();
-
-    List<Row> rows = this.sql.select( //
-        e.star().as(c -> "e:" + c.getProperty()), //
-        b.star().as(c -> "b:" + c.getProperty()), //
-        e.name.as("oldNmae") //
-    ) //
-        .from(e).crossJoin(b).limit(1).execute();
-
-    try (Connection conn = this.employeeDAO.getDataSource().getConnection()) {
-      for (Row row : rows) {
-        Employee emp = this.employeeDAO.parseRow(row, "e:", conn);
-        System.out.println("e=" + emp);
-        Branch bra = this.branchDAO.parseRow(row, "b:");
-        System.out.println("b=" + bra);
-      }
-    }
-
+  private void testA() throws SQLException, DynamicExpressionException {
+    Account a = this.accountDAO.select(123);
+    System.out.println("a=" + a);
   }
 
-  private void testPredicate() throws SQLException, DynamicExpressionException {
-    EmployeeTable t = this.employeeDAO.newTable();
-
+//  private void testParseRow() throws SQLException, DynamicExpressionException {
+//    EmployeeTable e = this.employeeDAO.newTable();
+//    BranchTable b = this.branchDAO.newTable();
+//
+//    List<Row> rows = this.sql.select( //
+//        e.star().as(c -> "e:" + c.getProperty()), //
+//        b.star().as(c -> "b:" + c.getProperty()), //
+//        e.name.as("oldNmae") //
+//    ) //
+//        .from(e).crossJoin(b).limit(1).execute();
+//
+//    try (Connection conn = this.employeeDAO.getDataSource().getConnection()) {
+//      for (Row row : rows) {
+//        Employee emp = this.employeeDAO.parseRow(row, "e:", conn);
+//        System.out.println("e=" + emp);
+//        Branch bra = this.branchDAO.parseRow(row, "b:");
+//        System.out.println("b=" + bra);
+//      }
+//    }
+//
+//  }
+//
+//  private void testPredicate() throws SQLException, DynamicExpressionException {
+//    EmployeeTable t = this.employeeDAO.newTable();
+//
+////    Predicate p = t.name.like("%nne%");
+////    List<Employee> es = this.employeeDAO.select(t, p).execute();
+////    for (Employee e : es) {
+////      System.out.println("--> e=" + e);
+////    }
+//
+////    Predicate p2 = t.id.eq(30);
+////    Employee e2 = this.employeeDAO.select(t, p2).executeOne();
+////    System.out.println("--> e2=" + e2);
+//
 //    Predicate p = t.name.like("%nne%");
-//    List<Employee> es = this.employeeDAO.select(t, p).execute();
+//    Cursor<Employee> es = this.employeeDAO.select(t, p).executeCursor();
 //    for (Employee e : es) {
 //      System.out.println("--> e=" + e);
 //    }
-
-//    Predicate p2 = t.id.eq(30);
-//    Employee e2 = this.employeeDAO.select(t, p2).executeOne();
-//    System.out.println("--> e2=" + e2);
-
-    Predicate p = t.name.like("%nne%");
-    Cursor<Employee> es = this.employeeDAO.select(t, p).executeCursor();
-    for (Employee e : es) {
-      System.out.println("--> e=" + e);
-    }
-
-  }
-
-  private void testSequence() throws SQLException, DynamicExpressionException {
-    long seq = this.employeeDAO.getSequenceNextValue();
-    System.out.println("--> seq=" + seq);
-    long hiredSeq = this.employeeDAO.getHiredNextValue();
-    System.out.println("--> hired_seq=" + hiredSeq);
-    seq = this.employeeDAO.getSequenceNextValue();
-    System.out.println("--> seq=" + seq);
-  }
-
-  private void testInsert() throws SQLException, DynamicExpressionException {
-    Branch a = new Branch();
-    a.setRegion("NNW");
-    a.setIsVip(1);
-    a.setParentBranchId(null);
-    a.setCreatedAt(LocalDateTime.now());
-    Branch b = this.branchDAO.insert(a);
-    System.out.println("--> b=" + b);
-
-    // Update by PK
-
-    b.setRegion("NNW01");
-    int count = this.branchDAO.update(b);
-    System.out.println("--> UPDATE count=" + count);
-
-    // Update by example
-
-    Branch example = new Branch();
-    example.setIsVip(1);
-    Branch values = new Branch();
-    values.setIsVip(1);
-    int c2 = this.branchDAO.update(example, values);
-    System.out.println("--> UPDATE2 count=" + c2);
-
-    // Update with predicate
-
-    BranchTable x = this.branchDAO.newTable();
-    int c3 = this.branchDAO.update(values, x, x.id.ge(100)).execute();
-    System.out.println("--> UPDATE3 count=" + c3);
-
-    // LiveSQL Update
-
-    int c4 = this.sql.update(x).set(x.isVip, 1).where(x.id.ge(100)).execute();
-    System.out.println("--> UPDATE4 count=" + c4);
-
-  }
+//
+//  }
+//
+//  private void testSequence() throws SQLException, DynamicExpressionException {
+//    long seq = this.employeeDAO.getSequenceNextValue();
+//    System.out.println("--> seq=" + seq);
+//    long hiredSeq = this.employeeDAO.getHiredNextValue();
+//    System.out.println("--> hired_seq=" + hiredSeq);
+//    seq = this.employeeDAO.getSequenceNextValue();
+//    System.out.println("--> seq=" + seq);
+//  }
+//
+//  private void testInsert() throws SQLException, DynamicExpressionException {
+//    Branch a = new Branch();
+//    a.setRegion("NNW");
+//    a.setIsVip(1);
+//    a.setParentBranchId(null);
+//    a.setCreatedAt(LocalDateTime.now());
+//    Branch b = this.branchDAO.insert(a);
+//    System.out.println("--> b=" + b);
+//
+//    // Update by PK
+//
+//    b.setRegion("NNW01");
+//    int count = this.branchDAO.update(b);
+//    System.out.println("--> UPDATE count=" + count);
+//
+//    // Update by example
+//
+//    Branch example = new Branch();
+//    example.setIsVip(1);
+//    Branch values = new Branch();
+//    values.setIsVip(1);
+//    int c2 = this.branchDAO.update(example, values);
+//    System.out.println("--> UPDATE2 count=" + c2);
+//
+//    // Update with predicate
+//
+//    BranchTable x = this.branchDAO.newTable();
+//    int c3 = this.branchDAO.update(values, x, x.id.ge(100)).execute();
+//    System.out.println("--> UPDATE3 count=" + c3);
+//
+//    // LiveSQL Update
+//
+//    int c4 = this.sql.update(x).set(x.isVip, 1).where(x.id.ge(100)).execute();
+//    System.out.println("--> UPDATE4 count=" + c4);
+//
+//  }
 
 //  private void testOptimisticLocking() throws SQLException, DynamicExpressionException {
 ////    testOLInsert();
@@ -429,10 +421,10 @@ public class App {
 
   private void testLiveSQLTuples() throws SQLException, DynamicExpressionException {
 
-    AccountTable a = this.accountDAO.newTable();
-    ProductTable p = this.productDAO.newTable("p");
-    BranchTable b1 = this.branchDAO.newTable();
-    BranchTable b2 = this.branchDAO.newTable();
+//    AccountTable a = this.accountDAO.newTable();
+//    ProductTable p = this.productDAO.newTable("p");
+//    BranchTable b1 = this.branchDAO.newTable();
+//    BranchTable b2 = this.branchDAO.newTable();
 
 //    Select<Row> q = this.sql.select(a.star(), p.shipping, p.type.as("ptype")).from(a).crossJoin(p).limit(2);
 //    System.out.print(q.getPreview(true));
@@ -493,8 +485,8 @@ public class App {
 //      }
 //    }
 
-    CTE x = sql.cte("x", sql.select(sql.max(b1.createdAt).as("mca")).from(b1));
-    CTE y = sql.cte("y", sql.select(sql.max(b2.createdAt).as("mca")).from(b2));
+//    CTE x = sql.cte("x", sql.select(sql.max(b1.createdAt).as("mca")).from(b1));
+//    CTE y = sql.cte("y", sql.select(sql.max(b2.createdAt).as("mca")).from(b2));
 
     AccountTable a1 = this.accountDAO.newTable();
     AccountTable a2 = this.accountDAO.newTable();
@@ -557,7 +549,7 @@ public class App {
 //    tuplesExample4();
 //    tuplesExample5();
 //    tuplesExample6();
-    tuplesExample7();
+//    tuplesExample7();
 //    tuplesExample7();
 //    tuplesExample8();
 //    tuplesExample9();
@@ -663,123 +655,80 @@ public class App {
 
   }
 
-  private void tuplesExample4() throws SQLException, DynamicExpressionException {
-
-    // Joining tables and views
-
-    BranchTable b = this.branchDAO.newTable();
-    EmployeeTable e = this.employeeDAO.newTable();
-
-//    List<Tuple2<Employee, Branch>> rows = this.sql.select().tuples() //
+//  private void tuplesExample4() throws SQLException, DynamicExpressionException {
+//
+//    // Joining tables and views
+//
+//    BranchTable b = this.branchDAO.newTable();
+//    EmployeeTable e = this.employeeDAO.newTable();
+//
+////    List<Tuple2<Employee, Branch>> rows = this.sql.select().tuples() //
+////        .from(e) //
+////        .join(b, b.id.eq(e.branchId)).where(e.name.like("%Anne%")) //
+////        .execute();
+////    for (Tuple2<Employee, Branch> r : rows) {
+////      Employee account = r.getA();
+////      Branch branch = r.getB();
+////      System.out.println("=== Employee: " + account);
+////      System.out.println("=== Branch: " + branch);
+////    }
+//
+//    List<Tuple1<Employee>> rows2 = this.sql.select().tuples() //
 //        .from(e) //
-//        .join(b, b.id.eq(e.branchId)).where(e.name.like("%Anne%")) //
+//        .semiJoin(b, b.id.eq(e.branchId)).where(e.name.like("%Anne%")) //
 //        .execute();
-//    for (Tuple2<Employee, Branch> r : rows) {
+//    for (Tuple1<Employee> r : rows2) {
 //      Employee account = r.getA();
-//      Branch branch = r.getB();
 //      System.out.println("=== Employee: " + account);
-//      System.out.println("=== Branch: " + branch);
 //    }
-
-    List<Tuple1<Employee>> rows2 = this.sql.select().tuples() //
-        .from(e) //
-        .semiJoin(b, b.id.eq(e.branchId)).where(e.name.like("%Anne%")) //
-        .execute();
-    for (Tuple1<Employee> r : rows2) {
-      Employee account = r.getA();
-      System.out.println("=== Employee: " + account);
-    }
-
-//    === Employee: app.persistence.model.Employee@6adc5b9c
-//        - id=30
-//        - name=Anne
-//        - branchId=101
-//    === Branch: app.persistence.model.Branch@19c1820d
-//        - id=101
-//        - region=N
-//        - isVip=1
-//        - parentBranchId=null
-//        - createdAt=2024-01-01T12:34:56
-
-  }
-
-  private void tuplesExample5() throws SQLException, DynamicExpressionException {
-
-    // Self joins
-
-    BranchTable b = this.branchDAO.newTable();
-    BranchTable p = this.branchDAO.newTable();
-
-    List<Tuple2<Branch, Branch>> rows = this.sql.select().tuples() //
-        .from(b) //
-        .join(p, p.id.eq(b.parentBranchId)) //
-        .where(b.region.eq("NE")).execute();
-    for (Tuple2<Branch, Branch> r : rows) {
-      Branch branch = r.getA();
-      Branch parentBranch = r.getB();
-      System.out.println("=== Branch: " + branch);
-      System.out.println("=== Parent Branch: " + parentBranch);
-    }
-
-//    === Branch: app.persistence.model.Branch@4b862408
-//        - id=105
-//        - region=NE
-//        - isVip=0
-//        - parentBranchId=101
-//        - createdAt=2024-01-05T12:34:56
-//    === Parent Branch: app.persistence.model.Branch@6ddee60f
-//        - id=101
-//        - region=N
-//        - isVip=1
-//        - parentBranchId=null
-//        - createdAt=2024-01-01T12:34:56
-
-  }
-
-  private void tuplesExample6() throws SQLException, DynamicExpressionException {
-
-    // Joining multiple tables and views (up to 26)
-
-    EmployeeTable e = this.employeeDAO.newTable();
-    BranchTable b = this.branchDAO.newTable();
-    BranchTable p = this.branchDAO.newTable();
-
-    List<Tuple3<Employee, Branch, Branch>> rows = this.sql //
-        .select() //
-        .tuples() //
-        .from(e) //
-        .join(b, e.branchId.eq(b.id)) //
-        .join(p, p.id.eq(b.parentBranchId)) //
-        .execute();
-    for (Tuple3<Employee, Branch, Branch> r : rows) {
-      Employee employee = r.getA();
-      Branch branch = r.getB();
-      Branch parentBranch = r.getC();
-      System.out.println("=== Employee: " + employee);
-      System.out.println("=== Branch: " + branch);
-      System.out.println("=== Parent Branch: " + parentBranch);
-    }
-
-//    === Employee: app.persistence.model.Employee@6418e39e
-//        - id=33
-//        - name=Malcolm
-//        - branchId=107
-//    === Branch: app.persistence.model.Branch@3635099
-//        - id=107
-//        - region=SE
-//        - isVip=0
-//        - parentBranchId=102
-//        - createdAt=2024-01-07T12:34:56
-//    === Parent Branch: app.persistence.model.Branch@1da1380b
-//        - id=102
-//        - region=S
-//        - isVip=1
-//        - parentBranchId=null
-//        - createdAt=2024-01-02T12:34:56
-
-  }
-
-//  private void tuplesExampleNested() throws SQLException, DynamicExpressionException {
+//
+////    === Employee: app.persistence.model.Employee@6adc5b9c
+////        - id=30
+////        - name=Anne
+////        - branchId=101
+////    === Branch: app.persistence.model.Branch@19c1820d
+////        - id=101
+////        - region=N
+////        - isVip=1
+////        - parentBranchId=null
+////        - createdAt=2024-01-01T12:34:56
+//
+//  }
+//
+//  private void tuplesExample5() throws SQLException, DynamicExpressionException {
+//
+//    // Self joins
+//
+//    BranchTable b = this.branchDAO.newTable();
+//    BranchTable p = this.branchDAO.newTable();
+//
+//    List<Tuple2<Branch, Branch>> rows = this.sql.select().tuples() //
+//        .from(b) //
+//        .join(p, p.id.eq(b.parentBranchId)) //
+//        .where(b.region.eq("NE")).execute();
+//    for (Tuple2<Branch, Branch> r : rows) {
+//      Branch branch = r.getA();
+//      Branch parentBranch = r.getB();
+//      System.out.println("=== Branch: " + branch);
+//      System.out.println("=== Parent Branch: " + parentBranch);
+//    }
+//
+////    === Branch: app.persistence.model.Branch@4b862408
+////        - id=105
+////        - region=NE
+////        - isVip=0
+////        - parentBranchId=101
+////        - createdAt=2024-01-05T12:34:56
+////    === Parent Branch: app.persistence.model.Branch@6ddee60f
+////        - id=101
+////        - region=N
+////        - isVip=1
+////        - parentBranchId=null
+////        - createdAt=2024-01-01T12:34:56
+//
+//  }
+//
+//  private void tuplesExample6() throws SQLException, DynamicExpressionException {
 //
 //    // Joining multiple tables and views (up to 26)
 //
@@ -787,109 +736,152 @@ public class App {
 //    BranchTable b = this.branchDAO.newTable();
 //    BranchTable p = this.branchDAO.newTable();
 //
-//    List<Tuple1<Employee>> rows = this.sql //
-//        .select( //
-//            e.star(), //
-//            
-//            sql.collection("parentBranches").columns(b.createdAt, p.isVip), //
-//            sql.collection("parentBranches").over(e.name).columns(b.createdAt, p.isVip), //
-//
-//            b.association("currentBranch").columns(b.id, b.region), //
-//            b.collection("parentBranches").over(e.name), //
-//            b.collection("parentBranches").over(e.name).columns(b.id, b.region) //
-//
-//            b.collection("parentBranches").over(e.name).columns(b.id, b.region,
-//                p.association("parents"),
-//                sql.collection("items").over(b.id).columns(e.name.concat(p.region).as("code"))
-//                ) //
-//
-//            ) //
-//        .collections() //
+//    List<Tuple3<Employee, Branch, Branch>> rows = this.sql //
+//        .select() //
+//        .tuples() //
 //        .from(e) //
-//        .semiJoin(b, e.branchId.eq(b.id)) //
-//        .semiJoin(p, p.id.eq(b.parentBranchId)) //
+//        .join(b, e.branchId.eq(b.id)) //
+//        .join(p, p.id.eq(b.parentBranchId)) //
 //        .execute();
-//    for (Tuple1<Employee> r : rows) {
+//    for (Tuple3<Employee, Branch, Branch> r : rows) {
 //      Employee employee = r.getA();
-////      Branch branch = r.getB();
-////      Branch parentBranch = r.getC();
+//      Branch branch = r.getB();
+//      Branch parentBranch = r.getC();
 //      System.out.println("=== Employee: " + employee);
-////      System.out.println("=== Branch: " + branch);
-////      System.out.println("=== Parent Branch: " + parentBranch);
+//      System.out.println("=== Branch: " + branch);
+//      System.out.println("=== Parent Branch: " + parentBranch);
 //    }
 //
+////    === Employee: app.persistence.model.Employee@6418e39e
+////        - id=33
+////        - name=Malcolm
+////        - branchId=107
+////    === Branch: app.persistence.model.Branch@3635099
+////        - id=107
+////        - region=SE
+////        - isVip=0
+////        - parentBranchId=102
+////        - createdAt=2024-01-07T12:34:56
+////    === Parent Branch: app.persistence.model.Branch@1da1380b
+////        - id=102
+////        - region=S
+////        - isVip=1
+////        - parentBranchId=null
+////        - createdAt=2024-01-02T12:34:56
+//
 //  }
-
-  private void tuplesExample7() throws SQLException, DynamicExpressionException {
-
-    EmployeeTable e = this.employeeDAO.newTable();
-    BranchTable b = this.branchDAO.newTable();
-    BranchTable p = this.branchDAO.newTable();
-
-    List<Tuple2<Employee, Branch>> rows = this.sql.select().tuples().from(e).join(b, e.branchId.eq(b.id))
-        .semiLeftJoin(p, p.parentBranchId.eq(b.id)).where(p.id.isNull()).execute();
-    for (Tuple2<Employee, Branch> r : rows) {
-      Employee employee = r.getA();
-      Branch branch = r.getB();
-      System.out.println("=== Employee: " + employee);
-      System.out.println("=== Branch: " + branch);
-    }
-
-//    === Employee: app.persistence.model.Employee@2ec99035
-//        - id=32
-//        - name=Jeanne
-//        - branchId=104
-//        === Branch: app.persistence.model.Branch@60743cdb
-//        - id=104
-//        - region=E
-//        - isVip=0
-//        - parentBranchId=null
-//        - createdAt=2024-01-04T12:34:56
-
-  }
-
-  private void tuplesExample8() throws SQLException, DynamicExpressionException {
-
-    // Joining subqueries and CTEs
-
-    BranchTable br = this.branchDAO.newTable();
-    CTE y = sql.cte("y", sql.select(sql.min(br.region).as("minRegion")).from(br));
-
-    EmployeeTable e = this.employeeDAO.newTable();
-    Subquery x = sql.subquery("x", sql.select(sql.currentDate().as("currentDate")));
-    BranchTable b = this.branchDAO.newTable();
-
-    List<Tuple2<Employee, Branch>> rows = this.sql.with(y).select().tuples() //
-        .from(e) //
-        .crossJoin(x) //
-        .crossJoin(y) //
-        .join(b, b.id.eq(e.branchId).and(b.region.eq(y.str("minRegion")))) //
-        .execute();
-
-    for (Tuple2<Employee, Branch> r : rows) {
-      Employee employee = r.getA();
-      Branch branch = r.getB();
-      System.out.println("=== Employee: " + employee);
-      System.out.println("=== Branch: " + branch);
-      for (String prop : r.getUnbound().keySet()) {
-        System.out.println("*** Unbound '" + prop + "': " + r.getUnbound().get(prop));
-      }
-    }
-
-//    === Employee: app.persistence.model.Employee@21de60a7
-//        - id=32
-//        - name=Jeanne
-//        - branchId=104
-//        === Branch: app.persistence.model.Branch@73894c5a
-//        - id=104
-//        - region=E
-//        - isVip=0
-//        - parentBranchId=null
-//        - createdAt=2024-01-04T12:34:56
-//        *** Unbound 'currentDate': 2025-08-12
-//        *** Unbound 'minRegion': E
-
-  }
+//
+////  private void tuplesExampleNested() throws SQLException, DynamicExpressionException {
+////
+////    // Joining multiple tables and views (up to 26)
+////
+////    EmployeeTable e = this.employeeDAO.newTable();
+////    BranchTable b = this.branchDAO.newTable();
+////    BranchTable p = this.branchDAO.newTable();
+////
+////    List<Tuple1<Employee>> rows = this.sql //
+////        .select( //
+////            e.star(), //
+////            
+////            sql.collection("parentBranches").columns(b.createdAt, p.isVip), //
+////            sql.collection("parentBranches").over(e.name).columns(b.createdAt, p.isVip), //
+////
+////            b.association("currentBranch").columns(b.id, b.region), //
+////            b.collection("parentBranches").over(e.name), //
+////            b.collection("parentBranches").over(e.name).columns(b.id, b.region) //
+////
+////            b.collection("parentBranches").over(e.name).columns(b.id, b.region,
+////                p.association("parents"),
+////                sql.collection("items").over(b.id).columns(e.name.concat(p.region).as("code"))
+////                ) //
+////
+////            ) //
+////        .collections() //
+////        .from(e) //
+////        .semiJoin(b, e.branchId.eq(b.id)) //
+////        .semiJoin(p, p.id.eq(b.parentBranchId)) //
+////        .execute();
+////    for (Tuple1<Employee> r : rows) {
+////      Employee employee = r.getA();
+//////      Branch branch = r.getB();
+//////      Branch parentBranch = r.getC();
+////      System.out.println("=== Employee: " + employee);
+//////      System.out.println("=== Branch: " + branch);
+//////      System.out.println("=== Parent Branch: " + parentBranch);
+////    }
+////
+////  }
+//
+//  private void tuplesExample7() throws SQLException, DynamicExpressionException {
+//
+//    EmployeeTable e = this.employeeDAO.newTable();
+//    BranchTable b = this.branchDAO.newTable();
+//    BranchTable p = this.branchDAO.newTable();
+//
+//    List<Tuple2<Employee, Branch>> rows = this.sql.select().tuples().from(e).join(b, e.branchId.eq(b.id))
+//        .semiLeftJoin(p, p.parentBranchId.eq(b.id)).where(p.id.isNull()).execute();
+//    for (Tuple2<Employee, Branch> r : rows) {
+//      Employee employee = r.getA();
+//      Branch branch = r.getB();
+//      System.out.println("=== Employee: " + employee);
+//      System.out.println("=== Branch: " + branch);
+//    }
+//
+////    === Employee: app.persistence.model.Employee@2ec99035
+////        - id=32
+////        - name=Jeanne
+////        - branchId=104
+////        === Branch: app.persistence.model.Branch@60743cdb
+////        - id=104
+////        - region=E
+////        - isVip=0
+////        - parentBranchId=null
+////        - createdAt=2024-01-04T12:34:56
+//
+//  }
+//
+//  private void tuplesExample8() throws SQLException, DynamicExpressionException {
+//
+//    // Joining subqueries and CTEs
+//
+//    BranchTable br = this.branchDAO.newTable();
+//    CTE y = sql.cte("y", sql.select(sql.min(br.region).as("minRegion")).from(br));
+//
+//    EmployeeTable e = this.employeeDAO.newTable();
+//    Subquery x = sql.subquery("x", sql.select(sql.currentDate().as("currentDate")));
+//    BranchTable b = this.branchDAO.newTable();
+//
+//    List<Tuple2<Employee, Branch>> rows = this.sql.with(y).select().tuples() //
+//        .from(e) //
+//        .crossJoin(x) //
+//        .crossJoin(y) //
+//        .join(b, b.id.eq(e.branchId).and(b.region.eq(y.str("minRegion")))) //
+//        .execute();
+//
+//    for (Tuple2<Employee, Branch> r : rows) {
+//      Employee employee = r.getA();
+//      Branch branch = r.getB();
+//      System.out.println("=== Employee: " + employee);
+//      System.out.println("=== Branch: " + branch);
+//      for (String prop : r.getUnbound().keySet()) {
+//        System.out.println("*** Unbound '" + prop + "': " + r.getUnbound().get(prop));
+//      }
+//    }
+//
+////    === Employee: app.persistence.model.Employee@21de60a7
+////        - id=32
+////        - name=Jeanne
+////        - branchId=104
+////        === Branch: app.persistence.model.Branch@73894c5a
+////        - id=104
+////        - region=E
+////        - isVip=0
+////        - parentBranchId=null
+////        - createdAt=2024-01-04T12:34:56
+////        *** Unbound 'currentDate': 2025-08-12
+////        *** Unbound 'minRegion': E
+//
+//  }
 
   private void tuplesExample9() throws SQLException, DynamicExpressionException {
 
