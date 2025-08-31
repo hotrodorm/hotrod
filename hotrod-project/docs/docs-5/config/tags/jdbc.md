@@ -3,6 +3,8 @@
 This tag configures the details of the generated persistence layer. It defines the folder locations,
 packages, and naming convention for the generated DAOs, Layout, and Model classes.
 
+See [Organizing the Persistence Layer](../../guides/organizing-persistence-layer-folders.md) for examples.
+
 ## Sub Tags
 
 This configuration tag can optionally include any of the following tags, in the order shown below:
