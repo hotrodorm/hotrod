@@ -9,10 +9,10 @@ This configuration tag can optionally include any of the following tags, in the 
 
 | Sub Tag | Description |
 | -- | -- |
-| `<dao>` | Configures the details of the generated DAO classes. DAOs provide all the persistence operations related to a table or view |
-| `<layout>` | Configures the details of the generated Layout classes. A Layout class represents the structure of a table or view. It doesn't have any methods beyond the setters and getters |
-| `<model>` | Configure the details of the generated Model classes. A model class represents the behavior of the domain object related to the table or view and it can be extended to add behavior or properties. This java class extends the Layout class |
-| `<discover>` | Configure the auto-discovery of tables and views in one or more database schema |
+| [&lt;dao>](./jdbc-dao.md) | Configures the details of the generated DAO classes. DAOs provide all the persistence operations related to a table or view |
+| [&lt;layout>](./jdbc-layout.md) | Configures the details of the generated Layout classes. A Layout class represents the structure of a table or view. It doesn't have any methods beyond the setters and getters |
+| [&lt;model>](./jdbc-model.md) | Configure the details of the generated Model classes. A model class represents the behavior of the domain object related to the table or view and it can be extended to add behavior or properties. This java class extends the Layout class |
+| [&lt;discover>](./discover.md) | Configure the auto-discovery of tables and views in one or more database schema |
 
 ## Attributes
 
@@ -22,7 +22,7 @@ This tag includes the following attribute:
 | -- | -- | -- |
 | `base-dir` | Specifies the base dir for all generated classes| `src/main/java` |
 | `package`  | Specifies the base package for all generated classes | `app.persistence` |
-| `qualifier-suffix` | Specifies the Spring qualifier suffix to use in this persistence layer, to reference beans (such as LiveSQL beans) in case the application uses multiple data sources. Don't specify it, or see [Using Multiple DataSources](../../guides/using-multiple-datasources.md) | *none* |
+| `qualifier` | Specifies the Spring qualifier to use in the persistence layer, to reference beans (such as LiveSQL beans) in case the application uses multiple data sources. Don't specify it if the application has a single persistence layer. See [Using Multiple DataSources](../../guides/using-multiple-datasources.md) for examples on ow to use it | *none* |
 
 ## Default Configuration
 
@@ -30,20 +30,9 @@ If the `<jdbc>` tag is not specified &mdash; either due to the no-configuration 
 
 ```xml
   <jdbc base-dir="src/main/java"
-        package="app.persistence"
-        qualifier="">
-    <dao    base-dir="" subpackage="dao"    prefix="" suffix="DAO" />
-    <layout base-dir="" subpackage="layout" prefix="" suffix="Layout" />
-    <model  base-dir="" subpackage="model"  prefix="" suffix="" />
-```
-
-The example above is not valid and is artificially verbose for clarification purposes only. The configuration validtor checks that &mdash; when specified &mdash; attributes cannot be empty strings. The real configuration can be used as:
-
-```xml
-  <jdbc base-dir="src/main/java"
         package="app.persistence">
-    <dao    subpackage="dao"    suffix="DAO"    />
-    <layout subpackage="layout" suffix="Layout" />
-    <model  subpackage="model" />
-  </jdbc>
+    <dao    sub-package="dao"    prefix="" suffix="DAO" />
+    <layout sub-package="layout" prefix="" suffix="Layout" />
+    <model  sub-package="model"  prefix="" suffix="" />
 ```
+

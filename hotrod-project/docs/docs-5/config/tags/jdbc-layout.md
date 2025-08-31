@@ -12,8 +12,9 @@ This tag includes the following attribute:
 
 | Attribute | Description | Defaults to |
 | -- | -- | -- |
-| `base-dir` | Overrides the base dir specified in the `<jdbc>` tag for the generated Layout classes | value in the `<jdbc>` tag |
-| `subpackage`  | Specifies the extra sub-package for Layout classes | `layout` |
+| `base-dir` | Overrides the base dir specified in the parent `<jdbc>` tag | *parent base-dir* |
+| `package`  | Overrides the package specified in the parent `<jdbc>` tag  | *parent package* |
+| `sub-package`  | Specifies the extra sub-package for Layout classes | `layout` |
 | `prefix` | Specifies the prefix to prepend to the Layout class names | *empty* |
 | `suffix` | Specifies the suffix to append to the Layout class names | `Layout` |
 

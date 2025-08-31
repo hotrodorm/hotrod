@@ -12,8 +12,9 @@ This tag includes the following attribute:
 
 | Attribute | Description | Defaults to |
 | -- | -- | -- |
-| `base-dir` | Overrides the base dir specified in the `<jdbc>` tag for the generated Model classes | value in the `<jdbc>` tag |
-| `subpackage`  | Specifies the extra sub-package for Model classes | `model` |
+| `base-dir` | Overrides the base dir specified in the parent `<jdbc>` tag | *parent base-dir* |
+| `package`  | Overrides the package specified in the parent `<jdbc>` tag  | *parent package* |
+| `sub-package`  | Specifies the extra sub-package for Model classes | `model` |
 | `prefix` | Specifies the prefix to prepend to the Model class names | *empty* |
 | `suffix` | Specifies the suffix to append to the Model class names | `Model` |
 
