@@ -75,7 +75,7 @@ public abstract class LiveSQLDialect {
   // Parsing
 
   private int parsePatchVersion(final String databaseVersion) {
-    Pattern p = Pattern.compile("^[0-9]+\\.[0-9]+\\.([0-9]+).*$");
+    Pattern p = Pattern.compile("^[0-9]+\\.[0-9]+\\.([0-9]+).*+$");
     Matcher m = p.matcher(databaseVersion);
     if (m.find()) {
       String patch = m.group(1);
