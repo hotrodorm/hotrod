@@ -1,0 +1,17 @@
+app/persistence1/dao/AccountDAO$AccountTable.class
+app/persistence1/dao/AccountDAO$1.class
+app/persistence2/dao/InvoiceDAO$InvoiceTable.class
+app/persistence1/layout/AccountLayout.class
+app/persistence2/dao/InvoiceDAO$1.class
+app/persistence1/model/Account.class
+app/persistence1/dao/AccountDAO$AccountBaseline.class
+app/persistence1/LayerConfigurationBundleAccounting.class
+app/persistence1/dao/AccountDAO$AccountOrderBy.class
+app/persistence2/dao/InvoiceDAO$InvoiceOrderBy.class
+app/persistence2/model/Invoice.class
+app/App.class
+app/persistence2/dao/InvoiceDAO$InvoiceBaseline.class
+app/persistence2/dao/InvoiceDAO.class
+app/persistence2/LayerConfigurationBundleSales.class
+app/persistence2/layout/InvoiceLayout.class
+app/persistence1/dao/AccountDAO.class
