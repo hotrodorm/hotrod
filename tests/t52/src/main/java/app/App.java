@@ -58,20 +58,20 @@ public class App {
     // Use a DAO to search in datasouce #1
     {
       Account a = this.accountDAO.select(2);
-      System.out.println("Account #2: " + a);
+      System.out.println("1. Account #2: " + a);
     }
 
     // Use a DAO to search in datasouce #2
     {
       Invoice i = this.invoiceDAO.select(103);
-      System.out.println("Invoice #103: " + i);
+      System.out.println("2. Invoice #103: " + i);
     }
 
     // Use LiveSQL to search in datasource #1
     {
       AccountTable a = this.accountDAO.newTable();
       List<Row> rows = this.sql1.select().from(a).where(a.owner.like("%m%")).execute();
-      System.out.println("Account which owner names' have an 'm':");
+      System.out.println("3. Account which owner names' have an 'm':");
       for (Row r : rows) {
         System.out.println(r);
       }
@@ -81,7 +81,7 @@ public class App {
     {
       InvoiceTable i = this.invoiceDAO.newTable();
       List<Row> rows = this.sql2.select().from(i).where(i.amount.ge(300)).execute();
-      System.out.println("Invoices for more than $300:");
+      System.out.println("4. Invoices for more than $300:");
       for (Row r : rows) {
         System.out.println(r);
       }
