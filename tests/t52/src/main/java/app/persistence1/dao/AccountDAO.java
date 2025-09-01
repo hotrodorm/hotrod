@@ -66,11 +66,11 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   private static final Logger log = Logger.getLogger(AccountDAO.class.getName());
 
   @Autowired
-  @Qualifier("accountingd")
+  @Qualifier("dataSourceAccounting")
   private DataSource dataSource;
 
   @Autowired
-  @Qualifier("accountingl")
+  @Qualifier("accounting")
   private LiveSQL sql;
 
   private DynamicSQL dyn;

@@ -3,7 +3,7 @@
   <generators>
   <jdbc base-dir="src/main/java"
         package="app.persistence"
-        qualifier="core">
+        qualifier="accounting">
   </jdbc>
     <!--
     <jdbc>

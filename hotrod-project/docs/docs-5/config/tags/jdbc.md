@@ -24,7 +24,7 @@ This tag includes the following attribute:
 | -- | -- | -- |
 | `base-dir` | Specifies the base dir for all generated classes| `src/main/java` |
 | `package`  | Specifies the base package for all generated classes | `app.persistence` |
-| `qualifier` | Specifies the Spring qualifier to use in the persistence layer, to reference beans (such as LiveSQL beans) in case the application uses multiple data sources. Don't specify it if the application has a single persistence layer. See [Using Multiple DataSources](../../guides/using-multiple-datasources.md) for examples on ow to use it | *none* |
+| `qualifier` | Specifies the Spring qualifier to use in the persistence layer, to reference beans (such as dataSource and LiveSQL beans) when the application uses multiple data sources. Use a different qualifier for each dataSource. Don't specify it if the application has a single persistence layer. See [Using Multiple DataSources](../../guides/using-multiple-datasources.md) for examples on how to use it | *none* |
 
 ## Default Configuration
 
@@ -36,5 +36,6 @@ If the `<jdbc>` tag is not specified &mdash; either due to the no-configuration 
     <dao    sub-package="dao"    prefix="" suffix="DAO" />
     <layout sub-package="layout" prefix="" suffix="Layout" />
     <model  sub-package="model"  prefix="" suffix="" />
+  </jdbc>
 ```
 

@@ -36,6 +36,11 @@ public class Const {
   public static final ExternalClass BEFORE = ExternalClass.of("org.aspectj.lang.annotation.Before");
   public static final ExternalClass CONFIGURATION = ExternalClass
       .of("org.springframework.context.annotation.Configuration");
+  public static final ExternalClass BEAN = ExternalClass.of("org.springframework.context.annotation.Bean");
+  public static final ExternalClass CONFIGURATION_PROPERTIES = ExternalClass
+      .of("org.springframework.boot.context.properties.ConfigurationProperties");
+  public static final ExternalClass DATA_SOURCE_PROPERTIES = ExternalClass
+      .of("org.springframework.boot.autoconfigure.jdbc.DataSourceProperties");
 
   public static final ExternalClass ORDER = ExternalClass.of("org.springframework.core.annotation.Order");
 

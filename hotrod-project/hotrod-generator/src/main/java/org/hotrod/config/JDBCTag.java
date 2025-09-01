@@ -199,7 +199,7 @@ public class JDBCTag extends AbstractGeneratorTag {
       Matcher m = QUALIFIER_PATTERN.matcher(this.qualifier);
       if (!m.matches()) {
         throw new InvalidConfigurationFileException(this,
-            "When specified, the qualifier must be an alphanumeric value with underscores.");
+            "When specified, the qualifier must start with a letter and continue with letters, digits, and/or underscores.");
       }
     }
 

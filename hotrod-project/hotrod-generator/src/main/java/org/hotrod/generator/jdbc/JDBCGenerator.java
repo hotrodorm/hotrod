@@ -63,7 +63,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
   private LinkedHashMap<EnumDataSetMetadata, EnumClass> enumClasses = new LinkedHashMap<>();
   private List<Layout> tableAbstractVOs = new ArrayList<>();
 
-  private LayerConfigWriter layerConfigWriter;
+  private LayerConfigBundleWriter layerConfigBundleWriter;
 
   public JDBCGenerator(final HotRodContext hc, final EnabledFKs enabledFKs, final DisplayMode displayMode,
       final boolean incrementalMode, final Feedback feedback)
@@ -128,7 +128,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
       }
     }
 
-    this.layerConfigWriter = new LayerConfigWriter(this.jdbcTag, this.config.getTypeSolverTag());
+    this.layerConfigBundleWriter = new LayerConfigBundleWriter(this.jdbcTag, this.config.getTypeSolverTag());
 
   }
 
@@ -276,7 +276,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
       vo.generate(fileGenerator);
     }
 
-    this.layerConfigWriter.generate(fileGenerator, this, this.jdbcTag.getQualifier());
+    this.layerConfigBundleWriter.generate(fileGenerator, this, this.jdbcTag.getQualifier());
 
   }
 

@@ -101,9 +101,6 @@ public class DAO {
 
   private static final Logger log = Logger.getLogger(DAO.class.getName());
 
-//  private static final String DATASOURCE_QUALIFIER_PREFIX = "dataSource";
-//  private static final String LIVESQL_QUALIFIER_PREFIX = "liveSQL";
-
   // Properties
 
   private AbstractDAOTag tag;
@@ -119,7 +116,6 @@ public class DAO {
 
   private ClassPackage classPackage;
 
-  @SuppressWarnings("unused")
   private Layout layout = null;
   private Model model = null;
 
@@ -287,7 +283,8 @@ public class DAO {
 
     w.println("  @", Const.AUTOWIRED);
     if (this.jdbcTag.getQualifier() != null) {
-      w.println("  @", Const.QUALIFIER, "(\"" + this.jdbcTag.getQualifier() + "\")");
+      String suffixCap = SUtil.capitalize(this.jdbcTag.getQualifier());
+      w.println("  @", Const.QUALIFIER, "(\"dataSource" + suffixCap + "\")");
     }
     w.println("  private ", DataSource.class, " dataSource;");
     w.println();

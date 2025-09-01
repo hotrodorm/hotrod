@@ -1,8 +1,8 @@
 # Using Multiple Datasources
 
-This guide shows how to configure two datasources that use a HotRod's generated persistence.
+This guide shows how to configure two datasources, each one having its own persistence layer. The datasource are not limited to use the same database brand, edition, or version; in fact, they can use different brands of databases and dialects.
 
-This strategy can be used to use any number of static data sources, that is, data sources known at compilation time. Each datasource is configured independently and can be
+This strategy can be used to use any number of static datasources, that is, data sources known at compilation time. Each datasource is configured independently and can be
 defined for the database of the same or different brand.
 
 Using Spring beans it's also possible to register and use a dynamic list of datasources. This can
@@ -43,7 +43,7 @@ The `pom.xml` file will look like:
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
-    <hotrod.version>5.0.0</hotrod.version>
+    <hotrod.version>5.1.2</hotrod.version>
   </properties>
 
   <dependencies>
@@ -258,11 +258,15 @@ Generate the persistence layer for the first database. Type:
 mvn -P first hotrod:gen
 ```
 
+The generated persistence layer includes all the beans necessary to use this datasource.
+
 Generate the persistence layer for the second database. Type:
 
 ```bash
 mvn -P second hotrod:gen
 ```
+
+Again, the second generated persistence layer includes all the beans necessary to use it.
 
 Each time HotRod connected to the corresponding database schema, retrieved the table details, and produced the persistence layer.
 
@@ -283,12 +287,9 @@ package app;
 import java.sql.SQLException;
 import java.util.List;
 
-import javax.sql.DataSource;
-
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.LiveSQL;
-import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
@@ -375,120 +376,6 @@ public class App {
 }
 ```
 
-When using multiple datasources we need to configure multiple dataSource beans and multiple LiveSQL brans. The following two classes do this job for each database.
-
-Add the class `src/main/java/app/DataSource1Config.java`:
-
-```java
-package app;
-
-import javax.sql.DataSource;
-
-import org.hotrod.livesql.LayerConfiguration;
-import org.hotrod.livesql.LiveSQL;
-import org.hotrod.livesql.dialects.LiveSQLDialect;
-import org.hotrod.livesql.dialects.LiveSQLDialectFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-@Configuration(proxyBeanMethods = false)
-public class DataSource1Config {
-
-  @Bean
-  @ConfigurationProperties("datasource1")
-  public DataSourceProperties dataSource1Properties() {
-    return new DataSourceProperties();
-  }
-
-  @Bean
-  public DataSource dataSource1(DataSourceProperties dataSource1Properties) {
-    DataSource ds = dataSource1Properties.initializeDataSourceBuilder().build();
-    return ds;
-  }
-
-  @Value("${datasource1.livesqldialect.name:#{null}}")
-  private String liveSQLDialectName;
-  @Value("${datasource1.livesqldialect.databaseName:#{null}}")
-  private String liveSQLDialectVDatabaseName;
-  @Value("${datasource1.livesqldialect.versionString:#{null}}")
-  private String liveSQLDialectVersionString;
-  @Value("${datasource1.livesqldialect.majorVersion:#{null}}")
-  private String liveSQLDialectMajorVersion;
-  @Value("${datasource1.livesqldialect.minorVersion:#{null}}")
-  private String liveSQLDialectMinorVersion;
-
-  @Bean
-  public LiveSQL accounting(DataSource dataSource1, LayerConfiguration layerConfiguration1) throws Exception {
-    LiveSQLDialect liveSQLDialect = LiveSQLDialectFactory.getLiveSQLDialect(dataSource1, this.liveSQLDialectName,
-        this.liveSQLDialectVDatabaseName, this.liveSQLDialectVersionString, this.liveSQLDialectMajorVersion,
-        this.liveSQLDialectMinorVersion);
-    LiveSQL ls = new LiveSQL(liveSQLDialect, dataSource1, "layerConfiguration1", layerConfiguration1);
-    return ls;
-  }
-
-}
-```
-
-Add the class `src/main/java/app/DataSource2Config.java`:
-
-```java
-package app;
-
-import javax.sql.DataSource;
-
-import org.hotrod.livesql.LayerConfiguration;
-import org.hotrod.livesql.LiveSQL;
-import org.hotrod.livesql.dialects.LiveSQLDialect;
-import org.hotrod.livesql.dialects.LiveSQLDialectFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-@Configuration(proxyBeanMethods = false)
-public class DataSource2Config {
-
-  @Bean
-  @ConfigurationProperties("datasource2")
-  public DataSourceProperties dataSource2Properties() {
-    return new DataSourceProperties();
-  }
-
-  @Bean
-  public DataSource dataSource2(DataSourceProperties dataSource2Properties) {
-    DataSource ds = dataSource2Properties.initializeDataSourceBuilder().build();
-    return ds;
-  }
-
-  @Value("${datasource2.livesqldialect.name:#{null}}")
-  private String liveSQLDialectName;
-  @Value("${datasource2.livesqldialect.databaseName:#{null}}")
-  private String liveSQLDialectVDatabaseName;
-  @Value("${datasource2.livesqldialect.versionString:#{null}}")
-  private String liveSQLDialectVersionString;
-  @Value("${datasource2.livesqldialect.majorVersion:#{null}}")
-  private String liveSQLDialectMajorVersion;
-  @Value("${datasource2.livesqldialect.minorVersion:#{null}}")
-  private String liveSQLDialectMinorVersion;
-
-  @Bean
-  public LiveSQL sales(DataSource dataSource2, LayerConfiguration layerConfiguration2) throws Exception {
-    LiveSQLDialect liveSQLDialect = LiveSQLDialectFactory.getLiveSQLDialect(dataSource2, this.liveSQLDialectName,
-        this.liveSQLDialectVDatabaseName, this.liveSQLDialectVersionString, this.liveSQLDialectMajorVersion,
-        this.liveSQLDialectMinorVersion);
-    LiveSQL ls = new LiveSQL(liveSQLDialect, dataSource2, "layerConfiguration2", layerConfiguration2);
-    return ls;
-  }
-
-}
-```
-
-**Note**: In the beans configured for both datasources, the properties `datasource1.livesqldialect.*` and `datasource2.livesqldialect.*` can be used to designate different dialect for each database. They are shown here for demonstration purposes only. Leave empty unless you know how to use custom dialects.
-
 ### Prepare the Runtime Properties File
 
 The runtime properties provide details of each database for the running the application.
@@ -512,31 +399,32 @@ logging.level.root=INFO
 
 # First datasource configuration
 
-datasource1.driver-class-name=org.h2.Driver
-datasource1.url=jdbc:h2:mem:FIRSTDB;INIT=runscript from './database1.sql';DB_CLOSE_DELAY=-1
-datasource1.username=sa
-datasource1.password=
+datasource.accounting.driver-class-name=org.h2.Driver
+datasource.accounting.url=jdbc:h2:mem:FIRSTDB;INIT=runscript from './database1.sql';DB_CLOSE_DELAY=-1
+datasource.accounting.username=sa
+datasource.accounting.password=
 
-#datasource1.livesqldialectname=MYSQL
-#datasource1.livesqldialectdatabaseName=MariaDB
-#datasource1.livesqldialectversionString="10.6"
-#datasource1.livesqldialectmajorVersion=10
-#datasource1.livesqldialectminorVersion=6
+#datasource.accounting.livesqldialectname=MYSQL
+#datasource.accounting.livesqldialectdatabaseName=MariaDB
+#datasource.accounting.livesqldialectversionString="10.6"
+#datasource.accounting.livesqldialectmajorVersion=10
+#datasource.accounting.livesqldialectminorVersion=6
 
 # Second datasouce configuration
 
-datasource2.driver-class-name=org.h2.Driver
-datasource2.url=jdbc:h2:mem:SECONDDB;INIT=runscript from './database2.sql';DB_CLOSE_DELAY=-1
-datasource2.username=sa
-datasource2.password=
+datasource.sales.driver-class-name=org.h2.Driver
+datasource.sales.url=jdbc:h2:mem:SECONDDB;INIT=runscript from './database2.sql';DB_CLOSE_DELAY=-1
+datasource.sales.username=sa
+datasource.sales.password=
 
-#datasource2.livesqldialectname=POSTGRESQL
-#datasource2.livesqldialectdatabaseName="PostgreSQL 12"
-#datasource2.livesqldialectversionString="12.4 (Linux)"
-#datasource2.livesqldialectmajorVersion=12
-#datasource2.livesqldialectminorVersion=4
+#datasource.sales.livesqldialectname=POSTGRESQL
+#datasource.sales.livesqldialectdatabaseName="PostgreSQL 12"
+#datasource.sales.livesqldialectversionString="12.4 (Linux)"
+#datasource.sales.livesqldialectmajorVersion=12
+#datasource.sales.livesqldialectminorVersion=4
 ```
 
+**Note**: The properties commented out can be used to change the database dialect at runtime.
 
 ### Run the Application
 

@@ -15,7 +15,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import app.abc1.SimpleComponent;
 import app.persistence1.dao.AccountDAO;
 import app.persistence1.dao.AccountDAO.AccountTable;
 import app.persistence1.model.Account;
@@ -28,23 +27,17 @@ import app.persistence2.model.Invoice;
 public class App {
 
   @Autowired
-  private SimpleComponent sc1;
-
-  @Autowired
-  private app.abc2.SimpleComponent sc2;
-
-  @Autowired
   private AccountDAO accountDAO;
 
   @Autowired
   private InvoiceDAO invoiceDAO;
 
   @Autowired
-  @Qualifier("accountingl") // bean name defined in DataSourceConfig1.java
+  @Qualifier("accounting") // bean name defined in DataSourceConfig1.java
   private LiveSQL sql1;
 
   @Autowired
-  @Qualifier("salesl") // bean name defined in DataSourceConfig2.java
+  @Qualifier("sales") // bean name defined in DataSourceConfig2.java
   private LiveSQL sql2;
 
   public static void main(String[] args) {

@@ -12,7 +12,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import org.hotrod.dynamicsql.Row;
@@ -154,25 +153,28 @@ public class LiveSQL {
   @SuppressWarnings("unused")
   private String qualifier = null;
 
-  private LayerConfiguration layerConfiguration;
+//  private LayerConfiguration layerConfiguration;
 
   // Constructor
 
-  public LiveSQL(LiveSQLDialect liveSQLDialect, DataSource dataSource, String qualifier,
-      LayerConfiguration layerConfiguration) {
+  public LiveSQL(LiveSQLDialect liveSQLDialect, DataSource dataSource, String qualifier, List<TypeRule> layerRules) {
     log.info("Initializing LiveSQL for qualifier: " + (qualifier == null ? "(main)" : qualifier));
     this.liveSQLDialect = liveSQLDialect;
     this.dataSource = dataSource;
     this.qualifier = qualifier;
-    this.layerConfiguration = layerConfiguration;
-  }
-
-  @PostConstruct
-  private void initialize() {
-    List<TypeRule> layerRules = this.layerConfiguration.getTypeRules();
+//    this.layerConfiguration = layerConfiguration;   
+//    List<TypeRule> layerRules = this.layerConfiguration.getTypeRules();
     this.typeSolver = new TypeSolver(layerRules, this.liveSQLDialect);
     this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, this.typeSolver, log);
+
   }
+
+//  @PostConstruct
+//  private void initialize() {
+//    List<TypeRule> layerRules = this.layerConfiguration.getTypeRules();
+//    this.typeSolver = new TypeSolver(layerRules, this.liveSQLDialect);
+//    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, this.typeSolver, log);
+//  }
 
   // Shielded methods
 
