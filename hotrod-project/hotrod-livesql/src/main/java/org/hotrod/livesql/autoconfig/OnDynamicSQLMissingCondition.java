@@ -16,8 +16,6 @@ public class OnDynamicSQLMissingCondition implements Condition {
     if (f == null)
       return false;
     Map<String, DynamicSQL> beans = f.getBeansOfType(DynamicSQL.class);
-    if (beans == null)
-      return false;
     return beans.isEmpty();
   }
 

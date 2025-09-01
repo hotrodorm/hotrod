@@ -16,8 +16,6 @@ public class OnLiveSQLDialectMissingCondition implements Condition {
     if (f == null)
       return false;
     Map<String, LiveSQLDialect> beans = f.getBeansOfType(LiveSQLDialect.class);
-    if (beans == null)
-      return false;
     return beans.isEmpty();
   }
 

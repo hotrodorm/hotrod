@@ -117,21 +117,17 @@ public class JDBCModelTag extends AbstractConfigurationTag {
     // sub-package
 
     if (this.sSubPackage == null) {
-      String ds = getDefaultSubPackage();
-      if (ds == null) {
-        this.computedPackage = currPackage;
-      } else {
-        ClassPackage sp = null;
-        try {
-          sp = ClassPackage.parse(ds);
-        } catch (InvalidPackageException e) {
-          throw new InvalidConfigurationFileException(this,
-              "Invalid default subpackage '" + ds
-                  + "'. Please specify a subpackage on the attribute 'sub-package' of the tag <" + super.getTagName()
-                  + ">: " + e.getMessage());
-        }
-        this.computedPackage = currPackage.append(sp);
+      String ds = DEFAULT_SUBPACKAGE;
+      ClassPackage sp = null;
+      try {
+        sp = ClassPackage.parse(ds);
+      } catch (InvalidPackageException e) {
+        throw new InvalidConfigurationFileException(this,
+            "Invalid default subpackage '" + ds
+                + "'. Please specify a subpackage on the attribute 'sub-package' of the tag <" + super.getTagName()
+                + ">: " + e.getMessage());
       }
+      this.computedPackage = currPackage.append(sp);
     } else {
       try {
         ClassPackage sp = ClassPackage.parse(this.sSubPackage);
@@ -166,10 +162,6 @@ public class JDBCModelTag extends AbstractConfigurationTag {
       }
     }
 
-  }
-
-  private String getDefaultSubPackage() {
-    return DEFAULT_SUBPACKAGE;
   }
 
   // Getters

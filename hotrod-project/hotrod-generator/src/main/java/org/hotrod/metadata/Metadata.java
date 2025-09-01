@@ -360,7 +360,9 @@ public class Metadata {
     } finally {
       log.fine("Closing connection (selects)...");
       try {
-        cr.close();
+        if (cr != null) {
+          cr.close();
+        }
       } catch (Exception e) {
         log.log(Level.FINE, "Could not close database connection", e);
       }

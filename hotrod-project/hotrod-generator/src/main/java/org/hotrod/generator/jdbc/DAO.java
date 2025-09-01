@@ -1163,7 +1163,7 @@ public class DAO {
           String getter = cm.getId().getJavaGetter();
           w.println("    if (baseline." + getter + "() == null) return 0;");
         }
-        if (!ol.getStrategy().usesAllColumns()) {
+        if (ol != null && !ol.getStrategy().usesAllColumns()) {
           ColumnMetadata cm = ol.getColumnMetadata();
           String getter = cm.getId().getJavaGetter();
           w.println("    if (baseline." + getter + "() == null) return 0;");
