@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 
 public class JULCustomFormatter extends Formatter {
 
-  private static final SimpleDateFormat DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+  private final SimpleDateFormat DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
   public static void initialize(Level level) {
     Logger root = Logger.getLogger("");

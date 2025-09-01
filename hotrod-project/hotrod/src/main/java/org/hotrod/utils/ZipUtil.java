@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -11,27 +12,29 @@ public class ZipUtil {
 
   public static void pack(File sourceDir, File zipFile) throws IOException {
     if (zipFile.exists()) {
-      zipFile.delete();
+      if (!zipFile.delete()) {
+        throw new IOException("Could not delete zip file: " + zipFile);
+      }
     }
     Path dest = Files.createFile(zipFile.toPath());
     try (ZipOutputStream zs = new ZipOutputStream(Files.newOutputStream(dest))) {
       Path from = sourceDir.toPath();
-      Files.walk(from).forEach(p -> {
-        if (!Files.isDirectory(p)) {
-          String relPath = from.relativize(p).toString();
-//          System.out.println("relPath=" + relPath);
-          ZipEntry zipEntry = new ZipEntry(relPath);
-          try {
-            zs.putNextEntry(zipEntry);
-            Files.copy(p, zs);
-            zs.closeEntry();
-          } catch (IOException e) {
-            System.err.println("relPath=" + relPath);
-            e.printStackTrace();
-
+      try (Stream<Path> walked = Files.walk(from)) {
+        walked.forEach(p -> {
+          if (!Files.isDirectory(p)) {
+            String relPath = from.relativize(p).toString();
+            ZipEntry zipEntry = new ZipEntry(relPath);
+            try {
+              zs.putNextEntry(zipEntry);
+              Files.copy(p, zs);
+              zs.closeEntry();
+            } catch (IOException e) {
+              System.err.println("relPath=" + relPath);
+              e.printStackTrace();
+            }
           }
-        }
-      });
+        });
+      }
     }
   }
 

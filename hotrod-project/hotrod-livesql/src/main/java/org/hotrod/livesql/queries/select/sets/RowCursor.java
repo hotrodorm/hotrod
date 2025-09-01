@@ -1,11 +1,13 @@
 package org.hotrod.livesql.queries.select.sets;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.dynamicsql.RowReader;
@@ -13,6 +15,8 @@ import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 
 public class RowCursor<T> implements Cursor<T> {
+
+  private static final Logger log = Logger.getLogger(RowCursor.class.getName());
 
   private Connection conn;
   private PreparedStatement ps;
@@ -46,12 +50,8 @@ public class RowCursor<T> implements Cursor<T> {
       }
 
     } catch (SQLException e) {
-      try {
-        this.close();
-        throw e;
-      } catch (IOException e1) {
-        throw e;
-      }
+      this.close();
+      throw e;
     }
 
   }
@@ -62,14 +62,14 @@ public class RowCursor<T> implements Cursor<T> {
   }
 
   @Override
-  public void close() throws IOException {
+  public void close() {
     try {
       try {
         if (this.rs != null) {
           this.rs.close();
         }
       } catch (SQLException e) {
-        throw new IOException("Could not close the database result set", e);
+        log.log(Level.SEVERE, "Could not close the database result set", e);
       }
     } finally {
       try {
@@ -77,14 +77,14 @@ public class RowCursor<T> implements Cursor<T> {
           this.ps.close();
         }
       } catch (SQLException e) {
-        throw new IOException("Could not close the database prepared statement", e);
+        log.log(Level.SEVERE, "Could not close the database prepared statement", e);
       } finally {
         try {
           if (this.conn != null) {
             this.conn.close();
           }
         } catch (SQLException e) {
-          throw new IOException("Could not close the database connection", e);
+          log.log(Level.SEVERE, "Could not close the database connection", e);
         }
       }
     }
@@ -95,17 +95,26 @@ public class RowCursor<T> implements Cursor<T> {
     private Connection conn;
     private ResultSet rs;
     private RowReader<T> rowReader;
+    private boolean endReached;
 
     public CursorIterator(Connection conn, ResultSet rs, RowReader<T> rowReader) {
       this.conn = conn;
       this.rs = rs;
       this.rowReader = rowReader;
+      this.endReached = false;
     }
 
     @Override
     public boolean hasNext() {
+      if (this.endReached) {
+        throw new NoSuchElementException("There are no more rows in the result set");
+      }
       try {
-        return this.rs.next();
+        boolean next = this.rs.next();
+        if (!next) {
+          this.endReached = true;
+        }
+        return next;
       } catch (SQLException e) {
         throw new RuntimeException("Could not move to the next row of the result set", e);
       }
@@ -113,6 +122,9 @@ public class RowCursor<T> implements Cursor<T> {
 
     @Override
     public T next() {
+      if (this.endReached) {
+        throw new NoSuchElementException("There are no more rows in the result set");
+      }
       try {
         return this.rowReader.readRowFrom(this.rs, this.conn);
       } catch (SQLException e) {
