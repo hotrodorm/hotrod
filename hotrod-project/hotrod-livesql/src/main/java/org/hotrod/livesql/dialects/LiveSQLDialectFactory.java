@@ -14,14 +14,10 @@ public class LiveSQLDialectFactory {
       final String liveSQLDialectDatabaseName, final String liveSQLDialectVersionString,
       final String liveSQLDialectMajorVersion, final String liveSQLDialectMinorVersion) throws LiveSQLDialectException {
 
-    if (dataSource == null && SUtil.isEmpty(liveSQLDialectName)) {
-      throw new RuntimeException(
-          "Either the dataSource of the liveSQLDialectName must be provided, but both were null.");
-    }
-
     try {
 
       if (!SUtil.isEmpty(liveSQLDialectName)) {
+
         Integer majorVersion = null;
         Integer minorVersion = null;
         try {
@@ -46,13 +42,21 @@ public class LiveSQLDialectFactory {
         LiveSQLDialect sqlDialect = DesignatedLiveSQLDialect.resolveDesignatedDialect(liveSQLDialectName,
             liveSQLDialectDatabaseName, liveSQLDialectVersionString, majorVersion, minorVersion);
         return sqlDialect;
-      } else {
+
+      } else if (dataSource != null) {
+
         try {
           LiveSQLDialect sqlDialect = discoverFromDatasource(dataSource);
           return sqlDialect;
         } catch (SQLException e) {
           throw new LiveSQLDialectException(e.getMessage(), e.getCause());
         }
+
+      } else {
+
+        throw new RuntimeException(
+            "Either the dataSource of the liveSQLDialectName must be provided, but both were null.");
+
       }
 
     } catch (RuntimeException e) {

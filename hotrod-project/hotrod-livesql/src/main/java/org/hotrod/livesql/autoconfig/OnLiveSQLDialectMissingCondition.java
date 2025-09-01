@@ -13,7 +13,11 @@ public class OnLiveSQLDialectMissingCondition implements Condition {
   @Override
   public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
     ConfigurableListableBeanFactory f = context.getBeanFactory();
+    if (f == null)
+      return false;
     Map<String, LiveSQLDialect> beans = f.getBeansOfType(LiveSQLDialect.class);
+    if (beans == null)
+      return false;
     return beans.isEmpty();
   }
 

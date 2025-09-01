@@ -525,7 +525,7 @@ public class VORegistry {
     if (!c1.getName().equals(c2.getName())) {
       return false;
     }
-    if (c1.getDataType() != c2.getDataType()) {
+    if (!c1.getDataType().equals(c2.getDataType())) {
       return false;
     }
     if (!c1.getType().getJavaClassName().equals(c2.getType().getJavaClassName())) {

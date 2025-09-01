@@ -310,9 +310,7 @@ public class Metadata {
         }
       }
 
-    } catch (
-
-    SQLException e) {
+    } catch (SQLException e) {
       throw new UncontrolledException("Could not retrieve database metadata.", e);
 
     } finally {
@@ -322,7 +320,7 @@ public class Metadata {
           conn.close();
           log.fine("Connection closed.");
         } catch (SQLException e) {
-          throw new UncontrolledException("Could not retrieve database metadata.", e);
+          log.log(Level.SEVERE, "Could not retrieve database metadata", e);
         }
       }
     }
