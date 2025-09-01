@@ -1,6 +1,5 @@
 package org.hotrod.dynamicsql;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,8 +8,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DynCursor<R> implements Cursor<R> {
+
+  private static final Logger log = Logger.getLogger(DynCursor.class.getName());
 
   private Connection conn;
   private PreparedStatement ps;
@@ -39,12 +42,8 @@ public class DynCursor<R> implements Cursor<R> {
       this.rowReader.discoverColumns(this.rs);
 
     } catch (SQLException e) {
-      try {
-        this.close();
-        throw e;
-      } catch (IOException e1) {
-        throw e;
-      }
+      this.close();
+      throw e;
     }
 
   }
@@ -55,14 +54,14 @@ public class DynCursor<R> implements Cursor<R> {
   }
 
   @Override
-  public void close() throws IOException {
+  public void close() {
     try {
       try {
         if (this.rs != null) {
           this.rs.close();
         }
       } catch (SQLException e) {
-        throw new IOException("Could not close the database result set", e);
+        log.log(Level.SEVERE, "Could not close the database result set", e);
       }
     } finally {
       try {
@@ -70,14 +69,14 @@ public class DynCursor<R> implements Cursor<R> {
           this.ps.close();
         }
       } catch (SQLException e) {
-        throw new IOException("Could not close the database prepared statement", e);
+        log.log(Level.SEVERE, "Could not close the database prepared statement", e);
       } finally {
         try {
           if (this.conn != null) {
             this.conn.close();
           }
         } catch (SQLException e) {
-          throw new IOException("Could not close the database connection", e);
+          log.log(Level.SEVERE, "Could not close the database connection", e);
         }
       }
     }
