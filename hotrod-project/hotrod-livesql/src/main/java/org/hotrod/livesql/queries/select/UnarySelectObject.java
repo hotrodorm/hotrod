@@ -96,11 +96,6 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
 
   @Override
   public List<Expression> assembleColumns() {
-//    String froms = this.from == null ? "N/A"
-//        : (this.from.getName().getName() + ":" + this.joins.stream()
-//            .map(j -> j.getTableExpression().getName().getName()).collect(Collectors.joining(", ")));
-//    log.info("=== 1. ASSEMBLE COLUMNS === " + froms);
-
     if (this.from != null) {
       this.from.assembleColumns();
     }
@@ -110,17 +105,15 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
     }
 
     if (this.sqlExpressions == null || this.sqlExpressions.isEmpty()) {
-//      log.info("== Adding all columns...");
       this.sqlExpressions = new ArrayList<>();
-      this.sqlExpressions.add(this.from.star());
+      if (this.from != null) {
+        this.sqlExpressions.add(this.from.star());
+      }
       for (Join j : this.joins) {
         this.sqlExpressions.add(j.getTableExpression().star());
       }
     } else {
-//      log.info("== Columns were specified (" + this.resultSetColumns.size() + ")");
     }
-
-//    log.info("=== 1.3");
 
     // sql.val(3).mult(7) -- Expression N/A
     // a.id -- Column te.id

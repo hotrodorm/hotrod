@@ -110,8 +110,10 @@ public class SelectMethodReturnType implements Serializable {
 
         log.finer(">>> sm.getVOClassName()=" + sm.getVOClassName() + " sm.getAbstractVOClassName()="
             + sm.getAbstractVOClassName());
+//        log.finer("this.soloVO.getName()=" + (this.soloVO == null ? "null" : this.soloVO.getName())
+//            + " this.connectedVO.getName()=" + (this.connectedVO == null ? "null" : this.connectedVO.getName()));
         log.finer("this.soloVO.getName()=" + (this.soloVO == null ? "null" : this.soloVO.getName())
-            + " this.connectedVO.getName()=" + (this.connectedVO == null ? "null" : this.connectedVO.getName()));
+            + " this.connectedVO.getName()=" + ("null"));
 
       }
 
