@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -87,17 +88,26 @@ public class DynCursor<R> implements Cursor<R> {
     private Connection conn;
     private ResultSet rs;
     private RowReader<T> rowReader;
+    private boolean endReached;
 
     public CursorIterator(Connection conn, ResultSet rs, RowReader<T> rowReader) {
       this.conn = conn;
       this.rs = rs;
       this.rowReader = rowReader;
+      this.endReached = false;
     }
 
     @Override
     public boolean hasNext() {
+      if (this.endReached) {
+        throw new NoSuchElementException("There are no more rows in the result set");
+      }
       try {
-        return this.rs.next();
+        boolean next = this.rs.next();
+        if (!next) {
+          this.endReached = true;
+        }
+        return next;
       } catch (SQLException e) {
         throw new RuntimeException("Could not advance to the next row of the result set", e);
       }
@@ -105,6 +115,9 @@ public class DynCursor<R> implements Cursor<R> {
 
     @Override
     public T next() {
+      if (this.endReached) {
+        throw new NoSuchElementException("There are no more rows in the result set");
+      }
       try {
         return this.rowReader.readRowFrom(this.rs, this.conn);
       } catch (SQLException e) {
