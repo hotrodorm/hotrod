@@ -185,16 +185,27 @@ The reference details how to activate all features, and how to use them.
 
 ## Guides
 
-These guides focus on specific features and show examples enabling and using them.
+These are step by step guides to use specific features or functionality in the HotRod ORM.
 
-These guides are the following:
+Getting Started:
 
-- [Starting a Spring Boot Project from Scratch using PostgreSQL](./guides/starting-a-maven-project-from-scratch-with-postgresql.md)
-- [Previewing LiveSQL](./livesql/previewing-livesql.md)
-- [Enabling SQL Logging](./guides/enabling-sql-logging.md)
-- [Schema Discovery](./guides/schema-discovery.md)
-- [Using Multiple DataSources](./guides/using-multiple-datasources.md)
-- [Custom Column Types](./guides/mapping-column-types.md)
-- [Custom Table and Column Names](./guides/mapping-table-and-column-names.md)
-- [Extending LiveSQL Functions](./livesql/extending-livesql-functions.md)
+- [Hello World!](./hello-world.md)
+- [Starting a Maven Project from Scratch](./starting-a-maven-project-from-scratch-with-postgresql.md)
+
+Tuning the Persistence Layer:
+
+- [Organizing the Persistence Layer Folders](./organizing-persistence-layer-folders.md)
+- [Tuning Column Types](./mapping-column-types.md)
+- [Mapping Table, Views, and Column Names](./mapping-table-and-column-names.md)
+
+Debugging:
+
+- [Previewing LiveSQL](../livesql/previewing-livesql.md)
+- [Enabling SQL Logging](./enabling-sql-logging.md)
+
+Advanced Features:
+
+- [Extending LiveSQL Functions](../livesql/extending-livesql-functions.md)
+- [Using Multiple DataSources](./using-multiple-datasources.md)
+
 
