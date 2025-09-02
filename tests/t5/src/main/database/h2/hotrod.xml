@@ -32,6 +32,10 @@
     <sequence name="hired_seq" method="getHiredNextValue" />
   </table>
 
+  <dao name="SalesDAO">
+    <sequence name="hired_seq" method="getHiredNextValue" />
+  </dao>
+
 
 <!--
   <table name="chars" />

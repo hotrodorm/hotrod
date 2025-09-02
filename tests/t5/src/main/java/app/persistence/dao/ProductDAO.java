@@ -312,7 +312,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateSetCompletePhase update(ProductLayout values, ProductTable tableOrView,
+  public UpdateSetCompletePhase update(Product values, ProductTable tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));

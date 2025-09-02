@@ -21,7 +21,8 @@ import org.springframework.context.annotation.Configuration;
 
 import app.persistence.dao.AccountDAO;
 import app.persistence.dao.AccountDAO.AccountTable;
-import app.persistence.layout.AccountLayout;
+import app.persistence.dao.EmployeeDAO;
+import app.persistence.dao.SalesDAO;
 import app.persistence.model.Account;
 
 @SpringBootApplication
@@ -42,9 +43,12 @@ public class App {
 //
 //  @Autowired
 //  private BranchDAO branchDAO;
-//
-//  @Autowired
-//  private EmployeeDAO employeeDAO;
+
+  @Autowired
+  private EmployeeDAO employeeDAO;
+
+  @Autowired
+  private SalesDAO salesDAO;
 
 //  @Autowired
 //  private ADAO aDAO;
@@ -86,13 +90,15 @@ public class App {
     };
   }
 
-  private void selectByExample()  {
-    AccountLayout example = new AccountLayout();
-    this.accountDAO.select(example);
-    
-    
-    Account a = this.accountDAO.select(123);
-    System.out.println("a=" + a);
+  private void selectByExample() {
+    long seq = this.salesDAO.getHiredNextValue();
+
+//    AccountLayout example = new AccountLayout();
+//    this.accountDAO.select(example);
+//    
+//    
+//    Account a = this.accountDAO.select(123);
+    System.out.println("seq=" + seq);
   }
 
   private void testA() throws SQLException, DynamicExpressionException {

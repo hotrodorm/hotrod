@@ -417,7 +417,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateSetCompletePhase update(BranchLayout values, BranchTable tableOrView,
+  public UpdateSetCompletePhase update(Branch values, BranchTable tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));

@@ -403,7 +403,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateSetCompletePhase update(EmployeeLayout values, EmployeeTable tableOrView,
+  public UpdateSetCompletePhase update(Employee values, EmployeeTable tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));

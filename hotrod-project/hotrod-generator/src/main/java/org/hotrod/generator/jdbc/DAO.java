@@ -1786,10 +1786,11 @@ public class DAO {
     w.println();
     w.println("  // SEQUENCE ROW READER");
     w.println();
-    w.println("  private final RowReader<Long> sequenceRowReader = new RowReader<Long>() {");
+    w.println("  private final ", RowReader.class, "<Long> sequenceRowReader = new ", RowReader.class, "<Long>() {");
     w.println();
-    w.println("    @Override");
-    w.println("    public Long readRowFrom(ResultSet rs, Connection conn) throws SQLException {");
+    w.println("    @", Override.class);
+    w.println("    public Long readRowFrom(", ResultSet.class, " rs, ", Connection.class,
+        " conn) throws SQLException {");
     w.println("      Long col1 = rs.getLong(1);");
     w.println("      if (rs.wasNull()) col1 = null;");
     w.println("      return col1;");
@@ -1809,18 +1810,18 @@ public class DAO {
     w.println();
     w.println("  // SELECT SEQUENCE");
     w.println();
-    w.println("  private DynamicSelectQuery selectSequence" + n + ";");
+    w.println("  private ", DynamicSelectQuery.class, " selectSequence" + n + ";");
     w.println();
     w.println("  private void " + initializerMethod + "() {");
     w.println("    this.selectSequence" + n + " = dyn.literaln(\"" + sql + "\").endSelectQuery();");
     w.println("  }");
     w.println();
     w.println("  public long " + tag.getMethod() + "() {");
-    w.println("    Parameters context = this.dyn.newParameters();");
-    w.println("    PreparedSelectQuery<Long> preparedQuery = " + "this.selectSequence" + n
-        + ".prepare(context, this.sequenceRowReader);");
+    w.println("    ", Parameters.class, " context = this.dyn.newParameters();");
+    w.println("    ", PreparedSelectQuery.class,
+        "<Long> preparedQuery = " + "this.selectSequence" + n + ".prepare(context, this.sequenceRowReader);");
     w.println("    logQuery(preparedQuery);");
-    w.println("    try (Connection conn = this.dataSource.getConnection()) {");
+    w.println("    try (", Connection.class, " conn = this.dataSource.getConnection()) {");
     w.println("      long value = preparedQuery.executeOne(conn);");
     w.println("      return value;");
     w.println("    } catch (", SQLException.class, " e) {");
