@@ -54,7 +54,6 @@ import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.utils.SQLUtil;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
@@ -71,11 +70,9 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   private static final Logger log = Logger.getLogger(AccountDAO.class.getName());
 
   @Autowired
-  @Qualifier("dataSourceAccounting")
   private DataSource dataSource;
 
   @Autowired
-  @Qualifier("accounting")
   private LiveSQL sql;
 
   private DynamicSQL dyn;

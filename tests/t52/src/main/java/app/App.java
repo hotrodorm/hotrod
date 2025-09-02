@@ -33,11 +33,11 @@ public class App {
   private InvoiceDAO invoiceDAO;
 
   @Autowired
-  @Qualifier("accounting") // bean name defined in DataSourceConfig1.java
+  @Qualifier("liveSQL:accounting") // bean name defined in DataSourceConfig1.java
   private LiveSQL sql1;
 
   @Autowired
-  @Qualifier("sales") // bean name defined in DataSourceConfig2.java
+  @Qualifier("liveSQL:sales") // bean name defined in DataSourceConfig2.java
   private LiveSQL sql2;
 
   public static void main(String[] args) {
@@ -55,16 +55,20 @@ public class App {
 
   private void searching() throws DynamicExpressionException, SQLException {
 
+    System.out.println();
+
     // Use a DAO to search in datasouce #1
     {
       Account a = this.accountDAO.select(2);
       System.out.println("1. Account #2: " + a);
+      System.out.println();
     }
 
     // Use a DAO to search in datasouce #2
     {
       Invoice i = this.invoiceDAO.select(103);
       System.out.println("2. Invoice #103: " + i);
+      System.out.println();
     }
 
     // Use LiveSQL to search in datasource #1
@@ -75,6 +79,7 @@ public class App {
       for (Row r : rows) {
         System.out.println(r);
       }
+      System.out.println();
     }
 
     // Use LiveSQL to search in datasource #2
@@ -85,6 +90,7 @@ public class App {
       for (Row r : rows) {
         System.out.println(r);
       }
+      System.out.println();
     }
 
   }

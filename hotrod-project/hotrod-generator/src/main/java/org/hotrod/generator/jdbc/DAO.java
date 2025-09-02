@@ -116,8 +116,9 @@ public class DAO {
 
   private ClassPackage classPackage;
 
-  private Layout layout = null;
-  private Model model = null;
+  private Layout layout;
+  private Model model;
+  private LayerConfigBeanWriter layerConfig;
 
   private String metadataClassName;
 
@@ -129,7 +130,7 @@ public class DAO {
 
   public DAO(final AbstractDAOTag tag, final DataSetMetadata metadata, final JDBCGenerator generator,
       final DAOType type, final JDBCTag myBatisTag, final DatabaseAdapter adapter, final Layout layout,
-      final Model model) {
+      final Model model, final LayerConfigBeanWriter layerConfig) {
     super();
     this.tag = tag;
     this.metadata = metadata;
@@ -143,6 +144,7 @@ public class DAO {
 
     this.layout = layout;
     this.model = model;
+    this.layerConfig = layerConfig;
 
     this.fragmentConfig = metadata.getFragmentConfig();
     this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
@@ -282,9 +284,8 @@ public class DAO {
     // Spring properties
 
     w.println("  @", Const.AUTOWIRED);
-    if (this.jdbcTag.getQualifier() != null) {
-      String suffixCap = SUtil.capitalize(this.jdbcTag.getQualifier());
-      w.println("  @", Const.QUALIFIER, "(\"dataSource" + suffixCap + "\")");
+    if (this.layerConfig.getDataSourceQualifier() != null) {
+      w.println("  @", Const.QUALIFIER, "(\"" + this.layerConfig.getDataSourceQualifier() + "\")");
     }
     w.println("  private ", DataSource.class, " dataSource;");
     w.println();
@@ -293,8 +294,8 @@ public class DAO {
       w.println("  @", SuppressWarnings.class, "(\"unused\")");
     }
     w.println("  @", Const.AUTOWIRED);
-    if (this.jdbcTag.getQualifier() != null) {
-      w.println("  @", Const.QUALIFIER, "(\"" + this.jdbcTag.getQualifier() + "\")");
+    if (this.layerConfig.getLiveSQLQualifier() != null) {
+      w.println("  @", Const.QUALIFIER, "(\"" + this.layerConfig.getLiveSQLQualifier() + "\")");
     }
     w.println("  private ", LiveSQL.class, " sql;");
     w.println();

@@ -57,13 +57,13 @@ public class JDBCGenerator implements Generator, LiveGenerator {
 
   private JDBCTag jdbcTag;
 
-  private LinkedHashMap<DataSetMetadata, Layout> abstractVos = new LinkedHashMap<>();
-  private LinkedHashMap<DataSetMetadata, Model> vos = new LinkedHashMap<>();
+  private LinkedHashMap<DataSetMetadata, Layout> layouts = new LinkedHashMap<>();
+  private LinkedHashMap<DataSetMetadata, Model> models = new LinkedHashMap<>();
   private LinkedHashMap<DataSetMetadata, DAO> daos = new LinkedHashMap<>();
   private LinkedHashMap<EnumDataSetMetadata, EnumClass> enumClasses = new LinkedHashMap<>();
   private List<Layout> tableAbstractVOs = new ArrayList<>();
 
-  private LayerConfigBundleWriter layerConfigBundleWriter;
+  private LayerConfigBeanWriter layerConfig;
 
   public JDBCGenerator(final HotRodContext hc, final EnabledFKs enabledFKs, final DisplayMode displayMode,
       final boolean incrementalMode, final Feedback feedback)
@@ -94,6 +94,9 @@ public class JDBCGenerator implements Generator, LiveGenerator {
 //    log.info("PREPARE GENERATION");
 
     this.jdbcTag = (JDBCTag) this.config.getGenerators().getSelectedGeneratorTag();
+
+    this.layerConfig = new LayerConfigBeanWriter(this.jdbcTag, this.config.getTypeSolverTag(),
+        this.jdbcTag.getQualifier());
 
     // Add tables
 
@@ -128,16 +131,14 @@ public class JDBCGenerator implements Generator, LiveGenerator {
       }
     }
 
-    this.layerConfigBundleWriter = new LayerConfigBundleWriter(this.jdbcTag, this.config.getTypeSolverTag());
-
   }
 
   private EntityDTOs addDaosAndMapper(final DataSetMetadata metadata, final DAOType type) throws ControlledException {
 
     JDBCTag jdbcTag = (JDBCTag) this.config.getGenerators().getSelectedGeneratorTag();
 
-    Layout abstractVO;
-    Model vo;
+    Layout layout;
+    Model model;
     DAO dao;
 
     switch (type) {
@@ -152,11 +153,11 @@ public class JDBCGenerator implements Generator, LiveGenerator {
         }
       }
 
-      abstractVO = new Layout(metadata, this, DAOType.TABLE, jdbcTag);
-      this.tableAbstractVOs.add(abstractVO);
-      vo = new Model(metadata, this, abstractVO, jdbcTag);
-      dao = new DAO(ttag, metadata, this, type, jdbcTag, this.adapter, abstractVO, vo);
-      vo.setDAO(dao);
+      layout = new Layout(metadata, this, DAOType.TABLE, jdbcTag);
+      this.tableAbstractVOs.add(layout);
+      model = new Model(metadata, this, layout, jdbcTag);
+      dao = new DAO(ttag, metadata, this, type, jdbcTag, this.adapter, layout, model, this.layerConfig);
+      model.setDAO(dao);
       break;
 
     case VIEW:
@@ -169,18 +170,18 @@ public class JDBCGenerator implements Generator, LiveGenerator {
         }
       }
 
-      abstractVO = new Layout(metadata, this, DAOType.VIEW, jdbcTag);
-      vo = new Model(metadata, this, abstractVO, jdbcTag);
-      dao = new DAO(vtag, metadata, this, type, jdbcTag, this.adapter, abstractVO, vo);
-      vo.setDAO(dao);
+      layout = new Layout(metadata, this, DAOType.VIEW, jdbcTag);
+      model = new Model(metadata, this, layout, jdbcTag);
+      dao = new DAO(vtag, metadata, this, type, jdbcTag, this.adapter, layout, model, this.layerConfig);
+      model.setDAO(dao);
       break;
 
     case EXECUTOR:
       AbstractDAOTag tag = metadata.getDaoTag();
-      abstractVO = null;
-      vo = null;
+      layout = null;
+      model = null;
 
-      dao = new DAO(tag, metadata, this, type, jdbcTag, this.adapter, abstractVO, vo);
+      dao = new DAO(tag, metadata, this, type, jdbcTag, this.adapter, layout, model, this.layerConfig);
       break;
 
     default:
@@ -188,15 +189,15 @@ public class JDBCGenerator implements Generator, LiveGenerator {
           "Unrecognized type for database object '" + metadata.getId().getCanonicalSQLName() + "'.");
     }
 
-    if (abstractVO != null) {
-      this.abstractVos.put(metadata, abstractVO);
+    if (layout != null) {
+      this.layouts.put(metadata, layout);
     }
-    if (vo != null) {
-      this.vos.put(metadata, vo);
+    if (model != null) {
+      this.models.put(metadata, model);
     }
     this.daos.put(metadata, dao);
 
-    return vo == null ? null : new EntityDTOs(abstractVO, vo);
+    return model == null ? null : new EntityDTOs(layout, model);
 
   }
 
@@ -248,35 +249,30 @@ public class JDBCGenerator implements Generator, LiveGenerator {
 
   }
 
-  // =============================================================================================
-  // =============================================================================================
-  // =============================================================================================
-
   @Override
   public void generate(FileGenerator fileGenerator) throws UncontrolledException, ControlledException {
-//    log.info("JDBC GENERATE");
 
-    for (Model vo : this.vos.values()) {
-      vo.generate(fileGenerator);
+    for (Model mo : this.models.values()) {
+      mo.generate(fileGenerator);
     }
 
-    for (Layout avo : this.abstractVos.values()) {
-      avo.generate(fileGenerator);
+    for (Layout la : this.layouts.values()) {
+      la.generate(fileGenerator);
     }
 
     for (DAO dao : this.daos.values()) {
       dao.generate(fileGenerator, this);
     }
 
-    for (SelectLayout avo : this.abstractSelectVOs) {
-      avo.generate(fileGenerator);
+    for (SelectLayout sla : this.abstractSelectVOs) {
+      sla.generate(fileGenerator);
     }
 
-    for (SelectModel vo : this.selectVOs) {
-      vo.generate(fileGenerator);
+    for (SelectModel smo : this.selectVOs) {
+      smo.generate(fileGenerator);
     }
 
-    this.layerConfigBundleWriter.generate(fileGenerator, this, this.jdbcTag.getQualifier());
+    this.layerConfig.generate(fileGenerator, this);
 
   }
 

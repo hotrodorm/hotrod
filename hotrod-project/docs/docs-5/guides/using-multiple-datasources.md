@@ -317,11 +317,11 @@ public class App {
   private InvoiceDAO invoiceDAO;
 
   @Autowired
-  @Qualifier("accounting") // bean name defined in DataSourceConfig1.java
+  @Qualifier("liveSQL:accounting") // bean name defined in DataSourceConfig1.java
   private LiveSQL sql1;
 
   @Autowired
-  @Qualifier("sales") // bean name defined in DataSourceConfig2.java
+  @Qualifier("liveSQL:sales") // bean name defined in DataSourceConfig2.java
   private LiveSQL sql2;
 
   public static void main(String[] args) {
@@ -339,16 +339,20 @@ public class App {
 
   private void searching() throws DynamicExpressionException, SQLException {
 
+    System.out.println();
+
     // Use a DAO to search in datasouce #1
     {
       Account a = this.accountDAO.select(2);
       System.out.println("1. Account #2: " + a);
+      System.out.println();
     }
 
     // Use a DAO to search in datasouce #2
     {
       Invoice i = this.invoiceDAO.select(103);
       System.out.println("2. Invoice #103: " + i);
+      System.out.println();
     }
 
     // Use LiveSQL to search in datasource #1
@@ -359,6 +363,7 @@ public class App {
       for (Row r : rows) {
         System.out.println(r);
       }
+      System.out.println();
     }
 
     // Use LiveSQL to search in datasource #2
@@ -369,6 +374,7 @@ public class App {
       for (Row r : rows) {
         System.out.println(r);
       }
+      System.out.println();
     }
 
   }
@@ -391,11 +397,11 @@ Create the file `application.properties` as:
 ```properties
 # General configuration of the app
 
+logging.level.root=INFO
+
 spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,\
 org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration,\
 org.hotrod.livesql.autoconfig.LiveSQLAutoConfiguration
-
-logging.level.root=INFO
 
 # First datasource configuration
 
@@ -438,20 +444,25 @@ The Spring Boot application starts, connects to the database and run both querie
 
 ```log
 [ Starting example ]
-1. Account #2: app.persistence1.model.Account@10b4e7f8
+
+1. Account #2: app.persistence1.model.Account@dab1f89
 - id=2
 - owner=Kim
 - balance=450
-2. Invoice #103: app.persistence2.model.Invoice@66813e6e
+
+2. Invoice #103: app.persistence2.model.Invoice@5e13f156
 - id=103
 - client=Lotus Inc
 - amount=450
+
 3. Account which owner names' have an 'm':
 {owner=Tom, balance=500, id=1}
 {owner=Kim, balance=450, id=2}
+
 4. Invoices for more than $300:
 {amount=1680, client=Indus, id=102}
 {amount=450, client=Lotus Inc, id=103}
+
 [ Example complete ]
 ```
 

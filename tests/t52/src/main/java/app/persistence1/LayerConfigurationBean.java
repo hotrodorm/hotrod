@@ -10,30 +10,31 @@ import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.dialects.LiveSQLDialectFactory;
 import org.hotrod.livesql.queries.typesolver.TypeRule;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
-public class LayerConfigurationBundleAccounting {
+@Configuration("layerConfigurationBean:accounting")
+public class LayerConfigurationBean {
 
-  @Bean
-  public LayerConfiguration layerConfigAccounting() {
+  @Bean("layerConfiguration:accounting")
+  public LayerConfiguration layerConfig() {
     List<TypeRule> rules = new ArrayList<>();
     return () -> rules;
   }
 
-  @Bean
+  @Bean("dataSourceProperties:accounting")
   @ConfigurationProperties("datasource.accounting")
-  public DataSourceProperties dataSourcePropertiesAccounting() {
+  public DataSourceProperties dataSourceProperties() {
     return new DataSourceProperties();
   }
 
-  @Bean
-  public DataSource dataSourceAccounting(DataSourceProperties dataSourcePropertiesAccounting) {
-    DataSource ds = dataSourcePropertiesAccounting.initializeDataSourceBuilder().build();
+  @Bean("dataSource:accounting")
+  public DataSource dataSource(@Qualifier("dataSourceProperties:accounting") DataSourceProperties dataSourceProperties) {
+    DataSource ds = dataSourceProperties.initializeDataSourceBuilder().build();
     return ds;
   }
 
@@ -48,12 +49,12 @@ public class LayerConfigurationBundleAccounting {
   @Value("${datasource.accounting.livesqldialect.minorVersion:#{null}}")
   private String liveSQLDialectMinorVersion;
 
-  @Bean
-  public LiveSQL accounting(DataSource dataSourceAccounting, LayerConfiguration layerConfigAccounting) throws Exception {
-    LiveSQLDialect liveSQLDialect = LiveSQLDialectFactory.getLiveSQLDialect(dataSourceAccounting, this.liveSQLDialectName,
+  @Bean("liveSQL:accounting")
+  public LiveSQL liveSQL(@Qualifier("dataSource:accounting") DataSource dataSource, @Qualifier("layerConfiguration:accounting") LayerConfiguration layerConfig) throws Exception {
+    LiveSQLDialect liveSQLDialect = LiveSQLDialectFactory.getLiveSQLDialect(dataSource, this.liveSQLDialectName,
         this.liveSQLDialectVDatabaseName, this.liveSQLDialectVersionString, this.liveSQLDialectMajorVersion,
         this.liveSQLDialectMinorVersion);
-    LiveSQL ls = new LiveSQL(liveSQLDialect, dataSourceAccounting, "layerConfigurationAccounting", layerConfigAccounting.getTypeRules());
+    LiveSQL ls = new LiveSQL(liveSQLDialect, dataSource, "layerConfiguration:accounting", layerConfig.getTypeRules());
     return ls;
   }
 

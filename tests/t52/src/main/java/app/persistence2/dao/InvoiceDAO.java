@@ -66,11 +66,11 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   private static final Logger log = Logger.getLogger(InvoiceDAO.class.getName());
 
   @Autowired
-  @Qualifier("dataSourceSales")
+  @Qualifier("dataSource:sales")
   private DataSource dataSource;
 
   @Autowired
-  @Qualifier("sales")
+  @Qualifier("liveSQL:sales")
   private LiveSQL sql;
 
   private DynamicSQL dyn;
