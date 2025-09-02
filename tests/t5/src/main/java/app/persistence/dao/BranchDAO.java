@@ -249,7 +249,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
       .endSelectQuery();
   }
 
-  public List<Branch> select(Branch filter, BranchOrderBy... orderBies) {
+  public List<Branch> select(BranchLayout filter, BranchOrderBy... orderBies) {
     Parameters context = this.dyn.newParameters();
     context.add("f", filter);
     String ordering = SQLUtil.render(orderBies);
@@ -401,7 +401,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
       .endModificationQuery();
   }
 
-  public int update(Branch example, Branch values) {
+  public int update(BranchLayout example, BranchLayout values) {
     Parameters context = this.dyn.newParameters();
     context.add("e", example);
     context.add("v", values);
@@ -417,7 +417,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateSetCompletePhase update(final Branch values, final BranchTable tableOrView,
+  public UpdateSetCompletePhase update(BranchLayout values, BranchTable tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
@@ -472,7 +472,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
       .endModificationQuery();
   }
 
-  public int delete(Branch example) {
+  public int delete(BranchLayout example) {
     Parameters context = this.dyn.newParameters();
     context.add("e", example);
     PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(context);
@@ -524,7 +524,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   }
 
-  // Database class org.hotrod.livesql.metadata.Table metadata
+  // Database Table metadata
 
   public BranchTable newTable() {
     return new BranchTable();

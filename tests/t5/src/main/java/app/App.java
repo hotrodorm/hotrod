@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Configuration;
 
 import app.persistence.dao.AccountDAO;
 import app.persistence.dao.AccountDAO.AccountTable;
+import app.persistence.layout.AccountLayout;
 import app.persistence.model.Account;
 
 @SpringBootApplication
@@ -65,7 +66,8 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       log.info("[ Starting... ]");
-      testA();
+//      testA();
+      selectByExample();
 //      testParseRow();
 //      testPredicate();
 //      testSequence();
@@ -82,6 +84,15 @@ public class App {
 //      testNitro6();
       log.info("[ Ending ]");
     };
+  }
+
+  private void selectByExample()  {
+    AccountLayout example = new AccountLayout();
+    this.accountDAO.select(example);
+    
+    
+    Account a = this.accountDAO.select(123);
+    System.out.println("a=" + a);
   }
 
   private void testA() throws SQLException, DynamicExpressionException {

@@ -187,7 +187,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
       .endSelectQuery();
   }
 
-  public List<Product> select(Product filter, ProductOrderBy... orderBies) {
+  public List<Product> select(ProductLayout filter, ProductOrderBy... orderBies) {
     Parameters context = this.dyn.newParameters();
     context.add("f", filter);
     String ordering = SQLUtil.render(orderBies);
@@ -296,7 +296,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
       .endModificationQuery();
   }
 
-  public int update(Product example, Product values) {
+  public int update(ProductLayout example, ProductLayout values) {
     Parameters context = this.dyn.newParameters();
     context.add("e", example);
     context.add("v", values);
@@ -312,7 +312,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateSetCompletePhase update(final Product values, final ProductTable tableOrView,
+  public UpdateSetCompletePhase update(ProductLayout values, ProductTable tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
@@ -338,7 +338,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
       .endModificationQuery();
   }
 
-  public int delete(Product example) {
+  public int delete(ProductLayout example) {
     Parameters context = this.dyn.newParameters();
     context.add("e", example);
     PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(context);
@@ -386,7 +386,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   }
 
-  // Database class org.hotrod.livesql.metadata.Table metadata
+  // Database Table metadata
 
   public ProductTable newTable() {
     return new ProductTable();

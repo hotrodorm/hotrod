@@ -244,7 +244,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       .endSelectQuery();
   }
 
-  public List<Employee> select(Employee filter, EmployeeOrderBy... orderBies) {
+  public List<Employee> select(EmployeeLayout filter, EmployeeOrderBy... orderBies) {
     Parameters context = this.dyn.newParameters();
     context.add("f", filter);
     String ordering = SQLUtil.render(orderBies);
@@ -387,7 +387,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       .endModificationQuery();
   }
 
-  public int update(Employee example, Employee values) {
+  public int update(EmployeeLayout example, EmployeeLayout values) {
     Parameters context = this.dyn.newParameters();
     context.add("e", example);
     context.add("v", values);
@@ -403,7 +403,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateSetCompletePhase update(final Employee values, final EmployeeTable tableOrView,
+  public UpdateSetCompletePhase update(EmployeeLayout values, EmployeeTable tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
@@ -456,7 +456,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       .endModificationQuery();
   }
 
-  public int delete(Employee example) {
+  public int delete(EmployeeLayout example) {
     Parameters context = this.dyn.newParameters();
     context.add("e", example);
     PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(context);
@@ -506,7 +506,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   }
 
-  // Database class org.hotrod.livesql.metadata.Table metadata
+  // Database Table metadata
 
   public EmployeeTable newTable() {
     return new EmployeeTable();

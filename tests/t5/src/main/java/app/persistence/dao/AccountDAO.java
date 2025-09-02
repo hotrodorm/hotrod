@@ -304,7 +304,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .endSelectQuery();
   }
 
-  public List<Account> select(Account filter, AccountOrderBy... orderBies) {
+  public List<Account> select(AccountLayout filter, AccountOrderBy... orderBies) {
     Parameters context = this.dyn.newParameters();
     context.add("f", filter);
     String ordering = SQLUtil.render(orderBies);
@@ -477,7 +477,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .endModificationQuery();
   }
 
-  public int update(Account example, Account values) {
+  public int update(AccountLayout example, AccountLayout values) {
     Parameters context = this.dyn.newParameters();
     context.add("e", example);
     context.add("v", values);
@@ -493,7 +493,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateSetCompletePhase update(final Account values, final AccountTable tableOrView,
+  public UpdateSetCompletePhase update(AccountLayout values, AccountTable tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
@@ -554,7 +554,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .endModificationQuery();
   }
 
-  public int delete(Account example) {
+  public int delete(AccountLayout example) {
     Parameters context = this.dyn.newParameters();
     context.add("e", example);
     PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(context);
@@ -612,7 +612,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   }
 
-  // Database class org.hotrod.livesql.metadata.Table metadata
+  // Database Table metadata
 
   public AccountTable newTable() {
     return new AccountTable();

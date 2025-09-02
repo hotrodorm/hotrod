@@ -572,10 +572,11 @@ public class DAO {
       // Method
 
       ExternalClass em = ExternalClass.of(this.model.getFullClassName());
+      ExternalClass el = ExternalClass.of(this.layout.getFullClassName());
       if (byExample) {
         w.print("  public ", List.class, "<", em, "> select(");
         ExternalClass ob = ExternalClass.of(this.getOrderByClassName());
-        w.print(em, " filter, ", ob, "... orderBies");
+        w.print(el, " filter, ", ob, "... orderBies");
       } else {
         w.print("  public ", em, " select(");
         fragmentPKParameters(pk);
@@ -1068,8 +1069,9 @@ public class DAO {
     // Method
 
     ExternalClass em = ExternalClass.of(this.model.getFullClassName());
+    ExternalClass el = ExternalClass.of(this.layout.getFullClassName());
     w.println();
-    w.print("  public int update(", em, " example, ", em, " values");
+    w.print("  public int update(", el, " example, ", el, " values");
     w.println(") {");
 
     w.println("    ", Parameters.class, " context = this.dyn.newParameters();");
@@ -1086,12 +1088,13 @@ public class DAO {
 
   private void writeUpdateByCriteria() {
     ExternalClass em = ExternalClass.of(this.model.getFullClassName());
+    ExternalClass el = ExternalClass.of(this.layout.getFullClassName());
     ExternalClass ec = ExternalClass.of(this.metadataClassName);
     w.println();
     w.println("  // UPDATE BY CRITERIA");
     w.println();
-    w.print("  public ", UpdateSetCompletePhase.class, " update(final ", em, " values, ");
-    w.println("final ", ec, " tableOrView,");
+    w.print("  public ", UpdateSetCompletePhase.class, " update(", el, " values, ");
+    w.println(ec, " tableOrView,");
     w.println("      final ", Predicate.class, " predicate) {");
     w.print("    ", List.class, "<", Setter.class, "> setters");
     w.println(" = new ", ArrayList.class, "<>();");
@@ -1223,8 +1226,9 @@ public class DAO {
     // Method
 
     ExternalClass em = ExternalClass.of(this.model.getFullClassName());
+    ExternalClass el = ExternalClass.of(this.layout.getFullClassName());
     w.println();
-    w.print("  public int delete(", em, " example");
+    w.print("  public int delete(", el, " example");
     w.println(") {");
 
     w.println("    ", Parameters.class, " context = this.dyn.newParameters();");
@@ -1264,7 +1268,7 @@ public class DAO {
     ExternalClass em = ExternalClass.of(this.model.getFullClassName());
 
     w.println();
-    w.println("  // Database " + type + " metadata");
+    w.println("  // Database " + type.getSimpleName() + " metadata");
     w.println();
     w.println("  public ", ec, " new", pc, "() {");
     w.println("    return new ", ec, "();");
