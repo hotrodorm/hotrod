@@ -164,11 +164,11 @@ When using LiveSQL, for example, the application can pick the correct one by usi
 
 ```java
   @Autowired
-  @Qualifier("Main")
+  @Qualifier("dataSource:main")
   private LiveSQL sql1;
 
   @Autowired
-  @Qualifier("Accounting")
+  @Qualifier("dataSource:accounting")
   private LiveSQL sql2;
 ```
 
