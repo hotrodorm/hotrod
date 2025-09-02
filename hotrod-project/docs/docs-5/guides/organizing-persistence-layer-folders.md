@@ -13,7 +13,7 @@ For example, when using the default settings with a database schema that has two
 <PROJECT_HOME>
   + src/main/java/
     + app/persistence/
-      + MainLayerConfiguration.java
+      + LayerConfigurationBean.java
       + dao/
         + EmployeeDAO.java
         + CompanyDAO.java
@@ -90,7 +90,7 @@ If the first database has the tables COMPANY and EMPLOYEE, while the second one 
 <PROJECT_HOME>
   + src/main/java/
     + app/persistence/
-      + MainLayerConfiguration.java
+      + LayerConfigurationBean.java
       + dao/
         + CompanyDAO.java
         + EmployeeDAO.java
@@ -101,7 +101,7 @@ If the first database has the tables COMPANY and EMPLOYEE, while the second one 
         + Company.java
         + Employee.java
     + app/persistence2/
-      + MainLayerConfiguration.java
+      + LayerConfigurationBean.java
       + dao/
         + AccountDAO.java
         + BranchDAO.java
@@ -130,7 +130,7 @@ In this case the persistence layers will be places in separate base dirs, as in:
 <PROJECT_HOME>
   + src/main/java/
     + app/persistence/
-      + MainLayerConfiguration.java
+      + LayerConfigurationBean.java
       + dao/
         + CompanyDAO.java
         + EmployeeDAO.java
@@ -142,7 +142,7 @@ In this case the persistence layers will be places in separate base dirs, as in:
         + Employee.java
   + src/database/java/
     + app/persistence/
-      + MainLayerConfiguration.java
+      + LayerConfigurationBean.java
       + dao/
         + AccountDAO.java
         + BranchDAO.java
