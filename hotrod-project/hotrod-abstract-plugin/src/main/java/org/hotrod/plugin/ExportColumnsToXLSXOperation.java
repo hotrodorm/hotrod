@@ -30,9 +30,9 @@ public class ExportColumnsToXLSXOperation extends AbstractExportColumnsOperation
   public ExportColumnsToXLSXOperation(final File baseDir, final String configfilename, final String localproperties,
       final String jdbcdriverclass, final String jdbcurl, final String jdbcusername, final String jdbcpassword,
       final String jdbccatalog, final String jdbcschema, final String facets, final String display,
-      final String exportfilename) {
+      final String xlsxexportfile) {
     super(baseDir, configfilename, localproperties, jdbcdriverclass, jdbcurl, jdbcusername, jdbcpassword, jdbccatalog,
-        jdbcschema, facets, display, exportfilename);
+        jdbcschema, facets, display, "xlsxexportfile", xlsxexportfile);
     log.fine("init");
   }
 

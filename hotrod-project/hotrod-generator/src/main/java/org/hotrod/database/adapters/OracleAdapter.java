@@ -57,7 +57,7 @@ public class OracleAdapter extends DatabaseAdapter {
   @Override
   public PropertyType getAdapterDefaultType(final ColumnMetadata m) throws UnresolvableDataTypeException {
 
-    log.fine("cm.getDataType()=" + m.getDataType() + " (" + m.getTypeName() + ")");
+//    log.info("cm.getDataType()=" + m.getDataType() + " (" + m.getTypeName() + ")");
 
     switch (m.getDataType()) {
 

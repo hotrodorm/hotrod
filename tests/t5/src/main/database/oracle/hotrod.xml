@@ -10,24 +10,31 @@
         -->
     </jdbc>
   </generators>
+
+  <type-solver>
+    <when test="typeName == 'DATE'" java-type="java.sql.Date" />
+    <when test="typeName == 'TIMESTAMP(6)'" java-type="java.sql.Timestamp" />
+  </type-solver>
   
   <converter name="util_SN_to_Boolean"
     java-type="java.lang.Boolean"
     java-raw-type="java.lang.String"
     class="app.StringBooleanConverter"
   />
+  
 
+<!-- 
   <table name="A" java-name="A">
     <column name="ID" java-name="id" />
     <column name="FECHA" java-name="fecha" java-type="java.sql.Timestamp" />
     <column name="ES_ACTIVO" java-name="esActivo" converter="util_SN_to_Boolean" />
   </table>
-
+-->
+  <table name="dates" />
 
 <!-- 
   <table name="chars" />
   <table name="numbers" />
-  <table name="dates" />
   <table name="binaries" />
   <table name="other" />
 

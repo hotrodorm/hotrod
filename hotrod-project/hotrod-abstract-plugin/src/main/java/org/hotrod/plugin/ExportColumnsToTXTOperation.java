@@ -28,15 +28,20 @@ public class ExportColumnsToTXTOperation extends AbstractExportColumnsOperation 
   public ExportColumnsToTXTOperation(final File baseDir, final String configfilename, final String localproperties,
       final String jdbcdriverclass, final String jdbcurl, final String jdbcusername, final String jdbcpassword,
       final String jdbccatalog, final String jdbcschema, final String facets, final String display,
-      final String exportfilename) {
+      final String txtexportfile) {
     super(baseDir, configfilename, localproperties, jdbcdriverclass, jdbcurl, jdbcusername, jdbcpassword, jdbccatalog,
-        jdbcschema, facets, display, exportfilename);
+        jdbcschema, facets, display, "txtexportfile", txtexportfile);
     log.fine("init");
   }
 
   @Override
   protected void exportColumns(final Generator g) throws IOException {
     LinkedHashSet<String> nativeNames = new LinkedHashSet<>();
+
+//    log.info("g=" + g);
+//    log.info("g.getConfig()=" + g.getConfig());
+//    log.info("g.getConfig().getTypeSolverTag()=" + g.getConfig().getTypeSolverTag());
+
     g.getConfig().getTypeSolverTag().getRetrievedColumns().stream().forEach(c -> {
       if (c.getNative() != null) {
         c.getNative().keySet().stream().forEach(n -> nativeNames.add(n));

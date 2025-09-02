@@ -294,8 +294,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
 
   @Override
   public HotRodConfigTag getConfig() {
-    // TODO Auto-generated method stub
-    return null;
+    return this.config;
   }
 
   @Override

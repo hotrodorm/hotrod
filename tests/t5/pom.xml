@@ -132,6 +132,9 @@
             <artifactId>hotrod-maven-plugin</artifactId>
             <version>${hotrod.version}</version>
             <configuration>
+            <!-- 
+              <localproperties>local-oracle.properties</localproperties>
+               -->
               <configfile>src/main/database/oracle/hotrod.xml</configfile>
               <jdbcdriverclass>${jdbcdriverclass}</jdbcdriverclass>
               <jdbcurl>${jdbcurl}</jdbcurl>
@@ -140,6 +143,10 @@
               <jdbcschema>USER1</jdbcschema>
               <facets></facets>
               <display></display>
+              <txtexportfile>./oracle-columns.txt</txtexportfile>
+              <xlsxexportfile>./oracle-columns.xlsx</xlsxexportfile>
+              <!--
+               -->
             </configuration>
             <dependencies>
               <dependency>
@@ -147,6 +154,18 @@
                 <artifactId>${jdbcdriverartifactid}</artifactId>
                 <version>${jdbcdriverversion}</version>
               </dependency>
+              
+              <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>4.1.2</version>
+              </dependency>
+              <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>4.1.2</version>
+              </dependency>  
+                  
             </dependencies>
           </plugin>
 
