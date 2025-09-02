@@ -11,7 +11,7 @@
   <parent>
     <groupId>org.hotrodorm.hotrod</groupId>
     <artifactId>hotrod-project</artifactId>
-    <version>5.1.2-SNAPSHOT</version>
+    <version>5.1.2</version>
   </parent>
 
   <properties>
@@ -24,19 +24,19 @@
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod</artifactId>
-      <version>5.1.2-SNAPSHOT</version>
+      <version>5.1.2</version>
     </dependency>
 
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
-      <version>5.1.2-SNAPSHOT</version>
+      <version>5.1.2</version>
     </dependency>
 
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-dynamicsql</artifactId>
-      <version>5.1.2-SNAPSHOT</version>
+      <version>5.1.2</version>
     </dependency>
 
     <!-- Tartarus -->
