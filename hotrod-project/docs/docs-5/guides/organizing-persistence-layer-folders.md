@@ -25,21 +25,23 @@ For example, when using the default settings with a database schema that has two
         + Company.java
 ```
 
-All folders are relative to the `<PROJECT_HOME>` folder. In the example:
+The folders are relative to the `<PROJECT_HOME>` folder. In the example:
 
 - `src/main/java` is the base directory of the source code.
 - `app.persistence` is the default base package for the persistence layer, and this is translated to the `app/persistence` folder.
 - `dao` is the default sub-package for the DAO classes.
 - `layout` is the default sub-package for the Layout classes.
 - `model` is the default sub-package for the Model classes.
-- `MainLayerConfiguration` includes the persistence layer runtime rules.
+- `LayerConfigurationBean.java` includes the persistence layer runtime rules.
 
 The default settings are used in the no-config mode &ndash; when the hotrod XML configuration file is not specified &ndash; or when this files includes an empty `<jdbc/>` tag, with not declared settings.
 
 
 ## Default Configuration
 
-An empty `<jdbc/>` tag is equivalent to:
+When using the No-config mode, or when specifying an empty `<jdbc/>` tag, the persistence layer uses a default structure for the folders.
+
+In short, an non-declared or empty `<jdbc/>` tag is equivalent to:
 
 ```xml
   <jdbc base-dir="src/main/java"
