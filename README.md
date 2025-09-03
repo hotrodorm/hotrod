@@ -24,22 +24,32 @@ LiveSQL allows you to write and run queries directly from your application code.
 
 LiveSQL can run SELECT, UPDATE, DELETE, and INSERT queries from the most basic syntax to advanced queries. The syntax can include complex predicates, subqueries, CTEs, arithmetic operators, functions, as well as standard SQL constructs such as ordering limiting, aggregation, window functions, union, for update (locking), etc.
 
-A basic select with a simple condition can look like:
+The most basic SELECT query to compute an expression in the database can be written as:
 
 ```java
-  List<Employee> employees = this.employeeDAO
-    .select(e, e.salary.plus(e.bonus).ge(40000).and(e.title.substring(4, 2).eq("TE")))
-    .orderBy(e.hiringDate.desc())
-    .execute();
+   Row row = sql.select(sql.val(3).mult(7).as("total")).executeOne();
+   System.out.println("total=" + row.get("total")); // total=21
 ```
 
-Runs the query (in PostgreSQL) as:
+Joining multiple tables can look like:
 
-```sql
-  SELECT *
-  FROM employee
-  WHERE salary + bonus >= 40000 AND subtring(title, 4, 2) = "TE"
-  ORDER BY hiring_date DESC;
+```java
+  List<Tuple2<Invoice, Client>> rows = sql
+    .select(i.star(), c.star(), i.amount.mult(c.discount).as("appliedDiscount"))
+    .tuples()
+    .from(i)
+    .join(c, c.id.eq(i.clientId))
+    .where(c.branchId.eq("Main"))
+    .orderBy(c.id, i.purchaseDate.desc())
+    .execute();
+
+  for (Tuple2<Invoice, Client> r : rows) {
+    Invoice inv = r.getA() // all columns correctly named, cast, typed, and/or converted here
+    Client cli = r.getB(); 
+    System.out.println("Invoice: " + inv);
+    System.out.println("Client: " + cli);
+    System.out.println("Applied Discount: " + r.getUnbound().get("appliedDiscount"));
+  }
 ```
 
 Behind the scenes LiveSQL automatically adapts the SQL syntax to the specific database.
@@ -142,9 +152,9 @@ Nitro makes this query available in your application as the method:
 
 ## Torcs &mdash; At a Glance
 
-Torcs discovers slow queries at runtime by providing rankings by impact, slowest response time, high frequency, and others. The visibility that Torcs offers about the actual running application can provide critical information to understand the bottlenecks of the application that need to be addressed.
+Torcs discovers slow queries at runtime by computing rankings by impact, response time, execution frequency, and others. The visibility that Torcs offers about the actual running application can provide critical information to understand the bottlenecks of the application that need to be addressed.
 
-For example, the ranking by highest response time starts automatically when Torcs is added to the application and can provide a ranking of queries like:
+For example, the ranking by highest response time starts automatically when Torcs is added to the application and can provide a ranking of queries in the form:
 
 | Rank | Execs | Errors | Min Time (ms) | Avg Time (ms) | Max Time (ms) | Impact (ms) | Data Source | SQL |
 | :--: | --:| --:| --:| --:| --:| --:| :--: | :-- |
