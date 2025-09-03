@@ -142,7 +142,7 @@ In this case the persistence layers will be places in separate base dirs, as in:
       + model/
         + Company.java
         + Employee.java
-  + src/database/java/
+  + src/database2/java/
     + app/persistence/
       + LayerConfigurationBean.java
       + dao/
@@ -158,19 +158,19 @@ In this case the persistence layers will be places in separate base dirs, as in:
 
 ### The Qualifier
 
-When multiple databases or data sources are used in an application, there will be one `LiveSQL` and `LayerConfiguration` bean per layer. To distinguish them, you'll need to define a `qualifier` for each one, so your applications and beans can use the appropriate ones.
+When multiple databases or data sources are used in an application, there will be one `LiveSQL` and one `LayerConfigurationBean` per layer. To distinguish them, you'll need to define a `qualifier` for each one.
 
 In the example above, the first persistence layer defines the qualifier `Main`, while the second persistence layer uses the qualifier `Accounting`.
 
-When using LiveSQL, for example, the application can pick the correct one by using these qualifiers, as in:
+There will be two LiveSQL beans, each one with a different qualifier. Your the application can use both of them as needed using these qualifiers, as in:
 
 ```java
   @Autowired
-  @Qualifier("dataSource:main")
+  @Qualifier("liveSQL:main")
   private LiveSQL sql1;
 
   @Autowired
-  @Qualifier("dataSource:accounting")
+  @Qualifier("liveSQL:accounting")
   private LiveSQL sql2;
 ```
 
