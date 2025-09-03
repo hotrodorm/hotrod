@@ -295,9 +295,9 @@ public class DAO {
     w.println("  private ", DataSource.class, " dataSource;");
     w.println();
 
-    if (this.isExecutor()) {
-      w.println("  @", SuppressWarnings.class, "(\"unused\")");
-    }
+//    if (this.isExecutor()) {
+//      w.println("  @", SuppressWarnings.class, "(\"unused\")");
+//    }
     w.println("  @", Const.AUTOWIRED);
     if (this.layerConfig.getLiveSQLQualifier() != null) {
       w.println("  @", Const.QUALIFIER, "(\"" + this.layerConfig.getLiveSQLQualifier() + "\")");

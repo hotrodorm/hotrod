@@ -45,7 +45,6 @@ public class SalesDAO implements Serializable, ApplicationContextAware {
   @Autowired
   private DataSource dataSource;
 
-  @SuppressWarnings("unused")
   @Autowired
   private LiveSQL sql;
 
