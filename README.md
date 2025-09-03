@@ -146,11 +146,13 @@ Torcs discovers slow queries at runtime by providing rankings by impact, slowest
 
 For example, the ranking by highest response time starts automatically when Torcs is added to the application and can provide a ranking of queries like:
 
-| Rank | Execs | Errors | Avg Time (ms) | Observed Time (ms) | Impact (ms) | Data Source | SQL |
-| :--: | --:| --:| --:| --:| --:| :--: | :-- |
-| #1 | 4    |   0 |       47 | 38-55      | 188         | #0 | SELECT amount FROM invoice WHERE client_id = ? ORDER BY created_at |
-| #2 | 12   |   0 |        6 | 4-10        | 87         | #0 | SELECT status FROM client WHERE id = ? |
-| #3 | 5    |   1 |        8 | 7-9         | 42         | #0 | SELECT name FROM branch WHERE id = ? |
+| Rank | Execs | Errors | Min Time (ms) | Avg Time (ms) | Max Time (ms) | Impact (ms) | Data Source | SQL |
+| :--: | --:| --:| --:| --:| --:| --:| :--: | :-- |
+| #1 | 4    |   0 | 38 |       47 | 55      | 188         | #0 | SELECT amount FROM invoice WHERE client_id = ? ORDER BY created_at |
+| #2 | 12   |   0 | 4 |        6 | 10        | 87         | #0 | SELECT status FROM client WHERE id = ? |
+| #3 | 5    |   1 | 7 |        8 | 9         | 42         | #0 | SELECT name FROM branch WHERE id = ? |
+
+In this example the entries are sorted by max time in descending order.
 
 The following rankings are built-in in Torcs and can be activated programmatically. When multiple rankings are active, each one keeps its own separate data:
 
