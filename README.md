@@ -40,7 +40,7 @@ Joining two tables can look like:
     .from(i)
     .join(c, c.id.eq(i.clientId))
     .where(c.branchId.eq("Main"))
-    .orderBy(i.purchaseDate.desc())
+    .orderBy(c.id, i.purchaseDate.desc())
     .execute();
 ```
 
