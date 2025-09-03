@@ -134,11 +134,11 @@ create table employee (
   vip int
 );
 
-insert into employee (id, name, branch_id) values
-  (30, 'Anne', 101),
-  (31, 'Lucas', 101),
-  (32, 'Jeanne', 104),
-  (33, 'Malcolm', 107);
+insert into employee (id, name, branch_id, vip) values
+  (30, 'Anne', 101, true),
+  (31, 'Lucas', 101, false),
+  (32, 'Jeanne', 104, true),
+  (33, 'Malcolm', 107, false);
 
 create sequence employee_seq start with 150;
 create sequence hired_seq start with 300;

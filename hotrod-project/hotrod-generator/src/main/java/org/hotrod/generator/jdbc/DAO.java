@@ -257,7 +257,12 @@ public class DAO {
 
     i = 0;
     for (SelectMethodMetadata s : this.metadata.getSelectsMetadata()) {
-      writeNitroSelect(s, i++);
+      if (this.isExecutor()) {
+        this.writeNitroFreeSelect(s, i);
+      } else {
+        this.writeNitroEntitySelect(s, i);
+      }
+      i++;
     }
 
     writePostConstruct();
@@ -422,6 +427,11 @@ public class DAO {
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String javaType = resolveType(cm);
       String memberProperty = cm.getId().getJavaMemberName();
+
+      String setter = cm.getId().getJavaSetter();
+//      log.info("PARSEROW: " + OUtil.hc(this) + " md" + OUtil.hc(this.metadata) + " gc"
+//          + OUtil.hc(this.metadata.getColumns()) + " cm" + OUtil.hc(cm) + " "
+//          + this.metadata.getId().getCanonicalSQLName() + "." + cm.getName() + " setter=" + setter);
 
       if (cm.getConverter() != null) {
         ConverterTag ct = cm.getConverter();
@@ -1713,6 +1723,11 @@ public class DAO {
   private void writeReaderLogic(ColumnMetadata cm, int ordinal, boolean discoverable) {
     w.println();
     String setter = cm.getId().getJavaSetter();
+
+//    log.info("ROWREADER: " + OUtil.hc(this) + " md" + OUtil.hc(this.metadata) + " gc"
+//        + OUtil.hc(this.metadata.getColumns()) + " cm" + OUtil.hc(cm) + " "
+//        + this.metadata.getId().getCanonicalSQLName() + "." + cm.getName() + " setter=" + setter);
+
     String javaClass = cm.getType().getJavaClassName();
     ConverterTag ct = cm.getConverter();
     String cn = cm.getId().getCanonicalSQLName();
@@ -1881,7 +1896,16 @@ public class DAO {
 
   // TODO: Just a marker
 
-  private void writeNitroSelect(SelectMethodMetadata s, int sno) throws ControlledException {
+  private void writeNitroEntitySelect(SelectMethodMetadata s, int sno) throws ControlledException {
+    this.writeNitroSelectBody(s, sno, this.metadata.getColumns());
+  }
+
+  private void writeNitroFreeSelect(SelectMethodMetadata s, int sno) throws ControlledException {
+    this.writeNitroSelectBody(s, sno, s.getColumns());
+  }
+
+  private void writeNitroSelectBody(SelectMethodMetadata s, int sno, List<ColumnMetadata> columns)
+      throws ControlledException {
 
     String queryName = "select" + sno;
     String method = s.getMethod();
@@ -1912,7 +1936,7 @@ public class DAO {
 
     String rowReaderClass = "RowReader" + sno;
     String rowReaderObject = "rowReader" + sno;
-    this.writeNitroSelectRowReaderClass(s, rowReaderClass, rowReaderObject);
+    this.writeNitroSelectRowReaderClass(s, rowReaderClass, rowReaderObject, columns);
 
     // 3. Method
 
@@ -1976,8 +2000,8 @@ public class DAO {
 
   // TODO: Just a marker
 
-  @SuppressWarnings("unused")
-  private void writeNitroSelectRowReaderClass(SelectMethodMetadata s, String rowReaderClass, String rowReaderObject) {
+  private void writeNitroSelectRowReaderClass(SelectMethodMetadata s, String rowReaderClass, String rowReaderObject,
+      List<ColumnMetadata> columns) {
     SelectMethodReturnType rt = s.getReturnType(this.classPackage);
     ExternalClass m = ExternalClass.of(rt.getBaseReturnVOFullClassName());
     rt.getSoloVO();
@@ -1987,7 +2011,9 @@ public class DAO {
     w.println();
 
     int ordinal = 1;
-    for (ColumnMetadata cm : s.getColumns()) {
+//    List<ColumnMetadata> columns = s.getColumns();
+
+    for (ColumnMetadata cm : columns) {
       w.println("    private boolean present" + ordinal + " = false;");
       ordinal++;
     }
@@ -1997,7 +2023,7 @@ public class DAO {
     w.println("    public void discoverColumns(ResultSet rs) throws SQLException {");
     w.println("      ", ResultSetMetaData.class, " m = rs.getMetaData();");
     ordinal = 1;
-    for (ColumnMetadata cm : s.getColumns()) {
+    for (ColumnMetadata cm : columns) {
       w.println("      present" + ordinal + " = false;");
       ordinal++;
     }
@@ -2005,7 +2031,7 @@ public class DAO {
     w.println("      for (int i = 1; i <= n; i++) {");
     w.println("        String l = m.getColumnLabel(i);");
     ordinal = 1;
-    for (ColumnMetadata cm : s.getColumns()) {
+    for (ColumnMetadata cm : columns) {
       String label = SUtil.escapeJavaString(cm.getLabel());
       w.println("        if (\"" + label + "\".equals(l)) present" + ordinal + " = true;");
       ordinal++;
@@ -2021,7 +2047,7 @@ public class DAO {
     w.println("      ", m, " row = applicationContext.getBean(", m, ".class);");
 
     ordinal = 1;
-    for (ColumnMetadata cm : s.getColumns()) {
+    for (ColumnMetadata cm : columns) {
       this.writeReaderLogic(cm, ordinal, true);
       ordinal++;
     }

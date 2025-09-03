@@ -24,14 +24,33 @@
   <converter name="account_type_stored_as_char" java-type="app.AccountTypeConverter.AccountType" java-raw-type="java.lang.String"
     class="app.AccountTypeConverter" />
 
+<!-- 
   <table name="product" />
   <table name="branch" />
+   -->
+   
+  <table name="account">
+    <column name="balance" java-type="Double" />
+    <column name="active" converter="boolean_stored_as_int" />
+    <column name="type" converter="account_type_stored_as_char" />
+  </table>
+   
   <table name="employee">
+    <column name="name" java-name="fullName" />
     <column name="vip" converter="boolean_stored_as_int" />
     <sequence name="employee_seq" method="getSequenceNextValue" />
     <sequence name="hired_seq" method="getHiredNextValue" />
+    
+    <select method="findVIPEmployees">
+SELECT name, vip, id
+FROM employee
+WHERE branch_id = 101
+    </select> 
+    
   </table>
 
+<!-- 
+ -->
   <dao name="SalesDAO">
     <sequence name="hired_seq" method="getHiredNextValue" />
 
@@ -45,7 +64,6 @@ where balance >= 200
     </select> 
     
   </dao>
-
 
 <!--
   <table name="chars" />
@@ -74,13 +92,8 @@ where balance >= 200
   <table name="c" />
  -->
 
-
-  <table name="account">
-    <column name="balance" java-type="Double" />
-    <column name="active" converter="boolean_stored_as_int" />
-    <column name="type" converter="account_type_stored_as_char" />
-  </table>
-    
+<!-- 
+     -->
 <!-- 
    -->
   

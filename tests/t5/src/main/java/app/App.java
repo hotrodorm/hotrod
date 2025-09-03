@@ -23,8 +23,9 @@ import app.persistence.dao.AccountDAO;
 import app.persistence.dao.AccountDAO.AccountTable;
 import app.persistence.dao.EmployeeDAO;
 import app.persistence.dao.SalesDAO;
-import app.persistence.layout.AccountLayout;
+import app.persistence.layout.EmployeeLayout;
 import app.persistence.model.Account;
+import app.persistence.model.Employee;
 
 @SpringBootApplication
 @Configuration
@@ -91,14 +92,23 @@ public class App {
     };
   }
 
-  private void selectByExample() {
-    AccountLayout example = new AccountLayout();
-    List<Account> accounts = this.accountDAO.select(example);
-    for (Account a : accounts) {
-      System.out.println("a=" + a);
-    }
+  private void selectByExample() throws DynamicExpressionException, SQLException {
+//    AccountLayout example = new AccountLayout();
+//    List<Account> accounts = this.accountDAO.select(example);
+//    for (Account a : accounts) {
+//      System.out.println("a=" + a);
+//    }
 
-//    Account a = this.accountDAO.select(123);
+    EmployeeLayout example = new EmployeeLayout();
+    List<Employee> employees = this.employeeDAO.select(example);
+    employees.forEach(e -> System.out.println("emp=" + e));
+
+//    EmployeeLayout example = new EmployeeLayout();
+//    List<Employee> employees = this.employeeDAO.findVIPEmployees();
+//    employees.forEach(e -> System.out.println("emp=" + e));
+
+//    List<BigAccount> bas = this.salesDAO.findBigAccounts();
+//    bas.forEach(a -> System.out.println("big account=" + a));
 
 //   long seq = this.salesDAO.getHiredNextValue();
 //    System.out.println("seq=" + seq);

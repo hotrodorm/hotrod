@@ -158,11 +158,9 @@ In this case the persistence layers will be places in separate base dirs, as in:
 
 ### The Qualifier
 
-When multiple databases or data sources are used in an application, there will be one `LiveSQL` and one `LayerConfigurationBean` per layer. To distinguish them, you'll need to define a `qualifier` for each one.
+When multiple databases or data sources are used in an application, there will be one `LiveSQL` and one `LayerConfigurationBean` per layer. To distinguish them, you'll need to define a `qualifier` for each one. In the example above, the first persistence layer defines the qualifier `Main`, while the second persistence layer uses the qualifier `Accounting`.
 
-In the example above, the first persistence layer defines the qualifier `Main`, while the second persistence layer uses the qualifier `Accounting`.
-
-There will be two LiveSQL beans, each one with a different qualifier. Your the application can use both of them as needed using these qualifiers, as in:
+Therefore, there will be two LiveSQL beans, each one with a different qualifier. Your the application can use any or both of them as needed using these qualifiers, as in:
 
 ```java
   @Autowired
@@ -174,7 +172,7 @@ There will be two LiveSQL beans, each one with a different qualifier. Your the a
   private LiveSQL sql2;
 ```
 
-It's important to use the correct LiveSQL instance on each query to address the correct tables, and the correct SQL dialect, should these database be of different brands, editions, or versions.
+It's important to use the correct LiveSQL instance on each query to address the correct tables, database, and SQL dialect, should these database be of different brands, editions, or versions.
 
 
 

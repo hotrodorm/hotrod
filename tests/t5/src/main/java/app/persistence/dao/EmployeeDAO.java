@@ -5,6 +5,7 @@ package app.persistence.dao;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
+import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicInsertQuery;
 import org.hotrod.dynamicsql.DynamicModificationQuery;
 import org.hotrod.dynamicsql.DynamicSelectQuery;
@@ -100,7 +102,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       row.setId(col1);
 
       String col2 = rs.getString("NAME"); // NAME
-      row.setName(col2);
+      row.setFullName(col2);
 
       Integer col3 = rs.getInt("BRANCH_ID"); // BRANCH_ID
       if (rs.wasNull()) col3 = null;
@@ -131,7 +133,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
     m.setId(CastUtil.toInteger((Number) row.get(p + "id" + s)));
-    m.setName((String) row.get(p + "name" + s));
+    m.setFullName((String) row.get(p + "fullName" + s));
     m.setBranchId(CastUtil.toInteger((Number) row.get(p + "branchId" + s)));
     m.setVip(this.converter0.decode((Integer) row.get(p + "vip" + s), conn));
     return m;
@@ -142,7 +144,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   public class EmployeeBaseline {
 
     private Integer id;
-    private String name;
+    private String fullName;
     private Integer branchId;
     private Boolean vip;
 
@@ -150,8 +152,8 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       return this.id;
     }
 
-    public String getName() {
-      return this.name;
+    public String getFullName() {
+      return this.fullName;
     }
 
     public Integer getBranchId() {
@@ -167,7 +169,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   public EmployeeBaseline baseline(Employee model) {
     EmployeeBaseline b = new EmployeeBaseline();
     b.id = model.getId();
-    b.name = model.getName();
+    b.fullName = model.getFullName();
     b.branchId = model.getBranchId();
     b.vip = model.getVip();
     return b;
@@ -178,7 +180,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   public Employee clone(EmployeeLayout layout) {
     Employee m = new Employee();
     m.setId(layout.getId());
-    m.setName(layout.getName());
+    m.setFullName(layout.getFullName());
     m.setBranchId(layout.getBranchId());
     m.setVip(layout.getVip());
     return m;
@@ -192,7 +194,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     this.selectByPrimaryKey = dyn
       .literaln("SELECT")
       .literaln("  id,")
-      .literaln("  name,")
+      .literaln("  \"NAME\",")
       .literaln("  branch_id,")
       .literaln("  vip")
       .literaln("FROM employee")
@@ -226,13 +228,13 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     this.selectByExample = dyn
       .literaln("SELECT")
       .literaln("  id,")
-      .literaln("  name,")
+      .literaln("  \"NAME\",")
       .literaln("  branch_id,")
       .literaln("  vip")
       .literaln("FROM employee")
       .where("AND")
         .if_("f.id != null").literal("id = ").parameter("f.id").endif()
-        .if_("f.name != null").literal("name = ").parameter("f.name").endif()
+        .if_("f.fullName != null").literal("\"NAME\" = ").parameter("f.fullName").endif()
         .if_("f.branchId != null").literal("branch_id = ").parameter("f.branchId").endif()
         .if_("f.vip != null").literal("vip = ").parameter("f.vip").endif()
       .endwhere()
@@ -269,13 +271,13 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     this.insert = dyn
       .literaln("INSERT INTO employee (")
       .literaln("  id,")
-      .literaln("  name,")
+      .literaln("  \"NAME\",")
       .literaln("  branch_id,")
       .literaln("  vip")
       .literaln(")")
       .literaln("VALUES(")
       .literal("  ").parameterNullable("l.id", Types.INTEGER).literaln(",")
-      .literal("  ").parameterNullable("l.name", Types.VARCHAR).literaln(",")
+      .literal("  ").parameterNullable("l.fullName", Types.VARCHAR).literaln(",")
       .literal("  ").parameterNullable("l.branchId", Types.INTEGER).literaln(",")
       .literal("  ").parameterNullable("l.vip", Types.INTEGER)
       .literal(")")
@@ -304,13 +306,13 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     this.insertByExample = dyn
       .literaln("INSERT INTO employee (")
       .if_("l.id != null").literal("id,\n").endif()
-      .if_("l.name != null").literal("name,\n").endif()
+      .if_("l.fullName != null").literal("\"NAME\",\n").endif()
       .if_("l.branchId != null").literal("branch_id,\n").endif()
       .if_("l.vip != null").literal("vip\n").endif()
       .literaln(")")
       .literaln("VALUES(")
       .if_("l.id != null").parameter("l.id").literal(", ").endif()
-      .if_("l.name != null").parameter("l.name").literal(", ").endif()
+      .if_("l.fullName != null").parameter("l.fullName").literal(", ").endif()
       .if_("l.branchId != null").parameter("l.branchId").literal(", ").endif()
       .if_("l.vip != null").parameter("l.vip").endif()
       .literal(")")
@@ -340,7 +342,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       .literaln("UPDATE employee")
       .literaln("SET")
       .literal("  id = ").parameterNullable("m.id", Types.INTEGER).literaln(",")
-      .literal("  name = ").parameterNullable("m.name", Types.VARCHAR).literaln(",")
+      .literal("  \"NAME\" = ").parameterNullable("m.fullName", Types.VARCHAR).literaln(",")
       .literal("  branch_id = ").parameterNullable("m.branchId", Types.INTEGER).literaln(",")
       .literal("  vip = ").parameterNullable("m.vip", Types.INTEGER)
       .literaln("\nWHERE " + "id = ").parameter("m.id")
@@ -370,13 +372,13 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       .literal("UPDATE employee")
       .set()
         .if_("v.id != null").literal("id = ").parameter("v.id").endif()
-        .if_("v.name != null").literal("name = ").parameter("v.name").endif()
+        .if_("v.fullName != null").literal("\"NAME\" = ").parameter("v.fullName").endif()
         .if_("v.branchId != null").literal("branch_id = ").parameter("v.branchId").endif()
         .if_("v.vip != null").literal("vip = ").parameter("v.vip").endif()
       .endset()
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
-        .if_("e.name != null").literal("name = ").parameter("e.name").endif()
+        .if_("e.fullName != null").literal("\"NAME\" = ").parameter("e.fullName").endif()
         .if_("e.branchId != null").literal("branch_id = ").parameter("e.branchId").endif()
         .if_("e.vip != null").literal("vip = ").parameter("e.vip").endif()
       .endwhere()
@@ -403,7 +405,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
-    if (values.getName() != null) setters.add(new Setter(tableOrView.name, sql.val(values.getName())));
+    if (values.getFullName() != null) setters.add(new Setter(tableOrView.fullName, sql.val(values.getFullName())));
     if (values.getBranchId() != null) setters.add(new Setter(tableOrView.branchId, sql.val(values.getBranchId())));
     if (values.getVip() != null) setters.add(new Setter(tableOrView.vip, sql.val(values.getVip())));
     return new UpdateSetCompletePhase(this.context, tableOrView, setters, predicate);
@@ -445,7 +447,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       .literal("DELETE FROM employee")
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
-        .if_("e.name != null").literal("name = ").parameter("e.name").endif()
+        .if_("e.fullName != null").literal("\"NAME\" = ").parameter("e.fullName").endif()
         .if_("e.branchId != null").literal("branch_id = ").parameter("e.branchId").endif()
         .if_("e.vip != null").literal("vip = ").parameter("e.vip").endif()
       .endwhere()
@@ -477,8 +479,8 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
     ID("id", true),
     ID$DESC("id", false),
-    NAME("name", true),
-    NAME$DESC("name", false),
+    FULL_NAME("\"NAME\"", true),
+    FULL_NAME$DESC("\"NAME\"", false),
     BRANCH_ID("branch_id", true),
     BRANCH_ID$DESC("branch_id", false),
     VIP("vip", true),
@@ -518,8 +520,8 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
     public final NumericEntityColumn id = new NumericEntityColumn(this,
       "ID", "id", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
-    public final CharEntityColumn name = new CharEntityColumn(this,
-      "NAME", "name", "CHARACTER VARYING", 50, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE));
+    public final CharEntityColumn fullName = new CharEntityColumn(this,
+      "NAME", "fullName", "CHARACTER VARYING", 50, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE));
     public final NumericEntityColumn branchId = new NumericEntityColumn(this,
       "BRANCH_ID", "branchId", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
     private final TypeHandler<Integer, Boolean> th0 = TypeHandler.forConverter(new IntegerBooleanConverter(), TypeSource.STATIC_DESIGNATED);
@@ -528,7 +530,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this.id, this.name, this.branchId, this.vip);
+      return new AllColumns(this.id, this.fullName, this.branchId, this.vip);
     }
 
     // Constructors
@@ -548,7 +550,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     private void initialize() {
       super.columns = new ArrayList<>();
       super.columns.add(this.id);
-      super.columns.add(this.name);
+      super.columns.add(this.fullName);
       super.columns.add(this.branchId);
       super.columns.add(this.vip);
     }
@@ -608,6 +610,83 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     }
   }
 
+  // NITRO SELECT: findVIPEmployees
+
+  private DynamicSelectQuery select0;
+
+  private void initializeSelect0() {
+    this.select0 = dyn
+      .literal("\nSELECT name, vip, id\nFROM employee\nWHERE branch_id = 101\n    ")
+      .endSelectQuery();
+  }
+
+  public final class RowReader0 implements RowReader<Employee> {
+
+    private boolean present1 = false;
+    private boolean present2 = false;
+    private boolean present3 = false;
+    private boolean present4 = false;
+
+    @Override
+    public void discoverColumns(ResultSet rs) throws SQLException {
+      ResultSetMetaData m = rs.getMetaData();
+      present1 = false;
+      present2 = false;
+      present3 = false;
+      present4 = false;
+      int n = m.getColumnCount();
+      for (int i = 1; i <= n; i++) {
+        String l = m.getColumnLabel(i);
+        if ("ID".equals(l)) present1 = true;
+        if ("NAME".equals(l)) present2 = true;
+        if ("BRANCH_ID".equals(l)) present3 = true;
+        if ("VIP".equals(l)) present4 = true;
+      }
+    }
+
+    @Override
+    public Employee readRowFrom(ResultSet rs, Connection conn) throws SQLException {
+      Employee row = applicationContext.getBean(Employee.class);
+
+      if (this.present1) {
+        Integer col1 = rs.getInt("ID"); // ID
+        if (rs.wasNull()) col1 = null;
+        row.setId(col1);
+      }
+
+      if (this.present2) {
+        String col2 = rs.getString("NAME"); // NAME
+        row.setFullName(col2);
+      }
+
+      if (this.present3) {
+        Integer col3 = rs.getInt("BRANCH_ID"); // BRANCH_ID
+        if (rs.wasNull()) col3 = null;
+        row.setBranchId(col3);
+      }
+
+      if (this.present4) {
+        Integer raw4 = rs.getInt("VIP"); // VIP
+        if (rs.wasNull()) raw4 = null;
+        Boolean col4 = converter0.decode(raw4, conn);
+        row.setVip(col4);
+      }
+
+      return row;
+    }
+
+  };
+  public List<Employee> findVIPEmployees() throws DynamicExpressionException, SQLException {
+    Parameters context = this.dyn.newParameters();
+    RowReader0 rr = new RowReader0();
+    PreparedSelectQuery<Employee> preparedQuery = this.select0.prepare(context, rr);
+    logQuery(preparedQuery);
+    try (Connection conn = this.dataSource.getConnection()) {
+      List<Employee> rows = preparedQuery.execute(conn);
+      return rows;
+    }
+  }
+
   @PostConstruct
   public void initializeContext() {
     LiveSQLDialect liveSQLDialect = LShield.getLiveSQLDialect(this.sql);
@@ -623,6 +702,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     this.initializeDeletebyexample();
     this.initializeSelectSequence0();
     this.initializeSelectSequence1();
+    this.initializeSelect0();
   }
 
   private void logQuery(PreparedQuery preparedQuery) {

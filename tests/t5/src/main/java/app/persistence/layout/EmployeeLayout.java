@@ -13,7 +13,7 @@ public class EmployeeLayout implements Serializable {
   // Layout Properties (table columns)
 
   protected Integer id = null;
-  protected String name = null;
+  protected String fullName = null;
   protected Integer branchId = null;
   protected Boolean vip = null;
 
@@ -27,12 +27,12 @@ public class EmployeeLayout implements Serializable {
     this.id = id;
   }
 
-  public String getName() {
-    return this.name;
+  public String getFullName() {
+    return this.fullName;
   }
 
-  public void setName(final String name) {
-    this.name = name;
+  public void setFullName(final String fullName) {
+    this.fullName = fullName;
   }
 
   public Integer getBranchId() {
@@ -57,7 +57,7 @@ public class EmployeeLayout implements Serializable {
     StringBuilder sb = new StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- id=" + this.id + "\n");
-    sb.append("- name=" + this.name + "\n");
+    sb.append("- fullName=" + this.fullName + "\n");
     sb.append("- branchId=" + this.branchId + "\n");
     sb.append("- vip=" + this.vip);
     return sb.toString();
@@ -68,7 +68,7 @@ public class EmployeeLayout implements Serializable {
   public JSONObject toJSONObject() {
     JSONObject obj = new JSONObject();
     obj.addProperty("id", this.id);
-    obj.addProperty("name", this.name);
+    obj.addProperty("fullName", this.fullName);
     obj.addProperty("branchId", this.branchId);
     obj.addProperty("vip", this.vip);
     return obj;
