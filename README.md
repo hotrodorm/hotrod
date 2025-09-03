@@ -28,7 +28,6 @@ The most basic SELECT query to compute an expression in the database can be writ
 
 ```java
    Row row = sql.select(sql.val(3).mult(7).as("total")).executeOne();
-
    System.out.println("total=" + row.get("total")); // total=21
 ```
 
@@ -45,11 +44,11 @@ Joining two tables can look like:
     .execute();
 
   for (Tuple2<Invoice, Client> r : rows) {
-    Invoice inv = r.getA()
+    Invoice inv = r.getA() // all columns correctly named, cast, typed, and/or converted here
     Client cli = r.getB(); 
-    System.out.println("=== Invoice: " + inv);
-    System.out.println("=== Client: " + cli);
-    System.out.println("=== Applied Discount: " + r.getUnbound().get("appliedDiscount"));
+    System.out.println("Invoice: " + inv);
+    System.out.println("Client: " + cli);
+    System.out.println("Applied Discount: " + r.getUnbound().get("appliedDiscount"));
   }
 ```
 
