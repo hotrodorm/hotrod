@@ -144,9 +144,9 @@ Nitro makes this query available in your application as the method:
 
 ## Torcs &mdash; At a Glance
 
-Torcs discovers slow queries at runtime by providing rankings by impact, slowest response time, high frequency, and others. The visibility that Torcs offers about the actual running application can provide critical information to understand the bottlenecks of the application that need to be addressed.
+Torcs discovers slow queries at runtime by computing rankings by impact, response time, execution frequency, and others. The visibility that Torcs offers about the actual running application can provide critical information to understand the bottlenecks of the application that need to be addressed.
 
-For example, the ranking by highest response time starts automatically when Torcs is added to the application and can provide a ranking of queries like:
+For example, the ranking by highest response time starts automatically when Torcs is added to the application and can provide a ranking of queries in the form:
 
 | Rank | Execs | Errors | Avg Time (ms) | Observed Time (ms) | Impact (ms) | Data Source | SQL |
 | :--: | --:| --:| --:| --:| --:| :--: | :-- |
