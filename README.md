@@ -24,7 +24,7 @@ LiveSQL allows you to write and run queries directly from your application code.
 
 LiveSQL can run SELECT, UPDATE, DELETE, and INSERT queries from the most basic syntax to advanced queries. The syntax can include complex predicates, subqueries, CTEs, arithmetic operators, functions, as well as standard SQL constructs such as ordering limiting, aggregation, window functions, union, for update (locking), etc.
 
-A very simple SELECT query to compute an expression in the database can be written as:
+A simple SELECT query to compute the expression `3 * 7` in the database can be written as:
 
 ```java
    Row row = sql.select(sql.val(3).mult(7).as("total")).executeOne();
