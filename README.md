@@ -24,22 +24,24 @@ LiveSQL allows you to write and run queries directly from your application code.
 
 LiveSQL can run SELECT, UPDATE, DELETE, and INSERT queries from the most basic syntax to advanced queries. The syntax can include complex predicates, subqueries, CTEs, arithmetic operators, functions, as well as standard SQL constructs such as ordering limiting, aggregation, window functions, union, for update (locking), etc.
 
-A basic select with a simple condition can look like:
+The most basic SELECT query to compute an expression in the database can be written as:
 
 ```java
-  List<Employee> employees = this.employeeDAO
-    .select(e, e.salary.plus(e.bonus).ge(40000).and(e.title.substring(4, 2).eq("TE")))
-    .orderBy(e.hiringDate.desc())
-    .execute();
+   Row row = sql.select(sql.val(3).mult(7).as("total")).executeOne();
+   System.out.println("total=" + row.get("total")); // total=21
 ```
 
-Runs the query (in PostgreSQL) as:
+Joining two tables can look like:
 
-```sql
-  SELECT *
-  FROM employee
-  WHERE salary + bonus >= 40000 AND subtring(title, 4, 2) = "TE"
-  ORDER BY hiring_date DESC;
+```java
+  List<Tuple2<Invoice, Client>> rows = sql
+    .select(i.star(), c.star(), i.amount.mult(c.discount).as("appliedDiscount"))
+    .tuples()
+    .from(i)
+    .join(c, c.id.eq(i.clientId))
+    .where(c.branchId.eq("Main"))
+    .orderBy(i.purchaseDate.desc())
+    .execute();
 ```
 
 Behind the scenes LiveSQL automatically adapts the SQL syntax to the specific database.
