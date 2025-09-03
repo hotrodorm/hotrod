@@ -133,11 +133,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     m.setId(CastUtil.toInteger((Number) row.get(p + "id" + s)));
     m.setName((String) row.get(p + "name" + s));
     m.setBranchId(CastUtil.toInteger((Number) row.get(p + "branchId" + s)));
-    try {
-      m.setVip(new app.IntegerBooleanConverter().decode((Integer) row.get(p + "vip" + s), conn));
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
-    }
+    m.setVip(this.converter0.decode((Integer) row.get(p + "vip" + s), conn));
     return m;
   }
 

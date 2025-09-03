@@ -34,6 +34,16 @@
 
   <dao name="SalesDAO">
     <sequence name="hired_seq" method="getHiredNextValue" />
+
+    <select method="findBigAccounts" vo="BigAccount">
+       <column name="ibt_balance" java-name="grossBalance" />
+select id, balance as ibt_balance,
+  case when active then 'Active' else 'Inactive' end as status,
+  cast(case when type = 'CHK' then balance * 1.5 else balance * 1.2 end as int) as score
+from account
+where balance >= 200
+    </select> 
+    
   </dao>
 
 
@@ -68,6 +78,7 @@
   <table name="account">
     <column name="balance" java-type="Double" />
     <column name="active" converter="boolean_stored_as_int" />
+    <column name="type" converter="account_type_stored_as_char" />
   </table>
     
 <!-- 
@@ -172,13 +183,6 @@ where balance >= 300
     </query>
 -->
 <!-- 
-    <select method="findBigAccounts" vo="BigAccount">
-select id, balance,
-  case when active then 'Active' else 'Inactive' end as status,
-  cast(case when type = 'CHK' then balance * 1.5 else balance * 1.2 end as int) as score
-from account
-where balance >= 200
-    </select> 
        
   </dao>
   -->

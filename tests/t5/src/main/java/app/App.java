@@ -23,6 +23,7 @@ import app.persistence.dao.AccountDAO;
 import app.persistence.dao.AccountDAO.AccountTable;
 import app.persistence.dao.EmployeeDAO;
 import app.persistence.dao.SalesDAO;
+import app.persistence.layout.AccountLayout;
 import app.persistence.model.Account;
 
 @SpringBootApplication
@@ -91,14 +92,17 @@ public class App {
   }
 
   private void selectByExample() {
-    long seq = this.salesDAO.getHiredNextValue();
+    AccountLayout example = new AccountLayout();
+    List<Account> accounts = this.accountDAO.select(example);
+    for (Account a : accounts) {
+      System.out.println("a=" + a);
+    }
 
-//    AccountLayout example = new AccountLayout();
-//    this.accountDAO.select(example);
-//    
-//    
 //    Account a = this.accountDAO.select(123);
-    System.out.println("seq=" + seq);
+
+//   long seq = this.salesDAO.getHiredNextValue();
+//    System.out.println("seq=" + seq);
+
   }
 
   private void testA() throws SQLException, DynamicExpressionException {

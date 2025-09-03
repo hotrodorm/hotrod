@@ -1,14 +1,13 @@
 package app;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import org.hotrod.converter.TypeConverter;
 
 public class IntegerBooleanConverter implements TypeConverter<Integer, Boolean> {
 
   @Override
-  public Boolean decode(Integer raw, Connection conn) throws SQLException {
+  public Boolean decode(Integer raw, Connection conn) {
     if (raw == null) {
       return null;
     }
@@ -16,7 +15,7 @@ public class IntegerBooleanConverter implements TypeConverter<Integer, Boolean> 
   }
 
   @Override
-  public Integer encode(Boolean domain, Connection conn) throws SQLException {
+  public Integer encode(Boolean domain, Connection conn) {
     return domain ? 1 : 0;
   }
 

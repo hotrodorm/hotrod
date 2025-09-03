@@ -1,6 +1,5 @@
 package org.hotrod.livesql.expressions.bool.converter;
 
-import java.sql.SQLException;
 import java.util.logging.Logger;
 
 import org.hotrod.converter.TypeConverter;
@@ -34,12 +33,7 @@ public class ConvertedCoalesce<R, D> extends SortableExpression {
 
     w.write(", ");
 
-    R raw;
-    try {
-      raw = this.converter.encode(this.d, null);
-    } catch (SQLException e) {
-      throw new RuntimeException("Could not encode converted value to raw value.", e);
-    }
+    R raw = this.converter.encode(this.d, null);
     RenderedParameter rp = w.registerParameter(raw);
     w.write(rp.getPlaceholder());
 

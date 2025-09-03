@@ -58,6 +58,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import app.AccountTypeConverter;
+import app.AccountTypeConverter.AccountType;
 import app.IntegerBooleanConverter;
 import app.persistence.layout.AccountLayout;
 import app.persistence.model.Account;
@@ -88,7 +90,8 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   // CONVERTERS
 
-  private final IntegerBooleanConverter converter0 = new IntegerBooleanConverter();
+  private final AccountTypeConverter converter0 = new AccountTypeConverter();
+  private final IntegerBooleanConverter converter1 = new IntegerBooleanConverter();
 
   // ROW READER
 
@@ -105,7 +108,8 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       String col2 = rs.getString("NAME"); // NAME
       row.setName(col2);
 
-      String col3 = rs.getString("TYPE"); // TYPE
+      String raw3 = rs.getString("TYPE"); // TYPE
+      AccountType col3 = converter0.decode(raw3, conn);
       row.setType(col3);
 
       Double col4 = rs.getDouble("BALANCE"); // BALANCE
@@ -114,7 +118,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
       Integer raw5 = rs.getInt("ACTIVE"); // ACTIVE
       if (rs.wasNull()) raw5 = null;
-      Boolean col5 = converter0.decode(raw5, conn);
+      Boolean col5 = converter1.decode(raw5, conn);
       row.setActive(col5);
 
       byte[] col6 = rs.getObject("CLIENT_PHOTO", byte[].class); // CLIENT_PHOTO
@@ -148,13 +152,9 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     String s = suffix == null ? "": suffix;
     m.setId(CastUtil.toInteger((Number) row.get(p + "id" + s)));
     m.setName((String) row.get(p + "name" + s));
-    m.setType((String) row.get(p + "type" + s));
+    m.setType(this.converter0.decode((String) row.get(p + "type" + s), conn));
     m.setBalance(CastUtil.toDouble((Number) row.get(p + "balance" + s)));
-    try {
-      m.setActive(new app.IntegerBooleanConverter().decode((Integer) row.get(p + "active" + s), conn));
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
-    }
+    m.setActive(this.converter1.decode((Integer) row.get(p + "active" + s), conn));
     m.setClientPhoto((byte[]) row.get(p + "clientPhoto" + s));
     m.setUpdatedAt((LocalDateTime) row.get(p + "updatedAt" + s));
     m.setVersion(CastUtil.toInteger((Number) row.get(p + "version" + s)));
@@ -167,7 +167,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
     private Integer id;
     private String name;
-    private String type;
+    private AccountType type;
     private Double balance;
     private Boolean active;
     private byte[] clientPhoto;
@@ -182,7 +182,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       return this.name;
     }
 
-    public String getType() {
+    public AccountType getType() {
       return this.type;
     }
 
@@ -630,12 +630,12 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       "ID", "id", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
     public final CharEntityColumn name = new CharEntityColumn(this,
       "NAME", "name", "CHARACTER VARYING", 20, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE));
-    public final CharEntityColumn type = new CharEntityColumn(this,
-      "TYPE", "type", "CHARACTER VARYING", 3, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE));
+    private final TypeHandler<String, AccountType> th0 = TypeHandler.forConverter(new AccountTypeConverter(), TypeSource.STATIC_DESIGNATED);
+    public final ConvertedColumn<String, AccountType> type = new ConvertedColumn<String, AccountType>(this, "TYPE", "type", "CHARACTER VARYING", 3, 0, th0, th0.getConverter());
     public final NumericEntityColumn balance = new NumericEntityColumn(this,
       "BALANCE", "balance", "INTEGER", 32, 0, TypeHandler.forClass(Double.class, TypeSource.STATIC_DESIGNATED));
-    private final TypeHandler<Integer, Boolean> th0 = TypeHandler.forConverter(new IntegerBooleanConverter(), TypeSource.STATIC_DESIGNATED);
-    public final ConvertedColumn<Integer, Boolean> active = new ConvertedColumn<Integer, Boolean>(this, "ACTIVE", "active", "INTEGER", 32, 0, th0, th0.getConverter());
+    private final TypeHandler<Integer, Boolean> th1 = TypeHandler.forConverter(new IntegerBooleanConverter(), TypeSource.STATIC_DESIGNATED);
+    public final ConvertedColumn<Integer, Boolean> active = new ConvertedColumn<Integer, Boolean>(this, "ACTIVE", "active", "INTEGER", 32, 0, th1, th1.getConverter());
     public final BinaryEntityColumn clientPhoto = new BinaryEntityColumn(this,
       "CLIENT_PHOTO", "clientPhoto", "BINARY LARGE OBJECT", 2147483647, 0, TypeHandler.forClass(byte[].class, TypeSource.STATIC_DIALECT_RULE));
     public final DateTimeEntityColumn updatedAt = new DateTimeEntityColumn(this,

@@ -1,7 +1,6 @@
 package app;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import org.hotrod.converter.TypeConverter;
 
@@ -11,11 +10,11 @@ public class AccountTypeConverter implements TypeConverter<String, AccountType> 
 
   public static enum AccountType {
 
-    PEN, CHK, SAV, INV;
+    PEN1, CHK2, SAV3, INV4;
 
     public static AccountType parse(String raw) {
       for (AccountType t : AccountType.values()) {
-        if (t.name().equals(raw)) {
+        if (t.name().substring(0, 3).equals(raw)) {
           return t;
         }
       }
@@ -24,7 +23,7 @@ public class AccountTypeConverter implements TypeConverter<String, AccountType> 
   }
 
   @Override
-  public AccountType decode(String raw, Connection conn) throws SQLException {
+  public AccountType decode(String raw, Connection conn) {
     if (raw == null) {
       return null;
     }
@@ -32,7 +31,7 @@ public class AccountTypeConverter implements TypeConverter<String, AccountType> 
   }
 
   @Override
-  public String encode(AccountType domain, Connection conn) throws SQLException {
+  public String encode(AccountType domain, Connection conn) {
     return domain == null ? null : domain.name();
   }
 

@@ -421,19 +421,16 @@ public class DAO {
 
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String javaType = resolveType(cm);
-      String property = cm.getId().getJavaMemberName();
+      String memberProperty = cm.getId().getJavaMemberName();
 
       if (cm.getConverter() != null) {
         ConverterTag ct = cm.getConverter();
+        String property = this.converterProperties.get(ct.getName());
 
         ExternalClass rt = ExternalClass.of(ct.getRawClass());
 
-        w.println("    try {");
-        w.println("      m." + cm.getId().getJavaSetter() + "(new " + ct.getConverterClass() + "().decode((", rt,
-            ") row.get(p + \"" + JUtils.escapeJavaString(property) + "\" + s), conn));");
-        w.println("    } catch (", SQLException.class, " e) {");
-        w.println("      throw new ", PersistenceException.class, "(e);");
-        w.println("    }");
+        w.println("    m." + cm.getId().getJavaSetter() + "(this." + property + ".decode((", rt,
+            ") row.get(p + \"" + JUtils.escapeJavaString(memberProperty) + "\" + s), conn));");
 
       } else if ("java.lang.Byte".equals(javaType) || //
           "java.lang.Short".equals(javaType) || //
@@ -447,14 +444,14 @@ public class DAO {
         String st = idx == -1 ? javaType : javaType.substring(idx + 1);
 
         w.println("    m." + cm.getId().getJavaSetter() + "(", CastUtil.class, ".to" + st + "((", Number.class,
-            ") row.get(p + \"" + JUtils.escapeJavaString(property) + "\" + s)));");
+            ") row.get(p + \"" + JUtils.escapeJavaString(memberProperty) + "\" + s)));");
       } else if ("java.lang.Object".equals(javaType)) {
-        w.println("    m." + cm.getId().getJavaSetter() + "(row.get(p + \"" + JUtils.escapeJavaString(property)
+        w.println("    m." + cm.getId().getJavaSetter() + "(row.get(p + \"" + JUtils.escapeJavaString(memberProperty)
             + "\" + s));");
       } else {
         ExternalClass jt = ExternalClass.of(javaType);
         w.println("    m." + cm.getId().getJavaSetter() + "((", jt,
-            ") row.get(p + \"" + JUtils.escapeJavaString(property) + "\" + s));");
+            ") row.get(p + \"" + JUtils.escapeJavaString(memberProperty) + "\" + s));");
       }
 
     }

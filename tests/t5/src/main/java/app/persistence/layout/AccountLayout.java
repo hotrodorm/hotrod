@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 
 import org.hotrod.json.JSONObject;
 
+import app.AccountTypeConverter.AccountType;
+
 public class AccountLayout implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -15,7 +17,7 @@ public class AccountLayout implements Serializable {
 
   protected Integer id = null;
   protected String name = null;
-  protected String type = null;
+  protected AccountType type = null;
   protected Double balance = null;
   protected Boolean active = null;
   protected byte[] clientPhoto = null;
@@ -40,11 +42,11 @@ public class AccountLayout implements Serializable {
     this.name = name;
   }
 
-  public String getType() {
+  public AccountType getType() {
     return this.type;
   }
 
-  public void setType(final String type) {
+  public void setType(final AccountType type) {
     this.type = type;
   }
 

@@ -5,13 +5,16 @@ package app.persistence.dao;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
+import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicSelectQuery;
 import org.hotrod.dynamicsql.Parameters;
 import org.hotrod.dynamicsql.PreparedQuery;
@@ -29,6 +32,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
+
+import app.persistence.model.BigAccount;
 
 @Component
 public class SalesDAO implements Serializable, ApplicationContextAware {
@@ -89,12 +94,90 @@ public class SalesDAO implements Serializable, ApplicationContextAware {
     }
   }
 
+  // NITRO SELECT: findBigAccounts
+
+  private DynamicSelectQuery select0;
+
+  private void initializeSelect0() {
+    this.select0 = dyn
+      .literal("\n       ")
+      .literal("\nselect id, balance as ibt_balance,\n  case when active then 'Active' else 'Inactive' end as status,\n  cast(case when type = 'CHK' then balance * 1.5 else balance * 1.2 end as int) as score\nfrom account\nwhere balance >= 200\n    ")
+      .endSelectQuery();
+  }
+
+  public final class RowReader0 implements RowReader<BigAccount> {
+
+    private boolean present1 = false;
+    private boolean present2 = false;
+    private boolean present3 = false;
+    private boolean present4 = false;
+
+    @Override
+    public void discoverColumns(ResultSet rs) throws SQLException {
+      ResultSetMetaData m = rs.getMetaData();
+      present1 = false;
+      present2 = false;
+      present3 = false;
+      present4 = false;
+      int n = m.getColumnCount();
+      for (int i = 1; i <= n; i++) {
+        String l = m.getColumnLabel(i);
+        if ("ID".equals(l)) present1 = true;
+        if ("IBT_BALANCE".equals(l)) present2 = true;
+        if ("STATUS".equals(l)) present3 = true;
+        if ("SCORE".equals(l)) present4 = true;
+      }
+    }
+
+    @Override
+    public BigAccount readRowFrom(ResultSet rs, Connection conn) throws SQLException {
+      BigAccount row = applicationContext.getBean(BigAccount.class);
+
+      if (this.present1) {
+        Integer col1 = rs.getInt("ID"); // ID
+        if (rs.wasNull()) col1 = null;
+        row.setId(col1);
+      }
+
+      if (this.present2) {
+        Integer col2 = rs.getInt("IBT_BALANCE"); // IBT_BALANCE
+        if (rs.wasNull()) col2 = null;
+        row.setGrossBalance(col2);
+      }
+
+      if (this.present3) {
+        String col3 = rs.getString("STATUS"); // STATUS
+        row.setStatus(col3);
+      }
+
+      if (this.present4) {
+        Integer col4 = rs.getInt("SCORE"); // SCORE
+        if (rs.wasNull()) col4 = null;
+        row.setScore(col4);
+      }
+
+      return row;
+    }
+
+  };
+  public List<BigAccount> findBigAccounts() throws DynamicExpressionException, SQLException {
+    Parameters context = this.dyn.newParameters();
+    RowReader0 rr = new RowReader0();
+    PreparedSelectQuery<BigAccount> preparedQuery = this.select0.prepare(context, rr);
+    logQuery(preparedQuery);
+    try (Connection conn = this.dataSource.getConnection()) {
+      List<BigAccount> rows = preparedQuery.execute(conn);
+      return rows;
+    }
+  }
+
   @PostConstruct
   public void initializeContext() {
     LiveSQLDialect liveSQLDialect = LShield.getLiveSQLDialect(this.sql);
     this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, new TypeSolver(null, liveSQLDialect), log);
     this.dyn = new DynamicSQL();
     this.initializeSelectSequence0();
+    this.initializeSelect0();
   }
 
   private void logQuery(PreparedQuery preparedQuery) {
