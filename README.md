@@ -31,7 +31,7 @@ The most basic SELECT query to compute an expression in the database can be writ
    System.out.println("total=" + row.get("total")); // total=21
 ```
 
-Joining two tables can look like:
+Joining multiple tables can look like:
 
 ```java
   List<Tuple2<Invoice, Client>> rows = sql
