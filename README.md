@@ -6,7 +6,7 @@ HotRod brings:
 
 - [CRUD](./hotrod-project/docs/docs-5/crud/README.md) &mdash; Quick and simple persistence for rapid prototyping
 - [LiveSQL](./hotrod-project/docs/docs-5/livesql/README.md) &mdash; Flexible SQL querying from your code to retrieve plain values and also full table entities
-- [Nitro](./hotrod-project/docs/docs-5/nitro/README.md) &mdash; All the power of [Dynamic SQL](./hotrod-project/docs/docs-5/nitro/nitro-dynamicsql.md) and Native SQL when you need it
+- [Nitro](./hotrod-project/docs/docs-5/nitro/README.md) &mdash; All the power of Dynamic SQL and Native SQL when you need it
 - [Torcs](./hotrod-project/docs/docs-5/torcs/README.md) &mdash; Detect slow queries at runtime and analyze them
 
 All this functionality is available for any of the [supported databases](./hotrod-project/docs/docs-5/config/supported-databases.md).
@@ -15,60 +15,62 @@ See [What's New](./hotrod-project/docs/docs-5/whats-new.md) in HotRod 5, [versio
 and the [HotRod 5 Documentation](./hotrod-project/docs/docs-5/README.md). For documentation on the previous versions see
 [HotRod 4 Documentation](./hotrod-project/docs/docs-4/README.md) and [HotRod 3 Documentation](./hotrod-project/docs/docs-3/README.md).
 
-See HotRod in action with the [Hello World Example](./hotrod-project/docs/docs-5/guides/hello-world.md).
+Get started with the [Hello World](./hotrod-project/docs/docs-5/guides/hello-world.md) example.
 
 
 ## LiveSQL &mdash; At a Glance
 
-LiveSQL allows you to write and run queries directly from your application code. LiveSQL's inline syntax only allow valid SQL clauses and expressions.
+[LiveSQL](./hotrod-project/docs/docs-5/livesql/README.md) allows you to write and run queries directly from your application code. LiveSQL's inline syntax only allow valid SQL clauses and expressions.
 
 LiveSQL can run SELECT, UPDATE, DELETE, and INSERT queries from the most basic syntax to advanced queries. The syntax can include complex predicates, subqueries, CTEs, arithmetic operators, functions, as well as standard SQL constructs such as ordering limiting, aggregation, window functions, union, for update (locking), etc.
 
 A simple SELECT query to compute the expression `3 * 7` in the database can be written as:
 
 ```java
-   Row row = sql.select(sql.val(3).mult(7).as("total")).executeOne();
-   System.out.println("total=" + row.get("total")); // total=21
+Row row = sql.select(sql.val(3).mult(7).as("total")).executeOne();
+System.out.println("total=" + row.get("total")); // total=21
 ```
 
 Joining multiple tables can look like:
 
 ```java
-  List<Tuple2<Invoice, Client>> rows = sql
-    .select(i.star(), c.star(), i.amount.mult(c.discount).as("appliedDiscount"))
-    .tuples()
-    .from(i)
-    .join(c, c.id.eq(i.clientId))
-    .where(c.branchId.eq("Main"))
-    .orderBy(c.id, i.purchaseDate.desc())
-    .execute();
+List<Tuple2<Invoice, Client>> rows = sql
+  .select(i.star(), c.star(), i.amount.mult(c.discount).as("appliedDiscount"))
+  .tuples()
+  .from(i)
+  .join(c, c.id.eq(i.clientId))
+  .where(c.branchId.eq("Main"))
+  .orderBy(c.id, i.purchaseDate.desc())
+  .execute();
 
-  for (Tuple2<Invoice, Client> r : rows) {
-    Invoice inv = r.getA() // all columns correctly named, cast, typed, and/or converted here
-    Client cli = r.getB(); 
-    System.out.println("Invoice: " + inv);
-    System.out.println("Client: " + cli);
-    System.out.println("Applied Discount: " + r.getUnbound().get("appliedDiscount"));
-  }
+for (Tuple2<Invoice, Client> r : rows) {
+  Invoice inv = r.getA() // all columns correctly named, cast, typed, and/or converted here
+  Client cli = r.getB(); // same here
+  System.out.println("Invoice: " + inv);
+  System.out.println("Client: " + cli);
+  System.out.println("Applied Discount: " + r.getUnbound().get("appliedDiscount"));
+}
 ```
 
 Behind the scenes LiveSQL automatically adapts the SQL syntax to the specific database.
 
-A more complex query can include joins, CTEs, and much more:
+Any query can include joins, CTEs, subqueries, and other syntax, as shown below:
 
 ```java
 CTE x = sql.cte("x",
     sql.select(b.isVip, a.star())
        .from(b)
-       .join(a, a.branchId.eq(b.id)));
-CTE y = sql.cte("y", "aid").as(
-    sql.select(i.accountId)
+       .join(a, a.branchId.eq(b.id))
+    );
+Subquery y = sql.subquery("y",
+    sql.select(i.accountId.as("aid"))
        .from(i)
        .join(l, l.invoiceId.eq(i.id))
        .join(p, p.id.eq(l.productId))
-       .where(p.shipping.eq(0)));
+       .where(p.shipping.eq(0))
+    );
 List<Row> rows = sql
-    .with(x, y)
+    .with(x)
     .select(x.star())
     .from(x)
     .leftJoin(y, y.num("aid").eq(x.num("id")))
@@ -79,46 +81,46 @@ List<Row> rows = sql
 
 ## CRUD &mdash; At a Glance
 
-CRUD can access rows by primary keys or by example to execute SELECT, UPDATE, INSERT, and DELETE queries on the tables and view of the schema(s).
+[CRUD](./hotrod-project/docs/docs-5/crud/README.md) provides a straightforward repertoire of database access methods that can access rows by primary keys, by example, or by predicates to execute SELECT, UPDATE, INSERT, and DELETE queries on the tables and view of the schema(s).
 
 Inserting a payment while retrieving the new primary key can be done as:
 
 ```java
-  Payment p = new Payment();
-  p.setClientId(1205);
-  p.setPaidAt(LocalDateTime.now());
-  p.setAmount(100.00);
-  Long id = this.paymentDAO.insert(p);
+Payment p = new Payment();
+p.setClientId(1205);
+p.setPaidAt(LocalDateTime.now());
+p.setAmount(100.00);
+Long id = this.paymentDAO.insert(p);
 ```
 
 To find an employee by primary key:
 
 ```java
-  Employee emp = this.employeeDAO.select(134081);
+Employee emp = this.employeeDAO.select(134081);
 ```
 
-CRUD can use complex predicates to find all employees on departments 101 and 120, hired after January 15, 2024, with last names that end with 'SMITH':
+CRUD can use custom predicates, for example, to find all employees on departments 101 and 120, hired after January 15, 2024, with last names that end with 'SMITH':
 
 ```java
-  List<Employee> emps = this.employeeDAO.select(e, 
-      e.deptId.in(101, 120)
-      .and(e.hiredDate.gt(LocalDate.of(2025, 1, 15)))
-      .and(e.lastName.upper().like('%SMITH'))
-    .execute();
+List<Employee> emps = this.employeeDAO.select(e,
+    e.deptId.in(101, 120)
+    .and(e.hiredDate.gt(LocalDate.of(2025, 1, 15)))
+    .and(e.lastName.upper().like('%SMITH'))
+  .execute();
 ```
 
 Updating the status of an invoice is also simple:
 
 ```java
-  Invoice inv = this.invoiceDAO.select(5470);
-  inv.setStatus("PAID");
-  this.invoiceDAO.update(inv);
+Invoice inv = this.invoiceDAO.select(5470);
+inv.setStatus("PAID");
+this.invoiceDAO.update(inv);
 ```
 
 
 ## Nitro &mdash; At a Glance
 
-Nitro excels when the application requires complex, non-trivial queries that go beyond the scope of LiveSQL and CRUD, or for queries that benefit from:
+[Nitro](./hotrod-project/docs/docs-5/nitro/README.md) excels when the application requires complex, non-trivial queries that go beyond the scope of LiveSQL and CRUD, or for queries that benefit from:
 
 - [Dynamic SQL](./hotrod-project/docs/docs-5/nitro/nitro-dynamicsql.md) logic to dynamically assemble queries based on runtime parameters
 - Native SQL extensions available in the specific database
@@ -147,12 +149,12 @@ The following query uses Dynamic SQL to assemble the query dynamically and to ap
 Nitro makes this query available in your application as the method:
 
 ```java
-  List<Vehicle> searchVehicles(String brandName, Integer minYear, Integer ordering)
+List<Vehicle> searchVehicles(String brandName, Integer minYear, Integer ordering)
 ```
 
 ## Torcs &mdash; At a Glance
 
-Torcs discovers slow queries at runtime by computing rankings by impact, response time, execution frequency, and others. The visibility that Torcs offers about the actual running application can provide critical information to understand the bottlenecks of the application that need to be addressed.
+[Torcs](./hotrod-project/docs/docs-5/torcs/README.md) discovers slow queries at runtime by computing rankings by impact, response time, execution frequency, and others. The visibility that Torcs offers about the actual running application can provide critical information to understand the bottlenecks of the application that need to be addressed.
 
 For example, the ranking by highest response time starts automatically when Torcs is added to the application and can provide a ranking of queries in the form:
 
@@ -172,6 +174,6 @@ The following rankings are built-in in Torcs and can be activated programmatical
 - Initial Queries
 - Latest Queries
 
-Torcs can also retrieve execution plans programmatically in a variety of formats for specific queries that require attention.
+Torcs can also retrieve execution plans programmatically in a variety of formats for any of the queries in the rankings.
 
 
