@@ -23,9 +23,12 @@ import app.persistence.dao.AccountDAO;
 import app.persistence.dao.AccountDAO.AccountTable;
 import app.persistence.dao.EmployeeDAO;
 import app.persistence.dao.SalesDAO;
+import app.persistence.dao.VehicleDAO;
 import app.persistence.layout.EmployeeLayout;
+import app.persistence.layout.VehicleLayout;
 import app.persistence.model.Account;
 import app.persistence.model.Employee;
+import app.persistence.model.Vehicle;
 
 @SpringBootApplication
 @Configuration
@@ -52,6 +55,9 @@ public class App {
   @Autowired
   private SalesDAO salesDAO;
 
+  @Autowired
+  private VehicleDAO vehicleDAO;
+
 //  @Autowired
 //  private ADAO aDAO;
 
@@ -73,7 +79,8 @@ public class App {
     return args -> {
       log.info("[ Starting... ]");
 //      testA();
-      selectByExample();
+      testInsertNonId();
+//      selectByExample();
 //      testParseRow();
 //      testPredicate();
 //      testSequence();
@@ -90,6 +97,18 @@ public class App {
 //      testNitro6();
       log.info("[ Ending ]");
     };
+  }
+
+  private void testInsertNonId() {
+    VehicleLayout v = new VehicleLayout();
+    v.setName("Buick");
+    Vehicle vm = this.vehicleDAO.insert(v);
+    System.out.println("vm=" + vm);
+
+    v.setName("Toyota");
+    vm = this.vehicleDAO.insert(v);
+    System.out.println("vm=" + vm);
+
   }
 
   private void selectByExample() throws DynamicExpressionException, SQLException {

@@ -855,7 +855,9 @@ public class DAO {
       String targetClass = pk.getColumns().get(0).getType().getJavaClassName();
       String pkCast = GenUtils.convertPropertyType(Long.class.getName(), targetClass, "pk");
       w.println("      Long pk = preparedQuery.execute(conn);");
-      w.println("      model.setId(" + pkCast + ");");
+      ColumnMetadata pkcm = pk.getColumns().get(0);
+      String setter = pkcm.getId().getJavaSetter();
+      w.println("      model." + setter + "(" + pkCast + ");");
     }
     w.println("    } catch (", SQLException.class, " e) {");
     w.println("      throw new ", PersistenceException.class, "(e);");

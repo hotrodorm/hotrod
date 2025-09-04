@@ -67,8 +67,7 @@ public class SalesDAO implements Serializable, ApplicationContextAware {
     @Override
     public Long readRowFrom(ResultSet rs, Connection conn) throws SQLException {
       Long col1 = rs.getLong(1);
-      if (rs.wasNull())
-        col1 = null;
+      if (rs.wasNull()) col1 = null;
       return col1;
     }
 
@@ -99,9 +98,10 @@ public class SalesDAO implements Serializable, ApplicationContextAware {
   private DynamicSelectQuery select0;
 
   private void initializeSelect0() {
-    this.select0 = dyn.literal("\n       ").literal(
-        "\nselect id, balance as ibt_balance,\n  case when active then 'Active' else 'Inactive' end as status,\n  cast(case when type = 'CHK' then balance * 1.5 else balance * 1.2 end as int) as score\nfrom account\nwhere balance >= 200\n    ")
-        .endSelectQuery();
+    this.select0 = dyn
+      .literal("\n       ")
+      .literal("\nselect id, balance as ibt_balance,\n  case when active then 'Active' else 'Inactive' end as status,\n  cast(case when type = 'CHK' then balance * 1.5 else balance * 1.2 end as int) as score\nfrom account\nwhere balance >= 200\n    ")
+      .endSelectQuery();
   }
 
   public final class RowReader0 implements RowReader<BigAccount> {
@@ -121,14 +121,10 @@ public class SalesDAO implements Serializable, ApplicationContextAware {
       int n = m.getColumnCount();
       for (int i = 1; i <= n; i++) {
         String l = m.getColumnLabel(i);
-        if ("ID".equals(l))
-          present1 = true;
-        if ("IBT_BALANCE".equals(l))
-          present2 = true;
-        if ("STATUS".equals(l))
-          present3 = true;
-        if ("SCORE".equals(l))
-          present4 = true;
+        if ("ID".equals(l)) present1 = true;
+        if ("IBT_BALANCE".equals(l)) present2 = true;
+        if ("STATUS".equals(l)) present3 = true;
+        if ("SCORE".equals(l)) present4 = true;
       }
     }
 
@@ -138,15 +134,13 @@ public class SalesDAO implements Serializable, ApplicationContextAware {
 
       if (this.present1) {
         Integer col1 = rs.getInt("ID"); // ID
-        if (rs.wasNull())
-          col1 = null;
+        if (rs.wasNull()) col1 = null;
         row.setId(col1);
       }
 
       if (this.present2) {
         Integer col2 = rs.getInt("IBT_BALANCE"); // IBT_BALANCE
-        if (rs.wasNull())
-          col2 = null;
+        if (rs.wasNull()) col2 = null;
         row.setGrossBalance(col2);
       }
 
@@ -157,8 +151,7 @@ public class SalesDAO implements Serializable, ApplicationContextAware {
 
       if (this.present4) {
         Integer col4 = rs.getInt("SCORE"); // SCORE
-        if (rs.wasNull())
-          col4 = null;
+        if (rs.wasNull()) col4 = null;
         row.setScore(col4);
       }
 

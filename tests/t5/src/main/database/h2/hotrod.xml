@@ -28,6 +28,9 @@
   <table name="product" />
   <table name="branch" />
    -->
+
+  <table name="vehicle" />
+  <table name="land" />
    
   <table name="account">
     <column name="balance" java-type="Double" />
