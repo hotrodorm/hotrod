@@ -612,7 +612,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   }
 
-  // Database Table metadata
+  // TABLE METADATA
 
   public AccountTable newTable() {
     return new AccountTable();
@@ -623,8 +623,6 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   }
 
   public static class AccountTable extends Table<Account> {
-
-    // Properties
 
     public final NumericEntityColumn id = new NumericEntityColumn(this,
       "ID", "id", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
@@ -643,13 +641,9 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     public final NumericEntityColumn version = new NumericEntityColumn(this,
       "VERSION", "version", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
 
-    // Getters
-
     public AllColumns star() {
       return new AllColumns(this.id, this.name, this.type, this.balance, this.active, this.clientPhoto, this.updatedAt, this.version);
     }
-
-    // Constructors
 
     AccountTable() {
       super(null, null, Name.of("ACCOUNT", false), "Table", null, AccountLayout.class, Account.class);
@@ -660,8 +654,6 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       super(null, null, Name.of("ACCOUNT", false), "Table", alias, AccountLayout.class, Account.class);
       initialize();
     }
-
-    // Initialization
 
     private void initialize() {
       super.columns = new ArrayList<>();
@@ -676,6 +668,14 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     }
 
   }
+
+  // GETTERS
+
+  public DataSource getDataSource() {
+    return this.dataSource;
+  }
+
+  // INTERNAL METHODS
 
   @PostConstruct
   public void initializeContext() {
@@ -698,10 +698,6 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     } else if (log.isLoggable(Level.FINE)) {
       log.fine("SQL:\n" + preparedQuery.getPreview());
     }
-  }
-
-  public DataSource getDataSource() {
-    return this.dataSource;
   }
 
 }

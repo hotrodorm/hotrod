@@ -504,7 +504,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   }
 
-  // Database Table metadata
+  // TABLE METADATA
 
   public EmployeeTable newTable() {
     return new EmployeeTable();
@@ -516,8 +516,6 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   public static class EmployeeTable extends Table<Employee> {
 
-    // Properties
-
     public final NumericEntityColumn id = new NumericEntityColumn(this,
       "ID", "id", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
     public final CharEntityColumn fullName = new CharEntityColumn(this,
@@ -527,13 +525,9 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     private final TypeHandler<Integer, Boolean> th0 = TypeHandler.forConverter(new IntegerBooleanConverter(), TypeSource.STATIC_DESIGNATED);
     public final ConvertedColumn<Integer, Boolean> vip = new ConvertedColumn<Integer, Boolean>(this, "VIP", "vip", "INTEGER", 32, 0, th0, th0.getConverter());
 
-    // Getters
-
     public AllColumns star() {
       return new AllColumns(this.id, this.fullName, this.branchId, this.vip);
     }
-
-    // Constructors
 
     EmployeeTable() {
       super(null, null, Name.of("EMPLOYEE", false), "Table", null, EmployeeLayout.class, Employee.class);
@@ -544,8 +538,6 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       super(null, null, Name.of("EMPLOYEE", false), "Table", alias, EmployeeLayout.class, Employee.class);
       initialize();
     }
-
-    // Initialization
 
     private void initialize() {
       super.columns = new ArrayList<>();
@@ -676,7 +668,8 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     }
 
   };
-  public List<Employee> findVIPEmployees() throws DynamicExpressionException, SQLException {
+
+  public List<Employee> findVIPEmployees() {
     Parameters context = this.dyn.newParameters();
     RowReader0 rr = new RowReader0();
     PreparedSelectQuery<Employee> preparedQuery = this.select0.prepare(context, rr);
@@ -684,8 +677,18 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     try (Connection conn = this.dataSource.getConnection()) {
       List<Employee> rows = preparedQuery.execute(conn);
       return rows;
+    } catch (DynamicExpressionException | SQLException e) {
+      throw new PersistenceException(e);
     }
   }
+
+  // GETTERS
+
+  public DataSource getDataSource() {
+    return this.dataSource;
+  }
+
+  // INTERNAL METHODS
 
   @PostConstruct
   public void initializeContext() {
@@ -711,10 +714,6 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     } else if (log.isLoggable(Level.FINE)) {
       log.fine("SQL:\n" + preparedQuery.getPreview());
     }
-  }
-
-  public DataSource getDataSource() {
-    return this.dataSource;
   }
 
 }

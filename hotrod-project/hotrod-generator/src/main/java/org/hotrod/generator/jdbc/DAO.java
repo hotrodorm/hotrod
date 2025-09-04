@@ -265,6 +265,8 @@ public class DAO {
       i++;
     }
 
+    writeGetters();
+
     writePostConstruct();
 
     writeClassFooter();
@@ -337,6 +339,8 @@ public class DAO {
   }
 
   private void writePostConstruct() {
+    w.println();
+    w.println("  // INTERNAL METHODS");
     w.println();
     w.println("  @", Const.POST_CONSTRUCT);
     w.println("  public void initializeContext() {");
@@ -1275,7 +1279,7 @@ public class DAO {
     ExternalClass em = ExternalClass.of(this.model.getFullClassName());
 
     w.println();
-    w.println("  // Database " + type.getSimpleName() + " metadata");
+    w.println("  // " + type.getSimpleName().toUpperCase() + " METADATA");
     w.println();
     w.println("  public ", ec, " new", pc, "() {");
     w.println("    return new ", ec, "();");
@@ -1289,8 +1293,6 @@ public class DAO {
     w.println(" extends ", pc, "<", em, "> {");
 
     w.println();
-    w.println("    // Properties");
-    w.println();
     int thId = 0;
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String javaType = resolveType(cm);
@@ -1298,22 +1300,11 @@ public class DAO {
       String memberName = cm.getId().getJavaMemberName();
       String canonicalName = cm.getId().getCanonicalSQLName();
       String property = cm.getId().getJavaMemberName();
-//      String javaConverterClass = null;
-//      String rawClass = null;
-//      if (cm.getConverter() != null) {
-//        javaConverterClass = cm.getConverter().getJavaClass();
-//        rawClass = cm.getConverter().getJavaRawType();
-//      }
 
       ExternalClass jt = ExternalClass.of(javaType);
       ExternalClass lt = ExternalClass.of(liveSQLColumnType);
 
-//      ExternalClass th = ExternalClass.of(TypeHandler.class);
-
       if (cm.getConverter() == null) {
-
-//      public final NumberEntityColumn balance = new NumberEntityColumn(this,
-//      "BALANCE", "balance", "INTEGER", 32, 0, TypeHandler.of(Integer.class, TypeSource.ENTITY_COLUMN));
 
         w.println("    public final ", lt, " " + memberName + " = new ", lt, "(this,");
         w.print("      " //
@@ -1324,26 +1315,17 @@ public class DAO {
             + ", " + cm.getScale() //
             + ", ");
 
-//        if (rawClass != null && javaConverterClass != null) {
-//          ExternalClass cvt = ExternalClass.of(javaConverterClass);
-//          w.print(TypeHandler.class, ".of(", cvt, ".class, ");
-//          w.print(TypeSource.class, ".ENTITY_COLUMN)");
-//        } else {
         w.print(TypeHandler.class, ".forClass(", jt, ".class, ");
         TypeSource typeSource = cm.getType().getTypeSource();
         w.print(TypeSource.class, "." + typeSource.name() + ")");
 
-//        TypeSource.
-//        }
         w.println(");");
 
       } else {
+
         ExternalClass rawClass = ExternalClass.of(cm.getConverter().getRawClass());
         ExternalClass domainClass = ExternalClass.of(cm.getConverter().getDomainClass());
         ExternalClass converterClass = ExternalClass.of(cm.getConverter().getConverterClass());
-
-//      private final TypeHandler<String, AccountType> th = TypeHandler.forConverter(new AccountTypeConverter(), TypeSource.ENTITY_COLUMN);
-//  public final ConvertedColumn<String, AccountType> dtype = new ConvertedColumn<String, AccountType>(this, "TYPE", "type", "VARCHAR", 3, 0, th, th.getConverter());
 
         w.print("    private final ", TypeHandler.class, "<", rawClass, ", ");
         w.print(domainClass, "> th" + thId + " = ", TypeHandler.class, ".forConverter(new ", converterClass);
@@ -1363,9 +1345,7 @@ public class DAO {
       }
 
     }
-    w.println();
 
-    w.println("    // Getters");
     w.println();
 
     ExternalClass ac = ExternalClass.of(AllColumns.class);
@@ -1374,10 +1354,8 @@ public class DAO {
     w.println("      return new ", ac, "(" + this.metadata.getColumns().stream()
         .map(c -> "this." + c.getId().getJavaMemberName()).collect(Collectors.joining(", ")) + ");");
     w.println("    }");
-    w.println();
 
     ExternalClass nm = ExternalClass.of(Name.class);
-    w.println("    // Constructors");
     w.println();
     w.println("    " + this.metadataClassName + "() {");
     w.print("      super(");
@@ -1418,9 +1396,7 @@ public class DAO {
     w.println(", \"" + typeName + "\", alias, ", el, ".class, ", em, ".class);");
     w.println("      initialize();");
     w.println("    }");
-    w.println();
 
-    w.println("    // Initialization");
     w.println();
     w.println("    private void initialize() {");
     w.println("      super.columns = new ", ArrayList.class, "<>();");
@@ -1640,11 +1616,16 @@ public class DAO {
     w.println("    }");
     w.println("  }");
     w.println();
+    w.println("}");
+  }
+
+  private void writeGetters() throws IOException {
+    w.println();
+    w.println("  // GETTERS");
+    w.println();
     w.println("  public ", DataSource.class, " getDataSource() {");
     w.println("    return this.dataSource;");
     w.println("  }");
-    w.println();
-    w.println("}");
   }
 
   private LinkedHashMap<String, String> converterProperties = new LinkedHashMap<>();
@@ -1943,6 +1924,7 @@ public class DAO {
     SelectMethodReturnType rt = s.getReturnType(this.classPackage);
     ExternalClass rc = ExternalClass.of(rt.getBaseReturnVOFullClassName());
 
+    w.println();
     switch (rt.getMode()) {
     case CURSOR:
       w.print("  public ", Cursor.class, "<", rc, "> " + method + "(");
@@ -1961,7 +1943,7 @@ public class DAO {
       ExternalClass pc = ExternalClass.of(p.getJavaType());
       w.print(sep.render(), pc, " " + p.getName());
     }
-    w.println(") throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
+    w.println(") {");
 
     w.println("    ", Parameters.class, " context = this.dyn.newParameters();");
     for (SelectParameterMetadata sp : s.getParameters()) {
@@ -1992,6 +1974,8 @@ public class DAO {
       break;
     }
 
+    w.println("    } catch (", DynamicExpressionException.class, " | ", SQLException.class, " e) {");
+    w.println("      throw new ", PersistenceException.class, "(e);");
     w.println("    }");
 
     w.println("  }");
