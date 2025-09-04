@@ -267,7 +267,7 @@ public class DAO {
 
     writeGetters();
 
-    writePostConstruct();
+    writeInternalMethods();
 
     writeClassFooter();
   }
@@ -338,12 +338,21 @@ public class DAO {
 
   }
 
-  private void writePostConstruct() {
+  private void writeGetters() throws IOException {
+    w.println();
+    w.println("  // GETTERS");
+    w.println();
+    w.println("  public ", DataSource.class, " getDataSource() {");
+    w.println("    return this.dataSource;");
+    w.println("  }");
+  }
+
+  private void writeInternalMethods() {
     w.println();
     w.println("  // INTERNAL METHODS");
     w.println();
     w.println("  @", Const.POST_CONSTRUCT);
-    w.println("  public void initializeContext() {");
+    w.println("  private void initializeContext() {");
     w.println("    ", LiveSQLDialect.class, " liveSQLDialect = ", LShield.class, ".getLiveSQLDialect(this.sql);");
     w.println("    this.context = new ", LiveSQLContext.class, "(liveSQLDialect, this.dataSource, new ",
         TypeSolver.class, "(null, liveSQLDialect), log);");
@@ -352,6 +361,19 @@ public class DAO {
       w.println("    this." + ini + "();");
     }
     w.println("  }");
+    w.println();
+    w.println("  private void logQuery(", PreparedQuery.class, " preparedQuery) {");
+    w.println("    if (log.isLoggable(", Level.class, ".FINER)) {");
+    w.println("      log.finest(\"SQL:\\n\" + preparedQuery.getPreview(true));");
+    w.println("    } else if (log.isLoggable(", Level.class, ".FINE)) {");
+    w.println("      log.fine(\"SQL:\\n\" + preparedQuery.getPreview());");
+    w.println("    }");
+    w.println("  }");
+  }
+
+  private void writeClassFooter() throws IOException {
+    w.println();
+    w.println("}");
   }
 
   private void writeRowReaderProperty() {
@@ -1606,28 +1628,6 @@ public class DAO {
     w.println("    } catch (", SQLException.class, " e) {");
     w.println("      throw new ", PersistenceException.class, "(e);");
     w.println("    }");
-  }
-
-  private void writeClassFooter() throws IOException {
-    w.println();
-    w.println("  private void logQuery(", PreparedQuery.class, " preparedQuery) {");
-    w.println("    if (log.isLoggable(", Level.class, ".FINER)) {");
-    w.println("      log.finest(\"SQL:\\n\" + preparedQuery.getPreview(true));");
-    w.println("    } else if (log.isLoggable(", Level.class, ".FINE)) {");
-    w.println("      log.fine(\"SQL:\\n\" + preparedQuery.getPreview());");
-    w.println("    }");
-    w.println("  }");
-    w.println();
-    w.println("}");
-  }
-
-  private void writeGetters() throws IOException {
-    w.println();
-    w.println("  // GETTERS");
-    w.println();
-    w.println("  public ", DataSource.class, " getDataSource() {");
-    w.println("    return this.dataSource;");
-    w.println("  }");
   }
 
   private LinkedHashMap<String, String> converterProperties = new LinkedHashMap<>();

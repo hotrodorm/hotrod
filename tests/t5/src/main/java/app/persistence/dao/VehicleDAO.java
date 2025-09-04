@@ -493,7 +493,7 @@ public class VehicleDAO implements Serializable, ApplicationContextAware {
   // INTERNAL METHODS
 
   @PostConstruct
-  public void initializeContext() {
+  private void initializeContext() {
     LiveSQLDialect liveSQLDialect = LShield.getLiveSQLDialect(this.sql);
     this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, new TypeSolver(null, liveSQLDialect), log);
     this.dyn = new DynamicSQL();
