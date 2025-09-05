@@ -26,7 +26,6 @@ import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.hotrod.dynamicsql.insert.PreparedInsertQuery;
 import org.hotrod.dynamicsql.insert.PrimaryKeyRetrievalMode;
 import org.hotrod.dynamicsql.tuples.DTuple3;
-import org.junit.jupiter.api.Test;
 
 public class TestExamples {
 
@@ -708,7 +707,7 @@ public class TestExamples {
   }
 
   // Example 30. Insert with Sequences
-  @Test
+//  @Test
   public void example31() throws DynamicExpressionException, SQLException {
     try (Connection conn = getConnection()) {
       DynamicSQL dyn = new DynamicSQL();

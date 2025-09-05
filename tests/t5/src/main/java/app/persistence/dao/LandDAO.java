@@ -375,7 +375,7 @@ public class LandDAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateSetCompletePhase update(Land values, LandTable tableOrView,
+  public UpdateSetCompletePhase update(LandLayout values, LandTable tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getRegionCode() != null) setters.add(new Setter(tableOrView.regionCode, sql.val(values.getRegionCode())));

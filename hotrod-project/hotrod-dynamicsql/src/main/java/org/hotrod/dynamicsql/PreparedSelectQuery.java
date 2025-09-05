@@ -22,7 +22,7 @@ public class PreparedSelectQuery<R> extends PreparedQuery {
     this.rr = rr;
   }
 
-  public List<R> execute(Connection conn) throws SQLException, DynamicExpressionException {
+  public List<R> execute(Connection conn) throws SQLException {
     try (PreparedStatement ps = prepareStatement(conn)) {
       applyParameters(ps);
       try (ResultSet rs = ps.executeQuery()) {
@@ -37,7 +37,7 @@ public class PreparedSelectQuery<R> extends PreparedQuery {
     }
   }
 
-  public R executeOne(Connection conn) throws SQLException, DynamicExpressionException {
+  public R executeOne(Connection conn) throws SQLException {
     try (PreparedStatement ps = prepareStatement(conn)) {
       applyParameters(ps);
       try (ResultSet rs = ps.executeQuery()) {

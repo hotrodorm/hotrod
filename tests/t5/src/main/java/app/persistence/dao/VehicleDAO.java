@@ -350,7 +350,7 @@ public class VehicleDAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateSetCompletePhase update(Vehicle values, VehicleTable tableOrView,
+  public UpdateSetCompletePhase update(VehicleLayout values, VehicleTable tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getVehicleCode() != null) setters.add(new Setter(tableOrView.vehicleCode, sql.val(values.getVehicleCode())));

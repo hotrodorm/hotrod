@@ -1128,7 +1128,7 @@ public class DAO {
     w.println();
     w.println("  // UPDATE BY CRITERIA");
     w.println();
-    w.print("  public ", UpdateSetCompletePhase.class, " update(", em, " values, ");
+    w.print("  public ", UpdateSetCompletePhase.class, " update(", el, " values, ");
     w.println(ec, " tableOrView,");
     w.println("      final ", Predicate.class, " predicate) {");
     w.print("    ", List.class, "<", Setter.class, "> setters");
