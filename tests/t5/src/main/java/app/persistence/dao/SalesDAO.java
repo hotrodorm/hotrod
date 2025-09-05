@@ -70,8 +70,8 @@ public class SalesDAO implements Serializable, ApplicationContextAware {
   }
 
   public long getHiredNextValue() {
-    Parameters context = this.dyn.newParameters();
-    PreparedSelectQuery<Long> preparedQuery = this.selectSequence0.prepare(context, this.sequenceRowReader);
+    Parameters params = this.dyn.newParameters();
+    PreparedSelectQuery<Long> preparedQuery = this.selectSequence0.prepare(params, this.sequenceRowReader);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       long value = preparedQuery.executeOne(conn);
@@ -149,9 +149,9 @@ public class SalesDAO implements Serializable, ApplicationContextAware {
   };
 
   public List<BigAccount> findBigAccounts() {
-    Parameters context = this.dyn.newParameters();
+    Parameters params = this.dyn.newParameters();
     RowReader0 rr = new RowReader0();
-    PreparedSelectQuery<BigAccount> preparedQuery = this.select0.prepare(context, rr);
+    PreparedSelectQuery<BigAccount> preparedQuery = this.select0.prepare(params, rr);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       List<BigAccount> rows = preparedQuery.execute(conn);

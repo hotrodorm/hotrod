@@ -619,14 +619,14 @@ public class DAO {
         }
       }
 
-      w.println("    ", Parameters.class, " context = this.dyn.newParameters();");
-      w.println("    context.add(\"f\", filter);");
+      w.println("    ", Parameters.class, " params = this.dyn.newParameters();");
+      w.println("    params.add(\"f\", filter);");
       if (byExample) {
         w.println("    String ordering = ", SQLUtil.class, ".render(orderBies);");
-        w.println("    context.add(\"ordering\", ordering);");
+        w.println("    params.add(\"ordering\", ordering);");
       }
       w.print("    ", PreparedSelectQuery.class, "<", em, "> preparedQuery = ");
-      w.println("this." + queryName + ".prepare(context, this.rowReader);");
+      w.println("this." + queryName + ".prepare(params, this.rowReader);");
 
       fragmentLogging();
       fragmentExecuteSelect(em, !byExample);
@@ -834,8 +834,8 @@ public class DAO {
     w.print("  public ", em, " " + methodName + "(", el, " layout");
     w.println(") {");
 
-    w.println("    ", Parameters.class, " context = this.dyn.newParameters();");
-    w.println("    context.add(\"l\", layout);");
+    w.println("    ", Parameters.class, " params = this.dyn.newParameters();");
+    w.println("    params.add(\"l\", layout);");
 
     if (ol != null) {
       switch (ol.getStrategy()) {
@@ -854,7 +854,7 @@ public class DAO {
       }
     }
 
-    w.println("    ", PreparedInsertQuery.class, " preparedQuery = this." + queryName + ".prepare(context);");
+    w.println("    ", PreparedInsertQuery.class, " preparedQuery = this." + queryName + ".prepare(params);");
 
     fragmentLogging();
 
@@ -1053,12 +1053,12 @@ public class DAO {
         w.println("    if (model." + getter + "() == null) return 0;");
       }
 
-      w.println("    ", Parameters.class, " context = this.dyn.newParameters();");
-      w.println("    context.add(\"m\", model);");
+      w.println("    ", Parameters.class, " params = this.dyn.newParameters();");
+      w.println("    params.add(\"m\", model);");
       if (ol != null && ol.getStrategy() == OptimisticLockingStrategy.FULL_ROW_CHECK) {
-        w.println("    context.add(\"b\", baseline);");
+        w.println("    params.add(\"b\", baseline);");
       }
-      w.println("    ", PreparedModificationQuery.class, " preparedQuery = this." + queryName + ".prepare(context);");
+      w.println("    ", PreparedModificationQuery.class, " preparedQuery = this." + queryName + ".prepare(params);");
 
       fragmentLogging();
       fragmentExecuteModification(optimisticLocking, "UPDATE");
@@ -1099,10 +1099,10 @@ public class DAO {
     w.print("  public int update(", el, " example, ", el, " values");
     w.println(") {");
 
-    w.println("    ", Parameters.class, " context = this.dyn.newParameters();");
-    w.println("    context.add(\"e\", example);");
-    w.println("    context.add(\"v\", values);");
-    w.println("    ", PreparedModificationQuery.class, " preparedQuery = this.updateByExample.prepare(context);");
+    w.println("    ", Parameters.class, " params = this.dyn.newParameters();");
+    w.println("    params.add(\"e\", example);");
+    w.println("    params.add(\"v\", values);");
+    w.println("    ", PreparedModificationQuery.class, " preparedQuery = this.updateByExample.prepare(params);");
 
     fragmentLogging();
     fragmentExecuteModification();
@@ -1197,8 +1197,8 @@ public class DAO {
           String getter = cm.getId().getJavaGetter();
           w.println("    if (baseline." + getter + "() == null) return 0;");
         }
-        w.println("    ", Parameters.class, " context = this.dyn.newParameters();");
-        w.println("    context.add(\"b\", baseline);");
+        w.println("    ", Parameters.class, " params = this.dyn.newParameters();");
+        w.println("    params.add(\"b\", baseline);");
       } else {
         fragmentPKParameters(pk);
         w.println(") {");
@@ -1212,11 +1212,11 @@ public class DAO {
           String setter = cm.getId().getJavaSetter();
           w.println("    filter." + setter + "(" + m + ");");
         }
-        w.println("    ", Parameters.class, " context = this.dyn.newParameters();");
-        w.println("    context.add(\"f\", filter);");
+        w.println("    ", Parameters.class, " params = this.dyn.newParameters();");
+        w.println("    params.add(\"f\", filter);");
       }
 
-      w.println("    ", PreparedModificationQuery.class, " preparedQuery = this." + queryName + ".prepare(context);");
+      w.println("    ", PreparedModificationQuery.class, " preparedQuery = this." + queryName + ".prepare(params);");
 
       fragmentLogging();
       fragmentExecuteModification(optimisticLocking, "DELETE");
@@ -1256,9 +1256,9 @@ public class DAO {
     w.print("  public int delete(", el, " example");
     w.println(") {");
 
-    w.println("    ", Parameters.class, " context = this.dyn.newParameters();");
-    w.println("    context.add(\"e\", example);");
-    w.println("    ", PreparedModificationQuery.class, " preparedQuery = this.deleteByExample.prepare(context);");
+    w.println("    ", Parameters.class, " params = this.dyn.newParameters();");
+    w.println("    params.add(\"e\", example);");
+    w.println("    ", PreparedModificationQuery.class, " preparedQuery = this.deleteByExample.prepare(params);");
 
     fragmentLogging();
     fragmentExecuteModification();
@@ -1805,9 +1805,9 @@ public class DAO {
     w.println("  }");
     w.println();
     w.println("  public long " + tag.getMethod() + "() {");
-    w.println("    ", Parameters.class, " context = this.dyn.newParameters();");
+    w.println("    ", Parameters.class, " params = this.dyn.newParameters();");
     w.println("    ", PreparedSelectQuery.class,
-        "<Long> preparedQuery = " + "this.selectSequence" + n + ".prepare(context, this.sequenceRowReader);");
+        "<Long> preparedQuery = " + "this.selectSequence" + n + ".prepare(params, this.sequenceRowReader);");
     w.println("    logQuery(preparedQuery);");
     w.println("    try (", Connection.class, " conn = this.dataSource.getConnection()) {");
     w.println("      long value = preparedQuery.executeOne(conn);");
@@ -1857,11 +1857,11 @@ public class DAO {
     }
     w.println(")");
     w.println("      throws ", DynamicExpressionException.class, ", ", SQLException.class, " {");
-    w.println("    ", Parameters.class, " context = this.dyn.newParameters();");
+    w.println("    ", Parameters.class, " params = this.dyn.newParameters();");
     for (ParameterTag p : q.getParameterDefinitions()) {
-      w.println("    context.add(\"" + p.getName() + "\", " + p.getName() + ");");
+      w.println("    params.add(\"" + p.getName() + "\", " + p.getName() + ");");
     }
-    w.println("    ", PreparedModificationQuery.class, " preparedQuery = this." + queryName + ".prepare(context);");
+    w.println("    ", PreparedModificationQuery.class, " preparedQuery = this." + queryName + ".prepare(params);");
 
     fragmentLogging();
     fragmentExecuteModification();
@@ -1940,15 +1940,15 @@ public class DAO {
     }
     w.println(") {");
 
-    w.println("    ", Parameters.class, " context = this.dyn.newParameters();");
+    w.println("    ", Parameters.class, " params = this.dyn.newParameters();");
     for (SelectParameterMetadata sp : s.getParameters()) {
       ParameterTag p = sp.getParameter();
-      w.println("    context.add(\"" + p.getName() + "\", " + p.getName() + ");");
+      w.println("    params.add(\"" + p.getName() + "\", " + p.getName() + ");");
     }
 
     w.println("    " + rowReaderClass + " rr = new " + rowReaderClass + "();");
     w.print("    ", PreparedSelectQuery.class, "<", rc, "> preparedQuery = ");
-    w.println("this." + queryName + ".prepare(context, rr);");
+    w.println("this." + queryName + ".prepare(params, rr);");
 
     fragmentLogging();
 

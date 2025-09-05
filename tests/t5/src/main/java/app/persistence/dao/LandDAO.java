@@ -187,9 +187,9 @@ public class LandDAO implements Serializable, ApplicationContextAware {
     Land filter = new Land();
     filter.setRegionCode(regionCode);
     filter.setLocalCode(localCode);
-    Parameters context = this.dyn.newParameters();
-    context.add("f", filter);
-    PreparedSelectQuery<Land> preparedQuery = this.selectByPrimaryKey.prepare(context, this.rowReader);
+    Parameters params = this.dyn.newParameters();
+    params.add("f", filter);
+    PreparedSelectQuery<Land> preparedQuery = this.selectByPrimaryKey.prepare(params, this.rowReader);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       List<Land> rows = preparedQuery.execute(conn);
@@ -222,11 +222,11 @@ public class LandDAO implements Serializable, ApplicationContextAware {
   }
 
   public List<Land> select(LandLayout filter, LandOrderBy... orderBies) {
-    Parameters context = this.dyn.newParameters();
-    context.add("f", filter);
+    Parameters params = this.dyn.newParameters();
+    params.add("f", filter);
     String ordering = SQLUtil.render(orderBies);
-    context.add("ordering", ordering);
-    PreparedSelectQuery<Land> preparedQuery = this.selectByExample.prepare(context, this.rowReader);
+    params.add("ordering", ordering);
+    PreparedSelectQuery<Land> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       List<Land> rows = preparedQuery.execute(conn);
@@ -262,9 +262,9 @@ public class LandDAO implements Serializable, ApplicationContextAware {
   }
 
   public Land insert(LandLayout layout) {
-    Parameters context = this.dyn.newParameters();
-    context.add("l", layout);
-    PreparedInsertQuery preparedQuery = this.insert.prepare(context);
+    Parameters params = this.dyn.newParameters();
+    params.add("l", layout);
+    PreparedInsertQuery preparedQuery = this.insert.prepare(params);
     logQuery(preparedQuery);
     Land model = this.clone(layout);
     try (Connection conn = this.dataSource.getConnection()) {
@@ -295,9 +295,9 @@ public class LandDAO implements Serializable, ApplicationContextAware {
   }
 
   public Land insertByExample(LandLayout layout) {
-    Parameters context = this.dyn.newParameters();
-    context.add("l", layout);
-    PreparedInsertQuery preparedQuery = this.insertByExample.prepare(context);
+    Parameters params = this.dyn.newParameters();
+    params.add("l", layout);
+    PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
     logQuery(preparedQuery);
     Land model = this.clone(layout);
     try (Connection conn = this.dataSource.getConnection()) {
@@ -327,9 +327,9 @@ public class LandDAO implements Serializable, ApplicationContextAware {
   public int update(Land model) {
     if (model.getRegionCode() == null) return 0;
     if (model.getLocalCode() == null) return 0;
-    Parameters context = this.dyn.newParameters();
-    context.add("m", model);
-    PreparedModificationQuery preparedQuery = this.updateByPK.prepare(context);
+    Parameters params = this.dyn.newParameters();
+    params.add("m", model);
+    PreparedModificationQuery preparedQuery = this.updateByPK.prepare(params);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       int count = preparedQuery.execute(conn);
@@ -360,10 +360,10 @@ public class LandDAO implements Serializable, ApplicationContextAware {
   }
 
   public int update(LandLayout example, LandLayout values) {
-    Parameters context = this.dyn.newParameters();
-    context.add("e", example);
-    context.add("v", values);
-    PreparedModificationQuery preparedQuery = this.updateByExample.prepare(context);
+    Parameters params = this.dyn.newParameters();
+    params.add("e", example);
+    params.add("v", values);
+    PreparedModificationQuery preparedQuery = this.updateByExample.prepare(params);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       int count = preparedQuery.execute(conn);
@@ -402,9 +402,9 @@ public class LandDAO implements Serializable, ApplicationContextAware {
     Land filter = new Land();
     filter.setRegionCode(regionCode);
     filter.setLocalCode(localCode);
-    Parameters context = this.dyn.newParameters();
-    context.add("f", filter);
-    PreparedModificationQuery preparedQuery = this.deleteByPK.prepare(context);
+    Parameters params = this.dyn.newParameters();
+    params.add("f", filter);
+    PreparedModificationQuery preparedQuery = this.deleteByPK.prepare(params);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       int count = preparedQuery.execute(conn);
@@ -430,9 +430,9 @@ public class LandDAO implements Serializable, ApplicationContextAware {
   }
 
   public int delete(LandLayout example) {
-    Parameters context = this.dyn.newParameters();
-    context.add("e", example);
-    PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(context);
+    Parameters params = this.dyn.newParameters();
+    params.add("e", example);
+    PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(params);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       int count = preparedQuery.execute(conn);

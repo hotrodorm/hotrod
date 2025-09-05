@@ -205,9 +205,9 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     if (id == null) return null;
     Employee filter = new Employee();
     filter.setId(id);
-    Parameters context = this.dyn.newParameters();
-    context.add("f", filter);
-    PreparedSelectQuery<Employee> preparedQuery = this.selectByPrimaryKey.prepare(context, this.rowReader);
+    Parameters params = this.dyn.newParameters();
+    params.add("f", filter);
+    PreparedSelectQuery<Employee> preparedQuery = this.selectByPrimaryKey.prepare(params, this.rowReader);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       List<Employee> rows = preparedQuery.execute(conn);
@@ -242,11 +242,11 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   }
 
   public List<Employee> select(EmployeeLayout filter, EmployeeOrderBy... orderBies) {
-    Parameters context = this.dyn.newParameters();
-    context.add("f", filter);
+    Parameters params = this.dyn.newParameters();
+    params.add("f", filter);
     String ordering = SQLUtil.render(orderBies);
-    context.add("ordering", ordering);
-    PreparedSelectQuery<Employee> preparedQuery = this.selectByExample.prepare(context, this.rowReader);
+    params.add("ordering", ordering);
+    PreparedSelectQuery<Employee> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       List<Employee> rows = preparedQuery.execute(conn);
@@ -284,9 +284,9 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   }
 
   public Employee insert(EmployeeLayout layout) {
-    Parameters context = this.dyn.newParameters();
-    context.add("l", layout);
-    PreparedInsertQuery preparedQuery = this.insert.prepare(context);
+    Parameters params = this.dyn.newParameters();
+    params.add("l", layout);
+    PreparedInsertQuery preparedQuery = this.insert.prepare(params);
     logQuery(preparedQuery);
     Employee model = this.clone(layout);
     try (Connection conn = this.dataSource.getConnection()) {
@@ -319,9 +319,9 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   }
 
   public Employee insertByExample(EmployeeLayout layout) {
-    Parameters context = this.dyn.newParameters();
-    context.add("l", layout);
-    PreparedInsertQuery preparedQuery = this.insertByExample.prepare(context);
+    Parameters params = this.dyn.newParameters();
+    params.add("l", layout);
+    PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
     logQuery(preparedQuery);
     Employee model = this.clone(layout);
     try (Connection conn = this.dataSource.getConnection()) {
@@ -350,9 +350,9 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   public int update(Employee model) {
     if (model.getId() == null) return 0;
-    Parameters context = this.dyn.newParameters();
-    context.add("m", model);
-    PreparedModificationQuery preparedQuery = this.updateByPK.prepare(context);
+    Parameters params = this.dyn.newParameters();
+    params.add("m", model);
+    PreparedModificationQuery preparedQuery = this.updateByPK.prepare(params);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       int count = preparedQuery.execute(conn);
@@ -385,10 +385,10 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   }
 
   public int update(EmployeeLayout example, EmployeeLayout values) {
-    Parameters context = this.dyn.newParameters();
-    context.add("e", example);
-    context.add("v", values);
-    PreparedModificationQuery preparedQuery = this.updateByExample.prepare(context);
+    Parameters params = this.dyn.newParameters();
+    params.add("e", example);
+    params.add("v", values);
+    PreparedModificationQuery preparedQuery = this.updateByExample.prepare(params);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       int count = preparedQuery.execute(conn);
@@ -425,9 +425,9 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     if (id == null) return 0;
     Employee filter = new Employee();
     filter.setId(id);
-    Parameters context = this.dyn.newParameters();
-    context.add("f", filter);
-    PreparedModificationQuery preparedQuery = this.deleteByPK.prepare(context);
+    Parameters params = this.dyn.newParameters();
+    params.add("f", filter);
+    PreparedModificationQuery preparedQuery = this.deleteByPK.prepare(params);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       int count = preparedQuery.execute(conn);
@@ -454,9 +454,9 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   }
 
   public int delete(EmployeeLayout example) {
-    Parameters context = this.dyn.newParameters();
-    context.add("e", example);
-    PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(context);
+    Parameters params = this.dyn.newParameters();
+    params.add("e", example);
+    PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(params);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       int count = preparedQuery.execute(conn);
@@ -573,8 +573,8 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   }
 
   public long getSequenceNextValue() {
-    Parameters context = this.dyn.newParameters();
-    PreparedSelectQuery<Long> preparedQuery = this.selectSequence0.prepare(context, this.sequenceRowReader);
+    Parameters params = this.dyn.newParameters();
+    PreparedSelectQuery<Long> preparedQuery = this.selectSequence0.prepare(params, this.sequenceRowReader);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       long value = preparedQuery.executeOne(conn);
@@ -593,8 +593,8 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   }
 
   public long getHiredNextValue() {
-    Parameters context = this.dyn.newParameters();
-    PreparedSelectQuery<Long> preparedQuery = this.selectSequence1.prepare(context, this.sequenceRowReader);
+    Parameters params = this.dyn.newParameters();
+    PreparedSelectQuery<Long> preparedQuery = this.selectSequence1.prepare(params, this.sequenceRowReader);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       long value = preparedQuery.executeOne(conn);
@@ -672,9 +672,9 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   };
 
   public List<Employee> findVIPEmployees() {
-    Parameters context = this.dyn.newParameters();
+    Parameters params = this.dyn.newParameters();
     RowReader0 rr = new RowReader0();
-    PreparedSelectQuery<Employee> preparedQuery = this.select0.prepare(context, rr);
+    PreparedSelectQuery<Employee> preparedQuery = this.select0.prepare(params, rr);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       List<Employee> rows = preparedQuery.execute(conn);
