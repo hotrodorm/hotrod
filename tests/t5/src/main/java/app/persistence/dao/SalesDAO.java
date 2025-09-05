@@ -21,11 +21,6 @@ import org.hotrod.dynamicsql.PreparedSelectQuery;
 import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.hotrod.exceptions.PersistenceException;
-import org.hotrod.livesql.LShield;
-import org.hotrod.livesql.LiveSQL;
-import org.hotrod.livesql.dialects.LiveSQLDialect;
-import org.hotrod.livesql.queries.LiveSQLContext;
-import org.hotrod.livesql.queries.typesolver.TypeSolver;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -44,9 +39,6 @@ public class SalesDAO implements Serializable, ApplicationContextAware {
   @Autowired
   private DataSource dataSource;
 
-  @Autowired
-  private LiveSQL sql;
-
   private DynamicSQL dyn;
 
   private ApplicationContext applicationContext;
@@ -55,9 +47,6 @@ public class SalesDAO implements Serializable, ApplicationContextAware {
   public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
   }
-
-  @SuppressWarnings("unused")
-  private LiveSQLContext context;
 
   // SEQUENCE ROW READER
 
@@ -182,8 +171,6 @@ public class SalesDAO implements Serializable, ApplicationContextAware {
 
   @PostConstruct
   private void initializeContext() {
-    LiveSQLDialect liveSQLDialect = LShield.getLiveSQLDialect(this.sql);
-    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, new TypeSolver(null, liveSQLDialect), log);
     this.dyn = new DynamicSQL();
     this.initializeSelectSequence0();
     this.initializeSelect0();

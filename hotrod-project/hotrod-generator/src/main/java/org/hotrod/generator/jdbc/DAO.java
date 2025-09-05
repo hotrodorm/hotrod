@@ -297,26 +297,14 @@ public class DAO {
     w.println("  private ", DataSource.class, " dataSource;");
     w.println();
 
-//    if (this.isExecutor()) {
-//      w.println("  @", SuppressWarnings.class, "(\"unused\")");
-//    }
-    w.println("  @", Const.AUTOWIRED);
-    if (this.layerConfig.getLiveSQLQualifier() != null) {
-      w.println("  @", Const.QUALIFIER, "(\"" + this.layerConfig.getLiveSQLQualifier() + "\")");
+    if (!this.isExecutor()) {
+      w.println("  @", Const.AUTOWIRED);
+      if (this.layerConfig.getLiveSQLQualifier() != null) {
+        w.println("  @", Const.QUALIFIER, "(\"" + this.layerConfig.getLiveSQLQualifier() + "\")");
+      }
+      w.println("  private ", LiveSQL.class, " sql;");
+      w.println();
     }
-    w.println("  private ", LiveSQL.class, " sql;");
-    w.println();
-
-//    w.println("  @", Const.AUTOWIRED);
-//    if (!SUtil.isEmpty(this.jdbcTag.getQualifier())) {
-//      w.println("  @", Const.QUALIFIER, "(\"" + this.jdbcTag.getQualifier() + "\")");
-//    }
-//    w.println("  private ", LiveSQLDialect.class, " liveSQLDialect;");
-//    w.println();
-
-//    w.println("  @", Const.AUTOWIRED);
-//    w.println("  private ", DynamicSQLBean.class, " dynamicSQLBean;");
-//    w.println();
 
     w.println("  private ", DynamicSQL.class, " dyn;");
     w.println();
@@ -329,12 +317,12 @@ public class DAO {
         Const.BEANS_EXCEPTION, " {");
     w.println("    this.applicationContext = applicationContext;");
     w.println("  }");
-    w.println();
 
-    if (this.isExecutor()) {
-      w.println("  @", SuppressWarnings.class, "(\"unused\")");
+    if (!this.isExecutor()) {
+      w.println();
+//      w.println("  @", SuppressWarnings.class, "(\"unused\")");
+      w.println("  private ", LiveSQLContext.class, " context;");
     }
-    w.println("  private ", LiveSQLContext.class, " context;");
 
   }
 
@@ -353,9 +341,11 @@ public class DAO {
     w.println();
     w.println("  @", Const.POST_CONSTRUCT);
     w.println("  private void initializeContext() {");
-    w.println("    ", LiveSQLDialect.class, " liveSQLDialect = ", LShield.class, ".getLiveSQLDialect(this.sql);");
-    w.println("    this.context = new ", LiveSQLContext.class, "(liveSQLDialect, this.dataSource, new ",
-        TypeSolver.class, "(null, liveSQLDialect), log);");
+    if (!this.isExecutor()) {
+      w.println("    ", LiveSQLDialect.class, " liveSQLDialect = ", LShield.class, ".getLiveSQLDialect(this.sql);");
+      w.println("    this.context = new ", LiveSQLContext.class, "(liveSQLDialect, this.dataSource, new ",
+          TypeSolver.class, "(null, liveSQLDialect), log);");
+    }
     w.println("    this.dyn = new ", DynamicSQL.class, "();");
     for (String ini : this.initializersInPostConstruct) {
       w.println("    this." + ini + "();");
