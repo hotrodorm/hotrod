@@ -3,19 +3,19 @@
 The following list of versions includes a planned list of features that could be included in future
 versions of HotRod in no particular order. Over time they will be reassessed and reprioritized:
 
-- LiveSQL Collections
+- &#x2B50; LiveSQL Collections
 - LiveSQL Scalar Selects
 - CRUD Index Access
 - LiveSQL Merge (Upsert)
 - LiveSQL Joined Updates
 - LiveSQL Joined Deletes
-- LiveSQL LiveTypes
+- &#x2B50; LiveSQL LiveTypes
 - LiveSQL Inline Subqueries
-- Nitro Collections &amp; Unnamed Nodes
-- LiveSQL LiveSyntax
+- &#x2B50; Nitro Collections &amp; Unnamed Nodes
+- &#x2B50; LiveSQL LiveSyntax
 - LiveSQL Limiting with ties
 - LiveSQL Regular Expressions Predicates
-- LiveSQL Full Text Search
-- LiveSQL Replicas - Rule-based Query Routing
+- &#x2B50; LiveSQL Full Text Search
+- &#x2B50; Replicas - Rule-based Query Routing for CRUD, LiveSQL, and Nitro
 
 
