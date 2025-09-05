@@ -3,6 +3,7 @@ package org.hotrod.config;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -108,7 +109,8 @@ public class TypeSolverTag extends AbstractConfigurationTag {
           throw new UnresolvableDataTypeException(cm,
               "Could not evaluate <when> tag's test expression '" + w.getTest() + "': " + e.getMessage());
         } catch (RuntimeException e) {
-          e.printStackTrace();
+          log.log(Level.SEVERE,
+              "Failed to evaluate the test expression '" + w.getTest() + "' of the <type-solver> tag.", e);
           throw e;
         }
       }

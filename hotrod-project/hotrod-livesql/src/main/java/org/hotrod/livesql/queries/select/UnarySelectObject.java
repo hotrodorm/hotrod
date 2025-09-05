@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -281,7 +282,7 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
     private char letter = 'a';
     private int seq = 0;
 
-    public void register(final Name alias, final TableOrView tov) {
+    public void register(final Name alias, final TableOrView<?> tov) {
       if (alias == null) {
         return;
       }
@@ -318,6 +319,7 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
 
   }
 
+  @Deprecated
   protected List<SQLExpression> getColumnsField(final Object cs, final String colName)
       throws IllegalArgumentException, IllegalAccessException {
     try {
@@ -332,7 +334,7 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
         return new ArrayList<>();
       }
     } catch (ClassCastException e) {
-      e.printStackTrace();
+      log.log(Level.SEVERE, "Invalid property in object", e);
       throw e;
     }
   }

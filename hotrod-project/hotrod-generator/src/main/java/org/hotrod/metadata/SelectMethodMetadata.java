@@ -79,6 +79,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
   private ObjectId id;
 
   private ClassPackage fragmentPackage;
+  @SuppressWarnings("unused")
   private ClassPackage layoutPackage;
   private ClassPackage modelPackage;
 

@@ -111,16 +111,16 @@ public class ConfigurationLoader {
       log.fine("XML loaded.");
 
     } catch (SAXException e) {
-      e.printStackTrace();
+      log.log(Level.SEVERE, "Failed to read XML file", e);
       throw new UncontrolledException("Could not load configuration file [internal XML parser error]", e);
     } catch (JAXBException e) {
-      e.printStackTrace();
+      log.log(Level.SEVERE, "Failed to read XML file", e);
       throw new UncontrolledException("Could not load configuration file [internal XML parser error]", e);
     } catch (FileNotFoundException e) {
-      e.printStackTrace();
+      log.log(Level.SEVERE, "Failed to read XML file", e);
       throw new ControlledException(Constants.TOOL_NAME + " configuration file not found: " + f.getPath());
     } catch (XMLStreamException e) {
-      e.printStackTrace();
+      log.log(Level.SEVERE, "Failed to read XML file", e);
       String message = (e.getLocation() == null ? ""
           : "[line " + e.getLocation().getLineNumber() + ", col " + e.getLocation().getColumnNumber() + "] ")
           + e.getMessage();

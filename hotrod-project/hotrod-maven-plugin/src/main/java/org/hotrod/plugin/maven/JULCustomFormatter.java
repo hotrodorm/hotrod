@@ -15,7 +15,7 @@ public class JULCustomFormatter extends Formatter {
 
   public static void initialize(Level level) {
     Logger root = Logger.getLogger("");
-    root.setLevel(level);
+//    root.setLevel(level);
     JULCustomFormatter f = new JULCustomFormatter();
     for (Handler handler : root.getHandlers()) {
       handler.setFormatter(f);

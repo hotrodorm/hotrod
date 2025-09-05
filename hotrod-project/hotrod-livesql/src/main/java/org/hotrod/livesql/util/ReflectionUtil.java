@@ -13,42 +13,42 @@ public class ReflectionUtil {
 
   public static List<EntityColumn> getColumnsField(final Object cs, final String colName)
       throws IllegalArgumentException, IllegalAccessException {
-    try {
-      Field cf = ReflectionUtils.findField(cs.getClass(), colName);
+//    try {
+    Field cf = ReflectionUtils.findField(cs.getClass(), colName);
 //      System.out.println("cs (" + (cs == null ? "null" : cs.getClass().getName()) + ")");
-      if (cf != null) {
-        cf.setAccessible(true);
-        Object object = cf.get(cs);
-        @SuppressWarnings("unchecked")
-        List<EntityColumn> columns = (List<EntityColumn>) object;
-        return columns;
-      } else {
-        return new ArrayList<>();
-      }
-    } catch (ClassCastException e) {
-      e.printStackTrace();
-      throw e;
+    if (cf != null) {
+      cf.setAccessible(true);
+      Object object = cf.get(cs);
+      @SuppressWarnings("unchecked")
+      List<EntityColumn> columns = (List<EntityColumn>) object;
+      return columns;
+    } else {
+      return new ArrayList<>();
     }
+//    } catch (ClassCastException e) {
+//      e.printStackTrace();
+//      throw e;
+//    }
   }
 
   public static List<SQLExpression> getResultSetColumnsField(final Object cs, final String colName)
       throws IllegalArgumentException, IllegalAccessException {
-    try {
-      Field cf = ReflectionUtils.findField(cs.getClass(), colName);
+//    try {
+    Field cf = ReflectionUtils.findField(cs.getClass(), colName);
 //      System.out.println("cs (" + (cs == null ? "null" : cs.getClass().getName()) + ")");
-      if (cf != null) {
-        cf.setAccessible(true);
-        Object object = cf.get(cs);
-        @SuppressWarnings("unchecked")
-        List<SQLExpression> columns = (List<SQLExpression>) object;
-        return columns;
-      } else {
-        return new ArrayList<>();
-      }
-    } catch (ClassCastException e) {
-      e.printStackTrace();
-      throw e;
+    if (cf != null) {
+      cf.setAccessible(true);
+      Object object = cf.get(cs);
+      @SuppressWarnings("unchecked")
+      List<SQLExpression> columns = (List<SQLExpression>) object;
+      return columns;
+    } else {
+      return new ArrayList<>();
     }
+//    } catch (ClassCastException e) {
+//      e.printStackTrace();
+//      throw e;
+//    }
   }
 
   public static String getStringField(final Object obj, final String property)

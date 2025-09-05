@@ -271,7 +271,7 @@ public class HotRodContext {
       } catch (ReaderException e) {
         throw new ControlledException(e.getMessage());
       } catch (SQLException e) {
-        e.printStackTrace();
+        log.log(Level.SEVERE, "Failed to retrieve the database meta data ", e);
         throw new ControlledException("Could not retrieve database metadata - " + XUtil.trim(e));
       } catch (InvalidCatalogSchemaException e) {
         String msg = "Invalid catalog/schema: " + e.getMessage();
@@ -281,7 +281,7 @@ public class HotRodContext {
             + "Please specify an empty value for the current catalog property instead of '" + loc.getCurrentCatalog()
             + "'.");
       } catch (InvalidCatalogException e) {
-        e.printStackTrace();
+        log.log(Level.SEVERE, "Failed to retrieve the database meta data ", e);
         StringBuilder sb = new StringBuilder();
         if (loc.getCurrentCatalog() == null) {
           sb.append("Please specify a current catalog.\n\n");
@@ -345,7 +345,7 @@ public class HotRodContext {
             "Could not retrieve database metadata  - " + e.getMessage() + ": " + XUtil.trim(e.getCause()));
       } catch (Throwable e) {
         log.fine("gen 15");
-        e.printStackTrace();
+        log.log(Level.SEVERE, "Failed to retrieve the database meta data ", e);
         throw new ControlledException(
             "Could not retrieve database metadata  - " + e.getMessage() + ": " + XUtil.trim(e.getCause()));
       }

@@ -178,7 +178,6 @@ public class TuplesRowReader<T> implements RowReader<T> {
 //          }
           field = layout.getDeclaredField(property);
         } catch (NoSuchFieldException | SecurityException e) {
-          e.printStackTrace();
           throw new RuntimeException("Could not find field '" + property + "' in model class '" + layout.getName()
               + "': " + e.getClass().getName());
         }

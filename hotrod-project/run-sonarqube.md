@@ -37,13 +37,7 @@ Open the page http://192.168.56.244:9000 and login with (admin/admin). Change th
 
     cd ~/git/hotrod/hotrod-project
     git pull
-    # mvn clean verify sonar:sonar -Dsonar.projectKey=hotrod -Dsonar.projectName='hotrod' -Dsonar.host.url=http://192.168.56.244:9000 -Dsonar.token=sqp_ca542fce4b9a3511d8149938d75a17ceab11cf09
     mvn clean verify sonar:sonar -Dsonar.projectKey=hotrod-5 -Dsonar.projectName='hotrod-5' -Dsonar.host.url=http://192.168.56.244:9000 -Dsonar.token=sqp_04695f8dbd7f759c064ba1e185706249c5964f0b
-
-
-Or in one go:
-
-    cd ~/git/hotrod/hotrod-project && git pull && mvn clean verify sonar:sonar -Dsonar.projectKey=hotrod -Dsonar.projectName='hotrod' -Dsonar.host.url=http://192.168.56.244:9000 -Dsonar.token=sqp_ca542fce4b9a3511d8149938d75a17ceab11cf09
 
 See the report at:
 

@@ -270,7 +270,7 @@ public class Metadata {
       try {
         config.validateAgainstDatabase(this, conn, adapter);
       } catch (InvalidConfigurationFileException e) {
-        e.printStackTrace();
+        log.log(Level.SEVERE, "Invalid configuration file", e);
         throw new ControlledException(e.getTag().getSourceLocation(), e.getMessage());
       }
       // }
@@ -305,7 +305,6 @@ public class Metadata {
         try {
           dm.gatherSelectsMetadataPhase1(this, cr, jdbcTag);
         } catch (InvalidConfigurationFileException e) {
-          e.printStackTrace();
           throw new ControlledException(e.getTag().getSourceLocation(), e.getMessage());
         }
       }

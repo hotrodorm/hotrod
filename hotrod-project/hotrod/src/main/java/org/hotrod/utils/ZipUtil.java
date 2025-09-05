@@ -4,11 +4,15 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class ZipUtil {
+
+  private static final Logger log = Logger.getLogger(ZipUtil.class.getName());
 
   public static void pack(File sourceDir, File zipFile) throws IOException {
     if (zipFile.exists()) {
@@ -29,8 +33,7 @@ public class ZipUtil {
               Files.copy(p, zs);
               zs.closeEntry();
             } catch (IOException e) {
-              System.err.println("relPath=" + relPath);
-              e.printStackTrace();
+              log.log(Level.SEVERE, "Invalid relative path '" + relPath + "'");
             }
           }
         });

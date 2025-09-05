@@ -33,7 +33,6 @@ import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.dynamicsql.Cursor;
-import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicInsertQuery;
 import org.hotrod.dynamicsql.DynamicModificationQuery;
 import org.hotrod.dynamicsql.DynamicSelectQuery;
@@ -444,7 +443,7 @@ public class DAO {
       String javaType = resolveType(cm);
       String memberProperty = cm.getId().getJavaMemberName();
 
-      String setter = cm.getId().getJavaSetter();
+//      String setter = cm.getId().getJavaSetter();
 //      log.info("PARSEROW: " + OUtil.hc(this) + " md" + OUtil.hc(this.metadata) + " gc"
 //          + OUtil.hc(this.metadata.getColumns()) + " cm" + OUtil.hc(cm) + " "
 //          + this.metadata.getId().getCanonicalSQLName() + "." + cm.getName() + " setter=" + setter);
@@ -541,7 +540,7 @@ public class DAO {
     w.println("  public ", m, " clone(", l, " layout) {");
     w.println("    ", m, " m = new ", m, "();");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
-      String mem = cm.getId().getJavaMemberName();
+//      String mem = cm.getId().getJavaMemberName();
       w.println("    m." + cm.getId().getJavaSetter() + "(layout." + cm.getId().getJavaGetter() + "());");
     }
     w.println("    return m;");
@@ -1093,7 +1092,7 @@ public class DAO {
 
     // Method
 
-    ExternalClass em = ExternalClass.of(this.model.getFullClassName());
+//    ExternalClass em = ExternalClass.of(this.model.getFullClassName());
     ExternalClass el = ExternalClass.of(this.layout.getFullClassName());
     w.println();
     w.print("  public int update(", el, " example, ", el, " values");
@@ -1112,7 +1111,7 @@ public class DAO {
   }
 
   private void writeUpdateByCriteria() {
-    ExternalClass em = ExternalClass.of(this.model.getFullClassName());
+//    ExternalClass em = ExternalClass.of(this.model.getFullClassName());
     ExternalClass el = ExternalClass.of(this.layout.getFullClassName());
     ExternalClass ec = ExternalClass.of(this.metadataClassName);
     w.println();
@@ -1250,7 +1249,7 @@ public class DAO {
 
     // Method
 
-    ExternalClass em = ExternalClass.of(this.model.getFullClassName());
+//    ExternalClass em = ExternalClass.of(this.model.getFullClassName());
     ExternalClass el = ExternalClass.of(this.layout.getFullClassName());
     w.println();
     w.print("  public int delete(", el, " example");
@@ -1990,7 +1989,8 @@ public class DAO {
     int ordinal = 1;
 //    List<ColumnMetadata> columns = s.getColumns();
 
-    for (ColumnMetadata cm : columns) {
+    for (@SuppressWarnings("unused")
+    ColumnMetadata cm : columns) {
       w.println("    private boolean present" + ordinal + " = false;");
       ordinal++;
     }
@@ -2000,7 +2000,8 @@ public class DAO {
     w.println("    public void discoverColumns(ResultSet rs) throws SQLException {");
     w.println("      ", ResultSetMetaData.class, " m = rs.getMetaData();");
     ordinal = 1;
-    for (ColumnMetadata cm : columns) {
+    for (@SuppressWarnings("unused")
+    ColumnMetadata cm : columns) {
       w.println("      present" + ordinal + " = false;");
       ordinal++;
     }
