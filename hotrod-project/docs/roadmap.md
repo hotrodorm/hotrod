@@ -14,6 +14,8 @@ versions of HotRod in no particular order. Over time they will be reassessed and
 - Nitro Collections &amp; Unnamed Nodes
 - LiveSQL LiveSyntax
 - LiveSQL Limiting with ties
-- LiveSQL Regular Expressions
+- LiveSQL Regular Expressions Predicates
+- LiveSQL Full Text Search
+- LiveSQL Replicas - Rule-based Query Routing
 
 
