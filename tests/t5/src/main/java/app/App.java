@@ -79,7 +79,8 @@ public class App {
     return args -> {
       log.info("[ Starting... ]");
 //      testA();
-      testInsertNonId();
+      testQueries();
+//      testInsertNonId();
 //      selectByExample();
 //      testParseRow();
 //      testPredicate();
@@ -97,6 +98,16 @@ public class App {
 //      testNitro6();
       log.info("[ Ending ]");
     };
+  }
+
+  private void testQueries() {
+
+    int rows = this.employeeDAO.updateEmployees();
+    System.out.println("updated employees=" + rows);
+
+    rows = this.salesDAO.deleteAccounts();
+    System.out.println("deleted accounts=" + rows);
+
   }
 
   private void testInsertNonId() {

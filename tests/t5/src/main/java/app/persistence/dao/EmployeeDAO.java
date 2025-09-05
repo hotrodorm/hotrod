@@ -604,6 +604,28 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     }
   }
 
+  // NITRO QUERY: updateEmployees
+
+  private DynamicModificationQuery query0;
+
+  private void initializeQuery0() {
+    this.query0 = dyn
+      .literal("\n      update employee SET id = id\n    ")
+      .endModificationQuery();
+  }
+
+  public int updateEmployees() {
+    Parameters params = this.dyn.newParameters();
+    PreparedModificationQuery preparedQuery = this.query0.prepare(params);
+    logQuery(preparedQuery);
+    try (Connection conn = this.dataSource.getConnection()) {
+      int count = preparedQuery.execute(conn);
+      return count;
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
+    }
+  }
+
   // NITRO SELECT: findVIPEmployees
 
   private DynamicSelectQuery select0;
@@ -707,6 +729,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     this.initializeDeletebyexample();
     this.initializeSelectSequence0();
     this.initializeSelectSequence1();
+    this.initializeQuery0();
     this.initializeSelect0();
   }
 

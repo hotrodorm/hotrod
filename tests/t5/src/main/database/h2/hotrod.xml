@@ -50,6 +50,10 @@ FROM employee
 WHERE branch_id = 101
     </select> 
     
+    <query method="updateEmployees">
+      update employee SET id = id
+    </query>
+    
   </table>
 
 <!-- 
@@ -64,7 +68,11 @@ select id, balance as ibt_balance,
   cast(case when type = 'CHK' then balance * 1.5 else balance * 1.2 end as int) as score
 from account
 where balance >= 200
-    </select> 
+    </select>
+
+    <query method="deleteAccounts">
+      delete from account where type = 'SAV'
+    </query>
     
   </dao>
 

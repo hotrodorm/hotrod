@@ -14,8 +14,10 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
+import org.hotrod.dynamicsql.DynamicModificationQuery;
 import org.hotrod.dynamicsql.DynamicSelectQuery;
 import org.hotrod.dynamicsql.Parameters;
+import org.hotrod.dynamicsql.PreparedModificationQuery;
 import org.hotrod.dynamicsql.PreparedQuery;
 import org.hotrod.dynamicsql.PreparedSelectQuery;
 import org.hotrod.dynamicsql.RowReader;
@@ -76,6 +78,28 @@ public class SalesDAO implements Serializable, ApplicationContextAware {
     try (Connection conn = this.dataSource.getConnection()) {
       long value = preparedQuery.executeOne(conn);
       return value;
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
+    }
+  }
+
+  // NITRO QUERY: deleteAccounts
+
+  private DynamicModificationQuery query0;
+
+  private void initializeQuery0() {
+    this.query0 = dyn
+      .literal("\n      delete from account where type = 'SAV'\n    ")
+      .endModificationQuery();
+  }
+
+  public int deleteAccounts() {
+    Parameters params = this.dyn.newParameters();
+    PreparedModificationQuery preparedQuery = this.query0.prepare(params);
+    logQuery(preparedQuery);
+    try (Connection conn = this.dataSource.getConnection()) {
+      int count = preparedQuery.execute(conn);
+      return count;
     } catch (SQLException e) {
       throw new PersistenceException(e);
     }
@@ -173,6 +197,7 @@ public class SalesDAO implements Serializable, ApplicationContextAware {
   private void initializeContext() {
     this.dyn = new DynamicSQL();
     this.initializeSelectSequence0();
+    this.initializeQuery0();
     this.initializeSelect0();
   }
 
