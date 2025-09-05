@@ -17,7 +17,6 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
-import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicInsertQuery;
 import org.hotrod.dynamicsql.DynamicModificationQuery;
 import org.hotrod.dynamicsql.DynamicSelectQuery;
@@ -494,10 +493,12 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       this.ascending = ascending;
     }
 
+    @Override
     public String getSQLColumnName() {
       return this.sqlColumnName;
     }
 
+    @Override
     public boolean isAscending() {
       return this.ascending;
     }
@@ -525,6 +526,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     private final TypeHandler<Integer, Boolean> th0 = TypeHandler.forConverter(new IntegerBooleanConverter(), TypeSource.STATIC_DESIGNATED);
     public final ConvertedColumn<Integer, Boolean> vip = new ConvertedColumn<Integer, Boolean>(this, "VIP", "vip", "INTEGER", 32, 0, th0, th0.getConverter());
 
+    @Override
     public AllColumns star() {
       return new AllColumns(this.id, this.fullName, this.branchId, this.vip);
     }
@@ -677,7 +679,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     try (Connection conn = this.dataSource.getConnection()) {
       List<Employee> rows = preparedQuery.execute(conn);
       return rows;
-    } catch (DynamicExpressionException | SQLException e) {
+    } catch (SQLException e) {
       throw new PersistenceException(e);
     }
   }

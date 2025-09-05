@@ -14,7 +14,6 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
-import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicSelectQuery;
 import org.hotrod.dynamicsql.Parameters;
 import org.hotrod.dynamicsql.PreparedQuery;
@@ -168,7 +167,7 @@ public class SalesDAO implements Serializable, ApplicationContextAware {
     try (Connection conn = this.dataSource.getConnection()) {
       List<BigAccount> rows = preparedQuery.execute(conn);
       return rows;
-    } catch (DynamicExpressionException | SQLException e) {
+    } catch (SQLException e) {
       throw new PersistenceException(e);
     }
   }

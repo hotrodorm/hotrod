@@ -602,10 +602,12 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       this.ascending = ascending;
     }
 
+    @Override
     public String getSQLColumnName() {
       return this.sqlColumnName;
     }
 
+    @Override
     public boolean isAscending() {
       return this.ascending;
     }
@@ -641,6 +643,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     public final NumericEntityColumn version = new NumericEntityColumn(this,
       "VERSION", "version", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
 
+    @Override
     public AllColumns star() {
       return new AllColumns(this.id, this.name, this.type, this.balance, this.active, this.clientPhoto, this.updatedAt, this.version);
     }

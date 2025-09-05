@@ -435,10 +435,12 @@ public class VehicleDAO implements Serializable, ApplicationContextAware {
       this.ascending = ascending;
     }
 
+    @Override
     public String getSQLColumnName() {
       return this.sqlColumnName;
     }
 
+    @Override
     public boolean isAscending() {
       return this.ascending;
     }
@@ -462,6 +464,7 @@ public class VehicleDAO implements Serializable, ApplicationContextAware {
     public final CharEntityColumn name = new CharEntityColumn(this,
       "NAME", "name", "CHARACTER VARYING", 10, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE));
 
+    @Override
     public AllColumns star() {
       return new AllColumns(this.vehicleCode, this.name);
     }

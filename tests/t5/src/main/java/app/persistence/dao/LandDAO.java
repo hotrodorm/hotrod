@@ -467,10 +467,12 @@ public class LandDAO implements Serializable, ApplicationContextAware {
       this.ascending = ascending;
     }
 
+    @Override
     public String getSQLColumnName() {
       return this.sqlColumnName;
     }
 
+    @Override
     public boolean isAscending() {
       return this.ascending;
     }
@@ -496,6 +498,7 @@ public class LandDAO implements Serializable, ApplicationContextAware {
     public final NumericEntityColumn price = new NumericEntityColumn(this,
       "PRICE", "price", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
 
+    @Override
     public AllColumns star() {
       return new AllColumns(this.regionCode, this.localCode, this.price);
     }

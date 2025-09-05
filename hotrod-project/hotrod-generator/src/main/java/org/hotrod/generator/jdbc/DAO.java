@@ -324,7 +324,7 @@ public class DAO {
     w.println("  private ", Const.APPLICATION_CONTEXT, " applicationContext;");
     w.println();
 
-    w.println("  @Override");
+    w.println("  @", Override.class);
     w.println("  public void setApplicationContext(final ", Const.APPLICATION_CONTEXT, " applicationContext) throws ",
         Const.BEANS_EXCEPTION, " {");
     w.println("    this.applicationContext = applicationContext;");
@@ -1374,6 +1374,7 @@ public class DAO {
 
     ExternalClass ac = ExternalClass.of(AllColumns.class);
 
+    w.println("    @", Override.class);
     w.println("    public ", ac, " star() {");
     w.println("      return new ", ac, "(" + this.metadata.getColumns().stream()
         .map(c -> "this." + c.getId().getJavaMemberName()).collect(Collectors.joining(", ")) + ");");
@@ -1503,10 +1504,12 @@ public class DAO {
     w.println("      this.ascending = ascending;");
     w.println("    }");
     w.println();
+    w.println("    @", Override.class);
     w.println("    public String getSQLColumnName() {");
     w.println("      return this.sqlColumnName;");
     w.println("    }");
     w.println();
+    w.println("    @", Override.class);
     w.println("    public boolean isAscending() {");
     w.println("      return this.ascending;");
     w.println("    }");
@@ -1976,7 +1979,7 @@ public class DAO {
       break;
     }
 
-    w.println("    } catch (", DynamicExpressionException.class, " | ", SQLException.class, " e) {");
+    w.println("    } catch (", SQLException.class, " e) {");
     w.println("      throw new ", PersistenceException.class, "(e);");
     w.println("    }");
 
