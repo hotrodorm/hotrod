@@ -12,6 +12,7 @@ HotRod brings:
 All this functionality is available for any of the [supported databases](./hotrod-project/docs/docs-5/config/supported-databases.md).
 
 See [What's New](./hotrod-project/docs/docs-5/whats-new.md) in HotRod 5, [version history](./hotrod-project/docs/version-history.md),
+[Roadmap](./hotrod-project/docs/roadmap.m),
 and the [HotRod 5 Documentation](./hotrod-project/docs/docs-5/README.md). For documentation on the previous versions see
 [HotRod 4 Documentation](./hotrod-project/docs/docs-4/README.md) and [HotRod 3 Documentation](./hotrod-project/docs/docs-3/README.md).
 
