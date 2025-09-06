@@ -152,6 +152,11 @@ insert into employee (id, name, branch_id, vip) values
   (32, 'Jeanne', 104, true),
   (33, 'Malcolm', 107, false);
 
+create view employee_branch as
+select e.*, b.region
+from employee e
+join branch b on b.id = e.branch_id;
+  
 create sequence employee_seq start with 150;
 create sequence hired_seq start with 300;
 

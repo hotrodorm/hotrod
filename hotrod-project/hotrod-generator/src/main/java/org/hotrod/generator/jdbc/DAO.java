@@ -18,7 +18,6 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
-import javax.swing.text.View;
 
 import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.Constants;
@@ -67,6 +66,7 @@ import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.ObjectEntityColumn;
 import org.hotrod.livesql.metadata.Table;
+import org.hotrod.livesql.metadata.View;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase;

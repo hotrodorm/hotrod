@@ -29,6 +29,8 @@
   <table name="branch" />
    -->
 
+  <view name="employee_branch" />
+
   <table name="vehicle" />
   <table name="land" />
    
