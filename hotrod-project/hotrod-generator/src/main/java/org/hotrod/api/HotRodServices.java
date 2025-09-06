@@ -17,6 +17,7 @@ import org.hotrod.generator.Generator;
 import org.hotrod.generator.HotRodContext;
 import org.hotrod.generator.LiveGenerator;
 import org.hotrod.utils.LocalFileGenerator;
+import org.hotrod.utils.T;
 import org.nocrala.tools.database.tartarus.utils.XUtil;
 
 public class HotRodServices {
@@ -33,10 +34,11 @@ public class HotRodServices {
   private File configFile;
   private DisplayMode displayMode;
   private LinkedHashSet<String> facetNames;
+  private boolean logTimes;
 
   public HotRodServices(File baseDir, String jdbcdriverclass, String jdbcurl, String jdbcusername, String jdbcpassword,
-      String jdbccatalog, String jdbcschema, File configFile, DisplayMode displayMode,
-      LinkedHashSet<String> facetNames) {
+      String jdbccatalog, String jdbcschema, File configFile, DisplayMode displayMode, LinkedHashSet<String> facetNames,
+      final boolean logTimes) {
     super();
     this.baseDir = baseDir;
     this.jdbcdriverclass = jdbcdriverclass;
@@ -48,25 +50,30 @@ public class HotRodServices {
     this.configFile = configFile;
     this.displayMode = displayMode;
     this.facetNames = facetNames;
+    this.logTimes = logTimes;
   }
 
   public void generate(final Feedback feedback) throws Exception {
 //    log.info("init");
 
-    feedback.info(Constants.TOOL_NAME + " Generator version " + BuildInformation.VERSION + " (build " + BuildInformation.BUILD_ID
-        + ") - Generate");
+    feedback.info(Constants.TOOL_NAME + " Generator version " + BuildInformation.VERSION + " (build "
+        + BuildInformation.BUILD_ID + ") - Generate");
 
     try {
+      T.endPhase("pre-context");
 
       HotRodContext hc = new HotRodContext(configFile, jdbcdriverclass, jdbcurl, jdbcusername, jdbcpassword,
-          jdbccatalog, jdbcschema, baseDir, facetNames, feedback);
+          jdbccatalog, jdbcschema, baseDir, facetNames, feedback, logTimes);
 //      log.info("init context");
+      T.endPhase("Context");
 
       // Generate
 
       Generator g = hc.getConfig().getGenerators().getSelectedGeneratorTag().instantiateGenerator(hc, null,
           this.displayMode, false, feedback);
 //      log.info("Generator instantiated: "+g.getClass().getName());
+
+      T.endPhase("Instantiate");
 
       try {
 
@@ -76,8 +83,10 @@ public class HotRodServices {
 //        log.fine("live generator");
 
         g.prepareGeneration();
+        T.endPhase("Prepare Generation");
         FileGenerator fg = new LocalFileGenerator();
         liveGenerator.generate(fg);
+        T.endPhase("Generate");
 
       } catch (ClassCastException e) {
 

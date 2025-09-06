@@ -13,13 +13,11 @@ import java.util.logging.Logger;
 
 import org.hotrod.config.ConfigurationLoader;
 import org.hotrod.config.Constants;
-import org.hotrod.config.DaosTag;
 import org.hotrod.config.EnumTag;
 import org.hotrod.config.ExcludeTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.JDBCTag;
 import org.hotrod.config.SchemaTag;
-import org.hotrod.config.SelectGenerationTag.SelectStrategy;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
@@ -32,6 +30,7 @@ import org.hotrod.exceptions.UnrecognizedDatabaseException;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.utils.SUtil;
 import org.hotrod.utils.SourceLocation;
+import org.hotrod.utils.T;
 import org.hotrod.utils.XUtil;
 import org.nocrala.tools.database.tartarus.connectors.DatabaseConnectorFactory.UnsupportedDatabaseException;
 import org.nocrala.tools.database.tartarus.core.CatalogSchema;
@@ -61,7 +60,7 @@ public class HotRodContext {
   public HotRodContext(final File configFile, final String jdbcdriverclass, final String jdbcurl,
       final String jdbcusername, final String jdbcpassword, final String currentJDBCCatalog,
       final String currentJDBCSchema, final File baseDir, final LinkedHashSet<String> facetNames,
-      final Feedback feedback) throws ControlledException {
+      final Feedback feedback, final boolean logTimes) throws ControlledException {
 
 //    log.info("init");
 
@@ -72,6 +71,7 @@ public class HotRodContext {
 
     this.loc = new DatabaseLocation(jdbcdriverclass, jdbcurl, jdbcusername, jdbcpassword, currentJDBCCatalog,
         currentJDBCSchema, null);
+    T.endPhase("DB Location");
 
     feedback.info("Database URL: " + loc.getUrl());
 
@@ -84,6 +84,7 @@ public class HotRodContext {
       } catch (SQLException e) {
         throw new ControlledException("Could not connect to the database: " + XUtil.trim(e));
       }
+      T.endPhase("DB connected");
 
 //      log.info("conn");
 
@@ -101,6 +102,7 @@ public class HotRodContext {
       feedback.info("Database Name: " + cv.renderDatabaseName());
       feedback.info("JDBC Driver: " + cv.renderJDBCDriverName() + " - implements JDBC Specification "
           + cv.renderJDBCSpecification());
+      T.endPhase("DB Version");
 
 //      log.info("db version");
 
@@ -119,6 +121,7 @@ public class HotRodContext {
       } catch (SQLException e) {
         throw new ControlledException("Could not identify database at URL " + loc.getUrl() + " - " + XUtil.trim(e));
       }
+      T.endPhase("DB Adapter");
 //      log.info("Adapter loaded.");
 
       // Current Catalog & Schema
@@ -172,6 +175,7 @@ public class HotRodContext {
           throw new ControlledException("Could not load configuration file " + configFile + " - " + e.getMessage());
         }
       }
+      T.endPhase("Configuration Loaded");
 
 //      log.info("config loaded.");
 
@@ -200,6 +204,7 @@ public class HotRodContext {
       for (ViewTag v : this.config.getFacetViews()) {
         views.add(v.getDatabaseObjectId());
       }
+      T.endPhase("Facets");
 
 //      log.info("db object scope.");
 
@@ -224,7 +229,7 @@ public class HotRodContext {
           }
 
 //            log.fine("gen 2");
-          this.db = new JdbcDatabase(conn, currentCS, tables, views, discoverCSs, excludeIds);
+          this.db = new JdbcDatabase(conn, currentCS, tables, views, discoverCSs, excludeIds, false, false, logTimes);
           removeCurrentCatalogSchema(currentCS);
 //            log.fine("gen 3");
           this.config.getFacetTables();// FIXME
@@ -249,7 +254,9 @@ public class HotRodContext {
         } else { // 2. No Discover
 
           log.fine("gen 4");
-          this.db = new JdbcDatabase(conn, currentCS, tables, views);
+          T.endPhase("DB pre-meta");
+          this.db = new JdbcDatabase(conn, currentCS, tables, views, false, false, logTimes);
+          T.endPhase("DB post-meta");
           removeCurrentCatalogSchema(currentCS);
           log.fine("gen 5");
 
@@ -262,6 +269,8 @@ public class HotRodContext {
 //          log.fine("gen 7");
 //
 //        }
+
+        T.endPhase("DB Meta data obtained.");
 
         log.fine("gen 8");
         this.config.getFacetTables(); // FIXME
@@ -325,6 +334,8 @@ public class HotRodContext {
       log.fine("gen 10");
       this.metadata = new Metadata(db, adapter, loc);
 
+      T.endPhase("DB Meta Data Post-processing");
+
       log.fine("gen 10.5");
       this.config.getFacetTables();// FIXME
       log.fine("gen 11");
@@ -350,6 +361,7 @@ public class HotRodContext {
             "Could not retrieve database metadata  - " + e.getMessage() + ": " + XUtil.trim(e.getCause()));
       }
       log.fine("gen 16");
+      T.endPhase("Facets Post-processing");
 
     } finally {
       if (conn != null) {

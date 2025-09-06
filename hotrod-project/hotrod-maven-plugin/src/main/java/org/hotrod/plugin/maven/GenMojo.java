@@ -63,11 +63,8 @@ public class GenMojo extends AbstractMojo {
   // Mojo logic
 
   public void execute() throws MojoExecutionException {
-//    log.info("init");
-
-//    log.fine("this.localproperties=" + this.localproperties);
-
     try {
+
       GenOperation op = new GenOperation(this.project.getBasedir(), this.configfile, this.localproperties,
           this.jdbcdriverclass, this.jdbcurl, this.jdbcusername, this.jdbcpassword, this.jdbccatalog, this.jdbcschema,
           this.facets, this.display);

@@ -78,7 +78,7 @@ public abstract class AbstractExportColumnsOperation {
     validateParameters(feedback);
 
     HotRodContext hc = new HotRodContext(configFile, jdbcdriverclass, jdbcurl, jdbcusername, jdbcpassword, jdbccatalog,
-        jdbcschema, baseDir, facetNames, feedback);
+        jdbcschema, baseDir, facetNames, feedback, false);
 
     try {
 
