@@ -212,6 +212,11 @@ insert into account (id, name, type, balance, active, version, client_photo) val
 
 create sequence seq_account start with 1000;
 
+create table "abc_DEF" (
+  id int primary key not null,
+  name varchar(10)
+);
+
 -- Validate foreign keys
 
 create table a (

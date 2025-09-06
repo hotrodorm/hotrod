@@ -30,6 +30,7 @@
    -->
 
   <view name="employee_branch" />
+  <table name="'abc_DEF'" />
 
   <table name="vehicle" />
   <table name="land" />

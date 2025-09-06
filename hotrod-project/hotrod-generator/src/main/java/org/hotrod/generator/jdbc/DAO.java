@@ -580,7 +580,7 @@ public class DAO {
         n++;
       }
 
-      w.println("      .literaln(\"FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
+      w.println("      .literaln(\"FROM " + SUtil.escapeJavaString(this.metadata.getId().getRenderedSQLName()) + "\")");
       if (byExample) {
         fragmentWhereExample("f");
         w.println("      .parameterInjection(\"ordering\")");
@@ -996,7 +996,8 @@ public class DAO {
       w.println();
       w.println("  private void " + initializerName + "() {");
       w.println("    this." + queryName + " = dyn");
-      w.println("      .literaln(\"UPDATE " + this.metadata.getId().getRenderedSQLName() + "\")");
+      w.println(
+          "      .literaln(\"UPDATE " + SUtil.escapeJavaString(this.metadata.getId().getRenderedSQLName()) + "\")");
       w.println("      .literaln(\"SET\")");
 
       int coln = this.metadata.getColumns().size();
@@ -1084,7 +1085,7 @@ public class DAO {
     w.println();
     w.println("  private void " + initializerName + "() {");
     w.println("    this." + queryName + " = dyn");
-    w.println("      .literal(\"UPDATE " + this.metadata.getId().getRenderedSQLName() + "\")");
+    w.println("      .literal(\"UPDATE " + SUtil.escapeJavaString(this.metadata.getId().getRenderedSQLName()) + "\")");
     fragmentSet("v");
     fragmentWhereExample("e");
     w.println("      .endModificationQuery();");
@@ -1159,7 +1160,8 @@ public class DAO {
       w.println();
       w.println("  private void " + initializerName + "() {");
       w.println("    this." + queryName + " = dyn");
-      w.println("      .literaln(\"DELETE FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
+      w.println("      .literaln(\"DELETE FROM " + SUtil.escapeJavaString(this.metadata.getId().getRenderedSQLName())
+          + "\")");
 
       if (ol == null) {
         fragmentWherePK("f");
@@ -1242,7 +1244,8 @@ public class DAO {
     w.println();
     w.println("  private void " + initializerName + "() {");
     w.println("    this." + queryName + " = dyn");
-    w.println("      .literal(\"DELETE FROM " + this.metadata.getId().getRenderedSQLName() + "\")");
+    w.println(
+        "      .literal(\"DELETE FROM " + SUtil.escapeJavaString(this.metadata.getId().getRenderedSQLName()) + "\")");
     fragmentWhereExample("e");
     w.println("      .endModificationQuery();");
     w.println("  }");
