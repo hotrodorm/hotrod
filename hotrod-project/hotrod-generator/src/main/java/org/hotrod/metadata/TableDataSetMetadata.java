@@ -30,6 +30,7 @@ import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.SelectMetadataCache;
 import org.hotrod.identifiers.ObjectId;
+import org.hotrod.typesolver.DriverColumnMetaData;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ColumnsPrefixGenerator;
@@ -470,16 +471,20 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
   }
 
   private List<ColumnMetadata> getColumnsMetadata(final List<JdbcColumn> cols, final ViewTag viewTag)
-      throws UnresolvableDataTypeException, InvalidConfigurationFileException {
+      throws InvalidConfigurationFileException, UnresolvableDataTypeException {
     List<ColumnMetadata> lcm = new ArrayList<ColumnMetadata>();
     for (JdbcColumn c : cols) {
       ColumnTag columnTag = viewTag.findColumnTag(c.getName(), this.adapter);
       try {
         lcm.add(new ColumnMetadata(this, c, this.adapter, columnTag, false, false, false,
             this.config.getTypeSolverTag(), this.config.getNameSolverTag()));
+
       } catch (InvalidIdentifierException e) {
         String msg = "Invalid identifier name for column '" + c.getName() + "': " + e.getMessage();
         throw new InvalidConfigurationFileException(viewTag, msg);
+      } catch (UnresolvableDataTypeException e) {
+        throw new UnresolvableDataTypeException(e.getColumnMetadata(), "Could not resolve data type for column "
+            + viewTag.getId().getCanonicalSQLName() + "." + c.getName() + " of type '" + c.getTypeName() + "'");
       }
     }
     return lcm;

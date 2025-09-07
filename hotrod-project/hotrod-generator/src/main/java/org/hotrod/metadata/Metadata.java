@@ -234,6 +234,7 @@ public class Metadata {
           this.voRegistry.addVO(vo);
 
         } catch (UnresolvableDataTypeException e) {
+//          log.log(Level.SEVERE, "Could not resolve column type in view '" + v.getName() + "'", e);
           throw new ControlledException(e.getMessage());
 
         } catch (VOAlreadyExistsException e) {
