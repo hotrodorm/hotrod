@@ -1,0 +1,26 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------------< tools:schemagen >---------------------------
+[INFO] Building schemagen 1.0.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- hotrod-maven-plugin:5.1.3-SNAPSHOT:gen (default-cli) @ schemagen ---
+[INFO] HotRod Generator version 5.1.3-SNAPSHOT (build 20250907-154204) - Generate
+[INFO] Database URL: jdbc:postgresql://192.168.56.200:5416/hotrod
+[INFO] Database Name: PostgreSQL - version 16.1 (16.1 (Debian 16.1-1.pgdg120+1))
+[INFO] JDBC Driver: PostgreSQL JDBC Driver - version 42.3 (42.3.3) - implements JDBC Specification 4.2
+[INFO] HotRod Adapter: PostgreSQL Adapter
+[INFO]  
+[INFO] Current Schema: public
+[INFO]  
+[INFO] Discover enabled.
+[INFO]  
+[INFO] Generating all facets.
+[INFO]  
+[INFO] Total of: 925 tables, 300 views, 0 enums, 0 DAOs, and 0 sequences -- including 0 select methods, and 0 query methods.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  29.079 s
+[INFO] Finished at: 2025-09-07T13:53:06-04:00
+[INFO] ------------------------------------------------------------------------
