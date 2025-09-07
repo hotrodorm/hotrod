@@ -10,7 +10,7 @@ public class SchemaGen {
 
   private static final long RANDOM_SEED = 1234;
 
-  private static final int TABLES = 500;
+  private static final int TABLES = 1200;
   private static final int VIEWS = TABLES / 3;
   private static final double FK_PER_TABLE = 2.0;
   private static final int COLUMNS_PER_TABLE = 20;
