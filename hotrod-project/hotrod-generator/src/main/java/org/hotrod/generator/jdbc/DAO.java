@@ -1014,8 +1014,10 @@ public class DAO {
         } else {
           String memId = cm.getId().getJavaMemberName();
           String jdbcType = cm.getType().getJDBCShortType();
-          w.println("      .literal(\"  " + SUtil.escapeJavaString(sqlId) + " = \").parameterNullable(\"m."
-              + SUtil.escapeJavaString(memId) + "\", Types." + jdbcType + ")" + (n < coln ? ".literaln(\",\")" : ""));
+          w.println(
+              "      .literal(\"  " + SUtil.escapeJavaString(sqlId) + " = \").parameterNullable(\"m."
+                  + SUtil.escapeJavaString(memId) + "\", ",
+              Types.class, "." + jdbcType + ")" + (n < coln ? ".literaln(\",\")" : ""));
         }
         n++;
       }
