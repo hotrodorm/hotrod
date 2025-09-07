@@ -60,12 +60,12 @@ public class HotRodServices {
         + BuildInformation.BUILD_ID + ") - Generate");
 
     try {
-      T.endPhase("pre-context");
+      T.endPhase("Ini generation");
 
       HotRodContext hc = new HotRodContext(configFile, jdbcdriverclass, jdbcurl, jdbcusername, jdbcpassword,
           jdbccatalog, jdbcschema, baseDir, facetNames, feedback, logTimes);
 //      log.info("init context");
-      T.endPhase("Context");
+      T.endPhase("Context ready");
 
       // Generate
 
@@ -73,7 +73,7 @@ public class HotRodServices {
           this.displayMode, false, feedback);
 //      log.info("Generator instantiated: "+g.getClass().getName());
 
-      T.endPhase("Instantiate");
+      T.endPhase("Generator instantiated");
 
       try {
 
@@ -83,10 +83,10 @@ public class HotRodServices {
 //        log.fine("live generator");
 
         g.prepareGeneration();
-        T.endPhase("Prepare Generation");
+        T.endPhase("Persistence layer generation initialized");
         FileGenerator fg = new LocalFileGenerator();
         liveGenerator.generate(fg);
-        T.endPhase("Generate");
+        T.endPhase("Persistence layer generated");
 
       } catch (ClassCastException e) {
 

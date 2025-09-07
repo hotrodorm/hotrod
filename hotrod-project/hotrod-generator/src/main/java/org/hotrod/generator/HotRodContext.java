@@ -229,7 +229,8 @@ public class HotRodContext {
           }
 
 //            log.fine("gen 2");
-          this.db = new JdbcDatabase(conn, currentCS, tables, views, discoverCSs, excludeIds, false, false, logTimes);
+          this.db = new JdbcDatabase(conn, currentCS, tables, views, discoverCSs, excludeIds, false, false, false,
+              logTimes);
           removeCurrentCatalogSchema(currentCS);
 //            log.fine("gen 3");
           this.config.getFacetTables();// FIXME
@@ -255,7 +256,7 @@ public class HotRodContext {
 
           log.fine("gen 4");
           T.endPhase("DB pre-meta");
-          this.db = new JdbcDatabase(conn, currentCS, tables, views, false, false, logTimes);
+          this.db = new JdbcDatabase(conn, currentCS, tables, views, false, false, false, logTimes);
           T.endPhase("DB post-meta");
           removeCurrentCatalogSchema(currentCS);
           log.fine("gen 5");

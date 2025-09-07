@@ -166,7 +166,7 @@
               <jdbcpassword>${jdbcpassword}</jdbcpassword>
               <jdbcschema>USER1</jdbcschema>
               <facets></facets>
-              <display></display>
+              <display>summary</display>
               <txtexportfile>./oracle-columns.txt</txtexportfile>
               <xlsxexportfile>./oracle-columns.xlsx</xlsxexportfile>
               <!--
@@ -254,6 +254,7 @@
               <jdbcurl>${jdbcurl}</jdbcurl>
               <jdbcusername>${jdbcusername}</jdbcusername>
               <jdbcpassword>${jdbcpassword}</jdbcpassword>
+              <display>summary</display>
             </configuration>
             <dependencies>
               <dependency>

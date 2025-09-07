@@ -12,6 +12,8 @@ import org.hotrod.config.EnabledFKs;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.JDBCTag;
+import org.hotrod.config.QueryMethodTag;
+import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
@@ -35,8 +37,10 @@ import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VORegistry;
 import org.hotrod.metadata.VORegistry.SelectVOClass;
 import org.hotrod.utils.ClassPackage;
+import org.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
+import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class JDBCGenerator implements Generator, LiveGenerator {
 
@@ -81,6 +85,8 @@ public class JDBCGenerator implements Generator, LiveGenerator {
 
     this.displayMode = displayMode;
     this.feedback = feedback;
+
+    displayGenerationMetadata(config);
 
   }
 
@@ -281,9 +287,8 @@ public class JDBCGenerator implements Generator, LiveGenerator {
   }
 
   @Override
-  public void display(String txt) {
-    // TODO Auto-generated method stub
-
+  public void display(final String txt) {
+    this.feedback.info(SUtil.isEmpty(txt) ? " " : txt);
   }
 
   @Override
@@ -301,6 +306,137 @@ public class JDBCGenerator implements Generator, LiveGenerator {
   public void generate() throws UncontrolledException, ControlledException {
     // TODO Auto-generated method stub
 
+  }
+
+  private void displayGenerationMetadata(final HotRodConfigTag config) {
+
+    int sequences = 0;
+    int queries = 0;
+    int selectMethods = 0;
+
+    if (config.getFacetNames().isEmpty()) {
+      display("Generating all facets.");
+    } else {
+      ListWriter lw = new ListWriter(", ");
+      for (String facetName : config.getFacetNames()) {
+        lw.add(facetName);
+      }
+      display("Generating facet" + (config.getFacetNames().size() == 1 ? "" : "s") + ": " + lw.toString());
+    }
+
+    if (this.displayMode == DisplayMode.LIST) {
+
+      display("");
+
+      // tables
+
+      for (TableDataSetMetadata t : this.md.getTables()) {
+        String ns = getNS(t);
+        display("Table " + getNS(t) + t.getId().getCanonicalSQLName() + " included.");
+        for (SequenceMethodTag s : t.getSequences()) {
+          sequences++;
+          if (this.displayMode == DisplayMode.LIST) {
+            display(" - Sequence " + s.getSequenceId().getRenderedSQLName() + " included.");
+          }
+        }
+        for (QueryMethodTag q : t.getQueries()) {
+          queries++;
+          if (this.displayMode == DisplayMode.LIST) {
+            display(" - Query " + q.getMethod() + " included.");
+          }
+        }
+        for (SelectMethodMetadata s : t.getSelectsMetadata()) {
+          selectMethods++;
+          if (this.displayMode == DisplayMode.LIST) {
+            display(" - Select " + s.getMethod() + " included.");
+          }
+        }
+      }
+
+      // views
+
+      for (TableDataSetMetadata v : this.md.getViews()) {
+        display("View " + getNS(v) + v.getId().getCanonicalSQLName() + " included.");
+        for (SequenceMethodTag s : v.getSequences()) {
+          sequences++;
+          if (this.displayMode == DisplayMode.LIST) {
+            display(" - Sequence " + s.getSequenceId().getRenderedSQLName() + " included.");
+          }
+        }
+        for (QueryMethodTag q : v.getQueries()) {
+          queries++;
+          if (this.displayMode == DisplayMode.LIST) {
+            display(" - Query " + q.getMethod() + " included.");
+          }
+        }
+        for (SelectMethodMetadata s : v.getSelectsMetadata()) {
+          selectMethods++;
+          if (this.displayMode == DisplayMode.LIST) {
+            display(" - Select " + s.getMethod() + " included.");
+          }
+        }
+      }
+
+      // enums
+
+      for (EnumDataSetMetadata e : this.md.getEnums()) {
+        display("Enum " + getNS(e) + e.getJdbcName() + " included.");
+      }
+
+      // daos
+
+      for (ExecutorDAOMetadata d : this.md.getExecutors()) {
+        if (this.displayMode == DisplayMode.LIST) {
+          display("DAO " + d.getJavaClassName() + " included.");
+        }
+        for (SequenceMethodTag s : d.getSequences()) {
+          sequences++;
+          if (this.displayMode == DisplayMode.LIST) {
+            display(" - Sequence " + s.getSequenceId().getRenderedSQLName() + " included.");
+          }
+        }
+        for (QueryMethodTag q : d.getQueries()) {
+          queries++;
+          if (this.displayMode == DisplayMode.LIST) {
+            display(" - Query " + q.getMethod() + " included.");
+          }
+        }
+        for (SelectMethodMetadata s : d.getSelectsMetadata()) {
+          selectMethods++;
+          if (this.displayMode == DisplayMode.LIST) {
+            display(" - Select " + s.getMethod() + " included.");
+          }
+        }
+      }
+
+    }
+
+    display("");
+    StringBuilder sb = new StringBuilder();
+    sb.append("Total of: ");
+    sb.append(this.md.getTables().size() + " " + (this.md.getTables().size() == 1 ? "table" : "tables") + ", ");
+    sb.append(this.md.getViews().size() + " " + (this.md.getViews().size() == 1 ? "view" : "views") + ", ");
+    sb.append(this.md.getEnums().size() + " " + (this.md.getEnums().size() == 1 ? "enum" : "enums") + ", ");
+    sb.append(
+        this.config.getFacetExecutors().size() + " " + (this.config.getFacetExecutors().size() == 1 ? "DAO" : "DAOs") //
+            + ", and ");
+
+    sb.append(sequences + " sequence" + (sequences == 1 ? "" : "s") + " -- including ");
+    sb.append(selectMethods + " " + (selectMethods == 1 ? "select method" : "select methods") + ", ");
+    sb.append("and " + queries + " " + (queries == 1 ? "query method" : "query methods") + ".");
+
+    display(sb.toString());
+
+  }
+
+  private String getNS(final TableDataSetMetadata t) {
+    String cat = t.getId().getCatalog() == null ? null : t.getId().getCatalog().getCanonicalSQLName();
+    String sche = t.getId().getSchema() == null ? null : t.getId().getSchema().getCanonicalSQLName();
+    if (!t.isFromCurrentCatalog()) {
+      return t.isFromCurrentSchema() ? cat + "." : cat + "." + sche + ".";
+    } else {
+      return t.isFromCurrentSchema() ? "" : sche + ".";
+    }
   }
 
 }
