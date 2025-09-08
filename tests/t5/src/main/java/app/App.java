@@ -23,12 +23,15 @@ import org.springframework.context.annotation.Configuration;
 import app.AccountTypeConverter.AccountType;
 import app.persistence.dao.AccountDAO;
 import app.persistence.dao.AccountDAO.AccountTable;
+import app.persistence.dao.CoinDAO;
+import app.persistence.dao.CoinDAO.CoinTable;
 import app.persistence.dao.EmployeeDAO;
 import app.persistence.dao.SalesDAO;
 import app.persistence.dao.VehicleDAO;
 import app.persistence.layout.EmployeeLayout;
 import app.persistence.layout.VehicleLayout;
 import app.persistence.model.Account;
+import app.persistence.model.Coin;
 import app.persistence.model.Employee;
 import app.persistence.model.Vehicle;
 
@@ -44,6 +47,9 @@ public class App {
 
   @Autowired
   private AccountDAO accountDAO;
+
+  @Autowired
+  private CoinDAO coinDAO;
 
 //  @Autowired
 //  private ProductDAO productDAO;
@@ -81,7 +87,8 @@ public class App {
     return args -> {
       log.info("[ Starting... ]");
 //      testA();
-      insertConverter();
+//      insertConverter();
+      converterOnPK();
 //      updateConverter();
 //      testQueries();
 //      testInsertNonId();
@@ -125,6 +132,29 @@ public class App {
     example.setType(AccountType.INV4);
     count = this.accountDAO.delete(example);
     System.out.println("updated: " + count);
+  }
+
+  private void converterOnPK() {
+    Coin c = new Coin();
+    c.setType(2);
+    c.setName("Coin 2");
+    Coin inserted = this.coinDAO.insert(c);
+    System.out.println("inserted: " + inserted);
+
+    CoinTable ct = this.coinDAO.newTable();
+    List<Row> rows = this.sql.select().from(ct).execute();
+    for (Row r : rows) {
+      System.out.println("r=" + r);
+    }
+
+    inserted.setName("Coin 2 b)");
+    int count = this.coinDAO.update(inserted);
+    System.out.println("updated: " + count);
+
+    Coin example = new Coin();
+    example.setName("Coin 2 b)");
+    count = this.coinDAO.delete(example);
+    System.out.println("delete: " + count);
   }
 
   private void updateConverter() {
