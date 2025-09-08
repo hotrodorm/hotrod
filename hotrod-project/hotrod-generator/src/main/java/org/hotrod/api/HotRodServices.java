@@ -101,19 +101,19 @@ public class HotRodServices {
 
     } catch (ControlledException e) {
       if (e.getLocation() == null) {
-        throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code:\n" + e.getMessage());
+        throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code [1]:\n" + e.getMessage());
       } else {
-        throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code. Invalid configuration in "
+        throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code [2]. Invalid configuration in "
             + e.getLocation().render() + ":\n" + e.getMessage());
       }
     } catch (UncontrolledException e) {
       feedback.error("Technical error found: " + XUtil.abridge(e));
-      throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code.");
+      throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code [3].");
     } catch (InvalidConfigurationFileException e) {
-      throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code. Invalid configuration in "
+      throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code [4]. Invalid configuration in "
           + e.getTag().getSourceLocation().render() + ":\n" + e.getMessage());
     } catch (Throwable e) {
-      log.log(Level.SEVERE, "Could not generate persistence layer.", e);
+      log.log(Level.SEVERE, "Could not generate persistence layer [5].", e);
       throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code.", e);
     }
 

@@ -12,9 +12,9 @@ public class LandLayout implements Serializable {
 
   // Layout Properties (table columns)
 
-  protected Integer regionCode = null;
-  protected String localCode = null;
-  protected Integer price = null;
+  protected Integer regionCode = null; // INTEGER
+  protected String localCode = null; // CHARACTER VARYING
+  protected Integer price = null; // INTEGER
 
   // getters & setters
 

@@ -355,9 +355,7 @@ public class HotRodContext {
         log.fine("gen 14");
         throw new ControlledException(
             "Could not retrieve database metadata  - " + e.getMessage() + ": " + XUtil.trim(e.getCause()));
-      } catch (Throwable e) {
-        log.fine("gen 15");
-        log.log(Level.SEVERE, "Failed to retrieve the database meta data ", e);
+      } catch (RuntimeException e) {
         throw new ControlledException(
             "Could not retrieve database metadata  - " + e.getMessage() + ": " + XUtil.trim(e.getCause()));
       }

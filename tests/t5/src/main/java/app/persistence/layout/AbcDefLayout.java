@@ -12,8 +12,8 @@ public class AbcDefLayout implements Serializable {
 
   // Layout Properties (table columns)
 
-  protected Integer id = null;
-  protected String name = null;
+  protected Integer id = null; // INTEGER
+  protected String name = null; // CHARACTER VARYING
 
   // getters & setters
 

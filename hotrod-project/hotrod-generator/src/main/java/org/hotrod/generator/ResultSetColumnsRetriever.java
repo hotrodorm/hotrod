@@ -17,6 +17,7 @@ import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.InvalidSQLException;
@@ -24,6 +25,7 @@ import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
+import org.hotrod.typesolver.DriverColumnMetaData;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.JDBCTypes.JDBCType;
 import org.hotrod.utils.SQLUtil;
@@ -110,8 +112,11 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
           cm = new ColumnMetadata(ctx.getSm(), rm, i, ctx.getTag().getMethod(), this.adapter, columnTag, false, false,
               false, this.config.getTypeSolverTag());
         } catch (UnresolvableDataTypeException e) {
-          String msg = "Could not retrieve metadata for <" + new SelectMethodTag().getTagName()
-              + ">: could not find suitable Java type for column '" + e.getColumnMetadata().getName() + "' ";
+          DriverColumnMetaData m = e.getColumnMetadata();
+          String msg = "The column '" + m.getName() + "' in the <select> tag reports the type " + m.getTypeName()
+              + ", and there's no default type for it defined in " + "HotRod's database dialect.\n"
+              + "Please specify a type (or a converter) either using a <column> tag inside the <select> tag, "
+              + "or a rule in the <type-solver> tag.";
           throw new InvalidConfigurationFileException(ctx.getTag(), msg);
         } catch (InvalidIdentifierException e) {
           String msg = "Invalid retrieved column name: " + e.getMessage();

@@ -12,8 +12,8 @@ public class VehicleLayout implements Serializable {
 
   // Layout Properties (table columns)
 
-  protected Integer vehicleCode = null;
-  protected String name = null;
+  protected Integer vehicleCode = null; // INTEGER
+  protected String name = null; // CHARACTER VARYING
 
   // getters & setters
 

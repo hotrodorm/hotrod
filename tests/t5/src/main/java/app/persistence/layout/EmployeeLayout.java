@@ -12,10 +12,10 @@ public class EmployeeLayout implements Serializable {
 
   // Layout Properties (table columns)
 
-  protected Integer id = null;
-  protected String fullName = null;
-  protected Integer branchId = null;
-  protected Boolean vip = null;
+  protected Integer id = null; // INTEGER
+  protected String fullName = null; // CHARACTER VARYING
+  protected Integer branchId = null; // INTEGER
+  protected Boolean vip = null; // INTEGER
 
   // getters & setters
 

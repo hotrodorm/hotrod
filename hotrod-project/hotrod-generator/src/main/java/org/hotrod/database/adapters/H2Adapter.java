@@ -153,12 +153,11 @@ public class H2Adapter extends DatabaseAdapter {
         // false);
 
       } else {
-        // return produceType(Object.class, m, false);
-        return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE);
+        throw new UnresolvableDataTypeException(m);
       }
 
     default: // Unrecognized type
-      return produceType(Object.class, m, false);
+      throw new UnresolvableDataTypeException(m);
 
     }
 

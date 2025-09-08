@@ -98,6 +98,8 @@ create table other (
 
 -- ==========================================================================================================
 
+create view v_other as select * from other;
+
 create table product (
   id int,
   type varchar(6),

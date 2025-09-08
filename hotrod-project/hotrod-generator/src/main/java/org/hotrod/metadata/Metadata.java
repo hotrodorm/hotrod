@@ -36,7 +36,6 @@ import org.hotrod.metadata.VORegistry.VOAlreadyExistsException;
 import org.hotrod.typesolver.DriverColumnMetaData;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.ClassPackage;
-import org.hotrod.utils.JDBCTypes;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
@@ -106,13 +105,11 @@ public class Metadata {
 
         } catch (UnresolvableDataTypeException e) {
           DriverColumnMetaData m = e.getColumnMetadata();
-
-          String typeName = JDBCTypes.codeToName(m.getDataType());
-
-          throw new ControlledException("Unrecognized column data type (reported as '" + m.getTypeName()
-              + "', JDBC type " + m.getDataType() + " "
-              + (typeName == null ? "(non-standard JDBC type)" : "'" + typeName + "'") + ") on column '" + m.getName()
-              + "' of table/view/select '" + m.getTable() + (e.getMessage() == null ? "" : ": " + e.getMessage()));
+          throw new ControlledException("The column '" + m.getName() + "' in the table (" + m.getObjectType() + ") '"
+              + m.getTable() + "' reports the type " + m.getTypeName()
+              + ", and there's no default type for it defined in " + "HotRod's database dialect.\n"
+              + "Please specify a type (or a converter) either using a <column> tag "
+              + "inside the corresponding <table> tag, " + "or a rule in the <type-solver> tag.");
 
         } catch (VOAlreadyExistsException e) {
           throw new ControlledException("Duplicate table with name '" + t.getName() + "'.");
@@ -234,8 +231,12 @@ public class Metadata {
           this.voRegistry.addVO(vo);
 
         } catch (UnresolvableDataTypeException e) {
-//          log.log(Level.SEVERE, "Could not resolve column type in view '" + v.getName() + "'", e);
-          throw new ControlledException(e.getMessage());
+          DriverColumnMetaData m = e.getColumnMetadata();
+          throw new ControlledException("The column '" + m.getName() + "' in the view (" + m.getObjectType() + ") '"
+              + m.getTable() + "' reports the type " + m.getTypeName()
+              + ", and there's no default type for it defined in " + "HotRod's database dialect.\n"
+              + "Please specify a type (or a converter) either using a <column> tag "
+              + "inside the corresponding <view> tag, " + "or a rule in the <type-solver> tag.");
 
         } catch (VOAlreadyExistsException e) {
           throw new ControlledException(vmd.getDaoTag().getSourceLocation(),

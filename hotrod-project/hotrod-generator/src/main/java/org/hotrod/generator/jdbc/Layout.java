@@ -127,7 +127,8 @@ public class Layout {
   private void writeColumnProperties(final List<ColumnMetadata> columns) throws IOException {
     for (ColumnMetadata cm : columns) {
       String javaType = resolveType(cm);
-      w.println("  protected ", ExternalClass.of(javaType), " " + cm.getId().getJavaMemberName() + " = null;");
+      w.println("  protected ", ExternalClass.of(javaType),
+          " " + cm.getId().getJavaMemberName() + " = null; // " + cm.getTypeName());
     }
     w.println();
   }

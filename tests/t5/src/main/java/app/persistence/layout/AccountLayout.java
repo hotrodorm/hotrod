@@ -15,14 +15,14 @@ public class AccountLayout implements Serializable {
 
   // Layout Properties (table columns)
 
-  protected Integer id = null;
-  protected String name = null;
-  protected AccountType type = null;
-  protected Double balance = null;
-  protected Boolean active = null;
-  protected byte[] clientPhoto = null;
-  protected LocalDateTime updatedAt = null;
-  protected Integer version = null;
+  protected Integer id = null; // INTEGER
+  protected String name = null; // CHARACTER VARYING
+  protected AccountType type = null; // CHARACTER VARYING
+  protected Double balance = null; // INTEGER
+  protected Boolean active = null; // INTEGER
+  protected byte[] clientPhoto = null; // BINARY LARGE OBJECT
+  protected LocalDateTime updatedAt = null; // TIMESTAMP
+  protected Integer version = null; // INTEGER
 
   // getters & setters
 

@@ -38,6 +38,7 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
   private String catalog;
   private String schema;
   private String columnName;
+  private String objectType;
   private String tableName;
 
   private Id id;
@@ -86,6 +87,7 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
     this.schema = c.getTable().getSchema();
     this.columnName = c.getName();
     log.fine("this.columnName=" + this.columnName);
+    this.objectType = c.getTable().getType();
     this.tableName = c.getTable().getName();
 
     this.tag = columnTag;
@@ -194,6 +196,7 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
     this.dataSet = cm.dataSet;
     this.c = cm.c;
     this.columnName = cm.columnName;
+    this.objectType = cm.objectType;
     this.tableName = cm.tableName;
 
     this.id = cm.id;
@@ -440,6 +443,10 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
   @Override
   public String getSchema() {
     return this.schema;
+  }
+
+  public String getObjectType() {
+    return objectType;
   }
 
   @Override

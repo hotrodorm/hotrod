@@ -12,11 +12,11 @@ public class EmployeeBranchLayout implements Serializable {
 
   // Layout Properties (view columns)
 
-  protected Integer id = null;
-  protected String name = null;
-  protected Integer branchId = null;
-  protected Integer vip = null;
-  protected String region = null;
+  protected Integer id = null; // INTEGER
+  protected String name = null; // CHARACTER VARYING
+  protected Integer branchId = null; // INTEGER
+  protected Integer vip = null; // INTEGER
+  protected String region = null; // CHARACTER VARYING
 
   // getters & setters
 

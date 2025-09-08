@@ -482,9 +482,15 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
       } catch (InvalidIdentifierException e) {
         String msg = "Invalid identifier name for column '" + c.getName() + "': " + e.getMessage();
         throw new InvalidConfigurationFileException(viewTag, msg);
-      } catch (UnresolvableDataTypeException e) {
-        throw new UnresolvableDataTypeException(e.getColumnMetadata(), "Could not resolve data type for column "
-            + viewTag.getId().getCanonicalSQLName() + "." + c.getName() + " of type '" + c.getTypeName() + "'");
+//      } catch (UnresolvableDataTypeException e) {
+//        DriverColumnMetaData m = e.getColumnMetadata();
+//        throw new ControlledException("The column '" + m.getName() + "' on the " + m.getObjectType() + " '"
+//            + m.getTable() + "' has the type " + m.getTypeName() + ", and there's no dialect default type for it. "
+//            + "Please specify a type (or a converter) either using a <column> tag, "
+//            + "or a rule in the <type-solver> tag.");
+//
+//        throw new UnresolvableDataTypeException(e.getColumnMetadata(), "Could not resolve data type for column "
+//            + viewTag.getId().getCanonicalSQLName() + "." + c.getName() + " of type '" + c.getTypeName() + "'");
       }
     }
     return lcm;

@@ -27,6 +27,8 @@
 <!-- 
   <table name="product" />
   <table name="branch" />
+  <table name="other" />
+  <view name="v_other" />
    -->
 
   <view name="employee_branch" />
@@ -34,6 +36,7 @@
 
   <table name="vehicle" />
   <table name="land" />
+
    
   <table name="account">
     <column name="balance" java-type="Double" />
@@ -52,7 +55,8 @@ SELECT name, vip, id
 FROM employee
 WHERE branch_id = 101
     </select> 
-    
+<!-- 
+     -->
     <query method="updateEmployees">
       update employee SET id = id
     </query>
@@ -60,9 +64,13 @@ WHERE branch_id = 101
   </table>
 
 <!-- 
+    <select method="getOthers" vo="Abv">
+SELECT * FROM other
+    </select> 
  -->
   <dao name="SalesDAO">
     <sequence name="hired_seq" method="getHiredNextValue" />
+
 
     <select method="findBigAccounts" vo="BigAccount">
        <column name="ibt_balance" java-name="grossBalance" />

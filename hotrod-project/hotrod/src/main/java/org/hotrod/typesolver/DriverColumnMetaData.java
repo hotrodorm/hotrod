@@ -6,6 +6,8 @@ public interface DriverColumnMetaData {
 
   String getSchema(); // Only for database object columns
 
+  String getObjectType();
+
   String getTable(); // Only for database object columns
 
   String getName();
