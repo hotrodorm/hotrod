@@ -40,7 +40,7 @@ List<Tuple2<Invoice, Client>> rows = sql
   .tuples()
   .from(i)
   .join(c, c.id.eq(i.clientId))
-  .where(c.branchId.eq("Main"))
+  .where(c.branchId.upper().like("%SOUTH%"))
   .orderBy(c.id, i.purchaseDate.desc())
   .execute();
 
