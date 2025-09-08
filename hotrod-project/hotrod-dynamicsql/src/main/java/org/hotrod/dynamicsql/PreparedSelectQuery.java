@@ -24,7 +24,7 @@ public class PreparedSelectQuery<R> extends PreparedQuery {
 
   public List<R> execute(Connection conn) throws SQLException {
     try (PreparedStatement ps = prepareStatement(conn)) {
-      applyParameters(ps);
+      applyParameters(ps, conn);
       try (ResultSet rs = ps.executeQuery()) {
         this.rr.discoverColumns(rs);
         List<R> rows = new ArrayList<>();
@@ -39,7 +39,7 @@ public class PreparedSelectQuery<R> extends PreparedQuery {
 
   public R executeOne(Connection conn) throws SQLException {
     try (PreparedStatement ps = prepareStatement(conn)) {
-      applyParameters(ps);
+      applyParameters(ps, conn);
       try (ResultSet rs = ps.executeQuery()) {
         this.rr.discoverColumns(rs);
         if (rs.next()) {
@@ -59,10 +59,10 @@ public class PreparedSelectQuery<R> extends PreparedQuery {
     return conn.prepareStatement(super.sql);
   }
 
-  void applyParameters(PreparedStatement ps) throws SQLException {
+  void applyParameters(PreparedStatement ps, Connection conn) throws SQLException {
     int ordinal = 1;
     for (ParameterInstance p : super.parameters) {
-      p.applyTo(ps, ordinal++);
+      p.applyTo(ps, ordinal++, conn);
     }
   }
 

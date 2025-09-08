@@ -18,7 +18,7 @@ public class PreparedInsertNoRetrievalQuery extends InsertExecutor {
   public Long execute(Connection conn, String sql, List<ParameterInstance> parameters, String sequencePreFetchSQL,
       String primaryKeyParameterName, String[] generatedKeysNames) throws SQLException, DynamicExpressionException {
     try (PreparedStatement ps = conn.prepareStatement(sql)) {
-      super.applyParameters(parameters, ps);
+      super.applyParameters(parameters, ps, conn);
       ps.executeUpdate();
       return null;
     }

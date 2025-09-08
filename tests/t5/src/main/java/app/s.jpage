@@ -1,0 +1,4 @@
+int domain = 4;    
+int x = 'A' + domain;
+    String y= "" + (char) x;
+    System.out.println("y="+y);

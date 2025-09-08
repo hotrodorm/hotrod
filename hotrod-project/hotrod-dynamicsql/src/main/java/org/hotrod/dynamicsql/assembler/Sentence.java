@@ -1,5 +1,6 @@
 package org.hotrod.dynamicsql.assembler;
 
+import org.hotrod.converter.TypeConverter;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.segments.BindSegment;
 import org.hotrod.dynamicsql.segments.ParameterInjectionSegment;
@@ -28,12 +29,22 @@ public abstract class Sentence<M extends Sentence<?, ?>, P> extends AbstractSent
   }
 
   public M parameter(String name) {
-    this.segments.add(new ParameterNotNullableSegment(this.factory, name));
+    this.segments.add(new ParameterNotNullableSegment(this.factory, name, null));
+    return this.me;
+  }
+
+  public M parameter(String name, TypeConverter<?, ?> converter) {
+    this.segments.add(new ParameterNotNullableSegment(this.factory, name, converter));
     return this.me;
   }
 
   public M parameterNullable(String name, int sqlType) {
-    this.segments.add(new ParameterNullableSegment(this.factory, name, sqlType));
+    this.segments.add(new ParameterNullableSegment(this.factory, name, sqlType, null));
+    return this.me;
+  }
+
+  public M parameterNullable(String name, int sqlType, TypeConverter<?, ?> converter) {
+    this.segments.add(new ParameterNullableSegment(this.factory, name, sqlType, converter));
     return this.me;
   }
 
@@ -43,7 +54,12 @@ public abstract class Sentence<M extends Sentence<?, ?>, P> extends AbstractSent
   }
 
   public M variable(String name) {
-    this.segments.add(new VariableSegment(this.factory, name));
+    this.segments.add(new VariableSegment(this.factory, name, null));
+    return this.me;
+  }
+
+  public M variable(String name, TypeConverter<?, ?> converter) {
+    this.segments.add(new VariableSegment(this.factory, name, converter));
     return this.me;
   }
 

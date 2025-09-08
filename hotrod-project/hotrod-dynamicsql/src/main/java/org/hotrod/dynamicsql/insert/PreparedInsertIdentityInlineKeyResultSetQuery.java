@@ -21,17 +21,17 @@ public class PreparedInsertIdentityInlineKeyResultSetQuery extends InsertExecuto
       String primaryKeyParameterName, String[] generatedKeysNames) throws SQLException, DynamicExpressionException {
     if (generatedKeysNames == null || generatedKeysNames.length == 0) {
       try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-        return execute(parameters, ps);
+        return execute(parameters, ps, conn);
       }
     } else {
       try (PreparedStatement ps = conn.prepareStatement(sql, generatedKeysNames)) {
-        return execute(parameters, ps);
+        return execute(parameters, ps, conn);
       }
     }
   }
 
-  private Long execute(List<ParameterInstance> parameters, PreparedStatement ps) throws SQLException {
-    super.applyParameters(parameters, ps);
+  private Long execute(List<ParameterInstance> parameters, PreparedStatement ps, Connection conn) throws SQLException {
+    super.applyParameters(parameters, ps, conn);
     ps.executeUpdate();
     try (ResultSet rs = ps.getGeneratedKeys()) {
       if (rs.next()) {

@@ -5,18 +5,18 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import app.persistence.dao.OtherDAO;
-import app.persistence.layout.OtherLayout;
+import app.persistence.dao.CoinDAO;
+import app.persistence.layout.CoinLayout;
 
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class Other extends OtherLayout {
+public class Coin extends CoinLayout {
 
   private static final long serialVersionUID = 1L;
 
   @SuppressWarnings("unused")
   @Autowired
-  private OtherDAO otherDAO;
+  private CoinDAO coinDAO;
 
   // Add custom code below.
 

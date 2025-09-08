@@ -1,5 +1,7 @@
 package org.hotrod.dynamicsql.parameters;
 
+import java.sql.Connection;
+
 /**
  * <pre>
  * - QuerySegment
@@ -18,6 +20,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.hotrod.converter.TypeConverter;
 import org.hotrod.dynamicsql.segments.DynamicContentSegment;
 
 public abstract class ParameterInstance {
@@ -40,11 +43,13 @@ public abstract class ParameterInstance {
   private String name;
   private Integer index;
   protected Object value;
+  protected TypeConverter<?, ?> converter;
 
-  public ParameterInstance(String name, Integer index, Object value) {
+  public ParameterInstance(String name, Integer index, Object value, TypeConverter<?, ?> converter) {
     this.name = name;
     this.index = index;
     this.value = value;
+    this.converter = converter;
   }
 
   public String getName() {
@@ -55,6 +60,6 @@ public abstract class ParameterInstance {
     return this.value;
   }
 
-  public abstract void applyTo(PreparedStatement ps, int ordinal) throws SQLException;
+  public abstract void applyTo(PreparedStatement ps, int ordinal, Connection conn) throws SQLException;
 
 }

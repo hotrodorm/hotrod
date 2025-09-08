@@ -20,7 +20,7 @@ public class PreparedInsertSequenceInlineStandardResultsetQuery extends InsertEx
   public Long execute(Connection conn, String sql, List<ParameterInstance> parameters, String sequencePreFetchSQL,
       String primaryKeyParameterName, String[] generatedKeysNames) throws SQLException, DynamicExpressionException {
     try (PreparedStatement ps = conn.prepareStatement(sql)) {
-      super.applyParameters(parameters, ps);
+      super.applyParameters(parameters, ps, conn);
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
           return rs.getLong(1);

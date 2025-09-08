@@ -235,7 +235,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
         .if_("f.id != null").literal("id = ").parameter("f.id").endif()
         .if_("f.fullName != null").literal("\"NAME\" = ").parameter("f.fullName").endif()
         .if_("f.branchId != null").literal("branch_id = ").parameter("f.branchId").endif()
-        .if_("f.vip != null").literal("vip = ").parameter("f.vip").endif()
+        .if_("f.vip != null").literal("vip = ").parameter("f.vip", this.converter0).endif()
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
@@ -278,7 +278,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       .literal("  ").parameterNullable("l.id", Types.INTEGER).literaln(",")
       .literal("  ").parameterNullable("l.fullName", Types.VARCHAR).literaln(",")
       .literal("  ").parameterNullable("l.branchId", Types.INTEGER).literaln(",")
-      .literal("  ").parameterNullable("l.vip", Types.INTEGER)
+      .literal("  ").parameterNullable("l.vip", Types.INTEGER, this.converter0)
       .literal(")")
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
@@ -313,7 +313,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       .if_("l.id != null").parameter("l.id").literal(", ").endif()
       .if_("l.fullName != null").parameter("l.fullName").literal(", ").endif()
       .if_("l.branchId != null").parameter("l.branchId").literal(", ").endif()
-      .if_("l.vip != null").parameter("l.vip").endif()
+      .if_("l.vip != null").parameter("l.vip", this.converter0).endif()
       .literal(")")
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
@@ -343,7 +343,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       .literal("  id = ").parameterNullable("m.id", Types.INTEGER).literaln(",")
       .literal("  \"NAME\" = ").parameterNullable("m.fullName", Types.VARCHAR).literaln(",")
       .literal("  branch_id = ").parameterNullable("m.branchId", Types.INTEGER).literaln(",")
-      .literal("  vip = ").parameterNullable("m.vip", Types.INTEGER)
+      .literal("  vip = ").parameterNullable("m.vip", Types.INTEGER, this.converter0)
       .literaln("\nWHERE " + "id = ").parameter("m.id")
     .endModificationQuery();
   }
@@ -373,13 +373,13 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
         .if_("v.id != null").literal("id = ").parameter("v.id").endif()
         .if_("v.fullName != null").literal("\"NAME\" = ").parameter("v.fullName").endif()
         .if_("v.branchId != null").literal("branch_id = ").parameter("v.branchId").endif()
-        .if_("v.vip != null").literal("vip = ").parameter("v.vip").endif()
+        .if_("v.vip != null").literal("vip = ").parameter("v.vip", this.converter0).endif()
       .endset()
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
         .if_("e.fullName != null").literal("\"NAME\" = ").parameter("e.fullName").endif()
         .if_("e.branchId != null").literal("branch_id = ").parameter("e.branchId").endif()
-        .if_("e.vip != null").literal("vip = ").parameter("e.vip").endif()
+        .if_("e.vip != null").literal("vip = ").parameter("e.vip", this.converter0).endif()
       .endwhere()
       .endModificationQuery();
   }
@@ -448,7 +448,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
         .if_("e.fullName != null").literal("\"NAME\" = ").parameter("e.fullName").endif()
         .if_("e.branchId != null").literal("branch_id = ").parameter("e.branchId").endif()
-        .if_("e.vip != null").literal("vip = ").parameter("e.vip").endif()
+        .if_("e.vip != null").literal("vip = ").parameter("e.vip", this.converter0).endif()
       .endwhere()
       .endModificationQuery();
   }

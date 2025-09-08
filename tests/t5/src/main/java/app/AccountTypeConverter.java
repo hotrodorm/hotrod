@@ -32,7 +32,7 @@ public class AccountTypeConverter implements TypeConverter<String, AccountType> 
 
   @Override
   public String encode(AccountType domain, Connection conn) {
-    return domain == null ? null : domain.name();
+    return domain == null ? null : domain.name().substring(0, 3);
   }
 
 }

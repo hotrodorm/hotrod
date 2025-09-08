@@ -2,6 +2,7 @@ package org.hotrod.dynamicsql.assembler;
 
 import java.util.logging.Logger;
 
+import org.hotrod.converter.TypeConverter;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.DynamicExpressionFactoryConfig;
 import org.hotrod.dynamicsql.Parameters;
@@ -46,9 +47,19 @@ public class DynamicSQL {
     return s.parameter(name);
   }
 
+  public Sequence parameter(String name, TypeConverter<?, ?> converter) {
+    Sequence s = new Sequence(this.factory);
+    return s.parameter(name, converter);
+  }
+
   public Sequence parameterNullable(String name, int sqlType) {
     Sequence s = new Sequence(this.factory);
     return s.parameterNullable(name, sqlType);
+  }
+
+  public Sequence parameterNullable(String name, int sqlType, TypeConverter<?, ?> converter) {
+    Sequence s = new Sequence(this.factory);
+    return s.parameterNullable(name, sqlType, converter);
   }
 
   public Sequence parameterInjection(String name) {
@@ -59,6 +70,11 @@ public class DynamicSQL {
   public Sequence variable(String name) {
     Sequence s = new Sequence(this.factory);
     return s.variable(name);
+  }
+
+  public Sequence variable(String name, TypeConverter<?, ?> converter) {
+    Sequence s = new Sequence(this.factory);
+    return s.variable(name, converter);
   }
 
   public If<Sequence> if_(String test) {

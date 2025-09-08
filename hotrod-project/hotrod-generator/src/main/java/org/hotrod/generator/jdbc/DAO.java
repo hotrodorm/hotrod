@@ -750,6 +750,8 @@ public class DAO {
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String memId = cm.getId().getJavaMemberName();
       String jdbcType = cm.getType().getJDBCShortType();
+      String converterParam = cm.getConverter() == null ? ""
+          : ", this." + this.converterProperties.get(cm.getConverter().getName());
 
       if (byExample) {
         if (ol != null && ol.getStrategy() == OptimisticLockingStrategy.TIMESTAMP && cm.isOLTimestampColumn()) {
@@ -757,7 +759,8 @@ public class DAO {
               + (n < coln ? ".literaln(\",\")" : ""));
         } else {
           w.println("      .if_(\"l." + SUtil.escapeJavaString(memId) + " != null\").parameter(\"l."
-              + SUtil.escapeJavaString(memId) + "\")" + (n < coln ? ".literal(\", \")" : "") + ".endif()");
+              + SUtil.escapeJavaString(memId) + "\"" + converterParam + ")" + (n < coln ? ".literal(\", \")" : "")
+              + ".endif()");
         }
       } else {
 
@@ -768,13 +771,13 @@ public class DAO {
                 + "\")" + (n < coln ? ".literaln(\",\")" : ""));
           } else {
             w.println("      .literal(\"  \").parameterNullable(\"l." + SUtil.escapeJavaString(memId) + "\", ",
-                Types.class, "." + jdbcType + ")" + (n < coln ? ".literaln(\",\")" : ""));
+                Types.class, "." + jdbcType + converterParam + ")" + (n < coln ? ".literaln(\",\")" : ""));
           }
         }
         if (cm.belongsToPK() && cm.getSequenceId() != null) {
           if (mechanics.getMode() == PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH) {
             w.println("      .literal(\"  \").parameterNullable(\"l." + SUtil.escapeJavaString(memId) + "\", ",
-                Types.class, "." + jdbcType + ")" + (n < coln ? ".literaln(\",\")" : ""));
+                Types.class, "." + jdbcType + converterParam + ")" + (n < coln ? ".literaln(\",\")" : ""));
           } else {
             String si = mechanics.getSequenceInlineSQL();
             w.println(
@@ -783,7 +786,7 @@ public class DAO {
         }
         if (cm.belongsToPK() && cm.getSequenceId() == null && cm.getAutogenerationType() == null) {
           w.println("      .literal(\"  \").parameterNullable(\"l." + SUtil.escapeJavaString(memId) + "\", ",
-              Types.class, "." + jdbcType + ")" + (n < coln ? ".literaln(\",\")" : ""));
+              Types.class, "." + jdbcType + converterParam + ")" + (n < coln ? ".literaln(\",\")" : ""));
         }
 
         // Never include column
@@ -794,7 +797,8 @@ public class DAO {
         // Conditionally include column
         if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
           w.println("      .if_(\"l." + SUtil.escapeJavaString(memId) + " != null\").parameter(\"l."
-              + SUtil.escapeJavaString(memId) + "\")" + (n < coln ? ".literal(\", \")" : "") + ".endif()");
+              + SUtil.escapeJavaString(memId) + "\"" + converterParam + ")" + (n < coln ? ".literal(\", \")" : "")
+              + ".endif()");
         }
 
       }
@@ -1004,9 +1008,11 @@ public class DAO {
       int n = 1;
       for (ColumnMetadata cm : this.metadata.getColumns()) {
         String sqlId = cm.getId().getRenderedSQLName();
+        String converterParam = cm.getConverter() == null ? ""
+            : ", this." + this.converterProperties.get(cm.getConverter().getName());
         if (ol != null && cm.isOLVersionNumberColumn()) {
           w.println("      .literal(\"  " + SUtil.escapeJavaString(sqlId) + " = " + SUtil.escapeJavaString(sqlId)
-              + " + 1\")" + (n < coln ? ".literaln(\",\")" : ""));
+              + " + 1\"" + converterParam + ")" + (n < coln ? ".literaln(\",\")" : ""));
         } else if (ol != null && cm.isOLTimestampColumn()) {
           w.println("      .literal(\"  " + SUtil.escapeJavaString(sqlId) + " = "
               + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\")"
@@ -1017,7 +1023,7 @@ public class DAO {
           w.println(
               "      .literal(\"  " + SUtil.escapeJavaString(sqlId) + " = \").parameterNullable(\"m."
                   + SUtil.escapeJavaString(memId) + "\", ",
-              Types.class, "." + jdbcType + ")" + (n < coln ? ".literaln(\",\")" : ""));
+              Types.class, "." + jdbcType + converterParam + ")" + (n < coln ? ".literaln(\",\")" : ""));
         }
         n++;
       }
@@ -1517,6 +1523,8 @@ public class DAO {
     w.println("      .set()");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String sqlId = cm.getId().getRenderedSQLName();
+      String converterParam = cm.getConverter() == null ? ""
+          : ", this." + this.converterProperties.get(cm.getConverter().getName());
       if (ol != null && cm.isOLVersionNumberColumn()) {
         w.println("        .if_(\"true\").literal(\"" + ns + "." + SUtil.escapeJavaString(sqlId) + " = "
             + SUtil.escapeJavaString(sqlId) + " + 1\").endif()");
@@ -1526,8 +1534,8 @@ public class DAO {
       } else {
         String memId = cm.getId().getJavaMemberName();
         w.println("        .if_(\"" + ns + "." + SUtil.escapeJavaString(memId) + " != null\").literal(\""
-            + SUtil.escapeJavaString(sqlId) + " = \").parameter(\"" + ns + "." + SUtil.escapeJavaString(memId)
-            + "\").endif()");
+            + SUtil.escapeJavaString(sqlId) + " = \").parameter(\"" + ns + "." + SUtil.escapeJavaString(memId) + "\""
+            + converterParam + ").endif()");
       }
     }
     w.println("      .endset()");
@@ -1556,8 +1564,10 @@ public class DAO {
     for (ColumnMetadata cm : pk.getColumns()) {
       String memId = cm.getId().getJavaMemberName();
       String sqlId = cm.getId().getRenderedSQLName();
+      String converterParam = cm.getConverter() == null ? ""
+          : ", this." + this.converterProperties.get(cm.getConverter().getName());
       w.println("      .literaln(\"" + SUtil.escapeJavaString(sep.render()) + "\" + \"" + SUtil.escapeJavaString(sqlId)
-          + " = \").parameter(\"" + ns + "." + SUtil.escapeJavaString(memId) + "\")");
+          + " = \").parameter(\"" + ns + "." + SUtil.escapeJavaString(memId) + "\"" + converterParam + ")");
     }
   }
 
@@ -1567,10 +1577,12 @@ public class DAO {
       String memId = cm.getId().getJavaMemberName();
       String sqlId = cm.getId().getRenderedSQLName();
       String jdbcType = cm.getType().getJDBCShortType();
+      String converterParam = cm.getConverter() == null ? ""
+          : ", this." + this.converterProperties.get(cm.getConverter().getName());
       w.println(
           "      .literaln(\"" + SUtil.escapeJavaString(sep.render()) + "\" + \"" + SUtil.escapeJavaString(sqlId)
               + " = \").parameter(\"" + ns + "." + SUtil.escapeJavaString(memId) + "\", ",
-          Types.class, "." + jdbcType + ")");
+          Types.class, "." + jdbcType + converterParam + ")");
     }
   }
 
@@ -1579,8 +1591,10 @@ public class DAO {
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String memId = cm.getId().getJavaMemberName();
       String sqlId = cm.getId().getRenderedSQLName();
+      String converterParam = cm.getConverter() == null ? ""
+          : ", this." + this.converterProperties.get(cm.getConverter().getName());
       w.println("        .if_(\"" + ns + "." + memId + " != null\").literal(\"" + SUtil.escapeJavaString(sqlId)
-          + " = \").parameter(\"" + ns + "." + memId + "\").endif()");
+          + " = \").parameter(\"" + ns + "." + memId + "\"" + converterParam + ").endif()");
     }
     w.println("      .endwhere()");
   }

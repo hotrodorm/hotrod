@@ -24,6 +24,9 @@
   <converter name="account_type_stored_as_char" java-type="app.AccountTypeConverter.AccountType" java-raw-type="java.lang.String"
     class="app.AccountTypeConverter" />
 
+  <converter name="coin_type_stored_as_char" java-type="java.lang.Integer" java-raw-type="java.lang.String"
+    class="app.CoinTypeConverter" />
+
 <!-- 
   <table name="product" />
   <table name="branch" />
@@ -37,6 +40,9 @@
   <table name="vehicle" />
   <table name="land" />
 
+  <table name="coin">
+    <column name="type" converter="coin_type_stored_as_char" />
+  </table>
    
   <table name="account">
     <column name="balance" java-type="Double" />

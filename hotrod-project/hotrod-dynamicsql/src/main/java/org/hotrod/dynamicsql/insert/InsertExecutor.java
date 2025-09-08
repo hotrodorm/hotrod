@@ -14,10 +14,11 @@ public abstract class InsertExecutor {
       String sequencePreFetchSQL, String primaryKeyParameterName, String[] generatedKeysNames)
       throws SQLException, DynamicExpressionException;
 
-  protected void applyParameters(List<ParameterInstance> parameters, PreparedStatement ps) throws SQLException {
+  protected void applyParameters(List<ParameterInstance> parameters, PreparedStatement ps, Connection conn)
+      throws SQLException {
     int ordinal = 1;
     for (ParameterInstance p : parameters) {
-      p.applyTo(ps, ordinal++);
+      p.applyTo(ps, ordinal++, conn);
     }
   }
 

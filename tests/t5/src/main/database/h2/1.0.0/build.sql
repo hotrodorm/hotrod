@@ -162,6 +162,10 @@ join branch b on b.id = e.branch_id;
 create sequence employee_seq start with 150;
 create sequence hired_seq start with 300;
 
+create table coin (
+  type char(1) primary key not null,
+  name varchar(10)
+);
   
 create table invoice (
   id int,

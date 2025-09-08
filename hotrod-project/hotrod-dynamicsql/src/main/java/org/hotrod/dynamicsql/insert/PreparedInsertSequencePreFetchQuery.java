@@ -38,7 +38,7 @@ public class PreparedInsertSequencePreFetchQuery extends InsertExecutor {
     }
 
     try (PreparedStatement ps = conn.prepareStatement(sql)) {
-      super.applyParameters(parameters, ps);
+      super.applyParameters(parameters, ps, conn);
       ps.executeUpdate();
       return seq;
     }

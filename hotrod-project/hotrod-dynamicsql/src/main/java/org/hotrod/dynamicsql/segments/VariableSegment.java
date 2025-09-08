@@ -2,6 +2,7 @@ package org.hotrod.dynamicsql.segments;
 
 import java.util.logging.Logger;
 
+import org.hotrod.converter.TypeConverter;
 import org.hotrod.dynamicsql.DynamicExpression;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
@@ -16,11 +17,14 @@ public class VariableSegment extends DynamicContentSegment {
 
   private DynamicExpressionFactory factory;
   private String name;
+  private TypeConverter<?, ?> converter;
+
   private DynamicExpression nameExpression;
 
-  public VariableSegment(DynamicExpressionFactory factory, String name) {
+  public VariableSegment(DynamicExpressionFactory factory, String name, TypeConverter<?, ?> converter) {
     this.factory = factory;
     this.name = name;
+    this.converter = converter;
     this.nameExpression = this.factory.expression(this.name);
   }
 
@@ -29,7 +33,7 @@ public class VariableSegment extends DynamicContentSegment {
       throws DynamicExpressionException {
     Object v = this.nameExpression.evaluate(context, Object.class);
     Integer index = ParameterInstance.getCounterAndIncrement(this, loopNestingLevel);
-    VariableInstance is = new VariableInstance(this.name, index, v);
+    VariableInstance is = new VariableInstance(this.name, index, v, this.converter);
     sc.consume("?");
     sc.consume(is);
     return true;

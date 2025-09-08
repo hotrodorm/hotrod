@@ -31,7 +31,7 @@ public class DynCursor<R> implements Cursor<R> {
         this.ps.setFetchSize(fetchSize);
       }
 
-      q.applyParameters(this.ps);
+      q.applyParameters(this.ps, conn);
 
       this.rs = this.ps.executeQuery();
 

@@ -1,6 +1,7 @@
 package app;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -19,6 +20,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import app.AccountTypeConverter.AccountType;
 import app.persistence.dao.AccountDAO;
 import app.persistence.dao.AccountDAO.AccountTable;
 import app.persistence.dao.EmployeeDAO;
@@ -79,7 +81,9 @@ public class App {
     return args -> {
       log.info("[ Starting... ]");
 //      testA();
-      testQueries();
+      insertConverter();
+//      updateConverter();
+//      testQueries();
 //      testInsertNonId();
 //      selectByExample();
 //      testParseRow();
@@ -98,6 +102,36 @@ public class App {
 //      testNitro6();
       log.info("[ Ending ]");
     };
+  }
+
+  private void insertConverter() {
+    Account a = new Account();
+    a.setName("CHCC1");
+    a.setBalance(1111.1);
+    a.setUpdatedAt(LocalDateTime.now());
+    a.setVersion(1);
+
+    a.setType(AccountType.PEN1);
+    a.setActive(true);
+
+    Account inserted = this.accountDAO.insert(a);
+    System.out.println("inserted: " + inserted);
+
+    inserted.setType(AccountType.INV4);
+    int count = this.accountDAO.update(inserted);
+    System.out.println("updated: " + count);
+
+    Account example = new Account();
+    example.setType(AccountType.INV4);
+    count = this.accountDAO.delete(example);
+    System.out.println("updated: " + count);
+  }
+
+  private void updateConverter() {
+    Account a = this.accountDAO.select(123);
+    a.setActive(false);
+    int count = this.accountDAO.update(a);
+    System.out.println("updated: " + count);
   }
 
   private void testQueries() {
