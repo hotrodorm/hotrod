@@ -84,14 +84,15 @@ List<Row> rows = sql
 
 [CRUD](./hotrod-project/docs/docs-5/crud/README.md) provides a straightforward repertoire of database access methods that can access rows by primary keys, by example, or by predicates to execute SELECT, UPDATE, INSERT, and DELETE queries on the tables and view of the schema(s).
 
-Inserting a payment while retrieving the new primary key can be done as:
+Inserting a payment while retrieving the new primary key (in the column ID) can be done as:
 
 ```java
 Payment p = new Payment();
 p.setClientId(1205);
 p.setPaidAt(LocalDateTime.now());
 p.setAmount(100.00);
-Long id = this.paymentDAO.insert(p);
+Payment inserted = this.paymentDAO.insert(p);
+System.out.println("ID: " + inserted.getId()); // generated ID
 ```
 
 To find an employee by primary key:
