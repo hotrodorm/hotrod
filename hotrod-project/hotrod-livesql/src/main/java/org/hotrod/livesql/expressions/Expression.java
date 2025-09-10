@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.livesql.exceptions.LiveSQLException;
+import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.SShield;
@@ -15,7 +16,6 @@ import org.hotrod.livesql.queries.select.sets.CombinedSelectObject;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.util.ToString;
-import org.hotrod.utils.SUtil;
 
 public abstract class Expression extends SQLExpression {
 
@@ -151,7 +151,7 @@ public abstract class Expression extends SQLExpression {
 
   private List<Expression> expressions = new ArrayList<>();
   private List<CombinedSelectObject<?>> subqueries = new ArrayList<>();
-  private List<TableOrView> tablesOrViews = new ArrayList<>();
+  private List<TableOrView<?>> tablesOrViews = new ArrayList<>();
 
   protected void register(final Expression expression) {
     this.expressions.add(expression);
@@ -161,13 +161,17 @@ public abstract class Expression extends SQLExpression {
     this.subqueries.add(SShield.getCombinedSelect(subquery));
   }
 
-  protected void register(final TableOrView tableOrView) {
+  protected void register(final TableOrView<?> tableOrView) {
     this.tablesOrViews.add(tableOrView);
   }
 
   protected final void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
     for (Expression e : this.expressions) {
-      e.validateTableReferences(tableReferences, ag);
+      if (e instanceof EntityColumn) {
+        // ignore entity columns
+      } else {
+        e.validateTableReferences(tableReferences, ag);
+      }
     }
     for (CombinedSelectObject<?> s : this.subqueries) {
       if (s == null) {
@@ -175,7 +179,7 @@ public abstract class Expression extends SQLExpression {
       }
       s.validateTableReferences(tableReferences, ag);
     }
-    for (TableOrView t : this.tablesOrViews) {
+    for (TableOrView<?> t : this.tablesOrViews) {
       if (t == null) {
         throw new LiveSQLException("Table referenced in query cannot be null.", null);
       }

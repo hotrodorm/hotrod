@@ -119,22 +119,22 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   // PARSE ROW
 
-  public Employee parseRow(Map<String, Object> row, Connection conn) {
-    return parseRow(row, null, null, conn);
+  public Employee parseRow(Map<String, Object> row) {
+    return parseRow(row, null, null);
   }
 
-  public Employee parseRow(Map<String, Object> row, String prefix, Connection conn) {
-    return parseRow(row, prefix, null, conn);
+  public Employee parseRow(Map<String, Object> row, String prefix) {
+    return parseRow(row, prefix, null);
   }
 
-  public Employee parseRow(Map<String, Object> row, String prefix, String suffix, Connection conn) {
+  public Employee parseRow(Map<String, Object> row, String prefix, String suffix) {
     Employee m = applicationContext.getBean(Employee.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
     m.setId(CastUtil.toInteger((Number) row.get(p + "id" + s)));
     m.setFullName((String) row.get(p + "fullName" + s));
     m.setBranchId(CastUtil.toInteger((Number) row.get(p + "branchId" + s)));
-    m.setVip(this.converter0.decode((Integer) row.get(p + "vip" + s), conn));
+    m.setVip((Boolean) row.get(p + "vip" + s));
     return m;
   }
 

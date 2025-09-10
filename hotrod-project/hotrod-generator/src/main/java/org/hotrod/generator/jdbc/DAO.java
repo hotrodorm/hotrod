@@ -397,11 +397,11 @@ public class DAO {
     ExternalClass m = ExternalClass.of(this.model.getFullClassName());
 
     boolean hasConverters = false;
-    for (ColumnMetadata cm : this.metadata.getColumns()) {
-      if (cm.getConverter() != null) {
-        hasConverters = true;
-      }
-    }
+//    for (ColumnMetadata cm : this.metadata.getColumns()) {
+//      if (cm.getConverter() != null) {
+//        hasConverters = true;
+//      }
+//    }
 
     w.println();
     w.println("  // PARSE ROW");
@@ -443,21 +443,18 @@ public class DAO {
       String javaType = resolveType(cm);
       String memberProperty = cm.getId().getJavaMemberName();
 
-//      String setter = cm.getId().getJavaSetter();
-//      log.info("PARSEROW: " + OUtil.hc(this) + " md" + OUtil.hc(this.metadata) + " gc"
-//          + OUtil.hc(this.metadata.getColumns()) + " cm" + OUtil.hc(cm) + " "
-//          + this.metadata.getId().getCanonicalSQLName() + "." + cm.getName() + " setter=" + setter);
+//      if (cm.getConverter() != null) {
+//        ConverterTag ct = cm.getConverter();
+//        String property = this.converterProperties.get(ct.getName());
+//
+//        ExternalClass rt = ExternalClass.of(ct.getRawClass());
+//
+//        w.println("    m." + cm.getId().getJavaSetter() + "(this." + property + ".decode((", rt,
+//            ") row.get(p + \"" + JUtils.escapeJavaString(memberProperty) + "\" + s), conn));");
+//
+//      } else
 
-      if (cm.getConverter() != null) {
-        ConverterTag ct = cm.getConverter();
-        String property = this.converterProperties.get(ct.getName());
-
-        ExternalClass rt = ExternalClass.of(ct.getRawClass());
-
-        w.println("    m." + cm.getId().getJavaSetter() + "(this." + property + ".decode((", rt,
-            ") row.get(p + \"" + JUtils.escapeJavaString(memberProperty) + "\" + s), conn));");
-
-      } else if ("java.lang.Byte".equals(javaType) || //
+      if ("java.lang.Byte".equals(javaType) || //
           "java.lang.Short".equals(javaType) || //
           "java.lang.Integer".equals(javaType) || //
           "java.lang.Long".equals(javaType) || //

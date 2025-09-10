@@ -138,23 +138,23 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   // PARSE ROW
 
-  public Account parseRow(Map<String, Object> row, Connection conn) {
-    return parseRow(row, null, null, conn);
+  public Account parseRow(Map<String, Object> row) {
+    return parseRow(row, null, null);
   }
 
-  public Account parseRow(Map<String, Object> row, String prefix, Connection conn) {
-    return parseRow(row, prefix, null, conn);
+  public Account parseRow(Map<String, Object> row, String prefix) {
+    return parseRow(row, prefix, null);
   }
 
-  public Account parseRow(Map<String, Object> row, String prefix, String suffix, Connection conn) {
+  public Account parseRow(Map<String, Object> row, String prefix, String suffix) {
     Account m = applicationContext.getBean(Account.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
     m.setId(CastUtil.toInteger((Number) row.get(p + "id" + s)));
     m.setName((String) row.get(p + "name" + s));
-    m.setType(this.converter0.decode((String) row.get(p + "type" + s), conn));
+    m.setType((AccountType) row.get(p + "type" + s));
     m.setBalance(CastUtil.toDouble((Number) row.get(p + "balance" + s)));
-    m.setActive(this.converter1.decode((Integer) row.get(p + "active" + s), conn));
+    m.setActive((Boolean) row.get(p + "active" + s));
     m.setClientPhoto((byte[]) row.get(p + "clientPhoto" + s));
     m.setUpdatedAt((LocalDateTime) row.get(p + "updatedAt" + s));
     m.setVersion(CastUtil.toInteger((Number) row.get(p + "version" + s)));

@@ -87,8 +87,9 @@ public class App {
     return args -> {
       log.info("[ Starting... ]");
 //      testA();
+      testParseRow();
 //      insertConverter();
-      converterOnPK();
+//      converterOnPK();
 //      updateConverter();
 //      testQueries();
 //      testInsertNonId();
@@ -109,6 +110,27 @@ public class App {
 //      testNitro6();
       log.info("[ Ending ]");
     };
+  }
+
+  private void testParseRow() {
+    AccountTable a = this.accountDAO.newTable();
+    CoinTable c = this.coinDAO.newTable();
+    List<Row> rows = this.sql.select( //
+        a.star().as(ac -> "a:" + ac.getProperty()), //
+        c.star().as(cc -> "c:" + cc.getProperty()) //
+    ).from(a) //
+        .crossJoin(c) //
+        .where( //
+//            c.name.like("F%")
+            a.balance.gt(400).and(c.name.like("F%"))) //
+        .execute();
+    for (Row r : rows) {
+      System.out.println("r=" + r);
+      Account pa = this.accountDAO.parseRow(r, "a:");
+      System.out.println("pa=" + pa);
+      Coin pc = this.coinDAO.parseRow(r, "c:");
+      System.out.println("pc=" + pc);
+    }
   }
 
   private void insertConverter() {
@@ -166,11 +188,11 @@ public class App {
 
   private void testQueries() {
 
-    int rows = this.employeeDAO.updateEmployees();
-    System.out.println("updated employees=" + rows);
-
-    rows = this.salesDAO.deleteAccounts();
-    System.out.println("deleted accounts=" + rows);
+//    int rows = this.employeeDAO.updateEmployees();
+//    System.out.println("updated employees=" + rows);
+//
+//    rows = this.salesDAO.deleteAccounts();
+//    System.out.println("deleted accounts=" + rows);
 
   }
 
