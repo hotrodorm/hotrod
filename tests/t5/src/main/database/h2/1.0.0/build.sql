@@ -100,6 +100,7 @@ create table other (
 
 create view v_other as select * from other;
 
+
 create table product (
   id int,
   type varchar(6),
@@ -154,6 +155,8 @@ insert into employee (id, name, branch_id, vip) values
   (32, 'Jeanne', 104, true),
   (33, 'Malcolm', 107, false);
 
+--create materialized view mv_employee as select * from employee where branch_id < 105;
+  
 create view employee_branch as
 select e.*, b.region
 from employee e
@@ -166,6 +169,10 @@ create table coin (
   type char(1) primary key not null,
   name varchar(10)
 );
+
+insert into coin (type, name) values
+  ('f', 'Franc'),
+  ('e', 'Euro');
   
 create table invoice (
   id int,

@@ -45,6 +45,7 @@ import org.hotrod.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
+import org.hotrod.livesql.util.CastUtil;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.utils.SQLUtil;
 import org.springframework.beans.BeansException;
@@ -107,19 +108,19 @@ public class CoinDAO implements Serializable, ApplicationContextAware {
 
   // PARSE ROW
 
-  public Coin parseRow(Map<String, Object> row, Connection conn) {
-    return parseRow(row, null, null, conn);
+  public Coin parseRow(Map<String, Object> row) {
+    return parseRow(row, null, null);
   }
 
-  public Coin parseRow(Map<String, Object> row, String prefix, Connection conn) {
-    return parseRow(row, prefix, null, conn);
+  public Coin parseRow(Map<String, Object> row, String prefix) {
+    return parseRow(row, prefix, null);
   }
 
-  public Coin parseRow(Map<String, Object> row, String prefix, String suffix, Connection conn) {
+  public Coin parseRow(Map<String, Object> row, String prefix, String suffix) {
     Coin m = applicationContext.getBean(Coin.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
-    m.setType(this.converter0.decode((String) row.get(p + "type" + s), conn));
+    m.setType(CastUtil.toInteger((Number) row.get(p + "type" + s)));
     m.setName((String) row.get(p + "name" + s));
     return m;
   }

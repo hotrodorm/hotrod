@@ -1,0 +1,34 @@
+<hotrod>
+
+  <generators>
+    <jdbc>
+    </jdbc>
+  </generators>
+
+<!-- 
+  <table name="chars" />
+  <table name="numbers" />
+  <table name="dates" />
+  <table name="binaries" />
+  <table name="other" />
+
+  <table name="branch" />
+
+  <enum name="category" name-column="name" />
+
+  <dao name="SearchQueries">
+    <select method="searchInvoices" vo="SInvoice">
+      select * from invoice
+    </select>
+  </dao>
+
+  <fragment file="./reporting.xml" />
+ -->
+
+  <table name="EMploYEE" />
+
+<!--
+  <view name="mv_employee" />
+-->
+  
+</hotrod>

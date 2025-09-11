@@ -37,6 +37,10 @@ public class ConvertedColumn<R, D> extends EquatableExpression implements Entity
     super.setTypeHandler(handler);
   }
 
+  protected void register(final Expression expression) {
+    // Nothing to do; entity columns cannot register sub expressions
+  }
+
   public BooleanSyntaxExpression eq(final D d) {
     return new ConvertedEqual<R, D>(this, this.converter, d);
   }
