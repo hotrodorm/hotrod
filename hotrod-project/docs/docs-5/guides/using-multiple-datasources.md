@@ -317,11 +317,11 @@ public class App {
   private InvoiceDAO invoiceDAO;
 
   @Autowired
-  @Qualifier("liveSQL:accounting") // bean name defined in DataSourceConfig1.java
+  @Qualifier("liveSQL:accounting") // distinguishes the corresponding data source by the bean qualifier
   private LiveSQL sql1;
 
   @Autowired
-  @Qualifier("liveSQL:sales") // bean name defined in DataSourceConfig2.java
+  @Qualifier("liveSQL:sales") // distinguishes the corresponding data source by bean the qualifier
   private LiveSQL sql2;
 
   public static void main(String[] args) {
