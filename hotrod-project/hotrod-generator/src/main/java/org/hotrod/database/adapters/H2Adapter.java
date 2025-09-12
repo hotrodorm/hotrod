@@ -58,12 +58,13 @@ public class H2Adapter extends DatabaseAdapter {
   @Override
   public PropertyType getAdapterDefaultType(final ColumnMetadata m) throws UnresolvableDataTypeException {
 
-    log.fine("c.getDataType()=" + m.getDataType());
+//    log.info("c.getDataType()=" + m.getDataType() + ", precision=" + m.getPrecision() + ", scale=" + m.getScale());
 
     switch (m.getDataType()) {
 
     // Numeric types
 
+    case java.sql.Types.NUMERIC:
     case java.sql.Types.DECIMAL:
       if (m.getScale() != null && m.getScale() != 0) {
         return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE);
