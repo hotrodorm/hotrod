@@ -112,6 +112,10 @@ create table vehicle (
   name varchar(10)
 );
 
+insert into vehicle (vehicle_code, name) values
+  (1234, 'Toyota'),
+  (2500, 'Buick');
+
 create table land (
   region_code int not null,
   local_code varchar(12) not null,

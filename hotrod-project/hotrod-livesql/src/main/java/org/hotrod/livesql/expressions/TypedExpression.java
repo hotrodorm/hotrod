@@ -8,39 +8,44 @@ import org.hotrod.livesql.queries.typesolver.TypeSource;
 
 public class TypedExpression extends Expression {
 
-  private Expression expr;
+  private Expression referencedExpression;
+  protected TypeHandler<?, ?> typeHandler;
 
   public TypedExpression(Expression expr, Class<?> type) {
-    super(expr);
+    super(expr.getPrecedence());
     TypeHandler<?, ?> th = TypeHandler.forClass(type, TypeSource.RUNTIME_DESIGNATED);
-    Shield.setTypeHandler(expr, th);
     this.typeHandler = th;
-    this.expr = expr;
+    this.referencedExpression = expr;
+  }
+
+  @Override
+  protected TypeHandler<?, ?> getTypeHandler() {
+    return typeHandler;
   }
 
   @Override
   protected Expression getEmergingExpression() {
-    return this.expr.getEmergingExpression();
+    return this.referencedExpression.getEmergingExpression();
   }
 
   @Override
   protected String getReferenceName() {
-    return this.expr.getReferenceName();
+    return this.referencedExpression.getReferenceName();
   }
 
   @Override
   protected String getProperty() {
-    return this.expr.getProperty();
+    return this.referencedExpression.getProperty();
   }
 
   @Override
   protected void renderTo(QueryWriter w) {
-    this.expr.renderTo(w);
+    this.referencedExpression.renderTo(w);
   }
 
   @Override
   protected List<Expression> expand() {
-    return expr.expand();
+    return referencedExpression.expand();
   }
 
 }

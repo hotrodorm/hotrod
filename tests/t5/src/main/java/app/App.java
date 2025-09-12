@@ -28,6 +28,7 @@ import app.persistence.dao.CoinDAO.CoinTable;
 import app.persistence.dao.EmployeeDAO;
 import app.persistence.dao.SalesDAO;
 import app.persistence.dao.VehicleDAO;
+import app.persistence.dao.VehicleDAO.VehicleTable;
 import app.persistence.layout.EmployeeLayout;
 import app.persistence.layout.VehicleLayout;
 import app.persistence.model.Account;
@@ -86,8 +87,9 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       log.info("[ Starting... ]");
+      testSubExpressions();
 //      testA();
-      testParseRow();
+//      testParseRow();
 //      insertConverter();
 //      converterOnPK();
 //      updateConverter();
@@ -110,6 +112,16 @@ public class App {
 //      testNitro6();
       log.info("[ Ending ]");
     };
+  }
+
+  private void testSubExpressions() {
+    VehicleTable v = this.vehicleDAO.newTable();
+    List<Row> rows = this.sql //
+        .select(v.name, v.name.as("v2"), v.vehicleCode, v.vehicleCode.as("code").type(Double.class)) //
+        .from(v) //
+        .where(v.name.like(v.name)) //
+        .execute();
+    rows.forEach(r -> System.out.println("r=" + r));
   }
 
   private void testParseRow() {

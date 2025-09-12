@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.livesql.exceptions.LiveSQLException;
-import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.SShield;
@@ -83,15 +82,6 @@ public abstract class Expression extends SQLExpression {
     this.typeHandler = null;
   }
 
-  protected Expression(final Expression expr) {
-    this.expressions = expr.expressions;
-    this.precedence = expr.precedence;
-    this.subqueries = expr.subqueries;
-    this.tablesOrViews = expr.tablesOrViews;
-    this.typeHandler = expr.typeHandler;
-  }
-
-//  protected abstract Expression asSubqueryExpression(final Subquery subquery);
   protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
     log.info("Expr: " + this);
     throw new UnsupportedOperationException();
@@ -133,28 +123,22 @@ public abstract class Expression extends SQLExpression {
 
   protected void setTypeHandler(TypeHandler typeHandler) {
     this.typeHandler = typeHandler;
-//    log.info("set type(" + typeHandler + "): " + this + " -- th=" + this.typeHandler);
-//    if (typeHandler == null) {
-//      log.info("Stack: " + TUtil.compactStackTrace());
-//    }
   }
 
   // Getters
 
   protected TypeHandler getTypeHandler() {
-//    log.info(
-//        "TYPEHANDLER " + this + " (" + this.getProperty() + "/" + this.getReferenceName() + "): " + this.typeHandler);
     return typeHandler;
   }
 
   // Apply aliases
 
-  private List<Expression> expressions = new ArrayList<>();
+  private List<Expression> subExpressions = new ArrayList<>();
   private List<CombinedSelectObject<?>> subqueries = new ArrayList<>();
   private List<TableOrView<?>> tablesOrViews = new ArrayList<>();
 
   protected void register(final Expression expression) {
-    this.expressions.add(expression);
+    this.subExpressions.add(expression);
   }
 
   protected void register(final Select<?> subquery) {
@@ -166,12 +150,8 @@ public abstract class Expression extends SQLExpression {
   }
 
   protected final void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-    for (Expression e : this.expressions) {
-      if (e instanceof EntityColumn) {
-        // ignore entity columns
-      } else {
-        e.validateTableReferences(tableReferences, ag);
-      }
+    for (Expression e : this.subExpressions) {
+      e.validateTableReferences(tableReferences, ag);
     }
     for (CombinedSelectObject<?> s : this.subqueries) {
       if (s == null) {

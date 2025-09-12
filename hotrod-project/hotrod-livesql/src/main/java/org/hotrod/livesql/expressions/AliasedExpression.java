@@ -16,7 +16,7 @@ public class AliasedExpression extends Expression {
   private String alias;
 
   public AliasedExpression(final Expression referencedExpression, final String alias) {
-    super(referencedExpression);
+    super(referencedExpression.getPrecedence());
     this.referencedExpression = referencedExpression;
     this.alias = alias;
     super.register(this.referencedExpression);
@@ -28,7 +28,6 @@ public class AliasedExpression extends Expression {
 
   @Override
   protected Expression getEmergingExpression() {
-//    log.info("referencedExpression=" + this.referencedExpression.getClass().getName());
     Expression ee = this.referencedExpression.getEmergingExpression();
     return new AliasedExpression(ee, this.alias);
   }
@@ -45,7 +44,7 @@ public class AliasedExpression extends Expression {
   }
 
   @Override
-  protected TypeHandler getTypeHandler() {
+  protected TypeHandler<?,?> getTypeHandler() {
     return this.referencedExpression.getTypeHandler();
   }
 
@@ -53,7 +52,6 @@ public class AliasedExpression extends Expression {
 
   @Override
   protected String getReferenceName() {
-//    log.info("############### this.alias=" + this.alias);
     return this.alias;
   }
 
