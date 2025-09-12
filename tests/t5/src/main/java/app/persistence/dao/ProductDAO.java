@@ -54,15 +54,15 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import app.persistence.layout.LandLayout;
-import app.persistence.model.Land;
+import app.persistence.layout.ProductLayout;
+import app.persistence.model.Product;
 
 @Component
-public class LandDAO implements Serializable, ApplicationContextAware {
+public class ProductDAO implements Serializable, ApplicationContextAware {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = Logger.getLogger(LandDAO.class.getName());
+  private static final Logger log = Logger.getLogger(ProductDAO.class.getName());
 
   @Autowired
   private DataSource dataSource;
@@ -83,22 +83,22 @@ public class LandDAO implements Serializable, ApplicationContextAware {
 
   // ROW READER
 
-  private final RowReader<Land> rowReader = new RowReader<Land>() {
+  private final RowReader<Product> rowReader = new RowReader<Product>() {
 
     @Override
-    public Land readRowFrom(ResultSet rs, Connection conn) throws SQLException {
-      Land row = applicationContext.getBean(Land.class);
+    public Product readRowFrom(ResultSet rs, Connection conn) throws SQLException {
+      Product row = applicationContext.getBean(Product.class);
 
-      Integer col1 = rs.getInt("REGION_CODE"); // REGION_CODE
+      Long col1 = rs.getLong("PID_PRODUCT"); // PID_PRODUCT
       if (rs.wasNull()) col1 = null;
-      row.setRegionCode(col1);
+      row.setPidProduct(col1);
 
-      String col2 = rs.getString("LOCAL_CODE"); // LOCAL_CODE
-      row.setLocalCode(col2);
+      String col2 = rs.getString("TYPE"); // TYPE
+      row.setType(col2);
 
-      Integer col3 = rs.getInt("PRICE"); // PRICE
+      Integer col3 = rs.getInt("SHIPPING"); // SHIPPING
       if (rs.wasNull()) col3 = null;
-      row.setPrice(col3);
+      row.setShipping(col3);
 
       return row;
     }
@@ -107,61 +107,61 @@ public class LandDAO implements Serializable, ApplicationContextAware {
 
   // PARSE ROW
 
-  public Land parseRow(Map<String, Object> row) {
+  public Product parseRow(Map<String, Object> row) {
     return parseRow(row, null, null);
   }
 
-  public Land parseRow(Map<String, Object> row, String prefix) {
+  public Product parseRow(Map<String, Object> row, String prefix) {
     return parseRow(row, prefix, null);
   }
 
-  public Land parseRow(Map<String, Object> row, String prefix, String suffix) {
-    Land m = applicationContext.getBean(Land.class);
+  public Product parseRow(Map<String, Object> row, String prefix, String suffix) {
+    Product m = applicationContext.getBean(Product.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
-    m.setRegionCode(CastUtil.toInteger((Number) row.get(p + "regionCode" + s)));
-    m.setLocalCode((String) row.get(p + "localCode" + s));
-    m.setPrice(CastUtil.toInteger((Number) row.get(p + "price" + s)));
+    m.setPidProduct(CastUtil.toLong((Number) row.get(p + "pidProduct" + s)));
+    m.setType((String) row.get(p + "type" + s));
+    m.setShipping(CastUtil.toInteger((Number) row.get(p + "shipping" + s)));
     return m;
   }
 
   // BASELINE
 
-  public class LandBaseline {
+  public class ProductBaseline {
 
-    private Integer regionCode;
-    private String localCode;
-    private Integer price;
+    private Long pidProduct;
+    private String type;
+    private Integer shipping;
 
-    public Integer getRegionCode() {
-      return this.regionCode;
+    public Long getPidProduct() {
+      return this.pidProduct;
     }
 
-    public String getLocalCode() {
-      return this.localCode;
+    public String getType() {
+      return this.type;
     }
 
-    public Integer getPrice() {
-      return this.price;
+    public Integer getShipping() {
+      return this.shipping;
     }
 
   }
 
-  public LandBaseline baseline(Land model) {
-    LandBaseline b = new LandBaseline();
-    b.regionCode = model.getRegionCode();
-    b.localCode = model.getLocalCode();
-    b.price = model.getPrice();
+  public ProductBaseline baseline(Product model) {
+    ProductBaseline b = new ProductBaseline();
+    b.pidProduct = model.getPidProduct();
+    b.type = model.getType();
+    b.shipping = model.getShipping();
     return b;
   };
 
   // CLONE
 
-  public Land clone(LandLayout layout) {
-    Land m = new Land();
-    m.setRegionCode(layout.getRegionCode());
-    m.setLocalCode(layout.getLocalCode());
-    m.setPrice(layout.getPrice());
+  public Product clone(ProductLayout layout) {
+    Product m = new Product();
+    m.setPidProduct(layout.getPidProduct());
+    m.setType(layout.getType());
+    m.setShipping(layout.getShipping());
     return m;
   };
 
@@ -172,27 +172,24 @@ public class LandDAO implements Serializable, ApplicationContextAware {
   private void initializeSelectbyprimarykey() {
     this.selectByPrimaryKey = dyn
       .literaln("SELECT")
-      .literaln("  region_code,")
-      .literaln("  local_code,")
-      .literaln("  price")
-      .literaln("FROM land")
-      .literaln("\nWHERE " + "region_code = ").parameter("f.regionCode")
-      .literaln("  AND " + "local_code = ").parameter("f.localCode")
+      .literaln("  pid_product,")
+      .literaln("  type,")
+      .literaln("  shipping")
+      .literaln("FROM product")
+      .literaln("\nWHERE " + "pid_product = ").parameter("f.pidProduct")
       .endSelectQuery();
   }
 
-  public Land select(Integer regionCode, String localCode) {
-    if (regionCode == null) return null;
-    if (localCode == null) return null;
-    Land filter = new Land();
-    filter.setRegionCode(regionCode);
-    filter.setLocalCode(localCode);
+  public Product select(Long pidProduct) {
+    if (pidProduct == null) return null;
+    Product filter = new Product();
+    filter.setPidProduct(pidProduct);
     Parameters params = this.dyn.newParameters();
     params.add("f", filter);
-    PreparedSelectQuery<Land> preparedQuery = this.selectByPrimaryKey.prepare(params, this.rowReader);
+    PreparedSelectQuery<Product> preparedQuery = this.selectByPrimaryKey.prepare(params, this.rowReader);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
-      List<Land> rows = preparedQuery.execute(conn);
+      List<Product> rows = preparedQuery.execute(conn);
       if (rows.size() == 0) return null;
       if (rows.size() == 1) return rows.get(0);
       throw new PersistenceException("A single row at most was expected but received " + rows.size() + " rows.");
@@ -208,28 +205,28 @@ public class LandDAO implements Serializable, ApplicationContextAware {
   private void initializeSelectbyexample() {
     this.selectByExample = dyn
       .literaln("SELECT")
-      .literaln("  region_code,")
-      .literaln("  local_code,")
-      .literaln("  price")
-      .literaln("FROM land")
+      .literaln("  pid_product,")
+      .literaln("  type,")
+      .literaln("  shipping")
+      .literaln("FROM product")
       .where("AND")
-        .if_("f.regionCode != null").literal("region_code = ").parameter("f.regionCode").endif()
-        .if_("f.localCode != null").literal("local_code = ").parameter("f.localCode").endif()
-        .if_("f.price != null").literal("price = ").parameter("f.price").endif()
+        .if_("f.pidProduct != null").literal("pid_product = ").parameter("f.pidProduct").endif()
+        .if_("f.type != null").literal("type = ").parameter("f.type").endif()
+        .if_("f.shipping != null").literal("shipping = ").parameter("f.shipping").endif()
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
   }
 
-  public List<Land> select(LandLayout filter, LandOrderBy... orderBies) {
+  public List<Product> select(ProductLayout filter, ProductOrderBy... orderBies) {
     Parameters params = this.dyn.newParameters();
     params.add("f", filter);
     String ordering = SQLUtil.render(orderBies);
     params.add("ordering", ordering);
-    PreparedSelectQuery<Land> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
+    PreparedSelectQuery<Product> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
-      List<Land> rows = preparedQuery.execute(conn);
+      List<Product> rows = preparedQuery.execute(conn);
       return rows;
     } catch (SQLException e) {
       throw new PersistenceException(e);
@@ -238,8 +235,8 @@ public class LandDAO implements Serializable, ApplicationContextAware {
 
   // SELECT BY CRITERIA
 
-  public CriteriaWherePhase<Land> select(final LandTable from, final Predicate predicate) {
-    return new CriteriaWherePhase<Land>(this.context, from, predicate, this.rowReader);
+  public CriteriaWherePhase<Product> select(final ProductTable from, final Predicate predicate) {
+    return new CriteriaWherePhase<Product>(this.context, from, predicate, this.rowReader);
   }
 
   // INSERT
@@ -248,27 +245,28 @@ public class LandDAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsert() {
     this.insert = dyn
-      .literaln("INSERT INTO land (")
-      .literaln("  region_code,")
-      .literaln("  local_code,")
-      .literaln("  price")
+      .literaln("INSERT INTO product (")
+      .literaln("  pid_product,")
+      .literaln("  type,")
+      .literaln("  shipping")
       .literaln(")")
       .literaln("VALUES(")
-      .literal("  ").parameterNullable("l.regionCode", Types.INTEGER).literaln(",")
-      .literal("  ").parameterNullable("l.localCode", Types.VARCHAR).literaln(",")
-      .literal("  ").parameterNullable("l.price", Types.INTEGER)
+      .literal("  ").parameterNullable("l.pidProduct", Types.NUMERIC).literaln(",")
+      .literal("  ").parameterNullable("l.type", Types.VARCHAR).literaln(",")
+      .literal("  ").parameterNullable("l.shipping", Types.NUMERIC)
       .literal(")")
-      .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
+      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH, "SELECT seq_product.NEXTVAL FROM DUAL", "l.pidProduct");
   }
 
-  public Land insert(LandLayout layout) {
+  public Product insert(ProductLayout layout) {
     Parameters params = this.dyn.newParameters();
     params.add("l", layout);
     PreparedInsertQuery preparedQuery = this.insert.prepare(params);
     logQuery(preparedQuery);
-    Land model = this.clone(layout);
+    Product model = this.clone(layout);
     try (Connection conn = this.dataSource.getConnection()) {
-      preparedQuery.execute(conn);
+      Long pk = preparedQuery.execute(conn);
+      model.setPidProduct(pk);
     } catch (SQLException e) {
       throw new PersistenceException(e);
     }
@@ -281,27 +279,28 @@ public class LandDAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
-      .literaln("INSERT INTO land (")
-      .if_("l.regionCode != null").literal("region_code,\n").endif()
-      .if_("l.localCode != null").literal("local_code,\n").endif()
-      .if_("l.price != null").literal("price\n").endif()
+      .literaln("INSERT INTO product (")
+      .if_("l.pidProduct != null").literal("pid_product,\n").endif()
+      .if_("l.type != null").literal("type,\n").endif()
+      .if_("l.shipping != null").literal("shipping\n").endif()
       .literaln(")")
       .literaln("VALUES(")
-      .if_("l.regionCode != null").parameter("l.regionCode").literal(", ").endif()
-      .if_("l.localCode != null").parameter("l.localCode").literal(", ").endif()
-      .if_("l.price != null").parameter("l.price").endif()
+      .if_("l.pidProduct != null").parameter("l.pidProduct").literal(", ").endif()
+      .if_("l.type != null").parameter("l.type").literal(", ").endif()
+      .if_("l.shipping != null").parameter("l.shipping").endif()
       .literal(")")
-      .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
+      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH, "SELECT seq_product.NEXTVAL FROM DUAL", "l.pidProduct");
   }
 
-  public Land insertByExample(LandLayout layout) {
+  public Product insertByExample(ProductLayout layout) {
     Parameters params = this.dyn.newParameters();
     params.add("l", layout);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
     logQuery(preparedQuery);
-    Land model = this.clone(layout);
+    Product model = this.clone(layout);
     try (Connection conn = this.dataSource.getConnection()) {
-      preparedQuery.execute(conn);
+      Long pk = preparedQuery.execute(conn);
+      model.setPidProduct(pk);
     } catch (SQLException e) {
       throw new PersistenceException(e);
     }
@@ -314,19 +313,17 @@ public class LandDAO implements Serializable, ApplicationContextAware {
 
   private void initializeUpdatebypk() {
     this.updateByPK = dyn
-      .literaln("UPDATE land")
+      .literaln("UPDATE product")
       .literaln("SET")
-      .literal("  region_code = ").parameterNullable("m.regionCode", Types.INTEGER).literaln(",")
-      .literal("  local_code = ").parameterNullable("m.localCode", Types.VARCHAR).literaln(",")
-      .literal("  price = ").parameterNullable("m.price", Types.INTEGER)
-      .literaln("\nWHERE " + "region_code = ").parameter("m.regionCode")
-      .literaln("  AND " + "local_code = ").parameter("m.localCode")
+      .literal("  pid_product = ").parameterNullable("m.pidProduct", Types.NUMERIC).literaln(",")
+      .literal("  type = ").parameterNullable("m.type", Types.VARCHAR).literaln(",")
+      .literal("  shipping = ").parameterNullable("m.shipping", Types.NUMERIC)
+      .literaln("\nWHERE " + "pid_product = ").parameter("m.pidProduct")
     .endModificationQuery();
   }
 
-  public int update(Land model) {
-    if (model.getRegionCode() == null) return 0;
-    if (model.getLocalCode() == null) return 0;
+  public int update(Product model) {
+    if (model.getPidProduct() == null) return 0;
     Parameters params = this.dyn.newParameters();
     params.add("m", model);
     PreparedModificationQuery preparedQuery = this.updateByPK.prepare(params);
@@ -345,21 +342,21 @@ public class LandDAO implements Serializable, ApplicationContextAware {
 
   private void initializeUpdatebyexample() {
     this.updateByExample = dyn
-      .literal("UPDATE land")
+      .literal("UPDATE product")
       .set()
-        .if_("v.regionCode != null").literal("region_code = ").parameter("v.regionCode").endif()
-        .if_("v.localCode != null").literal("local_code = ").parameter("v.localCode").endif()
-        .if_("v.price != null").literal("price = ").parameter("v.price").endif()
+        .if_("v.pidProduct != null").literal("pid_product = ").parameter("v.pidProduct").endif()
+        .if_("v.type != null").literal("type = ").parameter("v.type").endif()
+        .if_("v.shipping != null").literal("shipping = ").parameter("v.shipping").endif()
       .endset()
       .where("AND")
-        .if_("e.regionCode != null").literal("region_code = ").parameter("e.regionCode").endif()
-        .if_("e.localCode != null").literal("local_code = ").parameter("e.localCode").endif()
-        .if_("e.price != null").literal("price = ").parameter("e.price").endif()
+        .if_("e.pidProduct != null").literal("pid_product = ").parameter("e.pidProduct").endif()
+        .if_("e.type != null").literal("type = ").parameter("e.type").endif()
+        .if_("e.shipping != null").literal("shipping = ").parameter("e.shipping").endif()
       .endwhere()
       .endModificationQuery();
   }
 
-  public int update(LandLayout example, LandLayout values) {
+  public int update(ProductLayout example, ProductLayout values) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     params.add("v", values);
@@ -375,12 +372,12 @@ public class LandDAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateSetCompletePhase update(LandLayout values, LandTable tableOrView,
+  public UpdateSetCompletePhase update(ProductLayout values, ProductTable tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
-    if (values.getRegionCode() != null) setters.add(new Setter(tableOrView.regionCode, sql.val(values.getRegionCode())));
-    if (values.getLocalCode() != null) setters.add(new Setter(tableOrView.localCode, sql.val(values.getLocalCode())));
-    if (values.getPrice() != null) setters.add(new Setter(tableOrView.price, sql.val(values.getPrice())));
+    if (values.getPidProduct() != null) setters.add(new Setter(tableOrView.pidProduct, sql.val(values.getPidProduct())));
+    if (values.getType() != null) setters.add(new Setter(tableOrView.type, sql.val(values.getType())));
+    if (values.getShipping() != null) setters.add(new Setter(tableOrView.shipping, sql.val(values.getShipping())));
     return new UpdateSetCompletePhase(this.context, tableOrView, setters, predicate);
   }
 
@@ -390,18 +387,15 @@ public class LandDAO implements Serializable, ApplicationContextAware {
 
   private void initializeDeletebypk() {
     this.deleteByPK = dyn
-      .literaln("DELETE FROM land")
-      .literaln("\nWHERE " + "region_code = ").parameter("f.regionCode")
-      .literaln("  AND " + "local_code = ").parameter("f.localCode")
+      .literaln("DELETE FROM product")
+      .literaln("\nWHERE " + "pid_product = ").parameter("f.pidProduct")
       .endModificationQuery();
   }
 
-  public int delete(Integer regionCode, String localCode) {
-    if (regionCode == null) return 0;
-    if (localCode == null) return 0;
-    Land filter = new Land();
-    filter.setRegionCode(regionCode);
-    filter.setLocalCode(localCode);
+  public int delete(Long pidProduct) {
+    if (pidProduct == null) return 0;
+    Product filter = new Product();
+    filter.setPidProduct(pidProduct);
     Parameters params = this.dyn.newParameters();
     params.add("f", filter);
     PreparedModificationQuery preparedQuery = this.deleteByPK.prepare(params);
@@ -420,16 +414,16 @@ public class LandDAO implements Serializable, ApplicationContextAware {
 
   private void initializeDeletebyexample() {
     this.deleteByExample = dyn
-      .literal("DELETE FROM land")
+      .literal("DELETE FROM product")
       .where("AND")
-        .if_("e.regionCode != null").literal("region_code = ").parameter("e.regionCode").endif()
-        .if_("e.localCode != null").literal("local_code = ").parameter("e.localCode").endif()
-        .if_("e.price != null").literal("price = ").parameter("e.price").endif()
+        .if_("e.pidProduct != null").literal("pid_product = ").parameter("e.pidProduct").endif()
+        .if_("e.type != null").literal("type = ").parameter("e.type").endif()
+        .if_("e.shipping != null").literal("shipping = ").parameter("e.shipping").endif()
       .endwhere()
       .endModificationQuery();
   }
 
-  public int delete(LandLayout example) {
+  public int delete(ProductLayout example) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(params);
@@ -444,25 +438,25 @@ public class LandDAO implements Serializable, ApplicationContextAware {
 
   // DELETE BY CRITERIA
 
-  public DeleteWherePhase delete(final LandTable from, final Predicate predicate) {
+  public DeleteWherePhase delete(final ProductTable from, final Predicate predicate) {
     return new DeleteWherePhase(this.context, from, predicate);
   }
 
   // ORDER BY
 
-  public enum LandOrderBy implements OrderBy {
+  public enum ProductOrderBy implements OrderBy {
 
-    REGION_CODE("region_code", true),
-    REGION_CODE$DESC("region_code", false),
-    LOCAL_CODE("local_code", true),
-    LOCAL_CODE$DESC("local_code", false),
-    PRICE("price", true),
-    PRICE$DESC("price", false);
+    PID_PRODUCT("pid_product", true),
+    PID_PRODUCT$DESC("pid_product", false),
+    TYPE("type", true),
+    TYPE$DESC("type", false),
+    SHIPPING("shipping", true),
+    SHIPPING$DESC("shipping", false);
 
     private String sqlColumnName;
     private boolean ascending;
 
-    private LandOrderBy(String sqlColumnName, boolean ascending) {
+    private ProductOrderBy(String sqlColumnName, boolean ascending) {
       this.sqlColumnName = sqlColumnName;
       this.ascending = ascending;
     }
@@ -481,43 +475,43 @@ public class LandDAO implements Serializable, ApplicationContextAware {
 
   // TABLE METADATA
 
-  public LandTable newTable() {
-    return new LandTable();
+  public ProductTable newTable() {
+    return new ProductTable();
   }
 
-  public LandTable newTable(final String alias) {
-    return new LandTable(alias);
+  public ProductTable newTable(final String alias) {
+    return new ProductTable(alias);
   }
 
-  public static class LandTable extends Table<Land> {
+  public static class ProductTable extends Table<Product> {
 
-    public final NumericEntityColumn regionCode = new NumericEntityColumn(this,
-      "REGION_CODE", "regionCode", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
-    public final CharEntityColumn localCode = new CharEntityColumn(this,
-      "LOCAL_CODE", "localCode", "CHARACTER VARYING", 12, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE));
-    public final NumericEntityColumn price = new NumericEntityColumn(this,
-      "PRICE", "price", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
+    public final NumericEntityColumn pidProduct = new NumericEntityColumn(this,
+      "PID_PRODUCT", "pidProduct", "NUMBER", 18, 0, TypeHandler.forClass(Long.class, TypeSource.STATIC_DIALECT_RULE));
+    public final CharEntityColumn type = new CharEntityColumn(this,
+      "TYPE", "type", "VARCHAR2", 6, null, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE));
+    public final NumericEntityColumn shipping = new NumericEntityColumn(this,
+      "SHIPPING", "shipping", "NUMBER", 6, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
 
     @Override
     public AllColumns star() {
-      return new AllColumns(this.regionCode, this.localCode, this.price);
+      return new AllColumns(this.pidProduct, this.type, this.shipping);
     }
 
-    LandTable() {
-      super(null, null, Name.of("LAND", false), "Table", null, LandLayout.class, Land.class);
+    ProductTable() {
+      super(null, null, Name.of("PRODUCT", false), "Table", null, ProductLayout.class, Product.class);
       initialize();
     }
 
-    LandTable(final String alias) {
-      super(null, null, Name.of("LAND", false), "Table", alias, LandLayout.class, Land.class);
+    ProductTable(final String alias) {
+      super(null, null, Name.of("PRODUCT", false), "Table", alias, ProductLayout.class, Product.class);
       initialize();
     }
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      super.columns.add(this.regionCode);
-      super.columns.add(this.localCode);
-      super.columns.add(this.price);
+      super.columns.add(this.pidProduct);
+      super.columns.add(this.type);
+      super.columns.add(this.shipping);
     }
 
   }

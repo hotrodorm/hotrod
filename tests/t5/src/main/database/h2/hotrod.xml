@@ -27,8 +27,11 @@
   <converter name="coin_type_stored_as_char" java-type="java.lang.Integer" java-raw-type="java.lang.String"
     class="app.CoinTypeConverter" />
 
+  <table name="product">
+    <column name="pid_product" sequence="seq_product" />
+  </table>
+
 <!-- 
-  <table name="product" />
   <table name="branch" />
   <table name="other" />
   <view name="v_other" />

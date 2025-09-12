@@ -29,8 +29,9 @@
     <column name="FECHA" java-name="fecha" java-type="java.sql.Timestamp" />
     <column name="ES_ACTIVO" java-name="esActivo" converter="util_SN_to_Boolean" />
   </table>
--->
+
   <table name="dates" />
+-->
 
   <table name="product">
     <column name="pid_product" sequence="seq_product" />

@@ -6,31 +6,40 @@ import java.io.Serializable;
 
 import org.hotrod.json.JSONObject;
 
-public class CoinLayout implements Serializable {
+public class ProductLayout implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
   // Layout Properties (table columns)
 
-  protected Integer type = null; // CHARACTER
-  protected String name = null; // CHARACTER VARYING
+  protected Long pidProduct = null; // NUMBER
+  protected String type = null; // VARCHAR2
+  protected Integer shipping = null; // NUMBER
 
   // getters & setters
 
-  public Integer getType() {
+  public Long getPidProduct() {
+    return this.pidProduct;
+  }
+
+  public void setPidProduct(final Long pidProduct) {
+    this.pidProduct = pidProduct;
+  }
+
+  public String getType() {
     return this.type;
   }
 
-  public void setType(final Integer type) {
+  public void setType(final String type) {
     this.type = type;
   }
 
-  public String getName() {
-    return this.name;
+  public Integer getShipping() {
+    return this.shipping;
   }
 
-  public void setName(final String name) {
-    this.name = name;
+  public void setShipping(final Integer shipping) {
+    this.shipping = shipping;
   }
 
   // to string
@@ -38,8 +47,9 @@ public class CoinLayout implements Serializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
+    sb.append("- pidProduct=" + this.pidProduct + "\n");
     sb.append("- type=" + this.type + "\n");
-    sb.append("- name=" + this.name);
+    sb.append("- shipping=" + this.shipping);
     return sb.toString();
   }
 
@@ -47,8 +57,9 @@ public class CoinLayout implements Serializable {
 
   public JSONObject toJSONObject() {
     JSONObject obj = new JSONObject();
+    obj.addProperty("pidProduct", this.pidProduct);
     obj.addProperty("type", this.type);
-    obj.addProperty("name", this.name);
+    obj.addProperty("shipping", this.shipping);
     return obj;
   }
 
