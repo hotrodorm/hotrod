@@ -4,6 +4,7 @@ import org.hotrod.converter.TypeConverter;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.segments.BindSegment;
 import org.hotrod.dynamicsql.segments.ParameterInjectionSegment;
+import org.hotrod.dynamicsql.segments.ParameterNotNullableUpdatableSegment;
 import org.hotrod.dynamicsql.segments.ParameterNotNullableSegment;
 import org.hotrod.dynamicsql.segments.ParameterNullableSegment;
 import org.hotrod.dynamicsql.segments.StaticContentSegment;
@@ -35,6 +36,16 @@ public abstract class Sentence<M extends Sentence<?, ?>, P> extends AbstractSent
 
   public M parameter(String name, TypeConverter<?, ?> converter) {
     this.segments.add(new ParameterNotNullableSegment(this.factory, name, converter));
+    return this.me;
+  }
+
+  public M parameterUpdatable(String name) {
+    this.segments.add(new ParameterNotNullableUpdatableSegment(this.factory, name, null));
+    return this.me;
+  }
+
+  public M parameterUpdatable(String name, TypeConverter<?, ?> converter) {
+    this.segments.add(new ParameterNotNullableUpdatableSegment(this.factory, name, converter));
     return this.me;
   }
 

@@ -251,7 +251,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
       .literaln("  shipping")
       .literaln(")")
       .literaln("VALUES(")
-      .literal("  ").parameterNullable("l.pidProduct", Types.NUMERIC).literaln(",")
+      .literal("  ").parameterUpdatable("l.pidProduct").literaln(",")
       .literal("  ").parameterNullable("l.type", Types.VARCHAR).literaln(",")
       .literal("  ").parameterNullable("l.shipping", Types.NUMERIC)
       .literal(")")

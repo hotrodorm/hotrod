@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import org.hotrod.converter.TypeConverter;
 import org.hotrod.utils.ConverterUtil;
 
-public class ParameterNullableInstance extends ParameterInstance implements UpdatableParameter {
+public class ParameterNullableInstance extends ParameterInstance {
 
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(ParameterNullableInstance.class.getName());
@@ -23,11 +23,6 @@ public class ParameterNullableInstance extends ParameterInstance implements Upda
 
   public int getSQLType() {
     return sqlType;
-  }
-
-  @Override
-  public void setValue(Object value) {
-    this.value = value;
   }
 
   @Override

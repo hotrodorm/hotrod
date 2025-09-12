@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.parameters.ParameterInstance;
-import org.hotrod.dynamicsql.parameters.UpdatableParameter;
+import org.hotrod.dynamicsql.parameters.ParameterNotNullableUpdatableInstance;
 
 public class PreparedInsertSequencePreFetchQuery extends InsertExecutor {
 
@@ -46,8 +46,8 @@ public class PreparedInsertSequencePreFetchQuery extends InsertExecutor {
 
   private boolean setParameter(List<ParameterInstance> parameters, String name, Long value) {
     for (ParameterInstance s : parameters) {
-      if (s instanceof UpdatableParameter) {
-        UpdatableParameter ts = (UpdatableParameter) s;
+      if (s instanceof ParameterNotNullableUpdatableInstance) {
+        ParameterNotNullableUpdatableInstance ts = (ParameterNotNullableUpdatableInstance) s;
         if (s.getName().equals(name)) {
           ts.setValue(value);
           return true;

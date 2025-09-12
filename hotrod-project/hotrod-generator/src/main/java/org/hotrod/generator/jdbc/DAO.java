@@ -750,7 +750,8 @@ public class DAO {
       String converterParam = cm.getConverter() == null ? ""
           : ", this." + this.converterProperties.get(cm.getConverter().getName());
 
-      if (byExample) {
+      if (byExample) { // by example
+
         if (ol != null && ol.getStrategy() == OptimisticLockingStrategy.TIMESTAMP && cm.isOLTimestampColumn()) {
           w.println("      .literal(\"  " + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\")"
               + (n < coln ? ".literaln(\",\")" : ""));
@@ -759,7 +760,8 @@ public class DAO {
               + SUtil.escapeJavaString(memId) + "\"" + converterParam + ")" + (n < coln ? ".literal(\", \")" : "")
               + ".endif()");
         }
-      } else {
+
+      } else { // insert
 
         // Always include column
         if (!cm.belongsToPK()) {
@@ -773,8 +775,8 @@ public class DAO {
         }
         if (cm.belongsToPK() && cm.getSequenceId() != null) {
           if (mechanics.getMode() == PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH) {
-            w.println("      .literal(\"  \").parameterNullable(\"l." + SUtil.escapeJavaString(memId) + "\", ",
-                Types.class, "." + jdbcType + converterParam + ")" + (n < coln ? ".literaln(\",\")" : ""));
+            w.println("      .literal(\"  \").parameterUpdatable(\"l." + SUtil.escapeJavaString(memId) + "\""
+                + converterParam + ")" + (n < coln ? ".literaln(\",\")" : ""));
           } else {
             String si = mechanics.getSequenceInlineSQL();
             w.println(

@@ -52,6 +52,16 @@ public class DynamicSQL {
     return s.parameter(name, converter);
   }
 
+  public Sequence parameterChangeable(String name) {
+    Sequence s = new Sequence(this.factory);
+    return s.parameterUpdatable(name, null);
+  }
+
+  public Sequence parameterChangeable(String name, TypeConverter<?, ?> converter) {
+    Sequence s = new Sequence(this.factory);
+    return s.parameterUpdatable(name, converter);
+  }
+
   public Sequence parameterNullable(String name, int sqlType) {
     Sequence s = new Sequence(this.factory);
     return s.parameterNullable(name, sqlType);

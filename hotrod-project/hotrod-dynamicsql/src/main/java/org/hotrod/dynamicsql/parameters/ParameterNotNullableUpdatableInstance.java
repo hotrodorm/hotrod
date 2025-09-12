@@ -8,17 +8,16 @@ import java.util.logging.Logger;
 import org.hotrod.converter.TypeConverter;
 import org.hotrod.utils.ConverterUtil;
 
-public class ParameterNotNullableChangeableInstance extends ParameterInstance implements UpdatableParameter {
+public class ParameterNotNullableUpdatableInstance extends ParameterInstance {
 
   @SuppressWarnings("unused")
-  private static final Logger log = Logger.getLogger(ParameterNotNullableChangeableInstance.class.getName());
+  private static final Logger log = Logger.getLogger(ParameterNotNullableUpdatableInstance.class.getName());
 
-  public ParameterNotNullableChangeableInstance(String originalParameterName, Integer index, Object value,
+  public ParameterNotNullableUpdatableInstance(String originalParameterName, Integer index, Object value,
       TypeConverter<?, ?> converter) {
     super(originalParameterName, index, value, converter);
   }
 
-  @Override
   public void setValue(Object value) {
     this.value = value;
   }
