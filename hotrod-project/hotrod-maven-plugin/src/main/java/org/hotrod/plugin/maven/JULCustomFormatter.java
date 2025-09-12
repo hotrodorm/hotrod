@@ -13,17 +13,14 @@ public class JULCustomFormatter extends Formatter {
 
   private final SimpleDateFormat DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
-  public static void initialize(Level level) {
+  public static void initialize() {
     Logger root = Logger.getLogger("");
-    root.setLevel(level);
+//    root.setLevel(level);
     JULCustomFormatter f = new JULCustomFormatter();
     for (Handler handler : root.getHandlers()) {
       handler.setFormatter(f);
-      handler.setLevel(level);
+//      handler.setLevel(level);
     }
-//    Logger populate = Logger.getLogger("org.nocrala.tools.database.tartarus.utils.Elapsed");
-//    Logger populate2 = Logger.getLogger(Elapsed.class.getName());
-//    populate2.setLevel(Level.FINE);
   }
 
   @Override

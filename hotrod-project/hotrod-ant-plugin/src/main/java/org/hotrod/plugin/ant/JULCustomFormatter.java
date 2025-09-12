@@ -13,13 +13,13 @@ public class JULCustomFormatter extends Formatter {
 
   private final SimpleDateFormat DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
-  public static void initialize(Level level) {
+  public static void initialize() {
     Logger root = Logger.getLogger("");
 //    root.setLevel(level);
     JULCustomFormatter f = new JULCustomFormatter();
     for (Handler handler : root.getHandlers()) {
       handler.setFormatter(f);
-      handler.setLevel(level);
+//      handler.setLevel(level);
     }
   }
 
