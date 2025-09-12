@@ -31,7 +31,6 @@ public class PreparedInsertSequencePreFetchQuery extends InsertExecutor {
       throw new SQLException("Could not retrieve sequence for INSERT using: " + sequencePreFetchSQL);
     }
 
-    log.info("seq=" + seq);
     boolean wasSet = this.setParameter(parameters, primaryKeyParameterName, seq);
     if (!wasSet) {
       throw new SQLException(
@@ -47,7 +46,6 @@ public class PreparedInsertSequencePreFetchQuery extends InsertExecutor {
 
   private boolean setParameter(List<ParameterInstance> parameters, String name, Long value) {
     for (ParameterInstance s : parameters) {
-      log.info("*** parameter '" + s.getName() + "': " + s.getClass().getName());
       if (s instanceof UpdatableParameter) {
         UpdatableParameter ts = (UpdatableParameter) s;
         if (s.getName().equals(name)) {
