@@ -23,7 +23,7 @@ import java.util.Map;
 import org.hotrod.converter.TypeConverter;
 import org.hotrod.dynamicsql.segments.DynamicContentSegment;
 
-public abstract class ParameterInstance {
+public abstract class ParameterOccurrence {
 
   private static Map<DynamicContentSegment, Integer> counters = new HashMap<>();
 
@@ -45,7 +45,7 @@ public abstract class ParameterInstance {
   protected Object value;
   protected TypeConverter<?, ?> converter;
 
-  public ParameterInstance(String name, Integer index, Object value, TypeConverter<?, ?> converter) {
+  public ParameterOccurrence(String name, Integer index, Object value, TypeConverter<?, ?> converter) {
     this.name = name;
     this.index = index;
     this.value = value;

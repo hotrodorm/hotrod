@@ -9,15 +9,15 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.DynamicExpressionException;
-import org.hotrod.dynamicsql.parameters.ParameterInstance;
+import org.hotrod.dynamicsql.parameters.ParameterOccurrence;
 
-public class PreparedInsertIdentityInlineKeyResultSetQuery extends InsertExecutor {
+public class PreparedInsertIdentityInlineKeyResultSetExecutor extends InsertExecutor {
 
   @SuppressWarnings("unused")
-  private static final Logger log = Logger.getLogger(PreparedInsertIdentityInlineKeyResultSetQuery.class.getName());
+  private static final Logger log = Logger.getLogger(PreparedInsertIdentityInlineKeyResultSetExecutor.class.getName());
 
   @Override
-  public Long execute(Connection conn, String sql, List<ParameterInstance> parameters, String sequencePreFetchSQL,
+  public Long execute(Connection conn, String sql, List<ParameterOccurrence> parameters, String sequencePreFetchSQL,
       String primaryKeyParameterName, String[] generatedKeysNames) throws SQLException, DynamicExpressionException {
     if (generatedKeysNames == null || generatedKeysNames.length == 0) {
       try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -30,7 +30,7 @@ public class PreparedInsertIdentityInlineKeyResultSetQuery extends InsertExecuto
     }
   }
 
-  private Long execute(List<ParameterInstance> parameters, PreparedStatement ps, Connection conn) throws SQLException {
+  private Long execute(List<ParameterOccurrence> parameters, PreparedStatement ps, Connection conn) throws SQLException {
     super.applyParameters(parameters, ps, conn);
     ps.executeUpdate();
     try (ResultSet rs = ps.getGeneratedKeys()) {

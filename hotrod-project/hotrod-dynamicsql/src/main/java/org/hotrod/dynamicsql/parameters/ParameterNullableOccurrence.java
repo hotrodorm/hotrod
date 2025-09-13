@@ -8,14 +8,14 @@ import java.util.logging.Logger;
 import org.hotrod.converter.TypeConverter;
 import org.hotrod.utils.ConverterUtil;
 
-public class ParameterNullableInstance extends ParameterInstance {
+public class ParameterNullableOccurrence extends ParameterOccurrence {
 
   @SuppressWarnings("unused")
-  private static final Logger log = Logger.getLogger(ParameterNullableInstance.class.getName());
+  private static final Logger log = Logger.getLogger(ParameterNullableOccurrence.class.getName());
 
   private int sqlType;
 
-  public ParameterNullableInstance(int sqlType, String originalParameterName, Integer index, Object value,
+  public ParameterNullableOccurrence(int sqlType, String originalParameterName, Integer index, Object value,
       TypeConverter<?, ?> converter) {
     super(originalParameterName, index, value, converter);
     this.sqlType = sqlType;

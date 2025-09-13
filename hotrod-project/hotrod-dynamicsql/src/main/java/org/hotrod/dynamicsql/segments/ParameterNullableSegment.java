@@ -7,8 +7,8 @@ import org.hotrod.dynamicsql.DynamicExpression;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.Parameters;
-import org.hotrod.dynamicsql.parameters.ParameterInstance;
-import org.hotrod.dynamicsql.parameters.ParameterNullableInstance;
+import org.hotrod.dynamicsql.parameters.ParameterOccurrence;
+import org.hotrod.dynamicsql.parameters.ParameterNullableOccurrence;
 
 public class ParameterNullableSegment extends DynamicContentSegment {
 
@@ -35,8 +35,8 @@ public class ParameterNullableSegment extends DynamicContentSegment {
   public boolean prepare(StaticSegmentConsumer sc, Parameters context, int loopNestingLevel)
       throws DynamicExpressionException {
     Object v = this.nameExpression.evaluate(context, Object.class);
-    Integer index = ParameterInstance.getCounterAndIncrement(this, loopNestingLevel);
-    ParameterNullableInstance is = new ParameterNullableInstance(this.sqlType, this.name, index, v, this.converter);
+    Integer index = ParameterOccurrence.getCounterAndIncrement(this, loopNestingLevel);
+    ParameterNullableOccurrence is = new ParameterNullableOccurrence(this.sqlType, this.name, index, v, this.converter);
     sc.consume("?");
     sc.consume(is);
     return true;

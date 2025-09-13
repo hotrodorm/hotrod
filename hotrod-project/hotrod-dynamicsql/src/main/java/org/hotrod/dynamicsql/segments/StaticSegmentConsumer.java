@@ -1,6 +1,6 @@
 package org.hotrod.dynamicsql.segments;
 
-import org.hotrod.dynamicsql.parameters.ParameterInstance;
+import org.hotrod.dynamicsql.parameters.ParameterOccurrence;
 
 public interface StaticSegmentConsumer {
 
@@ -8,6 +8,6 @@ public interface StaticSegmentConsumer {
 
   void consume(String literal);
 
-  void consume(ParameterInstance s);
+  void consume(ParameterOccurrence s);
 
 }

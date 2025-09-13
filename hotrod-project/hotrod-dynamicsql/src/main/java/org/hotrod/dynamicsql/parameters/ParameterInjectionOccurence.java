@@ -5,12 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
-public class ParameterInjectionInstance extends ParameterInstance {
+public class ParameterInjectionOccurence extends ParameterOccurrence {
 
   @SuppressWarnings("unused")
-  private static final Logger log = Logger.getLogger(ParameterInjectionInstance.class.getName());
+  private static final Logger log = Logger.getLogger(ParameterInjectionOccurence.class.getName());
 
-  public ParameterInjectionInstance(String originalParameterName, Integer index, String value) {
+  public ParameterInjectionOccurence(String originalParameterName, Integer index, String value) {
     super(originalParameterName, index, value, null);
   }
 

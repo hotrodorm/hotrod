@@ -7,8 +7,8 @@ import org.hotrod.dynamicsql.DynamicExpression;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.Parameters;
-import org.hotrod.dynamicsql.parameters.ParameterInstance;
-import org.hotrod.dynamicsql.parameters.VariableInstance;
+import org.hotrod.dynamicsql.parameters.ParameterOccurrence;
+import org.hotrod.dynamicsql.parameters.VariableOccurrence;
 
 public class VariableSegment extends DynamicContentSegment {
 
@@ -32,8 +32,8 @@ public class VariableSegment extends DynamicContentSegment {
   public boolean prepare(StaticSegmentConsumer sc, Parameters context, int loopNestingLevel)
       throws DynamicExpressionException {
     Object v = this.nameExpression.evaluate(context, Object.class);
-    Integer index = ParameterInstance.getCounterAndIncrement(this, loopNestingLevel);
-    VariableInstance is = new VariableInstance(this.name, index, v, this.converter);
+    Integer index = ParameterOccurrence.getCounterAndIncrement(this, loopNestingLevel);
+    VariableOccurrence is = new VariableOccurrence(this.name, index, v, this.converter);
     sc.consume("?");
     sc.consume(is);
     return true;

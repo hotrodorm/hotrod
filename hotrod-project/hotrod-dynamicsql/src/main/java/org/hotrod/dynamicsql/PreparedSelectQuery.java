@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.hotrod.dynamicsql.parameters.ParameterInstance;
+import org.hotrod.dynamicsql.parameters.ParameterOccurrence;
 
 public class PreparedSelectQuery<R> extends PreparedQuery {
 
@@ -61,7 +61,7 @@ public class PreparedSelectQuery<R> extends PreparedQuery {
 
   void applyParameters(PreparedStatement ps, Connection conn) throws SQLException {
     int ordinal = 1;
-    for (ParameterInstance p : super.parameters) {
+    for (ParameterOccurrence p : super.parameters) {
       p.applyTo(ps, ordinal++, conn);
     }
   }

@@ -8,13 +8,13 @@ import java.util.logging.Logger;
 import org.hotrod.converter.TypeConverter;
 import org.hotrod.utils.ConverterUtil;
 
-public class ParameterNotNullableInstance extends ParameterInstance {
+public class VariableOccurrence extends ParameterOccurrence {
 
   @SuppressWarnings("unused")
-  private static final Logger log = Logger.getLogger(ParameterNotNullableInstance.class.getName());
+  private static final Logger log = Logger.getLogger(VariableOccurrence.class.getName());
 
-  public ParameterNotNullableInstance(String name, Integer index, Object value, TypeConverter<?, ?> converter) {
-    super(name, index, value, converter);
+  public VariableOccurrence(String originalParameterName, Integer index, Object value, TypeConverter<?, ?> converter) {
+    super(originalParameterName, index, value, converter);
   }
 
   @Override

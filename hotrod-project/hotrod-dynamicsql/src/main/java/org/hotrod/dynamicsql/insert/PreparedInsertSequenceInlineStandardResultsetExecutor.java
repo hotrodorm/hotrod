@@ -8,16 +8,16 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.DynamicExpressionException;
-import org.hotrod.dynamicsql.parameters.ParameterInstance;
+import org.hotrod.dynamicsql.parameters.ParameterOccurrence;
 
-public class PreparedInsertSequenceInlineStandardResultsetQuery extends InsertExecutor {
+public class PreparedInsertSequenceInlineStandardResultsetExecutor extends InsertExecutor {
 
   @SuppressWarnings("unused")
   private static final Logger log = Logger
-      .getLogger(PreparedInsertSequenceInlineStandardResultsetQuery.class.getName());
+      .getLogger(PreparedInsertSequenceInlineStandardResultsetExecutor.class.getName());
 
   @Override
-  public Long execute(Connection conn, String sql, List<ParameterInstance> parameters, String sequencePreFetchSQL,
+  public Long execute(Connection conn, String sql, List<ParameterOccurrence> parameters, String sequencePreFetchSQL,
       String primaryKeyParameterName, String[] generatedKeysNames) throws SQLException, DynamicExpressionException {
     try (PreparedStatement ps = conn.prepareStatement(sql)) {
       super.applyParameters(parameters, ps, conn);

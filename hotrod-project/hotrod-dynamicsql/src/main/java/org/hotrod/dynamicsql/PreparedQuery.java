@@ -4,17 +4,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.hotrod.dynamicsql.parameters.ParameterInstance;
-import org.hotrod.dynamicsql.parameters.ParameterNullableInstance;
+import org.hotrod.dynamicsql.parameters.ParameterOccurrence;
+import org.hotrod.dynamicsql.parameters.ParameterNullableOccurrence;
 
 public abstract class PreparedQuery {
 
   protected String sql;
-  protected List<ParameterInstance> parameters;
+  protected List<ParameterOccurrence> parameters;
 
   protected String formattedSQL = null;
 
-  public PreparedQuery(String sql, List<ParameterInstance> parameters) {
+  public PreparedQuery(String sql, List<ParameterOccurrence> parameters) {
     if (sql == null) {
       throw new RuntimeException("Invalid empty SQL query");
     }
@@ -41,11 +41,11 @@ public abstract class PreparedQuery {
       if (this.parameters.isEmpty()) {
         p.append("  N/A\n");
       } else {
-        for (ParameterInstance ps : this.parameters) {
+        for (ParameterOccurrence ps : this.parameters) {
 
           String jdbcType = null;
-          if (ps instanceof ParameterNullableInstance) {
-            jdbcType = JDBCTypes.codeToShortName(((ParameterNullableInstance) ps).getSQLType());
+          if (ps instanceof ParameterNullableOccurrence) {
+            jdbcType = JDBCTypes.codeToShortName(((ParameterNullableOccurrence) ps).getSQLType());
           }
 
           Object value = ps.getValue();

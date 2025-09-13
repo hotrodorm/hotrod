@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.hotrod.dynamicsql.parameters.ParameterInstance;
+import org.hotrod.dynamicsql.parameters.ParameterOccurrence;
 import org.hotrod.dynamicsql.segments.StaticSegmentConsumer;
 
 public class SimpleStaticSegmentConsumer implements StaticSegmentConsumer {
 
   private StringBuilder sb = new StringBuilder();
-  private List<ParameterInstance> parameters = new ArrayList<>();
+  private List<ParameterOccurrence> parameters = new ArrayList<>();
 
   @Override
   public void consume(String literal) {
@@ -18,7 +18,7 @@ public class SimpleStaticSegmentConsumer implements StaticSegmentConsumer {
   }
 
   @Override
-  public void consume(ParameterInstance p) {
+  public void consume(ParameterOccurrence p) {
     this.parameters.add(p);
   }
 
@@ -31,7 +31,7 @@ public class SimpleStaticSegmentConsumer implements StaticSegmentConsumer {
     return sb.toString();
   }
 
-  public List<ParameterInstance> getParameters() {
+  public List<ParameterOccurrence> getParameters() {
     return Collections.unmodifiableList(parameters);
   }
 

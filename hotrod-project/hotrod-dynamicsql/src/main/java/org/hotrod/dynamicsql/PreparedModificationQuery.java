@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
-import org.hotrod.dynamicsql.parameters.ParameterInstance;
+import org.hotrod.dynamicsql.parameters.ParameterOccurrence;
 
 public class PreparedModificationQuery extends PreparedQuery {
 
@@ -19,7 +19,7 @@ public class PreparedModificationQuery extends PreparedQuery {
   public int execute(Connection conn) throws SQLException, DynamicExpressionException {
     try (PreparedStatement ps = conn.prepareStatement(super.sql)) {
       int ordinal = 1;
-      for (ParameterInstance p : super.parameters) {
+      for (ParameterOccurrence p : super.parameters) {
         p.applyTo(ps, ordinal++, conn);
       }
       return ps.executeUpdate();

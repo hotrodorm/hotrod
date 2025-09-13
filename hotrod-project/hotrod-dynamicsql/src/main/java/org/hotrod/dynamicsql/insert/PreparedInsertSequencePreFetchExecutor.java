@@ -8,16 +8,16 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.DynamicExpressionException;
-import org.hotrod.dynamicsql.parameters.ParameterInstance;
-import org.hotrod.dynamicsql.parameters.ParameterNotNullableUpdatableInstance;
+import org.hotrod.dynamicsql.parameters.ParameterOccurrence;
+import org.hotrod.dynamicsql.parameters.ParameterNotNullableUpdatableOccurrence;
 
-public class PreparedInsertSequencePreFetchQuery extends InsertExecutor {
+public class PreparedInsertSequencePreFetchExecutor extends InsertExecutor {
 
   @SuppressWarnings("unused")
-  private static final Logger log = Logger.getLogger(PreparedInsertSequencePreFetchQuery.class.getName());
+  private static final Logger log = Logger.getLogger(PreparedInsertSequencePreFetchExecutor.class.getName());
 
   @Override
-  public Long execute(Connection conn, String sql, List<ParameterInstance> parameters, String sequencePreFetchSQL,
+  public Long execute(Connection conn, String sql, List<ParameterOccurrence> parameters, String sequencePreFetchSQL,
       String primaryKeyParameterName, String[] generatedKeysNames) throws SQLException, DynamicExpressionException {
     Long seq = null;
     try (PreparedStatement ps = conn.prepareStatement(sequencePreFetchSQL)) {
@@ -44,10 +44,10 @@ public class PreparedInsertSequencePreFetchQuery extends InsertExecutor {
     }
   }
 
-  private boolean setParameter(List<ParameterInstance> parameters, String name, Long value) {
-    for (ParameterInstance s : parameters) {
-      if (s instanceof ParameterNotNullableUpdatableInstance) {
-        ParameterNotNullableUpdatableInstance ts = (ParameterNotNullableUpdatableInstance) s;
+  private boolean setParameter(List<ParameterOccurrence> parameters, String name, Long value) {
+    for (ParameterOccurrence s : parameters) {
+      if (s instanceof ParameterNotNullableUpdatableOccurrence) {
+        ParameterNotNullableUpdatableOccurrence ts = (ParameterNotNullableUpdatableOccurrence) s;
         if (s.getName().equals(name)) {
           ts.setValue(value);
           return true;

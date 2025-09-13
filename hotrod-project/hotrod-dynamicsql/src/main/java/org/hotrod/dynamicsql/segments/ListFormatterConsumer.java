@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.hotrod.dynamicsql.assembler.ListProcessor;
-import org.hotrod.dynamicsql.parameters.ParameterInstance;
+import org.hotrod.dynamicsql.parameters.ParameterOccurrence;
 
 public class ListFormatterConsumer implements StaticSegmentConsumer, AutoCloseable {
 
@@ -72,7 +72,7 @@ public class ListFormatterConsumer implements StaticSegmentConsumer, AutoCloseab
   }
 
   @Override
-  public void consume(ParameterInstance s) {
+  public void consume(ParameterOccurrence s) {
     this.isFirstSegment = false;
     this.parentConsumer.consume(s);
   }

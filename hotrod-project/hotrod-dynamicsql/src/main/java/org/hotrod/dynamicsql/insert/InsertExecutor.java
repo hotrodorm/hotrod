@@ -6,18 +6,18 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.hotrod.dynamicsql.DynamicExpressionException;
-import org.hotrod.dynamicsql.parameters.ParameterInstance;
+import org.hotrod.dynamicsql.parameters.ParameterOccurrence;
 
 public abstract class InsertExecutor {
 
-  public abstract Long execute(Connection conn, String sql, List<ParameterInstance> parameters,
+  public abstract Long execute(Connection conn, String sql, List<ParameterOccurrence> parameters,
       String sequencePreFetchSQL, String primaryKeyParameterName, String[] generatedKeysNames)
       throws SQLException, DynamicExpressionException;
 
-  protected void applyParameters(List<ParameterInstance> parameters, PreparedStatement ps, Connection conn)
+  protected void applyParameters(List<ParameterOccurrence> parameters, PreparedStatement ps, Connection conn)
       throws SQLException {
     int ordinal = 1;
-    for (ParameterInstance p : parameters) {
+    for (ParameterOccurrence p : parameters) {
       p.applyTo(ps, ordinal++, conn);
     }
   }
