@@ -17,28 +17,13 @@ import java.sql.Connection;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.logging.Logger;
 
 import org.hotrod.converter.TypeConverter;
-import org.hotrod.dynamicsql.segments.DynamicContentSegment;
 
 public abstract class ParameterOccurrence {
 
-  private static Map<DynamicContentSegment, Integer> counters = new HashMap<>();
-
-  public static Integer getCounterAndIncrement(DynamicContentSegment dynamicContentSegment, int loopNestingLevel) {
-    if (loopNestingLevel < 1) {
-      return null;
-    }
-    Integer current = counters.get(dynamicContentSegment);
-    if (current == null) {
-      current = 0;
-    }
-    int value = current;
-    counters.put(dynamicContentSegment, current + 1);
-    return value;
-  }
+  private static final Logger log = Logger.getLogger(ParameterOccurrence.class.getName());
 
   private String name;
   private Integer index;
@@ -46,6 +31,7 @@ public abstract class ParameterOccurrence {
   protected TypeConverter<?, ?> converter;
 
   public ParameterOccurrence(String name, Integer index, Object value, TypeConverter<?, ?> converter) {
+    log.fine("init");
     this.name = name;
     this.index = index;
     this.value = value;

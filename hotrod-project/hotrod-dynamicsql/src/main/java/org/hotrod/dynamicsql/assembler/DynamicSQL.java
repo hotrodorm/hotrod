@@ -52,12 +52,12 @@ public class DynamicSQL {
     return s.parameter(name, converter);
   }
 
-  public Sequence parameterChangeable(String name) {
+  public Sequence parameterUpdatable(String name) {
     Sequence s = new Sequence(this.factory);
     return s.parameterUpdatable(name, null);
   }
 
-  public Sequence parameterChangeable(String name, TypeConverter<?, ?> converter) {
+  public Sequence parameterUpdatable(String name, TypeConverter<?, ?> converter) {
     Sequence s = new Sequence(this.factory);
     return s.parameterUpdatable(name, converter);
   }

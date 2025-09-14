@@ -1,6 +1,7 @@
 package app;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.livesql.LiveSQL;
@@ -56,6 +57,9 @@ public class App {
 //  private Test2DAO test2DAO;
 
   @Autowired
+  private TestDAO testDAO;
+
+  @Autowired
   private LiveSQL sql;
 
   public static void main(String[] args) {
@@ -66,7 +70,8 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       log.info("[ Starting... ]");
-      testOracleInsertDeq();
+//      testForEach();
+      testOracleInsertSeq();
 //      testSubExpressions();
 //      testA();
 //      testParseRow();
@@ -94,8 +99,21 @@ public class App {
     };
   }
 
-  private void testOracleInsertDeq() throws SQLException {
-    System.out.println("DB: " + this.productDAO.getDataSource().getConnection().getMetaData().getURL());
+  private void testForEach() throws SQLException {
+    System.out.println("Searching products...");
+
+    Long[] ids = new Long[] { 100L, 102L, 104L };
+    List<Product> products = this.testDAO.select(ids);
+    products.forEach(p -> System.out.println("p=" + p));
+
+    ids = new Long[] { 105L, 106L };
+    products = this.testDAO.select(ids);
+    products.forEach(p -> System.out.println("p=" + p));
+
+  }
+
+  private void testOracleInsertSeq() throws SQLException {
+//    System.out.println("DB: " + this.productDAO.getDataSource().getConnection().getMetaData().getURL());
 
     Product p = new Product();
     p.setShipping(120);

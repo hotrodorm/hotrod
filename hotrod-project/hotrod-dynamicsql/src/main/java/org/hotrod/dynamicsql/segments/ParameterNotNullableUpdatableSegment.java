@@ -7,7 +7,6 @@ import org.hotrod.dynamicsql.DynamicExpression;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.Parameters;
-import org.hotrod.dynamicsql.parameters.ParameterOccurrence;
 import org.hotrod.dynamicsql.parameters.ParameterNotNullableUpdatableOccurrence;
 
 public class ParameterNotNullableUpdatableSegment extends DynamicContentSegment {
@@ -22,18 +21,18 @@ public class ParameterNotNullableUpdatableSegment extends DynamicContentSegment 
 
   public ParameterNotNullableUpdatableSegment(DynamicExpressionFactory factory, String name,
       TypeConverter<?, ?> converter) {
+    log.fine("init");
     this.factory = factory;
     this.name = name;
     this.converter = converter;
-    log.finer("<<parameter>> this.name=" + this.name);
     this.nameExpression = this.factory.expression(this.name);
   }
 
   @Override
-  public boolean prepare(StaticSegmentConsumer sc, Parameters context, int loopNestingLevel)
+  public boolean prepare(StaticSegmentConsumer sc, Parameters params, int loopNestingLevel)
       throws DynamicExpressionException {
-    Object v = this.nameExpression.evaluate(context, Object.class);
-    Integer index = ParameterOccurrence.getCounterAndIncrement(this, loopNestingLevel);
+    Object v = this.nameExpression.evaluate(params, Object.class);
+    Integer index = params.getIndexAndIncrement(this, loopNestingLevel);
     ParameterNotNullableUpdatableOccurrence is = new ParameterNotNullableUpdatableOccurrence(this.name, index, v,
         this.converter);
     sc.consume("?");

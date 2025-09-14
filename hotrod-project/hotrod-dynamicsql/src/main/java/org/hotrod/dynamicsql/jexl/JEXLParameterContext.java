@@ -16,7 +16,7 @@ public class JEXLParameterContext extends Parameters implements JexlContext {
 
   @Override
   public Object get(String name) {
-    return super.params.get(name);
+    return super.paramValues.get(name);
   }
 
   @Override
@@ -26,7 +26,7 @@ public class JEXLParameterContext extends Parameters implements JexlContext {
 
   @Override
   public boolean has(String name) {
-    return super.params.containsKey(name);
+    return super.paramValues.containsKey(name);
   }
 
   // ParameterContext
@@ -47,12 +47,12 @@ public class JEXLParameterContext extends Parameters implements JexlContext {
       throw new RuntimeException(
           "Invalid variable name '" + name + "': must a letter followed by alphanumeric characters or underscores.");
     }
-    super.params.put(name, value);
+    super.paramValues.put(name, value);
   }
 
   @Override
   public Object unbind(String name) {
-    return super.params.remove(name);
+    return super.paramValues.remove(name);
   }
 
 }

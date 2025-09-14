@@ -106,6 +106,14 @@ create table product (
   shipping int
 );
 
+insert into product (pid_product, type, shipping) values
+  (101, 'NOR', 50),
+  (102, 'VAL', 51),
+  (103, 'VIP', 52),
+  (104, 'NOR', 53),
+  (105, 'NOR', 54),
+  (106, 'NOR', 55);
+
 create sequence seq_product;
 
 insert into product (pid_product, type, shipping) values (next value for seq_product, 'ABC', 105);

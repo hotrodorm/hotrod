@@ -10,11 +10,11 @@ import org.hotrod.utils.ConverterUtil;
 
 public class VariableOccurrence extends ParameterOccurrence {
 
-  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(VariableOccurrence.class.getName());
 
   public VariableOccurrence(String originalParameterName, Integer index, Object value, TypeConverter<?, ?> converter) {
     super(originalParameterName, index, value, converter);
+    log.fine("init");
   }
 
   @Override
