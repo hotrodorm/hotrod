@@ -89,7 +89,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     public Product readRowFrom(ResultSet rs, Connection conn) throws SQLException {
       Product row = applicationContext.getBean(Product.class);
 
-      Long col1 = rs.getLong("PID_PRODUCT"); // PID_PRODUCT
+      Long col1 = rs.getLong("PID_proDUCT"); // PID_proDUCT
       if (rs.wasNull()) col1 = null;
       row.setPidProduct(col1);
 
@@ -172,11 +172,11 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   private void initializeSelectbyprimarykey() {
     this.selectByPrimaryKey = dyn
       .literaln("SELECT")
-      .literaln("  pid_product,")
+      .literaln("  \"PID_proDUCT\",")
       .literaln("  type,")
       .literaln("  shipping")
       .literaln("FROM product")
-      .literaln("\nWHERE " + "pid_product = ").parameter("f.pidProduct")
+      .literaln("\nWHERE " + "\"PID_proDUCT\" = ").parameter("f.pidProduct")
       .endSelectQuery();
   }
 
@@ -205,12 +205,12 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   private void initializeSelectbyexample() {
     this.selectByExample = dyn
       .literaln("SELECT")
-      .literaln("  pid_product,")
+      .literaln("  \"PID_proDUCT\",")
       .literaln("  type,")
       .literaln("  shipping")
       .literaln("FROM product")
       .where("AND")
-        .if_("f.pidProduct != null").literal("pid_product = ").parameter("f.pidProduct").endif()
+        .if_("f.pidProduct != null").literal("\"PID_proDUCT\" = ").parameter("f.pidProduct").endif()
         .if_("f.type != null").literal("type = ").parameter("f.type").endif()
         .if_("f.shipping != null").literal("shipping = ").parameter("f.shipping").endif()
       .endwhere()
@@ -246,7 +246,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   private void initializeInsert() {
     this.insert = dyn
       .literaln("INSERT INTO product (")
-      .literaln("  pid_product,")
+      .literaln("  \"PID_proDUCT\",")
       .literaln("  type,")
       .literaln("  shipping")
       .literaln(")")
@@ -280,7 +280,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
       .literaln("INSERT INTO product (")
-      .if_("l.pidProduct != null").literal("pid_product,\n").endif()
+      .if_("l.pidProduct != null").literal("\"PID_proDUCT\",\n").endif()
       .if_("l.type != null").literal("type,\n").endif()
       .if_("l.shipping != null").literal("shipping\n").endif()
       .literaln(")")
@@ -315,10 +315,10 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     this.updateByPK = dyn
       .literaln("UPDATE product")
       .literaln("SET")
-      .literal("  pid_product = ").parameterNullable("m.pidProduct", Types.NUMERIC).literaln(",")
+      .literal("  \"PID_proDUCT\" = ").parameterNullable("m.pidProduct", Types.NUMERIC).literaln(",")
       .literal("  type = ").parameterNullable("m.type", Types.VARCHAR).literaln(",")
       .literal("  shipping = ").parameterNullable("m.shipping", Types.NUMERIC)
-      .literaln("\nWHERE " + "pid_product = ").parameter("m.pidProduct")
+      .literaln("\nWHERE " + "\"PID_proDUCT\" = ").parameter("m.pidProduct")
     .endModificationQuery();
   }
 
@@ -344,12 +344,12 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     this.updateByExample = dyn
       .literal("UPDATE product")
       .set()
-        .if_("v.pidProduct != null").literal("pid_product = ").parameter("v.pidProduct").endif()
+        .if_("v.pidProduct != null").literal("\"PID_proDUCT\" = ").parameter("v.pidProduct").endif()
         .if_("v.type != null").literal("type = ").parameter("v.type").endif()
         .if_("v.shipping != null").literal("shipping = ").parameter("v.shipping").endif()
       .endset()
       .where("AND")
-        .if_("e.pidProduct != null").literal("pid_product = ").parameter("e.pidProduct").endif()
+        .if_("e.pidProduct != null").literal("\"PID_proDUCT\" = ").parameter("e.pidProduct").endif()
         .if_("e.type != null").literal("type = ").parameter("e.type").endif()
         .if_("e.shipping != null").literal("shipping = ").parameter("e.shipping").endif()
       .endwhere()
@@ -388,7 +388,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   private void initializeDeletebypk() {
     this.deleteByPK = dyn
       .literaln("DELETE FROM product")
-      .literaln("\nWHERE " + "pid_product = ").parameter("f.pidProduct")
+      .literaln("\nWHERE " + "\"PID_proDUCT\" = ").parameter("f.pidProduct")
       .endModificationQuery();
   }
 
@@ -416,7 +416,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     this.deleteByExample = dyn
       .literal("DELETE FROM product")
       .where("AND")
-        .if_("e.pidProduct != null").literal("pid_product = ").parameter("e.pidProduct").endif()
+        .if_("e.pidProduct != null").literal("\"PID_proDUCT\" = ").parameter("e.pidProduct").endif()
         .if_("e.type != null").literal("type = ").parameter("e.type").endif()
         .if_("e.shipping != null").literal("shipping = ").parameter("e.shipping").endif()
       .endwhere()
@@ -446,8 +446,8 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   public enum ProductOrderBy implements OrderBy {
 
-    PID_PRODUCT("pid_product", true),
-    PID_PRODUCT$DESC("pid_product", false),
+    PID_PRODUCT("\"PID_proDUCT\"", true),
+    PID_PRODUCT$DESC("\"PID_proDUCT\"", false),
     TYPE("type", true),
     TYPE$DESC("type", false),
     SHIPPING("shipping", true),
@@ -486,7 +486,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   public static class ProductTable extends Table<Product> {
 
     public final NumericEntityColumn pidProduct = new NumericEntityColumn(this,
-      "PID_PRODUCT", "pidProduct", "NUMBER", 18, 0, TypeHandler.forClass(Long.class, TypeSource.STATIC_DIALECT_RULE));
+      "PID_proDUCT", "pidProduct", "NUMBER", 18, 0, TypeHandler.forClass(Long.class, TypeSource.STATIC_DIALECT_RULE));
     public final CharEntityColumn type = new CharEntityColumn(this,
       "TYPE", "type", "VARCHAR2", 6, null, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE));
     public final NumericEntityColumn shipping = new NumericEntityColumn(this,

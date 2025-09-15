@@ -942,7 +942,7 @@ public class DAO {
         }
         if (this.adapter.getInsertIntegration().integratesSequencesKeysResultSet()) {
           if (this.adapter.getInsertIntegration().identitiesMustDeclarePKColumns()) {
-            String[] pkcols = this.metadata.getPK().getColumns().stream().map(c -> c.getId().getRenderedSQLName())
+            String[] pkcols = this.metadata.getPK().getColumns().stream().map(c -> c.getId().getCanonicalSQLName())
                 .toArray(String[]::new);
             return new InsertMechanics(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET, null, null,
                 sequenceInlineSQL, null, pkcols);

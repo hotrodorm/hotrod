@@ -30,6 +30,7 @@ public class OracleAdapter extends DatabaseAdapter {
 
   private static final long serialVersionUID = 1L;
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(OracleAdapter.class.getName());
 
   private boolean isOracle12cOrNewer;
@@ -201,10 +202,14 @@ public class OracleAdapter extends DatabaseAdapter {
 
   }
 
+  // Integrated retrieval of sequences fails to work with mixed case PK names, as in "Product_ID"
+  // Defaulting to pre-fetch in all cases for now.
+
   @Override
   public InsertIntegration getInsertIntegration() {
-    return this.isOracle12cOrNewer ? InsertIntegration.of(true, true, true, false, null, true)
-        : InsertIntegration.of(false, false, false, false, null, true);
+    return InsertIntegration.of(false, false, false, false, null, true);
+//    return this.isOracle12cOrNewer ? InsertIntegration.of(true, true, true, false, null, true)
+//        : InsertIntegration.of(false, false, false, false, null, true);
   }
 
   @Override

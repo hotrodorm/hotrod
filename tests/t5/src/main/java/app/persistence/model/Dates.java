@@ -5,18 +5,18 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import app.persistence.dao.LandDAO;
-import app.persistence.layout.LandLayout;
+import app.persistence.dao.DatesDAO;
+import app.persistence.layout.DatesLayout;
 
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class Land extends LandLayout {
+public class Dates extends DatesLayout {
 
   private static final long serialVersionUID = 1L;
 
   @SuppressWarnings("unused")
   @Autowired
-  private LandDAO landDAO;
+  private DatesDAO datesDAO;
 
   // Add custom code below.
 

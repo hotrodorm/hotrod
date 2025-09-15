@@ -4,9 +4,12 @@ package app.persistence.dao;
 
 import java.io.Serializable;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.sql.Types;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +36,7 @@ import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.metadata.AllColumns;
-import org.hotrod.livesql.metadata.CharEntityColumn;
+import org.hotrod.livesql.metadata.DateTimeEntityColumn;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.Table;
@@ -54,15 +57,15 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import app.persistence.layout.AbcDefLayout;
-import app.persistence.model.AbcDef;
+import app.persistence.layout.DatesLayout;
+import app.persistence.model.Dates;
 
 @Component
-public class AbcDefDAO implements Serializable, ApplicationContextAware {
+public class DatesDAO implements Serializable, ApplicationContextAware {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = Logger.getLogger(AbcDefDAO.class.getName());
+  private static final Logger log = Logger.getLogger(DatesDAO.class.getName());
 
   @Autowired
   private DataSource dataSource;
@@ -83,18 +86,27 @@ public class AbcDefDAO implements Serializable, ApplicationContextAware {
 
   // ROW READER
 
-  private final RowReader<AbcDef> rowReader = new RowReader<AbcDef>() {
+  private final RowReader<Dates> rowReader = new RowReader<Dates>() {
 
     @Override
-    public AbcDef readRowFrom(ResultSet rs, Connection conn) throws SQLException {
-      AbcDef row = applicationContext.getBean(AbcDef.class);
+    public Dates readRowFrom(ResultSet rs, Connection conn) throws SQLException {
+      Dates row = applicationContext.getBean(Dates.class);
 
       Integer col1 = rs.getInt("ID"); // ID
       if (rs.wasNull()) col1 = null;
       row.setId(col1);
 
-      String col2 = rs.getString("NAME"); // NAME
-      row.setName(col2);
+      Date col2 = rs.getDate("DAT1"); // DAT1
+      row.setDat1(col2);
+
+      Timestamp col3 = rs.getTimestamp("DAT2"); // DAT2
+      row.setDat2(col3);
+
+      ZonedDateTime col4 = rs.getObject("DAT3", ZonedDateTime.class); // DAT3
+      row.setDat3(col4);
+
+      ZonedDateTime col5 = rs.getObject("DAT4", ZonedDateTime.class); // DAT4
+      row.setDat4(col5);
 
       return row;
     }
@@ -103,53 +115,77 @@ public class AbcDefDAO implements Serializable, ApplicationContextAware {
 
   // PARSE ROW
 
-  public AbcDef parseRow(Map<String, Object> row) {
+  public Dates parseRow(Map<String, Object> row) {
     return parseRow(row, null, null);
   }
 
-  public AbcDef parseRow(Map<String, Object> row, String prefix) {
+  public Dates parseRow(Map<String, Object> row, String prefix) {
     return parseRow(row, prefix, null);
   }
 
-  public AbcDef parseRow(Map<String, Object> row, String prefix, String suffix) {
-    AbcDef m = applicationContext.getBean(AbcDef.class);
+  public Dates parseRow(Map<String, Object> row, String prefix, String suffix) {
+    Dates m = applicationContext.getBean(Dates.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
     m.setId(CastUtil.toInteger((Number) row.get(p + "id" + s)));
-    m.setName((String) row.get(p + "name" + s));
+    m.setDat1((Date) row.get(p + "dat1" + s));
+    m.setDat2((Timestamp) row.get(p + "dat2" + s));
+    m.setDat3((ZonedDateTime) row.get(p + "dat3" + s));
+    m.setDat4((ZonedDateTime) row.get(p + "dat4" + s));
     return m;
   }
 
   // BASELINE
 
-  public class AbcDefBaseline {
+  public class DatesBaseline {
 
     private Integer id;
-    private String name;
+    private Date dat1;
+    private Timestamp dat2;
+    private ZonedDateTime dat3;
+    private ZonedDateTime dat4;
 
     public Integer getId() {
       return this.id;
     }
 
-    public String getName() {
-      return this.name;
+    public Date getDat1() {
+      return this.dat1;
+    }
+
+    public Timestamp getDat2() {
+      return this.dat2;
+    }
+
+    public ZonedDateTime getDat3() {
+      return this.dat3;
+    }
+
+    public ZonedDateTime getDat4() {
+      return this.dat4;
     }
 
   }
 
-  public AbcDefBaseline baseline(AbcDef model) {
-    AbcDefBaseline b = new AbcDefBaseline();
+  public DatesBaseline baseline(Dates model) {
+    DatesBaseline b = new DatesBaseline();
     b.id = model.getId();
-    b.name = model.getName();
+    b.dat1 = model.getDat1();
+    b.dat2 = model.getDat2();
+    b.dat3 = model.getDat3();
+    b.dat4 = model.getDat4();
     return b;
   };
 
   // CLONE
 
-  public AbcDef clone(AbcDefLayout layout) {
-    AbcDef m = new AbcDef();
+  public Dates clone(DatesLayout layout) {
+    Dates m = new Dates();
     m.setId(layout.getId());
-    m.setName(layout.getName());
+    m.setDat1(layout.getDat1());
+    m.setDat2(layout.getDat2());
+    m.setDat3(layout.getDat3());
+    m.setDat4(layout.getDat4());
     return m;
   };
 
@@ -161,22 +197,25 @@ public class AbcDefDAO implements Serializable, ApplicationContextAware {
     this.selectByPrimaryKey = dyn
       .literaln("SELECT")
       .literaln("  id,")
-      .literaln("  name")
-      .literaln("FROM \"abc_DEF\"")
+      .literaln("  dat1,")
+      .literaln("  dat2,")
+      .literaln("  dat3,")
+      .literaln("  dat4")
+      .literaln("FROM dates")
       .literaln("\nWHERE " + "id = ").parameter("f.id")
       .endSelectQuery();
   }
 
-  public AbcDef select(Integer id) {
+  public Dates select(Integer id) {
     if (id == null) return null;
-    AbcDef filter = new AbcDef();
+    Dates filter = new Dates();
     filter.setId(id);
     Parameters params = this.dyn.newParameters();
     params.add("f", filter);
-    PreparedSelectQuery<AbcDef> preparedQuery = this.selectByPrimaryKey.prepare(params, this.rowReader);
+    PreparedSelectQuery<Dates> preparedQuery = this.selectByPrimaryKey.prepare(params, this.rowReader);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
-      List<AbcDef> rows = preparedQuery.execute(conn);
+      List<Dates> rows = preparedQuery.execute(conn);
       if (rows.size() == 0) return null;
       if (rows.size() == 1) return rows.get(0);
       throw new PersistenceException("A single row at most was expected but received " + rows.size() + " rows.");
@@ -193,25 +232,31 @@ public class AbcDefDAO implements Serializable, ApplicationContextAware {
     this.selectByExample = dyn
       .literaln("SELECT")
       .literaln("  id,")
-      .literaln("  name")
-      .literaln("FROM \"abc_DEF\"")
+      .literaln("  dat1,")
+      .literaln("  dat2,")
+      .literaln("  dat3,")
+      .literaln("  dat4")
+      .literaln("FROM dates")
       .where("AND")
         .if_("f.id != null").literal("id = ").parameter("f.id").endif()
-        .if_("f.name != null").literal("name = ").parameter("f.name").endif()
+        .if_("f.dat1 != null").literal("dat1 = ").parameter("f.dat1").endif()
+        .if_("f.dat2 != null").literal("dat2 = ").parameter("f.dat2").endif()
+        .if_("f.dat3 != null").literal("dat3 = ").parameter("f.dat3").endif()
+        .if_("f.dat4 != null").literal("dat4 = ").parameter("f.dat4").endif()
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
   }
 
-  public List<AbcDef> select(AbcDefLayout filter, AbcDefOrderBy... orderBies) {
+  public List<Dates> select(DatesLayout filter, DatesOrderBy... orderBies) {
     Parameters params = this.dyn.newParameters();
     params.add("f", filter);
     String ordering = SQLUtil.render(orderBies);
     params.add("ordering", ordering);
-    PreparedSelectQuery<AbcDef> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
+    PreparedSelectQuery<Dates> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
-      List<AbcDef> rows = preparedQuery.execute(conn);
+      List<Dates> rows = preparedQuery.execute(conn);
       return rows;
     } catch (SQLException e) {
       throw new PersistenceException(e);
@@ -220,8 +265,8 @@ public class AbcDefDAO implements Serializable, ApplicationContextAware {
 
   // SELECT BY CRITERIA
 
-  public CriteriaWherePhase<AbcDef> select(final AbcDefTable from, final Predicate predicate) {
-    return new CriteriaWherePhase<AbcDef>(this.context, from, predicate, this.rowReader);
+  public CriteriaWherePhase<Dates> select(final DatesTable from, final Predicate predicate) {
+    return new CriteriaWherePhase<Dates>(this.context, from, predicate, this.rowReader);
   }
 
   // INSERT
@@ -230,23 +275,29 @@ public class AbcDefDAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsert() {
     this.insert = dyn
-      .literaln("INSERT INTO \"abc_DEF\" (")
+      .literaln("INSERT INTO dates (")
       .literaln("  id,")
-      .literaln("  name")
+      .literaln("  dat1,")
+      .literaln("  dat2,")
+      .literaln("  dat3,")
+      .literaln("  dat4")
       .literaln(")")
       .literaln("VALUES(")
-      .literal("  ").parameterNullable("l.id", Types.INTEGER).literaln(",")
-      .literal("  ").parameterNullable("l.name", Types.VARCHAR)
+      .literal("  ").parameterNullable("l.id", Types.NUMERIC).literaln(",")
+      .literal("  ").parameterNullable("l.dat1", Types.TIMESTAMP).literaln(",")
+      .literal("  ").parameterNullable("l.dat2", Types.TIMESTAMP).literaln(",")
+      .literal("  ").parameterNullable("l.dat3", Types.TIMESTAMP).literaln(",")
+      .literal("  ").parameterNullable("l.dat4", Types.TIMESTAMP)
       .literal(")")
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public AbcDef insert(AbcDefLayout layout) {
+  public Dates insert(DatesLayout layout) {
     Parameters params = this.dyn.newParameters();
     params.add("l", layout);
     PreparedInsertQuery preparedQuery = this.insert.prepare(params);
     logQuery(preparedQuery);
-    AbcDef model = this.clone(layout);
+    Dates model = this.clone(layout);
     try (Connection conn = this.dataSource.getConnection()) {
       preparedQuery.execute(conn);
     } catch (SQLException e) {
@@ -261,23 +312,29 @@ public class AbcDefDAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
-      .literaln("INSERT INTO \"abc_DEF\" (")
+      .literaln("INSERT INTO dates (")
       .if_("l.id != null").literal("id,\n").endif()
-      .if_("l.name != null").literal("name\n").endif()
+      .if_("l.dat1 != null").literal("dat1,\n").endif()
+      .if_("l.dat2 != null").literal("dat2,\n").endif()
+      .if_("l.dat3 != null").literal("dat3,\n").endif()
+      .if_("l.dat4 != null").literal("dat4\n").endif()
       .literaln(")")
       .literaln("VALUES(")
       .if_("l.id != null").parameter("l.id").literal(", ").endif()
-      .if_("l.name != null").parameter("l.name").endif()
+      .if_("l.dat1 != null").parameter("l.dat1").literal(", ").endif()
+      .if_("l.dat2 != null").parameter("l.dat2").literal(", ").endif()
+      .if_("l.dat3 != null").parameter("l.dat3").literal(", ").endif()
+      .if_("l.dat4 != null").parameter("l.dat4").endif()
       .literal(")")
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public AbcDef insertByExample(AbcDefLayout layout) {
+  public Dates insertByExample(DatesLayout layout) {
     Parameters params = this.dyn.newParameters();
     params.add("l", layout);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
     logQuery(preparedQuery);
-    AbcDef model = this.clone(layout);
+    Dates model = this.clone(layout);
     try (Connection conn = this.dataSource.getConnection()) {
       preparedQuery.execute(conn);
     } catch (SQLException e) {
@@ -292,15 +349,18 @@ public class AbcDefDAO implements Serializable, ApplicationContextAware {
 
   private void initializeUpdatebypk() {
     this.updateByPK = dyn
-      .literaln("UPDATE \"abc_DEF\"")
+      .literaln("UPDATE dates")
       .literaln("SET")
-      .literal("  id = ").parameterNullable("m.id", Types.INTEGER).literaln(",")
-      .literal("  name = ").parameterNullable("m.name", Types.VARCHAR)
+      .literal("  id = ").parameterNullable("m.id", Types.NUMERIC).literaln(",")
+      .literal("  dat1 = ").parameterNullable("m.dat1", Types.TIMESTAMP).literaln(",")
+      .literal("  dat2 = ").parameterNullable("m.dat2", Types.TIMESTAMP).literaln(",")
+      .literal("  dat3 = ").parameterNullable("m.dat3", Types.TIMESTAMP).literaln(",")
+      .literal("  dat4 = ").parameterNullable("m.dat4", Types.TIMESTAMP)
       .literaln("\nWHERE " + "id = ").parameter("m.id")
     .endModificationQuery();
   }
 
-  public int update(AbcDef model) {
+  public int update(Dates model) {
     if (model.getId() == null) return 0;
     Parameters params = this.dyn.newParameters();
     params.add("m", model);
@@ -320,19 +380,25 @@ public class AbcDefDAO implements Serializable, ApplicationContextAware {
 
   private void initializeUpdatebyexample() {
     this.updateByExample = dyn
-      .literal("UPDATE \"abc_DEF\"")
+      .literal("UPDATE dates")
       .set()
         .if_("v.id != null").literal("id = ").parameter("v.id").endif()
-        .if_("v.name != null").literal("name = ").parameter("v.name").endif()
+        .if_("v.dat1 != null").literal("dat1 = ").parameter("v.dat1").endif()
+        .if_("v.dat2 != null").literal("dat2 = ").parameter("v.dat2").endif()
+        .if_("v.dat3 != null").literal("dat3 = ").parameter("v.dat3").endif()
+        .if_("v.dat4 != null").literal("dat4 = ").parameter("v.dat4").endif()
       .endset()
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
-        .if_("e.name != null").literal("name = ").parameter("e.name").endif()
+        .if_("e.dat1 != null").literal("dat1 = ").parameter("e.dat1").endif()
+        .if_("e.dat2 != null").literal("dat2 = ").parameter("e.dat2").endif()
+        .if_("e.dat3 != null").literal("dat3 = ").parameter("e.dat3").endif()
+        .if_("e.dat4 != null").literal("dat4 = ").parameter("e.dat4").endif()
       .endwhere()
       .endModificationQuery();
   }
 
-  public int update(AbcDefLayout example, AbcDefLayout values) {
+  public int update(DatesLayout example, DatesLayout values) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     params.add("v", values);
@@ -348,11 +414,14 @@ public class AbcDefDAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateSetCompletePhase update(AbcDefLayout values, AbcDefTable tableOrView,
+  public UpdateSetCompletePhase update(DatesLayout values, DatesTable tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
-    if (values.getName() != null) setters.add(new Setter(tableOrView.name, sql.val(values.getName())));
+    if (values.getDat1() != null) setters.add(new Setter(tableOrView.dat1, sql.val(values.getDat1())));
+    if (values.getDat2() != null) setters.add(new Setter(tableOrView.dat2, sql.val(values.getDat2())));
+    if (values.getDat3() != null) setters.add(new Setter(tableOrView.dat3, sql.val(values.getDat3())));
+    if (values.getDat4() != null) setters.add(new Setter(tableOrView.dat4, sql.val(values.getDat4())));
     return new UpdateSetCompletePhase(this.context, tableOrView, setters, predicate);
   }
 
@@ -362,14 +431,14 @@ public class AbcDefDAO implements Serializable, ApplicationContextAware {
 
   private void initializeDeletebypk() {
     this.deleteByPK = dyn
-      .literaln("DELETE FROM \"abc_DEF\"")
+      .literaln("DELETE FROM dates")
       .literaln("\nWHERE " + "id = ").parameter("f.id")
       .endModificationQuery();
   }
 
   public int delete(Integer id) {
     if (id == null) return 0;
-    AbcDef filter = new AbcDef();
+    Dates filter = new Dates();
     filter.setId(id);
     Parameters params = this.dyn.newParameters();
     params.add("f", filter);
@@ -389,15 +458,18 @@ public class AbcDefDAO implements Serializable, ApplicationContextAware {
 
   private void initializeDeletebyexample() {
     this.deleteByExample = dyn
-      .literal("DELETE FROM \"abc_DEF\"")
+      .literal("DELETE FROM dates")
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
-        .if_("e.name != null").literal("name = ").parameter("e.name").endif()
+        .if_("e.dat1 != null").literal("dat1 = ").parameter("e.dat1").endif()
+        .if_("e.dat2 != null").literal("dat2 = ").parameter("e.dat2").endif()
+        .if_("e.dat3 != null").literal("dat3 = ").parameter("e.dat3").endif()
+        .if_("e.dat4 != null").literal("dat4 = ").parameter("e.dat4").endif()
       .endwhere()
       .endModificationQuery();
   }
 
-  public int delete(AbcDefLayout example) {
+  public int delete(DatesLayout example) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(params);
@@ -412,23 +484,29 @@ public class AbcDefDAO implements Serializable, ApplicationContextAware {
 
   // DELETE BY CRITERIA
 
-  public DeleteWherePhase delete(final AbcDefTable from, final Predicate predicate) {
+  public DeleteWherePhase delete(final DatesTable from, final Predicate predicate) {
     return new DeleteWherePhase(this.context, from, predicate);
   }
 
   // ORDER BY
 
-  public enum AbcDefOrderBy implements OrderBy {
+  public enum DatesOrderBy implements OrderBy {
 
     ID("id", true),
     ID$DESC("id", false),
-    NAME("name", true),
-    NAME$DESC("name", false);
+    DAT1("dat1", true),
+    DAT1$DESC("dat1", false),
+    DAT2("dat2", true),
+    DAT2$DESC("dat2", false),
+    DAT3("dat3", true),
+    DAT3$DESC("dat3", false),
+    DAT4("dat4", true),
+    DAT4$DESC("dat4", false);
 
     private String sqlColumnName;
     private boolean ascending;
 
-    private AbcDefOrderBy(String sqlColumnName, boolean ascending) {
+    private DatesOrderBy(String sqlColumnName, boolean ascending) {
       this.sqlColumnName = sqlColumnName;
       this.ascending = ascending;
     }
@@ -447,40 +525,49 @@ public class AbcDefDAO implements Serializable, ApplicationContextAware {
 
   // TABLE METADATA
 
-  public AbcDefTable newTable() {
-    return new AbcDefTable();
+  public DatesTable newTable() {
+    return new DatesTable();
   }
 
-  public AbcDefTable newTable(final String alias) {
-    return new AbcDefTable(alias);
+  public DatesTable newTable(final String alias) {
+    return new DatesTable(alias);
   }
 
-  public static class AbcDefTable extends Table<AbcDef> {
+  public static class DatesTable extends Table<Dates> {
 
     public final NumericEntityColumn id = new NumericEntityColumn(this,
-      "ID", "id", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
-    public final CharEntityColumn name = new CharEntityColumn(this,
-      "NAME", "name", "CHARACTER VARYING", 10, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE));
+      "ID", "id", "NUMBER", 9, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
+    public final DateTimeEntityColumn dat1 = new DateTimeEntityColumn(this,
+      "DAT1", "dat1", "DATE", 7, null, TypeHandler.forClass(Date.class, TypeSource.STATIC_LAYER_RULE));
+    public final DateTimeEntityColumn dat2 = new DateTimeEntityColumn(this,
+      "DAT2", "dat2", "TIMESTAMP(6)", 11, 6, TypeHandler.forClass(Timestamp.class, TypeSource.STATIC_LAYER_RULE));
+    public final DateTimeEntityColumn dat3 = new DateTimeEntityColumn(this,
+      "DAT3", "dat3", "TIMESTAMP(6) WITH TIME ZONE", 13, 6, TypeHandler.forClass(ZonedDateTime.class, TypeSource.STATIC_DIALECT_RULE));
+    public final DateTimeEntityColumn dat4 = new DateTimeEntityColumn(this,
+      "DAT4", "dat4", "TIMESTAMP(6) WITH LOCAL TIME ZONE", 11, 6, TypeHandler.forClass(ZonedDateTime.class, TypeSource.STATIC_DIALECT_RULE));
 
     @Override
     public AllColumns star() {
-      return new AllColumns(this.id, this.name);
+      return new AllColumns(this.id, this.dat1, this.dat2, this.dat3, this.dat4);
     }
 
-    AbcDefTable() {
-      super(null, null, Name.of("abc_DEF", true), "Table", null, AbcDefLayout.class, AbcDef.class);
+    DatesTable() {
+      super(null, null, Name.of("DATES", false), "Table", null, DatesLayout.class, Dates.class);
       initialize();
     }
 
-    AbcDefTable(final String alias) {
-      super(null, null, Name.of("abc_DEF", true), "Table", alias, AbcDefLayout.class, AbcDef.class);
+    DatesTable(final String alias) {
+      super(null, null, Name.of("DATES", false), "Table", alias, DatesLayout.class, Dates.class);
       initialize();
     }
 
     private void initialize() {
       super.columns = new ArrayList<>();
       super.columns.add(this.id);
-      super.columns.add(this.name);
+      super.columns.add(this.dat1);
+      super.columns.add(this.dat2);
+      super.columns.add(this.dat3);
+      super.columns.add(this.dat4);
     }
 
   }
