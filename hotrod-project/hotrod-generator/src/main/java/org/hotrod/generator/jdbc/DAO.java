@@ -535,7 +535,8 @@ public class DAO {
     w.println("  // CLONE");
     w.println();
     w.println("  public ", m, " clone(", l, " layout) {");
-    w.println("    ", m, " m = new ", m, "();");
+    w.println("    ", m, " m = this.applicationContext.getBean(", m, ".class);");
+
     for (ColumnMetadata cm : this.metadata.getColumns()) {
 //      String mem = cm.getId().getJavaMemberName();
       w.println("    m." + cm.getId().getJavaSetter() + "(layout." + cm.getId().getJavaGetter() + "());");
