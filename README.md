@@ -32,7 +32,20 @@ Row row = sql.select(sql.val(3).mult(7).as("total")).executeOne();
 System.out.println("total=" + row.get("total")); // total=21
 ```
 
-Joining multiple tables can look like:
+Selecting from a table can be done as:
+
+```java
+List<Tuple1<Product>> products = this.sql
+  .select(p.star(), p.shipping.plus(p.tax).as("totalCost"))
+  .tuples()
+  .from(p)
+  .where(p.type.eq("SPORTS").and(p.promotion.eq("BOGO")))
+  .orderBy(p.shipping.desc())
+  .limit(50)
+  .execute();
+```
+
+Joining multiple tables and views can be done as:
 
 ```java
 List<Tuple2<Invoice, Client>> rows = sql
