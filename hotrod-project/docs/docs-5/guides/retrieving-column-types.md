@@ -74,7 +74,7 @@ The complete `pom.xml` file will look like:
       <plugin>
         <groupId>org.hotrodorm.hotrod</groupId>
         <artifactId>hotrod-maven-plugin</artifactId>
-        <version>5.1.3</version>
+        <version>5.1.3-SNAPSHOT</version>
         <configuration>
           <configfile>./layer.xml</configfile>
           <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
@@ -100,21 +100,13 @@ The complete `pom.xml` file will look like:
 </project>
 ```
 
-Also, create the empty source folders, if they are not yet created. In linux you can do:
+Also, create the empty source folder, if not yet created. In linux you can do:
 
 ```bash
 mkdir -p src/main/java
 ```
 
-Change the commands above accordingly for Windows or other OS as needed, or use your IDE to create them.
-
-To check the `pom.xml` file is correct, run Maven once using:
-
-```bash
-mvn clean compile
-```
-
-It should report `BUILD SUCCESS` at the end.
+Change the command above accordingly for Windows or other OS as needed, or use your IDE to create it.
 
 
 ## Part 2 &mdash; The Database Script
@@ -149,7 +141,7 @@ Create the file `layer.xml` as:
 ```xml
 <hotrod>
 
-  <generators/>
+  <generators>
     <jdbc />
   </generators>
 
