@@ -11,6 +11,10 @@ public class ExportColumnsToTXTAntTask extends Task {
 
   private static transient final Logger log = Logger.getLogger(ExportColumnsToTXTAntTask.class.getName());
 
+  static {
+    JULCustomFormatter.initialize();
+  }
+
   private String configfile = null;
   private String localproperties = null;
 

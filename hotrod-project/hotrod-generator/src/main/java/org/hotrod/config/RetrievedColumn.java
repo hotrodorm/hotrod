@@ -54,7 +54,7 @@ public class RetrievedColumn implements Comparable<RetrievedColumn> {
       this.catalog = null;
       this.schema = null;
       this.nature = null;
-      this.ordinal = null;
+      this.ordinal = cm.getOrdinal();
       this.nullable = null;
       this.nativeProperties = null;
     }

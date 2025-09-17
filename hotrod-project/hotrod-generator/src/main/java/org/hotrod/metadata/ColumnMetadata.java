@@ -37,6 +37,7 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
 
   private String catalog;
   private String schema;
+  private int ordinal;
   private String columnName;
   private String objectType;
   private String tableName;
@@ -85,6 +86,7 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
     this.c = c;
     this.catalog = c.getTable().getCatalog();
     this.schema = c.getTable().getSchema();
+    this.ordinal = c.getOrdinalPosition();
     this.columnName = c.getName();
     log.fine("this.columnName=" + this.columnName);
     this.objectType = c.getTable().getType();
@@ -123,20 +125,131 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
     this.enumMetadata = null;
 
     this.adapter = adapter;
-    this.type = ColumnMetadata.resolveJavaType(this, this.tag, this.c, null, typeSolverTag, this.adapter);
+    this.type = this.resolveJavaType(this, this.tag, this.c, null, typeSolverTag, this.adapter);
     this.typeSolverTag = typeSolverTag;
     this.isOLVersionNumberColumn = isOLVersionNumberColumn;
     this.isOLTimestampColumn = isOLTimestampColumn;
     this.reusesMemberFromSuperClass = false;
   }
 
-  public static PropertyType resolveJavaType(final ColumnMetadata cm, final ColumnTag columnTag, final JdbcColumn c,
+  public void setEnumMetadata(final EnumDataSetMetadata enumMetadata) {
+    log.fine("[mark enum column] name=" + this.columnName + " enum=" + enumMetadata.getJdbcName());
+    this.enumMetadata = enumMetadata;
+  }
+
+  // From another ColumnMetadata object
+
+  protected ColumnMetadata(final ColumnMetadata cm) {
+    this.dataSet = cm.dataSet;
+    this.c = cm.c;
+    this.ordinal = cm.ordinal;
+    this.columnName = cm.columnName;
+    this.objectType = cm.objectType;
+    this.tableName = cm.tableName;
+
+    this.id = cm.id;
+
+    this.belongsToPK = cm.belongsToPK;
+    this.autogenerationType = cm.autogenerationType;
+    this.dataType = cm.dataType;
+    this.typeName = cm.typeName;
+    this.columnSize = cm.columnSize;
+    this.decimalDigits = cm.decimalDigits;
+    this.columnDefault = cm.columnDefault;
+    this.enumMetadata = cm.enumMetadata;
+    this.adapter = cm.adapter;
+    this.tag = cm.tag;
+    this.type = cm.type;
+    this.typeSolverTag = cm.typeSolverTag;
+    this.isOLVersionNumberColumn = cm.isOLVersionNumberColumn;
+    this.isOLTimestampColumn = cm.isOLTimestampColumn;
+    this.reusesMemberFromSuperClass = false;
+  }
+
+  // From a <select> tag -- create view strategy
+
+  public ColumnMetadata(final ExecutorDAOMetadata dataSet, final JdbcColumn c, final String selectName,
+      final DatabaseAdapter adapter, final ColumnTag columnTag, final boolean isOLVersionNumberColumn,
+      final boolean isOLTimestampColumn, final boolean belongsToPK, final TypeSolverTag typeSolverTag)
+      throws UnresolvableDataTypeException, InvalidIdentifierException {
+    this.dataSet = dataSet;
+    this.c = c;
+    this.catalog = null;
+    this.schema = null;
+    this.ordinal = c.getOrdinalPosition();
+    this.columnName = c.getName();
+    this.tableName = selectName;
+
+    this.tag = columnTag;
+    if (this.tag == null || this.tag.getJavaName() == null) {
+      this.id = Id.fromCanonicalSQL(c.getName(), adapter);
+    } else {
+      this.id = Id.fromCanonicalSQLAndJavaMember(c.getName(), adapter, this.tag.getJavaName());
+    }
+
+    this.belongsToPK = belongsToPK;
+    this.autogenerationType = c.getAutogenerationType();
+    this.dataType = c.getDataType();
+    this.typeName = c.getTypeName();
+    this.columnSize = c.getColumnSize();
+    this.decimalDigits = c.getDecimalDigits();
+    this.columnDefault = c.getColumnDef();
+    this.enumMetadata = null;
+
+    this.adapter = adapter;
+    this.type = this.resolveJavaType(this, this.tag, this.c, null, typeSolverTag, this.adapter);
+    this.typeSolverTag = typeSolverTag;
+
+    this.isOLVersionNumberColumn = isOLVersionNumberColumn;
+    this.isOLTimestampColumn = isOLTimestampColumn;
+    this.reusesMemberFromSuperClass = false;
+  }
+
+  // From a <select> tag -- result set strategy
+
+  public ColumnMetadata(final SelectMethodMetadata dataSet, ResultSetMetaData rm, final int colIndex,
+      final String selectName, final DatabaseAdapter adapter, final ColumnTag columnTag,
+      final boolean isOLVersionNumberColumn, final boolean isOLTimestampColumn, final boolean belongsToPK,
+      final TypeSolverTag typeSolverTag)
+      throws UnresolvableDataTypeException, InvalidIdentifierException, SQLException {
+    this.dataSet = dataSet;
+    this.c = null;
+    this.catalog = null;
+    this.schema = null;
+    this.ordinal = colIndex;
+    this.columnName = rm.getColumnLabel(colIndex);
+    this.tableName = dataSet.getExecutorMetaData().getJavaClassName() + "." + selectName;
+
+    this.tag = columnTag;
+    if (this.tag == null || this.tag.getJavaName() == null) {
+      this.id = Id.fromCanonicalSQL(this.columnName, adapter);
+    } else {
+      this.id = Id.fromCanonicalSQLAndJavaMember(this.columnName, adapter, this.tag.getJavaName());
+    }
+
+    this.belongsToPK = belongsToPK;
+    this.autogenerationType = null;
+    this.dataType = rm.getColumnType(colIndex);
+    this.typeName = rm.getColumnTypeName(colIndex);
+    this.columnSize = rm.getPrecision(colIndex);
+    this.decimalDigits = rm.getScale(colIndex);
+    this.columnDefault = null;
+    this.enumMetadata = null;
+
+    this.resultSetType = JDBCTypes.codeToType(this.dataType);
+
+    this.adapter = adapter;
+    this.type = this.resolveJavaType(this, this.tag, null, this.resultSetType, typeSolverTag, this.adapter);
+    this.typeSolverTag = typeSolverTag;
+
+    this.isOLVersionNumberColumn = isOLVersionNumberColumn;
+    this.isOLTimestampColumn = isOLTimestampColumn;
+    this.reusesMemberFromSuperClass = false;
+  }
+
+  private PropertyType resolveJavaType(final ColumnMetadata cm, final ColumnTag columnTag, final JdbcColumn c,
       final JDBCType resultSetType, final TypeSolverTag typeSolverTag, final DatabaseAdapter adapter)
       throws UnresolvableDataTypeException {
-    log.fine("columnTag=" + columnTag);
-    if (columnTag != null) {
-      log.fine("columnTag.getJdbcColumn()=" + columnTag.getJdbcColumn());
-    }
 
     PropertyType typeSolverType = typeSolverTag.resolveType(cm, c, resultSetType);
 
@@ -185,129 +298,13 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
 
   }
 
-  public void setEnumMetadata(final EnumDataSetMetadata enumMetadata) {
-    log.fine("[mark enum column] name=" + this.columnName + " enum=" + enumMetadata.getJdbcName());
-    this.enumMetadata = enumMetadata;
-  }
-
-  // From another ColumnMetadata object
-
-  protected ColumnMetadata(final ColumnMetadata cm) {
-    this.dataSet = cm.dataSet;
-    this.c = cm.c;
-    this.columnName = cm.columnName;
-    this.objectType = cm.objectType;
-    this.tableName = cm.tableName;
-
-    this.id = cm.id;
-
-    this.belongsToPK = cm.belongsToPK;
-    this.autogenerationType = cm.autogenerationType;
-    this.dataType = cm.dataType;
-    this.typeName = cm.typeName;
-    this.columnSize = cm.columnSize;
-    this.decimalDigits = cm.decimalDigits;
-    this.columnDefault = cm.columnDefault;
-    this.enumMetadata = cm.enumMetadata;
-    this.adapter = cm.adapter;
-    this.tag = cm.tag;
-    this.type = cm.type;
-    this.typeSolverTag = cm.typeSolverTag;
-    this.isOLVersionNumberColumn = cm.isOLVersionNumberColumn;
-    this.isOLTimestampColumn = cm.isOLTimestampColumn;
-    this.reusesMemberFromSuperClass = false;
-  }
-
-  // From a <select> tag -- create view strategy
-
-  public ColumnMetadata(final DataSetMetadata dataSet, final JdbcColumn c, final String selectName,
-      final DatabaseAdapter adapter, final ColumnTag columnTag, final boolean isOLVersionNumberColumn,
-      final boolean isOLTimestampColumn, final boolean belongsToPK, final TypeSolverTag typeSolverTag)
-      throws UnresolvableDataTypeException, InvalidIdentifierException {
-    this.dataSet = dataSet;
-    this.c = c;
-    this.catalog = null;
-    this.schema = null;
-    this.columnName = c.getName();
-    this.tableName = selectName;
-
-    this.tag = columnTag;
-    if (this.tag == null || this.tag.getJavaName() == null) {
-      this.id = Id.fromCanonicalSQL(c.getName(), adapter);
-    } else {
-      this.id = Id.fromCanonicalSQLAndJavaMember(c.getName(), adapter, this.tag.getJavaName());
-    }
-
-    this.belongsToPK = belongsToPK;
-    this.autogenerationType = c.getAutogenerationType();
-    this.dataType = c.getDataType();
-    this.typeName = c.getTypeName();
-    this.columnSize = c.getColumnSize();
-    this.decimalDigits = c.getDecimalDigits();
-    this.columnDefault = c.getColumnDef();
-    this.enumMetadata = null;
-
-    this.adapter = adapter;
-    this.type = ColumnMetadata.resolveJavaType(this, this.tag, this.c, null, typeSolverTag, this.adapter);
-    this.typeSolverTag = typeSolverTag;
-
-    this.isOLVersionNumberColumn = isOLVersionNumberColumn;
-    this.isOLTimestampColumn = isOLTimestampColumn;
-    this.reusesMemberFromSuperClass = false;
-  }
-
-  // From a <select> tag -- result set strategy
-
-  public ColumnMetadata(final DataSetMetadata dataSet, ResultSetMetaData rm, final int colIndex,
-      final String selectName, final DatabaseAdapter adapter, final ColumnTag columnTag,
-      final boolean isOLVersionNumberColumn, final boolean isOLTimestampColumn, final boolean belongsToPK,
-      final TypeSolverTag typeSolverTag)
-      throws UnresolvableDataTypeException, InvalidIdentifierException, SQLException {
-    this.dataSet = dataSet;
-    this.c = null;
-    this.catalog = null;
-    this.schema = null;
-
-    this.columnName = rm.getColumnLabel(colIndex);
-    this.tableName = selectName;
-
-    this.tag = columnTag;
-    if (this.tag == null || this.tag.getJavaName() == null) {
-      this.id = Id.fromCanonicalSQL(this.columnName, adapter);
-    } else {
-      this.id = Id.fromCanonicalSQLAndJavaMember(this.columnName, adapter, this.tag.getJavaName());
-    }
-
-    this.belongsToPK = belongsToPK;
-    this.autogenerationType = null;
-    this.dataType = rm.getColumnType(colIndex);
-    this.typeName = rm.getColumnTypeName(colIndex);
-    this.columnSize = rm.getPrecision(colIndex);
-    this.decimalDigits = rm.getScale(colIndex);
-    this.columnDefault = null;
-    this.enumMetadata = null;
-
-    this.resultSetType = JDBCTypes.codeToType(this.dataType);
-
-    log.fine(">>>>>>>> RS: '" + this.columnName + "' -- this.dataType=" + this.dataType + " -- this.resultSetType="
-        + resultSetType);
-
-    this.adapter = adapter;
-    this.type = ColumnMetadata.resolveJavaType(this, this.tag, null, this.resultSetType, typeSolverTag, this.adapter);
-    this.typeSolverTag = typeSolverTag;
-
-    this.isOLVersionNumberColumn = isOLVersionNumberColumn;
-    this.isOLTimestampColumn = isOLTimestampColumn;
-    this.reusesMemberFromSuperClass = false;
-  }
-
   // Applying a column tag to a column meta data
 
   public static ColumnMetadata applyColumnTag(final ColumnMetadata cm, final ColumnTag tag,
       final DatabaseAdapter adapter) throws UnresolvableDataTypeException, InvalidIdentifierException {
     ColumnMetadata m2 = new ColumnMetadata(cm);
     m2.tag = tag;
-    m2.type = resolveJavaType(m2, tag, tag.getJdbcColumn(), cm.resultSetType, cm.typeSolverTag, m2.adapter);
+    m2.type = cm.resolveJavaType(m2, tag, tag.getJdbcColumn(), cm.resultSetType, cm.typeSolverTag, m2.adapter);
     if (tag.getJavaName() != null) {
       m2.id = Id.fromCanonicalSQLAndJavaMember(cm.getName(), adapter, tag.getJavaName());
     }
@@ -452,6 +449,11 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
   @Override
   public String getTable() {
     return this.tableName;
+  }
+
+  @Override
+  public final int getOrdinal() {
+    return ordinal;
   }
 
   @Override

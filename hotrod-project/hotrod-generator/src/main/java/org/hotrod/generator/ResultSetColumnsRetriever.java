@@ -109,6 +109,7 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
         log.fine("prepare view 3 -- column=" + label);
         ColumnMetadata cm;
         try {
+          log.fine("NITRO column: " + i);
           cm = new ColumnMetadata(ctx.getSm(), rm, i, ctx.getTag().getMethod(), this.adapter, columnTag, false, false,
               false, this.config.getTypeSolverTag());
         } catch (UnresolvableDataTypeException e) {

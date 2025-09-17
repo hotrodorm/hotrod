@@ -15,6 +15,10 @@ public class ExportColumnsToTXTMojo extends AbstractMojo {
 
   private static transient final Logger log = Logger.getLogger(ExportColumnsToTXTMojo.class.getName());
 
+  static {
+    JULCustomFormatter.initialize();
+  }
+
   // Note: 1) Each property must be annotated by @Parameter. 2) The property
   // attribute -- if declared -- must be the exact same name as the Java member
 
@@ -69,7 +73,6 @@ public class ExportColumnsToTXTMojo extends AbstractMojo {
         this.localproperties, this.jdbcdriverclass, this.jdbcurl, this.jdbcusername, this.jdbcpassword,
         this.jdbccatalog, this.jdbcschema, this.facets, this.display, this.txtexportfile);
 
-    log.info("op="+op);
     try {
       op.execute(new MojoFeedback(this));
     } catch (Exception e) {

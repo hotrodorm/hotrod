@@ -84,7 +84,6 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
 
   // Select Methods meta data gathering
 
-  @SuppressWarnings("unused")
   public boolean gatherSelectsMetadataPhase1(final Metadata metadata, final ColumnsRetriever cr, final JDBCTag jdbcTag)
       throws InvalidConfigurationFileException {
     this.selectsMetadata = new ArrayList<SelectMethodMetadata>();
@@ -102,8 +101,8 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
       ColumnsPrefixGenerator columnsPrefixGenerator = new ColumnsPrefixGenerator(this.adapter.getUnescapedSQLCase());
       SelectMethodMetadata sm;
       try {
-        sm = new SelectMethodMetadata(metadata, cr, selectTag, this.config, null, columnsPrefixGenerator, jdbcTag,
-            null);
+        sm = new SelectMethodMetadata(metadata, cr, selectTag, this.config, null, columnsPrefixGenerator, jdbcTag, null,
+            this);
       } catch (InvalidIdentifierException e) {
         String msg = "Invalid method name '" + selectTag.getMethod() + "': " + e.getMessage();
         throw new InvalidConfigurationFileException(selectTag, msg);
@@ -119,7 +118,6 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
   public void gatherSelectsMetadataPhase2(final VORegistry voRegistry)
       throws UncontrolledException, InvalidConfigurationFileException {
     for (SelectMethodMetadata sm : this.selectsMetadata) {
-      log.fine("*** - executor method " + sm.getMethod() + "() sm.metadataComplete()=" + sm.metadataComplete());
       if (!sm.metadataComplete()) {
         sm.gatherMetadataPhase2(voRegistry);
       }

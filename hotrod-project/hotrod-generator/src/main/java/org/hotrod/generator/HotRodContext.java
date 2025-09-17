@@ -27,7 +27,9 @@ import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnrecognizedDatabaseException;
+import org.hotrod.metadata.ExecutorDAOMetadata;
 import org.hotrod.metadata.Metadata;
+import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.utils.SUtil;
 import org.hotrod.utils.SourceLocation;
 import org.hotrod.utils.T;
@@ -142,7 +144,7 @@ public class HotRodContext {
       CatalogSchema currentCS = loc.getCatalogSchema();
       if (configFile != null) {
         try {
-//          log.info("will load configuration");
+          log.fine("will load configuration");
           this.config = ConfigurationLoader.loadPrimary(baseDir, configFile, adapter, facetNames, currentCS);
 //          log.info("Main Configuration loaded.");
         } catch (ControlledException e) {
@@ -165,7 +167,7 @@ public class HotRodContext {
           throw new ControlledException("Could not load configuration file " + configFile + " - " + e.getMessage());
         }
       } else {
-        log.fine("No config mode");
+        log.info("No config mode");
         try {
           this.config = ConfigurationLoader.prepareNoConfig(baseDir, configFile, adapter, facetNames, currentCS);
           log.fine("Default configuration loaded.");
@@ -332,7 +334,6 @@ public class HotRodContext {
             "Could not retrieve database metadata" + (e.getCause() != null ? XUtil.trim(e.getCause()) : XUtil.trim(e)));
       }
 
-      log.fine("gen 10");
       this.metadata = new Metadata(db, adapter, loc);
 
       T.endPhase("DB Meta Data Post-processing");

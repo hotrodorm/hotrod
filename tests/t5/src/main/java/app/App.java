@@ -14,7 +14,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import app.persistence.dao.ProductDAO;
+import app.persistence.dao.VehicleDAO;
+import app.persistence.layout.VehicleLayout;
 import app.persistence.model.Product;
+import app.persistence.model.Vehicle;
 
 @SpringBootApplication
 @Configuration
@@ -43,9 +46,9 @@ public class App {
 //
 //  @Autowired
 //  private SalesDAO salesDAO;
-//
-//  @Autowired
-//  private VehicleDAO vehicleDAO;
+
+  @Autowired
+  private VehicleDAO vehicleDAO;
 
 //  @Autowired
 //  private ADAO aDAO;
@@ -70,8 +73,9 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       log.info("[ Starting... ]");
+      testInsert1();
 //      testForEach();
-      testOracleInsertSeq();
+//      testOracleInsertSeq();
 //      testSubExpressions();
 //      testA();
 //      testParseRow();
@@ -97,6 +101,29 @@ public class App {
 //      testNitro6();
       log.info("[ Ending ]");
     };
+  }
+
+  private void testInsert1() {
+    VehicleLayout v = new VehicleLayout();
+    v.setName("Toyota 1");
+    v.setVehicleCode(1123);
+
+    Vehicle inserted = this.vehicleDAO.insert(v);
+    System.out.println("inserted=" + inserted);
+
+  }
+
+  private void testSelect1() throws SQLException {
+//    ProductTable p = this.productDAO.newTable();
+//    List<Tuple1<Product>> products = this.sql.select(
+//        p.star(), p.shipping.plus(p.tax).as("totalCost")
+//        ) //
+//        .tuples() //
+//        .from(p) //
+//        .where(p.type.eq("SPORTS")) //
+//        .orderBy(p.shipping.desc()) //
+//        .limit(50)
+//        .execute();
   }
 
   private void testForEach() throws SQLException {

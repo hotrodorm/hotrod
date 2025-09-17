@@ -55,7 +55,9 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
   private transient Metadata metadata;
   private ColumnsRetriever cr;
   private transient JDBCTag jdbcTag;
-  private TableDataSetMetadata entityMetadata;
+
+  private TableDataSetMetadata entityMetaData;
+  private ExecutorDAOMetadata executorMetaData;
 
   private EntityDTOs entityVOs;
 
@@ -90,11 +92,13 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
   public SelectMethodMetadata(final Metadata metadata, final ColumnsRetriever cr, final SelectMethodTag tag,
       final HotRodConfigTag config, final SelectGenerationTag selectGenerationTag,
       final ColumnsPrefixGenerator columnsPrefixGenerator, final JDBCTag jdbcTag,
-      final TableDataSetMetadata entityMetadata) throws InvalidIdentifierException, InvalidConfigurationFileException {
+      final TableDataSetMetadata entityMetaData, ExecutorDAOMetadata executorMetaData)
+      throws InvalidIdentifierException, InvalidConfigurationFileException {
     this.metadata = metadata;
     this.cr = cr;
     this.jdbcTag = jdbcTag;
-    this.entityMetadata = entityMetadata;
+    this.entityMetaData = entityMetaData;
+    this.executorMetaData = executorMetaData;
     this.entityVOs = null;
     this.db = metadata.getJdbcDatabase();
     this.config = config;
@@ -201,7 +205,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
       List<VOMember> associations = new ArrayList<VOMember>();
       List<VOMember> collections = new ArrayList<VOMember>();
 
-      if (this.entityMetadata == null) { // does not belong to an entity (table or view)
+      if (this.entityMetaData == null) { // does not belong to an entity (table or view)
 
         SelectVOClass vo = null;
         try {
@@ -318,8 +322,12 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   // Other getters
 
-  public TableDataSetMetadata getEntityMetadata() {
-    return entityMetadata;
+  public TableDataSetMetadata getEntityMetaData() {
+    return entityMetaData;
+  }
+
+  public final ExecutorDAOMetadata getExecutorMetaData() {
+    return executorMetaData;
   }
 
   public String getMethod() {

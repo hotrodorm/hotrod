@@ -67,9 +67,7 @@ public class TypeSolverTag extends AbstractConfigurationTag {
     DynamicExpressionFactory factory = DynamicExpressionFactoryConfig.getFactory();
 
     RetrievedColumn rc = new RetrievedColumn(cm, c);
-    if (c != null) {
-      this.retrievedColumns.add(rc);
-    }
+    this.retrievedColumns.add(rc);
 
     Parameters context = factory.newObjectContext(rc);
 

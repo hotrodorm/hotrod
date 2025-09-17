@@ -76,7 +76,7 @@ The complete `pom.xml` file will look like:
         <artifactId>hotrod-maven-plugin</artifactId>
         <version>5.1.3</version>
         <configuration>
-          <config-file>./layer.xml</config-file>
+          <configfile>./layer.xml</configfile>
           <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
           <jdbcurl>jdbc:h2:mem:EX;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1</jdbcurl>
           <jdbcusername>sa</jdbcusername>

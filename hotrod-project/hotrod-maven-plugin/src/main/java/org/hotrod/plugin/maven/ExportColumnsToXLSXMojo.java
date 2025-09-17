@@ -15,6 +15,10 @@ public class ExportColumnsToXLSXMojo extends AbstractMojo {
 
   private static transient final Logger log = Logger.getLogger(ExportColumnsToXLSXMojo.class.getName());
 
+  static {
+    JULCustomFormatter.initialize();
+  }
+
   // Note: 1) Each property must be annotated by @Parameter. 2) The property
   // attribute -- if declared -- must be the exact same name as the Java member
 

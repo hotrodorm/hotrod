@@ -30,7 +30,6 @@ import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.SelectMetadataCache;
 import org.hotrod.identifiers.ObjectId;
-import org.hotrod.typesolver.DriverColumnMetaData;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ColumnsPrefixGenerator;
@@ -409,7 +408,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
       SelectMethodMetadata sm;
       try {
         sm = new SelectMethodMetadata(metadata, cr, selectTag, this.config, selectGenerationTag, columnsPrefixGenerator,
-            jdbcTag, this);
+            jdbcTag, this, null);
       } catch (InvalidIdentifierException e) {
         String msg = "Invalid method name '" + selectTag.getMethod() + "': " + e.getMessage();
         throw new InvalidConfigurationFileException(selectTag, msg);
@@ -444,7 +443,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
       ColumnTag columnTag = tableTag.findColumnTag(c.getName(), this.adapter);
       try {
         lcm.add(new ColumnMetadata(this, c, this.adapter, columnTag, false, false, belongsToPK,
-            this.config.getTypeSolverTag(), this.config.getNameSolverTag()));
+            this.config.getTypeSolverTag(), this.config.getNameSolverTag())); // THIS
       } catch (InvalidIdentifierException e) {
         String msg = "Invalid identifier name for column '" + c.getName() + "': " + e.getMessage();
         throw new InvalidConfigurationFileException(tableTag, msg);

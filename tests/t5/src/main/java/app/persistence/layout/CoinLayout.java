@@ -6,40 +6,31 @@ import java.io.Serializable;
 
 import org.hotrod.json.JSONObject;
 
-public class ProductLayout implements Serializable {
+public class CoinLayout implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
   // Layout Properties (table columns)
 
-  protected Long pidProduct = null; // NUMERIC
-  protected String type = null; // CHARACTER VARYING
-  protected Integer shipping = null; // INTEGER
+  protected Integer type = null; // CHARACTER
+  protected String name = null; // CHARACTER VARYING
 
   // getters & setters
 
-  public Long getPidProduct() {
-    return this.pidProduct;
-  }
-
-  public void setPidProduct(final Long pidProduct) {
-    this.pidProduct = pidProduct;
-  }
-
-  public String getType() {
+  public Integer getType() {
     return this.type;
   }
 
-  public void setType(final String type) {
+  public void setType(final Integer type) {
     this.type = type;
   }
 
-  public Integer getShipping() {
-    return this.shipping;
+  public String getName() {
+    return this.name;
   }
 
-  public void setShipping(final Integer shipping) {
-    this.shipping = shipping;
+  public void setName(final String name) {
+    this.name = name;
   }
 
   // to string
@@ -47,9 +38,8 @@ public class ProductLayout implements Serializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
-    sb.append("- pidProduct=" + this.pidProduct + "\n");
     sb.append("- type=" + this.type + "\n");
-    sb.append("- shipping=" + this.shipping);
+    sb.append("- name=" + this.name);
     return sb.toString();
   }
 
@@ -57,9 +47,8 @@ public class ProductLayout implements Serializable {
 
   public JSONObject toJSONObject() {
     JSONObject obj = new JSONObject();
-    obj.addProperty("pidProduct", this.pidProduct);
     obj.addProperty("type", this.type);
-    obj.addProperty("shipping", this.shipping);
+    obj.addProperty("name", this.name);
     return obj;
   }
 

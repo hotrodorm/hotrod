@@ -51,7 +51,7 @@
       <url>file:///${project.basedir}/local-maven-repository</url>
     </repository>
   </repositories>
-
+ 
   <build>
 
     <plugins>
@@ -66,9 +66,14 @@
 
       <properties>
         <subfolder>oracle</subfolder>
+        <!-- 
         <jdbcdrivergroupid>com.oracle.ojdbc</jdbcdrivergroupid>
         <jdbcdriverartifactid>ojdbc8</jdbcdriverartifactid>
         <jdbcdriverversion>19.3.0.0</jdbcdriverversion>
+         -->
+        <jdbcdrivergroupid>com.oracle.database.jdbc</jdbcdrivergroupid>
+        <jdbcdriverartifactid>ojdbc8</jdbcdriverartifactid>
+        <jdbcdriverversion>23.9.0.25.07</jdbcdriverversion>
 
         <jdbcdriverclass>oracle.jdbc.driver.OracleDriver</jdbcdriverclass>
         <jdbcurl>jdbc:oracle:thin:@192.168.56.95:1521:orcl</jdbcurl>

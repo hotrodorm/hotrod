@@ -10,6 +10,8 @@ public interface DriverColumnMetaData {
 
   String getTable(); // Only for database object columns
 
+  int getOrdinal();
+
   String getName();
 
   String getLabel(); // Only for computed columns. May be different from name due to aliasing
