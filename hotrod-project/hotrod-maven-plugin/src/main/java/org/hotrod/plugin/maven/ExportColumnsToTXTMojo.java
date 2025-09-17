@@ -69,9 +69,11 @@ public class ExportColumnsToTXTMojo extends AbstractMojo {
         this.localproperties, this.jdbcdriverclass, this.jdbcurl, this.jdbcusername, this.jdbcpassword,
         this.jdbccatalog, this.jdbcschema, this.facets, this.display, this.txtexportfile);
 
+    log.info("op="+op);
     try {
       op.execute(new MojoFeedback(this));
     } catch (Exception e) {
+      e.printStackTrace();
       throw new MojoExecutionException(e.getMessage(), e.getCause());
     }
   }

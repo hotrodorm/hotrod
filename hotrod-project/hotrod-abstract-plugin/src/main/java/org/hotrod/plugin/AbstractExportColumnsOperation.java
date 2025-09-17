@@ -20,6 +20,7 @@ import org.hotrod.generator.Feedback;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.HotRodContext;
 import org.hotrod.utils.SUtil;
+import org.hotrod.utils.T;
 import org.nocrala.tools.database.tartarus.utils.XUtil;
 
 public abstract class AbstractExportColumnsOperation {
@@ -67,6 +68,9 @@ public abstract class AbstractExportColumnsOperation {
     this.display = display;
     this.exportfilenameProperty = exportfilenameProperty;
     this.exportfilename = exportfilename;
+
+    boolean logTimes = "true".equals(System.getProperty("timers"));
+    T.start(logTimes);
   }
 
   public final void execute(final Feedback feedback) throws Exception {
@@ -265,12 +269,12 @@ public abstract class AbstractExportColumnsOperation {
     // Export File Name
 
     if (this.exportfilename == null) {
-      throw new Exception(
-          Constants.TOOL_NAME + " parameter: The '" + this.exportfilenameProperty + "' attribute must be specified (in the Maven plugin configuration, Ant plugin, or other).");
+      throw new Exception(Constants.TOOL_NAME + " parameter: The '" + this.exportfilenameProperty
+          + "' attribute must be specified (in the Maven plugin configuration, Ant plugin, or other).");
     }
     if (SUtil.isEmpty(this.exportfilename)) {
-      throw new Exception(
-          Constants.TOOL_NAME + " parameter: The '" + this.exportfilenameProperty + "' attribute cannot be empty (in the Maven plugin configuration, Ant plugin, or other).");
+      throw new Exception(Constants.TOOL_NAME + " parameter: The '" + this.exportfilenameProperty
+          + "' attribute cannot be empty (in the Maven plugin configuration, Ant plugin, or other).");
     }
     this.exportFile = new File(this.baseDir, this.exportfilename);
 

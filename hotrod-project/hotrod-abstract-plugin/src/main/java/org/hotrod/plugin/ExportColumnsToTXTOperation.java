@@ -31,12 +31,13 @@ public class ExportColumnsToTXTOperation extends AbstractExportColumnsOperation 
       final String txtexportfile) {
     super(baseDir, configfilename, localproperties, jdbcdriverclass, jdbcurl, jdbcusername, jdbcpassword, jdbccatalog,
         jdbcschema, facets, display, "txtexportfile", txtexportfile);
-    log.fine("init");
+    log.info("init");
   }
 
   @Override
   protected void exportColumns(final Generator g) throws IOException {
     LinkedHashSet<String> nativeNames = new LinkedHashSet<>();
+    log.info("export 1");
 
 //    log.info("g=" + g);
 //    log.info("g.getConfig()=" + g.getConfig());
@@ -47,8 +48,10 @@ public class ExportColumnsToTXTOperation extends AbstractExportColumnsOperation 
         c.getNative().keySet().stream().forEach(n -> nativeNames.add(n));
       }
     });
+    log.info("export 2");
 
     int columns = 15 + nativeNames.size();
+    log.info("export 3");
     Table t = new Table(columns, BorderStyle.DESIGN_FORMAL_WIDE, ShownBorders.HEADER_AND_COLUMNS);
 
     t.setColumnWidth(6, 1, 30);
@@ -77,6 +80,7 @@ public class ExportColumnsToTXTOperation extends AbstractExportColumnsOperation 
     t.addCell("nullable");
 
     nativeNames.forEach(n -> t.addCell("native." + n));
+    log.info("export 4");
 
     // Body
 
@@ -139,6 +143,9 @@ public class ExportColumnsToTXTOperation extends AbstractExportColumnsOperation 
 
       w.write("\n");
     }
+    
+    log.info("export 5");
+
 
   }
 
