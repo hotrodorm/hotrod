@@ -29,8 +29,6 @@ import org.hotrod.identifiers.Id;
 @XmlRootElement(name = "query")
 public class QueryMethodTag extends AbstractMethodTag<QueryMethodTag> {
 
-  private static final long serialVersionUID = 1L;
-
   // Constants
 
   private static final Logger log = Logger.getLogger(QueryMethodTag.class.getName());

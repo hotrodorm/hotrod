@@ -4,12 +4,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.metadata.Metadata;
 
 @XmlRootElement(name = "if")
 public class IfTag extends DynamicSQLPart {
-
-  private static final long serialVersionUID = 1L;
 
   // Constructor
 

@@ -18,8 +18,6 @@ import org.hotrod.utils.SUtil;
 @XmlRootElement(name = "column")
 public class TypeSolverWhenTag extends AbstractConfigurationTag {
 
-  private static final long serialVersionUID = 1L;
-
   // Constants
 
   private static final Logger log = Logger.getLogger(TypeSolverWhenTag.class.getName());

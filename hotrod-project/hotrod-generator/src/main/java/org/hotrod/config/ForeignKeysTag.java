@@ -12,8 +12,6 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 @XmlRootElement(name = "foreign-keys")
 public class ForeignKeysTag extends AbstractConfigurationTag {
 
-  private static final long serialVersionUID = 1L;
-
   // Constants
 
   private static final Logger log = Logger.getLogger(ForeignKeysTag.class.getName());

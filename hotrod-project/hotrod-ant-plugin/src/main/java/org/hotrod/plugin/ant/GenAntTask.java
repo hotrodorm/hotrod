@@ -5,11 +5,13 @@ import java.util.logging.Logger;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
+import org.hotrod.exceptions.ErrorMessageException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.plugin.GeneratePersistenceLayerOperation;
 
 public class GenAntTask extends Task {
 
-  private static transient final Logger log = Logger.getLogger(GenAntTask.class.getName());
+  private static final Logger log = Logger.getLogger(GenAntTask.class.getName());
 
   static {
     JULCustomFormatter.initialize();
@@ -30,16 +32,16 @@ public class GenAntTask extends Task {
   @Override
   public void execute() {
     log.fine("init");
-
     try {
-      GeneratePersistenceLayerOperation op = new GeneratePersistenceLayerOperation(new File("."), this.configfile, this.localproperties, this.jdbcdriverclass,
-          this.jdbcurl, this.jdbcusername, this.jdbcpassword, this.jdbccatalog, this.jdbcschema, this.facets,
-          this.display);
+      GeneratePersistenceLayerOperation op = new GeneratePersistenceLayerOperation(new File("."), this.configfile,
+          this.localproperties, this.jdbcdriverclass, this.jdbcurl, this.jdbcusername, this.jdbcpassword,
+          this.jdbccatalog, this.jdbcschema, this.facets, this.display);
       op.execute(new AntFeedback(this));
-    } catch (Exception e) {
-      throw new BuildException(e.getMessage(), e.getCause());
+    } catch (ErrorMessageException e) {
+      throw new BuildException(e.renderErrorMessage("HotRod could not generate the persistence layer"));
+    } catch (FaultException e) {
+      throw new BuildException("HotRod could not generate the persistence layer", e.getCause());
     }
-
   }
 
   // Ant Setters

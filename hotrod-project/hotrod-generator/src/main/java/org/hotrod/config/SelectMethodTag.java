@@ -37,8 +37,6 @@ import org.nocrala.tools.lang.collector.listcollector.ListCollector;
 @XmlRootElement(name = "select")
 public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
-  private static final long serialVersionUID = 1L;
-
   // Constants
 
   private static final Logger log = Logger.getLogger(SelectMethodTag.class.getName());

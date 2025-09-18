@@ -32,8 +32,6 @@ public class ComplementTag extends EnhancedSQLPart {
 
   private static final Logger log = Logger.getLogger(ComplementTag.class.getName());
 
-  private static final long serialVersionUID = 1L;
-
   // Properties - Primitive content parsing by JAXB
 
   // This property cannot be transient. JAXB fails when doing so with the

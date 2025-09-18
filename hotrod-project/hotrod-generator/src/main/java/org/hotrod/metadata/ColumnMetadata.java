@@ -57,7 +57,7 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
 
   private EnumDataSetMetadata enumMetadata;
 
-  private transient DatabaseAdapter adapter;
+  private DatabaseAdapter adapter;
   private ColumnTag tag;
   private PropertyType type;
   private TypeSolverTag typeSolverTag;

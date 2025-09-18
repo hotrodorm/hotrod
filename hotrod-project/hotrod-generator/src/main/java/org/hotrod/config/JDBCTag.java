@@ -15,9 +15,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ErrorMessageException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidPackageException;
-import org.hotrod.exceptions.FaultException;
 import org.hotrod.generator.Feedback;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.HotRodContext;
@@ -29,8 +29,6 @@ import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 
 @XmlRootElement(name = "jdbc")
 public class JDBCTag extends AbstractGeneratorTag {
-
-  private static final long serialVersionUID = 1L;
 
   // Constants
 

@@ -1,13 +1,10 @@
 package org.hotrod.config;
 
-import java.io.Serializable;
 import java.util.logging.Logger;
 
 import org.hotrod.utils.SourceLocation;
 
-public abstract class AbstractConfigurationTag implements Serializable {
-
-  private static final long serialVersionUID = 1L;
+public abstract class AbstractConfigurationTag {
 
   private static final Logger log = Logger.getLogger(HotRodConfigTag.class.getName());
 

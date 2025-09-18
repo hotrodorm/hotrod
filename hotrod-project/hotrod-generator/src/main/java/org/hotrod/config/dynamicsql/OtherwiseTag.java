@@ -7,8 +7,6 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 @XmlRootElement(name = "otherwise")
 public class OtherwiseTag extends DynamicSQLPart {
 
-  private static final long serialVersionUID = 1L;
-
   // Constructor
 
   public OtherwiseTag() {

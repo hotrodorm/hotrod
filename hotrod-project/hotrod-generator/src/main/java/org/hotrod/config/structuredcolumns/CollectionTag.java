@@ -7,8 +7,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "collection")
 public class CollectionTag extends VOTag {
 
-  private static final long serialVersionUID = 1L;
-
   // Constants
 
   private static final Logger log = Logger.getLogger(CollectionTag.class.getName());

@@ -12,8 +12,6 @@ import org.hotrod.utils.SUtil;
 @XmlRootElement(name = "session-factory")
 public class SessionFactoryTag extends AbstractConfigurationTag {
 
-  private static final long serialVersionUID = 1L;
-
   // Constants
 
   private static final Logger log = Logger.getLogger(SequenceMethodTag.class.getName());

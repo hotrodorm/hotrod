@@ -17,10 +17,9 @@ import org.nocrala.tools.database.tartarus.core.JdbcTable;
 @XmlRootElement(name = "optimistic-locking")
 public class OptimisticLockingTag extends AbstractConfigurationTag {
 
-  private static final long serialVersionUID = 1L;
-
   // Constants
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(OptimisticLockingTag.class.getName());
 
   // Properties

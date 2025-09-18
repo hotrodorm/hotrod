@@ -4,16 +4,14 @@ import java.io.File;
 
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ErrorMessageException;
-import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.FaultException;
+import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.Feedback;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.HotRodContext;
 import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 
 public abstract class AbstractGeneratorTag extends AbstractConfigurationTag {
-
-  private static final long serialVersionUID = 1L;
 
   // Constructor
 

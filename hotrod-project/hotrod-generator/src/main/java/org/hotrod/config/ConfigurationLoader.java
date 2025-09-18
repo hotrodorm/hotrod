@@ -43,7 +43,6 @@ import org.xml.sax.SAXParseException;
 
 public class ConfigurationLoader {
 
-  // private static final String DEBUG_PATH = "/src/main/xml/";
   private static final String DEBUG_PATH = "/";
   private static final String PLUGIN_PATH = "/xml/";
 
@@ -68,8 +67,6 @@ public class ConfigurationLoader {
       final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
       throws ErrorMessageException, FaultException, FacetNotFoundException {
 
-//    log.info("loading file: " + f);
-
     // Basic validation on the file
 
     if (f == null) {
@@ -84,8 +81,6 @@ public class ConfigurationLoader {
     }
 
     // Prepare the parser
-
-//    log.info("loading file 2");
 
     Unmarshaller unmarshaller = null;
     XMLStreamReader xsr = null;
@@ -132,9 +127,7 @@ public class ConfigurationLoader {
 
     try {
 
-//      log.info("[ Will parse ]");
       HotRodConfigTag config = (HotRodConfigTag) unmarshaller.unmarshal(xsr);
-//      log.info("[ Parsed ]");
 
       // Validation (specific)
 
@@ -163,18 +156,13 @@ public class ConfigurationLoader {
 
       // Complete
 
-//      log.info("File loaded.");
-
       return config;
 
     } catch (JAXBException e) {
       throw new FaultException("Could not load the configuration file '" + f.getPath() + "'", e);
-//      throw assembleControlledException(f, validationHandler, e);
 
     } catch (InvalidConfigurationFileException e) {
-//      log.log(Level.INFO, "InvalidConfigurationFileException", e);
       SourceLocation loc = e.getTag().getSourceLocation();
-//      log.fine("loc=" + loc);
       if (loc == null) {
         throw new ErrorMessageException("Invalid configuration file '" + f.getPath() + "': " + e.getMessage());
       } else {
@@ -184,10 +172,6 @@ public class ConfigurationLoader {
     } catch (GeneratorNotFoundException e) {
       throw new FaultException("Geneator not found", e);
 
-//    } catch (Throwable e) {
-//      log.log(Level.SEVERE, "Throwable detected.", e);
-//      throw new FaultException("Could not load configuration file '" + f.getPath() + "'.", e);
-//
     }
 
   }

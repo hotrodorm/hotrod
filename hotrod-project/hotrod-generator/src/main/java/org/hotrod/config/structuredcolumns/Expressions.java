@@ -1,6 +1,5 @@
 package org.hotrod.config.structuredcolumns;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,9 +27,7 @@ import org.hotrod.utils.ColumnsMetadataRetriever;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
-public class Expressions implements ColumnsProvider, Serializable {
-
-  private static final long serialVersionUID = 1L;
+public class Expressions implements ColumnsProvider {
 
   // Constants
 
@@ -41,8 +38,8 @@ public class Expressions implements ColumnsProvider, Serializable {
   private TableDataSetMetadata tableMetadata;
   private List<ExpressionTag> expressions;
 
-  protected transient ColumnsMetadataRetriever columnsRetriever;
-  private transient Metadata metadata;
+  protected ColumnsMetadataRetriever columnsRetriever;
+  private Metadata metadata;
 
   // Constructor
 

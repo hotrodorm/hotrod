@@ -37,8 +37,6 @@ import org.hotrod.utils.ClassPackage;
 
 public abstract class AbstractDAOTag extends AbstractConfigurationTag {
 
-  private static final long serialVersionUID = 1L;
-
   // Constants
 
   private static final Logger log = Logger.getLogger(AbstractDAOTag.class.getName());

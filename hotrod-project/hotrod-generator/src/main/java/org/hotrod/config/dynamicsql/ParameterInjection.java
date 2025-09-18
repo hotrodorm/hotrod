@@ -7,8 +7,6 @@ import org.hotrod.generator.ParameterRenderer;
 
 public class ParameterInjection implements SQLSegment {
 
-  private static final long serialVersionUID = 1L;
-
   // Constants
 
   private static final Logger log = Logger.getLogger(ParameterInjection.class.getName());

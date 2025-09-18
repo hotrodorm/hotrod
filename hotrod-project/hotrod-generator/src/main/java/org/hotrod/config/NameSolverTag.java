@@ -14,8 +14,6 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 @XmlRootElement(name = "name-solver")
 public class NameSolverTag extends AbstractConfigurationTag {
 
-  private static final long serialVersionUID = 1L;
-
   // Constants
 
   private static final Logger log = Logger.getLogger(NameSolverTag.class.getName());

@@ -16,8 +16,6 @@ import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 @XmlRootElement(name = "schema")
 public class SchemaTag extends AbstractConfigurationTag {
 
-  private static final long serialVersionUID = 1L;
-
   // Properties
 
   private boolean isCurrentCS = false;

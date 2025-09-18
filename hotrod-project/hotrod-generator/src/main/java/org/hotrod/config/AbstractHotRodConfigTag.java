@@ -23,8 +23,8 @@ import javax.xml.stream.XMLStreamReader;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ErrorMessageException;
 import org.hotrod.exceptions.FacetNotFoundException;
-import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.FaultException;
+import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.utils.FileRegistry;
@@ -33,8 +33,6 @@ import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
 public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
-
-  private static final long serialVersionUID = 1L;
 
   // Constants
 

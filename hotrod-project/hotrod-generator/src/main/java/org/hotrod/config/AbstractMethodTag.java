@@ -6,8 +6,6 @@ import org.hotrod.identifiers.Id;
 
 public abstract class AbstractMethodTag<M extends AbstractMethodTag<M>> extends AbstractConfigurationTag {
 
-  private static final long serialVersionUID = 1L;
-
   // Properties
 
   protected String method = null;

@@ -11,13 +11,11 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.identifiers.Id;
 import org.hotrod.utils.JDBCTypes;
-import org.hotrod.utils.SUtil;
 import org.hotrod.utils.JDBCTypes.JDBCType;
+import org.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "parameter")
 public class ParameterTag extends AbstractConfigurationTag {
-
-  private static final long serialVersionUID = 1L;
 
   // Constants
 

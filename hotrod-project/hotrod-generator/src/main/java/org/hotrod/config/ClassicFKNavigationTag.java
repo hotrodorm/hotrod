@@ -9,8 +9,6 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 @XmlRootElement(name = "classic-fk-navigation")
 public class ClassicFKNavigationTag extends AbstractConfigurationTag {
 
-  private static final long serialVersionUID = 1L;
-
   // Constants
 
   private static final Logger log = Logger.getLogger(ClassicFKNavigationTag.class.getName());

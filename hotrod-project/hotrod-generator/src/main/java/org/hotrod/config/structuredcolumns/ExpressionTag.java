@@ -22,8 +22,6 @@ import org.hotrod.utils.SUtil;
 @XmlRootElement(name = "expression")
 public class ExpressionTag extends AbstractConfigurationTag {
 
-  private static final long serialVersionUID = 1L;
-
   // Constants
 
   private static final Logger log = Logger.getLogger(ExpressionTag.class.getName());
@@ -37,14 +35,11 @@ public class ExpressionTag extends AbstractConfigurationTag {
   private boolean isId = false;
 
   private ConverterTag converterTag;
-  private transient StructuredColumnMetadata metadata;
+  private StructuredColumnMetadata metadata;
   private String tempAlias = null;
   private String namespacedAlias;
 
   // Properties - Primitive content parsing by JAXB
-
-  // This property cannot be transient. JAXB fails when doing so with the
-  // message: Transient field "content" cannot have any JAXB annotations.
 
   @XmlMixed
   private List<Object> content = new ArrayList<Object>();

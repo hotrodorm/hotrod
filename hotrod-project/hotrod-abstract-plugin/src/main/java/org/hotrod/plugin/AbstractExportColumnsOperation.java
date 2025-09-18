@@ -7,7 +7,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Properties;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.hotrod.BuildInformation;
@@ -72,7 +71,7 @@ public abstract class AbstractExportColumnsOperation {
     T.start(logTimes);
   }
 
-  public final void execute(final Feedback feedback) throws Exception {
+  public final void execute(final Feedback feedback) throws ErrorMessageException, FaultException {
     log.fine("init");
 
     feedback.info(Constants.TOOL_NAME + " version " + BuildInformation.VERSION + " (build " + BuildInformation.BUILD_ID
@@ -94,22 +93,12 @@ public abstract class AbstractExportColumnsOperation {
 
       feedback.info("Column export saved to: " + this.exportFile);
 
-//    } catch (ErrorMessageException e) {
-//      if (e.getLocation() == null) {
-//        throw new Exception(Constants.TOOL_NAME + " could not load the configuration:\n" + e.getMessage());
-//      } else {
-//        throw new Exception(Constants.TOOL_NAME + " could not load the configuration. Invalid configuration in "
-//            + e.getLocation().render() + ":\n" + e.getMessage());
-//      }
-//    } catch (FaultException e) {
-//      feedback.error("Technical error found: " + XUtil.abridge(e));
-//      throw new Exception(Constants.TOOL_NAME + " could not load the configuration.");
     } catch (InvalidConfigurationFileException e) {
-      throw new Exception(Constants.TOOL_NAME + " could not load the configuration. Invalid configuration in "
-          + e.getTag().getSourceLocation().render() + ":\n" + e.getMessage());
-    } catch (Exception e) {
-      log.log(Level.SEVERE, Constants.TOOL_NAME + " could not load the configuration", e);
-      throw new Exception(Constants.TOOL_NAME + " could not load the configuration.");
+      throw new ErrorMessageException(e.getTag(),
+          Constants.TOOL_NAME + " could not load the configuration. Invalid configuration in "
+              + e.getTag().getSourceLocation().render() + ":\n" + e.getMessage());
+    } catch (RuntimeException e) {
+      throw new FaultException(Constants.TOOL_NAME + " could not load the configuration.", e);
     }
 
   }
@@ -118,7 +107,7 @@ public abstract class AbstractExportColumnsOperation {
 
   // Validation
 
-  private final void validateParameters(final Feedback feedback) throws Exception {
+  private final void validateParameters(final Feedback feedback) throws ErrorMessageException, FaultException {
 
     // 1. Apply local properties file, if any
 
@@ -130,11 +119,11 @@ public abstract class AbstractExportColumnsOperation {
 
       File p = new File(this.baseDir, this.localproperties);
       if (!p.exists()) {
-        throw new Exception(
+        throw new ErrorMessageException(
             Constants.TOOL_NAME + " parameter: " + "localproperties file does not exist: " + this.localproperties);
       }
       if (!p.isFile()) {
-        throw new Exception(Constants.TOOL_NAME + " parameter: "
+        throw new ErrorMessageException(Constants.TOOL_NAME + " parameter: "
             + "localproperties file exists but it's not a regular file: " + this.localproperties);
       }
 
@@ -147,12 +136,12 @@ public abstract class AbstractExportColumnsOperation {
         props.load(r);
 
       } catch (FileNotFoundException e) {
-        throw new Exception(
-            Constants.TOOL_NAME + " parameter: " + "localproperties file does not exist: " + this.localproperties);
+        throw new FaultException(
+            Constants.TOOL_NAME + " parameter: " + "localproperties file does not exist: " + this.localproperties, e);
 
       } catch (IOException e) {
-        throw new Exception(Constants.TOOL_NAME + " parameter: " + "localproperties: cannot read file: "
-            + e.getMessage() + ": " + this.localproperties);
+        throw new FaultException(Constants.TOOL_NAME + " parameter: " + "localproperties: cannot read file: "
+            + e.getMessage() + ": " + this.localproperties, e);
 
       } finally {
         if (r != null) {
@@ -188,45 +177,49 @@ public abstract class AbstractExportColumnsOperation {
       this.configFile = null;
     } else {
       if (SUtil.isEmpty(this.configfilename)) {
-        throw new Exception(Constants.TOOL_NAME + " parameter: " + "configfile attribute cannot be empty.");
+        throw new ErrorMessageException(Constants.TOOL_NAME + " parameter: " + "configfile attribute cannot be empty.");
       }
       this.configFile = new File(this.baseDir, this.configfilename);
       if (!this.configFile.exists()) {
-        throw new Exception(Constants.TOOL_NAME + " parameter: " + "configfile does not exist: " + this.configfilename);
+        throw new ErrorMessageException(
+            Constants.TOOL_NAME + " parameter: " + "configfile does not exist: " + this.configfilename);
       }
     }
 
     // driverclass
 
     if (this.jdbcdriverclass == null) {
-      throw new Exception(Constants.TOOL_NAME + " parameter: " + "jdbcdriverclass attribute must be specified.");
+      throw new ErrorMessageException(
+          Constants.TOOL_NAME + " parameter: " + "jdbcdriverclass attribute must be specified.");
     }
     if (SUtil.isEmpty(this.jdbcdriverclass)) {
-      throw new Exception(Constants.TOOL_NAME + " parameter: " + "jdbcdriverclass attribute cannot be empty.");
+      throw new ErrorMessageException(
+          Constants.TOOL_NAME + " parameter: " + "jdbcdriverclass attribute cannot be empty.");
     }
 
     // url
 
     if (this.jdbcurl == null) {
-      throw new Exception(Constants.TOOL_NAME + " parameter: " + "jdbcurl attribute must be specified.");
+      throw new ErrorMessageException(Constants.TOOL_NAME + " parameter: " + "jdbcurl attribute must be specified.");
     }
     if (SUtil.isEmpty(this.jdbcurl)) {
-      throw new Exception(Constants.TOOL_NAME + " parameter: " + "jdbcurl attribute cannot be empty.");
+      throw new ErrorMessageException(Constants.TOOL_NAME + " parameter: " + "jdbcurl attribute cannot be empty.");
     }
 
     // username
 
     if (this.jdbcusername == null) {
-      throw new Exception(Constants.TOOL_NAME + " parameter: " + "jdbcusername attribute must be specified.");
+      throw new ErrorMessageException(
+          Constants.TOOL_NAME + " parameter: " + "jdbcusername attribute must be specified.");
     }
     if (SUtil.isEmpty(this.jdbcusername)) {
-      throw new Exception(Constants.TOOL_NAME + " parameter: " + "jdbcusername attribute cannot be empty.");
+      throw new ErrorMessageException(Constants.TOOL_NAME + " parameter: " + "jdbcusername attribute cannot be empty.");
     }
 
     // password
 
     if (this.jdbcpassword == null) {
-      throw new Exception(
+      throw new ErrorMessageException(
           Constants.TOOL_NAME + " parameter: " + "jdbcpassword attribute must be specified, even if empty.");
     }
 
@@ -260,7 +253,7 @@ public abstract class AbstractExportColumnsOperation {
     } else {
       this.displayMode = DisplayMode.parse(this.display);
       if (this.displayMode == null) {
-        throw new Exception(Constants.TOOL_NAME + " parameter: "
+        throw new ErrorMessageException(Constants.TOOL_NAME + " parameter: "
             + "If specified, the attribute display must have one of the following values: " + "summary, list");
       }
     }
@@ -268,11 +261,11 @@ public abstract class AbstractExportColumnsOperation {
     // Export File Name
 
     if (this.exportfilename == null) {
-      throw new Exception(Constants.TOOL_NAME + " parameter: The '" + this.exportfilenameProperty
+      throw new ErrorMessageException(Constants.TOOL_NAME + " parameter: The '" + this.exportfilenameProperty
           + "' attribute must be specified (in the Maven plugin configuration, Ant plugin, or other).");
     }
     if (SUtil.isEmpty(this.exportfilename)) {
-      throw new Exception(Constants.TOOL_NAME + " parameter: The '" + this.exportfilenameProperty
+      throw new ErrorMessageException(Constants.TOOL_NAME + " parameter: The '" + this.exportfilenameProperty
           + "' attribute cannot be empty (in the Maven plugin configuration, Ant plugin, or other).");
     }
     this.exportFile = new File(this.baseDir, this.exportfilename);

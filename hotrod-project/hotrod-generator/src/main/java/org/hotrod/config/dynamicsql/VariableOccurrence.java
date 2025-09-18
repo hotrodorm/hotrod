@@ -8,8 +8,6 @@ public class VariableOccurrence implements SQLSegment {
 
   // Constants
 
-  private static final long serialVersionUID = 1L;
-
   private static final Logger log = Logger.getLogger(VariableOccurrence.class.getName());
 
   // Properties

@@ -10,8 +10,6 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 @XmlRootElement(name = "when")
 public class WhenTag extends DynamicSQLPart {
 
-  private static final long serialVersionUID = 1L;
-
   // Constants
 
   private static final Logger log = Logger.getLogger(WhenTag.class.getName());

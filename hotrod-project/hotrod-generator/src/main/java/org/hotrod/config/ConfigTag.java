@@ -11,8 +11,6 @@ import org.hotrod.utils.SUtil;
 @XmlRootElement(name = "config")
 public class ConfigTag extends AbstractConfigurationTag {
 
-  private static final long serialVersionUID = 1L;
-
   // Properties
 
   private String sGenBaseDir = null;

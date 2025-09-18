@@ -13,8 +13,6 @@ import org.hotrod.utils.ClassPackage;
 @XmlRootElement(name = "hotrod-fragment")
 public class HotRodFragmentConfigTag extends AbstractHotRodConfigTag {
 
-  private static final long serialVersionUID = 1L;
-
   // Constants
 
   private static final Logger log = Logger.getLogger(HotRodFragmentConfigTag.class.getName());

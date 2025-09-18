@@ -35,8 +35,8 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
 
   // Properties
 
-  protected transient HotRodConfigTag config;
-  protected transient DatabaseAdapter adapter;
+  protected HotRodConfigTag config;
+  protected DatabaseAdapter adapter;
   private ExecutorTag tag;
 
   private List<SequenceMethodTag> sequences = new ArrayList<SequenceMethodTag>();

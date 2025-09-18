@@ -15,13 +15,11 @@ import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public abstract class EnhancedSQLPart extends AbstractConfigurationTag {
 
-  private static final long serialVersionUID = 1L;
-
   private static final Logger log = Logger.getLogger(EnhancedSQLPart.class.getName());
 
   // Properties
 
-  protected transient List<Object> content = new ArrayList<Object>();
+  protected List<Object> content = new ArrayList<Object>();
 
   protected List<EnhancedSQLPart> eparts = null;
 

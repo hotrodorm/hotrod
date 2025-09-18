@@ -20,8 +20,6 @@ import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 @XmlRootElement(name = "hotrod")
 public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
-  private static final long serialVersionUID = 1L;
-
   // Constants
 
   private static final Logger log = Logger.getLogger(HotRodConfigTag.class.getName());
@@ -123,7 +121,6 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
     }
 
   }
-
 
   // Apply current catalog/schema to declared tables
 

@@ -10,8 +10,6 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 @XmlRootElement(name = "choose")
 public class ChooseTag extends DynamicSQLPart {
 
-  private static final long serialVersionUID = 1L;
-
   // Constructor
 
   public ChooseTag() {

@@ -9,8 +9,6 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 @XmlRootElement(name = "set")
 public class SetTag extends DynamicSQLPart {
 
-  private static final long serialVersionUID = 1L;
-
   // Constructor
 
   public SetTag() {

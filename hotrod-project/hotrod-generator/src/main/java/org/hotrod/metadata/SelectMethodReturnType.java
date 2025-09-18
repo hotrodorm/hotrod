@@ -32,7 +32,7 @@ public class SelectMethodReturnType implements Serializable {
 
   private SelectVOClass soloVO;
   private SelectVOClass abstractSoloVO;
-  private transient VOMetadata connectedVO;
+  private VOMetadata connectedVO;
 
   private ResultSetMode mode;
 

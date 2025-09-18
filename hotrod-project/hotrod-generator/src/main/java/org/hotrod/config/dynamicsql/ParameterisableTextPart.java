@@ -13,8 +13,6 @@ import org.hotrod.generator.ParameterRenderer;
 
 public class ParameterisableTextPart extends DynamicSQLPart {
 
-  private static final long serialVersionUID = 1L;
-
   // Constants
 
   private static final Logger log = Logger.getLogger(ParameterisableTextPart.class.getName());

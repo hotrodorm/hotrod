@@ -19,8 +19,6 @@ import org.hotrod.metadata.Metadata;
 
 public class TextContent extends EnhancedSQLPart {
 
-  private static final long serialVersionUID = 1L;
-
   // Constants
 
   private static final Logger log = Logger.getLogger(TextContent.class.getName());

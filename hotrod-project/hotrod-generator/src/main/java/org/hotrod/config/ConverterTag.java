@@ -14,8 +14,6 @@ import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 @XmlRootElement(name = "converter")
 public class ConverterTag extends AbstractConfigurationTag {
 
-  private static final long serialVersionUID = 1L;
-
   // Constants
 
   private static final String NAME_PATTERN = "[a-zA-Z][a-zA-Z0-9_]*";

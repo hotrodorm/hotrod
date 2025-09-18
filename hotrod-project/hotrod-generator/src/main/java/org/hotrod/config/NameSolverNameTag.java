@@ -20,8 +20,6 @@ import org.hotrod.utils.SUtil;
 @XmlRootElement(name = "name")
 public class NameSolverNameTag extends AbstractConfigurationTag {
 
-  private static final long serialVersionUID = 1L;
-
   // Constants
 
   private static final Logger log = Logger.getLogger(NameSolverNameTag.class.getName());

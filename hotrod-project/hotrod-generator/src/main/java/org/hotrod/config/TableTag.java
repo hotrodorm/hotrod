@@ -31,8 +31,6 @@ import org.nocrala.tools.lang.collector.listcollector.ListCollector;
 @XmlRootElement(name = "table")
 public class TableTag extends AbstractEntityDAOTag {
 
-  private static final long serialVersionUID = 1L;
-
   // Constants
 
   private static final Logger log = Logger.getLogger(TableTag.class.getName());

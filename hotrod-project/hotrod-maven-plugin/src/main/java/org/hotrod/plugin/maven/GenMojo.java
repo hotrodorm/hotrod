@@ -15,7 +15,7 @@ import org.hotrod.plugin.GeneratePersistenceLayerOperation;
 @Mojo(name = "gen", defaultPhase = LifecyclePhase.COMPILE)
 public class GenMojo extends AbstractMojo {
 
-  private static transient final Logger log = Logger.getLogger(GenMojo.class.getName());
+  private static final Logger log = Logger.getLogger(GenMojo.class.getName());
 
   static {
     JULCustomFormatter.initialize();

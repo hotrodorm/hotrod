@@ -41,8 +41,6 @@ import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 @XmlRootElement(name = "enum")
 public class EnumTag extends AbstractEntityDAOTag {
 
-  private static final long serialVersionUID = 1L;
-
   // Constants
 
   private static final Logger log = Logger.getLogger(EnumTag.class.getName());

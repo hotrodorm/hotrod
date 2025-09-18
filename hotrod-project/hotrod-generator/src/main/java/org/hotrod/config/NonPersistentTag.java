@@ -11,8 +11,6 @@ import org.hotrod.utils.SUtil;
 @XmlRootElement(name = "non-persistent")
 public class NonPersistentTag extends AbstractConfigurationTag {
 
-  private static final long serialVersionUID = 1L;
-
   // Constants
 
   private static final Logger log = Logger.getLogger(NonPersistentTag.class.getName());

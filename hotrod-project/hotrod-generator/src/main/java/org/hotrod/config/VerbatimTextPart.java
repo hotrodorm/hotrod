@@ -6,8 +6,6 @@ import org.hotrod.utils.SourceLocation;
 
 public class VerbatimTextPart implements SQLSegment {
 
-  private static final long serialVersionUID = 1L;
-
   private SourceLocation location;
   private String content;
 

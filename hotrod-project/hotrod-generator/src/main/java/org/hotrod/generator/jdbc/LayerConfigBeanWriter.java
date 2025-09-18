@@ -11,7 +11,6 @@ import javax.sql.DataSource;
 import org.hotrod.config.JDBCTag;
 import org.hotrod.config.TypeSolverTag;
 import org.hotrod.config.TypeSolverWhenTag;
-import org.hotrod.exceptions.ErrorMessageException;
 import org.hotrod.exceptions.FaultException;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
@@ -55,8 +54,7 @@ public class LayerConfigBeanWriter {
     this.suffixCap = SUtil.capitalize(suffix);
   }
 
-  public void generate(final FileGenerator fileGenerator, final JDBCGenerator mg)
-      throws FaultException, ErrorMessageException {
+  public void generate(final FileGenerator fileGenerator) throws FaultException {
 
     File dir = this.jdbcTag.getLayerPackageDir();
 
@@ -86,12 +84,12 @@ public class LayerConfigBeanWriter {
 
   }
 
-  private void writeHeader() throws IOException {
+  private void writeHeader() {
     w.println("@", Const.CONFIGURATION, "(\"" + this.getLayerConfigBeanQualifier() + "\")");
     w.println("public class " + this.className + " {");
   }
 
-  private void writeLayerConfig() throws IOException {
+  private void writeLayerConfig() {
     w.println("");
     if (this.getLayerConfigQualifier() == null) {
       w.println("  @", Const.BEAN);
@@ -115,7 +113,7 @@ public class LayerConfigBeanWriter {
     w.println("  }");
   }
 
-  private void writeDataSourceProperties() throws IOException {
+  private void writeDataSourceProperties() {
     w.println("");
     w.println("  @", Const.BEAN, "(\"" + this.getDataSourcePropertiesQualifier() + "\")");
     w.println("  @", Const.CONFIGURATION_PROPERTIES, "(\"" + this.getPropertiesPrefix() + "\")");
@@ -124,7 +122,7 @@ public class LayerConfigBeanWriter {
     w.println("  }");
   }
 
-  private void writeDataSource() throws IOException {
+  private void writeDataSource() {
     w.println("");
     w.println("  @", Const.BEAN, "(\"" + this.getDataSourceQualifier() + "\")");
     w.print("  public ", DataSource.class, " dataSource(");
@@ -135,7 +133,7 @@ public class LayerConfigBeanWriter {
     w.println("  }");
   }
 
-  private void writeDialectProperties() throws IOException {
+  private void writeDialectProperties() {
     w.println("");
     w.println("  @", Const.VALUE, "(\"${" + this.getPropertiesPrefix() + ".livesqldialect.name:#{null}}\")");
     w.println("  private String liveSQLDialectName;");
@@ -149,7 +147,7 @@ public class LayerConfigBeanWriter {
     w.println("  private String liveSQLDialectMinorVersion;");
   }
 
-  private void writeLiveSQL() throws IOException {
+  private void writeLiveSQL() {
     w.println("");
     w.println("  @", Const.BEAN, "(\"" + this.getLiveSQLQualifier() + "\")");
     w.print("  public ", LiveSQL.class, " liveSQL(@", Const.QUALIFIER, "(\"" + this.getDataSourceQualifier() + "\") ");
@@ -169,7 +167,7 @@ public class LayerConfigBeanWriter {
 
   }
 
-  private void writeFooter() throws IOException {
+  private void writeFooter() {
     w.println();
     w.println("}");
   }

@@ -17,12 +17,11 @@ public class SequenceOfParts extends EnhancedSQLPart {
 
   private static final Logger log = Logger.getLogger(SequenceOfParts.class.getName());
 
-  private static final long serialVersionUID = 1L;
-
   // Constructor
 
   public SequenceOfParts(final List<EnhancedSQLPart> parts) {
     super("not-a-tag");
+    log.fine("init");
     super.eparts = parts;
   }
 

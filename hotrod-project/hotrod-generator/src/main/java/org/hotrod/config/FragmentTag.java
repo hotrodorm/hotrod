@@ -10,16 +10,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ErrorMessageException;
 import org.hotrod.exceptions.FacetNotFoundException;
-import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.FaultException;
+import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.FileRegistry;
 import org.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 
 @XmlRootElement(name = "fragment")
 public class FragmentTag extends AbstractConfigurationTag {
-
-  private static final long serialVersionUID = 1L;
 
   // Constants
 

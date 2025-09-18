@@ -1,12 +1,8 @@
 package org.hotrod.config;
 
-import java.io.Serializable;
-
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 
-public class JDBCProperties implements Serializable {
-
-  private static final long serialVersionUID = 1L;
+public class JDBCProperties {
 
   // Constants
 

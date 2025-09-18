@@ -17,8 +17,6 @@ import org.hotrod.utils.SUtil;
 @XmlRootElement(name = "model")
 public class JDBCModelTag extends AbstractConfigurationTag {
 
-  private static final long serialVersionUID = 1L;
-
   // Constants
 
   private static final Logger log = Logger.getLogger(JDBCModelTag.class.getName());

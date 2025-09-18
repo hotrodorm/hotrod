@@ -8,12 +8,14 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.hotrod.exceptions.ErrorMessageException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.plugin.ExportColumnsToXLSXOperation;
 
 @Mojo(name = "export-columns-xlsx", defaultPhase = LifecyclePhase.COMPILE)
 public class ExportColumnsToXLSXMojo extends AbstractMojo {
 
-  private static transient final Logger log = Logger.getLogger(ExportColumnsToXLSXMojo.class.getName());
+  private static final Logger log = Logger.getLogger(ExportColumnsToXLSXMojo.class.getName());
 
   static {
     JULCustomFormatter.initialize();
@@ -75,8 +77,10 @@ public class ExportColumnsToXLSXMojo extends AbstractMojo {
 
     try {
       op.execute(new MojoFeedback(this));
-    } catch (Exception e) {
-      throw new MojoExecutionException(e.getMessage(), e.getCause());
+    } catch (ErrorMessageException e) {
+      throw new MojoExecutionException(e.renderErrorMessage("HotRod could not export the column meta data"));
+    } catch (FaultException e) {
+      throw new MojoExecutionException("HotRod could not export the column meta data", e.getCause());
     }
   }
 

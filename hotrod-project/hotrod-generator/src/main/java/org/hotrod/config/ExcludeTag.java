@@ -11,8 +11,6 @@ import org.hotrod.identifiers.Id;
 @XmlRootElement(name = "exclude")
 public class ExcludeTag extends AbstractConfigurationTag {
 
-  private static final long serialVersionUID = 1L;
-
   // Properties
 
   private String name = null;

@@ -13,8 +13,6 @@ import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 @XmlRootElement(name = "discover")
 public class DiscoverTag extends AbstractConfigurationTag {
 
-  private static final long serialVersionUID = 1L;
-
   // Properties
 
   private SchemaTag currentSchema = null;

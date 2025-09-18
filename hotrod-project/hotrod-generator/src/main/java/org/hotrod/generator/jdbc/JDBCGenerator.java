@@ -18,8 +18,8 @@ import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ErrorMessageException;
-import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.FaultException;
+import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.DAOType;
 import org.hotrod.generator.Feedback;
 import org.hotrod.generator.FileGenerator;
@@ -278,7 +278,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
       smo.generate(fileGenerator);
     }
 
-    this.layerConfig.generate(fileGenerator, this);
+    this.layerConfig.generate(fileGenerator);
 
   }
 

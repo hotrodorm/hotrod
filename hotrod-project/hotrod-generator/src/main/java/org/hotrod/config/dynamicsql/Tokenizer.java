@@ -22,6 +22,7 @@ public class Tokenizer {
   private int pos;
 
   public Tokenizer(AbstractConfigurationTag tag, String txt) {
+    log.fine("init");
     this.tag = tag;
     this.txt = txt;
     this.pos = 0;

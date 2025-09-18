@@ -33,8 +33,6 @@ import org.hotrod.utils.ColumnsPrefixGenerator;
 @XmlRootElement(name = "columns")
 public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
-  private static final long serialVersionUID = 1L;
-
   // Constants
 
   private static final Logger log = Logger.getLogger(ColumnsTag.class.getName());
@@ -53,7 +51,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   private Expressions expressions = new Expressions();
 
   @SuppressWarnings("unused")
-  private transient Metadata metadatarep;
+  private Metadata metadatarep;
 
   private boolean connectedVOResult;
 

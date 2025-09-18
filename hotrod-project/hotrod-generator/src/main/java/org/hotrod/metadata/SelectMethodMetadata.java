@@ -51,9 +51,9 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
   private boolean structuredSelect;
 
   @SuppressWarnings("unused")
-  private transient Metadata metadata;
+  private Metadata metadata;
   private ColumnsRetriever cr;
-  private transient JDBCTag jdbcTag;
+  private JDBCTag jdbcTag;
 
   private TableDataSetMetadata entityMetaData;
   private ExecutorDAOMetadata executorMetaData;
@@ -61,20 +61,20 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
   private EntityDTOs entityVOs;
 
   @SuppressWarnings("unused")
-  private transient JdbcDatabase db;
+  private JdbcDatabase db;
   @SuppressWarnings("unused")
   private HotRodConfigTag config;
-  private transient DatabaseAdapter adapter;
+  private DatabaseAdapter adapter;
   @SuppressWarnings("unused")
-  private transient DatabaseLocation loc;
+  private DatabaseLocation loc;
   private SelectMethodTag tag;
-  private transient ColumnsPrefixGenerator columnsPrefixGenerator;
+  private ColumnsPrefixGenerator columnsPrefixGenerator;
 
-  private transient HotRodFragmentConfigTag fragmentConfig;
+  private HotRodFragmentConfigTag fragmentConfig;
   private List<ColumnMetadata> nonStructuredColumns;
   private StructuredColumnsMetadata structuredColumns;
 
-  private transient String createView;
+  private String createView;
 
   private ObjectId id;
 
@@ -161,8 +161,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
       // Graph columns
 
       log.fine("Phase 1 - method=" + this.getMethod());
-      this.tag.getStructuredColumns().gatherMetadataPhase1(this.tag, 
-          this.columnsPrefixGenerator, this.cr);
+      this.tag.getStructuredColumns().gatherMetadataPhase1(this.tag, this.columnsPrefixGenerator, this.cr);
 
     }
 

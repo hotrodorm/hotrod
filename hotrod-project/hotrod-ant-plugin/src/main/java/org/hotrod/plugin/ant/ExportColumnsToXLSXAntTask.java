@@ -5,11 +5,13 @@ import java.util.logging.Logger;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
+import org.hotrod.exceptions.ErrorMessageException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.plugin.ExportColumnsToXLSXOperation;
 
 public class ExportColumnsToXLSXAntTask extends Task {
 
-  private static transient final Logger log = Logger.getLogger(ExportColumnsToXLSXAntTask.class.getName());
+  private static final Logger log = Logger.getLogger(ExportColumnsToXLSXAntTask.class.getName());
 
   static {
     JULCustomFormatter.initialize();
@@ -39,8 +41,10 @@ public class ExportColumnsToXLSXAntTask extends Task {
 
     try {
       op.execute(new AntFeedback(this));
-    } catch (Exception e) {
-      throw new BuildException(e.getMessage(), e.getCause());
+    } catch (ErrorMessageException e) {
+      throw new BuildException(e.renderErrorMessage("HotRod could not export the column meta data"));
+    } catch (FaultException e) {
+      throw new BuildException("HotRod could not export the column meta data", e.getCause());
     }
 
   }

@@ -47,8 +47,6 @@ import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 @XmlRootElement(name = "vo")
 public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
-  private static final long serialVersionUID = 1L;
-
   // Constants
 
   private static final Logger log = Logger.getLogger(VOTag.class.getName());

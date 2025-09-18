@@ -14,8 +14,6 @@ import org.hotrod.utils.SUtil;
 @XmlRootElement(name = "dao")
 public class ExecutorTag extends AbstractDAOTag {
 
-  private static final long serialVersionUID = 1L;
-
   // Constants
 
   private static final Logger log = Logger.getLogger(ExecutorTag.class.getName());

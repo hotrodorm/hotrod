@@ -25,8 +25,6 @@ import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 @XmlRootElement(name = "type-solver")
 public class TypeSolverTag extends AbstractConfigurationTag {
 
-  private static final long serialVersionUID = 1L;
-
   // Constants
 
   private static final Logger log = Logger.getLogger(TypeSolverTag.class.getName());

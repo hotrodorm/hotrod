@@ -45,15 +45,15 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
   private static final Logger log = Logger.getLogger(TableDataSetMetadata.class.getName());
 
-  protected transient JdbcTable t;
-  protected transient HotRodConfigTag config;
-  protected transient DatabaseAdapter adapter;
+  protected JdbcTable t;
+  protected HotRodConfigTag config;
+  protected DatabaseAdapter adapter;
 
   private AbstractDAOTag daoTag;
 
   private TableTag parentTag;
   @SuppressWarnings("unused")
-  private transient JdbcTable parentJdbcTable;
+  private JdbcTable parentJdbcTable;
   private TableDataSetMetadata parent;
 
   private List<ColumnMetadata> cols;
