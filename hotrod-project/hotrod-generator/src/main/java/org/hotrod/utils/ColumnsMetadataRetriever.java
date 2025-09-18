@@ -3,7 +3,6 @@ package org.hotrod.utils;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
@@ -32,8 +31,6 @@ public class ColumnsMetadataRetriever {
   private JdbcDatabase db;
   @SuppressWarnings("unused")
   private DatabaseLocation loc;
-  @SuppressWarnings("unused")
-  private SelectGenerationTag selectGenerationTag;
   private ColumnsProvider columnsProvider;
   private String entityPrefix;
   private String aliasPrefix;
@@ -42,14 +39,13 @@ public class ColumnsMetadataRetriever {
   // Constructor
 
   public ColumnsMetadataRetriever(final SelectMethodTag selectTag, final DatabaseAdapter adapter, final JdbcDatabase db,
-      final DatabaseLocation loc, final SelectGenerationTag selectGenerationTag, final ColumnsProvider columnsProvider,
-      final String entityPrefix, final ColumnsPrefixGenerator columnsPrefixGenerator, final ColumnsRetriever cr) {
+      final DatabaseLocation loc, final ColumnsProvider columnsProvider, final String entityPrefix,
+      final ColumnsPrefixGenerator columnsPrefixGenerator, final ColumnsRetriever cr) {
     log.fine("init");
     this.selectTag = selectTag;
     this.adapter = adapter;
     this.db = db;
     this.loc = loc;
-    this.selectGenerationTag = selectGenerationTag;
     this.columnsProvider = columnsProvider;
     this.entityPrefix = entityPrefix;
     this.aliasPrefix = columnsPrefixGenerator.next();

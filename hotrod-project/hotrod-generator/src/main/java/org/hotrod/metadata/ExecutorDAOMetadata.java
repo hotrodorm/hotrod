@@ -102,7 +102,7 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
       ColumnsPrefixGenerator columnsPrefixGenerator = new ColumnsPrefixGenerator(this.adapter.getUnescapedSQLCase());
       SelectMethodMetadata sm;
       try {
-        sm = new SelectMethodMetadata(metadata, cr, selectTag, this.config, null, columnsPrefixGenerator, jdbcTag, null,
+        sm = new SelectMethodMetadata(metadata, cr, selectTag, this.config, columnsPrefixGenerator, jdbcTag, null,
             this);
       } catch (InvalidIdentifierException e) {
         String msg = "Invalid method name '" + selectTag.getMethod() + "': " + e.getMessage();
@@ -203,11 +203,6 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
 
   @Override
   public String renderSQLSentence(ParameterRenderer parameterRenderer) {
-    return null;
-  }
-
-  @Override
-  public String renderXML(ParameterRenderer parameterRenderer) {
     return null;
   }
 

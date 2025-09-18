@@ -408,12 +408,6 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
     return sb.toString();
   }
 
-  public void renderXML(final SQLFormatter formatter, final ParameterRenderer parameterRenderer) {
-    for (EnhancedSQLPart p : this.parts) {
-      p.renderXML(formatter, parameterRenderer);
-    }
-  }
-
   public List<ParameterTag> getParameterDefinitions() {
     return this.parameters.getDefinitions();
   }

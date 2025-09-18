@@ -27,7 +27,6 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.metadata.Metadata;
 
-@Deprecated
 @XmlRootElement(name = "complement")
 public class ComplementTag extends EnhancedSQLPart {
 
@@ -112,15 +111,6 @@ public class ComplementTag extends EnhancedSQLPart {
   @Override
   public String renderStatic(final ParameterRenderer parameterRenderer) {
     return "";
-  }
-
-  @Override
-  public void renderXML(final SQLFormatter formatter, final ParameterRenderer parameterRenderer) {
-    StringBuilder sb = new StringBuilder();
-    for (DynamicSQLPart p : this.parts) {
-      sb.append(p.renderXML(parameterRenderer));
-    }
-    formatter.add(sb.toString());
   }
 
   // Simple Caption

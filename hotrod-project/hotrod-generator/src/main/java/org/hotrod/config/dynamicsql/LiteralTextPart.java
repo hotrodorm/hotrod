@@ -4,7 +4,6 @@ import java.util.logging.Logger;
 
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.utils.SUtil;
 import org.hotrod.utils.SourceLocation;
 
 public class LiteralTextPart extends DynamicSQLPart implements SQLSegment {
@@ -67,11 +66,6 @@ public class LiteralTextPart extends DynamicSQLPart implements SQLSegment {
   @Override
   public String renderStatic(final ParameterRenderer parameterRenderer) {
     return this.text;
-  }
-
-  @Override
-  public String renderXML(final ParameterRenderer parameterRenderer) {
-    return SUtil.escapeXmlBody(this.text);
   }
 
   @Override

@@ -8,12 +8,10 @@ import java.util.logging.Logger;
 
 import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.EnhancedSQLPart;
-import org.hotrod.config.EnhancedSQLPart.SQLFormatter;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.JDBCTag;
 import org.hotrod.config.ParameterTag;
-import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.SelectMethodTag.ResultSetMode;
 import org.hotrod.database.DatabaseAdapter;
@@ -70,7 +68,6 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
   @SuppressWarnings("unused")
   private transient DatabaseLocation loc;
   private SelectMethodTag tag;
-  private transient SelectGenerationTag selectGenerationTag;
   private transient ColumnsPrefixGenerator columnsPrefixGenerator;
 
   private transient HotRodFragmentConfigTag fragmentConfig;
@@ -91,8 +88,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
   // Constructor
 
   public SelectMethodMetadata(final Metadata metadata, final ColumnsRetriever cr, final SelectMethodTag tag,
-      final HotRodConfigTag config, final SelectGenerationTag selectGenerationTag,
-      final ColumnsPrefixGenerator columnsPrefixGenerator, final JDBCTag jdbcTag,
+      final HotRodConfigTag config, final ColumnsPrefixGenerator columnsPrefixGenerator, final JDBCTag jdbcTag,
       final TableDataSetMetadata entityMetaData, ExecutorDAOMetadata executorMetaData)
       throws InvalidIdentifierException, InvalidConfigurationFileException, ErrorMessageException {
     this.metadata = metadata;
@@ -120,7 +116,6 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
     this.loc = metadata.getLoc();
     this.tag = tag;
     this.id = new ObjectId(null, null, Id.fromJavaMember(tag.getMethod()), adapter);
-    this.selectGenerationTag = selectGenerationTag;
     this.columnsPrefixGenerator = columnsPrefixGenerator;
 
     this.fragmentConfig = tag.getFragmentConfig();
@@ -166,7 +161,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
       // Graph columns
 
       log.fine("Phase 1 - method=" + this.getMethod());
-      this.tag.getStructuredColumns().gatherMetadataPhase1(this.tag, this.selectGenerationTag,
+      this.tag.getStructuredColumns().gatherMetadataPhase1(this.tag, 
           this.columnsPrefixGenerator, this.cr);
 
     }
@@ -391,13 +386,6 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   public List<EnhancedSQLPart> getParts() {
     return this.tag.getParts();
-  }
-
-  @Override
-  public String renderXML(final ParameterRenderer parameterRenderer) {
-    SQLFormatter formatter = new SQLFormatter();
-    this.tag.renderXML(formatter, parameterRenderer);
-    return formatter.toString();
   }
 
   @Override

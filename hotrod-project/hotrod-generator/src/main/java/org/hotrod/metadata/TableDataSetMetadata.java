@@ -16,7 +16,6 @@ import org.hotrod.config.JDBCTag;
 import org.hotrod.config.OptimisticLockingTag;
 import org.hotrod.config.OptimisticLockingTag.OptimisticLockingStrategy;
 import org.hotrod.config.QueryMethodTag;
-import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.config.TableTag;
@@ -402,12 +401,11 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
     boolean needsToRetrieveMetadata = false;
     for (SelectMethodTag selectTag : this.selects) {
       needsToRetrieveMetadata = true;
-      SelectGenerationTag selectGenerationTag = null;
       ColumnsPrefixGenerator columnsPrefixGenerator = new ColumnsPrefixGenerator(this.adapter.getUnescapedSQLCase());
       SelectMethodMetadata sm;
       try {
-        sm = new SelectMethodMetadata(metadata, cr, selectTag, this.config, selectGenerationTag, columnsPrefixGenerator,
-            jdbcTag, this, null);
+        sm = new SelectMethodMetadata(metadata, cr, selectTag, this.config, columnsPrefixGenerator, jdbcTag, this,
+            null);
       } catch (InvalidIdentifierException e) {
         throw new ErrorMessageException(selectTag,
             "Invalid method name '" + selectTag.getMethod() + "': " + e.getMessage());
@@ -671,11 +669,6 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
   @Override
   public String renderSQLSentence(final ParameterRenderer parameterRenderer) {
-    return null;
-  }
-
-  @Override
-  public String renderXML(final ParameterRenderer parameterRenderer) {
     return null;
   }
 

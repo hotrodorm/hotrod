@@ -12,6 +12,5 @@ public interface SQLSegment extends Serializable {
 
   public abstract String renderSQLFoundation(ParameterRenderer parameterRenderer);
 
-  public abstract String renderXML(ParameterRenderer parameterRenderer);
 
 }

@@ -132,9 +132,4 @@ public class SQLParameter implements SQLSegment {
     return r;
   }
 
-  @Override
-  public String renderXML(final ParameterRenderer parameterRenderer) {
-    return parameterRenderer.render(this);
-  }
-
 }

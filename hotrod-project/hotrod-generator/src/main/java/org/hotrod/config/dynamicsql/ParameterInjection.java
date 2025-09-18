@@ -48,9 +48,4 @@ public class ParameterInjection implements SQLSegment {
     return "$INJECT{" + this.name + "}";
   }
 
-  @Override
-  public String renderXML(ParameterRenderer parameterRenderer) {
-    return "$INJECT{" + this.name + "}";
-  }
-
 }

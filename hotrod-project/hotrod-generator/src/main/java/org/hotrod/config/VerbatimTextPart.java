@@ -2,7 +2,6 @@ package org.hotrod.config;
 
 import org.hotrod.config.dynamicsql.SQLSegment;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.utils.SUtil;
 import org.hotrod.utils.SourceLocation;
 
 public class VerbatimTextPart implements SQLSegment {
@@ -34,11 +33,6 @@ public class VerbatimTextPart implements SQLSegment {
   @Override
   public String renderStatic(final ParameterRenderer parameterRenderer) {
     return this.content;
-  }
-
-  @Override
-  public String renderXML(ParameterRenderer parameterRenderer) {
-    return SUtil.escapeXmlBody(this.content);
   }
 
   public String getContent() {

@@ -42,11 +42,6 @@ public class VariableOccurrence implements SQLSegment {
     return this.name;
   }
 
-  @Override
-  public String renderXML(final ParameterRenderer parameterRenderer) {
-    return this.name;
-  }
-
   public String getName() {
     return name;
   }

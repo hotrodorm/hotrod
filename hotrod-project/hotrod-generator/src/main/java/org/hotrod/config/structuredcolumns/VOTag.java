@@ -20,7 +20,6 @@ import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.JDBCTag;
 import org.hotrod.config.Patterns;
-import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
@@ -421,9 +420,8 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
   // Meta data gathering
 
   @Override
-  public void gatherMetadataPhase1(final SelectMethodTag selectTag, final SelectGenerationTag selectGenerationTag,
-      final ColumnsPrefixGenerator columnsPrefixGenerator, final ColumnsRetriever cr)
-      throws FaultException, ErrorMessageException {
+  public void gatherMetadataPhase1(final SelectMethodTag selectTag, final ColumnsPrefixGenerator columnsPrefixGenerator,
+      final ColumnsRetriever cr) throws FaultException, ErrorMessageException {
 
     // body
 
@@ -437,21 +435,21 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
       } else { // specific columns
         log.fine("this.generator=" + this.metadata);
         this.cmr = new ColumnsMetadataRetriever(selectTag, this.metadata.getAdapter(), this.metadata.getJdbcDatabase(),
-            this.metadata.getLoc(), selectGenerationTag, this, this.alias, columnsPrefixGenerator, cr);
+            this.metadata.getLoc(), this, this.alias, columnsPrefixGenerator, cr);
         this.cmr.prepareRetrieval();
       }
     }
 
     // expressions, collections, associations
 
-    this.expressions.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, cr);
+    this.expressions.gatherMetadataPhase1(selectTag, columnsPrefixGenerator, cr);
 
     for (CollectionTag c : this.collections) {
-      c.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, cr);
+      c.gatherMetadataPhase1(selectTag, columnsPrefixGenerator, cr);
     }
 
     for (AssociationTag a : this.associations) {
-      a.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, cr);
+      a.gatherMetadataPhase1(selectTag, columnsPrefixGenerator, cr);
     }
 
   }

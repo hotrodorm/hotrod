@@ -13,15 +13,13 @@ import java.util.logging.Logger;
 import org.hotrod.config.ColumnTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.SQLParameter;
-import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.exceptions.ErrorMessageException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.InvalidSQLException;
-import org.hotrod.exceptions.FaultException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
@@ -39,8 +37,6 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
   private HotRodConfigTag config;
   @SuppressWarnings("unused")
   private DatabaseLocation dloc;
-  @SuppressWarnings("unused")
-  private SelectGenerationTag selectGenerationTag;
   private DatabaseAdapter adapter;
   @SuppressWarnings("unused")
   private JdbcDatabase db;
@@ -48,11 +44,9 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
   private Map<String, RetrievalContext> contexts;
 
   public ResultSetColumnsRetriever(final HotRodConfigTag config, final DatabaseLocation dloc,
-      final SelectGenerationTag selectGenerationTag, final DatabaseAdapter adapter, final JdbcDatabase db,
-      final Connection conn) throws SQLException {
+      final DatabaseAdapter adapter, final JdbcDatabase db, final Connection conn) throws SQLException {
     this.config = config;
     this.dloc = dloc;
-    this.selectGenerationTag = selectGenerationTag;
     this.adapter = adapter;
     this.db = db;
     this.conn = conn;

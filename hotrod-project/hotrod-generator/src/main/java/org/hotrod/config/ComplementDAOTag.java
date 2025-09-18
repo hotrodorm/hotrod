@@ -96,15 +96,6 @@ public class ComplementDAOTag extends DynamicSQLPart {
   }
 
   @Override
-  public String renderXML(final ParameterRenderer parameterRenderer) {
-    StringBuilder sb = new StringBuilder();
-    for (DynamicSQLPart p : this.parts) {
-      sb.append(p.renderXML(parameterRenderer));
-    }
-    return sb.toString();
-  }
-
-  @Override
   protected void validateAttributes(ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
     // XXX: Pending. Develop only when/if it's needed.

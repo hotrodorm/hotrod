@@ -12,7 +12,6 @@ import org.hotrod.config.ColumnTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.JDBCTag;
-import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.database.DatabaseAdapter.UnescapedSQLCase;
 import org.hotrod.exceptions.ErrorMessageException;
@@ -78,16 +77,14 @@ public class Expressions implements ColumnsProvider, Serializable {
   }
 
   @Override
-  public void gatherMetadataPhase1(final SelectMethodTag selectTag, final SelectGenerationTag selectGenerationTag,
-      final ColumnsPrefixGenerator columnsPrefixGenerator, final ColumnsRetriever cr)
-      throws ErrorMessageException, FaultException {
+  public void gatherMetadataPhase1(final SelectMethodTag selectTag, final ColumnsPrefixGenerator columnsPrefixGenerator,
+      final ColumnsRetriever cr) throws ErrorMessageException, FaultException {
     log.fine("this=" + this + " - this.expressions.isEmpty()=" + this.expressions.isEmpty());
     if (this.expressions.isEmpty()) {
       this.columnsRetriever = null;
     } else {
       this.columnsRetriever = new ColumnsMetadataRetriever(selectTag, this.metadata.getAdapter(),
-          this.metadata.getJdbcDatabase(), this.metadata.getLoc(), selectGenerationTag, this, null,
-          columnsPrefixGenerator, cr);
+          this.metadata.getJdbcDatabase(), this.metadata.getLoc(), this, null, columnsPrefixGenerator, cr);
       this.columnsRetriever.prepareRetrieval();
     }
   }

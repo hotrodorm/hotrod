@@ -172,15 +172,6 @@ public abstract class DynamicSQLPart extends EnhancedSQLPart {
     return sb.toString();
   }
 
-  @Override
-  public void renderXML(final SQLFormatter formatter, final ParameterRenderer parameterRenderer) {
-    StringBuilder sb = new StringBuilder();
-    for (DynamicSQLPart p : this.parts) {
-      sb.append(p.renderXML(parameterRenderer));
-    }
-    formatter.add(sb.toString());
-  }
-
   // Getters
 
   // Behavior
@@ -274,32 +265,6 @@ public abstract class DynamicSQLPart extends EnhancedSQLPart {
   // XML Rendering
 
   protected abstract boolean shouldRenderTag();
-
-  @Deprecated
-  public String renderXML(final ParameterRenderer parameterRenderer) {
-
-    StringBuilder sb = new StringBuilder();
-    for (DynamicSQLPart p : this.parts) {
-      sb.append(p.renderXML(parameterRenderer));
-    }
-    String body = sb.toString();
-
-    StringBuilder full = new StringBuilder();
-    if (body == null || body.isEmpty()) {
-      if (this.shouldRenderTag()) {
-        full.append(this.renderEmptyTag(parameterRenderer));
-      }
-    } else {
-      if (this.shouldRenderTag()) {
-        full.append(renderTagHeader(parameterRenderer));
-      }
-      full.append(body);
-      if (this.shouldRenderTag()) {
-        full.append(renderTagFooter());
-      }
-    }
-    return full.toString();
-  }
 
   protected abstract TagAttribute[] getAttributes();
 

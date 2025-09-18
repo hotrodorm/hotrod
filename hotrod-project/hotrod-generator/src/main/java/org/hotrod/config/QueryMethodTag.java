@@ -134,14 +134,6 @@ public class QueryMethodTag extends AbstractMethodTag<QueryMethodTag> {
     return sb.toString();
   }
 
-  public String renderXML(final ParameterRenderer parameterRenderer) {
-    StringBuilder sb = new StringBuilder();
-    for (DynamicSQLPart p : this.parts) {
-      sb.append(p.renderXML(parameterRenderer));
-    }
-    return sb.toString();
-  }
-
   public List<ParameterTag> getParameterDefinitions() {
     return this.parameters.getDefinitions();
   }

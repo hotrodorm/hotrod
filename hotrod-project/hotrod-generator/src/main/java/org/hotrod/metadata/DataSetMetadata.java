@@ -32,9 +32,7 @@ public interface DataSetMetadata extends Serializable {
   List<SelectParameterMetadata> getParameterDefinitions();
 
   String renderSQLSentence(ParameterRenderer parameterRenderer);
-
-  String renderXML(ParameterRenderer parameterRenderer);
-
+  
   default public ClassicFKNavigationTag getClassicFKNavigation() {
     return null;
   }

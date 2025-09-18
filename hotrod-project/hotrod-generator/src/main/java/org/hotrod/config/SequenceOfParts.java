@@ -61,13 +61,6 @@ public class SequenceOfParts extends EnhancedSQLPart {
     return null;
   }
 
-  @Override
-  public void renderXML(final SQLFormatter formatter, final ParameterRenderer parameterRenderer) {
-    for (EnhancedSQLPart p : super.eparts) {
-      p.renderXML(formatter, parameterRenderer);
-    }
-  }
-
   // Simple Caption
 
   @Override

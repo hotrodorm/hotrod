@@ -46,13 +46,9 @@ public abstract class EnhancedSQLPart extends AbstractConfigurationTag {
 
   // Rendering
 
-  @Deprecated
   public abstract String renderStatic(final ParameterRenderer parameterRenderer);
 
   public abstract String renderSQLFoundation(ParameterRenderer parameterRenderer);
-
-  @Deprecated
-  public abstract void renderXML(final SQLFormatter formatter, final ParameterRenderer parameterRenderer);
 
   // Rendering
 

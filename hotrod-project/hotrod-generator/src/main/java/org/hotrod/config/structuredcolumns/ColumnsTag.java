@@ -15,7 +15,6 @@ import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.JDBCTag;
 import org.hotrod.config.Patterns;
-import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
 import org.hotrod.database.DatabaseAdapter;
@@ -25,14 +24,11 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.metadata.Metadata;
-import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.StructuredColumnsMetadata;
 import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.metadata.VOMetadata;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ColumnsPrefixGenerator;
-import org.hotrod.utils.SUtil;
-import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 @XmlRootElement(name = "columns")
 public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
@@ -145,23 +141,6 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
     return "... graph columns here...";
   }
 
-  @Override
-  public void renderXML(final SQLFormatter formatter, final ParameterRenderer parameterRenderer) {
-
-    List<String> columns = new ArrayList<String>();
-    for (VOTag vo : this.vos) {
-      columns.addAll(vo.gelAliasedSQLColumns());
-    }
-
-    for (StructuredColumnMetadata m : this.expressions.getMetadata()) {
-      String aliasedSQLColumn = m.renderAliasedSQLColumn();
-      columns.add(aliasedSQLColumn);
-    }
-
-    String indent = SUtil.getFiller(' ', formatter.getCurrentIndent() + 2);
-    formatter.add(ListWriter.render(columns, indent, "", ",\n"));
-  }
-
   // ========================
   // ColumnProvider interface
   // ========================
@@ -234,15 +213,14 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   }
 
   @Override
-  public void gatherMetadataPhase1(final SelectMethodTag selectTag, final SelectGenerationTag selectGenerationTag,
-      final ColumnsPrefixGenerator columnsPrefixGenerator, final ColumnsRetriever cr)
-      throws ErrorMessageException, FaultException {
+  public void gatherMetadataPhase1(final SelectMethodTag selectTag, final ColumnsPrefixGenerator columnsPrefixGenerator,
+      final ColumnsRetriever cr) throws ErrorMessageException, FaultException {
 
     for (VOTag vo : this.vos) {
-      vo.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, cr);
+      vo.gatherMetadataPhase1(selectTag, columnsPrefixGenerator, cr);
     }
     log.fine("EXPRESSIONS from ColumnsTag... this=" + this);
-    this.expressions.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, cr);
+    this.expressions.gatherMetadataPhase1(selectTag, columnsPrefixGenerator, cr);
 
   }
 

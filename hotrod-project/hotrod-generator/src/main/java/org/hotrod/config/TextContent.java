@@ -156,14 +156,6 @@ public class TextContent extends EnhancedSQLPart {
   }
 
   @Override
-  public void renderXML(final SQLFormatter formatter, final ParameterRenderer parameterRenderer) {
-    for (SQLSegment s : this.segments) {
-      String sxml = s.renderXML(parameterRenderer);
-      formatter.add(sxml);
-    }
-  }
-
-  @Override
   public String renderSQLAngle(final DatabaseAdapter adapter, final ColumnsProvider cp) {
     return this.txt;
   }

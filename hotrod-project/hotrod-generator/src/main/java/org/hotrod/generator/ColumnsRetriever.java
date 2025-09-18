@@ -5,14 +5,13 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.hotrod.config.HotRodConfigTag;
-import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.InvalidSQLException;
-import org.hotrod.exceptions.FaultException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
@@ -38,12 +37,7 @@ public interface ColumnsRetriever extends AutoCloseable {
 
   static ColumnsRetriever getInstance(final HotRodConfigTag config, final DatabaseLocation dloc,
       final DatabaseAdapter adapter, final JdbcDatabase db, final Connection conn) throws SQLException {
-    SelectGenerationTag selectGenerationTag = null;
-//    if (selectGenerationTag.getStrategy() == SelectStrategy.RESULT_SET) {
-    return new ResultSetColumnsRetriever(config, dloc, selectGenerationTag, adapter, db, conn);
-//    } else {
-//      return new CreateViewColumnsRetriever(config, dloc, selectGenerationTag, adapter, db, conn);
-//    }
+    return new ResultSetColumnsRetriever(config, dloc, adapter, db, conn);
   }
 
 }
