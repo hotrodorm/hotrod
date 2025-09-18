@@ -179,7 +179,8 @@ public class ConfigurationLoader {
   // When no hotrod.xml is provided
 
   public static HotRodConfigTag prepareNoConfig(final File projectBaseDir, final File f, final DatabaseAdapter adapter,
-      final LinkedHashSet<String> facetNames, final CatalogSchema currentCS) throws ErrorMessageException {
+      final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
+      throws ErrorMessageException, FaultException {
     HotRodConfigTag config = new HotRodConfigTag();
     File parentDir = null;
     try {
@@ -194,8 +195,6 @@ public class ConfigurationLoader {
     try {
       config.validateCommon(config, f, fileRegistry, f, jdbcTag, null, adapter, facetNames, currentCS);
     } catch (InvalidConfigurationFileException e) {
-      throw new ErrorMessageException("No Config Error: " + e.getMessage());
-    } catch (FaultException e) {
       throw new ErrorMessageException("No Config Error: " + e.getMessage());
     } catch (FacetNotFoundException e) {
       throw new ErrorMessageException("No Config Error: " + e.getMessage());

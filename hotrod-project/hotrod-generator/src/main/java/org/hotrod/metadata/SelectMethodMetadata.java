@@ -1,6 +1,5 @@
 package org.hotrod.metadata;
 
-import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +37,7 @@ import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 
-public class SelectMethodMetadata implements DataSetMetadata, Serializable {
-
-  private static final long serialVersionUID = 1L;
+public class SelectMethodMetadata implements DataSetMetadata {
 
   // Constants
 
@@ -192,7 +189,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
         throw new ErrorMessageException(this.tag, "Invalid retrieved column name: " + e.getMessage());
       }
 
-      List<VOProperty> properties = new ArrayList<VOProperty>();
+      List<VOProperty> properties = new ArrayList<>();
 
       for (ColumnMetadata cm : this.nonStructuredColumns) {
         StructuredColumnMetadata m = new StructuredColumnMetadata(cm, "entityPrefix1", "columnAlias", false, this.tag);
@@ -200,8 +197,8 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
             .add(new VOProperty(m.getId().getJavaMemberName(), m, EnclosingTagType.NON_STRUCTURED_SELECT, this.tag));
       }
 
-      List<VOMember> associations = new ArrayList<VOMember>();
-      List<VOMember> collections = new ArrayList<VOMember>();
+      List<VOMember> associations = new ArrayList<>();
+      List<VOMember> collections = new ArrayList<>();
 
       if (this.entityMetaData == null) { // does not belong to an entity (table or view)
 
@@ -347,22 +344,22 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   @Override
   public List<KeyMetadata> getUniqueIndexes() {
-    return new ArrayList<KeyMetadata>();
+    return new ArrayList<>();
   }
 
   @Override
   public List<ForeignKeyMetadata> getImportedFKs() {
-    return new ArrayList<ForeignKeyMetadata>();
+    return new ArrayList<>();
   }
 
   @Override
   public List<ForeignKeyMetadata> getExportedFKs() {
-    return new ArrayList<ForeignKeyMetadata>();
+    return new ArrayList<>();
   }
 
   @Override
   public List<SelectParameterMetadata> getParameters() {
-    List<SelectParameterMetadata> pms = new ArrayList<SelectParameterMetadata>();
+    List<SelectParameterMetadata> pms = new ArrayList<>();
     for (ParameterTag p : this.tag.getParameterDefinitions()) {
       pms.add(new SelectParameterMetadata(p));
     }
@@ -371,7 +368,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   @Override
   public List<SelectParameterMetadata> getParameterDefinitions() {
-    List<SelectParameterMetadata> pms = new ArrayList<SelectParameterMetadata>();
+    List<SelectParameterMetadata> pms = new ArrayList<>();
     for (ParameterTag p : this.tag.getParameterDefinitions()) {
       pms.add(new SelectParameterMetadata(p));
     }

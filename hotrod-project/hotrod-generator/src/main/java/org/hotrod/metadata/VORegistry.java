@@ -31,7 +31,7 @@ public class VORegistry {
 
   // Properties
 
-  private LinkedHashMap<ClassPackage, FragmentRegistry> fragmentsByPackage = new LinkedHashMap<ClassPackage, FragmentRegistry>();
+  private LinkedHashMap<ClassPackage, FragmentRegistry> fragmentsByPackage = new LinkedHashMap<>();
 
   // Behavior
 
@@ -72,7 +72,7 @@ public class VORegistry {
   // Getters
 
   public List<FragmentRegistry> getFragments() {
-    return new ArrayList<FragmentRegistry>(this.fragmentsByPackage.values());
+    return new ArrayList<>(this.fragmentsByPackage.values());
   }
 
   // Classes
@@ -152,11 +152,11 @@ public class VORegistry {
     }
 
     public List<EntityVOClass> getVOs() {
-      return new ArrayList<EntityVOClass>(this.vosByName.values());
+      return new ArrayList<>(this.vosByName.values());
     }
 
     public List<SelectVOClass> getStructuredVOs() {
-      return new ArrayList<SelectVOClass>(this.structuredVOsByName.values());
+      return new ArrayList<>(this.structuredVOsByName.values());
     }
 
   }
@@ -185,7 +185,7 @@ public class VORegistry {
       this.metadata = metadata;
       this.classPackage = classPackage;
       this.name = name;
-      this.columnsByName = new LinkedHashMap<String, ColumnMetadata>();
+      this.columnsByName = new LinkedHashMap<>();
       for (ColumnMetadata c : columns) {
         this.columnsByName.put(c.getName(), c);
       }
@@ -458,7 +458,7 @@ public class VORegistry {
   public static class VOPropertiesRegistry {
 
     private String name;
-    private List<VOProperty> properties = new ArrayList<VOProperty>();
+    private List<VOProperty> properties = new ArrayList<>();
 
     public VOPropertiesRegistry(final String name) {
       this.name = name;
@@ -570,10 +570,6 @@ public class VORegistry {
       return this.thisOne != null ? this.thisOne.getName() : this.thisOneSt.getName();
     }
 
-//    public ClassPackage getThisPackage() {
-//      return this.thisOne != null ? this.thisOne.getClassPackage() : this.thisOneSt.getClassPackage();
-//    }
-
   }
 
   public static class StructuredVOAlreadyExistsException extends Exception {
@@ -609,10 +605,6 @@ public class VORegistry {
     public String getThisName() {
       return this.thisOne != null ? this.thisOne.getName() : this.thisOneSt.getName();
     }
-
-//    public ClassPackage getThisPackage() {
-//      return this.thisOne != null ? this.thisOne.getClassPackage() : this.thisOneSt.getClassPackage();
-//    }
 
   }
 

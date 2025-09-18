@@ -11,9 +11,7 @@ import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.CachedMetadata;
-import org.hotrod.generator.SelectMetadataCache;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
-import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
 public abstract class DataSetMetadataFactory {
@@ -33,23 +31,12 @@ public abstract class DataSetMetadataFactory {
       final CachedMetadata cachedMetadata, final boolean isFromCurrentCatalog, final boolean isFromCurrentSchema)
       throws UnresolvableDataTypeException, InvalidConfigurationFileException {
 
-    JdbcDatabase cachedDB = null;
-    HotRodConfigTag cachedConfig = null;
-    SelectMetadataCache selectMetadataCache = null;
-    if (cachedMetadata != null) {
-      cachedDB = cachedMetadata.getCachedDatabase();
-      cachedConfig = cachedMetadata.getConfig();
-      selectMetadataCache = cachedMetadata.getSelectMetadataCache();
-    }
-
     // Table
 
     TableTag tableTag = config.getTableTag(t);
     if (tableTag != null) {
       TableDataSetMetadata tm = new TableDataSetMetadata(tableTag, t, tableTag.getExtendsTag(),
-          tableTag.getExtendsJdbcTable(), adapter, config, jdbcTag, selectMetadataCache, isFromCurrentCatalog,
-          isFromCurrentSchema);
-      log.fine("cachedConfig=" + cachedConfig);
+          tableTag.getExtendsJdbcTable(), adapter, config, jdbcTag, isFromCurrentCatalog, isFromCurrentSchema);
       return tm;
     }
 
@@ -57,8 +44,8 @@ public abstract class DataSetMetadataFactory {
 
     EnumTag enumTag = config.getEnumTag(t);
     if (enumTag != null) {
-      EnumDataSetMetadata em = new EnumDataSetMetadata(enumTag, t, adapter, config, jdbcTag, selectMetadataCache,
-          isFromCurrentCatalog, isFromCurrentSchema);
+      EnumDataSetMetadata em = new EnumDataSetMetadata(enumTag, t, adapter, config, jdbcTag, isFromCurrentCatalog,
+          isFromCurrentSchema);
       return em;
     }
 
@@ -66,8 +53,7 @@ public abstract class DataSetMetadataFactory {
 
     ViewTag viewTag = config.getViewTag(t);
     if (viewTag != null) {
-      return new TableDataSetMetadata(viewTag, t, adapter, config, jdbcTag, selectMetadataCache, isFromCurrentCatalog,
-          isFromCurrentSchema);
+      return new TableDataSetMetadata(viewTag, t, adapter, config, jdbcTag, isFromCurrentCatalog, isFromCurrentSchema);
     }
 
     // Not a declared table or view
@@ -81,14 +67,14 @@ public abstract class DataSetMetadataFactory {
         tableTag.setName(t.getName());
         tableTag.validate(null, config, null, adapter, null);
         return new TableDataSetMetadata(tableTag, t, tableTag.getExtendsTag(), tableTag.getExtendsJdbcTable(), adapter,
-            config, jdbcTag, selectMetadataCache, isFromCurrentCatalog, isFromCurrentSchema);
+            config, jdbcTag, isFromCurrentCatalog, isFromCurrentSchema);
       } else {
         viewTag = new ViewTag();
         viewTag.setCatalog(t.getCatalog());
         viewTag.setSchema(t.getSchema());
         viewTag.setName(t.getName());
         viewTag.validate(null, config, null, adapter, null);
-        return new TableDataSetMetadata(viewTag, t, adapter, config, jdbcTag, selectMetadataCache, isFromCurrentCatalog,
+        return new TableDataSetMetadata(viewTag, t, adapter, config, jdbcTag, isFromCurrentCatalog,
             isFromCurrentSchema);
       }
 
