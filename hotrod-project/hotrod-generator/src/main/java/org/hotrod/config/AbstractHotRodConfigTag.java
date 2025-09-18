@@ -21,10 +21,10 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamReader;
 
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.ErrorMessageException;
 import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.exceptions.UncontrolledException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.utils.FileRegistry;
@@ -112,7 +112,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
   protected void validateCommon(final HotRodConfigTag config, final File file, final FileRegistry fileRegistry,
       final File parentFile, final JDBCTag jdbcTag, final HotRodFragmentConfigTag fragmentConfig,
       final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
-      throws InvalidConfigurationFileException, ControlledException, UncontrolledException, FacetNotFoundException {
+      throws InvalidConfigurationFileException, ErrorMessageException, FaultException, FacetNotFoundException {
 
     log.fine("validateCommon");
 

@@ -27,11 +27,11 @@ import javax.xml.validation.SchemaFactory;
 
 import org.hotrod.config.AbstractHotRodConfigTag.LocationListener;
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.ErrorMessageException;
 import org.hotrod.exceptions.FacetNotFoundException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.exceptions.GeneratorNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.utils.FileRegistry;
 import org.hotrod.utils.FileRegistry.FileAlreadyRegisteredException;
 import org.hotrod.utils.SourceLocation;
@@ -66,20 +66,20 @@ public class ConfigurationLoader {
 
   public static HotRodConfigTag loadPrimary(final File projectBaseDir, final File f, final DatabaseAdapter adapter,
       final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
-      throws ControlledException, UncontrolledException, FacetNotFoundException {
+      throws ErrorMessageException, FaultException, FacetNotFoundException {
 
 //    log.info("loading file: " + f);
 
     // Basic validation on the file
 
     if (f == null) {
-      throw new ControlledException("Configuration file name is empty.");
+      throw new ErrorMessageException("Configuration file name is empty.");
     }
     if (!f.exists()) {
-      throw new ControlledException(Constants.TOOL_NAME + " configuration file not found: " + f.getPath());
+      throw new ErrorMessageException(Constants.TOOL_NAME + " configuration file not found: " + f.getPath());
     }
     if (!f.isFile()) {
-      throw new ControlledException(Constants.TOOL_NAME + " configuration file '" + f.getPath()
+      throw new ErrorMessageException(Constants.TOOL_NAME + " configuration file '" + f.getPath()
           + "' must be a normal file, not a directory or other special file.");
     }
 
@@ -112,19 +112,19 @@ public class ConfigurationLoader {
 
     } catch (SAXException e) {
       log.log(Level.SEVERE, "Failed to read XML file", e);
-      throw new UncontrolledException("Could not load configuration file [internal XML parser error]", e);
+      throw new FaultException("Could not load configuration file [internal XML parser error]", e);
     } catch (JAXBException e) {
       log.log(Level.SEVERE, "Failed to read XML file", e);
-      throw new UncontrolledException("Could not load configuration file [internal XML parser error]", e);
+      throw new FaultException("Could not load configuration file [internal XML parser error]", e);
     } catch (FileNotFoundException e) {
       log.log(Level.SEVERE, "Failed to read XML file", e);
-      throw new ControlledException(Constants.TOOL_NAME + " configuration file not found: " + f.getPath());
+      throw new ErrorMessageException(Constants.TOOL_NAME + " configuration file not found: " + f.getPath());
     } catch (XMLStreamException e) {
       log.log(Level.SEVERE, "Failed to read XML file", e);
       String message = (e.getLocation() == null ? ""
           : "[line " + e.getLocation().getLineNumber() + ", col " + e.getLocation().getColumnNumber() + "] ")
           + e.getMessage();
-      throw new ControlledException(
+      throw new ErrorMessageException(
           Constants.TOOL_NAME + " configuration file '" + f.getPath() + "' is not well-formed: " + message);
     }
 
@@ -157,9 +157,8 @@ public class ConfigurationLoader {
 
       JDBCTag mst = (JDBCTag) config.getGenerators().getSelectedGeneratorTag();
       if (mst.getDiscover() != null && !config.getFacets().isEmpty()) {
-        throw new ControlledException(config.getSourceLocation(),
-            "The <discover> tag is mutually exclusive with <facet> tags. "
-                + "If you want to use discover you cannot use facets, and vice versa.");
+        throw new ErrorMessageException(config, "The <discover> tag is mutually exclusive with <facet> tags. "
+            + "If you want to use discover you cannot use facets, and vice versa.");
       }
 
       // Complete
@@ -169,27 +168,26 @@ public class ConfigurationLoader {
       return config;
 
     } catch (JAXBException e) {
-      log.log(Level.INFO, "JAXBException", e);
-      throw assembleControlledException(f, validationHandler, e);
+      throw new FaultException("Could not load the configuration file '" + f.getPath() + "'", e);
+//      throw assembleControlledException(f, validationHandler, e);
 
     } catch (InvalidConfigurationFileException e) {
 //      log.log(Level.INFO, "InvalidConfigurationFileException", e);
       SourceLocation loc = e.getTag().getSourceLocation();
 //      log.fine("loc=" + loc);
       if (loc == null) {
-        throw new ControlledException("Invalid configuration file '" + f.getPath() + "': " + e.getMessage());
+        throw new ErrorMessageException("Invalid configuration file '" + f.getPath() + "': " + e.getMessage());
       } else {
-        throw new ControlledException(loc, e.getMessage());
+        throw new ErrorMessageException(e.getTag(), e.getMessage());
       }
 
     } catch (GeneratorNotFoundException e) {
-      log.log(Level.INFO, "GeneratorNotFoundException.", e);
-      throw new ControlledException(e.getMessage());
+      throw new FaultException("Geneator not found", e);
 
-    } catch (Throwable e) {
-      log.log(Level.SEVERE, "Throwable detected.", e);
-      throw new UncontrolledException("Could not load configuration file '" + f.getPath() + "'.", e);
-
+//    } catch (Throwable e) {
+//      log.log(Level.SEVERE, "Throwable detected.", e);
+//      throw new FaultException("Could not load configuration file '" + f.getPath() + "'.", e);
+//
     }
 
   }
@@ -197,26 +195,26 @@ public class ConfigurationLoader {
   // When no hotrod.xml is provided
 
   public static HotRodConfigTag prepareNoConfig(final File projectBaseDir, final File f, final DatabaseAdapter adapter,
-      final LinkedHashSet<String> facetNames, final CatalogSchema currentCS) throws ControlledException {
+      final LinkedHashSet<String> facetNames, final CatalogSchema currentCS) throws ErrorMessageException {
     HotRodConfigTag config = new HotRodConfigTag();
     File parentDir = null;
     try {
       config.validate(projectBaseDir, parentDir, f, adapter, currentCS);
     } catch (InvalidConfigurationFileException e) {
-      throw new ControlledException("No Config Error: " + e.getMessage());
+      throw new ErrorMessageException("No Config Error: " + e.getMessage());
     } catch (GeneratorNotFoundException e) {
-      throw new ControlledException("No Config Error: " + e.getMessage());
+      throw new ErrorMessageException("No Config Error: " + e.getMessage());
     }
     JDBCTag jdbcTag = JDBCTag.getNoConfigTag();
     FileRegistry fileRegistry = new FileRegistry(f);
     try {
       config.validateCommon(config, f, fileRegistry, f, jdbcTag, null, adapter, facetNames, currentCS);
     } catch (InvalidConfigurationFileException e) {
-      throw new ControlledException("No Config Error: " + e.getMessage());
-    } catch (UncontrolledException e) {
-      throw new ControlledException("No Config Error: " + e.getMessage());
+      throw new ErrorMessageException("No Config Error: " + e.getMessage());
+    } catch (FaultException e) {
+      throw new ErrorMessageException("No Config Error: " + e.getMessage());
     } catch (FacetNotFoundException e) {
-      throw new ControlledException("No Config Error: " + e.getMessage());
+      throw new ErrorMessageException("No Config Error: " + e.getMessage());
     }
     return config;
   }
@@ -224,21 +222,21 @@ public class ConfigurationLoader {
   public static HotRodFragmentConfigTag loadFragment(final HotRodConfigTag primaryConfig, final File f,
       final FileRegistry fileRegistry, final JDBCTag jdbcTag, final FragmentTag fragmentTag,
       final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
-      throws UncontrolledException, ControlledException, FacetNotFoundException {
+      throws FaultException, ErrorMessageException, FacetNotFoundException {
 
     // Basic file validation
 
     if (f == null) {
-      throw new ControlledException(fragmentTag.getSourceLocation(), "Configuration file name is empty.");
+      throw new ErrorMessageException(fragmentTag, "Configuration file name is empty.");
     }
     log.fine("-- loading fragment: " + f.getName());
     if (!f.exists()) {
-      throw new ControlledException(fragmentTag.getSourceLocation(),
+      throw new ErrorMessageException(fragmentTag,
           Constants.TOOL_NAME + " configuration file not found: " + f.getPath());
     }
     if (!f.isFile()) {
-      throw new ControlledException(fragmentTag.getSourceLocation(), Constants.TOOL_NAME + " configuration file '"
-          + f.getPath() + "' must be a normal file, not a directory or other special file.");
+      throw new ErrorMessageException(fragmentTag, Constants.TOOL_NAME + " configuration file '" + f.getPath()
+          + "' must be a normal file, not a directory or other special file.");
     }
 
     // Prepare the parser
@@ -266,17 +264,17 @@ public class ConfigurationLoader {
       unmarshaller.setListener(locationListener);
 
     } catch (SAXException e) {
-      throw new UncontrolledException("Could not load configuration file [internal XML parser error]", e);
+      throw new FaultException("Could not load configuration file [internal XML parser error]", e);
     } catch (JAXBException e) {
-      throw new UncontrolledException("Could not load configuration file [internal XML parser error]", e);
+      throw new FaultException("Could not load configuration file [internal XML parser error]", e);
     } catch (FileNotFoundException e) {
-      throw new ControlledException(fragmentTag.getSourceLocation(),
+      throw new ErrorMessageException(fragmentTag,
           Constants.TOOL_NAME + " configuration file not found: " + f.getPath());
     } catch (XMLStreamException e) {
       String message = (e.getLocation() == null ? ""
           : "[line " + e.getLocation().getLineNumber() + ", col " + e.getLocation().getColumnNumber() + "] ")
           + e.getMessage();
-      throw new ControlledException(fragmentTag.getSourceLocation(),
+      throw new ErrorMessageException(fragmentTag,
           Constants.TOOL_NAME + " configuration file '" + f.getPath() + "' is not well-formed: " + message);
     }
 
@@ -295,7 +293,7 @@ public class ConfigurationLoader {
       // Validation (common)
 
       log.fine("--       Registering f=" + f);
-      log.fine("  --     tag: " + fragmentTag.getSourceLocation());
+      log.fine("  --     tag: " + fragmentTag);
       fileRegistry.add(fragmentTag, f);
       log.fine("----2> fileRegistry=" + fileRegistry);
       fragmentConfig.validateCommon(primaryConfig, f, fileRegistry, f, jdbcTag, fragmentConfig, adapter, facetNames,
@@ -311,20 +309,20 @@ public class ConfigurationLoader {
     } catch (InvalidConfigurationFileException e) {
       SourceLocation loc = e.getTag().getSourceLocation();
       if (loc == null) {
-        throw new ControlledException("Invalid configuration file '" + f.getPath() + "': " + e.getMessage());
+        throw new ErrorMessageException("Invalid configuration file '" + f.getPath() + "': " + e.getMessage());
       } else {
-        throw new ControlledException(loc, e.getMessage());
+        throw new ErrorMessageException(loc, e.getMessage());
       }
 
     } catch (FileAlreadyRegisteredException e) {
       log.fine("********** exception in tag: " + e.getContainerTag().getSourceLocation());
-      throw new ControlledException(e.getContainerTag().getSourceLocation(),
+      throw new ErrorMessageException(e.getContainerTag(),
           "Invalid configuration file '" + f.getPath() + "': this fragment file has already been loaded once.");
     }
 
   }
 
-  private static ControlledException assembleControlledException(final File f,
+  private static ErrorMessageException assembleControlledException(final File f,
       final StrictValidationEventHandler validationHandler, final JAXBException e) {
     ValidationEventLocator locator = validationHandler.getLocator();
 
@@ -337,7 +335,7 @@ public class ConfigurationLoader {
           XMLStreamException xe = (XMLStreamException) ue.getCause();
           Location lxe = xe.getLocation();
           location = new SourceLocation(f, lxe.getLineNumber(), lxe.getColumnNumber(), lxe.getCharacterOffset());
-          return new ControlledException(location, xe.getMessage());
+          return new ErrorMessageException(location, xe.getMessage());
         }
       } catch (ClassCastException e2) {
         // Ignore
@@ -347,16 +345,16 @@ public class ConfigurationLoader {
     }
 
     if (e.getMessage() != null) {
-      return new ControlledException(location, e.getMessage());
+      return new ErrorMessageException(location, e.getMessage());
     } else if (e.getCause() != null) {
       try {
         SAXParseException pe = (SAXParseException) e.getCause();
-        return new ControlledException(location, pe.getMessage());
+        return new ErrorMessageException(location, pe.getMessage());
       } catch (ClassCastException e2) {
-        return new ControlledException(location, e.getCause().getMessage());
+        return new ErrorMessageException(location, e.getCause().getMessage());
       }
     } else {
-      return new ControlledException(location, "Invalid configuration file.");
+      return new ErrorMessageException(location, "Invalid configuration file.");
     }
   }
 

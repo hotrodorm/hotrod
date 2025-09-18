@@ -2,15 +2,14 @@ package org.hotrod.api;
 
 import java.io.File;
 import java.util.LinkedHashSet;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.hotrod.BuildInformation;
 import org.hotrod.config.Constants;
 import org.hotrod.config.DisplayMode;
-import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.ErrorMessageException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.Feedback;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.Generator;
@@ -18,7 +17,6 @@ import org.hotrod.generator.HotRodContext;
 import org.hotrod.generator.LiveGenerator;
 import org.hotrod.utils.LocalFileGenerator;
 import org.hotrod.utils.T;
-import org.nocrala.tools.database.tartarus.utils.XUtil;
 
 public class HotRodServices {
 
@@ -53,8 +51,8 @@ public class HotRodServices {
     this.logTimes = logTimes;
   }
 
-  public void generate(final Feedback feedback) throws Exception {
-//    log.info("init");
+  public void generate(final Feedback feedback) throws ErrorMessageException, FaultException {
+    log.fine("init");
 
     feedback.info(Constants.TOOL_NAME + " Generator version " + BuildInformation.VERSION + " (build "
         + BuildInformation.BUILD_ID + ") - Generate");
@@ -97,24 +95,28 @@ public class HotRodServices {
         g.generate();
       }
 
-//      log.fine("Generation complete.");
+      log.fine("Generation complete.");
 
-    } catch (ControlledException e) {
-      if (e.getLocation() == null) {
-        throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code [1]:\n" + e.getMessage());
-      } else {
-        throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code [2]. Invalid configuration in "
-            + e.getLocation().render() + ":\n" + e.getMessage());
-      }
-    } catch (UncontrolledException e) {
-      feedback.error("Technical error found: " + XUtil.abridge(e));
-      throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code [3].");
+//    } catch (ErrorMessageException e) {
+//      if (e.getLocation() == null) {
+//        throw new Exception(Constants.TOOL_NAME + " could not generate the persistence layer [1]:\n" + e.getMessage());
+//      } else {
+//        throw new Exception(
+//            Constants.TOOL_NAME + " could not generate the persistence layer [2]. Invalid configuration in "
+//                + e.getLocation().render() + ":\n" + e.getMessage());
+//      }
+//    } catch (FaultException e) {
+//      feedback.error("Technical error found: " + XUtil.abridge(e));
+//      throw new Exception(Constants.TOOL_NAME + " could not generate the persistence layer [3].");
     } catch (InvalidConfigurationFileException e) {
-      throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code [4]. Invalid configuration in "
-          + e.getTag().getSourceLocation().render() + ":\n" + e.getMessage());
-    } catch (Throwable e) {
-      log.log(Level.SEVERE, "Could not generate persistence layer [5].", e);
-      throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code.", e);
+      throw new ErrorMessageException(
+          Constants.TOOL_NAME + " could not generate the persistence layer [4]. Invalid configuration in "
+              + e.getTag().getSourceLocation().render() + ":\n" + e.getMessage());
+    } catch (RuntimeException e) {
+//      log.log(Level.SEVERE, "Could not generate persistence layer [5].", e);
+      throw new FaultException(Constants.TOOL_NAME + " could not generate the persistence layer.", e);
+//    } catch (Exception e) {
+//      log.log(Level.SEVERE, "Could not generate persistence layer [6].", e);
     }
 
   }

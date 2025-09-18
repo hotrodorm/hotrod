@@ -17,10 +17,11 @@ import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.SelectMethodTag.ResultSetMode;
 import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.exceptions.ErrorMessageException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.InvalidSQLException;
-import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.jdbc.EntityDTOs;
@@ -93,12 +94,25 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
       final HotRodConfigTag config, final SelectGenerationTag selectGenerationTag,
       final ColumnsPrefixGenerator columnsPrefixGenerator, final JDBCTag jdbcTag,
       final TableDataSetMetadata entityMetaData, ExecutorDAOMetadata executorMetaData)
-      throws InvalidIdentifierException, InvalidConfigurationFileException {
+      throws InvalidIdentifierException, InvalidConfigurationFileException, ErrorMessageException {
     this.metadata = metadata;
     this.cr = cr;
     this.jdbcTag = jdbcTag;
+
+    if (entityMetaData == null) {
+      if (executorMetaData == null) {
+        throw new ErrorMessageException(tag,
+            "The Nitro select tag must belong to an entity or to a DAO but does not belong to any of them.");
+      }
+    } else {
+      if (executorMetaData != null) {
+        throw new ErrorMessageException(tag,
+            "The Nitro select tag must belong to an entity or to a DAO and cannot belong to both of them.");
+      }
+    }
     this.entityMetaData = entityMetaData;
     this.executorMetaData = executorMetaData;
+
     this.entityVOs = null;
     this.db = metadata.getJdbcDatabase();
     this.config = config;
@@ -130,7 +144,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   // TODO: Just a marker for phase 1
 
-  public void gatherMetadataPhase1() throws InvalidConfigurationFileException {
+  public void gatherMetadataPhase1() throws FaultException, ErrorMessageException {
 
     if (!this.structuredSelect) {
 
@@ -139,28 +153,21 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
       try {
         this.cr.phase1Flat(getSelectKey(), this.tag, this);
       } catch (InvalidSQLException e) {
-        throw new InvalidConfigurationFileException(this.tag,
-            "Error in " + this.tag.getSourceLocation().render() + ":\n"
-                + "Could not retrieve metadata for <select> tag while creating a temporary SQL view for it.\n" + "* "
-                + e.getCause().getMessage() + "\n" + "* Is the create view SQL code below valid?\n"
-                + "--- begin SQL ---\n" + e.getInvalidSQL() + "\n--- end SQL ---");
+        throw new ErrorMessageException(this.tag,
+            "Could not retrieve metadata for <select>\n" + "* " + e.getCause().getMessage() + "\n"
+                + "* Is the SQL query below valid?\n" + "--- begin SQL ---\n" + e.getInvalidSQL()
+                + "\n--- end SQL ---");
+      } catch (InvalidConfigurationFileException e) {
+        throw new ErrorMessageException(e.getTag(), e.getMessage());
       }
 
     } else {
 
       // Graph columns
 
-      try {
-        log.fine("Phase 1 - method=" + this.getMethod());
-        this.tag.getStructuredColumns().gatherMetadataPhase1(this.tag, this.selectGenerationTag,
-            this.columnsPrefixGenerator, this.cr);
-      } catch (InvalidSQLException e) {
-        throw new InvalidConfigurationFileException(this.tag,
-            "Error in " + this.tag.getSourceLocation().render() + ":\n" + "Could not retrieve metadata for <"
-                + this.tag.getTagName() + "> tag while creating the temporary SQL view for it.\n" + "* "
-                + e.getCause().getMessage() + "\n" + "* Is the create view SQL code below valid?\n"
-                + "--- begin SQL ---\n" + e.getInvalidSQL() + "\n--- end SQL ---");
-      }
+      log.fine("Phase 1 - method=" + this.getMethod());
+      this.tag.getStructuredColumns().gatherMetadataPhase1(this.tag, this.selectGenerationTag,
+          this.columnsPrefixGenerator, this.cr);
 
     }
 
@@ -172,8 +179,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   // TODO: Just a marker for phase 2
 
-  public void gatherMetadataPhase2(final VORegistry voRegistry)
-      throws UncontrolledException, InvalidConfigurationFileException {
+  public void gatherMetadataPhase2(final VORegistry voRegistry) throws FaultException, ErrorMessageException {
 
     if (!this.structuredSelect) {
 
@@ -183,15 +189,13 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
         this.nonStructuredColumns = this.cr.phase2Flat(getSelectKey());
 
       } catch (SQLException e) {
-        throw new UncontrolledException("Could not retrieve metadata for <" + new SelectMethodTag().getTagName()
-            + "> at " + this.tag.getSourceLocation().render(), e);
+        throw new FaultException(this.tag,
+            "Could not retrieve metadata for <" + new SelectMethodTag().getTagName() + ">", e);
       } catch (UnresolvableDataTypeException e) {
-        String msg = "Could not retrieve metadata for <" + new SelectMethodTag().getTagName()
-            + ">: could not find suitable Java type for column '" + e.getColumnMetadata().getName() + "' ";
-        throw new InvalidConfigurationFileException(this.tag, msg);
+        throw new ErrorMessageException(this.tag,
+            "Could not find suitable Java type for column '" + e.getColumnMetadata().getName() + "'");
       } catch (InvalidIdentifierException e) {
-        String msg = "Invalid retrieved column name: " + e.getMessage();
-        throw new InvalidConfigurationFileException(this.tag, msg);
+        throw new ErrorMessageException(this.tag, "Invalid retrieved column name: " + e.getMessage());
       }
 
       List<VOProperty> properties = new ArrayList<VOProperty>();
@@ -214,17 +218,17 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
           log.fine("--> Adding VO: " + vo);
           voRegistry.addVO(vo);
         } catch (VOAlreadyExistsException e) {
-          throw new InvalidConfigurationFileException(this.tag,
+          throw new ErrorMessageException(this.tag,
               "Duplicate VO name '" + vo.getName() + "' in package '" + vo.getClassPackage().getPackage()
                   + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
                   + ".");
         } catch (StructuredVOAlreadyExistsException e) {
-          throw new InvalidConfigurationFileException(this.tag,
+          throw new ErrorMessageException(this.tag,
               "Duplicate VO name '" + vo.getName() + "' in package '" + vo.getClassPackage().getPackage()
                   + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
                   + ".");
         } catch (DuplicatePropertyNameException e) {
-          throw new InvalidConfigurationFileException(e.getInitial().getTag(), e.renderMessage());
+          throw new ErrorMessageException(e.getInitial().getTag(), e.renderMessage());
         }
 
       }
@@ -239,28 +243,20 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
         this.structuredColumns = this.tag.getStructuredColumns().getMetadata();
         this.structuredColumns.registerVOs(this.fragmentPackage, this.modelPackage, voRegistry);
 
-      } catch (InvalidSQLException e) {
-        String msg = "Could not create temporary SQL view to retrieve metadata.\n" + "[ " + e.getMessage() + " ]\n"
-            + "* Do all resulting columns have different and valid names?\n"
-            + "* Is the create view SQL code below valid?\n" + "--- begin SQL ---\n" + e.getInvalidSQL()
-            + "\n--- end SQL ---";
-        throw new InvalidConfigurationFileException(this.tag, msg);
-      } catch (UnresolvableDataTypeException e) {
-        String msg = "Could not retrieve metadata: could not find suitable Java type for column '"
-            + e.getColumnMetadata().getName() + "' ";
-        throw new InvalidConfigurationFileException(this.tag, msg);
       } catch (VOAlreadyExistsException e) {
-        throw new InvalidConfigurationFileException(e.getTag(),
+        throw new ErrorMessageException(e.getTag(),
             "Duplicate VO name '" + e.getThisName() + "' in package '" + modelPackage.getPackage()
                 + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
                 + ".");
       } catch (StructuredVOAlreadyExistsException e) {
-        throw new InvalidConfigurationFileException(e.getThisTag(),
+        throw new ErrorMessageException(e.getThisTag(),
             "Duplicate VO name '" + e.getThisName() + "' in package '" + modelPackage.getPackage()
                 + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
                 + ".");
       } catch (DuplicatePropertyNameException e) {
-        throw new InvalidConfigurationFileException(e.getDuplicate().getTag(), e.renderMessage());
+        throw new ErrorMessageException(e.getDuplicate().getTag(), e.renderMessage());
+      } catch (InvalidConfigurationFileException e) {
+        throw new ErrorMessageException(e.getTag(), e.getMessage());
       }
 
     }
@@ -322,12 +318,9 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   // Other getters
 
-  public TableDataSetMetadata getEntityMetaData() {
-    return entityMetaData;
-  }
-
-  public final ExecutorDAOMetadata getExecutorMetaData() {
-    return executorMetaData;
+  public String getSelectMethodNamespace() {
+    return this.entityMetaData != null ? this.entityMetaData.getId().getCanonicalSQLName()
+        : this.executorMetaData.getJavaClassName();
   }
 
   public String getMethod() {

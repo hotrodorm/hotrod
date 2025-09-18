@@ -23,9 +23,9 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.hotrod.config.AbstractHotRodConfigTag.LocationListener;
-import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.ErrorMessageException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.exceptions.UncontrolledException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.utils.SourceLocation;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
@@ -48,7 +48,7 @@ public class EnabledFKs {
     this.fks = fks;
   }
 
-  public static EnabledFKs loadIfPresent(final File baseDir) throws UncontrolledException, ControlledException {
+  public static EnabledFKs loadIfPresent(final File baseDir) throws FaultException, ErrorMessageException {
 
     // Check if the file is present
 
@@ -91,17 +91,17 @@ public class EnabledFKs {
       unmarshaller.setListener(locationListener);
 
     } catch (SAXException e) {
-      throw new UncontrolledException("Could not load enabled-foreign-keys file [internal XML parser error]", e);
+      throw new FaultException("Could not load enabled-foreign-keys file [internal XML parser error]", e);
     } catch (JAXBException e) {
-      throw new UncontrolledException("Could not load enabled-foreign-keys file [internal XML parser error]", e);
+      throw new FaultException("Could not load enabled-foreign-keys file [internal XML parser error]", e);
     } catch (XMLStreamException e) {
       String message = (e.getLocation() == null ? ""
           : "[line " + e.getLocation().getLineNumber() + ", col " + e.getLocation().getColumnNumber() + "] ")
           + e.getMessage();
-      throw new ControlledException(
+      throw new ErrorMessageException(
           Constants.TOOL_NAME + " configuration file '" + f.getPath() + "' is not well-formed: " + message);
     } catch (FileNotFoundException e) {
-      throw new UncontrolledException("Could not load enabled-foreign-keys file; file '" + f + "' not found", e);
+      throw new FaultException("Could not load enabled-foreign-keys file; file '" + f + "' not found", e);
     }
 
     // Parse the configuration file
@@ -131,16 +131,16 @@ public class EnabledFKs {
       SourceLocation loc = e.getTag().getSourceLocation();
       log.fine("loc=" + loc);
       if (loc == null) {
-        throw new ControlledException("Invalid configuration file '" + f.getPath() + "': " + e.getMessage());
+        throw new ErrorMessageException("Invalid configuration file '" + f.getPath() + "': " + e.getMessage());
       } else {
-        throw new ControlledException(loc, e.getMessage());
+        throw new ErrorMessageException(loc, e.getMessage());
       }
 
     }
 
   }
 
-  private static ControlledException assembleControlledException(final File f,
+  private static ErrorMessageException assembleControlledException(final File f,
       final StrictValidationEventHandler validationHandler, final JAXBException e) {
     ValidationEventLocator locator = validationHandler.getLocator();
 
@@ -153,7 +153,7 @@ public class EnabledFKs {
           XMLStreamException xe = (XMLStreamException) ue.getCause();
           Location lxe = xe.getLocation();
           location = new SourceLocation(f, lxe.getLineNumber(), lxe.getColumnNumber(), lxe.getCharacterOffset());
-          return new ControlledException(location, xe.getMessage());
+          return new ErrorMessageException(location, xe.getMessage());
         }
       } catch (ClassCastException e2) {
         // Ignore
@@ -163,16 +163,16 @@ public class EnabledFKs {
     }
 
     if (e.getMessage() != null) {
-      return new ControlledException(location, e.getMessage());
+      return new ErrorMessageException(location, e.getMessage());
     } else if (e.getCause() != null) {
       try {
         SAXParseException pe = (SAXParseException) e.getCause();
-        return new ControlledException(location, pe.getMessage());
+        return new ErrorMessageException(location, pe.getMessage());
       } catch (ClassCastException e2) {
-        return new ControlledException(location, e.getCause().getMessage());
+        return new ErrorMessageException(location, e.getCause().getMessage());
       }
     } else {
-      return new ControlledException(location, "Invalid configuration file.");
+      return new ErrorMessageException(location, "Invalid configuration file.");
     }
   }
 

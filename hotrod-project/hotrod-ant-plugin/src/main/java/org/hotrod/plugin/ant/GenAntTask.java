@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
-import org.hotrod.plugin.GenOperation;
+import org.hotrod.plugin.GeneratePersistenceLayerOperation;
 
 public class GenAntTask extends Task {
 
@@ -32,7 +32,7 @@ public class GenAntTask extends Task {
     log.fine("init");
 
     try {
-      GenOperation op = new GenOperation(new File("."), this.configfile, this.localproperties, this.jdbcdriverclass,
+      GeneratePersistenceLayerOperation op = new GeneratePersistenceLayerOperation(new File("."), this.configfile, this.localproperties, this.jdbcdriverclass,
           this.jdbcurl, this.jdbcusername, this.jdbcpassword, this.jdbccatalog, this.jdbcschema, this.facets,
           this.display);
       op.execute(new AntFeedback(this));

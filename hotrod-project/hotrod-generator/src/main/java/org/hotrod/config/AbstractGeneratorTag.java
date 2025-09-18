@@ -3,9 +3,9 @@ package org.hotrod.config;
 import java.io.File;
 
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.ErrorMessageException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.exceptions.UncontrolledException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.generator.Feedback;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.HotRodContext;
@@ -32,6 +32,6 @@ public abstract class AbstractGeneratorTag extends AbstractConfigurationTag {
 
   public abstract Generator instantiateGenerator(HotRodContext hc, EnabledFKs enabledFKs, DisplayMode displayMode,
       boolean incrementalMode, Feedback feedback)
-      throws UncontrolledException, ControlledException, InvalidConfigurationFileException;
+      throws FaultException, ErrorMessageException, InvalidConfigurationFileException;
 
 }

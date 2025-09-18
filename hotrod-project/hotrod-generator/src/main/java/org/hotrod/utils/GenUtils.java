@@ -1,7 +1,7 @@
 package org.hotrod.utils;
 
 import org.hotrod.config.Constants;
-import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.ErrorMessageException;
 
 public class GenUtils {
 
@@ -23,12 +23,12 @@ public class GenUtils {
   private static final String S_FLOAT = "Float";
 
   public static String convertPropertyType(final String sourceClass, final String targetClass, final String var)
-      throws ControlledException {
+      throws ErrorMessageException {
     if (sourceClass == null) {
       if (targetClass == null) {
         return var;
       } else {
-        throw new ControlledException("Unrecognized FK data conversion: " + Constants.TOOL_NAME
+        throw new ErrorMessageException("Unrecognized FK data conversion: " + Constants.TOOL_NAME
             + " cannot convert from '" + sourceClass + "' to '" + targetClass + "'.");
       }
     } else {
@@ -59,13 +59,13 @@ public class GenUtils {
         if (FLOAT.equals(sourceClass) || S_FLOAT.equals(sourceClass)) {
           return floatTo(targetClass, var);
         }
-        throw new ControlledException("Unrecognized FK data conversion: " + Constants.TOOL_NAME
+        throw new ErrorMessageException("Unrecognized FK data conversion: " + Constants.TOOL_NAME
             + " cannot convert from '" + sourceClass + "' to '" + targetClass + "'.");
       }
     }
   }
 
-  private static String bigDecimalTo(final String targetClass, final String var) throws ControlledException {
+  private static String bigDecimalTo(final String targetClass, final String var) throws ErrorMessageException {
     if (BIG_DECIMAL.equals(targetClass)) {
       return var;
     }
@@ -90,11 +90,11 @@ public class GenUtils {
     if (FLOAT.equals(targetClass) || S_FLOAT.equals(targetClass)) {
       return "(" + var + " == null) ? null : Float.valueOf(" + var + ".floatValue())";
     }
-    throw new ControlledException("Unrecognized FK data conversion: " + Constants.TOOL_NAME
+    throw new ErrorMessageException("Unrecognized FK data conversion: " + Constants.TOOL_NAME
         + " cannot convert from 'BigDecimal' to '" + targetClass + "'.");
   }
 
-  private static String bigIntegerTo(final String targetClass, final String var) throws ControlledException {
+  private static String bigIntegerTo(final String targetClass, final String var) throws ErrorMessageException {
     if (BIG_DECIMAL.equals(targetClass)) {
       return "(" + var + " == null) ? null : new java.math.BigDecimal(" + var + ")";
     }
@@ -119,11 +119,11 @@ public class GenUtils {
     if (FLOAT.equals(targetClass) || S_FLOAT.equals(targetClass)) {
       return "(" + var + " == null) ? null : Float.valueOf(" + var + ".floatValue())";
     }
-    throw new ControlledException("Unrecognized FK data conversion: " + Constants.TOOL_NAME
+    throw new ErrorMessageException("Unrecognized FK data conversion: " + Constants.TOOL_NAME
         + " cannot convert from 'BigDecimal' to '" + targetClass + "'.");
   }
 
-  private static String longTo(final String targetClass, final String var) throws ControlledException {
+  private static String longTo(final String targetClass, final String var) throws ErrorMessageException {
     if (BIG_DECIMAL.equals(targetClass)) {
       return "(" + var + " == null) ? null : new java.math.BigDecimal(" + var + ")";
     }
@@ -148,11 +148,11 @@ public class GenUtils {
     if (FLOAT.equals(targetClass) || S_FLOAT.equals(targetClass)) {
       return "(" + var + " == null) ? null : Float.valueOf(" + var + ".floatValue())";
     }
-    throw new ControlledException("Unrecognized FK data conversion: " + Constants.TOOL_NAME
+    throw new ErrorMessageException("Unrecognized FK data conversion: " + Constants.TOOL_NAME
         + " cannot convert from 'Long' to '" + targetClass + "'.");
   }
 
-  private static String integerTo(final String targetClass, final String var) throws ControlledException {
+  private static String integerTo(final String targetClass, final String var) throws ErrorMessageException {
     if (BIG_DECIMAL.equals(targetClass)) {
       return "(" + var + " == null) ? null : new java.math.BigDecimal(" + var + ")";
     }
@@ -177,11 +177,11 @@ public class GenUtils {
     if (FLOAT.equals(targetClass) || S_FLOAT.equals(targetClass)) {
       return "(" + var + " == null) ? null : Float.valueOf(" + var + ".floatValue())";
     }
-    throw new ControlledException("Unrecognized FK data conversion: " + Constants.TOOL_NAME
+    throw new ErrorMessageException("Unrecognized FK data conversion: " + Constants.TOOL_NAME
         + " cannot convert from 'Long' to '" + targetClass + "'.");
   }
 
-  private static String shortTo(final String targetClass, final String var) throws ControlledException {
+  private static String shortTo(final String targetClass, final String var) throws ErrorMessageException {
     if (BIG_DECIMAL.equals(targetClass)) {
       return "(" + var + " == null) ? null : new java.math.BigDecimal(" + var + ")";
     }
@@ -206,11 +206,11 @@ public class GenUtils {
     if (FLOAT.equals(targetClass) || S_FLOAT.equals(targetClass)) {
       return "(" + var + " == null) ? null : Float.valueOf(" + var + ".floatValue())";
     }
-    throw new ControlledException("Unrecognized FK data conversion: " + Constants.TOOL_NAME
+    throw new ErrorMessageException("Unrecognized FK data conversion: " + Constants.TOOL_NAME
         + " cannot convert from 'Long' to '" + targetClass + "'.");
   }
 
-  private static String byteTo(final String targetClass, final String var) throws ControlledException {
+  private static String byteTo(final String targetClass, final String var) throws ErrorMessageException {
     if (BIG_DECIMAL.equals(targetClass)) {
       return "(" + var + " == null) ? null : new java.math.BigDecimal(" + var + ")";
     }
@@ -235,11 +235,11 @@ public class GenUtils {
     if (FLOAT.equals(targetClass) || S_FLOAT.equals(targetClass)) {
       return "(" + var + " == null) ? null : Float.valueOf(" + var + ".floatValue())";
     }
-    throw new ControlledException("Unrecognized FK data conversion: " + Constants.TOOL_NAME
+    throw new ErrorMessageException("Unrecognized FK data conversion: " + Constants.TOOL_NAME
         + " cannot convert from 'Long' to '" + targetClass + "'.");
   }
 
-  private static String doubleTo(final String targetClass, final String var) throws ControlledException {
+  private static String doubleTo(final String targetClass, final String var) throws ErrorMessageException {
     if (BIG_DECIMAL.equals(targetClass)) {
       return "(" + var + " == null) ? null : new java.math.BigDecimal(" + var + ")";
     }
@@ -264,7 +264,7 @@ public class GenUtils {
     if (FLOAT.equals(targetClass) || S_FLOAT.equals(targetClass)) {
       return "(" + var + " == null) ? null : Float.valueOf(" + var + ".floatValue())";
     }
-    throw new ControlledException("Unrecognized FK data conversion: " + Constants.TOOL_NAME
+    throw new ErrorMessageException("Unrecognized FK data conversion: " + Constants.TOOL_NAME
         + " cannot convert from 'Long' to '" + targetClass + "'.");
   }
 
@@ -280,7 +280,7 @@ public class GenUtils {
   // Float f = i.floatValue();
   // }
 
-  private static String floatTo(final String targetClass, final String var) throws ControlledException {
+  private static String floatTo(final String targetClass, final String var) throws ErrorMessageException {
     if (BIG_DECIMAL.equals(targetClass)) {
       return "(" + var + " == null) ? null : new java.math.BigDecimal(" + var + ")";
     }
@@ -305,7 +305,7 @@ public class GenUtils {
     if (FLOAT.equals(targetClass) || S_FLOAT.equals(targetClass)) {
       return var;
     }
-    throw new ControlledException("Unrecognized FK data conversion: " + Constants.TOOL_NAME
+    throw new ErrorMessageException("Unrecognized FK data conversion: " + Constants.TOOL_NAME
         + " cannot convert from 'Long' to '" + targetClass + "'.");
   }
 

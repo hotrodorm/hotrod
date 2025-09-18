@@ -25,10 +25,10 @@ import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.exceptions.ErrorMessageException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
-import org.hotrod.exceptions.InvalidSQLException;
-import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.identifiers.Id;
 import org.hotrod.identifiers.ObjectId;
@@ -39,7 +39,6 @@ import org.hotrod.metadata.StructuredColumnMetadata.IdColumnNotFoundException;
 import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VORegistry;
-import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.ColumnsMetadataRetriever;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.hotrod.utils.JDBCTypes;
@@ -93,16 +92,16 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
   private Expressions expressions = new Expressions();
 
-  private transient Metadata metadata;
+  private Metadata metadata;
 
   private String compiledBody;
   private boolean useAllColumns;
 
-  private transient ColumnsMetadataRetriever cmr;
+  private ColumnsMetadataRetriever cmr;
   private String aliasPrefix;
 
-  private transient List<StructuredColumnMetadata> inheritedColumns;
-  private transient List<StructuredColumnMetadata> declaredColumns;
+  private List<StructuredColumnMetadata> inheritedColumns;
+  private List<StructuredColumnMetadata> declaredColumns;
 
   // Constructors
 
@@ -424,7 +423,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
   @Override
   public void gatherMetadataPhase1(final SelectMethodTag selectTag, final SelectGenerationTag selectGenerationTag,
       final ColumnsPrefixGenerator columnsPrefixGenerator, final ColumnsRetriever cr)
-      throws InvalidSQLException, InvalidConfigurationFileException {
+      throws FaultException, ErrorMessageException {
 
     // body
 
@@ -497,8 +496,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
   }
 
   @Override
-  public void gatherMetadataPhase2() throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException,
-      InvalidConfigurationFileException {
+  public void gatherMetadataPhase2() throws FaultException, ErrorMessageException {
 
     // log.info("===========");
     // log.info("=========== VOTag " + this.table);
@@ -519,9 +517,8 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
                 this.inheritedColumns = StructuredColumnMetadata.promote(this.alias, this.tableMetadata.getColumns(),
                     this.aliasPrefix, this.idNames);
               } catch (IdColumnNotFoundException e) {
-                throw new InvalidConfigurationFileException(this,
-                    "Could not find column '" + e.getIdName() + "' on the table '"
-                        + this.tableMetadata.getId().getCanonicalSQLName() + "' as specified on the 'id' attribute.");
+                throw new ErrorMessageException(this, "Could not find column '" + e.getIdName() + "' on the table '"
+                    + this.tableMetadata.getId().getCanonicalSQLName() + "' as specified on the 'id' attribute.");
               }
             } else {
               this.inheritedColumns = StructuredColumnMetadata.promote(this.alias, this.tableMetadata.getColumns(),
@@ -531,8 +528,8 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
           } else { // 1.a.2 Table without a PK
 
             if (requiresIds && this.idNames.isEmpty()) {
-              throw new InvalidConfigurationFileException(this, "Missing 'id' attribute on tag <" + this.getTagName()
-                  + ">.\n" + "When a <" + this.getTagName() + "> uses a table with no PK (the table "
+              throw new ErrorMessageException(this, "Missing 'id' attribute on tag <" + this.getTagName() + ">.\n"
+                  + "When a <" + this.getTagName() + "> uses a table with no PK (the table "
                   + this.tableMetadata.getId().getCanonicalSQLName()
                   + " in this case) and includes other <collection> tags, "
                   + "the 'id' attribute must specify the row-identifying columns for the table (i.e. an acting unique key for the table).");
@@ -541,9 +538,8 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
               this.inheritedColumns = StructuredColumnMetadata.promote(this.alias, this.tableMetadata.getColumns(),
                   this.aliasPrefix, this.idNames);
             } catch (IdColumnNotFoundException e) {
-              throw new InvalidConfigurationFileException(this,
-                  "Could not find column '" + e.getIdName() + "' on the table '"
-                      + this.tableMetadata.getId().getCanonicalSQLName() + "' as specified on the 'id' attribute.");
+              throw new ErrorMessageException(this, "Could not find column '" + e.getIdName() + "' on the table '"
+                  + this.tableMetadata.getId().getCanonicalSQLName() + "' as specified on the 'id' attribute.");
             }
 
           }
@@ -554,17 +550,16 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
           log.fine("this.viewMetadata=" + this.viewMetadata);
 
           if (requiresIds && this.idNames.isEmpty()) {
-            throw new InvalidConfigurationFileException(this, "Missing 'id' attribute on tag <" + this.getTagName()
-                + ">.\n" + "When a <" + this.getTagName() + "> uses a view and includes other <collection> tags, "
+            throw new ErrorMessageException(this, "Missing 'id' attribute on tag <" + this.getTagName() + ">.\n"
+                + "When a <" + this.getTagName() + "> uses a view and includes other <collection> tags, "
                 + "the 'id' attribute must specify the row-identifying columns for the view (i.e. an acting unique key for the view).");
           }
           try {
             this.inheritedColumns = StructuredColumnMetadata.promote(this.alias, this.viewMetadata.getColumns(),
                 this.aliasPrefix, this.idNames);
           } catch (IdColumnNotFoundException e) {
-            throw new InvalidConfigurationFileException(this,
-                "Could not find column '" + e.getIdName() + "' on the view '"
-                    + this.viewMetadata.getId().getCanonicalSQLName() + "' as specified on the 'id' attribute.");
+            throw new ErrorMessageException(this, "Could not find column '" + e.getIdName() + "' on the view '"
+                + this.viewMetadata.getId().getCanonicalSQLName() + "' as specified on the 'id' attribute.");
           }
 
         }
@@ -604,8 +599,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
   }
 
   private List<StructuredColumnMetadata> retrieveSpecificColumns(final TableDataSetMetadata dm,
-      final boolean requiresIds) throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException,
-      InvalidConfigurationFileException {
+      final boolean requiresIds) throws FaultException, ErrorMessageException {
 
     Map<String, ColumnMetadata> baseColumnsByName = new HashMap<String, ColumnMetadata>();
     for (ColumnMetadata cm : dm.getColumns()) {
@@ -615,14 +609,14 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     if (requiresIds) {
       if (dm.getPK() == null && this.idNames.isEmpty()) {
         if (this.tableMetadata != null) {
-          throw new InvalidConfigurationFileException(this, "Missing 'id' attribute on tag <" + this.getTagName()
-              + ">.\n" + "When a <" + this.getTagName() + "> uses a table with no PK (the table "
+          throw new ErrorMessageException(this, "Missing 'id' attribute on tag <" + this.getTagName() + ">.\n"
+              + "When a <" + this.getTagName() + "> uses a table with no PK (the table "
               + this.tableMetadata.getId().getCanonicalSQLName()
               + " in this case) and includes other <collection> tags, "
               + "the 'id' attribute must specify the row-identifying columns for the table (i.e. an acting unique key for the table).");
         } else {
-          throw new InvalidConfigurationFileException(this, "Missing 'id' attribute on tag <" + this.getTagName()
-              + ">.\n" + "When a <" + this.getTagName() + "> uses a view and includes other <collection> tags, "
+          throw new ErrorMessageException(this, "Missing 'id' attribute on tag <" + this.getTagName() + ">.\n"
+              + "When a <" + this.getTagName() + "> uses a view and includes other <collection> tags, "
               + "the 'id' attribute must specify the row-identifying columns for the view (i.e. an acting unique key for the view).");
         }
       }
@@ -631,7 +625,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     if (!this.idNames.isEmpty()) {
       for (String idName : this.idNames) {
         if (!idIsColumn(dm.getColumns(), idName)) {
-          throw new InvalidConfigurationFileException(this,
+          throw new ErrorMessageException(this,
               "Could not find column '" + idName + "' on the "
                   + (this.tableMetadata != null ? "table '" + this.tableMetadata.getId().getCanonicalSQLName()
                       : "view '" + this.viewMetadata.getId().getCanonicalSQLName())
@@ -645,13 +639,12 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     for (StructuredColumnMetadata r : retrievedColumns) {
       ColumnMetadata baseColumn = baseColumnsByName.get(r.getName());
       if (baseColumn == null) {
-        String msg = "Invalid column '" + r.getName() + "' in the body of the <" + this.getTagName() + "> tag at "
-            + super.getSourceLocation().render() + ".\n" + "There's no column '" + r.getName() + "' in the "
+        String msg = "Invalid column '" + r.getName() + "'.\n" + "There's no column '" + r.getName() + "' in the "
             + (this.tableMetadata != null ? "table" : "view") + " '"
             + (this.tableMetadata != null ? this.tableMetadata.getId().getRenderedSQLName()
                 : this.viewMetadata.getId().getRenderedSQLName())
             + "'.";
-        throw new InvalidConfigurationFileException(dm.getDaoTag(), msg);
+        throw new ErrorMessageException(dm.getDaoTag(), msg);
       }
       boolean isId = this.idNames.isEmpty() ? baseColumn.belongsToPK() : columnIsId(baseColumn);
       if (isId) {
@@ -664,14 +657,14 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     return metadata;
   }
 
-  private void validateIdJDBCType(final ColumnMetadata baseColumn) throws InvalidConfigurationFileException {
+  private void validateIdJDBCType(final ColumnMetadata baseColumn) throws ErrorMessageException {
     Integer jdbcType = baseColumn.getDataType();
     if (!VALID_ID_JDBC_TYPES.contains(jdbcType)) {
       List<String> validJdbcTypes = new ArrayList<String>();
       for (Integer t : VALID_ID_JDBC_TYPES) {
         validJdbcTypes.add(SUtil.alignRight("" + t, 7) + " (" + JDBCTypes.codeToName(t) + ")");
       }
-      throw new InvalidConfigurationFileException(this,
+      throw new ErrorMessageException(this,
           "Unsupported JDBC type " + jdbcType + " (" + JDBCTypes.codeToName(jdbcType) + ") on column '"
               + baseColumn.getName() + "' of "
               + (this.tableMetadata != null ? "table '" + this.tableMetadata.getId().getCanonicalSQLName() + "'"

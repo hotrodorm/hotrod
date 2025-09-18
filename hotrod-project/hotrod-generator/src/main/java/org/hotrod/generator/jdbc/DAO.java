@@ -43,11 +43,11 @@ import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.hotrod.dynamicsql.insert.PreparedInsertQuery;
 import org.hotrod.dynamicsql.insert.PrimaryKeyRetrievalMode;
-import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.ErrorMessageException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.exceptions.PersistenceException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.exceptions.StaleDataException;
-import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.DAOType;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
@@ -85,7 +85,6 @@ import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.SelectMethodReturnType;
 import org.hotrod.metadata.SelectParameterMetadata;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
-import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.AbstractClassWriter.ExternalClass;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ClassWriter;
@@ -156,7 +155,7 @@ public class DAO {
   }
 
   public void generate(final FileGenerator fileGenerator, final JDBCGenerator mg)
-      throws UncontrolledException, ControlledException {
+      throws FaultException, ErrorMessageException {
 
     String className = this.getClassName() + ".java";
 
@@ -172,25 +171,12 @@ public class DAO {
       this.w.writeTo(tw);
 
     } catch (IOException e) {
-
-      throw new UncontrolledException(
-          "Could not generate DAO primitives class for DAO defined in the <" + this.tag.getTagName() + "> tag in "
-              + this.tag.getSourceLocation().render() + ":\n" + "could not write to file '" + f.getName() + "'.",
-          e);
-    } catch (UnresolvableDataTypeException e) {
-      throw new ControlledException(
-          "Could not generate DAO primitives class for DAO defined in the <" + this.tag.getTagName() + "> tag in "
-              + this.tag.getSourceLocation().render() + ":\n" + "'could not handle columns '"
-              + e.getColumnMetadata().getName() + "' type: " + e.getColumnMetadata().getTypeName());
-    } catch (SequencesNotSupportedException e) {
-      throw new ControlledException("Could not generate DAO primitives class for DAO defined in the <"
-          + this.tag.getTagName() + "> tag in " + this.tag.getSourceLocation().render() + ":\n" + e.getMessage());
+      throw new FaultException(this.tag, "Could not generate DAO: could not write to file '" + f.getName() + "'.", e);
     }
 
   }
 
-  private void writeBody(final JDBCGenerator g)
-      throws IOException, UnresolvableDataTypeException, ControlledException, SequencesNotSupportedException {
+  private void writeBody(final JDBCGenerator g) throws IOException, ErrorMessageException {
 
     writeClassHeader();
 
@@ -647,7 +633,7 @@ public class DAO {
     w.println("  }");
   }
 
-  private void writeInsert(boolean byExample) throws ControlledException {
+  private void writeInsert(boolean byExample) throws ErrorMessageException {
 
     w.println();
     w.println("  // " + (byExample ? "INSERT BY EXAMPLE" : "INSERT"));
@@ -901,7 +887,7 @@ public class DAO {
   }
 
   private InsertMechanics computeInsertMechanics(List<ColumnMetadata> sequences, List<ColumnMetadata> identities,
-      List<ColumnMetadata> defaults) throws ControlledException {
+      List<ColumnMetadata> defaults) throws ErrorMessageException {
 
     // Identity
 
@@ -922,7 +908,7 @@ public class DAO {
           return new InsertMechanics(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
         }
       } else { // Implement in the future
-        throw new ControlledException(
+        throw new ErrorMessageException(
             "HotRod does not support multiple columns generated as IDENTITY in the same table: table '"
                 + this.metadata.getId().getRenderedSQLName() + "'");
       }
@@ -939,7 +925,7 @@ public class DAO {
           sequenceInlineSQL = this.adapter.renderInlineSequenceOnInsert(cm);
           sequencePreFetchSQL = this.adapter.renderSelectSequence(cm);
         } catch (SequencesNotSupportedException e) {
-          throw new ControlledException(e.getMessage());
+          throw new ErrorMessageException(e.getMessage());
         }
         if (this.adapter.getInsertIntegration().integratesSequencesKeysResultSet()) {
           if (this.adapter.getInsertIntegration().identitiesMustDeclarePKColumns()) {
@@ -964,7 +950,7 @@ public class DAO {
               cm.getId().getJavaMemberName(), null, null, null);
         }
       } else { // Do not implement yet
-        throw new ControlledException("HotRod does not support multiple columns generated using sequences: table '"
+        throw new ErrorMessageException("HotRod does not support multiple columns generated using sequences: table '"
             + this.metadata.getId().getRenderedSQLName() + "'");
       }
     }
@@ -1788,7 +1774,7 @@ public class DAO {
     }
   }
 
-  private void writeSequenceRowReader() throws IOException, SequencesNotSupportedException {
+  private void writeSequenceRowReader() throws IOException {
     w.println();
     w.println("  // SEQUENCE ROW READER");
     w.println();
@@ -1805,10 +1791,15 @@ public class DAO {
     w.println("  };");
   }
 
-  private void writeSelectSequence(final SequenceMethodTag tag, int n)
-      throws IOException, SequencesNotSupportedException {
+  private void writeSelectSequence(final SequenceMethodTag tag, int n) throws IOException, ErrorMessageException {
 
-    String sql = this.adapter.renderSelectSequence(tag.getSequenceId());
+    String sql;
+    try {
+      sql = this.adapter.renderSelectSequence(tag.getSequenceId());
+    } catch (SequencesNotSupportedException e) {
+      throw new ErrorMessageException(this.tag,
+          "Could not generate method for <sequence> tag. Sequences are not supported in this database edition or version.");
+    }
 
     String initializerMethod = "initializeSelectSequence" + n;
     this.initializersInPostConstruct.add(initializerMethod);
@@ -1837,7 +1828,7 @@ public class DAO {
 
   }
 
-  private void writeNitroQuery(QueryMethodTag q, int n) throws ControlledException {
+  private void writeNitroQuery(QueryMethodTag q, int n) throws ErrorMessageException {
 
     String queryName = "query" + n;
     String method = q.getMethod();
@@ -1888,16 +1879,16 @@ public class DAO {
 
   // TODO: Just a marker
 
-  private void writeNitroEntitySelect(SelectMethodMetadata s, int sno) throws ControlledException {
+  private void writeNitroEntitySelect(SelectMethodMetadata s, int sno) throws ErrorMessageException {
     this.writeNitroSelectBody(s, sno, this.metadata.getColumns());
   }
 
-  private void writeNitroFreeSelect(SelectMethodMetadata s, int sno) throws ControlledException {
+  private void writeNitroFreeSelect(SelectMethodMetadata s, int sno) throws ErrorMessageException {
     this.writeNitroSelectBody(s, sno, s.getColumns());
   }
 
   private void writeNitroSelectBody(SelectMethodMetadata s, int sno, List<ColumnMetadata> columns)
-      throws ControlledException {
+      throws ErrorMessageException {
 
     String queryName = "select" + sno;
     String method = s.getMethod();

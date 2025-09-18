@@ -20,10 +20,10 @@ import org.hotrod.config.JDBCTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.ErrorMessageException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
-import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.DAONamespace;
 import org.hotrod.generator.DAONamespace.DuplicateDAOClassException;
@@ -63,8 +63,7 @@ public class Metadata {
 
   // Load metadata
 
-  public void load(final HotRodConfigTag config, final DatabaseLocation dloc, final Connection conn)
-      throws ControlledException, InvalidConfigurationFileException, UncontrolledException {
+  public void load(final HotRodConfigTag config, final Connection conn) throws ErrorMessageException, FaultException {
 
     this.voRegistry = new VORegistry();
 
@@ -105,17 +104,18 @@ public class Metadata {
 
         } catch (UnresolvableDataTypeException e) {
           DriverColumnMetaData m = e.getColumnMetadata();
-          throw new ControlledException("The column '" + m.getName() + "' in the table (" + m.getObjectType() + ") '"
+          throw new ErrorMessageException("The column '" + m.getName() + "' in the table (" + m.getObjectType() + ") '"
               + m.getTable() + "' reports the type " + m.getTypeName()
               + ", and there's no default type for it defined in " + "HotRod's database dialect.\n"
               + "Please specify a type (or a converter) either using a <column> tag "
               + "inside the corresponding <table> tag, " + "or a rule in the <type-solver> tag.");
 
         } catch (VOAlreadyExistsException e) {
-          throw new ControlledException("Duplicate table with name '" + t.getName() + "'.");
+          throw new ErrorMessageException("Duplicate table with name '" + t.getName() + "'.");
         } catch (StructuredVOAlreadyExistsException e) {
-          throw new ControlledException("Duplicate table with name '" + t.getName() + "'.");
-
+          throw new ErrorMessageException("Duplicate table with name '" + t.getName() + "'.");
+        } catch (InvalidConfigurationFileException e) {
+          throw new ErrorMessageException(e.getTag(), "Could not retrieve database meta data");
         }
       }
 
@@ -133,7 +133,7 @@ public class Metadata {
           try {
             EnumDataSetMetadata em = (EnumDataSetMetadata) efk.getRemote().getTableMetadata();
             // it's an enum! An enum cannot be used as the children table
-            throw new ControlledException(em.getDaoTag().getSourceLocation(), "Cannot specify the enum '"
+            throw new ErrorMessageException(em.getDaoTag(), "Cannot specify the enum '"
                 + em.getId().getRenderedSQLName() + "' on the 'many' side of a 1-to-many relationship.");
 
           } catch (ClassCastException e) {
@@ -178,7 +178,7 @@ public class Metadata {
         String canonicalName = tt.getId().getCanonicalSQLName();
         log.fine("t: " + tt.getId());
         if (tablesAndEnumsCanonicalNames.contains(canonicalName)) {
-          throw new ControlledException(tt.getSourceLocation(), "Duplicate database <table> name '" + canonicalName
+          throw new ErrorMessageException(tt, "Duplicate database <table> name '" + canonicalName
               + "'. This table is already defined in the configuration file(s).");
         }
         tablesAndEnumsCanonicalNames.add(canonicalName);
@@ -187,7 +187,7 @@ public class Metadata {
       for (EnumTag et : config.getFacetEnums()) {
         String canonicalName = et.getId().getCanonicalSQLName();
         if (tablesAndEnumsCanonicalNames.contains(canonicalName)) {
-          throw new ControlledException(et.getSourceLocation(), "Duplicate database <enum> name '" + canonicalName
+          throw new ErrorMessageException(et, "Duplicate database <enum> name '" + canonicalName
               + "'. This enum is already defined in the configuration file(s), as a <table> or <enum>.");
         }
         tablesAndEnumsCanonicalNames.add(canonicalName);
@@ -198,7 +198,7 @@ public class Metadata {
       for (ViewTag vt : config.getFacetViews()) {
         String canonicalName = vt.getId().getCanonicalSQLName();
         if (viewsCanonicalNames.contains(canonicalName)) {
-          throw new ControlledException(vt.getSourceLocation(), "Duplicate database <view> name '" + canonicalName
+          throw new ErrorMessageException(vt, "Duplicate database <view> name '" + canonicalName
               + "'. This enum is already defined in the configuration file(s).");
         }
         viewsCanonicalNames.add(canonicalName);
@@ -232,19 +232,18 @@ public class Metadata {
 
         } catch (UnresolvableDataTypeException e) {
           DriverColumnMetaData m = e.getColumnMetadata();
-          throw new ControlledException("The column '" + m.getName() + "' in the view (" + m.getObjectType() + ") '"
+          throw new ErrorMessageException("The column '" + m.getName() + "' in the view (" + m.getObjectType() + ") '"
               + m.getTable() + "' reports the type " + m.getTypeName()
               + ", and there's no default type for it defined in " + "HotRod's database dialect.\n"
               + "Please specify a type (or a converter) either using a <column> tag "
               + "inside the corresponding <view> tag, " + "or a rule in the <type-solver> tag.");
 
         } catch (VOAlreadyExistsException e) {
-          throw new ControlledException(vmd.getDaoTag().getSourceLocation(),
-              "Duplicate view with name '" + v.getName() + "'.");
+          throw new ErrorMessageException(vmd.getDaoTag(), "Duplicate view with name '" + v.getName() + "'.");
         } catch (StructuredVOAlreadyExistsException e) {
-          throw new ControlledException(vmd.getDaoTag().getSourceLocation(),
-              "Duplicate view with name '" + v.getName() + "'.");
-
+          throw new ErrorMessageException(vmd.getDaoTag(), "Duplicate view with name '" + v.getName() + "'.");
+        } catch (InvalidConfigurationFileException e) {
+          throw new ErrorMessageException(e.getTag(), "Could not retrieve database meta data");
         }
       }
 
@@ -256,7 +255,7 @@ public class Metadata {
         try {
           dm = new ExecutorDAOMetadata(tag, adapter, config, tag.getFragmentConfig());
         } catch (InvalidIdentifierException e) {
-          throw new ControlledException(tag.getSourceLocation(),
+          throw new ErrorMessageException(tag,
               "Invalid DAO with namename '" + tag.getJavaClassName() + "': " + e.getMessage());
         }
         this.executors.add(dm);
@@ -272,47 +271,30 @@ public class Metadata {
       try {
         config.validateAgainstDatabase(this, conn, adapter);
       } catch (InvalidConfigurationFileException e) {
-        log.log(Level.SEVERE, "Invalid configuration file", e);
-        throw new ControlledException(e.getTag().getSourceLocation(), e.getMessage());
+        throw new ErrorMessageException(e.getTag(), e.getMessage());
       }
       // }
 
       // Prepare <select> methods metadata - phase 1
 
       for (TableDataSetMetadata tm : this.tables) {
-        try {
-          tm.gatherSelectsMetadataPhase1(this, cr, jdbcTag);
-        } catch (InvalidConfigurationFileException e) {
-          throw new ControlledException(e.getTag().getSourceLocation(), e.getMessage());
-        }
+        tm.gatherSelectsMetadataPhase1(this, cr, jdbcTag);
       }
 
       for (TableDataSetMetadata vm : this.views) {
-        try {
-          vm.gatherSelectsMetadataPhase1(this, cr, jdbcTag);
-        } catch (InvalidConfigurationFileException e) {
-          throw new ControlledException(e.getTag().getSourceLocation(), e.getMessage());
-        }
+        vm.gatherSelectsMetadataPhase1(this, cr, jdbcTag);
       }
 
       for (TableDataSetMetadata em : this.enums) {
-        try {
-          em.gatherSelectsMetadataPhase1(this, cr, jdbcTag);
-        } catch (InvalidConfigurationFileException e) {
-          throw new ControlledException(e.getTag().getSourceLocation(), e.getMessage());
-        }
+        em.gatherSelectsMetadataPhase1(this, cr, jdbcTag);
       }
 
       for (ExecutorDAOMetadata dm : this.executors) {
-        try {
-          dm.gatherSelectsMetadataPhase1(this, cr, jdbcTag);
-        } catch (InvalidConfigurationFileException e) {
-          throw new ControlledException(e.getTag().getSourceLocation(), e.getMessage());
-        }
+        dm.gatherSelectsMetadataPhase1(this, cr, jdbcTag);
       }
 
     } catch (SQLException e) {
-      throw new UncontrolledException("Could not retrieve database metadata.", e);
+      throw new FaultException("Could not retrieve database metadata.", e);
 
     } finally {
       if (conn != null) {
@@ -357,7 +339,7 @@ public class Metadata {
       }
 
     } catch (InvalidConfigurationFileException e) {
-      throw new ControlledException(e.getTag().getSourceLocation(), e.getMessage());
+      throw new ErrorMessageException(e.getTag(), e.getMessage());
     } finally {
       log.fine("Closing connection (selects)...");
       try {
@@ -377,11 +359,11 @@ public class Metadata {
       validateDAONamesAndMethods(config);
 
     } catch (DuplicateDAOClassException e) {
-      throw new ControlledException(
+      throw new ErrorMessageException(
           "Duplicate DAO class name '" + e.getClassName() + "' on " + e.getType() + " '" + e.getName()
               + "'. There's another " + e.getType() + " with the same class name (either specified or computed).");
     } catch (DuplicateDAOClassMethodException e) {
-      throw new ControlledException("Duplicate method name '" + e.getMethodName() + "' (on DAO class '"
+      throw new ErrorMessageException("Duplicate method name '" + e.getMethodName() + "' (on DAO class '"
           + e.getClassName() + "') for the " + e.getType() + " '" + e.getName() + "'. Please consider method names "
           + "may have been specified (as in <update> tags) "
           + "or may have been computed based on the SQL names (as in the <sequence> tag).");

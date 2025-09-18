@@ -9,8 +9,8 @@ import java.util.logging.Logger;
 import org.hotrod.config.Constants;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.JDBCTag;
-import org.hotrod.exceptions.ControlledException;
-import org.hotrod.exceptions.UncontrolledException;
+import org.hotrod.exceptions.ErrorMessageException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.generator.DAOType;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
@@ -63,7 +63,7 @@ public class Layout {
 
   // Getters
 
-  public void generate(final FileGenerator fileGenerator) throws UncontrolledException, ControlledException {
+  public void generate(final FileGenerator fileGenerator) throws FaultException, ErrorMessageException {
 
     String className = this.getClassName() + ".java";
     File dir = this.jdbcTag.getLayoutPackageDir(this.fragmentPackage);
@@ -90,10 +90,10 @@ public class Layout {
       this.w.writeTo(tw);
 
     } catch (IOException e) {
-      throw new UncontrolledException(
+      throw new FaultException(
           "Could not generate DAO primitives class: could not write to file '" + f.getName() + "'.", e);
     } catch (UnresolvableDataTypeException e) {
-      throw new ControlledException("Could not generate DAO primitives for table '" + e.getColumnMetadata().getTable()
+      throw new ErrorMessageException("Could not generate DAO primitives for table '" + e.getColumnMetadata().getTable()
           + "'. Could not handle columns '" + e.getColumnMetadata().getName() + "' type: "
           + e.getColumnMetadata().getTypeName());
     }

@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.JDBCTag;
 import org.hotrod.config.SelectMethodTag.ResultSetMode;
-import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.ErrorMessageException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.metadata.VOMetadata.DuplicatePropertyNameException;
 import org.hotrod.metadata.VOMetadata.VOMember;
@@ -37,7 +37,7 @@ public class SelectMethodReturnType implements Serializable {
   private ResultSetMode mode;
 
   public SelectMethodReturnType(final SelectMethodMetadata sm, final ClassPackage fragmentPackage,
-      final AbstractConfigurationTag tag, final JDBCTag jdbcTag) throws InvalidConfigurationFileException {
+      final AbstractConfigurationTag tag, final JDBCTag jdbcTag) throws ErrorMessageException {
 
     this.sm = sm;
     this.fragmentPackage = fragmentPackage;
@@ -66,7 +66,7 @@ public class SelectMethodReturnType implements Serializable {
             m = new VOMember(vo.getProperty(), vo.getClassPackage(), vo.getName(), vo.getTag());
           } catch (InvalidIdentifierException e) {
             String msg = "Invalid property '" + vo.getProperty() + "':" + e.getMessage();
-            throw new InvalidConfigurationFileException(tag, msg);
+            throw new ErrorMessageException(tag, msg);
           }
           associations.add(m);
         }

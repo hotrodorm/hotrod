@@ -8,10 +8,10 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.ErrorMessageException;
 import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.exceptions.UncontrolledException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.utils.FileRegistry;
 import org.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.CatalogSchema;
@@ -50,7 +50,7 @@ public class FragmentTag extends AbstractConfigurationTag {
   public void validate(final HotRodConfigTag primaryConfig, final File parentDir, final FileRegistry fileRegistry,
       final File parentFile, final JDBCTag jdbcTag, final DatabaseAdapter adapter,
       final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
-      throws InvalidConfigurationFileException, ControlledException, UncontrolledException, FacetNotFoundException {
+      throws InvalidConfigurationFileException, ErrorMessageException, FaultException, FacetNotFoundException {
 
     log.fine("Will load fragment: this.filename=" + this.filename);
 
@@ -80,7 +80,7 @@ public class FragmentTag extends AbstractConfigurationTag {
 
   public void load(final HotRodConfigTag primaryConfig, final FileRegistry fileRegistry, final JDBCTag jdbcTag,
       final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
-      throws UncontrolledException, ControlledException, FacetNotFoundException {
+      throws FaultException, ErrorMessageException, FacetNotFoundException {
     log.fine("@@@ Will load fragment '" + this.f.getName() + "' -- at " + this.getSourceLocation());
     this.fragmentConfig = ConfigurationLoader.loadFragment(primaryConfig, this.f, fileRegistry, jdbcTag, this, adapter,
         facetNames, currentCS);

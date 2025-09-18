@@ -13,15 +13,14 @@ import java.util.logging.Logger;
 import org.hotrod.BuildInformation;
 import org.hotrod.config.Constants;
 import org.hotrod.config.DisplayMode;
-import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.ErrorMessageException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.Feedback;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.HotRodContext;
 import org.hotrod.utils.SUtil;
 import org.hotrod.utils.T;
-import org.nocrala.tools.database.tartarus.utils.XUtil;
 
 public abstract class AbstractExportColumnsOperation {
 
@@ -95,16 +94,16 @@ public abstract class AbstractExportColumnsOperation {
 
       feedback.info("Column export saved to: " + this.exportFile);
 
-    } catch (ControlledException e) {
-      if (e.getLocation() == null) {
-        throw new Exception(Constants.TOOL_NAME + " could not load the configuration:\n" + e.getMessage());
-      } else {
-        throw new Exception(Constants.TOOL_NAME + " could not load the configuration. Invalid configuration in "
-            + e.getLocation().render() + ":\n" + e.getMessage());
-      }
-    } catch (UncontrolledException e) {
-      feedback.error("Technical error found: " + XUtil.abridge(e));
-      throw new Exception(Constants.TOOL_NAME + " could not load the configuration.");
+//    } catch (ErrorMessageException e) {
+//      if (e.getLocation() == null) {
+//        throw new Exception(Constants.TOOL_NAME + " could not load the configuration:\n" + e.getMessage());
+//      } else {
+//        throw new Exception(Constants.TOOL_NAME + " could not load the configuration. Invalid configuration in "
+//            + e.getLocation().render() + ":\n" + e.getMessage());
+//      }
+//    } catch (FaultException e) {
+//      feedback.error("Technical error found: " + XUtil.abridge(e));
+//      throw new Exception(Constants.TOOL_NAME + " could not load the configuration.");
     } catch (InvalidConfigurationFileException e) {
       throw new Exception(Constants.TOOL_NAME + " could not load the configuration. Invalid configuration in "
           + e.getTag().getSourceLocation().render() + ":\n" + e.getMessage());
@@ -115,7 +114,7 @@ public abstract class AbstractExportColumnsOperation {
 
   }
 
-  protected abstract void exportColumns(final Generator g) throws IOException;
+  protected abstract void exportColumns(final Generator g) throws ErrorMessageException, FaultException;
 
   // Validation
 

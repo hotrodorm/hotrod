@@ -19,9 +19,9 @@ import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
 import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.exceptions.ErrorMessageException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.exceptions.InvalidSQLException;
-import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.metadata.Metadata;
@@ -29,7 +29,6 @@ import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.StructuredColumnsMetadata;
 import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.metadata.VOMetadata;
-import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.hotrod.utils.SUtil;
@@ -237,7 +236,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   @Override
   public void gatherMetadataPhase1(final SelectMethodTag selectTag, final SelectGenerationTag selectGenerationTag,
       final ColumnsPrefixGenerator columnsPrefixGenerator, final ColumnsRetriever cr)
-      throws InvalidSQLException, InvalidConfigurationFileException {
+      throws ErrorMessageException, FaultException {
 
     for (VOTag vo : this.vos) {
       vo.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, cr);
@@ -248,8 +247,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   }
 
   @Override
-  public void gatherMetadataPhase2() throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException,
-      InvalidConfigurationFileException {
+  public void gatherMetadataPhase2() throws ErrorMessageException, FaultException {
 
     // Retrieve
 
@@ -262,7 +260,11 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
     List<VOMetadata> vos = new ArrayList<VOMetadata>();
     for (VOTag t : this.vos) {
-      vos.add(t.getMetadata(this.fragmentConfig, this.jdbcTag));
+      try {
+        vos.add(t.getMetadata(this.fragmentConfig, this.jdbcTag));
+      } catch (InvalidConfigurationFileException e) {
+        throw new ErrorMessageException(this.jdbcTag, e.getMessage());
+      }
     }
 
     ClassPackage classPackage = getVOClassPackage(this.jdbcTag, this.fragmentConfig);

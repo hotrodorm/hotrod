@@ -11,6 +11,8 @@ import java.util.logging.Logger;
 
 import org.hotrod.BuildInformation;
 import org.hotrod.config.Constants;
+import org.hotrod.exceptions.ErrorMessageException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.generator.Generator;
 import org.nocrala.tools.texttablefmt.BorderStyle;
 import org.nocrala.tools.texttablefmt.CellStyle;
@@ -35,7 +37,7 @@ public class ExportColumnsToTXTOperation extends AbstractExportColumnsOperation 
   }
 
   @Override
-  protected void exportColumns(final Generator g) throws IOException {
+  protected void exportColumns(final Generator g) throws ErrorMessageException, FaultException {
     LinkedHashSet<String> nativeNames = new LinkedHashSet<>();
 
 //    log.info("g=" + g);
@@ -138,6 +140,8 @@ public class ExportColumnsToTXTOperation extends AbstractExportColumnsOperation 
       }
 
       w.write("\n");
+    } catch (IOException e) {
+      throw new FaultException("Could not generate TXT file '" + this.exportFile + "'", e);
     }
 
   }

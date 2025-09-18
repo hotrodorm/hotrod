@@ -218,7 +218,8 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
     this.schema = null;
     this.ordinal = colIndex;
     this.columnName = rm.getColumnLabel(colIndex);
-    this.tableName = dataSet.getExecutorMetaData().getJavaClassName() + "." + selectName;
+
+    this.tableName = dataSet.getSelectMethodNamespace() + "." + selectName;
 
     this.tag = columnTag;
     if (this.tag == null || this.tag.getJavaName() == null) {

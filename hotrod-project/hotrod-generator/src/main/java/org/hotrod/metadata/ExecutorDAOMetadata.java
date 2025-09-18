@@ -14,9 +14,10 @@ import org.hotrod.config.QueryMethodTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.exceptions.ErrorMessageException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
-import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.SelectMetadataCache;
@@ -85,7 +86,7 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
   // Select Methods meta data gathering
 
   public boolean gatherSelectsMetadataPhase1(final Metadata metadata, final ColumnsRetriever cr, final JDBCTag jdbcTag)
-      throws InvalidConfigurationFileException {
+      throws FaultException, ErrorMessageException {
     this.selectsMetadata = new ArrayList<SelectMethodMetadata>();
     boolean needsToRetrieveMetadata = false;
     for (SelectMethodTag selectTag : this.selects) {
@@ -105,7 +106,9 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
             this);
       } catch (InvalidIdentifierException e) {
         String msg = "Invalid method name '" + selectTag.getMethod() + "': " + e.getMessage();
-        throw new InvalidConfigurationFileException(selectTag, msg);
+        throw new ErrorMessageException(selectTag, msg);
+      } catch (InvalidConfigurationFileException e) {
+        throw new ErrorMessageException(e.getTag(), e.getMessage());
       }
       this.selectsMetadata.add(sm);
       sm.gatherMetadataPhase1();
@@ -115,8 +118,7 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
     return needsToRetrieveMetadata;
   }
 
-  public void gatherSelectsMetadataPhase2(final VORegistry voRegistry)
-      throws UncontrolledException, InvalidConfigurationFileException {
+  public void gatherSelectsMetadataPhase2(final VORegistry voRegistry) throws FaultException, ErrorMessageException {
     for (SelectMethodMetadata sm : this.selectsMetadata) {
       if (!sm.metadataComplete()) {
         sm.gatherMetadataPhase2(voRegistry);

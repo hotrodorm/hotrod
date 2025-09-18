@@ -15,10 +15,10 @@ import org.hotrod.config.JDBCTag;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.database.DatabaseAdapter.UnescapedSQLCase;
+import org.hotrod.exceptions.ErrorMessageException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
-import org.hotrod.exceptions.InvalidSQLException;
-import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.Metadata;
@@ -80,7 +80,7 @@ public class Expressions implements ColumnsProvider, Serializable {
   @Override
   public void gatherMetadataPhase1(final SelectMethodTag selectTag, final SelectGenerationTag selectGenerationTag,
       final ColumnsPrefixGenerator columnsPrefixGenerator, final ColumnsRetriever cr)
-      throws InvalidSQLException, InvalidConfigurationFileException {
+      throws ErrorMessageException, FaultException {
     log.fine("this=" + this + " - this.expressions.isEmpty()=" + this.expressions.isEmpty());
     if (this.expressions.isEmpty()) {
       this.columnsRetriever = null;
@@ -115,8 +115,7 @@ public class Expressions implements ColumnsProvider, Serializable {
   }
 
   @Override
-  public void gatherMetadataPhase2() throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException,
-      InvalidConfigurationFileException {
+  public void gatherMetadataPhase2() throws ErrorMessageException, FaultException {
     log.fine("this.columnsRetriever=" + this.columnsRetriever);
     if (this.columnsRetriever != null) {
       List<StructuredColumnMetadata> cms = this.columnsRetriever.retrieve();
@@ -136,8 +135,11 @@ public class Expressions implements ColumnsProvider, Serializable {
         try {
           cm = StructuredColumnMetadata.applyColumnTag(cm, ct, tag, this.metadata.getAdapter());
         } catch (InvalidIdentifierException e) {
-          String msg = "Invalid name for column '" + cm.getName() + tag.getClassName() + "': " + e.getMessage();
-          throw new InvalidConfigurationFileException(tag, msg);
+          throw new ErrorMessageException(tag,
+              "Invalid name for column '" + cm.getName() + tag.getClassName() + "': " + e.getMessage());
+        } catch (UnresolvableDataTypeException e) {
+          throw new ErrorMessageException(tag,
+              "Could not resolve data type for column '" + cm.getName() + tag.getClassName() + "': " + e.getMessage());
         }
 
         boolean isId = false;

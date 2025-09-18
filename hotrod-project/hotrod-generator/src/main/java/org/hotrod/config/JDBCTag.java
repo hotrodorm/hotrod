@@ -14,10 +14,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.ErrorMessageException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidPackageException;
-import org.hotrod.exceptions.UncontrolledException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.generator.Feedback;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.HotRodContext;
@@ -290,7 +290,7 @@ public class JDBCTag extends AbstractGeneratorTag {
   @Override
   public Generator instantiateGenerator(final HotRodContext hc, final EnabledFKs enabledFKs,
       final DisplayMode displayMode, final boolean incrementalMode, final Feedback feedback)
-      throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
+      throws FaultException, ErrorMessageException, InvalidConfigurationFileException {
     return new JDBCGenerator(hc, enabledFKs, displayMode, incrementalMode, feedback);
   }
 

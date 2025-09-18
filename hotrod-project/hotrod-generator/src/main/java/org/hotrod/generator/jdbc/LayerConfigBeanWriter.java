@@ -11,8 +11,8 @@ import javax.sql.DataSource;
 import org.hotrod.config.JDBCTag;
 import org.hotrod.config.TypeSolverTag;
 import org.hotrod.config.TypeSolverWhenTag;
-import org.hotrod.exceptions.ControlledException;
-import org.hotrod.exceptions.UncontrolledException;
+import org.hotrod.exceptions.ErrorMessageException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.livesql.LayerConfiguration;
@@ -56,7 +56,7 @@ public class LayerConfigBeanWriter {
   }
 
   public void generate(final FileGenerator fileGenerator, final JDBCGenerator mg)
-      throws UncontrolledException, ControlledException {
+      throws FaultException, ErrorMessageException {
 
     File dir = this.jdbcTag.getLayerPackageDir();
 
@@ -81,7 +81,7 @@ public class LayerConfigBeanWriter {
       w.writeTo(tw);
 
     } catch (IOException e) {
-      throw new UncontrolledException("Could not generate LayerConfig class", e);
+      throw new FaultException("Could not generate LayerConfig class", e);
     }
 
   }

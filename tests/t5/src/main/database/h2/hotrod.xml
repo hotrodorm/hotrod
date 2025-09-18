@@ -28,7 +28,7 @@
     class="app.CoinTypeConverter" />
 
   <table name="product">
-    <column name="pid_product" sequence="seq_product" />
+    <column name="pid_prdoduct" sequence="seq_product" />
   </table>
 
 <!-- 

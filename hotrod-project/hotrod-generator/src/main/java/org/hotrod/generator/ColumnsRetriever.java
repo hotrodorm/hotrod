@@ -12,7 +12,7 @@ import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.InvalidSQLException;
-import org.hotrod.exceptions.UncontrolledException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
@@ -34,7 +34,7 @@ public interface ColumnsRetriever extends AutoCloseable {
 
   List<StructuredColumnMetadata> phase2Structured(String key, SelectMethodTag selectTag, String aliasPrefix,
       String entityPrefix, ColumnsProvider columnsProvider)
-      throws UnresolvableDataTypeException, InvalidConfigurationFileException, UncontrolledException;
+      throws UnresolvableDataTypeException, InvalidConfigurationFileException, FaultException;
 
   static ColumnsRetriever getInstance(final HotRodConfigTag config, final DatabaseLocation dloc,
       final DatabaseAdapter adapter, final JdbcDatabase db, final Connection conn) throws SQLException {

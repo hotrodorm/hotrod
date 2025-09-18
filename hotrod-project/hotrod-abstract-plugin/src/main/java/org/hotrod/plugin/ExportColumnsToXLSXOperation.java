@@ -18,6 +18,8 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hotrod.BuildInformation;
 import org.hotrod.config.Constants;
+import org.hotrod.exceptions.ErrorMessageException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.generator.Generator;
 
 public class ExportColumnsToXLSXOperation extends AbstractExportColumnsOperation {
@@ -37,7 +39,7 @@ public class ExportColumnsToXLSXOperation extends AbstractExportColumnsOperation
   }
 
   @Override
-  protected void exportColumns(final Generator g) throws IOException {
+  protected void exportColumns(final Generator g) throws ErrorMessageException, FaultException {
     LinkedHashSet<String> nativeNames = new LinkedHashSet<>();
     g.getConfig().getTypeSolverTag().getRetrievedColumns().stream().forEach(c -> {
       if (c.getNative() != null) {
@@ -185,6 +187,8 @@ public class ExportColumnsToXLSXOperation extends AbstractExportColumnsOperation
 
       workbook.write(os);
 
+    } catch (IOException e) {
+      throw new FaultException("Could not generate XLSX file '" + this.exportFile + "'", e);
     }
 
   }

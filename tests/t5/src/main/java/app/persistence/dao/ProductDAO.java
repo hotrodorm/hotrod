@@ -89,17 +89,15 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     public Product readRowFrom(ResultSet rs, Connection conn) throws SQLException {
       Product row = applicationContext.getBean(Product.class);
 
-      Long col1 = rs.getLong("PID_proDUCT"); // PID_proDUCT
-      if (rs.wasNull())
-        col1 = null;
+      Long col1 = rs.getLong("PID_PRODUCT"); // PID_PRODUCT
+      if (rs.wasNull()) col1 = null;
       row.setPidProduct(col1);
 
       String col2 = rs.getString("TYPE"); // TYPE
       row.setType(col2);
 
       Integer col3 = rs.getInt("SHIPPING"); // SHIPPING
-      if (rs.wasNull())
-        col3 = null;
+      if (rs.wasNull()) col3 = null;
       row.setShipping(col3);
 
       return row;
@@ -119,8 +117,8 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   public Product parseRow(Map<String, Object> row, String prefix, String suffix) {
     Product m = applicationContext.getBean(Product.class);
-    String p = prefix == null ? "" : prefix;
-    String s = suffix == null ? "" : suffix;
+    String p = prefix == null ? "": prefix;
+    String s = suffix == null ? "": suffix;
     m.setPidProduct(CastUtil.toLong((Number) row.get(p + "pidProduct" + s)));
     m.setType((String) row.get(p + "type" + s));
     m.setShipping(CastUtil.toInteger((Number) row.get(p + "shipping" + s)));
@@ -161,7 +159,6 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   public Product clone(ProductLayout layout) {
     Product m = this.applicationContext.getBean(Product.class);
-//    Product m = new Product();
     m.setPidProduct(layout.getPidProduct());
     m.setType(layout.getType());
     m.setShipping(layout.getShipping());
@@ -173,14 +170,18 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   private DynamicSelectQuery selectByPrimaryKey;
 
   private void initializeSelectbyprimarykey() {
-    this.selectByPrimaryKey = dyn.literaln("SELECT").literaln("  \"PID_proDUCT\",").literaln("  type,")
-        .literaln("  shipping").literaln("FROM product").literaln("\nWHERE " + "\"PID_proDUCT\" = ")
-        .parameter("f.pidProduct").endSelectQuery();
+    this.selectByPrimaryKey = dyn
+      .literaln("SELECT")
+      .literaln("  pid_product,")
+      .literaln("  type,")
+      .literaln("  shipping")
+      .literaln("FROM product")
+      .literaln("\nWHERE " + "pid_product = ").parameter("f.pidProduct")
+      .endSelectQuery();
   }
 
   public Product select(Long pidProduct) {
-    if (pidProduct == null)
-      return null;
+    if (pidProduct == null) return null;
     Product filter = new Product();
     filter.setPidProduct(pidProduct);
     Parameters params = this.dyn.newParameters();
@@ -189,10 +190,8 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       List<Product> rows = preparedQuery.execute(conn);
-      if (rows.size() == 0)
-        return null;
-      if (rows.size() == 1)
-        return rows.get(0);
+      if (rows.size() == 0) return null;
+      if (rows.size() == 1) return rows.get(0);
       throw new PersistenceException("A single row at most was expected but received " + rows.size() + " rows.");
     } catch (SQLException e) {
       throw new PersistenceException(e);
@@ -204,11 +203,19 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   private DynamicSelectQuery selectByExample;
 
   private void initializeSelectbyexample() {
-    this.selectByExample = dyn.literaln("SELECT").literaln("  \"PID_proDUCT\",").literaln("  type,")
-        .literaln("  shipping").literaln("FROM product").where("AND").if_("f.pidProduct != null")
-        .literal("\"PID_proDUCT\" = ").parameter("f.pidProduct").endif().if_("f.type != null").literal("type = ")
-        .parameter("f.type").endif().if_("f.shipping != null").literal("shipping = ").parameter("f.shipping").endif()
-        .endwhere().parameterInjection("ordering").endSelectQuery();
+    this.selectByExample = dyn
+      .literaln("SELECT")
+      .literaln("  pid_product,")
+      .literaln("  type,")
+      .literaln("  shipping")
+      .literaln("FROM product")
+      .where("AND")
+        .if_("f.pidProduct != null").literal("pid_product = ").parameter("f.pidProduct").endif()
+        .if_("f.type != null").literal("type = ").parameter("f.type").endif()
+        .if_("f.shipping != null").literal("shipping = ").parameter("f.shipping").endif()
+      .endwhere()
+      .parameterInjection("ordering")
+      .endSelectQuery();
   }
 
   public List<Product> select(ProductLayout filter, ProductOrderBy... orderBies) {
@@ -237,11 +244,18 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   private DynamicInsertQuery insert;
 
   private void initializeInsert() {
-    this.insert = dyn.literaln("INSERT INTO product (").literaln("  \"PID_proDUCT\",").literaln("  type,")
-        .literaln("  shipping").literaln(")").literaln("VALUES(").literal("  ").parameterUpdatable("l.pidProduct")
-        .literaln(",").literal("  ").parameterNullable("l.type", Types.VARCHAR).literaln(",").literal("  ")
-        .parameterNullable("l.shipping", Types.NUMERIC).literal(")").endInsertQuery(
-            PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH, "SELECT seq_product.NEXTVAL FROM DUAL", "l.pidProduct");
+    this.insert = dyn
+      .literaln("INSERT INTO product (")
+      .literaln("  pid_product,")
+      .literaln("  type,")
+      .literaln("  shipping")
+      .literaln(")")
+      .literaln("VALUES(")
+      .literal("  NEXT VALUE FOR seq_product").literaln(",")
+      .literal("  ").parameterNullable("l.type", Types.VARCHAR).literaln(",")
+      .literal("  ").parameterNullable("l.shipping", Types.INTEGER)
+      .literal(")")
+      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET);
   }
 
   public Product insert(ProductLayout layout) {
@@ -264,13 +278,18 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   private DynamicInsertQuery insertByExample;
 
   private void initializeInsertbyexample() {
-    this.insertByExample = dyn.literaln("INSERT INTO product (").if_("l.pidProduct != null")
-        .literal("\"PID_proDUCT\",\n").endif().if_("l.type != null").literal("type,\n").endif()
-        .if_("l.shipping != null").literal("shipping\n").endif().literaln(")").literaln("VALUES(")
-        .if_("l.pidProduct != null").parameter("l.pidProduct").literal(", ").endif().if_("l.type != null")
-        .parameter("l.type").literal(", ").endif().if_("l.shipping != null").parameter("l.shipping").endif()
-        .literal(")").endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH, "SELECT seq_product.NEXTVAL FROM DUAL",
-            "l.pidProduct");
+    this.insertByExample = dyn
+      .literaln("INSERT INTO product (")
+      .if_("l.pidProduct != null").literal("pid_product,\n").endif()
+      .if_("l.type != null").literal("type,\n").endif()
+      .if_("l.shipping != null").literal("shipping\n").endif()
+      .literaln(")")
+      .literaln("VALUES(")
+      .if_("l.pidProduct != null").parameter("l.pidProduct").literal(", ").endif()
+      .if_("l.type != null").parameter("l.type").literal(", ").endif()
+      .if_("l.shipping != null").parameter("l.shipping").endif()
+      .literal(")")
+      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET);
   }
 
   public Product insertByExample(ProductLayout layout) {
@@ -293,16 +312,18 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   private DynamicModificationQuery updateByPK;
 
   private void initializeUpdatebypk() {
-    this.updateByPK = dyn.literaln("UPDATE product").literaln("SET").literal("  \"PID_proDUCT\" = ")
-        .parameterNullable("m.pidProduct", Types.NUMERIC).literaln(",").literal("  type = ")
-        .parameterNullable("m.type", Types.VARCHAR).literaln(",").literal("  shipping = ")
-        .parameterNullable("m.shipping", Types.NUMERIC).literaln("\nWHERE " + "\"PID_proDUCT\" = ")
-        .parameter("m.pidProduct").endModificationQuery();
+    this.updateByPK = dyn
+      .literaln("UPDATE product")
+      .literaln("SET")
+      .literal("  pid_product = ").parameterNullable("m.pidProduct", Types.NUMERIC).literaln(",")
+      .literal("  type = ").parameterNullable("m.type", Types.VARCHAR).literaln(",")
+      .literal("  shipping = ").parameterNullable("m.shipping", Types.INTEGER)
+      .literaln("\nWHERE " + "pid_product = ").parameter("m.pidProduct")
+    .endModificationQuery();
   }
 
   public int update(Product model) {
-    if (model.getPidProduct() == null)
-      return 0;
+    if (model.getPidProduct() == null) return 0;
     Parameters params = this.dyn.newParameters();
     params.add("m", model);
     PreparedModificationQuery preparedQuery = this.updateByPK.prepare(params);
@@ -320,12 +341,19 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   private DynamicModificationQuery updateByExample;
 
   private void initializeUpdatebyexample() {
-    this.updateByExample = dyn.literal("UPDATE product").set().if_("v.pidProduct != null").literal("\"PID_proDUCT\" = ")
-        .parameter("v.pidProduct").endif().if_("v.type != null").literal("type = ").parameter("v.type").endif()
-        .if_("v.shipping != null").literal("shipping = ").parameter("v.shipping").endif().endset().where("AND")
-        .if_("e.pidProduct != null").literal("\"PID_proDUCT\" = ").parameter("e.pidProduct").endif()
-        .if_("e.type != null").literal("type = ").parameter("e.type").endif().if_("e.shipping != null")
-        .literal("shipping = ").parameter("e.shipping").endif().endwhere().endModificationQuery();
+    this.updateByExample = dyn
+      .literal("UPDATE product")
+      .set()
+        .if_("v.pidProduct != null").literal("pid_product = ").parameter("v.pidProduct").endif()
+        .if_("v.type != null").literal("type = ").parameter("v.type").endif()
+        .if_("v.shipping != null").literal("shipping = ").parameter("v.shipping").endif()
+      .endset()
+      .where("AND")
+        .if_("e.pidProduct != null").literal("pid_product = ").parameter("e.pidProduct").endif()
+        .if_("e.type != null").literal("type = ").parameter("e.type").endif()
+        .if_("e.shipping != null").literal("shipping = ").parameter("e.shipping").endif()
+      .endwhere()
+      .endModificationQuery();
   }
 
   public int update(ProductLayout example, ProductLayout values) {
@@ -344,14 +372,12 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateSetCompletePhase update(ProductLayout values, ProductTable tableOrView, final Predicate predicate) {
+  public UpdateSetCompletePhase update(ProductLayout values, ProductTable tableOrView,
+      final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
-    if (values.getPidProduct() != null)
-      setters.add(new Setter(tableOrView.pidProduct, sql.val(values.getPidProduct())));
-    if (values.getType() != null)
-      setters.add(new Setter(tableOrView.type, sql.val(values.getType())));
-    if (values.getShipping() != null)
-      setters.add(new Setter(tableOrView.shipping, sql.val(values.getShipping())));
+    if (values.getPidProduct() != null) setters.add(new Setter(tableOrView.pidProduct, sql.val(values.getPidProduct())));
+    if (values.getType() != null) setters.add(new Setter(tableOrView.type, sql.val(values.getType())));
+    if (values.getShipping() != null) setters.add(new Setter(tableOrView.shipping, sql.val(values.getShipping())));
     return new UpdateSetCompletePhase(this.context, tableOrView, setters, predicate);
   }
 
@@ -360,13 +386,14 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   private DynamicModificationQuery deleteByPK;
 
   private void initializeDeletebypk() {
-    this.deleteByPK = dyn.literaln("DELETE FROM product").literaln("\nWHERE " + "\"PID_proDUCT\" = ")
-        .parameter("f.pidProduct").endModificationQuery();
+    this.deleteByPK = dyn
+      .literaln("DELETE FROM product")
+      .literaln("\nWHERE " + "pid_product = ").parameter("f.pidProduct")
+      .endModificationQuery();
   }
 
   public int delete(Long pidProduct) {
-    if (pidProduct == null)
-      return 0;
+    if (pidProduct == null) return 0;
     Product filter = new Product();
     filter.setPidProduct(pidProduct);
     Parameters params = this.dyn.newParameters();
@@ -386,10 +413,14 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   private DynamicModificationQuery deleteByExample;
 
   private void initializeDeletebyexample() {
-    this.deleteByExample = dyn.literal("DELETE FROM product").where("AND").if_("e.pidProduct != null")
-        .literal("\"PID_proDUCT\" = ").parameter("e.pidProduct").endif().if_("e.type != null").literal("type = ")
-        .parameter("e.type").endif().if_("e.shipping != null").literal("shipping = ").parameter("e.shipping").endif()
-        .endwhere().endModificationQuery();
+    this.deleteByExample = dyn
+      .literal("DELETE FROM product")
+      .where("AND")
+        .if_("e.pidProduct != null").literal("pid_product = ").parameter("e.pidProduct").endif()
+        .if_("e.type != null").literal("type = ").parameter("e.type").endif()
+        .if_("e.shipping != null").literal("shipping = ").parameter("e.shipping").endif()
+      .endwhere()
+      .endModificationQuery();
   }
 
   public int delete(ProductLayout example) {
@@ -415,8 +446,12 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   public enum ProductOrderBy implements OrderBy {
 
-    PID_PRODUCT("\"PID_proDUCT\"", true), PID_PRODUCT$DESC("\"PID_proDUCT\"", false), TYPE("type", true),
-    TYPE$DESC("type", false), SHIPPING("shipping", true), SHIPPING$DESC("shipping", false);
+    PID_PRODUCT("pid_product", true),
+    PID_PRODUCT$DESC("pid_product", false),
+    TYPE("type", true),
+    TYPE$DESC("type", false),
+    SHIPPING("shipping", true),
+    SHIPPING$DESC("shipping", false);
 
     private String sqlColumnName;
     private boolean ascending;
@@ -450,12 +485,12 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   public static class ProductTable extends Table<Product> {
 
-    public final NumericEntityColumn pidProduct = new NumericEntityColumn(this, "PID_proDUCT", "pidProduct", "NUMBER",
-        18, 0, TypeHandler.forClass(Long.class, TypeSource.STATIC_DIALECT_RULE));
-    public final CharEntityColumn type = new CharEntityColumn(this, "TYPE", "type", "VARCHAR2", 6, null,
-        TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE));
-    public final NumericEntityColumn shipping = new NumericEntityColumn(this, "SHIPPING", "shipping", "NUMBER", 6, 0,
-        TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
+    public final NumericEntityColumn pidProduct = new NumericEntityColumn(this,
+      "PID_PRODUCT", "pidProduct", "NUMERIC", 18, 0, TypeHandler.forClass(Long.class, TypeSource.STATIC_DIALECT_RULE));
+    public final CharEntityColumn type = new CharEntityColumn(this,
+      "TYPE", "type", "CHARACTER VARYING", 6, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE));
+    public final NumericEntityColumn shipping = new NumericEntityColumn(this,
+      "SHIPPING", "shipping", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
 
     @Override
     public AllColumns star() {

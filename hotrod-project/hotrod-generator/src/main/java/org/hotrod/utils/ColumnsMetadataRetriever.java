@@ -7,9 +7,10 @@ import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.exceptions.ErrorMessageException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidSQLException;
-import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
@@ -57,16 +58,30 @@ public class ColumnsMetadataRetriever {
 
   // TODO: Nothing to do; just a marker === Phase 1
 
-  public void prepareRetrieval() throws InvalidSQLException, InvalidConfigurationFileException {
-    this.cr.phase1Structured(getKey(), this.selectTag, this.aliasPrefix, this.entityPrefix, this.columnsProvider, null);
+  public void prepareRetrieval() throws ErrorMessageException, FaultException {
+    try {
+      this.cr.phase1Structured(getKey(), this.selectTag, this.aliasPrefix, this.entityPrefix, this.columnsProvider,
+          null);
+    } catch (InvalidConfigurationFileException e) {
+      throw new ErrorMessageException(e.getTag(), "Could not retrieve the meta data");
+    } catch (InvalidSQLException e) {
+      throw new FaultException(this.selectTag,
+          "Could not retrieve meta data using the SQL query:\n" + e.getInvalidSQL() + "\n", e);
+    }
   }
 
   // TODO: Nothing to do; just a marker === Phase 2
 
-  public List<StructuredColumnMetadata> retrieve() throws InvalidSQLException, UncontrolledException,
-      UnresolvableDataTypeException, InvalidConfigurationFileException {
-    return this.cr.phase2Structured(getKey(), this.selectTag, this.aliasPrefix, this.entityPrefix,
-        this.columnsProvider);
+  public List<StructuredColumnMetadata> retrieve() throws FaultException, ErrorMessageException {
+    try {
+      return this.cr.phase2Structured(getKey(), this.selectTag, this.aliasPrefix, this.entityPrefix,
+          this.columnsProvider);
+    } catch (UnresolvableDataTypeException e) {
+      throw new ErrorMessageException(this.selectTag,
+          "Could not retrieve the meta data for column '" + e.getColumnMetadata().getName() + "'");
+    } catch (InvalidConfigurationFileException e) {
+      throw new ErrorMessageException(e.getTag(), "Could not retrieve the meta data: '" + e.getMessage());
+    }
   }
 
   // TODO: Nothing to do; just a marker === END

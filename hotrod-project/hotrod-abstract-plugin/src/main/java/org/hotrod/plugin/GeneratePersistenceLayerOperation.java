@@ -12,14 +12,16 @@ import java.util.logging.Logger;
 import org.hotrod.api.HotRodServices;
 import org.hotrod.config.Constants;
 import org.hotrod.config.DisplayMode;
+import org.hotrod.exceptions.ErrorMessageException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.generator.Feedback;
 import org.hotrod.utils.SUtil;
 import org.hotrod.utils.T;
 
-public class GenOperation {
+public class GeneratePersistenceLayerOperation {
 
   @SuppressWarnings("unused")
-  private static final Logger log = Logger.getLogger(GenOperation.class.getName());
+  private static final Logger log = Logger.getLogger(GeneratePersistenceLayerOperation.class.getName());
 
   private File baseDir;
   private String configfilename = null;
@@ -43,9 +45,10 @@ public class GenOperation {
 
   private LinkedHashSet<String> facetNames = null;
 
-  public GenOperation(final File baseDir, final String configfilename, final String localproperties,
-      final String jdbcdriverclass, final String jdbcurl, final String jdbcusername, final String jdbcpassword,
-      final String jdbccatalog, final String jdbcschema, final String facets, final String display) throws Exception {
+  public GeneratePersistenceLayerOperation(final File baseDir, final String configfilename,
+      final String localproperties, final String jdbcdriverclass, final String jdbcurl, final String jdbcusername,
+      final String jdbcpassword, final String jdbccatalog, final String jdbcschema, final String facets,
+      final String display) throws ErrorMessageException {
     this.baseDir = baseDir;
     this.configfilename = configfilename;
     this.localproperties = localproperties;
@@ -64,7 +67,7 @@ public class GenOperation {
     validateParameters();
   }
 
-  public void execute(final Feedback feedback) throws Exception {
+  public void execute(final Feedback feedback) throws ErrorMessageException, FaultException {
     HotRodServices hs = new HotRodServices(this.baseDir, this.jdbcdriverclass, this.jdbcurl, this.jdbcusername,
         this.jdbcpassword, this.jdbccatalog, this.jdbcschema, this.configFile, this.displayMode, this.facetNames,
         this.logTimes);
@@ -76,7 +79,7 @@ public class GenOperation {
 
   // Validation
 
-  private void validateParameters() throws Exception {
+  private void validateParameters() throws ErrorMessageException {
 
     // 1. Apply local properties file, if any
 
@@ -86,11 +89,11 @@ public class GenOperation {
 
       File p = new File(this.baseDir, this.localproperties);
       if (!p.exists()) {
-        throw new Exception(
+        throw new ErrorMessageException(
             Constants.TOOL_NAME + " parameter: " + "localproperties file does not exist: " + this.localproperties);
       }
       if (!p.isFile()) {
-        throw new Exception(Constants.TOOL_NAME + " parameter: "
+        throw new ErrorMessageException(Constants.TOOL_NAME + " parameter: "
             + "localproperties file exists but it's not a regular file: " + this.localproperties);
       }
 
@@ -103,11 +106,11 @@ public class GenOperation {
         props.load(r);
 
       } catch (FileNotFoundException e) {
-        throw new Exception(
+        throw new ErrorMessageException(
             Constants.TOOL_NAME + " parameter: " + "localproperties file does not exist: " + this.localproperties);
 
       } catch (IOException e) {
-        throw new Exception(Constants.TOOL_NAME + " parameter: " + "localproperties: cannot read file: "
+        throw new ErrorMessageException(Constants.TOOL_NAME + " parameter: " + "localproperties: cannot read file: "
             + e.getMessage() + ": " + this.localproperties);
 
       } finally {
@@ -141,41 +144,45 @@ public class GenOperation {
     if (this.configfilename != null) {
       this.configFile = new File(this.baseDir, this.configfilename);
       if (!this.configFile.exists()) {
-        throw new Exception(Constants.TOOL_NAME + " parameter: " + "configfile does not exist: " + this.configfilename);
+        throw new ErrorMessageException(
+            Constants.TOOL_NAME + " parameter: " + "configfile does not exist: " + this.configfilename);
       }
     }
 
     // driverclass
 
     if (this.jdbcdriverclass == null) {
-      throw new Exception(Constants.TOOL_NAME + " parameter: " + "jdbcdriverclass attribute must be specified.");
+      throw new ErrorMessageException(
+          Constants.TOOL_NAME + " parameter: " + "jdbcdriverclass attribute must be specified.");
     }
     if (SUtil.isEmpty(this.jdbcdriverclass)) {
-      throw new Exception(Constants.TOOL_NAME + " parameter: " + "jdbcdriverclass attribute cannot be empty.");
+      throw new ErrorMessageException(
+          Constants.TOOL_NAME + " parameter: " + "jdbcdriverclass attribute cannot be empty.");
     }
 
     // url
 
     if (this.jdbcurl == null) {
-      throw new Exception(Constants.TOOL_NAME + " parameter: " + "jdbcurl attribute must be specified.");
+      throw new ErrorMessageException(Constants.TOOL_NAME + " parameter: " + "jdbcurl attribute must be specified.");
     }
     if (SUtil.isEmpty(this.jdbcurl)) {
-      throw new Exception(Constants.TOOL_NAME + " parameter: " + "jdbcurl attribute cannot be empty.");
+      throw new ErrorMessageException(Constants.TOOL_NAME + " parameter: " + "jdbcurl attribute cannot be empty.");
     }
 
     // username
 
     if (this.jdbcusername == null) {
-      throw new Exception(Constants.TOOL_NAME + " parameter: " + "jdbcusername attribute must be specified.");
+      throw new ErrorMessageException(
+          Constants.TOOL_NAME + " parameter: " + "jdbcusername attribute must be specified.");
     }
     if (SUtil.isEmpty(this.jdbcusername)) {
-      throw new Exception(Constants.TOOL_NAME + " parameter: " + "jdbcusername attribute cannot be empty.");
+      throw new ErrorMessageException(Constants.TOOL_NAME + " parameter: " + "jdbcusername attribute cannot be empty.");
     }
 
     // password
 
     if (this.jdbcpassword == null) {
-      throw new Exception(
+      throw new ErrorMessageException(
           Constants.TOOL_NAME + " parameter: " + "jdbcpassword attribute must be specified, even if empty.");
     }
 
@@ -209,7 +216,7 @@ public class GenOperation {
     } else {
       this.displayMode = DisplayMode.parse(this.display);
       if (this.displayMode == null) {
-        throw new Exception(Constants.TOOL_NAME + " parameter: "
+        throw new ErrorMessageException(Constants.TOOL_NAME + " parameter: "
             + "If specified, the attribute display must have one of the following values: " + "summary, list");
       }
     }

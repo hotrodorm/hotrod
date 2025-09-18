@@ -227,7 +227,7 @@ public class VOMetadata implements Serializable {
       String existing;
       switch (this.initial.getSourceTagType()) {
       case NON_STRUCTURED_SELECT:
-        existing = "This property name is already being used by a property (related to a database column) of the non-graph select in "
+        existing = "This property name is already being used by a property (related to a database column) of the plain Nitro select in "
             + this.initial.getTag().getSourceLocation().render();
         break;
       case ENTITY_VO:

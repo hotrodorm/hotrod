@@ -22,10 +22,10 @@ import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.ErrorMessageException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
-import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.SelectMetadataCache;
@@ -301,7 +301,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
   }
 
-  public void linkReferencedTableMetadata(final Set<TableDataSetMetadata> tm) throws InvalidConfigurationFileException {
+  public void linkReferencedTableMetadata(final Set<TableDataSetMetadata> tm) throws ErrorMessageException {
 
     // foreign keys
 
@@ -325,9 +325,8 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
       }
       log.fine("" + this.id + ": parent=" + this.parent);
       if (this.parent == null) {
-        throw new InvalidConfigurationFileException(this.daoTag,
+        throw new ErrorMessageException(this.daoTag,
             "Could not find parent table '" + this.parentTag.getId() + "' that is extended by '" + this.id + "'.");
-
       }
     }
 
@@ -398,7 +397,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
   @SuppressWarnings("unused")
   public boolean gatherSelectsMetadataPhase1(final Metadata metadata, final ColumnsRetriever cr, final JDBCTag jdbcTag)
-      throws InvalidConfigurationFileException {
+      throws FaultException, ErrorMessageException {
     this.selectsMetadata = new ArrayList<SelectMethodMetadata>();
     boolean needsToRetrieveMetadata = false;
     for (SelectMethodTag selectTag : this.selects) {
@@ -410,8 +409,10 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
         sm = new SelectMethodMetadata(metadata, cr, selectTag, this.config, selectGenerationTag, columnsPrefixGenerator,
             jdbcTag, this, null);
       } catch (InvalidIdentifierException e) {
-        String msg = "Invalid method name '" + selectTag.getMethod() + "': " + e.getMessage();
-        throw new InvalidConfigurationFileException(selectTag, msg);
+        throw new ErrorMessageException(selectTag,
+            "Invalid method name '" + selectTag.getMethod() + "': " + e.getMessage());
+      } catch (InvalidConfigurationFileException e) {
+        throw new ErrorMessageException(e.getTag(), e.getMessage());
       }
       this.selectsMetadata.add(sm);
       sm.gatherMetadataPhase1();
@@ -422,7 +423,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
   }
 
   public void gatherSelectsMetadataPhase2(final VORegistry voRegistry)
-      throws ControlledException, UncontrolledException, InvalidConfigurationFileException {
+      throws ErrorMessageException, FaultException, InvalidConfigurationFileException {
     log.fine("*** DataSet " + this.id.getRenderedSQLName() + ":");
     for (SelectMethodMetadata sm : this.selectsMetadata) {
       log.fine("*** - table-like method " + sm.getMethod() + "() sm.metadataComplete()=" + sm.metadataComplete());

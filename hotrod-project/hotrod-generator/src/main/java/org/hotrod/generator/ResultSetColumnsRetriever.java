@@ -17,11 +17,11 @@ import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.ErrorMessageException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.InvalidSQLException;
-import org.hotrod.exceptions.UncontrolledException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
@@ -198,7 +198,7 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
   @Override
   public List<StructuredColumnMetadata> phase2Structured(final String key, final SelectMethodTag selectTag,
       final String aliasPrefix, final String entityPrefix, final ColumnsProvider columnsProvider)
-      throws UnresolvableDataTypeException, InvalidConfigurationFileException, UncontrolledException {
+      throws UnresolvableDataTypeException, InvalidConfigurationFileException, FaultException {
     log.fine("flat 4 -- columns retrieved.");
     RetrievalContext ctx = this.contexts.get(key);
     return ctx.getStructuredColumnMetadata();

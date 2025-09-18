@@ -9,8 +9,8 @@ import org.hotrod.config.EnumTag.EnumConstant;
 import org.hotrod.config.EnumTag.EnumProperty;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.JDBCTag;
-import org.hotrod.exceptions.ControlledException;
-import org.hotrod.exceptions.UncontrolledException;
+import org.hotrod.exceptions.ErrorMessageException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.generator.Generator;
@@ -58,7 +58,7 @@ public class EnumClass {
 
   // Behavior
 
-  public void generate(final FileGenerator fileGenerator) throws UncontrolledException, ControlledException {
+  public void generate(final FileGenerator fileGenerator) throws FaultException, ErrorMessageException {
     String sourceClassName = this.getClassName() + ".java";
 
     File dir = this.jdbcTag.getLayoutPackageDir(this.fragmentPackage);
@@ -72,7 +72,7 @@ public class EnumClass {
       w.writeTo(tw);
 
     } catch (IOException e) {
-      throw new UncontrolledException(
+      throw new FaultException(
           "Could not generate Java enum class: could not write to file '" + ec.getName() + "'.", e);
     }
 

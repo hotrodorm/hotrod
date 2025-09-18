@@ -17,9 +17,9 @@ import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.ErrorMessageException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.exceptions.UncontrolledException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.generator.DAOType;
 import org.hotrod.generator.Feedback;
 import org.hotrod.generator.FileGenerator;
@@ -71,7 +71,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
 
   public JDBCGenerator(final HotRodContext hc, final EnabledFKs enabledFKs, final DisplayMode displayMode,
       final boolean incrementalMode, final Feedback feedback)
-      throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
+      throws FaultException, ErrorMessageException, InvalidConfigurationFileException {
 
 //    log.info("CONFIGURE GENERATION");
 
@@ -95,7 +95,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
   // =============================================================================================
 
   @Override
-  public void prepareGeneration() throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
+  public void prepareGeneration() throws FaultException, ErrorMessageException, InvalidConfigurationFileException {
 
 //    log.info("PREPARE GENERATION");
 
@@ -139,7 +139,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
 
   }
 
-  private EntityDTOs addDaosAndMapper(final DataSetMetadata metadata, final DAOType type) throws ControlledException {
+  private EntityDTOs addDaosAndMapper(final DataSetMetadata metadata, final DAOType type) throws ErrorMessageException {
 
     JDBCTag jdbcTag = (JDBCTag) this.config.getGenerators().getSelectedGeneratorTag();
 
@@ -154,7 +154,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
       if (ttag == null) {
         ttag = (TableTag) metadata.getDaoTag();
         if (ttag == null) {
-          throw new ControlledException(
+          throw new ErrorMessageException(
               "Could not find table tag for table '" + metadata.getId().getCanonicalSQLName() + "'.");
         }
       }
@@ -171,7 +171,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
       if (vtag == null) {
         vtag = (ViewTag) metadata.getDaoTag();
         if (vtag == null) {
-          throw new ControlledException(
+          throw new ErrorMessageException(
               "Could not find view tag for table '" + metadata.getId().getCanonicalSQLName() + "'.");
         }
       }
@@ -191,7 +191,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
       break;
 
     default:
-      throw new ControlledException(
+      throw new ErrorMessageException(
           "Unrecognized type for database object '" + metadata.getId().getCanonicalSQLName() + "'.");
     }
 
@@ -210,7 +210,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
   private LinkedHashSet<SelectLayout> abstractSelectVOs = new LinkedHashSet<SelectLayout>();
   private LinkedHashSet<SelectModel> selectVOs = new LinkedHashSet<SelectModel>();
 
-  private void addSelectVOs(final SelectMethodMetadata sm, final EntityDTOs entityVOs) throws ControlledException {
+  private void addSelectVOs(final SelectMethodMetadata sm, final EntityDTOs entityVOs) throws ErrorMessageException {
 
     if (entityVOs != null) {
 //      log.info("entityVOs");
@@ -256,7 +256,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
   }
 
   @Override
-  public void generate(FileGenerator fileGenerator) throws UncontrolledException, ControlledException {
+  public void generate(FileGenerator fileGenerator) throws FaultException, ErrorMessageException {
 
     for (Model mo : this.models.values()) {
       mo.generate(fileGenerator);
@@ -303,7 +303,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
   }
 
   @Override
-  public void generate() throws UncontrolledException, ControlledException {
+  public void generate() throws FaultException, ErrorMessageException {
     // TODO Auto-generated method stub
 
   }

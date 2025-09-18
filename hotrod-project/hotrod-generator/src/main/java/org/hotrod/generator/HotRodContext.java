@@ -22,16 +22,13 @@ import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.DatabaseAdapterFactory;
-import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.ErrorMessageException;
 import org.hotrod.exceptions.FacetNotFoundException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnrecognizedDatabaseException;
-import org.hotrod.metadata.ExecutorDAOMetadata;
 import org.hotrod.metadata.Metadata;
-import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.utils.SUtil;
-import org.hotrod.utils.SourceLocation;
 import org.hotrod.utils.T;
 import org.hotrod.utils.XUtil;
 import org.nocrala.tools.database.tartarus.connectors.DatabaseConnectorFactory.UnsupportedDatabaseException;
@@ -62,7 +59,7 @@ public class HotRodContext {
   public HotRodContext(final File configFile, final String jdbcdriverclass, final String jdbcurl,
       final String jdbcusername, final String jdbcpassword, final String currentJDBCCatalog,
       final String currentJDBCSchema, final File baseDir, final LinkedHashSet<String> facetNames,
-      final Feedback feedback, final boolean logTimes) throws ControlledException {
+      final Feedback feedback, final boolean logTimes) throws ErrorMessageException, FaultException {
 
 //    log.info("init");
 
@@ -84,7 +81,7 @@ public class HotRodContext {
         conn = this.loc.getConnection();
         log.fine("Connection open.");
       } catch (SQLException e) {
-        throw new ControlledException("Could not connect to the database: " + XUtil.trim(e));
+        throw new ErrorMessageException("Could not connect to the database: " + XUtil.trim(e));
       }
       T.endPhase("DB connected");
 
@@ -99,7 +96,7 @@ public class HotRodContext {
         log.fine("Metadata retrieval complete.");
 
       } catch (SQLException e) {
-        throw new ControlledException("Could not retrieve database metadata: " + XUtil.trim(e));
+        throw new ErrorMessageException("Could not retrieve database metadata: " + XUtil.trim(e));
       }
       feedback.info("Database Name: " + cv.renderDatabaseName());
       feedback.info("JDBC Driver: " + cv.renderJDBCDriverName() + " - implements JDBC Specification "
@@ -114,14 +111,14 @@ public class HotRodContext {
         this.adapter = DatabaseAdapterFactory.getAdapter(conn);
         feedback.info("HotRod Adapter: " + adapter.getName());
       } catch (UnrecognizedDatabaseException e) {
-        throw new ControlledException("Could not identify database at URL " + loc.getUrl() + " - " + e.getMessage());
-      } catch (UncontrolledException e) {
-        throw new ControlledException("Could not identify database at URL " + loc.getUrl() + " - " + e.getMessage()
+        throw new ErrorMessageException("Could not identify database at URL " + loc.getUrl() + " - " + e.getMessage());
+      } catch (FaultException e) {
+        throw new ErrorMessageException("Could not identify database at URL " + loc.getUrl() + " - " + e.getMessage()
             + ": " + XUtil.trim(e.getCause()));
       } catch (RuntimeException e) {
-        throw new ControlledException("Could not identify database at URL " + loc.getUrl() + " - " + XUtil.trim(e));
+        throw new ErrorMessageException("Could not identify database at URL " + loc.getUrl() + " - " + XUtil.trim(e));
       } catch (SQLException e) {
-        throw new ControlledException("Could not identify database at URL " + loc.getUrl() + " - " + XUtil.trim(e));
+        throw new ErrorMessageException("Could not identify database at URL " + loc.getUrl() + " - " + XUtil.trim(e));
       }
       T.endPhase("DB Adapter");
 //      log.info("Adapter loaded.");
@@ -147,24 +144,24 @@ public class HotRodContext {
           log.fine("will load configuration");
           this.config = ConfigurationLoader.loadPrimary(baseDir, configFile, adapter, facetNames, currentCS);
 //          log.info("Main Configuration loaded.");
-        } catch (ControlledException e) {
-          if (e.getLocation() != null) {
-            throw new ControlledException("\n" + e.getMessage() + "\n  in " + e.getLocation().render());
-          } else {
-            throw new ControlledException("\n" + e.getMessage());
-          }
-        } catch (UncontrolledException e) {
-          throw new ControlledException("Could not load configuration file " + configFile + " - " + e.getMessage()
-              + ": " + XUtil.trim(e.getCause()));
+//        } catch (ErrorMessageException e) {
+//          if (e.getLocation() != null) {
+//            throw new ErrorMessageException("\n" + e.getMessage() + "\n  in " + e.getLocation().render());
+//          } else {
+//            throw new ErrorMessageException("\n" + e.getMessage());
+//          }
+//        } catch (FaultException e) {
+//          throw new ErrorMessageException("Could not load configuration file " + configFile + " - " + e.getMessage()
+//              + ": " + XUtil.trim(e.getCause()));
         } catch (FacetNotFoundException e) {
-          throw new ControlledException("facet '" + e.getMessage() + "' not found.");
+          throw new ErrorMessageException("facet '" + e.getMessage() + "' not found.");
         } catch (RuntimeException e) {
-          throw new ControlledException("Could not load configuration file " + configFile + " - " + e.getMessage()
+          throw new ErrorMessageException("Could not load configuration file " + configFile + " - " + e.getMessage()
               + ": " + XUtil.trim(e.getCause()));
         } catch (Throwable e) { // Added to display JVM errors, such as JAXB not present (Java 11 and up for Ant
                                 // generation)
           log.log(Level.SEVERE, "Could not load the configuration", e);
-          throw new ControlledException("Could not load configuration file " + configFile + " - " + e.getMessage());
+          throw new FaultException("Could not load configuration file '" + configFile + "'", e);
         }
       } else {
         log.info("No config mode");
@@ -174,7 +171,7 @@ public class HotRodContext {
         } catch (Throwable e) { // Added to display JVM errors, such as JAXB not present (Java 11 and up for Ant
           // generation)
           log.log(Level.SEVERE, "Could not load default configuration", e);
-          throw new ControlledException("Could not load configuration file " + configFile + " - " + e.getMessage());
+          throw new ErrorMessageException("Could not load configuration file " + configFile + " - " + e.getMessage());
         }
       }
       T.endPhase("Configuration Loaded");
@@ -249,7 +246,7 @@ public class HotRodContext {
             }
             this.config.getFacetTables();// FIXME
           } catch (InvalidConfigurationFileException e) {
-            throw new ControlledException(
+            throw new ErrorMessageException(
                 "Could not use a discovered table or view because of its peculiar name. " + e.getMessage());
           }
           this.config.getFacetTables();// FIXME
@@ -281,15 +278,15 @@ public class HotRodContext {
         log.fine("gen 9");
 
       } catch (ReaderException e) {
-        throw new ControlledException(e.getMessage());
+        throw new ErrorMessageException(e.getMessage());
       } catch (SQLException e) {
         log.log(Level.SEVERE, "Failed to retrieve the database meta data ", e);
-        throw new ControlledException("Could not retrieve database metadata - " + XUtil.trim(e));
+        throw new ErrorMessageException("Could not retrieve database metadata - " + XUtil.trim(e));
       } catch (InvalidCatalogSchemaException e) {
         String msg = "Invalid catalog/schema: " + e.getMessage();
-        throw new ControlledException(msg);
+        throw new ErrorMessageException(msg);
       } catch (CatalogNotSupportedException e) {
-        throw new ControlledException("This database does not support catalogs through the JDBC driver. "
+        throw new ErrorMessageException("This database does not support catalogs through the JDBC driver. "
             + "Please specify an empty value for the current catalog property instead of '" + loc.getCurrentCatalog()
             + "'.");
       } catch (InvalidCatalogException e) {
@@ -305,9 +302,9 @@ public class HotRodContext {
         for (String c : e.getExistingCatalogs()) {
           sb.append("  " + c + "\n");
         }
-        throw new ControlledException(sb.toString());
+        throw new ErrorMessageException(sb.toString());
       } catch (SchemaNotSupportedException e) {
-        throw new ControlledException("This database does not support schemas through the JDBC driver. "
+        throw new ErrorMessageException("This database does not support schemas through the JDBC driver. "
             + "Please specify an empty value for the current schema property instead of '" + loc.getCurrentCatalog()
             + "'.");
       } catch (InvalidSchemaException e) {
@@ -322,15 +319,15 @@ public class HotRodContext {
         for (String s : e.getExistingSchemas()) {
           sb.append("  " + s + "\n");
         }
-        throw new ControlledException(sb.toString());
+        throw new ErrorMessageException(sb.toString());
       } catch (UnsupportedDatabaseException e) {
-        throw new ControlledException("This database is not currently supported by " + Constants.TOOL_NAME);
+        throw new ErrorMessageException("This database is not currently supported by " + Constants.TOOL_NAME);
       } catch (DatabaseObjectNotFoundException e) {
-        throw new ControlledException(
+        throw new ErrorMessageException(
             "Database object not found. Please check this is the correct database, catalog, and schema: "
                 + e.getMessage());
       } catch (RuntimeException e) {
-        throw new ControlledException(
+        throw new ErrorMessageException(
             "Could not retrieve database metadata" + (e.getCause() != null ? XUtil.trim(e.getCause()) : XUtil.trim(e)));
       }
 
@@ -341,25 +338,25 @@ public class HotRodContext {
       log.fine("gen 10.5");
       this.config.getFacetTables();// FIXME
       log.fine("gen 11");
-      try {
-        metadata.load(config, loc, conn);
-        log.fine("gen 12");
-      } catch (InvalidConfigurationFileException e) {
-        log.fine("gen 13");
-        SourceLocation sl = e.getTag() == null ? null : e.getTag().getSourceLocation();
-        if (sl != null) {
-          throw new ControlledException("\n" + e.getMessage() + "\n  in " + sl.render());
-        } else {
-          throw new ControlledException("\n" + e.getMessage());
-        }
-      } catch (UncontrolledException e) {
-        log.fine("gen 14");
-        throw new ControlledException(
-            "Could not retrieve database metadata  - " + e.getMessage() + ": " + XUtil.trim(e.getCause()));
-      } catch (RuntimeException e) {
-        throw new ControlledException(
-            "Could not retrieve database metadata  - " + e.getMessage() + ": " + XUtil.trim(e.getCause()));
-      }
+//      try {
+      metadata.load(config, conn);
+      log.fine("gen 12");
+//      } catch (InvalidConfigurationFileException e) {
+//        log.fine("gen 13");
+//        SourceLocation sl = e.getTag() == null ? null : e.getTag().getSourceLocation();
+//        if (sl != null) {
+//          throw new ErrorMessageException("\n" + e.getMessage() + "\n  in " + sl.render());
+//        } else {
+//          throw new ErrorMessageException("\n" + e.getMessage());
+//        }
+//      } catch (FaultException e) {
+//        log.fine("gen 14");
+//        throw new ErrorMessageException(
+//            "Could not retrieve database metadata  - " + e.getMessage() + ": " + XUtil.trim(e.getCause()));
+//      } catch (RuntimeException e) {
+//        throw new ErrorMessageException(
+//            "Could not retrieve database metadata  - " + e.getMessage() + ": " + XUtil.trim(e.getCause()));
+//      }
       log.fine("gen 16");
       T.endPhase("Facets Post-processing");
 

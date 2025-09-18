@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.JDBCTag;
-import org.hotrod.exceptions.UncontrolledException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.identifiers.ObjectId;
@@ -54,7 +54,7 @@ public class Model {
     this.dao = dao;
   }
 
-  public void generate(final FileGenerator fileGenerator) throws UncontrolledException {
+  public void generate(final FileGenerator fileGenerator) throws FaultException {
     String sourceClassName = this.getClassName() + ".java";
 
     ClassPackage fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
@@ -75,7 +75,7 @@ public class Model {
         w.writeTo(tw);
 
       } catch (IOException e) {
-        throw new UncontrolledException("Could not generate VO class: could not write to file '" + vo.getName() + "'.",
+        throw new FaultException("Could not generate VO class: could not write to file '" + vo.getName() + "'.",
             e);
       }
     }

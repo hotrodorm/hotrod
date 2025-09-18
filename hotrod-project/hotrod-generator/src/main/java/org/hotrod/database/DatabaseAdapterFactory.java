@@ -17,7 +17,7 @@ import org.hotrod.database.adapters.OracleAdapter;
 import org.hotrod.database.adapters.PostgreSQLAdapter;
 import org.hotrod.database.adapters.SAPASEAdapter;
 import org.hotrod.database.adapters.SQLServerAdapter;
-import org.hotrod.exceptions.UncontrolledException;
+import org.hotrod.exceptions.FaultException;
 import org.hotrod.exceptions.UnrecognizedDatabaseException;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
@@ -26,7 +26,7 @@ public final class DatabaseAdapterFactory {
   private static final Logger log = Logger.getLogger(DatabaseAdapterFactory.class.getName());
 
   public static DatabaseAdapter getAdapter(final DatabaseLocation loc)
-      throws UnrecognizedDatabaseException, UncontrolledException {
+      throws UnrecognizedDatabaseException, FaultException {
     log.fine("init.");
 
     Connection conn = null;
@@ -36,12 +36,12 @@ public final class DatabaseAdapterFactory {
       try {
         conn = loc.getConnection();
       } catch (SQLException e) {
-        throw new UncontrolledException("Could not connect to database at URL: " + loc.getUrl(), e);
+        throw new FaultException("Could not connect to database at URL: " + loc.getUrl(), e);
       }
       return getAdapter(conn);
 
     } catch (SQLException e) {
-      throw new UncontrolledException("Could not retrieve metadata from database at URL: " + loc.getUrl(), e);
+      throw new FaultException("Could not retrieve metadata from database at URL: " + loc.getUrl(), e);
 
     } finally {
       if (conn != null) {
@@ -55,19 +55,19 @@ public final class DatabaseAdapterFactory {
   }
 
   public static DatabaseAdapter getAdapter(final Connection conn)
-      throws UncontrolledException, UnrecognizedDatabaseException, SQLException {
+      throws FaultException, UnrecognizedDatabaseException, SQLException {
     DatabaseMetaData dm;
     try {
       dm = conn.getMetaData();
     } catch (SQLException e) {
-      throw new UncontrolledException("Could not retrieve database information from the JDBC driver.", e);
+      throw new FaultException("Could not retrieve database information from the JDBC driver.", e);
     }
 
     String name;
     try {
       name = dm.getDatabaseProductName();
     } catch (SQLException e) {
-      throw new UncontrolledException("Could not retrieve the database product name from the JDBC driver.", e);
+      throw new FaultException("Could not retrieve the database product name from the JDBC driver.", e);
     }
 
     if (name == null) {
