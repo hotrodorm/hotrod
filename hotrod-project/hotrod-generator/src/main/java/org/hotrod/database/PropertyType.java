@@ -10,9 +10,7 @@ import org.hotrod.utils.ColumnUtils;
 import org.hotrod.utils.JDBCTypes;
 import org.hotrod.utils.JDBCTypes.JDBCType;
 
-public class PropertyType implements Serializable {
-
-  private static final long serialVersionUID = 1L;
+public class PropertyType {
 
   private static final Logger log = Logger.getLogger(PropertyType.class.getName());
 

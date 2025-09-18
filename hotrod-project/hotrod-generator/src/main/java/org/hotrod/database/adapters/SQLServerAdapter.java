@@ -30,8 +30,6 @@ import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class SQLServerAdapter extends DatabaseAdapter {
 
-  private static final long serialVersionUID = 1L;
-
   private static final Logger log = Logger.getLogger(SQLServerAdapter.class.getName());
 
   private static final long MAX_VARCHAR_LENGTH = 64L * 1024;

@@ -1,6 +1,5 @@
 package org.hotrod.config;
 
-import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -224,9 +223,7 @@ public class EnumTag extends AbstractEntityDAOTag {
     }
   }
 
-  private static class EnumColumn implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+  private static class EnumColumn {
 
     private JdbcColumn column;
     private Id id;
@@ -457,9 +454,7 @@ public class EnumTag extends AbstractEntityDAOTag {
 
   }
 
-  public static class EnumConstant implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+  public static class EnumConstant {
 
     private String javaConstantName;
     private List<String> javaLiteralValues;

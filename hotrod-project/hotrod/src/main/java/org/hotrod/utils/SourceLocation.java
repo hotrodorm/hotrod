@@ -1,11 +1,8 @@
 package org.hotrod.utils;
 
 import java.io.File;
-import java.io.Serializable;
 
-public class SourceLocation implements Serializable {
-
-  private static final long serialVersionUID = 1L;
+public class SourceLocation {
 
   private File file;
   private int lineNumber;

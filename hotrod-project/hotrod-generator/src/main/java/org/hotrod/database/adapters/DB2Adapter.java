@@ -28,8 +28,6 @@ import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class DB2Adapter extends DatabaseAdapter {
 
-  private static final long serialVersionUID = 1L;
-
   private static final Logger log = Logger.getLogger(DB2Adapter.class.getName());
 
   public DB2Adapter(final DatabaseMetaData dm) throws SQLException {

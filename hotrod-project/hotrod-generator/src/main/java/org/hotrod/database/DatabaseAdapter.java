@@ -26,9 +26,7 @@ import org.nocrala.tools.database.tartarus.exception.InvalidSchemaException;
 import org.nocrala.tools.database.tartarus.exception.SchemaNotSupportedException;
 import org.nocrala.tools.database.tartarus.utils.JdbcUtil;
 
-public abstract class DatabaseAdapter implements Serializable {
-
-  private static final long serialVersionUID = 1L;
+public abstract class DatabaseAdapter {
 
   private static final Logger log = Logger.getLogger(DatabaseAdapter.class.getName());
 

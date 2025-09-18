@@ -28,8 +28,6 @@ import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class OracleAdapter extends DatabaseAdapter {
 
-  private static final long serialVersionUID = 1L;
-
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(OracleAdapter.class.getName());
 
@@ -137,13 +135,11 @@ public class OracleAdapter extends DatabaseAdapter {
 
     case -101: // timestamp with time zone.
       // Invalid JDBC type (-101) reported by the Oracle JDBC Driver.
-      return new PropertyType(java.time.ZonedDateTime.class, JDBCType.TIMESTAMP, false,
-          TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(java.time.ZonedDateTime.class, JDBCType.TIMESTAMP, false, TypeSource.STATIC_DIALECT_RULE);
 
     case -102: // timestamp with local time zone.
       // Invalid JDBC type (-102) reported by the Oracle JDBC Driver.
-      return new PropertyType(java.time.ZonedDateTime.class, JDBCType.TIMESTAMP, false,
-          TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(java.time.ZonedDateTime.class, JDBCType.TIMESTAMP, false, TypeSource.STATIC_DIALECT_RULE);
 
     // Binary types
 
@@ -202,7 +198,8 @@ public class OracleAdapter extends DatabaseAdapter {
 
   }
 
-  // Integrated retrieval of sequences fails to work with mixed case PK names, as in "Product_ID"
+  // Integrated retrieval of sequences fails to work with mixed case PK names, as
+  // in "Product_ID"
   // Defaulting to pre-fetch in all cases for now.
 
   @Override

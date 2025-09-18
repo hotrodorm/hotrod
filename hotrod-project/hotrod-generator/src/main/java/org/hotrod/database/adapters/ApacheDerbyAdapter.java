@@ -28,8 +28,6 @@ import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class ApacheDerbyAdapter extends DatabaseAdapter {
 
-  private static final long serialVersionUID = 1L;
-
   private static final Logger log = Logger.getLogger(ApacheDerbyAdapter.class.getName());
 
   public ApacheDerbyAdapter(final DatabaseMetaData dm) throws SQLException {

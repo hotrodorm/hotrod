@@ -31,8 +31,6 @@ import org.nocrala.tools.database.tartarus.exception.SchemaNotSupportedException
 
 public class MySQLAdapter extends DatabaseAdapter {
 
-  private static final long serialVersionUID = 1L;
-
   private static final Logger log = Logger.getLogger(MySQLAdapter.class.getName());
 
   public MySQLAdapter(final DatabaseMetaData dm) throws SQLException {
@@ -87,8 +85,7 @@ public class MySQLAdapter extends DatabaseAdapter {
 
     case java.sql.Types.TINYINT:
       if (m.getTypeName().toUpperCase().contains("UNSIGNED")) {
-        return new PropertyType(Short.class, m, false, ValueRange.UNSIGNED_BYTE_RANGE,
-            TypeSource.STATIC_DIALECT_RULE);
+        return new PropertyType(Short.class, m, false, ValueRange.UNSIGNED_BYTE_RANGE, TypeSource.STATIC_DIALECT_RULE);
       } else {
         return new PropertyType(Byte.class, m, false, ValueRange.BYTE_RANGE, TypeSource.STATIC_DIALECT_RULE);
       }

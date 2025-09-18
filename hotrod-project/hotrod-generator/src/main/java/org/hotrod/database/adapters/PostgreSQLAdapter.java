@@ -29,8 +29,6 @@ import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class PostgreSQLAdapter extends DatabaseAdapter {
 
-  private static final long serialVersionUID = 1L;
-
   private static final Logger log = Logger.getLogger(PostgreSQLAdapter.class.getName());
 
   public PostgreSQLAdapter(final DatabaseMetaData dm) throws SQLException {

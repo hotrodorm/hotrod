@@ -29,8 +29,6 @@ import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class H2Adapter extends DatabaseAdapter {
 
-  private static final long serialVersionUID = 1L;
-
   private static final Logger log = Logger.getLogger(H2Adapter.class.getName());
 
   private boolean supportsCatalog;

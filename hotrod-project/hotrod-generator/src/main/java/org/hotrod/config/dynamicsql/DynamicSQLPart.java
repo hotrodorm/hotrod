@@ -1,6 +1,5 @@
 package org.hotrod.config.dynamicsql;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -174,9 +173,7 @@ public abstract class DynamicSQLPart extends EnhancedSQLPart {
 
   // Behavior
 
-  public static class ParameterDefinitions implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+  public static class ParameterDefinitions {
 
     private List<ParameterTag> params = new ArrayList<ParameterTag>();
 

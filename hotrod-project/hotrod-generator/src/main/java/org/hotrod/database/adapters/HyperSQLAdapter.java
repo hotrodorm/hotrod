@@ -28,8 +28,6 @@ import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class HyperSQLAdapter extends DatabaseAdapter {
 
-  private static final long serialVersionUID = 1L;
-
   private static final Logger log = Logger.getLogger(HyperSQLAdapter.class.getName());
 
   private static final long MAX_VARCHAR_LENGTH = 64L * 1024;

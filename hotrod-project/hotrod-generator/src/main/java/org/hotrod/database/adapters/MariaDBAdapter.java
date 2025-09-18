@@ -24,8 +24,6 @@ import org.nocrala.tools.database.tartarus.exception.SchemaNotSupportedException
 
 public class MariaDBAdapter extends DatabaseAdapter {
 
-  private static final long serialVersionUID = 1L;
-
   private static final Logger log = Logger.getLogger(MariaDBAdapter.class.getName());
 
   private MySQLAdapter mysqlAdaper;

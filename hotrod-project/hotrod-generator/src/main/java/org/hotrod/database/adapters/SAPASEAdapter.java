@@ -27,8 +27,6 @@ import org.nocrala.tools.database.tartarus.exception.InvalidSchemaException;
 
 public class SAPASEAdapter extends DatabaseAdapter {
 
-  private static final long serialVersionUID = 1L;
-
   private static final Logger log = Logger.getLogger(SAPASEAdapter.class.getName());
 
   public SAPASEAdapter(final DatabaseMetaData dm) throws SQLException {
@@ -69,13 +67,17 @@ public class SAPASEAdapter extends DatabaseAdapter {
         if (m.getPrecision() == null) {
           return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE);
         } else if (m.getPrecision() <= 2) {
-          return new PropertyType(Byte.class, m, false, ValueRange.getSignedRange(m.getPrecision()), TypeSource.STATIC_DIALECT_RULE);
+          return new PropertyType(Byte.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
+              TypeSource.STATIC_DIALECT_RULE);
         } else if (m.getPrecision() <= 4) {
-          return new PropertyType(Short.class, m, false, ValueRange.getSignedRange(m.getPrecision()), TypeSource.STATIC_DIALECT_RULE);
+          return new PropertyType(Short.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
+              TypeSource.STATIC_DIALECT_RULE);
         } else if (m.getPrecision() <= 9) {
-          return new PropertyType(Integer.class, m, false, ValueRange.getSignedRange(m.getPrecision()), TypeSource.STATIC_DIALECT_RULE);
+          return new PropertyType(Integer.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
+              TypeSource.STATIC_DIALECT_RULE);
         } else if (m.getPrecision() <= 18) {
-          return new PropertyType(Long.class, m, false, ValueRange.getSignedRange(m.getPrecision()), TypeSource.STATIC_DIALECT_RULE);
+          return new PropertyType(Long.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
+              TypeSource.STATIC_DIALECT_RULE);
         } else {
           return new PropertyType(BigInteger.class, m, false, TypeSource.STATIC_DIALECT_RULE);
         }

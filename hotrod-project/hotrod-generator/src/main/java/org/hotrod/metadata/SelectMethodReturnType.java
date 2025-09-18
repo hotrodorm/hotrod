@@ -17,7 +17,7 @@ import org.hotrod.metadata.VORegistry.VOProperty;
 import org.hotrod.metadata.VORegistry.VOProperty.EnclosingTagType;
 import org.hotrod.utils.ClassPackage;
 
-public class SelectMethodReturnType implements Serializable {
+public class SelectMethodReturnType {
 
   private static final long serialVersionUID = 1L;
 
