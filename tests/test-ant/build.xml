@@ -27,26 +27,42 @@
   </taskdef>
 
   <path id="hotrod.class.path">
+    <pathelement location="${user.home}/.m2/repository/org/hotrodorm/hotrod/hotrod-ant-plugin/${version}/hotrod-ant-plugin-${version}-jar-with-dependencies.jar" />
+
+    <pathelement location="${user.home}/.m2/repository/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1.jar" />
+    <pathelement location="${user.home}/.m2/repository/org/glassfish/jaxb/jaxb-runtime/2.3.1/jaxb-runtime-2.3.1.jar" />
+    <pathelement location="${user.home}/.m2/repository/javax/activation/activation/1.1/activation-1.1.jar" />
+
+    <!--
     <pathelement location="${user.home}/.m2/repository/org/hotrodorm/hotrod/hotrod-generator/${version}/hotrod-generator-${version}.jar" />
     <pathelement location="${user.home}/.m2/repository/org/hotrodorm/hotrod/hotrod-abstract-plugin/${version}/hotrod-abstract-plugin-${version}.jar" />
     <pathelement location="${user.home}/.m2/repository/org/hotrodorm/hotrod/hotrod-ant-plugin/${version}/hotrod-ant-plugin-${version}.jar" />
     <pathelement location="${user.home}/.m2/repository/org/hotrodorm/hotrod/hotrod-utils/${version}/hotrod-utils-${version}.jar" />
     <pathelement location="${user.home}/.m2/repository/org/hotrodorm/hotrod/hotrod/${version}/hotrod-${version}.jar" />
     <pathelement location="${user.home}/.m2/repository/org/nocrala/tools/database/tartarus/${tartarus.version}/tartarus-${tartarus.version}.jar" />
-
     <pathelement location="${user.home}/.m2/repository/org/apache/logging/log4j/log4j-api/2.12.1/log4j-api-2.12.1.jar" />
     <pathelement location="${user.home}/.m2/repository/org/apache/logging/log4j/log4j-core/2.12.1/log4j-core-2.12.1.jar" />
 
     <fileset dir="lib/ivy">
       <include name="*.jar" />
     </fileset>
+    -->
 
     <pathelement location="${jdbcdriverclasspath}" />
   </path>
 
   <target name="-init">
     <echo message="java version: ${java.version}" />
+    <echo message="JAR: ${user.home}/.m2/repository/org/hotrodorm/hotrod/hotrod-ant-plugin/${version}/hotrod-ant-plugin-${version}-jar-with-dependencies.jar" />
+
     <ivy-retrieve type="jar" pattern="lib/ivy/[artifact]-[revision].[ext]" />
+  </target>
+
+  <target name="gen" depends="-init">
+    <taskdef name="hotrodgen" classname="org.hotrod.plugin.ant.GenAntTask">
+      <classpath refid="hotrod.class.path" />
+    </taskdef>
+    <hotrodgen localproperties="${db.src.dir}/testing.properties" />
   </target>
 
   <target name="exporttxt" depends="-init">
@@ -61,13 +77,6 @@
       <classpath refid="hotrod.class.path" />
     </taskdef>
     <hotrodexportxlsx localproperties="${db.src.dir}/testing.properties" exportfilename="export.xlsx" />
-  </target>
-
-  <target name="purge" depends="-init">
-    <taskdef name="hotrodpurge" classname="org.hotrod.plugin.ant.PurgeAntTask">
-      <classpath refid="hotrod.class.path" />
-    </taskdef>
-    <hotrodpurge localproperties="${db.src.dir}/testing.properties" />
   </target>
 
 </project>
