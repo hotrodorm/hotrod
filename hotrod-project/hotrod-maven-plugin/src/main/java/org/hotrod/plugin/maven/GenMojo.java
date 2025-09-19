@@ -1,5 +1,6 @@
 package org.hotrod.plugin.maven;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -72,7 +73,8 @@ public class GenMojo extends AbstractMojo {
     } catch (ErrorMessageException e) {
       throw new MojoExecutionException(e.renderErrorMessage("HotRod could not generate the persistence layer"));
     } catch (FaultException e) {
-      throw new MojoExecutionException("HotRod could not generate the persistence layer", e.getCause());
+      log.log(Level.SEVERE, "HotRod could not generate the persistence layer", e.getCause());
+      throw new MojoExecutionException("HotRod could not generate the persistence layer.");
     }
   }
 
