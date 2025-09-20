@@ -1,0 +1,21 @@
+<project name="t5ant" basedir="." default="gen">
+
+  <target name="gen">
+    <taskdef name="hotrodgen" classname="org.hotrod.plugin.ant.GenAntTask">
+      <classpath >
+        <fileset dir="lib">
+          <include name="*.jar" />
+        </fileset>
+      </classpath>
+    </taskdef>
+    <hotrodgen 
+        configfile="./layer.xml"
+        jdbcdriverclass="org.h2.Driver"
+        jdbcurl="jdbc:h2:mem:EXAMPLEDB;INIT=runscript from 'schema.sql';DB_CLOSE_DELAY=-1"
+        jdbcusername="sa"
+        jdbcpassword=""
+        jdbcschema="PUBLIC"
+    />
+  </target>
+
+</project>

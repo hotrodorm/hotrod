@@ -1,0 +1,9 @@
+<hotrod>
+
+  <generators>
+    <jdbc />
+  </generators>
+
+  <table name="account" />
+
+</hotrod>
