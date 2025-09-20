@@ -13,7 +13,7 @@ public abstract class AbstractSentence<M extends AbstractSentence<?, ?>, P> {
   protected DynamicExpressionFactory factory;
   protected List<QuerySegment> segments = new ArrayList<>();
 
-  public AbstractSentence(DynamicExpressionFactory factory, M me, P parent) {
+  protected AbstractSentence(DynamicExpressionFactory factory, M me, P parent) {
     this.factory = factory;
     this.me = me;
     this.parent = parent;

@@ -67,11 +67,11 @@ public class PreparedSelectQuery<R> extends PreparedQuery {
   }
 
   public Cursor<R> executeCursor(Connection conn) throws SQLException {
-    return new DynCursor<R>(conn, this, this.rr, null);
+    return new DynamicCursor<>(conn, this, this.rr, null);
   }
 
   public Cursor<R> executeCursor(Connection conn, Integer fetchSize) throws SQLException {
-    return new DynCursor<R>(conn, this, this.rr, fetchSize);
+    return new DynamicCursor<>(conn, this, this.rr, fetchSize);
   }
 
 }

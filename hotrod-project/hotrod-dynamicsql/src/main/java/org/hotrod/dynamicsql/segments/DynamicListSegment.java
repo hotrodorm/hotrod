@@ -6,7 +6,7 @@ public abstract class DynamicListSegment extends ControlSegment {
 
   protected ListProcessor processor;
 
-  public DynamicListSegment(ListProcessor processor) {
+  protected DynamicListSegment(ListProcessor processor) {
     super();
     this.processor = processor;
   }

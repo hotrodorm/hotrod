@@ -4,15 +4,15 @@ import org.hotrod.converter.TypeConverter;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.segments.BindSegment;
 import org.hotrod.dynamicsql.segments.ParameterInjectionSegment;
-import org.hotrod.dynamicsql.segments.ParameterNotNullableUpdatableSegment;
 import org.hotrod.dynamicsql.segments.ParameterNotNullableSegment;
+import org.hotrod.dynamicsql.segments.ParameterNotNullableUpdatableSegment;
 import org.hotrod.dynamicsql.segments.ParameterNullableSegment;
 import org.hotrod.dynamicsql.segments.StaticContentSegment;
 import org.hotrod.dynamicsql.segments.VariableSegment;
 
 public abstract class Sentence<M extends Sentence<?, ?>, P> extends AbstractSentence<M, P> {
 
-  public Sentence(DynamicExpressionFactory factory, M me, P parent) {
+  protected Sentence(DynamicExpressionFactory factory, M me, P parent) {
     super(factory, me, parent);
   }
 

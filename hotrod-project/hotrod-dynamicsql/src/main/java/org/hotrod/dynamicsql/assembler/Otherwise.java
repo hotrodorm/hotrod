@@ -3,8 +3,7 @@ package org.hotrod.dynamicsql.assembler;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.segments.OtherwiseSegment;
 
-public class Otherwise<P extends Choose<?>, G extends AbstractSentence<?, ?>>
-    extends Sentence<Otherwise<P, G>, P> {
+public class Otherwise<P extends Choose<?>, G extends AbstractSentence<?, ?>> extends Sentence<Otherwise<P, G>, P> {
 
   private G grandpa;
 
@@ -16,7 +15,7 @@ public class Otherwise<P extends Choose<?>, G extends AbstractSentence<?, ?>>
 
   public ChooseTail<P, G> endotherwise() {
     DynShield.addOtherwise(this.parent, new OtherwiseSegment(super.segments, super.factory));
-    ChooseTail<P, G> es = new ChooseTail<P, G>(this.factory, this.parent, this.grandpa);
+    ChooseTail<P, G> es = new ChooseTail<>(this.factory, this.parent, this.grandpa);
     return es;
   }
 

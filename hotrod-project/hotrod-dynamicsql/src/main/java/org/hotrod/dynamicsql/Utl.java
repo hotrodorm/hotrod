@@ -2,6 +2,9 @@ package org.hotrod.dynamicsql;
 
 public abstract class Utl {
 
+  private Utl() {
+  }
+
   public static boolean isEmpty(String s) {
     return s == null || s.trim().isEmpty();
   }

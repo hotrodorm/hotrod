@@ -17,7 +17,7 @@ public class JEXLDynamicExpressionFactory extends DynamicExpressionFactory {
 
   @Override
   public Parameters newObjectContext(Object wrapped) {
-    return JEXLObjectParameterContext.of(new ObjectContext<>(JEXLDynamicExpression.JEXL_ENGINE, wrapped));
+    return JEXLObjectParameterContext.of(new ObjectContext<>(JEXLDynamicExpression.getJEXLEngine(), wrapped));
   }
 
 }

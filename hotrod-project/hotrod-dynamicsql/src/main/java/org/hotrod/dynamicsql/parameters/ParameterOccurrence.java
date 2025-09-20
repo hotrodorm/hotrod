@@ -30,7 +30,7 @@ public abstract class ParameterOccurrence {
   protected Object value;
   protected TypeConverter<?, ?> converter;
 
-  public ParameterOccurrence(String name, Integer index, Object value, TypeConverter<?, ?> converter) {
+  protected ParameterOccurrence(String name, Integer index, Object value, TypeConverter<?, ?> converter) {
     log.fine("init");
     this.name = name;
     this.index = index;

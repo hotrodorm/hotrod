@@ -23,13 +23,12 @@ public class Choose<P extends AbstractSentence<?, ?>> extends AbstractSentence<C
   }
 
   public When<Choose<P>> when(String test) {
-    When<Choose<P>> ws = new When<Choose<P>>(this.factory, this, test);
+    When<Choose<P>> ws = new When<>(this.factory, this, test);
     return ws;
   }
 
   public Otherwise<Choose<P>, P> otherwise() {
-    Otherwise<Choose<P>, P> ces = new Otherwise<Choose<P>, P>(this.factory, this,
-        this.parent);
+    Otherwise<Choose<P>, P> ces = new Otherwise<>(this.factory, this, this.parent);
     return ces;
   }
 

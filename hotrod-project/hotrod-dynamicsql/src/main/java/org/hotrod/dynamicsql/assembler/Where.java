@@ -17,14 +17,6 @@ public class Where<P extends AbstractSentence<?, ?>> extends AbstractSentence<Wh
     this.separator = separator;
   }
 
-  public Where(DynamicExpressionFactory factory, P parent, String separator, String headerPrefix,
-      String headerSuffix, String separatorPrefix, String separatorSuffix, String tailPrefix, String tailSuffix,
-      String... removePrefixes) {
-    super(factory, null, parent);
-    super.setMe(this);
-    this.separator = separator;
-  }
-
   @SuppressWarnings("unchecked")
   public If<Where<P>> if_(String test) {
     @SuppressWarnings("rawtypes")

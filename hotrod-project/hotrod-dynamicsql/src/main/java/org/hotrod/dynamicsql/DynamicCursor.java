@@ -12,16 +12,16 @@ import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class DynCursor<R> implements Cursor<R> {
+public class DynamicCursor<R> implements Cursor<R> {
 
-  private static final Logger log = Logger.getLogger(DynCursor.class.getName());
+  private static final Logger log = Logger.getLogger(DynamicCursor.class.getName());
 
   private Connection conn;
   private PreparedStatement ps;
   private ResultSet rs;
   private RowReader<R> rowReader;
 
-  public DynCursor(Connection conn, PreparedSelectQuery<R> q, RowReader<R> rowReader, final Integer fetchSize)
+  public DynamicCursor(Connection conn, PreparedSelectQuery<R> q, RowReader<R> rowReader, final Integer fetchSize)
       throws SQLException {
 
     try {

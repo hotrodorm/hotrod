@@ -15,6 +15,8 @@ public class SettersSegment extends DynamicListSegment {
   private static final Logger log = Logger.getLogger(SettersSegment.class.getName());
 
   private List<IfSegment> segments;
+  @SuppressWarnings("unused")
+  private DynamicExpressionFactory factory;
 
   public SettersSegment(List<IfSegment> segments, DynamicExpressionFactory factory) {
     super(new ListProcessor( //
@@ -22,6 +24,7 @@ public class SettersSegment extends DynamicListSegment {
         new ClauseFormatter(",", null, "\n    "), null, new ClauseFormatter("\n", null, null) //
     ));
     this.segments = segments;
+    this.factory = factory;
   }
 
   @Override

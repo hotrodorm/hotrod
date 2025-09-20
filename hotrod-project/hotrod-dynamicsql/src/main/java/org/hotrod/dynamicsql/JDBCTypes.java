@@ -5,11 +5,14 @@ import java.util.Map;
 
 public class JDBCTypes {
 
+  private JDBCTypes() {
+  }
+
   /*
    * This enum contains all JDBC types available until Java 8. It's used to be
    * able to run in Java 6.
    */
-  public static enum JDBCType {
+  public enum JDBCType {
 
     ARRAY("ARRAY", java.sql.Types.ARRAY), //
     BIGINT("BIGINT", java.sql.Types.BIGINT), //
@@ -82,15 +85,16 @@ public class JDBCTypes {
       return typeName;
     }
 
+    @Override
     public String toString() {
       return "code:" + this.code + ", shortTypeName:" + this.shortTypeName + " typeName:" + this.typeName;
     }
 
   }
 
-  private static Map<Integer, JDBCType> mapByCode = new HashMap<Integer, JDBCType>();
-  private static Map<String, JDBCType> mapByTypeName = new HashMap<String, JDBCType>();
-  private static Map<String, JDBCType> mapByShortTypeName = new HashMap<String, JDBCType>();
+  private static Map<Integer, JDBCType> mapByCode = new HashMap<>();
+  private static Map<String, JDBCType> mapByTypeName = new HashMap<>();
+  private static Map<String, JDBCType> mapByShortTypeName = new HashMap<>();
 
   static {
     for (JDBCType t : JDBCType.values()) {
@@ -115,9 +119,9 @@ public class JDBCTypes {
   }
 
   /*
-   * Returns the JDBC type for this name. Accepts short type name (e.g.
-   * "NUMERIC") as well as full type name ("java.sql.Types.NUMERIC"). Null if
-   * the type name does not exist.
+   * Returns the JDBC type for this name. Accepts short type name (e.g. "NUMERIC")
+   * as well as full type name ("java.sql.Types.NUMERIC"). Null if the type name
+   * does not exist.
    */
   public static JDBCType nameToType(final String jdbcTypeName) {
     JDBCType t = mapByTypeName.get(jdbcTypeName);

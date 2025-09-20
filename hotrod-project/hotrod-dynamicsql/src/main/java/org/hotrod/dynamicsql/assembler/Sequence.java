@@ -23,8 +23,7 @@ public class Sequence extends Sentence<Sequence, Sequence> {
   }
 
   public DynamicSelectQuery endSelectQuery() {
-    DynamicSelectQuery q = new DynamicSelectQuery(super.factory, this.segments);
-    return q;
+    return new DynamicSelectQuery(super.factory, this.segments);
   }
 
   public DynamicInsertQuery endInsertQuery(PrimaryKeyRetrievalMode primaryKeyRetrievalMode) {

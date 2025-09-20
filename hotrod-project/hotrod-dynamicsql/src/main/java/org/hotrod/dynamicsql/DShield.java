@@ -2,6 +2,9 @@ package org.hotrod.dynamicsql;
 
 public class DShield {
 
+  private DShield() {
+  }
+
   public static boolean hasParameter(Parameters params, String name) {
     return params.hasParameter(name);
   }

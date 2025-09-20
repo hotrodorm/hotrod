@@ -9,9 +9,12 @@ import org.hotrod.dynamicsql.Parameters;
 public class OtherwiseSegment extends ControlSegment {
 
   private List<QuerySegment> segments;
+  @SuppressWarnings("unused")
+  private DynamicExpressionFactory factory;
 
   public OtherwiseSegment(List<QuerySegment> segments, DynamicExpressionFactory factory) {
     this.segments = segments;
+    this.factory = factory;
   }
 
   @Override

@@ -15,7 +15,7 @@ public class JEXLDynamicExpression extends DynamicExpression {
 
   private static final int JEXL_CACHE_MAX_EXPRESSIONS = 200;
 
-  public static JexlEngine JEXL_ENGINE = new JexlBuilder().cache(JEXL_CACHE_MAX_EXPRESSIONS)
+  private static final JexlEngine JEXL_ENGINE = new JexlBuilder().cache(JEXL_CACHE_MAX_EXPRESSIONS)
       .permissions(JexlPermissions.UNRESTRICTED).strict(true).debug(true).silent(false).create();
 
   private String txt;
@@ -42,8 +42,7 @@ public class JEXLDynamicExpression extends DynamicExpression {
       return null;
     }
     try {
-      T t = targetClass.cast(obj);
-      return t;
+      return targetClass.cast(obj);
     } catch (ClassCastException e) {
       throw new DynamicExpressionException(
           "Invalid result of expression '" + this.txt + "': expected a result of type '" + targetClass.getName()
@@ -59,6 +58,10 @@ public class JEXLDynamicExpression extends DynamicExpression {
     } catch (Exception e) {
       throw new DynamicExpressionException("Could not evaluate the expression '" + this.txt + "'", e);
     }
+  }
+
+  public static final JexlEngine getJEXLEngine() {
+    return JEXL_ENGINE;
   }
 
 }

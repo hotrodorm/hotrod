@@ -6,6 +6,9 @@ import org.hotrod.dynamicsql.segments.WhenSegment;
 
 public class DynShield {
 
+  private DynShield() {
+  }
+
   public static void addSegment(AbstractSentence<?, ?> parent, QuerySegment segment) {
     parent.segments.add(segment);
   }

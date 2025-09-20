@@ -26,14 +26,17 @@ public class WhenSegment extends ControlSegment {
 
     // 1. Evaluate the test condition
 
-    Boolean cond = null;
+    Boolean condObj = null;
+    boolean cond = false;
     try {
-      cond = this.testExpression.evaluate(context, Boolean.class);
-      if (cond == null) {
+      condObj = this.testExpression.evaluate(context, Boolean.class);
+      if (condObj == null) {
         throw new DynamicExpressionException("The dynamic test condition '" + this.test
             + "' evaluated to null, but must evaluate to either true or false.");
+      } else {
+        cond = condObj;
       }
-    } catch (Throwable e) {
+    } catch (RuntimeException e) {
       throw new DynamicExpressionException(
           "Could not evaluate the test condition '" + this.test + "' on Dynamic SQL WHEN segment", e);
     }

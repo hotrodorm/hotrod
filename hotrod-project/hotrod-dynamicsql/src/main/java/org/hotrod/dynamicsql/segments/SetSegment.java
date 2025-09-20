@@ -8,10 +8,13 @@ public class SetSegment extends ControlSegment {
 
   private String column;
   private ParameterNullableSegment value;
+  @SuppressWarnings("unused")
+  private DynamicExpressionFactory factory;
 
   public SetSegment(String column, ParameterNullableSegment value, DynamicExpressionFactory factory) {
     this.column = column;
     this.value = value;
+    this.factory = factory;
   }
 
   @Override

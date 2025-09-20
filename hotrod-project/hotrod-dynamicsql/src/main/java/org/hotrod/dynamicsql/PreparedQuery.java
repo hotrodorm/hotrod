@@ -14,7 +14,7 @@ public abstract class PreparedQuery {
 
   protected String formattedSQL = null;
 
-  public PreparedQuery(String sql, List<ParameterOccurrence> parameters) {
+  protected PreparedQuery(String sql, List<ParameterOccurrence> parameters) {
     if (sql == null) {
       throw new RuntimeException("Invalid empty SQL query");
     }
@@ -66,8 +66,7 @@ public abstract class PreparedQuery {
     if (this.formattedSQL == null) {
       String[] lines = this.sql.split("\n");
       if (lines != null) {
-        this.formattedSQL = Arrays.stream(lines).filter(l -> !l.trim().isEmpty())
-            .collect(Collectors.joining("\n"));
+        this.formattedSQL = Arrays.stream(lines).filter(l -> !l.trim().isEmpty()).collect(Collectors.joining("\n"));
       } else {
         this.formattedSQL = "";
       }

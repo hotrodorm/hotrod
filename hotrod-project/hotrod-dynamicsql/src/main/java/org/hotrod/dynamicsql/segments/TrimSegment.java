@@ -22,6 +22,8 @@ public class TrimSegment extends DynamicListSegment {
   private static final String DEFAULT_TAIL_SUFFIX = "";
 
   private List<IfSegment> segments;
+  @SuppressWarnings("unused")
+  private DynamicExpressionFactory factory;
 
   public TrimSegment(String header, String separator, String tail, List<IfSegment> segments,
       DynamicExpressionFactory factory) {
@@ -32,6 +34,7 @@ public class TrimSegment extends DynamicListSegment {
         new ClauseFormatter(tail, DEFAULT_TAIL_PREFIX, DEFAULT_TAIL_SUFFIX) //
     ));
     this.segments = segments;
+    this.factory = factory;
   }
 
   public TrimSegment(String header, String separator, String tail, List<IfSegment> segments,
@@ -44,6 +47,7 @@ public class TrimSegment extends DynamicListSegment {
         new ClauseFormatter(tail, tailPrefix, tailSuffix) //
     ));
     this.segments = segments;
+    this.factory = factory;
   }
 
   @Override

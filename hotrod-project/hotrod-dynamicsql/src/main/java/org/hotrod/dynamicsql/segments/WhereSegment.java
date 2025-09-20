@@ -19,11 +19,14 @@ public class WhereSegment extends DynamicListSegment {
   private static final String DEFAULT_MIDDLE_SUFFIX = " ";
 
   private List<IfSegment> segments;
+  @SuppressWarnings("unused")
+  private DynamicExpressionFactory factory;
 
   public WhereSegment(String separator, List<IfSegment> segments, DynamicExpressionFactory factory) {
     super(new ListProcessor(DEFAULT_HEADER_FORMATTER,
         new ClauseFormatter(separator, DEFAULT_MIDDLE_PREFIX, DEFAULT_MIDDLE_SUFFIX), null, null));
     this.segments = segments;
+    this.factory = factory;
   }
 
   @Override

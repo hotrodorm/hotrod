@@ -30,13 +30,13 @@ public class PreparedInsertSequenceInlineKeysResultsetExecutor extends InsertExe
     }
   }
 
-  private Long execute(List<ParameterOccurrence> parameters, PreparedStatement ps, Connection conn) throws SQLException {
+  private Long execute(List<ParameterOccurrence> parameters, PreparedStatement ps, Connection conn)
+      throws SQLException {
     super.applyParameters(parameters, ps, conn);
     ps.executeUpdate();
     try (ResultSet rs = ps.getGeneratedKeys()) {
       if (rs.next()) {
-        long k = rs.getLong(1);
-        return k;
+        return rs.getLong(1);
       }
       return null;
     }

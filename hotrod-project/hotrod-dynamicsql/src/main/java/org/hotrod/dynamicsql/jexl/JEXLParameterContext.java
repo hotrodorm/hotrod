@@ -44,7 +44,7 @@ public class JEXLParameterContext extends Parameters implements JexlContext {
   @Override
   public void bind(String name, Object value) throws DynamicExpressionException {
     if (!VALID_SIMPLE_NAME.matcher(name).matches()) {
-      throw new RuntimeException(
+      throw new DynamicExpressionException(
           "Invalid variable name '" + name + "': must a letter followed by alphanumeric characters or underscores.");
     }
     super.paramValues.put(name, value);

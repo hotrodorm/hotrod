@@ -31,7 +31,7 @@ public class ListFormatterConsumer implements StaticSegmentConsumer, AutoCloseab
     this.atStartOfEntry = true;
     this.removePattern = (this.removePrefixes == null || this.removePrefixes.length == 0) ? null
         : Pattern.compile("^(\\s*(?:" + Arrays.stream(this.removePrefixes).filter(s -> s != null)
-            .map(s -> s.toLowerCase()).collect(Collectors.joining("|")) + "))");
+            .map(String::toLowerCase).collect(Collectors.joining("|")) + "))");
   }
 
   @Override

@@ -27,7 +27,7 @@ public class DynamicSelectQuery extends DynamicQuery {
     for (QuerySegment s : this.segments) {
       s.prepare(sc, context, 0);
     }
-    return new PreparedSelectQuery<T>(sc, rr);
+    return new PreparedSelectQuery<>(sc, rr);
   }
 
   public PreparedSelectQuery<Row> prepare(Parameters context) throws DynamicExpressionException {
@@ -35,7 +35,7 @@ public class DynamicSelectQuery extends DynamicQuery {
     for (QuerySegment s : this.segments) {
       s.prepare(sc, context, 0);
     }
-    return new PreparedSelectQuery<Row>(sc, new MapRowReader());
+    return new PreparedSelectQuery<>(sc, new MapRowReader());
   }
 
   public <A> PreparedSelectQuery<A> prepare(Parameters context, Class<A> a) throws DynamicExpressionException {
@@ -43,7 +43,7 @@ public class DynamicSelectQuery extends DynamicQuery {
     for (QuerySegment s : this.segments) {
       s.prepare(sc, context, 0);
     }
-    return new PreparedSelectQuery<A>(sc, new RowReader<A>() {
+    return new PreparedSelectQuery<>(sc, new RowReader<A>() {
 
       @Override
       public A readRowFrom(ResultSet rs, Connection conn) throws SQLException {
@@ -59,7 +59,7 @@ public class DynamicSelectQuery extends DynamicQuery {
     for (QuerySegment s : this.segments) {
       s.prepare(sc, context, 0);
     }
-    return new PreparedSelectQuery<DTuple2<A, B>>(sc, new RowReader<DTuple2<A, B>>() {
+    return new PreparedSelectQuery<>(sc, new RowReader<DTuple2<A, B>>() {
 
       @Override
       public DTuple2<A, B> readRowFrom(ResultSet rs, Connection conn) throws SQLException {
@@ -78,7 +78,7 @@ public class DynamicSelectQuery extends DynamicQuery {
     for (QuerySegment s : this.segments) {
       s.prepare(sc, context, 0);
     }
-    return new PreparedSelectQuery<DTuple3<A, B, C>>(sc, new RowReader<DTuple3<A, B, C>>() {
+    return new PreparedSelectQuery<>(sc, new RowReader<DTuple3<A, B, C>>() {
 
       @Override
       public DTuple3<A, B, C> readRowFrom(ResultSet rs, Connection conn) throws SQLException {
@@ -98,7 +98,7 @@ public class DynamicSelectQuery extends DynamicQuery {
     for (QuerySegment s : this.segments) {
       s.prepare(sc, context, 0);
     }
-    return new PreparedSelectQuery<DTuple4<A, B, C, D>>(sc, new RowReader<DTuple4<A, B, C, D>>() {
+    return new PreparedSelectQuery<>(sc, new RowReader<DTuple4<A, B, C, D>>() {
 
       @Override
       public DTuple4<A, B, C, D> readRowFrom(ResultSet rs, Connection conn) throws SQLException {
@@ -119,7 +119,7 @@ public class DynamicSelectQuery extends DynamicQuery {
     for (QuerySegment s : this.segments) {
       s.prepare(sc, context, 0);
     }
-    return new PreparedSelectQuery<DTuple5<A, B, C, D, E>>(sc, new RowReader<DTuple5<A, B, C, D, E>>() {
+    return new PreparedSelectQuery<>(sc, new RowReader<DTuple5<A, B, C, D, E>>() {
 
       @Override
       public DTuple5<A, B, C, D, E> readRowFrom(ResultSet rs, Connection conn) throws SQLException {
@@ -141,7 +141,7 @@ public class DynamicSelectQuery extends DynamicQuery {
     for (QuerySegment s : this.segments) {
       s.prepare(sc, context, 0);
     }
-    return new PreparedSelectQuery<DTuple6<A, B, C, D, E, F>>(sc, new RowReader<DTuple6<A, B, C, D, E, F>>() {
+    return new PreparedSelectQuery<>(sc, new RowReader<DTuple6<A, B, C, D, E, F>>() {
 
       @Override
       public DTuple6<A, B, C, D, E, F> readRowFrom(ResultSet rs, Connection conn) throws SQLException {

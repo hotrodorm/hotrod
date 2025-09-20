@@ -29,9 +29,6 @@ public class ForEachSegment extends ControlSegment {
 
   private List<QuerySegment> segments = new ArrayList<>();
 
-  private Object[] array;
-  private Collection<?> coll;
-
   public ForEachSegment(String item, String collection, String open, String separator, String close,
       List<QuerySegment> segments, DynamicExpressionFactory factory) {
     super();
@@ -94,16 +91,19 @@ public class ForEachSegment extends ControlSegment {
       this.validate();
     }
 
+    Object[] array;
+    Collection<?> coll;
+
     Object obj = this.collectionExpression.evaluate(context);
     if (obj == null) {
       return false;
     }
     if (obj.getClass().isArray()) {
-      this.array = (Object[]) obj;
-      this.coll = null;
+      array = (Object[]) obj;
+      coll = null;
     } else if (Collection.class.isAssignableFrom(obj.getClass())) {
-      this.array = null;
-      this.coll = (Collection<?>) obj;
+      array = null;
+      coll = (Collection<?>) obj;
     } else {
       throw new DynamicExpressionException(
           "The 'collection' property of a Dynamic SQL FOREACH must evaluate to a java.util.Collection class or an array, but it evaluated to:"
@@ -115,7 +115,7 @@ public class ForEachSegment extends ControlSegment {
           + "' defined by the 'item' property of a Dynamic SQL FOREACH already exists. Cannot shadow an existing variable");
     }
 
-    Collection<?> elements = this.array != null ? Arrays.asList(this.array) : this.coll;
+    Collection<?> elements = array != null ? Arrays.asList(array) : coll;
 
     this.open.prepare(sc, context, loopNestingLevel);
 
