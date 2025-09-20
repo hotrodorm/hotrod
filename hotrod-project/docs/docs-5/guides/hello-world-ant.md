@@ -2,22 +2,40 @@
 
 This guide shows how to generate the persistence layer using Apache Ant.
 
-The Ant plugin included in HotRod works in Java 8 only. For newer versions of Java, use Maven instead
+**Note**: The Ant plugin included in HotRod works in Java 8 only. For newer versions of Java, use Maven instead.
 
 You'll need:
 
-- Java.
+- Java 8.
 - Apache Ant.
 - A text editor. `Notepad` or `vi` will do, but you can use your favorite IDE if you prefer.
 - No database installation necessary. We'll use a non-persistent in-memory H2 database in this example.
 
 This guide sets up an Ant project, creates a table in the database, and generates the persistence from it.
 
-**Note**: It's perfectly possible (albiet cumbersome) to build and run a Spring or Spring Boot application using Ant. This has been done for a few projects, although is heavily recommended to use Maven for its simplicity.
+**Note**: It's perfectly possible to assemble a Spring or Spring Boot application using Ant. This has been done for a few projects, although is heavily recommended to use Maven for simplicity.
 
 ## 1. The build.xml File
 
-In this part we create the Maven project, we lay out its structure, we and add all the necessary libraries and plugins to it.
+In this part we create the Maven project, we lay out its structure, we and add all the necessary libraries and plugins to it. In the end you'll have the following folder structure:
+
+```
+<PROJECT_HOME>
++- build.xml
++- layer.xml
++- schema.sql
++- lib/
+  +- hotrod-ant-plugin-5.1.2-jar-with-dependencies.jar
+  +- h2-2.2.224.jar
++- src/main/java/app/persistence/
+  +- LayerConfigurationBean.java
+  +- dao/
+    +- AccountDAO.java
+  +- layout/
+    +- AccountLayout.java
+  +- model/
+    +- Account.java
+```
 
 If you are using a plain text editor (such as Notepad) you can create an empty folder and add the
 files as described in the steps below. Alternatively, you can use your favorite IDE to create a
@@ -57,16 +75,14 @@ mkdir -p src/main/java/app
 mkdir -p lib
 ```
 
-Change the commands above accordingly for Windows or other OS as needed, or use your IDE to create them.
+**Note**: Change the commands above accordingly for Windows or other OS as needed, or use your IDE to create them.
 
-## 2. The Libraries
-
-Download the HotRod Ant Plugin along with the JDBC driver of your database to the lib folder. In this example you can get them from Maven Central:
+Download the HotRod Ant Plugin along with the JDBC driver of your database to the `lib` folder. In this example you can get them from Maven Central:
 
 - [hotrod-ant-plugin-5.1.2-jar-with-dependencies.jar](https://repo1.maven.org/maven2/org/hotrodorm/hotrod/hotrod-ant-plugin/5.1.2/hotrod-ant-plugin-5.1.2-jar-with-dependencies.jar)
 - [h2-2.2.224.jar](https://repo1.maven.org/maven2/com/h2database/h2/2.2.224/h2-2.2.224.jar)
 
-## 3. The Database Tables
+## 2. The Database Tables
 
 In this part we define the SQL script to create an in-memory table in H2 database.
 
@@ -79,7 +95,7 @@ create table account (
 );
 ```
 
-## 4. The Persistence Layer Configuration
+## 3. The Persistence Layer Configuration
 
 In this example the persistence layer will include a single table. Create the file `layer.xml` with the content:
 
@@ -95,7 +111,7 @@ In this example the persistence layer will include a single table. Create the fi
 </hotrod>
 ```
 
-## 5. Generating the Persistence Layer
+## 4. Generating the Persistence Layer
 
 Now, let's use HotRod to generate the persistence code. Go to the project folder and type:
 
