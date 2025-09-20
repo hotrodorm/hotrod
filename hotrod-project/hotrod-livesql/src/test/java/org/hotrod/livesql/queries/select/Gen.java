@@ -40,7 +40,7 @@ public class Gen {
       String classnNew = "SelectTuplesFrom" + (i + 1) + "Phase<>";
       String tupleClassc = "Tuple" + i + "<" + tuplesc + ">";
 //      String t = "<T extends TableOrView<" + c + ">, " + c + ">";
-      String t = "<TV extends TableOrView<" + c + ">, " + c + ">";
+      String t = "<T0 extends TableOrView<" + c + ">, " + c + ">";
 
       String temp = i < MAX_SIZE ? template : templateLast;
       String ready = temp //

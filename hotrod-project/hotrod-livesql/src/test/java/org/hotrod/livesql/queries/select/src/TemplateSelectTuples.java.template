@@ -39,137 +39,137 @@ public class @@classc@@ {
 
   // joining TableOrView
 
-  public @@t@@ @@classn@@ join(TV t, final Predicate on) {
+  public @@t@@ @@classn@@ join(T0 t, final Predicate on) {
     this.metadata.join(new InnerJoin(t, on));
     return new @@classnNew@@(this.metadata);
   }
 
-  public @@t@@ @@classn@@ join(TV t, final EntityColumn... using) {
+  public @@t@@ @@classn@@ join(T0 t, final EntityColumn... using) {
     this.metadata.join(new InnerJoin(t, using));
     return new @@classnNew@@(this.metadata);
   }
 
-  public @@t@@ @@classn@@ leftJoin(TV t,
+  public @@t@@ @@classn@@ leftJoin(T0 t,
       final Predicate on) {
     this.metadata.join(new LeftOuterJoin(t, on));
     return new @@classnNew@@(this.metadata);
   }
 
-  public @@t@@ @@classn@@ leftJoin(TV t, final EntityColumn... using) {
+  public @@t@@ @@classn@@ leftJoin(T0 t, final EntityColumn... using) {
     this.metadata.join(new LeftOuterJoin(t, using));
     return new @@classnNew@@(this.metadata);
   }
 
-  public @@t@@ @@classn@@ rightJoin(TV t,
+  public @@t@@ @@classn@@ rightJoin(T0 t,
       final Predicate on) {
     this.metadata.join(new RightOuterJoin(t, on));
     return new @@classnNew@@(this.metadata);
   }
 
-  public @@t@@ @@classn@@ rightJoin(TV t, final EntityColumn... using) {
+  public @@t@@ @@classn@@ rightJoin(T0 t, final EntityColumn... using) {
     this.metadata.join(new RightOuterJoin(t, using));
     return new @@classnNew@@(this.metadata);
   }
 
-  public @@t@@ @@classn@@ fullJoin(TV t,
+  public @@t@@ @@classn@@ fullJoin(T0 t,
       final Predicate on) {
     this.metadata.join(new FullOuterJoin(t, on));
     return new @@classnNew@@(this.metadata);
   }
 
-  public @@t@@ @@classn@@ fullJoin(TV t, final EntityColumn... using) {
+  public @@t@@ @@classn@@ fullJoin(T0 t, final EntityColumn... using) {
     this.metadata.join(new FullOuterJoin(t, using));
     return new @@classnNew@@(this.metadata);
   }
 
-  public @@t@@ @@classn@@ crossJoin(TV t) {
+  public @@t@@ @@classn@@ crossJoin(T0 t) {
     this.metadata.join(new CrossJoin(t));
     return new @@classnNew@@(this.metadata);
   }
 
-  public @@t@@ @@classn@@ naturalJoin(TV t) {
+  public @@t@@ @@classn@@ naturalJoin(T0 t) {
     this.metadata.join(new NaturalInnerJoin(t));
     return new @@classnNew@@(this.metadata);
   }
 
-  public @@t@@ @@classn@@ naturalLeftJoin(TV t) {
+  public @@t@@ @@classn@@ naturalLeftJoin(T0 t) {
     this.metadata.join(new NaturalLeftOuterJoin(t));
     return new @@classnNew@@(this.metadata);
   }
 
-  public @@t@@ @@classn@@ naturalRightJoin(TV t) {
+  public @@t@@ @@classn@@ naturalRightJoin(T0 t) {
     this.metadata.join(new NaturalRightOuterJoin(t));
     return new @@classnNew@@(this.metadata);
   }
 
-  public @@t@@ @@classn@@ naturalFullJoin(TV t) {
+  public @@t@@ @@classn@@ naturalFullJoin(T0 t) {
     this.metadata.join(new NaturalFullOuterJoin(t));
     return new @@classnNew@@(this.metadata);
   }
 
   // semi-joining TableOrView
 
-  public @@t@@ @@classc@@ semiJoin(TV t, final Predicate on) {
+  public @@t@@ @@classc@@ semiJoin(T0 t, final Predicate on) {
     this.metadata.join(new InnerJoin(t, on), false);
     return new @@classcNew@@(this.metadata);
   }
 
-  public @@t@@ @@classc@@ semiJoin(TV t, final EntityColumn... using) {
+  public @@t@@ @@classc@@ semiJoin(T0 t, final EntityColumn... using) {
     this.metadata.join(new InnerJoin(t, using), false);
     return new @@classcNew@@(this.metadata);
   }
 
-  public @@t@@ @@classc@@ semiLeftJoin(TV t, final Predicate on) {
+  public @@t@@ @@classc@@ semiLeftJoin(T0 t, final Predicate on) {
     this.metadata.join(new LeftOuterJoin(t, on), false);
     return new @@classcNew@@(this.metadata);
   }
 
-  public @@t@@ @@classc@@ semiLeftJoin(TV t, final EntityColumn... using) {
+  public @@t@@ @@classc@@ semiLeftJoin(T0 t, final EntityColumn... using) {
     this.metadata.join(new LeftOuterJoin(t, using), false);
     return new @@classcNew@@(this.metadata);
   }
 
-  public @@t@@ @@classc@@ semiRightJoin(TV t, final Predicate on) {
+  public @@t@@ @@classc@@ semiRightJoin(T0 t, final Predicate on) {
     this.metadata.join(new RightOuterJoin(t, on), false);
     return new @@classcNew@@(this.metadata);
   }
 
-  public @@t@@ @@classc@@ semiRightJoin(TV t, final EntityColumn... using) {
+  public @@t@@ @@classc@@ semiRightJoin(T0 t, final EntityColumn... using) {
     this.metadata.join(new RightOuterJoin(t, using), false);
     return new @@classcNew@@(this.metadata);
   }
 
-  public @@t@@ @@classc@@ semiFullJoin(TV t, final Predicate on) {
+  public @@t@@ @@classc@@ semiFullJoin(T0 t, final Predicate on) {
     this.metadata.join(new FullOuterJoin(t, on), false);
     return new @@classcNew@@(this.metadata);
   }
 
-  public @@t@@ @@classc@@ semiFullJoin(TV t, final EntityColumn... using) {
+  public @@t@@ @@classc@@ semiFullJoin(T0 t, final EntityColumn... using) {
     this.metadata.join(new FullOuterJoin(t, using), false);
     return new @@classcNew@@(this.metadata);
   }
 
-  public @@t@@ @@classc@@ semiCrossJoin(TV t) {
+  public @@t@@ @@classc@@ semiCrossJoin(T0 t) {
     this.metadata.join(new CrossJoin(t), false);
     return new @@classcNew@@(this.metadata);
   }
 
-  public @@t@@ @@classc@@ semiNaturalJoin(TV t) {
+  public @@t@@ @@classc@@ semiNaturalJoin(T0 t) {
     this.metadata.join(new NaturalInnerJoin(t), false);
     return new @@classcNew@@(this.metadata);
   }
 
-  public @@t@@ @@classc@@ semiNaturalLeftJoin(TV t) {
+  public @@t@@ @@classc@@ semiNaturalLeftJoin(T0 t) {
     this.metadata.join(new NaturalLeftOuterJoin(t), false);
     return new @@classcNew@@(this.metadata);
   }
 
-  public @@t@@ @@classc@@ semiNaturalRightJoin(TV t) {
+  public @@t@@ @@classc@@ semiNaturalRightJoin(T0 t) {
     this.metadata.join(new NaturalRightOuterJoin(t), false);
     return new @@classcNew@@(this.metadata);
   }
 
-  public @@t@@ @@classc@@ semiNaturalFullJoin(TV t) {
+  public @@t@@ @@classc@@ semiNaturalFullJoin(T0 t) {
     this.metadata.join(new NaturalFullOuterJoin(t), false);
     return new @@classcNew@@(this.metadata);
   }
