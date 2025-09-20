@@ -10,12 +10,14 @@ import java.util.stream.StreamSupport;
 public class XUtil {
 
   public static String trim(final Throwable e) {
-    return stream(e).map(c -> renderMessage(c)).collect(Collectors.joining(": "));
+    return stream(e).map(c -> renderMessage(c)).filter(s -> s != null && !s.isEmpty())
+        .map(x -> x + "[" + x.length() + "]").collect(Collectors.joining(": "));
   }
 
   private static String renderMessage(final Throwable e) {
     return (e.getClass().equals(ClassNotFoundException.class) ? "Class not found: "
-        : (e.getClass().equals(FileNotFoundException.class) ? "File not found: " : "")) + e.getMessage();
+        : (e.getClass().equals(FileNotFoundException.class) ? "File not found: " : ""))
+        + (e == null || SUtil.isEmpty(e.getMessage()) ? e.getClass().getSimpleName() : e.getMessage());
   }
 
   public static Stream<Throwable> stream(final Throwable e) {

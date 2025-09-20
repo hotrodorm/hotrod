@@ -35,6 +35,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.FileRegistry;
 import org.hotrod.utils.FileRegistry.FileAlreadyRegisteredException;
 import org.hotrod.utils.SourceLocation;
+import org.hotrod.utils.XUtil;
 import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
@@ -159,7 +160,8 @@ public class ConfigurationLoader {
       return config;
 
     } catch (JAXBException e) {
-      throw new FaultException("Could not load the configuration file '" + f.getPath() + "'", e);
+      throw new ErrorMessageException(
+          "Invalid XML tag or attribute in the configuration file '" + f.getPath() + "': " + XUtil.trim(e));
 
     } catch (InvalidConfigurationFileException e) {
       SourceLocation loc = e.getTag().getSourceLocation();
@@ -170,7 +172,7 @@ public class ConfigurationLoader {
       }
 
     } catch (GeneratorNotFoundException e) {
-      throw new FaultException("Geneator not found", e);
+      throw new FaultException("Generator not found", e);
 
     }
 
