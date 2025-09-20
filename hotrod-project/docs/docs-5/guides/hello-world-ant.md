@@ -131,8 +131,8 @@ BUILD SUCCESSFUL
 Total time: 1 second
 ```
 
-That's it! You just generated the persistence code from the database and ran an app using it.
+That's it! You just generated the persistence layer from the database to `src/main/java/app/persistence`. The DAOs, Layout, and Model classes are ready so you can use CRUD and LiveSQL features out of the box.
 
 Later on, when the database suffers changes &mdash; it will &mdash; you can just
-rerun the generation step `mvn hotrod:gen` to retrieve the latest changes to columns, tables, views, etc. and to apply
+rerun the generation step `ant` to retrieve the latest changes to columns, tables, views, etc. and to apply
 them automatically to the persistence layer.

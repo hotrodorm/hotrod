@@ -191,6 +191,7 @@ Getting Started:
 
 - [Hello World!](./guides/hello-world.md)
 - [Starting a Maven Project from Scratch](./guides/starting-a-maven-project-from-scratch-with-postgresql.md)
+- [Using Ant for Java 8](./guides/hello-world-ant.md)
 
 Tuning the Persistence Layer:
 
@@ -205,7 +206,7 @@ Debugging:
 
 Advanced Features:
 
-- [Extending LiveSQL Functions](./livesql/extending-livesql-functions.md)
 - [Using Multiple DataSources](./guides/using-multiple-datasources.md)
+- [Extending LiveSQL Functions](./livesql/extending-livesql-functions.md)
 
 
