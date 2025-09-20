@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.livesql.expressions.ComparableExpression;
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.ordering.OrderingTerm;
@@ -28,6 +27,7 @@ import org.hotrod.livesql.queries.select.sets.CombinedSelectObject;
 import org.hotrod.livesql.queries.select.tuples.TuplesMetadata;
 import org.hotrod.livesql.queries.select.tuples.TuplesSelectObject;
 import org.hotrod.livesql.queries.subqueries.Subquery;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public class @@classc@@ {
 
@@ -39,7 +39,7 @@ public class @@classc@@ {
 
   // joining TableOrView
 
-  public @@t@@ @@classn@@ join(TV t, final BooleanExpression on) {
+  public @@t@@ @@classn@@ join(TV t, final Predicate on) {
     this.metadata.join(new InnerJoin(t, on));
     return new @@classnNew@@(this.metadata);
   }
@@ -50,7 +50,7 @@ public class @@classc@@ {
   }
 
   public @@t@@ @@classn@@ leftJoin(TV t,
-      final BooleanExpression on) {
+      final Predicate on) {
     this.metadata.join(new LeftOuterJoin(t, on));
     return new @@classnNew@@(this.metadata);
   }
@@ -61,7 +61,7 @@ public class @@classc@@ {
   }
 
   public @@t@@ @@classn@@ rightJoin(TV t,
-      final BooleanExpression on) {
+      final Predicate on) {
     this.metadata.join(new RightOuterJoin(t, on));
     return new @@classnNew@@(this.metadata);
   }
@@ -72,7 +72,7 @@ public class @@classc@@ {
   }
 
   public @@t@@ @@classn@@ fullJoin(TV t,
-      final BooleanExpression on) {
+      final Predicate on) {
     this.metadata.join(new FullOuterJoin(t, on));
     return new @@classnNew@@(this.metadata);
   }
@@ -109,7 +109,7 @@ public class @@classc@@ {
 
   // semi-joining TableOrView
 
-  public @@t@@ @@classc@@ semiJoin(TV t, final BooleanExpression on) {
+  public @@t@@ @@classc@@ semiJoin(TV t, final Predicate on) {
     this.metadata.join(new InnerJoin(t, on), false);
     return new @@classcNew@@(this.metadata);
   }
@@ -119,7 +119,7 @@ public class @@classc@@ {
     return new @@classcNew@@(this.metadata);
   }
 
-  public @@t@@ @@classc@@ semiLeftJoin(TV t, final BooleanExpression on) {
+  public @@t@@ @@classc@@ semiLeftJoin(TV t, final Predicate on) {
     this.metadata.join(new LeftOuterJoin(t, on), false);
     return new @@classcNew@@(this.metadata);
   }
@@ -129,7 +129,7 @@ public class @@classc@@ {
     return new @@classcNew@@(this.metadata);
   }
 
-  public @@t@@ @@classc@@ semiRightJoin(TV t, final BooleanExpression on) {
+  public @@t@@ @@classc@@ semiRightJoin(TV t, final Predicate on) {
     this.metadata.join(new RightOuterJoin(t, on), false);
     return new @@classcNew@@(this.metadata);
   }
@@ -139,7 +139,7 @@ public class @@classc@@ {
     return new @@classcNew@@(this.metadata);
   }
 
-  public @@t@@ @@classc@@ semiFullJoin(TV t, final BooleanExpression on) {
+  public @@t@@ @@classc@@ semiFullJoin(TV t, final Predicate on) {
     this.metadata.join(new FullOuterJoin(t, on), false);
     return new @@classcNew@@(this.metadata);
   }
@@ -176,7 +176,7 @@ public class @@classc@@ {
 
   // joining Subquery
 
-  public @@classc@@ join(Subquery t, final BooleanExpression on) {
+  public @@classc@@ join(Subquery t, final Predicate on) {
     this.metadata.join(new InnerJoin(t, on));
     return this;
   }
@@ -186,7 +186,7 @@ public class @@classc@@ {
     return this;
   }
 
-  public @@classc@@ leftJoin(Subquery t, final BooleanExpression on) {
+  public @@classc@@ leftJoin(Subquery t, final Predicate on) {
     this.metadata.join(new LeftOuterJoin(t, on));
     return this;
   }
@@ -196,7 +196,7 @@ public class @@classc@@ {
     return this;
   }
 
-  public @@classc@@ rightJoin(Subquery t, final BooleanExpression on) {
+  public @@classc@@ rightJoin(Subquery t, final Predicate on) {
     this.metadata.join(new RightOuterJoin(t, on));
     return this;
   }
@@ -206,7 +206,7 @@ public class @@classc@@ {
     return this;
   }
 
-  public @@classc@@ fullJoin(Subquery t, final BooleanExpression on) {
+  public @@classc@@ fullJoin(Subquery t, final Predicate on) {
     this.metadata.join(new FullOuterJoin(t, on));
     return this;
   }
@@ -243,7 +243,7 @@ public class @@classc@@ {
 
   // next phases
 
-  public SelectWherePhase<@@tupleClassc@@> where(final BooleanExpression predicate) {
+  public SelectWherePhase<@@tupleClassc@@> where(final Predicate predicate) {
     return SShield.getSelectWherePhase(this.metadata.getContext(), new TuplesSelectObject<>(this.metadata), predicate);
   }
 

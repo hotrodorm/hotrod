@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.livesql.expressions.ComparableExpression;
-import org.hotrod.livesql.expressions.bool.BooleanExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.ordering.OrderingTerm;
@@ -28,6 +27,7 @@ import org.hotrod.livesql.queries.select.sets.CombinedSelectObject;
 import org.hotrod.livesql.queries.select.tuples.TuplesMetadata;
 import org.hotrod.livesql.queries.select.tuples.TuplesSelectObject;
 import org.hotrod.livesql.queries.subqueries.Subquery;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public class @@classc@@ {
 
@@ -39,7 +39,7 @@ public class @@classc@@ {
 
   // next phases
 
-  public SelectWherePhase<@@tupleClassc@@> where(final BooleanExpression predicate) {
+  public SelectWherePhase<@@tupleClassc@@> where(final Predicate predicate) {
     return SShield.getSelectWherePhase(this.metadata.getContext(), new TuplesSelectObject<>(this.metadata), predicate);
   }
 
