@@ -28,12 +28,12 @@ public class Separator {
     this.first = true;
   }
 
-  public static Separator of(final String s) {
-    return new Separator(s);
+  public static Separator of(final String separator) {
+    return new Separator(separator);
   }
 
-  public static Separator of(final String prefix, final String s) {
-    return new Separator(prefix, s);
+  public static Separator of(final String prefix, final String separator) {
+    return new Separator(prefix, separator);
   }
 
   public String render() {

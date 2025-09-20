@@ -998,18 +998,18 @@ public class DAO {
             : ", this." + this.converterProperties.get(cm.getConverter().getName());
         if (ol != null && cm.isOLVersionNumberColumn()) {
           w.println("      .literal(\"  " + SUtil.escapeJavaString(sqlId) + " = " + SUtil.escapeJavaString(sqlId)
-              + " + 1\"" + converterParam + ")" + (n < coln ? ".literaln(\",\")" : ""));
+              + " + 1\"" + converterParam + ")" + (n < coln ? ".literaln(\",\")" : ".literaln()"));
         } else if (ol != null && cm.isOLTimestampColumn()) {
           w.println("      .literal(\"  " + SUtil.escapeJavaString(sqlId) + " = "
               + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\")"
-              + (n < coln ? ".literaln(\",\")" : ""));
+              + (n < coln ? ".literaln(\",\")" : ".literaln()"));
         } else {
           String memId = cm.getId().getJavaMemberName();
           String jdbcType = cm.getType().getJDBCShortType();
           w.println(
               "      .literal(\"  " + SUtil.escapeJavaString(sqlId) + " = \").parameterNullable(\"m."
                   + SUtil.escapeJavaString(memId) + "\", ",
-              Types.class, "." + jdbcType + converterParam + ")" + (n < coln ? ".literaln(\",\")" : ""));
+              Types.class, "." + jdbcType + converterParam + ")" + (n < coln ? ".literaln(\",\")" : ".literaln()"));
         }
         n++;
       }
@@ -1239,14 +1239,13 @@ public class DAO {
     w.println("  private void " + initializerName + "() {");
     w.println("    this." + queryName + " = dyn");
     w.println(
-        "      .literal(\"DELETE FROM " + SUtil.escapeJavaString(this.metadata.getId().getRenderedSQLName()) + "\")");
+        "      .literaln(\"DELETE FROM " + SUtil.escapeJavaString(this.metadata.getId().getRenderedSQLName()) + "\")");
     fragmentWhereExample("e");
     w.println("      .endModificationQuery();");
     w.println("  }");
 
     // Method
 
-//    ExternalClass em = ExternalClass.of(this.model.getFullClassName());
     ExternalClass el = ExternalClass.of(this.layout.getFullClassName());
     w.println();
     w.print("  public int delete(", el, " example");
@@ -1546,14 +1545,14 @@ public class DAO {
 
   private void fragmentWherePK(String ns) {
     KeyMetadata pk = this.metadata.getPK();
-    Separator sep = Separator.of("\nWHERE ", "  AND ");
+    Separator sep = Separator.of("WHERE ", "  AND ");
     for (ColumnMetadata cm : pk.getColumns()) {
       String memId = cm.getId().getJavaMemberName();
       String sqlId = cm.getId().getRenderedSQLName();
       String converterParam = cm.getConverter() == null ? ""
           : ", this." + this.converterProperties.get(cm.getConverter().getName());
-      w.println("      .literaln(\"" + SUtil.escapeJavaString(sep.render()) + "\" + \"" + SUtil.escapeJavaString(sqlId)
-          + " = \").parameter(\"" + ns + "." + SUtil.escapeJavaString(memId) + "\"" + converterParam + ")");
+      w.println("      .literal(\"" + SUtil.escapeJavaString(sep.render()) + SUtil.escapeJavaString(sqlId)
+          + " = \").parameter(\"" + ns + "." + SUtil.escapeJavaString(memId) + "\"" + converterParam + ").literaln()");
     }
   }
 

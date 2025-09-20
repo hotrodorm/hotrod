@@ -14,7 +14,7 @@ public class WhereSegment extends DynamicListSegment {
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(WhereSegment.class.getName());
 
-  private static final ClauseFormatter DEFAULT_HEADER_FORMATTER = new ClauseFormatter("WHERE", "\n", " ");
+  private static final ClauseFormatter DEFAULT_HEADER_FORMATTER = new ClauseFormatter("WHERE", "", " ");
   private static final String DEFAULT_MIDDLE_PREFIX = "\n  ";
   private static final String DEFAULT_MIDDLE_SUFFIX = " ";
 

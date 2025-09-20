@@ -73,7 +73,8 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       log.info("[ Starting... ]");
-      testInsert1();
+      testWhere();
+//      testInsert1();
 //      testForEach();
 //      testOracleInsertSeq();
 //      testSubExpressions();
@@ -101,6 +102,33 @@ public class App {
 //      testNitro6();
       log.info("[ Ending ]");
     };
+  }
+
+  private void testWhere() {
+    VehicleLayout example = new VehicleLayout();
+    example.setName("Toyota 1");
+    example.setVehicleCode(1123);
+
+    System.out.println("=== SELECT BY PK ===");
+    Vehicle v = this.vehicleDAO.select(1234);
+
+    System.out.println("=== SELECT BY EXAMPLE ===");
+    this.vehicleDAO.select(example);
+
+    System.out.println("=== UPDATE BY PK ===");
+    this.vehicleDAO.update(v);
+
+    System.out.println("=== UPDATE BY EXAMPLE ===");
+    this.vehicleDAO.update(example, example);
+
+    System.out.println("=== DELETE BY PK ===");
+    this.vehicleDAO.delete(1234);
+
+    System.out.println("=== DELETE BY EXAMPLE ===");
+    this.vehicleDAO.delete(example);
+
+//    System.out.println("inserted=" + inserted);
+
   }
 
   private void testInsert1() {
