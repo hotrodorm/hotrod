@@ -1,12 +1,24 @@
 <ivy-module version="2.0">
   <info organisation="com.mycompany.myapp" module="project1" />
   <dependencies>
+    <dependency org="jakarta.xml.bind" name="jakarta.xml.bind-api" rev="4.0.1" />
+    <dependency org="javax.xml.bind" name="jaxb-api" rev="2.3.1" />
+  
+    <!--
+    
+    <dependency org="jakarta.xml.bind" name="jakarta.xml.bind-api" rev="2.3.3" />
+    <dependency org="org.glassfish.jaxb" name="jaxb-runtime" rev="2.3.3" />
+
+    <dependency org="jakarta.xml.bind" name="jakarta.xml.bind-api" rev="3.0.1" />
+    <dependency org="com.sun.xml.bind" name="jaxb-impl" rev="3.0.2" />
+    
+     
     <dependency org="org.nocrala.tools.lang.collector" name="list-collector" rev="1.0.0" />
     <dependency org="org.nocrala.tools.texttablefmt" name="text-table-formatter" rev="1.2.4" />
     <dependency org="ognl" name="ognl" rev="3.2.14" />
     <dependency org="org.apache.poi" name="poi" rev="4.1.2" />
     <dependency org="org.apache.poi" name="poi-ooxml" rev="4.1.2" />
-    <!-- 
+
     <dependency org="org.apache.logging.log4j" name="log4j-api" rev="2.12.1" />
     <dependency org="org.apache.logging.log4j" name="log4j-core" rev="2.12.1" />
     -->    

@@ -368,7 +368,7 @@ public class EmployeeBranchDAO implements Serializable, ApplicationContextAware 
 
   private void initializeDeletebyexample() {
     this.deleteByExample = dyn
-      .literal("DELETE FROM employee_branch")
+      .literaln("DELETE FROM employee_branch")
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
         .if_("e.name != null").literal("name = ").parameter("e.name").endif()

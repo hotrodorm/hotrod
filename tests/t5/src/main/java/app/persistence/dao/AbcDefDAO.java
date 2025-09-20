@@ -163,7 +163,7 @@ public class AbcDefDAO implements Serializable, ApplicationContextAware {
       .literaln("  id,")
       .literaln("  name")
       .literaln("FROM \"abc_DEF\"")
-      .literaln("\nWHERE " + "id = ").parameter("f.id")
+      .literal("WHERE id = ").parameter("f.id").literaln()
       .endSelectQuery();
   }
 
@@ -295,8 +295,8 @@ public class AbcDefDAO implements Serializable, ApplicationContextAware {
       .literaln("UPDATE \"abc_DEF\"")
       .literaln("SET")
       .literal("  id = ").parameterNullable("m.id", Types.INTEGER).literaln(",")
-      .literal("  name = ").parameterNullable("m.name", Types.VARCHAR)
-      .literaln("\nWHERE " + "id = ").parameter("m.id")
+      .literal("  name = ").parameterNullable("m.name", Types.VARCHAR).literaln()
+      .literal("WHERE id = ").parameter("m.id").literaln()
     .endModificationQuery();
   }
 
@@ -363,7 +363,7 @@ public class AbcDefDAO implements Serializable, ApplicationContextAware {
   private void initializeDeletebypk() {
     this.deleteByPK = dyn
       .literaln("DELETE FROM \"abc_DEF\"")
-      .literaln("\nWHERE " + "id = ").parameter("f.id")
+      .literal("WHERE id = ").parameter("f.id").literaln()
       .endModificationQuery();
   }
 
@@ -389,7 +389,7 @@ public class AbcDefDAO implements Serializable, ApplicationContextAware {
 
   private void initializeDeletebyexample() {
     this.deleteByExample = dyn
-      .literal("DELETE FROM \"abc_DEF\"")
+      .literaln("DELETE FROM \"abc_DEF\"")
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
         .if_("e.name != null").literal("name = ").parameter("e.name").endif()

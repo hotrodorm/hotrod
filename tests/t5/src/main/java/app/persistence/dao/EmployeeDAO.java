@@ -197,7 +197,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       .literaln("  branch_id,")
       .literaln("  vip")
       .literaln("FROM employee")
-      .literaln("\nWHERE " + "id = ").parameter("f.id")
+      .literal("WHERE id = ").parameter("f.id").literaln()
       .endSelectQuery();
   }
 
@@ -343,8 +343,8 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       .literal("  id = ").parameterNullable("m.id", Types.INTEGER).literaln(",")
       .literal("  \"NAME\" = ").parameterNullable("m.fullName", Types.VARCHAR).literaln(",")
       .literal("  branch_id = ").parameterNullable("m.branchId", Types.INTEGER).literaln(",")
-      .literal("  vip = ").parameterNullable("m.vip", Types.INTEGER, this.converter0)
-      .literaln("\nWHERE " + "id = ").parameter("m.id")
+      .literal("  vip = ").parameterNullable("m.vip", Types.INTEGER, this.converter0).literaln()
+      .literal("WHERE id = ").parameter("m.id").literaln()
     .endModificationQuery();
   }
 
@@ -417,7 +417,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   private void initializeDeletebypk() {
     this.deleteByPK = dyn
       .literaln("DELETE FROM employee")
-      .literaln("\nWHERE " + "id = ").parameter("f.id")
+      .literal("WHERE id = ").parameter("f.id").literaln()
       .endModificationQuery();
   }
 
@@ -443,7 +443,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   private void initializeDeletebyexample() {
     this.deleteByExample = dyn
-      .literal("DELETE FROM employee")
+      .literaln("DELETE FROM employee")
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
         .if_("e.fullName != null").literal("\"NAME\" = ").parameter("e.fullName").endif()

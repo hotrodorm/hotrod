@@ -176,8 +176,8 @@ public class LandDAO implements Serializable, ApplicationContextAware {
       .literaln("  local_code,")
       .literaln("  price")
       .literaln("FROM land")
-      .literaln("\nWHERE " + "region_code = ").parameter("f.regionCode")
-      .literaln("  AND " + "local_code = ").parameter("f.localCode")
+      .literal("WHERE region_code = ").parameter("f.regionCode").literaln()
+      .literal("  AND local_code = ").parameter("f.localCode").literaln()
       .endSelectQuery();
   }
 
@@ -318,9 +318,9 @@ public class LandDAO implements Serializable, ApplicationContextAware {
       .literaln("SET")
       .literal("  region_code = ").parameterNullable("m.regionCode", Types.INTEGER).literaln(",")
       .literal("  local_code = ").parameterNullable("m.localCode", Types.VARCHAR).literaln(",")
-      .literal("  price = ").parameterNullable("m.price", Types.INTEGER)
-      .literaln("\nWHERE " + "region_code = ").parameter("m.regionCode")
-      .literaln("  AND " + "local_code = ").parameter("m.localCode")
+      .literal("  price = ").parameterNullable("m.price", Types.INTEGER).literaln()
+      .literal("WHERE region_code = ").parameter("m.regionCode").literaln()
+      .literal("  AND local_code = ").parameter("m.localCode").literaln()
     .endModificationQuery();
   }
 
@@ -391,8 +391,8 @@ public class LandDAO implements Serializable, ApplicationContextAware {
   private void initializeDeletebypk() {
     this.deleteByPK = dyn
       .literaln("DELETE FROM land")
-      .literaln("\nWHERE " + "region_code = ").parameter("f.regionCode")
-      .literaln("  AND " + "local_code = ").parameter("f.localCode")
+      .literal("WHERE region_code = ").parameter("f.regionCode").literaln()
+      .literal("  AND local_code = ").parameter("f.localCode").literaln()
       .endModificationQuery();
   }
 
@@ -420,7 +420,7 @@ public class LandDAO implements Serializable, ApplicationContextAware {
 
   private void initializeDeletebyexample() {
     this.deleteByExample = dyn
-      .literal("DELETE FROM land")
+      .literaln("DELETE FROM land")
       .where("AND")
         .if_("e.regionCode != null").literal("region_code = ").parameter("e.regionCode").endif()
         .if_("e.localCode != null").literal("local_code = ").parameter("e.localCode").endif()

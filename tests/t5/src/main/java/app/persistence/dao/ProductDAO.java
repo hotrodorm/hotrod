@@ -176,7 +176,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
       .literaln("  type,")
       .literaln("  shipping")
       .literaln("FROM product")
-      .literaln("\nWHERE " + "pid_product = ").parameter("f.pidProduct")
+      .literal("WHERE pid_product = ").parameter("f.pidProduct").literaln()
       .endSelectQuery();
   }
 
@@ -317,8 +317,8 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
       .literaln("SET")
       .literal("  pid_product = ").parameterNullable("m.pidProduct", Types.NUMERIC).literaln(",")
       .literal("  type = ").parameterNullable("m.type", Types.VARCHAR).literaln(",")
-      .literal("  shipping = ").parameterNullable("m.shipping", Types.INTEGER)
-      .literaln("\nWHERE " + "pid_product = ").parameter("m.pidProduct")
+      .literal("  shipping = ").parameterNullable("m.shipping", Types.INTEGER).literaln()
+      .literal("WHERE pid_product = ").parameter("m.pidProduct").literaln()
     .endModificationQuery();
   }
 
@@ -388,7 +388,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   private void initializeDeletebypk() {
     this.deleteByPK = dyn
       .literaln("DELETE FROM product")
-      .literaln("\nWHERE " + "pid_product = ").parameter("f.pidProduct")
+      .literal("WHERE pid_product = ").parameter("f.pidProduct").literaln()
       .endModificationQuery();
   }
 
@@ -414,7 +414,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   private void initializeDeletebyexample() {
     this.deleteByExample = dyn
-      .literal("DELETE FROM product")
+      .literaln("DELETE FROM product")
       .where("AND")
         .if_("e.pidProduct != null").literal("pid_product = ").parameter("e.pidProduct").endif()
         .if_("e.type != null").literal("type = ").parameter("e.type").endif()

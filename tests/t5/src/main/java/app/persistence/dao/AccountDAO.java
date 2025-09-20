@@ -252,7 +252,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .literaln("  updated_at,")
       .literaln("  version")
       .literaln("FROM account")
-      .literaln("\nWHERE " + "id = ").parameter("f.id")
+      .literal("WHERE id = ").parameter("f.id").literaln()
       .endSelectQuery();
   }
 
@@ -428,8 +428,8 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .literal("  active = ").parameterNullable("m.active", Types.INTEGER, this.converter1).literaln(",")
       .literal("  client_photo = ").parameterNullable("m.clientPhoto", Types.BLOB).literaln(",")
       .literal("  updated_at = ").parameterNullable("m.updatedAt", Types.TIMESTAMP).literaln(",")
-      .literal("  version = ").parameterNullable("m.version", Types.INTEGER)
-      .literaln("\nWHERE " + "id = ").parameter("m.id")
+      .literal("  version = ").parameterNullable("m.version", Types.INTEGER).literaln()
+      .literal("WHERE id = ").parameter("m.id").literaln()
     .endModificationQuery();
   }
 
@@ -514,7 +514,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   private void initializeDeletebypk() {
     this.deleteByPK = dyn
       .literaln("DELETE FROM account")
-      .literaln("\nWHERE " + "id = ").parameter("f.id")
+      .literal("WHERE id = ").parameter("f.id").literaln()
       .endModificationQuery();
   }
 
@@ -540,7 +540,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   private void initializeDeletebyexample() {
     this.deleteByExample = dyn
-      .literal("DELETE FROM account")
+      .literaln("DELETE FROM account")
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
         .if_("e.name != null").literal("name = ").parameter("e.name").endif()

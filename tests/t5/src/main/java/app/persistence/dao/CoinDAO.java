@@ -168,7 +168,7 @@ public class CoinDAO implements Serializable, ApplicationContextAware {
       .literaln("  type,")
       .literaln("  name")
       .literaln("FROM coin")
-      .literaln("\nWHERE " + "type = ").parameter("f.type", this.converter0)
+      .literal("WHERE type = ").parameter("f.type", this.converter0).literaln()
       .endSelectQuery();
   }
 
@@ -300,8 +300,8 @@ public class CoinDAO implements Serializable, ApplicationContextAware {
       .literaln("UPDATE coin")
       .literaln("SET")
       .literal("  type = ").parameterNullable("m.type", Types.CHAR, this.converter0).literaln(",")
-      .literal("  name = ").parameterNullable("m.name", Types.VARCHAR)
-      .literaln("\nWHERE " + "type = ").parameter("m.type", this.converter0)
+      .literal("  name = ").parameterNullable("m.name", Types.VARCHAR).literaln()
+      .literal("WHERE type = ").parameter("m.type", this.converter0).literaln()
     .endModificationQuery();
   }
 
@@ -368,7 +368,7 @@ public class CoinDAO implements Serializable, ApplicationContextAware {
   private void initializeDeletebypk() {
     this.deleteByPK = dyn
       .literaln("DELETE FROM coin")
-      .literaln("\nWHERE " + "type = ").parameter("f.type", this.converter0)
+      .literal("WHERE type = ").parameter("f.type", this.converter0).literaln()
       .endModificationQuery();
   }
 
@@ -394,7 +394,7 @@ public class CoinDAO implements Serializable, ApplicationContextAware {
 
   private void initializeDeletebyexample() {
     this.deleteByExample = dyn
-      .literal("DELETE FROM coin")
+      .literaln("DELETE FROM coin")
       .where("AND")
         .if_("e.type != null").literal("type = ").parameter("e.type", this.converter0).endif()
         .if_("e.name != null").literal("name = ").parameter("e.name").endif()

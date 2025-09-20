@@ -163,7 +163,7 @@ public class VehicleDAO implements Serializable, ApplicationContextAware {
       .literaln("  vehicle_code,")
       .literaln("  name")
       .literaln("FROM vehicle")
-      .literaln("\nWHERE " + "vehicle_code = ").parameter("f.vehicleCode")
+      .literal("WHERE vehicle_code = ").parameter("f.vehicleCode").literaln()
       .endSelectQuery();
   }
 
@@ -297,8 +297,8 @@ public class VehicleDAO implements Serializable, ApplicationContextAware {
       .literaln("UPDATE vehicle")
       .literaln("SET")
       .literal("  vehicle_code = ").parameterNullable("m.vehicleCode", Types.INTEGER).literaln(",")
-      .literal("  name = ").parameterNullable("m.name", Types.VARCHAR)
-      .literaln("\nWHERE " + "vehicle_code = ").parameter("m.vehicleCode")
+      .literal("  name = ").parameterNullable("m.name", Types.VARCHAR).literaln()
+      .literal("WHERE vehicle_code = ").parameter("m.vehicleCode").literaln()
     .endModificationQuery();
   }
 
@@ -365,7 +365,7 @@ public class VehicleDAO implements Serializable, ApplicationContextAware {
   private void initializeDeletebypk() {
     this.deleteByPK = dyn
       .literaln("DELETE FROM vehicle")
-      .literaln("\nWHERE " + "vehicle_code = ").parameter("f.vehicleCode")
+      .literal("WHERE vehicle_code = ").parameter("f.vehicleCode").literaln()
       .endModificationQuery();
   }
 
@@ -391,7 +391,7 @@ public class VehicleDAO implements Serializable, ApplicationContextAware {
 
   private void initializeDeletebyexample() {
     this.deleteByExample = dyn
-      .literal("DELETE FROM vehicle")
+      .literaln("DELETE FROM vehicle")
       .where("AND")
         .if_("e.vehicleCode != null").literal("vehicle_code = ").parameter("e.vehicleCode").endif()
         .if_("e.name != null").literal("name = ").parameter("e.name").endif()
