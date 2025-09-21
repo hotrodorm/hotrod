@@ -6,10 +6,10 @@ This guide shows how to generate the persistence layer using Apache Ant.
 
 You'll need:
 
-- Java 8.
-- Apache Ant.
-- A text editor. `Notepad` or `vi` will do, but you can use your favorite IDE if you prefer.
-- No database installation necessary. We'll use a non-persistent in-memory H2 database in this example.
+- Java 8
+- Apache Ant
+- A text editor. `Notepad` or `vi` will do, but you can use your favorite IDE if you prefer
+- No database installation necessary. We'll use a non-persistent in-memory H2 database in this example
 
 This guide sets up an Ant project, creates a table in the database, and generates the persistence from it.
 
@@ -25,16 +25,16 @@ In this part we create the Maven project, we lay out its structure, we and add a
 +- layer.xml
 +- schema.sql
 +- lib/
-  +- hotrod-ant-plugin-5.1.2-jar-with-dependencies.jar
-  +- h2-2.2.224.jar
+   +- hotrod-ant-plugin-5.1.2-jar-with-dependencies.jar
+   +- h2-2.2.224.jar
 +- src/main/java/app/persistence/
-  +- LayerConfigurationBean.java
-  +- dao/
-    +- AccountDAO.java
-  +- layout/
-    +- AccountLayout.java
-  +- model/
-    +- Account.java
+   +- LayerConfigurationBean.java
+   +- dao/
+      +- AccountDAO.java
+   +- layout/
+      +- AccountLayout.java
+   +- model/
+      +- Account.java
 ```
 
 If you are using a plain text editor (such as Notepad) you can create an empty folder and add the

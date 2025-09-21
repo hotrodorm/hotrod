@@ -1,0 +1,44 @@
+<hotrod>
+
+  <generators>
+    <jdbc/>
+  </generators>
+
+  <table name="account">
+
+    <query method="applyMonthlyCharge">
+      <parameter name="amount" java-type="Integer" />
+      UPDATE account SET balance = balance - #{amount}
+    </query>
+
+    <select method="findSavingAccounts">
+      <parameter name="year" java-type="Integer" />
+      SELECT *
+      FROM account
+      WHERE title like 'SAV%'
+      <if test="year != null">
+        AND year(created) = #{year}
+      </if>
+    </select> 
+
+  </table>
+
+  <dao name="ReportingDAO">
+
+    <query method="deleteOldNegativeAccounts">
+      <parameter name="maxYear" java-type="Integer" />
+      DELETE FROM account WHERE year(created) &lt;= #{maxYear} AND balance &lt; 0
+    </query>
+
+    <select method="getTotals" vo="ReportingTotals" mode="single-row">
+      <parameter name="minDate" java-type="java.time.LocalDate" />
+      <parameter name="maxDate" java-type="java.time.LocalDate" />
+      SELECT sum(balance) AS balance, count(*) AS count
+      FROM account
+      WHERE created BETWEEN #{minDate} AND #{maxDate}
+    </select>
+
+  </dao>
+
+</hotrod>
+

@@ -3,10 +3,11 @@
 This guide runs a Spring Boot project with Maven and H2 in-memory database. It shows the basic idea of how HotRod works.
 
 You'll need:
-- Java.
-- Maven.
-- A text editor. `Notepad` or `vi` will do, but you can use your favorite IDE if you prefer.
-- No database installation necessary. We'll use a non-persistent in-memory H2 database in this example.
+
+- Java
+- Maven
+- A text editor. `Notepad` or `vi` will do, but you can use your favorite IDE if you prefer
+- No database installation necessary. We'll use a non-persistent in-memory H2 database in this example
 
 This guide sets up the Maven project, creates a table in the database, generates the HotRod persistence from it, and then runs a simple application using it.
 
@@ -16,7 +17,6 @@ After following all the steps of this guide our main project folder will include
 pom.xml                    # The Maven project file
 schema.sql                 # A SQL script that creates a table and data for this example
 src/main/java              # Your Java app and the generated DAOs and VOs
-src/main/resources         # All resources, including the generated mappers
 application.properties     # The runtime properties
 ```
 
