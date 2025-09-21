@@ -1,6 +1,6 @@
 # Hello Nitro!
 
-This example runs four Nitro queries in the database. It shows the basics on how to define and use them from your application, includng parameters the Dynamic SQL.
+This example runs four Nitro queries in the database. It shows the basics on how to define and use them from your application, including the use of parameters and Dynamic SQL.
 
 There are two types of Nitro queries:
 
@@ -15,6 +15,7 @@ After following all the steps of this guide our main project folder will include
 
 ```bash
 <PROJECT_HOME>
++- application.properties
 +- pom.xml
 +- layer.xml
 +- schema.sql
@@ -26,7 +27,6 @@ After following all the steps of this guide our main project folder will include
       +- AccountLayout.java
    +- model/
       +- Account.java
-application.properties
 ```
 
 ## Part 1 &mdash; Setting Up the Project
@@ -222,12 +222,37 @@ Now, let's generate the persistence layer. Type:
 mvn hotrod:gen
 ```
 
-We see the code generation details:
+The layer generation reports:
 
 ```bash
+[INFO] HotRod Generator version 5.1.3 (build 20250920-205252) - Generate
+[INFO] 
+[INFO] Configuration File: ./layer.xml
+[INFO] Database URL: jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1
+[INFO] Database Name: H2 - version 2.1 (2.1.214 (2022-06-13))
+[INFO] JDBC Driver: H2 JDBC Driver - version 2.1 (2.1.214 (2022-06-13)) - implements JDBC Specification 4.2
+[INFO] HotRod Adapter: H2 Adapter
+[INFO]  
+[INFO] Current Schema: PUBLIC
+[INFO]  
+[INFO] Discover disabled.
+[INFO]  
+[INFO] Generating all facets.
+[INFO]  
+[INFO] Table ACCOUNT included.
+[INFO]  - Query applyMonthlyCharge included.
+[INFO]  - Select findSavingAccounts included.
+[INFO] DAO ReportingDAO included.
+[INFO]  - Query deleteOldNegativeAccounts included.
+[INFO]  - Select getTotals included.
+[INFO]  
+[INFO] Total of: 1 table, 0 views, 0 enums, 1 DAO, and 0 sequences -- including 2 select methods, and 2 query methods.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+
 ```
 
-HotRod connected to the database schema, discovered the table's and queries' details, and generated the persistence layer.
+HotRod connected to the database schema, discovered the details of the table and queries, and generated the persistence layer.
 
 All generated classes are inside `src/main/java/app/persistence`.
 
