@@ -141,7 +141,7 @@ Torcs discovers slow queries at runtime by providing rankings by impact, slowest
 
 ## Hello World
 
-See HotRod in action with the [Hello World Example](./guides/hello-world.md). It's an example that shows the simplicity of using HotRod.
+See HotRod in action with the [Hello World](./guides/hello-world.md) and [Hello Nitro](./guides/hello-nitro.md).
 
 
 ## Modules
