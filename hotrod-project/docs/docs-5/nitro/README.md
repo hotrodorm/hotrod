@@ -3,6 +3,8 @@
 Nitro brings DynamicSQL functionality to defined queries. These queries can also take full advantage
 of all native SQL extensions available in the database.
 
+Get started with the [Hello Nitro](../guides/hello-nitro.md) example.
+
 Nitro queries can be useful to:
 
 - Use native SQL features to gain access to advanced database features, and to implement high performance queries.
