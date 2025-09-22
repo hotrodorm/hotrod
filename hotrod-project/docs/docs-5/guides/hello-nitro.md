@@ -214,6 +214,26 @@ Create the `layer.xml` file with:
 </hotrod>
 ```
 
+
+These four Nitro queries become available to your application in the correspondig DAOs. Specifically at:
+
+- AccountDAO: `public int applyMonthlyCharge(Integer amount)`
+- AccountDAO: `public List<Account> findSavingAccounts(Integer year)`
+- ReportingDAO: `public int deleteOldNegativeAccounts()`
+- ReportingDAO: `public ReportingTotals getTotals(LocalDate minDate, LocalDate maxDate)`
+
+A few notes:
+
+1. The `<query>` Nitro methods return an `int` that represent the number of rows affected by the query.
+2. The `<select>` Nitro methods return SQL rows.
+    - The `<select>` Nitro methods that belong to a table or view can only return rows of the type of the corresponding table or view.
+    - The `<select>` Nitro methods that belong to a generic `<dao>` tag are free to return any type of row. As such the `vo` must be specified, to create new Layout and Model classes to represent the result set.
+- By default `<select>` Nitro methods return a `List<Model>`. When using `mode="cursor"` they return a `Cursor<Model>`. When using `mode="single-row"` Nitro understand that the query return one row at most, and the return type is simply `Model`.
+- Since the Nitro queries are specified in an XML file, they must abide with the XML syntax. That is, the `&` and `<` need to be escaped in XML as `&amp;` and `&lt;` as you can see in the method `deleteOldNegativeAccounts`. Other less common characters may need to be escaped too.
+- A Nitro query or select can have zero, one, or many parameters.
+- A Nitro query or select can use Dynamic SQL. In this example the method `findSavingAccounts` uses a simple `<if>` to conditionally include a SQL segment at runtime based on the runtime parameter values. The query can use any number of Dynamic SQL segments, in flat or nested form.
+
+
 ### Generate the Persistence Layer
 
 Now, let's generate the persistence layer. Type:
@@ -255,6 +275,7 @@ The layer generation reports:
 HotRod connected to the database schema, discovered the details of the table and queries, and generated the persistence layer.
 
 All generated classes are inside `src/main/java/app/persistence`.
+
 
 ## Part 3 &mdash; The Application
 
