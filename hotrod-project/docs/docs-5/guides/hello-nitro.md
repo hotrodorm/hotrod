@@ -234,9 +234,9 @@ A few notes:
     - When using the default mode (`mode="list"`) the method returns a `List<Model>`.
     - When using `mode="cursor"` they return a `Cursor<Model>`.
     - When using `mode="single-row"` Nitro understand that the query return one row at most, and the return type is simply `Model`; in this example the method `getTotals()` works this way.
-4. Since the Nitro queries are specified in an XML file, they must be written in XML syntax. That is, the `&` and `<` need to be escaped in XML as `&amp;` and `&lt;` as you can see in the method `deleteOldNegativeAccounts`. Other less common characters may need to be escaped too.
+4. Since the Nitro queries are specified in an XML file, they must be written in XML syntax. That is, the `&` and `<` characters need to be escaped in XML as `&amp;` and `&lt;` as you can see in the method `deleteOldNegativeAccounts()`. Other less common characters may need to be escaped too.
 5. A Nitro query or select can have zero, one, or many parameters.
-6. A Nitro query or select can use Dynamic SQL. In this example the method `findSavingAccounts` uses a simple `<if>` to conditionally include a SQL segment at runtime based on the parameter values. The query can use any number of Dynamic SQL segments, in flat or nested form.
+6. A Nitro query or select can use Dynamic SQL. In this example the method `findSavingAccounts()` uses a simple `<if>` to conditionally include a SQL segment at runtime based on the parameter values. The query can use any number of Dynamic SQL segments, in flat or nested form.
 
 
 ### Generate the Persistence Layer
