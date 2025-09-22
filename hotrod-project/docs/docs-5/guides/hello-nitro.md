@@ -217,10 +217,12 @@ Create the `layer.xml` file with:
 
 These four Nitro queries become available to your application in the correspondig DAOs. Specifically at:
 
-- AccountDAO: `public int applyMonthlyCharge(Integer amount)`
-- AccountDAO: `public List<Account> findSavingAccounts(Integer year)`
-- ReportingDAO: `public int deleteOldNegativeAccounts()`
-- ReportingDAO: `public ReportingTotals getTotals(LocalDate minDate, LocalDate maxDate)`
+- AccountDAO:
+    - `public int applyMonthlyCharge(Integer amount)`
+    - `public List<Account> findSavingAccounts(Integer year)`
+- ReportingDAO:
+    - `public int deleteOldNegativeAccounts()`
+    - `public ReportingTotals getTotals(LocalDate minDate, LocalDate maxDate)`
 
 A few notes:
 
