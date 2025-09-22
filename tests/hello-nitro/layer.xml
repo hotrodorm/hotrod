@@ -15,7 +15,7 @@
       <parameter name="year" java-type="Integer" />
       SELECT *
       FROM account
-      WHERE title like 'SAV%'
+      WHERE title LIKE 'SAV%'
       <if test="year != null">
         AND year(created) = #{year}
       </if>

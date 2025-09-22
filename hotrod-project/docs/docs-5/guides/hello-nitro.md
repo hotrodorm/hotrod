@@ -178,7 +178,7 @@ Create the `layer.xml` file with:
   <table name="account">
 
     <query method="applyMonthlyCharge">
-      <parameter name="amount" java-type="Long" />
+      <parameter name="amount" java-type="Integer" />
       UPDATE account SET balance = balance - #{amount}
     </query>
 
@@ -186,7 +186,7 @@ Create the `layer.xml` file with:
       <parameter name="year" java-type="Integer" />
       SELECT *
       FROM account
-      WHERE title like 'SAV%'
+      WHERE title LIKE 'SAV%'
       <if test="year != null">
         AND year(created) = #{year}
       </if>
@@ -198,13 +198,13 @@ Create the `layer.xml` file with:
 
     <query method="deleteOldNegativeAccounts">
       <parameter name="maxYear" java-type="Integer" />
-      DELETE FROM account WHERE created &lt;= #{maxYear} AND balance &lt; 0
+      DELETE FROM account WHERE year(created) &lt;= #{maxYear} AND balance &lt; 0
     </query>
 
-    <select method="getTotals" vo="ReportingTotals">
+    <select method="getTotals" vo="ReportingTotals" mode="single-row">
       <parameter name="minDate" java-type="java.time.LocalDate" />
       <parameter name="maxDate" java-type="java.time.LocalDate" />
-      SELECT sum(balance) AS total_balance, count(*) AS total_count
+      SELECT sum(balance) AS balance, count(*) AS count
       FROM account
       WHERE created BETWEEN #{minDate} AND #{maxDate}
     </select>
