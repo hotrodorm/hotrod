@@ -2,8 +2,6 @@
 
 This example runs four Nitro queries in the database. It shows the basics on how to define and use them from your application, including the use of parameters and Dynamic SQL.
 
-There are two types of Nitro queries:
-
 You'll need:
 
 - Java installed

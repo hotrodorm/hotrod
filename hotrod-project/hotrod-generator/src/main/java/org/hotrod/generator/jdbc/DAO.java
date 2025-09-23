@@ -180,9 +180,9 @@ public class DAO {
 
     writeClassHeader();
 
-    if (!this.isExecutor()) {
+    writeConverterProperties();
 
-      writeConverterProperties();
+    if (!this.isExecutor()) {
 
       writeRowReaderProperty();
 
@@ -1630,7 +1630,19 @@ public class DAO {
 
   private void writeConverterProperties() {
     int n = 0;
-    for (ColumnMetadata cm : this.metadata.getColumns()) {
+
+    // Table or View columns
+    n = writeConverter(n, this.metadata.getColumns());
+
+    // Free Nitro Selects
+    for (SelectMethodMetadata s : this.metadata.getSelectsMetadata()) {
+      n = writeConverter(n, s.getColumns());
+    }
+
+  }
+
+  private int writeConverter(int n, List<ColumnMetadata> cols) {
+    for (ColumnMetadata cm : cols) {
       ConverterTag ct = cm.getConverter();
       if (ct != null) {
         boolean found = this.converterProperties.containsKey(ct.getName());
@@ -1640,13 +1652,14 @@ public class DAO {
             w.println("  // CONVERTERS");
             w.println();
           }
-          String property = "converter" + (n++);
+          String property = "converter" + n++;
           this.converterProperties.put(ct.getName(), property);
           ExternalClass cc = ExternalClass.of(ct.getConverterClass());
           w.println("  private final ", cc, " " + property + " = new ", cc, "();");
         }
       }
     }
+    return n;
   }
 
   // Utils

@@ -1,0 +1,32 @@
+<hotrod>
+
+  <generators>
+    <jdbc/>
+  </generators>
+
+  <converter name="YNConverter"
+    java-raw-type="String" java-type="Boolean" class="app.YNBooleanConverter" />
+
+  <converter name="TaxCodesArrayConverter"
+    java-raw-type="java.sql.Array" java-type="String[]" class="app.TaxCodesArrayConverter" />
+
+  <table name="invoice">
+    <column name="amount" java-type="Double" />
+    <column name="paid" converter="YNConverter" />
+    <column name="tax_codes" converter="TaxCodesArrayConverter" />
+  </table>
+
+  <dao name="PaymentDAO">
+
+    <select method="getBigInvoices" vo="BigInvoice">
+      <column name="amount" java-type="Double" />
+      <column name="paid" converter="YNConverter" />
+      <column name="tax_codes" converter="TaxCodesArrayConverter" />
+      SELECT *
+      FROM invoice
+      WHERE amount > 1.2 * (SELECT avg(amount) FROM invoice)
+    </select>
+
+  </dao>
+
+</hotrod>

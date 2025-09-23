@@ -108,7 +108,7 @@ public class AbstractClassWriter {
     String registeredCodeName = this.importCode.get(pc.getImportName());
     if (registeredCodeName != null) {
       // already registered
-      return registeredCodeName;
+      return pc.getShortCodeName();
     }
 
     // Not registered

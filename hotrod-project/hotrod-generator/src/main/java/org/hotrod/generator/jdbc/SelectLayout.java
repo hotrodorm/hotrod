@@ -155,8 +155,8 @@ public class SelectLayout {
       for (ColumnMetadata cm : this.columns) {
         if (!cm.reusesMemberFromSuperClass()) {
           ExternalClass jt = ExternalClass.of(cm.getType().getJavaClassName());
-          w.println("  protected ", jt,
-              " " + cm.getId().getJavaMemberName() + " = null;" + (cm.getType().isLOB() ? " // it's a LOB type" : ""));
+          w.println("  protected ", jt, " " + cm.getId().getJavaMemberName() + " = null; // Type Name: "
+              + cm.getTypeName() + " - Type Resolved By: " + cm.getType().getTypeSource());
         }
       }
       w.println();

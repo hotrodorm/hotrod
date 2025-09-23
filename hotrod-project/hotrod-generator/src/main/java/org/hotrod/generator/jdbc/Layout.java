@@ -116,19 +116,17 @@ public class Layout {
   }
 
   private void writeProperties() throws IOException, UnresolvableDataTypeException {
-
     w.println("  // Layout Properties ("
         + (this.daoType == DAOType.TABLE ? "table" : this.daoType == DAOType.VIEW ? "view" : "select") + " columns)");
     w.println();
     writeColumnProperties(this.metadata.getColumns());
-
   }
 
   private void writeColumnProperties(final List<ColumnMetadata> columns) throws IOException {
     for (ColumnMetadata cm : columns) {
       String javaType = resolveType(cm);
-      w.println("  protected ", ExternalClass.of(javaType),
-          " " + cm.getId().getJavaMemberName() + " = null; // " + cm.getTypeName());
+      w.println("  protected ", ExternalClass.of(javaType), " " + cm.getId().getJavaMemberName()
+          + " = null; // Type Name: " + cm.getTypeName() + " - Type Resolved By: " + cm.getType().getTypeSource());
     }
     w.println();
   }
@@ -153,7 +151,8 @@ public class Layout {
   }
 
   private void writeGetter(ColumnMetadata cm, String javaType, String m) throws IOException {
-    w.println("  public ", ExternalClass.of(javaType), " " + cm.getId().getJavaGetter() + "() {");
+    ExternalClass et = ExternalClass.of(javaType);
+    w.println("  public ", et, " " + cm.getId().getJavaGetter() + "() {");
     w.println("    return this." + m + ";");
     w.println("  }");
     w.println();
