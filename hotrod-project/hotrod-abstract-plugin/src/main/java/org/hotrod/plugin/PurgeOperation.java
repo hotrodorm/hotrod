@@ -124,7 +124,7 @@ public class PurgeOperation {
       JdbcDatabase db = null;
       try {
         db = new JdbcDatabase(conn, loc.getCatalogSchema(), new HashSet<DatabaseObject>(),
-            new HashSet<DatabaseObject>());
+            new HashSet<DatabaseObject>(), false, true, false, false);
       } catch (ReaderException | UnsupportedDatabaseException | DatabaseObjectNotFoundException e) {
         throw new OperationException("Could 1 not retrieve the list of temp views:" + XUtil.trim(e));
       }

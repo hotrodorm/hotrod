@@ -33,10 +33,11 @@ public class HotRodServices {
   private File configFile;
   private DisplayMode displayMode;
   private LinkedHashSet<String> facetNames;
+  private boolean logTimes;
 
-  public HotRodServices(File baseDir, String jdbcdriverclass, String jdbcurl, String jdbcusername,
-      String jdbcpassword, String jdbccatalog, String jdbcschema, File configFile, DisplayMode displayMode,
-      LinkedHashSet<String> facetNames) {
+  public HotRodServices(File baseDir, String jdbcdriverclass, String jdbcurl, String jdbcusername, String jdbcpassword,
+      String jdbccatalog, String jdbcschema, File configFile, DisplayMode displayMode, LinkedHashSet<String> facetNames,
+      boolean logTimes) {
     super();
     this.baseDir = baseDir;
     this.jdbcdriverclass = jdbcdriverclass;
@@ -48,6 +49,7 @@ public class HotRodServices {
     this.configFile = configFile;
     this.displayMode = displayMode;
     this.facetNames = facetNames;
+    this.logTimes = logTimes;
   }
 
   public void generate(final Feedback feedback) throws Exception {
@@ -59,7 +61,7 @@ public class HotRodServices {
     try {
 
       HotRodContext hc = new HotRodContext(configFile, jdbcdriverclass, jdbcurl, jdbcusername, jdbcpassword,
-          jdbccatalog, jdbcschema, baseDir, facetNames, feedback);
+          jdbccatalog, jdbcschema, baseDir, facetNames, feedback, this.logTimes);
 
       // Generate
 

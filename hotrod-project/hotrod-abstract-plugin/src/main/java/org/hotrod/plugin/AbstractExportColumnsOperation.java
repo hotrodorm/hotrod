@@ -19,6 +19,7 @@ import org.hotrod.generator.Feedback;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.HotRodContext;
 import org.hotrod.runtime.BuildInformation;
+import org.hotrod.utils.T;
 import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.utils.XUtil;
 
@@ -39,6 +40,8 @@ public abstract class AbstractExportColumnsOperation {
   protected String facets = null;
   protected String display = null;
   protected String exportfilename = null;
+
+  private boolean logTimes;
 
   // Computed properties (during validation)
 
@@ -65,6 +68,10 @@ public abstract class AbstractExportColumnsOperation {
     this.facets = facets;
     this.display = display;
     this.exportfilename = exportfilename;
+
+    this.logTimes = "true".equals(System.getProperty("timers"));
+    T.start(this.logTimes);
+
   }
 
   public final void execute(final Feedback feedback) throws Exception {
@@ -76,7 +83,7 @@ public abstract class AbstractExportColumnsOperation {
     validateParameters(feedback);
 
     HotRodContext hc = new HotRodContext(configFile, jdbcdriverclass, jdbcurl, jdbcusername, jdbcpassword, jdbccatalog,
-        jdbcschema, baseDir, facetNames, feedback);
+        jdbcschema, baseDir, facetNames, feedback, this.logTimes);
 
     try {
 

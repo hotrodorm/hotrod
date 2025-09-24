@@ -61,7 +61,7 @@ public class HotRodContext {
   public HotRodContext(final File configFile, final String jdbcdriverclass, final String jdbcurl,
       final String jdbcusername, final String jdbcpassword, final String currentJDBCCatalog,
       final String currentJDBCSchema, final File baseDir, final LinkedHashSet<String> facetNames,
-      final Feedback feedback) throws ControlledException {
+      final Feedback feedback, final boolean logTimes) throws ControlledException {
 
     if (configFile != null) {
       feedback.info("");
@@ -216,7 +216,8 @@ public class HotRodContext {
             }
 
             log.debug("gen 2");
-            this.db = new JdbcDatabase(conn, currentCS, tables, views, discoverCSs, excludeIds);
+            this.db = new JdbcDatabase(conn, currentCS, tables, views, discoverCSs, excludeIds, false, false, true,
+                logTimes);
             removeCurrentCatalogSchema(currentCS);
             log.debug("gen 3");
             this.config.getFacetTables();// FIXME
@@ -242,7 +243,7 @@ public class HotRodContext {
           } else { // 2. No Discover
 
             log.debug("gen 4");
-            this.db = new JdbcDatabase(conn, currentCS, tables, views);
+            this.db = new JdbcDatabase(conn, currentCS, tables, views, false, false, true, logTimes);
             removeCurrentCatalogSchema(currentCS);
             log.debug("gen 5");
 

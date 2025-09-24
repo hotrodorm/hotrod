@@ -14,6 +14,7 @@ import org.hotrod.api.HotRodServices;
 import org.hotrod.config.Constants;
 import org.hotrod.config.DisplayMode;
 import org.hotrod.generator.Feedback;
+import org.hotrod.utils.T;
 import org.hotrodorm.hotrod.utils.SUtil;
 
 public class GenOperation {
@@ -32,6 +33,8 @@ public class GenOperation {
   private String jdbcschema = null;
   private String facets = null;
   private String display = null;
+
+  private boolean logTimes;
 
   // Computed properties (during validation)
 
@@ -54,6 +57,10 @@ public class GenOperation {
     this.jdbcschema = jdbcschema;
     this.facets = facets;
     this.display = display;
+
+    this.logTimes = "true".equals(System.getProperty("timers"));
+    T.start(this.logTimes);
+
     validateParameters();
   }
 
@@ -61,7 +68,7 @@ public class GenOperation {
     log.debug("init");
 
     HotRodServices hs = new HotRodServices(this.baseDir, this.jdbcdriverclass, this.jdbcurl, this.jdbcusername,
-        this.jdbcpassword, this.jdbccatalog, this.jdbcschema, this.configFile, this.displayMode, this.facetNames);
+        this.jdbcpassword, this.jdbccatalog, this.jdbcschema, this.configFile, this.displayMode, this.facetNames, this.logTimes);
     hs.generate(feedback);
 
   }

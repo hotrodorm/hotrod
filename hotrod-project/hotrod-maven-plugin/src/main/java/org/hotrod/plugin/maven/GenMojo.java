@@ -15,6 +15,10 @@ public class GenMojo extends AbstractMojo {
 
   private static transient final Logger log = LogManager.getLogger(GenMojo.class);
 
+  static {
+    JULCustomFormatter.initialize();
+  }
+
   // Note: 1) Each property must be annotated by @Parameter. 2) The property
   // attribute -- if declared -- must be the exact same name as the Java member
 
