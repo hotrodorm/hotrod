@@ -9,7 +9,7 @@ import org.hotrod.livesql.exceptions.LiveSQLException;
 
 public class CastUtil {
 
-  private static final String FORMS = "WORD, WORD WORD..., WORD(NUMBER), WORD(NUMBER,NUMBER), WORD[], WORD[] WORD";
+  private static final String FORMS = "<word>, <word> <word>..., <word>(<number>), <word>(<number>,<number>), <word>[], <word>[] <word>";
   private static Pattern TYPE_PATTERN = Pattern.compile(
       "^" + "[a-zA-Z][a-zA-Z0-9\\ ]*" + "(\\([0-9]+(,\\ *[0-9]+)?\\))?" + "(\\[\\])?" + "[a-zA-Z0-9\\ ]*" + "$");
 
@@ -27,13 +27,13 @@ public class CastUtil {
   public static void validateCastType(String type) {
     if (type == null) {
       throw new LiveSQLException(
-          "Invalid type used in CAST: '" + type + "'; can only use the forms: " + FORMS + ", etc.");
+          "Invalid SQL type used in CAST: '" + type + "'; can only use the forms: " + FORMS + ", etc.");
     } else {
       Matcher m = TYPE_PATTERN.matcher(type);
       boolean valid = m.find();
       if (!valid) {
         throw new LiveSQLException(
-            "Invalid type used in CAST: '" + type + "'; can only use the forms: " + FORMS + ", etc.");
+            "Invalid SQL type used in CAST: '" + type + "'; can only use the forms: " + FORMS + ", etc.");
       }
     }
   }

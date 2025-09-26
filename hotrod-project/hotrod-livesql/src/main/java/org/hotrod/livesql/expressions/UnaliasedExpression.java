@@ -32,28 +32,28 @@ public abstract class UnaliasedExpression extends Expression {
 
   // Cast
 
-  public NumericExpression castNumeric(String type) {
-    return new NumericCast(this, type);
+  public NumericExpression castNumeric(String sqlType) {
+    return new NumericCast(this, sqlType);
   }
 
-  public CharExpression castChar(String type) {
-    return new CharCast(this, type);
+  public CharExpression castChar(String sqlType) {
+    return new CharCast(this, sqlType);
   }
 
-  public Predicate castBoolean(String type) {
-    return new BooleanCast(this, type);
+  public Predicate castBoolean(String sqlType) {
+    return new BooleanCast(this, sqlType);
   }
 
-  public DateTimeExpression castDateTime(String type) {
-    return new DateTimeCast(this, type);
+  public DateTimeExpression castDateTime(String sqlType) {
+    return new DateTimeCast(this, sqlType);
   }
 
-  public BinaryExpression castBinary(String type) {
-    return new BinaryCast(this, type);
+  public BinaryExpression castBinary(String sqlType) {
+    return new BinaryCast(this, sqlType);
   }
 
-  public ObjectExpression castObject(String type) {
-    return new ObjectCast(this, type);
+  public ObjectExpression castObject(String sqlType) {
+    return new ObjectCast(this, sqlType);
   }
 
 }
