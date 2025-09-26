@@ -109,7 +109,7 @@ public class App {
 
   private void testCast() {
     ProductTable p = this.productDAO.newTable();
-    List<Row> rows = this.sql.select(p.pidProduct, p.pidProduct.castChar("VARCHAR").length().as("len")).from(p)
+    List<Row> rows = this.sql.select(p.pidProduct, p.pidProduct.castChar("VA'RCHAR").length().as("len")).from(p)
         .execute();
     rows.forEach(r -> System.out.println("r=" + r));
   }

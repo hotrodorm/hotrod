@@ -9,30 +9,31 @@ import org.hotrod.livesql.exceptions.LiveSQLException;
 
 public class CastUtil {
 
-  private static Pattern TYPE_PATTERN = Pattern.compile("[a-zA-Z][a-zA-Z0-9\\ ]*"
-      + "(\\([0-9]+([\\ ]*,[0-9]+)?\\))?");
+  private static final String FORMS = "WORD, WORD WORD..., WORD(NUMBER), WORD(NUMBER,NUMBER), WORD[], WORD[] WORD";
+  private static Pattern TYPE_PATTERN = Pattern.compile(
+      "^" + "[a-zA-Z][a-zA-Z0-9\\ ]*" + "(\\([0-9]+(,\\ *[0-9]+)?\\))?" + "(\\[\\])?" + "[a-zA-Z0-9\\ ]*" + "$");
 
-  
   // PostgreSQL:
   // INTEGER[]
-  
+
   // MySQL:
   // AT TIME ZONE '+00:00' AS DATETIME(2)
   // CHAR CHARACTER SET latin1
   // CHAR(50) CHARACTER SET latin1
-  
+
   // MariaDB:
   // CHAR CHARACTER SET utf8
-  
+
   public static void validateCastType(String type) {
     if (type == null) {
-      throw new LiveSQLException("Invalid type used in CAST: '" + type
-          + "'; can only use the forms: WORD, WORD(NUMBER), or WORD(NUMBER,NUMBER)");
+      throw new LiveSQLException(
+          "Invalid type used in CAST: '" + type + "'; can only use the forms: " + FORMS + ", etc.");
     } else {
-      Matcher m = TYPE_PATTERN.matcher("type");
-      if (!m.find()) {
-        throw new LiveSQLException("Invalid type used in CAST: '" + type
-            + "'; can only use the forms: WORD, WORD(NUMBER), or WORD(NUMBER,NUMBER)");
+      Matcher m = TYPE_PATTERN.matcher(type);
+      boolean valid = m.find();
+      if (!valid) {
+        throw new LiveSQLException(
+            "Invalid type used in CAST: '" + type + "'; can only use the forms: " + FORMS + ", etc.");
       }
     }
   }
