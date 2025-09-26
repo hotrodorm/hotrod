@@ -1,5 +1,6 @@
 package org.hotrod.livesql.dialects;
 
+import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.queries.QueryWriter;
 
 public abstract class BooleanLiteralRenderer {

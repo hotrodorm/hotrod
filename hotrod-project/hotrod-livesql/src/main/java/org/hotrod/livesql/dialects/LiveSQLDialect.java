@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.select.SShield;
@@ -131,6 +132,8 @@ public abstract class LiveSQLDialect {
   public abstract String naturalToCanonical(final String natural);
 
   public abstract String quoteIdentifier(final String verbatim);
+
+  public abstract CastRenderer getCastRenderer();
 
   public String canonicalToNatural(final Name name) {
     if (name.isQuoted()) {

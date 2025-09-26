@@ -15,14 +15,14 @@ public class AccountLayout implements Serializable {
 
   // Layout Properties (table columns)
 
-  protected Integer id = null; // INTEGER
-  protected String name = null; // CHARACTER VARYING
-  protected AccountType type = null; // CHARACTER VARYING
-  protected Double balance = null; // INTEGER
-  protected Boolean active = null; // INTEGER
-  protected byte[] clientPhoto = null; // BINARY LARGE OBJECT
-  protected LocalDateTime updatedAt = null; // TIMESTAMP
-  protected Integer version = null; // INTEGER
+  protected Integer id = null; // Type Name: INTEGER - Type Resolved By: STATIC_DIALECT_RULE
+  protected String name = null; // Type Name: CHARACTER VARYING - Type Resolved By: STATIC_DIALECT_RULE
+  protected AccountType type = null; // Type Name: CHARACTER VARYING - Type Resolved By: STATIC_DESIGNATED
+  protected Double balance = null; // Type Name: INTEGER - Type Resolved By: STATIC_DESIGNATED
+  protected Boolean active = null; // Type Name: INTEGER - Type Resolved By: STATIC_DESIGNATED
+  protected byte[] clientPhoto = null; // Type Name: BINARY LARGE OBJECT - Type Resolved By: STATIC_DIALECT_RULE
+  protected LocalDateTime updatedAt = null; // Type Name: TIMESTAMP - Type Resolved By: STATIC_DIALECT_RULE
+  protected Integer version = null; // Type Name: INTEGER - Type Resolved By: STATIC_DIALECT_RULE
 
   // getters & setters
 

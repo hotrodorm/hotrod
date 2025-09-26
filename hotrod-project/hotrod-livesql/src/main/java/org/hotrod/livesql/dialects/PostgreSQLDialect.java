@@ -351,8 +351,8 @@ public class PostgreSQLDialect extends LiveSQLDialect {
       // String functions
 
       @Override
-      public void locate(final QueryWriter w, final CharExpression substring,
-          final CharExpression string, final NumericExpression from) {
+      public void locate(final QueryWriter w, final CharExpression substring, final CharExpression string,
+          final NumericExpression from) {
         if (from == null) {
           this.write(w, "strpos", string, substring);
         } else {
@@ -391,8 +391,7 @@ public class PostgreSQLDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void dateTime(final QueryWriter w, final DateTimeExpression date,
-          final DateTimeExpression time) {
+      public void dateTime(final QueryWriter w, final DateTimeExpression date, final DateTimeExpression time) {
         w.write("(");
         Shield.renderTo(date, w);
         w.write(" + ");
@@ -497,6 +496,20 @@ public class PostgreSQLDialect extends LiveSQLDialect {
       @Override
       public boolean removeMainTableAlias() {
         return false;
+      }
+
+    };
+  }
+
+  @Override
+  public CastRenderer getCastRenderer() {
+    return new CastRenderer() {
+
+      @Override
+      public void render(QueryWriter w, Expression expr, String type) {
+        w.write("CAST(");
+        Shield.renderTo(expr, w);
+        w.write(" AS " + type + ")");
       }
 
     };

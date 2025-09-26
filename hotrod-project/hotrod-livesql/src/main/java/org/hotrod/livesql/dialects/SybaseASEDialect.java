@@ -8,10 +8,11 @@ import java.util.stream.Collectors;
 
 import org.hotrod.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.livesql.exceptions.UnsupportedLiveSQLFeatureException;
+import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.character.CharExpression;
-import org.hotrod.livesql.expressions.datetime.DateTimeFieldExpression;
 import org.hotrod.livesql.expressions.datetime.DateTimeExpression;
+import org.hotrod.livesql.expressions.datetime.DateTimeFieldExpression;
 import org.hotrod.livesql.expressions.numeric.NumericExpression;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.QueryWriter;
@@ -271,8 +272,8 @@ public class SybaseASEDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void locate(final QueryWriter w, final CharExpression substring,
-          final CharExpression string, final NumericExpression from) {
+      public void locate(final QueryWriter w, final CharExpression substring, final CharExpression string,
+          final NumericExpression from) {
         if (from == null) {
           this.write(w, "charindex", substring, string);
         } else {
@@ -318,14 +319,12 @@ public class SybaseASEDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void dateTime(final QueryWriter w, final DateTimeExpression date,
-          final DateTimeExpression time) {
+      public void dateTime(final QueryWriter w, final DateTimeExpression date, final DateTimeExpression time) {
         throw new UnsupportedLiveSQLFeatureException("Sybase ASE does not suppor the DATETIME() function");
       }
 
       @Override
-      public void extract(final QueryWriter w, final DateTimeExpression datetime,
-          final DateTimeFieldExpression field) {
+      public void extract(final QueryWriter w, final DateTimeExpression datetime, final DateTimeFieldExpression field) {
         w.write("datepart(");
         Shield.renderTo(field, w);
         w.write(", ");
@@ -439,6 +438,20 @@ public class SybaseASEDialect extends LiveSQLDialect {
       @Override
       public boolean removeMainTableAlias() {
         return true;
+      }
+
+    };
+  }
+
+  @Override
+  public CastRenderer getCastRenderer() {
+    return new CastRenderer() {
+
+      @Override
+      public void render(QueryWriter w, Expression expr, String type) {
+        w.write("CAST(");
+        Shield.renderTo(expr, w);
+        w.write(" AS " + type + ")");
       }
 
     };

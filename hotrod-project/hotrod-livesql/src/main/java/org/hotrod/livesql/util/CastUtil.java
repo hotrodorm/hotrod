@@ -2,8 +2,40 @@ package org.hotrod.livesql.util;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.hotrod.livesql.exceptions.LiveSQLException;
 
 public class CastUtil {
+
+  private static Pattern TYPE_PATTERN = Pattern.compile("[a-zA-Z][a-zA-Z0-9\\ ]*"
+      + "(\\([0-9]+([\\ ]*,[0-9]+)?\\))?");
+
+  
+  // PostgreSQL:
+  // INTEGER[]
+  
+  // MySQL:
+  // AT TIME ZONE '+00:00' AS DATETIME(2)
+  // CHAR CHARACTER SET latin1
+  // CHAR(50) CHARACTER SET latin1
+  
+  // MariaDB:
+  // CHAR CHARACTER SET utf8
+  
+  public static void validateCastType(String type) {
+    if (type == null) {
+      throw new LiveSQLException("Invalid type used in CAST: '" + type
+          + "'; can only use the forms: WORD, WORD(NUMBER), or WORD(NUMBER,NUMBER)");
+    } else {
+      Matcher m = TYPE_PATTERN.matcher("type");
+      if (!m.find()) {
+        throw new LiveSQLException("Invalid type used in CAST: '" + type
+            + "'; can only use the forms: WORD, WORD(NUMBER), or WORD(NUMBER,NUMBER)");
+      }
+    }
+  }
 
   public static Byte toByte(final Number n) {
     return n == null ? null : n.byteValue();

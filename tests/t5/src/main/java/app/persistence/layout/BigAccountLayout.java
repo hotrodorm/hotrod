@@ -12,10 +12,10 @@ public class BigAccountLayout implements Serializable {
 
   // Expression properties
 
-  protected Integer id = null;
-  protected Integer grossBalance = null;
-  protected String status = null;
-  protected Integer score = null;
+  protected Integer id = null; // Type Name: INTEGER - Type Resolved By: STATIC_DIALECT_RULE
+  protected Integer grossBalance = null; // Type Name: INTEGER - Type Resolved By: STATIC_DIALECT_RULE
+  protected String status = null; // Type Name: CHARACTER VARYING - Type Resolved By: STATIC_DIALECT_RULE
+  protected Integer score = null; // Type Name: INTEGER - Type Resolved By: STATIC_DIALECT_RULE
 
   // getters & setters
 

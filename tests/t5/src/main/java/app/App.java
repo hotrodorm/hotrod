@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.LiveSQL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import app.persistence.dao.ProductDAO;
+import app.persistence.dao.ProductDAO.ProductTable;
 import app.persistence.dao.VehicleDAO;
 import app.persistence.layout.VehicleLayout;
 import app.persistence.model.Product;
@@ -73,7 +75,8 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       log.info("[ Starting... ]");
-      testWhere();
+      testCast();
+//      testWhere();
 //      testInsert1();
 //      testForEach();
 //      testOracleInsertSeq();
@@ -102,6 +105,13 @@ public class App {
 //      testNitro6();
       log.info("[ Ending ]");
     };
+  }
+
+  private void testCast() {
+    ProductTable p = this.productDAO.newTable();
+    List<Row> rows = this.sql.select(p.pidProduct, p.pidProduct.castChar("VARCHAR").length().as("len")).from(p)
+        .execute();
+    rows.forEach(r -> System.out.println("r=" + r));
   }
 
   private void testWhere() {

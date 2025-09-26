@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.hotrod.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.livesql.exceptions.UnsupportedLiveSQLFeatureException;
+import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.character.CharExpression;
 import org.hotrod.livesql.expressions.datetime.DateTimeExpression;
@@ -401,8 +402,8 @@ public class OracleDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void locate(final QueryWriter w, final CharExpression substring,
-          final CharExpression string, final NumericExpression from) {
+      public void locate(final QueryWriter w, final CharExpression substring, final CharExpression string,
+          final NumericExpression from) {
         if (from == null) {
           this.write(w, "instr", string, substring);
         } else {
@@ -442,8 +443,7 @@ public class OracleDialect extends LiveSQLDialect {
       }
 
       @Override
-      public void dateTime(final QueryWriter w, final DateTimeExpression date,
-          final DateTimeExpression time) {
+      public void dateTime(final QueryWriter w, final DateTimeExpression date, final DateTimeExpression time) {
         w.write("to_date(to_char(");
         Shield.renderTo(date, w);
         w.write(", 'yyyymmdd') || ' ' || ");
@@ -557,6 +557,20 @@ public class OracleDialect extends LiveSQLDialect {
       @Override
       public boolean removeMainTableAlias() {
         return false;
+      }
+
+    };
+  }
+
+  @Override
+  public CastRenderer getCastRenderer() {
+    return new CastRenderer() {
+
+      @Override
+      public void render(QueryWriter w, Expression expr, String type) {
+        w.write("CAST(");
+        Shield.renderTo(expr, w);
+        w.write(" AS " + type + ")");
       }
 
     };
