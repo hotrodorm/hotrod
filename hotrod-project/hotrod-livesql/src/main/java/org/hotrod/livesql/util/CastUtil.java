@@ -9,12 +9,30 @@ import org.hotrod.livesql.exceptions.LiveSQLException;
 
 public class CastUtil {
 
-  private static final String FORMS = "<word>, <word> <word>..., <word>(<number>), <word>(<number>,<number>), <word>[], <word>[] <word>";
-  private static Pattern TYPE_PATTERN = Pattern.compile(
-      "^" + "[a-zA-Z][a-zA-Z0-9\\ ]*" + "(\\([0-9]+(,\\ *[0-9]+)?\\))?" + "(\\[\\])?" + "[a-zA-Z0-9\\ ]*" + "$");
+  private static final String FORMS = "Any sequence of <word>, [], (<number>), (<number>,<number>), and <time-offset>;\n"
+      + "words start with letters and continue with alphanumeric chars;\n"
+      + "time offsets must be enclosed in single quotes and take the form '+<number>' or '+<number>:<number>'";
 
+  private static final String WORD = "[a-zA-Z][a-zA-Z0-9\\ ]*+";
+  private static final String PRECISION = "\\([0-9]+(,\\ *+[0-9]++)?+\\)";
+  private static final String BRACKETS = "\\[\\]";
+  private static final String TIME_OFFSET = "\\'\\+[0-9]++(\\:[0-9]++)?+\\'";
+
+  private static final String SEGMENTS = "((" + WORD + "|" + PRECISION + "|" + BRACKETS + "|" + TIME_OFFSET
+      + ")\\ *+)++";
+
+  private static Pattern TYPE_PATTERN = Pattern.compile("^" + SEGMENTS + "$");
+
+  // Oracle:
+  // VARCHAR2(50)
+  // varchar2(50)
+  // DECIMAL(10,2)
+  
   // PostgreSQL:
   // INTEGER[]
+  
+  // SQL Server:
+  // Integer
 
   // MySQL:
   // AT TIME ZONE '+00:00' AS DATETIME(2)

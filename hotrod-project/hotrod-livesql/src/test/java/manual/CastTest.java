@@ -1,17 +1,14 @@
 package manual;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.hotrod.livesql.util.CastUtil;
 
-public class Cast {
+public class CastTest {
 
   public static void main(String[] args) {
-    new Cast().allChecks();
+    new CastTest().allChecks();
   }
 
-  private int succeeded = 0;
+  private int pass = 0;
   private int failed = 0;
 
   private void allChecks() {
@@ -32,27 +29,55 @@ public class Cast {
     check("a", true);
     check("A", true);
 
-    // PostgreSQL:
-    // INTEGER[]
+    check("[]", true);
+    check(" []", false);
+    check("[]  abc[]d  []d", true);
+    check("a[]", true);
+    check("[]b", true);
+    check("a[]b", true);
+
+    check("''", false);
+    check("'+'", false);
+    check("'+9'", true);
+    check("'+9:'", false);
+    check("'+9:9'", true);
+    check("':0'", false);
+
+    check("a':0'", false);
+    check("a'+1:0'", true);
+    check("a'+1:0'b", true);
+    check("'+1:0'b", true);
+    check("a '+1:0'", true);
+    check("'+1:0' bb", true);
+    check("':0'b", false);
+    check("a':0'b", false);
+
+//    // PostgreSQL:
+//    // INTEGER[]
     check("INTEGER[]", true);
-    check("integ\"er[]", true);
-
-    // MySQL:
-    // AT TIME ZONE '+00:00' AS DATETIME(2)
-    // CHAR CHARACTER SET latin1
+    check("integ\"er[]", false);
+//
+//    // MySQL:
+//    // AT TIME ZONE '+00:00' AS DATETIME(2)
+    check("AT TIME ZONE '+00:00' AS DATETIME(2)", true);
+    check("AT TIME ZONE ':0' AS DATETIME(2)", false);
+    check("AT TIME ZONE '0:0' AS DATETIME(2)", false);
+    check("AT TIME ZONE '+0:0' AS DATETIME(2)", true);
+//    // CHAR CHARACTER SET latin1
     check("CHAR CHARACTER SET latin1", true);
-    // CHAR(50) CHARACTER SET latin1
+//    // CHAR(50) CHARACTER SET latin1
     check("CHAR(50) CHARACTER SET latin1", true);
-
-    // MariaDB:
-    // CHAR CHARACTER SET utf8
+//
+//    // MariaDB:
+//    // CHAR CHARACTER SET utf8
     check("CHAR CHARACTER SET utf8", true);
+    check(" CHAR CHARACTER SET utf8", false);
 
     if (this.failed == 0) {
-      log("SUCCESS -- " + this.succeeded + " succeeded, " + this.failed + " failed.");
+      log("SUCCESS -- " + this.pass + " passed, " + (this.failed == 0 ? "no failures" : this.failed + " failed."));
     } else {
       log("==========");
-      log("FAILURE -- " + this.succeeded + " succeeded, " + this.failed + " failed.");
+      log("FAILURE -- " + this.pass + " passed, " + (this.failed == 0 ? "no failures" : this.failed + " failed."));
       log("==========");
     }
   }
@@ -63,7 +88,7 @@ public class Cast {
       CastUtil.validateCastType(type);
 //      log("continued...");
       if (expectedToBeValid) {
-        this.succeeded++;
+        this.pass++;
       } else {
         this.failed++;
         log("Type '" + type + "' should not be valid but succeeded.");
@@ -74,7 +99,7 @@ public class Cast {
         this.failed++;
         log("Type '" + type + "' should be valid but failed.");
       } else {
-        this.succeeded++;
+        this.pass++;
       }
     }
   }
