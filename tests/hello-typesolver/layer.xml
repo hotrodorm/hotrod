@@ -1,0 +1,34 @@
+<hotrod>
+
+  <generators>
+    <jdbc />
+  </generators>
+
+  <type-solver>
+    <when test="typeName == 'TIMESTAMP'" java-type="java.sql.Timestamp" />
+    <when test="typeName == 'TINYINT'" java-type="Double" />
+    <when test="typeName == 'CHARACTER VARYING ARRAY' and name =$ '_CODES'" converter="TaxCodesArrayConverter" />
+  </type-solver>
+
+  <converter name="YNConverter" java-raw-type="String" java-type="Boolean" class="app.YNBooleanConverter" />
+
+  <converter name="TaxCodesArrayConverter" java-raw-type="java.sql.Array" java-type="String[]"
+    class="app.TaxCodesArrayConverter" />
+
+  <table name="account">
+    <column name="balance" java-type="Double" />
+  </table>
+
+  <dao name="PaymentDAO">
+
+    <select method="getBigInvoices" vo="BigInvoice">
+      <column name="amount" java-type="Double" />
+      <column name="paid" converter="YNConverter" />
+      SELECT *
+      FROM invoice
+      WHERE amount > 1.2 * (SELECT avg(amount) FROM invoice)
+    </select>
+
+  </dao>
+
+</hotrod>

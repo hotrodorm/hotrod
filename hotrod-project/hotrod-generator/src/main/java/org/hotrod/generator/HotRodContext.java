@@ -156,6 +156,7 @@ public class HotRodContext {
         } catch (FacetNotFoundException e) {
           throw new ErrorMessageException("facet '" + e.getMessage() + "' not found.");
         } catch (RuntimeException e) {
+          log.log(Level.SEVERE, "Could not load default configuration", e);
           throw new ErrorMessageException("Could not load configuration file " + configFile + " - " + e.getMessage()
               + ": " + XUtil.trim(e.getCause()));
         }

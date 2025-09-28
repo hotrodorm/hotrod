@@ -103,10 +103,6 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
     this.nameSolverTag.validate(this);
 
-    // Type Solver
-
-    this.typeSolverTag.validate(this);
-
     // Converters
 
     this.convertersByName = new HashMap<String, ConverterTag>();
@@ -119,6 +115,10 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
       }
       this.convertersByName.put(c.getName(), c);
     }
+
+    // Type Solver
+
+    this.typeSolverTag.validate(this);
 
   }
 
