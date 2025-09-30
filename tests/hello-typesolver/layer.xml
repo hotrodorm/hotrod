@@ -26,7 +26,7 @@
       <column name="paid" converter="YNConverter" />
       SELECT *
       FROM invoice
-      WHERE amount > 1.2 * (SELECT avg(amount) FROM invoice)
+      WHERE amount > 200
     </select>
 
   </dao>

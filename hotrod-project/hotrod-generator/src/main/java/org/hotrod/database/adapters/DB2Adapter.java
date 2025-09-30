@@ -50,7 +50,7 @@ public class DB2Adapter extends DatabaseAdapter {
   }
 
   @Override
-  public PropertyType getAdapterDefaultType(final ColumnMetadata m) throws UnresolvableDataTypeException {
+  public PropertyType getDialectDefaultType(final ColumnMetadata m) throws UnresolvableDataTypeException {
 
     log.fine("c.getDataType()=" + m.getDataType());
 
@@ -123,7 +123,7 @@ public class DB2Adapter extends DatabaseAdapter {
       }
 
     default: // Unrecognized type
-      return produceType(Object.class, m, false);
+      return produceType(Object.class, m, false, m.getResolvedConverter());
 
     }
 

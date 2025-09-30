@@ -3,6 +3,7 @@ package org.hotrod.database;
 import java.io.Serializable;
 import java.util.logging.Logger;
 
+import org.hotrod.config.ConverterTag;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
@@ -15,6 +16,7 @@ public class PropertyType {
   private static final Logger log = Logger.getLogger(PropertyType.class.getName());
 
   private String javaClassName;
+  private ConverterTag converterTag;
   private JDBCType jdbcType;
   private boolean isLOB;
   private TypeSource typeSource;
@@ -82,7 +84,7 @@ public class PropertyType {
     if (t == null) {
       throw new UnresolvableDataTypeException(m);
     }
-    initialize(javaClass.getName(), t, isLOB, valueRange, typeSource);
+    initialize(javaClass.getName(), t, isLOB, valueRange, typeSource, null);
   }
 
   /* Internal type for a non-serial column */
@@ -93,7 +95,7 @@ public class PropertyType {
     if (t == null) {
       throw new UnresolvableDataTypeException(m);
     }
-    initialize(javaClass.getName(), t, isLOB, null, typeSource);
+    initialize(javaClass.getName(), t, isLOB, null, typeSource, null);
   }
 
   /*
@@ -102,7 +104,7 @@ public class PropertyType {
    */
   public PropertyType(final Class<?> javaClass, final JDBCType jdbcType, final boolean isLOB,
       final TypeSource typeSource) {
-    initialize(javaClass.getName(), jdbcType, isLOB, null, typeSource);
+    initialize(javaClass.getName(), jdbcType, isLOB, null, typeSource, null);
   }
 
   // For custom data types and select parameters
@@ -115,26 +117,27 @@ public class PropertyType {
     if (t == null) {
       throw new UnresolvableDataTypeException(m);
     }
-    initialize(javaClassName, t, isLOB, null, typeSource);
+    initialize(javaClassName, t, isLOB, null, typeSource, null);
   }
 
   /* Custom type for a non-serial column with specified JDBC type */
   public PropertyType(final String javaClassName, final JDBCType jdbcType, final boolean isLOB,
-      final TypeSource typeSource) {
-    initialize(javaClassName, jdbcType, isLOB, null, typeSource);
+      final TypeSource typeSource, final ConverterTag converterTag) {
+    initialize(javaClassName, jdbcType, isLOB, null, typeSource, converterTag);
   }
 
   /* Custom type for a serial column */
   public PropertyType(final String javaClassName, final JDBCType jdbcType, final boolean isLOB,
-      final ValueRange valueRange, final TypeSource typeSource) {
-    initialize(javaClassName, jdbcType, isLOB, valueRange, typeSource);
+      final ValueRange valueRange, final TypeSource typeSource, final ConverterTag converterTag) {
+    initialize(javaClassName, jdbcType, isLOB, valueRange, typeSource, converterTag);
   }
 
   // Initialize
 
   private void initialize(final String javaClassName, final JDBCType jdbcType, final boolean isLOB,
-      final ValueRange valueRange, TypeSource typeSource) {
-    this.javaClassName = javaClassName;
+      final ValueRange valueRange, TypeSource typeSource, final ConverterTag converterTag) {
+    this.javaClassName = converterTag == null ? javaClassName : converterTag.getDomainClass();
+    this.converterTag = converterTag;
     this.jdbcType = jdbcType;
     this.isLOB = isLOB;
     this.valueRange = valueRange;
@@ -144,8 +147,8 @@ public class PropertyType {
   // ToString
 
   public String toString() {
-    return "javaClass=" + this.javaClassName + ", jdbcType=" + this.jdbcType + ", isLOB=" + this.isLOB + ", valueRange="
-        + this.valueRange;
+    return "javaClass=" + this.javaClassName + ", converter=" + this.converterTag + ", jdbcType=" + this.jdbcType
+        + ", isLOB=" + this.isLOB + ", valueRange=" + this.valueRange;
   }
 
   // Getters
@@ -216,6 +219,10 @@ public class PropertyType {
   /* Example: "java.lang.Integer" */
   public String getJavaClassName() {
     return this.javaClassName;
+  }
+
+  public final ConverterTag getConverterTag() {
+    return converterTag;
   }
 
   /* Example: "java.sql.Types.NUMERIC" */

@@ -17,7 +17,7 @@ public class BigInvoiceLayout implements Serializable {
   protected String client = null; // Type Name: CHARACTER VARYING - Type Resolved By: STATIC_DIALECT_RULE
   protected Timestamp created = null; // Type Name: TIMESTAMP - Type Resolved By: STATIC_LAYER_RULE
   protected Double amount = null; // Type Name: DECIMAL - Type Resolved By: STATIC_DESIGNATED
-  protected Double taxCodes = null; // Type Name: CHARACTER VARYING ARRAY - Type Resolved By: STATIC_LAYER_RULE
+  protected String[] taxCodes = null; // Type Name: CHARACTER VARYING ARRAY - Type Resolved By: STATIC_LAYER_RULE
   protected Boolean paid = null; // Type Name: CHARACTER - Type Resolved By: STATIC_DESIGNATED
 
   // getters & setters
@@ -54,11 +54,11 @@ public class BigInvoiceLayout implements Serializable {
     this.amount = amount;
   }
 
-  public final Double getTaxCodes() {
+  public final String[] getTaxCodes() {
     return this.taxCodes;
   }
 
-  public final void setTaxCodes(final Double taxCodes) {
+  public final void setTaxCodes(final String[] taxCodes) {
     this.taxCodes = taxCodes;
   }
 

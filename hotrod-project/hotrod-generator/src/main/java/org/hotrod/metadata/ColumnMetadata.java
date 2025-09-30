@@ -18,6 +18,7 @@ import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.identifiers.Id;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
+import org.hotrod.livesql.util.OUtil;
 import org.hotrod.typesolver.DriverColumnMetaData;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.JDBCTypes;
@@ -241,6 +242,7 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
 
     this.adapter = adapter;
     this.type = this.resolveJavaType(this, this.tag, null, this.resultSetType, typeSolverTag, this.adapter);
+    log.info("%%%%%%% " + OUtil.hc(this) + " cm=" + this.columnName + " type=" + this.type);
     this.typeSolverTag = typeSolverTag;
 
     this.isOLVersionNumberColumn = isOLVersionNumberColumn;
@@ -281,7 +283,8 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
       String javaType = columnTag.getJavaType() != null ? columnTag.getJavaType()
           : columnTag.getConverterTag().getDomainClass();
 
-      return new PropertyType(javaType, jdbcType, columnTag.isLOB(), range, TypeSource.STATIC_DESIGNATED);
+      return new PropertyType(javaType, jdbcType, columnTag.isLOB(), range, TypeSource.STATIC_DESIGNATED,
+          cm.getColumnTagConverter());
 
     } else {
 
@@ -291,9 +294,9 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
         return typeSolverType;
       }
 
-      // Otherwise, use the default type from the database adapter
+      // Otherwise, use the default type from the HotRod database dialect
 
-      return adapter.getAdapterDefaultType(cm);
+      return adapter.getDialectDefaultType(cm);
 
     }
 
@@ -380,7 +383,11 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
     return this.isOLTimestampColumn;
   }
 
-  public ConverterTag getConverter() {
+  public ConverterTag getResolvedConverter() {
+    return this.type.getConverterTag();
+  }
+
+  public ConverterTag getColumnTagConverter() {
     return this.tag != null ? this.tag.getConverterTag() : null;
   }
 

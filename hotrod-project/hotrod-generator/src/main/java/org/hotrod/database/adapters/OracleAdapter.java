@@ -54,7 +54,7 @@ public class OracleAdapter extends DatabaseAdapter {
   }
 
   @Override
-  public PropertyType getAdapterDefaultType(final ColumnMetadata m) throws UnresolvableDataTypeException {
+  public PropertyType getDialectDefaultType(final ColumnMetadata m) throws UnresolvableDataTypeException {
 
 //    log.info("cm.getDataType()=" + m.getDataType() + " (" + m.getTypeName() + ")");
 
@@ -192,7 +192,7 @@ public class OracleAdapter extends DatabaseAdapter {
       }
 
     default: // Unrecognized type
-      return produceType(Object.class, m, false);
+      return produceType(Object.class, m, false, m.getResolvedConverter());
 
     }
 

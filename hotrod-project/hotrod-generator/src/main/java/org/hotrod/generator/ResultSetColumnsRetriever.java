@@ -55,7 +55,7 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
 
   private class ResultSetParameterRenderer implements ParameterRenderer {
 
-    private List<JDBCType> parameterJDBCTypes = new ArrayList<JDBCType>();
+    private List<JDBCType> parameterJDBCTypes = new ArrayList<>();
 
     @Override
     public String render(final SQLParameter parameter) {
@@ -88,7 +88,7 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
     String sql = ctx.getTag().renderSQLFoundation(pr);
     String foundation = SQLUtil.cleanUpSQL(sql);
 
-    List<ColumnMetadata> flatColumns = new ArrayList<ColumnMetadata>();
+    List<ColumnMetadata> flatColumns = new ArrayList<>();
     ctx.setFlatColumnsMetadata(flatColumns);
 
     try (PreparedStatement ps = this.conn.prepareStatement(foundation)) {
@@ -104,8 +104,12 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
         ColumnMetadata cm;
         try {
           log.fine("NITRO column: " + i);
+          
+          
           cm = new ColumnMetadata(ctx.getSm(), rm, i, ctx.getTag().getMethod(), this.adapter, columnTag, false, false,
               false, this.config.getTypeSolverTag());
+          
+          
         } catch (UnresolvableDataTypeException e) {
           DriverColumnMetaData m = e.getColumnMetadata();
           String msg = "The column '" + m.getName() + "' in the <select> tag reports the type " + m.getTypeName()
@@ -151,7 +155,7 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
     ResultSetParameterRenderer pr = new ResultSetParameterRenderer();
     String foundation = SQLUtil.cleanUpSQL(selectTag.renderSQLAngle(pr, columnsProvider, this.adapter));
 
-    List<StructuredColumnMetadata> structuredColumnMetadata = new ArrayList<StructuredColumnMetadata>();
+    List<StructuredColumnMetadata> structuredColumnMetadata = new ArrayList<>();
     ctx.setStructuredColumnMetadata(structuredColumnMetadata);
 
     try (PreparedStatement ps = this.conn.prepareStatement(foundation)) {

@@ -53,7 +53,7 @@ public class MySQLAdapter extends DatabaseAdapter {
   }
 
   @Override
-  public PropertyType getAdapterDefaultType(final ColumnMetadata m) throws UnresolvableDataTypeException {
+  public PropertyType getDialectDefaultType(final ColumnMetadata m) throws UnresolvableDataTypeException {
 
     log.fine("c.getDataType()=" + m.getDataType() + " (" + m.getTypeName() + ")");
 
@@ -149,7 +149,7 @@ public class MySQLAdapter extends DatabaseAdapter {
       return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE);
 
     default: // Unrecognized type
-      return produceType(Object.class, m, false);
+      return produceType(Object.class, m, false, m.getResolvedConverter());
 
     }
 

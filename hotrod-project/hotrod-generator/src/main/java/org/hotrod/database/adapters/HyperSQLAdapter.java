@@ -52,7 +52,7 @@ public class HyperSQLAdapter extends DatabaseAdapter {
   }
 
   @Override
-  public PropertyType getAdapterDefaultType(final ColumnMetadata m) throws UnresolvableDataTypeException {
+  public PropertyType getDialectDefaultType(final ColumnMetadata m) throws UnresolvableDataTypeException {
 
     log.fine("c.getDataType()=" + m.getDataType());
 
@@ -132,14 +132,14 @@ public class HyperSQLAdapter extends DatabaseAdapter {
       return new PropertyType(String.class, m, true, TypeSource.STATIC_DIALECT_RULE);
 
     case java.sql.Types.OTHER:
-      return produceType(Object.class, m, false);
+      return produceType(Object.class, m, false, m.getResolvedConverter());
 
     case java.sql.Types.BIT:
     case java.sql.Types.ARRAY:
-      return produceType(Object.class, m, false);
+      return produceType(Object.class, m, false, m.getResolvedConverter());
 
     default: // Unrecognized type
-      return produceType(Object.class, m, false);
+      return produceType(Object.class, m, false, m.getResolvedConverter());
 
     }
 

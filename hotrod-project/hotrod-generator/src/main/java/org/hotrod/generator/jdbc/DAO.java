@@ -76,6 +76,7 @@ import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.livesql.util.CastUtil;
+import org.hotrod.livesql.util.OUtil;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.EnumDataSetMetadata;
@@ -368,7 +369,7 @@ public class DAO {
 
     int ordinal = 1;
     for (ColumnMetadata cm : this.metadata.getColumns()) {
-      this.writeReaderLogic(cm, ordinal, false);
+      this.writeColumnReaderLogic(cm, ordinal, false);
       ordinal++;
     }
 
@@ -734,8 +735,8 @@ public class DAO {
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String memId = cm.getId().getJavaMemberName();
       String jdbcType = cm.getType().getJDBCShortType();
-      String converterParam = cm.getConverter() == null ? ""
-          : ", this." + this.converterProperties.get(cm.getConverter().getName());
+      String converterParam = cm.getResolvedConverter() == null ? ""
+          : ", this." + this.converterProperties.get(cm.getResolvedConverter().getName());
 
       if (byExample) { // by example
 
@@ -994,8 +995,8 @@ public class DAO {
       int n = 1;
       for (ColumnMetadata cm : this.metadata.getColumns()) {
         String sqlId = cm.getId().getRenderedSQLName();
-        String converterParam = cm.getConverter() == null ? ""
-            : ", this." + this.converterProperties.get(cm.getConverter().getName());
+        String converterParam = cm.getResolvedConverter() == null ? ""
+            : ", this." + this.converterProperties.get(cm.getResolvedConverter().getName());
         if (ol != null && cm.isOLVersionNumberColumn()) {
           w.println("      .literal(\"  " + SUtil.escapeJavaString(sqlId) + " = " + SUtil.escapeJavaString(sqlId)
               + " + 1\"" + converterParam + ")" + (n < coln ? ".literaln(\",\")" : ".literaln()"));
@@ -1313,7 +1314,7 @@ public class DAO {
       ExternalClass jt = ExternalClass.of(javaType);
       ExternalClass lt = ExternalClass.of(liveSQLColumnType);
 
-      if (cm.getConverter() == null) {
+      if (cm.getResolvedConverter() == null) {
 
         w.println("    public final ", lt, " " + memberName + " = new ", lt, "(this,");
         w.print("      " //
@@ -1332,9 +1333,9 @@ public class DAO {
 
       } else {
 
-        ExternalClass rawClass = ExternalClass.of(cm.getConverter().getRawClass());
-        ExternalClass domainClass = ExternalClass.of(cm.getConverter().getDomainClass());
-        ExternalClass converterClass = ExternalClass.of(cm.getConverter().getConverterClass());
+        ExternalClass rawClass = ExternalClass.of(cm.getResolvedConverter().getRawClass());
+        ExternalClass domainClass = ExternalClass.of(cm.getResolvedConverter().getDomainClass());
+        ExternalClass converterClass = ExternalClass.of(cm.getResolvedConverter().getConverterClass());
 
         w.print("    private final ", TypeHandler.class, "<", rawClass, ", ");
         w.print(domainClass, "> th" + thId + " = ", TypeHandler.class, ".forConverter(new ", converterClass);
@@ -1508,8 +1509,8 @@ public class DAO {
     w.println("      .set()");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String sqlId = cm.getId().getRenderedSQLName();
-      String converterParam = cm.getConverter() == null ? ""
-          : ", this." + this.converterProperties.get(cm.getConverter().getName());
+      String converterParam = cm.getResolvedConverter() == null ? ""
+          : ", this." + this.converterProperties.get(cm.getResolvedConverter().getName());
       if (ol != null && cm.isOLVersionNumberColumn()) {
         w.println("        .if_(\"true\").literal(\"" + ns + "." + SUtil.escapeJavaString(sqlId) + " = "
             + SUtil.escapeJavaString(sqlId) + " + 1\").endif()");
@@ -1549,8 +1550,8 @@ public class DAO {
     for (ColumnMetadata cm : pk.getColumns()) {
       String memId = cm.getId().getJavaMemberName();
       String sqlId = cm.getId().getRenderedSQLName();
-      String converterParam = cm.getConverter() == null ? ""
-          : ", this." + this.converterProperties.get(cm.getConverter().getName());
+      String converterParam = cm.getResolvedConverter() == null ? ""
+          : ", this." + this.converterProperties.get(cm.getResolvedConverter().getName());
       w.println("      .literal(\"" + SUtil.escapeJavaString(sep.render()) + SUtil.escapeJavaString(sqlId)
           + " = \").parameter(\"" + ns + "." + SUtil.escapeJavaString(memId) + "\"" + converterParam + ").literaln()");
     }
@@ -1562,8 +1563,8 @@ public class DAO {
       String memId = cm.getId().getJavaMemberName();
       String sqlId = cm.getId().getRenderedSQLName();
       String jdbcType = cm.getType().getJDBCShortType();
-      String converterParam = cm.getConverter() == null ? ""
-          : ", this." + this.converterProperties.get(cm.getConverter().getName());
+      String converterParam = cm.getResolvedConverter() == null ? ""
+          : ", this." + this.converterProperties.get(cm.getResolvedConverter().getName());
       w.println(
           "      .literaln(\"" + SUtil.escapeJavaString(sep.render()) + "\" + \"" + SUtil.escapeJavaString(sqlId)
               + " = \").parameter(\"" + ns + "." + SUtil.escapeJavaString(memId) + "\", ",
@@ -1576,8 +1577,8 @@ public class DAO {
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String memId = cm.getId().getJavaMemberName();
       String sqlId = cm.getId().getRenderedSQLName();
-      String converterParam = cm.getConverter() == null ? ""
-          : ", this." + this.converterProperties.get(cm.getConverter().getName());
+      String converterParam = cm.getResolvedConverter() == null ? ""
+          : ", this." + this.converterProperties.get(cm.getResolvedConverter().getName());
       w.println("        .if_(\"" + ns + "." + memId + " != null\").literal(\"" + SUtil.escapeJavaString(sqlId)
           + " = \").parameter(\"" + ns + "." + memId + "\"" + converterParam + ").endif()");
     }
@@ -1643,7 +1644,8 @@ public class DAO {
 
   private int writeConverter(int n, List<ColumnMetadata> cols) {
     for (ColumnMetadata cm : cols) {
-      ConverterTag ct = cm.getConverter();
+      log.info("### " + OUtil.hc(cm) + " cm=" + cm.getName() + " converter=" + cm.getResolvedConverter());
+      ConverterTag ct = cm.getResolvedConverter();
       if (ct != null) {
         boolean found = this.converterProperties.containsKey(ct.getName());
         if (!found) {
@@ -1712,7 +1714,7 @@ public class DAO {
     JDBC_GETTERS.put("java.sql.Timestamp", JDBCGetter.obj("getTimestamp"));
   }
 
-  private void writeReaderLogic(ColumnMetadata cm, int ordinal, boolean discoverable) {
+  private void writeColumnReaderLogic(ColumnMetadata cm, int ordinal, boolean discoverable) {
     w.println();
     String setter = cm.getId().getJavaSetter();
 
@@ -1721,7 +1723,7 @@ public class DAO {
 //        + this.metadata.getId().getCanonicalSQLName() + "." + cm.getName() + " setter=" + setter);
 
     String javaClass = cm.getType().getJavaClassName();
-    ConverterTag ct = cm.getConverter();
+    ConverterTag ct = cm.getResolvedConverter();
     String cn = cm.getId().getCanonicalSQLName();
 //    log.info("-- " + cn + ": javaClass=" + javaClass);
 
@@ -1732,6 +1734,7 @@ public class DAO {
     }
     String indent = discoverable ? "  " : "";
 
+    log.info("cm=" + cm);
     if (ct == null) { // No converter
       JDBCGetter g = JDBC_GETTERS.get(javaClass);
 //      log.info("- g=" + g + " method=" + (g == null ? "null" : g.getResultSetMethod()));
@@ -2048,7 +2051,7 @@ public class DAO {
 
     ordinal = 1;
     for (ColumnMetadata cm : columns) {
-      this.writeReaderLogic(cm, ordinal, true);
+      this.writeColumnReaderLogic(cm, ordinal, true);
       ordinal++;
     }
 

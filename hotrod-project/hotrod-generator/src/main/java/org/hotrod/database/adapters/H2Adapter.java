@@ -54,7 +54,7 @@ public class H2Adapter extends DatabaseAdapter {
   }
 
   @Override
-  public PropertyType getAdapterDefaultType(final ColumnMetadata m) throws UnresolvableDataTypeException {
+  public PropertyType getDialectDefaultType(final ColumnMetadata m) throws UnresolvableDataTypeException {
 
 //    log.info("c.getDataType()=" + m.getDataType() + ", precision=" + m.getPrecision() + ", scale=" + m.getScale());
 

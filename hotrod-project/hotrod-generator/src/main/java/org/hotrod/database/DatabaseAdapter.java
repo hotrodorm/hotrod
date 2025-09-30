@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.hotrod.config.ConverterTag;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.identifiers.ObjectId;
@@ -139,7 +140,7 @@ public abstract class DatabaseAdapter {
 
   public abstract String getName();
 
-  public abstract PropertyType getAdapterDefaultType(ColumnMetadata cm) throws UnresolvableDataTypeException;
+  public abstract PropertyType getDialectDefaultType(ColumnMetadata cm) throws UnresolvableDataTypeException;
 
   // Insert Behavior
 
@@ -204,13 +205,13 @@ public abstract class DatabaseAdapter {
 
   // Utilities
 
-  protected PropertyType produceType(final Class<?> c, final ColumnMetadata m, final boolean isLOB)
-      throws UnresolvableDataTypeException {
+  protected PropertyType produceType(final Class<?> c, final ColumnMetadata m, final boolean isLOB,
+      final ConverterTag converterTag) throws UnresolvableDataTypeException {
     JDBCType jdbcType = JDBCTypes.codeToType(m.getDataType());
     if (jdbcType == null) {
       throw new UnresolvableDataTypeException(m);
     }
-    return new PropertyType(c.getName(), jdbcType, isLOB, TypeSource.STATIC_DIALECT_RULE);
+    return new PropertyType(c.getName(), jdbcType, isLOB, TypeSource.STATIC_DIALECT_RULE, converterTag);
   }
 
   // Classes

@@ -49,7 +49,7 @@ public class SAPASEAdapter extends DatabaseAdapter {
   }
 
   @Override
-  public PropertyType getAdapterDefaultType(final ColumnMetadata m) throws UnresolvableDataTypeException {
+  public PropertyType getDialectDefaultType(final ColumnMetadata m) throws UnresolvableDataTypeException {
 
     log.fine("c.getDataType()=" + m.getDataType() + " (" + m.getPrecision() + ", " + m.getScale() + ")");
 
@@ -159,7 +159,7 @@ public class SAPASEAdapter extends DatabaseAdapter {
     // If not found.
 
     default:
-      return produceType(Object.class, m, false);
+      return produceType(Object.class, m, false, m.getResolvedConverter());
 
     }
   }

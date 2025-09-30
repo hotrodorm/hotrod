@@ -50,8 +50,8 @@ public class MariaDBAdapter extends DatabaseAdapter {
   }
 
   @Override
-  public PropertyType getAdapterDefaultType(final ColumnMetadata m) throws UnresolvableDataTypeException {
-    return this.mysqlAdaper.getAdapterDefaultType(m);
+  public PropertyType getDialectDefaultType(final ColumnMetadata m) throws UnresolvableDataTypeException {
+    return this.mysqlAdaper.getDialectDefaultType(m);
   }
 
   @Override

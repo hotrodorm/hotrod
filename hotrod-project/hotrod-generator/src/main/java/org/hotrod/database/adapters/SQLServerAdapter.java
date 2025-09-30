@@ -54,7 +54,7 @@ public class SQLServerAdapter extends DatabaseAdapter {
   }
 
   @Override
-  public PropertyType getAdapterDefaultType(final ColumnMetadata m) throws UnresolvableDataTypeException {
+  public PropertyType getDialectDefaultType(final ColumnMetadata m) throws UnresolvableDataTypeException {
 
     log.fine("c.getDataType()=" + m.getDataType());
 
@@ -170,7 +170,7 @@ public class SQLServerAdapter extends DatabaseAdapter {
       return new PropertyType(Object.class, JDBCType.OTHER, false, TypeSource.STATIC_DIALECT_RULE);
 
     default: // Unrecognized type
-      return produceType(Object.class, m, false);
+      return produceType(Object.class, m, false, m.getResolvedConverter());
 
     }
 

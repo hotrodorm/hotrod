@@ -432,7 +432,7 @@ public class EnumTag extends AbstractEntityDAOTag {
     try {
       ColumnMetadata cm = new ColumnMetadata(null, c, adapter, null, false, false, false,
           this.config.getTypeSolverTag(), this.config.getNameSolverTag());
-      type = adapter.getAdapterDefaultType(cm);
+      type = adapter.getDialectDefaultType(cm);
     } catch (UnresolvableDataTypeException e) {
       throw new InvalidConfigurationFileException(this, "Could not resolve a suitable Java type for the column '"
           + c.getName() + "' on table '" + this.id.getRenderedSQLName() + "'.");
