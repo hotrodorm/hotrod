@@ -14,8 +14,8 @@ CREATE TABLE invoice (
   client VARCHAR(50),                     -- STATIC_DIALECT_RULE
   created TIMESTAMP,                      -- STATIC_LAYER_RULE
   amount DECIMAL(12, 2),                  -- STATIC_DESIGNATED
-  tax_codes VARCHAR ARRAY[8],             -- STATIC_DIALECT_RULE
-  paid char(1) CHECK (paid IN ('Y', 'N')) -- STATIC_DESIGNATED
+  tax_codes VARCHAR ARRAY[8],             -- STATIC_LAYER_RULE with converter
+  paid char(1) CHECK (paid IN ('Y', 'N')) -- STATIC_DESIGNATED with converter
 );
 
 INSERT INTO invoice (id, client, created, amount, tax_codes, paid) VALUES
