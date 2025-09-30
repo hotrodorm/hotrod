@@ -137,7 +137,7 @@ public class ConfigurationLoader {
       log.fine("parentFile=" + parentDir + " :: " + parentDir.getAbsolutePath());
 
       log.fine("Will validate semantics.");
-      config.validate(projectBaseDir, parentDir, f, adapter, currentCS);
+      config.validate(projectBaseDir, parentDir, f, adapter, currentCS, false);
       log.fine("Semantics validation #1 successful.");
 
       // Validation (common)
@@ -186,7 +186,7 @@ public class ConfigurationLoader {
     HotRodConfigTag config = new HotRodConfigTag();
     File parentDir = null;
     try {
-      config.validate(projectBaseDir, parentDir, f, adapter, currentCS);
+      config.validate(projectBaseDir, parentDir, f, adapter, currentCS, true);
     } catch (InvalidConfigurationFileException e) {
       throw new ErrorMessageException("No Config Error: " + e.getMessage());
     } catch (GeneratorNotFoundException e) {

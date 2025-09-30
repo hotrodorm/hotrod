@@ -1,9 +1,5 @@
 <hotrod>
 
-  <generators>
-    <jdbc />
-  </generators>
-
   <type-solver>
     <when test="typeName == 'TIMESTAMP'" java-type="java.sql.Timestamp" />
     <when test="typeName == 'TINYINT'" java-type="Double" />

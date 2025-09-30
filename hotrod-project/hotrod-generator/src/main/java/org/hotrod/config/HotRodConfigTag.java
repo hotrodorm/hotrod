@@ -87,7 +87,8 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
   }
 
   public void validate(final File basedir, final File parentDir, final File f, final DatabaseAdapter adapter,
-      final CatalogSchema currentCS) throws InvalidConfigurationFileException, GeneratorNotFoundException {
+      final CatalogSchema currentCS, final boolean enableDiscoverOnAbsentGeneratorTag)
+      throws InvalidConfigurationFileException, GeneratorNotFoundException {
 
     this.f = f;
 
@@ -95,7 +96,9 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
     if (this.generatorsTag == null) {
       this.generatorsTag = new GeneratorsTag();
-      this.generatorsTag.enableDiscover();
+      if (enableDiscoverOnAbsentGeneratorTag) {
+        this.generatorsTag.enableDiscover();
+      }
     }
     this.generatorsTag.validate(basedir, parentDir, adapter, currentCS);
 

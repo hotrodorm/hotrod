@@ -76,7 +76,6 @@ import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.livesql.util.CastUtil;
-import org.hotrod.livesql.util.OUtil;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.EnumDataSetMetadata;
@@ -1644,7 +1643,6 @@ public class DAO {
 
   private int writeConverter(int n, List<ColumnMetadata> cols) {
     for (ColumnMetadata cm : cols) {
-      log.info("### " + OUtil.hc(cm) + " cm=" + cm.getName() + " converter=" + cm.getResolvedConverter());
       ConverterTag ct = cm.getResolvedConverter();
       if (ct != null) {
         boolean found = this.converterProperties.containsKey(ct.getName());
@@ -1734,7 +1732,6 @@ public class DAO {
     }
     String indent = discoverable ? "  " : "";
 
-    log.info("cm=" + cm);
     if (ct == null) { // No converter
       JDBCGetter g = JDBC_GETTERS.get(javaClass);
 //      log.info("- g=" + g + " method=" + (g == null ? "null" : g.getResultSetMethod()));

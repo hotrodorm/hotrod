@@ -161,7 +161,7 @@ public class HotRodContext {
               + ": " + XUtil.trim(e.getCause()));
         }
       } else {
-        log.info("No config mode");
+        log.fine("No config mode");
         try {
           this.config = ConfigurationLoader.prepareNoConfig(baseDir, configFile, adapter, facetNames, currentCS);
           log.fine("Default configuration loaded.");

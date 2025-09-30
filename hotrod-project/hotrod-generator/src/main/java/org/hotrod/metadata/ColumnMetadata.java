@@ -242,7 +242,6 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
 
     this.adapter = adapter;
     this.type = this.resolveJavaType(this, this.tag, null, this.resultSetType, typeSolverTag, this.adapter);
-    log.info("%%%%%%% " + OUtil.hc(this) + " cm=" + this.columnName + " type=" + this.type);
     this.typeSolverTag = typeSolverTag;
 
     this.isOLVersionNumberColumn = isOLVersionNumberColumn;
