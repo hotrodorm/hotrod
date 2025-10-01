@@ -76,7 +76,6 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
     private boolean present3 = false;
     private boolean present4 = false;
     private boolean present5 = false;
-    private boolean present6 = false;
 
     @Override
     public void discoverColumns(ResultSet rs) throws SQLException {
@@ -86,16 +85,14 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
       present3 = false;
       present4 = false;
       present5 = false;
-      present6 = false;
       int n = m.getColumnCount();
       for (int i = 1; i <= n; i++) {
         String l = m.getColumnLabel(i);
         if ("ID".equals(l)) present1 = true;
-        if ("CLIENT".equals(l)) present2 = true;
-        if ("CREATED".equals(l)) present3 = true;
+        if ("CREATED".equals(l)) present2 = true;
+        if ("INVOICE_TAX_CODES".equals(l)) present3 = true;
         if ("AMOUNT".equals(l)) present4 = true;
-        if ("TAX_CODES".equals(l)) present5 = true;
-        if ("PAID".equals(l)) present6 = true;
+        if ("PAID".equals(l)) present5 = true;
       }
     }
 
@@ -110,13 +107,14 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
       }
 
       if (this.present2) {
-        String col2 = rs.getString("CLIENT"); // CLIENT
-        row.setClient(col2);
+        Timestamp col2 = rs.getTimestamp("CREATED"); // CREATED
+        row.setCreated(col2);
       }
 
       if (this.present3) {
-        Timestamp col3 = rs.getTimestamp("CREATED"); // CREATED
-        row.setCreated(col3);
+        Array raw3 = rs.getObject("INVOICE_TAX_CODES", Array.class); // INVOICE_TAX_CODES
+        String[] col3 = converter0.decode(raw3, conn);
+        row.setInvoiceTaxCodes(col3);
       }
 
       if (this.present4) {
@@ -126,15 +124,9 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
       }
 
       if (this.present5) {
-        Array raw5 = rs.getObject("TAX_CODES", Array.class); // TAX_CODES
-        String[] col5 = converter0.decode(raw5, conn);
-        row.setTaxCodes(col5);
-      }
-
-      if (this.present6) {
-        String raw6 = rs.getObject("PAID", String.class); // PAID
-        Boolean col6 = converter1.decode(raw6, conn);
-        row.setPaid(col6);
+        String raw5 = rs.getObject("PAID", String.class); // PAID
+        Boolean col5 = converter1.decode(raw5, conn);
+        row.setPaid(col5);
       }
 
       return row;

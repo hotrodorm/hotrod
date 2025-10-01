@@ -19,12 +19,11 @@ The types for columns of tables, views, and Nitro select queries are resolved du
 
 The types are set by the following rules, in order. For each column the first rule that applies wins and the rest are ignored.
 
-| Priority | Rule | Shown in Preview and Logs as |
-| :--: | :-- | :-- |
-| 1  | The &lt;column> Tag | STATIC_DESIGNATED |
-| 2  | The &lt;type-solver> Static Rules | STATIC_LAYER_RULE |
-| 3  | The Dialect Default Type | STATIC_DIALECT_RULE |
-| 4  | The JDBC Driver Default Type | -- |
+| Priority | Rule | Shown in Preview and Logs as | Can Use Converter |
+| :--: | :-- | :-- | :--: |
+| 1  | The &lt;column> Tag | STATIC_DESIGNATED | Yes |
+| 2  | The &lt;type-solver> Static Rules | STATIC_TYPESOLVER_RULE | Yes |
+| 3  | The Dialect Default Type | STATIC_DIALECT_RULE | No |
 
 LiveSQL queries use the static type resolution for table and view columns in the result set. This means that in the result set of a LiveSQL query the types of the columns coming from a table are always the same as the ones used by CRUD. This includes all the static resolution rules for plain types and converters.
 
@@ -34,12 +33,12 @@ LiveSQL free SQL expressions in the result set &ndash; that is, any combination 
 
 The Runtime Type Resolution uses the following rules, in order. For each column the first rule that applies wins and the rest are ignored.
 
-| Priority | Rule | Shown in Preview and Logs as |
-| :--: | :-- | :-- |
-| 1  | The `.type(<class>)` clause applied to the expression | RUNTIME_DESIGNATED |
-| 2  | The &lt;type-solver> Runtime Rules | RUNTIME_LAYER_RULE |
-| 3  | The Dialect Default Type | RUNTIME_DIALECT_RULE |
-| 4  | The JDBC Driver Default Type | RUNTIME_JDBC_DRIVER_DEFAULT |
+| Priority | Rule | Shown in Preview and Logs as |Can Use Converter |
+| :--: | :-- | :-- | :--: |
+| 1  | The `.type(<class>)` clause applied to the expression | RUNTIME_DESIGNATED | Yes |
+| 2  | The &lt;type-solver> Runtime Rules | RUNTIME_TYPESOLVER_RULE | Yes |
+| 3  | The Dialect Default Type | RUNTIME_DIALECT_RULE | No |
+| 4  | The JDBC Driver Default Type | RUNTIME_JDBC_DRIVER_DEFAULT | No |
 
 The Runtime Layer Rules are kept in the generated persistence layer bean `LayerConfigurationBean.java` class. This class is updated every time the persistence layer is re-generated to keep the rules up to date with the latest changes.
 

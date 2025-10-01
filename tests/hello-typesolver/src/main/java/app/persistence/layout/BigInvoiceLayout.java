@@ -14,10 +14,9 @@ public class BigInvoiceLayout implements Serializable {
   // Expression properties
 
   protected Integer id = null; // Type Name: INTEGER - Type Resolved By: STATIC_DIALECT_RULE
-  protected String client = null; // Type Name: CHARACTER VARYING - Type Resolved By: STATIC_DIALECT_RULE
-  protected Timestamp created = null; // Type Name: TIMESTAMP - Type Resolved By: STATIC_LAYER_RULE
+  protected Timestamp created = null; // Type Name: TIMESTAMP - Type Resolved By: STATIC_TYPESOLVER_RULE
+  protected String[] invoiceTaxCodes = null; // Type Name: CHARACTER VARYING ARRAY - Type Resolved By: STATIC_TYPESOLVER_RULE
   protected Double amount = null; // Type Name: DECIMAL - Type Resolved By: STATIC_DESIGNATED
-  protected String[] taxCodes = null; // Type Name: CHARACTER VARYING ARRAY - Type Resolved By: STATIC_LAYER_RULE
   protected Boolean paid = null; // Type Name: CHARACTER - Type Resolved By: STATIC_DESIGNATED
 
   // getters & setters
@@ -30,14 +29,6 @@ public class BigInvoiceLayout implements Serializable {
     this.id = id;
   }
 
-  public final String getClient() {
-    return this.client;
-  }
-
-  public final void setClient(final java.lang.String client) {
-    this.client = client;
-  }
-
   public final Timestamp getCreated() {
     return this.created;
   }
@@ -46,20 +37,20 @@ public class BigInvoiceLayout implements Serializable {
     this.created = created;
   }
 
+  public final String[] getInvoiceTaxCodes() {
+    return this.invoiceTaxCodes;
+  }
+
+  public final void setInvoiceTaxCodes(final String[] invoiceTaxCodes) {
+    this.invoiceTaxCodes = invoiceTaxCodes;
+  }
+
   public final Double getAmount() {
     return this.amount;
   }
 
   public final void setAmount(final java.lang.Double amount) {
     this.amount = amount;
-  }
-
-  public final String[] getTaxCodes() {
-    return this.taxCodes;
-  }
-
-  public final void setTaxCodes(final String[] taxCodes) {
-    this.taxCodes = taxCodes;
   }
 
   public final Boolean getPaid() {
@@ -76,10 +67,9 @@ public class BigInvoiceLayout implements Serializable {
     StringBuilder sb = new StringBuilder();
     sb.append(super.toString() + "\n");
     sb.append("- id=" + this.id + "\n");
-    sb.append("- client=" + this.client + "\n");
     sb.append("- created=" + this.created + "\n");
+    sb.append("- invoiceTaxCodes=" + this.invoiceTaxCodes + "\n");
     sb.append("- amount=" + this.amount + "\n");
-    sb.append("- taxCodes=" + this.taxCodes + "\n");
     sb.append("- paid=" + this.paid);
     return sb.toString();
   }
@@ -89,10 +79,9 @@ public class BigInvoiceLayout implements Serializable {
   public JSONObject toJSONObject() {
     JSONObject obj = new JSONObject();
     obj.addProperty("id", this.id);
-    obj.addProperty("client", this.client);
     obj.addProperty("created", this.created);
+    obj.addProperty("invoiceTaxCodes", this.invoiceTaxCodes);
     obj.addProperty("amount", this.amount);
-    obj.addProperty("taxCodes", this.taxCodes);
     obj.addProperty("paid", this.paid);
     return obj;
   }

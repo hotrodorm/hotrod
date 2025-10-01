@@ -3,7 +3,7 @@
   <type-solver>
     <when test="typeName == 'TIMESTAMP'" java-type="java.sql.Timestamp" />
     <when test="typeName == 'TINYINT'" java-type="Double" />
-    <when test="typeName == 'CHARACTER VARYING ARRAY' and name =$ '_CODES'" converter="TaxCodesArrayConverter" />
+    <when test="typeName == 'CHARACTER VARYING ARRAY' and name.endsWith('_TAX_CODES')" converter="TaxCodesArrayConverter" />
   </type-solver>
 
   <converter name="YNConverter" java-raw-type="String" java-type="Boolean" class="app.YNBooleanConverter" />

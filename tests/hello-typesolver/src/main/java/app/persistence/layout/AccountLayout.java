@@ -14,7 +14,7 @@ public class AccountLayout implements Serializable {
 
   protected Integer id = null; // Type Name: INTEGER - Type Resolved By: STATIC_DIALECT_RULE
   protected Double balance = null; // Type Name: DECIMAL - Type Resolved By: STATIC_DESIGNATED
-  protected Double segment = null; // Type Name: TINYINT - Type Resolved By: STATIC_LAYER_RULE
+  protected Double segment = null; // Type Name: TINYINT - Type Resolved By: STATIC_TYPESOLVER_RULE
 
   // getters & setters
 

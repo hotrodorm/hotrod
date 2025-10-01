@@ -487,7 +487,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     public final NumericEntityColumn balance = new NumericEntityColumn(this,
       "BALANCE", "balance", "DECIMAL", 12, 2, TypeHandler.forClass(Double.class, TypeSource.STATIC_DESIGNATED));
     public final NumericEntityColumn segment = new NumericEntityColumn(this,
-      "SEGMENT", "segment", "TINYINT", 8, 0, TypeHandler.forClass(Double.class, TypeSource.STATIC_LAYER_RULE));
+      "SEGMENT", "segment", "TINYINT", 8, 0, TypeHandler.forClass(Double.class, TypeSource.STATIC_TYPESOLVER_RULE));
 
     @Override
     public AllColumns star() {
