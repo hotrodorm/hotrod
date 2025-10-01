@@ -85,7 +85,12 @@ public class LayerConfigBeanWriter {
   }
 
   private void writeHeader() {
-    w.println("@", Const.CONFIGURATION, "(\"" + this.getLayerConfigBeanQualifier() + "\")");
+    w.print("@", Const.CONFIGURATION);
+    if (this.getLayerConfigBeanQualifier() != null) {
+      w.println("(\"" + this.getLayerConfigBeanQualifier() + "\")");
+    } else {
+      w.println();
+    }
     w.println("public class " + this.className + " {");
   }
 

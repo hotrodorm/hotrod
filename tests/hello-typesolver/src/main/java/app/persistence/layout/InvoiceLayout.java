@@ -4,7 +4,7 @@ package app.persistence.layout;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 import org.hotrod.json.JSONObject;
 
@@ -15,10 +15,9 @@ public class InvoiceLayout implements Serializable {
   // Layout Properties (table columns)
 
   protected Integer id = null; // Type Name: INTEGER - Type Resolved By: STATIC_DIALECT_RULE
-  protected String client = null; // Type Name: CHARACTER VARYING - Type Resolved By: STATIC_DIALECT_RULE
-  protected LocalDateTime created = null; // Type Name: TIMESTAMP - Type Resolved By: STATIC_DIALECT_RULE
+  protected Timestamp created = null; // Type Name: TIMESTAMP - Type Resolved By: STATIC_TYPESOLVER_RULE
+  protected String[] invoiceTaxCodes = null; // Type Name: CHARACTER VARYING ARRAY - Type Resolved By: STATIC_TYPESOLVER_RULE
   protected BigDecimal amount = null; // Type Name: DECIMAL - Type Resolved By: STATIC_DIALECT_RULE
-  protected Object[] taxCodes = null; // Type Name: CHARACTER VARYING ARRAY - Type Resolved By: STATIC_DIALECT_RULE
   protected String paid = null; // Type Name: CHARACTER - Type Resolved By: STATIC_DIALECT_RULE
 
   // getters & setters
@@ -31,20 +30,20 @@ public class InvoiceLayout implements Serializable {
     this.id = id;
   }
 
-  public String getClient() {
-    return this.client;
-  }
-
-  public void setClient(final String client) {
-    this.client = client;
-  }
-
-  public LocalDateTime getCreated() {
+  public Timestamp getCreated() {
     return this.created;
   }
 
-  public void setCreated(final LocalDateTime created) {
+  public void setCreated(final Timestamp created) {
     this.created = created;
+  }
+
+  public String[] getInvoiceTaxCodes() {
+    return this.invoiceTaxCodes;
+  }
+
+  public void setInvoiceTaxCodes(final String[] invoiceTaxCodes) {
+    this.invoiceTaxCodes = invoiceTaxCodes;
   }
 
   public BigDecimal getAmount() {
@@ -53,14 +52,6 @@ public class InvoiceLayout implements Serializable {
 
   public void setAmount(final BigDecimal amount) {
     this.amount = amount;
-  }
-
-  public Object[] getTaxCodes() {
-    return this.taxCodes;
-  }
-
-  public void setTaxCodes(final Object[] taxCodes) {
-    this.taxCodes = taxCodes;
   }
 
   public String getPaid() {
@@ -77,10 +68,9 @@ public class InvoiceLayout implements Serializable {
     StringBuilder sb = new StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- id=" + this.id + "\n");
-    sb.append("- client=" + this.client + "\n");
     sb.append("- created=" + this.created + "\n");
+    sb.append("- invoiceTaxCodes=" + this.invoiceTaxCodes + "\n");
     sb.append("- amount=" + this.amount + "\n");
-    sb.append("- taxCodes=" + this.taxCodes + "\n");
     sb.append("- paid=" + this.paid);
     return sb.toString();
   }
@@ -90,10 +80,9 @@ public class InvoiceLayout implements Serializable {
   public JSONObject toJSONObject() {
     JSONObject obj = new JSONObject();
     obj.addProperty("id", this.id);
-    obj.addProperty("client", this.client);
     obj.addProperty("created", this.created);
+    obj.addProperty("invoiceTaxCodes", this.invoiceTaxCodes);
     obj.addProperty("amount", this.amount);
-    obj.addProperty("taxCodes", this.taxCodes);
     obj.addProperty("paid", this.paid);
     return obj;
   }

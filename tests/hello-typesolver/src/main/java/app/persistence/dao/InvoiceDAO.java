@@ -4,11 +4,12 @@ package app.persistence.dao;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.sql.Types;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,12 +35,12 @@ import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
+import org.hotrod.livesql.expressions.bool.converter.ConvertedColumn;
 import org.hotrod.livesql.metadata.AllColumns;
 import org.hotrod.livesql.metadata.CharEntityColumn;
 import org.hotrod.livesql.metadata.DateTimeEntityColumn;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.NumericEntityColumn;
-import org.hotrod.livesql.metadata.ObjectEntityColumn;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
@@ -58,6 +59,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import app.TaxCodesArrayConverter;
 import app.persistence.layout.InvoiceLayout;
 import app.persistence.model.Invoice;
 
@@ -85,6 +87,10 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
   private LiveSQLContext context;
 
+  // CONVERTERS
+
+  private final TaxCodesArrayConverter converter0 = new TaxCodesArrayConverter();
+
   // ROW READER
 
   private final RowReader<Invoice> rowReader = new RowReader<Invoice>() {
@@ -97,20 +103,18 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
       if (rs.wasNull()) col1 = null;
       row.setId(col1);
 
-      String col2 = rs.getString("CLIENT"); // CLIENT
-      row.setClient(col2);
+      Timestamp col2 = rs.getTimestamp("CREATED"); // CREATED
+      row.setCreated(col2);
 
-      LocalDateTime col3 = rs.getObject("CREATED", LocalDateTime.class); // CREATED
-      row.setCreated(col3);
+      Array raw3 = rs.getObject("INVOICE_TAX_CODES", Array.class); // INVOICE_TAX_CODES
+      String[] col3 = converter0.decode(raw3, conn);
+      row.setInvoiceTaxCodes(col3);
 
       BigDecimal col4 = rs.getBigDecimal("AMOUNT"); // AMOUNT
       row.setAmount(col4);
 
-      Object[] col5 = rs.getObject("TAX_CODES", Object[].class); // TAX_CODES
-      row.setTaxCodes(col5);
-
-      String col6 = rs.getString("PAID"); // PAID
-      row.setPaid(col6);
+      String col5 = rs.getString("PAID"); // PAID
+      row.setPaid(col5);
 
       return row;
     }
@@ -132,10 +136,9 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
     m.setId(CastUtil.toInteger((Number) row.get(p + "id" + s)));
-    m.setClient((String) row.get(p + "client" + s));
-    m.setCreated((LocalDateTime) row.get(p + "created" + s));
+    m.setCreated((Timestamp) row.get(p + "created" + s));
+    m.setInvoiceTaxCodes((String[]) row.get(p + "invoiceTaxCodes" + s));
     m.setAmount(CastUtil.toBigDecimal((Number) row.get(p + "amount" + s)));
-    m.setTaxCodes((Object[]) row.get(p + "taxCodes" + s));
     m.setPaid((String) row.get(p + "paid" + s));
     return m;
   }
@@ -145,30 +148,25 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   public class InvoiceBaseline {
 
     private Integer id;
-    private String client;
-    private LocalDateTime created;
+    private Timestamp created;
+    private String[] invoiceTaxCodes;
     private BigDecimal amount;
-    private Object[] taxCodes;
     private String paid;
 
     public Integer getId() {
       return this.id;
     }
 
-    public String getClient() {
-      return this.client;
+    public Timestamp getCreated() {
+      return this.created;
     }
 
-    public LocalDateTime getCreated() {
-      return this.created;
+    public String[] getInvoiceTaxCodes() {
+      return this.invoiceTaxCodes;
     }
 
     public BigDecimal getAmount() {
       return this.amount;
-    }
-
-    public Object[] getTaxCodes() {
-      return this.taxCodes;
     }
 
     public String getPaid() {
@@ -180,10 +178,9 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   public InvoiceBaseline baseline(Invoice model) {
     InvoiceBaseline b = new InvoiceBaseline();
     b.id = model.getId();
-    b.client = model.getClient();
     b.created = model.getCreated();
+    b.invoiceTaxCodes = model.getInvoiceTaxCodes();
     b.amount = model.getAmount();
-    b.taxCodes = model.getTaxCodes();
     b.paid = model.getPaid();
     return b;
   };
@@ -193,10 +190,9 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   public Invoice clone(InvoiceLayout layout) {
     Invoice m = this.applicationContext.getBean(Invoice.class);
     m.setId(layout.getId());
-    m.setClient(layout.getClient());
     m.setCreated(layout.getCreated());
+    m.setInvoiceTaxCodes(layout.getInvoiceTaxCodes());
     m.setAmount(layout.getAmount());
-    m.setTaxCodes(layout.getTaxCodes());
     m.setPaid(layout.getPaid());
     return m;
   };
@@ -209,10 +205,9 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     this.selectByPrimaryKey = dyn
       .literaln("SELECT")
       .literaln("  id,")
-      .literaln("  client,")
       .literaln("  created,")
+      .literaln("  invoice_tax_codes,")
       .literaln("  amount,")
-      .literaln("  tax_codes,")
       .literaln("  paid")
       .literaln("FROM invoice")
       .literal("WHERE id = ").parameter("f.id").literaln()
@@ -245,18 +240,16 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     this.selectByExample = dyn
       .literaln("SELECT")
       .literaln("  id,")
-      .literaln("  client,")
       .literaln("  created,")
+      .literaln("  invoice_tax_codes,")
       .literaln("  amount,")
-      .literaln("  tax_codes,")
       .literaln("  paid")
       .literaln("FROM invoice")
       .where("AND")
         .if_("f.id != null").literal("id = ").parameter("f.id").endif()
-        .if_("f.client != null").literal("client = ").parameter("f.client").endif()
         .if_("f.created != null").literal("created = ").parameter("f.created").endif()
+        .if_("f.invoiceTaxCodes != null").literal("invoice_tax_codes = ").parameter("f.invoiceTaxCodes", this.converter0).endif()
         .if_("f.amount != null").literal("amount = ").parameter("f.amount").endif()
-        .if_("f.taxCodes != null").literal("tax_codes = ").parameter("f.taxCodes").endif()
         .if_("f.paid != null").literal("paid = ").parameter("f.paid").endif()
       .endwhere()
       .parameterInjection("ordering")
@@ -292,18 +285,16 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     this.insert = dyn
       .literaln("INSERT INTO invoice (")
       .literaln("  id,")
-      .literaln("  client,")
       .literaln("  created,")
+      .literaln("  invoice_tax_codes,")
       .literaln("  amount,")
-      .literaln("  tax_codes,")
       .literaln("  paid")
       .literaln(")")
       .literaln("VALUES(")
       .literal("  ").parameterNullable("l.id", Types.INTEGER).literaln(",")
-      .literal("  ").parameterNullable("l.client", Types.VARCHAR).literaln(",")
       .literal("  ").parameterNullable("l.created", Types.TIMESTAMP).literaln(",")
+      .literal("  ").parameterNullable("l.invoiceTaxCodes", Types.ARRAY, this.converter0).literaln(",")
       .literal("  ").parameterNullable("l.amount", Types.DECIMAL).literaln(",")
-      .literal("  ").parameterNullable("l.taxCodes", Types.ARRAY).literaln(",")
       .literal("  ").parameterNullable("l.paid", Types.CHAR)
       .literal(")")
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
@@ -331,18 +322,16 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     this.insertByExample = dyn
       .literaln("INSERT INTO invoice (")
       .if_("l.id != null").literal("id,\n").endif()
-      .if_("l.client != null").literal("client,\n").endif()
       .if_("l.created != null").literal("created,\n").endif()
+      .if_("l.invoiceTaxCodes != null").literal("invoice_tax_codes,\n").endif()
       .if_("l.amount != null").literal("amount,\n").endif()
-      .if_("l.taxCodes != null").literal("tax_codes,\n").endif()
       .if_("l.paid != null").literal("paid\n").endif()
       .literaln(")")
       .literaln("VALUES(")
       .if_("l.id != null").parameter("l.id").literal(", ").endif()
-      .if_("l.client != null").parameter("l.client").literal(", ").endif()
       .if_("l.created != null").parameter("l.created").literal(", ").endif()
+      .if_("l.invoiceTaxCodes != null").parameter("l.invoiceTaxCodes", this.converter0).literal(", ").endif()
       .if_("l.amount != null").parameter("l.amount").literal(", ").endif()
-      .if_("l.taxCodes != null").parameter("l.taxCodes").literal(", ").endif()
       .if_("l.paid != null").parameter("l.paid").endif()
       .literal(")")
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
@@ -371,10 +360,9 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
       .literaln("UPDATE invoice")
       .literaln("SET")
       .literal("  id = ").parameterNullable("m.id", Types.INTEGER).literaln(",")
-      .literal("  client = ").parameterNullable("m.client", Types.VARCHAR).literaln(",")
       .literal("  created = ").parameterNullable("m.created", Types.TIMESTAMP).literaln(",")
+      .literal("  invoice_tax_codes = ").parameterNullable("m.invoiceTaxCodes", Types.ARRAY, this.converter0).literaln(",")
       .literal("  amount = ").parameterNullable("m.amount", Types.DECIMAL).literaln(",")
-      .literal("  tax_codes = ").parameterNullable("m.taxCodes", Types.ARRAY).literaln(",")
       .literal("  paid = ").parameterNullable("m.paid", Types.CHAR).literaln()
       .literal("WHERE id = ").parameter("m.id").literaln()
     .endModificationQuery();
@@ -403,18 +391,16 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
       .literal("UPDATE invoice")
       .set()
         .if_("v.id != null").literal("id = ").parameter("v.id").endif()
-        .if_("v.client != null").literal("client = ").parameter("v.client").endif()
         .if_("v.created != null").literal("created = ").parameter("v.created").endif()
+        .if_("v.invoiceTaxCodes != null").literal("invoice_tax_codes = ").parameter("v.invoiceTaxCodes", this.converter0).endif()
         .if_("v.amount != null").literal("amount = ").parameter("v.amount").endif()
-        .if_("v.taxCodes != null").literal("tax_codes = ").parameter("v.taxCodes").endif()
         .if_("v.paid != null").literal("paid = ").parameter("v.paid").endif()
       .endset()
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
-        .if_("e.client != null").literal("client = ").parameter("e.client").endif()
         .if_("e.created != null").literal("created = ").parameter("e.created").endif()
+        .if_("e.invoiceTaxCodes != null").literal("invoice_tax_codes = ").parameter("e.invoiceTaxCodes", this.converter0).endif()
         .if_("e.amount != null").literal("amount = ").parameter("e.amount").endif()
-        .if_("e.taxCodes != null").literal("tax_codes = ").parameter("e.taxCodes").endif()
         .if_("e.paid != null").literal("paid = ").parameter("e.paid").endif()
       .endwhere()
       .endModificationQuery();
@@ -440,10 +426,9 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
-    if (values.getClient() != null) setters.add(new Setter(tableOrView.client, sql.val(values.getClient())));
     if (values.getCreated() != null) setters.add(new Setter(tableOrView.created, sql.val(values.getCreated())));
+    if (values.getInvoiceTaxCodes() != null) setters.add(new Setter(tableOrView.invoiceTaxCodes, sql.val(values.getInvoiceTaxCodes())));
     if (values.getAmount() != null) setters.add(new Setter(tableOrView.amount, sql.val(values.getAmount())));
-    if (values.getTaxCodes() != null) setters.add(new Setter(tableOrView.taxCodes, sql.val(values.getTaxCodes())));
     if (values.getPaid() != null) setters.add(new Setter(tableOrView.paid, sql.val(values.getPaid())));
     return new UpdateSetCompletePhase(this.context, tableOrView, setters, predicate);
   }
@@ -484,10 +469,9 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
       .literaln("DELETE FROM invoice")
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
-        .if_("e.client != null").literal("client = ").parameter("e.client").endif()
         .if_("e.created != null").literal("created = ").parameter("e.created").endif()
+        .if_("e.invoiceTaxCodes != null").literal("invoice_tax_codes = ").parameter("e.invoiceTaxCodes", this.converter0).endif()
         .if_("e.amount != null").literal("amount = ").parameter("e.amount").endif()
-        .if_("e.taxCodes != null").literal("tax_codes = ").parameter("e.taxCodes").endif()
         .if_("e.paid != null").literal("paid = ").parameter("e.paid").endif()
       .endwhere()
       .endModificationQuery();
@@ -518,14 +502,12 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
     ID("id", true),
     ID$DESC("id", false),
-    CLIENT("client", true),
-    CLIENT$DESC("client", false),
     CREATED("created", true),
     CREATED$DESC("created", false),
+    INVOICE_TAX_CODES("invoice_tax_codes", true),
+    INVOICE_TAX_CODES$DESC("invoice_tax_codes", false),
     AMOUNT("amount", true),
     AMOUNT$DESC("amount", false),
-    TAX_CODES("tax_codes", true),
-    TAX_CODES$DESC("tax_codes", false),
     PAID("paid", true),
     PAID$DESC("paid", false);
 
@@ -563,20 +545,18 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
     public final NumericEntityColumn id = new NumericEntityColumn(this,
       "ID", "id", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
-    public final CharEntityColumn client = new CharEntityColumn(this,
-      "CLIENT", "client", "CHARACTER VARYING", 50, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE));
     public final DateTimeEntityColumn created = new DateTimeEntityColumn(this,
-      "CREATED", "created", "TIMESTAMP", 26, 6, TypeHandler.forClass(LocalDateTime.class, TypeSource.STATIC_DIALECT_RULE));
+      "CREATED", "created", "TIMESTAMP", 26, 6, TypeHandler.forClass(Timestamp.class, TypeSource.STATIC_TYPESOLVER_RULE));
+    private final TypeHandler<Array, String[]> th0 = TypeHandler.forConverter(new TaxCodesArrayConverter(), TypeSource.STATIC_TYPESOLVER_RULE);
+    public final ConvertedColumn<Array, String[]> invoiceTaxCodes = new ConvertedColumn<Array, String[]>(this, "INVOICE_TAX_CODES", "invoiceTaxCodes", "CHARACTER VARYING ARRAY", 8, 0, th0, th0.getConverter());
     public final NumericEntityColumn amount = new NumericEntityColumn(this,
       "AMOUNT", "amount", "DECIMAL", 12, 2, TypeHandler.forClass(BigDecimal.class, TypeSource.STATIC_DIALECT_RULE));
-    public final ObjectEntityColumn taxCodes = new ObjectEntityColumn(this,
-      "TAX_CODES", "taxCodes", "CHARACTER VARYING ARRAY", 8, 0, TypeHandler.forClass(Object[].class, TypeSource.STATIC_DIALECT_RULE));
     public final CharEntityColumn paid = new CharEntityColumn(this,
       "PAID", "paid", "CHARACTER", 1, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE));
 
     @Override
     public AllColumns star() {
-      return new AllColumns(this.id, this.client, this.created, this.amount, this.taxCodes, this.paid);
+      return new AllColumns(this.id, this.created, this.invoiceTaxCodes, this.amount, this.paid);
     }
 
     InvoiceTable() {
@@ -592,10 +572,9 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     private void initialize() {
       super.columns = new ArrayList<>();
       super.columns.add(this.id);
-      super.columns.add(this.client);
       super.columns.add(this.created);
+      super.columns.add(this.invoiceTaxCodes);
       super.columns.add(this.amount);
-      super.columns.add(this.taxCodes);
       super.columns.add(this.paid);
     }
 
