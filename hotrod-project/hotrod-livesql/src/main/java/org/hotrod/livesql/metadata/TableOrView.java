@@ -64,9 +64,8 @@ public abstract class TableOrView<M> extends TableExpression {
   // Validation
 
   @Override
-  protected void assembleColumns() {
+  protected void renderColumns() {
     // Tables and views have already all their assembled columns; nothing to do
-//    log.info("ASSEMBLING COLUMNS for: " + this.name);
   }
 
   @Override

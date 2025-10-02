@@ -107,6 +107,7 @@ public abstract class Expression extends SQLExpression {
     return this;
   }
 
+  @Deprecated
   protected Expression getEmergingExpression() {
     return this;
   }

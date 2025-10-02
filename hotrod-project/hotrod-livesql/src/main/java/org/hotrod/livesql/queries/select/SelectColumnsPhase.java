@@ -10,7 +10,7 @@ import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.select.sets.BaseSelectObject;
 import org.hotrod.livesql.queries.select.sets.IndividualSelectPhase;
-import org.hotrod.livesql.queries.select.sets.MultiSet;
+import org.hotrod.livesql.queries.select.sets.SelectObject;
 import org.hotrod.livesql.queries.select.tuples.SelectTuplesColumnsPhase;
 
 public class SelectColumnsPhase<R> extends IndividualSelectPhase<R> {
@@ -25,7 +25,7 @@ public class SelectColumnsPhase<R> extends IndividualSelectPhase<R> {
         throw new LiveSQLException("Select column cannot be null.");
       }
     }
-    MultiSet<R> m = this.combined.getLastSelect();
+    SelectObject<R> m = this.combined.getLastSelect();
     UnarySelectObject<R> s = (UnarySelectObject<R>) m;
     s.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
   }

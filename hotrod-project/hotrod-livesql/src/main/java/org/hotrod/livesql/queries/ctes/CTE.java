@@ -45,9 +45,9 @@ public class CTE extends Subquery {
       w.write(w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(super.getName().getName())));
     }
 
-    if (this.columns != null && this.columns.length > 0) {
+    if (this.columnNames != null && this.columnNames.length > 0) {
       w.write(" (");
-      w.write(Arrays.stream(this.columns).map(a -> w.getSQLDialect().canonicalToNatural(a))
+      w.write(Arrays.stream(this.columnNames).map(a -> w.getSQLDialect().canonicalToNatural(a))
           .collect(Collectors.joining(", ")));
       w.write(")");
     }

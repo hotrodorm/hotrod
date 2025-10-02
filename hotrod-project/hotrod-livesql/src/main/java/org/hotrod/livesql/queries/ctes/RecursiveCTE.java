@@ -13,7 +13,6 @@ import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.select.Select;
 import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
-import org.hotrod.livesql.queries.select.sets.MShield;
 
 public class RecursiveCTE extends CTE {
 
@@ -75,15 +74,15 @@ public class RecursiveCTE extends CTE {
     }
 
     if (w.getSQLDialect().mandatoryColumnNamesInRecursiveCTEs()) {
-      if (this.columns != null && this.columns.length > 0) { // explicit column names
+      if (this.columnNames != null && this.columnNames.length > 0) { // explicit column names
         w.write(" (");
-        w.write(Arrays.stream(this.columns).map(a -> w.getSQLDialect().canonicalToNatural(a))
+        w.write(Arrays.stream(this.columnNames).map(a -> w.getSQLDialect().canonicalToNatural(a))
             .collect(Collectors.joining(", ")));
         w.write(")");
       } else { // implicit column names from the anchor term
         w.write(" (");
         boolean first = true;
-        List<Expression> cols = MShield.assembleColumns(SShield.getCombinedSelect(this.anchorTerm));
+        List<Expression> cols = SShield.getCombinedSelect(this.anchorTerm).getCompiledColumns();
         for (Expression rc : cols) {
           if (first) {
             first = false;

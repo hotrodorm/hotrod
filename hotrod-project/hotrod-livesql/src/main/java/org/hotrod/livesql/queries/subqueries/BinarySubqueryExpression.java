@@ -6,6 +6,7 @@ import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.binary.BinarySyntaxExpression;
 import org.hotrod.livesql.queries.QueryWriter;
+import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
 public class BinarySubqueryExpression extends BinarySyntaxExpression implements SubqueryExpression {
 
@@ -21,8 +22,7 @@ public class BinarySubqueryExpression extends BinarySyntaxExpression implements 
 
   // Constructor
 
-  public BinarySubqueryExpression(final Subquery subquery, final String referencedColumnName,
-      final Expression column) {
+  public BinarySubqueryExpression(final Subquery subquery, final String referencedColumnName, final Expression column) {
     super(Expression.PRECEDENCE_COLUMN);
     this.subquery = subquery;
     this.referencedColumnName = referencedColumnName;

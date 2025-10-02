@@ -64,50 +64,38 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
   }
 
   @Override
-  public List<Expression> assembleColumns() {
-
-//    log.info("resultSetColumns.size()=" + (sqlExpressions == null ? "null" : sqlExpressions.size()));
-
-    boolean isListingColumns = this.sqlExpressions != null && !this.sqlExpressions.isEmpty();
+  public void compileAndReturnColumns() {
 
     if (this.getCTEs() != null) {
       for (CTE cte : this.getCTEs()) {
-        SShield.assembleColumns(cte);
+        SShield.renderColumns(cte);
       }
     }
 
     if (this.from != null) {
-      SShield.assembleColumns(this.from);
+      SShield.renderColumns(this.from);
     }
 
     if (this.tuplesJoins != null) {
       this.tuplesJoins.forEach(tj -> {
         if (tj.includeInResultSet())
-          SShield.assembleColumns(tj.getJoin());
+          SShield.renderColumns(tj.getJoin());
       });
     }
 
-    if (isListingColumns) {
-
-      super.expandQueryColumns();
-
-    } else { // columns not listed
-
+    if (this.sqlExpressions == null || this.sqlExpressions.isEmpty()) {
       this.sqlExpressions = new ArrayList<>();
-
       addTableColumns(this.from, this.sqlExpressions);
       for (TuplesJoin tj : this.tuplesJoins) {
         if (tj.includeInResultSet()) {
           addTableColumns(SShield.getTableExpression(tj.getJoin()), this.sqlExpressions);
         }
       }
-
-      super.expandQueryColumns();
-
     }
 
+    super.expandQueryColumns();
+
     this.columnsAssembled = true;
-    return this.expandedQueryColumns;
   }
 
   private void addTableColumns(TableExpression te, List<SQLExpression> filledIn) {
@@ -143,7 +131,7 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
 //    List<TableOrView<?>> joined = this.joins.stream().map(j -> (TableOrView<?>) SShield.getTableExpression(j))
 //        .collect(Collectors.toList());
 //    allTables.addAll(joined);
-    return new TuplesRowReader<>(this.expandedQueryColumns, allTables);
+    return new TuplesRowReader<>(this.compiledColumns, allTables);
   }
 
   @Override
@@ -199,7 +187,7 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
 
   protected void writeColumns(final QueryWriter w, final TableExpression baseTableExpression, final List<Join> joins) {
     Separator sep = new Separator();
-    for (Expression expr : this.expandedQueryColumns) {
+    for (Expression expr : this.compiledColumns) {
 
       w.write(sep.render());
       w.write("\n  ");

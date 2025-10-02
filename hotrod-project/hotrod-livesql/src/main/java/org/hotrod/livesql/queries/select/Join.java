@@ -17,8 +17,8 @@ public abstract class Join {
     return this.tableExpression;
   }
 
-  protected void assembleColumns() {
-    this.tableExpression.assembleColumns();
+  protected void renderColumns() {
+    this.tableExpression.renderColumns();
   }
 
 }

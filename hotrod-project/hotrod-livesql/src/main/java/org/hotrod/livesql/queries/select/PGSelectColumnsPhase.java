@@ -9,7 +9,7 @@ import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.select.sets.AbstractSelectPhase;
-import org.hotrod.livesql.queries.select.sets.MultiSet;
+import org.hotrod.livesql.queries.select.sets.SelectObject;
 
 public class PGSelectColumnsPhase<R> extends AbstractSelectPhase<R> {
 
@@ -18,7 +18,7 @@ public class PGSelectColumnsPhase<R> extends AbstractSelectPhase<R> {
   public PGSelectColumnsPhase(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct,
       final SQLExpression... resultSetColumns) {
     super(context, ctes, distinct, false);
-    MultiSet<R> m = this.combined.getLastSelect();
+    SelectObject<R> m = this.combined.getLastSelect();
     UnarySelectObject<R> s = (UnarySelectObject<R>) m;
     s.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
   }

@@ -12,7 +12,7 @@ public abstract class TableExpression {
 
   protected abstract Name getName();
 
-  protected abstract void assembleColumns();
+  protected abstract void renderColumns();
 
   protected abstract void renderTo(QueryWriter w);
 

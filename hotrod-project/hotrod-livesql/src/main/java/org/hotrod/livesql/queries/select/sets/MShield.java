@@ -7,11 +7,11 @@ import org.hotrod.livesql.util.ToString;
 
 public class MShield {
 
-  public static List<Expression> assembleColumns(final MultiSet<?> multiSet) {
-    return multiSet.assembleColumns();
-  }
+//  public static List<Expression> renderAndReturnColumns(final MultiSet<?> multiSet) {
+//    return multiSet.compileAndReturnColumns();
+//  }
 
-  public static void log(MultiSet<?> s, ToString t) {
+  public static void log(SelectObject<?> s, ToString t) {
     s.log(t);
   }
 

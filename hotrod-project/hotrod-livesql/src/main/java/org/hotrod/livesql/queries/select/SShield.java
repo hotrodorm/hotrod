@@ -42,12 +42,12 @@ public class SShield {
     return j.getTableExpression().star();
   }
 
-  public static void assembleColumns(TableExpression te) {
-    te.assembleColumns();
+  public static void renderColumns(TableExpression te) {
+    te.renderColumns();
   }
 
-  public static void assembleColumns(Join j) {
-    j.getTableExpression().assembleColumns();
+  public static void renderColumns(Join j) {
+    j.getTableExpression().renderColumns();
   }
 
   public static <R> SelectWherePhase<R> getSelectWherePhase(final LiveSQLContext context,

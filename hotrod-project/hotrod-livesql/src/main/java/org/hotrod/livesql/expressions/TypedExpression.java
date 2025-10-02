@@ -20,7 +20,7 @@ public class TypedExpression extends Expression {
 
   @Override
   protected TypeHandler<?, ?> getTypeHandler() {
-    return typeHandler;
+    return this.typeHandler;
   }
 
   @Override

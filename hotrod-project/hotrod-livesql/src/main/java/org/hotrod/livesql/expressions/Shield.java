@@ -11,7 +11,7 @@ import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.util.ToString;
 
-public class Shield {
+public abstract class Shield {
 
   private static final Logger log = Logger.getLogger(Shield.class.getName());
 

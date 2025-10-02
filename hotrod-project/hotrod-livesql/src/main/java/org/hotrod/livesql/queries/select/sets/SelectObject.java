@@ -20,9 +20,9 @@ import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
 import org.hotrod.livesql.util.ToString;
 
-public abstract class MultiSet<T> {
+public abstract class SelectObject<T> {
 
-  private static final Logger log = Logger.getLogger(MultiSet.class.getName());
+  private static final Logger log = Logger.getLogger(SelectObject.class.getName());
 
   private CombinedSelectObject<T> parent;
 
@@ -38,7 +38,9 @@ public abstract class MultiSet<T> {
 
   // Rendering
 
-  public abstract List<Expression> assembleColumns();
+  public abstract void compileAndReturnColumns();
+
+  public abstract List<Expression> getCompiledColumns();
 
   public abstract boolean excludeTuplesFromUniqueNames();
 
@@ -88,7 +90,8 @@ public abstract class MultiSet<T> {
 //    ToString t = new ToString();
 //    this.log(t);
 
-    List<Expression> columns = this.assembleColumns();
+    this.compileAndReturnColumns();
+    List<Expression> columns = this.getCompiledColumns();
     renderTo(w, false);
 
 //    log.info("");

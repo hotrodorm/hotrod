@@ -96,13 +96,20 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
   }
 
   @Override
-  public List<Expression> assembleColumns() {
+  public void compileAndReturnColumns() {
+
+    if (this.ctes != null) {
+      for (CTE cte : this.ctes) {
+        SShield.renderColumns(cte);
+      }
+    }
+
     if (this.from != null) {
-      this.from.assembleColumns();
+      this.from.renderColumns();
     }
 
     if (this.joins != null) {
-      this.joins.forEach(j -> j.getTableExpression().assembleColumns());
+      this.joins.forEach(j -> j.getTableExpression().renderColumns());
     }
 
     if (this.sqlExpressions == null || this.sqlExpressions.isEmpty()) {
@@ -113,7 +120,6 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
       for (Join j : this.joins) {
         this.sqlExpressions.add(j.getTableExpression().star());
       }
-    } else {
     }
 
     // sql.val(3).mult(7) -- Expression N/A
@@ -131,8 +137,6 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
 //    }
 
     this.columnsAssembled = true;
-//    log.info("=== 1. END ASSEMBLE COLUMNS === " + froms);
-    return this.expandedQueryColumns;
 
   }
 
@@ -151,7 +155,7 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
 //    log.info("=== 4. WRITE COLUMNS ===");
     Separator sep = new Separator();
 //    log.info(">2 this@" + OUtil.hc(this) + ".expandedQueryColumns=" + this.expandedQueryColumns);
-    for (Expression expr : this.expandedQueryColumns) {
+    for (Expression expr : this.compiledColumns) {
 
       w.write(sep.render());
       w.write("\n  ");

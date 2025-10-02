@@ -25,18 +25,17 @@ import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.select.TableExpression;
 import org.hotrod.livesql.queries.select.UnarySelectObject.LockingConcurrency;
 import org.hotrod.livesql.queries.select.UnarySelectObject.LockingMode;
-import org.hotrod.livesql.util.OUtil;
 import org.hotrod.livesql.util.ToString;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.utils.SUtil;
 import org.hotrod.utils.Separator;
 
-public abstract class BaseSelectObject<T> extends MultiSet<T> {
+public abstract class BaseSelectObject<T> extends SelectObject<T> {
 
   private static final Logger log = Logger.getLogger(BaseSelectObject.class.getName());
 
   protected List<SQLExpression> sqlExpressions = new ArrayList<>();
-  protected List<Expression> expandedQueryColumns = null;
+  protected List<Expression> compiledColumns = null;
   protected boolean columnsAssembled = false;
 
   protected List<CTE> ctes = new ArrayList<>();
@@ -44,7 +43,7 @@ public abstract class BaseSelectObject<T> extends MultiSet<T> {
   protected List<Expression> distinctOn = null;
 
   protected TableExpression from = null;
-  protected List<Join> joins = null;
+  protected List<Join> joins = new ArrayList<>();
 
   protected Predicate wherePredicate = null;
   protected List<ComparableExpression> groupBy = null;
@@ -77,24 +76,28 @@ public abstract class BaseSelectObject<T> extends MultiSet<T> {
   public boolean areColumnsAssembled() {
     return columnsAssembled;
   }
+  
+  
 
   protected void expandQueryColumns() {
 //    log.info("=== 2. EXPAND QUERY COLUMNS (AS/IF NEEDED) from " + SShield.getName(this.from) + " @" + OUtil.hc(this)
 //        + " ===");
-    this.expandedQueryColumns = new ArrayList<>();
+    this.compiledColumns = new ArrayList<>();
     for (SQLExpression rsc : this.sqlExpressions) {
 //      log.info("=== 2.1 rsc=" + rsc);
 
       try {
         // Single column
         Expression single = (Expression) rsc;
-//        log.info("=== 2.2 single" + (single == null ? "" : " [" + single.getClass().getName() + "] ") + "=" + single);
+        log.info("=== 2.2 single" + (single == null ? "" : " [" + single.getClass().getName() + "] ") + "=" + single);
         Expression emerging = Shield.getEmergingExpression(single); // emerging is always null for wrapping columns
-//        log.info("=== 2.2 A emerging=" + emerging);
+//        TypeHandler<?, ?> th1 = Shield.getTypeHandler(single);
+        log.info("=== 2.2 emerging=" + emerging);
         if (emerging != null) {
+          log.info("=== * th=" + Shield.getTypeHandler(emerging));
           Shield.setTypeHandler(single, Shield.getTypeHandler(emerging));
         }
-        this.expandedQueryColumns.add(single);
+        this.compiledColumns.add(single);
 
       } catch (ClassCastException cce) {
         // Wrapping column
@@ -103,7 +106,7 @@ public abstract class BaseSelectObject<T> extends MultiSet<T> {
         for (Expression exp : Shield.expand(wrapping)) {
 //          log.info("=== 2.4");
           Expression em = Shield.getEmergingExpression(exp);
-          this.expandedQueryColumns.add(em);
+          this.compiledColumns.add(em);
         }
       }
 
@@ -125,13 +128,17 @@ public abstract class BaseSelectObject<T> extends MultiSet<T> {
 //    log.info("=== 2.10 EXPAND DONE from " + SShield.getName(this.from) + " ===");
   }
 
+  @Override
+  public final List<Expression> getCompiledColumns() {
+    return this.compiledColumns;
+  }
+  
   public void setResultSetColumns(final List<SQLExpression> resultSetColumns) {
     this.sqlExpressions = resultSetColumns;
   }
 
   public void setBaseTableExpression(final TableExpression from) {
     this.from = from;
-    this.joins = new ArrayList<Join>();
   }
 
   public void addJoin(final Join join) {
@@ -427,8 +434,8 @@ public abstract class BaseSelectObject<T> extends MultiSet<T> {
         t.unindent();
       }
     }
-    if (this.expandedQueryColumns != null) {
-      for (Expression expr : this.expandedQueryColumns) {
+    if (this.compiledColumns != null) {
+      for (Expression expr : this.compiledColumns) {
         t.indent();
         t.prompt("expr");
         Shield.log(expr, t);

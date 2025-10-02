@@ -25,22 +25,22 @@ import org.hotrod.livesql.util.ToString;
 /**
  * <pre>
  * 
-       CombinedSelectObject (extends MultiSet)
+       CombinedSelectObject (extends SelectObject)
        /              \
       /                \
    select              List(SetOperatorTerm)
-   (extends MultiSet)    +SetOperator
-                         +MultiSet
+   (SelectObject)        +SetOperator
+                         +SelectObject
  * </pre>
  */
 
-public class CombinedSelectObject<T> extends MultiSet<T> {
+public class CombinedSelectObject<T> extends SelectObject<T> {
 
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(CombinedSelectObject.class.getName());
 
   private boolean forceParenthesis;
-  private MultiSet<T> first;
+  private SelectObject<T> anchor;
   private List<SetOperatorTerm<T>> combined;
   private BaseSelectObject<T> lastSelect; // TODO: Remove?
 
@@ -48,31 +48,31 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
   private Integer offset = null;
   private Integer limit = null;
 
-  public CombinedSelectObject(final MultiSet<T> first) {
-    initialize(first, false);
+  public CombinedSelectObject(final SelectObject<T> anchor) {
+    initialize(anchor, false);
   }
 
-  public CombinedSelectObject(final MultiSet<T> first, final boolean forceParenthesis) {
-    initialize(first, forceParenthesis);
+  public CombinedSelectObject(final SelectObject<T> anchor, final boolean forceParenthesis) {
+    initialize(anchor, forceParenthesis);
   }
 
-  private void initialize(final MultiSet<T> first, final boolean forceParenthesis) {
+  private void initialize(final SelectObject<T> anchor, final boolean forceParenthesis) {
     this.forceParenthesis = forceParenthesis;
-    this.first = first;
+    this.anchor = anchor;
     this.combined = new ArrayList<>();
     this.lastSelect = null;
-    first.setParent(this);
+    anchor.setParent(this);
   }
 
-  public CombinedSelectObject(final BaseSelectObject<T> first) {
+  public CombinedSelectObject(final BaseSelectObject<T> anchor) {
     this.forceParenthesis = false;
-    this.first = first;
+    this.anchor = anchor;
     this.combined = new ArrayList<>();
-    this.lastSelect = first;
-    first.setParent(this);
+    this.lastSelect = anchor;
+    anchor.setParent(this);
   }
 
-  public void add(final SetOperator operator, final MultiSet<T> multiset) {
+  public void add(final SetOperator operator, final SelectObject<T> multiset) {
     SetOperatorTerm<T> term = new SetOperatorTerm<>(operator, multiset);
     this.combined.add(term);
     multiset.setParent(this);
@@ -107,9 +107,9 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
   public void flatten() {
     if (this.combined.isEmpty()) {
       try {
-        CombinedSelectObject<T> nestedFirst = (CombinedSelectObject<T>) this.first;
+        CombinedSelectObject<T> nestedFirst = (CombinedSelectObject<T>) this.anchor;
         if (!nestedFirst.forceParenthesis) {
-          this.first = nestedFirst.first;
+          this.anchor = nestedFirst.anchor;
           this.combined = nestedFirst.combined;
         }
       } catch (ClassCastException e) {
@@ -117,7 +117,7 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
       }
     }
 
-    this.first.flatten();
+    this.anchor.flatten();
     this.combined.forEach(c -> c.getMultiset().flatten());
 
   }
@@ -170,9 +170,7 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
 
     // Single Selects
 
-//    log.info("first=" + this.first + " rest=" + this.combined.size());
-
-    this.first.renderTo(w, false);
+    this.anchor.renderTo(w, false);
 
     for (SetOperatorTerm<T> t : this.combined) {
       w.write("\n");
@@ -293,7 +291,7 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
 
   @Override
   public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-    this.first.validateTableReferences(tableReferences, ag);
+    this.anchor.validateTableReferences(tableReferences, ag);
     this.combined.forEach(s -> s.getMultiset().validateTableReferences(tableReferences, ag));
   }
 
@@ -305,25 +303,28 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
 
   @Override
   public boolean excludeTuplesFromUniqueNames() {
-//    log.info(">> first=" + this.first.getClass().getName());
-    return this.first.excludeTuplesFromUniqueNames();
+    return this.anchor.excludeTuplesFromUniqueNames();
   }
 
   @Override
-  public List<Expression> assembleColumns() {
-    List<Expression> cols = this.first.assembleColumns();
+  public void compileAndReturnColumns() {
+    this.anchor.compileAndReturnColumns();
     for (SetOperatorTerm<T> o : this.combined) {
-      o.getMultiset().assembleColumns();
+      o.getMultiset().compileAndReturnColumns();
     }
-    return cols;
   }
 
+  @Override
+  public List<Expression> getCompiledColumns() {
+    return this.anchor.getCompiledColumns();
+  }
+  
   // MultiSet execution
 
   @Override
   public List<T> execute(final LiveSQLContext context) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    RowReader<T> rowReader = this.first.getRowReader();
+    RowReader<T> rowReader = this.anchor.getRowReader();
     return executeLiveSQL(context, q, rowReader);
   }
 
@@ -336,7 +337,7 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
   @Override
   public T executeOne(final LiveSQLContext context) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    RowReader<T> rowReader = this.first.getRowReader();
+    RowReader<T> rowReader = this.anchor.getRowReader();
     T row = super.executeLiveSQLOne(context, q, rowReader);
     return row;
   }
@@ -351,14 +352,14 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
   @Override
   public Cursor<T> executeCursor(final LiveSQLContext context) throws SQLException {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    RowReader<T> rowReader = this.first.getRowReader();
+    RowReader<T> rowReader = this.anchor.getRowReader();
     return super.executeLiveSQLCursor(context, q, rowReader, null);
   }
 
   @Override
   public Cursor<T> executeCursor(final LiveSQLContext context, Integer fetchSize) throws SQLException {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    RowReader<T> rowReader = this.first.getRowReader();
+    RowReader<T> rowReader = this.anchor.getRowReader();
     return super.executeLiveSQLCursor(context, q, rowReader, fetchSize);
   }
 
@@ -373,7 +374,7 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
     StringBuilder sb = new StringBuilder();
     sb.append(
         "[" + IdUtil.id(this) + (this.forceParenthesis ? "f" : "") + (this.orderingTerms != null ? "o" : "") + " ");
-    sb.append(this.first.toString());
+    sb.append(this.anchor.toString());
     sb.append(", ");
     sb.append(this.combined.stream().map(c -> c.toString()).collect(Collectors.joining(", ")));
     sb.append("]");
@@ -384,7 +385,7 @@ public class CombinedSelectObject<T> extends MultiSet<T> {
   protected void log(ToString t) {
     t.printObject(this, "combined");
     t.indent();
-    this.first.log(t);
+    this.anchor.log(t);
     t.unindent();
   }
 
