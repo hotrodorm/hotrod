@@ -40,6 +40,9 @@ public class App {
   @Autowired
   private H2Functions h2;
 
+  @Autowired
+  private YNBooleanConverter ynBooleanConverter;
+
   public static void main(String[] args) {
     SpringApplication.run(App.class, args);
   }
@@ -74,7 +77,7 @@ public class App {
         i.amount, //
         i.paid, //
         i.amount.mult(1.30).as("ag1").type(Double.class), // RUNTIME_DESIGNATED
-//        sql.caseWhen(i.amount.ge(500), "Y").elseValue("N").end().as("vip").type(YNBooleanConverter.class), //
+        sql.caseWhen(i.amount.ge(500), "Y").elseValue("N").end().as("vip").type(this.ynBooleanConverter), //
         i.created.extract(DateTimeField.DAY).as("dom"), // RUNTIME_TYPESOLVER_RULE
         sql.caseWhen(i.paid.eq("Y"), i.amount).elseValue(0).end().as("paidAmount"), // RUNTIME_DIALECT_RULE
         h2.randomUUID().as("globalId") // RUNTIME_JDBC_DRIVER_DEFAULT
