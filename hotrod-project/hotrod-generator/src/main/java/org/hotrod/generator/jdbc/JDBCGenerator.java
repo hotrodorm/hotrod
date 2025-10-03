@@ -61,11 +61,11 @@ public class JDBCGenerator implements Generator, LiveGenerator {
 
   private JDBCTag jdbcTag;
 
-  private LinkedHashMap<DataSetMetadata, Layout> layouts = new LinkedHashMap<>();
-  private LinkedHashMap<DataSetMetadata, Model> models = new LinkedHashMap<>();
-  private LinkedHashMap<DataSetMetadata, DAO> daos = new LinkedHashMap<>();
+  private LinkedHashMap<DataSetMetadata, LayoutWriter> layouts = new LinkedHashMap<>();
+  private LinkedHashMap<DataSetMetadata, ModelWriter> models = new LinkedHashMap<>();
+  private LinkedHashMap<DataSetMetadata, DAOWriter> daos = new LinkedHashMap<>();
   private LinkedHashMap<EnumDataSetMetadata, EnumClass> enumClasses = new LinkedHashMap<>();
-  private List<Layout> tableAbstractVOs = new ArrayList<>();
+  private List<LayoutWriter> tableAbstractVOs = new ArrayList<>();
 
   private LayerConfigBeanWriter layerConfig;
 
@@ -143,9 +143,9 @@ public class JDBCGenerator implements Generator, LiveGenerator {
 
     JDBCTag jdbcTag = (JDBCTag) this.config.getGenerators().getSelectedGeneratorTag();
 
-    Layout layout;
-    Model model;
-    DAO dao;
+    LayoutWriter layout;
+    ModelWriter model;
+    DAOWriter dao;
 
     switch (type) {
 
@@ -159,10 +159,10 @@ public class JDBCGenerator implements Generator, LiveGenerator {
         }
       }
 
-      layout = new Layout(metadata, this, DAOType.TABLE, jdbcTag);
+      layout = new LayoutWriter(metadata, this, DAOType.TABLE, jdbcTag);
       this.tableAbstractVOs.add(layout);
-      model = new Model(metadata, this, layout, jdbcTag);
-      dao = new DAO(ttag, metadata, this, type, jdbcTag, this.adapter, layout, model, this.layerConfig);
+      model = new ModelWriter(metadata, this, layout, jdbcTag);
+      dao = new DAOWriter(ttag, metadata, this, type, jdbcTag, this.adapter, layout, model, this.layerConfig);
       model.setDAO(dao);
       break;
 
@@ -176,9 +176,9 @@ public class JDBCGenerator implements Generator, LiveGenerator {
         }
       }
 
-      layout = new Layout(metadata, this, DAOType.VIEW, jdbcTag);
-      model = new Model(metadata, this, layout, jdbcTag);
-      dao = new DAO(vtag, metadata, this, type, jdbcTag, this.adapter, layout, model, this.layerConfig);
+      layout = new LayoutWriter(metadata, this, DAOType.VIEW, jdbcTag);
+      model = new ModelWriter(metadata, this, layout, jdbcTag);
+      dao = new DAOWriter(vtag, metadata, this, type, jdbcTag, this.adapter, layout, model, this.layerConfig);
       model.setDAO(dao);
       break;
 
@@ -187,7 +187,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
       layout = null;
       model = null;
 
-      dao = new DAO(tag, metadata, this, type, jdbcTag, this.adapter, layout, model, this.layerConfig);
+      dao = new DAOWriter(tag, metadata, this, type, jdbcTag, this.adapter, layout, model, this.layerConfig);
       break;
 
     default:
@@ -207,8 +207,8 @@ public class JDBCGenerator implements Generator, LiveGenerator {
 
   }
 
-  private LinkedHashSet<SelectLayout> abstractSelectVOs = new LinkedHashSet<SelectLayout>();
-  private LinkedHashSet<SelectModel> selectVOs = new LinkedHashSet<SelectModel>();
+  private LinkedHashSet<SelectLayoutWriter> abstractSelectVOs = new LinkedHashSet<SelectLayoutWriter>();
+  private LinkedHashSet<SelectModelWriter> selectVOs = new LinkedHashSet<SelectModelWriter>();
 
   private void addSelectVOs(final SelectMethodMetadata sm, final EntityDTOs entityVOs) throws ErrorMessageException {
 
@@ -235,9 +235,9 @@ public class JDBCGenerator implements Generator, LiveGenerator {
 //      log.info("soloVO=" + soloVO + " - abstractSoloVO=" + abstractSoloVO);
 
       if (soloVO != null) {
-        SelectLayout abstractVO = new SelectLayout(abstractSoloVO, this.jdbcTag);
+        SelectLayoutWriter abstractVO = new SelectLayoutWriter(abstractSoloVO, this.jdbcTag);
         this.abstractSelectVOs.add(abstractVO);
-        SelectModel vo = new SelectModel(soloVO, abstractVO, this.jdbcTag);
+        SelectModelWriter vo = new SelectModelWriter(soloVO, abstractVO, this.jdbcTag);
         this.selectVOs.add(vo);
 //        log.fine("### soloVO.getName()=" + soloVO.getName() + " abstractVO.getName()=" + abstractVO.getName());
       }
@@ -258,23 +258,23 @@ public class JDBCGenerator implements Generator, LiveGenerator {
   @Override
   public void generate(FileGenerator fileGenerator) throws FaultException, ErrorMessageException {
 
-    for (Model mo : this.models.values()) {
+    for (ModelWriter mo : this.models.values()) {
       mo.generate(fileGenerator);
     }
 
-    for (Layout la : this.layouts.values()) {
+    for (LayoutWriter la : this.layouts.values()) {
       la.generate(fileGenerator);
     }
 
-    for (DAO dao : this.daos.values()) {
+    for (DAOWriter dao : this.daos.values()) {
       dao.generate(fileGenerator, this);
     }
 
-    for (SelectLayout sla : this.abstractSelectVOs) {
+    for (SelectLayoutWriter sla : this.abstractSelectVOs) {
       sla.generate(fileGenerator);
     }
 
-    for (SelectModel smo : this.selectVOs) {
+    for (SelectModelWriter smo : this.selectVOs) {
       smo.generate(fileGenerator);
     }
 

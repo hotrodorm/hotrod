@@ -1,13 +1,11 @@
 package org.hotrod.database;
 
-import java.io.Serializable;
 import java.util.logging.Logger;
 
 import org.hotrod.config.ConverterTag;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
-import org.hotrod.utils.ColumnUtils;
 import org.hotrod.utils.JDBCTypes;
 import org.hotrod.utils.JDBCTypes.JDBCType;
 
@@ -20,82 +18,32 @@ public class PropertyType {
   private JDBCType jdbcType;
   private boolean isLOB;
   private TypeSource typeSource;
-
-  public static class ValueRange implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    public static ValueRange BYTE_RANGE = new ValueRange(0, Byte.MIN_VALUE, Byte.MAX_VALUE);
-    public static ValueRange SHORT_RANGE = new ValueRange(0, Short.MIN_VALUE, Short.MAX_VALUE);
-    public static ValueRange INTEGER_RANGE = new ValueRange(0, Integer.MIN_VALUE, Integer.MAX_VALUE);
-    public static ValueRange LONG_RANGE = new ValueRange(0, Long.MIN_VALUE, Long.MAX_VALUE);
-
-    public static ValueRange UNSIGNED_BYTE_RANGE = new ValueRange(0, 0, 2L * Byte.MAX_VALUE + 1);
-    public static ValueRange UNSIGNED_SHORT_RANGE = new ValueRange(0, 0, 2L * Short.MAX_VALUE + 1);
-    public static ValueRange UNSIGNED_INTEGER_RANGE = new ValueRange(0, 0, 2L * Integer.MAX_VALUE + 1);
-
-    private long initialValue;
-    private long minValue;
-    private long maxValue;
-
-    public ValueRange(long initialValue, long minValue, long maxValue) {
-      super();
-      log.fine("init");
-      this.initialValue = initialValue;
-      this.minValue = minValue;
-      this.maxValue = maxValue;
-    }
-
-    public long getInitialValue() {
-      return initialValue;
-    }
-
-    public long getMinValue() {
-      return minValue;
-    }
-
-    public long getMaxValue() {
-      return maxValue;
-    }
-
-    public static ValueRange getSignedRange(final int size) {
-      return new ValueRange(0, ColumnUtils.getMinValue(size), ColumnUtils.getMaxValue(size));
-    }
-
-    public static ValueRange getUnsignedRange(final int size) {
-      return new ValueRange(0, 0, ColumnUtils.getMaxValue(size));
-    }
-
-    public String toString() {
-      return "[min=" + this.minValue + ", max=" + this.maxValue + ", initial=" + this.initialValue + "]";
-    }
-
-  }
-
+  private Integer ruleNumber;
   private ValueRange valueRange;
 
   // Constructors for internal types
 
   /* Internal type for a serial column */
   public PropertyType(final Class<?> javaClass, final ColumnMetadata m, final boolean isLOB,
-      final ValueRange valueRange, final TypeSource typeSource) throws UnresolvableDataTypeException {
+      final ValueRange valueRange, final TypeSource typeSource, final Integer ruleNumber)
+      throws UnresolvableDataTypeException {
     JDBCType t = JDBCTypes.codeToType(m.getDataType());
     // log.info("a) code=" + m.getDataType() + " type=" + t);
     if (t == null) {
       throw new UnresolvableDataTypeException(m);
     }
-    initialize(javaClass.getName(), t, isLOB, valueRange, typeSource, null);
+    initialize(javaClass.getName(), t, isLOB, valueRange, typeSource, null, ruleNumber);
   }
 
   /* Internal type for a non-serial column */
   public PropertyType(final Class<?> javaClass, final ColumnMetadata m, final boolean isLOB,
-      final TypeSource typeSource) throws UnresolvableDataTypeException {
+      final TypeSource typeSource, final Integer ruleNumber) throws UnresolvableDataTypeException {
     JDBCType t = JDBCTypes.codeToType(m.getDataType());
     // log.info("b) code=" + m.getDataType() + " type=" + t);
     if (t == null) {
       throw new UnresolvableDataTypeException(m);
     }
-    initialize(javaClass.getName(), t, isLOB, null, typeSource, null);
+    initialize(javaClass.getName(), t, isLOB, null, typeSource, null, ruleNumber);
   }
 
   /*
@@ -103,45 +51,47 @@ public class PropertyType {
    * the JDBC driver
    */
   public PropertyType(final Class<?> javaClass, final JDBCType jdbcType, final boolean isLOB,
-      final TypeSource typeSource) {
-    initialize(javaClass.getName(), jdbcType, isLOB, null, typeSource, null);
+      final TypeSource typeSource, final Integer ruleNumber) {
+    initialize(javaClass.getName(), jdbcType, isLOB, null, typeSource, null, ruleNumber);
   }
 
   // For custom data types and select parameters
 
   /* Custom type for a non-serial column with unspecified JDBC type */
   public PropertyType(final String javaClassName, final ColumnMetadata m, final boolean isLOB,
-      final TypeSource typeSource) throws UnresolvableDataTypeException {
+      final TypeSource typeSource, final Integer ruleNumber) throws UnresolvableDataTypeException {
     JDBCType t = JDBCTypes.codeToType(m.getDataType());
     // log.info("c) code=" + m.getDataType() + " type=" + t);
     if (t == null) {
       throw new UnresolvableDataTypeException(m);
     }
-    initialize(javaClassName, t, isLOB, null, typeSource, null);
+    initialize(javaClassName, t, isLOB, null, typeSource, null, ruleNumber);
   }
 
   /* Custom type for a non-serial column with specified JDBC type */
   public PropertyType(final String javaClassName, final JDBCType jdbcType, final boolean isLOB,
-      final TypeSource typeSource, final ConverterTag converterTag) {
-    initialize(javaClassName, jdbcType, isLOB, null, typeSource, converterTag);
+      final TypeSource typeSource, final ConverterTag converterTag, final Integer ruleNumber) {
+    initialize(javaClassName, jdbcType, isLOB, null, typeSource, converterTag, ruleNumber);
   }
 
   /* Custom type for a serial column */
   public PropertyType(final String javaClassName, final JDBCType jdbcType, final boolean isLOB,
-      final ValueRange valueRange, final TypeSource typeSource, final ConverterTag converterTag) {
-    initialize(javaClassName, jdbcType, isLOB, valueRange, typeSource, converterTag);
+      final ValueRange valueRange, final TypeSource typeSource, final ConverterTag converterTag,
+      final Integer ruleNumber) {
+    initialize(javaClassName, jdbcType, isLOB, valueRange, typeSource, converterTag, ruleNumber);
   }
 
   // Initialize
 
   private void initialize(final String javaClassName, final JDBCType jdbcType, final boolean isLOB,
-      final ValueRange valueRange, TypeSource typeSource, final ConverterTag converterTag) {
+      final ValueRange valueRange, TypeSource typeSource, final ConverterTag converterTag, final Integer ruleNumber) {
     this.javaClassName = converterTag == null ? javaClassName : converterTag.getDomainClass();
     this.converterTag = converterTag;
     this.jdbcType = jdbcType;
     this.isLOB = isLOB;
-    this.valueRange = valueRange;
     this.typeSource = typeSource;
+    this.ruleNumber = ruleNumber;
+    this.valueRange = valueRange;
   }
 
   // ToString
@@ -241,6 +191,10 @@ public class PropertyType {
 
   public final TypeSource getTypeSource() {
     return typeSource;
+  }
+
+  public final String getRuleNumber() {
+    return this.ruleNumber == null ? null : "S" + ruleNumber;
   }
 
 }

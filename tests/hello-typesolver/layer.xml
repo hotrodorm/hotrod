@@ -6,7 +6,7 @@
     <when test="typeName == 'CHARACTER VARYING ARRAY' and name.endsWith('_TAX_CODES')"
       converter="TaxCodesArrayConverter" />
 
-    <when test-resultset="name == 'dom'" java-type="Long" />
+    <when test-resultset="columnName == 'dom'" java-type="Long" />
 
   </type-solver>
 

@@ -11,17 +11,17 @@ public class TypeHandler<R, D> {
   private static final Logger log = Logger.getLogger(TypeHandler.class.getName());
 
   public static final TypeHandler<String, String> STRING_ENTITY_COLUMN = TypeHandler.forClass(String.class,
-      TypeSource.RUNTIME_DIALECT_RULE);
+      TypeSource.RUNTIME_DIALECT_RULE, null);
 
   private Class<D> javaClass;
   private Class<R> rawClass;
   private TypeConverter<R, D> converter;
 
   private TypeSource typeSource;
-  private Integer ruleNumber;
+  private String ruleNumber;
 
   private TypeHandler(final Class<D> javaClass, final Class<R> rawClass, final TypeConverter<R, D> converter,
-      final TypeSource typeSource, final Integer ruleNumber) {
+      final TypeSource typeSource, final String ruleNumber) {
     this.javaClass = javaClass;
     this.rawClass = rawClass;
     this.converter = converter;
@@ -29,13 +29,14 @@ public class TypeHandler<R, D> {
     this.ruleNumber = ruleNumber;
   }
 
-  public static <D> TypeHandler<D, D> forClass(final Class<D> javaClass, final TypeSource typeSource) {
-    return new TypeHandler<D, D>(javaClass, null, null, typeSource, null);
+  public static <D> TypeHandler<D, D> forClass(final Class<D> javaClass, final TypeSource typeSource,
+      final String ruleNumber) {
+    return new TypeHandler<D, D>(javaClass, null, null, typeSource, ruleNumber);
   }
 
   @SuppressWarnings("unchecked")
-  public static <R, D> TypeHandler<R, D> forConverter(final TypeConverter<R, D> converter,
-      final TypeSource typeSource) {
+  public static <R, D> TypeHandler<R, D> forConverter(final TypeConverter<R, D> converter, final TypeSource typeSource,
+      final String ruleNumber) {
     Class<R> raw = null;
     Class<D> domain = null;
     Method[] methods = converter.getClass().getDeclaredMethods();
@@ -47,7 +48,7 @@ public class TypeHandler<R, D> {
         raw = (Class<R>) m.getReturnType();
       }
     }
-    TypeHandler<R, D> th = new TypeHandler<R, D>(domain, raw, converter, typeSource, null);
+    TypeHandler<R, D> th = new TypeHandler<R, D>(domain, raw, converter, typeSource, ruleNumber);
     return th;
   }
 
@@ -67,14 +68,14 @@ public class TypeHandler<R, D> {
     return typeSource;
   }
 
-  public Integer getRuleNumber() {
+  public String getRuleNumber() {
     return ruleNumber;
   }
 
   protected String render() {
     return (this.converter == null ? "" + this.javaClass
         : "[" + this.rawClass + " -> " + this.converter.getClass() + " -> " + this.javaClass + "]") + ", source: "
-        + this.typeSource + (this.ruleNumber == null ? "" : ":" + this.ruleNumber);
+        + this.typeSource;
   }
 
   public String toString() {

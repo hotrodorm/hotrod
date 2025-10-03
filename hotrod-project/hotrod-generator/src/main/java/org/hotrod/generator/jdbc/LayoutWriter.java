@@ -23,9 +23,9 @@ import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ClassWriter;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
-public class Layout {
+public class LayoutWriter {
 
-  private static final Logger log = Logger.getLogger(Layout.class.getName());
+  private static final Logger log = Logger.getLogger(LayoutWriter.class.getName());
 
   private DataSetMetadata metadata;
   private JDBCTag jdbcTag;
@@ -40,7 +40,7 @@ public class Layout {
 
   // Constructor
 
-  public Layout(final DataSetMetadata metadata, final JDBCGenerator generator, final DAOType daoType,
+  public LayoutWriter(final DataSetMetadata metadata, final JDBCGenerator generator, final DAOType daoType,
       final JDBCTag jdbcTag) {
     super();
     log.fine("init");

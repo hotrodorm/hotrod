@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 import javax.sql.DataSource;
 
 import org.hotrod.config.JDBCTag;
-import org.hotrod.config.TypeSolverTag;
+import org.hotrod.config.StaticTypeSolverTag;
 import org.hotrod.config.TypeSolverWhenTag;
 import org.hotrod.exceptions.FaultException;
 import org.hotrod.generator.FileGenerator;
@@ -33,7 +33,7 @@ public class LayerConfigBeanWriter {
   private static final String LAYER_CONFIG_CLASS_PREFIX = "LayerConfigurationBean";
 
   private JDBCTag jdbcTag;
-  private TypeSolverTag typeSolver;
+  private StaticTypeSolverTag typeSolver;
 
   private String qualifier;
 
@@ -44,7 +44,7 @@ public class LayerConfigBeanWriter {
 
   private ClassWriter w;
 
-  public LayerConfigBeanWriter(final JDBCTag jdbcTag, final TypeSolverTag typeSolver, final String qualifier) {
+  public LayerConfigBeanWriter(final JDBCTag jdbcTag, final StaticTypeSolverTag typeSolver, final String qualifier) {
     this.jdbcTag = jdbcTag;
     this.typeSolver = typeSolver;
     this.qualifier = qualifier;
@@ -109,8 +109,9 @@ public class LayerConfigBeanWriter {
       if (!SUtil.isEmpty(when.getTestResultSet())) {
         w.print("    rules.add(", TypeRule.class, ".of(\"" + SUtil.escapeJavaString(when.getTestResultSet()) + "\", ",
             TypeHandler.class);
+        String ruleNumber = "R" + n;
         w.println(".forClass(", ExternalClass.of(when.getJavaType()), ".class, ", TypeSource.class,
-            "." + TypeSource.RUNTIME_TYPESOLVER_RULE.name() + "), " + n + "));");
+            "." + TypeSource.RUNTIME_TYPESOLVER_RULE.name() + ", \"" + ruleNumber + "\")));");
       }
       n++;
     }

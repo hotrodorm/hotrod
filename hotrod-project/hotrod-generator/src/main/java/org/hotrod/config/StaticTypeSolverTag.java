@@ -23,11 +23,11 @@ import org.hotrod.utils.JDBCTypes.JDBCType;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 
 @XmlRootElement(name = "type-solver")
-public class TypeSolverTag extends AbstractConfigurationTag {
+public class StaticTypeSolverTag extends AbstractConfigurationTag {
 
   // Constants
 
-  private static final Logger log = Logger.getLogger(TypeSolverTag.class.getName());
+  private static final Logger log = Logger.getLogger(StaticTypeSolverTag.class.getName());
 
   // Properties
 
@@ -36,7 +36,7 @@ public class TypeSolverTag extends AbstractConfigurationTag {
 
   // Constructor
 
-  public TypeSolverTag() {
+  public StaticTypeSolverTag() {
     super("type-solver");
   }
 
@@ -59,7 +59,7 @@ public class TypeSolverTag extends AbstractConfigurationTag {
 
   }
 
-  public PropertyType resolveType(final ColumnMetadata cm, final JdbcColumn c, final JDBCType resultSetType)
+  public PropertyType resolveStaticType(final ColumnMetadata cm, final JdbcColumn c, final JDBCType resultSetType)
       throws UnresolvableDataTypeException {
 
     DynamicExpressionFactory factory = DynamicExpressionFactoryConfig.getFactory();
@@ -71,6 +71,7 @@ public class TypeSolverTag extends AbstractConfigurationTag {
 
     // Find the first matching rule
 
+    int ruleNumber = 1;
     for (TypeSolverWhenTag w : this.whens) {
       if (w.getTest() != null) {
         Object result = null;
@@ -95,9 +96,10 @@ public class TypeSolverTag extends AbstractConfigurationTag {
             if (jdbcTypeOnWrite == null) {
               jdbcTypeOnWrite = (c != null ? JDBCTypes.codeToType(c.getDataType()) : resultSetType);
             }
+            log.info("Type resolved: '" + cm.getName() + "' using test #" + ruleNumber + " '" + w.getTest() + "'");
             log.fine("## 5 RULE MATCHES: w.getJavaType()=" + w.getJavaType() + " jdbcTypeOnWrite=" + jdbcTypeOnWrite);
             return new PropertyType(w.getJavaType(), jdbcTypeOnWrite, false, TypeSource.STATIC_TYPESOLVER_RULE,
-                w.getConverterTag());
+                w.getConverterTag(), ruleNumber);
           }
         } catch (ClassCastException e) {
           throw new UnresolvableDataTypeException(cm, "Could not evaluate <when> tag's test expression '" + w.getTest()
@@ -111,6 +113,7 @@ public class TypeSolverTag extends AbstractConfigurationTag {
           throw e;
         }
       }
+      ruleNumber++;
     }
 
     // No rule matched

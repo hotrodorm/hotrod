@@ -15,8 +15,6 @@ public class TypeRule {
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(TypeRule.class.getName());
 
-  private int ruleNumber;
-
   private String test;
 
   private TypeHandler<?, ?> typeHandler; // If test succeeds and there's no error message, this is the outcome
@@ -26,29 +24,27 @@ public class TypeRule {
   private DynamicExpressionFactory factory;
   private DynamicExpression testExpression;
 
-  private TypeRule(final int ruleNumber, final String test, final TypeHandler<?, ?> typeHandler,
-      final String errorMessage) {
-    this.ruleNumber = ruleNumber;
+  private TypeRule(final String test, final TypeHandler<?, ?> typeHandler, final String errorMessage) {
     this.test = test;
     this.typeHandler = typeHandler;
     this.errorMessage = errorMessage;
 
     this.factory = DynamicExpressionFactoryConfig.getFactory();
     if (SUtil.isEmpty(this.test)) {
-      throw new LiveSQLException("Invalid <type-solver> expression. Must be a non-empty OGNL expression");
+      throw new LiveSQLException("Invalid <type-solver> expression. Must be a non-empty JEXL expression");
     }
     this.testExpression = this.factory.expression(this.test);
   }
 
-  public static TypeRule of(final String test, final TypeHandler<?, ?> typeHandler, final int ruleNumber) {
-    return new TypeRule(ruleNumber, test, typeHandler, null);
+  public static TypeRule of(final String test, final TypeHandler<?, ?> typeHandler) {
+    return new TypeRule(test, typeHandler, null);
   }
 
-  public static TypeRule of(final String test, final String errorMessage, final int ruleNumber) {
-    return new TypeRule(ruleNumber, test, null, errorMessage);
+  public static TypeRule of(final String test, final String errorMessage) {
+    return new TypeRule(test, null, errorMessage);
   }
 
-  public TypeHandler<?, ?> resolve(final ResultSetColumnMetadata cm) throws CouldNotResolveResultSetDataTypeException {
+  public boolean applies(final ResultSetColumnMetadata cm) throws CouldNotResolveResultSetDataTypeException {
     Parameters context = this.factory.newObjectContext(cm);
     Object v = null;
     try {
@@ -64,9 +60,9 @@ public class TypeRule {
           throw new CouldNotResolveResultSetDataTypeException(cm, "Type Solver's with test expression '" + this.test
               + "' returned the error message:\n" + this.errorMessage);
         }
-        return this.typeHandler;
+        return true;
       }
-      return null;
+      return false;
 
     } catch (ClassCastException e) {
       throw new CouldNotResolveResultSetDataTypeException(cm,
@@ -81,10 +77,6 @@ public class TypeRule {
 
   public TypeHandler<?, ?> getTypeHandler() {
     return typeHandler;
-  }
-
-  public int getRuleNumber() {
-    return ruleNumber;
   }
 
   public static class CouldNotResolveResultSetDataTypeException extends Exception {

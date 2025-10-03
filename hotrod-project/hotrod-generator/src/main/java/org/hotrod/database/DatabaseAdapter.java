@@ -206,12 +206,12 @@ public abstract class DatabaseAdapter {
   // Utilities
 
   protected PropertyType produceType(final Class<?> c, final ColumnMetadata m, final boolean isLOB,
-      final ConverterTag converterTag) throws UnresolvableDataTypeException {
+      final ConverterTag converterTag,final Integer ruleNumber) throws UnresolvableDataTypeException {
     JDBCType jdbcType = JDBCTypes.codeToType(m.getDataType());
     if (jdbcType == null) {
       throw new UnresolvableDataTypeException(m);
     }
-    return new PropertyType(c.getName(), jdbcType, isLOB, TypeSource.STATIC_DIALECT_RULE, converterTag);
+    return new PropertyType(c.getName(), jdbcType, isLOB, TypeSource.STATIC_DIALECT_RULE, converterTag, ruleNumber);
   }
 
   // Classes

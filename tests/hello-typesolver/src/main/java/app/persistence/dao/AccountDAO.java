@@ -41,8 +41,8 @@ import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
+import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
-import org.hotrod.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.livesql.util.CastUtil;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
@@ -483,11 +483,11 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   public static class AccountTable extends Table<Account> {
 
     public final NumericEntityColumn id = new NumericEntityColumn(this,
-      "ID", "id", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
+      "ID", "id", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE, "S9"));
     public final NumericEntityColumn balance = new NumericEntityColumn(this,
-      "BALANCE", "balance", "DECIMAL", 12, 2, TypeHandler.forClass(Double.class, TypeSource.STATIC_DESIGNATED));
+      "BALANCE", "balance", "DECIMAL", 12, 2, TypeHandler.forClass(Double.class, TypeSource.STATIC_DESIGNATED, null));
     public final NumericEntityColumn segment = new NumericEntityColumn(this,
-      "SEGMENT", "segment", "TINYINT", 8, 0, TypeHandler.forClass(Double.class, TypeSource.STATIC_TYPESOLVER_RULE));
+      "SEGMENT", "segment", "TINYINT", 8, 0, TypeHandler.forClass(Double.class, TypeSource.STATIC_TYPESOLVER_RULE, "S2"));
 
     @Override
     public AllColumns star() {
@@ -524,7 +524,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   @PostConstruct
   private void initializeContext() {
     LiveSQLDialect liveSQLDialect = LShield.getLiveSQLDialect(this.sql);
-    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, new TypeSolver(null, liveSQLDialect), log);
+    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, new RuntimeTypeSolver(null, liveSQLDialect), log);
     this.dyn = new DynamicSQL();
     this.initializeSelectbyprimarykey();
     this.initializeSelectbyexample();

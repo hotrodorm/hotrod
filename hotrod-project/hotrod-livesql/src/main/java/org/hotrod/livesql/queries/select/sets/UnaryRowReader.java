@@ -33,12 +33,11 @@ public class UnaryRowReader<T> implements RowReader<T> {
     for (Expression expr : this.queryColumns) {
       TypeHandler<Object, Object> cth = Shield.getTypeHandler(expr);
       String name = Shield.getReferenceName(expr);
-//      log.info(">> EXPR: " + expr + " expr@" + OUtil.hc(expr) + " th=" + cth);
       if (cth == null) {
         ResultSetColumnMetadata cm = ResultSetColumnMetadata.of(rm, ordinal);
         try {
-          TypeHandler<?, ?> th = context.getTypeSolver().resolve(cm);
-//          log.info(">>   --> resolved expr@" + OUtil.hc(expr) + " <- th=" + th);
+          TypeHandler<?, ?> th = context.getTypeSolver().resolveRuntimeType(cm);
+          log.info("#" + ordinal + " th.getJavaClass()=" + th.getJavaClass());
           Shield.setTypeHandler(expr, th);
         } catch (CouldNotResolveResultSetDataTypeException e) {
           throw new LiveSQLException(
@@ -47,7 +46,7 @@ public class UnaryRowReader<T> implements RowReader<T> {
       }
       ordinal++;
     }
-//    logQueryColumns();
+    context.logExecution(q);
   }
 
   @SuppressWarnings("unchecked")
@@ -86,15 +85,15 @@ public class UnaryRowReader<T> implements RowReader<T> {
 //    return value;
 //  }
 
-  private void logQueryColumns() {
-    int n;
-    n = 1;
-    for (Expression qc : this.queryColumns) {
-      int i = n++;
-      String alias = Shield.getReferenceName(qc);
-      TypeHandler<?, ?> th = Shield.getTypeHandler(qc);
-      log.info("### column #" + i + " " + alias + ": " + th);
-    }
-  }
+//  private void logQueryColumns() {
+//    int n;
+//    n = 1;
+//    for (Expression qc : this.queryColumns) {
+//      int i = n++;
+//      String alias = Shield.getReferenceName(qc);
+//      TypeHandler<?, ?> th = Shield.getTypeHandler(qc);
+//      log.info("### column #" + i + " " + alias + ": " + th);
+//    }
+//  }
 
 }

@@ -25,11 +25,11 @@ import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ClassWriter;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
-public class SelectLayout {
+public class SelectLayoutWriter {
 
   // Constants
 
-  private static final Logger log = Logger.getLogger(SelectLayout.class.getName());
+  private static final Logger log = Logger.getLogger(SelectLayoutWriter.class.getName());
 
   // Properties
 
@@ -50,7 +50,7 @@ public class SelectLayout {
   // Constructors
 
   // From a solo VO
-  public SelectLayout(final SelectVOClass abstractSoloVO, final JDBCTag jdbcTag) {
+  public SelectLayoutWriter(final SelectVOClass abstractSoloVO, final JDBCTag jdbcTag) {
     log.fine("init");
     this.jdbcTag = jdbcTag;
 
@@ -69,7 +69,7 @@ public class SelectLayout {
   }
 
   // From a connected VO
-  public SelectLayout(final VOMetadata vo, final JDBCTag jdbcTag) {
+  public SelectLayoutWriter(final VOMetadata vo, final JDBCTag jdbcTag) {
     this.jdbcTag = jdbcTag;
 
     this.name = vo.getAbstractName();

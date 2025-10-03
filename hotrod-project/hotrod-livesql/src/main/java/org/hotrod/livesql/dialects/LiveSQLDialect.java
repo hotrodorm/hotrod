@@ -95,7 +95,7 @@ public abstract class LiveSQLDialect {
         + databaseMajorVersion + ", databaseMinorVersion=" + databaseMinorVersion + "]";
   }
 
-  public Class<?> resolveColumnType(final ResultSetColumnMetadata m) {
+  public RuntimeType resolveRuntimeType(final ResultSetColumnMetadata m) {
     return null;
   }
 

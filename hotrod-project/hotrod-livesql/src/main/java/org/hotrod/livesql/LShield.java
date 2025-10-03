@@ -1,17 +1,14 @@
 package org.hotrod.livesql;
 
-import java.util.List;
-
 import javax.sql.DataSource;
 
 import org.hotrod.livesql.dialects.LiveSQLDialect;
-import org.hotrod.livesql.queries.typesolver.TypeRule;
 
 public class LShield {
 
   public static LiveSQL newLiveSQL(LiveSQLDialect liveSQLDialect, DataSource dataSource, String qualifier,
-      List<TypeRule> rules) {
-    return new LiveSQL(liveSQLDialect, dataSource, qualifier, rules);
+      LayerConfiguration layerConfiguration) {
+    return new LiveSQL(liveSQLDialect, dataSource, qualifier, layerConfiguration);
   }
 
   public static DataSource getDataSource(LiveSQL liveSQL) {

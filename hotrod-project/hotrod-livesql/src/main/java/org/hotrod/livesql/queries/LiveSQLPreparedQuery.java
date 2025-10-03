@@ -90,8 +90,10 @@ public class LiveSQLPreparedQuery {
         for (Expression expr : this.queryColumns) {
           String name = Shield.getReferenceName(expr);
           TypeHandler<?, ?> th = Shield.getTypeHandler(expr);
-          sb.append(" * " + name + ": "
-              + (th != null ? TShield.render(th) : "class N/A, source: " + TypeSource.RUNTIME_JDBC_DRIVER_DEFAULT.name())
+          sb.append(" * " + name + ": " //
+              + (th != null ? TShield.render(th)
+                  : "class N/A, source: " + TypeSource.RUNTIME_JDBC_DRIVER_DEFAULT.name()) //
+              + (th.getRuleNumber() == null ? "" : ", rule #" + th.getRuleNumber()) //
               + "\n");
         }
       }

@@ -29,6 +29,7 @@ import org.hotrod.livesql.util.ToString;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.utils.SUtil;
 import org.hotrod.utils.Separator;
+import org.hotrod.utils.TUtil;
 
 public abstract class BaseSelectObject<T> extends SelectObject<T> {
 
@@ -36,7 +37,6 @@ public abstract class BaseSelectObject<T> extends SelectObject<T> {
 
   protected List<SQLExpression> sqlExpressions = new ArrayList<>();
   protected List<Expression> compiledColumns = null;
-  protected boolean columnsAssembled = false;
 
   protected List<CTE> ctes = new ArrayList<>();
   protected boolean distinct;
@@ -73,22 +73,23 @@ public abstract class BaseSelectObject<T> extends SelectObject<T> {
     return sqlExpressions;
   }
 
-  public boolean areColumnsAssembled() {
-    return columnsAssembled;
-  }
-  
-  
+  @Override
+  protected final void computeColumnsCompilation() {
+    log.info("POST-COMPILE");
 
-  protected void expandQueryColumns() {
-//    log.info("=== 2. EXPAND QUERY COLUMNS (AS/IF NEEDED) from " + SShield.getName(this.from) + " @" + OUtil.hc(this)
-//        + " ===");
+    log.info("Call Stack: " + TUtil.callStack());
+    int count = 1;
+    for (SQLExpression se : this.sqlExpressions) {
+      log.info("  " + count++ + ". se=" + (se == null ? "null" : se.getClass().getName()));
+    }
+
     this.compiledColumns = new ArrayList<>();
-    for (SQLExpression rsc : this.sqlExpressions) {
+    for (SQLExpression se : this.sqlExpressions) {
 //      log.info("=== 2.1 rsc=" + rsc);
 
       try {
         // Single column
-        Expression single = (Expression) rsc;
+        Expression single = (Expression) se;
         log.info("=== 2.2 single" + (single == null ? "" : " [" + single.getClass().getName() + "] ") + "=" + single);
         Expression emerging = Shield.getEmergingExpression(single); // emerging is always null for wrapping columns
 //        TypeHandler<?, ?> th1 = Shield.getTypeHandler(single);
@@ -102,7 +103,7 @@ public abstract class BaseSelectObject<T> extends SelectObject<T> {
       } catch (ClassCastException cce) {
         // Wrapping column
 //        log.info("=== 2.3");
-        SQLMetaExpression wrapping = (SQLMetaExpression) rsc;
+        SQLMetaExpression wrapping = (SQLMetaExpression) se;
         for (Expression exp : Shield.expand(wrapping)) {
 //          log.info("=== 2.4");
           Expression em = Shield.getEmergingExpression(exp);
@@ -132,7 +133,7 @@ public abstract class BaseSelectObject<T> extends SelectObject<T> {
   public final List<Expression> getCompiledColumns() {
     return this.compiledColumns;
   }
-  
+
   public void setResultSetColumns(final List<SQLExpression> resultSetColumns) {
     this.sqlExpressions = resultSetColumns;
   }

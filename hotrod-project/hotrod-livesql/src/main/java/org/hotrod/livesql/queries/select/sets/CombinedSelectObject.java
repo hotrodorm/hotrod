@@ -307,10 +307,18 @@ public class CombinedSelectObject<T> extends SelectObject<T> {
   }
 
   @Override
-  public void compileAndReturnColumns() {
-    this.anchor.compileAndReturnColumns();
+  protected void prepareColumnCompilation() {
+    this.anchor.prepareColumnCompilation();
     for (SetOperatorTerm<T> o : this.combined) {
-      o.getMultiset().compileAndReturnColumns();
+      o.getMultiset().prepareColumnCompilation();
+    }
+  }
+
+  @Override
+  protected void computeColumnsCompilation() {
+    this.anchor.computeColumnsCompilation();
+    for (SetOperatorTerm<T> o : this.combined) {
+      o.getMultiset().computeColumnsCompilation();
     }
   }
 
@@ -318,7 +326,7 @@ public class CombinedSelectObject<T> extends SelectObject<T> {
   public List<Expression> getCompiledColumns() {
     return this.anchor.getCompiledColumns();
   }
-  
+
   // MultiSet execution
 
   @Override

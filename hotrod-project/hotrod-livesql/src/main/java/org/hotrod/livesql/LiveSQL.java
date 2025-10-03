@@ -9,7 +9,6 @@ import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.sql.DataSource;
@@ -130,8 +129,7 @@ import org.hotrod.livesql.queries.select.SelectCTEPhase;
 import org.hotrod.livesql.queries.select.SelectColumnsPhase;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.queries.subqueries.SubqueryColumnsPhase;
-import org.hotrod.livesql.queries.typesolver.TypeRule;
-import org.hotrod.livesql.queries.typesolver.TypeSolver;
+import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.sysobjects.DualTable;
 import org.hotrod.livesql.sysobjects.SysDummy1Table;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
@@ -149,32 +147,23 @@ public class LiveSQL {
   private DataSource dataSource;
   private LiveSQLDialect liveSQLDialect;
 
-  private TypeSolver typeSolver;
+  private RuntimeTypeSolver typeSolver;
   @SuppressWarnings("unused")
   private String qualifier = null;
 
-//  private LayerConfiguration layerConfiguration;
-
   // Constructor
 
-  public LiveSQL(LiveSQLDialect liveSQLDialect, DataSource dataSource, String qualifier, List<TypeRule> layerRules) {
-    log.info("Initializing LiveSQL for qualifier: " + (qualifier == null ? "(main)" : qualifier));
+  public LiveSQL(LiveSQLDialect liveSQLDialect, DataSource dataSource, String qualifier,
+      LayerConfiguration layerConfiguration) {
+    log.info("Initializing LiveSQL for qualifier: " + (qualifier == null ? "(main)" : qualifier)
+        + (" - runtime rules: " + layerConfiguration.getRuntimeTypeSolverRules().size()));
     this.liveSQLDialect = liveSQLDialect;
     this.dataSource = dataSource;
     this.qualifier = qualifier;
-//    this.layerConfiguration = layerConfiguration;   
-//    List<TypeRule> layerRules = this.layerConfiguration.getTypeRules();
-    this.typeSolver = new TypeSolver(layerRules, this.liveSQLDialect);
+    this.typeSolver = new RuntimeTypeSolver(layerConfiguration.getRuntimeTypeSolverRules(), this.liveSQLDialect);
     this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, this.typeSolver, log);
 
   }
-
-//  @PostConstruct
-//  private void initialize() {
-//    List<TypeRule> layerRules = this.layerConfiguration.getTypeRules();
-//    this.typeSolver = new TypeSolver(layerRules, this.liveSQLDialect);
-//    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, this.typeSolver, log);
-//  }
 
   // Shielded methods
 

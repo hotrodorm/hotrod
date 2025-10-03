@@ -15,7 +15,7 @@ public class TUtil {
     return ix == -1 ? cn : cn.substring(ix + 1);
   }
 
-  public static String compactStackTrace() {
+  public static String callStack() {
     return Stream.of(Thread.currentThread().getStackTrace()).skip(2)
         .map(s -> "" + simpleName(s.getClassName()) + "(" + s.getLineNumber() + ")").collect(Collectors.joining(" < "));
   }

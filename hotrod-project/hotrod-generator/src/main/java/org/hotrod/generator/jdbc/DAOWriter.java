@@ -73,7 +73,7 @@ import org.hotrod.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
-import org.hotrod.livesql.queries.typesolver.TypeSolver;
+import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.livesql.util.CastUtil;
 import org.hotrod.metadata.ColumnMetadata;
@@ -95,9 +95,9 @@ import org.hotrod.utils.SUtil;
 import org.hotrod.utils.Separator;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn.AutogenerationType;
 
-public class DAO {
+public class DAOWriter {
 
-  private static final Logger log = Logger.getLogger(DAO.class.getName());
+  private static final Logger log = Logger.getLogger(DAOWriter.class.getName());
 
   // Properties
 
@@ -114,8 +114,8 @@ public class DAO {
 
   private ClassPackage classPackage;
 
-  private Layout layout;
-  private Model model;
+  private LayoutWriter layout;
+  private ModelWriter model;
   private LayerConfigBeanWriter layerConfig;
 
   private String metadataClassName;
@@ -126,9 +126,9 @@ public class DAO {
 
   // Constructors
 
-  public DAO(final AbstractDAOTag tag, final DataSetMetadata metadata, final JDBCGenerator generator,
-      final DAOType type, final JDBCTag myBatisTag, final DatabaseAdapter adapter, final Layout layout,
-      final Model model, final LayerConfigBeanWriter layerConfig) {
+  public DAOWriter(final AbstractDAOTag tag, final DataSetMetadata metadata, final JDBCGenerator generator,
+      final DAOType type, final JDBCTag myBatisTag, final DatabaseAdapter adapter, final LayoutWriter layout,
+      final ModelWriter model, final LayerConfigBeanWriter layerConfig) {
     super();
     this.tag = tag;
     this.metadata = metadata;
@@ -329,7 +329,7 @@ public class DAO {
     if (!this.isExecutor()) {
       w.println("    ", LiveSQLDialect.class, " liveSQLDialect = ", LShield.class, ".getLiveSQLDialect(this.sql);");
       w.println("    this.context = new ", LiveSQLContext.class, "(liveSQLDialect, this.dataSource, new ",
-          TypeSolver.class, "(null, liveSQLDialect), log);");
+          RuntimeTypeSolver.class, "(null, liveSQLDialect), log);");
     }
     w.println("    this.dyn = new ", DynamicSQL.class, "();");
     for (String ini : this.initializersInPostConstruct) {
@@ -1326,7 +1326,9 @@ public class DAO {
 
         w.print(TypeHandler.class, ".forClass(", jt, ".class, ");
         TypeSource typeSource = cm.getType().getTypeSource();
-        w.print(TypeSource.class, "." + typeSource.name() + ")");
+        String ruleNumber = cm.getType().getRuleNumber();
+        w.print(TypeSource.class, "." + typeSource.name() + ", "
+            + (ruleNumber == null ? "null" : "\"" + SUtil.escapeJavaString(ruleNumber) + "\"") + ")");
 
         w.println(");");
 
@@ -1339,7 +1341,9 @@ public class DAO {
         w.print("    private final ", TypeHandler.class, "<", rawClass, ", ");
         w.print(domainClass, "> th" + thId + " = ", TypeHandler.class, ".forConverter(new ", converterClass);
         TypeSource typeSource = cm.getType().getTypeSource();
-        w.println("(), ", TypeSource.class, "." + typeSource.name() + ");");
+        String ruleNumber = cm.getType().getRuleNumber();
+        w.println("(), ", TypeSource.class, "." + typeSource.name() + ", "
+            + (ruleNumber == null ? "" : "\"" + SUtil.escapeJavaString(ruleNumber) + "\"") + ");");
 
         w.print("    public final ", ConvertedColumn.class, "<", rawClass, ", ");
         w.print(domainClass, "> " + memberName + " = new ", ConvertedColumn.class);

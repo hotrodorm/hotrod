@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
-import org.hotrod.database.PropertyType.ValueRange;
+import org.hotrod.database.ValueRange;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.identifiers.ObjectId;
@@ -66,111 +66,111 @@ public class SQLServerAdapter extends DatabaseAdapter {
 
     case Types.DECIMAL: // DECIMAL, MONEY, SMALLMONEY
       if ((m.getScale() != null) && (m.getScale().intValue() != 0)) {
-        return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+        return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE, 1);
       } else if (m.getPrecision() <= 2) {
         return new PropertyType(Byte.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
-            TypeSource.STATIC_DIALECT_RULE);
+            TypeSource.STATIC_DIALECT_RULE, 2);
       } else if (m.getPrecision() <= 4) {
         return new PropertyType(Short.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
-            TypeSource.STATIC_DIALECT_RULE);
+            TypeSource.STATIC_DIALECT_RULE, 3);
       } else if (m.getPrecision() <= 9) {
         return new PropertyType(Integer.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
-            TypeSource.STATIC_DIALECT_RULE);
+            TypeSource.STATIC_DIALECT_RULE, 4);
       } else if (m.getPrecision() <= 18) {
         return new PropertyType(Long.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
-            TypeSource.STATIC_DIALECT_RULE);
+            TypeSource.STATIC_DIALECT_RULE, 5);
       } else {
-        return new PropertyType(BigInteger.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+        return new PropertyType(BigInteger.class, m, false, TypeSource.STATIC_DIALECT_RULE, 6);
       }
 
     case Types.BIT:
-      return new PropertyType(Byte.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(Byte.class, m, false, TypeSource.STATIC_DIALECT_RULE, 7);
     case Types.TINYINT:
-      return new PropertyType(Byte.class, m, false, ValueRange.BYTE_RANGE, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(Byte.class, m, false, ValueRange.BYTE_RANGE, TypeSource.STATIC_DIALECT_RULE, 8);
     case Types.SMALLINT:
-      return new PropertyType(Short.class, m, false, ValueRange.SHORT_RANGE, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(Short.class, m, false, ValueRange.SHORT_RANGE, TypeSource.STATIC_DIALECT_RULE, 9);
     case Types.INTEGER:
-      return new PropertyType(Integer.class, m, false, ValueRange.INTEGER_RANGE, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(Integer.class, m, false, ValueRange.INTEGER_RANGE, TypeSource.STATIC_DIALECT_RULE, 10);
     case Types.BIGINT:
-      return new PropertyType(Long.class, m, false, ValueRange.LONG_RANGE, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(Long.class, m, false, ValueRange.LONG_RANGE, TypeSource.STATIC_DIALECT_RULE, 11);
 
     case Types.REAL:
-      return new PropertyType(Float.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(Float.class, m, false, TypeSource.STATIC_DIALECT_RULE, 12);
     case Types.DOUBLE:
-      return new PropertyType(Double.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(Double.class, m, false, TypeSource.STATIC_DIALECT_RULE, 13);
 
     // Char types
 
     case Types.CHAR: // CHAR, UNIQUEIDENTIFIER
-      return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 14);
     case Types.VARCHAR:
-      return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 15);
     case Types.NCHAR:
-      return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 16);
     case Types.NVARCHAR:
       isLOB = m.getPrecision() >= MAX_VARCHAR_LENGTH;
-      return new PropertyType(String.class, m, isLOB, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(String.class, m, isLOB, TypeSource.STATIC_DIALECT_RULE, 17);
     case Types.LONGVARCHAR: // TEXT
       isLOB = m.getPrecision() >= MAX_VARCHAR_LENGTH;
-      return new PropertyType(String.class, m, isLOB, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(String.class, m, isLOB, TypeSource.STATIC_DIALECT_RULE, 18);
     case Types.LONGNVARCHAR: // NTEXT, XML
       // return new PropertyType(String.class, m); // LONGNVARCHAR is not
       // supported by MyBatis.
       isLOB = m.getPrecision() >= MAX_VARCHAR_LENGTH;
-      return new PropertyType(String.class, JDBCType.VARCHAR, isLOB, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(String.class, JDBCType.VARCHAR, isLOB, TypeSource.STATIC_DIALECT_RULE, 19);
 
     // Date/Time types
 
     case Types.DATE:
-      return new PropertyType(java.time.LocalDate.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(java.time.LocalDate.class, m, false, TypeSource.STATIC_DIALECT_RULE, 20);
     case Types.TIME:
-      return new PropertyType(java.time.LocalTime.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(java.time.LocalTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 21);
     case Types.TIMESTAMP: // DATETIME, DATETIME2, SMALLDATETIME
-      return new PropertyType(java.time.LocalDateTime.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(java.time.LocalDateTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 22);
     case -155: // DATETIMEOFFSET
       // Invalid JDBC type (-155) reported by the SQL Server JDBC Driver.
-      return new PropertyType(java.time.OffsetDateTime.class, JDBCType.TIMESTAMP, false,
-          TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(java.time.OffsetDateTime.class, JDBCType.TIMESTAMP, false, TypeSource.STATIC_DIALECT_RULE,
+          23);
 
     // Binary types
 
     case Types.BINARY:
       if ("timestamp".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(Object.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+        return new PropertyType(Object.class, m, false, TypeSource.STATIC_DIALECT_RULE, 24);
       } else {
-        return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE);
+        return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE, 25);
       }
     case Types.VARBINARY: // VARBINARY, HIERARCHYID, GEOGRAPHY, GEOMETRY
       if ("hierarchyid".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE);
+        return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE, 26);
       } else if ("geometry".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE);
+        return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE, 27);
       } else if ("geography".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE);
+        return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE, 28);
       } else {
         isLOB = m.getPrecision() >= MAX_VARCHAR_LENGTH;
-        return new PropertyType("byte[]", m, isLOB, TypeSource.STATIC_DIALECT_RULE);
+        return new PropertyType("byte[]", m, isLOB, TypeSource.STATIC_DIALECT_RULE, 29);
       }
     case Types.LONGVARBINARY:
-      return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE, 30);
 
     // Other types
 
     case Types.OTHER:
       if ("DECFLOAT".equals(m.getTypeName())) {
-        return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+        return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE, 31);
       } else if ("XML".equals(m.getTypeName())) {
-        return new PropertyType(Object.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+        return new PropertyType(Object.class, m, false, TypeSource.STATIC_DIALECT_RULE, 32);
       } else {
-        return new PropertyType(Object.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+        return new PropertyType(Object.class, m, false, TypeSource.STATIC_DIALECT_RULE, 33);
       }
 
     case -150: // SQL_VARIANT
       // Invalid JDBC type (-150) reported by the SQL Server JDBC Driver.
-      return new PropertyType(Object.class, JDBCType.OTHER, false, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(Object.class, JDBCType.OTHER, false, TypeSource.STATIC_DIALECT_RULE, 34);
 
     default: // Unrecognized type
-      return produceType(Object.class, m, false, m.getResolvedConverter());
+      return produceType(Object.class, m, false, m.getResolvedConverter(), 35);
 
     }
 

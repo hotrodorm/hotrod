@@ -64,7 +64,7 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
   }
 
   @Override
-  public void compileAndReturnColumns() {
+  protected void prepareColumnCompilation() {
 
     if (this.getCTEs() != null) {
       for (CTE cte : this.getCTEs()) {
@@ -93,9 +93,6 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
       }
     }
 
-    super.expandQueryColumns();
-
-    this.columnsAssembled = true;
   }
 
   private void addTableColumns(TableExpression te, List<SQLExpression> filledIn) {

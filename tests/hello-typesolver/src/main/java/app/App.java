@@ -37,6 +37,9 @@ public class App {
   @Autowired
   private PaymentDAO paymentDAO;
 
+  @Autowired
+  private H2Functions h2;
+
   public static void main(String[] args) {
     SpringApplication.run(App.class, args);
   }
@@ -68,13 +71,16 @@ public class App {
         i.id, // STATIC_DIALECT_RULE
         i.created, // STATIC_TYPESOLVER_RULE (type)
         i.invoiceTaxCodes, // STATIC_TYPESOLVER_RULE (converter)
+        i.amount, //
+        i.paid, //
         i.amount.mult(1.30).as("ag1").type(Double.class), // RUNTIME_DESIGNATED
+//        sql.caseWhen(i.amount.ge(500), "Y").elseValue("N").end().as("vip").type(YNBooleanConverter.class), //
         i.created.extract(DateTimeField.DAY).as("dom"), // RUNTIME_TYPESOLVER_RULE
-        sql.caseWhen(i.paid.eq("Y"), i.amount).elseValue(0).end().as("paidAmount") // RUNTIME_DIALECT_RULE
-
+        sql.caseWhen(i.paid.eq("Y"), i.amount).elseValue(0).end().as("paidAmount"), // RUNTIME_DIALECT_RULE
+        h2.randomUUID().as("globalId") // RUNTIME_JDBC_DRIVER_DEFAULT
     ).from(i) //
-        .where(i.id.eq(4));
-    System.out.println("query=" + q.getPreview(true));
+        .where(i.id.eq(11));
+//    System.out.println("query=" + q.getPreview(true));
     List<Row> rows = q.execute();
     for (Row r : rows) {
       System.out.println("r=" + r);

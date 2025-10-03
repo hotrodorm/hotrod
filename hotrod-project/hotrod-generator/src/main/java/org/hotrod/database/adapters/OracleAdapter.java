@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
-import org.hotrod.database.PropertyType.ValueRange;
+import org.hotrod.database.ValueRange;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.identifiers.ObjectId;
@@ -65,62 +65,62 @@ public class OracleAdapter extends DatabaseAdapter {
     case Types.DECIMAL:
     case Types.NUMERIC:
       if (m.getScale() == null || m.getScale().intValue() != 0) {
-        return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+        return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE, 1);
       } else {
         if (m.getPrecision() == null) {
-          return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+          return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE, 2);
         } else {
           if (m.getPrecision().intValue() <= 2) {
             return new PropertyType(Byte.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
-                TypeSource.STATIC_DIALECT_RULE);
+                TypeSource.STATIC_DIALECT_RULE, 3);
           } else if (m.getPrecision().intValue() <= 4) {
             return new PropertyType(Short.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
-                TypeSource.STATIC_DIALECT_RULE);
+                TypeSource.STATIC_DIALECT_RULE, 4);
           } else if (m.getPrecision().intValue() <= 9) {
             return new PropertyType(Integer.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
-                TypeSource.STATIC_DIALECT_RULE);
+                TypeSource.STATIC_DIALECT_RULE, 5);
           } else if (m.getPrecision().intValue() <= 18) {
             return new PropertyType(Long.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
-                TypeSource.STATIC_DIALECT_RULE);
+                TypeSource.STATIC_DIALECT_RULE, 6);
           } else {
-            return new PropertyType(BigInteger.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+            return new PropertyType(BigInteger.class, m, false, TypeSource.STATIC_DIALECT_RULE, 7);
           }
         }
       }
 
     case 100: // binary_float
       // Invalid JDBC type (100) reported by the Oracle JDBC Driver.
-      return new PropertyType(Float.class, JDBCType.NUMERIC, false, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(Float.class, JDBCType.NUMERIC, false, TypeSource.STATIC_DIALECT_RULE, 8);
 
     case 101: // binary_double
       // Invalid JDBC type (101) reported by the Oracle JDBC Driver.
-      return new PropertyType(Double.class, JDBCType.NUMERIC, false, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(Double.class, JDBCType.NUMERIC, false, TypeSource.STATIC_DIALECT_RULE, 9);
 
     case Types.FLOAT: // float, real, double precision
       if ("real".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+        return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE, 10);
       } else if ("double precision".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(Double.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+        return new PropertyType(Double.class, m, false, TypeSource.STATIC_DIALECT_RULE, 11);
       } else if ("float".equalsIgnoreCase(m.getTypeName())) {
         if (m.getPrecision() <= 23) {
-          return new PropertyType(Float.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+          return new PropertyType(Float.class, m, false, TypeSource.STATIC_DIALECT_RULE, 12);
         } else if (m.getPrecision() <= 52) {
-          return new PropertyType(Double.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+          return new PropertyType(Double.class, m, false, TypeSource.STATIC_DIALECT_RULE, 13);
         } else {
-          return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+          return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE, 14);
         }
       }
 
       // Character types
 
     case Types.CHAR:
-      return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 15);
 
     case Types.VARCHAR:
-      return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 16);
 
     case Types.CLOB:
-      return new PropertyType(String.class, m, true, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(String.class, m, true, TypeSource.STATIC_DIALECT_RULE, 17);
 
     case Types.LONGVARCHAR: // No default java type on HotRod yet.
       // byte[] nor String types do not work on MyBatis out of the box.
@@ -130,27 +130,29 @@ public class OracleAdapter extends DatabaseAdapter {
 
     case Types.TIMESTAMP:
       return "DATE".equalsIgnoreCase(m.getTypeName())
-          ? new PropertyType(java.util.Date.class, m, false, TypeSource.STATIC_DIALECT_RULE)
-          : new PropertyType(java.time.LocalDateTime.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+          ? new PropertyType(java.util.Date.class, m, false, TypeSource.STATIC_DIALECT_RULE, 18)
+          : new PropertyType(java.time.LocalDateTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 19);
 
     case -101: // timestamp with time zone.
       // Invalid JDBC type (-101) reported by the Oracle JDBC Driver.
-      return new PropertyType(java.time.ZonedDateTime.class, JDBCType.TIMESTAMP, false, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(java.time.ZonedDateTime.class, JDBCType.TIMESTAMP, false, TypeSource.STATIC_DIALECT_RULE,
+          20);
 
     case -102: // timestamp with local time zone.
       // Invalid JDBC type (-102) reported by the Oracle JDBC Driver.
-      return new PropertyType(java.time.ZonedDateTime.class, JDBCType.TIMESTAMP, false, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(java.time.ZonedDateTime.class, JDBCType.TIMESTAMP, false, TypeSource.STATIC_DIALECT_RULE,
+          21);
 
     // Binary types
 
     case Types.VARBINARY:
-      return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE, 22);
 
     case Types.LONGVARBINARY:
-      return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE, 23);
 
     case Types.BLOB:
-      return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE, 24);
 
     case -13: // BFILE
       // Invalid JDBC type (-13) reported by the Oracle JDBC Driver.
@@ -166,33 +168,33 @@ public class OracleAdapter extends DatabaseAdapter {
 
     case -103: // interval year to month
       // Invalid JDBC type (-103) reported by the Oracle JDBC Driver.
-      return new PropertyType(Object.class, JDBCType.OTHER, false, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(Object.class, JDBCType.OTHER, false, TypeSource.STATIC_DIALECT_RULE, 25);
 
     case -104: // interval day to second
       // Invalid JDBC type (-104) reported by the Oracle JDBC Driver.
-      return new PropertyType(Object.class, JDBCType.OTHER, false, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(Object.class, JDBCType.OTHER, false, TypeSource.STATIC_DIALECT_RULE, 26);
 
     case Types.OTHER:
 
       // String types
 
       if ("NCHAR".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+        return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 27);
       } else if ("NVARCHAR2".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+        return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 28);
       } else if ("NCLOB".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(String.class, m, true, TypeSource.STATIC_DIALECT_RULE);
+        return new PropertyType(String.class, m, true, TypeSource.STATIC_DIALECT_RULE, 29);
 
       } else if ("URITYPE".equals(m.getTypeName())) {
-        return new PropertyType(Object.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+        return new PropertyType(Object.class, m, false, TypeSource.STATIC_DIALECT_RULE, 30);
       } else if ("ROWID".equals(m.getTypeName())) {
-        return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+        return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 31);
       } else { // varray, struct, ref: fall here
-        return new PropertyType(Object.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+        return new PropertyType(Object.class, m, false, TypeSource.STATIC_DIALECT_RULE, 32);
       }
 
     default: // Unrecognized type
-      return produceType(Object.class, m, false, m.getResolvedConverter());
+      return produceType(Object.class, m, false, m.getResolvedConverter(), 33);
 
     }
 

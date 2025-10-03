@@ -47,8 +47,8 @@ import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
+import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
-import org.hotrod.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.livesql.util.CastUtil;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
@@ -544,15 +544,15 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   public static class InvoiceTable extends Table<Invoice> {
 
     public final NumericEntityColumn id = new NumericEntityColumn(this,
-      "ID", "id", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
+      "ID", "id", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE, "S9"));
     public final DateTimeEntityColumn created = new DateTimeEntityColumn(this,
-      "CREATED", "created", "TIMESTAMP", 26, 6, TypeHandler.forClass(Timestamp.class, TypeSource.STATIC_TYPESOLVER_RULE));
-    private final TypeHandler<Array, String[]> th0 = TypeHandler.forConverter(new TaxCodesArrayConverter(), TypeSource.STATIC_TYPESOLVER_RULE);
+      "CREATED", "created", "TIMESTAMP", 26, 6, TypeHandler.forClass(Timestamp.class, TypeSource.STATIC_TYPESOLVER_RULE, "S1"));
+    private final TypeHandler<Array, String[]> th0 = TypeHandler.forConverter(new TaxCodesArrayConverter(), TypeSource.STATIC_TYPESOLVER_RULE, "S3");
     public final ConvertedColumn<Array, String[]> invoiceTaxCodes = new ConvertedColumn<Array, String[]>(this, "INVOICE_TAX_CODES", "invoiceTaxCodes", "CHARACTER VARYING ARRAY", 8, 0, th0, th0.getConverter());
     public final NumericEntityColumn amount = new NumericEntityColumn(this,
-      "AMOUNT", "amount", "DECIMAL", 12, 2, TypeHandler.forClass(BigDecimal.class, TypeSource.STATIC_DIALECT_RULE));
+      "AMOUNT", "amount", "DECIMAL", 12, 2, TypeHandler.forClass(BigDecimal.class, TypeSource.STATIC_DIALECT_RULE, "S1"));
     public final CharEntityColumn paid = new CharEntityColumn(this,
-      "PAID", "paid", "CHARACTER", 1, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE));
+      "PAID", "paid", "CHARACTER", 1, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE, "S13"));
 
     @Override
     public AllColumns star() {
@@ -591,7 +591,7 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   @PostConstruct
   private void initializeContext() {
     LiveSQLDialect liveSQLDialect = LShield.getLiveSQLDialect(this.sql);
-    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, new TypeSolver(null, liveSQLDialect), log);
+    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, new RuntimeTypeSolver(null, liveSQLDialect), log);
     this.dyn = new DynamicSQL();
     this.initializeSelectbyprimarykey();
     this.initializeSelectbyexample();

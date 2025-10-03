@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
-import org.hotrod.database.PropertyType.ValueRange;
+import org.hotrod.database.ValueRange;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.identifiers.ObjectId;
@@ -58,72 +58,72 @@ public class DB2Adapter extends DatabaseAdapter {
 
     case Types.DECIMAL:
       if ((m.getScale() != null) && (m.getScale().intValue() != 0)) {
-        return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+        return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE, 1);
       } else if (m.getPrecision() <= 2) {
         return new PropertyType(Byte.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
-            TypeSource.STATIC_DIALECT_RULE);
+            TypeSource.STATIC_DIALECT_RULE, 2);
       } else if (m.getPrecision() <= 4) {
         return new PropertyType(Short.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
-            TypeSource.STATIC_DIALECT_RULE);
+            TypeSource.STATIC_DIALECT_RULE, 3);
       } else if (m.getPrecision() <= 9) {
         return new PropertyType(Integer.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
-            TypeSource.STATIC_DIALECT_RULE);
+            TypeSource.STATIC_DIALECT_RULE, 4);
       } else if (m.getPrecision() <= 18) {
         return new PropertyType(Long.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
-            TypeSource.STATIC_DIALECT_RULE);
+            TypeSource.STATIC_DIALECT_RULE, 5);
       } else {
-        return new PropertyType(BigInteger.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+        return new PropertyType(BigInteger.class, m, false, TypeSource.STATIC_DIALECT_RULE, 6);
       }
 
     case Types.SMALLINT:
-      return new PropertyType(Short.class, m, false, ValueRange.SHORT_RANGE, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(Short.class, m, false, ValueRange.SHORT_RANGE, TypeSource.STATIC_DIALECT_RULE, 7);
     case Types.INTEGER:
-      return new PropertyType(Integer.class, m, false, ValueRange.INTEGER_RANGE, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(Integer.class, m, false, ValueRange.INTEGER_RANGE, TypeSource.STATIC_DIALECT_RULE, 8);
     case Types.BIGINT:
-      return new PropertyType(Long.class, m, false, ValueRange.LONG_RANGE, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(Long.class, m, false, ValueRange.LONG_RANGE, TypeSource.STATIC_DIALECT_RULE, 9);
 
     case Types.REAL:
-      return new PropertyType(Float.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(Float.class, m, false, TypeSource.STATIC_DIALECT_RULE, 10);
     case Types.DOUBLE:
-      return new PropertyType(Double.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(Double.class, m, false, TypeSource.STATIC_DIALECT_RULE, 11);
 
     case Types.CHAR:
-      return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 12);
     case Types.VARCHAR:
-      return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 13);
     case Types.LONGVARCHAR:
-      return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 14);
 
     case Types.CLOB:
-      return new PropertyType(String.class, m, true, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(String.class, m, true, TypeSource.STATIC_DIALECT_RULE, 15);
 
     case Types.DATE:
-      return new PropertyType(java.time.LocalDate.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(java.time.LocalDate.class, m, false, TypeSource.STATIC_DIALECT_RULE, 16);
     case Types.TIME:
-      return new PropertyType(java.time.LocalTime.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(java.time.LocalTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 17);
     case Types.TIMESTAMP:
-      return new PropertyType(java.time.LocalDateTime.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType(java.time.LocalDateTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 18);
 
     case Types.LONGVARBINARY:
-      return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE, 19);
     case Types.VARBINARY:
-      return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE, 20);
     case Types.BINARY:
-      return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE, 21);
     case Types.BLOB:
-      return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE);
+      return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE, 22);
 
     case Types.OTHER:
       if ("DECFLOAT".equals(m.getTypeName())) {
-        return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+        return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE, 23);
       } else if ("XML".equals(m.getTypeName())) {
-        return new PropertyType(Object.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+        return new PropertyType(Object.class, m, false, TypeSource.STATIC_DIALECT_RULE, 24);
       } else {
-        return new PropertyType(Object.class, m, false, TypeSource.STATIC_DIALECT_RULE);
+        return new PropertyType(Object.class, m, false, TypeSource.STATIC_DIALECT_RULE, 25);
       }
 
     default: // Unrecognized type
-      return produceType(Object.class, m, false, m.getResolvedConverter());
+      return produceType(Object.class, m, false, m.getResolvedConverter(), 26);
 
     }
 

@@ -11,12 +11,12 @@ import org.hotrod.livesql.expressions.object.ObjectFunction;
 
 public class Function {
 
-  public static NumericFunction returnsNumber(final String pattern, final ComparableExpression... parameters) {
+  public static NumericFunction returnsNumeric(final String pattern, final ComparableExpression... parameters) {
     return new NumericFunction(pattern, parameters) {
     };
   }
 
-  public static CharFunction returnsString(final String pattern, final ComparableExpression... parameters) {
+  public static CharFunction returnsChar(final String pattern, final ComparableExpression... parameters) {
     return new CharFunction(pattern, parameters) {
     };
   }
@@ -31,7 +31,7 @@ public class Function {
     };
   }
 
-  public static BinaryFunction returnsByteArray(final String pattern, final ComparableExpression... parameters) {
+  public static BinaryFunction returnsBinary(final String pattern, final ComparableExpression... parameters) {
     return new BinaryFunction(pattern, parameters) {
     };
   }

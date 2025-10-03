@@ -15,24 +15,24 @@ import org.hotrod.utils.AbstractClassWriter.ExternalClass;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ClassWriter;
 
-public class Model {
+public class ModelWriter {
 
-  private static final Logger log = Logger.getLogger(Model.class.getName());
+  private static final Logger log = Logger.getLogger(ModelWriter.class.getName());
 
   private DataSetMetadata metadata;
   @SuppressWarnings("unused")
   private JDBCGenerator generator;
-  private Layout abstractVO;
+  private LayoutWriter abstractVO;
   private JDBCTag jdbcTag;
 
-  private DAO dao;
+  private DAOWriter dao;
 
   private HotRodFragmentConfigTag fragmentConfig;
   private ClassPackage fragmentPackage;
 
   private ClassPackage classPackage;
 
-  public Model(final DataSetMetadata metadata, final JDBCGenerator generator, final Layout abstractVO,
+  public ModelWriter(final DataSetMetadata metadata, final JDBCGenerator generator, final LayoutWriter abstractVO,
       final JDBCTag jdbcTag) {
     super();
     log.fine("init");
@@ -50,7 +50,7 @@ public class Model {
     this.classPackage = this.jdbcTag.getModelPackage(this.fragmentPackage);
   }
 
-  public void setDAO(DAO dao) {
+  public void setDAO(DAOWriter dao) {
     this.dao = dao;
   }
 

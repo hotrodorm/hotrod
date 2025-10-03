@@ -14,9 +14,9 @@ import org.hotrod.utils.AbstractClassWriter.ExternalClass;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ClassWriter;
 
-public class SelectModel {
+public class SelectModelWriter {
 
-  private static final Logger log = Logger.getLogger(SelectModel.class.getName());
+  private static final Logger log = Logger.getLogger(SelectModelWriter.class.getName());
 
   private JDBCTag jdbcTag;
 
@@ -26,9 +26,9 @@ public class SelectModel {
   private ClassPackage classPackage;
   private File dir;
 
-  private SelectLayout abstractVO;
+  private SelectLayoutWriter abstractVO;
 
-  public SelectModel(final SelectVOClass soloVO, final SelectLayout abstractVO, final JDBCTag jdbcTag) {
+  public SelectModelWriter(final SelectVOClass soloVO, final SelectLayoutWriter abstractVO, final JDBCTag jdbcTag) {
     log.fine("init");
     this.jdbcTag = jdbcTag;
     this.soloVO = soloVO;
@@ -40,7 +40,7 @@ public class SelectModel {
     this.abstractVO = abstractVO;
   }
 
-  public SelectModel(final VOMetadata vo, final SelectLayout abstractVO, final JDBCTag jdbcTag) {
+  public SelectModelWriter(final VOMetadata vo, final SelectLayoutWriter abstractVO, final JDBCTag jdbcTag) {
     this.jdbcTag = jdbcTag;
     this.className = vo.getName();
     this.classPackage = vo.getClassPackage();

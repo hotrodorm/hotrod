@@ -38,13 +38,18 @@ public abstract class SelectObject<T> {
 
   // Rendering
 
-  public abstract void compileAndReturnColumns();
+  public final void compileColumns() {
+    this.prepareColumnCompilation();
+    this.computeColumnsCompilation();
+  }
+
+  protected abstract void prepareColumnCompilation();
+
+  protected abstract void computeColumnsCompilation();
 
   public abstract List<Expression> getCompiledColumns();
 
   public abstract boolean excludeTuplesFromUniqueNames();
-
-//  public abstract Expression findColumnWithName(final String name);
 
   public abstract void renderTo(QueryWriter w, boolean inline);
 
@@ -90,7 +95,7 @@ public abstract class SelectObject<T> {
 //    ToString t = new ToString();
 //    this.log(t);
 
-    this.compileAndReturnColumns();
+    this.compileColumns();
     List<Expression> columns = this.getCompiledColumns();
     renderTo(w, false);
 
@@ -110,7 +115,7 @@ public abstract class SelectObject<T> {
 
   protected List<T> executeLiveSQL(final LiveSQLContext context, final LiveSQLPreparedQuery q,
       final RowReader<T> rowReader) {
-    logExecution(context, q);
+//    logExecution(context, q);
 
     List<T> rows = new ArrayList<>();
     try (Connection conn = context.getDataSource().getConnection()) {
@@ -149,7 +154,7 @@ public abstract class SelectObject<T> {
 
   protected T executeLiveSQLOne(final LiveSQLContext context, final LiveSQLPreparedQuery q,
       final RowReader<T> rowReader) {
-    logExecution(context, q);
+//    logExecution(context, q);
 
     try (Connection conn = context.getDataSource().getConnection()) {
 
@@ -201,12 +206,12 @@ public abstract class SelectObject<T> {
 
   protected abstract void log(ToString t);
 
-  void logExecution(final LiveSQLContext context, final LiveSQLPreparedQuery q) {
-    if (context.getLogger().isLoggable(Level.FINER)) {
-      context.getLogger().finest("SQL: " + q.getPreview(true));
-    } else if (context.getLogger().isLoggable(Level.FINE)) {
-      context.getLogger().fine("SQL: " + q.getPreview(false));
-    }
-  }
+//  void logExecution(final LiveSQLContext context, final LiveSQLPreparedQuery q) {
+//    if (context.getLogger().isLoggable(Level.FINER)) {
+//      context.getLogger().finest("SQL: " + q.getPreview(true));
+//    } else if (context.getLogger().isLoggable(Level.FINE)) {
+//      context.getLogger().fine("SQL: " + q.getPreview(false));
+//    }
+//  }
 
 }

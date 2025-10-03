@@ -9,16 +9,15 @@ import org.hotrod.config.ColumnTag;
 import org.hotrod.config.ConverterTag;
 import org.hotrod.config.NameSolverNameTag.Scope;
 import org.hotrod.config.NameSolverTag;
-import org.hotrod.config.TypeSolverTag;
+import org.hotrod.config.StaticTypeSolverTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
-import org.hotrod.database.PropertyType.ValueRange;
+import org.hotrod.database.ValueRange;
 import org.hotrod.exceptions.CouldNotResolveNameException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.identifiers.Id;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
-import org.hotrod.livesql.util.OUtil;
 import org.hotrod.typesolver.DriverColumnMetaData;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.JDBCTypes;
@@ -61,7 +60,7 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
   private DatabaseAdapter adapter;
   private ColumnTag tag;
   private PropertyType type;
-  private TypeSolverTag typeSolverTag;
+  private StaticTypeSolverTag typeSolverTag;
 
   private boolean isOLVersionNumberColumn;
   private boolean isOLTimestampColumn;
@@ -80,7 +79,7 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
 
   public ColumnMetadata(final DataSetMetadata dataSet, final JdbcColumn c, final DatabaseAdapter adapter,
       final ColumnTag columnTag, final boolean isOLVersionNumberColumn, final boolean isOLTimestampColumn,
-      final boolean belongsToPK, final TypeSolverTag typeSolverTag, final NameSolverTag nameSolverTag)
+      final boolean belongsToPK, final StaticTypeSolverTag typeSolverTag, final NameSolverTag nameSolverTag)
       throws UnresolvableDataTypeException, InvalidIdentifierException {
     log.fine("init c=" + c);
     this.dataSet = dataSet;
@@ -171,7 +170,7 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
 
   public ColumnMetadata(final ExecutorDAOMetadata dataSet, final JdbcColumn c, final String selectName,
       final DatabaseAdapter adapter, final ColumnTag columnTag, final boolean isOLVersionNumberColumn,
-      final boolean isOLTimestampColumn, final boolean belongsToPK, final TypeSolverTag typeSolverTag)
+      final boolean isOLTimestampColumn, final boolean belongsToPK, final StaticTypeSolverTag typeSolverTag)
       throws UnresolvableDataTypeException, InvalidIdentifierException {
     this.dataSet = dataSet;
     this.c = c;
@@ -211,7 +210,7 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
   public ColumnMetadata(final SelectMethodMetadata dataSet, ResultSetMetaData rm, final int colIndex,
       final String selectName, final DatabaseAdapter adapter, final ColumnTag columnTag,
       final boolean isOLVersionNumberColumn, final boolean isOLTimestampColumn, final boolean belongsToPK,
-      final TypeSolverTag typeSolverTag)
+      final StaticTypeSolverTag typeSolverTag)
       throws UnresolvableDataTypeException, InvalidIdentifierException, SQLException {
     this.dataSet = dataSet;
     this.c = null;
@@ -250,10 +249,10 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
   }
 
   private PropertyType resolveJavaType(final ColumnMetadata cm, final ColumnTag columnTag, final JdbcColumn c,
-      final JDBCType resultSetType, final TypeSolverTag typeSolverTag, final DatabaseAdapter adapter)
+      final JDBCType resultSetType, final StaticTypeSolverTag typeSolverTag, final DatabaseAdapter adapter)
       throws UnresolvableDataTypeException {
 
-    PropertyType typeSolverType = typeSolverTag.resolveType(cm, c, resultSetType);
+    PropertyType typeSolverType = typeSolverTag.resolveStaticType(cm, c, resultSetType);
 
     if (columnTag != null && (columnTag.getJavaType() != null || columnTag.getConverterTag() != null)) {
 
@@ -283,7 +282,7 @@ public class ColumnMetadata implements DriverColumnMetaData, Serializable {
           : columnTag.getConverterTag().getDomainClass();
 
       return new PropertyType(javaType, jdbcType, columnTag.isLOB(), range, TypeSource.STATIC_DESIGNATED,
-          cm.getColumnTagConverter());
+          cm.getColumnTagConverter(), null);
 
     } else {
 

@@ -192,13 +192,6 @@ public class TuplesRowReader<T> implements RowReader<T> {
 
   }
 
-//  private String findAliasNotIn(Set<String> usedNS, NSSequence seq) {
-//    String alias;
-//    while (usedNS.contains((alias = seq.next()))) {
-//    }
-//    return alias;
-//  }
-
   @SuppressWarnings("unchecked")
   @Override
   public T readRowFrom(ResultSet rs, Connection conn) throws SQLException {

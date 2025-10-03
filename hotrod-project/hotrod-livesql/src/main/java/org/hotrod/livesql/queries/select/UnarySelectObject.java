@@ -35,7 +35,6 @@ import org.springframework.util.ReflectionUtils;
 
 public class UnarySelectObject<T> extends BaseSelectObject<T> {
 
-  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(UnarySelectObject.class.getName());
 
   private boolean doNotAliasColumns;
@@ -96,8 +95,7 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
   }
 
   @Override
-  public void compileAndReturnColumns() {
-
+  protected void prepareColumnCompilation() {
     if (this.ctes != null) {
       for (CTE cte : this.ctes) {
         SShield.renderColumns(cte);
@@ -130,26 +128,7 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
     // a.id.as("bid") -- Column te.bid
     // x.num("amount").as("total") -- SubqueryXXXColumn te.total
 
-    super.expandQueryColumns();
-
-//    for (Expression col : this.expandedQueryColumns) {
-//      log.info("   --  expanded col: " + col);
-//    }
-
-    this.columnsAssembled = true;
-
   }
-
-//  @Override
-//  public Expression findColumnWithName(final String name) {
-//    for (Expression c : this.queryColumns) {
-//      if (name.equals(Helper.getReferenceName(c))) {
-//        // Only Entity columns, AliasedExpressions and SubqueryTTTColumns return names.
-//        return c;
-//      }
-//    }
-//    return null;
-//  }
 
   protected void writeColumns(final QueryWriter w, final TableExpression baseTableExpression, final List<Join> joins) {
 //    log.info("=== 4. WRITE COLUMNS ===");
@@ -193,13 +172,13 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
 
   // Setters
 
-  private void setCTEs(final List<CTE> ctes) {
-    if (ctes != null) {
-      for (CTE c : ctes) {
-        this.ctes.add(c);
-      }
-    }
-  }
+//  private void setCTEs(final List<CTE> ctes) {
+//    if (ctes != null) {
+//      for (CTE c : ctes) {
+//        this.ctes.add(c);
+//      }
+//    }
+//  }
 
   // Execute
 

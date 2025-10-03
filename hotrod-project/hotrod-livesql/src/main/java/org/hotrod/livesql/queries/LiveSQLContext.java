@@ -1,20 +1,21 @@
 package org.hotrod.livesql.queries;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
 import org.hotrod.livesql.dialects.LiveSQLDialect;
-import org.hotrod.livesql.queries.typesolver.TypeSolver;
+import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 
 public class LiveSQLContext {
 
   private LiveSQLDialect liveSQLDialect;
   private DataSource dataSource;
-  private TypeSolver typeSolver;
+  private RuntimeTypeSolver typeSolver;
   private Logger logger;
 
-  public LiveSQLContext(final LiveSQLDialect liveSQLDialect, final DataSource dataSource, final TypeSolver typeSolver,
+  public LiveSQLContext(final LiveSQLDialect liveSQLDialect, final DataSource dataSource, final RuntimeTypeSolver typeSolver,
       final Logger logger) {
     this.liveSQLDialect = liveSQLDialect;
     this.dataSource = dataSource;
@@ -30,12 +31,16 @@ public class LiveSQLContext {
     return dataSource;
   }
 
-  public TypeSolver getTypeSolver() {
+  public RuntimeTypeSolver getTypeSolver() {
     return typeSolver;
   }
 
-  public Logger getLogger() {
-    return logger;
+  public void logExecution(final LiveSQLPreparedQuery q) {
+    if (this.logger.isLoggable(Level.FINER)) {
+      this.logger.finest("SQL: " + q.getPreview(true));
+    } else if (this.logger.isLoggable(Level.FINE)) {
+      this.logger.fine("SQL: " + q.getPreview(false));
+    }
   }
 
 }

@@ -50,7 +50,7 @@ public class H2Dialect extends LiveSQLDialect {
   }
 
   @Override
-  public Class<?> resolveColumnType(final ResultSetColumnMetadata m) {
+  public RuntimeType resolveRuntimeType(final ResultSetColumnMetadata m) {
 
     switch (m.getColumnType()) {
 
@@ -59,97 +59,98 @@ public class H2Dialect extends LiveSQLDialect {
     case java.sql.Types.DECIMAL:
     case java.sql.Types.NUMERIC:
       if (m.getScale() != 0) {
-        return BigDecimal.class;
+        return RuntimeType.of(BigDecimal.class, 1);
       } else {
         if (m.getPrecision() <= 2) {
-          return Byte.class;
+          return RuntimeType.of(Byte.class, 2);
         } else if (m.getPrecision() <= 4) {
-          return Short.class;
+          return RuntimeType.of(Short.class, 3);
         } else if (m.getPrecision() <= 9) {
-          return Integer.class;
+          return RuntimeType.of(Integer.class, 4);
         } else if (m.getPrecision() <= 18) {
-          return Long.class;
+          return RuntimeType.of(Long.class, 5);
         } else {
-          return BigInteger.class;
+          return RuntimeType.of(BigInteger.class, 6);
         }
       }
 
     case java.sql.Types.TINYINT:
-      return Byte.class;
+      return RuntimeType.of(Byte.class, 7);
 
     case java.sql.Types.SMALLINT:
-      return Short.class;
+      return RuntimeType.of(Short.class, 8);
 
     case java.sql.Types.INTEGER:
-      return Integer.class;
+      return RuntimeType.of(Integer.class, 9);
 
     case java.sql.Types.BIGINT:
-      return Long.class;
+      return RuntimeType.of(Long.class, 10);
 
     case java.sql.Types.DOUBLE:
-      return Double.class;
+      return RuntimeType.of(Double.class, 11);
 
     case java.sql.Types.REAL:
-      return Float.class;
+      return RuntimeType.of(Float.class, 12);
 
     // Character types
 
     case java.sql.Types.CHAR:
-      return String.class;
+      return RuntimeType.of(String.class, 13);
 
     case java.sql.Types.VARCHAR:
-      return String.class;
+      return RuntimeType.of(String.class, 14);
 
     case java.sql.Types.CLOB:
-      return String.class;
+      return RuntimeType.of(String.class, 15);
 
     // Date/Time types
 
     case java.sql.Types.DATE:
-      return java.sql.Date.class;
+      return RuntimeType.of(java.sql.Date.class, 16);
     case java.sql.Types.TIME: // differs from original: java.sql.Time
-      return LocalTime.class;
+      return RuntimeType.of(LocalTime.class, 17);
     case java.sql.Types.TIME_WITH_TIMEZONE: // new
-      return OffsetTime.class;
+      return RuntimeType.of(OffsetTime.class, 18);
     case java.sql.Types.TIMESTAMP: // differs from original: java.sql.Timestamp
-      return LocalDateTime.class;
+      return RuntimeType.of(LocalDateTime.class, 19);
     case java.sql.Types.TIMESTAMP_WITH_TIMEZONE: // new
-      return ZonedDateTime.class;
+      return RuntimeType.of(ZonedDateTime.class, 20);
 
     // Binary
 
     case java.sql.Types.VARBINARY:
-      return byte[].class;
+      return RuntimeType.of(byte[].class, 21);
     case java.sql.Types.BLOB:
-      return byte[].class;
+      return RuntimeType.of(byte[].class, 22);
 
     // Boolean
 
     case java.sql.Types.BOOLEAN:
-      return Boolean.class;
+      return RuntimeType.of(Boolean.class, 23);
 
     // Other
 
-    case java.sql.Types.BINARY: // UUID
-      return byte[].class;
+//    case java.sql.Types.BINARY: // UUID
+//      return byte[].class;
 
     case java.sql.Types.ARRAY: // ARRAY
-      return Object[].class;
+      return RuntimeType.of(Object[].class, 24);
 
     case java.sql.Types.OTHER:
       if ("timestamp with timezone".equalsIgnoreCase(m.getColumnTypeName())) {
-        return java.sql.Timestamp.class;
+        return RuntimeType.of(java.sql.Timestamp.class, 25);
 
         // If the JDBC driver was 1.4.x (unstable as of Dec 2016) we could use:
         // return new PropertyType("org.h2.api.TimestampWithTimeZone", m,
         // false);
 
       } else {
-        return byte[].class;
+//        return byte[].class;
+        return null;
       }
 
     default: // Unrecognized type
-      return Object.class;
+      return null;
 
     }
 

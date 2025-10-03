@@ -30,7 +30,7 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
   private GeneratorsTag generatorsTag = null;
   private NameSolverTag nameSolverTag = new NameSolverTag();
-  private TypeSolverTag typeSolverTag = new TypeSolverTag(); // default that register columns
+  private StaticTypeSolverTag typeSolverTag = new StaticTypeSolverTag(); // default that register columns
 
   private List<ConverterTag> converters = new ArrayList<ConverterTag>();
   private Map<String, ConverterTag> convertersByName = null;
@@ -55,7 +55,7 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
   }
 
   @XmlElement(name = "type-solver")
-  public void setTypeSolver(final TypeSolverTag typeSolverTag) {
+  public void setTypeSolver(final StaticTypeSolverTag typeSolverTag) {
     this.typeSolverTag = typeSolverTag;
   }
 
@@ -74,7 +74,7 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
     return nameSolverTag;
   }
 
-  public TypeSolverTag getTypeSolverTag() {
+  public StaticTypeSolverTag getTypeSolverTag() {
     return typeSolverTag;
   }
 
