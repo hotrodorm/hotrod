@@ -75,27 +75,17 @@ public abstract class BaseSelectObject<T> extends SelectObject<T> {
 
   @Override
   protected final void computeColumnsCompilation() {
-    log.info("POST-COMPILE");
-
-    log.info("Call Stack: " + TUtil.callStack());
-    int count = 1;
-    for (SQLExpression se : this.sqlExpressions) {
-      log.info("  " + count++ + ". se=" + (se == null ? "null" : se.getClass().getName()));
-    }
-
     this.compiledColumns = new ArrayList<>();
     for (SQLExpression se : this.sqlExpressions) {
-//      log.info("=== 2.1 rsc=" + rsc);
 
       try {
         // Single column
         Expression single = (Expression) se;
-        log.info("=== 2.2 single" + (single == null ? "" : " [" + single.getClass().getName() + "] ") + "=" + single);
+//        log.info("=== 2.2 single" + (single == null ? "" : " [" + single.getClass().getName() + "] ") + "=" + single);
         Expression emerging = Shield.getEmergingExpression(single); // emerging is always null for wrapping columns
-//        TypeHandler<?, ?> th1 = Shield.getTypeHandler(single);
-        log.info("=== 2.2 emerging=" + emerging);
+//        log.info("=== 2.2 emerging=" + emerging);
         if (emerging != null) {
-          log.info("=== * th=" + Shield.getTypeHandler(emerging));
+//          log.info("=== * th=" + Shield.getTypeHandler(emerging));
           Shield.setTypeHandler(single, Shield.getTypeHandler(emerging));
         }
         this.compiledColumns.add(single);

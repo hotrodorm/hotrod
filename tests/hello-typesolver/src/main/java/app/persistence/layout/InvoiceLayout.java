@@ -14,11 +14,11 @@ public class InvoiceLayout implements Serializable {
 
   // Layout Properties (table columns)
 
-  protected Integer id = null; // Type Name: INTEGER - Type Resolved By: STATIC_DIALECT_RULE
-  protected Timestamp created = null; // Type Name: TIMESTAMP - Type Resolved By: STATIC_TYPESOLVER_RULE
-  protected String[] invoiceTaxCodes = null; // Type Name: CHARACTER VARYING ARRAY - Type Resolved By: STATIC_TYPESOLVER_RULE
-  protected BigDecimal amount = null; // Type Name: DECIMAL - Type Resolved By: STATIC_DIALECT_RULE
-  protected String paid = null; // Type Name: CHARACTER - Type Resolved By: STATIC_DIALECT_RULE
+  protected Integer id = null; // Type Source: STATIC_DIALECT_RULE, rule #D9
+  protected Timestamp created = null; // Type Source: STATIC_TYPESOLVER_RULE, rule #T1
+  protected String[] invoiceTaxCodes = null; // Type Source: STATIC_TYPESOLVER_RULE, rule #T3
+  protected BigDecimal amount = null; // Type Source: STATIC_DIALECT_RULE, rule #D1
+  protected String paid = null; // Type Source: STATIC_DIALECT_RULE, rule #D13
 
   // getters & setters
 

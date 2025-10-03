@@ -483,11 +483,11 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   public static class AccountTable extends Table<Account> {
 
     public final NumericEntityColumn id = new NumericEntityColumn(this,
-      "ID", "id", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE, "S9"));
+      "ID", "id", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE, "D9"));
     public final NumericEntityColumn balance = new NumericEntityColumn(this,
       "BALANCE", "balance", "DECIMAL", 12, 2, TypeHandler.forClass(Double.class, TypeSource.STATIC_DESIGNATED, null));
     public final NumericEntityColumn segment = new NumericEntityColumn(this,
-      "SEGMENT", "segment", "TINYINT", 8, 0, TypeHandler.forClass(Double.class, TypeSource.STATIC_TYPESOLVER_RULE, "S2"));
+      "SEGMENT", "segment", "TINYINT", 8, 0, TypeHandler.forClass(Double.class, TypeSource.STATIC_TYPESOLVER_RULE, "T2"));
 
     @Override
     public AllColumns star() {

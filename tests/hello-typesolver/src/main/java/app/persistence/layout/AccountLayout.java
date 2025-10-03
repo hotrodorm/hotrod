@@ -12,9 +12,9 @@ public class AccountLayout implements Serializable {
 
   // Layout Properties (table columns)
 
-  protected Integer id = null; // Type Name: INTEGER - Type Resolved By: STATIC_DIALECT_RULE
-  protected Double balance = null; // Type Name: DECIMAL - Type Resolved By: STATIC_DESIGNATED
-  protected Double segment = null; // Type Name: TINYINT - Type Resolved By: STATIC_TYPESOLVER_RULE
+  protected Integer id = null; // Type Source: STATIC_DIALECT_RULE, rule #D9
+  protected Double balance = null; // Type Source: STATIC_DESIGNATED
+  protected Double segment = null; // Type Source: STATIC_TYPESOLVER_RULE, rule #T2
 
   // getters & setters
 

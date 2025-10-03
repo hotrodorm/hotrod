@@ -59,74 +59,74 @@ public class H2Dialect extends LiveSQLDialect {
     case java.sql.Types.DECIMAL:
     case java.sql.Types.NUMERIC:
       if (m.getScale() != 0) {
-        return RuntimeType.of(BigDecimal.class, 1);
+        return RuntimeType.ofDialect(BigDecimal.class, 1);
       } else {
         if (m.getPrecision() <= 2) {
-          return RuntimeType.of(Byte.class, 2);
+          return RuntimeType.ofDialect(Byte.class, 2);
         } else if (m.getPrecision() <= 4) {
-          return RuntimeType.of(Short.class, 3);
+          return RuntimeType.ofDialect(Short.class, 3);
         } else if (m.getPrecision() <= 9) {
-          return RuntimeType.of(Integer.class, 4);
+          return RuntimeType.ofDialect(Integer.class, 4);
         } else if (m.getPrecision() <= 18) {
-          return RuntimeType.of(Long.class, 5);
+          return RuntimeType.ofDialect(Long.class, 5);
         } else {
-          return RuntimeType.of(BigInteger.class, 6);
+          return RuntimeType.ofDialect(BigInteger.class, 6);
         }
       }
 
     case java.sql.Types.TINYINT:
-      return RuntimeType.of(Byte.class, 7);
+      return RuntimeType.ofDialect(Byte.class, 7);
 
     case java.sql.Types.SMALLINT:
-      return RuntimeType.of(Short.class, 8);
+      return RuntimeType.ofDialect(Short.class, 8);
 
     case java.sql.Types.INTEGER:
-      return RuntimeType.of(Integer.class, 9);
+      return RuntimeType.ofDialect(Integer.class, 9);
 
     case java.sql.Types.BIGINT:
-      return RuntimeType.of(Long.class, 10);
+      return RuntimeType.ofDialect(Long.class, 10);
 
     case java.sql.Types.DOUBLE:
-      return RuntimeType.of(Double.class, 11);
+      return RuntimeType.ofDialect(Double.class, 11);
 
     case java.sql.Types.REAL:
-      return RuntimeType.of(Float.class, 12);
+      return RuntimeType.ofDialect(Float.class, 12);
 
     // Character types
 
     case java.sql.Types.CHAR:
-      return RuntimeType.of(String.class, 13);
+      return RuntimeType.ofDialect(String.class, 13);
 
     case java.sql.Types.VARCHAR:
-      return RuntimeType.of(String.class, 14);
+      return RuntimeType.ofDialect(String.class, 14);
 
     case java.sql.Types.CLOB:
-      return RuntimeType.of(String.class, 15);
+      return RuntimeType.ofDialect(String.class, 15);
 
     // Date/Time types
 
     case java.sql.Types.DATE:
-      return RuntimeType.of(java.sql.Date.class, 16);
+      return RuntimeType.ofDialect(java.sql.Date.class, 16);
     case java.sql.Types.TIME: // differs from original: java.sql.Time
-      return RuntimeType.of(LocalTime.class, 17);
+      return RuntimeType.ofDialect(LocalTime.class, 17);
     case java.sql.Types.TIME_WITH_TIMEZONE: // new
-      return RuntimeType.of(OffsetTime.class, 18);
+      return RuntimeType.ofDialect(OffsetTime.class, 18);
     case java.sql.Types.TIMESTAMP: // differs from original: java.sql.Timestamp
-      return RuntimeType.of(LocalDateTime.class, 19);
+      return RuntimeType.ofDialect(LocalDateTime.class, 19);
     case java.sql.Types.TIMESTAMP_WITH_TIMEZONE: // new
-      return RuntimeType.of(ZonedDateTime.class, 20);
+      return RuntimeType.ofDialect(ZonedDateTime.class, 20);
 
     // Binary
 
     case java.sql.Types.VARBINARY:
-      return RuntimeType.of(byte[].class, 21);
+      return RuntimeType.ofDialect(byte[].class, 21);
     case java.sql.Types.BLOB:
-      return RuntimeType.of(byte[].class, 22);
+      return RuntimeType.ofDialect(byte[].class, 22);
 
     // Boolean
 
     case java.sql.Types.BOOLEAN:
-      return RuntimeType.of(Boolean.class, 23);
+      return RuntimeType.ofDialect(Boolean.class, 23);
 
     // Other
 
@@ -134,11 +134,11 @@ public class H2Dialect extends LiveSQLDialect {
 //      return byte[].class;
 
     case java.sql.Types.ARRAY: // ARRAY
-      return RuntimeType.of(Object[].class, 24);
+      return RuntimeType.ofDialect(Object[].class, 24);
 
     case java.sql.Types.OTHER:
       if ("timestamp with timezone".equalsIgnoreCase(m.getColumnTypeName())) {
-        return RuntimeType.of(java.sql.Timestamp.class, 25);
+        return RuntimeType.ofDialect(java.sql.Timestamp.class, 25);
 
         // If the JDBC driver was 1.4.x (unstable as of Dec 2016) we could use:
         // return new PropertyType("org.h2.api.TimestampWithTimeZone", m,

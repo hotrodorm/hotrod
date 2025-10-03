@@ -50,8 +50,8 @@ public class App {
   @Bean
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
-//      demoTypeSolverCRUD();
-//      demoTypeSolverNitroSelect();
+      demoTypeSolverCRUD();
+      demoTypeSolverNitroSelect();
       demoTypeSolverLiveSQL();
     };
   }

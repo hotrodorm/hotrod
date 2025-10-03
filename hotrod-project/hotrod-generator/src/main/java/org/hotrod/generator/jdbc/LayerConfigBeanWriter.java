@@ -31,6 +31,7 @@ public class LayerConfigBeanWriter {
   private static final Logger log = Logger.getLogger(LayerConfigBeanWriter.class.getName());
 
   private static final String LAYER_CONFIG_CLASS_PREFIX = "LayerConfigurationBean";
+  private static final String RUNTIME_TYPESOLVER_NAMESPACE = "r";
 
   private JDBCTag jdbcTag;
   private StaticTypeSolverTag typeSolver;
@@ -109,7 +110,7 @@ public class LayerConfigBeanWriter {
       if (!SUtil.isEmpty(when.getTestResultSet())) {
         w.print("    rules.add(", TypeRule.class, ".of(\"" + SUtil.escapeJavaString(when.getTestResultSet()) + "\", ",
             TypeHandler.class);
-        String ruleNumber = "R" + n;
+        String ruleNumber = RUNTIME_TYPESOLVER_NAMESPACE + n;
         w.println(".forClass(", ExternalClass.of(when.getJavaType()), ".class, ", TypeSource.class,
             "." + TypeSource.RUNTIME_TYPESOLVER_RULE.name() + ", \"" + ruleNumber + "\")));");
       }

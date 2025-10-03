@@ -125,8 +125,9 @@ public class LayoutWriter {
   private void writeColumnProperties(final List<ColumnMetadata> columns) throws IOException {
     for (ColumnMetadata cm : columns) {
       String javaType = resolveType(cm);
+      String rn = cm.getType().getRuleNumber();
       w.println("  protected ", ExternalClass.of(javaType), " " + cm.getId().getJavaMemberName()
-          + " = null; // Type Name: " + cm.getTypeName() + " - Type Resolved By: " + cm.getType().getTypeSource());
+          + " = null; // Type Source: " + cm.getType().getTypeSource() + (rn == null ? "" : ", rule #" + rn));
     }
     w.println();
   }

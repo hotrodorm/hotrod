@@ -13,11 +13,15 @@ public class PropertyType {
 
   private static final Logger log = Logger.getLogger(PropertyType.class.getName());
 
+  private static final String DIALECT = "D";
+  private static final String TYPESOLVER = "T";
+
   private String javaClassName;
   private ConverterTag converterTag;
   private JDBCType jdbcType;
   private boolean isLOB;
   private TypeSource typeSource;
+  private String namespace;
   private Integer ruleNumber;
   private ValueRange valueRange;
 
@@ -27,12 +31,13 @@ public class PropertyType {
   public PropertyType(final Class<?> javaClass, final ColumnMetadata m, final boolean isLOB,
       final ValueRange valueRange, final TypeSource typeSource, final Integer ruleNumber)
       throws UnresolvableDataTypeException {
+    log.fine("init");
     JDBCType t = JDBCTypes.codeToType(m.getDataType());
     // log.info("a) code=" + m.getDataType() + " type=" + t);
     if (t == null) {
       throw new UnresolvableDataTypeException(m);
     }
-    initialize(javaClass.getName(), t, isLOB, valueRange, typeSource, null, ruleNumber);
+    initialize(javaClass.getName(), t, isLOB, valueRange, typeSource, null, ruleNumber, DIALECT);
   }
 
   /* Internal type for a non-serial column */
@@ -43,7 +48,7 @@ public class PropertyType {
     if (t == null) {
       throw new UnresolvableDataTypeException(m);
     }
-    initialize(javaClass.getName(), t, isLOB, null, typeSource, null, ruleNumber);
+    initialize(javaClass.getName(), t, isLOB, null, typeSource, null, ruleNumber, DIALECT);
   }
 
   /*
@@ -52,7 +57,7 @@ public class PropertyType {
    */
   public PropertyType(final Class<?> javaClass, final JDBCType jdbcType, final boolean isLOB,
       final TypeSource typeSource, final Integer ruleNumber) {
-    initialize(javaClass.getName(), jdbcType, isLOB, null, typeSource, null, ruleNumber);
+    initialize(javaClass.getName(), jdbcType, isLOB, null, typeSource, null, ruleNumber, DIALECT);
   }
 
   // For custom data types and select parameters
@@ -65,26 +70,33 @@ public class PropertyType {
     if (t == null) {
       throw new UnresolvableDataTypeException(m);
     }
-    initialize(javaClassName, t, isLOB, null, typeSource, null, ruleNumber);
+    initialize(javaClassName, t, isLOB, null, typeSource, null, ruleNumber, DIALECT);
   }
 
   /* Custom type for a non-serial column with specified JDBC type */
   public PropertyType(final String javaClassName, final JDBCType jdbcType, final boolean isLOB,
       final TypeSource typeSource, final ConverterTag converterTag, final Integer ruleNumber) {
-    initialize(javaClassName, jdbcType, isLOB, null, typeSource, converterTag, ruleNumber);
+    initialize(javaClassName, jdbcType, isLOB, null, typeSource, converterTag, ruleNumber, DIALECT);
+  }
+
+  public PropertyType(final String javaClassName, final JDBCType jdbcType, final boolean isLOB,
+      final TypeSource typeSource, final ConverterTag converterTag, final Integer ruleNumber, boolean fromTypeSolver) {
+    initialize(javaClassName, jdbcType, isLOB, null, typeSource, converterTag, ruleNumber,
+        fromTypeSolver ? TYPESOLVER : DIALECT);
   }
 
   /* Custom type for a serial column */
   public PropertyType(final String javaClassName, final JDBCType jdbcType, final boolean isLOB,
       final ValueRange valueRange, final TypeSource typeSource, final ConverterTag converterTag,
       final Integer ruleNumber) {
-    initialize(javaClassName, jdbcType, isLOB, valueRange, typeSource, converterTag, ruleNumber);
+    initialize(javaClassName, jdbcType, isLOB, valueRange, typeSource, converterTag, ruleNumber, null);
   }
 
   // Initialize
 
   private void initialize(final String javaClassName, final JDBCType jdbcType, final boolean isLOB,
-      final ValueRange valueRange, TypeSource typeSource, final ConverterTag converterTag, final Integer ruleNumber) {
+      final ValueRange valueRange, TypeSource typeSource, final ConverterTag converterTag, final Integer ruleNumber,
+      String namespace) {
     this.javaClassName = converterTag == null ? javaClassName : converterTag.getDomainClass();
     this.converterTag = converterTag;
     this.jdbcType = jdbcType;
@@ -92,6 +104,7 @@ public class PropertyType {
     this.typeSource = typeSource;
     this.ruleNumber = ruleNumber;
     this.valueRange = valueRange;
+    this.namespace = namespace;
   }
 
   // ToString
@@ -194,7 +207,7 @@ public class PropertyType {
   }
 
   public final String getRuleNumber() {
-    return this.ruleNumber == null ? null : "S" + ruleNumber;
+    return this.ruleNumber == null ? null : this.namespace + ruleNumber;
   }
 
 }

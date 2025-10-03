@@ -85,21 +85,12 @@ public class StaticTypeSolverTag extends AbstractConfigurationTag {
           }
           Boolean test = (Boolean) result;
           if (test) {
-//          if ("price".equals(cm.getName()) && "product".equals(cm.getName())) {
-//            log.debug("w.getJDBCTypeOnWrite()=" + w.getJDBCTypeOnWrite());
-//            log.debug("resultSetType=" + resultSetType);
-//            log.debug("this.context=" + this.context);
-//            log.debug("cm=" + cm);
-//            log.debug("c=" + c);
-//          }
             JDBCType jdbcTypeOnWrite = w.getJDBCTypeOnWrite();
             if (jdbcTypeOnWrite == null) {
               jdbcTypeOnWrite = (c != null ? JDBCTypes.codeToType(c.getDataType()) : resultSetType);
             }
-            log.info("Type resolved: '" + cm.getName() + "' using test #" + ruleNumber + " '" + w.getTest() + "'");
-            log.fine("## 5 RULE MATCHES: w.getJavaType()=" + w.getJavaType() + " jdbcTypeOnWrite=" + jdbcTypeOnWrite);
             return new PropertyType(w.getJavaType(), jdbcTypeOnWrite, false, TypeSource.STATIC_TYPESOLVER_RULE,
-                w.getConverterTag(), ruleNumber);
+                w.getConverterTag(), ruleNumber, true);
           }
         } catch (ClassCastException e) {
           throw new UnresolvableDataTypeException(cm, "Could not evaluate <when> tag's test expression '" + w.getTest()

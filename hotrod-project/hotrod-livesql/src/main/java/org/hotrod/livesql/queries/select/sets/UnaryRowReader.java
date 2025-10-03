@@ -37,7 +37,7 @@ public class UnaryRowReader<T> implements RowReader<T> {
         ResultSetColumnMetadata cm = ResultSetColumnMetadata.of(rm, ordinal);
         try {
           TypeHandler<?, ?> th = context.getTypeSolver().resolveRuntimeType(cm);
-          log.info("#" + ordinal + " th.getJavaClass()=" + th.getJavaClass());
+//          log.info("#" + ordinal + " th.getJavaClass()=" + th.getJavaClass());
           Shield.setTypeHandler(expr, th);
         } catch (CouldNotResolveResultSetDataTypeException e) {
           throw new LiveSQLException(
@@ -63,27 +63,6 @@ public class UnaryRowReader<T> implements RowReader<T> {
     }
     return (T) r;
   }
-
-//  private Object decode(final Object raw, final TypeConverter<?, ?> converter, final Connection conn) {
-//
-//    Method m;
-//    try {
-//      m = TypeConverter.class.getMethod("decode", Object.class, Connection.class);
-//    } catch (NoSuchMethodException | SecurityException e) {
-//      throw new RuntimeException("Could not use converter", e);
-//    }
-//
-//    Object value;
-//    try {
-//      value = m.invoke(converter, raw, conn);
-//    } catch (InvocationTargetException e) {
-//      throw new RuntimeException("Converter's decode() method threw an exception", e);
-//    } catch (IllegalAccessException | IllegalArgumentException e) {
-//      throw new RuntimeException("Could not invoke converter's decode() method", e);
-//    }
-//
-//    return value;
-//  }
 
 //  private void logQueryColumns() {
 //    int n;
