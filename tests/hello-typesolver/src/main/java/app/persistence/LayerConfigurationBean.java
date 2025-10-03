@@ -16,7 +16,7 @@ public class LayerConfigurationBean {
   @Bean
   public LayerConfiguration layerConfig() {
     List<TypeRule> rules = new ArrayList<>();
-    rules.add(TypeRule.of("columnName == 'dom'", TypeHandler.forClass(Long.class, TypeSource.RUNTIME_TYPESOLVER_RULE, "r4")));
+    rules.add(TypeRule.of("name == 'dom'", TypeHandler.forClass(Long.class, TypeSource.RUNTIME_TYPESOLVER_RULE, "r4")));
     return () -> rules;
   }
 

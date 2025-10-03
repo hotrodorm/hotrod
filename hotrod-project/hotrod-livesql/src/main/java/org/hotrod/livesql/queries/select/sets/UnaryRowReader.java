@@ -27,6 +27,7 @@ public class UnaryRowReader<T> implements RowReader<T> {
 
   public UnaryRowReader(final LiveSQLContext context, final LiveSQLPreparedQuery q, final ResultSet rs)
       throws SQLException {
+    log.fine("init");
     this.queryColumns = q.getQueryColumns();
     ResultSetMetaData rm = rs.getMetaData();
     int ordinal = 1;
@@ -40,8 +41,9 @@ public class UnaryRowReader<T> implements RowReader<T> {
 //          log.info("#" + ordinal + " th.getJavaClass()=" + th.getJavaClass());
           Shield.setTypeHandler(expr, th);
         } catch (CouldNotResolveResultSetDataTypeException e) {
-          throw new LiveSQLException(
-              "Could not determine the application type for the column '" + name + "' in the query", e);
+          throw new LiveSQLException("Could not determine the type for the column '" + name + "' in the query. "
+//              + "The ResultSetMetaData properties available for this test expression are:\n" + cm.toString()
+              , e);
         }
       }
       ordinal++;

@@ -141,13 +141,13 @@ public class ResultSetColumnMetadata {
 
   @Override
   public String toString() {
-    return "ResultSetColumnMetadata: catalogName=" + catalogName + ", schemaName=" + schemaName + ", columnName="
-        + columnName + ", columnLabel=" + columnLabel + ", columnTypeName=" + columnTypeName + ", columnType="
-        + columnType + ", columnClassName=" + columnClassName + ", columnDisplaySize=" + columnDisplaySize
-        + ", precision=" + precision + ", scale=" + scale + ", tableName=" + tableName + ", autoIncrement="
-        + autoIncrement + ", caseSensitive=" + caseSensitive + ", currency=" + currency + ", definitelyWritable="
-        + definitelyWritable + ", nullable=" + nullable + ", readOnly=" + readOnly + ", searchable=" + searchable
-        + ", signed=" + signed + ", writable=" + writable;
+    return "catalogName=" + catalogName + ",\nschemaName=" + schemaName + ",\ncolumnName="
+        + columnName + ",\ncolumnLabel=" + columnLabel + ",\ncolumnTypeName=" + columnTypeName + ",\ncolumnType="
+        + columnType + ",\ncolumnClassName=" + columnClassName + ",\ncolumnDisplaySize=" + columnDisplaySize
+        + ",\nprecision=" + precision + ",\nscale=" + scale + ",\ntableName=" + tableName + ",\nautoIncrement="
+        + autoIncrement + ",\ncaseSensitive=" + caseSensitive + ",\ncurrency=" + currency + ",\ndefinitelyWritable="
+        + definitelyWritable + ",\nnullable=" + nullable + ",\nreadOnly=" + readOnly + ",\nsearchable=" + searchable
+        + ",\nsigned=" + signed + ",\nwritable=" + writable;
   }
 
 }

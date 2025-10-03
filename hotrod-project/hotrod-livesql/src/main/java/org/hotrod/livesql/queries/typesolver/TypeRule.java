@@ -71,7 +71,8 @@ public class TypeRule {
               + (v == null ? "null" : v.getClass().getName()));
     } catch (DynamicExpressionException e) {
       throw new CouldNotResolveResultSetDataTypeException(cm,
-          "Could not evaluate Type Solver's <when> tag's test expression '" + this.test + "': " + e.getMessage());
+          "Could not evaluate Type Solver's <when> tag's test expression '" + this.test + "': " + e.getMessage()
+              + ". The ResultSetMetaData properties that can be used in this expression are:\n" + cm.toString());
     }
   }
 
