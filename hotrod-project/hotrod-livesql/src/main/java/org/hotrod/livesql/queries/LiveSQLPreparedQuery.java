@@ -87,14 +87,16 @@ public class LiveSQLPreparedQuery {
 
       if (this.queryColumns != null) {
         sb.append("--- Query Columns ---\n");
+        int ordinal = 1;
         for (Expression expr : this.queryColumns) {
           String name = Shield.getReferenceName(expr);
           TypeHandler<?, ?> th = Shield.getTypeHandler(expr);
-          sb.append(" * " + name + ": " //
+          sb.append(" * " + ordinal + " " + name + ": " //
               + (th != null ? TShield.render(th)
                   : "class N/A, source: " + TypeSource.RUNTIME_JDBC_DRIVER_DEFAULT.name()) //
               + (th.getRuleNumber() == null ? "" : ", rule #" + th.getRuleNumber()) //
               + "\n");
+          ordinal++;
         }
       }
 
