@@ -13,11 +13,11 @@ public class BigInvoiceLayout implements Serializable {
 
   // Expression properties
 
-  protected Integer id = null; // Type Name: INTEGER - Type Resolved By: STATIC_DIALECT_RULE
-  protected Timestamp created = null; // Type Name: TIMESTAMP - Type Resolved By: STATIC_TYPESOLVER_RULE
-  protected String[] invoiceTaxCodes = null; // Type Name: CHARACTER VARYING ARRAY - Type Resolved By: STATIC_TYPESOLVER_RULE
-  protected Double amount = null; // Type Name: DECIMAL - Type Resolved By: STATIC_DESIGNATED
-  protected Boolean paid = null; // Type Name: CHARACTER - Type Resolved By: STATIC_DESIGNATED
+  protected Integer id = null; // Source Type: STATIC_DIALECT_RULE, rule #D9
+  protected Timestamp created = null; // Source Type: STATIC_TYPESOLVER_RULE, rule #T1
+  protected String[] invoiceTaxCodes = null; // Source Type: STATIC_TYPESOLVER_RULE, rule #T3
+  protected Double amount = null; // Source Type: STATIC_DESIGNATED
+  protected Boolean paid = null; // Source Type: STATIC_DESIGNATED
 
   // getters & setters
 

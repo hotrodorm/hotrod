@@ -155,8 +155,9 @@ public class SelectLayoutWriter {
       for (ColumnMetadata cm : this.columns) {
         if (!cm.reusesMemberFromSuperClass()) {
           ExternalClass jt = ExternalClass.of(cm.getType().getJavaClassName());
-          w.println("  protected ", jt, " " + cm.getId().getJavaMemberName() + " = null; // Type Name: "
-              + cm.getTypeName() + " - Type Resolved By: " + cm.getType().getTypeSource());
+          String rn = cm.getType().getRuleNumber();
+          w.println("  protected ", jt, " " + cm.getId().getJavaMemberName() + " = null; // Source Type: "
+              + cm.getType().getTypeSource() + (rn == null ? "" : ", rule #" + rn));
         }
       }
       w.println();
