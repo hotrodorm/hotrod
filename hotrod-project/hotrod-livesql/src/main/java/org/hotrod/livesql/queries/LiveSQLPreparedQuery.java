@@ -51,9 +51,9 @@ public class LiveSQLPreparedQuery {
     } else {
 
       StringBuilder sb = new StringBuilder();
-      sb.append("--- SQL -------------\n");
+      sb.append("--- SQL ------------------\n");
       sb.append(this.sql);
-      sb.append("\n--- Parameters ------\n");
+      sb.append("\n--- Parameters (" + this.parameters.size() + ") -------\n");
       for (String name : this.parameters.keySet()) {
         Object value = this.parameters.get(name);
         Integer length = null;
@@ -86,7 +86,7 @@ public class LiveSQLPreparedQuery {
       }
 
       if (this.queryColumns != null) {
-        sb.append("--- Query Columns ---\n");
+        sb.append("--- Query Columns (" + this.queryColumns.size() + ") ---\n");
         int ordinal = 1;
         for (Expression expr : this.queryColumns) {
           String name = Shield.getReferenceName(expr);

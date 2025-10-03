@@ -15,8 +15,8 @@ public class LiveSQLContext {
   private RuntimeTypeSolver typeSolver;
   private Logger logger;
 
-  public LiveSQLContext(final LiveSQLDialect liveSQLDialect, final DataSource dataSource, final RuntimeTypeSolver typeSolver,
-      final Logger logger) {
+  public LiveSQLContext(final LiveSQLDialect liveSQLDialect, final DataSource dataSource,
+      final RuntimeTypeSolver typeSolver, final Logger logger) {
     this.liveSQLDialect = liveSQLDialect;
     this.dataSource = dataSource;
     this.typeSolver = typeSolver;
@@ -37,9 +37,9 @@ public class LiveSQLContext {
 
   public void logExecution(final LiveSQLPreparedQuery q) {
     if (this.logger.isLoggable(Level.FINER)) {
-      this.logger.finest("SQL: " + q.getPreview(true));
+      this.logger.finest("\n" + q.getPreview(true));
     } else if (this.logger.isLoggable(Level.FINE)) {
-      this.logger.fine("SQL: " + q.getPreview(false));
+      this.logger.fine("\n" + q.getPreview(false));
     }
   }
 
