@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 import javax.sql.DataSource;
 
 import org.hotrod.config.JDBCTag;
-import org.hotrod.config.StaticTypeSolverTag;
+import org.hotrod.config.RuntimeTypeSolverTag;
 import org.hotrod.config.TypeSolverWhenTag;
 import org.hotrod.exceptions.FaultException;
 import org.hotrod.generator.FileGenerator;
@@ -34,7 +34,7 @@ public class LayerConfigBeanWriter {
   private static final String RUNTIME_TYPESOLVER_NAMESPACE = "r";
 
   private JDBCTag jdbcTag;
-  private StaticTypeSolverTag typeSolver;
+  private RuntimeTypeSolverTag runtimeTypeSolver;
 
   private String qualifier;
 
@@ -45,9 +45,10 @@ public class LayerConfigBeanWriter {
 
   private ClassWriter w;
 
-  public LayerConfigBeanWriter(final JDBCTag jdbcTag, final StaticTypeSolverTag typeSolver, final String qualifier) {
+  public LayerConfigBeanWriter(final JDBCTag jdbcTag, final RuntimeTypeSolverTag runtimeTypeSolver,
+      final String qualifier) {
     this.jdbcTag = jdbcTag;
-    this.typeSolver = typeSolver;
+    this.runtimeTypeSolver = runtimeTypeSolver;
     this.qualifier = qualifier;
     this.className = LAYER_CONFIG_CLASS_PREFIX;
     String suffix = SUtil.coalesce(this.qualifier, "");
@@ -106,14 +107,12 @@ public class LayerConfigBeanWriter {
     w.print("    ", List.class, "<", TypeRule.class, "> rules = new ");
     w.println(ArrayList.class, "<>();");
     int n = 1;
-    for (TypeSolverWhenTag when : this.typeSolver.getWhens()) {
-      if (!SUtil.isEmpty(when.getTestResultSet())) {
-        w.print("    rules.add(", TypeRule.class, ".of(\"" + SUtil.escapeJavaString(when.getTestResultSet()) + "\", ",
-            TypeHandler.class);
-        String ruleNumber = RUNTIME_TYPESOLVER_NAMESPACE + n;
-        w.println(".forClass(", ExternalClass.of(when.getJavaType()), ".class, ", TypeSource.class,
-            "." + TypeSource.RUNTIME_TYPESOLVER_RULE.name() + ", \"" + ruleNumber + "\")));");
-      }
+    for (TypeSolverWhenTag when : this.runtimeTypeSolver.getWhens()) {
+      w.print("    rules.add(", TypeRule.class, ".of(\"" + SUtil.escapeJavaString(when.getTest()) + "\", ",
+          TypeHandler.class);
+      String ruleNumber = RUNTIME_TYPESOLVER_NAMESPACE + n;
+      w.println(".forClass(", ExternalClass.of(when.getJavaType()), ".class, ", TypeSource.class,
+          "." + TypeSource.RUNTIME_TYPESOLVER_RULE.name() + ", \"" + ruleNumber + "\")));");
       n++;
     }
     w.println("    return () -> rules;");

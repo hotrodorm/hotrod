@@ -431,7 +431,7 @@ public class TableDataSetMetadata implements DataSetMetadata {
       ColumnTag columnTag = tableTag.findColumnTag(c.getName(), this.adapter);
       try {
         lcm.add(new ColumnMetadata(this, c, this.adapter, columnTag, false, false, belongsToPK,
-            this.config.getTypeSolverTag(), this.config.getNameSolverTag())); // THIS
+            this.config.getStaticTypeSolverTag(), this.config.getNameSolverTag())); // THIS
       } catch (InvalidIdentifierException e) {
         String msg = "Invalid identifier name for column '" + c.getName() + "': " + e.getMessage();
         throw new InvalidConfigurationFileException(tableTag, msg);
@@ -448,7 +448,7 @@ public class TableDataSetMetadata implements DataSetMetadata {
       ColumnTag columnTag = enumTag.findColumnTag(c.getName(), this.adapter);
       try {
         lcm.add(new ColumnMetadata(this, c, this.adapter, columnTag, false, false, belongsToPK,
-            this.config.getTypeSolverTag(), this.config.getNameSolverTag()));
+            this.config.getStaticTypeSolverTag(), this.config.getNameSolverTag()));
       } catch (InvalidIdentifierException e) {
         String msg = "Invalid identifier name for column '" + c.getName() + "': " + e.getMessage();
         throw new InvalidConfigurationFileException(enumTag, msg);
@@ -464,7 +464,7 @@ public class TableDataSetMetadata implements DataSetMetadata {
       ColumnTag columnTag = viewTag.findColumnTag(c.getName(), this.adapter);
       try {
         lcm.add(new ColumnMetadata(this, c, this.adapter, columnTag, false, false, false,
-            this.config.getTypeSolverTag(), this.config.getNameSolverTag()));
+            this.config.getStaticTypeSolverTag(), this.config.getNameSolverTag()));
 
       } catch (InvalidIdentifierException e) {
         String msg = "Invalid identifier name for column '" + c.getName() + "': " + e.getMessage();
@@ -485,7 +485,7 @@ public class TableDataSetMetadata implements DataSetMetadata {
         ColumnTag columnTag = tableTag.findColumnTag(c.getColumn().getName(), this.adapter);
         try {
           lcm.add(new ColumnMetadata(this, c.getColumn(), this.adapter, columnTag, false, false, belongsToPK,
-              this.config.getTypeSolverTag(), this.config.getNameSolverTag()));
+              this.config.getStaticTypeSolverTag(), this.config.getNameSolverTag()));
         } catch (InvalidIdentifierException e) {
           String msg = "Invalid identifier name for column '" + c.getColumn().getName() + "': " + e.getMessage();
           throw new InvalidConfigurationFileException(tableTag, msg);
@@ -506,7 +506,7 @@ public class TableDataSetMetadata implements DataSetMetadata {
         ColumnTag columnTag = enumTag.findColumnTag(c.getColumn().getName(), this.adapter);
         try {
           lcm.add(new ColumnMetadata(this, c.getColumn(), this.adapter, columnTag, false, false, belongsToPK,
-              this.config.getTypeSolverTag(), this.config.getNameSolverTag()));
+              this.config.getStaticTypeSolverTag(), this.config.getNameSolverTag()));
         } catch (InvalidIdentifierException e) {
           String msg = "Invalid identifier name for column '" + c.getColumn().getName() + "': " + e.getMessage();
           throw new InvalidConfigurationFileException(enumTag, msg);
@@ -526,7 +526,7 @@ public class TableDataSetMetadata implements DataSetMetadata {
         ColumnTag columnTag = viewTag.findColumnTag(c.getColumn().getName(), this.adapter);
         try {
           lcm.add(new ColumnMetadata(this, c.getColumn(), this.adapter, columnTag, false, false, false,
-              this.config.getTypeSolverTag(), this.config.getNameSolverTag()));
+              this.config.getStaticTypeSolverTag(), this.config.getNameSolverTag()));
         } catch (InvalidIdentifierException e) {
           String msg = "Invalid identifier name for column '" + c.getColumn().getName() + "': " + e.getMessage();
           throw new InvalidConfigurationFileException(viewTag, msg);

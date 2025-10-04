@@ -5,10 +5,11 @@
     <when test="typeName == 'TINYINT'" java-type="Double" />
     <when test="typeName == 'CHARACTER VARYING ARRAY' and name.endsWith('_TAX_CODES')"
       converter="TaxCodesArrayConverter" />
-
-    <when test-resultset="columnName == 'dom'" java-type="Long" />
-
   </type-solver>
+
+  <runtime-type-solver>
+    <when test="columnName == 'dom'" java-type="Long" />
+  </runtime-type-solver>
 
   <converter name="YNConverter" java-raw-type="String" java-type="Boolean" class="app.YNBooleanConverter" />
 

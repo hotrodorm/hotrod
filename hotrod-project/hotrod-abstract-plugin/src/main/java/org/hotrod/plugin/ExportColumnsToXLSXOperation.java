@@ -41,7 +41,7 @@ public class ExportColumnsToXLSXOperation extends AbstractExportColumnsOperation
   @Override
   protected void exportColumns(final Generator g) throws ErrorMessageException, FaultException {
     LinkedHashSet<String> nativeNames = new LinkedHashSet<>();
-    g.getConfig().getTypeSolverTag().getRetrievedColumns().stream().forEach(c -> {
+    g.getConfig().getStaticTypeSolverTag().getRetrievedColumns().stream().forEach(c -> {
       if (c.getNative() != null) {
         c.getNative().keySet().stream().forEach(n -> nativeNames.add(n));
       }
@@ -144,7 +144,7 @@ public class ExportColumnsToXLSXOperation extends AbstractExportColumnsOperation
 //      this.col = 0;
 //      addCell(body, style, "catalog");
 
-      g.getConfig().getTypeSolverTag().getRetrievedColumns().stream().forEach(c -> {
+      g.getConfig().getStaticTypeSolverTag().getRetrievedColumns().stream().forEach(c -> {
 
         Row body = sheet.createRow(this.line++);
         this.col = 0;

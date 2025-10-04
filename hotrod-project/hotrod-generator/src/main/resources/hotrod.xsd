@@ -8,6 +8,7 @@
         <xsd:element name="generators" type="generators-type" minOccurs="0" />
         <xsd:element name="name-solver" type="name-solver-type" minOccurs="0" maxOccurs="1" />
         <xsd:element name="type-solver" type="type-solver-type" minOccurs="0" maxOccurs="1" />
+        <xsd:element name="runtime-type-solver" type="runtime-type-solver-type" minOccurs="0" maxOccurs="1" />
         <xsd:choice minOccurs="0" maxOccurs="unbounded">
           <xsd:element name="table" type="table-type" />
           <xsd:element name="dao" type="dao-type" />
@@ -45,9 +46,14 @@
     </xsd:choice>
   </xsd:complexType>
 
+  <xsd:complexType name="runtime-type-solver-type">
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="when" type="type-solver-when-type" />
+    </xsd:choice>
+  </xsd:complexType>
+
   <xsd:complexType name="type-solver-when-type">
     <xsd:attribute name="test" type="xsd:string" />
-    <xsd:attribute name="test-resultset" type="xsd:string" />
     <xsd:attribute name="java-type" type="xsd:string" />
     <xsd:attribute name="force-jdbc-type-on-write" type="xsd:string" />
     <xsd:attribute name="converter" type="xsd:string" />

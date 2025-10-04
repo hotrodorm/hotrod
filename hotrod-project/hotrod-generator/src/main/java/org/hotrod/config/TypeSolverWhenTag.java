@@ -25,7 +25,6 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
   // Properties
 
   private String test = null;
-  private String testResultSet = null;
   private String javaType = null;
   private String converter = null;
   private String forceJDBCTypeOnWrite = null;
@@ -49,11 +48,6 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
     this.test = test;
   }
 
-  @XmlAttribute(name = "test-resultset")
-  public void setTestResultSet(final String testResultSet) {
-    this.testResultSet = testResultSet;
-  }
-
   @XmlAttribute(name = "java-type")
   public void setJavaType(final String javaType) {
     this.javaType = javaType;
@@ -75,22 +69,12 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
 
     DynamicExpressionFactory factory = DynamicExpressionFactoryConfig.getFactory();
 
-    // test & test-resultset
+    // test
 
-    if (SUtil.isEmpty(this.test) && SUtil.isEmpty(this.testResultSet)) {
-      throw new InvalidConfigurationFileException(this,
-          "The attributes 'test' and 'test-resultset' cannot be empty at the same time");
+    if (SUtil.isEmpty(this.test)) {
+      throw new InvalidConfigurationFileException(this, "The attribute 'test' cannot be empty");
     }
-
-    if (!SUtil.isEmpty(this.test)) {
-      this.testExpression = factory.expression(this.test);
-      log.fine("this.testExpression=" + this.testExpression);
-    }
-
-    if (!SUtil.isEmpty(this.testResultSet)) {
-      this.testResultSetExpression = factory.expression(this.testResultSet);
-      log.fine("this.testResultSetExpression=" + this.testResultSetExpression);
-    }
+    this.testExpression = factory.expression(this.test);
 
     // java-type
 
@@ -153,10 +137,6 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
     return this.test;
   }
 
-  public String getTestResultSet() {
-    return testResultSet;
-  }
-
   public String getJavaType() {
     return this.javaType;
   }
@@ -185,7 +165,7 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
 
   @Override
   public String getInternalCaption() {
-    return this.getTagName() + ": test=" + this.test + " test-resultset=" + this.testResultSet;
+    return this.getTagName() + ": test=" + this.test;
   }
 
 }

@@ -104,12 +104,10 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
         ColumnMetadata cm;
         try {
           log.fine("NITRO column: " + i);
-          
-          
+
           cm = new ColumnMetadata(ctx.getSm(), rm, i, ctx.getTag().getMethod(), this.adapter, columnTag, false, false,
-              false, this.config.getTypeSolverTag());
-          
-          
+              false, this.config.getStaticTypeSolverTag());
+
         } catch (UnresolvableDataTypeException e) {
           DriverColumnMetaData m = e.getColumnMetadata();
           String msg = "The column '" + m.getName() + "' in the <select> tag reports the type " + m.getTypeName()
@@ -171,7 +169,7 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
         ColumnMetadata cm;
         try {
           cm = new ColumnMetadata(ctx.getSm(), rm, i, ctx.getTag().getMethod(), this.adapter, columnTag, false, false,
-              false, this.config.getTypeSolverTag());
+              false, this.config.getStaticTypeSolverTag());
 
           String alias = aliasPrefix + cm.getName();
           StructuredColumnMetadata scm = new StructuredColumnMetadata(cm, entityPrefix, alias, false, null,

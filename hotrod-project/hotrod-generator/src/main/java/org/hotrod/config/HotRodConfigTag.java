@@ -30,7 +30,8 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
   private GeneratorsTag generatorsTag = null;
   private NameSolverTag nameSolverTag = new NameSolverTag();
-  private StaticTypeSolverTag typeSolverTag = new StaticTypeSolverTag(); // default that register columns
+  private StaticTypeSolverTag staticTypeSolverTag = new StaticTypeSolverTag();
+  private RuntimeTypeSolverTag runtimeTypeSolverTag = new RuntimeTypeSolverTag();
 
   private List<ConverterTag> converters = new ArrayList<ConverterTag>();
   private Map<String, ConverterTag> convertersByName = null;
@@ -55,8 +56,13 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
   }
 
   @XmlElement(name = "type-solver")
-  public void setTypeSolver(final StaticTypeSolverTag typeSolverTag) {
-    this.typeSolverTag = typeSolverTag;
+  public void setStaticTypeSolver(final StaticTypeSolverTag staticTypeSolverTag) {
+    this.staticTypeSolverTag = staticTypeSolverTag;
+  }
+
+  @XmlElement(name = "runtime-type-solver")
+  public void setRuntimeTypeSolver(final RuntimeTypeSolverTag runtimeTypeSolverTag) {
+    this.runtimeTypeSolverTag = runtimeTypeSolverTag;
   }
 
   @XmlElement
@@ -74,8 +80,12 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
     return nameSolverTag;
   }
 
-  public StaticTypeSolverTag getTypeSolverTag() {
-    return typeSolverTag;
+  public StaticTypeSolverTag getStaticTypeSolverTag() {
+    return staticTypeSolverTag;
+  }
+
+  public final RuntimeTypeSolverTag getRuntimeTypeSolverTag() {
+    return runtimeTypeSolverTag;
   }
 
   public List<ConverterTag> getConverters() {
@@ -119,9 +129,13 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
       this.convertersByName.put(c.getName(), c);
     }
 
-    // Type Solver
+    // Static Type Solver
 
-    this.typeSolverTag.validate(this);
+    this.staticTypeSolverTag.validate(this);
+
+    // RuntimeType Solver
+
+    this.runtimeTypeSolverTag.validate(this);
 
   }
 

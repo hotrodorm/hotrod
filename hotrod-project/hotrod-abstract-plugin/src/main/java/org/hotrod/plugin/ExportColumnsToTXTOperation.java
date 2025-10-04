@@ -44,7 +44,7 @@ public class ExportColumnsToTXTOperation extends AbstractExportColumnsOperation 
 //    log.info("g.getConfig()=" + g.getConfig());
 //    log.info("g.getConfig().getTypeSolverTag()=" + g.getConfig().getTypeSolverTag());
 
-    g.getConfig().getTypeSolverTag().getRetrievedColumns().stream().forEach(c -> {
+    g.getConfig().getStaticTypeSolverTag().getRetrievedColumns().stream().forEach(c -> {
       if (c.getNative() != null) {
         c.getNative().keySet().stream().forEach(n -> nativeNames.add(n));
       }
@@ -82,7 +82,7 @@ public class ExportColumnsToTXTOperation extends AbstractExportColumnsOperation 
 
     // Body
 
-    g.getConfig().getTypeSolverTag().getRetrievedColumns().stream().forEach(c -> {
+    g.getConfig().getStaticTypeSolverTag().getRetrievedColumns().stream().forEach(c -> {
 
       t.addCell(c.getCatalog());
       t.addCell(c.getSchema());
