@@ -6,7 +6,9 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import org.hotrod.converter.TypeConverter;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TaxCodesArrayConverter implements TypeConverter<java.sql.Array, String[]> {
 
   @Override

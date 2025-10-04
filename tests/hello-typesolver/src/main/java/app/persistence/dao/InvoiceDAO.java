@@ -89,7 +89,8 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
   // CONVERTERS
 
-  private final TaxCodesArrayConverter converter0 = new TaxCodesArrayConverter();
+  @Autowired
+  private TaxCodesArrayConverter converter0;
 
   // ROW READER
 

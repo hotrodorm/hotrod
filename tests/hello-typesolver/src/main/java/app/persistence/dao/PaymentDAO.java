@@ -54,8 +54,11 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
 
   // CONVERTERS
 
-  private final TaxCodesArrayConverter converter0 = new TaxCodesArrayConverter();
-  private final YNBooleanConverter converter1 = new YNBooleanConverter();
+  @Autowired
+  private TaxCodesArrayConverter converter0;
+
+  @Autowired
+  private YNBooleanConverter converter1;
 
   // NITRO SELECT: getBigInvoices
 

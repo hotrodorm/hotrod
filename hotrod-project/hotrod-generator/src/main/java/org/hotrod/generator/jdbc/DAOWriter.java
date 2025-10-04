@@ -1655,12 +1655,13 @@ public class DAOWriter {
           if (n == 0) {
             w.println();
             w.println("  // CONVERTERS");
-            w.println();
           }
           String property = "converter" + n++;
           this.converterProperties.put(ct.getName(), property);
+          w.println();
+          w.println("  @", Const.AUTOWIRED);
           ExternalClass cc = ExternalClass.of(ct.getConverterClass());
-          w.println("  private final ", cc, " " + property + " = new ", cc, "();");
+          w.println("  private ", cc, " " + property + ";");
         }
       }
     }
