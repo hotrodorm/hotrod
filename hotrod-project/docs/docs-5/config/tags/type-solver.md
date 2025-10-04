@@ -8,7 +8,7 @@ In order to do this the developer can add the `<type-solver>` tag. For example:
 ```xml
 <type-solver>
     <when test="scale > 0" java-type="java.math.BigDecimal" />
-    <when test="name.matches('.*_IMAGE') &amp;&amp; size > 10000" converter="ByteArrayConverter" />
+    <when test="name.matches('.*_IMAGE') and size > 10000" converter="ByteArrayConverter" />
     <when ... />
 </type-solver>
 ```
@@ -40,9 +40,9 @@ Every query column is read as a property on the Layout class. The property class
 
 3. If none of the rules above is matched, then the database adapter for the specific database provides a default type for the column. See [Default Types](../supported-databases.md) for each database.
 
-## The `test` and `test-resultset` Expressions
+## The `test` Expressions
 
-These expressions declare a predicate to be evaluated. If found true that rule is selected and no further rules are processed.
+This expression declares a predicate to be evaluated. If found true that rule is selected and no further rules are processed.
 
 These expressions are written in JEXL syntax. For details on the JEXL's syntax see[Apache Commons JEXL](https://commons.apache.org/proper/commons-jexl/).
 
