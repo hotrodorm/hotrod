@@ -28,7 +28,6 @@ import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.DAONamespace;
 import org.hotrod.generator.DAONamespace.DuplicateDAOClassException;
 import org.hotrod.generator.DAONamespace.DuplicateDAOClassMethodException;
-import org.hotrod.generator.SelectMetadataCache;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.VORegistry.EntityVOClass;
 import org.hotrod.metadata.VORegistry.StructuredVOAlreadyExistsException;
@@ -81,7 +80,6 @@ public class Metadata {
       this.tables = new LinkedHashSet<TableDataSetMetadata>();
       for (JdbcTable t : this.db.getTables()) {
         try {
-//          log.info("t.getName()=" + t.getName() + " fks[" + t.getImportedFks().size() + "]");
 
           boolean isFromCurrentCatalog = t.getCatalog() == null
               || t.getCatalog().equals(this.dloc.getCatalogSchema().getCatalog());
@@ -266,14 +264,11 @@ public class Metadata {
       cr = ColumnsRetriever.getInstance(config, dloc, adapter, db, conn);
       log.fine("ColumnsRetriever: " + cr);
 
-      // TODO: make sure the cache includes enum values from table rows.
-      // if (retrieveFreshDatabaseObjects) {
       try {
         config.validateAgainstDatabase(this, conn, adapter);
       } catch (InvalidConfigurationFileException e) {
         throw new ErrorMessageException(e.getTag(), e.getMessage());
       }
-      // }
 
       // Prepare <select> methods metadata - phase 1
 
@@ -310,7 +305,6 @@ public class Metadata {
 
     // Prepare <select> DAOs meta data - phase 2
 
-    SelectMetadataCache selectMetadataCache = new SelectMetadataCache();
     Map<String, List<EnumConstant>> tableEnumConstants = new HashMap<String, List<EnumConstant>>();
 
     log.fine("Prepare selects metadata - phase 2.");
@@ -319,23 +313,19 @@ public class Metadata {
 
       for (TableDataSetMetadata tm : this.tables) {
         tm.gatherSelectsMetadataPhase2(this.voRegistry);
-        addSelectsMetaData(tm.getDaoTag().getJavaClassName(), tm.getSelectsMetadata(), selectMetadataCache);
       }
 
       for (TableDataSetMetadata vm : this.views) {
         vm.gatherSelectsMetadataPhase2(this.voRegistry);
-        addSelectsMetaData(vm.getDaoTag().getJavaClassName(), vm.getSelectsMetadata(), selectMetadataCache);
       }
 
       for (TableDataSetMetadata em : this.enums) {
         em.gatherSelectsMetadataPhase2(this.voRegistry);
-        addSelectsMetaData(em.getDaoTag().getJavaClassName(), em.getSelectsMetadata(), selectMetadataCache);
         addTableEnumConstants(em, tableEnumConstants);
       }
 
       for (ExecutorDAOMetadata xm : this.executors) {
         xm.gatherSelectsMetadataPhase2(this.voRegistry);
-        addSelectsMetaData(xm.getDaoTag().getJavaClassName(), xm.getSelectsMetadata(), selectMetadataCache);
       }
 
     } catch (InvalidConfigurationFileException e) {
@@ -373,13 +363,6 @@ public class Metadata {
 
     log.fine("Metadata initialized.");
 
-  }
-
-  private void addSelectsMetaData(final String daoName, final List<SelectMethodMetadata> selects,
-      final SelectMetadataCache selectMetadataCache) {
-    for (SelectMethodMetadata sm : selects) {
-      selectMetadataCache.put(daoName, sm.getMethod(), sm);
-    }
   }
 
   private void addTableEnumConstants(final TableDataSetMetadata em,

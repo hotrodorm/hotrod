@@ -1,15 +1,11 @@
 package org.hotrod.metadata;
 
-import java.io.Serializable;
-
 import org.hotrod.config.OptimisticLockingTag;
 import org.hotrod.config.OptimisticLockingTag.OptimisticLockingStrategy;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
 
-public class OptimisticLockingMetadata implements Serializable {
-
-  private static final long serialVersionUID = 1L;
+public class OptimisticLockingMetadata {
 
   private DataSetMetadata dataSet;
   private ColumnMetadata columnMetadata;

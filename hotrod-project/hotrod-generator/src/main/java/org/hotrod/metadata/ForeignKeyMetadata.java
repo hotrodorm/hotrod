@@ -1,13 +1,10 @@
 package org.hotrod.metadata;
 
-import java.io.Serializable;
 import java.util.Set;
 
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
-public class ForeignKeyMetadata implements Serializable {
-
-  private static final long serialVersionUID = 1L;
+public class ForeignKeyMetadata {
 
   private KeyMetadata local;
   private KeyMetadata remote;

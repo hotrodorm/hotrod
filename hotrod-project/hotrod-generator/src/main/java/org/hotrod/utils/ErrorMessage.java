@@ -1,10 +1,6 @@
 package org.hotrod.utils;
 
-import java.io.Serializable;
-
-public class ErrorMessage implements Serializable {
-
-  private static final long serialVersionUID = 1L;
+public class ErrorMessage {
 
   private SourceLocation location;
   private String message;

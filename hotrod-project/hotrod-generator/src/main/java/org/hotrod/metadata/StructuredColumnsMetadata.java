@@ -1,6 +1,5 @@
 package org.hotrod.metadata;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -18,9 +17,7 @@ import org.hotrod.metadata.VORegistry.VOProperty;
 import org.hotrod.metadata.VORegistry.VOProperty.EnclosingTagType;
 import org.hotrod.utils.ClassPackage;
 
-public class StructuredColumnsMetadata implements Serializable {
-
-  private static final long serialVersionUID = 1L;
+public class StructuredColumnsMetadata {
 
   // Constants
 

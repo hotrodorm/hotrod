@@ -1,6 +1,5 @@
 package org.hotrod.metadata;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -161,9 +160,7 @@ public class VORegistry {
 
   }
 
-  public static class EntityVOClass implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+  public static class EntityVOClass {
 
     // Properties
 
@@ -286,9 +283,7 @@ public class VORegistry {
 
   }
 
-  public static class SelectVOClass implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+  public static class SelectVOClass {
 
     // Properties
 

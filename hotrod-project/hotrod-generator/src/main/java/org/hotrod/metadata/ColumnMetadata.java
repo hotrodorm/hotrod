@@ -1,6 +1,5 @@
 package org.hotrod.metadata;
 
-import java.io.Serializable;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.logging.Logger;
@@ -25,9 +24,7 @@ import org.hotrod.utils.JDBCTypes.JDBCType;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn.AutogenerationType;
 
-public class ColumnMetadata implements DriverColumnMetaData, Serializable {
-
-  private static final long serialVersionUID = 1L;
+public class ColumnMetadata implements DriverColumnMetaData {
 
   private static final Logger log = Logger.getLogger(ColumnMetadata.class.getName());
 

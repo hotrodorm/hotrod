@@ -1,14 +1,11 @@
 package org.hotrod.metadata;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
-public class KeyMetadata implements Serializable {
-
-  private static final long serialVersionUID = 1L;
+public class KeyMetadata {
 
   private static final Logger log = Logger.getLogger(KeyMetadata.class.getName());
 

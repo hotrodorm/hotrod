@@ -1,6 +1,5 @@
 package org.hotrod.utils;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -10,13 +9,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.hotrod.utils.SUtil;
+public class ValueTypeFactory {
 
-public class ValueTypeFactory implements Serializable {
-
-  private static final long serialVersionUID = 1L;
-
-  public static interface ValueTypeManager<T> extends Serializable {
+  public static interface ValueTypeManager<T> {
 
     T getFromResultSet(ResultSet rs, int columnIndex) throws SQLException;
 

@@ -1,12 +1,8 @@
 package org.hotrod.utils;
 
-import java.io.Serializable;
-
 import org.hotrod.database.DatabaseAdapter.UnescapedSQLCase;
 
-public class ColumnsPrefixGenerator implements Serializable {
-
-  private static final long serialVersionUID = 1L;
+public class ColumnsPrefixGenerator {
 
   // Constants
 

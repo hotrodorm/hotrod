@@ -1,6 +1,5 @@
 package org.hotrod.metadata;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -12,9 +11,7 @@ import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
 
-public class StructuredColumnMetadata extends ColumnMetadata implements Serializable {
-
-  private static final long serialVersionUID = 1L;
+public class StructuredColumnMetadata extends ColumnMetadata {
 
   // Properties
 

@@ -1,6 +1,5 @@
 package org.hotrod.metadata;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -18,8 +17,6 @@ import org.hotrod.metadata.VORegistry.VOProperty.EnclosingTagType;
 import org.hotrod.utils.ClassPackage;
 
 public class SelectMethodReturnType {
-
-  private static final long serialVersionUID = 1L;
 
   private static final Logger log = Logger.getLogger(SelectMethodReturnType.class.getName());
 

@@ -1,6 +1,5 @@
 package org.hotrod.metadata;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -20,14 +19,11 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.generator.SelectMetadataCache;
 import org.hotrod.identifiers.Id;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 
-public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
-
-  private static final long serialVersionUID = 1L;
+public class ExecutorDAOMetadata implements DataSetMetadata {
 
   // Constants
 
@@ -43,7 +39,6 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
   private List<QueryMethodTag> queries = new ArrayList<QueryMethodTag>();
   private List<SelectMethodTag> selects = new ArrayList<SelectMethodTag>();
 
-  private SelectMetadataCache selectMetadataCache;
   private List<SelectMethodMetadata> selectsMetadata;
 
   private ObjectId id;
@@ -54,25 +49,16 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
 
   public ExecutorDAOMetadata(final ExecutorTag tag, final DatabaseAdapter adapter, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig) throws InvalidIdentifierException {
-    initialize(tag, adapter, config, fragmentConfig, new SelectMetadataCache());
-  }
-
-  public ExecutorDAOMetadata(final ExecutorTag tag, final DatabaseAdapter adapter, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig, final SelectMetadataCache selectMetadataCache)
-      throws InvalidIdentifierException {
-    initialize(tag, adapter, config, fragmentConfig, selectMetadataCache);
+    initialize(tag, adapter, config, fragmentConfig);
   }
 
   private void initialize(final ExecutorTag tag, final DatabaseAdapter adapter, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig, final SelectMetadataCache selectMetadataCache)
-      throws InvalidIdentifierException {
+      final HotRodFragmentConfigTag fragmentConfig) throws InvalidIdentifierException {
     log.fine("init");
     this.tag = tag;
     this.config = config;
     this.adapter = adapter;
     this.fragmentConfig = fragmentConfig;
-
-    this.selectMetadataCache = selectMetadataCache;
 
     this.sequences = this.tag.getSequences();
     this.queries = this.tag.getQueries();
@@ -90,13 +76,6 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
     this.selectsMetadata = new ArrayList<SelectMethodMetadata>();
     boolean needsToRetrieveMetadata = false;
     for (SelectMethodTag selectTag : this.selects) {
-      // SelectMethodMetadata cachedSm =
-      // this.selectMetadataCache.get(this.getJavaClassName(),
-      // selectTag.getMethod());
-      SelectMethodMetadata cachedSm = null; // Do not use cache, for now.
-      log.fine("[" + this.getId().getCanonicalSQLName() + "] " + selectTag.getMethod() + "() cache["
-          + this.getJavaClassName() + "]=" + cachedSm + " cache[" + this.selectMetadataCache.size() + "]");
-
       // retrieve fresh metadata
       needsToRetrieveMetadata = true;
       ColumnsPrefixGenerator columnsPrefixGenerator = new ColumnsPrefixGenerator(this.adapter.getUnescapedSQLCase());

@@ -1,13 +1,9 @@
 package org.hotrod.metadata;
 
-import java.io.Serializable;
-
 import org.hotrod.config.ParameterTag;
 import org.hotrod.identifiers.Id;
 
-public class SelectParameterMetadata implements Serializable {
-
-  private static final long serialVersionUID = 1L;
+public class SelectParameterMetadata {
 
   private ParameterTag p;
 
