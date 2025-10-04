@@ -1,6 +1,5 @@
 package org.hotrod.metadata;
 
-import java.io.Serializable;
 import java.util.List;
 
 import org.hotrod.config.AbstractDAOTag;
@@ -9,7 +8,7 @@ import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.identifiers.ObjectId;
 
-public interface DataSetMetadata extends Serializable {
+public interface DataSetMetadata {
 
   AbstractDAOTag getDaoTag();
 
@@ -32,7 +31,7 @@ public interface DataSetMetadata extends Serializable {
   List<SelectParameterMetadata> getParameterDefinitions();
 
   String renderSQLSentence(ParameterRenderer parameterRenderer);
-  
+
   default public ClassicFKNavigationTag getClassicFKNavigation() {
     return null;
   }

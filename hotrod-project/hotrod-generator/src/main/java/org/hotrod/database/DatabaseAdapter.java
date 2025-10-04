@@ -1,6 +1,5 @@
 package org.hotrod.database;
 
-import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -206,7 +205,7 @@ public abstract class DatabaseAdapter {
   // Utilities
 
   protected PropertyType produceType(final Class<?> c, final ColumnMetadata m, final boolean isLOB,
-      final ConverterTag converterTag,final Integer ruleNumber) throws UnresolvableDataTypeException {
+      final ConverterTag converterTag, final Integer ruleNumber) throws UnresolvableDataTypeException {
     JDBCType jdbcType = JDBCTypes.codeToType(m.getDataType());
     if (jdbcType == null) {
       throw new UnresolvableDataTypeException(m);
@@ -216,9 +215,7 @@ public abstract class DatabaseAdapter {
 
   // Classes
 
-  private static class DataType implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+  private static class DataType {
 
     private String typeName;
     private int dataType;

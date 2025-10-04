@@ -10,7 +10,6 @@ import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.generator.CachedMetadata;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
@@ -22,14 +21,8 @@ public abstract class DataSetMetadataFactory {
       final DatabaseAdapter adapter, final HotRodConfigTag config, final JDBCTag jdbcTag,
       final boolean isFromCurrentCatalog, final boolean isFromCurrentSchema)
       throws UnresolvableDataTypeException, InvalidConfigurationFileException {
-    return getMetadata(t, isTable, autoDiscovery, adapter, config, jdbcTag, null, isFromCurrentCatalog,
-        isFromCurrentSchema);
-  }
 
-  private static TableDataSetMetadata getMetadata(final JdbcTable t, final boolean isTable, final boolean autoDiscovery,
-      final DatabaseAdapter adapter, final HotRodConfigTag config, final JDBCTag jdbcTag,
-      final CachedMetadata cachedMetadata, final boolean isFromCurrentCatalog, final boolean isFromCurrentSchema)
-      throws UnresolvableDataTypeException, InvalidConfigurationFileException {
+    log.fine("init");
 
     // Table
 
