@@ -7,7 +7,6 @@ import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.queries.typesolver.TShield;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
-import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.utils.CUtil;
 import org.hotrod.utils.HexaUtils;
 
@@ -92,8 +91,7 @@ public class LiveSQLPreparedQuery {
           String name = Shield.getReferenceName(expr);
           TypeHandler<?, ?> th = Shield.getTypeHandler(expr);
           sb.append(" * " + ordinal + " " + name + ": " //
-              + (th != null ? TShield.render(th)
-                  : "class N/A, source: " + TypeSource.RUNTIME_JDBC_DRIVER_DEFAULT.name()) //
+              + TShield.render(th) //
               + (th.getRuleNumber() == null ? "" : ", rule #" + th.getRuleNumber()) //
               + "\n");
           ordinal++;

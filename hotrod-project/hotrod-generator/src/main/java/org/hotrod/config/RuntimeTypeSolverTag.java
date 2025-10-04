@@ -75,6 +75,7 @@ public class RuntimeTypeSolverTag extends AbstractConfigurationTag {
     for (TypeSolverWhenTag w : this.whens) {
       if (w.getTest() != null) {
         Object result = null;
+        String resultClassName = null;
         try {
 
           result = w.getTestExpression().evaluate(context);
@@ -82,6 +83,8 @@ public class RuntimeTypeSolverTag extends AbstractConfigurationTag {
           if (result == null) {
             throw new UnresolvableDataTypeException(cm, "Could not evaluate <when> tag's test expression '"
                 + w.getTest() + "': must return a boolean value but returned null");
+          } else {
+            resultClassName = result.getClass().getName();
           }
           Boolean test = (Boolean) result;
           if (test) {
@@ -94,7 +97,7 @@ public class RuntimeTypeSolverTag extends AbstractConfigurationTag {
           }
         } catch (ClassCastException e) {
           throw new UnresolvableDataTypeException(cm, "Could not evaluate <when> tag's test expression '" + w.getTest()
-              + "': must return a boolean value but returned a " + result.getClass().getName());
+              + "': must return a boolean value but returned a " + resultClassName);
         } catch (DynamicExpressionException e) {
           throw new UnresolvableDataTypeException(cm,
               "Could not evaluate <when> tag's test expression '" + w.getTest() + "': " + e.getMessage());
