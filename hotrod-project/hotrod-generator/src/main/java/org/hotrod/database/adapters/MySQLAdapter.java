@@ -203,7 +203,7 @@ public class MySQLAdapter extends DatabaseAdapter {
     return configName;
   }
 
-  private static final String UNQUOTED_IDENTIFIER_PATTERN = "[A-Za-z][A-Za-z0-9_]*";
+  private static final String UNQUOTED_IDENTIFIER_PATTERN = "[A-Za-z][A-Za-z0-9_]*+";
 
   @Override
   public boolean canonicalNameRequiresQuoting(String canonicalSQLName) {

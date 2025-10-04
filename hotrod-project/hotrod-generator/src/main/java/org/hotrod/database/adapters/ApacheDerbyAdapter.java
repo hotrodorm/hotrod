@@ -195,7 +195,7 @@ public class ApacheDerbyAdapter extends DatabaseAdapter {
     return configName == null ? null : (quoted ? configName : configName.toUpperCase());
   }
 
-  private static final String UNQUOTED_IDENTIFIER_PATTERN = "[A-Z][A-Z0-9_]*";
+  private static final String UNQUOTED_IDENTIFIER_PATTERN = "[A-Z][A-Z0-9_]*+";
 
   @Override
   public boolean canonicalNameRequiresQuoting(String canonicalSQLName) {

@@ -264,7 +264,7 @@ public class PostgreSQLAdapter extends DatabaseAdapter {
     return configName == null ? null : (quoted ? configName : configName.toLowerCase());
   }
 
-  private static final String UNQUOTED_IDENTIFIER_PATTERN = "[a-z][a-z0-9_]*";
+  private static final String UNQUOTED_IDENTIFIER_PATTERN = "[a-z][a-z0-9_]*+";
 
   @Override
   public boolean canonicalNameRequiresQuoting(String canonicalSQLName) {

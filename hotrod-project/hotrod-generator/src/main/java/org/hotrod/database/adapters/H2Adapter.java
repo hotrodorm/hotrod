@@ -140,12 +140,9 @@ public class H2Adapter extends DatabaseAdapter {
       // return new PropertyType(java.util.UUID.class, m, false);
       return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE, 22);
 
-    case java.sql.Types.ARRAY: // ARRAY
-      return new PropertyType("java.lang.Object[]", m, false, TypeSource.STATIC_DIALECT_RULE, 23);
-
     case java.sql.Types.OTHER:
       if ("timestamp with timezone".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(java.sql.Timestamp.class, m, false, TypeSource.STATIC_DIALECT_RULE, 24);
+        return new PropertyType(java.time.OffsetDateTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 23);
 
         // If the JDBC driver was 1.4.x (unstable as of Dec 2016) we could use:
         // return new PropertyType("org.h2.api.TimestampWithTimeZone", m,
@@ -213,7 +210,7 @@ public class H2Adapter extends DatabaseAdapter {
     return configName == null ? null : (quoted ? configName : configName.toUpperCase());
   }
 
-  private static final String UNQUOTED_IDENTIFIER_PATTERN = "[A-Z][A-Z0-9_]*";
+  private static final String UNQUOTED_IDENTIFIER_PATTERN = "[A-Z][A-Z0-9_]*+";
 
   @Override
   public boolean canonicalNameRequiresQuoting(String canonicalSQLName) {
