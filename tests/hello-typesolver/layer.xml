@@ -20,7 +20,9 @@
     <column name="balance" java-type="Double" />
   </table>
 
-  <table name="invoice" />
+  <table name="invoice">
+    <column name="created" java-type="java.sql.Timestamp" />
+  </table>
 
   <dao name="PaymentDAO">
 
