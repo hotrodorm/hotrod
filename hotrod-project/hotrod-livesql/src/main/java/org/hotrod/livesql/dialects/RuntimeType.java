@@ -1,9 +1,8 @@
 package org.hotrod.livesql.dialects;
 
-public class RuntimeType {
+import org.hotrod.typesolver.TypeSolverConst;
 
-  private static final String DIALECT = "d";
-  private static final String TYPESOLVER = "t";
+public class RuntimeType {
 
   private Class<?> type;
   private String namespace;
@@ -16,11 +15,11 @@ public class RuntimeType {
   }
 
   public static RuntimeType ofDialect(Class<?> type, Integer ruleNumber) {
-    return new RuntimeType(type, ruleNumber, DIALECT);
+    return new RuntimeType(type, ruleNumber, TypeSolverConst.RUNTIME_DIALECT_NAMESPACE);
   }
 
   public static RuntimeType ofTypeSolver(Class<?> type, Integer ruleNumber) {
-    return new RuntimeType(type, ruleNumber, TYPESOLVER);
+    return new RuntimeType(type, ruleNumber, TypeSolverConst.RUNTIME_TYPESOLVER_NAMESPACE);
   }
 
   public final Class<?> getType() {

@@ -21,6 +21,7 @@ import org.hotrod.livesql.dialects.LiveSQLDialectFactory;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.queries.typesolver.TypeRule;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
+import org.hotrod.typesolver.TypeSolverConst;
 import org.hotrod.utils.AbstractClassWriter.ExternalClass;
 import org.hotrod.utils.ClassWriter;
 import org.hotrod.utils.SUtil;
@@ -31,7 +32,6 @@ public class LayerConfigBeanWriter {
   private static final Logger log = Logger.getLogger(LayerConfigBeanWriter.class.getName());
 
   private static final String LAYER_CONFIG_CLASS_PREFIX = "LayerConfigurationBean";
-  private static final String RUNTIME_TYPESOLVER_NAMESPACE = "r";
 
   private JDBCTag jdbcTag;
   private RuntimeTypeSolverTag runtimeTypeSolver;
@@ -110,7 +110,7 @@ public class LayerConfigBeanWriter {
     for (TypeSolverWhenTag when : this.runtimeTypeSolver.getWhens()) {
       w.print("    rules.add(", TypeRule.class, ".of(\"" + SUtil.escapeJavaString(when.getTest()) + "\", ",
           TypeHandler.class);
-      String ruleNumber = RUNTIME_TYPESOLVER_NAMESPACE + n;
+      String ruleNumber = TypeSolverConst.RUNTIME_TYPESOLVER_NAMESPACE + n;
       w.println(".forClass(", ExternalClass.of(when.getJavaType()), ".class, ", TypeSource.class,
           "." + TypeSource.RUNTIME_TYPESOLVER_RULE.name() + ", \"" + ruleNumber + "\")));");
       n++;

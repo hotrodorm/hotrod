@@ -35,6 +35,7 @@ public class H2Adapter extends DatabaseAdapter {
 
   public H2Adapter(final DatabaseMetaData dm) throws SQLException {
     super(dm);
+    log.fine("init");
     this.supportsCatalog = false;
   }
 
@@ -149,11 +150,11 @@ public class H2Adapter extends DatabaseAdapter {
         // false);
 
       } else {
-        throw new UnresolvableDataTypeException(m);
+        return null;
       }
 
-    default: // Unrecognized type
-      throw new UnresolvableDataTypeException(m);
+    default: // Other type
+      return null;
 
     }
 

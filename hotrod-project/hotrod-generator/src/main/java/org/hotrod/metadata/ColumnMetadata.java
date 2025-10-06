@@ -291,7 +291,11 @@ public class ColumnMetadata implements DriverColumnMetaData {
 
       // Otherwise, use the default type from the HotRod database dialect
 
-      return adapter.getDialectDefaultType(cm);
+      PropertyType t = adapter.getDialectDefaultType(cm);
+      if (t != null) {
+        return t;
+      }
+      throw new UnresolvableDataTypeException(cm);
 
     }
 
