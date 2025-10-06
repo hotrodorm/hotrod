@@ -122,34 +122,15 @@ public class H2Dialect extends LiveSQLDialect {
       return RuntimeType.ofDialect(byte[].class, 21);
     case java.sql.Types.BLOB:
       return RuntimeType.ofDialect(byte[].class, 22);
+    case java.sql.Types.BINARY:
+      return RuntimeType.ofDialect(byte[].class, 23);
 
     // Boolean
 
     case java.sql.Types.BOOLEAN:
-      return RuntimeType.ofDialect(Boolean.class, 23);
+      return RuntimeType.ofDialect(Boolean.class, 24);
 
-    // Other
-
-//    case java.sql.Types.BINARY: // UUID
-//      return byte[].class;
-
-    case java.sql.Types.ARRAY: // ARRAY
-      return RuntimeType.ofDialect(Object[].class, 24);
-
-    case java.sql.Types.OTHER:
-      if ("timestamp with timezone".equalsIgnoreCase(m.getColumnTypeName())) {
-        return RuntimeType.ofDialect(java.sql.Timestamp.class, 25);
-
-        // If the JDBC driver was 1.4.x (unstable as of Dec 2016) we could use:
-        // return new PropertyType("org.h2.api.TimestampWithTimeZone", m,
-        // false);
-
-      } else {
-//        return byte[].class;
-        return null;
-      }
-
-    default: // Unrecognized type
+    default: // other
       return null;
 
     }
