@@ -37,6 +37,11 @@ public class DeleteObject {
 
   public int execute(final LiveSQLContext context, final LiveSQLLogging loggingAdapter) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
+
+    if (loggingAdapter != null && loggingAdapter.enabled()) {
+      loggingAdapter.log(q.getPreview(true));
+    }
+
     try (Connection conn = context.getDataSource().getConnection()) {
       try (PreparedStatement ps = conn.prepareStatement(q.getSQL())) {
 

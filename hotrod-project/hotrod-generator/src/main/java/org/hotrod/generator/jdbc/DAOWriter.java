@@ -329,7 +329,7 @@ public class DAOWriter {
     if (!this.isExecutor()) {
       w.println("    ", LiveSQLDialect.class, " liveSQLDialect = ", LShield.class, ".getLiveSQLDialect(this.sql);");
       w.println("    this.context = new ", LiveSQLContext.class, "(liveSQLDialect, this.dataSource, new ",
-          RuntimeTypeSolver.class, "(null, liveSQLDialect), log);");
+          RuntimeTypeSolver.class, "(null, liveSQLDialect));");
     }
     w.println("    this.dyn = new ", DynamicSQL.class, "();");
     for (String ini : this.initializersInPostConstruct) {

@@ -1,6 +1,5 @@
 package app;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -99,6 +98,8 @@ public class App {
     }
     int count = this.sql.insert(i).columns(i.id).values(sql.val(123)).execute(LIVESQLLOG);
     System.out.println("inserted: " + count);
+    count = this.invoiceDAO.delete(i, i.id.eq(1234)).execute(LIVESQLLOG);
+    System.out.println("deleted: " + count);
   }
 
 }

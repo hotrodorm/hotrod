@@ -161,7 +161,7 @@ public class LiveSQL {
     this.dataSource = dataSource;
     this.qualifier = qualifier;
     this.typeSolver = new RuntimeTypeSolver(layerConfiguration.getRuntimeTypeSolverRules(), this.liveSQLDialect);
-    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, this.typeSolver, null);
+    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, this.typeSolver);
 
   }
 

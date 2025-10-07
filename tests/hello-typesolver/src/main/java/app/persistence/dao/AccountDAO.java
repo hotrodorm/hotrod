@@ -524,7 +524,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   @PostConstruct
   private void initializeContext() {
     LiveSQLDialect liveSQLDialect = LShield.getLiveSQLDialect(this.sql);
-    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, new RuntimeTypeSolver(null, liveSQLDialect), log);
+    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, new RuntimeTypeSolver(null, liveSQLDialect));
     this.dyn = new DynamicSQL();
     this.initializeSelectbyprimarykey();
     this.initializeSelectbyexample();
