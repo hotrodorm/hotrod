@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.dynamicsql.RowReader;
+import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.SQLExpression;
 import org.hotrod.livesql.expressions.Shield;
@@ -132,11 +133,11 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
   }
 
   @Override
-  public List<T> execute(LiveSQLContext context) {
+  public List<T> execute(LiveSQLContext context, LiveSQLLogging loggingAdapter) {
 //    log.info("--- execute TUPLES");
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     TuplesRowReader<T> rowReader = getRowReader();
-    return executeLiveSQL(context, q, rowReader);
+    return executeLiveSQL(context, q, rowReader, loggingAdapter);
 
   }
 
@@ -147,13 +148,14 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
   }
 
   @Override
-  public Cursor<T> executeCursor(LiveSQLContext context) throws SQLException {
+  public Cursor<T> executeCursor(LiveSQLContext context, LiveSQLLogging loggingAdapter) throws SQLException {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public Cursor<T> executeCursor(LiveSQLContext context, Integer fetchSize) throws SQLException {
+  public Cursor<T> executeCursor(LiveSQLContext context, LiveSQLLogging loggingAdapter, Integer fetchSize)
+      throws SQLException {
     // TODO Auto-generated method stub
     return null;
   }
@@ -166,7 +168,7 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
   }
 
   @Override
-  public T executeOne(LiveSQLContext context) {
+  public T executeOne(LiveSQLContext context, LiveSQLLogging loggingAdapter) {
     // TODO Auto-generated method stub
     return null;
   }

@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.hotrod.dynamicsql.Cursor;
+import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.TableOrView;
@@ -64,22 +65,42 @@ public class SelectTuplesFrom26Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O
 
   public List<Tuple26<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z>> execute() {
     CombinedSelectObject<Tuple26<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z>> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
-    return combined.execute(this.metadata.getContext());
+    return combined.execute(this.metadata.getContext(), LiveSQLLogging.NO_LOGGING);
   }
 
   public Cursor<Tuple26<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z>> executeCursor() throws SQLException {
     CombinedSelectObject<Tuple26<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z>> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
-    return combined.executeCursor(this.metadata.getContext());
+    return combined.executeCursor(this.metadata.getContext(), LiveSQLLogging.NO_LOGGING);
   }
 
   public Cursor<Tuple26<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z>> executeCursor(int fetchSize) throws SQLException {
     CombinedSelectObject<Tuple26<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z>> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
-    return combined.executeCursor(this.metadata.getContext(), fetchSize);
+    return combined.executeCursor(this.metadata.getContext(), LiveSQLLogging.NO_LOGGING, fetchSize);
   }
 
   public Tuple26<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z> executeOne() throws SQLException {
     CombinedSelectObject<Tuple26<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z>> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
-    return combined.executeOne(this.metadata.getContext());
+    return combined.executeOne(this.metadata.getContext(), LiveSQLLogging.NO_LOGGING);
+  }
+
+  public List<Tuple26<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z>> execute(LiveSQLLogging loggingAdapter) {
+    CombinedSelectObject<Tuple26<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z>> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
+    return combined.execute(this.metadata.getContext(), loggingAdapter);
+  }
+
+  public Cursor<Tuple26<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z>> executeCursor(LiveSQLLogging loggingAdapter) throws SQLException {
+    CombinedSelectObject<Tuple26<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z>> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
+    return combined.executeCursor(this.metadata.getContext(), loggingAdapter);
+  }
+
+  public Cursor<Tuple26<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z>> executeCursor(LiveSQLLogging loggingAdapter, int fetchSize) throws SQLException {
+    CombinedSelectObject<Tuple26<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z>> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
+    return combined.executeCursor(this.metadata.getContext(), loggingAdapter, fetchSize);
+  }
+
+  public Tuple26<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z> executeOne(LiveSQLLogging loggingAdapter) throws SQLException {
+    CombinedSelectObject<Tuple26<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z>> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
+    return combined.executeOne(this.metadata.getContext(), loggingAdapter);
   }
 
 }

@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.dynamicsql.RowReader;
+import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.ComparableExpression;
@@ -183,46 +184,48 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
   // Execute
 
   @Override
-  public List<T> execute(final LiveSQLContext context) {
+  public List<T> execute(final LiveSQLContext context, final LiveSQLLogging loggingAdapter) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    return executeLiveSQL(context, q, null);
+    return executeLiveSQL(context, q, null, LiveSQLLogging.NO_LOGGING);
   }
 
   @Override
   public List<T> execute(LiveSQLContext context, RowReader<T> rowReader) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    return executeLiveSQL(context, q, rowReader);
+    return executeLiveSQL(context, q, rowReader, LiveSQLLogging.NO_LOGGING);
   }
 
   @Override
-  public Cursor<T> executeCursor(final LiveSQLContext context) throws SQLException {
+  public Cursor<T> executeCursor(final LiveSQLContext context, final LiveSQLLogging loggingAdapter)
+      throws SQLException {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    return executeLiveSQLCursor(context, q);
+    return executeLiveSQLCursor(context, q, LiveSQLLogging.NO_LOGGING);
   }
 
   @Override
-  public Cursor<T> executeCursor(final LiveSQLContext context, final Integer fetchSize) throws SQLException {
+  public Cursor<T> executeCursor(final LiveSQLContext context, final LiveSQLLogging loggingAdapter,
+      final Integer fetchSize) throws SQLException {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    return executeLiveSQLCursor(context, q, null, fetchSize);
+    return executeLiveSQLCursor(context, q, LiveSQLLogging.NO_LOGGING, null, fetchSize);
   }
 
   @Override
   public Cursor<T> executeCursor(final LiveSQLContext context, RowReader<T> rowReader, Integer fetchSize)
       throws SQLException {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    return executeLiveSQLCursor(context, q, rowReader, fetchSize);
+    return executeLiveSQLCursor(context, q, LiveSQLLogging.NO_LOGGING, rowReader, fetchSize);
   }
 
   @Override
-  public T executeOne(final LiveSQLContext context) {
+  public T executeOne(final LiveSQLContext context, final LiveSQLLogging loggingAdapter) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    return executeLiveSQLOne(context, q, null);
+    return executeLiveSQLOne(context, q, null, LiveSQLLogging.NO_LOGGING);
   }
 
   @Override
   public T executeOne(final LiveSQLContext context, RowReader<T> rowReader) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    return executeLiveSQLOne(context, q, rowReader);
+    return executeLiveSQLOne(context, q, rowReader, LiveSQLLogging.NO_LOGGING);
   }
 
   @Override

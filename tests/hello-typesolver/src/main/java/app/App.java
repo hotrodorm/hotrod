@@ -1,9 +1,12 @@
 package app;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.LiveSQL;
+import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.expressions.datetime.DateTimeFieldExpression.DateTimeField;
 import org.hotrod.livesql.queries.select.Select;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,11 @@ import app.persistence.model.BigInvoice;
 @SpringBootApplication
 @Configuration
 public class App {
+
+  private static final Logger log = Logger.getLogger(App.class.getName());
+
+  private static final LiveSQLLogging LIVESQLLOG = LiveSQLLogging.of(() -> log.isLoggable(Level.FINE),
+      msg -> log.fine(msg));
 
   @Autowired
   private LiveSQL sql;
@@ -84,7 +92,7 @@ public class App {
     ).from(i) //
         .where(i.id.eq(11));
 //    System.out.println("query=" + q.getPreview(true));
-    List<Row> rows = q.execute();
+    List<Row> rows = q.execute(LIVESQLLOG);
     for (Row r : rows) {
       System.out.println("r=" + r);
     }

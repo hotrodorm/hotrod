@@ -48,7 +48,7 @@ public class UnaryRowReader<T> implements RowReader<T> {
       }
       ordinal++;
     }
-    context.logExecution(q);
+//    context.logExecution(q);
   }
 
   @SuppressWarnings("unchecked")

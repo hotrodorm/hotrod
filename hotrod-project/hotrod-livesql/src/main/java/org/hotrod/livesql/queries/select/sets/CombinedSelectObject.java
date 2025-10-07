@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.dynamicsql.RowReader;
+import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.livesql.expressions.Expression;
@@ -330,52 +331,59 @@ public class CombinedSelectObject<T> extends SelectObject<T> {
   // MultiSet execution
 
   @Override
-  public List<T> execute(final LiveSQLContext context) {
+  public List<T> execute(final LiveSQLContext context, final LiveSQLLogging loggingAdapter) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     RowReader<T> rowReader = this.anchor.getRowReader();
-    return executeLiveSQL(context, q, rowReader);
+    return executeLiveSQL(context, q, rowReader, loggingAdapter);
   }
 
   @Override
   public List<T> execute(final LiveSQLContext context, final RowReader<T> rowReader) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    return super.executeLiveSQL(context, q, rowReader);
+    LiveSQLLogging la = null;
+    return super.executeLiveSQL(context, q, rowReader, la);
   }
 
   @Override
-  public T executeOne(final LiveSQLContext context) {
+  public T executeOne(final LiveSQLContext context, LiveSQLLogging loggingAdapter) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     RowReader<T> rowReader = this.anchor.getRowReader();
-    T row = super.executeLiveSQLOne(context, q, rowReader);
+    LiveSQLLogging la = null;
+    T row = super.executeLiveSQLOne(context, q, rowReader, la);
     return row;
   }
 
   @Override
   public T executeOne(LiveSQLContext context, RowReader<T> rowReader) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    T row = super.executeLiveSQLOne(context, q, rowReader);
+    LiveSQLLogging la = null;
+    T row = super.executeLiveSQLOne(context, q, rowReader, la);
     return row;
   }
 
   @Override
-  public Cursor<T> executeCursor(final LiveSQLContext context) throws SQLException {
+  public Cursor<T> executeCursor(final LiveSQLContext context, LiveSQLLogging loggingAdapter) throws SQLException {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     RowReader<T> rowReader = this.anchor.getRowReader();
-    return super.executeLiveSQLCursor(context, q, rowReader, null);
+    LiveSQLLogging la = null;
+    return super.executeLiveSQLCursor(context, q, la, rowReader, null);
   }
 
   @Override
-  public Cursor<T> executeCursor(final LiveSQLContext context, Integer fetchSize) throws SQLException {
+  public Cursor<T> executeCursor(final LiveSQLContext context, LiveSQLLogging loggingAdapter, Integer fetchSize)
+      throws SQLException {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     RowReader<T> rowReader = this.anchor.getRowReader();
-    return super.executeLiveSQLCursor(context, q, rowReader, fetchSize);
+    LiveSQLLogging la = null;
+    return super.executeLiveSQLCursor(context, q, la, rowReader, fetchSize);
   }
 
   @Override
   public Cursor<T> executeCursor(final LiveSQLContext context, final RowReader<T> rowReader, final Integer fetchSize)
       throws SQLException {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    return super.executeLiveSQLCursor(context, q, rowReader, fetchSize);
+    LiveSQLLogging la = null;
+    return super.executeLiveSQLCursor(context, q, la, rowReader, fetchSize);
   }
 
   public final String toString() {

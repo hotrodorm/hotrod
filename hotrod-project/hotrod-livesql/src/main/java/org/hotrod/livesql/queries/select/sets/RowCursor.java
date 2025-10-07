@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.dynamicsql.RowReader;
+import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 
@@ -23,13 +24,16 @@ public class RowCursor<T> implements Cursor<T> {
   private ResultSet rs;
   private RowReader<T> rowReader;
 
-  public RowCursor(final LiveSQLContext context, final LiveSQLPreparedQuery q, final RowReader<T> rowReader,
-      final Integer fetchSize) throws SQLException {
+  public RowCursor(final LiveSQLContext context, final LiveSQLPreparedQuery q, final LiveSQLLogging loggingAdapter,
+      final RowReader<T> rowReader, final Integer fetchSize) throws SQLException {
+
+    this.conn = null;
+    this.ps = null;
 
     try {
 
       this.conn = context.getDataSource().getConnection();
-      this.ps = conn.prepareStatement(q.getSQL());
+      this.ps = this.conn.prepareStatement(q.getSQL());
 
       context.getLiveSQLDialect().enableSelectStreaming(this.ps, fetchSize);
 
@@ -38,15 +42,19 @@ public class RowCursor<T> implements Cursor<T> {
       int n = 1;
       for (Object obj : q.getParameters().values()) {
         int i = n++;
-        ps.setObject(i, obj);
+        this.ps.setObject(i, obj);
       }
 
-      this.rs = ps.executeQuery();
+      this.rs = this.ps.executeQuery();
 
       if (rowReader == null) {
-        this.rowReader = new UnaryRowReader<>(context, q, rs);
+        this.rowReader = new UnaryRowReader<>(context, q, this.rs);
       } else {
         this.rowReader = rowReader;
+      }
+
+      if (loggingAdapter != null && loggingAdapter.enabled()) {
+        loggingAdapter.log(q.getPreview(true));
       }
 
     } catch (SQLException e) {

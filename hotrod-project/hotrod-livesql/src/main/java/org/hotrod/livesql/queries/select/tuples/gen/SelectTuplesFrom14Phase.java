@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.hotrod.dynamicsql.Cursor;
+import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.TableOrView;
@@ -268,22 +269,42 @@ public class SelectTuplesFrom14Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N> {
 
   public List<Tuple14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>> execute() {
     CombinedSelectObject<Tuple14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
-    return combined.execute(this.metadata.getContext());
+    return combined.execute(this.metadata.getContext(), LiveSQLLogging.NO_LOGGING);
   }
 
   public Cursor<Tuple14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>> executeCursor() throws SQLException {
     CombinedSelectObject<Tuple14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
-    return combined.executeCursor(this.metadata.getContext());
+    return combined.executeCursor(this.metadata.getContext(), LiveSQLLogging.NO_LOGGING);
   }
 
   public Cursor<Tuple14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>> executeCursor(int fetchSize) throws SQLException {
     CombinedSelectObject<Tuple14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
-    return combined.executeCursor(this.metadata.getContext(), fetchSize);
+    return combined.executeCursor(this.metadata.getContext(), LiveSQLLogging.NO_LOGGING, fetchSize);
   }
 
   public Tuple14<A, B, C, D, E, F, G, H, I, J, K, L, M, N> executeOne() throws SQLException {
     CombinedSelectObject<Tuple14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
-    return combined.executeOne(this.metadata.getContext());
+    return combined.executeOne(this.metadata.getContext(), LiveSQLLogging.NO_LOGGING);
+  }
+
+  public List<Tuple14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>> execute(LiveSQLLogging loggingAdapter) {
+    CombinedSelectObject<Tuple14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
+    return combined.execute(this.metadata.getContext(), loggingAdapter);
+  }
+
+  public Cursor<Tuple14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>> executeCursor(LiveSQLLogging loggingAdapter) throws SQLException {
+    CombinedSelectObject<Tuple14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
+    return combined.executeCursor(this.metadata.getContext(), loggingAdapter);
+  }
+
+  public Cursor<Tuple14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>> executeCursor(LiveSQLLogging loggingAdapter, int fetchSize) throws SQLException {
+    CombinedSelectObject<Tuple14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
+    return combined.executeCursor(this.metadata.getContext(), loggingAdapter, fetchSize);
+  }
+
+  public Tuple14<A, B, C, D, E, F, G, H, I, J, K, L, M, N> executeOne(LiveSQLLogging loggingAdapter) throws SQLException {
+    CombinedSelectObject<Tuple14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
+    return combined.executeOne(this.metadata.getContext(), loggingAdapter);
   }
 
 }

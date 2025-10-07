@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.dynamicsql.RowReader;
+import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.queries.LiveSQLContext;
@@ -55,18 +56,20 @@ public abstract class SelectObject<T> {
 
   // Execution
 
-  public abstract List<T> execute(final LiveSQLContext context);
+  public abstract List<T> execute(final LiveSQLContext context, final LiveSQLLogging loggingAdapter);
 
   public abstract List<T> execute(final LiveSQLContext context, RowReader<T> rowReader);
 
-  public abstract Cursor<T> executeCursor(final LiveSQLContext context) throws SQLException;
+  public abstract Cursor<T> executeCursor(final LiveSQLContext context, final LiveSQLLogging loggingAdapter)
+      throws SQLException;
 
-  public abstract Cursor<T> executeCursor(final LiveSQLContext context, Integer fetchSize) throws SQLException;
+  public abstract Cursor<T> executeCursor(final LiveSQLContext context, final LiveSQLLogging loggingAdapter,
+      Integer fetchSize) throws SQLException;
 
   public abstract Cursor<T> executeCursor(final LiveSQLContext context, RowReader<T> rowReader, Integer fetchSize)
       throws SQLException;
 
-  public abstract T executeOne(final LiveSQLContext context);
+  public abstract T executeOne(final LiveSQLContext context, final LiveSQLLogging loggingAdapter);
 
   public abstract T executeOne(final LiveSQLContext context, RowReader<T> rowReader);
 
@@ -114,8 +117,7 @@ public abstract class SelectObject<T> {
   public abstract RowReader<T> getRowReader();
 
   protected List<T> executeLiveSQL(final LiveSQLContext context, final LiveSQLPreparedQuery q,
-      final RowReader<T> rowReader) {
-//    logExecution(context, q);
+      final RowReader<T> rowReader, final LiveSQLLogging loggingAdapter) {
 
     List<T> rows = new ArrayList<>();
     try (Connection conn = context.getDataSource().getConnection()) {
@@ -136,6 +138,10 @@ public abstract class SelectObject<T> {
 
           final RowReader<T> effectiveRowReader = rowReader != null ? rowReader : new UnaryRowReader<>(context, q, rs);
 
+          if (loggingAdapter != null && loggingAdapter.enabled()) {
+            loggingAdapter.log(q.getPreview(true));
+          }
+
           while (rs.next()) {
             T row = effectiveRowReader.readRowFrom(rs, conn);
             rows.add(row);
@@ -153,8 +159,7 @@ public abstract class SelectObject<T> {
   }
 
   protected T executeLiveSQLOne(final LiveSQLContext context, final LiveSQLPreparedQuery q,
-      final RowReader<T> rowReader) {
-//    logExecution(context, q);
+      final RowReader<T> rowReader, final LiveSQLLogging loggingAdapter) {
 
     try (Connection conn = context.getDataSource().getConnection()) {
 
@@ -173,8 +178,12 @@ public abstract class SelectObject<T> {
         try (ResultSet rs = ps.executeQuery()) {
 
           final RowReader<T> effectiveRowReader = rowReader != null ? rowReader : new UnaryRowReader<>(context, q, rs);
-          T row = null;
 
+          if (loggingAdapter != null && loggingAdapter.enabled()) {
+            loggingAdapter.log(q.getPreview(true));
+          }
+
+          T row = null;
           int count = 0;
           while (rs.next()) {
             count++;
@@ -194,14 +203,14 @@ public abstract class SelectObject<T> {
     }
   }
 
-  protected Cursor<T> executeLiveSQLCursor(final LiveSQLContext context, final LiveSQLPreparedQuery q)
-      throws SQLException {
-    return executeLiveSQLCursor(context, q, null, null);
+  protected Cursor<T> executeLiveSQLCursor(final LiveSQLContext context, final LiveSQLPreparedQuery q,
+      final LiveSQLLogging loggingAdapter) throws SQLException {
+    return executeLiveSQLCursor(context, q, loggingAdapter, null, null);
   }
 
   protected Cursor<T> executeLiveSQLCursor(final LiveSQLContext context, final LiveSQLPreparedQuery q,
-      final RowReader<T> rowReader, Integer fetchSize) throws SQLException {
-    return new RowCursor<>(context, q, rowReader, fetchSize);
+      final LiveSQLLogging loggingAdapter, final RowReader<T> rowReader, final Integer fetchSize) throws SQLException {
+    return new RowCursor<>(context, q, loggingAdapter, rowReader, fetchSize);
   }
 
   protected abstract void log(ToString t);

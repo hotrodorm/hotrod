@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.hotrod.dynamicsql.Cursor;
+import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.ctes.CTE;
@@ -53,22 +54,45 @@ public class AbstractSelectPhase<R> extends Select<R> {
 
   @Override
   public final List<R> execute() {
-    return this.combined.execute(this.context);
+    LiveSQLLogging la = null;
+    return this.combined.execute(this.context, la);
   }
 
   @Override
   public final Cursor<R> executeCursor() throws SQLException {
-    return this.combined.executeCursor(this.context);
+    return this.combined.executeCursor(this.context, null);
   }
 
   @Override
   public final Cursor<R> executeCursor(int fetchSize) throws SQLException {
-    return this.combined.executeCursor(this.context, fetchSize);
+    LiveSQLLogging la = null;
+    return this.combined.executeCursor(this.context, la, fetchSize);
   }
 
   @Override
   public final R executeOne() {
-    return this.combined.executeOne(this.context);
+    LiveSQLLogging la = null;
+    return this.combined.executeOne(this.context, la);
+  }
+
+  @Override
+  public final List<R> execute(LiveSQLLogging loggingAdapter) {
+    return this.combined.execute(this.context, loggingAdapter);
+  }
+
+  @Override
+  public final Cursor<R> executeCursor(LiveSQLLogging loggingAdapter) throws SQLException {
+    return this.combined.executeCursor(this.context, loggingAdapter);
+  }
+
+  @Override
+  public final Cursor<R> executeCursor(int fetchSize, LiveSQLLogging loggingAdapter) throws SQLException {
+    return this.combined.executeCursor(this.context, loggingAdapter, fetchSize);
+  }
+
+  @Override
+  public final R executeOne(LiveSQLLogging loggingAdapter) {
+    return this.combined.executeOne(this.context, loggingAdapter);
   }
 
   // Utilities

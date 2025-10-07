@@ -35,12 +35,12 @@ public class LiveSQLContext {
     return typeSolver;
   }
 
-  public void logExecution(final LiveSQLPreparedQuery q) {
-    if (this.logger.isLoggable(Level.FINER)) {
-      this.logger.finest("\n" + q.getPreview(true));
-    } else if (this.logger.isLoggable(Level.FINE)) {
-      this.logger.fine("\n" + q.getPreview(false));
-    }
-  }
+//  public void logExecution(final LiveSQLPreparedQuery q) {
+//    if (this.logger.isLoggable(Level.FINER)) {
+//      this.logger.finest("\n" + q.getPreview(true));
+//    } else if (this.logger.isLoggable(Level.FINE)) {
+//      this.logger.fine("\n" + q.getPreview(false));
+//    }
+//  }
 
 }
