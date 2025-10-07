@@ -287,24 +287,24 @@ public class SelectTuplesFrom8Phase<A, B, C, D, E, F, G, H> {
     return combined.executeOne(this.metadata.getContext(), LiveSQLLogging.NO_LOGGING);
   }
 
-  public List<Tuple8<A, B, C, D, E, F, G, H>> execute(LiveSQLLogging loggingAdapter) {
+  public List<Tuple8<A, B, C, D, E, F, G, H>> execute(LiveSQLLogging liveSQLLogging) {
     CombinedSelectObject<Tuple8<A, B, C, D, E, F, G, H>> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
-    return combined.execute(this.metadata.getContext(), loggingAdapter);
+    return combined.execute(this.metadata.getContext(), liveSQLLogging);
   }
 
-  public Cursor<Tuple8<A, B, C, D, E, F, G, H>> executeCursor(LiveSQLLogging loggingAdapter) throws SQLException {
+  public Cursor<Tuple8<A, B, C, D, E, F, G, H>> executeCursor(LiveSQLLogging liveSQLLogging) throws SQLException {
     CombinedSelectObject<Tuple8<A, B, C, D, E, F, G, H>> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
-    return combined.executeCursor(this.metadata.getContext(), loggingAdapter);
+    return combined.executeCursor(this.metadata.getContext(), liveSQLLogging);
   }
 
-  public Cursor<Tuple8<A, B, C, D, E, F, G, H>> executeCursor(LiveSQLLogging loggingAdapter, int fetchSize) throws SQLException {
+  public Cursor<Tuple8<A, B, C, D, E, F, G, H>> executeCursor(LiveSQLLogging liveSQLLogging, int fetchSize) throws SQLException {
     CombinedSelectObject<Tuple8<A, B, C, D, E, F, G, H>> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
-    return combined.executeCursor(this.metadata.getContext(), loggingAdapter, fetchSize);
+    return combined.executeCursor(this.metadata.getContext(), liveSQLLogging, fetchSize);
   }
 
-  public Tuple8<A, B, C, D, E, F, G, H> executeOne(LiveSQLLogging loggingAdapter) throws SQLException {
+  public Tuple8<A, B, C, D, E, F, G, H> executeOne(LiveSQLLogging liveSQLLogging) throws SQLException {
     CombinedSelectObject<Tuple8<A, B, C, D, E, F, G, H>> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
-    return combined.executeOne(this.metadata.getContext(), loggingAdapter);
+    return combined.executeOne(this.metadata.getContext(), liveSQLLogging);
   }
 
 }

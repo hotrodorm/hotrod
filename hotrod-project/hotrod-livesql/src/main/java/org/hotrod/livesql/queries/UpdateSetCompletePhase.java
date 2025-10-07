@@ -3,6 +3,7 @@ package org.hotrod.livesql.queries;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.TableOrView;
@@ -44,7 +45,7 @@ public class UpdateSetCompletePhase implements DMLQuery {
     this.update = update;
   }
 
-  public UpdateSetCompletePhase(final LiveSQLContext context, final TableOrView tableOrView, final List<Setter> setters,
+  public UpdateSetCompletePhase(final LiveSQLContext context, final TableOrView<?> tableOrView, final List<Setter> setters,
       final Predicate predicate) {
     log.info("### setters = " + setters.size());
     this.context = context;
@@ -82,6 +83,11 @@ public class UpdateSetCompletePhase implements DMLQuery {
   @Override
   public int execute() {
     return this.update.execute(this.context);
+  }
+
+  @Override
+  public int execute(LiveSQLLogging loggingAdapter) {
+    return this.update.execute(this.context, loggingAdapter);
   }
 
 }

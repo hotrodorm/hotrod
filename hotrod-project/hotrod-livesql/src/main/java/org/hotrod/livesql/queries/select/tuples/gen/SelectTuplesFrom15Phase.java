@@ -287,24 +287,24 @@ public class SelectTuplesFrom15Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O
     return combined.executeOne(this.metadata.getContext(), LiveSQLLogging.NO_LOGGING);
   }
 
-  public List<Tuple15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>> execute(LiveSQLLogging loggingAdapter) {
+  public List<Tuple15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>> execute(LiveSQLLogging liveSQLLogging) {
     CombinedSelectObject<Tuple15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
-    return combined.execute(this.metadata.getContext(), loggingAdapter);
+    return combined.execute(this.metadata.getContext(), liveSQLLogging);
   }
 
-  public Cursor<Tuple15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>> executeCursor(LiveSQLLogging loggingAdapter) throws SQLException {
+  public Cursor<Tuple15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>> executeCursor(LiveSQLLogging liveSQLLogging) throws SQLException {
     CombinedSelectObject<Tuple15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
-    return combined.executeCursor(this.metadata.getContext(), loggingAdapter);
+    return combined.executeCursor(this.metadata.getContext(), liveSQLLogging);
   }
 
-  public Cursor<Tuple15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>> executeCursor(LiveSQLLogging loggingAdapter, int fetchSize) throws SQLException {
+  public Cursor<Tuple15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>> executeCursor(LiveSQLLogging liveSQLLogging, int fetchSize) throws SQLException {
     CombinedSelectObject<Tuple15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
-    return combined.executeCursor(this.metadata.getContext(), loggingAdapter, fetchSize);
+    return combined.executeCursor(this.metadata.getContext(), liveSQLLogging, fetchSize);
   }
 
-  public Tuple15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> executeOne(LiveSQLLogging loggingAdapter) throws SQLException {
+  public Tuple15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> executeOne(LiveSQLLogging liveSQLLogging) throws SQLException {
     CombinedSelectObject<Tuple15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
-    return combined.executeOne(this.metadata.getContext(), loggingAdapter);
+    return combined.executeOne(this.metadata.getContext(), liveSQLLogging);
   }
 
 }

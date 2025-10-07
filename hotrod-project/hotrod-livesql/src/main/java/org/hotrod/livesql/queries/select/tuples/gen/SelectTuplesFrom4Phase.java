@@ -287,24 +287,24 @@ public class SelectTuplesFrom4Phase<A, B, C, D> {
     return combined.executeOne(this.metadata.getContext(), LiveSQLLogging.NO_LOGGING);
   }
 
-  public List<Tuple4<A, B, C, D>> execute(LiveSQLLogging loggingAdapter) {
+  public List<Tuple4<A, B, C, D>> execute(LiveSQLLogging liveSQLLogging) {
     CombinedSelectObject<Tuple4<A, B, C, D>> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
-    return combined.execute(this.metadata.getContext(), loggingAdapter);
+    return combined.execute(this.metadata.getContext(), liveSQLLogging);
   }
 
-  public Cursor<Tuple4<A, B, C, D>> executeCursor(LiveSQLLogging loggingAdapter) throws SQLException {
+  public Cursor<Tuple4<A, B, C, D>> executeCursor(LiveSQLLogging liveSQLLogging) throws SQLException {
     CombinedSelectObject<Tuple4<A, B, C, D>> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
-    return combined.executeCursor(this.metadata.getContext(), loggingAdapter);
+    return combined.executeCursor(this.metadata.getContext(), liveSQLLogging);
   }
 
-  public Cursor<Tuple4<A, B, C, D>> executeCursor(LiveSQLLogging loggingAdapter, int fetchSize) throws SQLException {
+  public Cursor<Tuple4<A, B, C, D>> executeCursor(LiveSQLLogging liveSQLLogging, int fetchSize) throws SQLException {
     CombinedSelectObject<Tuple4<A, B, C, D>> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
-    return combined.executeCursor(this.metadata.getContext(), loggingAdapter, fetchSize);
+    return combined.executeCursor(this.metadata.getContext(), liveSQLLogging, fetchSize);
   }
 
-  public Tuple4<A, B, C, D> executeOne(LiveSQLLogging loggingAdapter) throws SQLException {
+  public Tuple4<A, B, C, D> executeOne(LiveSQLLogging liveSQLLogging) throws SQLException {
     CombinedSelectObject<Tuple4<A, B, C, D>> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
-    return combined.executeOne(this.metadata.getContext(), loggingAdapter);
+    return combined.executeOne(this.metadata.getContext(), liveSQLLogging);
   }
 
 }

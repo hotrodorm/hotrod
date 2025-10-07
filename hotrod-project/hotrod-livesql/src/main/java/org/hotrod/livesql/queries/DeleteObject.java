@@ -4,20 +4,21 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public class DeleteObject {
 
-  private TableOrView from;
+  private TableOrView<?> from;
   private Predicate wherePredicate;
 
   DeleteObject() {
     super();
   }
 
-  void setFrom(final TableOrView from) {
+  void setFrom(final TableOrView<?> from) {
     this.from = from;
   }
 
@@ -31,6 +32,10 @@ public class DeleteObject {
   }
 
   public int execute(final LiveSQLContext context) {
+    return execute(context, LiveSQLLogging.NO_LOGGING);
+  }
+
+  public int execute(final LiveSQLContext context, final LiveSQLLogging loggingAdapter) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     try (Connection conn = context.getDataSource().getConnection()) {
       try (PreparedStatement ps = conn.prepareStatement(q.getSQL())) {

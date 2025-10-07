@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.dialects.UpdateRenderer;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
@@ -20,7 +21,7 @@ public class UpdateObject {
 
   private static final Logger log = Logger.getLogger(UpdateObject.class.getName());
 
-  private TableOrView tableOrView;
+  private TableOrView<?> tableOrView;
   private List<Assignment> setters = new ArrayList<>();
   private Predicate wherePredicate;
 
@@ -29,7 +30,7 @@ public class UpdateObject {
     log.fine("init");
   }
 
-  void setTableOrView(final TableOrView from) {
+  void setTableOrView(final TableOrView<?> from) {
     this.tableOrView = from;
   }
 
@@ -47,6 +48,10 @@ public class UpdateObject {
   }
 
   public int execute(final LiveSQLContext context) {
+    return execute(context, LiveSQLLogging.NO_LOGGING);
+  }
+
+  public int execute(final LiveSQLContext context, LiveSQLLogging loggingAdapter) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     try (Connection conn = context.getDataSource().getConnection()) {
       try (PreparedStatement ps = conn.prepareStatement(q.getSQL())) {

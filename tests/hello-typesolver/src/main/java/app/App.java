@@ -1,5 +1,6 @@
 package app;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -96,6 +97,8 @@ public class App {
     for (Row r : rows) {
       System.out.println("r=" + r);
     }
+    int count = this.sql.insert(i).columns(i.id).values(sql.val(123)).execute(LIVESQLLOG);
+    System.out.println("inserted: " + count);
   }
 
 }

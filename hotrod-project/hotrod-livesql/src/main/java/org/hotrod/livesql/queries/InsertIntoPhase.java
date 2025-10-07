@@ -18,7 +18,7 @@ public class InsertIntoPhase {
 
   // Constructor
 
-  public InsertIntoPhase(final LiveSQLContext context, final TableOrView into) {
+  public InsertIntoPhase(final LiveSQLContext context, final TableOrView<?> into) {
     this.context = context;
     this.insert = new InsertObject();
     this.insert.setInto(into);
@@ -26,6 +26,12 @@ public class InsertIntoPhase {
 
   // Next stages
 
+  public InsertColumnsPhase columns(final EntityColumn... columns) {
+    this.insert.setColumns(Arrays.asList(columns));
+    return new InsertColumnsPhase(this.context, this.insert);
+  }
+
+  @Deprecated
   public InsertColumnsPhase columns(final List<EntityColumn> columns) {
     this.insert.setColumns(columns);
     return new InsertColumnsPhase(this.context, this.insert);

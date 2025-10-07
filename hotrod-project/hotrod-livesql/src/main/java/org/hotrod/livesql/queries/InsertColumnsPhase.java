@@ -1,5 +1,6 @@
 package org.hotrod.livesql.queries;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.hotrod.livesql.expressions.ComparableExpression;
@@ -22,6 +23,12 @@ public class InsertColumnsPhase {
 
   // Next stages
 
+  public InsertValuesPhase values(final ComparableExpression... values) {
+    this.insert.setValues(Arrays.asList(values));
+    return new InsertValuesPhase(this.context, this.insert);
+  }
+
+  @Deprecated
   public InsertValuesPhase values(final List<ComparableExpression> values) {
     this.insert.setValues(values);
     return new InsertValuesPhase(this.context, this.insert);

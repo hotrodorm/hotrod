@@ -29,7 +29,6 @@ import org.hotrod.livesql.util.ToString;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.utils.SUtil;
 import org.hotrod.utils.Separator;
-import org.hotrod.utils.TUtil;
 
 public abstract class BaseSelectObject<T> extends SelectObject<T> {
 
@@ -57,6 +56,7 @@ public abstract class BaseSelectObject<T> extends SelectObject<T> {
   protected Number waitTime = null;
 
   public BaseSelectObject(List<CTE> ctes, boolean distinct) {
+    log.fine("init");
     this.ctes = ctes;
     this.distinct = distinct;
   }

@@ -2,17 +2,18 @@ package org.hotrod.livesql.queries;
 
 import java.util.Date;
 
+import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.expressions.binary.BinaryExpression;
 import org.hotrod.livesql.expressions.character.CharExpression;
 import org.hotrod.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.livesql.expressions.numeric.NumericExpression;
 import org.hotrod.livesql.expressions.object.ObjectExpression;
-import org.hotrod.livesql.metadata.BooleanEntityColumn;
 import org.hotrod.livesql.metadata.BinaryEntityColumn;
+import org.hotrod.livesql.metadata.BooleanEntityColumn;
+import org.hotrod.livesql.metadata.CharEntityColumn;
 import org.hotrod.livesql.metadata.DateTimeEntityColumn;
 import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.ObjectEntityColumn;
-import org.hotrod.livesql.metadata.CharEntityColumn;
 import org.hotrod.livesql.util.BoxUtil;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
@@ -115,6 +116,11 @@ public class UpdateSetPhase implements DMLQuery {
   @Override
   public int execute() {
     return this.update.execute(this.context);
+  }
+
+  @Override
+  public int execute(LiveSQLLogging loggingAdapter) {
+    return this.update.execute(this.context, loggingAdapter);
   }
 
 }

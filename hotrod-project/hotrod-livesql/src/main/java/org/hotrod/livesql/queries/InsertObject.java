@@ -5,12 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.expressions.ComparableExpression;
-import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.select.sets.BaseSelectObject;
+import org.hotrod.utils.Separator;
 
 public class InsertObject {
 
@@ -23,7 +24,7 @@ public class InsertObject {
     super();
   }
 
-  void setInto(final TableOrView into) {
+  void setInto(final TableOrView<?> into) {
     this.into = into;
   }
 
@@ -45,7 +46,16 @@ public class InsertObject {
   }
 
   public int execute(final LiveSQLContext context) {
+    return this.execute(context, LiveSQLLogging.NO_LOGGING);
+  }
+
+  public int execute(final LiveSQLContext context, LiveSQLLogging loggingAdapter) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
+
+    if (loggingAdapter != null && loggingAdapter.enabled()) {
+      loggingAdapter.log(q.getPreview(true));
+    }
+
     try (Connection conn = context.getDataSource().getConnection()) {
       try (PreparedStatement ps = conn.prepareStatement(q.getSQL())) {
 
@@ -74,13 +84,10 @@ public class InsertObject {
 
     if (this.columns != null) {
       w.write(" (");
-      for (int i = 0; i < this.columns.size(); i++) {
-        EntityColumn c = this.columns.get(i);
-        Expression expr = (Expression) c;
-        Shield.renderTo(expr, w);
-        if (i < this.columns.size() - 1) {
-          w.write(", ");
-        }
+      Separator sep = new Separator(", ");
+      for (EntityColumn c : this.columns) {
+        w.write(sep.render());
+        w.write(w.getSQLDialect().canonicalToNatural(c.getCanonicalName()));
       }
       w.write(")");
     }

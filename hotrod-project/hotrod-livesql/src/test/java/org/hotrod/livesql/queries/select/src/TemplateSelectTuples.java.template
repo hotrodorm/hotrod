@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.hotrod.dynamicsql.Cursor;
-import org.hotrod.livesql.LoggingAdapter;
+import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.TableOrView;
@@ -269,42 +269,42 @@ public class @@classc@@ {
 
   public List<@@tupleClassc@@> execute() {
     CombinedSelectObject<@@tupleClassc@@> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
-    return combined.execute(this.metadata.getContext(), LoggingAdapter.NO_LOGGING);
+    return combined.execute(this.metadata.getContext(), LiveSQLLogging.NO_LOGGING);
   }
 
   public Cursor<@@tupleClassc@@> executeCursor() throws SQLException {
     CombinedSelectObject<@@tupleClassc@@> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
-    return combined.executeCursor(this.metadata.getContext(), LoggingAdapter.NO_LOGGING);
+    return combined.executeCursor(this.metadata.getContext(), LiveSQLLogging.NO_LOGGING);
   }
 
   public Cursor<@@tupleClassc@@> executeCursor(int fetchSize) throws SQLException {
     CombinedSelectObject<@@tupleClassc@@> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
-    return combined.executeCursor(this.metadata.getContext(), LoggingAdapter.NO_LOGGING, fetchSize);
+    return combined.executeCursor(this.metadata.getContext(), LiveSQLLogging.NO_LOGGING, fetchSize);
   }
 
   public @@tupleClassc@@ executeOne() throws SQLException {
     CombinedSelectObject<@@tupleClassc@@> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
-    return combined.executeOne(this.metadata.getContext(), LoggingAdapter.NO_LOGGING);
+    return combined.executeOne(this.metadata.getContext(), LiveSQLLogging.NO_LOGGING);
   }
 
-  public List<@@tupleClassc@@> execute(LoggingAdapter loggingAdapter) {
+  public List<@@tupleClassc@@> execute(LiveSQLLogging liveSQLLogging) {
     CombinedSelectObject<@@tupleClassc@@> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
-    return combined.execute(this.metadata.getContext(), loggingAdapter);
+    return combined.execute(this.metadata.getContext(), liveSQLLogging);
   }
 
-  public Cursor<@@tupleClassc@@> executeCursor(LoggingAdapter loggingAdapter) throws SQLException {
+  public Cursor<@@tupleClassc@@> executeCursor(LiveSQLLogging liveSQLLogging) throws SQLException {
     CombinedSelectObject<@@tupleClassc@@> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
-    return combined.executeCursor(this.metadata.getContext(), loggingAdapter);
+    return combined.executeCursor(this.metadata.getContext(), liveSQLLogging);
   }
 
-  public Cursor<@@tupleClassc@@> executeCursor(LoggingAdapter loggingAdapter, int fetchSize) throws SQLException {
+  public Cursor<@@tupleClassc@@> executeCursor(LiveSQLLogging liveSQLLogging, int fetchSize) throws SQLException {
     CombinedSelectObject<@@tupleClassc@@> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
-    return combined.executeCursor(this.metadata.getContext(), loggingAdapter, fetchSize);
+    return combined.executeCursor(this.metadata.getContext(), liveSQLLogging, fetchSize);
   }
 
-  public @@tupleClassc@@ executeOne(LoggingAdapter loggingAdapter) throws SQLException {
+  public @@tupleClassc@@ executeOne(LiveSQLLogging liveSQLLogging) throws SQLException {
     CombinedSelectObject<@@tupleClassc@@> combined = new CombinedSelectObject<>(new TuplesSelectObject<>(this.metadata));
-    return combined.executeOne(this.metadata.getContext(), loggingAdapter);
+    return combined.executeOne(this.metadata.getContext(), liveSQLLogging);
   }
 
 }

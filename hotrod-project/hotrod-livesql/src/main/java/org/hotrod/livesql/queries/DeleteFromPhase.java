@@ -1,5 +1,6 @@
 package org.hotrod.livesql.queries;
 
+import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
@@ -12,7 +13,7 @@ public class DeleteFromPhase implements DMLQuery {
 
   // Constructor
 
-  public DeleteFromPhase(final LiveSQLContext context, final TableOrView from) {
+  public DeleteFromPhase(final LiveSQLContext context, final TableOrView<?> from) {
     this.context = context;
     this.delete = new DeleteObject();
     this.delete.setFrom(from);
@@ -41,6 +42,11 @@ public class DeleteFromPhase implements DMLQuery {
   @Override
   public int execute() {
     return this.delete.execute(this.context);
+  }
+
+  @Override
+  public int execute(LiveSQLLogging loggingAdapter) {
+    return this.delete.execute(this.context, loggingAdapter);
   }
 
 }

@@ -6,7 +6,6 @@ import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.binary.BinarySyntaxExpression;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
 public class BinarySubqueryExpression extends BinarySyntaxExpression implements SubqueryExpression {
 

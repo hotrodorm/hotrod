@@ -1,5 +1,7 @@
 package org.hotrod.livesql.queries;
 
+import org.hotrod.livesql.LiveSQLLogging;
+
 public class InsertSelectPhase implements DMLQuery {
 
   // Properties
@@ -33,6 +35,11 @@ public class InsertSelectPhase implements DMLQuery {
   @Override
   public int execute() {
     return this.insert.execute(this.context);
+  }
+
+  @Override
+  public int execute(LiveSQLLogging loggingAdapter) {
+    return this.insert.execute(this.context, loggingAdapter);
   }
 
 }
