@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,6 +31,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import app.persistence.model.BigAccount;
+import app.persistence.model.MyAccount;
 
 @Component
 public class SalesDAO implements Serializable, ApplicationContextAware {
@@ -105,18 +107,140 @@ public class SalesDAO implements Serializable, ApplicationContextAware {
     }
   }
 
-  // NITRO SELECT: findBigAccounts
+  // NITRO SELECT: findMyAccounts
 
   private DynamicSelectQuery select0;
 
   private void initializeSelect0() {
     this.select0 = dyn
+      .literal("\n      ")
+      .literal("\n      select *\n      from account\n      where active\n      ")
+      .literal("\n        AND id IN \n        ")
+      .foreach("cod", "codigos", "(", ", ", ")")
+        .literal("\n          ")
+        .variable("cod")
+        .literal("\n        ")
+      .endforeach()
+      .literal("\n      ")
+      .literal("\n    ")
+      .endSelectQuery();
+  }
+
+  public final class RowReader0 implements RowReader<MyAccount> {
+
+    private boolean present1 = false;
+    private boolean present2 = false;
+    private boolean present3 = false;
+    private boolean present4 = false;
+    private boolean present5 = false;
+    private boolean present6 = false;
+    private boolean present7 = false;
+    private boolean present8 = false;
+
+    @Override
+    public void discoverColumns(ResultSet rs) throws SQLException {
+      ResultSetMetaData m = rs.getMetaData();
+      present1 = false;
+      present2 = false;
+      present3 = false;
+      present4 = false;
+      present5 = false;
+      present6 = false;
+      present7 = false;
+      present8 = false;
+      int n = m.getColumnCount();
+      for (int i = 1; i <= n; i++) {
+        String l = m.getColumnLabel(i);
+        if ("ID".equals(l)) present1 = true;
+        if ("NAME".equals(l)) present2 = true;
+        if ("TYPE".equals(l)) present3 = true;
+        if ("BALANCE".equals(l)) present4 = true;
+        if ("ACTIVE".equals(l)) present5 = true;
+        if ("CLIENT_PHOTO".equals(l)) present6 = true;
+        if ("UPDATED_AT".equals(l)) present7 = true;
+        if ("VERSION".equals(l)) present8 = true;
+      }
+    }
+
+    @Override
+    public MyAccount readRowFrom(ResultSet rs, Connection conn) throws SQLException {
+      MyAccount row = applicationContext.getBean(MyAccount.class);
+
+      if (this.present1) {
+        Integer col1 = rs.getInt("ID"); // ID
+        if (rs.wasNull()) col1 = null;
+        row.setId(col1);
+      }
+
+      if (this.present2) {
+        String col2 = rs.getString("NAME"); // NAME
+        row.setName(col2);
+      }
+
+      if (this.present3) {
+        String col3 = rs.getString("TYPE"); // TYPE
+        row.setType(col3);
+      }
+
+      if (this.present4) {
+        Integer col4 = rs.getInt("BALANCE"); // BALANCE
+        if (rs.wasNull()) col4 = null;
+        row.setBalance(col4);
+      }
+
+      if (this.present5) {
+        Integer col5 = rs.getInt("ACTIVE"); // ACTIVE
+        if (rs.wasNull()) col5 = null;
+        row.setActive(col5);
+      }
+
+      if (this.present6) {
+        byte[] col6 = rs.getObject("CLIENT_PHOTO", byte[].class); // CLIENT_PHOTO
+        row.setClientPhoto(col6);
+      }
+
+      if (this.present7) {
+        LocalDateTime col7 = rs.getObject("UPDATED_AT", LocalDateTime.class); // UPDATED_AT
+        row.setUpdatedAt(col7);
+      }
+
+      if (this.present8) {
+        Integer col8 = rs.getInt("VERSION"); // VERSION
+        if (rs.wasNull()) col8 = null;
+        row.setVersion(col8);
+      }
+
+      return row;
+    }
+
+  };
+
+  public List<MyAccount> findMyAccounts(List<Integer> codigos) {
+    Parameters params = this.dyn.newParameters();
+    params.add("codigos", codigos);
+    RowReader0 rr = new RowReader0();
+    PreparedSelectQuery<MyAccount> preparedQuery = this.select0.prepare(params, rr);
+    logQuery(preparedQuery);
+    try (Connection conn = this.dataSource.getConnection()) {
+      List<MyAccount> rows = preparedQuery.execute(conn);
+      return rows;
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
+    }
+  }
+
+  // NITRO SELECT: findBigAccounts
+
+  private DynamicSelectQuery select1;
+
+  private void initializeSelect1() {
+    this.select1 = dyn
       .literal("\n       ")
       .literal("\nselect id, balance as ibt_balance,\n  case when active then 'Active' else 'Inactive' end as status,\n  cast(case when type = 'CHK' then balance * 1.5 else balance * 1.2 end as int) as score\nfrom account\nwhere balance >= 200\n    ")
       .endSelectQuery();
   }
 
-  public final class RowReader0 implements RowReader<BigAccount> {
+  public final class RowReader1 implements RowReader<BigAccount> {
 
     private boolean present1 = false;
     private boolean present2 = false;
@@ -174,8 +298,8 @@ public class SalesDAO implements Serializable, ApplicationContextAware {
 
   public List<BigAccount> findBigAccounts() {
     Parameters params = this.dyn.newParameters();
-    RowReader0 rr = new RowReader0();
-    PreparedSelectQuery<BigAccount> preparedQuery = this.select0.prepare(params, rr);
+    RowReader1 rr = new RowReader1();
+    PreparedSelectQuery<BigAccount> preparedQuery = this.select1.prepare(params, rr);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
       List<BigAccount> rows = preparedQuery.execute(conn);
@@ -199,6 +323,7 @@ public class SalesDAO implements Serializable, ApplicationContextAware {
     this.initializeSelectSequence0();
     this.initializeQuery0();
     this.initializeSelect0();
+    this.initializeSelect1();
   }
 
   private void logQuery(PreparedQuery preparedQuery) {

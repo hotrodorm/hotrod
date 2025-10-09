@@ -39,13 +39,7 @@ import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 
 public class SelectMethodMetadata implements DataSetMetadata {
 
-  // Constants
-
-  private static final long serialVersionUID = 1L;
-
   private static final Logger log = Logger.getLogger(SelectMethodMetadata.class.getName());
-
-  // Properties
 
   private boolean structuredSelect;
 

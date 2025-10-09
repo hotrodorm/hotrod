@@ -1343,7 +1343,7 @@ public class DAOWriter {
         TypeSource typeSource = cm.getType().getTypeSource();
         String ruleNumber = cm.getType().getRuleNumber();
         w.println("(), ", TypeSource.class, "." + typeSource.name() + ", "
-            + (ruleNumber == null ? "" : "\"" + SUtil.escapeJavaString(ruleNumber) + "\"") + ");");
+            + (ruleNumber == null ? "null" : "\"" + SUtil.escapeJavaString(ruleNumber) + "\"") + ");");
 
         w.print("    public final ", ConvertedColumn.class, "<", rawClass, ", ");
         w.print(domainClass, "> " + memberName + " = new ", ConvertedColumn.class);

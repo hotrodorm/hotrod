@@ -12,10 +12,10 @@ public class EmployeeLayout implements Serializable {
 
   // Layout Properties (table columns)
 
-  protected Integer id = null; // Type Name: INTEGER - Type Resolved By: STATIC_DIALECT_RULE
-  protected String fullName = null; // Type Name: CHARACTER VARYING - Type Resolved By: STATIC_DIALECT_RULE
-  protected Integer branchId = null; // Type Name: INTEGER - Type Resolved By: STATIC_DIALECT_RULE
-  protected Boolean vip = null; // Type Name: INTEGER - Type Resolved By: STATIC_DESIGNATED
+  protected Integer id = null; // Type Source: STATIC_DIALECT_RULE, rule #D9
+  protected String fullName = null; // Type Source: STATIC_DIALECT_RULE, rule #D14
+  protected Integer branchId = null; // Type Source: STATIC_DIALECT_RULE, rule #D9
+  protected Boolean vip = null; // Type Source: STATIC_DESIGNATED
 
   // getters & setters
 

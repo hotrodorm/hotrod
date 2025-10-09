@@ -99,11 +99,12 @@ public class ComplementTag extends EnhancedSQLPart {
 
   @Override
   public String renderSQLFoundation(ParameterRenderer parameterRenderer) {
-    StringBuilder sb = new StringBuilder();
-    for (DynamicSQLPart p : this.parts) {
-      sb.append(p.renderSQLFoundation(parameterRenderer));
-    }
-    return sb.toString();
+    return "";
+//    StringBuilder sb = new StringBuilder();
+//    for (DynamicSQLPart p : this.parts) {
+//      sb.append(p.renderSQLFoundation(parameterRenderer));
+//    }
+//    return sb.toString();
   }
 
   @Override

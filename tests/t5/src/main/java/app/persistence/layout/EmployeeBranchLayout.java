@@ -12,11 +12,11 @@ public class EmployeeBranchLayout implements Serializable {
 
   // Layout Properties (view columns)
 
-  protected Integer id = null; // Type Name: INTEGER - Type Resolved By: STATIC_DIALECT_RULE
-  protected String name = null; // Type Name: CHARACTER VARYING - Type Resolved By: STATIC_DIALECT_RULE
-  protected Integer branchId = null; // Type Name: INTEGER - Type Resolved By: STATIC_DIALECT_RULE
-  protected Integer vip = null; // Type Name: INTEGER - Type Resolved By: STATIC_DIALECT_RULE
-  protected String region = null; // Type Name: CHARACTER VARYING - Type Resolved By: STATIC_DIALECT_RULE
+  protected Integer id = null; // Type Source: STATIC_DIALECT_RULE, rule #D9
+  protected String name = null; // Type Source: STATIC_DIALECT_RULE, rule #D14
+  protected Integer branchId = null; // Type Source: STATIC_DIALECT_RULE, rule #D9
+  protected Integer vip = null; // Type Source: STATIC_DIALECT_RULE, rule #D9
+  protected String region = null; // Type Source: STATIC_DIALECT_RULE, rule #D14
 
   // getters & setters
 

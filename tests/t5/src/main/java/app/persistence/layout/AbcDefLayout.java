@@ -12,8 +12,8 @@ public class AbcDefLayout implements Serializable {
 
   // Layout Properties (table columns)
 
-  protected Integer id = null; // Type Name: INTEGER - Type Resolved By: STATIC_DIALECT_RULE
-  protected String name = null; // Type Name: CHARACTER VARYING - Type Resolved By: STATIC_DIALECT_RULE
+  protected Integer id = null; // Type Source: STATIC_DIALECT_RULE, rule #D9
+  protected String name = null; // Type Source: STATIC_DIALECT_RULE, rule #D14
 
   // getters & setters
 

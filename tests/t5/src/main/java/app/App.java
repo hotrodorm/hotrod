@@ -1,6 +1,7 @@
 package app;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -16,8 +17,10 @@ import org.springframework.context.annotation.Configuration;
 
 import app.persistence.dao.ProductDAO;
 import app.persistence.dao.ProductDAO.ProductTable;
+import app.persistence.dao.SalesDAO;
 import app.persistence.dao.VehicleDAO;
 import app.persistence.layout.VehicleLayout;
+import app.persistence.model.MyAccount;
 import app.persistence.model.Product;
 import app.persistence.model.Vehicle;
 
@@ -45,9 +48,9 @@ public class App {
 
 //  @Autowired
 //  private EmployeeDAO employeeDAO;
-//
-//  @Autowired
-//  private SalesDAO salesDAO;
+
+  @Autowired
+  private SalesDAO salesDAO;
 
   @Autowired
   private VehicleDAO vehicleDAO;
@@ -75,7 +78,8 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       log.info("[ Starting... ]");
-      testCast();
+      testComplement();
+//      testCast();
 //      testWhere();
 //      testInsert1();
 //      testForEach();
@@ -105,6 +109,12 @@ public class App {
 //      testNitro6();
       log.info("[ Ending ]");
     };
+  }
+
+  private void testComplement() {
+    List<Integer> codigos = Arrays.asList(123, 456, 789);
+    List<MyAccount> ma = this.salesDAO.findMyAccounts(codigos);
+    ma.forEach(r -> System.out.println("ma=" + r));
   }
 
   private void testCast() {

@@ -12,9 +12,9 @@ public class ProductLayout implements Serializable {
 
   // Layout Properties (table columns)
 
-  protected Long pidProduct = null; // Type Name: NUMERIC - Type Resolved By: STATIC_DIALECT_RULE
-  protected String type = null; // Type Name: CHARACTER VARYING - Type Resolved By: STATIC_DIALECT_RULE
-  protected Integer shipping = null; // Type Name: INTEGER - Type Resolved By: STATIC_DIALECT_RULE
+  protected Long pidProduct = null; // Type Source: STATIC_DIALECT_RULE, rule #D5
+  protected String type = null; // Type Source: STATIC_DIALECT_RULE, rule #D14
+  protected Integer shipping = null; // Type Source: STATIC_DIALECT_RULE, rule #D9
 
   // getters & setters
 

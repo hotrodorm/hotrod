@@ -12,8 +12,8 @@ public class CoinLayout implements Serializable {
 
   // Layout Properties (table columns)
 
-  protected Integer type = null; // Type Name: CHARACTER - Type Resolved By: STATIC_DESIGNATED
-  protected String name = null; // Type Name: CHARACTER VARYING - Type Resolved By: STATIC_DIALECT_RULE
+  protected Integer type = null; // Type Source: STATIC_DESIGNATED
+  protected String name = null; // Type Source: STATIC_DIALECT_RULE, rule #D14
 
   // getters & setters
 

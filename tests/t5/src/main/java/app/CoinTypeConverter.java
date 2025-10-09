@@ -3,7 +3,9 @@ package app;
 import java.sql.Connection;
 
 import org.hotrod.converter.TypeConverter;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CoinTypeConverter implements TypeConverter<String, Integer> {
 
   @Override

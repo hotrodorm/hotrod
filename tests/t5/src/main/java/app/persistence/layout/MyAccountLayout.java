@@ -7,86 +7,84 @@ import java.time.LocalDateTime;
 
 import org.hotrod.json.JSONObject;
 
-import app.AccountTypeConverter.AccountType;
-
-public class AccountLayout implements Serializable {
+public class MyAccountLayout implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  // Layout Properties (table columns)
+  // Expression properties
 
-  protected Integer id = null; // Type Source: STATIC_DIALECT_RULE, rule #D9
-  protected String name = null; // Type Source: STATIC_DIALECT_RULE, rule #D14
-  protected AccountType type = null; // Type Source: STATIC_DESIGNATED
-  protected Double balance = null; // Type Source: STATIC_DESIGNATED
-  protected Boolean active = null; // Type Source: STATIC_DESIGNATED
-  protected byte[] clientPhoto = null; // Type Source: STATIC_DIALECT_RULE, rule #D20
-  protected LocalDateTime updatedAt = null; // Type Source: STATIC_DIALECT_RULE, rule #D18
-  protected Integer version = null; // Type Source: STATIC_DIALECT_RULE, rule #D9
+  protected Integer id = null; // Source Type: STATIC_DIALECT_RULE, rule #D9
+  protected String name = null; // Source Type: STATIC_DIALECT_RULE, rule #D14
+  protected String type = null; // Source Type: STATIC_DIALECT_RULE, rule #D14
+  protected Integer balance = null; // Source Type: STATIC_DIALECT_RULE, rule #D9
+  protected Integer active = null; // Source Type: STATIC_DIALECT_RULE, rule #D9
+  protected byte[] clientPhoto = null; // Source Type: STATIC_DIALECT_RULE, rule #D20
+  protected LocalDateTime updatedAt = null; // Source Type: STATIC_DIALECT_RULE, rule #D18
+  protected Integer version = null; // Source Type: STATIC_DIALECT_RULE, rule #D9
 
   // getters & setters
 
-  public Integer getId() {
+  public final Integer getId() {
     return this.id;
   }
 
-  public void setId(final Integer id) {
+  public final void setId(final java.lang.Integer id) {
     this.id = id;
   }
 
-  public String getName() {
+  public final String getName() {
     return this.name;
   }
 
-  public void setName(final String name) {
+  public final void setName(final java.lang.String name) {
     this.name = name;
   }
 
-  public AccountType getType() {
+  public final String getType() {
     return this.type;
   }
 
-  public void setType(final AccountType type) {
+  public final void setType(final java.lang.String type) {
     this.type = type;
   }
 
-  public Double getBalance() {
+  public final Integer getBalance() {
     return this.balance;
   }
 
-  public void setBalance(final Double balance) {
+  public final void setBalance(final java.lang.Integer balance) {
     this.balance = balance;
   }
 
-  public Boolean getActive() {
+  public final Integer getActive() {
     return this.active;
   }
 
-  public void setActive(final Boolean active) {
+  public final void setActive(final java.lang.Integer active) {
     this.active = active;
   }
 
-  public byte[] getClientPhoto() {
+  public final byte[] getClientPhoto() {
     return this.clientPhoto;
   }
 
-  public void setClientPhoto(final byte[] clientPhoto) {
+  public final void setClientPhoto(final byte[] clientPhoto) {
     this.clientPhoto = clientPhoto;
   }
 
-  public LocalDateTime getUpdatedAt() {
+  public final LocalDateTime getUpdatedAt() {
     return this.updatedAt;
   }
 
-  public void setUpdatedAt(final LocalDateTime updatedAt) {
+  public final void setUpdatedAt(final java.time.LocalDateTime updatedAt) {
     this.updatedAt = updatedAt;
   }
 
-  public Integer getVersion() {
+  public final Integer getVersion() {
     return this.version;
   }
 
-  public void setVersion(final Integer version) {
+  public final void setVersion(final java.lang.Integer version) {
     this.version = version;
   }
 
@@ -94,7 +92,7 @@ public class AccountLayout implements Serializable {
 
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
+    sb.append(super.toString() + "\n");
     sb.append("- id=" + this.id + "\n");
     sb.append("- name=" + this.name + "\n");
     sb.append("- type=" + this.type + "\n");

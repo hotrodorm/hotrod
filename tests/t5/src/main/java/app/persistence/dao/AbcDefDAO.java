@@ -42,8 +42,8 @@ import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
+import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
-import org.hotrod.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.livesql.util.CastUtil;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
@@ -458,9 +458,9 @@ public class AbcDefDAO implements Serializable, ApplicationContextAware {
   public static class AbcDefTable extends Table<AbcDef> {
 
     public final NumericEntityColumn id = new NumericEntityColumn(this,
-      "ID", "id", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
+      "ID", "id", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE, "D9"));
     public final CharEntityColumn name = new CharEntityColumn(this,
-      "NAME", "name", "CHARACTER VARYING", 10, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE));
+      "NAME", "name", "CHARACTER VARYING", 10, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE, "D14"));
 
     @Override
     public AllColumns star() {
@@ -496,7 +496,7 @@ public class AbcDefDAO implements Serializable, ApplicationContextAware {
   @PostConstruct
   private void initializeContext() {
     LiveSQLDialect liveSQLDialect = LShield.getLiveSQLDialect(this.sql);
-    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, new TypeSolver(null, liveSQLDialect), log);
+    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, new RuntimeTypeSolver(null, liveSQLDialect));
     this.dyn = new DynamicSQL();
     this.initializeSelectbyprimarykey();
     this.initializeSelectbyexample();

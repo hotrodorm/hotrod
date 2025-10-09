@@ -30,8 +30,8 @@ import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.LiveSQLContext;
+import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
-import org.hotrod.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,7 +105,7 @@ public class TestDAO implements Serializable, ApplicationContextAware {
         .literaln("FROM product") //
         .literaln("\nWHERE " + "pid_product IN ") //
         .foreach("v", "f.ids", "(", ", ", ")").variable("v") //
-          .foreach("u", "f.ids", ", ", ", ", "").variable("u").endforeach() //
+        .foreach("u", "f.ids", ", ", ", ", "").variable("u").endforeach() //
         .endforeach() //
         .endSelectQuery();
   }
@@ -151,11 +151,11 @@ public class TestDAO implements Serializable, ApplicationContextAware {
   public static class ProductTable extends Table<Product> {
 
     public final NumericEntityColumn pidProduct = new NumericEntityColumn(this, "PID_PRODUCT", "pidProduct", "NUMBER",
-        18, 0, TypeHandler.forClass(Long.class, TypeSource.STATIC_DIALECT_RULE));
+        18, 0, TypeHandler.forClass(Long.class, TypeSource.STATIC_DIALECT_RULE, "D1"));
     public final CharEntityColumn type = new CharEntityColumn(this, "TYPE", "type", "VARCHAR2", 6, null,
-        TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE));
+        TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE, "D2"));
     public final NumericEntityColumn shipping = new NumericEntityColumn(this, "SHIPPING", "shipping", "NUMBER", 6, 0,
-        TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
+        TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE, "D3"));
 
     @Override
     public AllColumns star() {
@@ -192,7 +192,7 @@ public class TestDAO implements Serializable, ApplicationContextAware {
   @PostConstruct
   private void initializeContext() {
     LiveSQLDialect liveSQLDialect = LShield.getLiveSQLDialect(this.sql);
-    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, new TypeSolver(null, liveSQLDialect), log);
+    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, new RuntimeTypeSolver(null, liveSQLDialect));
     this.dyn = new DynamicSQL();
     this.initializeSelectbyprimarykeys();
   }

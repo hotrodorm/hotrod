@@ -46,8 +46,8 @@ import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
+import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
-import org.hotrod.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.livesql.util.CastUtil;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
@@ -90,8 +90,11 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   // CONVERTERS
 
-  private final AccountTypeConverter converter0 = new AccountTypeConverter();
-  private final IntegerBooleanConverter converter1 = new IntegerBooleanConverter();
+  @Autowired
+  private AccountTypeConverter converter0;
+
+  @Autowired
+  private IntegerBooleanConverter converter1;
 
   // ROW READER
 
@@ -627,21 +630,21 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   public static class AccountTable extends Table<Account> {
 
     public final NumericEntityColumn id = new NumericEntityColumn(this,
-      "ID", "id", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
+      "ID", "id", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE, "D9"));
     public final CharEntityColumn name = new CharEntityColumn(this,
-      "NAME", "name", "CHARACTER VARYING", 20, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE));
-    private final TypeHandler<String, AccountType> th0 = TypeHandler.forConverter(new AccountTypeConverter(), TypeSource.STATIC_DESIGNATED);
+      "NAME", "name", "CHARACTER VARYING", 20, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE, "D14"));
+    private final TypeHandler<String, AccountType> th0 = TypeHandler.forConverter(new AccountTypeConverter(), TypeSource.STATIC_DESIGNATED, null);
     public final ConvertedColumn<String, AccountType> type = new ConvertedColumn<String, AccountType>(this, "TYPE", "type", "CHARACTER VARYING", 3, 0, th0, th0.getConverter());
     public final NumericEntityColumn balance = new NumericEntityColumn(this,
-      "BALANCE", "balance", "INTEGER", 32, 0, TypeHandler.forClass(Double.class, TypeSource.STATIC_DESIGNATED));
-    private final TypeHandler<Integer, Boolean> th1 = TypeHandler.forConverter(new IntegerBooleanConverter(), TypeSource.STATIC_DESIGNATED);
+      "BALANCE", "balance", "INTEGER", 32, 0, TypeHandler.forClass(Double.class, TypeSource.STATIC_DESIGNATED, null));
+    private final TypeHandler<Integer, Boolean> th1 = TypeHandler.forConverter(new IntegerBooleanConverter(), TypeSource.STATIC_DESIGNATED, null);
     public final ConvertedColumn<Integer, Boolean> active = new ConvertedColumn<Integer, Boolean>(this, "ACTIVE", "active", "INTEGER", 32, 0, th1, th1.getConverter());
     public final BinaryEntityColumn clientPhoto = new BinaryEntityColumn(this,
-      "CLIENT_PHOTO", "clientPhoto", "BINARY LARGE OBJECT", 2147483647, 0, TypeHandler.forClass(byte[].class, TypeSource.STATIC_DIALECT_RULE));
+      "CLIENT_PHOTO", "clientPhoto", "BINARY LARGE OBJECT", 2147483647, 0, TypeHandler.forClass(byte[].class, TypeSource.STATIC_DIALECT_RULE, "D20"));
     public final DateTimeEntityColumn updatedAt = new DateTimeEntityColumn(this,
-      "UPDATED_AT", "updatedAt", "TIMESTAMP", 26, 6, TypeHandler.forClass(LocalDateTime.class, TypeSource.STATIC_DIALECT_RULE));
+      "UPDATED_AT", "updatedAt", "TIMESTAMP", 26, 6, TypeHandler.forClass(LocalDateTime.class, TypeSource.STATIC_DIALECT_RULE, "D18"));
     public final NumericEntityColumn version = new NumericEntityColumn(this,
-      "VERSION", "version", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
+      "VERSION", "version", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE, "D9"));
 
     @Override
     public AllColumns star() {
@@ -683,7 +686,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   @PostConstruct
   private void initializeContext() {
     LiveSQLDialect liveSQLDialect = LShield.getLiveSQLDialect(this.sql);
-    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, new TypeSolver(null, liveSQLDialect), log);
+    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, new RuntimeTypeSolver(null, liveSQLDialect));
     this.dyn = new DynamicSQL();
     this.initializeSelectbyprimarykey();
     this.initializeSelectbyexample();

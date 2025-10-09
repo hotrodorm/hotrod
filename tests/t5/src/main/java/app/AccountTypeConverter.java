@@ -3,9 +3,11 @@ package app;
 import java.sql.Connection;
 
 import org.hotrod.converter.TypeConverter;
+import org.springframework.stereotype.Component;
 
 import app.AccountTypeConverter.AccountType;
 
+@Component
 public class AccountTypeConverter implements TypeConverter<String, AccountType> {
 
   public static enum AccountType {

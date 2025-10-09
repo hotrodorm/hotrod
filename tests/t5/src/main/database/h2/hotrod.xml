@@ -10,13 +10,13 @@
 -->
   </generators>
 
-  <type-solver>
+  <runtime-type-solver>
   <!-- 
-    <when test-resultset="scale > 0" java-type="java.math.BigDecimal" />
+    <when test="scale > 0" java-type="java.math.BigDecimal" />
   -->
-    <when test-resultset="precision &lt; 20" java-type="Long" />
-    <when test-resultset="scale > 0" java-type="Short" />
-  </type-solver>
+    <when test="precision &lt; 20" java-type="Long" />
+    <when test="scale > 0" java-type="Short" />
+  </runtime-type-solver>
 
   <converter name="boolean_stored_as_int" java-type="java.lang.Boolean" java-raw-type="java.lang.Integer"
     class="app.IntegerBooleanConverter" />
@@ -80,6 +80,18 @@ SELECT * FROM other
   <dao name="SalesDAO">
     <sequence name="hired_seq" method="getHiredNextValue" />
 
+    <select method="findMyAccounts" vo="MyAccount">
+      <parameter name="codigos" java-type="java.util.List&lt;Integer>" jdbc-type="ARRAY" />
+      select *
+      from account
+      where active
+      <complement>
+        AND id IN 
+        <foreach item="cod" collection="codigos" open="(" close=")" separator=", ">
+          #{cod}
+        </foreach>
+      </complement>
+    </select>
 
     <select method="findBigAccounts" vo="BigAccount">
        <column name="ibt_balance" java-name="grossBalance" />
