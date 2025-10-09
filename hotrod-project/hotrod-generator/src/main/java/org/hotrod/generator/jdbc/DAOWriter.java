@@ -149,6 +149,8 @@ public class DAOWriter {
         ? this.fragmentConfig.getFragmentPackage()
         : null;
 
+    // <package-base>/<fragment-package>/<dao>
+
     this.classPackage = this.jdbcTag.getDAOPackage(this.fragmentPackage);
     this.metadataClassName = this.metadata.getId().getJavaClassName() + (this.isTable() ? "Table" : "View");
 

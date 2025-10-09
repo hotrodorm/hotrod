@@ -1,22 +1,22 @@
-package app.persistence.model;
+package app.persistence;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import app.persistence.dao.EmployeeBranchDAO;
-import app.persistence.layout.EmployeeBranchLayout;
+import app.persistence.dao.AbcDefDAO;
+import app.persistence.layout.AbcDefLayout;
 
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class EmployeeBranch extends EmployeeBranchLayout {
+public class AbcDef extends AbcDefLayout {
 
   private static final long serialVersionUID = 1L;
 
   @SuppressWarnings("unused")
   @Autowired
-  private EmployeeBranchDAO employeeBranchDAO;
+  private AbcDefDAO abcDefDAO;
 
   // Add custom code below.
 

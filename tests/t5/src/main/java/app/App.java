@@ -15,14 +15,14 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import app.persistence.MyAccount;
+import app.persistence.Product;
 import app.persistence.dao.ProductDAO;
 import app.persistence.dao.ProductDAO.ProductTable;
 import app.persistence.dao.SalesDAO;
-import app.persistence.dao.VehicleDAO;
-import app.persistence.layout.VehicleLayout;
-import app.persistence.model.MyAccount;
-import app.persistence.model.Product;
-import app.persistence.model.Vehicle;
+import app.persistence.geo.Vehicle;
+import app.persistence.geo.dao.VehicleDAO;
+import app.persistence.geo.layout.VehicleLayout;
 
 @SpringBootApplication
 @Configuration

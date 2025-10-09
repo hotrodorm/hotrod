@@ -57,8 +57,8 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import app.IntegerBooleanConverter;
+import app.persistence.Employee;
 import app.persistence.layout.EmployeeLayout;
-import app.persistence.model.Employee;
 
 @Component
 public class EmployeeDAO implements Serializable, ApplicationContextAware {

@@ -39,8 +39,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import app.persistence.Product;
 import app.persistence.layout.ProductLayout;
-import app.persistence.model.Product;
 
 @Component
 public class TestDAO implements Serializable, ApplicationContextAware {

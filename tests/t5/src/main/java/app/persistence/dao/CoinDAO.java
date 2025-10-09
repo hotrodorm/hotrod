@@ -55,8 +55,8 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import app.CoinTypeConverter;
+import app.persistence.Coin;
 import app.persistence.layout.CoinLayout;
-import app.persistence.model.Coin;
 
 @Component
 public class CoinDAO implements Serializable, ApplicationContextAware {

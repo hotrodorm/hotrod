@@ -4,6 +4,7 @@
   <jdbc base-dir="src/main/java"
         package="app.persistence"
         >
+        <model sub-package="" />
   </jdbc>
     <!--
     <jdbc>
@@ -40,8 +41,6 @@
   <view name="employee_branch" />
   <table name="'abc_DEF'" />
 
-  <table name="vehicle" />
-  <table name="land" />
 
   <table name="coin">
     <column name="type" converter="coin_type_stored_as_char" />
@@ -180,6 +179,7 @@ where balance >= 300
   <fragment file="./test4.xml" />
 -->  
 
+  <fragment file="./geo.xml" />
   
 <!--
   <fragment file="./test2.xml" />

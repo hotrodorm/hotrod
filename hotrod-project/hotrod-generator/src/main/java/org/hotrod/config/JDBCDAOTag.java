@@ -36,7 +36,8 @@ public class JDBCDAOTag extends AbstractConfigurationTag {
   private String suffix = null;
 
   private File baseDir;
-  private ClassPackage computedPackage;
+  private ClassPackage basePackage;
+  private ClassPackage subpackage;
 
   // Constructor
 
@@ -101,13 +102,13 @@ public class JDBCDAOTag extends AbstractConfigurationTag {
 
     // package
 
-    ClassPackage currPackage = jdbcPackage;
+    this.basePackage = jdbcPackage;
     if (this.sPackage != null) {
       try {
-        currPackage = ClassPackage.parse(this.sPackage);
+        this.basePackage = ClassPackage.parse(this.sPackage);
       } catch (InvalidPackageException e) {
         throw new InvalidConfigurationFileException(this,
-            "Invalid package '" + this.sPackage + "'. in the attribute 'package' of the tag <" + super.getTagName()
+            "Invalid package '" + this.sPackage + "' in the attribute 'package' of the tag <" + super.getTagName()
                 + ">: when specified it must be a valid package: " + e.getMessage());
       }
     }
@@ -116,20 +117,18 @@ public class JDBCDAOTag extends AbstractConfigurationTag {
 
     if (this.sSubPackage == null) {
       String ds = DEFAULT_SUBPACKAGE;
-      ClassPackage sp = null;
+      this.subpackage = null;
       try {
-        sp = ClassPackage.parse(ds);
+        this.subpackage = ClassPackage.parse(ds);
       } catch (InvalidPackageException e) {
         throw new InvalidConfigurationFileException(this,
             "Invalid default subpackage '" + ds
                 + "'. Please specify a subpackage on the attribute 'sub-package' of the tag <" + super.getTagName()
                 + ">: " + e.getMessage());
       }
-      this.computedPackage = currPackage.append(sp);
     } else {
       try {
-        ClassPackage sp = ClassPackage.parse(this.sSubPackage);
-        this.computedPackage = currPackage.append(sp);
+        this.subpackage = ClassPackage.parse(this.sSubPackage);
       } catch (InvalidPackageException e) {
         throw new InvalidConfigurationFileException(this, "Invalid sub-package '" + this.sSubPackage
             + "' on attribute 'sub-package' of the tag <" + super.getTagName() + ">: " + e.getMessage());
@@ -178,9 +177,9 @@ public class JDBCDAOTag extends AbstractConfigurationTag {
 
   public ClassPackage getPackage(ClassPackage fragmentPackage) {
     if (fragmentPackage != null) {
-      return this.computedPackage.append(fragmentPackage);
+      return this.basePackage.append(fragmentPackage).append(this.subpackage);
     } else {
-      return this.computedPackage;
+      return this.basePackage.append(this.subpackage);
     }
   }
 

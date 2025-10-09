@@ -54,8 +54,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import app.persistence.EmployeeBranch;
 import app.persistence.layout.EmployeeBranchLayout;
-import app.persistence.model.EmployeeBranch;
 
 @Component
 public class EmployeeBranchDAO implements Serializable, ApplicationContextAware {

@@ -30,8 +30,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import app.persistence.model.BigAccount;
-import app.persistence.model.MyAccount;
+import app.persistence.BigAccount;
+import app.persistence.MyAccount;
 
 @Component
 public class SalesDAO implements Serializable, ApplicationContextAware {

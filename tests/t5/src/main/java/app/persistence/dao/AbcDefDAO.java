@@ -54,8 +54,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import app.persistence.AbcDef;
 import app.persistence.layout.AbcDefLayout;
-import app.persistence.model.AbcDef;
 
 @Component
 public class AbcDefDAO implements Serializable, ApplicationContextAware {

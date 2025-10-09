@@ -3,6 +3,7 @@ package org.hotrod.utils;
 import java.io.File;
 import java.util.Arrays;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.hotrod.exceptions.InvalidPackageException;
 
@@ -13,9 +14,9 @@ public class ClassPackage {
   private String pkg;
   private String[] names;
 
-  private ClassPackage(final String pkg, final String[] names) {
-    this.pkg = pkg;
+  private ClassPackage(final String[] names) {
     this.names = names;
+    this.pkg = Arrays.stream(names).collect(Collectors.joining("."));
   }
 
   public static ClassPackage parse(final String pkg) throws InvalidPackageException {
@@ -54,7 +55,7 @@ public class ClassPackage {
             + "See https://docs.oracle.com/javase/specs/jls/se16/html/jls-7.html#jls-7.4 for details.");
       }
     }
-    return new ClassPackage(pkg, names);
+    return new ClassPackage(names);
   }
 
   private static boolean isIdentifier(String name) {
@@ -98,7 +99,7 @@ public class ClassPackage {
 
   public ClassPackage append(final ClassPackage p) {
     String[] allNames = AUtils.concat(this.names, p.names, new String[0]);
-    return new ClassPackage((this.pkg.isEmpty() ? "" : this.pkg + ".") + p.pkg, allNames);
+    return new ClassPackage(allNames);
   }
 
   // toString

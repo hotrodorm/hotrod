@@ -61,8 +61,8 @@ import org.springframework.stereotype.Component;
 import app.AccountTypeConverter;
 import app.AccountTypeConverter.AccountType;
 import app.IntegerBooleanConverter;
+import app.persistence.Account;
 import app.persistence.layout.AccountLayout;
-import app.persistence.model.Account;
 
 @Component
 public class AccountDAO implements Serializable, ApplicationContextAware {

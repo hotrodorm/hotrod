@@ -1,4 +1,4 @@
-package app.persistence.model;
+package app.persistence;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
