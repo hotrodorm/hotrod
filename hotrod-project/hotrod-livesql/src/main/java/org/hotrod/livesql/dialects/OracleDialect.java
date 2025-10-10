@@ -1,7 +1,13 @@
 package org.hotrod.livesql.dialects;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.hotrod.livesql.exceptions.InvalidLiteralException;
@@ -29,6 +35,7 @@ import org.hotrod.livesql.queries.select.RightOuterJoin;
 import org.hotrod.livesql.queries.select.UnarySelectObject.LockingConcurrency;
 import org.hotrod.livesql.queries.select.UnarySelectObject.LockingMode;
 import org.hotrod.livesql.queries.select.UnionJoin;
+import org.hotrod.livesql.queries.typesolver.ResultSetColumnMetadata;
 import org.hotrod.utils.Separator;
 
 public class OracleDialect extends LiveSQLDialect {
@@ -44,6 +51,122 @@ public class OracleDialect extends LiveSQLDialect {
     if (fetchSize != null) {
       ps.setFetchSize(fetchSize);
     }
+  }
+
+  @Override
+  public RuntimeType resolveRuntimeType(final ResultSetColumnMetadata m) {
+
+    switch (m.getColumnType()) {
+
+    // Numeric types
+
+    case java.sql.Types.DECIMAL: // 3
+    case java.sql.Types.NUMERIC: // 2
+      if (m.getScale() > 0) { // DECIMAL or NUMBER with decimal places
+        return RuntimeType.ofDialect(BigDecimal.class, 1);
+      } else if (m.getScale() < 0) { // FLOAT, REAL, DOUBLE PRECISION
+        return RuntimeType.ofDialect(Double.class, 7);
+      } else { // DECIMAL or NUMBER without decimal places
+        if (m.getPrecision() <= 2) {
+          return RuntimeType.ofDialect(Byte.class, 2);
+        } else if (m.getPrecision() <= 4) {
+          return RuntimeType.ofDialect(Short.class, 3);
+        } else if (m.getPrecision() <= 9) {
+          return RuntimeType.ofDialect(Integer.class, 4);
+        } else if (m.getPrecision() <= 18) {
+          return RuntimeType.ofDialect(Long.class, 5);
+        } else {
+          return RuntimeType.ofDialect(BigInteger.class, 6);
+        }
+      }
+
+    case 100: // BINARY_FLOAT
+      return RuntimeType.ofDialect(Float.class, 8);
+    case 101: // BINARY_DOUBLE
+      return RuntimeType.ofDialect(Double.class, 9);
+
+    // Character types
+
+    case java.sql.Types.CHAR: // 1
+      // CHAR
+      return RuntimeType.ofDialect(String.class, 10);
+    case java.sql.Types.VARCHAR: // 12
+      // VARCHAR, VARCHAR2
+      return RuntimeType.ofDialect(String.class, 11);
+    case java.sql.Types.NCHAR: // -15
+      // NCHAR
+      return RuntimeType.ofDialect(String.class, 12);
+    case java.sql.Types.NVARCHAR: // -9
+      // NVARCHAR2
+      return RuntimeType.ofDialect(String.class, 13);
+    case java.sql.Types.CLOB: // 2005
+      // CLOB
+      return RuntimeType.ofDialect(String.class, 14);
+    case java.sql.Types.NCLOB: // 2011
+      // NCLOB
+      return RuntimeType.ofDialect(String.class, 15);
+    case java.sql.Types.LONGVARCHAR: // -1
+      // LONG
+      return RuntimeType.ofDialect(String.class, 16);
+
+    // Date/Time types
+
+    case java.sql.Types.TIMESTAMP: // 93
+      // DATE, TIMESTAMP
+      return RuntimeType.ofDialect(java.time.LocalDateTime.class, 17);
+    case -101:
+      // TIMESTAMP WITH TIME ZONE
+      return RuntimeType.ofDialect(OffsetDateTime.class, 18);
+    case -102:
+      // TIMESTAMP WITH LOCAL TIME ZONE
+      return RuntimeType.ofDialect(OffsetDateTime.class, 19);
+    case -103:
+      // INTERVALYM
+      return null;
+    case -104:
+      // INTERVALDS
+      return null;
+
+    // Binary
+
+    case java.sql.Types.VARBINARY: // -3
+      // RAW
+      return RuntimeType.ofDialect(byte[].class, 20);
+    case java.sql.Types.LONGVARBINARY: // -4
+      // LONG RAW
+      return RuntimeType.ofDialect(byte[].class, 21);
+    case java.sql.Types.BLOB: // 2004
+      // BLOB
+      return RuntimeType.ofDialect(byte[].class, 22);
+    case -13: // BFILE
+      return RuntimeType.ofDialect(byte[].class, 23);
+
+    // Other
+
+    case java.sql.Types.ROWID: // -8
+      // ROWID
+      return RuntimeType.ofDialect(String.class, 24);
+
+    case java.sql.Types.SQLXML: // 2009
+      // XMLTYPE
+      return null;
+
+    case java.sql.Types.STRUCT: // 2002
+      // URITYPE, OBJECT (struct)
+      return null;
+
+    case java.sql.Types.ARRAY: // 2003
+      // VARRAY
+      return null;
+    case java.sql.Types.REF: // 2006
+      // REF
+      return null;
+
+    default: // other
+      return null;
+
+    }
+
   }
 
   // WITH rendering

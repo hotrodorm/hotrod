@@ -86,9 +86,7 @@ SELECT * FROM other
       where active
       <complement>
         AND id IN 
-        <foreach item="cod" collection="codigos" open="(" close=")" separator=", ">
-          #{cod}
-        </foreach>
+        <foreach item="cod" collection="codigos" open="(" close=")" separator=", ">#{cod}</foreach>
       </complement>
     </select>
 

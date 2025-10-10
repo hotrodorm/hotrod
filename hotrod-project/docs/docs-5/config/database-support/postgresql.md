@@ -13,7 +13,7 @@ If a custom Java type is not specified HotRod will use the following rules to de
 | `SMALLINT`,<br/>`INT2`,<br/>`SMALLSERIAL` | `java.lang.Short` |
 | `INTEGER`,<br/>`INT`,<br/>`INT4`,<br/>`SERIAL` | `java.lang.Integer` |
 | `BIGINT`,<br/>`INT8`,<br/>`BIGSERIAL` | `java.lang.Long` |
-| `DECIMAL(p,s)`,<br/>`NUMERIC(p,s)` | If neither p or s are specified:<br/>&nbsp;&nbsp;&bull; `java.math.BigDecimal`<br/>If s is specified and different from zero the Java type is:<br/>&nbsp;&nbsp;&bull; `java.math.BigDecimal`<br/>if s is not specified or specified with a value of zero:<br/>&nbsp;&nbsp;&bull; if p <= 2: `java.lang.Byte`<br/>&nbsp;&nbsp;&bull; if 2 < p <= 4: `java.lang.Short`<br/>&nbsp;&nbsp;&bull; if 4 < p <= 9: `java.lang.Integer`<br/>&nbsp;&nbsp;&bull; if 8 < p <= 18: `java.lang.Long`<br/>&nbsp;&nbsp;&bull; if p > 18: `java.math.BigInteger` |
+| `DECIMAL(p,s)`,<br/>`NUMERIC(p,s)` | If neither p or s are specified:<br/>&nbsp;&nbsp;&bull; `java.math.BigDecimal`<br/>If s is specified and different from zero the type is:<br/>&nbsp;&nbsp;&bull; `java.math.BigDecimal`<br/>if s is not specified or specified with a value of zero:<br/>&nbsp;&nbsp;&bull; if p <= 2: `java.lang.Byte`<br/>&nbsp;&nbsp;&bull; if 2 < p <= 4: `java.lang.Short`<br/>&nbsp;&nbsp;&bull; if 4 < p <= 9: `java.lang.Integer`<br/>&nbsp;&nbsp;&bull; if 8 < p <= 18: `java.lang.Long`<br/>&nbsp;&nbsp;&bull; if p > 18: `java.math.BigInteger` |
 | `REAL` | `java.lang.Float` |
 | `DOUBLE PRECISION` | `java.lang.Double` |
 | `MONEY` | `java.math.BigDecimal` |
@@ -36,6 +36,36 @@ If a custom Java type is not specified HotRod will use the following rules to de
 | (enum data types) | No default HotRod data type [^2] |
 | (composite types) | No default HotRod data type [^2] |
 | `OID`,<br/>`REGPROC`,<br/>`REGPROCEDURE`,<br/>`REGOPER`,<br/>`REGOPERATOR`,<br/>`REGCLASS`,<br/>`REGTYPE`,<br/>`REGROLE`,<br/>`REGNAMESPACE`,<br/>`REGCONFIG`,<br/>`REGDICTIONARY` | No default HotRod data type [^2] |
+
+## Runtime Type Solver
+
+
+| PostgreSQL Column Type | Default Java Type |
+| -- | -- |
+| `DECIMAL(p,s)`,<br/>`NUMERIC(p,s)` | If neither p or s are specified:<br/>&nbsp;&nbsp;&bull; `java.lang.Integer`:small_orange_diamond:RD1<br/>If s is specified and different from zero the type is:<br/>&nbsp;&nbsp;&bull; `java.math.BigDecimal`:small_orange_diamond:RD2<br/>if s is not specified or specified with a value of zero:<br/>&nbsp;&nbsp;&bull; if p <= 2: `java.lang.Byte`:small_orange_diamond:RD3<br/>&nbsp;&nbsp;&bull; if 2 < p <= 4: `java.lang.Short`<br/>&nbsp;&nbsp;&bull; if 4 < p <= 9: `java.lang.Integer`:small_orange_diamond:RD4<br/>&nbsp;&nbsp;&bull; if 8 < p <= 18: `java.lang.Long`:small_orange_diamond:RD5<br/>&nbsp;&nbsp;&bull; if p > 18: `java.math.BigInteger`:small_orange_diamond:RD6 |
+| `SMALLINT`,<br/>`INT2`,<br/>`SMALLSERIAL` | `java.lang.Short`:small_orange_diamond:RD7 |
+| `INTEGER`,<br/>`INT`,<br/>`INT4`,<br/>`SERIAL` | `java.lang.Integer`:small_orange_diamond:RD8 |
+| `BIGINT`,<br/>`INT8`,<br/>`BIGSERIAL` | `java.lang.Long`:small_orange_diamond:RD9 |
+| `REAL` | `java.lang.Float`:small_orange_diamond:RD10 |
+| `DOUBLE PRECISION` | `java.lang.Double`:small_orange_diamond:RD11 |
+| `CHAR(n)` | `java.lang.String`:small_orange_diamond:RD12 |
+| `VARCHAR(n)`,<br/>`CHARACTER VARYING(n)`,<br/>`TEXT` | `java.lang.String`:small_orange_diamond:RD13 |
+| `DATE` | `java.time.LocalDate`:small_orange_diamond:RD14 |
+| `TIMESTAMP(n)`,<br/>`TIMESTAMP(n) WITHOUT TIME ZONE` | `java.time.LocalDateTime`:small_orange_diamond:RD15 |
+| `TIMESTAMPTZ(n)`,<br/>`TIMESTAMP(n) WITH TIME ZONE` | `java.time.OffsetDateTime`:small_orange_diamond:RD16 |
+| `TIME(n)`,<br/>`TIME(n) WITHOUT TIME ZONE` | `java.time.LocalTime`:small_orange_diamond:RD17 |
+| `TIMETZ(n)`,<br/>`TIME(n) WITH TIME ZONE` | `java.time.OffsetTime`:small_orange_diamond:RD18 |
+| `INTERVAL <fields> (n)` | No runtime dialect rule [^3] |
+| `BOOLEAN`,<br/>`BOOL` | `java.lang.Boolean`:small_orange_diamond:RD19 |
+| `BYTEA` | `byte[]`:small_orange_diamond:RD20 |
+| `INT4RANGE`,<br/>`INT8RANGE`,<br/>`NUMRANGE`,<br/>`TSRANGE`,<br/>`TSTZRANGE`,<br/>`DATERANGE` | No runtime dialect rule [^3] |
+| `POINT`,<br/>`LINE`,<br/>`LSEG`,<br/>`BOX`,<br/>`PATH`,<br/>`POLYGON`,<br/>`CIRCLE` | No runtime dialect rule [^3] |
+| `CIDR`,<br/>`INET`,<br/>`MACADDR` | No runtime dialect rule [^3] |
+| `UUID` | No runtime dialect rule [^3] |
+| `JSON`,<br/>`JSONB` | No runtime dialect rule [^3] |
+| `[] (array)` | No runtime dialect rule [^3] |
+| `TYPE (struct)` | No runtime dialect rule [^3] |
+
 
 [^1]: LOB types are by default read all at once into memory as byte arrays. They can also be read/written using streaming instead of loading them all at once. To do this you’ll need to write a `<converter>`.
 

@@ -1,5 +1,7 @@
 package org.hotrod.livesql.dialects;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -30,6 +32,7 @@ import org.hotrod.livesql.queries.select.RightOuterJoin;
 import org.hotrod.livesql.queries.select.UnarySelectObject.LockingConcurrency;
 import org.hotrod.livesql.queries.select.UnarySelectObject.LockingMode;
 import org.hotrod.livesql.queries.select.UnionJoin;
+import org.hotrod.livesql.queries.typesolver.ResultSetColumnMetadata;
 import org.hotrod.utils.Separator;
 
 public class PostgreSQLDialect extends LiveSQLDialect {
@@ -46,6 +49,120 @@ public class PostgreSQLDialect extends LiveSQLDialect {
     } else {
       ps.setFetchSize(DEFAULT_FETCH_SIZE);
     }
+  }
+
+  @Override
+  public RuntimeType resolveRuntimeType(final ResultSetColumnMetadata m) {
+
+    String typeName = m.getColumnTypeName();
+    switch (m.getColumnType()) {
+
+    // Numeric
+
+    case java.sql.Types.DECIMAL: // 3
+    case java.sql.Types.NUMERIC: // 2
+      if (m.getScale() != 0) { // DECIMAL or NUMBER with decimal places
+        return RuntimeType.ofDialect(BigDecimal.class, 1);
+      } else { // DECIMAL or NUMBER without decimal places
+        if (m.getPrecision() <= 2) {
+          return RuntimeType.ofDialect(Byte.class, 2);
+        } else if (m.getPrecision() <= 4) {
+          return RuntimeType.ofDialect(Short.class, 3);
+        } else if (m.getPrecision() <= 9) {
+          return RuntimeType.ofDialect(Integer.class, 4);
+        } else if (m.getPrecision() <= 18) {
+          return RuntimeType.ofDialect(Long.class, 5);
+        } else {
+          return RuntimeType.ofDialect(BigInteger.class, 6);
+        }
+      }
+    case java.sql.Types.SMALLINT: // 5
+      // SMALLINT, SMALLSERIAL
+      return RuntimeType.ofDialect(Short.class, 7);
+    case java.sql.Types.INTEGER: // 4
+      // INT, SERIAL
+      return RuntimeType.ofDialect(Integer.class, 8);
+    case java.sql.Types.BIGINT: // -5
+      // BIGINT, BIGSERIAL
+      return RuntimeType.ofDialect(Long.class, 9);
+    case java.sql.Types.REAL: // 7
+      // REAL
+      return RuntimeType.ofDialect(Float.class, 10);
+    case java.sql.Types.DOUBLE: // 8
+      // DOUBLE PRECISION
+      return RuntimeType.ofDialect(Double.class, 11);
+
+    // Character
+
+    case java.sql.Types.CHAR: // 1
+      // CHAR
+      return RuntimeType.ofDialect(String.class, 12);
+    case java.sql.Types.VARCHAR: // 12
+      // VARCHAR, TEXT
+      return RuntimeType.ofDialect(String.class, 13);
+
+    // Date & Time
+
+    case java.sql.Types.DATE: // 91
+      // DATE
+      return RuntimeType.ofDialect(java.time.LocalDate.class, 14);
+    case java.sql.Types.TIMESTAMP: // 93
+      if ("timestamp".equals(typeName)) {
+        // TIMESTAMP, TIMESTAMP WITHOUT TIME ZONE
+        return RuntimeType.ofDialect(java.time.LocalDateTime.class, 15);
+      } else {
+        // TIMESTAMP WITH TIME ZONE
+        return RuntimeType.ofDialect(java.time.OffsetDateTime.class, 16);
+      }
+    case java.sql.Types.TIME: // 92
+      if ("time".equals(typeName)) {
+        // TIME, TIMESTAMP WITHOUT TIME ZONE
+        return RuntimeType.ofDialect(java.time.LocalTime.class, 17);
+      } else {
+        // TIME WITH TIME ZONE
+        return RuntimeType.ofDialect(java.time.OffsetTime.class, 18);
+      }
+    case java.sql.Types.OTHER: // 1111
+      if ("interval".equals(typeName)) {
+        // INTERVAL
+        return null;
+      } else if (typeName != null && typeName.endsWith("range")) {
+        // INT4RANGE, INT8RANGE, NUMRANGE, TSRANGE, TSTZRANGE, DATERANGE
+      } else {
+        // POINT, LINE, LSEG, BOX, PATH, POLYGON, CIRCLE
+        // CIDR, INET, MACADDR
+        // UUID
+        // JSON, JSONB
+        return null;
+      }
+
+      // Boolean
+
+    case java.sql.Types.BIT: // -7
+      // BOOLEAN
+      return RuntimeType.ofDialect(Boolean.class, 19);
+
+    // Binary
+
+    case java.sql.Types.BINARY: // -2
+      // BYTEA
+      return RuntimeType.ofDialect(byte[].class, 20);
+
+    // Other
+
+    case java.sql.Types.ARRAY: // 2003
+      // [] (array)
+      return null;
+
+    case java.sql.Types.STRUCT: // 2002
+      // TYPE (a complex type)
+      return null;
+
+    default:
+      return null;
+
+    }
+
   }
 
   // WITH rendering

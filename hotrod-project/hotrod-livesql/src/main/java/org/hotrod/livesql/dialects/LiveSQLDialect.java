@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.select.SShield;
