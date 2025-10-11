@@ -58,8 +58,8 @@ public class App {
   @Bean
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
-      demoTypeSolverCRUD();
-      demoTypeSolverNitroSelect();
+//      demoTypeSolverCRUD();
+//      demoTypeSolverNitroSelect();
       demoTypeSolverLiveSQL();
     };
   }
@@ -76,7 +76,7 @@ public class App {
     }
   }
 
-  private void demoTypeSolverLiveSQL() {
+  private void demoTypeSolverLiveSQLOld() {
     InvoiceTable i = this.invoiceDAO.newTable();
     Select<Row> q = this.sql.select( //
         i.id, // STATIC_DIALECT_RULE
@@ -101,5 +101,51 @@ public class App {
     count = this.invoiceDAO.delete(i, i.id.eq(1234)).execute(LIVESQLLOG);
     System.out.println("deleted: " + count);
   }
+  
 
+  private void demoTypeSolverLiveSQL() {
+    InvoiceTable i = this.invoiceDAO.newTable();
+    
+//    select
+//    i.amount // static designated class
+//    i.status // static designated converter
+//    i.created // static typesolver class
+//    i.active // static typesolver converter
+//    i.category // static dialect rule
+//
+//    i.amount.mult(1.30).as("gross").type(Double.class) // runtime designated class
+//    sql.caseWhen(i.amount.ge(500), "Y").elseValue("N").end().as("vip").type(this.ynConverter) // runtime designated converter
+//    i.created.extract(DateTimeField. DAY ).as("dom") // runtime typesolver class
+//    i.expiration_jdn // runtime typesolver converter
+//    sql.caseWhen(i.paid.eq("Y"), i.amount).elseValue(0).end().as("paidAmount"), // RUNTIME_DIALECT_RULE
+//    h2.randomUUID().as("globalId") // RUNTIME_JDBC_DRIVER_DEFAULT
+
+
+    
+    
+    Select<Row> q = this.sql.select( //
+        i.amount, // STATIC_DESIGNATED
+        i.id, // STATIC_DIALECT_RULE
+        i.created, // STATIC_TYPESOLVER_RULE (type)
+        i.invoiceTaxCodes, // STATIC_TYPESOLVER_RULE (converter)
+        i.paid, //
+        i.amount.mult(1.30).as("ag1").type(Double.class), // RUNTIME_DESIGNATED
+        sql.caseWhen(i.amount.ge(500), "Y").elseValue("N").end().as("vip").type(this.ynBooleanConverter), //
+        i.created.extract(DateTimeField.DAY).as("dom"), // RUNTIME_TYPESOLVER_RULE
+        sql.caseWhen(i.paid.eq("Y"), i.amount).elseValue(0).end().as("paidAmount"), // RUNTIME_DIALECT_RULE
+        h2.randomUUID().as("globalId") // RUNTIME_JDBC_DRIVER_DEFAULT
+    ).from(i) //
+        .where(i.id.eq(11));
+//    System.out.println("query=" + q.getPreview(true));
+    List<Row> rows = q.execute(LIVESQLLOG);
+    for (Row r : rows) {
+      System.out.println("r=" + r);
+    }
+    int count = this.sql.insert(i).columns(i.id).values(sql.val(123)).execute(LIVESQLLOG);
+    System.out.println("inserted: " + count);
+    count = this.invoiceDAO.delete(i, i.id.eq(1234)).execute(LIVESQLLOG);
+    System.out.println("deleted: " + count);
+  }
+
+  
 }
