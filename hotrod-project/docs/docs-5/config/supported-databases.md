@@ -29,16 +29,16 @@ and writing to the database.
 
 The default data type for each column depends on the specific database. See sections below:
 
-- [Support for Oracle Database](./database-support/oracle.md).
-- [Support for Db2 LUW Database](./database-support/db2-luw.md).
-- [Support for PostgreSQL Database](./database-support/postgresql.md).
-- [Support for SQL Server Database](./database-support/sql-server.md).
-- [Support for MariaDB Database](./database-support/mariadb.md).
-- [Support for MySQL Database](./database-support/mysql.md).
-- [Support for SAP ASE (ex-Sybase) Database](./database-support/sap-ase.md).
-- [Support for H2 Database](./database-support/h2.md).
-- [Support for HSQLDB Database](./database-support/hsqldb.md).
-- [Support for Apache Derby Database](./database-support/apache-derby.md).
+- [Support for Oracle Database](./database-support/oracle.md)
+- [Support for Db2 LUW Database](./database-support/db2-luw.md)
+- [Support for PostgreSQL Database](./database-support/postgresql.md)
+- [Support for SQL Server Database](./database-support/sql-server.md)
+- [Support for MariaDB Database](./database-support/mariadb.md)
+- [Support for MySQL Database](./database-support/mysql.md)
+- [Support for SAP ASE (ex-Sybase) Database](./database-support/sap-ase.md)
+- [Support for H2 Database](./database-support/h2.md)
+- [Support for HSQLDB Database](./database-support/hsqldb.md)
+- [Support for Apache Derby Database](./database-support/apache-derby.md)
 
 
 ## Example of JDBC Drivers

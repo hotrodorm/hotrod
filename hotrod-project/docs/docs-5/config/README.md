@@ -10,14 +10,15 @@ The XLM configuration file includes the following tag structure:
 * [`<hotrod>`](tags/hotrod.md)
     * [`<generators>`](tags/generators.md)
         * [`<jdbc>`](tags/jdbc.md)
-            * [`<dao>`](tags/jdbc-dao.md)
-            * [`<layout>`](tags/jdbc-layout.md)
-            * [`<model>`](tags/jdbc-model.md)
             * [`<discover>`](tags/discover.md)
                 * [`<current-schema>`](tags/current-schema.md)
                     * [`<exclude>`](tags/exclude.md)
                 * [`<schema>`](tags/schema.md)
                     * `<exclude>` *(see above)*
+            * [`<layer-resources>`](tags/jdbc-layer-resources.md)
+            * [`<dao>`](tags/jdbc-dao.md)
+            * [`<layout>`](tags/jdbc-layout.md)
+            * [`<model>`](tags/jdbc-model.md)
     * [`<name-solver>`](tags/name-solver.md)
         * `<name>`
     * [`<type-solver>`](tags/type-solver.md)

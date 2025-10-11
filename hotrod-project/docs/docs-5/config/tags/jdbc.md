@@ -11,10 +11,11 @@ This configuration tag can optionally include any of the following tags, in the 
 
 | Sub Tag | Description |
 | -- | -- |
+| [&lt;discover>](./discover.md) | Configure the auto-discovery of tables and views in one or more database schema |
+| [&lt;layer-resources>](./jdbc-layer-resources.md) | Configures the details of the generated layer resources bean. This bean keeps the runtime properties related to the persistence layer |
 | [&lt;dao>](./jdbc-dao.md) | Configures the details of the generated DAO classes. DAOs provide all the persistence operations related to a table or view |
 | [&lt;layout>](./jdbc-layout.md) | Configures the details of the generated Layout classes. A Layout class represents the structure of a table or view. It doesn't have any methods beyond the setters and getters |
 | [&lt;model>](./jdbc-model.md) | Configure the details of the generated Model classes. A model class represents the behavior of the domain object related to the table or view and it can be extended to add behavior or properties. This java class extends the Layout class |
-| [&lt;discover>](./discover.md) | Configure the auto-discovery of tables and views in one or more database schema |
 
 ## Attributes
 
