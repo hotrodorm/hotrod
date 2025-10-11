@@ -116,7 +116,7 @@ public class DAOWriter {
 
   private LayoutWriter layout;
   private ModelWriter model;
-  private LayerConfigBeanWriter layerConfig;
+  private LayerResourcesBeanWriter layerResources;
 
   private String metadataClassName;
 
@@ -128,7 +128,7 @@ public class DAOWriter {
 
   public DAOWriter(final AbstractDAOTag tag, final DataSetMetadata metadata, final JDBCGenerator generator,
       final DAOType type, final JDBCTag myBatisTag, final DatabaseAdapter adapter, final LayoutWriter layout,
-      final ModelWriter model, final LayerConfigBeanWriter layerConfig) {
+      final ModelWriter model, final LayerResourcesBeanWriter layerResources) {
     super();
     this.tag = tag;
     this.metadata = metadata;
@@ -142,7 +142,7 @@ public class DAOWriter {
 
     this.layout = layout;
     this.model = model;
-    this.layerConfig = layerConfig;
+    this.layerResources = layerResources;
 
     this.fragmentConfig = metadata.getFragmentConfig();
     this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
@@ -278,16 +278,16 @@ public class DAOWriter {
     // Spring properties
 
     w.println("  @", Const.AUTOWIRED);
-    if (this.layerConfig.getDataSourceQualifier() != null) {
-      w.println("  @", Const.QUALIFIER, "(\"" + this.layerConfig.getDataSourceQualifier() + "\")");
+    if (this.layerResources.getDataSourceQualifier() != null) {
+      w.println("  @", Const.QUALIFIER, "(\"" + this.layerResources.getDataSourceQualifier() + "\")");
     }
     w.println("  private ", DataSource.class, " dataSource;");
     w.println();
 
     if (!this.isExecutor()) {
       w.println("  @", Const.AUTOWIRED);
-      if (this.layerConfig.getLiveSQLQualifier() != null) {
-        w.println("  @", Const.QUALIFIER, "(\"" + this.layerConfig.getLiveSQLQualifier() + "\")");
+      if (this.layerResources.getLiveSQLQualifier() != null) {
+        w.println("  @", Const.QUALIFIER, "(\"" + this.layerResources.getLiveSQLQualifier() + "\")");
       }
       w.println("  private ", LiveSQL.class, " sql;");
       w.println();

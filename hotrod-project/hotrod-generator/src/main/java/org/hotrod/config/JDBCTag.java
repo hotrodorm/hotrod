@@ -51,6 +51,7 @@ public class JDBCTag extends AbstractGeneratorTag {
   private ClassPackage layerPackage;
 
   private DiscoverTag discover = null;
+  private JDBCLayerResourcesTag layerResources = null;
   private JDBCDAOTag dao = null;
   private JDBCLayoutTag layout = null;
   private JDBCModelTag model = null;
@@ -104,6 +105,15 @@ public class JDBCTag extends AbstractGeneratorTag {
   @XmlElement(name = "discover")
   public void setSDiscover(final DiscoverTag discover) {
     this.discover = discover;
+  }
+
+  @XmlElement(name = "layer-resources")
+  public void setLayerResources(final JDBCLayerResourcesTag layerResources) throws InvalidConfigurationFileException {
+    if (this.layerResources != null) {
+      throw new InvalidConfigurationFileException(this,
+          "Duplicate <layer-resources> tag; the JDBC generator can only have a single <layer-resources> tag");
+    }
+    this.layerResources = layerResources;
   }
 
   @XmlElement(name = "dao")
@@ -207,6 +217,15 @@ public class JDBCTag extends AbstractGeneratorTag {
       this.discover.validate(adapter, currentCS);
     }
 
+    // layer-resources
+
+    if (this.layerResources == null) {
+      this.layerResources = new JDBCLayerResourcesTag();
+    }
+    if (this.layerResources != null) {
+      this.layerResources.validate(currentDir, this.baseDir, this.layerPackage);
+    }
+
     // dao
 
     if (this.dao == null) {
@@ -265,6 +284,10 @@ public class JDBCTag extends AbstractGeneratorTag {
 
   public DiscoverTag getDiscover() {
     return this.discover;
+  }
+
+  public JDBCLayerResourcesTag getLayerResources() {
+    return layerResources;
   }
 
   public JDBCDAOTag getDao() {

@@ -62,6 +62,7 @@
   <xsd:complexType name="jdbc-type">
     <xsd:sequence>
       <xsd:element name="discover" type="discover-type" minOccurs="0" maxOccurs="1" />
+      <xsd:element name="layer-resources" type="layer-resources-config-type" minOccurs="0" maxOccurs="1" />
       <xsd:element name="dao" type="dao-config-type" minOccurs="0" maxOccurs="1" />
       <xsd:element name="layout" type="layout-config-type" minOccurs="0" maxOccurs="1" />
       <xsd:element name="model" type="model-config-type" minOccurs="0" maxOccurs="1" />
@@ -89,6 +90,13 @@
 
   <xsd:complexType name="discover-exclude-type">
     <xsd:attribute name="name" type="xsd:string" use="required" />
+  </xsd:complexType>
+
+  <xsd:complexType name="layer-resources-config-type">
+    <xsd:attribute name="base-dir" type="xsd:string" />
+    <xsd:attribute name="package" type="xsd:string" />
+    <xsd:attribute name="sub-package" type="xsd:string" />
+    <xsd:attribute name="name" type="xsd:string" />
   </xsd:complexType>
 
   <xsd:complexType name="dao-config-type">

@@ -26,12 +26,9 @@ import org.hotrod.utils.AbstractClassWriter.ExternalClass;
 import org.hotrod.utils.ClassWriter;
 import org.hotrod.utils.SUtil;
 
-public class LayerConfigBeanWriter {
+public class LayerResourcesBeanWriter {
 
-  @SuppressWarnings("unused")
-  private static final Logger log = Logger.getLogger(LayerConfigBeanWriter.class.getName());
-
-  private static final String LAYER_CONFIG_CLASS_PREFIX = "LayerConfigurationBean";
+  private static final Logger log = Logger.getLogger(LayerResourcesBeanWriter.class.getName());
 
   private JDBCTag jdbcTag;
   private RuntimeTypeSolverTag runtimeTypeSolver;
@@ -45,12 +42,13 @@ public class LayerConfigBeanWriter {
 
   private ClassWriter w;
 
-  public LayerConfigBeanWriter(final JDBCTag jdbcTag, final RuntimeTypeSolverTag runtimeTypeSolver,
+  public LayerResourcesBeanWriter(final JDBCTag jdbcTag, final RuntimeTypeSolverTag runtimeTypeSolver,
       final String qualifier) {
+    log.fine("init");
     this.jdbcTag = jdbcTag;
     this.runtimeTypeSolver = runtimeTypeSolver;
     this.qualifier = qualifier;
-    this.className = LAYER_CONFIG_CLASS_PREFIX;
+    this.className = this.jdbcTag.getLayerResources().getClassName();
     String suffix = SUtil.coalesce(this.qualifier, "");
     this.suffixLower = suffix.toLowerCase();
     this.suffixCap = SUtil.capitalize(suffix);
@@ -58,13 +56,14 @@ public class LayerConfigBeanWriter {
 
   public void generate(final FileGenerator fileGenerator) throws FaultException {
 
-    File dir = this.jdbcTag.getLayerPackageDir();
+    File dir = this.jdbcTag.getLayerResources().getDir();
+    dir.mkdirs();
 
     File f = new File(dir, this.className + ".java");
 
     try (TextWriter tw = fileGenerator.createWriter(f)) {
 
-      this.w = new ClassWriter(this.jdbcTag.getLayerPackage());
+      this.w = new ClassWriter(this.jdbcTag.getLayerResources().getAssembledPackage());
 
       this.writeHeader();
       this.writeLayerConfig();

@@ -67,7 +67,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
   private LinkedHashMap<EnumDataSetMetadata, EnumClass> enumClasses = new LinkedHashMap<>();
   private List<LayoutWriter> tableAbstractVOs = new ArrayList<>();
 
-  private LayerConfigBeanWriter layerConfig;
+  private LayerResourcesBeanWriter layerConfig;
 
   public JDBCGenerator(final HotRodContext hc, final EnabledFKs enabledFKs, final DisplayMode displayMode,
       final boolean incrementalMode, final Feedback feedback)
@@ -101,7 +101,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
 
     this.jdbcTag = (JDBCTag) this.config.getGenerators().getSelectedGeneratorTag();
 
-    this.layerConfig = new LayerConfigBeanWriter(this.jdbcTag, this.config.getRuntimeTypeSolverTag(),
+    this.layerConfig = new LayerResourcesBeanWriter(this.jdbcTag, this.config.getRuntimeTypeSolverTag(),
         this.jdbcTag.getQualifier());
 
     // Add tables
