@@ -27,12 +27,9 @@ This tag can include the following attributes:
 | `class` | The full Java class name that implements the converter logic | Required |
 
 
-## Changes in Version 4
+## Changes in Version 5
 
-Version 4 includes a couple of changes in the converter. Namely:
-
-- The attribute `java-intermediate-type` was renamed to `java-raw-type`.
-- The `decode()` and `encode()` methods now include the extra parameter `Connection conn`. This is necessary for some JDBC drivers that require the connection information to process values coming and going to the database. For example, PostgreSQL requires it when sending data to a column of type array.
+Starting in version 5 the converter classes must be Spring beans. For example, you can annotate them with `org.springframework.stereotype.Component` as shown in the example below.
 
 
 ## Usage
@@ -91,8 +88,11 @@ In this example the converter Java class can look like:
 package com.ctac.converters;
 
 import java.sql.Connection;
+
+import org.springframework.stereotype.Component;
 import org.hotrod.runtime.converter.TypeConverter;
 
+@Component
 public class ShortBooleanConverter implements TypeConverter<Short, Boolean> {
 
   private static final Short FALSE = 0;
