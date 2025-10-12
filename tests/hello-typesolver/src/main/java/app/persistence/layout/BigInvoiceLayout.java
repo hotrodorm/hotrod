@@ -3,7 +3,7 @@
 package app.persistence.layout;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import org.hotrod.json.JSONObject;
 
@@ -13,37 +13,13 @@ public class BigInvoiceLayout implements Serializable {
 
   // Expression properties
 
-  protected Integer id = null; // Source Type: STATIC_DIALECT_RULE, rule #D9
-  protected Timestamp created = null; // Source Type: STATIC_TYPESOLVER_RULE, rule #T1
-  protected String[] invoiceTaxCodes = null; // Source Type: STATIC_TYPESOLVER_RULE, rule #T3
   protected Double amount = null; // Source Type: STATIC_DESIGNATED
-  protected Boolean paid = null; // Source Type: STATIC_DESIGNATED
+  protected Integer status = null; // Source Type: STATIC_DIALECT_RULE, rule #D9
+  protected LocalDateTime created = null; // Source Type: STATIC_TYPESOLVER_RULE, rule #T1
+  protected Boolean active = null; // Source Type: STATIC_TYPESOLVER_RULE, rule #T2
+  protected Short category = null; // Source Type: STATIC_DIALECT_RULE, rule #D3
 
   // getters & setters
-
-  public final Integer getId() {
-    return this.id;
-  }
-
-  public final void setId(final java.lang.Integer id) {
-    this.id = id;
-  }
-
-  public final Timestamp getCreated() {
-    return this.created;
-  }
-
-  public final void setCreated(final java.sql.Timestamp created) {
-    this.created = created;
-  }
-
-  public final String[] getInvoiceTaxCodes() {
-    return this.invoiceTaxCodes;
-  }
-
-  public final void setInvoiceTaxCodes(final String[] invoiceTaxCodes) {
-    this.invoiceTaxCodes = invoiceTaxCodes;
-  }
 
   public final Double getAmount() {
     return this.amount;
@@ -53,12 +29,36 @@ public class BigInvoiceLayout implements Serializable {
     this.amount = amount;
   }
 
-  public final Boolean getPaid() {
-    return this.paid;
+  public final Integer getStatus() {
+    return this.status;
   }
 
-  public final void setPaid(final Boolean paid) {
-    this.paid = paid;
+  public final void setStatus(final java.lang.Integer status) {
+    this.status = status;
+  }
+
+  public final LocalDateTime getCreated() {
+    return this.created;
+  }
+
+  public final void setCreated(final java.time.LocalDateTime created) {
+    this.created = created;
+  }
+
+  public final Boolean getActive() {
+    return this.active;
+  }
+
+  public final void setActive(final java.lang.Boolean active) {
+    this.active = active;
+  }
+
+  public final Short getCategory() {
+    return this.category;
+  }
+
+  public final void setCategory(final java.lang.Short category) {
+    this.category = category;
   }
 
   // to string
@@ -66,11 +66,11 @@ public class BigInvoiceLayout implements Serializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append(super.toString() + "\n");
-    sb.append("- id=" + this.id + "\n");
-    sb.append("- created=" + this.created + "\n");
-    sb.append("- invoiceTaxCodes=" + this.invoiceTaxCodes + "\n");
     sb.append("- amount=" + this.amount + "\n");
-    sb.append("- paid=" + this.paid);
+    sb.append("- status=" + this.status + "\n");
+    sb.append("- created=" + this.created + "\n");
+    sb.append("- active=" + this.active + "\n");
+    sb.append("- category=" + this.category);
     return sb.toString();
   }
 
@@ -78,11 +78,11 @@ public class BigInvoiceLayout implements Serializable {
 
   public JSONObject toJSONObject() {
     JSONObject obj = new JSONObject();
-    obj.addProperty("id", this.id);
-    obj.addProperty("created", this.created);
-    obj.addProperty("invoiceTaxCodes", this.invoiceTaxCodes);
     obj.addProperty("amount", this.amount);
-    obj.addProperty("paid", this.paid);
+    obj.addProperty("status", this.status);
+    obj.addProperty("created", this.created);
+    obj.addProperty("active", this.active);
+    obj.addProperty("category", this.category);
     return obj;
   }
 

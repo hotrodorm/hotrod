@@ -3,12 +3,11 @@
 package app.persistence.dao;
 
 import java.io.Serializable;
-import java.sql.Array;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,7 +28,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import app.TaxCodesArrayConverter;
 import app.YNBooleanConverter;
 import app.persistence.model.BigInvoice;
 
@@ -55,10 +53,7 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
   // CONVERTERS
 
   @Autowired
-  private TaxCodesArrayConverter converter0;
-
-  @Autowired
-  private YNBooleanConverter converter1;
+  private YNBooleanConverter converter0;
 
   // NITRO SELECT: getBigInvoices
 
@@ -91,11 +86,11 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
       int n = m.getColumnCount();
       for (int i = 1; i <= n; i++) {
         String l = m.getColumnLabel(i);
-        if ("ID".equals(l)) present1 = true;
-        if ("CREATED".equals(l)) present2 = true;
-        if ("INVOICE_TAX_CODES".equals(l)) present3 = true;
-        if ("AMOUNT".equals(l)) present4 = true;
-        if ("PAID".equals(l)) present5 = true;
+        if ("AMOUNT".equals(l)) present1 = true;
+        if ("STATUS".equals(l)) present2 = true;
+        if ("CREATED".equals(l)) present3 = true;
+        if ("ACTIVE".equals(l)) present4 = true;
+        if ("CATEGORY".equals(l)) present5 = true;
       }
     }
 
@@ -104,32 +99,32 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
       BigInvoice row = applicationContext.getBean(BigInvoice.class);
 
       if (this.present1) {
-        Integer col1 = rs.getInt("ID"); // ID
+        Double col1 = rs.getDouble("AMOUNT"); // AMOUNT
         if (rs.wasNull()) col1 = null;
-        row.setId(col1);
+        row.setAmount(col1);
       }
 
       if (this.present2) {
-        Timestamp col2 = rs.getTimestamp("CREATED"); // CREATED
-        row.setCreated(col2);
+        Integer col2 = rs.getInt("STATUS"); // STATUS
+        if (rs.wasNull()) col2 = null;
+        row.setStatus(col2);
       }
 
       if (this.present3) {
-        Array raw3 = rs.getObject("INVOICE_TAX_CODES", Array.class); // INVOICE_TAX_CODES
-        String[] col3 = converter0.decode(raw3, conn);
-        row.setInvoiceTaxCodes(col3);
+        LocalDateTime col3 = rs.getObject("CREATED", LocalDateTime.class); // CREATED
+        row.setCreated(col3);
       }
 
       if (this.present4) {
-        Double col4 = rs.getDouble("AMOUNT"); // AMOUNT
-        if (rs.wasNull()) col4 = null;
-        row.setAmount(col4);
+        String raw4 = rs.getString("ACTIVE"); // ACTIVE
+        Boolean col4 = converter0.decode(raw4, conn);
+        row.setActive(col4);
       }
 
       if (this.present5) {
-        String raw5 = rs.getObject("PAID", String.class); // PAID
-        Boolean col5 = converter1.decode(raw5, conn);
-        row.setPaid(col5);
+        Short col5 = rs.getShort("CATEGORY"); // CATEGORY
+        if (rs.wasNull()) col5 = null;
+        row.setCategory(col5);
       }
 
       return row;

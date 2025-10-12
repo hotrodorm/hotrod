@@ -3,13 +3,11 @@
 package app.persistence.dao;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.sql.Array;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.sql.Types;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +35,6 @@ import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.expressions.bool.converter.ConvertedColumn;
 import org.hotrod.livesql.metadata.AllColumns;
-import org.hotrod.livesql.metadata.CharEntityColumn;
 import org.hotrod.livesql.metadata.DateTimeEntityColumn;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.NumericEntityColumn;
@@ -59,7 +56,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import app.TaxCodesArrayConverter;
+import app.InvoiceStatus;
+import app.InvoiceStatusConverter;
+import app.YNBooleanConverter;
 import app.persistence.layout.InvoiceLayout;
 import app.persistence.model.Invoice;
 
@@ -90,7 +89,10 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   // CONVERTERS
 
   @Autowired
-  private TaxCodesArrayConverter converter0;
+  private InvoiceStatusConverter converter0;
+
+  @Autowired
+  private YNBooleanConverter converter1;
 
   // ROW READER
 
@@ -100,22 +102,25 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     public Invoice readRowFrom(ResultSet rs, Connection conn) throws SQLException {
       Invoice row = applicationContext.getBean(Invoice.class);
 
-      Integer col1 = rs.getInt("ID"); // ID
+      Double col1 = rs.getDouble("AMOUNT"); // AMOUNT
       if (rs.wasNull()) col1 = null;
-      row.setId(col1);
+      row.setAmount(col1);
 
-      Timestamp col2 = rs.getTimestamp("CREATED"); // CREATED
-      row.setCreated(col2);
+      Integer raw2 = rs.getInt("STATUS"); // STATUS
+      if (rs.wasNull()) raw2 = null;
+      InvoiceStatus col2 = converter0.decode(raw2, conn);
+      row.setStatus(col2);
 
-      Array raw3 = rs.getObject("INVOICE_TAX_CODES", Array.class); // INVOICE_TAX_CODES
-      String[] col3 = converter0.decode(raw3, conn);
-      row.setInvoiceTaxCodes(col3);
+      LocalDateTime col3 = rs.getObject("CREATED", LocalDateTime.class); // CREATED
+      row.setCreated(col3);
 
-      BigDecimal col4 = rs.getBigDecimal("AMOUNT"); // AMOUNT
-      row.setAmount(col4);
+      String raw4 = rs.getString("ACTIVE"); // ACTIVE
+      Boolean col4 = converter1.decode(raw4, conn);
+      row.setActive(col4);
 
-      String col5 = rs.getString("PAID"); // PAID
-      row.setPaid(col5);
+      Short col5 = rs.getShort("CATEGORY"); // CATEGORY
+      if (rs.wasNull()) col5 = null;
+      row.setCategory(col5);
 
       return row;
     }
@@ -136,11 +141,11 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     Invoice m = applicationContext.getBean(Invoice.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
-    m.setId(CastUtil.toInteger((Number) row.get(p + "id" + s)));
-    m.setCreated((Timestamp) row.get(p + "created" + s));
-    m.setInvoiceTaxCodes((String[]) row.get(p + "invoiceTaxCodes" + s));
-    m.setAmount(CastUtil.toBigDecimal((Number) row.get(p + "amount" + s)));
-    m.setPaid((String) row.get(p + "paid" + s));
+    m.setAmount(CastUtil.toDouble((Number) row.get(p + "amount" + s)));
+    m.setStatus((InvoiceStatus) row.get(p + "status" + s));
+    m.setCreated((LocalDateTime) row.get(p + "created" + s));
+    m.setActive((Boolean) row.get(p + "active" + s));
+    m.setCategory(CastUtil.toShort((Number) row.get(p + "category" + s)));
     return m;
   }
 
@@ -148,41 +153,41 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
   public class InvoiceBaseline {
 
-    private Integer id;
-    private Timestamp created;
-    private String[] invoiceTaxCodes;
-    private BigDecimal amount;
-    private String paid;
+    private Double amount;
+    private InvoiceStatus status;
+    private LocalDateTime created;
+    private Boolean active;
+    private Short category;
 
-    public Integer getId() {
-      return this.id;
-    }
-
-    public Timestamp getCreated() {
-      return this.created;
-    }
-
-    public String[] getInvoiceTaxCodes() {
-      return this.invoiceTaxCodes;
-    }
-
-    public BigDecimal getAmount() {
+    public Double getAmount() {
       return this.amount;
     }
 
-    public String getPaid() {
-      return this.paid;
+    public InvoiceStatus getStatus() {
+      return this.status;
+    }
+
+    public LocalDateTime getCreated() {
+      return this.created;
+    }
+
+    public Boolean getActive() {
+      return this.active;
+    }
+
+    public Short getCategory() {
+      return this.category;
     }
 
   }
 
   public InvoiceBaseline baseline(Invoice model) {
     InvoiceBaseline b = new InvoiceBaseline();
-    b.id = model.getId();
-    b.created = model.getCreated();
-    b.invoiceTaxCodes = model.getInvoiceTaxCodes();
     b.amount = model.getAmount();
-    b.paid = model.getPaid();
+    b.status = model.getStatus();
+    b.created = model.getCreated();
+    b.active = model.getActive();
+    b.category = model.getCategory();
     return b;
   };
 
@@ -190,48 +195,15 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
   public Invoice clone(InvoiceLayout layout) {
     Invoice m = this.applicationContext.getBean(Invoice.class);
-    m.setId(layout.getId());
-    m.setCreated(layout.getCreated());
-    m.setInvoiceTaxCodes(layout.getInvoiceTaxCodes());
     m.setAmount(layout.getAmount());
-    m.setPaid(layout.getPaid());
+    m.setStatus(layout.getStatus());
+    m.setCreated(layout.getCreated());
+    m.setActive(layout.getActive());
+    m.setCategory(layout.getCategory());
     return m;
   };
 
-  // SELECT BY PRIMARY KEY
-
-  private DynamicSelectQuery selectByPrimaryKey;
-
-  private void initializeSelectbyprimarykey() {
-    this.selectByPrimaryKey = dyn
-      .literaln("SELECT")
-      .literaln("  id,")
-      .literaln("  created,")
-      .literaln("  invoice_tax_codes,")
-      .literaln("  amount,")
-      .literaln("  paid")
-      .literaln("FROM invoice")
-      .literal("WHERE id = ").parameter("f.id").literaln()
-      .endSelectQuery();
-  }
-
-  public Invoice select(Integer id) {
-    if (id == null) return null;
-    Invoice filter = new Invoice();
-    filter.setId(id);
-    Parameters params = this.dyn.newParameters();
-    params.add("f", filter);
-    PreparedSelectQuery<Invoice> preparedQuery = this.selectByPrimaryKey.prepare(params, this.rowReader);
-    logQuery(preparedQuery);
-    try (Connection conn = this.dataSource.getConnection()) {
-      List<Invoice> rows = preparedQuery.execute(conn);
-      if (rows.size() == 0) return null;
-      if (rows.size() == 1) return rows.get(0);
-      throw new PersistenceException("A single row at most was expected but received " + rows.size() + " rows.");
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
-    }
-  }
+  // SELECT BY PRIMARY KEY -- Not available since the table does not have a primary key.
 
   // SELECT BY EXAMPLE
 
@@ -240,18 +212,18 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   private void initializeSelectbyexample() {
     this.selectByExample = dyn
       .literaln("SELECT")
-      .literaln("  id,")
-      .literaln("  created,")
-      .literaln("  invoice_tax_codes,")
       .literaln("  amount,")
-      .literaln("  paid")
+      .literaln("  status,")
+      .literaln("  created,")
+      .literaln("  active,")
+      .literaln("  category")
       .literaln("FROM invoice")
       .where("AND")
-        .if_("f.id != null").literal("id = ").parameter("f.id").endif()
-        .if_("f.created != null").literal("created = ").parameter("f.created").endif()
-        .if_("f.invoiceTaxCodes != null").literal("invoice_tax_codes = ").parameter("f.invoiceTaxCodes", this.converter0).endif()
         .if_("f.amount != null").literal("amount = ").parameter("f.amount").endif()
-        .if_("f.paid != null").literal("paid = ").parameter("f.paid").endif()
+        .if_("f.status != null").literal("status = ").parameter("f.status", this.converter0).endif()
+        .if_("f.created != null").literal("created = ").parameter("f.created").endif()
+        .if_("f.active != null").literal("active = ").parameter("f.active", this.converter1).endif()
+        .if_("f.category != null").literal("category = ").parameter("f.category").endif()
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
@@ -285,18 +257,18 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   private void initializeInsert() {
     this.insert = dyn
       .literaln("INSERT INTO invoice (")
-      .literaln("  id,")
-      .literaln("  created,")
-      .literaln("  invoice_tax_codes,")
       .literaln("  amount,")
-      .literaln("  paid")
+      .literaln("  status,")
+      .literaln("  created,")
+      .literaln("  active,")
+      .literaln("  category")
       .literaln(")")
       .literaln("VALUES(")
-      .literal("  ").parameterNullable("l.id", Types.INTEGER).literaln(",")
-      .literal("  ").parameterNullable("l.created", Types.TIMESTAMP).literaln(",")
-      .literal("  ").parameterNullable("l.invoiceTaxCodes", Types.ARRAY, this.converter0).literaln(",")
       .literal("  ").parameterNullable("l.amount", Types.DECIMAL).literaln(",")
-      .literal("  ").parameterNullable("l.paid", Types.CHAR)
+      .literal("  ").parameterNullable("l.status", Types.INTEGER, this.converter0).literaln(",")
+      .literal("  ").parameterNullable("l.created", Types.TIMESTAMP).literaln(",")
+      .literal("  ").parameterNullable("l.active", Types.CHAR, this.converter1).literaln(",")
+      .literal("  ").parameterNullable("l.category", Types.DECIMAL)
       .literal(")")
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
@@ -322,18 +294,18 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
       .literaln("INSERT INTO invoice (")
-      .if_("l.id != null").literal("id,\n").endif()
-      .if_("l.created != null").literal("created,\n").endif()
-      .if_("l.invoiceTaxCodes != null").literal("invoice_tax_codes,\n").endif()
       .if_("l.amount != null").literal("amount,\n").endif()
-      .if_("l.paid != null").literal("paid\n").endif()
+      .if_("l.status != null").literal("status,\n").endif()
+      .if_("l.created != null").literal("created,\n").endif()
+      .if_("l.active != null").literal("active,\n").endif()
+      .if_("l.category != null").literal("category\n").endif()
       .literaln(")")
       .literaln("VALUES(")
-      .if_("l.id != null").parameter("l.id").literal(", ").endif()
-      .if_("l.created != null").parameter("l.created").literal(", ").endif()
-      .if_("l.invoiceTaxCodes != null").parameter("l.invoiceTaxCodes", this.converter0).literal(", ").endif()
       .if_("l.amount != null").parameter("l.amount").literal(", ").endif()
-      .if_("l.paid != null").parameter("l.paid").endif()
+      .if_("l.status != null").parameter("l.status", this.converter0).literal(", ").endif()
+      .if_("l.created != null").parameter("l.created").literal(", ").endif()
+      .if_("l.active != null").parameter("l.active", this.converter1).literal(", ").endif()
+      .if_("l.category != null").parameter("l.category").endif()
       .literal(")")
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
@@ -352,36 +324,7 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     return model;
   }
 
-  // UPDATE BY PRIMARY KEY
-
-  private DynamicModificationQuery updateByPK;
-
-  private void initializeUpdatebypk() {
-    this.updateByPK = dyn
-      .literaln("UPDATE invoice")
-      .literaln("SET")
-      .literal("  id = ").parameterNullable("m.id", Types.INTEGER).literaln(",")
-      .literal("  created = ").parameterNullable("m.created", Types.TIMESTAMP).literaln(",")
-      .literal("  invoice_tax_codes = ").parameterNullable("m.invoiceTaxCodes", Types.ARRAY, this.converter0).literaln(",")
-      .literal("  amount = ").parameterNullable("m.amount", Types.DECIMAL).literaln(",")
-      .literal("  paid = ").parameterNullable("m.paid", Types.CHAR).literaln()
-      .literal("WHERE id = ").parameter("m.id").literaln()
-    .endModificationQuery();
-  }
-
-  public int update(Invoice model) {
-    if (model.getId() == null) return 0;
-    Parameters params = this.dyn.newParameters();
-    params.add("m", model);
-    PreparedModificationQuery preparedQuery = this.updateByPK.prepare(params);
-    logQuery(preparedQuery);
-    try (Connection conn = this.dataSource.getConnection()) {
-      int count = preparedQuery.execute(conn);
-      return count;
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
-    }
-  }
+  // UPDATE BY PRIMARY KEY -- Not available since the table does not have a primary key.
 
   // UPDATE BY EXAMPLE
 
@@ -391,18 +334,18 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     this.updateByExample = dyn
       .literal("UPDATE invoice")
       .set()
-        .if_("v.id != null").literal("id = ").parameter("v.id").endif()
-        .if_("v.created != null").literal("created = ").parameter("v.created").endif()
-        .if_("v.invoiceTaxCodes != null").literal("invoice_tax_codes = ").parameter("v.invoiceTaxCodes", this.converter0).endif()
         .if_("v.amount != null").literal("amount = ").parameter("v.amount").endif()
-        .if_("v.paid != null").literal("paid = ").parameter("v.paid").endif()
+        .if_("v.status != null").literal("status = ").parameter("v.status", this.converter0).endif()
+        .if_("v.created != null").literal("created = ").parameter("v.created").endif()
+        .if_("v.active != null").literal("active = ").parameter("v.active", this.converter1).endif()
+        .if_("v.category != null").literal("category = ").parameter("v.category").endif()
       .endset()
       .where("AND")
-        .if_("e.id != null").literal("id = ").parameter("e.id").endif()
-        .if_("e.created != null").literal("created = ").parameter("e.created").endif()
-        .if_("e.invoiceTaxCodes != null").literal("invoice_tax_codes = ").parameter("e.invoiceTaxCodes", this.converter0).endif()
         .if_("e.amount != null").literal("amount = ").parameter("e.amount").endif()
-        .if_("e.paid != null").literal("paid = ").parameter("e.paid").endif()
+        .if_("e.status != null").literal("status = ").parameter("e.status", this.converter0).endif()
+        .if_("e.created != null").literal("created = ").parameter("e.created").endif()
+        .if_("e.active != null").literal("active = ").parameter("e.active", this.converter1).endif()
+        .if_("e.category != null").literal("category = ").parameter("e.category").endif()
       .endwhere()
       .endModificationQuery();
   }
@@ -426,40 +369,15 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   public UpdateSetCompletePhase update(InvoiceLayout values, InvoiceTable tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
-    if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
-    if (values.getCreated() != null) setters.add(new Setter(tableOrView.created, sql.val(values.getCreated())));
-    if (values.getInvoiceTaxCodes() != null) setters.add(new Setter(tableOrView.invoiceTaxCodes, sql.val(values.getInvoiceTaxCodes())));
     if (values.getAmount() != null) setters.add(new Setter(tableOrView.amount, sql.val(values.getAmount())));
-    if (values.getPaid() != null) setters.add(new Setter(tableOrView.paid, sql.val(values.getPaid())));
+    if (values.getStatus() != null) setters.add(new Setter(tableOrView.status, sql.val(values.getStatus())));
+    if (values.getCreated() != null) setters.add(new Setter(tableOrView.created, sql.val(values.getCreated())));
+    if (values.getActive() != null) setters.add(new Setter(tableOrView.active, sql.val(values.getActive())));
+    if (values.getCategory() != null) setters.add(new Setter(tableOrView.category, sql.val(values.getCategory())));
     return new UpdateSetCompletePhase(this.context, tableOrView, setters, predicate);
   }
 
-  // DELETE BY PRIMARY KEY
-
-  private DynamicModificationQuery deleteByPK;
-
-  private void initializeDeletebypk() {
-    this.deleteByPK = dyn
-      .literaln("DELETE FROM invoice")
-      .literal("WHERE id = ").parameter("f.id").literaln()
-      .endModificationQuery();
-  }
-
-  public int delete(Integer id) {
-    if (id == null) return 0;
-    Invoice filter = new Invoice();
-    filter.setId(id);
-    Parameters params = this.dyn.newParameters();
-    params.add("f", filter);
-    PreparedModificationQuery preparedQuery = this.deleteByPK.prepare(params);
-    logQuery(preparedQuery);
-    try (Connection conn = this.dataSource.getConnection()) {
-      int count = preparedQuery.execute(conn);
-      return count;
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
-    }
-  }
+  // DELETE BY PRIMARY KEY -- Not available since the table does not have a primary key.
 
   // DELETE BY EXAMPLE
 
@@ -469,11 +387,11 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     this.deleteByExample = dyn
       .literaln("DELETE FROM invoice")
       .where("AND")
-        .if_("e.id != null").literal("id = ").parameter("e.id").endif()
-        .if_("e.created != null").literal("created = ").parameter("e.created").endif()
-        .if_("e.invoiceTaxCodes != null").literal("invoice_tax_codes = ").parameter("e.invoiceTaxCodes", this.converter0).endif()
         .if_("e.amount != null").literal("amount = ").parameter("e.amount").endif()
-        .if_("e.paid != null").literal("paid = ").parameter("e.paid").endif()
+        .if_("e.status != null").literal("status = ").parameter("e.status", this.converter0).endif()
+        .if_("e.created != null").literal("created = ").parameter("e.created").endif()
+        .if_("e.active != null").literal("active = ").parameter("e.active", this.converter1).endif()
+        .if_("e.category != null").literal("category = ").parameter("e.category").endif()
       .endwhere()
       .endModificationQuery();
   }
@@ -501,16 +419,16 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
   public enum InvoiceOrderBy implements OrderBy {
 
-    ID("id", true),
-    ID$DESC("id", false),
-    CREATED("created", true),
-    CREATED$DESC("created", false),
-    INVOICE_TAX_CODES("invoice_tax_codes", true),
-    INVOICE_TAX_CODES$DESC("invoice_tax_codes", false),
     AMOUNT("amount", true),
     AMOUNT$DESC("amount", false),
-    PAID("paid", true),
-    PAID$DESC("paid", false);
+    STATUS("status", true),
+    STATUS$DESC("status", false),
+    CREATED("created", true),
+    CREATED$DESC("created", false),
+    ACTIVE("active", true),
+    ACTIVE$DESC("active", false),
+    CATEGORY("category", true),
+    CATEGORY$DESC("category", false);
 
     private String sqlColumnName;
     private boolean ascending;
@@ -544,20 +462,20 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
   public static class InvoiceTable extends Table<Invoice> {
 
-    public final NumericEntityColumn id = new NumericEntityColumn(this,
-      "ID", "id", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE, "D9"));
-    public final DateTimeEntityColumn created = new DateTimeEntityColumn(this,
-      "CREATED", "created", "TIMESTAMP", 26, 6, TypeHandler.forClass(Timestamp.class, TypeSource.STATIC_DESIGNATED, null));
-    private final TypeHandler<Array, String[]> th0 = TypeHandler.forConverter(new TaxCodesArrayConverter(), TypeSource.STATIC_TYPESOLVER_RULE, "T3");
-    public final ConvertedColumn<Array, String[]> invoiceTaxCodes = new ConvertedColumn<Array, String[]>(this, "INVOICE_TAX_CODES", "invoiceTaxCodes", "CHARACTER VARYING ARRAY", 8, 0, th0, th0.getConverter());
     public final NumericEntityColumn amount = new NumericEntityColumn(this,
-      "AMOUNT", "amount", "DECIMAL", 12, 2, TypeHandler.forClass(BigDecimal.class, TypeSource.STATIC_DIALECT_RULE, "D1"));
-    public final CharEntityColumn paid = new CharEntityColumn(this,
-      "PAID", "paid", "CHARACTER", 1, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE, "D13"));
+      "AMOUNT", "amount", "DECIMAL", 12, 2, TypeHandler.forClass(Double.class, TypeSource.STATIC_DESIGNATED, null));
+    private final TypeHandler<Integer, InvoiceStatus> th0 = TypeHandler.forConverter(new InvoiceStatusConverter(), TypeSource.STATIC_DESIGNATED, null);
+    public final ConvertedColumn<Integer, InvoiceStatus> status = new ConvertedColumn<Integer, InvoiceStatus>(this, "STATUS", "status", "INTEGER", 32, 0, th0, th0.getConverter());
+    public final DateTimeEntityColumn created = new DateTimeEntityColumn(this,
+      "CREATED", "created", "TIMESTAMP", 26, 6, TypeHandler.forClass(LocalDateTime.class, TypeSource.STATIC_TYPESOLVER_RULE, "T1"));
+    private final TypeHandler<String, Boolean> th1 = TypeHandler.forConverter(new YNBooleanConverter(), TypeSource.STATIC_TYPESOLVER_RULE, "T2");
+    public final ConvertedColumn<String, Boolean> active = new ConvertedColumn<String, Boolean>(this, "ACTIVE", "active", "CHARACTER", 1, 0, th1, th1.getConverter());
+    public final NumericEntityColumn category = new NumericEntityColumn(this,
+      "CATEGORY", "category", "DECIMAL", 4, 0, TypeHandler.forClass(Short.class, TypeSource.STATIC_DIALECT_RULE, "D3"));
 
     @Override
     public AllColumns star() {
-      return new AllColumns(this.id, this.created, this.invoiceTaxCodes, this.amount, this.paid);
+      return new AllColumns(this.amount, this.status, this.created, this.active, this.category);
     }
 
     InvoiceTable() {
@@ -572,11 +490,11 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      super.columns.add(this.id);
-      super.columns.add(this.created);
-      super.columns.add(this.invoiceTaxCodes);
       super.columns.add(this.amount);
-      super.columns.add(this.paid);
+      super.columns.add(this.status);
+      super.columns.add(this.created);
+      super.columns.add(this.active);
+      super.columns.add(this.category);
     }
 
   }
@@ -594,13 +512,10 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     LiveSQLDialect liveSQLDialect = LShield.getLiveSQLDialect(this.sql);
     this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, new RuntimeTypeSolver(null, liveSQLDialect));
     this.dyn = new DynamicSQL();
-    this.initializeSelectbyprimarykey();
     this.initializeSelectbyexample();
     this.initializeInsert();
     this.initializeInsertbyexample();
-    this.initializeUpdatebypk();
     this.initializeUpdatebyexample();
-    this.initializeDeletebypk();
     this.initializeDeletebyexample();
   }
 

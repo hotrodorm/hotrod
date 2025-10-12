@@ -80,7 +80,7 @@ public class ConverterTag extends AbstractConfigurationTag {
     }
     if (!this.rawClass.matches(FULL_CLASS_NAME_PATTERN)) {
       throw new InvalidConfigurationFileException(this, "Attribute 'java-raw-type' of tag <" + super.getTagName()
-          + "> must be a valid java full class name, but '" + this.rawClass + "' was specified.");
+          + "> must be a valid full class name, but '" + this.rawClass + "' was specified.");
     }
     Accessors gs = ACCESSORS.get(this.rawClass);
     if (gs == null) {
@@ -101,7 +101,7 @@ public class ConverterTag extends AbstractConfigurationTag {
     }
     if (!this.domainClass.matches(FULL_CLASS_NAME_PATTERN)) {
       throw new InvalidConfigurationFileException(this, "Attribute 'java-type' of tag <" + super.getTagName()
-          + "> must be a valid java full class name, but '" + this.domainClass + "' was specified.");
+          + "> must be a valid full class name, but '" + this.domainClass + "' was specified.");
     }
 
     // class (converter)
@@ -111,8 +111,8 @@ public class ConverterTag extends AbstractConfigurationTag {
           "Attribute 'class' of tag <" + super.getTagName() + "> cannot be empty.");
     }
     if (!this.converterClass.matches(FULL_CLASS_NAME_PATTERN)) {
-      throw new InvalidConfigurationFileException(this, "Attribute 'java-class' of tag <" + super.getTagName()
-          + "> must be a valid java full class name, but '" + this.domainClass + "' was specified.");
+      throw new InvalidConfigurationFileException(this, "Attribute 'class' of tag <" + super.getTagName()
+          + "> must be a valid full class name, but '" + this.converterClass + "' was specified.");
     }
 
   }

@@ -1,62 +1,14 @@
-CREATE TABLE account (
-  id INT PRIMARY KEY NOT NULL, -- STATIC_DIALECT_RULE
-  balance DECIMAL(12, 2),      -- STATIC_DESIGNATED
-  segment TINYINT              -- STATIC_LAYER_RULE
-);
-
-INSERT INTO account (id, balance, segment) VALUES
-  (3, 215.53, 18),
-  (4, 101.01, 14),
-  (5, 450.25, 15);
-
 CREATE TABLE invoice (
-  id INT PRIMARY KEY NOT NULL,            -- STATIC_DIALECT_RULE
-  created TIMESTAMP,                      -- STATIC_LAYER_RULE (type)
-  invoice_tax_codes VARCHAR ARRAY[8],     -- STATIC_LAYER_RULE (converter)
-  amount DECIMAL(12, 2),                  -- STATIC_DESIGNATED (type)
-  paid char(1) CHECK (paid IN ('Y', 'N')) -- STATIC_DESIGNATED (converter)
+  amount DECIMAL(12, 2),                        -- STATIC_DESIGNATED (type)
+  status INT,                                   -- STATIC_DESIGNATED (converter)
+  created TIMESTAMP,                            -- STATIC_TYPESOLVER_RULE (type)
+  active CHAR(1) CHECK (active IN ('Y', 'N') ), -- STATIC_TYPESOLVER_RULE (converter)
+  category DECIMAL(4)                           -- STATIC_DIALECT_RULE
 );
 
-INSERT INTO invoice (id, created, invoice_tax_codes, amount, paid) VALUES
-  (10, '2022-04-10', ARRAY ['1001'], 105.60, 'Y'),
-  (11, '2023-12-07', ARRAY ['2077', '2078', '2301'], 230.05, 'N'),
-  (12, '2024-09-12', ARRAY ['1001', '1002'], 140.49, 'Y'),
-  (13, '2025-05-28', null, 49.99, 'N');
-
-/*
-select
-  id,                -- STATIC_DIALECT_RULE
-  created,           -- STATIC_LAYER_RULE (type)
-  invoice_tax_codes, -- STATIC_LAYER_RULE (converter)
-  amount * 1.3 as "AG1" .type(Double) -- RUNTIME_DESIGNATED
-  EXTRACT(DAY FROM created) as "dom" -- RUNTIME_TYPESOLVER_RULE
-  CASE WHEN paid THEN amount ELSE 0 END as "paidAmount" -- RUNTIME_DIALECT_RULE
-  DATEDIFF(DAY, created, CURRENT_DATE) as "age" -- RUNTIME_JDBC_DRIVER_DEFAULT
-from invoice
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+INSERT INTO invoice (amount, status, created, active, category) VALUES
+  (110.05, 3, '2022-09-14 12:30:21', 'Y', 1015),
+  (51.99,  2, '2023-07-22 14:31:35', 'N', 2001),
+  (480.14, 1, '2024-02-03 07:32:23', 'Y', 1018),
+  (224.01, 3, '2025-10-18 20:33:04', 'N', 1023);
+  

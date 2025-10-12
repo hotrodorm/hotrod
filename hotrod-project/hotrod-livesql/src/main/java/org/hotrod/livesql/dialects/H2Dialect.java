@@ -51,7 +51,7 @@ public class H2Dialect extends LiveSQLDialect {
 
   @Override
   public RuntimeType resolveRuntimeType(final ResultSetColumnMetadata m) {
-
+    String typeName = m.getColumnTypeName();
     switch (m.getColumnType()) {
 
     // Numeric types
@@ -118,12 +118,15 @@ public class H2Dialect extends LiveSQLDialect {
 
     // Binary
 
-    case java.sql.Types.VARBINARY:
+    case java.sql.Types.VARBINARY: // -3
       return RuntimeType.ofDialect(byte[].class, 21);
-    case java.sql.Types.BLOB:
+    case java.sql.Types.BLOB: // 2004
       return RuntimeType.ofDialect(byte[].class, 22);
-    case java.sql.Types.BINARY:
-      return RuntimeType.ofDialect(byte[].class, 23);
+    case java.sql.Types.BINARY: // -2
+      if ("BINARY".equals(typeName)) {
+        return RuntimeType.ofDialect(byte[].class, 23);
+      }
+      return null;
 
     // Boolean
 
