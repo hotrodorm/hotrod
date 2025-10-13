@@ -28,6 +28,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import app.InvoiceStatus;
+import app.InvoiceStatusConverter;
 import app.YNBooleanConverter;
 import app.persistence.model.BigInvoice;
 
@@ -53,7 +55,10 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
   // CONVERTERS
 
   @Autowired
-  private YNBooleanConverter converter0;
+  private InvoiceStatusConverter converter0;
+
+  @Autowired
+  private YNBooleanConverter converter1;
 
   // NITRO SELECT: getBigInvoices
 
@@ -105,8 +110,9 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
       }
 
       if (this.present2) {
-        Integer col2 = rs.getInt("STATUS"); // STATUS
-        if (rs.wasNull()) col2 = null;
+        Integer raw2 = rs.getInt("STATUS"); // STATUS
+        if (rs.wasNull()) raw2 = null;
+        InvoiceStatus col2 = converter0.decode(raw2, conn);
         row.setStatus(col2);
       }
 
@@ -117,7 +123,7 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
 
       if (this.present4) {
         String raw4 = rs.getString("ACTIVE"); // ACTIVE
-        Boolean col4 = converter0.decode(raw4, conn);
+        Boolean col4 = converter1.decode(raw4, conn);
         row.setActive(col4);
       }
 

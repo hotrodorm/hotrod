@@ -3,19 +3,11 @@
   <type-solver>
     <when test="name == 'CREATED'" java-type="java.time.LocalDateTime" />
     <when test="name == 'ACTIVE'" converter="YNConverter" />
-  <!-- 
-    <when test="typeName == 'TIMESTAMP'" java-type="java.sql.Timestamp" />
-    <when test="typeName == 'TINYINT'" java-type="Double" />
-    <when test="typeName == 'CHARACTER VARYING ARRAY' and name.endsWith('_TAX_CODES')"
-      converter="TaxCodesArrayConverter" />
-       -->
   </type-solver>
 
   <runtime-type-solver>
     <when test="columnName == 'dom'" java-type="Long" />
     <when test="columnName.endsWith('_jld')" java-type="Float" />
-  <!-- 
-     -->
   </runtime-type-solver>
 
   <converter name="YNConverter" java-raw-type="java.lang.String" java-type="java.lang.Boolean"
@@ -32,7 +24,7 @@
 
     <select method="getBigInvoices" vo="BigInvoice">
       <column name="amount" java-type="Double" />
-      <column name="paid" converter="YNConverter" />
+      <column name="status" converter="InvoiceStatusConverter" />
       SELECT *
       FROM invoice
       WHERE amount > 200

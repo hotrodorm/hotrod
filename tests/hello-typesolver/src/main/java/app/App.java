@@ -8,7 +8,6 @@ import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.expressions.datetime.DateTimeFieldExpression.DateTimeField;
-import org.hotrod.livesql.queries.select.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -20,15 +19,17 @@ import org.springframework.context.annotation.Configuration;
 import app.persistence.dao.InvoiceDAO;
 import app.persistence.dao.InvoiceDAO.InvoiceTable;
 import app.persistence.dao.PaymentDAO;
+import app.persistence.model.BigInvoice;
+import app.persistence.model.Invoice;
 
 @SpringBootApplication
 @Configuration
 public class App {
 
-  private static final Logger log = Logger.getLogger(App.class.getName());
+  private static final Logger LOG = Logger.getLogger(App.class.getName());
 
-  private static final LiveSQLLogging LIVESQLLOG = LiveSQLLogging.of(() -> log.isLoggable(Level.INFO),
-      msg -> log.info(msg));
+  private static final LiveSQLLogging LIVESQL_LOG = LiveSQLLogging.of(() -> LOG.isLoggable(Level.FINE),
+      msg -> LOG.fine(msg));
 
   @Autowired
   private LiveSQL sql;
@@ -52,94 +53,50 @@ public class App {
   @Bean
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
-//      demoTypeSolverCRUD();
-//      demoTypeSolverNitroSelect();
+      demoTypeSolverCRUD();
+      demoTypeSolverNitroSelect();
       demoTypeSolverLiveSQL();
     };
   }
 
-//  private void demoTypeSolverCRUD() {
-//    Account acc = this.accountDAO.select(4);
-//    System.out.println("1. Account #4: " + acc);
-//  }
-//
-//  private void demoTypeSolverNitroSelect() {
-//    List<BigInvoice> bi = this.paymentDAO.getBigInvoices();
-//    for (BigInvoice i : bi) {
-//      System.out.println("2. Big Invoice: " + i);
-//    }
-//  }
-//
-//  private void demoTypeSolverLiveSQLOld() {
-//    InvoiceTable i = this.invoiceDAO.newTable();
-//    Select<Row> q = this.sql.select( //
-//        i.id, // STATIC_DIALECT_RULE
-//        i.created, // STATIC_TYPESOLVER_RULE (type)
-//        i.invoiceTaxCodes, // STATIC_TYPESOLVER_RULE (converter)
-//        i.amount, //
-//        i.paid, //
-//        i.amount.mult(1.30).as("ag1").type(Double.class), // RUNTIME_DESIGNATED
-//        sql.caseWhen(i.amount.ge(500), "Y").elseValue("N").end().as("vip").type(this.ynBooleanConverter), //
-//        i.created.extract(DateTimeField.DAY).as("dom"), // RUNTIME_TYPESOLVER_RULE
-//        sql.caseWhen(i.paid.eq("Y"), i.amount).elseValue(0).end().as("paidAmount"), // RUNTIME_DIALECT_RULE
-//        h2.randomUUID().as("globalId") // RUNTIME_JDBC_DRIVER_DEFAULT
-//    ).from(i) //
-//        .where(i.id.eq(11));
-////    System.out.println("query=" + q.getPreview(true));
-//    List<Row> rows = q.execute(LIVESQLLOG);
-//    for (Row r : rows) {
-//      System.out.println("r=" + r);
-//    }
-//    int count = this.sql.insert(i).columns(i.id).values(sql.val(123)).execute(LIVESQLLOG);
-//    System.out.println("inserted: " + count);
-//    count = this.invoiceDAO.delete(i, i.id.eq(1234)).execute(LIVESQLLOG);
-//    System.out.println("deleted: " + count);
-//  }
+  private void demoTypeSolverCRUD() {
+    Invoice filter = new Invoice();
+    filter.setStatus(InvoiceStatus.UNPAID);
+    List<Invoice> unpaid = this.invoiceDAO.select(filter);
+    for (Invoice inv : unpaid) {
+      System.out.println("1. Unpaid invoice: " + inv);
+    }
+  }
+
+  private void demoTypeSolverNitroSelect() {
+    List<BigInvoice> bi = this.paymentDAO.getBigInvoices();
+    for (BigInvoice i : bi) {
+      System.out.println("2. Big Invoice: " + i);
+    }
+  }
 
   private void demoTypeSolverLiveSQL() {
     InvoiceTable i = this.invoiceDAO.newTable();
-
-//    select
-//    i.amount // static designated class
-//    i.status // static designated converter
-//    i.created // static typesolver class
-//    i.active // static typesolver converter
-//    i.category // static dialect rule
-//
-//    i.amount.mult(1.30).as("gross").type(Double.class) // runtime designated class
-//    sql.caseWhen(i.amount.ge(500), "Y").elseValue("N").end().as("vip").type(this.ynConverter) // runtime designated converter
-//    i.created.extract(DateTimeField. DAY ).as("dom") // runtime typesolver class
-//    i.expiration_jdn // runtime typesolver converter
-//    sql.caseWhen(i.paid.eq("Y"), i.amount).elseValue(0).end().as("paidAmount"), // RUNTIME_DIALECT_RULE
-//    h2.randomUUID().as("globalId") // RUNTIME_JDBC_DRIVER_DEFAULT
-
-    Select<Row> q = this.sql.select( //
-        i.amount, // static designated class
-        i.status, // static designated converter
-        i.created, // static typesolver class
-        i.active, // static typesolver converter
-        i.category, // static dialect rule
-
-        i.amount.mult(1.30).as("gross").type(Double.class), // runtime designated class
-        sql.caseWhen(i.amount.ge(500), "Y").elseValue("N").end().as("vip").type(this.ynBooleanConverter), // runtime designated
-                                                                                                   // converter
-        i.created.extract(DateTimeField.DAY).as("dom"), // runtime typesolver class
-        i.amount.mult(i.category).as("score_jld"), // runtime typesolver converter
-        
-        sql.caseWhen(i.status.eq(InvoiceStatus.PAID), i.amount).elseValue(0).end().as("paidAmount"), // RUNTIME_DIALECT_RULE
-        
-        h2.randomUUID().as("globalId") // RUNTIME_JDBC_DRIVER_DEFAULT
-    ).from(i) //
-    ;
-//    System.out.println("query=" + q.getPreview(true));
-    List<Row> rows = q.execute(LIVESQLLOG);
+    List<Row> rows = this.sql
+        .select(
+          i.amount,
+          i.status,
+          i.created,
+          i.active,
+          i.category,
+          i.amount.mult(1.30).as("gross").type(Double.class),
+          sql.caseWhen(i.amount.ge(300), "Y").elseValue("N").end().as("vip").type(this.ynBooleanConverter),
+          i.created.extract(DateTimeField.DAY).as("dom"),
+          i.amount.mult(i.category).as("score_jld"),
+          sql.caseWhen(i.status.eq(InvoiceStatus.PAID), i.amount).elseValue(0).end().as("paidAmount"),
+          h2.randomUUID().as("globalId")
+         )
+        .from(i)
+        .where(i.status.eq(InvoiceStatus.DRAFT))
+        .execute(LIVESQL_LOG);
     for (Row r : rows) {
-      System.out.println("r=" + r);
+      System.out.println("3. row=" + r);
     }
-//    int count = this.sql.insert(i).columns(i.id).values(sql.val(123)).execute(LIVESQLLOG);
-//    System.out.println("inserted: " + count);
-//    count = this.invoiceDAO.delete(i, i.id.eq(1234)).execute(LIVESQLLOG);
-//    System.out.println("deleted: " + count);
   }
 
 }

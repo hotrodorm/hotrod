@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 
 import org.hotrod.json.JSONObject;
 
+import app.InvoiceStatus;
+
 public class BigInvoiceLayout implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -14,7 +16,7 @@ public class BigInvoiceLayout implements Serializable {
   // Expression properties
 
   protected Double amount = null; // Source Type: STATIC_DESIGNATED
-  protected Integer status = null; // Source Type: STATIC_DIALECT_RULE, rule #D9
+  protected InvoiceStatus status = null; // Source Type: STATIC_DESIGNATED
   protected LocalDateTime created = null; // Source Type: STATIC_TYPESOLVER_RULE, rule #T1
   protected Boolean active = null; // Source Type: STATIC_TYPESOLVER_RULE, rule #T2
   protected Short category = null; // Source Type: STATIC_DIALECT_RULE, rule #D3
@@ -29,11 +31,11 @@ public class BigInvoiceLayout implements Serializable {
     this.amount = amount;
   }
 
-  public final Integer getStatus() {
+  public final InvoiceStatus getStatus() {
     return this.status;
   }
 
-  public final void setStatus(final java.lang.Integer status) {
+  public final void setStatus(final app.InvoiceStatus status) {
     this.status = status;
   }
 
